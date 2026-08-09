@@ -1,0 +1,17 @@
+13538b97b6dc015cd627493616a1d14d8c837fd857c11484b197b24ed00a5b37  ./api-rev-015-handoff-check.log
+3780802dce038f7febe347cb3347d35f48ca4a7dd81ffea15b44df2d0878d857  ./canonical-artifact-manifest.sha256
+6183a14dc2a5903a55c59cd4537358d8ec6e8ed6ff9be640668edcfd764b124e  ./changed-server-test-files.txt
+0fbe2125651c55a28b0466b328e3590008d32282ce4e501cdf6acba3a0a76666  ./changed-server-tests-final.log
+5af0cf393f227699036a4c9cbf0d25927530baaf46d1c7b9ed905ad9141a3c36  ./cumulative-durable-coverage-inventory-summary.log
+bc347be645be30ccc5cfdae4a1dd01bb0128d06d461089cc0dda8b8143e87c7b  ./cumulative-durable-coverage-inventory.tsv
+aa4b79dc13c15fc2bc73fbf294081b81b9f4e1d6cb27486b971e303c1495cee7  ./cumulative-durable-diff.patch
+c6395ef19c6bffbd4d6f6ac06139a74021d28d28ebdb6cab11d12780743713f2  ./durable-delta-status-initial.log
+2d74d59337425dba5af04fba60653b514c34f72bca6598d71e8947d6da0da9fd  ./final-audit.log
+9b8b8c5a014fea42b95c22ce4a4d31c21d0a76c91bbf985b33bdfd4c33471764  ./handoff-reference-files.txt
+83ab22d8ad188bf8e5033fd9864dc5cc29b750a78591efe529c772f1618c0bc5  ./harness-build.log
+f9eb1476c8b74d0f4b06d4ff5e2a8f2efb5026dfe187cfb10284a4ca1461711d  ./live-harness-isolation-final.log
+23e6d97b918ead00a85518eea4bd2cf9d0f3396538d8946cd21c70caeffc3b33  ./live-harness-static-final.log
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  ./production-typecheck-final.log
+f2221be2df47870a4e9ba5e63bcef573fa4665fb357384081a0b9fc62c00b813  ./restored-stale-paths-before.log
+320b42a907aa58408b5c9d33ad84640f3e52ec9f6cfafd5e7338c99858a63287  ./restored-stale-paths-final.log
+454bcc6f1854731a3b1b2cedd16f6de3236296b83c2f2b83c22746e869d51bc2  ./web-affected-final.log

@@ -1,0 +1,763 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+
+stdout | tests/integration/app-data-migrations/team-run-metadata-member-tree-history.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:35831) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/integration/app-data-migrations/team-run-metadata-member-tree-history.integration.test.ts (2 tests | 2 failed) 14ms
+     × migrates a real historical flat metadata file to canonical history format 11ms
+     × keeps workspace history usable when an unsafe historical file cannot be migrated 3ms
+(node:35832) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/custom-provider-v1-app-data-migration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/app-data-migrations/custom-provider-v1-app-data-migration.test.ts > CustomProviderV1AppDataMigration > is registered as the first required startup app-data migration
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/unit/app-data-migrations/custom-provider-v1-app-data-migration.test.ts > CustomProviderV1AppDataMigration > is registered as the first required startup app-data migration
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+
+stdout | tests/unit/app-data-migrations/custom-provider-v1-app-data-migration.test.ts > CustomProviderV1AppDataMigration > treats missing and current v2 files as idempotent no-ops without vault access
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/unit/app-data-migrations/custom-provider-v1-app-data-migration.test.ts > CustomProviderV1AppDataMigration > migrates every valid provider atomically and publishes owner-only secret-free v2
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/unit/app-data-migrations/custom-provider-v1-app-data-migration.test.ts > CustomProviderV1AppDataMigration > serializes live migration owners so only one batch can publish
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/unit/app-data-migrations/custom-provider-v1-app-data-migration.test.ts > CustomProviderV1AppDataMigration > recovers a fixed-path lock owned by a terminated process
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/unit/app-data-migrations/custom-provider-v1-app-data-migration.test.ts > CustomProviderV1AppDataMigration > recovers an aged zero-byte lock left by the pre-migration provider writer
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/unit/app-data-migrations/custom-provider-v1-app-data-migration.test.ts > CustomProviderV1AppDataMigration > does not reclaim an aged lock owned by a live positive PID
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/unit/app-data-migrations/custom-provider-v1-app-data-migration.test.ts > CustomProviderV1AppDataMigration > deletes invalid or duplicate v1 without touching the vault
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/unit/app-data-migrations/custom-provider-v1-app-data-migration.test.ts > CustomProviderV1AppDataMigration > removes an unsafe canonical symlink without reading or changing its target
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/unit/app-data-migrations/custom-provider-v1-app-data-migration.test.ts > CustomProviderV1AppDataMigration > treats an interrupted committed batch as a collision and never deletes it
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/unit/app-data-migrations/custom-provider-v1-app-data-migration.test.ts > CustomProviderV1AppDataMigration > compensates the exact new batch when atomic v2 publication fails
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/unit/app-data-migrations/custom-provider-v1-app-data-migration.test.ts > CustomProviderV1AppDataMigration > deletes v1 after stage failure without calling the database owner
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/unit/app-data-migrations/custom-provider-v1-app-data-migration.test.ts > CustomProviderV1AppDataMigration > rolls back the entire vault batch and deletes v1 after a database write failure
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/unit/app-data-migrations/custom-provider-v1-app-data-migration.test.ts > CustomProviderV1AppDataMigration > rolls back the entire vault batch and deletes v1 after a database write failure
+prisma:error 
+Invalid `this.create()` invocation in
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/src/secret-management/persistence/secret-entry-repository.ts:56:16
+
+  53 }
+  54 
+  55 async createEntry(record: EncryptedSecretEntryRecord): Promise<void> {
+→ 56   await this.create(
+Foreign key constraint violated: `foreign key`
+
+stdout | tests/unit/app-data-migrations/custom-provider-v1-app-data-migration.test.ts > CustomProviderV1AppDataMigration > leaves v1 byte-identical and reports FAILED when reset deletion is unavailable
+prisma:info Starting a sqlite pool with 21 connections.
+
+ ✓ tests/unit/app-data-migrations/custom-provider-v1-app-data-migration.test.ts (14 tests) 617ms
+stdout | tests/unit/app-data-migrations/token-usage-legacy-path-columns-drop-migration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:35834) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/token-usage-legacy-path-columns-drop-migration.test.ts > TokenUsageLegacyPathColumnsDropMigration > is registered as a startup migration after execution-address backfill
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+
+ ❯ tests/unit/app-data-migrations/token-usage-legacy-path-columns-drop-migration.test.ts (5 tests | 1 failed) 152ms
+     ✓ is registered as a startup migration after execution-address backfill 2ms
+     ✓ drops present legacy columns while preserving canonical columns, rows, totals, and indexes 36ms
+     ✓ no-ops already-absent legacy columns and only drops columns still present 26ms
+     ✓ fails clearly without a terminal-success execution-address backfill record and leaves schema unchanged 50ms
+     × runs after pending backfill in startup order for skipped-version upgrades 37ms
+ ✓ tests/unit/app-data-migrations/run-history-index-v2-migration.test.ts (3 tests) 66ms
+stdout | tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:35836) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > runs the default prerequisite class order through the ordinary runner and preserves a raw-1-backed direct upgrade
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+
+ ❯ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts (6 tests | 2 failed) 52ms
+     ✓ converts standalone v4 with absent lineage, exact active provenance, exact cleanup, and idempotence 17ms
+     ✓ converts standalone v4 with zero-byte lineage, exact active provenance, exact cleanup, and idempotence 8ms
+     × uses memberRunId as team snapshot identity and publishes an empty strict v5 with warnings when nothing survives 6ms
+     ✓ skips any nonempty-lineage location before snapshot inspection or cleanup 3ms
+     ✓ retains equivalent current-v5 bytes while cleaning obsolete files and rejects identity conflict without mutation 14ms
+     × runs the default prerequisite class order through the ordinary runner and preserves a raw-1-backed direct upgrade 3ms
+stderr | tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts > RemoveExternalRuntimeWorkingContextSnapshotsMigration > preserves snapshots when metadata is invalid or mismatched and reports actionable failures
+Failed reading run metadata for invalid-run: SyntaxError: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+
+stderr | tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts > RemoveExternalRuntimeWorkingContextSnapshotsMigration > reports a failed unlink, retains stale generic inspection with independent raws, and removes it on retry
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/external-snapshot-cleanup-ThuUS3/agents/codex-unlink-failure/working_context_snapshot.json
+
+ ❯ tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts (4 tests | 1 failed) 38ms
+     × removes only exact standalone and recursive team Codex/Claude snapshots and is idempotent 25ms
+     ✓ does not traverse directory symlinks and unlinks only the eligible snapshot symlink, not its target 3ms
+     ✓ preserves snapshots when metadata is invalid or mismatched and reports actionable failures 3ms
+     ✓ reports a failed unlink, retains stale generic inspection with independent raws, and removes it on retry 6ms
+ ✓ tests/unit/app-data-migrations/raw-trace-rotation-layout-migration.test.ts (6 tests) 46ms
+stdout | tests/unit/app-data-migrations/team-run-history-index-v2-migration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:35841) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/app-data-migrations/team-run-history-index-v2-migration.test.ts (2 tests | 2 failed) 12ms
+     × writes a plain V2 team row array and repairs metadata-backed rows missing from the legacy index 8ms
+     × fails metadata/directory identity mismatches and still writes migratable rows 3ms
+ ❯ tests/unit/app-data-migrations/token-usage-execution-address-backfill-migration.test.ts (3 tests | 3 failed) 24ms
+     × runs against the expanded Prisma migration schema and leaves legacy physical columns untouched 21ms
+     × backfills direct/task-agent rows, corrects task-team rows, and records category counts 2ms
+     × keeps active token usage hierarchy paths off legacy path columns and keeps physical drop out of normal Prisma migrations 1ms
+ ❯ tests/unit/app-data-migrations/team-run-metadata-member-tree-migration.test.ts (4 tests | 3 failed) 19ms
+     × converts legacy flat memberMetadata to canonical memberTree and creates a backup 6ms
+     ✓ skips current memberTree metadata idempotently 1ms
+     × records partial failures without blocking other files 9ms
+     × fails legacy flat metadata with nested route/path instead of guessing topology 1ms
+stdout | tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:35844) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts > RawTraceActiveFileNameMigration > registers external cleanup then both raw-layout prerequisites before native snapshot conversion
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+
+ ❯ tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts (3 tests | 1 failed) 25ms
+     ✓ renames local standalone and nested team active raw trace files 14ms
+     ✓ renames imported Memory Sync active files and rewrites matching manifest file records 5ms
+     × registers external cleanup then both raw-layout prerequisites before native snapshot conversion 5ms
+stdout | tests/unit/app-data-migrations/team-communication-projection-address-migration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:35848) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/team-communication-projection-address-migration.test.ts > TeamCommunicationProjectionAddressMigration > is registered as a startup-required app-data migration
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+
+ ❯ tests/unit/app-data-migrations/team-communication-projection-address-migration.test.ts (4 tests | 3 failed) 17ms
+     × converts old flat projection files to the address-first shape and records a backup 10ms
+     × skips already-current address-first projection files without creating a backup 3ms
+     × reports unconvertible old flat files as failures without rewriting the original file 2ms
+     ✓ is registered as a startup-required app-data migration 1ms
+ ✓ tests/unit/app-data-migrations/remove-global-skill-discovery-mode-migration.test.ts (1 test) 19ms
+stdout | tests/unit/app-data-migrations/app-data-migration-runner.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:35850) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/app-data-migrations/app-data-migration-runner.test.ts (6 tests) 10ms
+stdout | tests/unit/app-data-migrations/token-usage-provider-name-snapshot-backfill-migration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/app-data-migrations/token-usage-provider-name-snapshot-backfill-migration.test.ts (5 tests) 5ms
+stdout | tests/unit/server-runtime-app-data-migration-gate.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:35856) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts (2 tests) 5ms
+ ✓ tests/unit/app-data-migrations/token-usage-custom-provider-model-value-backfill-migration.test.ts (3 tests) 3ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 18 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/app-data-migrations/team-run-metadata-member-tree-history.integration.test.ts > team run metadata member-tree app-data migration history boundary > migrates a real historical flat metadata file to canonical history format
+AssertionError: expected { scannedCount: 1, …(4) } to match object { scannedCount: 1, …(3) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "failedCount": 0,
+-   "migratedCount": 1,
++   "migratedCount": 0,
+    "scannedCount": 1,
+-   "skippedCount": 0,
++   "skippedCount": 1,
+  }
+
+ ❯ tests/integration/app-data-migrations/team-run-metadata-member-tree-history.integration.test.ts:196:36
+    194|       canRetry: false,
+    195|     });
+    196|     expect(memberTreeRun?.summary).toMatchObject({
+       |                                    ^
+    197|       scannedCount: 1,
+    198|       migratedCount: 1,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/18]⎯
+
+ FAIL  tests/integration/app-data-migrations/team-run-metadata-member-tree-history.integration.test.ts > team run metadata member-tree app-data migration history boundary > keeps workspace history usable when an unsafe historical file cannot be migrated
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ normalizeTeamRunMetadata src/run-history/store/team-run-metadata-schema.ts:148:20
+ ❯ TeamRunMetadataStore.writeMetadata src/run-history/store/team-run-metadata-store.ts:93:24
+ ❯ tests/integration/app-data-migrations/team-run-metadata-member-tree-history.integration.test.ts:297:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/18]⎯
+
+ FAIL  tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > uses memberRunId as team snapshot identity and publishes an empty strict v5 with warnings when nothing survives
+AssertionError: expected 'FAILED' to be 'SUCCEEDED_WITH_WARNINGS' // Object.is equality
+
+Expected: "SUCCEEDED_WITH_WARNINGS"
+Received: "FAILED"
+
+ ❯ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts:276:27
+    274|     const result = await new MigrateNativeWorkingContextSnapshotsV5Mig…
+    275| 
+    276|     expect(result.status).toBe("SUCCEEDED_WITH_WARNINGS");
+       |                           ^
+    277|     expect(result.summary.details).toEqual(expect.arrayContaining([
+    278|       expect.objectContaining({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/18]⎯
+
+ FAIL  tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > runs the default prerequisite class order through the ordinary runner and preserves a raw-1-backed direct upgrade
+AssertionError: expected [ 4, 5, 6, 7 ] to deeply equal [ 3, 4, 5, 6 ]
+
+- Expected
++ Received
+
+  [
+-   3,
+    4,
+    5,
+    6,
++   7,
+  ]
+
+ ❯ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts:346:74
+    344|     const activeNameIndex = defaultDefinitions.findIndex((item) => ite…
+    345|     const nativeIndex = defaultDefinitions.findIndex((item) => item in…
+    346|     expect([externalIndex, rotationIndex, activeNameIndex, nativeIndex…
+       |                                                                          ^
+    347| 
+    348|     const runId = "ordinary-runner-direct-upgrade";
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/18]⎯
+
+ FAIL  tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts > RawTraceActiveFileNameMigration > registers external cleanup then both raw-layout prerequisites before native snapshot conversion
+AssertionError: expected [ 4, 5, 6, 7 ] to deeply equal [ 3, 4, 5, 6 ]
+
+- Expected
++ Received
+
+  [
+-   3,
+    4,
+    5,
+    6,
++   7,
+  ]
+
+ ❯ tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts:156:8
+    154|       definitionIds.indexOf(RAW_TRACE_ACTIVE_FILE_NAME_MIGRATION_ID),
+    155|       definitionIds.indexOf(MIGRATE_NATIVE_WORKING_CONTEXT_SNAPSHOTS_V…
+    156|     ]).toEqual([3, 4, 5, 6]);
+       |        ^
+    157|   });
+    158| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/18]⎯
+
+ FAIL  tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts > RemoveExternalRuntimeWorkingContextSnapshotsMigration > removes only exact standalone and recursive team Codex/Claude snapshots and is idempotent
+AssertionError: expected 'SUCCEEDED_WITH_WARNINGS' to be 'SUCCEEDED' // Object.is equality
+
+Expected: "SUCCEEDED"
+Received: "SUCCEEDED_WITH_WARNINGS"
+
+ ❯ tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts:223:26
+    221|     const first = await new RemoveExternalRuntimeWorkingContextSnapsho…
+    222| 
+    223|     expect(first.status).toBe("SUCCEEDED");
+       |                          ^
+    224|     expect(first.summary.migratedCount).toBe(6);
+    225|     for (const runDir of [
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/18]⎯
+
+ FAIL  tests/unit/app-data-migrations/team-communication-projection-address-migration.test.ts > TeamCommunicationProjectionAddressMigration > converts old flat projection files to the address-first shape and records a backup
+AssertionError: expected { teamRunId: 'team-legacy', …(1) } to deeply equal { teamRunId: 'team-legacy', …(1) }
+
+- Expected
++ Received
+
+@@ -4,16 +4,14 @@
+        "content": "Please review the attached report.",
+        "createdAt": "2026-04-08T00:00:00.000Z",
+        "messageId": "message-1",
+        "messageType": "handoff",
+        "receiverAddress": {
+-         "segments": [
+-           {
+-             "kind": "member",
+-             "memberRouteKey": "BuildSquad/review_lead",
+-           },
+-         ],
++         "memberAddress": "/BuildSquad/review_lead",
++         "rootTeamRunId": "team-legacy",
++         "taskAgentRunId": null,
++         "taskTeamRunIds": [],
+        },
+        "referenceFiles": [
+          {
+            "createdAt": "2026-04-08T00:00:00.000Z",
+            "path": "/tmp/report.md",
+@@ -21,16 +19,14 @@
+            "type": "file",
+            "updatedAt": "2026-04-08T00:00:01.000Z",
+          },
+        ],
+        "senderAddress": {
+-         "segments": [
+-           {
+-             "kind": "member",
+-             "memberRouteKey": "sender",
+-           },
+-         ],
++         "memberAddress": "/sender",
++         "rootTeamRunId": "team-legacy",
++         "taskAgentRunId": null,
++         "taskTeamRunIds": [],
+        },
+      },
+    ],
+    "teamRunId": "team-legacy",
+  }
+
+ ❯ tests/unit/app-data-migrations/team-communication-projection-address-migration.test.ts:82:23
+     80|     });
+     81|     const converted = await readJson(projectionPath);
+     82|     expect(converted).toEqual({
+       |                       ^
+     83|       teamRunId: "team-legacy",
+     84|       messages: [
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/18]⎯
+
+ FAIL  tests/unit/app-data-migrations/team-communication-projection-address-migration.test.ts > TeamCommunicationProjectionAddressMigration > skips already-current address-first projection files without creating a backup
+AssertionError: expected { scannedCount: 1, …(4) } to match object { scannedCount: 1, …(3) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "failedCount": 0,
+-   "migratedCount": 0,
++   "migratedCount": 1,
+    "scannedCount": 1,
+-   "skippedCount": 1,
++   "skippedCount": 0,
+  }
+
+ ❯ tests/unit/app-data-migrations/team-communication-projection-address-migration.test.ts:133:28
+    131| 
+    132|     expect(result.status).toBe("SUCCEEDED");
+    133|     expect(result.summary).toMatchObject({ scannedCount: 1, migratedCo…
+       |                            ^
+    134|     expect(result.summary.details[0]).toMatchObject({ itemId: "team-cu…
+    135|     await expect(readJson(projectionPath)).resolves.toMatchObject({ te…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/18]⎯
+
+ FAIL  tests/unit/app-data-migrations/team-communication-projection-address-migration.test.ts > TeamCommunicationProjectionAddressMigration > reports unconvertible old flat files as failures without rewriting the original file
+AssertionError: expected { itemId: 'team-bad', …(3) } to match object { itemId: 'team-bad', …(2) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "itemId": "team-bad",
+-   "message": StringContaining "receiver member route/path cannot be converted",
++   "message": "receiver member address cannot be reconstructed.",
+    "status": "FAILED",
+  }
+
+ ❯ tests/unit/app-data-migrations/team-communication-projection-address-migration.test.ts:159:39
+    157|     expect(result.status).toBe("FAILED");
+    158|     expect(result.summary).toMatchObject({ scannedCount: 1, migratedCo…
+    159|     expect(result.summary.details[0]).toMatchObject({
+       |                                       ^
+    160|       itemId: "team-bad",
+    161|       status: "FAILED",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/18]⎯
+
+ FAIL  tests/unit/app-data-migrations/team-run-history-index-v2-migration.test.ts > TeamRunHistoryIndexV2AppDataMigration > writes a plain V2 team row array and repairs metadata-backed rows missing from the legacy index
+AssertionError: expected 'FAILED' to be 'SUCCEEDED' // Object.is equality
+
+Expected: "SUCCEEDED"
+Received: "FAILED"
+
+ ❯ tests/unit/app-data-migrations/team-run-history-index-v2-migration.test.ts:95:27
+     93|     const result = await new TeamRunHistoryIndexV2AppDataMigration(mem…
+     94| 
+     95|     expect(result.status).toBe("SUCCEEDED");
+       |                           ^
+     96|     expect(result.summary.migratedCount).toBe(2);
+     97|     expect(result.summary.skippedCount).toBe(1);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/18]⎯
+
+ FAIL  tests/unit/app-data-migrations/team-run-history-index-v2-migration.test.ts > TeamRunHistoryIndexV2AppDataMigration > fails metadata/directory identity mismatches and still writes migratable rows
+AssertionError: expected 'FAILED' to be 'SUCCEEDED_WITH_WARNINGS' // Object.is equality
+
+Expected: "SUCCEEDED_WITH_WARNINGS"
+Received: "FAILED"
+
+ ❯ tests/unit/app-data-migrations/team-run-history-index-v2-migration.test.ts:134:27
+    132|     const result = await new TeamRunHistoryIndexV2AppDataMigration(mem…
+    133| 
+    134|     expect(result.status).toBe("SUCCEEDED_WITH_WARNINGS");
+       |                           ^
+    135|     expect(result.summary.failedCount).toBe(1);
+    136|     expect(result.summary.details).toEqual(expect.arrayContaining([
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/18]⎯
+
+ FAIL  tests/unit/app-data-migrations/team-run-metadata-member-tree-migration.test.ts > TeamRunMetadataMemberTreeMigration > converts legacy flat memberMetadata to canonical memberTree and creates a backup
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/unit/app-data-migrations/team-run-metadata-member-tree-migration.test.ts:91:42
+     89| 
+     90|     expect(result.status).toBe("SUCCEEDED");
+     91|     expect(result.summary.migratedCount).toBe(1);
+       |                                          ^
+     92|     const converted = JSON.parse(await fs.readFile(metadataPath, "utf-…
+     93|     expect(converted.runVersion).toBeUndefined();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/18]⎯
+
+ FAIL  tests/unit/app-data-migrations/team-run-metadata-member-tree-migration.test.ts > TeamRunMetadataMemberTreeMigration > records partial failures without blocking other files
+AssertionError: expected 'SUCCEEDED' to be 'SUCCEEDED_WITH_WARNINGS' // Object.is equality
+
+Expected: "SUCCEEDED_WITH_WARNINGS"
+Received: "SUCCEEDED"
+
+ ❯ tests/unit/app-data-migrations/team-run-metadata-member-tree-migration.test.ts:126:27
+    124|     const result = await new TeamRunMetadataMemberTreeMigration(tempDi…
+    125| 
+    126|     expect(result.status).toBe("SUCCEEDED_WITH_WARNINGS");
+       |                           ^
+    127|     expect(result.summary.migratedCount).toBe(1);
+    128|     expect(result.summary.failedCount).toBe(1);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/18]⎯
+
+ FAIL  tests/unit/app-data-migrations/team-run-metadata-member-tree-migration.test.ts > TeamRunMetadataMemberTreeMigration > fails legacy flat metadata with nested route/path instead of guessing topology
+AssertionError: expected 'SUCCEEDED' to be 'FAILED' // Object.is equality
+
+Expected: "FAILED"
+Received: "SUCCEEDED"
+
+ ❯ tests/unit/app-data-migrations/team-run-metadata-member-tree-migration.test.ts:138:33
+    136| 
+    137|     const failedResult = await new TeamRunMetadataMemberTreeMigration(…
+    138|     expect(failedResult.status).toBe("FAILED");
+       |                                 ^
+    139|     expect(failedResult.summary.failedCount).toBe(1);
+    140|     expect(failedResult.summary.details[0]?.message).toContain("topolo…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/18]⎯
+
+ FAIL  tests/unit/app-data-migrations/token-usage-execution-address-backfill-migration.test.ts > TokenUsageExecutionAddressBackfillMigration > runs against the expanded Prisma migration schema and leaves legacy physical columns untouched
+AssertionError: expected '{"rootTeamRunId":"rootSql","taskTeamR…' to be '{"segments":[{"kind":"member","member…' // Object.is equality
+
+Expected: "{"segments":[{"kind":"member","memberRouteKey":"Teacher"}]}"
+Received: "{"rootTeamRunId":"rootSql","taskTeamRunIds":[],"memberAddress":"/Teacher","taskAgentRunId":null}"
+
+ ❯ tests/unit/app-data-migrations/token-usage-execution-address-backfill-migration.test.ts:157:47
+    155|       expect(rows).toHaveLength(1);
+    156|       expect(rows[0]!.root_team_run_id).toBe("rootSql");
+    157|       expect(rows[0]!.execution_address_json).toBe(JSON.stringify({
+       |                                               ^
+    158|         segments: [{ kind: "member", memberRouteKey: "Teacher" }],
+    159|       }));
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/18]⎯
+
+ FAIL  tests/unit/app-data-migrations/token-usage-execution-address-backfill-migration.test.ts > TokenUsageExecutionAddressBackfillMigration > backfills direct/task-agent rows, corrects task-team rows, and records category counts
+AssertionError: expected 'FAILED' to be 'SUCCEEDED' // Object.is equality
+
+Expected: "SUCCEEDED"
+Received: "FAILED"
+
+ ❯ tests/unit/app-data-migrations/token-usage-execution-address-backfill-migration.test.ts:206:27
+    204|     const result = await new TokenUsageExecutionAddressBackfillMigrati…
+    205| 
+    206|     expect(result.status).toBe("SUCCEEDED");
+       |                           ^
+    207|     expect(result.summary).toMatchObject({
+    208|       scannedCount: 8,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/18]⎯
+
+ FAIL  tests/unit/app-data-migrations/token-usage-execution-address-backfill-migration.test.ts > TokenUsageExecutionAddressBackfillMigration > keeps active token usage hierarchy paths off legacy path columns and keeps physical drop out of normal Prisma migrations
+Error: ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/src/agent-team-execution/services/token-usage-execution-address-builder.ts'
+ ❯ tests/unit/app-data-migrations/token-usage-execution-address-backfill-migration.test.ts:283:23
+    281|     const activeLegacyReferences: string[] = [];
+    282|     for (const relativeFile of activeHierarchyFiles) {
+    283|       const content = await fs.readFile(path.join(repoRoot, relativeFi…
+       |                       ^
+    284|       if (legacyColumnPattern.test(content)) activeLegacyReferences.pu…
+    285|       legacyColumnPattern.lastIndex = 0;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/18]⎯
+
+ FAIL  tests/unit/app-data-migrations/token-usage-legacy-path-columns-drop-migration.test.ts > TokenUsageLegacyPathColumnsDropMigration > runs after pending backfill in startup order for skipped-version upgrades
+AssertionError: expected { …(2) } to deeply equal { …(2) }
+
+- Expected
++ Received
+
+  {
+-   "execution_address_json": "{\"segments\":[{\"kind\":\"member\",\"memberRouteKey\":\"Teacher\"}]}",
++   "execution_address_json": "{\"rootTeamRunId\":\"rootPending\",\"taskTeamRunIds\":[],\"memberAddress\":\"/Teacher\",\"taskAgentRunId\":null}",
+    "root_team_run_id": "rootPending",
+  }
+
+ ❯ tests/unit/app-data-migrations/token-usage-legacy-path-columns-drop-migration.test.ts:417:21
+    415|       [TOKEN_USAGE_LEGACY_PATH_COLUMNS_DROP_MIGRATION_ID, "SUCCEEDED"],
+    416|     ]);
+    417|     expect(rows[0]).toEqual({
+       |                     ^
+    418|       root_team_run_id: "rootPending",
+    419|       execution_address_json: JSON.stringify({ segments: [{ kind: "mem…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/18]⎯
+
+
+ Test Files  9 failed | 8 passed (17)
+      Tests  18 failed | 55 passed (73)
+   Start at  04:18:05
+   Duration  12.36s (transform 2.71s, setup 51ms, import 9.54s, tests 1.12s, environment 1ms)
+

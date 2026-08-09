@@ -152,7 +152,7 @@ describe("AgentRunMemoryRecorder", () => {
       turn_id: "turn-send-message",
       tool_name: "send_message_to",
       arguments: {
-        recipient_name: "pong",
+        recipient_address: "pong",
         content: "hello pong",
         message_type: "roundtrip_ping",
       },
@@ -162,7 +162,7 @@ describe("AgentRunMemoryRecorder", () => {
       turn_id: "turn-send-message",
       tool_name: "send_message_to",
       arguments: {
-        recipient_name: "pong",
+        recipient_address: "pong",
         content: "hello pong",
         message_type: "roundtrip_ping",
       },
@@ -183,7 +183,7 @@ describe("AgentRunMemoryRecorder", () => {
     expect(traces[0]).toMatchObject({
       sourceEvent: AgentRunEventType.TOOL_EXECUTION_STARTED,
       toolArgs: {
-        recipient_name: "pong",
+        recipient_address: "pong",
         content: "hello pong",
         message_type: "roundtrip_ping",
       },

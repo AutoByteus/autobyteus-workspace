@@ -1,0 +1,7 @@
+{
+  "runtimeRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-012-20260809",
+  "databasePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/sr015-api-rev-012-20260809.db",
+  "databaseUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/sr015-api-rev-012-20260809.db",
+  "serverUrl": "http://127.0.0.1:60001",
+  "port": 60001
+}

@@ -689,7 +689,7 @@ describe("CodexThreadEventConverter", () => {
         invocation_id: "call_send_message_approval",
         tool_name: "mcp__autobyteus_agent_tools__send_message_to",
         arguments: {
-          recipient_name: "code_reviewer",
+          recipient_address: "code_reviewer",
           content: "ready for review",
         },
       },
@@ -703,7 +703,7 @@ describe("CodexThreadEventConverter", () => {
         invocation_id: "call_send_message_approval",
         tool_name: "send_message_to",
         arguments: {
-          recipient_name: "code_reviewer",
+          recipient_address: "code_reviewer",
           content: "ready for review",
         },
       },
@@ -1636,7 +1636,7 @@ describe("CodexThreadEventConverter", () => {
           server: "autobyteus_agent_tools",
           tool: "mcp__autobyteus_agent_tools__send_message_to",
           arguments: {
-            recipient_name: "pong",
+            recipient_address: "pong",
             content: "hello",
           },
           status: "inProgress",
@@ -1661,7 +1661,7 @@ describe("CodexThreadEventConverter", () => {
         metadata: {
           tool_name: "send_message_to",
           arguments: {
-            recipient_name: "pong",
+            recipient_address: "pong",
             content: "hello",
           },
         },
@@ -1681,7 +1681,7 @@ describe("CodexThreadEventConverter", () => {
         invocation_id: "call_send_message",
         tool_name: "send_message_to",
         arguments: {
-          recipient_name: "pong",
+          recipient_address: "pong",
           content: "hello",
         },
       },
@@ -1698,7 +1698,7 @@ describe("CodexThreadEventConverter", () => {
         turn_id: "turn-1",
         tool_name: "mcp__autobyteus_agent_tools__send_message_to",
         arguments: {
-          recipient_name: "pong",
+          recipient_address: "pong",
           content: "hello",
         },
         item: {
@@ -1738,7 +1738,7 @@ describe("CodexThreadEventConverter", () => {
         turn_id: "turn-1",
         tool_name: "send_message_to",
         arguments: {
-          recipient_name: "pong",
+          recipient_address: "pong",
           content: "hello",
         },
         result: "Delivered message to pong.",
@@ -1890,7 +1890,7 @@ describe("CodexThreadEventConverter", () => {
         turn_id: "turn-1",
         tool_name: "mcp__autobyteus_agent_tools__send_message_to",
         arguments: {
-          recipient_name: "missing",
+          recipient_address: "missing",
           content: "hello",
         },
         item: {
@@ -1930,7 +1930,7 @@ describe("CodexThreadEventConverter", () => {
         turn_id: "turn-1",
         tool_name: "send_message_to",
         arguments: {
-          recipient_name: "missing",
+          recipient_address: "missing",
           content: "hello",
         },
         error: "Recipient missing was not found.",
@@ -1950,7 +1950,7 @@ describe("CodexThreadEventConverter", () => {
           server: "autobyteus_agent_tools",
           tool: "mcp__autobyteus_agent_tools__send_message_to",
           arguments: {
-            recipient_name: "pong",
+            recipient_address: "pong",
             content: "hello",
           },
           status: "completed",
@@ -1985,7 +1985,7 @@ describe("CodexThreadEventConverter", () => {
         metadata: {
           tool_name: "send_message_to",
           arguments: {
-            recipient_name: "pong",
+            recipient_address: "pong",
             content: "hello",
           },
         },

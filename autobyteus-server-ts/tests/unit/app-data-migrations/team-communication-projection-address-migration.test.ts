@@ -10,8 +10,11 @@ import {
 
 let memoryDir: string;
 
-const memberAddress = (memberRouteKey: string) => ({
-  segments: [{ kind: "member" as const, memberRouteKey }],
+const executionAddress = (rootTeamRunId: string, memberAddress: string) => ({
+  rootTeamRunId,
+  taskTeamRunIds: [],
+  memberAddress,
+  taskAgentRunId: null,
 });
 
 const writeProjection = async (teamRunId: string, payload: unknown): Promise<string> => {
@@ -84,8 +87,8 @@ describe("TeamCommunicationProjectionAddressMigration", () => {
       messages: [
         {
           messageId: "message-1",
-          senderAddress: memberAddress("sender"),
-          receiverAddress: memberAddress("BuildSquad/review_lead"),
+          senderAddress: executionAddress("team-legacy", "/sender"),
+          receiverAddress: executionAddress("team-legacy", "/BuildSquad/review_lead"),
           content: "Please review the attached report.",
           messageType: "handoff",
           createdAt: "2026-04-08T00:00:00.000Z",
@@ -117,8 +120,8 @@ describe("TeamCommunicationProjectionAddressMigration", () => {
       messages: [
         {
           messageId: "message-current",
-          senderAddress: memberAddress("sender"),
-          receiverAddress: memberAddress("receiver"),
+          senderAddress: executionAddress("team-current", "/sender"),
+          receiverAddress: executionAddress("team-current", "/receiver"),
           content: "Already current.",
           messageType: "agent_message",
           createdAt: "2026-04-08T00:00:00.000Z",
@@ -159,7 +162,7 @@ describe("TeamCommunicationProjectionAddressMigration", () => {
     expect(result.summary.details[0]).toMatchObject({
       itemId: "team-bad",
       status: "FAILED",
-      message: expect.stringContaining("receiver member route/path cannot be converted"),
+      message: expect.stringContaining("receiver member address cannot be reconstructed"),
     });
     await expect(readJson(projectionPath)).resolves.toEqual(original);
     await expect(listBackups(projectionPath)).resolves.toHaveLength(0);

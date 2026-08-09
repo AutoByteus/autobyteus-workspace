@@ -6,194 +6,173 @@
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/requirements.md`
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/design-spec.md`
-- Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/agent-team-addressing-handoff-contract.md`
+- Supplemental Task Artifacts Reviewed As Context: `agent-team-addressing-handoff-contract.md`; `agent-team-collaboration-system-instruction.md`; `team-run-canonical-identity-refactor.md`; `nested-classroom-live-validation-contract.md`
 - Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-001` through `SR-006`; `SR-006` remains the current behavior basis.
+- Relevant Solution Revision IDs: `SR-015`; exact-copy `SR-014`; cumulative `SR-013`, `SR-012`
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/design-review-report.md`
 - Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/architecture-review-revision-record.md`
-- Relevant Architecture Review Revision IDs: `ARCH-REV-001` through `ARCH-REV-005`; `ARCH-REV-005` remains authoritative for SR-006.
+- Relevant Architecture Review Revision IDs: `ARCH-REV-009`; cumulative `ARCH-REV-008`
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/implementation-revision-record.md`
-- Relevant Implementation Revision IDs: `IR-001` through `IR-004`; `IR-004` is the integrated implementation under review.
+- Relevant Implementation Revision IDs: `IR-018`; cumulative `IR-005` through `IR-017`
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-007`
-- Current Review Round: `4` (`Implementation Review` rounds only)
-- Trigger: `implementation_engineer` handoff for `IR-004`, merge commit `ef32724ddb50db9858cb92ca1e61f3bac1eddbd1`, resolving the `DR-002` latest-base integration conflicts between reviewed checkpoint `a5ef1d5bba271da23cb32db74a68829d1c0c63a8` and `origin/personal@ed3aa872303ccef5d8a097acd19876323ff795ab`.
-- Prior Review Round Reviewed: `CRR-005` source Pass, `API-REV-003` / `CRR-006` coverage checkpoint, and the `DR-002` blocked delivery refresh. The earlier source and coverage results do not by themselves prove the integrated merge state.
-- Latest Authoritative Round: `CRR-007`
-- Coverage Investigation Reviewed (failure-origin entry point): `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-coverage-investigation.md` as the pre-integration SR-006 checkpoint only.
-- Execution Coverage Report Reviewed (failure-origin entry point): `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md` as the pre-integration SR-006 checkpoint only.
-- API/E2E Revision Record Reviewed (failure-origin entry point): `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-revision-record.md`
-- Relevant API/E2E Revision IDs: `API-REV-001` through `API-REV-003`; `API-REV-003` predates the merge.
-- Delivery Revision Record Reviewed (delivery re-entry only): `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/delivery-revision-record.md`
-- Relevant Delivery Revision IDs: `DR-001`, `DR-002`; `DR-002` triggered this local integration fix.
-- Failing Scenario IDs: `N/A`; the trigger was a source/test merge-conflict gate rather than an executed product scenario failure.
-- Exact Failing Commands / Execution Mode: Delivery's tracked-base refresh command `git merge --no-edit origin/personal` stopped on five conflicts; IR-004 resolves them and the index is now conflict-free.
-- Failure Evidence Paths: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/delivery-integration-blocker.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/delivery-evidence/delivery-reentry-integration-conflict.log`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/delivery-evidence/delivery-reentry-blocker-artifact-check.log`
+- Current Code Review Revision ID: `CRR-031`
+- Current Review Round: `18`
+- Trigger: `IR-018` source correction for `CR-F-018` / `API-F-010` after `CRR-030`
+- Prior Review Round Reviewed: `CRR-030` Fail — Local Fix; prior full source result `CRR-029` Pass (`9.5/10`, `95.4/100`)
+- Latest Authoritative Round: `CRR-031`
+- Coverage Investigation Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-coverage-investigation.md`
+- Execution Coverage Report Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md`
+- API/E2E Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-revision-record.md`
+- Relevant API/E2E Revision IDs: `API-REV-013`; cumulative `API-REV-012`, `API-REV-011`
+- Delivery Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/delivery-revision-record.md`
+- Relevant Delivery Revision IDs: `DR-004` as cumulative lineage context only
+- Failing Scenario IDs: resolved in source review: `API-F-010`, `SR015-LIVE-TASKTEAM-002`; downstream live rerun remains required
+- Reviewer Evidence: `/tmp/crr031-production-typecheck.log`; `/tmp/crr031-routing-units.log`; `/tmp/crr031-task-team-peer-routing-probe.log`; `/tmp/crr031-source-audit.log`
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: the five production conflict-resolution paths represented by `IR-004`, the two mechanically resolved durable test paths at their source seams, and the complete SR-006 collaboration/message/task path where it intersects the latest base's leaf-Agent status and open-work lifecycle.
-- Files / areas reviewed: merge topology and remerge diff; root-private message materialization; child parent-boundary construction and active-run/task-registry bind/unbind; leaf status snapshot prefixing; open-work aggregation; Team termination/event behavior; removal of aggregate Team status owners; exact caller/placement contracts; two conflict-resolved tests; typecheck, build/bootstrap, focused execution, source-size, dependency, stale-authority, conflict-marker, diff, and tracked-base relation evidence.
-- Explicit exclusions: independent review of non-conflicting changes already established on `origin/personal`; fresh API/E2E coverage investigation and durable coverage decisions; external provider-process execution; delivery-owned documentation, protected stash/backup handling, archival, release, and deployment work.
+- Changed implementation and behavior reviewed: exact active task-Team sender-chain validation; same-task-Team peer materialization; explicit resolved delivery route; child TeamRun chain admission; persistent routing for targets outside the proven task Team.
+- Files / areas reviewed: the three changed production files in source commit `035fba611e6895187f7f6d4644993e22efd8c38c`; the unchanged `TaskTeamActiveRunDirectory`, `TaskAgentDirectory`, task-Team handle/factory, TeamRun facade, execution-address contract, persistent/task member registries, and intent builder needed to trace the full product path.
+- Explicit exclusions: no successful proportional review of API/E2E's cumulative durable coverage delta; no reopening of resolved canonical migration/provider/application work; no Activity-card change; no live provider claim from implementation-scoped proof.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: `Yes`. IR-004 is an integration-only change: it must preserve SR-006's canonical-address collaboration boundary while accepting the latest base's established leaf-Agent status/open-work contract and removal of aggregate Team status events.
-- Design-spec behavior map verified against the implementation: `Yes`. Root logical placement and private delivery conversion remain authoritative; child execution adds only the parent boundary and lifecycle bindings needed to reach that root; leaf status remains an execution projection rather than a parallel collaboration identity.
-- Design review report and round confirmed: `Yes`; `ARCH-REV-005` remains authoritative for SR-006.
-- Behavior-basis status: `Confirmed`
-- Changed or newly discovered behavior, if any: `None`. The latest base lifecycle contract is a governing integration input, not a ticket-defined behavior addition.
-- Remaining material ambiguity, if any: `None`.
+- Approved requirements basis understood: `R-034`–`R-037`, `R-047`; `AC-025`, `AC-027`–`AC-030`, `AC-043`.
+- Design-spec behavior map verified against the implementation: `BEH-002`, `BEH-003`, `BEH-014`, `BEH-018`; data-flow spines `DS-004`, `DS-007`, `DS-011`.
+- Design review report and round confirmed: `SR-015` / `ARCH-REV-009` remain authoritative; IR-018 is a bounded source correction using the already-approved active task execution authority.
+- Behavior-basis status: `Confirmed`.
+- Changed or newly discovered behavior, if any: none.
+- Remaining material ambiguity, if any: none.
 
-| Behavior ID | Current Status (`Confirmed`/`Contradicted`/`Unclear`/`Newly Discovered`) | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence (Only When Applicable) |
+| Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence |
 | --- | --- | --- | --- |
-| `BEH-001` | `Confirmed` | Definition graph/compiler and atomic detached update behavior are unaffected by the merge resolutions. | — |
-| `BEH-002` | `Confirmed` | Strict raw `/...` / `./...` requests still canonicalize once and traverse the current root TeamRun config through `TeamLogicalPlacementResolver`. | — |
-| `BEH-003` | `Confirmed` | A nested manager forwards the unchanged root-bound intent; the root manager resolves the exact placement and privately maps the effective Agent address to config, context, selector, endpoint, and run ID. | — |
-| `BEH-004` | `Confirmed` | Recursive topology localization remains the single persistent/restore/task-child localizer. The integrated child handle carries the canonical collaboration root/team mount and separately binds the active child run and task registry lifecycle. | — |
-| `BEH-005` | `Confirmed` | Exact two-field addressing and effective handoffs still flow through the child parent boundary; leaf status snapshot prefixing does not alter that identity contract. | — |
-| `BEH-006` | `Confirmed` | Immediate-Team instruction data remains derived from canonical `memberAddress`; no stored immediate-Team collaboration alias was restored. | — |
-| `BEH-007` | `Confirmed` | Exact AgentRun routing remains an execution concern. The latest base's leaf Agent snapshot/open-work behavior composes through handles without entering shared placement. | — |
-| `BEH-008` | `Confirmed` | Handoff snapshot persistence/restore is unchanged; IR-004 adds no migration or version branch. | — |
-| `BEH-009` | `Confirmed` | Native/MCP semantic envelope ownership is unchanged; delivery still publishes the canonical communication payload after accepted member delivery and no aggregate status callback remains. | — |
-| `BEH-010` | `Confirmed` | Root coordinator default entry and direct Team ingress mapping remain unchanged. | — |
-| `BEH-011` | `Confirmed` | The task tool still resolves through the root TeamRun and maps against the caller's current local TeamRun before task reservation or ledger mutation. | — |
-| `BEH-012` | `Confirmed` | Exact `{rootTeamRunId,memberAddress}` and Agent/Team placement unions remain intact; no path/owner/route alias, representative roster, or compatibility fallback was restored by the merge. | — |
+| `BEH-002`, `BEH-003`, `DS-004` | `Confirmed` | Team-bound Agent intent retains the exact sender execution address -> child boundary forwards unchanged -> root resolves logical target once -> task execution resolver validates the complete active chain -> in-scope target materializes from the exact active TeamRun -> common coordinator traces/publishes once -> authoritative child TeamRun performs final delivery. | None in current source; real post-fix API/E2E remains pending. |
+| `BEH-014`, `DS-007` | `Confirmed` | Every chain ID resolves through `TaskTeamActiveRunDirectory`; ordered prefix, parent lineage, Team placement, active runtime/context/config, task identity, persistent/task-Agent ownership, and final child chain are validated before effect. Receiver projection keeps the exact ordered chain and task-scoped AgentRun. | None. |
+| `BEH-018`, `DS-011` | `Confirmed for source; execution incomplete` | Independent built proof covers exact outer/nested task-Team peers, a task-Agent sender, outside-Team persistent routing, and fail-closed invalid chains without persistent fallback. | The retained API-F-010 live evidence is pre-fix; AutoByteus/Codex/Claude post-fix completion remains downstream. |
 
 ## Structural / Design Checks
 
-| Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
+| Check | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | `Pass` | IR-004 is explicitly scoped as integration of SR-006 with the latest base lifecycle contract; the remerge diff and current sources agree. | None. |
-| Implementation matches approved behavior-defining supplemental artifacts | `Pass` | Exact shared address/placement shapes, root-private conversion, direct Team ingress, parent-first task ownership, and no-fallback rules remain intact. | None. |
-| Data-flow spine inventory clarity and preservation under shared principles | `Pass` | Canonical context -> root resolver -> minimal placement -> private message/task conversion remains one spine; status snapshots/open-work are parallel read projections, not routing inputs. | None. |
-| Ownership boundary preservation and clarity | `Pass` | Root delivery conversion remains in `MixedTeamManager`; delivery execution remains in `TeamMemberDeliveryCoordinator`; child lifecycle stays in `MixedSubTeamMemberHandle`; aggregate Team status owners were removed. | None. |
-| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | `Pass` | Leaf status, open-work, events, memory, and task registry binding serve their execution owners without expanding shared collaboration shapes. | None. |
-| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | `Pass` | The resolution adopts the latest base leaf snapshot/event bridge and existing active-run/task registries while preserving the existing address resolver and delivery coordinator. | None. |
-| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | `Pass` | Canonical derivations, leaf snapshot prefixing, active directories, and registries each retain a single owner. | None. |
-| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | `Pass` | Shared collaboration values remain exact and immutable; latest-base lifecycle/status data stays in specialized runtime snapshots and handles. | None. |
-| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | `Pass` | Root placement, delivery, child lifecycle binding, leaf prefixing, and task registry attachment each have one coordination owner. | None. |
-| Empty indirection check (no pass-through-only boundary) | `Pass` | The child boundary validates reachability before forwarding; the coordinator normalizes and publishes accepted delivery; deleted aggregate status wrappers no longer add empty policy layers. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | `Pass` | The three surviving conflict-resolved sources remain cohesive despite integrating both branches' responsibilities. | None. |
-| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | `Pass` | Child handles depend on directories/registries and event prefixing; root manager owns private registry access; no lower-level collaboration domain imports runtime managers. | None. |
-| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | `Pass` | Tool/service callers continue through TeamRun/TeamManager; only the root manager reaches persistent-member internals for private materialization. | None. |
-| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | `Pass` | Coordinator, child handle, manager, event bridge, directories, and task registry remain in their owning runtime concerns; obsolete aggregate files are gone. | None. |
-| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | `Pass` | Removing two no-longer-applicable aggregate status files reduces fragmentation; the remaining three sources represent real boundaries. | None. |
-| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | `Pass` | `TeamRun`/backend leaf status and open-work methods are distinct from logical placement and delivery; frozen collaboration inputs remain exhaustive. | None. |
-| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | `Pass` | `getLeafAgentStatusSnapshots`, `hasOpenExecutionWork`, `materializeMessageRecipient`, `collaborationRootTeamRunId`, and `teamMountPath` name their actual responsibilities. | None. |
-| No unjustified duplication of code / repeated structures in changed scope | `Pass` | Static audit found no restored representative/parent roster, address owner/route alias, aggregate status publisher, or duplicate child binding policy. | None. |
-| Patch-on-patch complexity control | `Pass` | Conflict resolution removes superseded aggregate machinery instead of layering both branches; no compatibility or dual-authority branch was added. | None. |
-| Dead/obsolete code cleanup completeness in changed scope | `Pass` | `mixed-team-event-bus.ts` and `mixed-team-status-publisher.ts` are deleted and have no production references. | None. |
-| Relevant test scenarios and assertions are clear and requirement-aligned | `Pass` | Conflict seams assert leaf snapshots/open-work, no aggregate status events, root-canonical forwarding/private materialization, TeamRun creation/restore/delivery, and termination. | API/E2E must still decide whether the mechanically resolved durable coverage is sufficient in the integrated state. |
-| Test fixtures/helpers are reasonably reusable and test structure remains coherent | `Pass` | Existing manager/TeamRun builders were retained; the merge did not create a parallel fixture layer. | None. |
-| No stale, duplicated, or compatibility-only tests are retained in changed scope | `Pass` | The two conflicted test files compile and pass focused execution, and no removed aggregate-status expectation remains. Their final coverage validity is reserved for the required API/E2E investigation. | Reinvestigate these two files plus the three API-REV-003 maintained files. |
-| API/E2E readiness for the next workflow stage | `Pass` | Integrated typecheck/build/bootstrap, reviewer 8-file/45-test execution, implementation seam suites, clean ticket-relative diff, zero unmerged entries, and zero commits behind `origin/personal` make the branch ready for a new coverage round. | Produce a fresh integrated-state coverage investigation before final execution or durable coverage decisions. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | `Pass` | SR-015's rooted execution/address design and active task execution owner remain the governing model. | None. |
+| Implementation matches approved behavior-defining supplemental artifacts | `Pass` | Absolute addresses stay unchanged; execution identity is selected only through typed active-run facts; no localization or alias appears. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | `Pass` | The full browser/tool-to-input/event path is traceable through one root resolution, one execution-scope decision, one trace, and one TeamRun delivery. | None. |
+| Ownership boundary preservation and clarity | `Pass` | Root manager owns routing choice; the new resolver owns active task-Team scope proof; directory owns active-run lookup; TeamRun owns concrete delivery; coordinator owns trace/event/result normalization. | None. |
+| Off-spine concern clarity | `Pass` | Task execution proof is extracted beside the delivery owner and does not compete with root orchestration or TeamRun lifecycle. | None. |
+| Existing capability/subsystem reuse check | `Pass` | Reuses `TaskTeamActiveRunDirectory`, `TaskAgentDirectory`, canonical addresses, TeamRun context/index, and resolved delivery boundary. | None. |
+| Reusable owned structures check | `Pass` | `ActiveTaskTeamMessageExecution` and `ResolvedMessageDeliveryRoute` express the two bounded owned facts once rather than copying validation or trace logic. | None. |
+| Shared-structure/data-model tightness check | `Pass` | No new identity language; the resolver returns active runtime ownership plus the existing ordered chain and Team address only. | None. |
+| Repeated coordination ownership check | `Pass` | All nonempty sender task-Team chains pass through one resolver before any persistent/task route is selected. | None. |
+| Empty indirection check | `Pass` | The resolver owns substantial chain/lifecycle/ownership admission; the explicit route lets one coordinator share trace semantics across real persistent and active-Team boundaries. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | `Pass` | Resolver validates; manager orchestrates/materializes; coordinator normalizes/traces/publishes; active TeamRun delivers. | None. |
+| Ownership-driven dependency check | `Pass` | Root manager depends on the active-run directory through its dedicated resolver and invokes the authoritative child `TeamRun`, not child manager internals. | None. |
+| Authoritative Boundary Rule check | `Pass` | The concrete route calls `TeamRun.deliverResolvedInterAgentMessage`; it does not reach through TeamRun to its backend/manager/registry. | None. |
+| File placement check | `Pass` | The resolver is under mixed delivery, adjacent to the coordinator whose routing admission it serves. | None. |
+| Flat-vs-over-split layout judgment | `Pass` | One focused 158-line resolver prevents the 335-line manager from absorbing dense validation without creating a generic utility layer. | None. |
+| Interface/API/query/command/service-method boundary clarity | `Pass` | `ResolvedMessageDeliveryRoute` has one subject: an exact endpoint/run plus its authoritative resolved-delivery command. | None. |
+| Naming quality and naming-to-responsibility alignment check | `Pass` | Task-Team message execution, active execution, resolved route, persistent materialization, and task materialization are distinct and precise. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | `Pass` | Existing chain/identity/address contracts and common coordinator trace path are reused. | None. |
+| Patch-on-patch complexity control | `Pass` | IR-018 replaces implicit persistent selection with one explicit route decision; it adds no retry, second logical resolution, or alternate selector. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | `Pass` | Old unqualified `materializeMessageRecipient` is renamed to persistent-only ownership; no dead fallback or Activity branch is retained. | None. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | `Pass` | Reviewer built proof covers the exact reported failure, nested chain, task-Agent sender, outside-Team route, invalid variants, zero event/input, and zero persistent fallback. | API/E2E must add/maintain durable task-peer coverage and rerun the real matrix. |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | `Pass` | Implementation changed no durable coverage; API/E2E's current fixture helper and two corrected routing tests remain intact and 11/11 pass. | Preserve during resumed coverage work. |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | `Pass` | No implementation-owned test delta; the two maintained API/E2E fixture corrections are current and passing. | Later cumulative proportional review remains required. |
+| API/E2E readiness for the next workflow stage | `Pass` | Independent production typecheck, 3-file/11-test selection, built routing proof, diff/no-fallback/size audit pass; build:full/bootstrap passed in IR-018 evidence. | Resume API-REV-013 from 90%. |
 
-## Source File Size And Structure Audit (If Applicable)
-
-The current-round thresholds apply to the five ticket-owned production resolution paths. Deltas are against the reviewed first parent `a5ef1d5b...`; inherited non-conflicting latest-base changes are not reclassified as ticket implementation. Tests are excluded.
+## Source File Size And Structure Audit
 
 | Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| `src/agent-team-execution/backends/mixed/delivery/team-member-delivery-coordinator.ts` | 138 | `Pass` | `Pass` (`+1/-3`) | Cohesive accepted-delivery normalization/publication owner; no status callback. | `Pass` | None | None. |
-| `src/agent-team-execution/backends/mixed/members/mixed-sub-team-member-handle.ts` | 266 | `Pass` | `Pass` (`+17/-77`) | Cohesive child runtime, leaf snapshot/open-work, boundary, and bind/unbind lifecycle owner. | `Pass` | None | None. |
-| `src/agent-team-execution/backends/mixed/mixed-team-manager.ts` | 499 | `Pass` | `Pass` (`+59/-55`) | Root orchestrator remains cohesive; private address materialization and lifecycle aggregation are both root responsibilities. | `Pass` | None | Monitor future growth. |
-| `src/agent-team-execution/backends/mixed/mixed-team-event-bus.ts` | `Deleted` | `N/A` | `Pass` (`+0/-22`) | Obsolete aggregate indirection removed. | `Pass` | None | None. |
-| `src/agent-team-execution/backends/mixed/mixed-team-status-publisher.ts` | `Deleted` | `N/A` | `Pass` (`+0/-44`) | Obsolete aggregate status policy removed. | `Pass` | None | None. |
+| --- | ---: | --- | --- | --- | --- | --- | --- |
+| `backends/mixed/delivery/task-team-message-execution-resolver.ts` | 158 | `Pass` | `Pass` (`+169/-0`) | Exact active task-Team message-scope proof | `Pass` | None | None |
+| `backends/mixed/delivery/team-member-delivery-coordinator.ts` | 111 | `Pass` | `Pass` (`+29/-8`) | Common normalize/trace/event/result owner over resolved routes | `Pass` | None | None |
+| `backends/mixed/mixed-team-manager.ts` | 335 | `Pass` | `Pass` (`+98/-7`) | Root route orchestration and concrete receiver materialization | `Pass` | None | None |
 
 ## Legacy / Backward-Compatibility Verdict
 
-| Check | Result (`Pass`/`Fail`) | Notes |
+| Check | Result | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | `Pass` | No old collaboration context/placement shape, aggregate-status adapter, dual read, retry, or fallback was introduced. |
-| No legacy old-behavior retention in changed scope | `Pass` | Representative/roster/owner/route authorities remain absent; removed aggregate status behavior was not kept alongside leaf status. |
-| Dead/obsolete code cleanup completeness in changed scope | `Pass` | Both obsolete aggregate files and all references are removed. |
-| Approved persisted-data transition decision is followed without unnecessary migration work | `Pass` | Collaboration placement remains ephemeral and existing handoff persistence is unchanged. |
-| No version-specific dual reads/writes or request-time old-shape fallback exists | `Pass` | Exact constructors and current TeamRun config remain the only collaboration authorities. |
-| Approved transition mechanics match the reviewed design, including migration safety only when required | `Pass` | No persisted schema changed and no migration machinery was added. |
+| No backward-compatibility mechanisms in changed scope | `Pass` | No alias, fallback, localization, retry, or alternate selector was added. |
+| No legacy old-behavior retention in changed scope | `Pass` | The persistent substitution is removed for proven in-scope task-Team targets. |
+| Dead/obsolete code cleanup completeness in changed scope | `Pass` | Materialization names now state persistent versus task execution explicitly. |
+| Approved persisted-data transition decision is followed without unnecessary migration work | `Pass` | IR-018 changes no persisted-data transition or schema. |
+| No version-specific dual reads/writes or request-time old-shape fallback exists | `Pass` | Only canonical addresses, exact execution addresses, and current active directories participate. |
+| Approved transition mechanics match the reviewed design | `Pass` | Cumulative canonical migration/startup mechanics are untouched. |
 
-## Dead / Obsolete / Legacy Items Requiring Removal (Mandatory If Any Exist)
-
-None remain. IR-004 removed `mixed-team-event-bus.ts` and `mixed-team-status-publisher.ts` as part of the integration resolution.
-
-## Docs-Impact Verdict
-
-- Docs impact: `Yes`
-- Why: SR-006's canonical-address-only collaboration contract still requires documentation, while the integrated latest base also removes aggregate Team status semantics in favor of leaf-Agent status/open-work behavior. Delivery's prior documentation work predates this integrated state and is protected in its stash/artifacts.
-- Files or areas likely affected: Agent Communication, AgentTeam definition/execution, Agent Tools/MCP, run-history/status architecture, and the delivery artifacts at `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, and `release-deployment-report.md` after integrated API/E2E passes.
-
-## Material Premise Validation (Only When Needed)
-
-### Upstream Design-Review Material-Premise Decisions
+## Dead / Obsolete / Legacy Items Requiring Removal
 
 None.
 
-No new or reclassified material production, failure, or lifecycle premise was needed. This result relies on approved SR-006 behavior and the applicable latest-base TeamRun/leaf-status governing contract, both traced through current production owners rather than inferred from tests.
+## Docs-Impact Verdict
 
-## Review Scorecard (Mandatory)
+- Docs impact: `No new impact`.
+- Why: IR-018 restores behavior already specified by the canonical address, execution identity, and live-validation contracts.
+- Files or areas likely affected: delivery must still reconcile the already-open final project documentation after integrated validation, but no IR-018-specific contract change is needed.
 
-- Overall score (`/10`): `9.4`
-- Overall score (`/100`): `94`
-- Score calculation note: simple average of the ten category scores, rounded for display. Every category meets the `>=9.0` clean-pass target.
+## Material Premise Validation
 
-| Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
-| --- | --- | --- | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | `9.4` | Canonical placement/delivery and leaf status/open-work remain separate, explicit spines after the merge. | Fresh integrated API/lifecycle proof is downstream. | Execute the new integrated coverage matrix. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | `9.5` | Root materialization, delivery execution, child lifecycle, status projection, and task registries each retain one owner. | The root manager necessarily coordinates several runtime registries. | Keep future off-spine growth outside the manager. |
-| `3` | `API / Interface / Query / Command Clarity` | `9.5` | Exact address/placement contracts coexist cleanly with the latest base leaf snapshot/open-work interface. | Conflict-resolved durable tests have not yet received integrated coverage adjudication. | Reconfirm API/lifecycle behavior in the next stage. |
-| `4` | `Separation of Concerns and File Placement` | `9.4` | Obsolete aggregate files are removed and the remaining sources have distinct runtime responsibilities. | `MixedTeamManager` is close to the hard size boundary. | Avoid adding new unrelated policy to the manager. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | `9.6` | The merge restores no shared path/owner/route alias and does not mix status data into placement. | Team ingress remains the one necessary non-derived placement fact. | Preserve the exact unions. |
-| `6` | `Naming Quality and Local Readability` | `9.3` | Integrated method and field names distinguish collaboration, execution, status, and lifecycle roles. | The 499-line root manager still requires broad runtime context to read confidently. | Extract only if a future distinct policy owner emerges. |
-| `7` | `API/E2E Readiness` | `9.1` | Source/build/focused checks and conflict hygiene are clean, with a concrete five-file coverage reinvestigation scope. | Pre-merge API-REV-003 does not prove the integrated state; broader baseline health is non-clean. | Investigate first, then run affected and broader deterministic coverage. |
-| `8` | `Runtime Correctness And Behavioral Fidelity` | `9.4` | Source tracing and focused execution confirm unchanged root delivery, child boundary, leaf status, open-work, and termination behavior. | External provider and complete integrated lifecycle execution remain pending. | Revalidate through project-owned API/E2E paths. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | `9.7` | No representative/roster/alias/fallback authority or aggregate status compatibility layer survives. | The intentionally deferred broader execution identities remain, but are not collaboration fallbacks. | Keep that boundary explicit. |
-| `10` | `Cleanup Completeness` | `9.4` | Obsolete aggregate owners and conflict markers are gone; ticket-relative diff hygiene is clean. | Delivery-owned docs/stash still require later integrated reconciliation. | Complete reconciliation only after integrated API/E2E and proportional review. |
+### Upstream Design-Review And Failure-Origin Material-Premise Decisions
+
+| Premise ID | Current Status | Changed Evidence / Reason |
+| --- | --- | --- |
+| `CR-PREM-013` | `Confirmed and addressed in source` | The real browser/imported-Team/AutoByteus trigger remains Reachable. IR-018 now validates the active task-Team chain before route selection and materializes an in-scope peer from the exact active TeamRun. Independent built execution preserves outer/nested chains and task-scoped runs with no persistent fallback. |
+| `CR-PREM-011`, `CR-PREM-012` | `Confirmed and remain addressed` | API-REV-013 resolves persistent nested delivery and task-Team ingress in real execution; IR-018 retains those paths and the unchanged 11/11 selection passes. |
+
+No new or reclassified material premise is needed.
+
+## Review Scorecard
+
+- Overall score (`/10`): `9.6`
+- Overall score (`/100`): `95.5`
+- Score calculation note: arithmetic mean of the ten categories below; the Pass decision follows the resolved finding and mandatory checks.
+
+| Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| --- | --- | ---: | --- | --- | --- |
+| `1` | Data-Flow Spine Inventory and Clarity | 9.7 | Root logical resolution, active execution proof, receiver materialization, trace, and concrete delivery are now explicit end to end. | Real post-fix provider execution is pending. | API/E2E completes DS-011. |
+| `2` | Ownership Clarity and Boundary Encapsulation | 9.6 | Resolver, directory, root manager, coordinator, and TeamRun own distinct invariants without boundary bypass. | The root manager still coordinates several established runtime concerns. | Keep future route cases in owned resolvers rather than growing inline predicates. |
+| `3` | API / Interface / Query / Command Clarity | 9.5 | The resolved route expresses exact endpoint/run and one delivery command; public contracts are unchanged. | The route is callback-shaped because concrete runtime owners differ. | Keep it internal and single-purpose. |
+| `4` | Separation of Concerns and File Placement | 9.5 | Dense execution admission is extracted into the delivery subsystem; manager remains orchestration-focused. | Three files are necessarily involved in selection, tracing, and delivery. | No further split is warranted. |
+| `5` | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.6 | Reuses canonical execution address, directory entries, task identities, and TeamRun rather than adding identity fields. | None material. | Preserve exact shapes in durable coverage. |
+| `6` | Naming Quality and Local Readability | 9.5 | Persistent/task materializers and execution resolver state their authority accurately. | The fail-closed entry predicate is dense by design. | Keep validations grouped by entry versus sender ownership. |
+| `7` | API/E2E Readiness | 9.2 | Typecheck, focused units, built proof, build evidence, and source audit pass. | AutoByteus post-fix and required Codex/Claude Team rows remain incomplete; durable task-peer regression is downstream. | Resume API-REV-013 and return the final durable delta. |
+| `8` | Runtime Correctness And Behavioral Fidelity | 9.5 | Exact outer/nested peer chains and run IDs are preserved; invalid scope rejects before trace/input; outside-Team persistent routing remains correct. | Final real-system confirmation remains pending. | Complete live task submit/review and persistence assertions. |
+| `9` | No Backward-Compatibility / No Legacy Retention | 9.8 | No fallback, retry, alias, localization, or legacy identity is introduced. | None. | Preserve the clean cut. |
+| `10` | Cleanup Completeness | 9.6 | Implicit materialization is made explicit, no dead selector or Activity branch appears, and changed sources remain bounded. | Durable coverage remains awaiting downstream completion rather than source cleanup. | API/E2E maintains the final regression set. |
 
 ## Findings
 
-No open findings.
+No open implementation finding remains.
 
-Earlier `CR-F-001`, `CR-F-002`, and `TR-F-001` remain resolved. IR-004 does not reopen their atomicity, MCP-boundary, or reporting conditions.
+### Resolved prior findings
+
+| Finding ID | Current Status | Verification |
+| --- | --- | --- |
+| `CR-F-018` / `API-F-010` | `Resolved in source; downstream live rerun pending` | Root validates every nonempty sender chain through the active directory. In-scope peer materialization uses the exact active TeamRun and full chain; child admission requires exact receiver/current chain. Reviewer proof passes outer/nested task peers, task-Agent sender, outside-Team persistent routing, invalid-chain rejection before effect, and zero persistent fallback. |
+| `CR-F-016` / `API-F-008` | `Resolved downstream and preserved` | API-REV-013 real execution proves persistent nested delivery; IR-018 leaves that route as the empty-chain persistent path and the maintained selection passes. |
+| `CR-F-017` / `API-F-009` | `Resolved downstream and preserved` | API-REV-013 real execution proves task-Team activation/ingress; IR-018 does not change activation and the maintained manager assertion passes. |
+| `CR-F-012` through `CR-F-015`; `API-F-007` | `Remain resolved` | IR-018 changes only mixed-runtime message routing and does not alter canonical migration, transaction, startup, provider instruction, or Claude cleanup owners. |
 
 ## Classification
 
-- Current classification: `N/A — Pass`
+- Review result is `Pass`; no failure classification applies.
 
 ## Recommended Recipient
 
 - `api_e2e_engineer`
-- Begin a new integrated-state coverage investigation. At minimum, re-evaluate the two conflict-resolved durable files and the three files maintained by API-REV-003; any added, updated, or removed repository-resident durable coverage must return through proportional code review before delivery.
 
 ## Residual Risks
 
-- `API-REV-003` and `CRR-006` validate the pre-merge SR-006 checkpoint, not merge commit `ef32724d...`.
-- Coverage validity must be reinvestigated for `tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts`, `tests/unit/agent-team-execution/mixed-team-manager.test.ts`, and the three API-REV-003 files: `tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts`, `tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts`, and `tests/integration/api/runtime-selection-top-level.integration.test.ts`.
-- The pre-integration whole-server baseline recorded 24 failing files / 57 failing tests outside the SR-006 delta. This review does not attribute or waive them; API/E2E must establish the current integrated affected/broader result.
-- Live Codex/Claude model processes remain capability-gated in prior evidence and must not be counted as passed unless actually executed.
-- `MixedTeamManager` is 499 effective non-empty lines; the current integrated responsibility remains cohesive, but future growth needs scrutiny.
-- Delivery's protected stash/backup and untracked blocker/docs/release artifacts remain delivery-owned and must be reconciled only after the new coverage and any proportional review pass.
-
-## Verification Performed In This Review
-
-- Read the full canonical design principles and the cumulative SR-006 / ARCH-REV-005 / IR-004 / DR-002 artifact chain.
-- Inspected merge parents, `git show --remerge-diff`, all three surviving conflict-resolved production files, both deleted aggregate owners, both conflict-resolved test files, and relevant exact context/placement contracts and production callers.
-- Confirmed branch relation `6 ahead / 0 behind` against `origin/personal`, zero unmerged index entries, and merge parents exactly `a5ef1d5b...` plus `ed3aa872...`.
-- `pnpm exec tsc -p tsconfig.build.json --noEmit --pretty false` — passed.
-- `pnpm run build:full` — passed, including sanitized built-in Agent bootstrap smoke.
-- Reviewer-focused Vitest selection — 8 files / 45 tests passed.
-- Ticket delta relative to integrated latest base and the seven resolution paths pass `git diff --check`; conflict-marker audit is empty. Whole first-parent merge diff-check reports only inherited whitespace in latest-base `tickets/done/agent-stream-driven-status` evidence logs, outside the ticket resolution and production paths.
-- Current-round source audit — 3 surviving files at 138, 266, and 499 effective non-empty lines; 2 obsolete files deleted; no file over 500 and no delta over 220 changed lines.
-- Static authority audit — no production `representedSubTeam`, `parentMembers`, representative/owner/route address alias, aggregate status owner/callback, deleted-file reference, or conflict marker remains. Exact two-field context and Agent/Team placement unions remain current.
-- Reviewed implementation evidence: SR-006 13-file/76-test suite, provider-adjacent 10-file/92-test suite, conflict-seam 4-file/18-test suite, production typecheck, build/bootstrap, and resolution audits passed.
-- Worktree boundary confirmed: only delivery-owned artifacts remain untracked before this review's canonical report updates; no source or durable test was modified by the reviewer.
+- The retained API-F-010 live evidence predates IR-018 and is not post-fix proof. AutoByteus must rerun; Codex and Claude imported Team rows remain `Not Tested` rather than skipped or passed.
+- API/E2E must add or maintain durable same-task-Team peer coverage and complete submit/review, projection, and lifecycle assertions before final acceptance.
+- The cumulative durable coverage delta remains ineligible for delivery until API/E2E passes and returns it for proportional test-code review.
+- Activity/tool-result presentation remains intentionally unchanged under the current approved contract.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
 - Review Entry Point: `Implementation Review`
-- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass` — no new or reclassified material premise was needed.
-- Score Summary: `9.4/10` (`94/100`); all categories meet the clean-pass threshold.
-- Failure Origin (when applicable): `N/A`
-- Recommended Recipient (when applicable): `api_e2e_engineer`
-- Notes: IR-004's integrated source/architecture resolution passes. Prior API-REV-003 evidence must now be refreshed through a new coverage investigation and execution on the integrated latest-base state.
+- Material-Premise Gate: `Pass`
+- Score Summary: `9.6/10` (`95.5/100`); every category is at least `9.0`.
+- Failure Origin (when applicable): `CR-F-018 / API-F-010 is resolved in source; downstream real-system rerun remains required.`
+- Recommended Recipient: `api_e2e_engineer`
+- Notes: `Resume API-REV-013 from 90% without weakening the retained scenario or current fixture corrections. Rerun AutoByteus, complete Codex/Claude, maintain durable task-peer coverage, and return the cumulative durable delta for proportional review after Pass.`

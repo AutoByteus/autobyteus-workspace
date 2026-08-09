@@ -4,27 +4,20 @@ import { AgentRunConfig } from "../../../../../../src/agent-execution/domain/age
 import { AgentRunContext } from "../../../../../../src/agent-execution/domain/agent-run-context.js";
 import { buildConfiguredAgentToolExposure } from "../../../../../../src/agent-execution/shared/configured-agent-tool-exposure.js";
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
-import { MemberTeamContext } from "../../../../../../src/agent-team-execution/domain/member-team-context.js";
-import { TeamBackendKind } from "../../../../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { TeamMemberCodexThreadBootstrapStrategy } from "../../../../../../src/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.js";
+import { testMemberTeamContext } from "../../../../../fixtures/current-team-run-fixtures.js";
 
 const createMemberTeamContext = () =>
-  new MemberTeamContext({
+  testMemberTeamContext({
     teamRunId: "team-1",
     teamDefinitionId: "team-def-1",
-    teamBackendKind: TeamBackendKind.MIXED,
-    memberName: "Professor",
-    memberPath: ["professor"],
-    memberRouteKey: "professor",
-    memberRunId: "run-professor",
+    rootTeamRunId: "team-1",
+    teamAddress: "/",
+    memberAddress: "/professor",
+    coordinatorAddress: "/professor",
+    agentRunId: "run-professor",
     teamInstruction: "Coordinate carefully.",
-    collaboration: {
-      addressing: {
-        rootTeamRunId: "team-1",
-        memberAddress: "/professor",
-      },
-      deliverInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),
-    },
+    deliverInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),
   });
 
 describe("TeamMemberCodexThreadBootstrapStrategy", () => {
@@ -54,8 +47,8 @@ describe("TeamMemberCodexThreadBootstrapStrategy", () => {
 
     expect(preparation.baseInstructions).toContain("Team Instruction");
     expect(preparation.baseInstructions).toContain("Agent Instruction");
-    expect(preparation.developerInstructions).toContain("If you use `send_message_to`");
-    expect(preparation.developerInstructions).toContain("`target_agent_run_id` for an exact live AgentRun");
+    expect(preparation.developerInstructions).toContain("Your address in the AgentTeam is:\n\n/professor");
+    expect(preparation.developerInstructions).toContain("call `get_handoff_rules`");
     expect(preparation.dynamicToolRegistrations).toBeNull();
   });
 
@@ -82,9 +75,9 @@ describe("TeamMemberCodexThreadBootstrapStrategy", () => {
     });
 
     expect(preparation.dynamicToolRegistrations).toBeNull();
-    expect(preparation.developerInstructions).toContain("Bare names are invalid.");
-    expect(preparation.developerInstructions).toContain("`target_agent_run_id` for an exact live AgentRun");
-    expect(preparation.developerInstructions).not.toContain("roster recipient");
+    expect(preparation.developerInstructions).toContain("Bare member names, `../`, and backslashes are not valid addresses.");
+    expect(preparation.developerInstructions).not.toContain("target_agent_run_id");
+    expect(preparation.developerInstructions).not.toContain("Team membership roster");
   });
 
   it("keeps task delegation as Agent Tools MCP instructions without dynamic registrations", () => {
@@ -117,13 +110,9 @@ describe("TeamMemberCodexThreadBootstrapStrategy", () => {
       ]),
     });
 
-    expect(preparation.developerInstructions).toContain("Task delegation protocol");
-    expect(preparation.developerInstructions).toContain("Use `delegate_task`");
-    expect(preparation.developerInstructions).toContain("one `delegate_task` call for each bounded task");
-    expect(preparation.developerInstructions).toContain("same `/...` and `./...` logical address grammar");
-    expect(preparation.developerInstructions).not.toContain("do not pass delegator");
-    expect(preparation.developerInstructions).toContain("`submit_task_result`");
-    expect(preparation.developerInstructions).toContain("`review_task_result`");
+    expect(preparation.developerInstructions).toContain("`delegate_task.recipient_address` uses the same logical-address grammar");
+    expect(preparation.developerInstructions).toContain("direct Agent or AgentTeam child of your immediate AgentTeam");
+    expect(preparation.developerInstructions).not.toContain("delegator");
     expect(preparation.dynamicToolRegistrations).toBeNull();
   });
 });

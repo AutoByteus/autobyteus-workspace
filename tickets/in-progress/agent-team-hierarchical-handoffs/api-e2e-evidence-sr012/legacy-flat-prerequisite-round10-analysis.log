@@ -1,0 +1,150 @@
+API-F-006 legacy-flat prerequisite migration analysis
+UTC: 2026-08-05T02:57:26Z
+HEAD: 25d271b292e6939940200aa11b4587a2da1ae21e
+Reviewed source commit: d3796bd1fbabbd1a27fd83eb0cbb7857ec08249a
+
+Approved requirement:
+- **R-037 — Minimal task identities:** Task Agent identity shall store only task instance/run/owner/task IDs and creation time. Task AgentTeam identity shall store only task instance/run/parent/task IDs and creation time. The task record's receiver `TeamExecutionAddress`, root TeamRun node, and active task execution tree/directory shall own logical recipient, configuration, coordinator, and fresh descendant run facts; those facts shall not be duplicated in the task identity.
+- **R-038 — Clean project interfaces:** GraphQL, REST, WebSocket, context/memory selectors, external-channel models, application orchestration, and project-owned application SDK contracts shall expose `memberAddress`, `coordinatorAddress`, kind-specific run IDs, or `TeamExecutionAddress` as appropriate. They shall remove `memberPath`, `memberRouteKey`, coordinator route, target route/path pairs, generic member run ID, and task structural/local route fields without aliases. The changed application backend-definition and frontend-SDK semantic contracts shall each use explicit target version `5`; project-owned application/backend manifests, backend definitions, SDK packages, validators, and built artifacts shall declare and enforce that same exact target.
+- **R-039 — Rooted frontend projection:** Production frontend Team state shall retain one recursive `rootTeam` projection and derive `memberNodesByAddress`; concrete persistent/task Agent state shall use canonical `TeamExecutionAddress` serialization and focus shall use `focusedExecutionAddress`. Hydration, streaming, commands, history, memory, token usage, desktop/mobile navigation, and same-named leaves shall use these structures with no legacy route-key/path fallback.
+- **R-040 — Truthful storage boundary:** The physical Team memory lineage shall be named and owned as `ancestorTeamRunIds` inside the memory/context storage subsystem. Public/domain selectors shall use canonical addresses. Existing final memory directories and context files/locators shall remain directly usable by deriving the same relative storage segments from the address; logical addresses shall not replace concrete run-ID directory ownership.
+- **R-041 — Structured data migration:** Framework-owned TeamRun metadata, Team communication projections, task delegation records, token-usage storage, external-channel bindings, and application platform databases shall be converted to the current canonical model with per-item/file/database validation, backups where applicable, atomic file replacement or database transaction, actionable failure details, and idempotent rerun. TeamRun conversion shall retain genuine existing Agent metadata fields, convert the root wrapper into `rootTeam`, and fail contradictory legacy route/path/name/coordinator/run identities rather than guess. The application-database migration inventory shall enumerate existing platform databases from the application-data directory/store, not from the admitted application-bundle catalog, so an old or invalid bundle cannot hide required durable state.
+- **R-042 — Blocking current-schema rollout:** The canonical-identity app-data migration shall run after prerequisite legacy topology migration and before index rebuild/service bootstrap. Its startup policy shall block server bootstrap/listen unless all required items succeed. Bundle admission occurs through exact target contract gates independently of that durable-data discovery: application manifest `ui.frontendSdkContractVersion`, backend bundle `sdkCompatibility.backendDefinitionContractVersion`/`frontendSdkContractVersion`, and loaded backend `definitionContractVersion` shall all require target V5 as applicable. Normal runtime readers/writers and frontend/server contracts shall support only the current schema; no dual read/write, V4-to-V5 bundle adapter, mixed-version execution, or lazy conversion is allowed.
+- **R-043 — Complete clean removal with preserved behavior:** Production code shall remove the legacy Team logical identity system, including `recipient_name`/`recipient_path` public aliases, Team path/route selectors, persistent-child localizers, prefix event rewriting, duplicate conversation/token execution-address types, task logical identity bundles, integration route/path pairs, and frontend route-key/scoped-route state. It shall also remove current V4 backend-definition/frontend-SDK exports and declarations from target project code/artifacts, while retaining V4 only in explicit incompatibility tests/fixtures or historical text. An installed V4 application shall be excluded from the launchable catalog/quarantined and diagnosed before UI/backend execution with application/path identity, observed and required versions, and a rebuild/reinstall instruction; external bundles are not edited and must upgrade independently. The application manifest envelope, backend bundle envelope, and iframe transport versions remain unchanged where their shapes did not change. All BEH-001–BEH-011 outcomes, exact-run codes, task lifecycle, history/communication content, Agent launch/platform/workspace-root facts, token facts, integration targets, UI workflows, and documentation shall remain supported.
+- **R-044 — Imported example Team:** After implementation and source review, live validation shall create an isolated test-owned Agent package containing the existing `nested-classroom-test` fixture, import it through the supported `LOCAL_PATH` Agent-package surface, discover the Team definition, and create one fresh example root TeamRun per runtime scenario. The original agents package shall remain unchanged.
+
+Approved design blocking order:
+### 12.2 Blocking migration
+
+Reuse the ordered app-data migration capability with a `team-canonical-identity` migration composed from store-owned migrators. It runs after the existing legacy-flat-to-member-tree migration and before derived index rebuild. This migration is explicitly blocking: server tools, channels, GraphQL, WebSocket, and port listen do not start unless all required items reach `SUCCEEDED`. Existing unrelated best-effort migrations retain their policy. Token database schema work remains in normal blocking DB migrations; dynamically discovered per-application databases remain app-data migration items.
+
+### 12.3 TeamRun metadata conversion
+
+For each recursive current metadata file:
+
+1. validate top-level `teamRunId`, definition ID/name, timestamps, coordinator route, tree, and handoffs;
+2. create `rootTeam {kind:"agent_team",address:"/",teamDefinitionId,teamRunId,coordinatorAddress,children}`;
+3. require each member `memberName === last(memberPath)` and `memberRouteKey === memberPath.join("/")` after canonical normalization;
+4. convert the agreed path once to `/${segments.join("/")}`;
+5. for an Agent, rename `memberRunId` to `agentRunId` and copy every genuine Agent field unchanged;
+6. for an AgentTeam, require generic and Team-specific run IDs to agree, retain one `teamRunId`, convert the coordinator route to one exact direct `coordinatorAddress`, and recurse from `memberTree` to `children`;
+
+Current registry order:
+    24	  constructor(definitions?: AppDataMigrationDefinition[]) {
+    25	    this.definitions = definitions ?? [
+    26	      new CustomProviderV1AppDataMigration(),
+    27	      new RemoveGlobalSkillDiscoveryModeMigration(
+    28	        appConfigProvider.config.getMemoryDir(),
+    29	        appConfigProvider.config.getAppDataDir(),
+    30	      ),
+    31	      new TeamRunMetadataMemberTreeMigration(appConfigProvider.config.getMemoryDir()),
+    32	      new TeamCanonicalIdentityMigration(
+    33	        appConfigProvider.config.getMemoryDir(),
+    34	        appConfigProvider.config.getAppDataDir(),
+    35	      ),
+    36	      new RemoveExternalRuntimeWorkingContextSnapshotsMigration(
+    37	        appConfigProvider.config.getMemoryDir(),
+    38	      ),
+    39	      // Native snapshot conversion resolves provenance through the current raw-trace layout.
+    40	      new RawTraceRotationLayoutMigration(appConfigProvider.config.getMemoryDir()),
+    41	      new RawTraceActiveFileNameMigration(appConfigProvider.config.getMemoryDir()),
+    42	      new MigrateNativeWorkingContextSnapshotsV5Migration(
+
+Current prerequisite implementation:
+     1	import type { AppDataMigrationDefinition, AppDataMigrationExecutionResult, AppDataMigrationItemDetail } from "../domain/app-data-migration-types.js";
+     2	import { TeamRunMetadataStore } from "../../run-history/store/team-run-metadata-store.js";
+     3	
+     4	const MIGRATION_ID = "20260517_team_run_metadata_member_tree";
+     5	
+     6	/**
+     7	 * Retained as an ordered historical checkpoint. The later canonical-identity
+     8	 * migration owns all legacy metadata shapes so installations that already
+     9	 * recorded this checkpoint and fresh installations follow the same converter.
+    10	 */
+    11	export class TeamRunMetadataMemberTreeMigration implements AppDataMigrationDefinition {
+    12	  readonly id = MIGRATION_ID;
+    13	  readonly displayName = "Team run metadata legacy checkpoint";
+    14	  readonly description = "Discovers Team metadata before the canonical schema-v3 migration.";
+    15	  readonly requiredOnStartup = true;
+    16	  private readonly store: TeamRunMetadataStore;
+    17	  constructor(memoryDir: string) { this.store = new TeamRunMetadataStore(memoryDir); }
+    18	  async execute(): Promise<AppDataMigrationExecutionResult> {
+    19	    const details: AppDataMigrationItemDetail[] = (await this.store.listTeamRunIds()).map((teamRunId) => ({
+    20	      itemId: teamRunId,
+    21	      filePath: this.store.getMetadataPath(teamRunId),
+    22	      status: "SKIPPED",
+    23	      message: "Discovered for the ordered canonical schema-v3 migration.",
+    24	    }));
+    25	    return {
+    26	      status: "SUCCEEDED",
+    27	      summary: { scannedCount: details.length, migratedCount: 0, skippedCount: details.length, failedCount: 0, details },
+    28	    };
+    29	  }
+    30	}
+    31	export const TEAM_RUN_METADATA_MEMBER_TREE_MIGRATION_ID = MIGRATION_ID;
+
+Current canonical converter legacy entry requires memberTree and never reads memberMetadata:
+   110	  return result;
+   111	};
+   112	
+   113	export const convertLegacyTeamRunMetadata = (value: unknown, directoryTeamRunId: string): TeamRunMetadata => {
+   114	  const record = object(value, "TeamRun metadata");
+   115	  if (record.schemaVersion === 3) return validateTeamRunMetadataPayload(value, directoryTeamRunId);
+   116	  const teamRunId = text(record.teamRunId, "teamRunId");
+   117	  if (teamRunId !== directoryTeamRunId) throw new Error(`teamRunId '${teamRunId}' does not match directory '${directoryTeamRunId}'.`);
+   118	  const rootCoordinatorRoute = text(record.coordinatorMemberRouteKey, "coordinatorMemberRouteKey").replace(/^\/+|\/+$/g, "");
+   119	  const coordinatorAddress = createAgentTeamAddress(rootCoordinatorRoute.split("/"));
+   120	  if (getParentAgentTeamAddress(coordinatorAddress) !== "/") throw new Error("Root coordinator must be a direct child of '/'.");
+   121	  if (!Array.isArray(record.memberTree)) throw new Error("memberTree must be an array.");
+   122	  const rootTeam = cloneTeamRunNode({
+   123	    kind: "agent_team",
+   124	    address: createAgentTeamAddress([]),
+   125	    teamDefinitionId: text(record.teamDefinitionId, "teamDefinitionId"),
+   126	    teamRunId,
+   127	    coordinatorAddress,
+   128	    role: null,
+   129	    description: null,
+   130	    children: record.memberTree.map((child, index) => convertNode(child, createAgentTeamAddress([]), `memberTree[${index}]`)),
+   131	  }) as TeamRunAgentTeamNode;
+   132	  return validateTeamRunMetadataPayload({
+   133	    schemaVersion: 3,
+   134	    teamDefinitionName: text(record.teamDefinitionName, "teamDefinitionName"),
+   135	    createdAt: text(record.createdAt, "createdAt"),
+   136	    archivedAt: nullableText(record.archivedAt, "archivedAt"),
+   137	    rootTeam,
+   138	    handoffs: convertHandoffs(record.handoffs, collectAddresses(rootTeam)),
+   139	  }, directoryTeamRunId);
+   140	};
+
+Removed pre-ticket prerequisite converter evidence (base 2a7271c9, relevant symbols):
+64:    throw new Error("Legacy flat memberMetadata contains a non-agent member; topology cannot be reconstructed safely.");
+67:    throw new Error("Legacy flat memberMetadata contains nested-team fields; topology cannot be reconstructed safely.");
+71:    throw new Error("Legacy flat memberMetadata contains a nested member path; topology cannot be reconstructed safely.");
+100:const convertLegacyMetadata = (payload: Record<string, unknown>, teamRunId: string): TeamRunMetadata => {
+101:  const legacyMembers = Array.isArray(payload.memberMetadata)
+102:    ? payload.memberMetadata.map(asRecord)
+105:    throw new Error("Legacy team metadata has no valid memberMetadata entries.");
+125:const isLegacyMetadata = (payload: Record<string, unknown>): boolean =>
+126:  "memberMetadata" in payload || "runVersion" in payload;
+136:  migratedCount: details.filter((detail) => detail.status === "MIGRATED").length,
+167:        if (!isLegacyMetadata(record)) {
+178:        const converted = convertLegacyMetadata(record, teamRunId);
+179:        const backupPath = createBackupPath(metadataPath);
+180:        await fs.copyFile(metadataPath, backupPath);
+187:          status: "MIGRATED",
+188:          message: "Converted legacy flat memberMetadata to canonical memberTree metadata.",
+189:          backupPath,
+213:        ? "SUCCEEDED_WITH_WARNINGS"
+
+Observed durable result:
+- safe flat memberMetadata: reported SUCCEEDED with migratedCount=0; no conversion/backup
+- one safe plus one invalid flat file: reported SUCCEEDED instead of SUCCEEDED_WITH_WARNINGS
+- unsafe nested flat identity: reported SUCCEEDED instead of FAILED
+Focused log: legacy-flat-prerequisite-round10-failure.log (1 pass / 3 failures).
+
+Expected:
+- the existing legacy-flat-to-memberTree prerequisite converts safe flat metadata with backup;
+- reports unsafe topology/partial failures;
+- then the canonical schema-v3 migration consumes memberTree before strict runtime/index rebuild.
+
+Preliminary classification: implementation defect. IR-005 replaced the prerequisite converter with a skip-only checkpoint while the later canonical converter accepts memberTree/schema-v3 only. Safe pre-memberTree data therefore cannot reach schema v3 through the approved ordered startup chain.

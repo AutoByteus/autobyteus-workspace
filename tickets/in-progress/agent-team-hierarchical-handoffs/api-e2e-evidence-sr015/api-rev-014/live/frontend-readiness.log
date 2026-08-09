@@ -1,0 +1,3 @@
+frontend_http_status=200
+frontend_proxy_health={"status":"ok","message":"Server is running"}
+port_31003_pid=43747

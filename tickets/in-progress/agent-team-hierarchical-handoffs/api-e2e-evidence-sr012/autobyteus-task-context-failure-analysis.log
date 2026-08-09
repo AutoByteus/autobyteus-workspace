@@ -1,0 +1,208 @@
+Evidence generated 2026-08-05T00:30:29Z
+HEAD a72b7f7212f42763fc0a5f6dd8bc9864b690a92f
+--- approved caller contract ---
+tickets/in-progress/agent-team-hierarchical-handoffs/agent-team-addressing-handoff-contract.md:119:`rootTeamRunId` selects the concrete run snapshot; `memberAddress` selects the logical Agent placement inside it. The context contains no supplied member path, immediate-Team path/address, route key, owner coordinate, target list, handoffs, or operation state.
+tickets/in-progress/agent-team-hierarchical-handoffs/agent-team-addressing-handoff-contract.md:662:| UC-016 Canonical-address derivation | Any persistent/restored/task member invokes a recipient operation | Rooted TeamRun tree -> `{rootTeamRunId,memberAddress}` -> address parent/basename derivation -> minimal recipient -> operation policy | No duplicate path/owner/route identity crosses the shared boundary; existing operation result is preserved. |
+tickets/in-progress/agent-team-hierarchical-handoffs/requirements.md:38:| BEH-012 | SR-006 has already contracted the shared collaboration caller to `{rootTeamRunId,memberAddress}` and the common recipient to Agent `{kind,address}` or AgentTeam `{kind,address,coordinatorAddress}`, but older TeamRun/runtime/history/event structures still duplicate the same logical placement as paths and route keys. | Preserve the minimal collaboration boundary and make its canonical address type the project-wide logical placement authority. No downstream subsystem may reconstruct a second Team address language. | Collaboration grammar, authored handoff semantics, exact-run routing/codes, send delivery results, and direct-current-Team task eligibility remain unchanged. | R-028–R-032, R-036–R-043; AC-023–AC-025, AC-029–AC-039 |
+tickets/in-progress/agent-team-hierarchical-handoffs/requirements.md:79:| [team-run-canonical-identity-refactor.md](./team-run-canonical-identity-refactor.md) | Intended-behavior/data-model contract for the rooted TeamRun execution tree, handoff projection seam, derived indexes, execution address, migration, exact V5 application SDK admission, API/frontend, and storage | R-011–R-013, R-021, R-026, R-028–R-043, R-047 | AC-012, AC-013, AC-019, AC-023–AC-039, AC-043 | `Refined — SR-012; user-approved basis retained` | Defines the comprehensive identity transition/rooted model and the DR-004 V5 application compatibility correction; SR-011 live proof remains unchanged. |
+tickets/in-progress/agent-team-hierarchical-handoffs/requirements.md:105:12. Treat TeamRun-tree compilation as the sole constructor of canonical placement addresses. Store only `{rootTeamRunId, memberAddress}` in the shared caller context; derive its parent Team, segments, basename, and storage encoding through `AgentTeamAddress` helpers.
+tickets/in-progress/agent-team-hierarchical-handoffs/requirements.md:137:| UC-016 | Persistent, restored, task-Agent, and task-AgentTeam members use one canonical member address as their shared logical coordinate; message and task consumers derive parent/selector facts without independently supplied path or owner representations. |
+tickets/in-progress/agent-team-hierarchical-handoffs/requirements.md:191:- **R-029 — Minimal caller coordinate:** `MemberLogicalAddressContext` shall contain exactly `rootTeamRunId` and the caller's canonical absolute Agent `memberAddress`. It shall not store or accept independent `memberPath`, immediate-Team path/address, route-key, owner, target, handoff, or operation fields. The shared `AgentTeamAddress` capability shall derive segments, basename, parent Team address, ancestors, and storage encoding from `memberAddress`.
+tickets/in-progress/agent-team-hierarchical-handoffs/requirements.md:199:- **R-036 — One execution address:** Conversation, task record, event/status, command, WebSocket, token-usage, streaming, and history projection paths shall use exactly `TeamExecutionAddress {rootTeamRunId,taskTeamRunIds,memberAddress,taskAgentRunId}`. The ordered run-ID chain shall resolve through task AgentTeam identities to the correct nested Team scope and the final member address shall validate against that scope. A task AgentTeam's logical address shall not be repeated in the execution locator. Operations may add their own task/invocation IDs but shall not add source/member/team/local route or path identity bundles.
+tickets/in-progress/agent-team-hierarchical-handoffs/requirements.md:237:- **AC-023:** Every persistent, restored, task-Agent, and task-AgentTeam caller collaboration context has the exhaustive shape `{rootTeamRunId, memberAddress}`. For `/research_team/research_lead`, shared address functions derive `['research_team','research_lead']`, parent `/research_team`, basename `research_lead`, and the relative storage segments when needed; no independently supplied path or route key can contradict the canonical address.
+tickets/in-progress/agent-team-hierarchical-handoffs/requirements.md:244:- **AC-029:** The exact `TeamExecutionAddress {rootTeamRunId,taskTeamRunIds,memberAddress,taskAgentRunId}` round trips through task records, Team communication, token usage, events, WebSocket commands, and frontend state for a persistent Agent, task Agent, task-AgentTeam coordinator, and two-level nested task AgentTeam without information loss or a route/path side channel. Each ordered task AgentTeam run ID resolves to one task identity/receiver/active execution and its logical Team address is not repeated in the locator.
+tickets/in-progress/agent-team-hierarchical-handoffs/requirements.md:344:| UC-016 | R-028–R-032 |
+tickets/in-progress/agent-team-hierarchical-handoffs/requirements.md:366:| AC-023–AC-025 | Minimal collaboration caller/placement shapes, deterministic address derivation, and preserved behavior. |
+--- managed context builder ---
+     1	import type { AgentTeamAddress } from "../../../agent-collaboration/domain/agent-team-address.js";
+     2	import type { MemberTeamContext } from "../../../agent-team-execution/domain/member-team-context.js";
+     3	import { cloneTaskAgentInstanceIdentity, type TaskAgentInstanceIdentity } from "../../../agent-team-execution/domain/task-agent-instance.js";
+     4	import { cloneTaskTeamInstanceIdentity, type TaskTeamInstanceIdentity } from "../../../agent-team-execution/domain/task-team-instance.js";
+     5	import { createTeamExecutionAddress, type TeamExecutionAddress } from "../../../agent-team-execution/domain/team-execution-address.js";
+     6	
+     7	export type AutoByteusManagedTeamContext = Readonly<{
+     8	  teamRunId: string;
+     9	  teamDefinitionId: string;
+    10	  teamName: string;
+    11	  teamAddress: AgentTeamAddress;
+    12	  memberAddress: AgentTeamAddress;
+    13	  agentRunId: string;
+    14	  coordinatorAddress: AgentTeamAddress;
+    15	  executionAddress: TeamExecutionAddress;
+    16	  taskAgentInstance: TaskAgentInstanceIdentity | null;
+    17	  taskTeamInstance: TaskTeamInstanceIdentity | null;
+    18	}>;
+    19	
+    20	export const buildAutoByteusManagedTeamContext = (context: MemberTeamContext): AutoByteusManagedTeamContext => Object.freeze({
+    21	  teamRunId: context.teamRunId,
+    22	  teamDefinitionId: context.teamDefinitionId,
+    23	  teamName: context.teamName,
+    24	  teamAddress: context.teamAddress,
+    25	  memberAddress: context.memberAddress,
+    26	  agentRunId: context.agentRunId,
+    27	  coordinatorAddress: context.coordinatorAddress,
+    28	  executionAddress: createTeamExecutionAddress(context.executionAddress),
+    29	  taskAgentInstance: context.taskAgentInstance ? cloneTaskAgentInstanceIdentity(context.taskAgentInstance) : null,
+    30	  taskTeamInstance: context.taskTeamInstance ? cloneTaskTeamInstanceIdentity(context.taskTeamInstance) : null,
+    31	});
+--- native task context consumer ---
+     1	import { cloneTaskAgentInstanceIdentity, type TaskAgentInstanceIdentity } from "../../agent-team-execution/domain/task-agent-instance.js";
+     2	import { cloneTaskTeamInstanceIdentity, type TaskTeamInstanceIdentity } from "../../agent-team-execution/domain/task-team-instance.js";
+     3	import { createMemberLogicalAddressContext } from "../../agent-team-execution/domain/member-logical-address-context.js";
+     4	import { createTeamExecutionAddress, type TeamExecutionAddress } from "../../agent-team-execution/domain/team-execution-address.js";
+     5	import { TaskDelegationError } from "../../agent-team-execution/task-delegation/task-delegation-record.js";
+     6	import { assertAgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
+     7	import type { TaskDelegationToolContext } from "./task-delegation-tool-contract.js";
+     8	
+     9	type NativeTeamContext = {
+    10	  teamRunId?: unknown;
+    11	  teamDefinitionId?: unknown;
+    12	  teamName?: unknown;
+    13	  memberAddress?: unknown;
+    14	  agentRunId?: unknown;
+    15	  coordinatorAddress?: unknown;
+    16	  executionAddress?: TeamExecutionAddress | null;
+    17	  addressing?: { rootTeamRunId?: unknown; memberAddress?: unknown };
+    18	  taskAgentInstance?: TaskAgentInstanceIdentity | null;
+    19	  taskTeamInstance?: TaskTeamInstanceIdentity | null;
+    20	};
+    21	export type NativeTaskDelegationToolExecutionContext = {
+    22	  customData?: { teamContext?: NativeTeamContext };
+    23	};
+    24	const required = (value: unknown, field: string): string => {
+    25	  const normalized = typeof value === "string" ? value.trim() : "";
+    26	  if (!normalized) throw new TaskDelegationError("TEAM_RUN_CONTEXT_REQUIRED", `Task delegation tools require ${field} in team context.`);
+    27	  return normalized;
+    28	};
+    29	const optional = (value: unknown): string | null => typeof value === "string" && value.trim() ? value.trim() : null;
+    30	
+    31	export const buildTaskDelegationToolContextFromNativeContext = (
+    32	  context: NativeTaskDelegationToolExecutionContext,
+    33	): TaskDelegationToolContext => {
+    34	  const team = context.customData?.teamContext;
+    35	  if (!team?.addressing || !team.executionAddress) {
+    36	    throw new TaskDelegationError("TEAM_RUN_CONTEXT_REQUIRED", "Task delegation tools require an active Team collaboration context.");
+    37	  }
+    38	  const addressing = createMemberLogicalAddressContext({
+    39	    rootTeamRunId: required(team.addressing.rootTeamRunId, "addressing.rootTeamRunId"),
+    40	    memberAddress: required(team.addressing.memberAddress, "addressing.memberAddress"),
+    41	  });
+    42	  return {
+    43	    teamRunId: required(team.teamRunId, "teamRunId"),
+    44	    teamDefinitionId: optional(team.teamDefinitionId),
+    45	    teamName: optional(team.teamName),
+    46	    caller: {
+    47	      executionAddress: createTeamExecutionAddress(team.executionAddress),
+    48	      agentRunId: required(team.agentRunId, "agentRunId"),
+    49	      taskAgentInstance: team.taskAgentInstance ? cloneTaskAgentInstanceIdentity(team.taskAgentInstance) : null,
+    50	      taskTeamInstance: team.taskTeamInstance ? cloneTaskTeamInstanceIdentity(team.taskTeamInstance) : null,
+    51	    },
+    52	    coordinatorAddress: optional(team.coordinatorAddress) ? assertAgentTeamAddress(optional(team.coordinatorAddress)!) : null,
+    53	    addressing,
+    54	  };
+    55	};
+--- factory injection and native tool call sites ---
+autobyteus-server-ts/src/agent-tools/task-delegation/submit-task-result.ts:14:  buildTaskDelegationToolContextFromNativeContext,
+autobyteus-server-ts/src/agent-tools/task-delegation/submit-task-result.ts:39:      const toolContext = buildTaskDelegationToolContextFromNativeContext(context);
+autobyteus-server-ts/src/agent-tools/task-delegation/delegate-task.ts:14:  buildTaskDelegationToolContextFromNativeContext,
+autobyteus-server-ts/src/agent-tools/task-delegation/delegate-task.ts:39:      const toolContext = buildTaskDelegationToolContextFromNativeContext(context);
+autobyteus-server-ts/src/agent-tools/task-delegation/review-task-result.ts:14:  buildTaskDelegationToolContextFromNativeContext,
+autobyteus-server-ts/src/agent-tools/task-delegation/review-task-result.ts:39:      const toolContext = buildTaskDelegationToolContextFromNativeContext(context);
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts:44:import { buildAutoByteusManagedTeamContext } from "./autobyteus-managed-team-context-builder.js";
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts:460:        ? { teamContext: buildAutoByteusManagedTeamContext(options.memberTeamContext) }
+--- current durable expectation ---
+     1	import { describe, expect, it } from "vitest";
+     2	import { buildAutoByteusManagedTeamContext } from "../../../../src/agent-execution/backends/autobyteus/autobyteus-managed-team-context-builder.js";
+     3	import { buildTaskDelegationToolContextFromNativeContext } from "../../../../src/agent-tools/task-delegation/task-delegation-autobyteus-context.js";
+     4	import { testMemberTeamContext } from "../../../fixtures/current-team-run-fixtures.js";
+     5	
+     6	const createContext = () => testMemberTeamContext({
+     7	  teamRunId: "delivery-team-run-1",
+     8	  rootTeamRunId: "delivery-team-run-1",
+     9	  teamDefinitionId: "delivery-team-def",
+    10	  teamAddress: "/",
+    11	  memberAddress: "/program_manager",
+    12	  agentRunId: "run-program-manager",
+    13	  coordinatorAddress: "/program_manager",
+    14	});
+    15	
+    16	describe("buildTaskDelegationToolContextFromNativeContext", () => {
+    17	  it("projects only primitive caller addressing without a parallel member roster", () => {
+    18	    const managed = buildAutoByteusManagedTeamContext(createContext());
+    19	
+    20	    expect(managed).toEqual(expect.objectContaining({
+    21	      teamRunId: "delivery-team-run-1",
+    22	      memberAddress: "/program_manager",
+    23	      agentRunId: "run-program-manager",
+    24	      executionAddress: {
+    25	        rootTeamRunId: "delivery-team-run-1",
+    26	        taskTeamRunIds: [],
+    27	        memberAddress: "/program_manager",
+    28	      },
+    29	      addressing: {
+    30	        rootTeamRunId: "delivery-team-run-1",
+    31	        memberAddress: "/program_manager",
+    32	      },
+    33	    }));
+    34	    expect(managed).not.toHaveProperty("members");
+    35	    expect(managed).not.toHaveProperty("allowedRecipientAddresss");
+    36	
+    37	    expect(buildTaskDelegationToolContextFromNativeContext({
+    38	      config: { name: "program_manager" },
+    39	      customData: { teamContext: managed },
+    40	    })).toEqual(expect.objectContaining({
+    41	      teamRunId: "delivery-team-run-1",
+    42	      caller: expect.objectContaining({
+    43	        agentRunId: "run-program-manager",
+    44	        executionAddress: expect.objectContaining({ memberAddress: "/program_manager" }),
+    45	      }),
+    46	      addressing: expect.objectContaining({
+    47	        memberAddress: "/program_manager",
+    48	      }),
+    49	    }));
+    50	    expect(Object.keys(managed.addressing).sort()).toEqual(["memberAddress", "rootTeamRunId"]);
+    51	  });
+    52	
+    53	  it("clones and freezes the exact two-field addressing value", () => {
+    54	    const source = createContext();
+    55	    const managed = buildAutoByteusManagedTeamContext(source);
+    56	
+    57	    expect(managed.addressing).not.toBe(source.collaboration.addressing);
+    58	    expect(Object.isFrozen(managed.addressing)).toBe(true);
+    59	    expect(() => {
+    60	      (managed.addressing as { memberAddress: string }).memberAddress = "/mutated";
+    61	    }).toThrow(/read only property/);
+    62	    expect(source.collaboration.addressing.memberAddress).toBe("/program_manager");
+    63	  });
+    64	
+    65	  it("rejects a native context without collaboration addressing", () => {
+    66	    expect(() => buildTaskDelegationToolContextFromNativeContext({
+    67	      config: { name: "program_manager" },
+    68	      customData: { teamContext: {
+    69	        teamRunId: "delivery-team-run-1",
+    70	        memberAddress: "/program_manager",
+    71	        agentRunId: "run-program-manager",
+    72	        executionAddress: {
+    73	          rootTeamRunId: "delivery-team-run-1",
+    74	          taskTeamRunIds: [],
+    75	          memberAddress: "/program_manager",
+    76	        },
+    77	      } },
+    78	    })).toThrow(/active Team collaboration context/);
+    79	  });
+    80	
+    81	  it("rejects removed derived addressing fields instead of accepting a legacy shape", () => {
+    82	    const managed = buildAutoByteusManagedTeamContext(createContext());
+    83	    expect(() => buildTaskDelegationToolContextFromNativeContext({
+    84	      customData: { teamContext: {
+    85	        ...managed,
+    86	        addressing: {
+    87	          ...managed.addressing,
+    88	          memberPath: ["nested", "program_manager"],
+    89	        },
+    90	      } },
+    91	    })).toThrow(/accepts only rootTeamRunId and memberAddress/);
+    92	  });
+    93	});
+--- current source occurrences of managed addressing ---
+--- diff check maintained files ---

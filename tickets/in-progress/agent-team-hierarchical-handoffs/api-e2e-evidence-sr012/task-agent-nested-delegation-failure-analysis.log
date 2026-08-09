@@ -1,0 +1,237 @@
+API-F-004 focused failure analysis
+Date: 2026-08-05 Europe/Berlin
+HEAD: d980e000fd7e1282178b2effc85a633255793ea6
+
+Approved behavior:
+37:| BEH-011 | Integrated `delegate_task.recipient_name` already uses the same `/...` and `./...` resolver as messaging, then applies current-Team direct-target task eligibility and configured coordinator entry. | Rename only the public selector to `recipient_address`, resolve through the rooted TeamRun tree, and preserve the same operation-owned eligibility/lifecycle mapping. | Task eligibility remains limited to direct physical Agents/child Teams of the caller's immediate Team; task creation, task-Agent/task-AgentTeam materialization, `submit_task_result`, `review_task_result`, settlement, and exact task AgentRun communication retain task-protocol ownership. | R-023, R-027; AC-018, AC-022 |
+189:- **R-027 — Hierarchical task recipient selector:** `delegate_task` shall accept one required `recipient_address` string using exactly the R-007 grammar and shall remove the public `{target:{kind,name}}` selector and any `recipient_name` alias. Resolution shall infer Agent versus AgentTeam from the same canonical recipient returned for `send_message_to`. After shared resolution, existing task eligibility remains separately enforced: the recipient must be a direct physical Agent or direct child AgentTeam of the caller's immediate Team, and the caller Agent remains ineligible. An eligible Agent starts task-Agent execution; an eligible AgentTeam starts task-AgentTeam execution through its configured coordinator. A resolved non-direct recipient fails with `TASK_DELEGATION_TARGET_NOT_ELIGIBLE`, without name fallback, caller-supplied kind, or a separate task roster authority.
+343:| UC-015 | R-007–R-009, R-023, R-027 |
+
+Task Agent runtime context materializes exact task AgentRun identity:
+    92	    for (const handle of this.handles.values()) handle.dispose();
+    93	    this.handles.clear(); this.cache.forgetTeam(this.rootId());
+    94	  }
+    95	
+    96	  private createHandle(request: StartTaskAgentInstanceRequest, runtimeKind: import("../../../../runtime-management/runtime-kind-enum.js").RuntimeKind) {
+    97	    return new MixedAgentMemberHandle({
+    98	      teamContext: this.options.teamContext,
+    99	      context: new MixedAgentMemberContext({ address: request.receiver.memberAddress, agentRunId: request.identity.taskAgentRunId, runtimeKind, platformAgentRunId: null }),
+   100	      config: Object.freeze({ ...request.sourceNode, agentRunId: request.identity.taskAgentRunId, platformAgentRunId: null }),
+   101	      agentRunManager: this.options.agentRunManager,
+   102	      publish: this.options.publish,
+   103	      deliverInterAgentMessage: this.options.deliverInterAgentMessage,
+   104	      taskAgentInstance: cloneTaskAgentInstanceIdentity(request.identity),
+   105	    });
+   106	  }
+   107	
+   108	  private resolve(address: AgentTeamAddress, taskAgentRunId: string): MixedAgentMemberHandle | AgentOperationResult {
+   109	    const runId = taskAgentRunId.trim();
+   110	    const handle = this.handles.get(runId) ?? this.cache.get(this.rootId(), runId)?.handle ?? null;
+   204	      memberTeamContext,
+   205	      applicationExecutionContext: node.applicationExecutionContext,
+   206	    });
+   207	  }
+   208	
+   209	  private ancestorTeamRunIds(): string[] {
+   210	    const ids: string[] = [];
+   211	    let address = getParentAgentTeamAddress(this.context.address);
+   212	    while (address && address !== "/") {
+   213	      const team = this.options.teamContext.index.getTeam(address);
+   214	      if (!team) throw new Error(`Missing ancestor AgentTeam '${address}'.`);
+   215	      ids.unshift(team.teamRunId);
+   216	      address = getParentAgentTeamAddress(address);
+   217	    }
+   218	    return ids;
+   219	  }
+   220	
+   221	  private executionAddress() { return this.options.teamContext.runtimeContext.teamExecutionAddress.memberAddress === this.context.address && this.options.taskAgentInstance
+   222	    ? { ...this.options.teamContext.runtimeContext.teamExecutionAddress, taskAgentRunId: this.options.taskAgentInstance.taskAgentRunId }
+   223	    : { ...this.options.teamContext.runtimeContext.teamExecutionAddress, memberAddress: this.context.address, taskAgentRunId: this.options.taskAgentInstance?.taskAgentRunId ?? null };
+   224	  }
+   225	
+   226	  private statusIdentity() { return { executionAddress: this.executionAddress(), displayName: displayNameFor(this.context), agentRunId: this.context.agentRunId }; }
+   227	
+   228	  private publishMemberInput(message: AgentInputUserMessage): void {
+    12	import type { TaskDelegationToolContext } from "./task-delegation-tool-contract.js";
+    13	import { TaskDelegationToolRunRouter } from "./task-delegation-tool-run-router.js";
+    14	
+    15	export const buildTaskDelegationToolContextFromMemberTeamContext = (
+    16	  memberTeamContext: MemberTeamContext,
+    17	): TaskDelegationToolContext => {
+    18	  const caller: TaskDelegationCallerIdentity = {
+    19	    executionAddress: memberTeamContext.executionAddress,
+    20	    agentRunId: memberTeamContext.agentRunId,
+    21	    taskAgentInstance: memberTeamContext.taskAgentInstance,
+    22	    taskTeamInstance: memberTeamContext.taskTeamInstance ?? null,
+    23	  };
+    24	  return {
+    25	    teamRunId: memberTeamContext.teamRunId,
+    26	    teamDefinitionId: memberTeamContext.teamDefinitionId,
+    27	    teamName: memberTeamContext.teamName,
+
+Failing mapper comparison:
+    18	    const targetTeamAddress = getParentAgentTeamAddress(recipient.address);
+    19	    if (!callerTeamAddress || targetTeamAddress !== callerTeamAddress ||
+    20	        currentTeam.teamAddress !== callerTeamAddress) {
+    21	      throw new TaskDelegationError(
+    22	        "TASK_DELEGATION_TARGET_NOT_ELIGIBLE",
+    23	        "The resolved recipient is not a direct child of the caller's current AgentTeam.",
+    24	      );
+    25	    }
+    26	    const callerNode = currentTeam.index.getAgent(callerAddressing.memberAddress);
+    27	    if (!callerNode || callerNode.agentRunId !== caller.agentRunId) {
+    28	      throw new TaskDelegationError(
+    29	        "DELEGATOR_NOT_AUTHORIZED",
+    30	        "Caller runtime identity does not match the current AgentTeam execution.",
+    31	      );
+    32	    }
+    33	    if (recipient.address === callerAddressing.memberAddress) {
+    34	      throw new TaskDelegationError(
+    35	        "TASK_DELEGATION_SELF_TARGET_NOT_ALLOWED",
+    36	        "The current Agent cannot delegate a task to itself.",
+    37	      );
+    38	    }
+
+Existing active-task-agent validation that runs after mapping:
+   125	
+   126	  async delegateTask(
+   127	    context: TaskDelegationContext,
+   128	    input: DelegateTaskInput,
+   129	    placement: ResolvedTeamRecipient,
+   130	  ): Promise<DelegateTaskResult> {
+   131	    this.assertTeamRunActive();
+   132	    this.inputResolver.assertContext(context);
+   133	    this.assertActiveTaskAgentCaller(context);
+   134	    const task = this.inputResolver.normalizeCreateInput(input);
+   135	    const target = this.targetMapper.fromRecipient(placement, context.addressing, this.teamRun.context, context.caller);
+   136	    const taskId = await this.recordsService.reserveTaskId(this.persistenceScope);
+   137	    const createInput = this.inputResolver.buildCreateInput(context, task, target, taskId);
+   138	    const referenceFiles = this.normalizeReferenceFiles(createInput.task.reference_files);
+   139	    this.ledger.createStartingEntry({
+   140	      taskId: createInput.taskId,
+   141	      persistenceScope: this.persistenceScope,
+   142	      target: createInput.target,
+   143	      reviewOwner: createInput.delegator,
+   144	      senderAddress: this.addressBuilder.buildCallerAddress(context.caller),
+   145	      receiverAddress: this.addressBuilder.buildTargetAddress(createInput.target),
+   377	    const taskAgentRunId = context.caller.taskAgentInstance?.taskAgentRunId?.trim() || null;
+   378	    if (!taskAgentRunId) {
+   379	      throw new TaskDelegationError("TASK_AGENT_CONTEXT_REQUIRED", "submit_task_result is available only to a bound task-agent or task-team ingress context.");
+   380	    }
+   381	    this.resolveActiveTaskAgentCallerEntry(context, taskAgentRunId, "submit task results");
+   382	    return taskAgentRunId;
+   383	  }
+   384	
+   385	  private assertActiveTaskAgentCaller(context: TaskDelegationContext): void {
+   386	    const taskAgentRunId = context.caller.taskAgentInstance?.taskAgentRunId?.trim() || null;
+   387	    if (!taskAgentRunId) return;
+   388	    this.resolveActiveTaskAgentCallerEntry(context, taskAgentRunId, "perform task delegation actions");
+   389	  }
+   390	
+   391	  private resolveActiveTaskAgentCallerEntry(
+   392	    context: TaskDelegationContext,
+   393	    taskAgentRunId: string,
+   394	    actionDescription: string,
+   395	  ): { taskId: string } {
+   396	    if (this.taskAgentDirectory.isTaskAgentRunSettled(taskAgentRunId)) {
+   397	      throw new TaskDelegationError("TASK_AGENT_SETTLED", `Task-agent run '${taskAgentRunId}' is settled and cannot ${actionDescription}.`);
+   398	    }
+   399	    const entry = this.taskAgentDirectory.resolveTaskAgentRunId(taskAgentRunId);
+   400	    if (!entry) {
+   401	      throw new TaskDelegationError("TASK_AGENT_NOT_ACTIVE", `Task-agent run '${taskAgentRunId}' is not an active task-agent for ${actionDescription}.`);
+   402	    }
+   403	    const callerTaskId = context.caller.taskAgentInstance?.taskId?.trim() || null;
+   404	    if (callerTaskId !== entry.taskId) {
+   405	      throw new TaskDelegationError("TASK_AGENT_NOT_AUTHORIZED", `Task-agent run '${taskAgentRunId}' is not bound to task '${callerTaskId ?? "(missing)"}'.`);
+   406	    }
+   407	    return entry;
+   408	  }
+   409	
+   410	  private resolveTaskAgentTaskId(context: TaskDelegationContext, taskAgentRunId: string): string {
+   411	    return this.resolveActiveTaskAgentCallerEntry(context, taskAgentRunId, "submit task results").taskId;
+   412	  }
+   413	
+   414	  private normalizeRequiredMessage(value: string, fieldName: string): string {
+
+Durable expected scenarios:
+   968	    expect(taskDelegationPayloads(backend, "TASK_DELEGATION_ACTIVATED")).toEqual([]);
+   969	    expect(getTaskAgentDirectory("team-run-1").resolveTaskAgentRunId("worker_00000000000000000000000000000001")).toBeNull();
+   970	  });
+   971	
+   972	  it("supports task-agent delegators and blocks parent settlement while child delegation is open", async () => {
+   973	    const backend = new FakeTeamRunBackend();
+   974	    const service = createService(backend);
+   975	    await delegateTask(service,buildContext(), delegateMemberTask("worker", "Parent task."));
+   976	    const parentIdentity = backend.taskAgentStarts[0]!.identity;
+   977	    const parentCaller = buildTaskAgentCaller(parentIdentity);
+   978	
+   979	    const child = await delegateTask(service,buildContext(parentCaller), delegateMemberTask("reviewer", "Nested child task."));
+   980	    expect(child).toMatchObject({ task_id: "task_0002", status: "active" });
+   981	    expect(backend.taskAgentStarts[1]!.message.content).toContain("Task ID: task_0002");
+   982	    expect(backend.taskAgentStarts[1]!.message.content).toContain("Nested child task.");
+   983	    expect(backend.taskAgentStarts[1]!.message.content).not.toContain("Original delegator");
+   984	    expect(backend.taskAgentStarts[1]!.message.content).not.toContain(parentCaller.taskAgentRunId);
+   985	
+   986	    await service.submitTaskResult(buildContext(parentCaller), { message: "Parent complete." });
+   987	    await service.reviewTaskResult(buildContext(), { task_id: "task_0001", decision: "accept" });
+   988	    publishIdleEvent(backend, "task_0001");
+   989	    await nextTick();
+   990	    expect(backend.taskAgentSettlements).toEqual([]);
+   991	
+   992	    const childCaller = buildTaskAgentCaller(backend.taskAgentStarts[1]!.identity);
+   993	    await service.submitTaskResult(buildContext(childCaller), { message: "Child complete." });
+   994	    expect(backend.postedMessages.at(-1)).toMatchObject({ targetMemberRunId: "worker_00000000000000000000000000000001" });
+   995	
+   996	    await expect(
+   997	      service.reviewTaskResult(buildContext({ ...parentCaller, taskId: "wrong" }), { task_id: "task_0002", decision: "accept" }),
+   998	    ).rejects.toMatchObject({ code: "DELEGATOR_NOT_AUTHORIZED" });
+   999	    await service.reviewTaskResult(buildContext(parentCaller), { task_id: "task_0002", decision: "accept" });
+  1000	    await nextTick();
+  1001	    expect(backend.taskAgentSettlements).toEqual([
+  1002	      expect.objectContaining({ address: "/worker", runId: "worker_00000000000000000000000000000001" }),
+  1003	    ]);
+  1004	  });
+  1005	
+  1006	  it("rejects settled task-agent delegate_task before creating child work", async () => {
+  1007	    const backend = new FakeTeamRunBackend();
+  1008	    const service = createService(backend);
+  1009	    await delegateTask(service,buildContext(), delegateMemberTask("worker", "Parent task."));
+  1010	    const parentCaller = buildTaskAgentCaller(backend.taskAgentStarts[0]!.identity);
+  1011	
+  1012	    await service.submitTaskResult(buildContext(parentCaller), { message: "Parent complete." });
+  1013	    await service.reviewTaskResult(buildContext(), { task_id: "task_0001", decision: "accept" });
+  1014	    publishIdleEvent(backend, "task_0001");
+  1015	    await nextTick();
+  1016	    expect(getTaskAgentDirectory("team-run-1").isTaskAgentRunSettled(parentCaller.taskAgentRunId)).toBe(true);
+  1017	
+  1018	    const startsBefore = backend.taskAgentStarts.length;
+  1019	    const activatedBefore = taskDelegationPayloads(backend, "TASK_DELEGATION_ACTIVATED").length;
+  1020	    await expect(
+  1021	      delegateTask(service,buildContext(parentCaller), delegateMemberTask("worker", "Stale child task.")),
+  1022	    ).rejects.toMatchObject({ code: "TASK_AGENT_SETTLED" });
+  1023	
+  1024	    expect(backend.taskAgentStarts).toHaveLength(startsBefore);
+  1025	    expect(taskDelegationPayloads(backend, "TASK_DELEGATION_ACTIVATED")).toHaveLength(activatedBefore);
+  1026	  });
+  1027	
+  1028	  it("rejects settled task-agent review identity before recording a child review", async () => {
+  1029	    const backend = new FakeTeamRunBackend();
+  1030	    const service = createService(backend);
+  1031	    await delegateTask(service,buildContext(), delegateMemberTask("worker", "Parent task."));
+  1032	    const parentCaller = buildTaskAgentCaller(backend.taskAgentStarts[0]!.identity);
+  1033	    await delegateTask(service,buildContext(parentCaller), delegateMemberTask("reviewer", "Nested child task."));
+  1034	
+  1035	    const childCaller = buildTaskAgentCaller(backend.taskAgentStarts[1]!.identity);
+  1036	    await service.submitTaskResult(buildContext(childCaller), { message: "Child complete." });
+  1037	    const reviewedBefore = taskDelegationPayloads(backend, "TASK_DELEGATION_RESULT_REVIEWED").length;
+  1038	    getTaskAgentDirectory("team-run-1").markSettledByTaskAgentRunId(parentCaller.taskAgentRunId);
+  1039	
+  1040	    await expect(
+  1041	      service.reviewTaskResult(buildContext(parentCaller), { task_id: "task_0002", decision: "accept" }),
+  1042	    ).rejects.toMatchObject({ code: "TASK_AGENT_SETTLED" });
+  1043	
+  1044	    expect(taskDelegationPayloads(backend, "TASK_DELEGATION_RESULT_REVIEWED")).toHaveLength(reviewedBefore);
+  1045	    expect(backend.taskAgentSettlements).toEqual([]);
+
+Conclusion:
+An active task Agent at /worker has caller.agentRunId equal to its exact taskAgentRunId while the immutable node at /worker retains run-worker. TaskDelegationTargetMapper rejects this valid current task Agent before TaskDelegationService can validate taskAgentInstance against TaskAgentDirectory. This blocks nested delegate_task from an active task Agent. No API/E2E source edit was made.

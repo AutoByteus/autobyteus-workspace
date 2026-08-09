@@ -1,0 +1,139 @@
+{
+  "observedAt": "2026-08-09T10:08:38.418571+00:00",
+  "import": {
+    "packageId": "local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Fagent-team-hierarchical-handoffs%2Fautobyteus-server-ts%2Ftests%2F.tmp%2Fsr015-api-rev-012-20260809%2Fstaged-agent-package-01",
+    "displayName": "staged-agent-package-01",
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-012-20260809/staged-agent-package-01",
+    "sourceKind": "LOCAL_PATH",
+    "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-012-20260809/staged-agent-package-01",
+    "sharedAgentCount": 0,
+    "teamLocalAgentCount": 1,
+    "agentTeamCount": 1,
+    "applicationCount": 0,
+    "isDefault": false,
+    "isRemovable": true
+  },
+  "teams": [
+    {
+      "id": "nested-classroom-test",
+      "name": "Nested Classroom Test Team",
+      "description": "Minimal nested-team fixture for testing delegate_task to an agent-team target.",
+      "coordinatorMemberName": "Teacher",
+      "ownershipScope": "SHARED",
+      "ownerTeamId": null,
+      "ownerTeamName": null,
+      "handoffs": [
+        {
+          "from": "/Teacher",
+          "to": "/StudentStudyGroup",
+          "rules": [
+            "When the user asks to send the classroom handoff token to the study group."
+          ]
+        },
+        {
+          "from": "/StudentStudyGroup/student_one",
+          "to": "/Teacher",
+          "rules": [
+            "When the delegated classroom task is finished and the teacher needs the outcome."
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "memberName": "Teacher",
+          "ref": "teacher",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "StudentStudyGroup",
+          "ref": "student-study-group",
+          "refType": "AGENT_TEAM",
+          "refScope": "TEAM_LOCAL"
+        }
+      ]
+    },
+    {
+      "id": "team-local-team:nested-classroom-test:student-study-group",
+      "name": "Student Study Group",
+      "description": "Two-student nested team used as a task-team target in delegation tests.",
+      "coordinatorMemberName": "student_one",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamId": "nested-classroom-test",
+      "ownerTeamName": "Nested Classroom Test Team",
+      "handoffs": [
+        {
+          "from": "/student_one",
+          "to": "/student_two",
+          "rules": [
+            "When the delegated classroom task asks the coordinator to consult the supporting student."
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "memberName": "student_one",
+          "ref": "student-one",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "student_two",
+          "ref": "student-two",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        }
+      ]
+    }
+  ],
+  "agents": [
+    {
+      "id": "team-local-agent:nested-classroom-test:teacher",
+      "name": "Test Teacher",
+      "role": "Teacher",
+      "description": "Top-level teacher coordinator for nested task-team delegation tests.",
+      "toolNames": [
+        "delegate_task",
+        "review_task_result",
+        "send_message_to",
+        "run_bash"
+      ],
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamId": "nested-classroom-test",
+      "ownerTeamName": "Nested Classroom Test Team"
+    },
+    {
+      "id": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-one",
+      "name": "Student One",
+      "role": "Student coordinator",
+      "description": "Coordinator student for the nested Student Study Group test team.",
+      "toolNames": [
+        "submit_task_result",
+        "send_message_to",
+        "run_bash"
+      ],
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamId": "team-local-team:nested-classroom-test:student-study-group",
+      "ownerTeamName": "Student Study Group"
+    },
+    {
+      "id": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-two",
+      "name": "Student Two",
+      "role": "Supporting student",
+      "description": "Supporting student for the nested Student Study Group test team.",
+      "toolNames": [
+        "send_message_to",
+        "run_bash"
+      ],
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamId": "team-local-team:nested-classroom-test:student-study-group",
+      "ownerTeamName": "Student Study Group"
+    }
+  ],
+  "assertions": {
+    "rootTeamFound": true,
+    "nestedTeamFound": true,
+    "allThreeAgentsFound": true,
+    "sourceKind": "LOCAL_PATH"
+  }
+}

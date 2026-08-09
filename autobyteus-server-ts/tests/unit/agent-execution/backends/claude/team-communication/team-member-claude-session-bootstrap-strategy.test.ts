@@ -3,23 +3,17 @@ import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.j
 import { AgentRunConfig } from "../../../../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../../../../src/agent-execution/domain/agent-run-context.js";
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
-import { MemberTeamContext } from "../../../../../../src/agent-team-execution/domain/member-team-context.js";
-import { TeamBackendKind } from "../../../../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { TeamMemberClaudeSessionBootstrapStrategy } from "../../../../../../src/agent-execution/backends/claude/team-communication/team-member-claude-session-bootstrap-strategy.js";
+import { testMemberTeamContext } from "../../../../../fixtures/current-team-run-fixtures.js";
 
-const memberTeamContext = new MemberTeamContext({
+const memberTeamContext = testMemberTeamContext({
   teamRunId: "team-1",
   teamDefinitionId: "team-def-1",
-  teamBackendKind: TeamBackendKind.MIXED,
-  memberName: "Professor",
-  memberRouteKey: "professor",
-  memberRunId: "run-professor",
-  collaboration: {
-    addressing: {
-      rootTeamRunId: "team-1",
-      memberAddress: "/Professor",
-    },
-  },
+  rootTeamRunId: "team-1",
+  teamAddress: "/",
+  memberAddress: "/Professor",
+  coordinatorAddress: "/Professor",
+  agentRunId: "run-professor",
 });
 
 describe("TeamMemberClaudeSessionBootstrapStrategy", () => {

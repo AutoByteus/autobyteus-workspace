@@ -1,82 +1,42 @@
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { describe, expect, it } from "vitest";
-import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { createMemberLogicalAddressContext } from "../../../src/agent-team-execution/domain/member-logical-address-context.js";
+import { TeamRecipientResolver } from "../../../src/agent-team-execution/services/team-recipient-resolver.js";
+import { TeamRunTreeIndex } from "../../../src/agent-team-execution/services/team-run-tree-index.js";
 import {
-  TeamRunConfig,
-  type TeamMemberRunConfig,
-  type TeamRunMemberConfig,
-  type TeamSubTeamMemberRunConfig,
-} from "../../../src/agent-team-execution/domain/team-run-config.js";
-import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
-import { TeamLogicalPlacementResolver } from "../../../src/agent-team-execution/services/team-logical-placement-resolver.js";
+  testAgentNode,
+  testAgentTeamNode,
+  testTeamRunConfig,
+} from "../../fixtures/current-team-run-fixtures.js";
 
-const agent = (name: string, path: string[]): TeamMemberRunConfig => ({
-  memberKind: "agent",
-  memberName: name,
-  memberPath: path,
-  memberRouteKey: path.join("/"),
-  memberRunId: `run-${path.join("-")}`,
-  role: null,
-  description: null,
-  agentDefinitionId: `agent-${name}`,
-  llmModelIdentifier: "test-model",
-  autoExecuteTools: true,
-  skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
-  runtimeKind: RuntimeKind.AUTOBYTEUS,
-});
-
-const team = (
-  name: string,
-  path: string[],
-  coordinatorPath: string[],
-  members: TeamRunMemberConfig[],
-): TeamSubTeamMemberRunConfig => ({
-  memberKind: "agent_team",
-  memberName: name,
-  memberPath: path,
-  memberRouteKey: path.join("/"),
-  memberRunId: `run-${path.join("-")}`,
-  role: null,
-  description: null,
-  teamDefinitionId: `team-${name}`,
-  coordinatorMemberRouteKey: coordinatorPath.join("/"),
-  childTeamRunId: `child-${path.join("-")}`,
-  memberConfigs: members,
-});
-
-const buildRootConfig = (): TeamRunConfig => {
-  const fieldTeam = team(
-    "field_team",
-    ["research_team", "field_team"],
-    ["research_team", "field_team", "field_lead"],
-    [
-      agent("field_lead", ["research_team", "field_team", "field_lead"]),
-      agent("team_lead", ["research_team", "field_team", "team_lead"]),
-      agent("interviewer", ["research_team", "field_team", "interviewer"]),
+const buildIndex = (): TeamRunTreeIndex => {
+  const fieldTeam = testAgentTeamNode({
+    address: "/research_team/field_team",
+    coordinatorAddress: "/research_team/field_team/field_lead",
+    children: [
+      testAgentNode("/research_team/field_team/field_lead"),
+      testAgentNode("/research_team/field_team/team_lead"),
+      testAgentNode("/research_team/field_team/interviewer"),
     ],
-  );
-  const researchTeam = team(
-    "research_team",
-    ["research_team"],
-    ["research_team", "research_lead"],
-    [
-      agent("research_lead", ["research_team", "research_lead"]),
+  });
+  const researchTeam = testAgentTeamNode({
+    address: "/research_team",
+    coordinatorAddress: "/research_team/research_lead",
+    children: [
+      testAgentNode("/research_team/research_lead"),
       fieldTeam,
     ],
-  );
-  const designTeam = team(
-    "design_team",
-    ["design_team"],
-    ["design_team", "team_lead"],
-    [agent("team_lead", ["design_team", "team_lead"])],
-  );
-  return new TeamRunConfig({
-    teamDefinitionId: "product-team",
-    teamBackendKind: TeamBackendKind.MIXED,
-    coordinatorMemberRouteKey: "product_manager",
-    memberTree: [agent("product_manager", ["product_manager"]), researchTeam, designTeam],
   });
+  const designTeam = testAgentTeamNode({
+    address: "/design_team",
+    coordinatorAddress: "/design_team/team_lead",
+    children: [testAgentNode("/design_team/team_lead")],
+  });
+  const config = testTeamRunConfig({
+    rootTeamRunId: "root-run",
+    coordinatorAddress: "/product_manager",
+    children: [testAgentNode("/product_manager"), researchTeam, designTeam],
+  });
+  return new TeamRunTreeIndex(config.rootTeam);
 };
 
 const rootCaller = createMemberLogicalAddressContext({
@@ -89,13 +49,13 @@ const nestedCaller = createMemberLogicalAddressContext({
   memberAddress: "/research_team/field_team/interviewer",
 });
 
-describe("TeamLogicalPlacementResolver", () => {
-  it("returns identical coordinate-only Agent placement for relative and absolute selectors", () => {
-    const resolver = new TeamLogicalPlacementResolver();
-    const config = buildRootConfig();
+describe("TeamRecipientResolver", () => {
+  it("returns identical coordinate-only Agent recipients for relative and absolute expressions", () => {
+    const resolver = new TeamRecipientResolver();
+    const index = buildIndex();
 
-    const relative = resolver.resolve(config, "./research_team/field_team/interviewer", rootCaller);
-    const absolute = resolver.resolve(config, "/research_team/field_team/interviewer", rootCaller);
+    const relative = resolver.resolve(index, "./research_team/field_team/interviewer", rootCaller);
+    const absolute = resolver.resolve(index, "/research_team/field_team/interviewer", rootCaller);
 
     expect(relative).toEqual(absolute);
     expect(relative).toEqual({
@@ -104,19 +64,11 @@ describe("TeamLogicalPlacementResolver", () => {
     });
     expect(Object.isFrozen(relative)).toBe(true);
     expect(Object.keys(relative).sort()).toEqual(["address", "kind"]);
-    expect(relative).not.toHaveProperty("subject");
-    expect(relative).not.toHaveProperty("owner");
-    expect(relative).not.toHaveProperty("memberPath");
-    expect(relative).not.toHaveProperty("memberRouteKey");
-    expect(relative).not.toHaveProperty("memberConfig");
-    expect(relative).not.toHaveProperty("memberRunId");
-    expect(relative).not.toHaveProperty("teamRunId");
-    expect(relative).not.toHaveProperty("owningTeamRunId");
   });
 
-  it("preserves a Team subject and its exact real coordinator ingress", () => {
-    const placement = new TeamLogicalPlacementResolver().resolve(
-      buildRootConfig(),
+  it("preserves an AgentTeam subject and its exact configured coordinator", () => {
+    const recipient = new TeamRecipientResolver().resolve(
+      buildIndex(),
       "./field_team",
       createMemberLogicalAddressContext({
         rootTeamRunId: "root-run",
@@ -124,39 +76,36 @@ describe("TeamLogicalPlacementResolver", () => {
       }),
     );
 
-    expect(placement).toEqual({
-      kind: "team",
+    expect(recipient).toEqual({
+      kind: "agent_team",
       address: "/research_team/field_team",
-      ingressAddress: "/research_team/field_team/field_lead",
+      coordinatorAddress: "/research_team/field_team/field_lead",
     });
-    expect(Object.keys(placement).sort()).toEqual(["address", "ingressAddress", "kind"]);
-    expect(placement).not.toHaveProperty("subject");
-    expect(placement).not.toHaveProperty("owner");
-    expect(placement).not.toHaveProperty("ingress");
+    expect(Object.keys(recipient).sort()).toEqual(["address", "coordinatorAddress", "kind"]);
   });
 
-  it("resolves immediate and collaboration-root Team ingress without synthetic identity", () => {
-    const resolver = new TeamLogicalPlacementResolver();
-    const config = buildRootConfig();
+  it("resolves the immediate AgentTeam and collaboration root without synthetic identity", () => {
+    const resolver = new TeamRecipientResolver();
+    const index = buildIndex();
 
-    expect(resolver.resolve(config, "./", nestedCaller)).toEqual({
-      kind: "team",
+    expect(resolver.resolve(index, "./", nestedCaller)).toEqual({
+      kind: "agent_team",
       address: "/research_team/field_team",
-      ingressAddress: "/research_team/field_team/field_lead",
+      coordinatorAddress: "/research_team/field_team/field_lead",
     });
-    expect(resolver.resolve(config, "/", nestedCaller)).toEqual({
-      kind: "team",
+    expect(resolver.resolve(index, "/", nestedCaller)).toEqual({
+      kind: "agent_team",
       address: "/",
-      ingressAddress: "/product_manager",
+      coordinatorAddress: "/product_manager",
     });
   });
 
-  it("independently resolves duplicate leaf names by their full paths", () => {
-    const resolver = new TeamLogicalPlacementResolver();
-    const config = buildRootConfig();
+  it("independently resolves duplicate leaf names by canonical address", () => {
+    const resolver = new TeamRecipientResolver();
+    const index = buildIndex();
 
-    const fieldLead = resolver.resolve(config, "/research_team/field_team/team_lead", nestedCaller);
-    const designLead = resolver.resolve(config, "/design_team/team_lead", nestedCaller);
+    const fieldLead = resolver.resolve(index, "/research_team/field_team/team_lead", nestedCaller);
+    const designLead = resolver.resolve(index, "/design_team/team_lead", nestedCaller);
 
     expect(fieldLead.address).toBe("/research_team/field_team/team_lead");
     expect(designLead.address).toBe("/design_team/team_lead");
@@ -171,10 +120,10 @@ describe("TeamLogicalPlacementResolver", () => {
     ["/design_team\\team_lead", "COLLABORATION_ADDRESS_INVALID"],
     ["/missing", "COLLABORATION_TARGET_NOT_FOUND"],
     ["/product_manager/child", "COLLABORATION_TRAVERSAL_INVALID"],
-  ])("rejects %s with typed code %s", (recipientName, code) => {
-    expect(() => new TeamLogicalPlacementResolver().resolve(
-      buildRootConfig(),
-      recipientName,
+  ])("rejects %s with typed code %s", (recipientAddress, code) => {
+    expect(() => new TeamRecipientResolver().resolve(
+      buildIndex(),
+      recipientAddress,
       nestedCaller,
     )).toThrow(expect.objectContaining({ code }));
   });

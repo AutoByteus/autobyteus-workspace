@@ -1,0 +1,456 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:78049) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > passes raw run llmConfig to LLMFactory without wrapping it as extraParams
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stderr | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > passes raw run llmConfig to LLMFactory without wrapping it as extraParams
+No non-blank definition instructions found for AgentDefinition agent-1. Using agent description as fallback.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > passes raw run llmConfig to LLMFactory without wrapping it as extraParams
+Using temp workspace (ID: workspace-1) for agent.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > wires one subject-scoped API-key resolver into the core factory
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > wires one subject-scoped API-key resolver into the core factory
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > wires one subject-scoped API-key resolver into the core factory
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stderr | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > wires one subject-scoped API-key resolver into the core factory
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > wires one subject-scoped API-key resolver into the core factory
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > wires one subject-scoped API-key resolver into the core factory
+Finished LM Studio discovery. Total models registered: 14
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > filters mixed task-management tools, composes server team prompts, and injects primitive team context
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stderr | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > filters mixed task-management tools, composes server team prompts, and injects primitive team context
+No non-blank definition instructions found for AgentDefinition agent-1. Using agent description as fallback.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > filters mixed task-management tools, composes server team prompts, and injects primitive team context
+Using temp workspace (ID: workspace-1) for agent.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > advertises the strict filesystem-like logical protocol without a flat roster
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stderr | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > advertises the strict filesystem-like logical protocol without a flat roster
+No non-blank definition instructions found for AgentDefinition agent-1. Using agent description as fallback.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > advertises the strict filesystem-like logical protocol without a flat roster
+Using temp workspace (ID: workspace-1) for agent.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > keeps task-management tools for standalone AutoByteus runs without member team context
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stderr | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > keeps task-management tools for standalone AutoByteus runs without member team context
+No non-blank definition instructions found for AgentDefinition agent-1. Using agent description as fallback.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > keeps task-management tools for standalone AutoByteus runs without member team context
+Using temp workspace (ID: workspace-1) for agent.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > routes mixed AutoByteus send_message_to through server delivery and reports rejected delivery
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stderr | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > routes mixed AutoByteus send_message_to through server delivery and reports rejected delivery
+No non-blank definition instructions found for AgentDefinition agent-1. Using agent description as fallback.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > routes mixed AutoByteus send_message_to through server delivery and reports rejected delivery
+Using temp workspace (ID: workspace-1) for agent.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > keeps the exact-run send_message_to selector when logical delivery is unavailable
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stderr | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > keeps the exact-run send_message_to selector when logical delivery is unavailable
+No non-blank definition instructions found for AgentDefinition agent-1. Using agent description as fallback.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > keeps the exact-run send_message_to selector when logical delivery is unavailable
+Using temp workspace (ID: workspace-1) for agent.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > propagates mixed AutoByteus task-agent identity into managed custom data and task delegation context
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stderr | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > propagates mixed AutoByteus task-agent identity into managed custom data and task delegation context
+No non-blank definition instructions found for AgentDefinition agent-1. Using agent description as fallback.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > propagates mixed AutoByteus task-agent identity into managed custom data and task delegation context
+Using temp workspace (ID: workspace-1) for agent.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > injects a server-backed compaction runner using the parent workspace context
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > injects a server-backed compaction runner using the parent workspace context
+Resolved system prompt from fresh definition instructions for AgentDefinition agent-1.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > injects a server-backed compaction runner using the parent workspace context
+Using temp workspace (ID: workspace-1) for agent.
+
+ ❯ tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts (9 tests | 1 failed) 54ms
+     ✓ passes raw run llmConfig to LLMFactory without wrapping it as extraParams 19ms
+     ✓ wires one subject-scoped API-key resolver into the core factory 19ms
+     ✓ filters mixed task-management tools, composes server team prompts, and injects primitive team context 2ms
+     × advertises the strict filesystem-like logical protocol without a flat roster 6ms
+     ✓ keeps task-management tools for standalone AutoByteus runs without member team context 1ms
+     ✓ routes mixed AutoByteus send_message_to through server delivery and reports rejected delivery 3ms
+     ✓ keeps the exact-run send_message_to selector when logical delivery is unavailable 1ms
+     ✓ propagates mixed AutoByteus task-agent identity into managed custom data and task delegation context 1ms
+     ✓ injects a server-backed compaction runner using the parent workspace context 1ms
+ ❯ tests/unit/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.test.ts (3 tests | 3 failed) 4ms
+     × uses the runtime-local member team context for Agent Tools MCP send_message_to instructions 2ms
+     × keeps hierarchical Team and exact-run send_message_to instructions without dynamic registrations 0ms
+     × keeps task delegation as Agent Tools MCP instructions without dynamic registrations 0ms
+ ❯ tests/unit/agent-team-execution/member-run-instruction-composer.test.ts (5 tests | 3 failed) 14ms
+     × keeps Team and Agent instructions separate from stable runtime protocol 8ms
+     ✓ does not inline handoff rule text or render a flat recipient roster 0ms
+     × renders the exact-run selector separately from logical Team addressing 2ms
+     ✓ renders shared task addressing and direct-target eligibility only when enabled 0ms
+     × keeps member identity guidance even when no recipient operation is configured 2ms
+ ❯ tests/unit/agent-execution/backends/claude/team-communication/team-member-claude-session-bootstrap-strategy.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/team-communication/team-member-claude-session-bootstrap-strategy.test.ts [ tests/unit/agent-execution/backends/claude/team-communication/team-member-claude-session-bootstrap-strategy.test.ts ]
+TypeError: Cannot convert undefined or null to object
+ ❯ createTeamExecutionAddress src/agent-team-execution/domain/team-execution-address.ts:25:23
+     23|   taskAgentRunId?: string | null;
+     24| }): TeamExecutionAddress => {
+     25|   const keys = Object.keys(input);
+       |                       ^
+     26|   const allowed = new Set(["rootTeamRunId", "taskTeamRunIds", "memberA…
+     27|   if (keys.some((key) => !allowed.has(key))) {
+ ❯ new MemberTeamContext src/agent-team-execution/domain/member-team-context.ts:54:29
+ ❯ tests/unit/agent-execution/backends/claude/team-communication/team-member-claude-session-bootstrap-strategy.test.ts:10:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-team-execution/member-run-instruction-composer.test.ts > member-run-instruction-composer > keeps Team and Agent instructions separate from stable runtime protocol
+AssertionError: expected 'You are working as a member of an Age…' to contain 'Your canonical absolute AgentTeam add…'
+
+- Expected
++ Received
+
+- Your canonical absolute AgentTeam address is `/research_team/research_lead`.
++ You are working as a member of an AgentTeam. Agents and AgentTeams use filesystem-like logical addresses to communicate. These addresses identify Team members; they are not real filesystem paths.
++
++ Your address in the AgentTeam is:
++
++ /research_team/research_lead
++
++ Addresses beginning with `/` start from the root AgentTeam. Addresses beginning with `./` start from your current AgentTeam, similar to relative filesystem paths.
++
++ For example:
++
++ - `./architecture_reviewer` addresses a member named `architecture_reviewer` in your current AgentTeam.
++ - `./implementation_team` addresses a child AgentTeam named `implementation_team`.
++ - `/requirements_engineering/requirements_lead` is an absolute address from the root AgentTeam.
++
++ Sending a message to an AgentTeam address delivers it to that Team's configured coordinator. Bare member names, `../`, and backslashes are not valid addresses.
++
++ When you finish your work or are blocked, call `get_handoff_rules` to check your configured handoff rules. Each returned rule tells you when a handoff applies and provides the `recipient_address` to notify.
++
++ If a rule applies, use `send_message_to` to notify that Agent or AgentTeam. If several applicable rules have the same recipient, send one message that combines the relevant reasons. Follow distinct recipients in the order they first appear. If no rule applies, finish normally.
++
++ Do not say that you completed a handoff unless `send_message_to` confirms that the message was delivered.
+
+ ❯ tests/unit/agent-team-execution/member-run-instruction-composer.test.ts:42:44
+     40|     expect(composition.teamInstruction).toBe("Coordinate with the team…
+     41|     expect(composition.agentInstruction).toBe("Focus on research plann…
+     42|     expect(composition.runtimeInstruction).toContain(
+       |                                            ^
+     43|       "Your canonical absolute AgentTeam address is `/research_team/re…
+     44|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  tests/unit/agent-team-execution/member-run-instruction-composer.test.ts > member-run-instruction-composer > renders the exact-run selector separately from logical Team addressing
+AssertionError: expected 'You are working as a member of an Age…' to contain 'Call `send_message_to` once'
+
+- Expected
++ Received
+
+- Call `send_message_to` once
++ You are working as a member of an AgentTeam. Agents and AgentTeams use filesystem-like logical addresses to communicate. These addresses identify Team members; they are not real filesystem paths.
++
++ Your address in the AgentTeam is:
++
++ /research_team/research_lead
++
++ Addresses beginning with `/` start from the root AgentTeam. Addresses beginning with `./` start from your current AgentTeam, similar to relative filesystem paths.
++
++ For example:
++
++ - `./architecture_reviewer` addresses a member named `architecture_reviewer` in your current AgentTeam.
++ - `./implementation_team` addresses a child AgentTeam named `implementation_team`.
++ - `/requirements_engineering/requirements_lead` is an absolute address from the root AgentTeam.
++
++ Sending a message to an AgentTeam address delivers it to that Team's configured coordinator. Bare member names, `../`, and backslashes are not valid addresses.
++
++ When you finish your work or are blocked, call `get_handoff_rules` to check your configured handoff rules. Each returned rule tells you when a handoff applies and provides the `recipient_address` to notify.
++
++ If a rule applies, use `send_message_to` to notify that Agent or AgentTeam. If several applicable rules have the same recipient, send one message that combines the relevant reasons. Follow distinct recipients in the order they first appear. If no rule applies, finish normally.
++
++ Do not say that you completed a handoff unless `send_message_to` confirms that the message was delivered.
+
+ ❯ tests/unit/agent-team-execution/member-run-instruction-composer.test.ts:77:44
+     75| 
+     76|     expect(composition.runtimeInstruction).toContain("`recipient_addre…
+     77|     expect(composition.runtimeInstruction).toContain("Call `send_messa…
+       |                                            ^
+     78|     expect(composition.runtimeInstruction).toContain("get_handoff_rule…
+     79|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+ FAIL  tests/unit/agent-team-execution/member-run-instruction-composer.test.ts > member-run-instruction-composer > keeps member identity guidance even when no recipient operation is configured
+AssertionError: expected 'You are working as a member of an Age…' to contain 'Your canonical absolute AgentTeam add…'
+
+- Expected
++ Received
+
+- Your canonical absolute AgentTeam address
++ You are working as a member of an AgentTeam. Agents and AgentTeams use filesystem-like logical addresses to communicate. These addresses identify Team members; they are not real filesystem paths.
++
++ Your address in the AgentTeam is:
++
++ /research_team/research_lead
++
++ Addresses beginning with `/` start from the root AgentTeam. Addresses beginning with `./` start from your current AgentTeam, similar to relative filesystem paths.
++
++ For example:
++
++ - `./architecture_reviewer` addresses a member named `architecture_reviewer` in your current AgentTeam.
++ - `./implementation_team` addresses a child AgentTeam named `implementation_team`.
++ - `/requirements_engineering/requirements_lead` is an absolute address from the root AgentTeam.
++
++ Sending a message to an AgentTeam address delivers it to that Team's configured coordinator. Bare member names, `../`, and backslashes are not valid addresses.
++
++ When you finish your work or are blocked, call `get_handoff_rules` to check your configured handoff rules. Each returned rule tells you when a handoff applies and provides the `recipient_address` to notify.
++
++ If a rule applies, use `send_message_to` to notify that Agent or AgentTeam. If several applicable rules have the same recipient, send one message that combines the relevant reasons. Follow distinct recipients in the order they first appear. If no rule applies, finish normally.
++
++ Do not say that you completed a handoff unless `send_message_to` confirms that the message was delivered.
+
+ ❯ tests/unit/agent-team-execution/member-run-instruction-composer.test.ts:113:44
+    111| 
+    112|     expect(composition.agentInstruction).toBe("Only the Agent instruct…
+    113|     expect(composition.runtimeInstruction).toContain("Your canonical a…
+       |                                            ^
+    114|     expect(composition.runtimeInstruction).toContain("/research_team/r…
+    115|     expect(composition.runtimeInstruction).not.toContain("recipient_ad…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯
+
+ FAIL  tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > advertises the strict filesystem-like logical protocol without a flat roster
+AssertionError: expected '## Team Instruction\nCoordinate as a …' to contain '`/research_team`'
+
+- Expected
++ Received
+
+- `/research_team`
++ ## Team Instruction
++ Coordinate as a team.
++
++ ## Agent Instruction
++ Coordinates exact run replies.
++
++ ## Runtime Instruction
++ You are working as a member of an AgentTeam. Agents and AgentTeams use filesystem-like logical addresses to communicate. These addresses identify Team members; they are not real filesystem paths.
++
++ Your address in the AgentTeam is:
++
++ /professor
++
++ Addresses beginning with `/` start from the root AgentTeam. Addresses beginning with `./` start from your current AgentTeam, similar to relative filesystem paths.
++
++ For example:
++
++ - `./architecture_reviewer` addresses a member named `architecture_reviewer` in your current AgentTeam.
++ - `./implementation_team` addresses a child AgentTeam named `implementation_team`.
++ - `/requirements_engineering/requirements_lead` is an absolute address from the root AgentTeam.
++
++ Sending a message to an AgentTeam address delivers it to that Team's configured coordinator. Bare member names, `../`, and backslashes are not valid addresses.
++
++ When you finish your work or are blocked, call `get_handoff_rules` to check your configured handoff rules. Each returned rule tells you when a handoff applies and provides the `recipient_address` to notify.
++
++ If a rule applies, use `send_message_to` to notify that Agent or AgentTeam. If several applicable rules have the same recipient, send one message that combines the relevant reasons. Follow distinct recipients in the order they first appear. If no rule applies, finish normally.
++
++ Do not say that you completed a handoff unless `send_message_to` confirms that the message was delivered.
+
+ ❯ tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts:312:44
+    310|     ]);
+    311|     expect(built.agentConfig.systemPrompt).toContain("filesystem-like …
+    312|     expect(built.agentConfig.systemPrompt).toContain("`/research_team`…
+       |                                            ^
+    313|     expect(built.agentConfig.systemPrompt).toContain("`./peer`");
+    314|     expect(built.agentConfig.systemPrompt).toContain("Bare names, `../…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/8]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.test.ts > TeamMemberCodexThreadBootstrapStrategy > uses the runtime-local member team context for Agent Tools MCP send_message_to instructions
+TypeError: Cannot convert undefined or null to object
+ ❯ createTeamExecutionAddress src/agent-team-execution/domain/team-execution-address.ts:25:23
+     23|   taskAgentRunId?: string | null;
+     24| }): TeamExecutionAddress => {
+     25|   const keys = Object.keys(input);
+       |                       ^
+     26|   const allowed = new Set(["rootTeamRunId", "taskTeamRunIds", "memberA…
+     27|   if (keys.some((key) => !allowed.has(key))) {
+ ❯ new MemberTeamContext src/agent-team-execution/domain/member-team-context.ts:54:29
+ ❯ createMemberTeamContext tests/unit/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.test.ts:12:3
+ ❯ tests/unit/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.test.ts:33:31
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/8]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.test.ts > TeamMemberCodexThreadBootstrapStrategy > keeps hierarchical Team and exact-run send_message_to instructions without dynamic registrations
+TypeError: Cannot convert undefined or null to object
+ ❯ createTeamExecutionAddress src/agent-team-execution/domain/team-execution-address.ts:25:23
+     23|   taskAgentRunId?: string | null;
+     24| }): TeamExecutionAddress => {
+     25|   const keys = Object.keys(input);
+       |                       ^
+     26|   const allowed = new Set(["rootTeamRunId", "taskTeamRunIds", "memberA…
+     27|   if (keys.some((key) => !allowed.has(key))) {
+ ❯ new MemberTeamContext src/agent-team-execution/domain/member-team-context.ts:54:29
+ ❯ createMemberTeamContext tests/unit/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.test.ts:12:3
+ ❯ tests/unit/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.test.ts:64:31
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/8]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.test.ts > TeamMemberCodexThreadBootstrapStrategy > keeps task delegation as Agent Tools MCP instructions without dynamic registrations
+TypeError: Cannot convert undefined or null to object
+ ❯ createTeamExecutionAddress src/agent-team-execution/domain/team-execution-address.ts:25:23
+     23|   taskAgentRunId?: string | null;
+     24| }): TeamExecutionAddress => {
+     25|   const keys = Object.keys(input);
+       |                       ^
+     26|   const allowed = new Set(["rootTeamRunId", "taskTeamRunIds", "memberA…
+     27|   if (keys.some((key) => !allowed.has(key))) {
+ ❯ new MemberTeamContext src/agent-team-execution/domain/member-team-context.ts:54:29
+ ❯ createMemberTeamContext tests/unit/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.test.ts:12:3
+ ❯ tests/unit/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.test.ts:92:31
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/8]⎯
+
+
+ Test Files  4 failed (4)
+      Tests  7 failed | 10 passed (17)
+   Start at  11:41:29
+   Duration  4.51s (transform 2.75s, setup 20ms, import 3.70s, tests 72ms, environment 0ms)
+

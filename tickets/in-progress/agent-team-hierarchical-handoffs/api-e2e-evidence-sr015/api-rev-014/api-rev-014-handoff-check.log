@@ -1,0 +1,43 @@
+# API-REV-014 handoff consistency
+2026-08-09T15:18:42Z
+## Current meta
+tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md:5:- Current revision: `API-REV-014`
+tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md:6:- Result: `Pass`
+tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md:7:- Final validation confidence: `96%`
+tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md:147:- Result: `Pass`.
+tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-coverage-investigation.md:19:- Current API/E2E Revision ID: `API-REV-014` (`Pass / 96%`; prior `API-REV-013` completed `Fail / 90%`). CRR-031 said to resume API-REV-013, but that result remains chronological and was not rewritten.
+tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-coverage-investigation.md:64:- Provider instruction coverage was maintained at the SR-014 exact-copy boundary. One new provider-parity suite compares AutoByteus, Codex, and Claude seams against the shared renderer, proves exactly one block with the caller address, excludes removed authority, and excludes the block from standalone inputs. The existing composer and provider bootstrap/factory fixtures were updated from pre-SR-014 prose/current-context gaps. Result: `5 files / 21 tests`. Evidence: `api-e2e-evidence-sr015/provider-instruction-after-maintenance.log`.
+tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-coverage-investigation.md:368:- Result: `Fail`.
+tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-coverage-investigation.md:465:- Result: `Fail`.
+## Revision record uniqueness
+index_rows=1
+detail_entries=1
+## Matrix
+Pass
+AutoByteus	Pass	autobyteus	gpt-5.6-luna	null	true
+Codex App Server	Pass	codex_app_server	gpt-5.6-luna	{"reasoning_effort":"medium"}	true
+Claude Agent SDK	Pass	claude_agent_sdk	sonnet	{"reasoning_effort":"medium"}	true
+## Cleanup
+server_port_stopped
+frontend_port_stopped
+## Source assignment
+3ece3faee6acd2d696401b204de0954ba31576f4132ea81a21472d8d399476ed  /Users/normy/.autobyteus/server-data/.env
+## Source fixture compare
+source_fixture_unchanged
+## Git diff check
+git_diff_check_pass
+# Disposable-state removal verification
+2026-08-09T15:13:25.290297+00:00
+app_data_root_removed
+disposable_database_removed
+## Required paths
+present:tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-coverage-investigation.md
+present:tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md
+present:tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-revision-record.md
+present:autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts
+present:tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-014/affected-final.log
+present:tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-014/changed-server-tests-final.log
+present:tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-014/live/nested-classroom-live-matrix-summary.json
+present:tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-014/live/server-environment-collision-analysis.md
+## Diff check
+PASS

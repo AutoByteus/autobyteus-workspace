@@ -1,0 +1,11 @@
+API-REV-015 pre-restoration adjudication evidence
+2026-08-09T15:36:36Z
+autobyteus-server-ts/tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts	3	3	autobyteus-server-ts/tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts
+autobyteus-server-ts/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts	1	1	autobyteus-server-ts/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts
+autobyteus-server-ts/tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts	9	9	autobyteus-server-ts/tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts
+autobyteus-server-ts/tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts	8	8	autobyteus-server-ts/tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts
+autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts	4	4	autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts
+autobyteus-server-ts/tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts	3	3	autobyteus-server-ts/tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts
+autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts	2	2	autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts
+autobyteus-server-ts/tests/unit/agent-tools/prompt-engineering/states/xml-patch-prompt-tool-parsing-state.test.js	2	2	autobyteus-server-ts/tests/unit/agent-tools/prompt-engineering/states/xml-patch-prompt-tool-parsing-state.test.js
+autobyteus-server-ts/tests/unit/agent-tools/prompt-engineering/states/xml-patch-prompt-tool-parsing-state.test.ts	2	2	autobyteus-server-ts/tests/unit/agent-tools/prompt-engineering/states/xml-patch-prompt-tool-parsing-state.test.ts

@@ -220,7 +220,7 @@ const ensureTables = (storage) => {
 }
 
 export default {
-  definitionContractVersion: '4',
+  definitionContractVersion: '5',
   lifecycle: {
     onStart(ctx) {
       ensureTables(ctx.storage)

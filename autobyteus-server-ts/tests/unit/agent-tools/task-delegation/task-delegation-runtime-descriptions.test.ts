@@ -1,8 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { ParameterSchema } from "autobyteus-ts/utils/parameter-schema.js";
-import { MemberTeamContext } from "../../../../src/agent-team-execution/domain/member-team-context.js";
-import { TeamBackendKind } from "../../../../src/agent-team-execution/domain/team-backend-kind.js";
-import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
+import { testMemberTeamContext } from "../../../fixtures/current-team-run-fixtures.js";
 import {
   DELEGATE_TASK_TOOL_NAME,
   REVIEW_TASK_RESULT_TOOL_NAME,
@@ -20,33 +18,12 @@ import { TaskDelegationToolsMcpAdapterProvider } from "../../../../src/agent-too
 const findParameter = (schema: ParameterSchema, name: string) =>
   schema.parameters.find((parameter) => parameter.name === name);
 
-const memberTeamContext = new MemberTeamContext({
+const memberTeamContext = testMemberTeamContext({
   teamRunId: "team-run-1",
   teamDefinitionId: "team-def-1",
-  teamBackendKind: TeamBackendKind.MIXED,
-  memberName: "coordinator",
-  memberPath: ["coordinator"],
-  memberRouteKey: "coordinator",
-  memberRunId: "run-coordinator",
-  collaboration: {
-    addressing: {
-      rootTeamRunId: "team-run-1",
-      memberAddress: "/coordinator",
-    },
-  },
-  members: [
-    {
-      memberKind: "agent",
-      memberName: "coordinator",
-      memberPath: ["coordinator"],
-      memberRouteKey: "coordinator",
-      memberRunId: "run-coordinator",
-      runtimeKind: RuntimeKind.AUTOBYTEUS,
-      role: null,
-      description: null,
-      address: { teamRunId: "team-run-1", memberPath: ["coordinator"], memberRouteKey: "coordinator" },
-    },
-  ],
+  rootTeamRunId: "team-run-1",
+  memberAddress: "/coordinator",
+  agentRunId: "run-coordinator",
 });
 
 describe("task delegation runtime descriptions", () => {
@@ -66,7 +43,7 @@ describe("task delegation runtime descriptions", () => {
   it("describes the pure task result/review protocol without lifecycle chat fallback", () => {
     const delegateEntry = getTaskDelegationToolManifestEntry(DELEGATE_TASK_TOOL_NAME);
     expect(delegateEntry.description).toMatch(/Delegate one ready-to-run task/i);
-    expect(delegateEntry.description).toContain("recipient_name");
+    expect(delegateEntry.description).toContain("recipient_address");
     expect(delegateEntry.description).toContain("/...");
     expect(delegateEntry.description).toContain("./...");
     expect(delegateEntry.description).toContain("Agent");
@@ -81,15 +58,15 @@ describe("task delegation runtime descriptions", () => {
 
     const delegateSchema = buildDelegateTaskParameterSchema();
     expect(delegateSchema.parameters.map((parameter) => parameter.name)).toEqual([
-      "recipient_name",
+      "recipient_address",
       "description",
       "reference_files",
     ]);
     expect(findParameter(delegateSchema, "tasks")).toBeUndefined();
     expect(findParameter(delegateSchema, "target")).toBeUndefined();
-    expect(findParameter(delegateSchema, "recipient_name")?.required).toBe(true);
-    expect(findParameter(delegateSchema, "recipient_name")?.description).toContain("/...");
-    expect(findParameter(delegateSchema, "recipient_name")?.description).toContain("./...");
+    expect(findParameter(delegateSchema, "recipient_address")?.required).toBe(true);
+    expect(findParameter(delegateSchema, "recipient_address")?.description).toContain("/...");
+    expect(findParameter(delegateSchema, "recipient_address")?.description).toContain("./...");
     const delegateDescription = findParameter(delegateSchema, "description")?.description ?? "";
     expect(delegateDescription).toContain("Complete task details");
     expect(delegateDescription).toContain("objective");
@@ -150,7 +127,7 @@ describe("task delegation runtime descriptions", () => {
     expect(adapters.every((adapter) => adapter.isAvailable({
       configuredExposure: { configuredToolNames: TASK_DELEGATION_TOOL_NAME_LIST } as never,
       sender: {
-        senderRunId: memberTeamContext.memberRunId,
+        senderRunId: memberTeamContext.agentRunId,
         memberTeamContext,
       } as never,
       executionContext: {},

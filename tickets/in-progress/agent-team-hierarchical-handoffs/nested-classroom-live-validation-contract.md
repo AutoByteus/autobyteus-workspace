@@ -1,0 +1,201 @@
+# Nested Classroom Three-Runtime Live Validation Contract
+
+## Artifact Metadata
+
+- Canonical path: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/nested-classroom-live-validation-contract.md`
+- Purpose: Define the required later live API/E2E validation fixture, runtime/model matrix, secret-import isolation, observable assertions, and evidence standard for the comprehensive AgentTeam refactor.
+- Scope: Downstream API/E2E investigation and execution after implementation and source review; no live provider call is part of solution design.
+- Status: `Refined — SR-014 exact prompt-copy verification added; no architecture impact`
+- Approval applicability: This supplement defines intended verification behavior. The user explicitly required one imported nested-classroom example AgentTeam and live coverage across AutoByteus, Codex App Server, and Claude Agent SDK, including the stated GPT-5.6 Luna selections and use of `$HOME/.autobyteus/server-data/.env` through the repository secret importer. SR-012 changed only application SDK compatibility design, and SR-013 changes only persisted predecessor migration interpretation and sequencing. This live contract remains user-approved and unchanged; the user has authorized the cumulative package for architecture re-review.
+- Related requirements: R-021, R-044–R-048
+- Related acceptance criteria: AC-019, AC-040–AC-044
+- Exact system-instruction copy: [agent-team-collaboration-system-instruction.md](./agent-team-collaboration-system-instruction.md)
+
+## 1. Purpose And Ownership
+
+The downstream `api_e2e_engineer` owns the final coverage investigation, environment preparation, live execution, evidence, and truthful result classification. This contract fixes the required scenario and safety boundary without prescribing the final test-file layout.
+
+The validation must prove the integrated behavior through the supported package-import and TeamRun launch surfaces. Unit-only mocks, direct construction of private managers, or three provider-adapter snapshots do not replace the required live matrix.
+
+## 2. Source Fixture And Test-Owned Staging
+
+The authoritative source fixture currently exists at:
+
+```text
+/Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/nested-classroom-test
+```
+
+Its observed topology is:
+
+```text
+/                                      Nested Classroom Test Team
+├── /Teacher                           root coordinator Agent
+└── /StudentStudyGroup                 nested AgentTeam
+    ├── /StudentStudyGroup/student_one nested coordinator Agent
+    └── /StudentStudyGroup/student_two nested member Agent
+```
+
+The test must create an isolated Agent package root, copy the `nested-classroom-test` fixture into its `agent-teams/` directory, and import that staged package through the supported Agent-package import boundary with `sourceKind: "LOCAL_PATH"` and an absolute `source`. The public GraphQL `importAgentPackage` mutation is the preferred end-to-end entry point. The imported definition is then used to create and launch one fresh example TeamRun for each runtime-matrix row.
+
+The source package is read-only test input. The test must not edit, register mutable state inside, or write generated output to `/Users/normy/autobyteus_org/autobyteus-private-agents`.
+
+The current fixture prose still describes the superseded `{target:{kind,name}}` task selector and its configs contain no handoffs. Therefore the isolated staged copy may receive only these test-owned compatibility updates before import:
+
+1. replace old task-tool examples with `delegate_task({recipient_address:"./StudentStudyGroup", ...})`;
+2. add a small deterministic handoff graph needed to exercise non-empty `{when,recipient_address}` projection; and
+3. preserve the original member references, coordinators, roles, and task-lifecycle instructions.
+
+Use this exact deterministic handoff overlay in the staged root Team config, after its existing fields:
+
+```json
+{
+  "handoffs": [
+    {
+      "from": "/Teacher",
+      "to": "/StudentStudyGroup",
+      "rules": [
+        "When the user asks to send the classroom handoff token to the study group."
+      ]
+    },
+    {
+      "from": "/StudentStudyGroup/student_one",
+      "to": "/Teacher",
+      "rules": [
+        "When the delegated classroom task is finished and the teacher needs the outcome."
+      ]
+    }
+  ]
+}
+```
+
+Use this exact deterministic handoff overlay in `StudentStudyGroup`'s local Team config:
+
+```json
+{
+  "handoffs": [
+    {
+      "from": "/student_one",
+      "to": "/student_two",
+      "rules": [
+        "When the delegated classroom task asks the coordinator to consult the supporting student."
+      ]
+    }
+  ]
+}
+```
+
+The first array is parent-authored because its second edge crosses the nested-Team boundary; the third edge stays Team-local and is rebased during mounting. This also makes edge/rule order and expected canonical destinations reproducible.
+
+`get_handoff_rules` and `send_message_to` must **not** be added merely to make the Team protocol available. Their availability must come from the implemented intrinsic Team-runtime composition. The staged package and its exact diff or generated manifest must be retained as redacted test evidence so the scenario is reproducible.
+
+## 3. Isolated Secret Import
+
+The existing local assignment file is:
+
+```text
+$HOME/.autobyteus/server-data/.env
+```
+
+Before starting the isolated test server, import it into a test-owned database with the repository command:
+
+```bash
+pnpm secrets:import -- \
+  --source "$HOME/.autobyteus/server-data/.env" \
+  --database-url "file:<absolute-path-to-isolated-test-db>"
+```
+
+Requirements:
+
+- resolve the source from the invoking user's real home before changing any test `HOME` or application-data root;
+- use an absolute, disposable, test-owned database path;
+- do not use `--overwrite` against any non-test database;
+- never print, snapshot, attach, or persist secret values in test output;
+- evidence may record only secret identifiers/presence and the import exit result; and
+- a missing assignment, failed import, unavailable provider credential, or unavailable runtime is `Blocked`/`Fail` evidence, never a passing or silently skipped matrix row.
+
+## 4. Required Runtime And Model Matrix
+
+Every member in a scenario—`Teacher`, `student_one`, and `student_two`, including task-scoped descendants—uses that scenario's runtime/model configuration. Each row launches a fresh root TeamRun and records the effective configuration returned by the runtime/catalog boundary.
+
+| Scenario | `runtimeKind` | Required model/configuration |
+| --- | --- | --- |
+| AutoByteus | `autobyteus` | `llmModelIdentifier: "gpt-5.6-luna"` |
+| Codex App Server | `codex_app_server` | `llmModelIdentifier: "gpt-5.6-luna"`; `llmConfig.reasoning_effort: "medium"` |
+| Claude Agent SDK | `claude_agent_sdk` | Select an authenticated Claude model actually exposed by the live runtime catalog after secret import; record the exact model identifier and effective configuration in evidence. Do not substitute an AutoByteus/OpenAI model identifier. |
+
+The user fixed the GPT-5.6 Luna choices for AutoByteus and Codex but did not fix a Claude model identifier. Hard-coding a guessed Claude identifier would make the test less truthful than selecting from the authenticated runtime catalog.
+
+## 5. Fresh-Run Scenario Spine
+
+For each matrix row:
+
+```text
+isolated app-data root + isolated secrets database
+  -> stage one nested-classroom Agent package
+  -> importAgentPackage(LOCAL_PATH, absolute staged root)
+  -> discover Nested Classroom Test Team
+  -> apply one runtime/model launch configuration to all members
+  -> create and launch a fresh root TeamRun
+  -> inspect schema-v3 rooted metadata and canonical addresses
+  -> exercise intrinsic get_handoff_rules and send_message_to
+  -> exercise recipient_address AgentTeam coordinator routing
+  -> exercise delegate_task recipient_address and task-Team lifecycle
+  -> terminate and restore the root TeamRun where the supported live harness permits
+  -> collect redacted provider/runtime/events/history evidence
+  -> terminate processes and remove disposable state
+```
+
+No TeamRun, provider session, task execution, or history directory may be reused across runtime rows.
+
+## 6. Required Observable Assertions
+
+Each live row must establish all applicable observations through public/runtime-visible surfaces:
+
+1. package import discovers exactly the staged nested-classroom definition and launch creates a fresh TeamRun;
+2. rooted metadata contains `/`, `/Teacher`, `/StudentStudyGroup`, `/StudentStudyGroup/student_one`, and `/StudentStudyGroup/student_two`, with `/Teacher` and `/StudentStudyGroup/student_one` as the configured coordinators of their respective Teams;
+3. Team-bound Agents receive intrinsic `get_handoff_rules` and `send_message_to` even though package tool configuration does not add them;
+4. the provider-visible collaboration instruction matches `agent-team-collaboration-system-instruction.md` after substituting the caller address, including the explanation-first filesystem metaphor and the natural finish-or-blocked handoff check;
+5. `get_handoff_rules` returns only ordered `{handoffs:[{when,recipient_address}]}` guidance (or exactly `{handoffs:[]}` for a deliberately no-edge caller) without the generic success envelope or redundant caller/source fields;
+6. `send_message_to({recipient_address:"./StudentStudyGroup", ...})` from `/Teacher` reaches `/StudentStudyGroup/student_one` exactly once and records truthful source/recipient execution addresses;
+7. a nested Agent can address its peer relatively and the root coordinator absolutely without a flat-name, representative, or root/local fallback;
+8. `delegate_task({recipient_address:"./StudentStudyGroup", ...})` from `/Teacher` creates a task AgentTeam, enters through `student_one`, completes `submit_task_result`/`review_task_result`, and retains the current task-owned lifecycle;
+9. persistent and task executions sharing a logical address remain distinct through typed run IDs and `TeamExecutionAddress`; and
+10. termination/restoration, when exercised, preserves the launch-time rooted topology and handoff snapshot.
+
+Deterministic API/E2E coverage remains responsible for exact negative cases, migration failures, UI state, and exhaustive field-removal assertions. The live matrix is additive evidence that the same contract survives real provider tool/prompt lifecycles.
+
+## 7. Evidence And Result Classification
+
+The execution coverage report must contain one row per runtime with:
+
+- package import source kind and staged-package content digest;
+- created root TeamRun ID and relevant task TeamRun/AgentRun IDs;
+- runtime kind, exact model identifier, and effective non-secret model configuration;
+- canonical address and execution-address observations;
+- intrinsic tool exposure and provider instruction evidence;
+- handoff-result shape, message delivery, task lifecycle, terminate/restore outcomes;
+- command/test identifier, timestamps, duration, and exit/result classification; and
+- redacted log/evidence paths.
+
+Overall live-matrix status is `Pass` only when all three required rows pass. A provider not configured, credential missing, model absent, rate-limited run, runtime spawn failure, or scenario timeout must be reported truthfully as `Blocked` or `Fail` with retained diagnostics; it must not be converted to a skip-based pass.
+
+## 8. Cleanup And Forbidden Shortcuts
+
+Required cleanup:
+
+- terminate every root/task run and provider process started by the scenario;
+- remove the staged package, isolated application-data root, and isolated database after evidence capture unless failure preservation is explicitly needed;
+- if failure state is retained, record its path and redact/copy only non-secret evidence; and
+- verify the original agents package and the user's normal AutoByteus server-data state are unchanged.
+
+Forbidden shortcuts:
+
+- reading or logging secret values;
+- importing secrets into the user's normal operational database;
+- editing the source agents package;
+- reusing one provider's result as evidence for another runtime;
+- calling private service constructors instead of importing and launching through supported surfaces;
+- replacing live rows with adapter mocks;
+- weakening the Codex model or reasoning effort from `gpt-5.6-luna` / `medium`;
+- using a non-Luna AutoByteus model; or
+- reporting unavailable or skipped live coverage as passed.

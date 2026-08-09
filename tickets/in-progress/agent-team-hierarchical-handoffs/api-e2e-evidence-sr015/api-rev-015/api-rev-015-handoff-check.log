@@ -1,0 +1,12 @@
+API-REV-015 handoff check
+2026-08-09T15:46:23Z
+reference_file_count=97
+all_reference_files_exist=true
+current_inventory=53 (4 added / 47 updated / 2 removed)
+existing_current_paths_attached=51
+restored_out_of_delta=9
+server_final=46 files / 298 tests pass / 0 skip
+web_final=2 files / 34 tests pass
+harness_exact_db_accept_and_mismatch_reject=true
+result=Pass / 96%
+route=code_reviewer proportional re-review

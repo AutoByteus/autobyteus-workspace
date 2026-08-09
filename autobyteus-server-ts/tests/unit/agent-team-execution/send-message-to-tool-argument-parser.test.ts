@@ -9,14 +9,14 @@ const reportPath = "/Users/normy/project/report.md";
 describe("send-message-to-tool-argument-parser", () => {
   it("normalizes explicit reference_files while keeping content natural", () => {
     const parsed = parseSendMessageToToolArguments({
-      recipient_name: " reviewer ",
+      recipient_address: " reviewer ",
       content: " Please review the report. ",
       message_type: "handoff",
       reference_files: [reportPath, ` ${reportPath} `, "C:\\Users\\normy\\Desktop\\chart.png"],
     });
 
     expect(parsed).toMatchObject({
-      recipientName: " reviewer ",
+      recipientAddress: " reviewer ",
       content: " Please review the report. ",
       messageType: "handoff",
       referenceFiles: [reportPath, "C:/Users/normy/Desktop/chart.png"],
@@ -27,11 +27,11 @@ describe("send-message-to-tool-argument-parser", () => {
 
   it("accepts omitted or empty reference_files as no references", () => {
     const omitted = parseSendMessageToToolArguments({
-      recipient_name: "reviewer",
+      recipient_address: "reviewer",
       content: "hello",
     });
     const empty = parseSendMessageToToolArguments({
-      recipient_name: "reviewer",
+      recipient_address: "reviewer",
       content: "hello",
       reference_files: [],
     });
@@ -54,7 +54,7 @@ describe("send-message-to-tool-argument-parser", () => {
     expect(validateParsedSendMessageToToolArguments("send_message_to", exact)).toBeNull();
 
     const both = parseSendMessageToToolArguments({
-      recipient_name: "reviewer",
+      recipient_address: "reviewer",
       target_agent_run_id: "run-1",
       content: "hello",
     });
@@ -64,7 +64,7 @@ describe("send-message-to-tool-argument-parser", () => {
   });
 
   it("rejects hidden target selector aliases", () => {
-    for (const alias of ["recipient", "recipientName", "targetAgentRunId"]) {
+    for (const alias of ["recipient", "recipientAddress", "targetAgentRunId"]) {
       const parsed = parseSendMessageToToolArguments({
         [alias]: alias === "targetAgentRunId" ? "run-1" : "reviewer",
         content: "hello",
@@ -72,14 +72,14 @@ describe("send-message-to-tool-argument-parser", () => {
 
       expect(validateParsedSendMessageToToolArguments("send_message_to", parsed)).toEqual({
         code: "UNSUPPORTED_TARGET_SELECTOR_ALIAS",
-        message: `send_message_to target selector fields must use recipient_name or target_agent_run_id only. Unsupported field(s): ${alias}.`,
+        message: `send_message_to target selector fields must use recipient_address or target_agent_run_id only. Unsupported field(s): ${alias}.`,
       });
     }
   });
 
   it("fails malformed reference_files before delivery", () => {
     const parsed = parseSendMessageToToolArguments({
-      recipient_name: "reviewer",
+      recipient_address: "reviewer",
       content: "hello",
       reference_files: ["relative/report.md"],
     });
@@ -92,7 +92,7 @@ describe("send-message-to-tool-argument-parser", () => {
 
   it("rejects absolute-looking reference_files containing URL protocol markers before delivery", () => {
     const parsed = parseSendMessageToToolArguments({
-      recipient_name: "reviewer",
+      recipient_address: "reviewer",
       content: "hello",
       reference_files: ["/tmp/https://example.com/report.md"],
     });

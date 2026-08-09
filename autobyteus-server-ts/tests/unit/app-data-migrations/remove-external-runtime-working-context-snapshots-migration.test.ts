@@ -61,11 +61,9 @@ const agentMember = (input: {
   memberPath: string[];
   runtimeKind: RuntimeKind;
 }) => ({
-  memberKind: "agent" as const,
-  memberRouteKey: input.memberPath.join("/"),
-  memberPath: input.memberPath,
-  memberName: input.memberPath.at(-1) ?? input.memberRunId,
-  memberRunId: input.memberRunId,
+  kind: "agent" as const,
+  address: `/${input.memberPath.join("/")}`,
+  agentRunId: input.memberRunId,
   runtimeKind: input.runtimeKind,
   platformAgentRunId: null,
   agentDefinitionId: `agent-${input.memberRunId}`,
@@ -85,28 +83,31 @@ const subTeamMember = (input: {
   teamRunId: string;
   memberTree: unknown[];
 }) => ({
-  memberKind: "agent_team" as const,
-  memberRouteKey: input.memberPath.join("/"),
-  memberPath: input.memberPath,
-  memberName: input.memberPath.at(-1) ?? input.memberRunId,
-  memberRunId: input.memberRunId,
+  kind: "agent_team" as const,
+  address: `/${input.memberPath.join("/")}`,
   teamDefinitionId: `team-def-${input.teamRunId}`,
   teamRunId: input.teamRunId,
-  coordinatorMemberRouteKey: null,
-  memberTree: input.memberTree,
+  coordinatorAddress: (input.memberTree[0] as { address: string }).address,
+  children: input.memberTree,
   role: null,
   description: null,
 });
 
 const writeTeamMetadata = async (teamRunId: string, memberTree: unknown[]): Promise<void> => {
   await writeJson(path.join(memoryDir, "agent_teams", teamRunId, "team_run_metadata.json"), {
-    teamRunId,
-    teamDefinitionId: `team-def-${teamRunId}`,
+    schemaVersion: 3,
     teamDefinitionName: "Cleanup Fixture Team",
-    coordinatorMemberRouteKey: "lead",
     createdAt: "2026-07-31T00:00:00.000Z",
     archivedAt: null,
-    memberTree,
+    rootTeam: {
+      kind: "agent_team",
+      address: "/",
+      teamDefinitionId: `team-def-${teamRunId}`,
+      teamRunId,
+      coordinatorAddress: "/lead",
+      children: memberTree,
+    },
+    handoffs: [],
   });
 };
 

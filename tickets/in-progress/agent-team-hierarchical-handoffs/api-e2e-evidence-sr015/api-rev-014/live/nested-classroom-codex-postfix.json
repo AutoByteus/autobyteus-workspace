@@ -1,0 +1,352 @@
+{
+  "row": "Codex App Server",
+  "expected": {
+    "runtimeKind": "codex_app_server",
+    "model": "gpt-5.6-luna",
+    "llmConfig": {
+      "reasoning_effort": "medium"
+    },
+    "autoExecuteTools": true
+  },
+  "metadata": {
+    "schemaVersion": 3,
+    "teamDefinitionName": "Nested Classroom Test Team",
+    "createdAt": "2026-08-09T15:02:01.191Z",
+    "archivedAt": null,
+    "rootTeam": {
+      "kind": "agent_team",
+      "address": "/",
+      "teamDefinitionId": "nested-classroom-test",
+      "teamRunId": "nested_classroom_test_team_6d8bbd89677e43faaeef9148ee01dd0b",
+      "coordinatorAddress": "/Teacher",
+      "children": [
+        {
+          "kind": "agent",
+          "address": "/Teacher",
+          "agentDefinitionId": "team-local-agent:nested-classroom-test:teacher",
+          "agentRunId": "test_teacher_20a53481aa32429499a10093211b7ce3",
+          "platformAgentRunId": "019fe70b-8f25-7cd2-92ee-c40d7391d458",
+          "role": null,
+          "description": null,
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "llmConfig": {
+            "reasoning_effort": "medium"
+          },
+          "autoExecuteTools": true,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-014-20260809/temp_workspace",
+          "applicationExecutionContext": null
+        },
+        {
+          "kind": "agent_team",
+          "address": "/StudentStudyGroup",
+          "teamDefinitionId": "team-local-team:nested-classroom-test:student-study-group",
+          "teamRunId": "student_study_group_3918804a9e7c44019fc3459c7d292d3b",
+          "coordinatorAddress": "/StudentStudyGroup/student_one",
+          "role": null,
+          "description": null,
+          "children": [
+            {
+              "kind": "agent",
+              "address": "/StudentStudyGroup/student_one",
+              "agentDefinitionId": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-one",
+              "agentRunId": "student_one_439c95e7cfed49e0938e4e700f9eede2",
+              "platformAgentRunId": "019fe70b-bc7d-7b81-9bd0-80c6557a7bba",
+              "role": null,
+              "description": null,
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-5.6-luna",
+              "llmConfig": {
+                "reasoning_effort": "medium"
+              },
+              "autoExecuteTools": true,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-014-20260809/temp_workspace",
+              "applicationExecutionContext": null
+            },
+            {
+              "kind": "agent",
+              "address": "/StudentStudyGroup/student_two",
+              "agentDefinitionId": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-two",
+              "agentRunId": "student_two_682ff626afd846499b1e4a0c6bfe18d7",
+              "platformAgentRunId": "019fe70b-e413-79f2-b15c-124960a9edc2",
+              "role": null,
+              "description": null,
+              "runtimeKind": "codex_app_server",
+              "llmModelIdentifier": "gpt-5.6-luna",
+              "llmConfig": {
+                "reasoning_effort": "medium"
+              },
+              "autoExecuteTools": true,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-014-20260809/temp_workspace",
+              "applicationExecutionContext": null
+            }
+          ]
+        }
+      ]
+    },
+    "handoffs": [
+      {
+        "from": "/Teacher",
+        "to": "/StudentStudyGroup",
+        "rules": [
+          "When the user asks to send the classroom handoff token to the study group."
+        ]
+      },
+      {
+        "from": "/StudentStudyGroup/student_one",
+        "to": "/Teacher",
+        "rules": [
+          "When the delegated classroom task is finished and the teacher needs the outcome."
+        ]
+      },
+      {
+        "from": "/StudentStudyGroup/student_one",
+        "to": "/StudentStudyGroup/student_two",
+        "rules": [
+          "When the delegated classroom task asks the coordinator to consult the supporting student."
+        ]
+      }
+    ]
+  },
+  "communications": {
+    "teamRunId": "nested_classroom_test_team_6d8bbd89677e43faaeef9148ee01dd0b",
+    "messages": [
+      {
+        "messageId": "teammsg_8oBgrlJfEPdijU2dA-ptef_qecQWGAx-",
+        "senderAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_6d8bbd89677e43faaeef9148ee01dd0b",
+          "taskTeamRunIds": [],
+          "memberAddress": "/Teacher",
+          "taskAgentRunId": null
+        },
+        "receiverAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_6d8bbd89677e43faaeef9148ee01dd0b",
+          "taskTeamRunIds": [],
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "taskAgentRunId": null
+        },
+        "content": "Coordinator: first call get_handoff_rules. Then send exactly one message to ./student_two requesting the token PEER-CODEX-EXACT, wait for the reply, and then send a summary back to /Teacher.",
+        "messageType": "agent_message",
+        "createdAt": "2026-08-09T15:02:13.823Z",
+        "referenceFiles": []
+      },
+      {
+        "messageId": "teammsg_EHgo0931-So135nsh7HBApsaPLmyk2KC",
+        "senderAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_6d8bbd89677e43faaeef9148ee01dd0b",
+          "taskTeamRunIds": [],
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "taskAgentRunId": null
+        },
+        "receiverAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_6d8bbd89677e43faaeef9148ee01dd0b",
+          "taskTeamRunIds": [],
+          "memberAddress": "/StudentStudyGroup/student_two",
+          "taskAgentRunId": null
+        },
+        "content": "Please reply with exactly the token PEER-CODEX-EXACT.",
+        "messageType": "request",
+        "createdAt": "2026-08-09T15:02:24.002Z",
+        "referenceFiles": []
+      },
+      {
+        "messageId": "teammsg_youNMCAOy7Ll0ZBBMe5wV71pRk1d-VLN",
+        "senderAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_6d8bbd89677e43faaeef9148ee01dd0b",
+          "taskTeamRunIds": [],
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "taskAgentRunId": null
+        },
+        "receiverAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_6d8bbd89677e43faaeef9148ee01dd0b",
+          "taskTeamRunIds": [],
+          "memberAddress": "/Teacher",
+          "taskAgentRunId": null
+        },
+        "content": "student_two replied with the requested token: PEER-CODEX-EXACT.",
+        "messageType": "summary",
+        "createdAt": "2026-08-09T15:02:36.307Z",
+        "referenceFiles": []
+      },
+      {
+        "messageId": "teammsg_Kf2CMLkGbjXKJJLtQfkmbJrkBZcLGrbY",
+        "senderAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_6d8bbd89677e43faaeef9148ee01dd0b",
+          "taskTeamRunIds": [],
+          "memberAddress": "/StudentStudyGroup/student_two",
+          "taskAgentRunId": null
+        },
+        "receiverAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_6d8bbd89677e43faaeef9148ee01dd0b",
+          "taskTeamRunIds": [],
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "taskAgentRunId": null
+        },
+        "content": "PEER-CODEX-EXACT",
+        "messageType": "agent_message",
+        "createdAt": "2026-08-09T15:02:44.459Z",
+        "referenceFiles": []
+      },
+      {
+        "messageId": "teammsg_H6Bb770HCLPUhWWBSw6NOESaJH6PYn8n",
+        "senderAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_6d8bbd89677e43faaeef9148ee01dd0b",
+          "taskTeamRunIds": [],
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "taskAgentRunId": null
+        },
+        "receiverAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_6d8bbd89677e43faaeef9148ee01dd0b",
+          "taskTeamRunIds": [],
+          "memberAddress": "/Teacher",
+          "taskAgentRunId": null
+        },
+        "content": "student_two confirmed the exact token: PEER-CODEX-EXACT.",
+        "messageType": "summary",
+        "createdAt": "2026-08-09T15:02:47.895Z",
+        "referenceFiles": []
+      },
+      {
+        "messageId": "teammsg_J1dfI2L-XPxctJznG69JrXiy2eCTKScc",
+        "senderAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_6d8bbd89677e43faaeef9148ee01dd0b",
+          "taskTeamRunIds": [
+            "team_local_team_nested_classroom_test_student_st_cdd39438b87c4a779c9a19839a0e6bcb"
+          ],
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "taskAgentRunId": null
+        },
+        "receiverAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_6d8bbd89677e43faaeef9148ee01dd0b",
+          "taskTeamRunIds": [
+            "team_local_team_nested_classroom_test_student_st_cdd39438b87c4a779c9a19839a0e6bcb"
+          ],
+          "memberAddress": "/StudentStudyGroup/student_two",
+          "taskAgentRunId": null
+        },
+        "content": "Please provide the exact token TASKPEER-CODEX-EXACT.",
+        "messageType": "ordinary_discussion",
+        "createdAt": "2026-08-09T15:02:49.458Z",
+        "referenceFiles": []
+      },
+      {
+        "messageId": "teammsg_NgVMES1lQOIg6eNDNBkd0ml7wM_SEXP6",
+        "senderAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_6d8bbd89677e43faaeef9148ee01dd0b",
+          "taskTeamRunIds": [
+            "team_local_team_nested_classroom_test_student_st_cdd39438b87c4a779c9a19839a0e6bcb"
+          ],
+          "memberAddress": "/StudentStudyGroup/student_two",
+          "taskAgentRunId": null
+        },
+        "receiverAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_6d8bbd89677e43faaeef9148ee01dd0b",
+          "taskTeamRunIds": [
+            "team_local_team_nested_classroom_test_student_st_cdd39438b87c4a779c9a19839a0e6bcb"
+          ],
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "taskAgentRunId": null
+        },
+        "content": "TASKPEER-CODEX-EXACT",
+        "messageType": "agent_message",
+        "createdAt": "2026-08-09T15:02:55.801Z",
+        "referenceFiles": []
+      }
+    ]
+  },
+  "tasks": {
+    "teamRunId": "nested_classroom_test_team_6d8bbd89677e43faaeef9148ee01dd0b",
+    "records": [
+      {
+        "taskId": "task_0001",
+        "status": "accepted",
+        "senderAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_6d8bbd89677e43faaeef9148ee01dd0b",
+          "taskTeamRunIds": [],
+          "memberAddress": "/Teacher",
+          "taskAgentRunId": null
+        },
+        "receiverAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_6d8bbd89677e43faaeef9148ee01dd0b",
+          "taskTeamRunIds": [
+            "team_local_team_nested_classroom_test_student_st_cdd39438b87c4a779c9a19839a0e6bcb"
+          ],
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "taskAgentRunId": null
+        },
+        "receiverTargetKind": "agent_team",
+        "content": "The active task coordinator must call get_handoff_rules, send exactly one message to ./student_two requesting token TASKPEER-CODEX-EXACT, wait for its reply, then call submit_task_result with token RESULT-CODEX-EXACT. Done condition: submit_task_result is called with exactly RESULT-CODEX-EXACT.",
+        "referenceFiles": [],
+        "taskRun": {
+          "address": {
+            "rootTeamRunId": "nested_classroom_test_team_6d8bbd89677e43faaeef9148ee01dd0b",
+            "taskTeamRunIds": [
+              "team_local_team_nested_classroom_test_student_st_cdd39438b87c4a779c9a19839a0e6bcb"
+            ],
+            "memberAddress": "/StudentStudyGroup",
+            "taskAgentRunId": null
+          },
+          "startedAt": "2026-08-09T15:02:40.691Z"
+        },
+        "updates": [
+          {
+            "kind": "submission",
+            "submissionId": "task_0001_submission_0001",
+            "senderAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_6d8bbd89677e43faaeef9148ee01dd0b",
+              "taskTeamRunIds": [
+                "team_local_team_nested_classroom_test_student_st_cdd39438b87c4a779c9a19839a0e6bcb"
+              ],
+              "memberAddress": "/StudentStudyGroup",
+              "taskAgentRunId": null
+            },
+            "receiverAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_6d8bbd89677e43faaeef9148ee01dd0b",
+              "taskTeamRunIds": [],
+              "memberAddress": "/Teacher",
+              "taskAgentRunId": null
+            },
+            "content": "RESULT-CODEX-EXACT",
+            "referenceFiles": [],
+            "createdAt": "2026-08-09T15:02:58.982Z"
+          },
+          {
+            "kind": "review",
+            "reviewId": "task_0001_review_0001",
+            "senderAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_6d8bbd89677e43faaeef9148ee01dd0b",
+              "taskTeamRunIds": [],
+              "memberAddress": "/Teacher",
+              "taskAgentRunId": null
+            },
+            "receiverAddress": {
+              "rootTeamRunId": "nested_classroom_test_team_6d8bbd89677e43faaeef9148ee01dd0b",
+              "taskTeamRunIds": [
+                "team_local_team_nested_classroom_test_student_st_cdd39438b87c4a779c9a19839a0e6bcb"
+              ],
+              "memberAddress": "/StudentStudyGroup",
+              "taskAgentRunId": null
+            },
+            "reviewedSubmissionId": "task_0001_submission_0001",
+            "decision": "accept",
+            "content": null,
+            "referenceFiles": [],
+            "createdAt": "2026-08-09T15:03:08.867Z"
+          }
+        ],
+        "createdAt": "2026-08-09T15:02:40.502Z"
+      }
+    ]
+  },
+  "assertions": {
+    "allPersistentLeavesExact": true,
+    "persistentHandoff": true,
+    "sameTaskTeamPeer": true,
+    "taskAccepted": true,
+    "submittedExact": true,
+    "reviewAccepted": true
+  }
+}

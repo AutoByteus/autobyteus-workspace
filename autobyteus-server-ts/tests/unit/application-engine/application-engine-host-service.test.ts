@@ -45,8 +45,8 @@ describe("ApplicationEngineHostService", () => {
       distribution: "self-contained",
       targetRuntime: { engine: "node", semver: ">=22 <23" },
       sdkCompatibility: {
-        backendDefinitionContractVersion: "4",
-        frontendSdkContractVersion: "4",
+        backendDefinitionContractVersion: "5",
+        frontendSdkContractVersion: "5",
       },
       supportedExposures: {
         queries: true,
@@ -73,7 +73,7 @@ describe("ApplicationEngineHostService", () => {
     await fs.writeFile(
       path.join(applicationRootPath, "backend", "dist", "entry.mjs"),
       `export default {
-        definitionContractVersion: '4',
+        definitionContractVersion: '5',
         queries: {
           'tickets.get': async (input, ctx) => {
             await ctx.publishNotification('query.called', { input })
@@ -301,11 +301,11 @@ describe("ApplicationEngineHostService", () => {
 
     await expect(
       service.ensureApplicationEngine("built-in:applications__sample-app"),
-    ).rejects.toThrow("Unsupported application backend definitionContractVersion '2'.");
+    ).rejects.toThrow("exports definitionContractVersion '2', but '5' is required");
     expect(service.getApplicationEngineStatus("built-in:applications__sample-app")).toMatchObject({
       state: "failed",
       ready: false,
-      lastFailure: "Unsupported application backend definitionContractVersion '2'.",
+      lastFailure: expect.stringContaining("exports definitionContractVersion '2', but '5' is required"),
     });
   });
 

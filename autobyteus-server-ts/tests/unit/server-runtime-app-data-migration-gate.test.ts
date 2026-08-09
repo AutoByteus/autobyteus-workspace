@@ -164,19 +164,24 @@ vi.mock("../../src/logging/server-app-logger.js", () => ({
 }));
 
 import { startConfiguredServer } from "../../src/server-runtime.js";
+import { TEAM_CANONICAL_IDENTITY_MIGRATION_ID } from "../../src/app-data-migrations/migrations/team-canonical-identity-migration.js";
 
-describe("startConfiguredServer ordinary app-data migration execution", () => {
+describe("startConfiguredServer required app-data migration gate", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mocks.runPending.mockResolvedValue([]);
   });
 
-  it("continues bootstrap, app construction, and listen when the runner reports a FAILED result", async () => {
+  it("blocks bootstrap and listen when the canonical identity migration reports FAILED", async () => {
     mocks.runPending.mockResolvedValueOnce([
       {
-        migrationId: "migrate_native_working_context_snapshots_v5",
+        migrationId: TEAM_CANONICAL_IDENTITY_MIGRATION_ID,
         status: "FAILED",
-        details: { diagnostics: [{ status: "FAILED", reason: "identity mismatch" }] },
+        displayName: "AgentTeam canonical identity migration",
+        attempts: 1,
+        summary: { failedCount: 1 },
+        errorMessage: "identity mismatch",
+        logPath: "/tmp/canonical-migration-failure.log",
       },
     ]);
 
@@ -195,27 +200,69 @@ describe("startConfiguredServer ordinary app-data migration execution", () => {
     });
     expect(mocks.initializeSecretVault).toHaveBeenCalledTimes(1);
     expect(mocks.runPending).toHaveBeenCalledTimes(1);
-    expect(mocks.bootstrapBuiltInAgents).toHaveBeenCalledTimes(1);
-    expect(mocks.fastify).toHaveBeenCalledTimes(1);
-    expect(mocks.app.listen).toHaveBeenCalledWith({ host: "127.0.0.1", port: 0 });
-    expect(mocks.scheduleBackgroundTasks).toHaveBeenCalledTimes(1);
-    expect(mocks.loggerError).not.toHaveBeenCalledWith(
-      expect.stringContaining("Failed to run app data migrations"),
+    expect(mocks.app.listen).not.toHaveBeenCalled();
+    expect(mocks.bootstrapBuiltInAgents).not.toHaveBeenCalled();
+    expect(mocks.fastify).not.toHaveBeenCalled();
+    expect(mocks.scheduleBackgroundTasks).not.toHaveBeenCalled();
+    expect(mocks.loggerError).toHaveBeenCalledWith(
+      expect.stringContaining(TEAM_CANONICAL_IDENTITY_MIGRATION_ID),
     );
   });
 
-  it("logs an infrastructure exception from the runner and still starts", async () => {
+  it("blocks bootstrap and listen when the canonical identity migration status is missing", async () => {
+    mocks.runPending.mockResolvedValueOnce([
+      {
+        migrationId: "unrelated_best_effort_migration",
+        requiredOnStartup: true,
+        status: "SUCCEEDED_WITH_WARNINGS",
+      },
+    ]);
+
+    await expect(startConfiguredServer({ host: "127.0.0.1", port: 0 })).resolves.toBeUndefined();
+
+    expect(mocks.runPending).toHaveBeenCalledTimes(1);
+    expect(mocks.app.listen).not.toHaveBeenCalled();
+    expect(mocks.bootstrapBuiltInAgents).not.toHaveBeenCalled();
+    expect(mocks.fastify).not.toHaveBeenCalled();
+    expect(mocks.scheduleBackgroundTasks).not.toHaveBeenCalled();
+    expect(mocks.loggerError).toHaveBeenCalledWith(expect.stringContaining('"status":"MISSING"'));
+  });
+
+  it("blocks bootstrap and listen when required-migration execution throws", async () => {
     const runnerFailure = new Error("migration state store unavailable");
     mocks.runPending.mockRejectedValueOnce(runnerFailure);
 
     await expect(startConfiguredServer({ host: "127.0.0.1", port: 0 })).resolves.toBeUndefined();
 
     expect(mocks.runPending).toHaveBeenCalledTimes(1);
-    expect(mocks.bootstrapBuiltInAgents).toHaveBeenCalledTimes(1);
-    expect(mocks.fastify).toHaveBeenCalledTimes(1);
-    expect(mocks.app.listen).toHaveBeenCalledTimes(1);
+    expect(mocks.app.listen).not.toHaveBeenCalled();
+    expect(mocks.bootstrapBuiltInAgents).not.toHaveBeenCalled();
+    expect(mocks.fastify).not.toHaveBeenCalled();
     expect(mocks.loggerError).toHaveBeenCalledWith(
       expect.stringContaining("Failed to run app data migrations"),
     );
+  });
+
+  it("starts exactly once when the canonical migration succeeds despite an unrelated warning", async () => {
+    mocks.runPending.mockResolvedValueOnce([
+      {
+        migrationId: TEAM_CANONICAL_IDENTITY_MIGRATION_ID,
+        requiredOnStartup: true,
+        status: "SUCCEEDED",
+      },
+      {
+        migrationId: "unrelated_best_effort_migration",
+        requiredOnStartup: true,
+        status: "SUCCEEDED_WITH_WARNINGS",
+      },
+    ]);
+
+    await expect(startConfiguredServer({ host: "127.0.0.1", port: 0 })).resolves.toBeUndefined();
+
+    expect(mocks.bootstrapBuiltInAgents).toHaveBeenCalledTimes(1);
+    expect(mocks.fastify).toHaveBeenCalledTimes(1);
+    expect(mocks.app.listen).toHaveBeenCalledTimes(1);
+    expect(mocks.app.listen).toHaveBeenCalledWith({ host: "127.0.0.1", port: 0 });
+    expect(mocks.scheduleBackgroundTasks).toHaveBeenCalledTimes(1);
   });
 });

@@ -1,0 +1,159 @@
+# API-REV-012 / SR-015 initial coverage investigation
+UTC 2026-08-09T09:26:00Z
+HEAD 11c8ea62d3a09402962cbcc66ffc526b7eceace0
+SOURCE 110b9007615741fa0f5a96974b95ad7bc2be595c
+UPSTREAM SR-015 ARCH-REV-009 IR-016 CRR-027
+PRIOR API-REV-011 Fail/61 API-F-007
+
+## Current SR-015 source surface
+M	autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-member-system-prompt-composer.ts
+M	autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts
+M	autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-turn-input-builder.ts
+M	autobyteus-server-ts/src/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.ts
+M	autobyteus-server-ts/src/agent-team-execution/services/member-collaboration-instruction-renderer.ts
+M	autobyteus-server-ts/src/agent-team-execution/services/member-run-instruction-composer.ts
+M	autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts
+M	autobyteus-server-ts/src/app-data-migrations/migrations/team-canonical-identity-migration.ts
+A	autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-canonical-execution-address-migration-store.ts
+A	autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-canonical-execution-address-migrator.ts
+D	autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-execution-address-backfill-migration.ts
+A	autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-execution-address-backfill-planner.ts
+M	autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-legacy-path-columns-drop-migration.ts
+M	autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-legacy-route-column-drop-migration.ts
+A	autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-task-team-run-index.ts
+M	tickets/in-progress/agent-team-hierarchical-handoffs/implementation-handoff.md
+M	tickets/in-progress/agent-team-hierarchical-handoffs/implementation-revision-record.md
+
+## Current old-owner durable references
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-execution-address-backfill-graphql.e2e.test.ts:16:  PrismaTokenUsageExecutionAddressBackfillDatabase,
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-execution-address-backfill-graphql.e2e.test.ts:17:  TokenUsageExecutionAddressBackfillMigration,
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-execution-address-backfill-graphql.e2e.test.ts:18:} from "../../../src/app-data-migrations/migrations/token-usage-execution-address-backfill-migration.js";
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-execution-address-backfill-graphql.e2e.test.ts:21:const MIGRATION_ID = "20260703_token_usage_execution_address_backfill";
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-execution-address-backfill-graphql.e2e.test.ts:230:        senderAddress: { segments: [{ kind: "member", memberRouteKey: "Teacher" }] },
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-execution-address-backfill-graphql.e2e.test.ts:231:        receiverAddress: { segments: [{ kind: "member", memberRouteKey: taskRun.logicalMemberRouteKey }] },
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-execution-address-backfill-graphql.e2e.test.ts:232:        receiverTargetKind: "team",
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-execution-address-backfill-graphql.e2e.test.ts:237:            segments: [
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-execution-address-backfill-graphql.e2e.test.ts:406:      executionAddress: { segments: [{ kind: "member", memberRouteKey: "Teacher" }] },
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-execution-address-backfill-graphql.e2e.test.ts:432:        new TokenUsageExecutionAddressBackfillMigration(
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-execution-address-backfill-graphql.e2e.test.ts:434:          new PrismaTokenUsageExecutionAddressBackfillDatabase(prisma),
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-execution-address-backfill-graphql.e2e.test.ts:478:      segments: [{ kind: "member", memberRouteKey: "Teacher" }],
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-execution-address-backfill-graphql.e2e.test.ts:482:      segments: [
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-execution-address-backfill-graphql.e2e.test.ts:516:        segments: [
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-execution-address-backfill-graphql.e2e.test.ts:529:          segments: [
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-execution-address-backfill-graphql.e2e.test.ts:545:        segments: [
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:210:      executionAddress: { segments: [{ kind: 'member', memberRouteKey: 'worker' }] },
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:359:      executionAddress: { segments: [{ kind: 'member', memberRouteKey: 'worker' }] },
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:575:      executionAddress: { segments: [{ kind: 'member', memberRouteKey: 'designer' }] },
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:600:      executionAddress: { segments: [{ kind: 'member', memberRouteKey: 'builder' }] },
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:624:        segments: [
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:649:        segments: [
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:676:        segments: [
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:702:        segments: [
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:729:        segments: [
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:755:        segments: [
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:929:      executionAddress: { segments: [{ kind: 'member', memberRouteKey: 'designer' }] },
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:945:      executionAddress: { segments: [{ kind: 'member', memberRouteKey: 'builder' }] },
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:963:        segments: [
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:988:        segments: [
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:1187:        executionAddress: { segments: [{ kind: 'member', memberRouteKey: 'custom' }] },
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:1203:        executionAddress: { segments: [{ kind: 'member', memberRouteKey: 'built-in' }] },
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:1218:        executionAddress: { segments: [{ kind: 'member', memberRouteKey: 'collision' }] },
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-legacy-path-columns-drop-startup.e2e.test.ts:22:  "20260703_token_usage_execution_address_backfill";
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-legacy-path-columns-drop-startup.e2e.test.ts:64:  PrismaTokenUsageExecutionAddressBackfillDatabase: typeof import("../../../src/app-data-migrations/migrations/token-usage-execution-address-backfill-migration.js").PrismaTokenUsageExecutionAddressBackfillDatabase;
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-legacy-path-columns-drop-startup.e2e.test.ts:65:  TokenUsageExecutionAddressBackfillMigration: typeof import("../../../src/app-data-migrations/migrations/token-usage-execution-address-backfill-migration.js").TokenUsageExecutionAddressBackfillMigration;
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-legacy-path-columns-drop-startup.e2e.test.ts:203:    import("../../../src/app-data-migrations/migrations/token-usage-execution-address-backfill-migration.js"),
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-legacy-path-columns-drop-startup.e2e.test.ts:211:    PrismaTokenUsageExecutionAddressBackfillDatabase: backfillModule.PrismaTokenUsageExecutionAddressBackfillDatabase,
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-legacy-path-columns-drop-startup.e2e.test.ts:212:    TokenUsageExecutionAddressBackfillMigration: backfillModule.TokenUsageExecutionAddressBackfillMigration,
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-legacy-path-columns-drop-startup.e2e.test.ts:394:        ? [new runtime.TokenUsageExecutionAddressBackfillMigration(
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-legacy-path-columns-drop-startup.e2e.test.ts:396:          new runtime.PrismaTokenUsageExecutionAddressBackfillDatabase(prisma),
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-legacy-path-columns-drop-startup.e2e.test.ts:470:      executionAddress: { segments: [{ kind: "member", memberRouteKey: "Reviewer" }] },
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-legacy-path-columns-drop-startup.e2e.test.ts:516:      segments: [{ kind: "member", memberRouteKey: "Teacher" }],
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-legacy-path-columns-drop-startup.e2e.test.ts:519:      segments: [{ kind: "member", memberRouteKey: "Reviewer" }],
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-legacy-path-columns-drop-startup.e2e.test.ts:536:        executionAddress: { segments: [{ kind: "member", memberRouteKey: "Teacher" }] },
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-legacy-path-columns-drop-startup.e2e.test.ts:541:        executionAddress: { segments: [{ kind: "member", memberRouteKey: "Reviewer" }] },
+autobyteus-server-ts/tests/unit/app-data-migrations/raw-trace-rotation-layout-migration.test.ts:50:  segments: Array<ReturnType<typeof segment>>,
+autobyteus-server-ts/tests/unit/app-data-migrations/raw-trace-rotation-layout-migration.test.ts:55:  for (const entry of segments) {
+autobyteus-server-ts/tests/unit/app-data-migrations/raw-trace-rotation-layout-migration.test.ts:68:    `${JSON.stringify({ schema_version: 1, next_segment_index: 10, segments }, null, 2)}\n`,
+autobyteus-server-ts/tests/unit/app-data-migrations/raw-trace-rotation-layout-migration.test.ts:110:      expect(manifest.segments).toEqual([
+autobyteus-server-ts/tests/unit/app-data-migrations/raw-trace-rotation-layout-migration.test.ts:126:      `${JSON.stringify({ schema_version: 1, next_segment_index: 2, segments: [segment({ index: 1, fileName: "raw_traces_000001.jsonl", boundaryKey: "new" })] })}\n`,
+autobyteus-server-ts/tests/unit/app-data-migrations/raw-trace-rotation-layout-migration.test.ts:172:    expect((await readNewManifest(mixedDir)).segments).toEqual([
+autobyteus-server-ts/tests/unit/app-data-migrations/raw-trace-rotation-layout-migration.test.ts:176:    expect(pendingOnlyManifest.segments).toEqual([]);
+autobyteus-server-ts/tests/unit/app-data-migrations/raw-trace-rotation-layout-migration.test.ts:197:      `${JSON.stringify({ schema_version: 1, next_segment_index: 2, segments: [segment({ index: 1, fileName: "raw_traces_000001.jsonl", boundaryKey: "partial" })] }, null, 2)}\n`,
+autobyteus-server-ts/tests/unit/app-data-migrations/raw-trace-rotation-layout-migration.test.ts:228:    expect((await readNewManifest(runDir)).segments).toEqual(expect.arrayContaining([
+autobyteus-server-ts/tests/unit/app-data-migrations/raw-trace-rotation-layout-migration.test.ts:244:    expect((await readNewManifest(runDir)).segments).toEqual(expect.arrayContaining([
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts:271:      executionAddress: { segments: [{ kind: "member", memberRouteKey: "designer" }] },
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts:287:      executionAddress: { segments: [{ kind: "member", memberRouteKey: "builder" }] },
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts:476:      executionAddress: { segments: [{ kind: "member", memberRouteKey: "builder" }] },
+autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-execution-address-backfill-migration.test.ts:7:  PrismaTokenUsageExecutionAddressBackfillDatabase,
+autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-execution-address-backfill-migration.test.ts:8:  TokenUsageExecutionAddressBackfillMigration,
+autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-execution-address-backfill-migration.test.ts:10:  type TokenUsageExecutionAddressBackfillDatabase,
+autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-execution-address-backfill-migration.test.ts:11:} from "../../../src/app-data-migrations/migrations/token-usage-execution-address-backfill-migration.js";
+autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-execution-address-backfill-migration.test.ts:13:class InMemoryBackfillDatabase implements TokenUsageExecutionAddressBackfillDatabase {
+autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-execution-address-backfill-migration.test.ts:108:describe("TokenUsageExecutionAddressBackfillMigration", () => {
+autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-execution-address-backfill-migration.test.ts:141:      const database = new PrismaTokenUsageExecutionAddressBackfillDatabase(prisma);
+autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-execution-address-backfill-migration.test.ts:143:      const result = await new TokenUsageExecutionAddressBackfillMigration(memoryDir, database).execute();
+autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-execution-address-backfill-migration.test.ts:197:          segments: [
+autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-execution-address-backfill-migration.test.ts:207:        execution_address_json: JSON.stringify({ segments: [{ kind: "member", memberRouteKey: "student_two" }] }),
+autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-execution-address-backfill-migration.test.ts:212:    const result = await new TokenUsageExecutionAddressBackfillMigration(memoryDir, database).execute();
+autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-execution-address-backfill-migration.test.ts:255:    const secondRun = await new TokenUsageExecutionAddressBackfillMigration(memoryDir, database).execute();
+autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-execution-address-backfill-migration.test.ts:267:    const result = await new TokenUsageExecutionAddressBackfillMigration(
+autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-legacy-path-columns-drop-migration.test.ts:14:  PrismaTokenUsageExecutionAddressBackfillDatabase,
+autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-legacy-path-columns-drop-migration.test.ts:15:  TokenUsageExecutionAddressBackfillMigration,
+autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-legacy-path-columns-drop-migration.test.ts:16:} from "../../../src/app-data-migrations/migrations/token-usage-execution-address-backfill-migration.js";
+autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-legacy-path-columns-drop-migration.test.ts:241:      ${input.executionAddressJson ?? JSON.stringify({ segments: [{ kind: "member", memberRouteKey: "Teacher" }] })},
+autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-legacy-path-columns-drop-migration.test.ts:391:      new TokenUsageExecutionAddressBackfillMigration(
+autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-legacy-path-columns-drop-migration.test.ts:393:        new PrismaTokenUsageExecutionAddressBackfillDatabase(prisma),
+autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-legacy-path-columns-drop-migration.test.ts:419:      execution_address_json: JSON.stringify({ segments: [{ kind: "member", memberRouteKey: "Teacher" }] }),
+autobyteus-server-ts/tests/unit/app-data-migrations/team-communication-projection-address-migration.test.ts:14:  segments: [{ kind: "member" as const, memberRouteKey }],
+
+## Current canonical-owner source references
+autobyteus-server-ts/src/server-runtime.ts:21:import { TEAM_CANONICAL_IDENTITY_MIGRATION_ID } from "./app-data-migrations/migrations/team-canonical-identity-migration.js";
+autobyteus-server-ts/src/server-runtime.ts:194:      (status) => status.migrationId === TEAM_CANONICAL_IDENTITY_MIGRATION_ID,
+autobyteus-server-ts/src/server-runtime.ts:199:          migrationId: TEAM_CANONICAL_IDENTITY_MIGRATION_ID,
+autobyteus-server-ts/src/server-runtime.ts:213:        migrationId: TEAM_CANONICAL_IDENTITY_MIGRATION_ID,
+autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-legacy-route-column-drop-migration.ts:4:import { TEAM_CANONICAL_IDENTITY_MIGRATION_ID } from "./team-canonical-identity-migration.js";
+autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-legacy-route-column-drop-migration.ts:22:        TEAM_CANONICAL_IDENTITY_MIGRATION_ID,
+autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-legacy-path-columns-drop-migration.ts:10:import { TEAM_CANONICAL_IDENTITY_MIGRATION_ID } from "./team-canonical-identity-migration.js";
+autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-legacy-path-columns-drop-migration.ts:180:      TEAM_CANONICAL_IDENTITY_MIGRATION_ID,
+autobyteus-server-ts/src/app-data-migrations/migrations/team-canonical-identity-migration.ts:15:  TokenUsageCanonicalExecutionAddressMigrator,
+autobyteus-server-ts/src/app-data-migrations/migrations/team-canonical-identity-migration.ts:16:  type TokenUsageCanonicalExecutionAddressMigratorLike,
+autobyteus-server-ts/src/app-data-migrations/migrations/team-canonical-identity-migration.ts:49:    private readonly suppliedTokenMigrator?: TokenUsageCanonicalExecutionAddressMigratorLike,
+autobyteus-server-ts/src/app-data-migrations/migrations/team-canonical-identity-migration.ts:75:        ?? new TokenUsageCanonicalExecutionAddressMigrator(this.memoryDir);
+autobyteus-server-ts/src/app-data-migrations/migrations/team-canonical-identity-migration.ts:162:export const TEAM_CANONICAL_IDENTITY_MIGRATION_ID = MIGRATION_ID;
+autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-canonical-execution-address-migrator.ts:7:  PrismaTokenUsageCanonicalExecutionAddressMigrationStore,
+autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-canonical-execution-address-migrator.ts:8:  type TokenUsageCanonicalExecutionAddressMigrationStore,
+autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-canonical-execution-address-migrator.ts:9:  type TokenUsageCanonicalExecutionAddressUpdate,
+autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-canonical-execution-address-migrator.ts:25:  updates: readonly TokenUsageCanonicalExecutionAddressUpdate[],
+autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-canonical-execution-address-migrator.ts:34:export interface TokenUsageCanonicalExecutionAddressMigratorLike {
+autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-canonical-execution-address-migrator.ts:38:export class TokenUsageCanonicalExecutionAddressMigrator
+autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-canonical-execution-address-migrator.ts:39:implements TokenUsageCanonicalExecutionAddressMigratorLike {
+autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-canonical-execution-address-migrator.ts:40:  private store: TokenUsageCanonicalExecutionAddressMigrationStore | null;
+autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-canonical-execution-address-migrator.ts:44:    store?: TokenUsageCanonicalExecutionAddressMigrationStore,
+autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-canonical-execution-address-migrator.ts:49:  private get migrationStore(): TokenUsageCanonicalExecutionAddressMigrationStore {
+autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-canonical-execution-address-migrator.ts:50:    return this.store ??= new PrismaTokenUsageCanonicalExecutionAddressMigrationStore();
+autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-canonical-execution-address-migrator.ts:84:      const updates: readonly TokenUsageCanonicalExecutionAddressUpdate[] = Object.freeze(
+autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-canonical-execution-address-migrator.ts:95:          await this.migrationStore.applyCanonicalExecutionAddressBatch(updates);
+autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-canonical-execution-address-migration-store.ts:5:export type TokenUsageCanonicalExecutionAddressUpdate = Readonly<{
+autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-canonical-execution-address-migration-store.ts:11:export interface TokenUsageCanonicalExecutionAddressMigrationStore {
+autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-canonical-execution-address-migration-store.ts:13:  applyCanonicalExecutionAddressBatch(
+autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-canonical-execution-address-migration-store.ts:14:    updates: readonly TokenUsageCanonicalExecutionAddressUpdate[],
+autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-canonical-execution-address-migration-store.ts:29:  updates: readonly TokenUsageCanonicalExecutionAddressUpdate[],
+autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-canonical-execution-address-migration-store.ts:30:): readonly TokenUsageCanonicalExecutionAddressUpdate[] => {
+autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-canonical-execution-address-migration-store.ts:47:export class PrismaTokenUsageCanonicalExecutionAddressMigrationStore
+autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-canonical-execution-address-migration-store.ts:48:implements TokenUsageCanonicalExecutionAddressMigrationStore {
+autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-canonical-execution-address-migration-store.ts:69:  async applyCanonicalExecutionAddressBatch(
+autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-canonical-execution-address-migration-store.ts:70:    updates: readonly TokenUsageCanonicalExecutionAddressUpdate[],
+
+## Provider instruction durable references
+autobyteus-server-ts/tests/unit/agent-execution/shared/configured-agent-tool-exposure.test.ts:18:      "get_handoff_rules",
+autobyteus-server-ts/tests/unit/agent-execution/shared/configured-agent-tool-exposure.test.ts:33:      "get_handoff_rules",
+autobyteus-server-ts/tests/unit/agent-execution/shared/configured-agent-tool-exposure.test.ts:55:        "get_handoff_rules",
+autobyteus-server-ts/tests/unit/agent-team-execution/member-run-instruction-composer.test.ts:48:    expect(composition.runtimeInstruction).toContain("must call `get_handoff_rules`");
+autobyteus-server-ts/tests/unit/agent-team-execution/member-run-instruction-composer.test.ts:78:    expect(composition.runtimeInstruction).toContain("get_handoff_rules");
+autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts:232:      "get_handoff_rules",
+autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts:309:      "get_handoff_rules",
+autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts:512:      "get_handoff_rules",
+
+## Live/browser requirement addendum
+User requires real frontend creation and execution of standalone Agents and AgentTeams for AutoByteus, Codex App Server, and Claude Agent SDK in addition to the imported nested-classroom matrix.
+Use an isolated runtime, import /Users/normy/.autobyteus/server-data/.env through pnpm secrets:import into the exact isolated SQLite DB, never the operational DB.

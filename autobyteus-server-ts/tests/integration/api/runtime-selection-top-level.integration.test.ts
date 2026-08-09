@@ -17,10 +17,9 @@ import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-c
 import { AgentRunMetadataService } from "../../../src/run-history/services/agent-run-metadata-service.js";
 import { AgentRunStatusProjectionService } from "../../../src/agent-execution/services/agent-run-status-projection-service.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import { normalizeMemberRouteKey } from "../../../src/agent-team-execution/domain/team-run-member-identity.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import type { MemberTeamContext } from "../../../src/agent-team-execution/domain/member-team-context.js";
-import { buildInterAgentMessageDeliveryIntentFromRecipientName } from "../../../src/agent-team-execution/services/inter-agent-message-delivery-intent-builder.js";
+import { buildInterAgentMessageDeliveryIntentFromRecipientAddress } from "../../../src/agent-team-execution/services/inter-agent-message-delivery-intent-builder.js";
 import { TeamRunMetadataService } from "../../../src/run-history/services/team-run-metadata-service.js";
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
 import { MixedTeamRunBackendFactory } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.js";
@@ -87,12 +86,12 @@ const waitForCondition = async (fn: () => boolean, timeoutMs = 3000): Promise<vo
 
 const buildTestDeliveryRequest = (
   memberTeamContext: MemberTeamContext,
-  recipientName: string,
+  recipientAddress: string,
   content: string,
 ) => {
-  const result = buildInterAgentMessageDeliveryIntentFromRecipientName({
+  const result = buildInterAgentMessageDeliveryIntentFromRecipientAddress({
     memberTeamContext,
-    recipientName,
+    recipientAddress,
     content,
     messageType: "agent_message",
   });
@@ -355,116 +354,6 @@ class FakeAgentRunManager {
   }
 }
 
-type CapturedTeamMessage = {
-  teamRunId: string;
-  targetMemberRouteKey: string | null;
-  content: string;
-  source: "create" | "restore";
-};
-
-const createAutoByteusTeamBackendFactory = () => {
-  const createCalls: unknown[] = [];
-  const restoreCalls: unknown[] = [];
-  const messages: CapturedTeamMessage[] = [];
-  let runCounter = 0;
-
-  const createBackend = (
-    config: { memberConfigs: Array<{ memberName: string; memberRouteKey?: string | null; memberRunId?: string | null }> },
-    runId: string,
-    source: "create" | "restore",
-  ) => {
-    let active = true;
-    let turnCounter = 0;
-    const listeners = new Set<(event: unknown) => void>();
-    const memberContexts = config.memberConfigs.map((memberConfig) => {
-      const memberRouteKey = normalizeMemberRouteKey(memberConfig.memberRouteKey ?? memberConfig.memberName);
-      const memberRunId = memberConfig.memberRunId?.trim();
-      if (!memberRunId) {
-        throw new Error(`memberRunId for member '${memberRouteKey}' is required.`);
-      }
-      return {
-        memberName: memberConfig.memberName,
-        memberRouteKey,
-        memberRunId,
-        getPlatformAgentRunId: () => `autobyteus-team-platform-${memberRunId}`,
-      };
-    });
-
-    return {
-      runId,
-      teamBackendKind: TeamBackendKind.MIXED,
-      getRuntimeContext: () => ({
-        coordinatorMemberRouteKey: memberContexts[0]?.memberRouteKey ?? null,
-        memberContexts,
-      }),
-      isActive: () => active,
-      getLeafAgentStatusSnapshots: () => [],
-      hasOpenExecutionWork: () => false,
-      subscribeToEvents: (listener: (event: unknown) => void) => {
-        listeners.add(listener);
-        return () => {
-          listeners.delete(listener);
-        };
-      },
-      postMessage: vi.fn(async (message: { content: string }, targetMemberRouteKey: string | null) => {
-        turnCounter += 1;
-        const targetName = targetMemberRouteKey?.trim() || memberContexts[0]?.memberName || null;
-        const targetRouteKey = normalizeMemberRouteKey(targetName ?? memberContexts[0]?.memberName ?? "Coordinator");
-        messages.push({
-          teamRunId: runId,
-          targetMemberRouteKey: targetName,
-          content: message.content,
-          source,
-        });
-        return {
-          accepted: true,
-          memberRunId: memberContexts.find((member) => member.memberRouteKey === targetRouteKey)?.memberRunId ?? null,
-          memberName: targetName,
-          turnId: `turn-${runId}-${turnCounter}`,
-        };
-      }),
-      deliverInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),
-      approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
-      interrupt: vi.fn().mockResolvedValue({ accepted: true }),
-      terminate: vi.fn().mockImplementation(async () => {
-        active = false;
-        return { accepted: true };
-      }),
-    };
-  };
-
-  return {
-    createCalls,
-    restoreCalls,
-    messages,
-    getTeam: vi.fn(() => null),
-    createBackend: vi.fn(async (
-      config: { memberConfigs: Array<{ memberName: string; memberRouteKey?: string | null; memberRunId?: string | null }> },
-      teamRunId: string,
-    ) => {
-      createCalls.push(config);
-      runCounter += 1;
-      return createBackend(config, teamRunId || `team-autobyteus-${runCounter}`, "create") as never;
-    }),
-    restoreBackend: vi.fn(async (
-      context: { runId: string; config: { memberConfigs: Array<{ memberName: string; memberRouteKey?: string | null; memberRunId?: string | null }> } },
-    ) => {
-      restoreCalls.push(context);
-      return createBackend(context.config, context.runId, "restore") as never;
-    }),
-  };
-};
-
-const createUnexpectedTeamFactory = () => ({
-  createBackend: vi.fn(async () => {
-    throw new Error("Unexpected team backend selection in runtime-selection top-level test.");
-  }),
-  restoreBackend: vi.fn(async () => {
-    throw new Error("Unexpected team backend restore in runtime-selection top-level test.");
-  }),
-  getTeam: vi.fn(() => null),
-});
-
 type ValidationHarness = {
   app: FastifyInstance;
   baseUrl: string;
@@ -474,7 +363,6 @@ type ValidationHarness = {
   teamRunMetadataService: TeamRunMetadataService;
   standaloneAgentRunManager: FakeAgentRunManager;
   mixedMemberRunManager: FakeAgentRunManager;
-  autoByteusTeamFactory: ReturnType<typeof createAutoByteusTeamBackendFactory>;
   mixedFactory: {
     createBackend: ReturnType<typeof vi.fn>;
     restoreBackend: ReturnType<typeof vi.fn>;
@@ -511,8 +399,6 @@ const createValidationHarness = async (): Promise<ValidationHarness> => {
   const workspaceManager = createWorkspaceManager();
   const standaloneAgentRunManager = new FakeAgentRunManager();
   const mixedMemberRunManager = new FakeAgentRunManager();
-  const autoByteusTeamFactory = createAutoByteusTeamBackendFactory();
-  const unexpectedTeamFactory = createUnexpectedTeamFactory();
   let allocatedRunCounter = 0;
   const agentRunIdentityAllocator = {
     allocateForAgentDefinition: vi.fn(async (agentDefinitionId: string) => {
@@ -715,7 +601,6 @@ const createValidationHarness = async (): Promise<ValidationHarness> => {
     teamRunMetadataService,
     standaloneAgentRunManager,
     mixedMemberRunManager,
-    autoByteusTeamFactory,
     mixedFactory,
   };
 };
@@ -818,7 +703,7 @@ describe("runtime-selection top-level integration", () => {
             teamDefinitionId: "team-def-autobyteus",
             memberConfigs: [
               {
-                memberName: "Coordinator",
+                memberAddress: "/Coordinator",
                 agentDefinitionId: "agent-coordinator",
                 llmModelIdentifier: "gpt-test",
                 autoExecuteTools: false,
@@ -827,7 +712,7 @@ describe("runtime-selection top-level integration", () => {
                 runtimeKind: RuntimeKind.AUTOBYTEUS,
               },
               {
-                memberName: "Reviewer",
+                memberAddress: "/Reviewer",
                 agentDefinitionId: "agent-reviewer",
                 llmModelIdentifier: "gpt-test",
                 autoExecuteTools: false,
@@ -845,7 +730,6 @@ describe("runtime-selection top-level integration", () => {
       });
       const teamRunId = createResult.data.createAgentTeamRun.teamRunId as string;
       expect(teamRunId).toBeTruthy();
-      expect(harness.autoByteusTeamFactory.createCalls).toHaveLength(0);
       expect(harness.mixedFactory.createBackend).toHaveBeenCalledTimes(1);
       expect(harness.teamRunService.getTeamRun(teamRunId)?.teamBackendKind).toBe(TeamBackendKind.MIXED);
 
@@ -865,7 +749,12 @@ describe("runtime-selection top-level integration", () => {
               message_id: "msg-team-autobyteus-1",
               dedupe_key: "dedupe-team-autobyteus-1",
               content: "hello mixed-only team",
-              target_member_route_key: "Coordinator",
+              execution_address: {
+                rootTeamRunId: teamRunId,
+                taskTeamRunIds: [],
+                memberAddress: "/Coordinator",
+                taskAgentRunId: null,
+              },
             },
           }),
         );
@@ -873,7 +762,7 @@ describe("runtime-selection top-level integration", () => {
         await waitForCondition(() => harness.mixedMemberRunManager.messages.length === 1);
         expect(harness.mixedMemberRunManager.createCalls[0]).toMatchObject({
           runtimeKind: RuntimeKind.AUTOBYTEUS,
-          memberTeamContext: expect.objectContaining({ memberName: "Coordinator" }),
+          memberTeamContext: expect.objectContaining({ memberAddress: "/Coordinator" }),
         });
         expect(harness.mixedMemberRunManager.createCalls[0]?.memberTeamContext?.teamBackendKind).toBe(TeamBackendKind.MIXED);
         expect(harness.mixedMemberRunManager.messages[0]).toMatchObject({
@@ -907,7 +796,7 @@ describe("runtime-selection top-level integration", () => {
             teamDefinitionId: "team-def-mixed",
             memberConfigs: [
               {
-                memberName: "Coordinator",
+                memberAddress: "/Coordinator",
                 agentDefinitionId: "agent-coordinator",
                 llmModelIdentifier: "gpt-test",
                 autoExecuteTools: false,
@@ -916,7 +805,7 @@ describe("runtime-selection top-level integration", () => {
                 runtimeKind: RuntimeKind.AUTOBYTEUS,
               },
               {
-                memberName: "Specialist",
+                memberAddress: "/Specialist",
                 agentDefinitionId: "agent-specialist",
                 llmModelIdentifier: "gpt-test",
                 autoExecuteTools: false,
@@ -955,7 +844,12 @@ describe("runtime-selection top-level integration", () => {
               message_id: "msg-team-mixed-1",
               dedupe_key: "dedupe-team-mixed-1",
               content: "coordinate the mixed fix",
-              target_member_route_key: "Coordinator",
+              execution_address: {
+                rootTeamRunId: teamRunId,
+                taskTeamRunIds: [],
+                memberAddress: "/Coordinator",
+                taskAgentRunId: null,
+              },
             },
           }),
         );
@@ -968,7 +862,7 @@ describe("runtime-selection top-level integration", () => {
           rootTeamRunId: teamRunId,
           memberAddress: "/Coordinator",
         });
-        expect(coordinatorCreateConfig.memberTeamContext).not.toHaveProperty("allowedRecipientNames");
+        expect(coordinatorCreateConfig.memberTeamContext).not.toHaveProperty("allowedRecipientAddresss");
         expect(harness.mixedMemberRunManager.messages[0]).toMatchObject({
           runtimeKind: RuntimeKind.AUTOBYTEUS,
           content: "coordinate the mixed fix",
@@ -994,15 +888,15 @@ describe("runtime-selection top-level integration", () => {
 
         await harness.teamRunService.refreshRunMetadata(createdRun!);
         const metadata = await harness.teamRunMetadataService.readMetadata(teamRunId);
-        expect(metadata?.memberTree).toEqual(
+        expect(metadata?.rootTeam.children).toEqual(
           expect.arrayContaining([
             expect.objectContaining({
-              memberName: "Coordinator",
+              address: "/Coordinator",
               runtimeKind: RuntimeKind.AUTOBYTEUS,
               platformAgentRunId: expect.any(String),
             }),
             expect.objectContaining({
-              memberName: "Specialist",
+              address: "/Specialist",
               runtimeKind: RuntimeKind.CODEX_APP_SERVER,
               platformAgentRunId: expect.any(String),
             }),
@@ -1053,7 +947,12 @@ describe("runtime-selection top-level integration", () => {
                 message_id: "msg-team-mixed-restore-1",
                 dedupe_key: "dedupe-team-mixed-restore-1",
                 content: "resume mixed coordination",
-                target_member_route_key: "Coordinator",
+                execution_address: {
+                  rootTeamRunId: teamRunId,
+                  taskTeamRunIds: [],
+                  memberAddress: "/Coordinator",
+                  taskAgentRunId: null,
+                },
               },
             }),
           );
@@ -1082,7 +981,7 @@ describe("runtime-selection top-level integration", () => {
 
           await waitForCondition(() => harness.mixedMemberRunManager.restoreCalls.length === 2);
           const specialistRestoreContext = harness.mixedMemberRunManager.restoreCalls[1]!;
-          const specialistMetadata = metadata?.memberTree.find((member) => member.memberName === "Specialist");
+          const specialistMetadata = metadata?.rootTeam.children.find((member) => member.address === "/Specialist");
           expect(specialistRestoreContext.config.runtimeKind).toBe(RuntimeKind.CODEX_APP_SERVER);
           expect(specialistRestoreContext.config.memberTeamContext?.collaboration.addressing).toEqual({
             rootTeamRunId: teamRunId,

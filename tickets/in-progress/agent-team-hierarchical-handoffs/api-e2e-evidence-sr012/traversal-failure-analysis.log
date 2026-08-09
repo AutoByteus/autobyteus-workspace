@@ -1,0 +1,74 @@
+Evidence generated 2026-08-04T23:44:36Z
+--- contract ---
+tickets/in-progress/agent-team-hierarchical-handoffs/agent-team-addressing-handoff-contract.md:628:| Agent appears before final segment | `COLLABORATION_TRAVERSAL_INVALID` |
+--- current production implementation ---
+     1	import { getParentAgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
+     2	import {
+     3	  parseRecipientAddressExpression,
+     4	  resolveRecipientAddressExpression,
+     5	} from "../../agent-collaboration/domain/recipient-address-expression.js";
+     6	import { CollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
+     7	import type { MemberLogicalAddressContext } from "../domain/member-logical-address-context.js";
+     8	import type { TeamRunTreeIndex } from "./team-run-tree-index.js";
+     9	import {
+    10	  createResolvedAgentRecipient,
+    11	  createResolvedAgentTeamRecipient,
+    12	  type ResolvedTeamRecipient,
+    13	} from "./resolved-team-recipient.js";
+    14	
+    15	export class TeamRecipientResolver {
+    16	  resolve(
+    17	    index: TeamRunTreeIndex,
+    18	    recipientAddress: string,
+    19	    caller: MemberLogicalAddressContext,
+    20	  ): ResolvedTeamRecipient {
+    21	    const callerTeamAddress = getParentAgentTeamAddress(caller.memberAddress);
+    22	    if (!callerTeamAddress) {
+    23	      throw new CollaborationContractError(
+    24	        "COLLABORATION_CONTEXT_REQUIRED",
+    25	        "The caller collaboration address must identify an Agent inside an AgentTeam.",
+    26	      );
+    27	    }
+    28	    const address = resolveRecipientAddressExpression(
+    29	      parseRecipientAddressExpression(recipientAddress),
+    30	      callerTeamAddress,
+    31	    );
+    32	    const node = index.getNode(address);
+    33	    if (!node) {
+    34	      throw new CollaborationContractError(
+    35	        "COLLABORATION_TARGET_NOT_FOUND",
+    36	        `Collaboration target '${address}' was not found.`,
+    37	      );
+    38	    }
+    39	    return node.kind === "agent"
+    40	      ? createResolvedAgentRecipient(node.address)
+    41	      : createResolvedAgentTeamRecipient({
+    42	          address: node.address,
+    43	          coordinatorAddress: node.coordinatorAddress,
+    44	        });
+    45	  }
+    46	}
+--- production code occurrences ---
+autobyteus-server-ts/src/agent-collaboration/domain/collaboration-contract-error.ts:5:  "COLLABORATION_TRAVERSAL_INVALID",
+autobyteus-server-ts/src/agent-team-definition/services/team-handoff-compiler.ts:118:            "COLLABORATION_TRAVERSAL_INVALID",
+--- current durable expectation ---
+   112	    expect(fieldLead).not.toEqual(designLead);
+   113	  });
+   114	
+   115	  it.each([
+   116	    ["team_lead", "COLLABORATION_ADDRESS_INVALID"],
+   117	    ["../team_lead", "COLLABORATION_ADDRESS_INVALID"],
+   118	    ["/design_team//team_lead", "COLLABORATION_ADDRESS_INVALID"],
+   119	    ["/design_team/", "COLLABORATION_ADDRESS_INVALID"],
+   120	    ["/design_team\\team_lead", "COLLABORATION_ADDRESS_INVALID"],
+   121	    ["/missing", "COLLABORATION_TARGET_NOT_FOUND"],
+   122	    ["/product_manager/child", "COLLABORATION_TRAVERSAL_INVALID"],
+   123	  ])("rejects %s with typed code %s", (recipientAddress, code) => {
+   124	    expect(() => new TeamRecipientResolver().resolve(
+   125	      buildIndex(),
+   126	      recipientAddress,
+   127	      nestedCaller,
+   128	    )).toThrow(expect.objectContaining({ code }));
+   129	  });
+   130	});
+--- source status ---

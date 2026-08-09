@@ -1,0 +1,146 @@
+API-F-005 startup required-migration gate analysis
+UTC: 2026-08-05T02:20:06Z
+HEAD: 7dd55d8c2a4f4eba45c749742fa1755269f20bb2
+
+Approved requirement excerpts:
+- **R-037 — Minimal task identities:** Task Agent identity shall store only task instance/run/owner/task IDs and creation time. Task AgentTeam identity shall store only task instance/run/parent/task IDs and creation time. The task record's receiver `TeamExecutionAddress`, root TeamRun node, and active task execution tree/directory shall own logical recipient, configuration, coordinator, and fresh descendant run facts; those facts shall not be duplicated in the task identity.
+- **R-038 — Clean project interfaces:** GraphQL, REST, WebSocket, context/memory selectors, external-channel models, application orchestration, and project-owned application SDK contracts shall expose `memberAddress`, `coordinatorAddress`, kind-specific run IDs, or `TeamExecutionAddress` as appropriate. They shall remove `memberPath`, `memberRouteKey`, coordinator route, target route/path pairs, generic member run ID, and task structural/local route fields without aliases. The changed application backend-definition and frontend-SDK semantic contracts shall each use explicit target version `5`; project-owned application/backend manifests, backend definitions, SDK packages, validators, and built artifacts shall declare and enforce that same exact target.
+- **R-039 — Rooted frontend projection:** Production frontend Team state shall retain one recursive `rootTeam` projection and derive `memberNodesByAddress`; concrete persistent/task Agent state shall use canonical `TeamExecutionAddress` serialization and focus shall use `focusedExecutionAddress`. Hydration, streaming, commands, history, memory, token usage, desktop/mobile navigation, and same-named leaves shall use these structures with no legacy route-key/path fallback.
+- **R-040 — Truthful storage boundary:** The physical Team memory lineage shall be named and owned as `ancestorTeamRunIds` inside the memory/context storage subsystem. Public/domain selectors shall use canonical addresses. Existing final memory directories and context files/locators shall remain directly usable by deriving the same relative storage segments from the address; logical addresses shall not replace concrete run-ID directory ownership.
+- **R-041 — Structured data migration:** Framework-owned TeamRun metadata, Team communication projections, task delegation records, token-usage storage, external-channel bindings, and application platform databases shall be converted to the current canonical model with per-item/file/database validation, backups where applicable, atomic file replacement or database transaction, actionable failure details, and idempotent rerun. TeamRun conversion shall retain genuine existing Agent metadata fields, convert the root wrapper into `rootTeam`, and fail contradictory legacy route/path/name/coordinator/run identities rather than guess. The application-database migration inventory shall enumerate existing platform databases from the application-data directory/store, not from the admitted application-bundle catalog, so an old or invalid bundle cannot hide required durable state.
+- **R-042 — Blocking current-schema rollout:** The canonical-identity app-data migration shall run after prerequisite legacy topology migration and before index rebuild/service bootstrap. Its startup policy shall block server bootstrap/listen unless all required items succeed. Bundle admission occurs through exact target contract gates independently of that durable-data discovery: application manifest `ui.frontendSdkContractVersion`, backend bundle `sdkCompatibility.backendDefinitionContractVersion`/`frontendSdkContractVersion`, and loaded backend `definitionContractVersion` shall all require target V5 as applicable. Normal runtime readers/writers and frontend/server contracts shall support only the current schema; no dual read/write, V4-to-V5 bundle adapter, mixed-version execution, or lazy conversion is allowed.
+- **R-043 — Complete clean removal with preserved behavior:** Production code shall remove the legacy Team logical identity system, including `recipient_name`/`recipient_path` public aliases, Team path/route selectors, persistent-child localizers, prefix event rewriting, duplicate conversation/token execution-address types, task logical identity bundles, integration route/path pairs, and frontend route-key/scoped-route state. It shall also remove current V4 backend-definition/frontend-SDK exports and declarations from target project code/artifacts, while retaining V4 only in explicit incompatibility tests/fixtures or historical text. An installed V4 application shall be excluded from the launchable catalog/quarantined and diagnosed before UI/backend execution with application/path identity, observed and required versions, and a rebuild/reinstall instruction; external bundles are not edited and must upgrade independently. The application manifest envelope, backend bundle envelope, and iframe transport versions remain unchanged where their shapes did not change. All BEH-001–BEH-011 outcomes, exact-run codes, task lifecycle, history/communication content, Agent launch/platform/workspace-root facts, token facts, integration targets, UI workflows, and documentation shall remain supported.
+- **R-044 — Imported example Team:** After implementation and source review, live validation shall create an isolated test-owned Agent package containing the existing `nested-classroom-test` fixture, import it through the supported `LOCAL_PATH` Agent-package surface, discover the Team definition, and create one fresh example root TeamRun per runtime scenario. The original agents package shall remain unchanged.
+- **R-045 — Isolated credential preparation:** Live validation may use `pnpm secrets:import -- --source "$HOME/.autobyteus/server-data/.env" --database-url "file:<absolute-isolated-test-db>"`. The target database and application-data root shall be disposable/test-owned; secret values shall never be printed or attached; the user's normal server data shall not be mutated.
+
+- **AC-026:** A three-level definition compiles to one immutable schema-v3 rooted TeamRun tree whose nodes use native `agent`/`agent_team` kinds, one canonical address, typed run IDs, coordinator addresses, and children. Genuine Agent fields and kind-specific run IDs remain local to their nodes; no separate persisted topology/profile/binding table or parallel logical identity exists.
+- **AC-027:** Root create, persistent child materialization, and terminate/restore share one immutable root TeamRun tree/index and select direct children by absolute Team address. Task AgentTeam and nested task AgentTeam creation allocate fresh typed run IDs while preserving every absolute node/coordinator address. Static/source and runtime tests prove that no persistent-child localization, address prefix strip/rebase, coordinator rewrite, or root/local fallback remains.
+- **AC-028:** A persistent AgentTeam and one or more task AgentTeam instances may share `/research_team` while retaining distinct TeamRun IDs and ordered `taskTeamRunIds`; persistent and task Agents may share `/research_team/analyst` while retaining distinct Agent run identities. Each remains exactly routable, observable, settleable, and attributable.
+- **AC-029:** The exact `TeamExecutionAddress {rootTeamRunId,taskTeamRunIds,memberAddress,taskAgentRunId}` round trips through task records, Team communication, token usage, events, WebSocket commands, and frontend state for a persistent Agent, task Agent, task-AgentTeam coordinator, and two-level nested task AgentTeam without information loss or a route/path side channel. Each ordered task AgentTeam run ID resolves to one task identity/receiver/active execution and its logical Team address is not repeated in the locator.
+- **AC-030:** Task Agent/AgentTeam identities have exactly the R-037 fields. Direct activation, task-Agent chaining, nested task-AgentTeam coordinator entry, submit/review/settlement, and exact task-run messaging resolve configuration and persistent/task run facts from the rooted metadata plus active task execution owner and preserve current outcomes.
+- **AC-031:** Representative current member-tree TeamRun metadata migrates to schema version 3 with one `rootTeam` tree, canonical addresses, typed node-local run IDs, coordinator addresses, `children`, unchanged genuine Agent fields, handoffs, timestamps, and platform run IDs. The root `teamRunId` agrees with the directory. The strict parser restores it; old fields and SR-007 topology/profile/binding tables are absent. Contradictory path/route/name/coordinator/AgentTeam-run duplicates fail with a backup and actionable item detail.
+- **AC-032:** Representative Team communication and task record fixtures, including nested task-AgentTeam segments and task-Agent suffixes, migrate to exact `TeamExecutionAddress` values. Token usage history preserves grouping/cost facts under the same address. Current readers reject the old structured shapes.
+- **AC-033:** External-channel bindings and per-application launch/run-binding databases preserve the selected member and runtime facts after conversion to canonical address and kind-specific run IDs; old identity columns/JSON fields are absent and current SDK/server consumers operate without fallback. Database discovery finds and converts the platform database of an installed V4/quarantined or persisted-only application even though that application is not admitted for execution.
+- **AC-034:** Existing Agent memory directories and final context files remain accessible at the same physical paths after migration. Storage domain uses `ancestorTeamRunIds`, address-derived storage segments, and exact node/run lookup; no public API/frontend type exposes the physical lineage as Team structure.
+- **AC-035:** Generated GraphQL types, REST/context-file contracts, WebSocket payloads, and project-owned application SDK packages expose only the clean R-038 identity shapes. Backend-definition and frontend-SDK constants/types are exactly V5; project-owned application manifests, backend bundle manifests, backend definitions, SDK `dist`, application vendor copies, build scripts, and importable outputs agree. Application-manifest frontend-SDK V4, backend-bundle SDK V4, and loaded backend-definition V4 fixtures are rejected/excluded before execution with actionable observed/required-version diagnostics, while exact V5 packages are accepted. Persistent/task application launch, binding, target/input, event, and command/projection round trips use only canonical address/execution identity; old fields are rejected rather than ignored.
+- **AC-036:** Production desktop and mobile flows launch/open/hydrate a three-level AgentTeam, derive an address index from `rootTeam`, focus same-named leaves, send messages, delegate/observe tasks, approve tools, inspect history/token usage/memory, terminate, and restore using address/execution state. No synthetic scoped route or compatibility map is constructed.
+- **AC-037:** Migration tests prove ordered prerequisite execution, backups/transactions, idempotent rerun after full or partial completion, derived-index rebuild, and failure gating. A failed required item prevents server bootstrap/listen; a fully successful migration starts once with strict current readers. Application platform-database discovery is proven independent of V5 bundle admission, including an old V4 bundle and a persisted-only database subject.
+
+Approved design excerpt:
+| Context-file storage layout | `Directly Usable — No Migration` |
+| Opaque provider raw trace/tool arguments | `Directly Usable — No Migration` |
+| Installed application bundle code | `Compatibility Rejection — No Bundle Migration`; exact V5 admitted, V4 excluded/quarantined until independently upgraded |
+
+### 12.2 Blocking migration
+
+Reuse the ordered app-data migration capability with a `team-canonical-identity` migration composed from store-owned migrators. It runs after the existing legacy-flat-to-member-tree migration and before derived index rebuild. This migration is explicitly blocking: server tools, channels, GraphQL, WebSocket, and port listen do not start unless all required items reach `SUCCEEDED`. Existing unrelated best-effort migrations retain their policy. Token database schema work remains in normal blocking DB migrations; dynamically discovered per-application databases remain app-data migration items.
+
+### 12.3 TeamRun metadata conversion
+
+For each recursive current metadata file:
+
+1. validate top-level `teamRunId`, definition ID/name, timestamps, coordinator route, tree, and handoffs;
+2. create `rootTeam {kind:"agent_team",address:"/",teamDefinitionId,teamRunId,coordinatorAddress,children}`;
+3. require each member `memberName === last(memberPath)` and `memberRouteKey === memberPath.join("/")` after canonical normalization;
+4. convert the agreed path once to `/${segments.join("/")}`;
+5. for an Agent, rename `memberRunId` to `agentRunId` and copy every genuine Agent field unchanged;
+6. for an AgentTeam, require generic and Team-specific run IDs to agree, retain one `teamRunId`, convert the coordinator route to one exact direct `coordinatorAddress`, and recurse from `memberTree` to `children`;
+7. compile/validate handoff endpoints as canonical addresses without changing rule text/order;
+
+Current production startup chain:
+   186	    process.exit(1);
+   187	  }
+   188	  await getSecretVaultRuntime().initialize(databaseLocation);
+   189	
+   190	  try {
+   191	    await getAppDataMigrationRunner().runPending();
+   192	  } catch (error) {
+   193	    logger.error(`Failed to run app data migrations: ${String(error)}`);
+   194	  }
+   195	
+   196	  try {
+   197	    await bootstrapBuiltInAgents();
+   198	  } catch (error) {
+   199	    logger.error(`Failed to bootstrap built-in agents: ${String(error)}`);
+   200	    process.exit(1);
+   201	  }
+   202	
+   203	  const app = await buildApp({ loggingConfig });
+   204	  registerShutdownHandlers(app);
+   205	  await app.listen({ host: options.host, port: options.port });
+   206	  logger.info(`Server listening on ${options.host}:${options.port}`);
+   207	  startChannelRunOutputDeliveryRuntime();
+
+Current runner result policy:
+    71	  async runPending(): Promise<AppDataMigrationStatusSnapshot[]> {
+    72	    const results: AppDataMigrationStatusSnapshot[] = [];
+    73	    for (const definition of this.registry.listDefinitions()) {
+    74	      if (!definition.requiredOnStartup) {
+    75	        continue;
+    76	      }
+    77	      const record = await this.repository.getRecord(definition.id);
+    78	      if (record?.status === "SUCCEEDED" || record?.status === "SUCCEEDED_WITH_WARNINGS") {
+    79	        results.push(this.toStatusSnapshot(definition, record));
+    80	        continue;
+    81	      }
+    82	      try {
+    83	        const updated = await this.runDefinition(definition);
+    84	        results.push(this.toStatusSnapshot(definition, updated));
+    85	      } catch {
+    86	        const failedRecord = await this.repository.getRecord(definition.id);
+    87	        results.push(this.toStatusSnapshot(definition, failedRecord));
+    88	      }
+    89	    }
+    90	    return results;
+    91	  }
+
+Current migration registration and required flag:
+src/app-data-migrations/app-data-migration-registry.ts-14-import { RemoveGlobalSkillDiscoveryModeMigration } from "./migrations/remove-global-skill-discovery-mode-migration.js";
+src/app-data-migrations/app-data-migration-registry.ts-15-import { CustomProviderV1AppDataMigration } from "./migrations/custom-provider-v1-app-data-migration.js";
+src/app-data-migrations/app-data-migration-registry.ts-16-import { RemoveExternalRuntimeWorkingContextSnapshotsMigration } from "./migrations/remove-external-runtime-working-context-snapshots-migration.js";
+src/app-data-migrations/app-data-migration-registry.ts-17-import { MigrateNativeWorkingContextSnapshotsV5Migration } from "./migrations/migrate-native-working-context-snapshots-v5-migration.js";
+src/app-data-migrations/app-data-migration-registry.ts:18:import { TeamCanonicalIdentityMigration } from "./migrations/team-canonical-identity-migration.js";
+src/app-data-migrations/app-data-migration-registry.ts-19-import { TokenUsageLegacyRouteColumnDropMigration } from "./migrations/token-usage-legacy-route-column-drop-migration.js";
+src/app-data-migrations/app-data-migration-registry.ts-20-
+src/app-data-migrations/app-data-migration-registry.ts-21-export class AppDataMigrationRegistry {
+src/app-data-migrations/app-data-migration-registry.ts-22-  private readonly definitions: AppDataMigrationDefinition[];
+src/app-data-migrations/app-data-migration-registry.ts-23-
+src/app-data-migrations/app-data-migration-registry.ts-24-  constructor(definitions?: AppDataMigrationDefinition[]) {
+src/app-data-migrations/app-data-migration-registry.ts-25-    this.definitions = definitions ?? [
+src/app-data-migrations/app-data-migration-registry.ts-26-      new CustomProviderV1AppDataMigration(),
+--
+src/app-data-migrations/app-data-migration-registry.ts-28-        appConfigProvider.config.getMemoryDir(),
+src/app-data-migrations/app-data-migration-registry.ts-29-        appConfigProvider.config.getAppDataDir(),
+src/app-data-migrations/app-data-migration-registry.ts-30-      ),
+src/app-data-migrations/app-data-migration-registry.ts-31-      new TeamRunMetadataMemberTreeMigration(appConfigProvider.config.getMemoryDir()),
+src/app-data-migrations/app-data-migration-registry.ts:32:      new TeamCanonicalIdentityMigration(
+src/app-data-migrations/app-data-migration-registry.ts-33-        appConfigProvider.config.getMemoryDir(),
+src/app-data-migrations/app-data-migration-registry.ts-34-        appConfigProvider.config.getAppDataDir(),
+src/app-data-migrations/app-data-migration-registry.ts-35-      ),
+src/app-data-migrations/app-data-migration-registry.ts-36-      new RemoveExternalRuntimeWorkingContextSnapshotsMigration(
+src/app-data-migrations/app-data-migration-registry.ts-37-        appConfigProvider.config.getMemoryDir(),
+src/app-data-migrations/app-data-migration-registry.ts-38-      ),
+src/app-data-migrations/app-data-migration-registry.ts-39-      // Native snapshot conversion resolves provenance through the current raw-trace layout.
+src/app-data-migrations/app-data-migration-registry.ts-40-      new RawTraceRotationLayoutMigration(appConfigProvider.config.getMemoryDir()),
+--
+src/app-data-migrations/migrations/team-canonical-identity-migration.ts-31-  failedCount: details.filter((detail) => detail.status === "FAILED").length,
+src/app-data-migrations/migrations/team-canonical-identity-migration.ts-32-  details,
+src/app-data-migrations/migrations/team-canonical-identity-migration.ts-33-});
+src/app-data-migrations/migrations/team-canonical-identity-migration.ts-34-
+src/app-data-migrations/migrations/team-canonical-identity-migration.ts:35:export class TeamCanonicalIdentityMigration implements AppDataMigrationDefinition {
+src/app-data-migrations/migrations/team-canonical-identity-migration.ts-36-  readonly id = MIGRATION_ID;
+src/app-data-migrations/migrations/team-canonical-identity-migration.ts-37-  readonly displayName = "AgentTeam canonical identity migration";
+src/app-data-migrations/migrations/team-canonical-identity-migration.ts-38-  readonly description = "Atomically converts required TeamRun, task, channel, and application platform state to canonical schema v3 identity.";
+src/app-data-migrations/migrations/team-canonical-identity-migration.ts:39:  readonly requiredOnStartup = true;
+src/app-data-migrations/migrations/team-canonical-identity-migration.ts-40-
+src/app-data-migrations/migrations/team-canonical-identity-migration.ts-41-  constructor(
+src/app-data-migrations/migrations/team-canonical-identity-migration.ts-42-    private readonly memoryDir: string,
+src/app-data-migrations/migrations/team-canonical-identity-migration.ts-43-    private readonly appDataDir: string,
+src/app-data-migrations/migrations/team-canonical-identity-migration.ts-44-    private readonly platformStateStore = new ApplicationPlatformStateStore(),
+src/app-data-migrations/migrations/team-canonical-identity-migration.ts-45-  ) {}
+src/app-data-migrations/migrations/team-canonical-identity-migration.ts-46-
+src/app-data-migrations/migrations/team-canonical-identity-migration.ts-47-  async execute(): Promise<AppDataMigrationExecutionResult> {
+
+Observed: focused durable acceptance test records app.listen({host:"127.0.0.1",port:0}) once after both a FAILED required result and a thrown runner exception.
+Expected: no bootstrap/listen unless every required migration is terminal-success; a fully successful required result starts once.
+Preliminary classification: implementation defect at the server-runtime migration/startup boundary. The canonical migration is requiredOnStartup, but startConfiguredServer ignores returned FAILED statuses and catches/continues thrown runner failures.

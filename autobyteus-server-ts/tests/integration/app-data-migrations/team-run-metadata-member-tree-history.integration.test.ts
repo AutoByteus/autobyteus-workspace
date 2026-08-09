@@ -3,31 +3,45 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AppDataMigrationRegistry } from "../../../src/app-data-migrations/app-data-migration-registry.js";
 import { AppDataMigrationRunner } from "../../../src/app-data-migrations/app-data-migration-runner.js";
 import type {
   AppDataMigrationRecordRepositoryLike,
   AppDataMigrationRecordSnapshot,
+  AppDataMigrationStatus,
 } from "../../../src/app-data-migrations/domain/app-data-migration-types.js";
+import {
+  TeamCanonicalIdentityMigration,
+  TEAM_CANONICAL_IDENTITY_MIGRATION_ID,
+} from "../../../src/app-data-migrations/migrations/team-canonical-identity-migration.js";
 import {
   TeamRunMetadataMemberTreeMigration,
   TEAM_RUN_METADATA_MEMBER_TREE_MIGRATION_ID,
 } from "../../../src/app-data-migrations/migrations/team-run-metadata-member-tree-migration.js";
-import {
-  TeamRunHistoryIndexV2AppDataMigration,
-  TEAM_RUN_HISTORY_INDEX_V2_APP_DATA_MIGRATION_ID,
-} from "../../../src/app-data-migrations/migrations/team-run-history-index-v2-migration.js";
-import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import { WorkspaceRunHistoryService } from "../../../src/run-history/services/workspace-run-history-service.js";
-import { TeamRunHistoryCatalogService } from "../../../src/run-history/services/team-run-history-catalog-service.js";
-import { TeamRunHistoryService } from "../../../src/run-history/services/team-run-history-service.js";
-import { TeamRunHistoryIndexStore } from "../../../src/run-history/store/team-run-history-index-store.js";
 import { TeamRunMetadataStore } from "../../../src/run-history/store/team-run-metadata-store.js";
-import type { TeamRunMetadata } from "../../../src/run-history/store/team-run-metadata-types.js";
 
 class InMemoryMigrationRepository implements AppDataMigrationRecordRepositoryLike {
-  private readonly records = new Map<string, AppDataMigrationRecordSnapshot>();
+  readonly records = new Map<string, AppDataMigrationRecordSnapshot>();
+
+  seedTerminal(migrationId: string, status: "SUCCEEDED" | "SUCCEEDED_WITH_WARNINGS"): void {
+    this.records.set(migrationId, {
+      migrationId,
+      displayName: migrationId,
+      status,
+      attempts: 1,
+      startedAt: new Date("2026-05-17T00:00:00.000Z"),
+      completedAt: new Date("2026-05-17T00:00:01.000Z"),
+      summaryJson: JSON.stringify({
+        scannedCount: 1,
+        migratedCount: status === "SUCCEEDED" ? 1 : 0,
+        skippedCount: 0,
+        failedCount: status === "SUCCEEDED" ? 0 : 1,
+        details: [],
+      }),
+      errorMessage: status === "SUCCEEDED" ? null : "historical warning",
+      logPath: null,
+    });
+  }
 
   async getRecord(migrationId: string): Promise<AppDataMigrationRecordSnapshot | null> {
     return this.records.get(migrationId) ?? null;
@@ -61,7 +75,7 @@ class InMemoryMigrationRepository implements AppDataMigrationRecordRepositoryLik
   async complete(input: {
     migrationId: string;
     displayName: string;
-    status: "SUCCEEDED" | "FAILED" | "SUCCEEDED_WITH_WARNINGS";
+    status: Exclude<AppDataMigrationStatus, "NOT_RUN" | "RUNNING">;
     completedAt: Date;
     summaryJson: string;
     errorMessage: string | null;
@@ -99,322 +113,290 @@ const fixturesDir = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   "../../fixtures/app-data-migrations/team-run-metadata-member-tree",
 );
+const safeFixturePath = path.join(fixturesDir, "legacy-flat-safe-team-run-metadata.json");
+const unsafeFixturePath = path.join(fixturesDir, "legacy-flat-unsafe-nested-team-run-metadata.json");
 
-const copyFixtureMetadata = async (
+const readJson = async (filePath: string): Promise<Record<string, any>> =>
+  JSON.parse(await fs.readFile(filePath, "utf-8")) as Record<string, any>;
+
+const writeFixture = async (
   memoryDir: string,
   teamRunId: string,
-  fixtureName: string,
+  fixturePath: string,
 ): Promise<string> => {
+  const payload = await readJson(fixturePath);
+  payload.teamRunId = teamRunId;
   const metadataDir = path.join(memoryDir, "agent_teams", teamRunId);
+  const metadataPath = path.join(metadataDir, "team_run_metadata.json");
   await fs.mkdir(metadataDir, { recursive: true });
-  const target = path.join(metadataDir, "team_run_metadata.json");
-  await fs.copyFile(path.join(fixturesDir, fixtureName), target);
-  return target;
+  await fs.writeFile(metadataPath, JSON.stringify(payload, null, 2), "utf-8");
+  return metadataPath;
 };
 
-const currentCanonicalMetadata = (): TeamRunMetadata => ({
-  teamRunId: "team-run-current-canonical",
-  teamDefinitionId: "team-def-current-canonical",
-  teamDefinitionName: "Current Canonical Team",
-  coordinatorMemberRouteKey: "coordinator",
-  createdAt: "2026-05-01T12:00:00.000Z",
-  archivedAt: null,
-  memberTree: [
-    {
-      memberKind: "agent",
-      memberRouteKey: "coordinator",
-      memberPath: ["coordinator"],
-      memberName: "Coordinator",
-      memberRunId: "coordinator-run",
-      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-      platformAgentRunId: null,
-      agentDefinitionId: "agent-coordinator",
-      llmModelIdentifier: "codex:test-model",
-      autoExecuteTools: false,
-      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
-      llmConfig: null,
-      workspaceRootPath: "/tmp/autobyteus/current-workspace",
-      applicationExecutionContext: null,
-    },
-  ],
+const listArtifacts = async (metadataPath: string) => {
+  const names = await fs.readdir(path.dirname(metadataPath));
+  return {
+    backups: names.filter((name) => name.startsWith("team_run_metadata.json.backup-")),
+    temporary: names.filter((name) => name.startsWith("team_run_metadata.json.") && name.endsWith(".tmp")),
+  };
+};
+
+const removeBackups = async (metadataPath: string): Promise<void> => {
+  const { backups } = await listArtifacts(metadataPath);
+  await Promise.all(backups.map((name) => fs.rm(path.join(path.dirname(metadataPath), name))));
+};
+
+const emptyPlatformStateStore = {
+  listExistingPlatformDatabasePaths: () => [],
+  resolveApplicationIdForPlatformDatabasePath: () => null,
+};
+
+const emptyTokenMigrator = {
+  migrate: async () => [{
+    itemId: "token-usage",
+    status: "SKIPPED" as const,
+    message: "The TeamRun transition fixture contains no token rows.",
+  }],
+};
+
+const createRunner = (
+  memoryDir: string,
+  appDataDir: string,
+  tempDir: string,
+  repository: InMemoryMigrationRepository,
+  stableMigration = new TeamRunMetadataMemberTreeMigration(memoryDir),
+) => ({
+  stableMigration,
+  runner: new AppDataMigrationRunner(
+    new AppDataMigrationRegistry([
+      stableMigration,
+      new TeamCanonicalIdentityMigration(
+        memoryDir,
+        appDataDir,
+        emptyPlatformStateStore as never,
+        emptyTokenMigrator,
+      ),
+    ]),
+    repository,
+    { logsDir: path.join(tempDir, "logs") },
+  ),
 });
 
-const inactiveTeamRunManager = {
-  getActiveRun: vi.fn().mockReturnValue(null),
-  getTeamRun: vi.fn().mockReturnValue(null),
-  listActiveRuns: vi.fn().mockReturnValue([]),
-} as any;
+const expectCanonicalProgramTeam = async (memoryDir: string, teamRunId: string) => {
+  const metadata = await new TeamRunMetadataStore(memoryDir).readMetadata(teamRunId);
+  expect(metadata).toMatchObject({
+    schemaVersion: 3,
+    rootTeam: {
+      kind: "agent_team",
+      address: "/",
+      teamRunId,
+      coordinatorAddress: "/program_manager",
+      children: [
+        expect.objectContaining({
+          kind: "agent",
+          address: "/program_manager",
+          agentRunId: "program-manager-run",
+        }),
+        expect.objectContaining({
+          kind: "agent",
+          address: "/qa_specialist",
+          agentRunId: "qa-specialist-run",
+        }),
+      ],
+    },
+  });
+  for (const child of metadata?.rootTeam.children ?? []) {
+    expect(child).not.toHaveProperty("memberName");
+    expect(child).not.toHaveProperty("memberRouteKey");
+    expect(child).not.toHaveProperty("memberPath");
+    expect(child).not.toHaveProperty("memberRunId");
+  }
+  return metadata;
+};
 
-describe("team run metadata member-tree app-data migration history boundary", () => {
+describe("SR-013 two-ID TeamRun metadata transition", () => {
   let tempDir: string;
   let memoryDir: string;
+  let appDataDir: string;
 
   beforeEach(async () => {
-    tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-migration-history-e2e-"));
+    tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-sr013-migration-"));
     memoryDir = path.join(tempDir, "memory");
-    inactiveTeamRunManager.getActiveRun.mockClear();
-    inactiveTeamRunManager.getTeamRun.mockClear();
-    inactiveTeamRunManager.listActiveRuns.mockClear();
+    appDataDir = path.join(tempDir, "app-data");
   });
 
   afterEach(async () => {
     await fs.rm(tempDir, { recursive: true, force: true });
   });
 
-  it("migrates a real historical flat metadata file to canonical history format", async () => {
-    const safeMetadataPath = await copyFixtureMetadata(
-      memoryDir,
-      "team-run-legacy-flat-safe",
-      "legacy-flat-safe-team-run-metadata.json",
-    );
-
-    const metadataStore = new TeamRunMetadataStore(memoryDir);
+  it("runs fresh Program Manager flat data through predecessor then final v3 with two atomic backups", async () => {
+    const teamRunId = "team-run-legacy-flat-safe";
+    const metadataPath = await writeFixture(memoryDir, teamRunId, safeFixturePath);
+    const originalBytes = await fs.readFile(metadataPath, "utf-8");
     const repository = new InMemoryMigrationRepository();
-    const runner = new AppDataMigrationRunner(
-      new AppDataMigrationRegistry([
-        new TeamRunMetadataMemberTreeMigration(memoryDir),
-        new TeamRunHistoryIndexV2AppDataMigration(memoryDir),
-      ]),
-      repository,
-      { logsDir: path.join(tempDir, "logs") },
+    const { runner } = createRunner(memoryDir, appDataDir, tempDir, repository);
+
+    const results = await runner.runPending();
+
+    expect(results.map(({ migrationId, status, attempts }) => ({ migrationId, status, attempts })))
+      .toEqual([
+        { migrationId: TEAM_RUN_METADATA_MEMBER_TREE_MIGRATION_ID, status: "SUCCEEDED", attempts: 1 },
+        { migrationId: TEAM_CANONICAL_IDENTITY_MIGRATION_ID, status: "SUCCEEDED", attempts: 1 },
+      ]);
+    expect(results[0]?.summary).toMatchObject({ migratedCount: 1, failedCount: 0 });
+    expect(results[1]?.summary).toMatchObject({ migratedCount: 1, failedCount: 0 });
+    await expectCanonicalProgramTeam(memoryDir, teamRunId);
+
+    const { backups, temporary } = await listArtifacts(metadataPath);
+    expect(backups).toHaveLength(2);
+    expect(temporary).toEqual([]);
+    const backupBytes = await Promise.all(
+      backups.map((name) => fs.readFile(path.join(path.dirname(metadataPath), name), "utf-8")),
     );
-
-    const firstRun = await runner.runPending();
-    expect(firstRun).toHaveLength(2);
-    const memberTreeRun = firstRun.find(
-      (run) => run.migrationId === TEAM_RUN_METADATA_MEMBER_TREE_MIGRATION_ID,
-    );
-    const teamIndexRun = firstRun.find(
-      (run) => run.migrationId === TEAM_RUN_HISTORY_INDEX_V2_APP_DATA_MIGRATION_ID,
-    );
-    expect(memberTreeRun).toMatchObject({
-      migrationId: TEAM_RUN_METADATA_MEMBER_TREE_MIGRATION_ID,
-      status: "SUCCEEDED",
-      attempts: 1,
-      canRetry: false,
-    });
-    expect(memberTreeRun?.summary).toMatchObject({
-      scannedCount: 1,
-      migratedCount: 1,
-      skippedCount: 0,
-      failedCount: 0,
-    });
-    expect(teamIndexRun).toMatchObject({
-      migrationId: TEAM_RUN_HISTORY_INDEX_V2_APP_DATA_MIGRATION_ID,
-      status: "SUCCEEDED",
-      attempts: 1,
-      canRetry: false,
-    });
-    expect(teamIndexRun?.summary).toMatchObject({
-      scannedCount: 1,
-      migratedCount: 1,
-      skippedCount: 0,
-      failedCount: 0,
-    });
-
-    const converted = JSON.parse(await fs.readFile(safeMetadataPath, "utf-8"));
-    expect(converted.runVersion).toBeUndefined();
-    expect(converted.memberMetadata).toBeUndefined();
-    expect(converted.memberTree).toEqual([
-      expect.objectContaining({
-        memberKind: "agent",
-        memberRouteKey: "program_manager",
-        memberPath: ["program_manager"],
-        memberRunId: "program-manager-run",
-      }),
-      expect.objectContaining({
-        memberKind: "agent",
-        memberRouteKey: "qa_specialist",
-        memberPath: ["qa_specialist"],
-        memberRunId: "qa-specialist-run",
-      }),
-    ]);
-    const backupNames = await fs.readdir(path.dirname(safeMetadataPath));
-    expect(backupNames.some((name) => name.includes("team_run_metadata.json.backup-"))).toBe(true);
-
-    const indexStore = new TeamRunHistoryIndexStore(memoryDir);
-    const catalogService = new TeamRunHistoryCatalogService(memoryDir, {
-      indexStore,
-      metadataStore,
-      teamRunManager: inactiveTeamRunManager,
-    });
-    const teamRunHistoryService = new TeamRunHistoryService(memoryDir, {
-      metadataStore,
-      catalogService,
-      teamRunManager: inactiveTeamRunManager,
-    });
-    const workspaceRunHistoryService = new WorkspaceRunHistoryService({
-      agentRunHistoryService: { listRunHistory: vi.fn(async () => []) } as any,
-      teamRunHistoryService,
-    });
-
-    const workspaceHistory = await workspaceRunHistoryService.listWorkspaceRunHistory(10);
-    const returnedTeamRunIds = workspaceHistory.flatMap((workspace) =>
-      workspace.teamDefinitions.flatMap((definition) =>
-        definition.runs.map((run) => run.teamRunId),
-      ),
-    );
-    expect(returnedTeamRunIds).toEqual(["team-run-legacy-flat-safe"]);
-
-    await expect(
-      teamRunHistoryService.getTeamRunResumeConfig("team-run-legacy-flat-safe"),
-    ).resolves.toMatchObject({
-      teamRunId: "team-run-legacy-flat-safe",
-      metadata: {
-        memberTree: [
-          expect.objectContaining({ memberRouteKey: "program_manager" }),
-          expect.objectContaining({ memberRouteKey: "qa_specialist" }),
-        ],
-      },
-    });
-
-    const retry = await runner.runMigration(TEAM_RUN_METADATA_MEMBER_TREE_MIGRATION_ID);
-    expect(retry).toMatchObject({
-      status: "SUCCEEDED",
-      attempts: 2,
-      summary: {
-        scannedCount: 1,
-        migratedCount: 0,
-        skippedCount: 1,
-        failedCount: 0,
-      },
-    });
+    expect(backupBytes).toContain(originalBytes);
+    expect(backupBytes.some((value) => value.includes('"memberTree"') && !value.includes('"schemaVersion"')))
+      .toBe(true);
   });
 
-  it("keeps workspace history usable when an unsafe historical file cannot be migrated", async () => {
-    const safeMetadataPath = await copyFixtureMetadata(
-      memoryDir,
-      "team-run-legacy-flat-safe",
-      "legacy-flat-safe-team-run-metadata.json",
-    );
-    await copyFixtureMetadata(
-      memoryDir,
-      "team-run-legacy-flat-unsafe",
-      "legacy-flat-unsafe-nested-team-run-metadata.json",
-    );
-
-    const metadataStore = new TeamRunMetadataStore(memoryDir);
-    await metadataStore.writeMetadata("team-run-current-canonical", currentCanonicalMetadata());
+  it("skips a terminal-success predecessor record and lets the pending canonical ID write final v3", async () => {
+    const teamRunId = "team-run-terminal-predecessor";
+    const metadataPath = await writeFixture(memoryDir, teamRunId, safeFixturePath);
+    const prerequisite = await new TeamRunMetadataMemberTreeMigration(memoryDir).execute();
+    expect(prerequisite).toMatchObject({ status: "SUCCEEDED", summary: { migratedCount: 1 } });
+    await removeBackups(metadataPath);
+    const predecessorBytes = await fs.readFile(metadataPath, "utf-8");
 
     const repository = new InMemoryMigrationRepository();
-    const runner = new AppDataMigrationRunner(
-      new AppDataMigrationRegistry([
-        new TeamRunMetadataMemberTreeMigration(memoryDir),
-        new TeamRunHistoryIndexV2AppDataMigration(memoryDir),
-      ]),
+    repository.seedTerminal(TEAM_RUN_METADATA_MEMBER_TREE_MIGRATION_ID, "SUCCEEDED");
+    const stableMigration = new TeamRunMetadataMemberTreeMigration(memoryDir);
+    const stableExecute = vi.spyOn(stableMigration, "execute");
+    const { runner } = createRunner(
+      memoryDir,
+      appDataDir,
+      tempDir,
       repository,
-      { logsDir: path.join(tempDir, "logs") },
+      stableMigration,
     );
 
-    const firstRun = await runner.runPending();
-    expect(firstRun).toHaveLength(2);
-    const memberTreeRun = firstRun.find(
-      (run) => run.migrationId === TEAM_RUN_METADATA_MEMBER_TREE_MIGRATION_ID,
-    );
-    const teamIndexRun = firstRun.find(
-      (run) => run.migrationId === TEAM_RUN_HISTORY_INDEX_V2_APP_DATA_MIGRATION_ID,
-    );
-    expect(memberTreeRun).toMatchObject({
-      migrationId: TEAM_RUN_METADATA_MEMBER_TREE_MIGRATION_ID,
-      status: "SUCCEEDED_WITH_WARNINGS",
-      attempts: 1,
-      canRetry: true,
-    });
-    expect(memberTreeRun?.summary).toMatchObject({
-      scannedCount: 3,
-      migratedCount: 1,
-      skippedCount: 1,
-      failedCount: 1,
-    });
-    expect(teamIndexRun).toMatchObject({
-      migrationId: TEAM_RUN_HISTORY_INDEX_V2_APP_DATA_MIGRATION_ID,
-      status: "SUCCEEDED_WITH_WARNINGS",
-      attempts: 1,
-      canRetry: true,
-    });
-    expect(teamIndexRun?.summary).toMatchObject({
-      scannedCount: 3,
-      migratedCount: 2,
-      skippedCount: 0,
-      failedCount: 1,
-    });
+    const results = await runner.runPending();
 
-    const converted = JSON.parse(await fs.readFile(safeMetadataPath, "utf-8"));
-    expect(converted.runVersion).toBeUndefined();
-    expect(converted.memberMetadata).toBeUndefined();
-    expect(converted.memberTree).toEqual([
-      expect.objectContaining({
-        memberKind: "agent",
-        memberRouteKey: "program_manager",
-        memberPath: ["program_manager"],
-        memberRunId: "program-manager-run",
-      }),
-      expect.objectContaining({
-        memberKind: "agent",
-        memberRouteKey: "qa_specialist",
-        memberPath: ["qa_specialist"],
-        memberRunId: "qa-specialist-run",
-      }),
+    expect(stableExecute).not.toHaveBeenCalled();
+    expect(results).toMatchObject([
+      { migrationId: TEAM_RUN_METADATA_MEMBER_TREE_MIGRATION_ID, status: "SUCCEEDED", attempts: 1 },
+      { migrationId: TEAM_CANONICAL_IDENTITY_MIGRATION_ID, status: "SUCCEEDED", attempts: 1 },
     ]);
-    const backupNames = await fs.readdir(path.dirname(safeMetadataPath));
-    expect(backupNames.some((name) => name.includes("team_run_metadata.json.backup-"))).toBe(true);
+    await expectCanonicalProgramTeam(memoryDir, teamRunId);
+    const { backups, temporary } = await listArtifacts(metadataPath);
+    expect(backups).toHaveLength(1);
+    expect(temporary).toEqual([]);
+    await expect(fs.readFile(path.join(path.dirname(metadataPath), backups[0]!), "utf-8"))
+      .resolves.toBe(predecessorBytes);
+  });
 
-    const indexStore = new TeamRunHistoryIndexStore(memoryDir);
-    const catalogService = new TeamRunHistoryCatalogService(memoryDir, {
-      indexStore,
-      metadataStore,
-      teamRunManager: inactiveTeamRunManager,
-    });
-    const teamRunHistoryService = new TeamRunHistoryService(memoryDir, {
-      metadataStore,
-      catalogService,
-      teamRunManager: inactiveTeamRunManager,
-    });
-    const workspaceRunHistoryService = new WorkspaceRunHistoryService({
-      agentRunHistoryService: { listRunHistory: vi.fn(async () => []) } as any,
-      teamRunHistoryService,
-    });
-
-    const workspaceHistory = await workspaceRunHistoryService.listWorkspaceRunHistory(10);
-    const returnedTeamRunIds = workspaceHistory.flatMap((workspace) =>
-      workspace.teamDefinitions.flatMap((definition) =>
-        definition.runs.map((run) => run.teamRunId),
-      ),
+  it("skips a terminal-warning stable record and converts residual flat input directly to final v3", async () => {
+    const teamRunId = "team-run-terminal-warning-flat";
+    const metadataPath = await writeFixture(memoryDir, teamRunId, safeFixturePath);
+    const originalBytes = await fs.readFile(metadataPath, "utf-8");
+    const repository = new InMemoryMigrationRepository();
+    repository.seedTerminal(TEAM_RUN_METADATA_MEMBER_TREE_MIGRATION_ID, "SUCCEEDED_WITH_WARNINGS");
+    const stableMigration = new TeamRunMetadataMemberTreeMigration(memoryDir);
+    const stableExecute = vi.spyOn(stableMigration, "execute");
+    const { runner } = createRunner(
+      memoryDir,
+      appDataDir,
+      tempDir,
+      repository,
+      stableMigration,
     );
-    expect(returnedTeamRunIds).toEqual([
-      "team-run-current-canonical",
-      "team-run-legacy-flat-safe",
-    ]);
-    expect(returnedTeamRunIds).not.toContain("team-run-legacy-flat-unsafe");
 
-    await expect(
-      teamRunHistoryService.getTeamRunResumeConfig("team-run-legacy-flat-safe"),
-    ).resolves.toMatchObject({
-      teamRunId: "team-run-legacy-flat-safe",
-      metadata: {
-        memberTree: [
-          expect.objectContaining({ memberRouteKey: "program_manager" }),
-          expect.objectContaining({ memberRouteKey: "qa_specialist" }),
-        ],
+    const results = await runner.runPending();
+
+    expect(stableExecute).not.toHaveBeenCalled();
+    expect(results).toMatchObject([
+      {
+        migrationId: TEAM_RUN_METADATA_MEMBER_TREE_MIGRATION_ID,
+        status: "SUCCEEDED_WITH_WARNINGS",
+        attempts: 1,
       },
-    });
-    await expect(
-      teamRunHistoryService.getTeamRunResumeConfig("team-run-legacy-flat-unsafe"),
-    ).rejects.toMatchObject({
-      code: "LEGACY_TEAM_RUN_METADATA_UPGRADE_REQUIRED",
-      teamRunId: "team-run-legacy-flat-unsafe",
-    });
+      { migrationId: TEAM_CANONICAL_IDENTITY_MIGRATION_ID, status: "SUCCEEDED", attempts: 1 },
+    ]);
+    await expectCanonicalProgramTeam(memoryDir, teamRunId);
+    const { backups, temporary } = await listArtifacts(metadataPath);
+    expect(backups).toHaveLength(1);
+    expect(temporary).toEqual([]);
+    await expect(fs.readFile(path.join(path.dirname(metadataPath), backups[0]!), "utf-8"))
+      .resolves.toBe(originalBytes);
+  });
 
-    const retry = await runner.runMigration(TEAM_RUN_METADATA_MEMBER_TREE_MIGRATION_ID);
-    expect(retry).toMatchObject({
-      status: "SUCCEEDED_WITH_WARNINGS",
+  it("keeps unsafe residual flat bytes stable, then retries only canonical after repair and skips current v3", async () => {
+    const teamRunId = "team-run-repairable-flat";
+    const metadataPath = await writeFixture(memoryDir, teamRunId, unsafeFixturePath);
+    const unsafeBytes = await fs.readFile(metadataPath, "utf-8");
+    const repository = new InMemoryMigrationRepository();
+    repository.seedTerminal(TEAM_RUN_METADATA_MEMBER_TREE_MIGRATION_ID, "SUCCEEDED_WITH_WARNINGS");
+    const stableMigration = new TeamRunMetadataMemberTreeMigration(memoryDir);
+    const stableExecute = vi.spyOn(stableMigration, "execute");
+    const { runner } = createRunner(
+      memoryDir,
+      appDataDir,
+      tempDir,
+      repository,
+      stableMigration,
+    );
+
+    const failed = await runner.runPending();
+
+    expect(stableExecute).not.toHaveBeenCalled();
+    expect(failed[1]).toMatchObject({
+      migrationId: TEAM_CANONICAL_IDENTITY_MIGRATION_ID,
+      status: "FAILED",
+      attempts: 1,
+      canRetry: true,
+      summary: { migratedCount: 0, failedCount: 2 },
+    });
+    expect(failed[1]?.summary.details).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        itemId: "token-usage:team-identity-dependency",
+        status: "FAILED",
+      }),
+    ]));
+    await expect(fs.readFile(metadataPath, "utf-8")).resolves.toBe(unsafeBytes);
+    await expect(listArtifacts(metadataPath)).resolves.toEqual({ backups: [], temporary: [] });
+
+    await writeFixture(memoryDir, teamRunId, safeFixturePath);
+    const repairedBytes = await fs.readFile(metadataPath, "utf-8");
+    const repaired = await runner.runPending();
+
+    expect(stableExecute).not.toHaveBeenCalled();
+    expect(repaired[1]).toMatchObject({
+      migrationId: TEAM_CANONICAL_IDENTITY_MIGRATION_ID,
+      status: "SUCCEEDED",
       attempts: 2,
-      summary: {
-        scannedCount: 3,
-        migratedCount: 0,
-        skippedCount: 2,
-        failedCount: 1,
-      },
+      canRetry: false,
+      summary: { migratedCount: 1, failedCount: 0 },
     });
+    const current = await expectCanonicalProgramTeam(memoryDir, teamRunId);
+    const currentBytes = await fs.readFile(metadataPath, "utf-8");
+    const afterRepairArtifacts = await listArtifacts(metadataPath);
+    expect(afterRepairArtifacts.backups).toHaveLength(1);
+    expect(afterRepairArtifacts.temporary).toEqual([]);
+    await expect(fs.readFile(
+      path.join(path.dirname(metadataPath), afterRepairArtifacts.backups[0]!),
+      "utf-8",
+    )).resolves.toBe(repairedBytes);
+
+    const idempotent = await runner.runPending();
+
+    expect(idempotent).toMatchObject([
+      {
+        migrationId: TEAM_RUN_METADATA_MEMBER_TREE_MIGRATION_ID,
+        status: "SUCCEEDED_WITH_WARNINGS",
+        attempts: 1,
+      },
+      { migrationId: TEAM_CANONICAL_IDENTITY_MIGRATION_ID, status: "SUCCEEDED", attempts: 2 },
+    ]);
+    await expect(fs.readFile(metadataPath, "utf-8")).resolves.toBe(currentBytes);
+    await expect(new TeamRunMetadataStore(memoryDir).readMetadata(teamRunId)).resolves.toEqual(current);
+    await expect(listArtifacts(metadataPath)).resolves.toEqual(afterRepairArtifacts);
   });
 });

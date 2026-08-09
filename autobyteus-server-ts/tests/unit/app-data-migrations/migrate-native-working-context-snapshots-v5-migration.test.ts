@@ -73,30 +73,34 @@ const writeStandaloneMetadata = async (runId: string, runtimeKind = RuntimeKind.
 const writeTeamMetadata = async (teamRunId: string, memberRunId: string): Promise<string> => {
   const teamDir = path.join(memoryDir, "agent_teams", teamRunId);
   await writeJson(path.join(teamDir, "team_run_metadata.json"), {
-    teamRunId,
-    teamDefinitionId: `team-def-${teamRunId}`,
+    schemaVersion: 3,
     teamDefinitionName: "Native Migration Team",
-    coordinatorMemberRouteKey: "lead",
     createdAt: "2026-07-31T00:00:00.000Z",
     archivedAt: null,
-    memberTree: [{
-      memberKind: "agent",
-      memberRouteKey: "lead",
-      memberPath: ["lead"],
-      memberName: "Lead",
-      memberRunId,
-      runtimeKind: RuntimeKind.AUTOBYTEUS,
-      platformAgentRunId: null,
-      agentDefinitionId: `agent-${memberRunId}`,
-      llmModelIdentifier: "model-test",
-      autoExecuteTools: false,
-      skillAccessMode: SkillAccessMode.NONE,
-      llmConfig: null,
-      workspaceRootPath: "/workspace/team",
-      applicationExecutionContext: null,
-      role: null,
-      description: null,
-    }],
+    rootTeam: {
+      kind: "agent_team",
+      address: "/",
+      teamDefinitionId: `team-def-${teamRunId}`,
+      teamRunId,
+      coordinatorAddress: "/lead",
+      children: [{
+        kind: "agent",
+        address: "/lead",
+        agentRunId: memberRunId,
+        runtimeKind: RuntimeKind.AUTOBYTEUS,
+        platformAgentRunId: null,
+        agentDefinitionId: `agent-${memberRunId}`,
+        llmModelIdentifier: "model-test",
+        autoExecuteTools: false,
+        skillAccessMode: SkillAccessMode.NONE,
+        llmConfig: null,
+        workspaceRootPath: "/workspace/team",
+        applicationExecutionContext: null,
+        role: null,
+        description: null,
+      }],
+    },
+    handoffs: [],
   });
   return path.join(teamDir, memberRunId);
 };
@@ -343,7 +347,7 @@ describe("MigrateNativeWorkingContextSnapshotsV5Migration", () => {
     const rotationIndex = defaultDefinitions.findIndex((item) => item instanceof RawTraceRotationLayoutMigration);
     const activeNameIndex = defaultDefinitions.findIndex((item) => item instanceof RawTraceActiveFileNameMigration);
     const nativeIndex = defaultDefinitions.findIndex((item) => item instanceof MigrateNativeWorkingContextSnapshotsV5Migration);
-    expect([externalIndex, rotationIndex, activeNameIndex, nativeIndex]).toEqual([3, 4, 5, 6]);
+    expect([externalIndex, rotationIndex, activeNameIndex, nativeIndex]).toEqual([4, 5, 6, 7]);
 
     const runId = "ordinary-runner-direct-upgrade";
     const runDir = standaloneDir(runId);

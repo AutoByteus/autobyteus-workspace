@@ -1,0 +1,128 @@
+# API-REV-014 final source/environment integrity audit
+## Git
+ M autobyteus-server-ts/docs/design/streaming_parsing_architecture.md
+ M autobyteus-server-ts/docs/features/shared_member_multi_team_membership_future.md
+ M autobyteus-server-ts/docs/modules/agent_communication.md
+ M autobyteus-server-ts/docs/modules/agent_team_definition.md
+ M autobyteus-server-ts/docs/modules/agent_team_execution.md
+ M autobyteus-server-ts/docs/modules/agent_tools.md
+ M autobyteus-server-ts/docs/modules/agent_tools_mcp_server.md
+ M autobyteus-server-ts/docs/modules/run_history.md
+ M autobyteus-server-ts/tests/e2e/external-channel/external-channel-team-open-delivery.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts
+ D autobyteus-server-ts/tests/e2e/token-usage/token-usage-execution-address-backfill-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+ M autobyteus-server-ts/tests/integration/api/runtime-selection-top-level.integration.test.ts
+ M autobyteus-server-ts/tests/integration/app-data-migrations/team-run-metadata-member-tree-history.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-backend-rest-ws.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts
+ M autobyteus-server-ts/tests/unit/agent-collaboration/collaboration-logical-address.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-tool-use-coordinator.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/claude/team-communication/team-member-claude-session-bootstrap-strategy.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/codex/history/codex-thread-history-item-normalizer.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.test.ts
+ M autobyteus-server-ts/tests/unit/agent-memory/agent-run-memory-recorder.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/inter-agent-message-delivery-intent-builder.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/inter-agent-message-runtime-builders.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/member-run-instruction-composer.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/send-message-to-tool-argument-parser.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-service.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-target-mapper.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/team-logical-placement-resolver.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/team-member-delivery-coordinator.test.ts
+ M autobyteus-server-ts/tests/unit/agent-tools/prompt-engineering/states/xml-patch-prompt-tool-parsing-state.test.js
+ M autobyteus-server-ts/tests/unit/agent-tools/prompt-engineering/states/xml-patch-prompt-tool-parsing-state.test.ts
+ M autobyteus-server-ts/tests/unit/agent-tools/task-delegation/task-delegation-autobyteus-context.test.ts
+ M autobyteus-server-ts/tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts
+ M autobyteus-server-ts/tests/unit/agent-tools/team-communication/send-message-to.test.ts
+ M autobyteus-server-ts/tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts
+ M autobyteus-server-ts/tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts
+ M autobyteus-server-ts/tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts
+ M autobyteus-server-ts/tests/unit/app-data-migrations/team-communication-projection-address-migration.test.ts
+ M autobyteus-server-ts/tests/unit/app-data-migrations/team-run-history-index-v2-migration.test.ts
+ D autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-execution-address-backfill-migration.test.ts
+ M autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-legacy-path-columns-drop-migration.test.ts
+ M autobyteus-server-ts/tests/unit/application-bundles/file-application-bundle-provider.test.ts
+ M autobyteus-server-ts/tests/unit/application-engine/application-backend-definition-loader.test.ts
+ M autobyteus-server-ts/tests/unit/application-engine/application-engine-host-service.test.ts
+ M autobyteus-server-ts/tests/unit/run-history/projection/codex-run-view-projection-provider.test.ts
+ M autobyteus-server-ts/tests/unit/server-runtime-app-data-migration-gate.test.ts
+ M autobyteus-web/services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts
+ M autobyteus-web/services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts
+ M test-support/live-e2e/live-e2e-harness.ts
+ M test-support/live-e2e/run-live-e2e.mjs
+ M tickets/in-progress/agent-team-hierarchical-handoffs/agent-team-addressing-handoff-contract.md
+ M tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-coverage-investigation.md
+ M tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md
+ M tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-revision-record.md
+ M tickets/in-progress/agent-team-hierarchical-handoffs/architecture-review-revision-record.md
+ M tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md
+ M tickets/in-progress/agent-team-hierarchical-handoffs/code-review-revision-record.md
+ M tickets/in-progress/agent-team-hierarchical-handoffs/design-review-report.md
+ M tickets/in-progress/agent-team-hierarchical-handoffs/design-spec.md
+ M tickets/in-progress/agent-team-hierarchical-handoffs/investigation-notes.md
+ M tickets/in-progress/agent-team-hierarchical-handoffs/requirements.md
+ M tickets/in-progress/agent-team-hierarchical-handoffs/solution-revision-record.md
+?? autobyteus-server-ts/tests/e2e/token-usage/token-usage-canonical-execution-address-graphql.e2e.test.ts
+?? autobyteus-server-ts/tests/fixtures/current-team-run-fixtures.ts
+?? autobyteus-server-ts/tests/unit/agent-team-execution/member-collaboration-instruction-provider-parity.test.ts
+?? autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-canonical-execution-address-migration.test.ts
+?? tickets/in-progress/agent-team-hierarchical-handoffs/agent-team-collaboration-system-instruction.md
+?? tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr012/
+?? tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr013/
+?? tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/
+?? tickets/in-progress/agent-team-hierarchical-handoffs/delivery-evidence/
+?? tickets/in-progress/agent-team-hierarchical-handoffs/delivery-integration-blocker.md
+?? tickets/in-progress/agent-team-hierarchical-handoffs/delivery-revision-record.md
+?? tickets/in-progress/agent-team-hierarchical-handoffs/docs-sync-report.md
+?? tickets/in-progress/agent-team-hierarchical-handoffs/handoff-summary.md
+?? tickets/in-progress/agent-team-hierarchical-handoffs/nested-classroom-live-validation-contract.md
+?? tickets/in-progress/agent-team-hierarchical-handoffs/release-deployment-report.md
+?? tickets/in-progress/agent-team-hierarchical-handoffs/release-notes.md
+?? tickets/in-progress/agent-team-hierarchical-handoffs/team-run-canonical-identity-refactor.md
+HEAD 6b829e3d9aed63a24cd2f1e50c37a3457f9c0718
+branch codex/agent-team-hierarchical-handoffs
+## Source assignment hash
+3ece3faee6acd2d696401b204de0954ba31576f4132ea81a21472d8d399476ed  /Users/normy/.autobyteus/server-data/.env
+## Original fixture current hashes
+f8e0c390c8086fdceb402de52a2a780cc3f99cfba28710dfee20a190ef1ab138  /Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/nested-classroom-test/agent-teams/student-study-group/agents/student-one/agent-config.json
+dc728aa18296c5e5b5879eea3678ce3d57f904751d7b639ac4abf1d95c19d5b3  /Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/nested-classroom-test/agent-teams/student-study-group/agents/student-one/agent.md
+2ab1a39462d525fb89fdab14599136f4494e868f783ea0c1a47d2cb85d794f8c  /Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/nested-classroom-test/agent-teams/student-study-group/agents/student-two/agent-config.json
+b6184346499779dcbde4c969e66c58596cbfe87458c93e7294c58beb166a56a3  /Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/nested-classroom-test/agent-teams/student-study-group/agents/student-two/agent.md
+add9eaa46df13d6e47bef909865e14e73313961a6ae163bd30e531221ac7432d  /Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/nested-classroom-test/agent-teams/student-study-group/team-config.json
+47cb6bd126ad994a058d9a39d883bc97af51a0770c59a0c553f8030c37329f26  /Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/nested-classroom-test/agent-teams/student-study-group/team.md
+a5606884588803394d9a45dd115c6594686bfe5885e7806fc3b6c9ae8939216c  /Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/nested-classroom-test/agents/teacher/agent-config.json
+b3f3a67e3c2b8a33e1f0e1ac908b874ebe65f2adfe021a1db748c9e0b506f1f7  /Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/nested-classroom-test/agents/teacher/agent.md
+d31d4e9b187720fd9dfd6df7ebcb97d77cbb034fa7e8d8d08be6bfdc5a304d45  /Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/nested-classroom-test/team-config.json
+ed707ab99ee7e419a9a3127e76e0201b77e6e35270f0edef2cd6d719ce81d49a  /Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/nested-classroom-test/team.md
+## Staged hashes
+f8e0c390c8086fdceb402de52a2a780cc3f99cfba28710dfee20a190ef1ab138  autobyteus-server-ts/tests/.tmp/sr015-api-rev-014-20260809/staged-agent-package-01/agent-teams/nested-classroom-test/agent-teams/student-study-group/agents/student-one/agent-config.json
+dc728aa18296c5e5b5879eea3678ce3d57f904751d7b639ac4abf1d95c19d5b3  autobyteus-server-ts/tests/.tmp/sr015-api-rev-014-20260809/staged-agent-package-01/agent-teams/nested-classroom-test/agent-teams/student-study-group/agents/student-one/agent.md
+2ab1a39462d525fb89fdab14599136f4494e868f783ea0c1a47d2cb85d794f8c  autobyteus-server-ts/tests/.tmp/sr015-api-rev-014-20260809/staged-agent-package-01/agent-teams/nested-classroom-test/agent-teams/student-study-group/agents/student-two/agent-config.json
+b6184346499779dcbde4c969e66c58596cbfe87458c93e7294c58beb166a56a3  autobyteus-server-ts/tests/.tmp/sr015-api-rev-014-20260809/staged-agent-package-01/agent-teams/nested-classroom-test/agent-teams/student-study-group/agents/student-two/agent.md
+acdf5fc9d7e0cdfb3d275a5911aea7d6e1fe6ad8f9f16521478dfe95eb535bcf  autobyteus-server-ts/tests/.tmp/sr015-api-rev-014-20260809/staged-agent-package-01/agent-teams/nested-classroom-test/agent-teams/student-study-group/team-config.json
+47cb6bd126ad994a058d9a39d883bc97af51a0770c59a0c553f8030c37329f26  autobyteus-server-ts/tests/.tmp/sr015-api-rev-014-20260809/staged-agent-package-01/agent-teams/nested-classroom-test/agent-teams/student-study-group/team.md
+a5606884588803394d9a45dd115c6594686bfe5885e7806fc3b6c9ae8939216c  autobyteus-server-ts/tests/.tmp/sr015-api-rev-014-20260809/staged-agent-package-01/agent-teams/nested-classroom-test/agents/teacher/agent-config.json
+bc8f4d2b4d7f20b9b4361617813148751234bc7e74ec8e62c36950e24efe7aa0  autobyteus-server-ts/tests/.tmp/sr015-api-rev-014-20260809/staged-agent-package-01/agent-teams/nested-classroom-test/agents/teacher/agent.md
+0dc596b3397348b2d28b776e99f3e8f06605890e345d8959430d26383021ce32  autobyteus-server-ts/tests/.tmp/sr015-api-rev-014-20260809/staged-agent-package-01/agent-teams/nested-classroom-test/team-config.json
+9dea07b7e7c3ac11e980c7daf6fc6eee5282bdb1b1cc3c99237eb6c3b697304f  autobyteus-server-ts/tests/.tmp/sr015-api-rev-014-20260809/staged-agent-package-01/agent-teams/nested-classroom-test/team.md
+## Listen ports before owned-process stop
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    42962 normy   26u  IPv4 0xe66fe958dcc617ab      0t0  TCP 127.0.0.1:60003 (LISTEN)
+COMMAND   PID  USER   FD   TYPE            DEVICE SIZE/OFF NODE NAME
+node    43747 normy   13u  IPv4 0xce024d075aea8fa      0t0  TCP *:31003 (LISTEN)

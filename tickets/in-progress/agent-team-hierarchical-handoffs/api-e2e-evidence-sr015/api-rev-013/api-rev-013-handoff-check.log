@@ -1,0 +1,24 @@
+API-REV-013 handoff verification
+captured_at_utc=2026-08-09T11:46:51Z
+artifact_head=ced0270908c620f0d186e61d294080f89e08bb7d
+source_revision=b877d343b30fe01bd2f39546c0e8279adbd00dff
+api_rev_013_index_count=1
+api_rev_013_detail_count=1
+investigation_meta=- Current API/E2E Revision ID: `API-REV-013` (`Fail / 90%`; prior `API-REV-012` completed `Fail / 84%`). CRR-029 described resuming API-REV-012, but API-REV-012 is already a completed chronological result; the skill-mandated post-fix result is therefore API-REV-013 rather than a history rewrite.
+execution_meta=- Current revision: `API-REV-013`
+execution_meta=- Result: `Fail`
+execution_meta=- Final validation confidence: `90%`
+structured_failure_json_valid=true
+present=tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-coverage-investigation.md
+present=tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md
+present=tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-revision-record.md
+present=tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-013/live/nested-classroom-live-failure-analysis.md
+present=tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-013/live/nested-classroom-autobyteus-failure-and-lifecycle.json
+present=tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-013/live/task-team-peer-routing-evidence.log
+present=tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-013/live/cleanup.log
+present=autobyteus-server-ts/tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts
+present=autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts
+git_diff_check=pass
+server_port_stopped=true
+frontend_port_stopped=true
+handoff_ready=true

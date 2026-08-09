@@ -1,0 +1,294 @@
+HEAD ee93189a0757ac1778c0efe98d4cceb73088ec15
+Started 2026-08-04T23:41:32Z
+--- changed durable test diff stat ---
+ ...external-channel-team-open-delivery.e2e.test.ts |  4 +--
+ .../run-projection-toolcalls-graphql.e2e.test.ts   | 12 ++++----
+ .../all-runtime-send-message-matrix.e2e.test.ts    |  6 ++--
+ .../autobyteus-team-runtime-graphql.e2e.test.ts    |  2 +-
+ .../claude-team-inter-agent-roundtrip.e2e.test.ts  | 18 ++++++------
+ .../codex-team-inter-agent-roundtrip.e2e.test.ts   | 16 +++++-----
+ .../e2e/runtime/mixed-task-delegation.e2e.test.ts  |  8 ++---
+ .../runtime/mixed-team-runtime-graphql.e2e.test.ts |  6 ++--
+ .../nested-mixed-team-runtime-graphql.e2e.test.ts  |  4 +--
+ ...k-delegation-tool-lifecycle.integration.test.ts | 16 +++++-----
+ ...runtime-selection-top-level.integration.test.ts | 10 +++----
+ ...on-backend-custom-websocket.integration.test.ts |  2 +-
+ ...ckend-mount-route-transport.integration.test.ts |  2 +-
+ ...application-backend-rest-ws.integration.test.ts |  2 +-
+ ...cation-context-capabilities.integration.test.ts |  2 +-
+ .../collaboration-logical-address.test.ts          | 34 +++++++++++-----------
+ .../autobyteus-agent-run-backend-factory.test.ts   |  6 ++--
+ .../events/claude-session-event-converter.test.ts  | 28 +++++++++---------
+ .../claude-session-tool-use-coordinator.test.ts    |  4 +--
+ .../events/codex-thread-event-converter.test.ts    | 22 +++++++-------
+ .../codex-thread-history-item-normalizer.test.ts   |  4 +--
+ .../agent-memory/agent-run-memory-recorder.test.ts |  6 ++--
+ ...r-agent-message-delivery-intent-builder.test.ts |  4 +--
+ .../inter-agent-message-runtime-builders.test.ts   |  2 +-
+ .../member-run-instruction-composer.test.ts        | 10 +++----
+ .../mixed-sub-team-member-handle.test.ts           |  2 +-
+ .../mixed-team-manager.test.ts                     |  4 +--
+ .../send-message-to-tool-argument-parser.test.ts   | 18 ++++++------
+ .../task-delegation-service.test.ts                | 24 +++++++--------
+ .../task-delegation-target-mapper.test.ts          | 18 ++++++------
+ .../team-logical-placement-resolver.test.ts        | 18 ++++++------
+ .../team-manager-member-interrupt.test.ts          |  2 +-
+ .../team-member-delivery-coordinator.test.ts       |  2 +-
+ .../xml-patch-prompt-tool-parsing-state.test.js    |  4 +--
+ .../xml-patch-prompt-tool-parsing-state.test.ts    |  4 +--
+ .../task-delegation-autobyteus-context.test.ts     |  2 +-
+ .../task-delegation-runtime-descriptions.test.ts   | 10 +++----
+ .../team-communication/send-message-to.test.ts     | 14 ++++-----
+ .../file-application-bundle-provider.test.ts       |  2 +-
+ .../application-backend-definition-loader.test.ts  | 10 +++----
+ .../application-engine-host-service.test.ts        |  2 +-
+ .../codex-run-view-projection-provider.test.ts     | 10 +++----
+ .../handlers/__tests__/segmentHandler.spec.ts      | 12 ++++----
+ .../__tests__/toolLifecycleHandler.spec.ts         |  2 +-
+ 44 files changed, 195 insertions(+), 195 deletions(-)
+--- changed durable paths ---
+autobyteus-server-ts/tests/e2e/external-channel/external-channel-team-open-delivery.e2e.test.ts
+autobyteus-server-ts/tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts
+autobyteus-server-ts/tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts
+autobyteus-server-ts/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts
+autobyteus-server-ts/tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts
+autobyteus-server-ts/tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts
+autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts
+autobyteus-server-ts/tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts
+autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts
+autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+autobyteus-server-ts/tests/integration/api/runtime-selection-top-level.integration.test.ts
+autobyteus-server-ts/tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts
+autobyteus-server-ts/tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts
+autobyteus-server-ts/tests/integration/application-backend/application-backend-rest-ws.integration.test.ts
+autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts
+autobyteus-server-ts/tests/unit/agent-collaboration/collaboration-logical-address.test.ts
+autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts
+autobyteus-server-ts/tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts
+autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-tool-use-coordinator.test.ts
+autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts
+autobyteus-server-ts/tests/unit/agent-execution/backends/codex/history/codex-thread-history-item-normalizer.test.ts
+autobyteus-server-ts/tests/unit/agent-memory/agent-run-memory-recorder.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/inter-agent-message-delivery-intent-builder.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/inter-agent-message-runtime-builders.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/member-run-instruction-composer.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/send-message-to-tool-argument-parser.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-service.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-target-mapper.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/team-logical-placement-resolver.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/team-member-delivery-coordinator.test.ts
+autobyteus-server-ts/tests/unit/agent-tools/prompt-engineering/states/xml-patch-prompt-tool-parsing-state.test.js
+autobyteus-server-ts/tests/unit/agent-tools/prompt-engineering/states/xml-patch-prompt-tool-parsing-state.test.ts
+autobyteus-server-ts/tests/unit/agent-tools/task-delegation/task-delegation-autobyteus-context.test.ts
+autobyteus-server-ts/tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts
+autobyteus-server-ts/tests/unit/agent-tools/team-communication/send-message-to.test.ts
+autobyteus-server-ts/tests/unit/application-bundles/file-application-bundle-provider.test.ts
+autobyteus-server-ts/tests/unit/application-engine/application-backend-definition-loader.test.ts
+autobyteus-server-ts/tests/unit/application-engine/application-engine-host-service.test.ts
+autobyteus-server-ts/tests/unit/run-history/projection/codex-run-view-projection-provider.test.ts
+autobyteus-web/services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts
+autobyteus-web/services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts
+--- change tokens ---
+  13           recipient_name: "pong",
+  13           recipient_address: "pong",
+   7             recipient_name: "pong",
+   7             recipient_address: "pong",
+   5       recipient_name: "reviewer",
+   5       recipient_address: "reviewer",
+   4   definitionContractVersion: '5',
+   4   definitionContractVersion: '4',
+   4         recipient_name: "pong",
+   4         recipient_address: "pong",
+   4           recipient_name: "missing",
+   4           recipient_address: "missing",
+   3 import { TeamRecipientResolver } from "../../../src/agent-team-execution/services/team-recipient-resolver.js";
+   3 import { TeamLogicalPlacementResolver } from "../../../src/agent-team-execution/services/team-logical-placement-resolver.js";
+   3     const resolver = new TeamRecipientResolver();
+   3     const resolver = new TeamLogicalPlacementResolver();
+   3     const placement = createResolvedAgentTeamRecipient({
+   3     const placement = createResolvedAgentTeamPlacement({
+   3     const placement = createResolvedAgentRecipient({
+   3     const placement = createResolvedAgentPlacement({
+   3         recipient_name: "delivery_engineer",
+   3         recipient_name: "code_reviewer",
+   3         recipient_address: "delivery_engineer",
+   3         recipient_address: "code_reviewer",
+   3           recipient_name: "code_reviewer",
+   3           recipient_address: "code_reviewer",
+   2   recipient_name: `./${name}`,
+   2   recipient_address: `./${name}`,
+   2       recipient_name: "./worker",
+   2       recipient_name: "./design_team",
+   2       recipient_address: "./worker",
+   2       recipient_address: "./design_team",
+   2       recipientName: "/unknown",
+   2       recipientAddress: "/unknown",
+   2       definitionContractVersion: "5",
+   2       definitionContractVersion: "4",
+   2         recipient_name: 'Student',
+   2         recipient_name: "./worker",
+   2         recipient_address: 'Student',
+   2         recipient_address: "./worker",
+   2         recipientName: "ping" | "pong";
+   2         recipientAddress: "ping" | "pong";
+   2           recipient_name: `./${input.recipientName}`,
+   2           recipient_name: `./${input.recipientMemberName}`,
+   2           recipient_name: "/research_subteam/specialist",
+   2           recipient_address: `./${input.recipientMemberName}`,
+   2           recipient_address: `./${input.recipientAddress}`,
+   2           recipient_address: "/research_subteam/specialist",
+   2           recipientName: "pong",
+   2           recipientName: "ping",
+   2           recipientAddress: "pong",
+   2           recipientAddress: "ping",
+   2           args.recipient_name === delegateArgs.recipient_name &&
+   2           args.recipient_address === delegateArgs.recipient_address &&
+   2             recipient_name: 'Student',
+   2             recipient_address: 'Student',
+   2             args.recipient_name === `./${input.recipientMemberName}` &&
+   2             args.recipient_address === `./${input.recipientMemberName}` &&
+   2               recipient_name: `./${input.recipientMemberName}`,
+   2               recipient_address: `./${input.recipientMemberName}`,
+   1 } from "../../../src/agent-team-execution/services/resolved-team-recipient.js";
+   1 } from "../../../src/agent-team-execution/services/resolved-team-logical-placement.js";
+   1 import { buildInterAgentMessageDeliveryIntentFromRecipientName } from "../../../src/agent-team-execution/services/inter-agent-message-delivery-intent-builder.js";
+   1 import { buildInterAgentMessageDeliveryIntentFromRecipientAddress } from "../../../src/agent-team-execution/services/inter-agent-message-delivery-intent-builder.js";
+   1 describe("TeamRecipientResolver", () => {
+   1 describe("TeamLogicalPlacementResolver", () => {
+   1   resolveRecipient(recipientAddress: string, callerAddressing: ReturnType<typeof createMemberLogicalAddressContext>) {
+   1   resolveLogicalPlacement(recipientName: string, callerAddressing: ReturnType<typeof createMemberLogicalAddressContext>) {
+   1   recipientName: string,
+   1   recipientName: "/program_manager",
+   1   recipientName: "/product_manager",
+   1   recipientName: "/Reviewer",
+   1   recipientAddress: string,
+   1   recipientAddress: "/program_manager",
+   1   recipientAddress: "/product_manager",
+   1   recipientAddress: "/Reviewer",
+   1   new TeamRecipientResolver().resolve(
+   1   new TeamLogicalPlacementResolver().resolve(
+   1   it("routes a hierarchical recipient_name through Team delivery and returns canonical JSON", async () => {
+   1   it("routes a hierarchical recipient_address through Team delivery and returns canonical JSON", async () => {
+   1   it("rejects recipient_name for a non-Team sender with all envelope fields", async () => {
+   1   it("rejects recipient_address for a non-Team sender with all envelope fields", async () => {
+   1   it("advertises exact-run send_message_to while warning that recipient_name delivery is disabled", async () => {
+   1   it("advertises exact-run send_message_to while warning that recipient_address delivery is disabled", async () => {
+   1   isCollaborationAddressAncestor,
+   1   isAgentTeamAddressAncestor,
+   1   getParentCollaborationAddress,
+   1   getParentAgentTeamAddress,
+   1   getCollaborationAddressSegments,
+   1   getCollaborationAddressBasename,
+   1   getAgentTeamAddressSegments,
+   1   getAgentTeamAddressBasename,
+   1   formatAbsoluteCollaborationAddress,
+   1   createResolvedAgentTeamRecipient,
+   1   createResolvedAgentTeamPlacement,
+   1   createResolvedAgentRecipient,
+   1   createResolvedAgentPlacement,
+   1   createAgentTeamAddress,
+   1   const result = buildInterAgentMessageDeliveryIntentFromRecipientName({
+   1   const result = buildInterAgentMessageDeliveryIntentFromRecipientAddress({
+   1   assertCanonicalCollaborationAddress,
+   1   assertAgentTeamAddress,
+   1   ])("rejects %s with typed code %s", (recipientName, code) => {
+   1   ])("rejects %s with typed code %s", (recipientAddress, code) => {
+   1     return new TeamRecipientResolver().resolve(this.config, recipientAddress, callerAddressing);
+   1     return new TeamLogicalPlacementResolver().resolve(this.config, recipientName, callerAddressing);
+   1     recipient_name: string;
+   1     recipient_address: string;
+   1     recipientName,
+   1     recipientAddress,
+   1     input.recipient_name,
+   1     input.recipient_address,
+   1     for (const alias of ["recipient", "recipientName", "targetAgentRunId"]) {
+   1     for (const alias of ["recipient", "recipientAddress", "targetAgentRunId"]) {
+   1     expect(request.target).toEqual({ kind: "recipient_name", recipientName: "coordinator" });
+   1     expect(request.target).toEqual({ kind: "recipient_address", recipientAddress: "coordinator" });
+   1     expect(parseDelegateTaskInput({ recipient_name: "./worker", description: "Do it" })).toEqual({
+   1     expect(parseDelegateTaskInput({ recipient_address: "./worker", description: "Do it" })).toEqual({
+   1     expect(managed).not.toHaveProperty("allowedRecipientNames");
+   1     expect(managed).not.toHaveProperty("allowedRecipientAddresss");
+   1     expect(isCollaborationAddressAncestor(address, address)).toBe(false);
+   1     expect(isCollaborationAddressAncestor("/research_team", address)).toBe(true);
+   1     expect(isAgentTeamAddressAncestor(address, address)).toBe(false);
+   1     expect(isAgentTeamAddressAncestor("/research_team", address)).toBe(true);
+   1     expect(getParentCollaborationAddress(address)).toBe("/research_team");
+   1     expect(getParentCollaborationAddress("/")).toBeNull();
+   1     expect(getParentAgentTeamAddress(address)).toBe("/research_team");
+   1     expect(getParentAgentTeamAddress("/")).toBeNull();
+   1     expect(getCollaborationAddressSegments(address)).toEqual([
+   1     expect(getCollaborationAddressSegments("/")).toEqual([]);
+   1     expect(getCollaborationAddressBasename(address)).toBe("research_lead");
+   1     expect(getCollaborationAddressBasename("/")).toBeNull();
+   1     expect(getAgentTeamAddressSegments(address)).toEqual([
+   1     expect(getAgentTeamAddressSegments("/")).toEqual([]);
+   1     expect(getAgentTeamAddressBasename(address)).toBe("research_lead");
+   1     expect(getAgentTeamAddressBasename("/")).toBeNull();
+   1     expect(formatAbsoluteCollaborationAddress([])).toBe("/");
+   1     expect(findParameter(delegateSchema, "recipient_name")?.required).toBe(true);
+   1     expect(findParameter(delegateSchema, "recipient_name")?.description).toContain("/...");
+   1     expect(findParameter(delegateSchema, "recipient_name")?.description).toContain("./...");
+   1     expect(findParameter(delegateSchema, "recipient_address")?.required).toBe(true);
+   1     expect(findParameter(delegateSchema, "recipient_address")?.description).toContain("/...");
+   1     expect(findParameter(delegateSchema, "recipient_address")?.description).toContain("./...");
+   1     expect(enabled.runtimeInstruction).toContain("{recipient_name, description, reference_files?}");
+   1     expect(enabled.runtimeInstruction).toContain("{recipient_address, description, reference_files?}");
+   1     expect(delegateEntry.description).toContain("recipient_name");
+   1     expect(delegateEntry.description).toContain("recipient_address");
+   1     expect(createAgentTeamAddress([])).toBe("/");
+   1     expect(composition.runtimeInstruction).not.toContain("recipient_name` must be");
+   1     expect(composition.runtimeInstruction).not.toContain("recipient_address` must be");
+   1     expect(composition.runtimeInstruction).not.toContain("allowedRecipientNames");
+   1     expect(composition.runtimeInstruction).not.toContain("allowedRecipientAddresss");
+   1     expect(composition.runtimeInstruction).not.toContain("Use recipient_name for one logical roster recipient");
+   1     expect(composition.runtimeInstruction).not.toContain("Use recipient_address for one logical roster recipient");
+   1     expect(() => parseDelegateTaskInput({ tasks: [{ recipient_name: "./worker", description: "Do it" }] })).toThrow(/recipient_name/);
+   1     expect(() => parseDelegateTaskInput({ tasks: [{ recipient_address: "./worker", description: "Do it" }] })).toThrow(/recipient_address/);
+   1     expect(() => parseDelegateTaskInput({ target: { kind: "member", name: "worker" }, description: "Do it" })).toThrow(/recipient_name/);
+   1     expect(() => parseDelegateTaskInput({ target: { kind: "member", name: "worker" }, description: "Do it" })).toThrow(/recipient_address/);
+   1     expect(() => parseDelegateTaskInput({ recipient_name: "./worker", description: "Do it", status: "done" })).toThrow(/Unrecognized key/);
+   1     expect(() => parseDelegateTaskInput({ recipient_address: "./worker", description: "Do it", status: "done" })).toThrow(/Unrecognized key/);
+   1     expect(() => parseDelegateTaskInput({ member_name: "worker", description: "Do it" })).toThrow(/recipient_name/);
+   1     expect(() => parseDelegateTaskInput({ member_name: "worker", description: "Do it" })).toThrow(/recipient_address/);
+   1     expect(() => new TeamRecipientResolver().resolve(
+   1     expect(() => new TeamLogicalPlacementResolver().resolve(
+   1     expect(() => assertCanonicalCollaborationAddress("./research_lead")).toThrow(
+   1     expect(() => assertAgentTeamAddress("./research_lead")).toThrow(
+   1     delegatorReplyRecipientName: "solution_designer",
+   1     delegatorReplyRecipientAddress: "solution_designer",
+   1     const placement = new TeamRecipientResolver().resolve(
+   1     const placement = new TeamLogicalPlacementResolver().resolve(
+   1     const input = { recipient_name: "./writer", content: "Provider parity." };
+   1     const input = { recipient_address: "./writer", content: "Provider parity." };
+   1     const address = assertCanonicalCollaborationAddress("/research_team/research_lead");
+   1     const address = assertAgentTeamAddress("/research_team/research_lead");
+   1     args?.recipient_name === `./${input.recipientMemberName}` &&
+   1     args?.recipient_address === `./${input.recipientMemberName}` &&
+   1       target: { kind: "recipient_name", recipientName: "/ReviewTeam/Reviewer" },
+   1       target: { kind: "recipient_address", recipientAddress: "/ReviewTeam/Reviewer" },
+   1       recipient_name: `./${teamTargetRouteKey}`,
+   1       recipient_name: "/missing",
+   1       recipient_name: "./writer",
+   1       recipient_name: "./research_team/research_lead",
+   1       recipient_name: " reviewer ",
+   1       recipient_address: `./${teamTargetRouteKey}`,
+   1       recipient_address: "/missing",
+   1       recipient_address: "./writer",
+   1       recipient_address: "./research_team/research_lead",
+   1       recipient_address: " reviewer ",
+   1       recipientName: "/BuildSquad",
+   1       recipientName: "./research_team/research_lead",
+   1       recipientName: " reviewer ",
+   1       recipientName,
+   1       recipientAddress: "/BuildSquad",
+   1       recipientAddress: "./research_team/research_lead",
+   1       recipientAddress: " reviewer ",
+   1       recipientAddress,
+   1       `export default { definitionContractVersion: "5", webSocketRoutes: [{ path: "/rooms" }] };`,
+   1       `export default { definitionContractVersion: "5", webSocketRoutes: [{ path: "/:room/:room", open() {} }] };`,
+   1       `export default { definitionContractVersion: "5", webSocketRoutes: [
+   1       `export default { definitionContractVersion: "4", webSocketRoutes: [{ path: "/rooms" }] };`,

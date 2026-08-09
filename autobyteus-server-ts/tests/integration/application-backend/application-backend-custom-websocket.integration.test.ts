@@ -124,7 +124,7 @@ describe("Application backend custom WebSocket integration", () => {
       `import { appendFileSync } from 'node:fs'
 
 export default {
-  definitionContractVersion: '4',
+  definitionContractVersion: '5',
   webSocketRoutes: [{
     path: '/rooms/:roomId',
     async open(request, session, context) {

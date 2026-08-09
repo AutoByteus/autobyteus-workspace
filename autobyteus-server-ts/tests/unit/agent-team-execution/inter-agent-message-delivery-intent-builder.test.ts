@@ -1,30 +1,21 @@
 import { describe, expect, it, vi } from "vitest";
-import { MemberTeamContext } from "../../../src/agent-team-execution/domain/member-team-context.js";
-import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { buildInterAgentMessageDeliveryIntent } from "../../../src/agent-team-execution/services/inter-agent-message-delivery-intent-builder.js";
+import { testMemberTeamContext } from "../../fixtures/current-team-run-fixtures.js";
 
-const buildContext = () => new MemberTeamContext({
+const buildContext = () => testMemberTeamContext({
+  rootTeamRunId: "team-1",
   teamRunId: "team-1",
   teamDefinitionId: "team-def-1",
-  teamBackendKind: TeamBackendKind.MIXED,
-  memberName: "Sender",
-  memberPath: ["sender"],
-  memberRouteKey: "sender",
-  memberRunId: "run-sender",
-  collaboration: {
-    addressing: {
-      rootTeamRunId: "team-1",
-      memberAddress: "/sender",
-    },
-    deliverInterAgentMessage: vi.fn(),
-  },
+  memberAddress: "/Sender",
+  agentRunId: "run-sender",
+  deliverInterAgentMessage: vi.fn(),
 });
 
 describe("inter-agent-message-delivery-intent-builder", () => {
   it("builds an unresolved intent without pre-resolving recipients", () => {
     const result = buildInterAgentMessageDeliveryIntent({
       memberTeamContext: buildContext(),
-      recipientName: "/unknown",
+      recipientAddress: "/unknown",
       content: "hello",
       messageType: "agent_message",
       referenceFiles: ["/tmp/reference.md"],
@@ -33,21 +24,30 @@ describe("inter-agent-message-delivery-intent-builder", () => {
     expect(result.ok).toBe(true);
     if (!result.ok) throw new Error(result.message);
     expect(result.intent).toEqual(expect.objectContaining({
-      teamRunId: "team-1",
-      recipientName: "/unknown",
+      rootTeamRunId: "team-1",
+      recipientAddress: "/unknown",
       callerAddressing: expect.objectContaining({
         rootTeamRunId: "team-1",
-        memberAddress: "/sender",
+        memberAddress: "/Sender",
       }),
       content: "hello",
       messageType: "agent_message",
       referenceFiles: ["/tmp/reference.md"],
     }));
-    expect(result.intent.sender.participant).toEqual(expect.objectContaining({
-      memberName: "Sender",
-      memberRunId: "run-sender",
-      memberRouteKey: "sender",
-    }));
+    expect(result.intent.sender.participant).toEqual({
+      kind: "agent",
+      executionAddress: {
+        rootTeamRunId: "team-1",
+        taskTeamRunIds: [],
+        memberAddress: "/Sender",
+        taskAgentRunId: null,
+      },
+      agentRunId: "run-sender",
+      displayName: "Sender",
+      runtimeKind: "autobyteus",
+      platformAgentRunId: null,
+      taskId: null,
+    });
     expect(result.intent).not.toHaveProperty("recipient");
     expect(result.intent).not.toHaveProperty("representedSubTeam");
   });

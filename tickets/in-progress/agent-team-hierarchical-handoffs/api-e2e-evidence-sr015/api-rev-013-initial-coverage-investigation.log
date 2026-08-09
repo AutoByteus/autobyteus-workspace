@@ -1,0 +1,41 @@
+API-REV-013 initial coverage investigation (before durable edit/final execution)
+timestamp_utc=2026-08-09T11:07:34Z
+artifact_head=ced0270908c620f0d186e61d294080f89e08bb7d
+reviewed_source=b877d343b30fe01bd2f39546c0e8279adbd00dff
+
+IR-017 changed production files:
+M	autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+M	autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-sub-team-member-handle.ts
+M	autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-task-team-instance-registry.ts
+M	autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts
+M	autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend.ts
+M	autobyteus-server-ts/src/agent-team-execution/backends/team-manager.ts
+M	autobyteus-server-ts/src/agent-team-execution/backends/team-run-backend.ts
+M	autobyteus-server-ts/src/agent-team-execution/domain/team-run.ts
+
+Known downstream durable seam references:
+53:    postMessage: childPostMessage,
+97:    await expect(handle.postMessage(message)).resolves.toMatchObject({
+155:    await expect(handle.deliverInterMemberMessage(request)).resolves.toEqual({ accepted: true });
+
+Required post-fix live rows:
+9:- Approval applicability: This supplement defines intended verification behavior. The user explicitly required one imported nested-classroom example AgentTeam and live coverage across AutoByteus, Codex App Server, and Claude Agent SDK, including the stated GPT-5.6 Luna selections and use of `$HOME/.autobyteus/server-data/.env` through the repository secret importer. SR-012 changed only application SDK compatibility design, and SR-013 changes only persisted predecessor migration interpretation and sequencing. This live contract remains user-approved and unchanged; the user has authorized the cumulative package for architecture re-review.
+38:The test must create an isolated Agent package root, copy the `nested-classroom-test` fixture into its `agent-teams/` directory, and import that staged package through the supported Agent-package import boundary with `sourceKind: "LOCAL_PATH"` and an absolute `source`. The public GraphQL `importAgentPackage` mutation is the preferred end-to-end entry point. The imported definition is then used to create and launch one fresh example TeamRun for each runtime-matrix row.
+118:Every member in a scenario—`Teacher`, `student_one`, and `student_two`, including task-scoped descendants—uses that scenario's runtime/model configuration. Each row launches a fresh root TeamRun and records the effective configuration returned by the runtime/catalog boundary.
+122:| AutoByteus | `autobyteus` | `llmModelIdentifier: "gpt-5.6-luna"` |
+123:| Codex App Server | `codex_app_server` | `llmModelIdentifier: "gpt-5.6-luna"`; `llmConfig.reasoning_effort: "medium"` |
+124:| Claude Agent SDK | `claude_agent_sdk` | Select an authenticated Claude model actually exposed by the live runtime catalog after secret import; record the exact model identifier and effective configuration in evidence. Do not substitute an AutoByteus/OpenAI model identifier. |
+126:The user fixed the GPT-5.6 Luna choices for AutoByteus and Codex but did not fix a Claude model identifier. Hard-coding a guessed Claude identifier would make the test less truthful than selecting from the authenticated runtime catalog.
+138:  -> create and launch a fresh root TeamRun
+154:1. package import discovers exactly the staged nested-classroom definition and launch creates a fresh TeamRun;
+189:- verify the original agents package and the user's normal AutoByteus server-data state are unchanged.
+199:- weakening the Codex model or reasoning effort from `gpt-5.6-luna` / `medium`;
+200:- using a non-Luna AutoByteus model; or
+
+Current ports before setup:
+60002=AVAILABLE
+31002=AVAILABLE
+
+Prior completed result:
+| API-REV-012 | `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`; Round 12 | SR-015; ARCH-REV-009; IR-016; CRR-027 | Fail / 61% (API-REV-011) | Fail / 84% |
+DECISION write API-REV-013 investigation before test maintenance and final execution

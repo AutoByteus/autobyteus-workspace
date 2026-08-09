@@ -1,25 +1,16 @@
 import { describe, expect, it } from "vitest";
 import { buildAutoByteusManagedTeamContext } from "../../../../src/agent-execution/backends/autobyteus/autobyteus-managed-team-context-builder.js";
-import { MemberTeamContext } from "../../../../src/agent-team-execution/domain/member-team-context.js";
-import { TeamBackendKind } from "../../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { buildTaskDelegationToolContextFromNativeContext } from "../../../../src/agent-tools/task-delegation/task-delegation-autobyteus-context.js";
+import { testMemberTeamContext } from "../../../fixtures/current-team-run-fixtures.js";
 
-const createContext = () => new MemberTeamContext({
+const createContext = () => testMemberTeamContext({
   teamRunId: "delivery-team-run-1",
+  rootTeamRunId: "delivery-team-run-1",
   teamDefinitionId: "delivery-team-def",
-  teamName: "Delivery Team",
-  teamBackendKind: TeamBackendKind.MIXED,
-  memberName: "program_manager",
-  memberPath: ["program_manager"],
-  memberRouteKey: "program_manager",
-  memberRunId: "run-program-manager",
-  coordinatorMemberRouteKey: "program_manager",
-  collaboration: {
-    addressing: {
-      rootTeamRunId: "delivery-team-run-1",
-      memberAddress: "/program_manager",
-    },
-  },
+  teamAddress: "/",
+  memberAddress: "/program_manager",
+  agentRunId: "run-program-manager",
+  coordinatorAddress: "/program_manager",
 });
 
 describe("buildTaskDelegationToolContextFromNativeContext", () => {
@@ -28,16 +19,21 @@ describe("buildTaskDelegationToolContextFromNativeContext", () => {
 
     expect(managed).toEqual(expect.objectContaining({
       teamRunId: "delivery-team-run-1",
-      currentMemberName: "program_manager",
-      currentMemberPath: ["program_manager"],
-      currentMemberRouteKey: "program_manager",
+      memberAddress: "/program_manager",
+      agentRunId: "run-program-manager",
+      executionAddress: {
+        rootTeamRunId: "delivery-team-run-1",
+        taskTeamRunIds: [],
+        memberAddress: "/program_manager",
+        taskAgentRunId: null,
+      },
       addressing: {
         rootTeamRunId: "delivery-team-run-1",
         memberAddress: "/program_manager",
       },
     }));
     expect(managed).not.toHaveProperty("members");
-    expect(managed).not.toHaveProperty("allowedRecipientNames");
+    expect(managed).not.toHaveProperty("allowedRecipientAddresss");
 
     expect(buildTaskDelegationToolContextFromNativeContext({
       config: { name: "program_manager" },
@@ -45,9 +41,8 @@ describe("buildTaskDelegationToolContextFromNativeContext", () => {
     })).toEqual(expect.objectContaining({
       teamRunId: "delivery-team-run-1",
       caller: expect.objectContaining({
-        memberName: "program_manager",
-        memberRouteKey: "program_manager",
-        logicalAddress: "/program_manager",
+        agentRunId: "run-program-manager",
+        executionAddress: expect.objectContaining({ memberAddress: "/program_manager" }),
       }),
       addressing: expect.objectContaining({
         memberAddress: "/program_manager",
@@ -73,10 +68,14 @@ describe("buildTaskDelegationToolContextFromNativeContext", () => {
       config: { name: "program_manager" },
       customData: { teamContext: {
         teamRunId: "delivery-team-run-1",
-        currentMemberName: "program_manager",
-        currentMemberPath: ["program_manager"],
-        currentMemberRouteKey: "program_manager",
-        currentMemberRunId: "run-program-manager",
+        memberAddress: "/program_manager",
+        agentRunId: "run-program-manager",
+        executionAddress: {
+          rootTeamRunId: "delivery-team-run-1",
+          taskTeamRunIds: [],
+          memberAddress: "/program_manager",
+          taskAgentRunId: null,
+        },
       } },
     })).toThrow(/active Team collaboration context/);
   });

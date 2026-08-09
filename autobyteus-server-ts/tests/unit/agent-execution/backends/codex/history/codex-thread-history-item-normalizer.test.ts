@@ -10,7 +10,7 @@ describe("codex-thread-history-item-normalizer", () => {
         server: "autobyteus_agent_tools",
         tool: "mcp__autobyteus_agent_tools__send_message_to",
         arguments: {
-          recipient_name: "pong",
+          recipient_address: "pong",
           content: "hello",
         },
         status: "completed",
@@ -30,7 +30,7 @@ describe("codex-thread-history-item-normalizer", () => {
       invocationId: "call-send-message",
       toolName: "send_message_to",
       toolArgs: {
-        recipient_name: "pong",
+        recipient_address: "pong",
         content: "hello",
       },
       toolResult: "Delivered message to pong.",

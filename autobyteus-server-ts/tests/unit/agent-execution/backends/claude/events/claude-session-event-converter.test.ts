@@ -138,7 +138,7 @@ describe("ClaudeSessionEventConverter", () => {
         segment_type: "tool_call",
         tool_name: "mcp__autobyteus_agent_tools__send_message_to",
         arguments: {
-          recipient_name: "pong",
+          recipient_address: "pong",
           content: "hello",
           message_type: "roundtrip_ping",
         },
@@ -150,7 +150,7 @@ describe("ClaudeSessionEventConverter", () => {
         invocation_id: "invoke-send-message",
         tool_name: "mcp__autobyteus_agent_tools__send_message_to",
         arguments: {
-          recipient_name: "pong",
+          recipient_address: "pong",
           content: "hello",
         },
       },
@@ -170,7 +170,7 @@ describe("ClaudeSessionEventConverter", () => {
         segment_type: "tool_call",
         tool_name: "mcp__autobyteus_agent_tools__send_message_to",
         arguments: {
-          recipient_name: "pong",
+          recipient_address: "pong",
           content: "hello",
         },
       },
@@ -183,7 +183,7 @@ describe("ClaudeSessionEventConverter", () => {
         metadata: {
           tool_name: "send_message_to",
           arguments: {
-            recipient_name: "pong",
+            recipient_address: "pong",
             content: "hello",
             message_type: "roundtrip_ping",
           },
@@ -196,7 +196,7 @@ describe("ClaudeSessionEventConverter", () => {
         invocation_id: "invoke-send-message",
         tool_name: "send_message_to",
         arguments: {
-          recipient_name: "pong",
+          recipient_address: "pong",
           content: "hello",
         },
       },
@@ -216,7 +216,7 @@ describe("ClaudeSessionEventConverter", () => {
         metadata: {
           tool_name: "send_message_to",
           arguments: {
-            recipient_name: "pong",
+            recipient_address: "pong",
             content: "hello",
           },
         },
@@ -237,7 +237,7 @@ describe("ClaudeSessionEventConverter", () => {
         segment_type: "tool_call",
         tool_name: "send_message_to",
         arguments: {
-          recipient_name: "pong",
+          recipient_address: "pong",
           content: "hello",
           message_type: "roundtrip_ping",
         },
@@ -249,7 +249,7 @@ describe("ClaudeSessionEventConverter", () => {
         invocation_id: "invoke-send-message",
         tool_name: "send_message_to",
         arguments: {
-          recipient_name: "pong",
+          recipient_address: "pong",
           content: "hello",
           message_type: "roundtrip_ping",
         },
@@ -265,7 +265,7 @@ describe("ClaudeSessionEventConverter", () => {
         metadata: {
           tool_name: "send_message_to",
           arguments: {
-            recipient_name: "pong",
+            recipient_address: "pong",
             content: "hello",
             message_type: "roundtrip_ping",
           },
@@ -278,7 +278,7 @@ describe("ClaudeSessionEventConverter", () => {
         invocation_id: "invoke-send-message",
         tool_name: "send_message_to",
         arguments: {
-          recipient_name: "pong",
+          recipient_address: "pong",
           content: "hello",
           message_type: "roundtrip_ping",
         },
@@ -295,7 +295,7 @@ describe("ClaudeSessionEventConverter", () => {
         invocation_id: "invoke-send-message-success",
         tool_name: "send_message_to",
         arguments: {
-          recipient_name: "pong",
+          recipient_address: "pong",
           content: "hello",
         },
         result: {
@@ -311,7 +311,7 @@ describe("ClaudeSessionEventConverter", () => {
         invocation_id: "invoke-send-message-failed",
         tool_name: "send_message_to",
         arguments: {
-          recipient_name: "missing",
+          recipient_address: "missing",
           content: "hello",
         },
         error: "Recipient missing was not found.",
@@ -324,7 +324,7 @@ describe("ClaudeSessionEventConverter", () => {
         invocation_id: "invoke-send-message-success",
         tool_name: "send_message_to",
         arguments: {
-          recipient_name: "pong",
+          recipient_address: "pong",
           content: "hello",
         },
         result: {
@@ -340,7 +340,7 @@ describe("ClaudeSessionEventConverter", () => {
         invocation_id: "invoke-send-message-failed",
         tool_name: "send_message_to",
         arguments: {
-          recipient_name: "missing",
+          recipient_address: "missing",
           content: "hello",
         },
         error: "Recipient missing was not found.",

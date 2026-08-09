@@ -1,240 +1,103 @@
-# API/E2E Execution Coverage Report
+# API/E2E Execution And Coverage Report
 
-## Execution Round Meta
+## Report Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/design-spec.md`
-- Supplemental Task Artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/agent-team-addressing-handoff-contract.md`
-- Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/solution-revision-record.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/design-review-report.md`
-- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/architecture-review-revision-record.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/implementation-handoff.md`
-- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/implementation-revision-record.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`
-- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-revision-record.md`
-- Prior API/E2E Test Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-test-review-report.md` (`CRR-006`; pre-merge API-REV-003 only)
-- Delivery Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/delivery-revision-record.md`
-- Relevant Delivery Revision: `DR-002`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-coverage-investigation.md`
-- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-004`
-- Current Execution Round: `4`
-- Trigger: `CRR-007` Pass for integrated `IR-004` at merge commit `ef32724ddb50db9858cb92ca1e61f3bac1eddbd1`.
-- Prior Round Reviewed: `API-REV-003 — Pass / 97.0%` at pre-merge `a5ef1d5b...`; not integrated-state proof.
-- Latest Authoritative Round: `Round 4 / API-REV-004` in this report.
+- Current API/E2E Revision: `API-REV-015`
+- Trigger: `CRR-032` — `Fail — Local Fix` for `TR-F-002` and `TR-F-003`
+- Product source basis: `SR-015` / `ARCH-REV-009` / `IR-018` (`035fba611e6895187f7f6d4644993e22efd8c38c`) / `CRR-031`
+- Prior completed result: `API-REV-014 — Pass / 96%`
+- Current result: `Pass / 96%`
+- Scope of this revision: bounded cumulative durable-coverage correction and reporting reissue. CRR-032 explicitly preserves API-REV-014's product/runtime result and real three-runtime evidence.
+- Working directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs`
+- Evidence root: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-015`
 
-## Investigation And Execution Basis
+## Corrected Coverage Decisions
 
-- Investigation completed before durable coverage changes or final execution: `Yes`.
-- Investigation plan followed: `Yes, with evidence-driven expansion and selector correction`.
-- Coverage decisions revised during execution: `Yes`. Initial focused execution showed that the exact-context memory and API fixtures also required the latest base's Agent lifecycle/source-event interface. The investigation was updated before maintaining those seams. A first broad command used an ambiguous `tests/integration/agent` prefix and collected unrelated integration trees; that result was preserved as selection-validity/baseline evidence, the investigation was updated, and the intended explicit-path selection was executed cleanly.
-- Reroute required: `No`.
-- Result basis: fresh merge-HEAD execution only. API-REV-003 was used as scenario history, not proof.
+### TR-F-002 — stale skipped/excluded paths
 
-## Compatibility / Legacy Scope Check
-
-- Requirements/design introduce backward compatibility in scope: `No`.
-- Compatibility-only or legacy-retention behavior observed: `No`.
-- Approved persisted-data transition followed without unnecessary migration/fallback: `Yes`.
-- Durable coverage retained only for compatibility behavior: `No`.
-- Obsolete aggregate Team status owners/fixtures restored: `No`; the deleted `MixedTeamEventBus` and `MixedTeamStatusPublisher` remain absent, and maintained fixtures use leaf snapshots/open work.
-- Invalid compatibility scope / notification: `N/A`.
-
-## Changed Boundary And Evidence Matrix
-
-All relative log names resolve under `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence/`.
-
-| Scenario ID | Behavior / IDs | Changed Boundary | Surface / Evidence Type | Result | Evidence |
-| --- | --- | --- | --- | --- | --- |
-| INTEGRATED-MSG-001 | Exact canonical caller context and root-private Team-ingress materialization; R-028–R-031, AC-023–AC-025 | Mixed manager / delivery coordinator | Durable direct unit/integration | Pass | `ir004-focused-final.log`; `ir004-affected-broad-final.log` |
-| INTEGRATED-LIFECYCLE-001 | Leaf-Agent snapshots, path prefixing, open-work propagation, accepted settlement/termination, no aggregate Team events | Mixed manager / TeamRun lifecycle | Durable unit/integration | Pass | `ir004-focused-final.log`; `ir004-affected-broad-final.log` |
-| INTEGRATED-RUN-MANAGER-001 | Create/restore/route/evict/terminate using current Team backend lifecycle | TeamRun manager | Durable integration | Pass | `ir004-focused-final.log`; `ir004-affected-broad-final.log` |
-| ADDR-CTX-LIFECYCLE-001 | Exact persistent/task-Agent/task-Team addresses and supported task settlement | Task delegation lifecycle | Durable integration | Pass | `ir004-focused-final.log`; `ir004-affected-broad-final.log` |
-| ADDR-CTX-MEMORY-001 | Exact `/Coordinator` context plus current Agent lifecycle/source-batch/public event memory flow | Mixed memory/event composition | Updated durable integration | Pass | `ir004-memory-focused.log`; `ir004-focused-final.log`; `ir004-affected-broad-final.log` |
-| ADDR-CTX-RESTORE-001 | Exact created/restored Coordinator and restored Specialist addressing | GraphQL/WebSocket TeamRun restore | Updated durable integration | Pass | `ir004-focused-final.log`; `ir004-affected-broad-final.log` |
-| INTEGRATED-BACKEND-001 | TeamRun backend delegates leaf snapshots/open work | Backend seam | Updated durable integration | Pass | `ir004-focused-final.log`; `ir004-affected-broad-final.log` |
-| INTEGRATED-WS-001 | Team conversation target and Agent/Team lifecycle WebSockets use current lifecycle | API/WebSocket | Updated durable integration | Pass | `ir004-focused-final.log`; `ir004-affected-broad-final.log` |
-| INTEGRATED-HISTORY-001 | Current TeamRun lifecycle fixture preserves memory/history projection | Persistence/history | Updated durable integration | Pass | `ir004-focused-final.log`; `ir004-affected-broad-final.log` |
-| INTEGRATED-EXTERNAL-001 | External-channel Team open delivery tracks current open-work lifecycle | External-channel E2E | Updated durable E2E | Pass | `ir004-focused-final.log`; `ir004-affected-broad-final.log`; `ir004-repository-e2e-final.log` |
-| API-DEF-001 / API-HANDOFF-001 | Definitions, hierarchy, sender handoffs, instructions, exact-run/provider envelopes preserved | Definition/provider/API regression | Durable affected/E2E | Pass | `ir004-affected-broad-final.log`; `ir004-repository-e2e-final.log` |
-| BUILD-001 | Production source compiles and sanitized built bootstrap succeeds | Build/runtime packaging | Executable | Pass | `ir004-production-typecheck-final.log`; `ir004-build-full-final.log` |
-| FULL-BASELINE-001 | Whole-server health classification | Repository baseline | Executable, non-acceptance | Out Of Scope / non-clean | `ir004-broader-baseline.log`; `ir004-static-audit-final.log` |
-
-## Additional Repository Coverage Execution
-
-| Order | Command / Mode | Working Directory | Boundary | Result | Evidence |
-| --- | --- | --- | --- | --- | --- |
-| 0a | Initial focused 20-file validity command, recorded verbatim | `autobyteus-server-ts` | Integrated fixture validity | Expected discovery failure: 18/20 files and 113/132 tests passed; 19 failures identified stale Agent lifecycle methods in two fixtures | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence/ir004-focused-initial.log` |
-| 0b | Focused rerun after lifecycle fake maintenance | `autobyteus-server-ts` | Public event-boundary validity | Expected discovery failure: 19/20 files and 118/132 tests passed; remaining 14 stale `emitLocalEvent` calls identified | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence/ir004-focused-after-lifecycle-fix.log` |
-| 0c | Memory-focused rerun | `autobyteus-server-ts` | Current public event flow | Pass: 1 file / 16 tests | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence/ir004-memory-focused.log` |
-| 1 | Final focused 20-file command, recorded verbatim | `autobyteus-server-ts` | Direct IR-004/SR-006/lifecycle composition | Pass: 20/20 files, 132/132 tests | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence/ir004-focused-final.log` |
-| 2a | Initial affected command with ambiguous integration prefix | `autobyteus-server-ts` | Selection validity / inherited baseline | Non-clean: 7 failed / 123 passed / 6 skipped files; 24 failed / 853 passed / 35 skipped tests. All seven failures are unchanged integrated-base files with zero ticket/current-test-delta intersection. | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence/ir004-affected-broad-initial.log`; `ir004-static-audit-final.log` |
-| 2b | Corrected explicit-path affected command, recorded verbatim | `autobyteus-server-ts` | Collaboration, lifecycle, API/WebSocket, memory/history, providers, external channel | Pass: 121/121 files, 823/823 tests | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence/ir004-affected-broad-final.log` |
-| 3 | `pnpm test:e2e` | Worktree root | Full deterministic E2E | Pass: 51 passed / 14 skipped files; 178 passed / 50 skipped tests | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence/ir004-repository-e2e-final.log` |
-| 4 | `pnpm exec tsc -p tsconfig.build.json --noEmit`; `pnpm run build:full` | `autobyteus-server-ts` | Production compile, assets, sanitized bootstrap | Pass | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence/ir004-production-typecheck-final.log`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence/ir004-build-full-final.log` |
-| 5 | `pnpm exec vitest run --no-watch` | `autobyteus-server-ts` | Whole-server health classification | Non-clean: 26 failed / 518 passed / 32 skipped files; 71 failed / 2814 passed / 112 skipped tests. All 26 failed files are byte-identical to integrated-base parent and have zero ticket/current-test-delta intersection. | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence/ir004-broader-baseline.log`; `ir004-static-audit-final.log` |
-| 6 | Python/`git` structural and intersection audit | Worktree root | Merge parents, interfaces, exact delta, obsolete owners, failure origin, protected delivery state | Pass | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence/ir004-static-audit-final.log` |
-
-## Validation Confidence Scorecard
-
-Broader validation used project-owned lifecycle, in-process API, and deterministic E2E surfaces and completed before scoring. Post-repository and final scores are therefore identical.
-
-| Confidence Category | Post-Repository | Final | Change | Final Evidence | Residual Uncertainty |
-| --- | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 98% | 98% | 0 | R-028–R-031 and AC-023–AC-025 mapped to exact passing evidence | Negligible live provider drift |
-| Changed-boundary execution directness | 98% | 98% | 0 | Conflict-resolved manager, child, delivery, TeamRun lifecycle and deletion seams executed directly | None material |
-| Cross-boundary integration realism and mock gap | 96% | 96% | 0 | Prisma, GraphQL/WebSocket, task, memory/history, external channel, native/MCP/provider, E2E | Live model processes capability-gated |
-| Environment, configuration, identity, and fixture fidelity | 96% | 96% | 0 | `.env.test`, migrations, test SQLite/temp roots, exact addresses, current lifecycle fixtures | No external credentials/models |
-| Failure, edge-case, lifecycle, and recovery evidence | 97% | 97% | 0 | Rejections, private materialization, no aggregate events, leaf/open-work, settlement, restore, termination, cleanup | Inherited unrelated repository failures |
-| User-surface, browser, and desktop-shell confidence | N/A | N/A | N/A | No changed UI/shell surface | None |
-| Durable regression coverage quality and relevance | 97% | 97% | 0 | Seven narrow fixture updates; 132 focused, 823 affected, 178 deterministic E2E passes | Proportional test review is next gate |
-
-- Overall post-repository confidence: `97.0%`.
-- Overall final confidence: `97.0%`.
-- Calculation: arithmetic mean of six applicable categories: `(98+98+96+96+97+97)/6 = 97.0%`; N/A excluded.
-- Confidence change after already-completed broader validation: `0.0 percentage points`.
-- Every critical acceptance criterion directly proven: `Yes`.
-- Any applicable category below 90%: `No`.
-- Default 95% target met: `Yes`.
-- Confidence-limiting residual risks: live Codex/Claude model processes remain capability-gated and are not counted as passes; the whole-server baseline remains non-clean outside the ticket and current durable-test delta while the direct affected and deterministic E2E collections are clean.
-
-## Broader Validation Decision And Execution
-
-- Decision / mode: `Required — completed via lifecycle / in-process API / repository deterministic E2E`.
-- Material deviation: the initial broad selector expanded beyond intent; it was preserved transparently, classified, and replaced by the exact-path command. No failing evidence was discarded.
-- Gap addressed: merge composition across root-private message delivery, leaf/open-work lifecycle, accepted settlement, restore, WebSocket, memory/history, and external-channel delivery.
-- Browser: not selected because no frontend/browser/desktop boundary changed; server API/lifecycle execution is more direct.
-- Startup/readiness: Prisma migrations and test bootstrap completed; app/socket helpers used project readiness and teardown.
-- Environment/data: `.env.test`, test-owned SQLite/temp roots, deterministic Agent/Team/task/MCP identities; no user data or external authentication.
-
-| Journey | Expected Observable Result | Actual / Evidence | Result |
-| --- | --- | --- | --- |
-| Root/child message delivery | Exact canonical caller and Team-ingress private selector coexist | Direct manager/delivery assertions and affected suites pass | Pass |
-| Team lifecycle | Leaf statuses/open work propagate; aggregate Team status events stay absent | Conflict-resolved manager/run-manager and lifecycle suites pass | Pass |
-| Task settlement | Parent-first mapping and accepted settlement remove active task Teams | Task lifecycle and active-directory coverage pass | Pass |
-| TeamRun API/restore | Created/restored Coordinator and Specialist retain exact minimal addresses | Runtime-selection GraphQL/WebSocket integration passes | Pass |
-| Deterministic repository E2E | No affected external-channel/provider/API regression | 178 passed; 50 capability-declared skips | Pass |
-
-## Desktop Application Validation
-
-Not applicable. No renderer, browser, Electron shell, preload, IPC, window, or packaging behavior changed. No running desktop application was affected.
-
-## Platform / Runtime Targets
-
-- OS: `Darwin 25.5.0 arm64`.
-- Runtime: `Node.js v22.23.1`; `pnpm 10.28.2`; `Vitest 4.0.18`.
-- Browser/device/viewport/accessibility: `N/A`.
-- Locale/timezone: host environment / `Europe/Berlin`.
-
-## Lifecycle / Upgrade / Restart / Persisted-Data Checks
-
-- Approved SR-006/IR-004 persisted-data decision: `Not Affected`.
-- Preserved snapshot decision: `Directly Usable — No Migration`.
-- Representative data: current Team definition/handoffs, TeamRun metadata, restored mixed Coordinator/Specialist, task Agent/Team contexts, memory/events, leaf lifecycle state.
-- Result: create/restore/memory/task journeys pass on integrated HEAD without schema migration or definition-time fallback.
-- Migration completion/recovery: `N/A`.
-- Version-specific branch, dual read/write, or compatibility fallback observed: `No`.
-- Residual persisted-data risk: `None material`.
-
-## Tests Implemented Or Updated
-
-| Absolute Path | Change | Requirement / Boundary | Result | Notes |
-| --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/e2e/external-channel/external-channel-team-open-delivery.e2e.test.ts` | Updated | Current Team open-work lifecycle / external delivery | Pass | Replaced aggregate status fixture with leaf/open-work behavior. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts` | Updated | AC-023/025 exact context, memory/event composition | Pass | Current Agent lifecycle/source-event-batch fake and public `publishEvent`; memory assertions unchanged. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts` | Updated | IR-004 TeamRun backend lifecycle | Pass | Asserts leaf snapshots/open-work delegation. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts` | Updated | Team WebSocket/current lifecycle | Pass | Current leaf/open-work TeamRun fixture. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/integration/agent-team-execution/team-run-service.integration.test.ts` | Updated | TeamRun create/restore/current backend | Pass | Current leaf/open-work fixture. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/integration/api/runtime-selection-top-level.integration.test.ts` | Updated | AC-023/025 API create/restore and Agent/Team lifecycle | Pass | Exact Coordinator/Specialist assertions retained; Agent source-batch and Team leaf/open-work fixtures current. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/integration/run-history/memory-layout-and-projection.integration.test.ts` | Updated | TeamRun memory/history projection | Pass | Current leaf/open-work fixture. |
-
-## Tests Removed As Stale Or Obsolete
-
-None. No scenario or file was removed. Obsolete fixture methods were replaced in place; obsolete aggregate production owners had already been deleted by IR-004 and remain absent.
-
-## Durable Coverage Changed In The Codebase
-
-- Repository-resident durable coverage changed: `Yes`.
-- Paths added or updated: `0 added / 7 updated` — the seven absolute paths above.
-- Paths removed: `None`.
-- Updated paths attached for proportional test-code review: `Yes, in the outgoing handoff`.
-- Removed-path evidence: `N/A`.
-- The two merge-resolved durable tests were adjudicated and executed as `Still Valid`; API/E2E did not modify them.
-
-## Other Execution Artifacts
-
-| Absolute Path | Purpose | Status |
+| Path group | Final decision | Correction and evidence |
 | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence/ir004-focused-initial.log` | Fixture-validity discovery | Retained; expected non-final failure |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence/ir004-focused-after-lifecycle-fix.log` | Event-boundary validity discovery | Retained; expected non-final failure |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence/ir004-memory-focused.log` | Maintained memory fixture proof | Retained; Pass 1/16 |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence/ir004-focused-final.log` | Direct integrated-state proof | Retained; Pass 20/132 |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence/ir004-affected-broad-initial.log` | Transparent overbroad selection / inherited baseline | Retained; non-clean, unrelated by exact comparison |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence/ir004-affected-broad-final.log` | Corrected affected regression | Retained; Pass 121/823 |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence/ir004-repository-e2e-final.log` | Full deterministic E2E | Retained; 178 pass / 50 skip |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence/ir004-production-typecheck-final.log` | Production typecheck | Retained; Pass |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence/ir004-build-full-final.log` | Build/bootstrap | Retained; Pass |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence/ir004-broader-baseline.log` | Current whole-server baseline | Retained; non-clean outside ticket delta |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence/ir004-static-audit-final.log` | Interface/delta/failure-origin/protected-state audit | Retained; Pass |
+| Seven changed capability-gated runtime E2Es | `Replace / Restore` | Restored exactly to artifact HEAD. Their ticket changes were mechanical `recipient_address` edits layered over stale create-run/schema/socket setup, so they are not maintained current coverage and are not counted as skipped passes. Current durable unit/integration/API owners plus the API-REV-014 real AutoByteus/Codex/Claude Team matrix replace their intended changed-boundary evidence. |
+| Duplicate `xml-patch-prompt-tool-parsing-state.test.{js,ts}` edits | `Out Of Scope / Restore` | Restored exactly to artifact HEAD. They are server-Vitest-excluded and import deleted source, so they provide no executable ticket evidence. |
 
-## Temporary Execution Methods / Scaffolding
+All nine restorations have zero current diff and recorded hashes in `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-015/restored-stale-paths-final.log`.
 
-| Method | Why | Evidence | Cleanup |
+### TR-F-003 — exact inventory and live-harness ownership
+
+API/E2E owns the two cumulative support changes:
+
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/test-support/live-e2e/live-e2e-harness.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/test-support/live-e2e/run-live-e2e.mjs`
+
+They propagate the exact launched `AUTOBYTEUS_TEST_DATABASE_URL`, canonicalize it through the existing safe test-database resolver, and make the in-process harness reject a mismatch before live scenario execution. Focused proof accepted an explicit owned disposable database and rejected a second safe-but-wrong test database with `LIVE_E2E_DATABASE_TARGET_MISMATCH`; the operational database was not referenced.
+
+The authoritative inventory is:
+
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-015/cumulative-durable-coverage-inventory.tsv`
+- Current delta: `53` paths — `4 added / 47 updated / 2 removed`
+- Component split: `49 server / 2 web / 2 live-E2E support`
+- Additional explicit restored dispositions: `9` paths outside the current delta
+- Total inventory/disposition rows: `62`
+
+The 49 server paths comprise 46 executable changed tests, one shared current-schema fixture, and two removed/replaced historical token-owner tests. The two web tests and both live-E2E support files are named individually in the inventory.
+
+## Executed Validation
+
+| Validation | Exact command / mode | Result | Evidence |
 | --- | --- | --- | --- |
-| Python/`git` structural audit | Prove merge identity, exact durable delta, removed aggregate owners, and failure-file origin/intersection | `ir004-static-audit-final.log` | No process/data retained |
-| Test-local app/socket/SQLite/temp roots | Exercise realistic API/lifecycle boundaries | Focused, affected, E2E logs | Project hooks/global teardown completed |
+| Full server build and sanitized bootstrap | `pnpm --filter autobyteus-server-ts build` from repository root | `Pass`; TypeScript build, managed assets, built-in agent bootstrap, sanitized built-module smoke | `api-rev-015/harness-build.log` |
+| Production TypeScript | `pnpm exec tsc -p tsconfig.build.json --noEmit --pretty false` in `autobyteus-server-ts` | `Pass` | `api-rev-015/production-typecheck-final.log` |
+| Live-harness exact database isolation | Temporary executable probe starts built server with a unique database under `autobyteus-server-ts/db`, runs real-E2E preflight once with the exact URL and once with a distinct safe URL, then cleans both | `Pass`; matching target accepted (`1` preflight file), mismatch rejected with exact stable code, no operational DB reference | `api-rev-015/live-harness-isolation-final.log` |
+| Launcher/harness static validation | `node --check test-support/live-e2e/run-live-e2e.mjs` plus exact propagation/mismatch-source audit | `Pass` | `api-rev-015/live-harness-static-final.log` |
+| Exact active changed server selection | `pnpm exec vitest run <46 generated current active test paths> --no-watch` | `46 files / 298 tests passed`; `0 skipped` | `api-rev-015/changed-server-tests-final.log` |
+| Affected web streaming tests | `pnpm exec vitest run services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts --no-watch` | `2 files / 34 tests passed` | `api-rev-015/web-affected-final.log` |
+| Restored-path verification | Compare nine paths with artifact HEAD and hash current bytes | `Pass`; zero diff for all nine | `api-rev-015/restored-stale-paths-final.log` |
+| Exact delta reconciliation | Generate inventory from Git state across server tests, web tests, and live support | `Pass`; `53` current + `9` restored disposition rows | `api-rev-015/cumulative-durable-coverage-inventory.tsv`; summary log |
+| Diff and safety audit | `git diff --check`; exact restored-path/current-selection/inventory/harness/cleanup checks | `Pass` | `api-rev-015/final-audit.log` |
 
-No temporary source or repository test harness was retained.
+One non-evidence command attempt used the unavailable Bash `mapfile` builtin, which caused Vitest to begin an unintended broad selection. It was immediately interrupted after the first isolated test process began. It touched only the repository test database under `autobyteus-server-ts/tests/.tmp`; the corrected exact 46-file command was then run cleanly and is the sole final server-selection evidence.
 
-## Dependencies Mocked Or Emulated
+## Preserved Real-System Evidence
 
-| Dependency | Method | Why Real Dependency Was Not Used | Confidence Limitation |
-| --- | --- | --- | --- |
-| Codex/Claude external model processes | Capability gates plus deterministic native/MCP/materializer/provider tests | Credentials and nondeterministic generation are not the changed contract | Bounded live bootstrap/process drift |
-| LLM generation | Deterministic runtime/member recorders | Addressing, delivery, task, and lifecycle are the changed boundaries | No model-quality claim |
-| Server data/runtime | Project-owned in-process Fastify/GraphQL/WebSocket and Prisma SQLite | Safe deterministic server-equivalent boundary | No distributed deployment claim |
+CRR-032 explicitly states that API-REV-014's runtime result is not reopened. No production source changed during this correction, and the nine restored edits never supplied executable product proof. Therefore the following direct real evidence remains authoritative rather than being redundantly repeated:
 
-## Result Summary
+- Actual `pnpm secrets:import` against the exact disposable test application-data root/database, followed by a `READY` vault status with `9` configured identifiers and `0` blocked.
+- Public staged nested-classroom package import through the built server and real frontend.
+- Fresh AgentTeam rows for AutoByteus `gpt-5.6-luna`, Codex App Server `gpt-5.6-luna` with persisted `reasoning_effort: medium`, and authenticated Claude `sonnet` with medium reasoning.
+- Every row passed rooted metadata, exact persistent nested delivery, exact same-task-Team peer delivery with nonempty ordered task chain and task-scoped AgentRuns, exact submit result, accepted review, and lifecycle cleanup.
+- Structured summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-014/live/nested-classroom-live-matrix-summary.json`.
 
-| Result | Scenario IDs | Summary |
-| --- | --- | --- |
-| Pass | INTEGRATED-MSG-001 through BUILD-001 | Every critical integrated SR-006/IR-004 behavior has direct passing evidence; focused, affected, deterministic E2E, typecheck, build, and static checks pass. |
-| Out Of Scope / non-acceptance baseline | FULL-BASELINE-001 | Whole-server run has 26 failing files / 71 failing tests; every failed file is unchanged from integrated-base parent and has zero ticket/current-test-delta intersection. |
-| Not Tested | Live external model processes | Capability-gated and not counted as passed; deterministic provider boundaries pass. |
+`pnpm secrets:import` makes the vault ready only for the selected application-data root/database when the imported source and target configuration are valid. API-REV-014 confirmed that exact target with a post-import status check; the command is not a global guarantee for every environment.
 
-## Cleanup Performed
+## Confidence Scorecard
 
-| Resource | Ownership / Action | Result |
-| --- | --- | --- |
-| Apps/sockets/MCP sessions/TeamRuns/temp roots | Test-owned; project finalizers/hooks | Clean |
-| SQLite test state | Prisma/Vitest-owned reset/isolation | No user/development data touched |
-| External provider sessions | None created | Nothing to clean |
-| Manually retained process | None | Nothing to stop |
-| Delivery protected stash/backup and untracked delivery artifacts | Delivery-owned; deliberately untouched | `stash@{0}` and backup remain present; static audit passes |
+| Category | Score | Evidence and remaining uncertainty |
+| --- | ---: | --- |
+| Requirement and acceptance-criteria proof | 97% | All critical collaboration, migration, provider, browser, and three-runtime live rows retain direct API-REV-014 proof; local-fix coverage reporting is now exact. |
+| Changed-boundary execution directness | 97% | 46/46 active changed server files, 298/298 tests, the exact affected web selection, and prior real task-Team execution directly cover the changed owners. |
+| Cross-boundary integration realism and mock gap | 95% | Built server, GraphQL/WebSocket, real frontend, and real providers were exercised. The retained Claude teardown-only MCP 404 remains bounded after accepted settlement. |
+| Environment, configuration, identity, and fixture fidelity | 96% | Exact disposable secret import/database/provider/model configuration is retained; current harness additionally proves explicit target acceptance and mismatch rejection. |
+| Failure, edge-case, lifecycle, and recovery evidence | 96% | Strict routing negatives, migration rollback/retry, task lifecycle, terminate/restore, and fail-closed harness mismatch are covered. |
+| User-surface, browser, and desktop-shell confidence | 95% | Real browser Agents/Teams across all runtimes passed. Native Electron-shell-only behavior was not material to this server/web change. |
+| Durable regression coverage quality and relevance | 95% | Exact current delta is fully reconciled; all maintained executable changed tests pass; stale skipped/excluded ticket edits are explicitly restored rather than misreported. Proportional reviewer approval is still required. |
 
-## Preliminary Classification
+Overall confidence: `96%` (rounded mean `95.9%`). No category is below 90%, and no critical acceptance criterion is missing or failing.
 
-`Pass`. No implementation, design, requirement, or current coverage failure was found in the approved scope. Initial fixture failures were API/E2E-owned validity findings resolved by the seven narrow updates. The non-clean whole-server baseline is inherited repository-health evidence rather than a ticket failure, based on exact byte identity to the integrated-base parent, zero failing-file intersection, and clean direct/affected/E2E execution.
+## Cleanup, Safety, And Residual Disclosures
 
-## Recommended Recipient
+- Focused API-REV-015 harness runtime/database artifacts were removed; no `api-rev-015-*` test database or runtime remains.
+- No live server/frontend/browser/provider process was started for this bounded reissue beyond the owned built-server harness probe; that server was stopped.
+- API-REV-014 already removed its disposable runtime/database/vault/stage and stopped owned ports/processes; all Team rows were inactive.
+- Source `/Users/normy/.autobyteus/server-data/.env` was not modified and secret values were not printed or copied into evidence.
+- Mandatory operational disclosure remains: an initial API-REV-014 setup attempt inherited `DATABASE_URL` and mutated `/Users/normy/.autobyteus/server-data/db/production.db` by applying pending Prisma migration `20260801090000_token_usage_member_display_name` and writing a failed canonical migration record with 203 failures. No automatic rollback was attempted. All accepted results, including this round's harness proof, use isolated test-owned databases.
+- Prior non-clean whole-server/web baselines remain classified as unrelated and are not represented as acceptance. The exact affected/cumulative selections above are the current evidence.
 
-`code_reviewer` for proportional structure, clarity, determinism, reuse, and requirement-alignment review of the seven updated durable test files. CRR-007 remains the authoritative source review and is not reopened.
+## Result And Routing
 
-## Evidence / Notes
-
-- API-REV-003/CRR-006 evidence predates the merge and was not reused as integrated-state proof.
-- The two merge-resolved durable tests were retained without API/E2E edits and pass in final focused/affected runs.
-- Capability skips are reported separately and are not counted as passes.
-- No source code, delivery documentation, protected delivery stash/backup, or delivery-owned untracked artifact was modified by API/E2E.
-
-## Latest Authoritative Result
-
-- Result: `Pass`.
-- Final validation confidence: `97.0%`.
-- Default 95% target met: `Yes`.
-- Any applicable category below 90%: `No`.
-- Broader validation decision: `Required — completed`.
-- Critical acceptance criteria lacking direct proof: `None`.
-- Required next recipient: `code_reviewer` for proportional review of the seven updated durable tests.
-- Durable coverage delta: `0 added / 7 updated / 0 removed`.
+- Result: `Pass`
+- Final validation confidence: `96%`
+- Prior API/E2E failure resolved: `API-F-010` remains resolved by API-REV-014 and CRR-031.
+- Test-review findings resolved locally: `TR-F-002`, `TR-F-003`
+- Open API/E2E findings: `None`
+- Durable repository delta: `4 added / 47 updated / 2 removed` across server, web, and live-E2E support (`53` current paths); exact per-path inventory attached.
+- Recommended recipient: `code_reviewer` for proportional re-review of the corrected cumulative durable coverage package. Delivery remains gated on that review.

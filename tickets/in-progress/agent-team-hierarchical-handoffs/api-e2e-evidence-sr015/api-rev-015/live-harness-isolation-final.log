@@ -1,0 +1,9 @@
+{
+  "result": "PASS",
+  "matchingExplicitDatabaseAccepted": true,
+  "mismatchedExplicitDatabaseRejectedBeforeScenario": true,
+  "mismatchCode": "LIVE_E2E_DATABASE_TARGET_MISMATCH",
+  "operationalDatabaseReferenced": false,
+  "acceptedSummary": "Test Files  1 passed (1)",
+  "rejectedStatus": 1
+}

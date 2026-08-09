@@ -1,0 +1,7 @@
+checked_at=2026-08-09T14:46:25Z
+health={"status":"ok","message":"Server is running"}
+port_60003_pid=42962
+disposable_db_exists=true
+Datasource "db": SQLite database "sr015-api-rev-014-20260809.db" at "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/sr015-api-rev-014-20260809.db"
+SERVER PUBLIC URL: http://127.0.0.1:60003
+[2026-08-09T14:45:41.058Z] [INFO] [server.runtime] Server listening on 127.0.0.1:60003

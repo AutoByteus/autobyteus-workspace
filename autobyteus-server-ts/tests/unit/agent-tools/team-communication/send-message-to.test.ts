@@ -3,14 +3,11 @@ import { CollaborationContractError } from "../../../../src/agent-collaboration/
 import { buildAgentRunMessageSenderContext } from "../../../../src/agent-communication/domain/agent-run-message-sender.js";
 import type { GlobalAgentRunMessageRouter } from "../../../../src/agent-communication/services/global-agent-run-message-router.js";
 import { SendMessageToDispatcher } from "../../../../src/agent-communication/services/send-message-to-dispatcher.js";
-import { MemberCollaborationContext } from "../../../../src/agent-team-execution/domain/member-collaboration-context.js";
-import { createMemberLogicalAddressContext } from "../../../../src/agent-team-execution/domain/member-logical-address-context.js";
-import { MemberTeamContext } from "../../../../src/agent-team-execution/domain/member-team-context.js";
-import { TeamBackendKind } from "../../../../src/agent-team-execution/domain/team-backend-kind.js";
 import type { InterAgentMessageDeliveryIntent } from "../../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
 import { createBoundAutoByteusSendMessageToTool } from "../../../../src/agent-tools/agent-communication/send-message-to.js";
 import { SendMessageToMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/send-message-to-mcp-adapter-provider.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
+import { testMemberTeamContext } from "../../../fixtures/current-team-run-fixtures.js";
 
 const parseEnvelope = (value: string) => JSON.parse(value) as {
   accepted: boolean;
@@ -25,23 +22,14 @@ const createMemberTeamContext = (
     code?: string;
     message?: string;
   }>,
-) => new MemberTeamContext({
+) => testMemberTeamContext({
   teamRunId: "team-run-1",
+  rootTeamRunId: "team-run-1",
   teamDefinitionId: "team-def-1",
-  teamName: "Team",
-  teamBackendKind: TeamBackendKind.MIXED,
-  memberName: "professor",
-  memberPath: ["professor"],
-  memberRouteKey: "professor",
-  memberRunId: "run-professor",
-  coordinatorMemberRouteKey: "professor",
-  collaboration: new MemberCollaborationContext({
-    addressing: createMemberLogicalAddressContext({
-      rootTeamRunId: "team-run-1",
-      memberAddress: "/professor",
-    }),
-    deliverInterAgentMessage,
-  }),
+  memberAddress: "/professor",
+  agentRunId: "run-professor",
+  coordinatorAddress: "/professor",
+  deliverInterAgentMessage,
 });
 
 const createDispatcher = (globalResult = {
@@ -63,14 +51,14 @@ describe("AutoByteus server-owned send_message_to", () => {
     vi.restoreAllMocks();
   });
 
-  it("routes a hierarchical recipient_name through Team delivery and returns canonical JSON", async () => {
+  it("routes a hierarchical recipient_address through Team delivery and returns canonical JSON", async () => {
     const deliverInterAgentMessage = vi.fn(async () => ({ accepted: true }));
     const memberTeamContext = createMemberTeamContext(deliverInterAgentMessage);
     const { dispatcher, globalRouter } = createDispatcher();
     const tool = createBoundAutoByteusSendMessageToTool(
       buildAgentRunMessageSenderContext({
-        senderRunId: memberTeamContext.memberRunId,
-        senderName: memberTeamContext.memberName,
+        senderRunId: memberTeamContext.agentRunId,
+        senderName: "professor",
         runtimeKind: RuntimeKind.AUTOBYTEUS,
         memberTeamContext,
       }),
@@ -78,7 +66,7 @@ describe("AutoByteus server-owned send_message_to", () => {
     );
 
     const result = parseEnvelope(await tool.execute({}, {
-      recipient_name: "./research_team/research_lead",
+      recipient_address: "./research_team/research_lead",
       content: "Please review this handoff.",
       message_type: "handoff",
     }));
@@ -91,8 +79,8 @@ describe("AutoByteus server-owned send_message_to", () => {
     });
     expect(globalRouter.deliver).not.toHaveBeenCalled();
     expect(deliverInterAgentMessage).toHaveBeenCalledWith(expect.objectContaining({
-      teamRunId: "team-run-1",
-      recipientName: "./research_team/research_lead",
+      rootTeamRunId: "team-run-1",
+      recipientAddress: "./research_team/research_lead",
       callerAddressing: expect.objectContaining({ memberAddress: "/professor" }),
       content: "Please review this handoff.",
       messageType: "handoff",
@@ -146,8 +134,8 @@ describe("AutoByteus server-owned send_message_to", () => {
     const { dispatcher } = createDispatcher();
     const tool = createBoundAutoByteusSendMessageToTool(
       buildAgentRunMessageSenderContext({
-        senderRunId: memberTeamContext.memberRunId,
-        senderName: memberTeamContext.memberName,
+        senderRunId: memberTeamContext.agentRunId,
+        senderName: "professor",
         runtimeKind: RuntimeKind.AUTOBYTEUS,
         memberTeamContext,
       }),
@@ -155,7 +143,7 @@ describe("AutoByteus server-owned send_message_to", () => {
     );
 
     expect(parseEnvelope(await tool.execute({}, {
-      recipient_name: "/missing",
+      recipient_address: "/missing",
       content: "Team-only delivery.",
     }))).toEqual({
       accepted: false,
@@ -165,7 +153,7 @@ describe("AutoByteus server-owned send_message_to", () => {
     });
   });
 
-  it("rejects recipient_name for a non-Team sender with all envelope fields", async () => {
+  it("rejects recipient_address for a non-Team sender with all envelope fields", async () => {
     const { dispatcher } = createDispatcher();
     const tool = createBoundAutoByteusSendMessageToTool(
       buildAgentRunMessageSenderContext({
@@ -177,7 +165,7 @@ describe("AutoByteus server-owned send_message_to", () => {
     );
 
     expect(parseEnvelope(await tool.execute({}, {
-      recipient_name: "./writer",
+      recipient_address: "./writer",
       content: "Team-only delivery.",
     }))).toMatchObject({
       accepted: false,
@@ -201,13 +189,13 @@ describe("AutoByteus server-owned send_message_to", () => {
     const deliverInterAgentMessage = vi.fn(async () => result);
     const memberTeamContext = createMemberTeamContext(deliverInterAgentMessage);
     const sender = buildAgentRunMessageSenderContext({
-      senderRunId: memberTeamContext.memberRunId,
-      senderName: memberTeamContext.memberName,
+      senderRunId: memberTeamContext.agentRunId,
+      senderName: "professor",
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       memberTeamContext,
     });
     const { dispatcher } = createDispatcher();
-    const input = { recipient_name: "./writer", content: "Provider parity." };
+    const input = { recipient_address: "./writer", content: "Provider parity." };
     const nativeTool = createBoundAutoByteusSendMessageToTool(sender, dispatcher);
     const nativeText = await nativeTool.execute({}, input);
     const adapter = new SendMessageToMcpAdapterProvider(dispatcher).getAdapters()[0]!;

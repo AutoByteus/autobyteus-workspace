@@ -155,7 +155,7 @@ describe('segmentHandler', () => {
           metadata: {
             tool_name: 'send_message_to',
             arguments: {
-              recipient_name: 'Student',
+              recipient_address: 'Student',
               content: 'Question for you',
             },
           },
@@ -166,7 +166,7 @@ describe('segmentHandler', () => {
       const segment = findSegmentById(mockContext, 'send-msg-1') as any;
       expect(segment.toolName).toBe('send_message_to');
       expect(segment.arguments).toEqual({
-        recipient_name: 'Student',
+        recipient_address: 'Student',
         content: 'Question for you',
       });
       expect(useAgentActivityStore().getToolActivities('test-agent-id')).toEqual([
@@ -174,7 +174,7 @@ describe('segmentHandler', () => {
           invocationId: 'send-msg-1',
           toolName: 'send_message_to',
           arguments: {
-            recipient_name: 'Student',
+            recipient_address: 'Student',
             content: 'Question for you',
           },
         }),
@@ -252,7 +252,7 @@ describe('segmentHandler', () => {
         metadata: {
           tool_name: 'send_message_to',
           arguments: {
-            recipient_name: 'Student',
+            recipient_address: 'Student',
             content: 'hello',
           },
         },
@@ -266,7 +266,7 @@ describe('segmentHandler', () => {
       expect(aiMessage.segments[0].type).toBe('tool_call');
       expect(aiMessage.segments[0].toolName).toBe('send_message_to');
       expect(aiMessage.segments[0].arguments).toEqual({
-        recipient_name: 'Student',
+        recipient_address: 'Student',
         content: 'hello',
       });
       expect(useAgentActivityStore().getToolActivities('test-agent-id')).toHaveLength(1);
@@ -280,7 +280,7 @@ describe('segmentHandler', () => {
           segment_type: 'tool_call',
           metadata: {
             tool_name: 'send_message_to',
-            arguments: { recipient_name: 'Student', content: 'hello' },
+            arguments: { recipient_address: 'Student', content: 'hello' },
           },
         },
         mockContext,

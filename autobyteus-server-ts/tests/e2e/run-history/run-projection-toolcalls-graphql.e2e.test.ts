@@ -22,6 +22,7 @@ import {
 } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { CodexThreadEventConverter } from "../../../src/agent-execution/backends/codex/events/codex-thread-event-converter.js";
 import { CodexThreadEventName } from "../../../src/agent-execution/backends/codex/events/codex-thread-event-name.js";
+import { testAgentNode, testAgentTeamNode } from "../../fixtures/current-team-run-fixtures.js";
 
 const { readThreadMock } = vi.hoisted(() => ({
   readThreadMock: vi.fn(),
@@ -251,7 +252,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
       userText: "Run GraphQL standalone projection validation.",
       dynamicInvocationId: "dynamic-send-1",
       dynamicArgs: {
-        recipient_name: "code_reviewer",
+        recipient_address: "code_reviewer",
         content: "standalone projection validation",
       },
     });
@@ -284,7 +285,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
       kind: "tool_call",
       toolName: "send_message_to",
       toolArgs: {
-        recipient_name: "code_reviewer",
+        recipient_address: "code_reviewer",
         content: "standalone projection validation",
       },
       toolResult: { delivered: true },
@@ -293,7 +294,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
       toolName: "send_message_to",
       status: "success",
       arguments: {
-        recipient_name: "code_reviewer",
+        recipient_address: "code_reviewer",
         content: "standalone projection validation",
       },
       result: { delivered: true },
@@ -976,18 +977,17 @@ describe("Run projection tool-call GraphQL e2e", () => {
   it("serves local replay team-member Codex tool rows through getTeamMemberRunProjection", async () => {
     const teamMetadataStore = new TeamRunMetadataStore(memoryDir);
     await teamMetadataStore.writeMetadata(TEAM_RUN_ID, {
-      teamRunId: TEAM_RUN_ID,
-      teamDefinitionId: "team-definition-1",
+      schemaVersion: 3,
       teamDefinitionName: "Tool Projection Validation Team",
-      coordinatorMemberRouteKey: "coordinator",
       createdAt: new Date(USER_TS * 1000).toISOString(),
-      memberTree: [
-        {
-          memberKind: "agent",
-          memberRouteKey: "coordinator",
-          memberPath: ["coordinator"],
-          memberName: "coordinator",
-          memberRunId: MEMBER_RUN_ID,
+      archivedAt: null,
+      rootTeam: testAgentTeamNode({
+        address: "/",
+        teamRunId: TEAM_RUN_ID,
+        teamDefinitionId: "team-definition-1",
+        coordinatorAddress: "/coordinator",
+        children: [testAgentNode("/coordinator", {
+          agentRunId: MEMBER_RUN_ID,
           runtimeKind: RuntimeKind.CODEX_APP_SERVER,
           platformAgentRunId: MEMBER_THREAD_ID,
           agentDefinitionId: "agent-codex-member",
@@ -997,27 +997,28 @@ describe("Run projection tool-call GraphQL e2e", () => {
           llmConfig: null,
           workspaceRootPath,
           applicationExecutionContext: null,
-        },
-      ],
+        })],
+      }),
+      handoffs: [],
     } satisfies TeamRunMetadata);
 
     const memberDir = new AgentMemoryLayout(memoryDir).getTeamAgentRunDirPath(
-      { rootTeamRunId: TEAM_RUN_ID, teamRunPath: [] },
+      { rootTeamRunId: TEAM_RUN_ID, ancestorTeamRunIds: [] },
       MEMBER_RUN_ID,
     );
     await writeLocalReplayToolTrace(memberDir, {
       userText: "Send the team-member validation message.",
       dynamicInvocationId: "dynamic-send-member-1",
       dynamicArgs: {
-        recipient_name: "delivery_engineer",
+        recipient_address: "delivery_engineer",
         content: "team projection validation",
       },
     });
 
     const result = await execGraphql<{ getTeamMemberRunProjection: ProjectionPayload }>(
       `
-        query MemberProjection($teamRunId: String!, $memberRouteKey: String!) {
-          getTeamMemberRunProjection(teamRunId: $teamRunId, memberRouteKey: $memberRouteKey) {
+        query MemberProjection($teamRunId: String!, $memberAddress: String!) {
+          getTeamMemberRunProjection(teamRunId: $teamRunId, memberAddress: $memberAddress) {
             agentRunId
             summary
             lastActivityAt
@@ -1026,7 +1027,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
           }
         }
       `,
-      { teamRunId: TEAM_RUN_ID, memberRouteKey: "coordinator" },
+      { teamRunId: TEAM_RUN_ID, memberAddress: "/coordinator" },
     );
 
     const projection = result.getTeamMemberRunProjection;
@@ -1048,7 +1049,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
       kind: "tool_call",
       toolName: "send_message_to",
       toolArgs: {
-        recipient_name: "delivery_engineer",
+        recipient_address: "delivery_engineer",
         content: "team projection validation",
       },
       toolResult: { delivered: true },
@@ -1057,7 +1058,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
       toolName: "send_message_to",
       status: "success",
       arguments: {
-        recipient_name: "delivery_engineer",
+        recipient_address: "delivery_engineer",
         content: "team projection validation",
       },
       result: { delivered: true },
@@ -1079,18 +1080,17 @@ describe("Run projection tool-call GraphQL e2e", () => {
     const teamRunId = "team-codex-local-replay-absent";
     const memberRunId = "member-codex-local-replay-absent";
     await teamMetadataStore.writeMetadata(teamRunId, {
-      teamRunId,
-      teamDefinitionId: "team-definition-local-replay-absent",
+      schemaVersion: 3,
       teamDefinitionName: "Local Replay Absent Team",
-      coordinatorMemberRouteKey: "coordinator",
       createdAt: new Date(USER_TS * 1000).toISOString(),
-      memberTree: [
-        {
-          memberKind: "agent",
-          memberRouteKey: "coordinator",
-          memberPath: ["coordinator"],
-          memberName: "coordinator",
-          memberRunId,
+      archivedAt: null,
+      rootTeam: testAgentTeamNode({
+        address: "/",
+        teamRunId,
+        teamDefinitionId: "team-definition-local-replay-absent",
+        coordinatorAddress: "/coordinator",
+        children: [testAgentNode("/coordinator", {
+          agentRunId: memberRunId,
           runtimeKind: RuntimeKind.CODEX_APP_SERVER,
           platformAgentRunId: "native-thread-should-not-recover-member",
           agentDefinitionId: "agent-codex-member-local-replay-absent",
@@ -1100,14 +1100,15 @@ describe("Run projection tool-call GraphQL e2e", () => {
           llmConfig: null,
           workspaceRootPath,
           applicationExecutionContext: null,
-        },
-      ],
+        })],
+      }),
+      handoffs: [],
     } satisfies TeamRunMetadata);
 
     const result = await execGraphql<{ getTeamMemberRunProjection: ProjectionPayload }>(
       `
-        query MemberProjection($teamRunId: String!, $memberRouteKey: String!) {
-          getTeamMemberRunProjection(teamRunId: $teamRunId, memberRouteKey: $memberRouteKey) {
+        query MemberProjection($teamRunId: String!, $memberAddress: String!) {
+          getTeamMemberRunProjection(teamRunId: $teamRunId, memberAddress: $memberAddress) {
             agentRunId
             summary
             lastActivityAt
@@ -1116,7 +1117,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
           }
         }
       `,
-      { teamRunId, memberRouteKey: "coordinator" },
+      { teamRunId, memberAddress: "/coordinator" },
     );
 
     const projection = result.getTeamMemberRunProjection;

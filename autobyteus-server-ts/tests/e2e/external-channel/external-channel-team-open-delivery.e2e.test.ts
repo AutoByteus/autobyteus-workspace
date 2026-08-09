@@ -7,18 +7,19 @@ import { ExternalChannelTransport } from "autobyteus-ts/external-channel/channel
 import { ExternalPeerType } from "autobyteus-ts/external-channel/peer-type.js";
 import type { ExternalOutboundEnvelope } from "autobyteus-ts/external-channel/external-outbound-envelope.js";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
 import type { AgentOperationResult } from "../../../src/agent-execution/domain/agent-operation-result.js";
 import type { InterAgentMessageDeliveryIntent } from "../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
+import { createMemberLogicalAddressContext } from "../../../src/agent-team-execution/domain/member-logical-address-context.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
-import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
-import { selectorToRouteKey, type TeamMemberSelector } from "../../../src/agent-team-execution/domain/team-run-member-identity.js";
-import type { ConversationTargetAddress } from "../../../src/agent-team-execution/domain/conversation-target-address.js";
 import { TeamRunContext, type RuntimeTeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
+import { createTeamExecutionAddress } from "../../../src/agent-team-execution/domain/team-execution-address.js";
 import { TeamRunEventSourceType, type TeamRunEvent, type TeamRunEventListener } from "../../../src/agent-team-execution/domain/team-run-event.js";
 import type { TeamRunBackend } from "../../../src/agent-team-execution/backends/team-run-backend.js";
+import { MixedAgentMemberContext, MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
+import { TeamRecipientResolver } from "../../../src/agent-team-execution/services/team-recipient-resolver.js";
+import { TeamRunTreeIndex } from "../../../src/agent-team-execution/services/team-run-tree-index.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { registerChannelIngressRoutes } from "../../../src/api/rest/channel-ingress.js";
 import { FileChannelBindingProvider } from "../../../src/external-channel/providers/file-channel-binding-provider.js";
@@ -32,6 +33,7 @@ import { ChannelIngressService } from "../../../src/external-channel/services/ch
 import { ChannelMessageReceiptService } from "../../../src/external-channel/services/channel-message-receipt-service.js";
 import { ChannelRunOutputDeliveryService } from "../../../src/external-channel/services/channel-run-output-delivery-service.js";
 import { ReplyCallbackService } from "../../../src/external-channel/services/reply-callback-service.js";
+import { address, testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
 
 const tempFiles = new Set<string>();
 const cleanOverlapReply = "Sent the student a hard cyclic inequality problem to solve.";
@@ -122,7 +124,7 @@ describe("external channel team open delivery e2e", () => {
       targetType: "TEAM",
       teamDefinitionId: "team-definition-open-delivery",
       teamRunId,
-      targetMemberRouteKey: "coordinator",
+      targetMemberAddress: "/coordinator",
       allowTransportFallback: false,
     });
 
@@ -168,21 +170,25 @@ describe("external channel team open delivery e2e", () => {
       });
 
       await teamRun.deliverInterAgentMessage({
-        teamRunId,
+        rootTeamRunId: teamRunId,
+        callerAddressing: createMemberLogicalAddressContext({
+          rootTeamRunId: teamRunId,
+          memberAddress: "/worker",
+        }),
         sender: {
           participant: {
-            memberKind: "agent",
-            memberName: "worker",
-            memberPath: ["worker"],
-            memberRouteKey: "worker",
-            memberRunId: "run-worker",
-            platformRunId: null,
-            teamDefinitionId: null,
-            address: { teamRunId, memberPath: ["worker"], memberRouteKey: "worker" },
+            kind: "agent",
+            executionAddress: createTeamExecutionAddress({
+              rootTeamRunId: teamRunId,
+              memberAddress: "/worker",
+            }),
+            agentRunId: "run-worker",
+            displayName: "worker",
+            runtimeKind: RuntimeKind.AUTOBYTEUS,
+            platformAgentRunId: null,
           },
-          selector: { kind: "path", memberPath: ["worker"] },
         },
-        target: { kind: "recipient_name", recipientName: "coordinator" },
+        recipientAddress: "/coordinator",
         content: "worker has completed the task",
         messageType: "validation",
       });
@@ -219,11 +225,14 @@ describe("external channel team open delivery e2e", () => {
 });
 
 class DeterministicTeamRunBackend implements TeamRunBackend {
+  readonly teamRunId: string;
   readonly teamBackendKind = TeamBackendKind.MIXED;
   private readonly listeners = new Set<TeamRunEventListener>();
   private active = true;
 
-  constructor(readonly runId: string, private readonly runtimeContext: RuntimeTeamRunContext) {}
+  constructor(teamRunId: string, private readonly runtimeContext: RuntimeTeamRunContext) {
+    this.teamRunId = teamRunId;
+  }
 
   getRuntimeContext(): RuntimeTeamRunContext {
     return this.runtimeContext;
@@ -246,8 +255,16 @@ class DeterministicTeamRunBackend implements TeamRunBackend {
     return () => this.listeners.delete(listener);
   }
 
-  async postMessage(_message: AgentInputUserMessage, target?: TeamMemberSelector | null): Promise<AgentOperationResult> {
-    expect(target ? selectorToRouteKey(target) : null).toBe("coordinator");
+  resolveRecipient(recipientAddress: string, caller: ReturnType<typeof createMemberLogicalAddressContext>) {
+    return new TeamRecipientResolver().resolve(
+      new TeamRunTreeIndex(createConfig(this.teamRunId).rootTeam),
+      recipientAddress,
+      caller,
+    );
+  }
+
+  async postMessage(_message: AgentInputUserMessage, target: import("../../../src/agent-collaboration/domain/agent-team-address.js").AgentTeamAddress | null): Promise<AgentOperationResult> {
+    expect(target).toBe("/coordinator");
     setTimeout(() => {
       this.emitOverlappingStreamTurn("coordinator", "run-coordinator", "turn-direct", [
         "Sent the",
@@ -265,13 +282,9 @@ class DeterministicTeamRunBackend implements TeamRunBackend {
     return { accepted: true, turnId: "turn-direct", memberRunId: "run-coordinator", memberName: "coordinator" };
   }
 
-  async postMessageToConversationTarget(_message: AgentInputUserMessage, _address: ConversationTargetAddress): Promise<AgentOperationResult> {
-    return { accepted: true };
-  }
-
   async deliverInterAgentMessage(request: InterAgentMessageDeliveryIntent): Promise<AgentOperationResult> {
-    expect(request.sender.participant.memberName).toBe("worker");
-    expect(request.target).toEqual({ kind: "recipient_name", recipientName: "coordinator" });
+    expect(request.sender.participant.displayName).toBe("worker");
+    expect(request.recipientAddress).toBe("/coordinator");
     setTimeout(() => {
       this.emitTextTurn("worker", "run-worker", "turn-worker-internal", "worker internal only");
       this.emitFinalPrecedenceTurn(
@@ -341,13 +354,18 @@ class DeterministicTeamRunBackend implements TeamRunBackend {
       for (const listener of this.listeners) {
         listener({
           eventSourceType: TeamRunEventSourceType.AGENT,
-          teamRunId: this.runId,
+          teamRunId: this.teamRunId,
+          executionAddress: createTeamExecutionAddress({
+            rootTeamRunId: this.teamRunId,
+            memberAddress: `/${memberName}`,
+          }),
           data: {
             runtimeKind: RuntimeKind.AUTOBYTEUS,
-            memberName,
-            memberRunId,
-            memberRouteKey: memberName,
-            memberPath: [memberName],
+            executionAddress: createTeamExecutionAddress({
+              rootTeamRunId: this.teamRunId,
+              memberAddress: `/${memberName}`,
+            }),
+            displayName: memberName,
             agentEvent: {
               eventType: event.eventType,
               runId: memberRunId,
@@ -362,20 +380,19 @@ class DeterministicTeamRunBackend implements TeamRunBackend {
 }
 
 const createDeterministicTeamRun = (teamRunId: string): TeamRun => {
-  const config = new TeamRunConfig({
-    teamDefinitionId: "team-definition-open-delivery",
-    teamBackendKind: TeamBackendKind.MIXED,
-    coordinatorMemberName: "coordinator",
-    memberConfigs: [createMemberConfig("coordinator", "run-coordinator"), createMemberConfig("worker", "run-worker")],
+  const config = createConfig(teamRunId);
+  const runtimeContext = new MixedTeamRunContext({
+    memberContexts: [
+      createRuntimeMemberContext("coordinator", "run-coordinator"),
+      createRuntimeMemberContext("worker", "run-worker"),
+    ],
+    teamExecutionAddress: createTeamExecutionAddress({ rootTeamRunId: teamRunId, memberAddress: "/" }),
   });
-  const runtimeContext = {
-    memberContexts: [createRuntimeMemberContext("coordinator", "run-coordinator"), createRuntimeMemberContext("worker", "run-worker")],
-  } as RuntimeTeamRunContext;
   return new TeamRun({
     context: new TeamRunContext({
-      runId: teamRunId,
+      teamRunId,
+      teamAddress: address("/"),
       teamBackendKind: TeamBackendKind.MIXED,
-      coordinatorMemberName: "coordinator",
       config,
       runtimeContext,
     }),
@@ -383,26 +400,23 @@ const createDeterministicTeamRun = (teamRunId: string): TeamRun => {
   });
 };
 
-const createMemberConfig = (memberName: string, memberRunId: string) => ({
-  memberName,
-  memberRouteKey: memberName,
-  memberRunId,
-  agentDefinitionId: `agent-definition-${memberName}`,
-  llmModelIdentifier: "deterministic-test-model",
-  autoExecuteTools: false,
-  skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
-  workspaceRootPath: "/tmp/autobyteus-external-channel-team-open-delivery",
-  llmConfig: null,
-  runtimeKind: RuntimeKind.AUTOBYTEUS,
+const createConfig = (teamRunId: string) => testTeamRunConfig({
+  rootTeamRunId: teamRunId,
+  rootTeamDefinitionId: "team-definition-open-delivery",
+  coordinatorAddress: "/coordinator",
+  children: [
+    testAgentNode("/coordinator", { agentRunId: "run-coordinator" }),
+    testAgentNode("/worker", { agentRunId: "run-worker" }),
+  ],
 });
 
-const createRuntimeMemberContext = (memberName: string, memberRunId: string) => ({
-  memberName,
-  memberPath: [memberName],
-  memberRouteKey: memberName,
-  memberRunId,
-  getPlatformAgentRunId: () => null,
-});
+const createRuntimeMemberContext = (memberName: string, memberRunId: string) =>
+  new MixedAgentMemberContext({
+    address: address(`/${memberName}`),
+    agentRunId: memberRunId,
+    runtimeKind: RuntimeKind.AUTOBYTEUS,
+    platformAgentRunId: null,
+  });
 
 const tempJsonPath = (prefix: string): string => {
   const filePath = `/tmp/${prefix}-${randomUUID()}.json`;

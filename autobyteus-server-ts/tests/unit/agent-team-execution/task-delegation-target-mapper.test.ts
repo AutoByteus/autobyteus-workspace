@@ -1,175 +1,110 @@
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { describe, expect, it } from "vitest";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import { createMemberLogicalAddressContext } from "../../../src/agent-team-execution/domain/member-logical-address-context.js";
-import { TeamRunConfig, type TeamMemberRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
+import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
+import { createMemberLogicalAddressContext } from "../../../src/agent-team-execution/domain/member-logical-address-context.js";
+import { createTeamExecutionAddress } from "../../../src/agent-team-execution/domain/team-execution-address.js";
 import {
-  createResolvedAgentPlacement,
-  createResolvedAgentTeamPlacement,
-} from "../../../src/agent-team-execution/services/resolved-team-logical-placement.js";
+  createResolvedAgentRecipient,
+  createResolvedAgentTeamRecipient,
+} from "../../../src/agent-team-execution/services/resolved-team-recipient.js";
 import { TaskDelegationTargetMapper } from "../../../src/agent-team-execution/task-delegation/task-delegation-target-mapper.js";
+import {
+  testAgentNode,
+  testAgentTeamNode,
+  testTeamRunConfig,
+} from "../../fixtures/current-team-run-fixtures.js";
 
-const agent = (name: string, route = name): TeamMemberRunConfig => ({
-  memberKind: "agent",
-  memberName: name,
-  memberPath: route.split("/"),
-  memberRouteKey: route,
-  memberRunId: `run-${name}`,
-  role: `${name}-role`,
-  description: `${name}-description`,
-  agentDefinitionId: `agent-${name}`,
-  llmModelIdentifier: "test-model",
-  autoExecuteTools: true,
-  skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
-  runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-});
-
-const buildCurrentResearchConfig = () => new TeamRunConfig({
-  teamDefinitionId: "research-team",
-  teamBackendKind: TeamBackendKind.MIXED,
-  coordinatorMemberRouteKey: "research_lead",
-  memberTree: [
-    agent("research_lead"),
-    agent("analyst"),
-    {
-      memberKind: "agent_team",
-      memberName: "field_team",
-      memberPath: ["field_team"],
-      memberRouteKey: "field_team",
-      memberRunId: "run-field-team",
+const config = testTeamRunConfig({
+  coordinatorAddress: "/research_lead",
+  rootTeamRunId: "root-run",
+  rootTeamDefinitionId: "research-team",
+  children: [
+    testAgentNode("/research_lead", {
+      agentRunId: "run-research-lead",
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+    }),
+    testAgentNode("/analyst", {
+      agentRunId: "run-analyst",
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+    }),
+    testAgentTeamNode({
+      address: "/field_team",
+      coordinatorAddress: "/field_team/field_lead",
+      teamRunId: "run-field-team",
       teamDefinitionId: "field-team",
-      childTeamRunId: "child-field-team",
-      coordinatorMemberRouteKey: "field_team/field_lead",
-      memberConfigs: [agent("field_lead", "field_team/field_lead")],
-    },
+      children: [testAgentNode("/field_team/field_lead", {
+        agentRunId: "run-field-lead",
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      })],
+    }),
   ],
 });
 
+const currentTeam = new TeamRunContext({
+  teamRunId: "root-run",
+  teamAddress: "/",
+  teamBackendKind: TeamBackendKind.MIXED,
+  config,
+  runtimeContext: null,
+});
 const addressing = createMemberLogicalAddressContext({
   rootTeamRunId: "root-run",
-  memberAddress: "/research_team/research_lead",
+  memberAddress: "/research_lead",
 });
-
 const caller = {
-  memberKind: "agent" as const,
-  memberName: "research_lead",
-  memberPath: ["research_lead"],
-  memberRouteKey: "research_lead",
-  memberRunId: "run-research_lead",
-  runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+  executionAddress: createTeamExecutionAddress({
+    rootTeamRunId: "root-run",
+    taskTeamRunIds: [],
+    memberAddress: "/research_lead",
+  }),
+  agentRunId: "run-research-lead",
 };
 
+const map = (recipient: Parameters<TaskDelegationTargetMapper["fromRecipient"]>[0]) =>
+  new TaskDelegationTargetMapper().fromRecipient(recipient, addressing, currentTeam, caller);
+
 describe("TaskDelegationTargetMapper", () => {
-  it("maps a direct Agent placement to current-Team execution identity", () => {
-    const placement = createResolvedAgentPlacement({
-      address: "/research_team/analyst",
-    });
+  it("maps a direct Agent recipient to the unchanged canonical target", () => {
+    const recipient = createResolvedAgentRecipient("/analyst");
+    expect(map(recipient)).toBe(recipient);
+    expect(map(recipient)).toEqual({ kind: "agent", address: "/analyst" });
+  });
 
-    expect(new TaskDelegationTargetMapper().fromPlacement(
-      placement,
-      addressing,
-      buildCurrentResearchConfig(),
-      caller,
-    )).toEqual({
-      kind: "member",
-      member: expect.objectContaining({
-        memberKind: "agent",
-        memberName: "analyst",
-        memberPath: ["analyst"],
-        memberRouteKey: "analyst",
-        memberRunId: "run-analyst",
-        logicalAddress: "/research_team/analyst",
-      }),
+  it("maps a direct AgentTeam recipient only with its exact configured coordinator", () => {
+    const recipient = createResolvedAgentTeamRecipient({
+      address: "/field_team",
+      coordinatorAddress: "/field_team/field_lead",
+    });
+    expect(map(recipient)).toBe(recipient);
+    expect(map(recipient)).toEqual({
+      kind: "agent_team",
+      address: "/field_team",
+      coordinatorAddress: "/field_team/field_lead",
     });
   });
 
-  it("maps a direct Team placement through its exact localized real coordinator", () => {
-    const placement = createResolvedAgentTeamPlacement({
-      address: "/research_team/field_team",
-      ingressAddress: "/research_team/field_team/field_lead",
-    });
-
-    expect(new TaskDelegationTargetMapper().fromPlacement(
-      placement,
-      addressing,
-      buildCurrentResearchConfig(),
-      caller,
-    )).toEqual({
-      kind: "team",
-      team: expect.objectContaining({
-        memberKind: "agent_team",
-        memberName: "field_team",
-        memberPath: ["field_team"],
-        memberRouteKey: "field_team",
-        memberRunId: "run-field-team",
-        teamDefinitionId: "field-team",
-        logicalAddress: "/research_team/field_team",
-        ingress: expect.objectContaining({
-          memberName: "field_lead",
-          memberPath: ["field_team", "field_lead"],
-          memberRouteKey: "field_team/field_lead",
-          memberRunId: "run-field_lead",
-        }),
-      }),
-    });
+  it("rejects a valid deeper recipient before task activation identity exists", () => {
+    expect(() => map(createResolvedAgentRecipient("/field_team/field_lead")))
+      .toThrow(expect.objectContaining({ code: "TASK_DELEGATION_TARGET_NOT_ELIGIBLE" }));
   });
 
-  it("rejects a valid cross-branch or deeper placement before task activation identity exists", () => {
-    const placement = createResolvedAgentPlacement({
-      address: "/design_team/designer",
-    });
-
-    expect(() => new TaskDelegationTargetMapper().fromPlacement(
-      placement,
-      addressing,
-      buildCurrentResearchConfig(),
-      caller,
-    )).toThrow(expect.objectContaining({ code: "TASK_DELEGATION_TARGET_NOT_ELIGIBLE" }));
+  it("rejects the caller Agent even when its direct current-Team node matches", () => {
+    expect(() => map(createResolvedAgentRecipient("/research_lead")))
+      .toThrow(expect.objectContaining({ code: "TASK_DELEGATION_SELF_TARGET_NOT_ALLOWED" }));
   });
 
-  it("rejects the caller Agent even when its direct current-Team config matches", () => {
-    const placement = createResolvedAgentPlacement({
-      address: "/research_team/research_lead",
-    });
-
-    expect(() => new TaskDelegationTargetMapper().fromPlacement(
-      placement,
-      addressing,
-      buildCurrentResearchConfig(),
-      caller,
-    )).toThrow(expect.objectContaining({ code: "TASK_DELEGATION_SELF_TARGET_NOT_ALLOWED" }));
+  it("does not retry or derive a coordinator when the recipient ingress is inconsistent", () => {
+    expect(() => map(createResolvedAgentTeamRecipient({
+      address: "/field_team",
+      coordinatorAddress: "/field_team/missing",
+    }))).toThrow(expect.objectContaining({ code: "TASK_TEAM_TARGET_INGRESS_NOT_FOUND" }));
   });
 
-  it("does not retry a root-prefixed coordinator when current-local topology is inconsistent", () => {
-    const config = buildCurrentResearchConfig();
-    const fieldTeam = config.memberTree[2];
-    if (!fieldTeam || fieldTeam.memberKind !== "agent_team") throw new Error("fixture invalid");
-    fieldTeam.coordinatorMemberRouteKey = "research_team/field_team/field_lead";
-    const placement = createResolvedAgentTeamPlacement({
-      address: "/research_team/field_team",
-      ingressAddress: "/research_team/field_team/field_lead",
-    });
-
-    expect(() => new TaskDelegationTargetMapper().fromPlacement(
-      placement,
-      addressing,
-      config,
-      caller,
-    )).toThrow(expect.objectContaining({ code: "TASK_TEAM_TARGET_INGRESS_NOT_FOUND" }));
-  });
-
-  it("rejects a Team ingress outside the resolved Team before local coordinator mapping", () => {
-    const placement = createResolvedAgentTeamPlacement({
-      address: "/research_team/field_team",
-      ingressAddress: "/research_team/analyst",
-    });
-
-    expect(() => new TaskDelegationTargetMapper().fromPlacement(
-      placement,
-      addressing,
-      buildCurrentResearchConfig(),
-      caller,
-    )).toThrow(expect.objectContaining({ code: "TASK_TEAM_TARGET_INGRESS_NOT_FOUND" }));
+  it("rejects an AgentTeam ingress outside the resolved Team", () => {
+    expect(() => map(createResolvedAgentTeamRecipient({
+      address: "/field_team",
+      coordinatorAddress: "/analyst",
+    }))).toThrow(expect.objectContaining({ code: "TASK_TEAM_TARGET_INGRESS_NOT_FOUND" }));
   });
 });

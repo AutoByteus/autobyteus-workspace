@@ -11,15 +11,11 @@ import type {
   AppDataMigrationStatus,
 } from "../../../src/app-data-migrations/domain/app-data-migration-types.js";
 import {
-  PrismaTokenUsageExecutionAddressBackfillDatabase,
-  TokenUsageExecutionAddressBackfillMigration,
-} from "../../../src/app-data-migrations/migrations/token-usage-execution-address-backfill-migration.js";
-import {
   PrismaTokenUsageLegacyPathColumnsDropDatabase,
-  TOKEN_USAGE_EXECUTION_ADDRESS_BACKFILL_MIGRATION_ID,
   TOKEN_USAGE_LEGACY_PATH_COLUMNS_DROP_MIGRATION_ID,
   TokenUsageLegacyPathColumnsDropMigration,
 } from "../../../src/app-data-migrations/migrations/token-usage-legacy-path-columns-drop-migration.js";
+import { TEAM_CANONICAL_IDENTITY_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/team-canonical-identity-migration.js";
 import { TOKEN_USAGE_CUSTOM_PROVIDER_MODEL_VALUE_BACKFILL_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/token-usage-custom-provider-model-value-backfill-migration.js";
 import { TOKEN_USAGE_PROVIDER_NAME_SNAPSHOT_BACKFILL_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/token-usage-provider-name-snapshot-backfill-migration.js";
 
@@ -180,7 +176,7 @@ const createTempDatabase = async (): Promise<TempDatabase> => {
   return database;
 };
 
-const seedBackfillRecord = async (
+const seedCanonicalIdentityRecord = async (
   prisma: PrismaClient,
   status: AppDataMigrationStatus = "SUCCEEDED",
 ): Promise<void> => {
@@ -188,8 +184,8 @@ const seedBackfillRecord = async (
     INSERT INTO app_data_migration_records
       (migration_id, display_name, status, attempts, started_at, completed_at, summary_json, error_message, log_path)
     VALUES (
-      ${TOKEN_USAGE_EXECUTION_ADDRESS_BACKFILL_MIGRATION_ID},
-      'Token usage execution address backfill',
+      ${TEAM_CANONICAL_IDENTITY_MIGRATION_ID},
+      'Team canonical identity',
       ${status},
       1,
       '2026-07-03T10:00:00.000Z',
@@ -290,15 +286,15 @@ const aggregateTokenRows = async (prisma: PrismaClient): Promise<{
 };
 
 describe("TokenUsageLegacyPathColumnsDropMigration", () => {
-  it("is registered as a startup migration after execution-address backfill", () => {
+  it("is registered as a startup migration after the canonical identity aggregate", () => {
     const definitions = new AppDataMigrationRegistry().listDefinitions();
     const definitionIds = definitions.map((definition) => definition.id);
 
     expect(definitions.find((definition) => definition.id === TOKEN_USAGE_LEGACY_PATH_COLUMNS_DROP_MIGRATION_ID))
       .toBeInstanceOf(TokenUsageLegacyPathColumnsDropMigration);
-    expect(definitionIds.indexOf(TOKEN_USAGE_EXECUTION_ADDRESS_BACKFILL_MIGRATION_ID)).toBeGreaterThanOrEqual(0);
+    expect(definitionIds.indexOf(TEAM_CANONICAL_IDENTITY_MIGRATION_ID)).toBeGreaterThanOrEqual(0);
     expect(definitionIds.indexOf(TOKEN_USAGE_LEGACY_PATH_COLUMNS_DROP_MIGRATION_ID))
-      .toBeGreaterThan(definitionIds.indexOf(TOKEN_USAGE_EXECUTION_ADDRESS_BACKFILL_MIGRATION_ID));
+      .toBeGreaterThan(definitionIds.indexOf(TEAM_CANONICAL_IDENTITY_MIGRATION_ID));
     expect(definitionIds.indexOf(TOKEN_USAGE_PROVIDER_NAME_SNAPSHOT_BACKFILL_MIGRATION_ID))
       .toBe(definitionIds.indexOf(TOKEN_USAGE_CUSTOM_PROVIDER_MODEL_VALUE_BACKFILL_MIGRATION_ID) + 1);
     expect(definitionIds.indexOf(TOKEN_USAGE_LEGACY_PATH_COLUMNS_DROP_MIGRATION_ID))
@@ -307,7 +303,7 @@ describe("TokenUsageLegacyPathColumnsDropMigration", () => {
 
   it("drops present legacy columns while preserving canonical columns, rows, totals, and indexes", async () => {
     const { prisma } = await createTempDatabase();
-    await seedBackfillRecord(prisma, "SUCCEEDED_WITH_WARNINGS");
+    await seedCanonicalIdentityRecord(prisma, "SUCCEEDED");
     await seedTokenRow(prisma, { usageEventId: "usage-preserve-1" });
     const beforeAggregate = await aggregateTokenRows(prisma);
 
@@ -332,7 +328,7 @@ describe("TokenUsageLegacyPathColumnsDropMigration", () => {
 
   it("no-ops already-absent legacy columns and only drops columns still present", async () => {
     const { prisma } = await createTempDatabase();
-    await seedBackfillRecord(prisma);
+    await seedCanonicalIdentityRecord(prisma);
     await prisma.$executeRawUnsafe(`ALTER TABLE "token_usage_ledger_events" DROP COLUMN "team_run_path_json"`);
 
     const firstRun = await new TokenUsageLegacyPathColumnsDropMigration(
@@ -351,47 +347,47 @@ describe("TokenUsageLegacyPathColumnsDropMigration", () => {
     );
   });
 
-  it("fails clearly without a terminal-success execution-address backfill record and leaves schema unchanged", async () => {
+  it("fails clearly without exact-success canonical identity and leaves schema unchanged", async () => {
     const missingRecordDb = await createTempDatabase();
     const missingRecordResult = await new TokenUsageLegacyPathColumnsDropMigration(
       new PrismaTokenUsageLegacyPathColumnsDropDatabase(missingRecordDb.prisma),
     ).execute();
     expect(missingRecordResult.status).toBe("FAILED");
-    expect(missingRecordResult.errorMessage).toContain("requires terminal-success execution-address backfill");
+    expect(missingRecordResult.errorMessage).toContain("requires exact-success canonical identity migration");
     expect(await listTokenUsageColumns(missingRecordDb.prisma)).toEqual(
       expect.arrayContaining(["team_run_path_json", "member_path_json"]),
     );
 
     const failedRecordDb = await createTempDatabase();
-    await seedBackfillRecord(failedRecordDb.prisma, "FAILED");
+    await seedCanonicalIdentityRecord(failedRecordDb.prisma, "FAILED");
     const failedRecordResult = await new TokenUsageLegacyPathColumnsDropMigration(
       new PrismaTokenUsageLegacyPathColumnsDropDatabase(failedRecordDb.prisma),
     ).execute();
     expect(failedRecordResult.status).toBe("FAILED");
     expect(failedRecordResult.summary.details.map((entry) => entry.message).join("\n")).toContain(
-      "Execution-address backfill prerequisite status: FAILED.",
+      "Canonical identity prerequisite status: FAILED.",
     );
     expect(await listTokenUsageColumns(failedRecordDb.prisma)).toEqual(
       expect.arrayContaining(["team_run_path_json", "member_path_json"]),
     );
   });
 
-  it("runs after pending backfill in startup order for skipped-version upgrades", async () => {
+  it("runs through the ordinary runner after an exact-success canonical migration record", async () => {
     const { tempDir, prisma } = await createTempDatabase();
     await seedTokenRow(prisma, {
       usageEventId: "usage-needs-backfill",
       rootTeamRunId: "rootPending",
-      executionAddressJson: null,
+      executionAddressJson: JSON.stringify({
+        rootTeamRunId: "rootPending",
+        taskTeamRunIds: [],
+        memberAddress: "/Teacher",
+        taskAgentRunId: null,
+      }),
       memberRouteKey: "Teacher",
     });
-    const memoryDir = path.join(tempDir, "memory");
-    await fs.mkdir(memoryDir, { recursive: true });
+    await seedCanonicalIdentityRecord(prisma, "SUCCEEDED");
     const repository = new TempMigrationRecordRepository(prisma);
     const registry = new AppDataMigrationRegistry([
-      new TokenUsageExecutionAddressBackfillMigration(
-        memoryDir,
-        new PrismaTokenUsageExecutionAddressBackfillDatabase(prisma),
-      ),
       new TokenUsageLegacyPathColumnsDropMigration(
         new PrismaTokenUsageLegacyPathColumnsDropDatabase(prisma),
       ),
@@ -411,12 +407,16 @@ describe("TokenUsageLegacyPathColumnsDropMigration", () => {
     `;
 
     expect(statuses.map((status) => [status.migrationId, status.status])).toEqual([
-      [TOKEN_USAGE_EXECUTION_ADDRESS_BACKFILL_MIGRATION_ID, "SUCCEEDED"],
       [TOKEN_USAGE_LEGACY_PATH_COLUMNS_DROP_MIGRATION_ID, "SUCCEEDED"],
     ]);
     expect(rows[0]).toEqual({
       root_team_run_id: "rootPending",
-      execution_address_json: JSON.stringify({ segments: [{ kind: "member", memberRouteKey: "Teacher" }] }),
+      execution_address_json: JSON.stringify({
+        rootTeamRunId: "rootPending",
+        taskTeamRunIds: [],
+        memberAddress: "/Teacher",
+        taskAgentRunId: null,
+      }),
     });
     expect(await listTokenUsageColumns(prisma)).not.toEqual(
       expect.arrayContaining(["team_run_path_json", "member_path_json"]),

@@ -1,0 +1,13 @@
+API-REV-015 explicit restoration verification
+2026-08-09T15:36:36Z
+ZERO_DIFF	autobyteus-server-ts/tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts	5c1c1588063f76112ce2b19efd7fb9da54a7a1e2436232d23e53800c711c4166
+ZERO_DIFF	autobyteus-server-ts/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts	7252502c629a0629d604dcc259276e471b58fdd75b8ae57d118c1d208a251676
+ZERO_DIFF	autobyteus-server-ts/tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts	3a54711b5209e6dc739c26dabf3794d76e7e64a6c580559bc0e5cf2c1e8968b8
+ZERO_DIFF	autobyteus-server-ts/tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts	09e9ba9d93c64fd3979892e00d3b174aa015c41708e76886e20c0d65accd5a98
+ZERO_DIFF	autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts	67bf92cee187e3e3d2bd568e4ee331e6fc236d6e20ce7a7806a4ab30658c3273
+ZERO_DIFF	autobyteus-server-ts/tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts	bad2985bdef7d66728dc19944ab2ce8bfd3f5701953c12af8db4e8e9cdf11014
+ZERO_DIFF	autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts	c66ea31b82ab536e50099d4b535e912616e93a2cd6f6a5963bc932abd0c0ded1
+ZERO_DIFF	autobyteus-server-ts/tests/unit/agent-tools/prompt-engineering/states/xml-patch-prompt-tool-parsing-state.test.js	4ffaff7d13d300796426bbb9c38ea8f38425fcd7aaf1236b690f3665d2fdb966
+ZERO_DIFF	autobyteus-server-ts/tests/unit/agent-tools/prompt-engineering/states/xml-patch-prompt-tool-parsing-state.test.ts	2b01da438e42c2c3196a5aa1729137638ebf0b5144062eada34db99e90e30d73
+Decision: restored to artifact HEAD; excluded from maintained ticket delta and executable-pass counts.
+Replacement: current durable unit/integration/API coverage plus API-REV-014 real imported nested-classroom AutoByteus/Codex/Claude matrix.

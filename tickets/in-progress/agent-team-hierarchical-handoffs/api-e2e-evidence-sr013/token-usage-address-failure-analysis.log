@@ -1,0 +1,307 @@
+# API-F-007 token-usage task-Team attribution analysis
+UTC 2026-08-09T05:45:15Z
+
+## Requirement authority
+tickets/in-progress/agent-team-hierarchical-handoffs/requirements.md:34:| BEH-008 | SR-006 TeamRun metadata now persists handoffs beside a recursive member tree whose logical identity is still expressed as parallel name/path/route/coordinator fields. | Schema-v3 metadata persists one rooted `rootTeam` execution tree with genuine Agent fields local to Agent nodes, typed run IDs local to their nodes, canonical coordinator addresses, and compiled `handoffs`; restore reads that self-contained snapshot and never recompiles current definitions into prior history. | Legacy recursive metadata, including records without handoffs, remains recoverable through the required migration rather than a normal-reader fallback. | R-017, R-018, R-020, R-033, R-041, R-042; AC-014, AC-017, AC-031, AC-037 |
+tickets/in-progress/agent-team-hierarchical-handoffs/requirements.md:38:| BEH-012 | SR-006 has already contracted the shared collaboration caller to `{rootTeamRunId,memberAddress}` and the common recipient to Agent `{kind,address}` or AgentTeam `{kind,address,coordinatorAddress}`, but older TeamRun/runtime/history/event structures still duplicate the same logical placement as paths and route keys. | Preserve the minimal collaboration boundary and make its canonical address type the project-wide logical placement authority. No downstream subsystem may reconstruct a second Team address language. | Collaboration grammar, authored handoff semantics, exact-run routing/codes, send delivery results, and direct-current-Team task eligibility remain unchanged. | R-028–R-032, R-036–R-043; AC-023–AC-025, AC-029–AC-039 |
+tickets/in-progress/agent-team-hierarchical-handoffs/requirements.md:40:| BEH-014 | Conversation, task, event, WebSocket, and token-usage code independently encode member path/route and task segments, often with source/local variants. | One `TeamExecutionAddress` carries root run scope, an ordered task-AgentTeam run-ID chain, canonical member address, and optional task-Agent run ID. A task AgentTeam run's logical Team address is resolved from its task identity/topology rather than repeated in each frame. | Task IDs, invocation IDs, concrete run IDs, lifecycle/error semantics, and exact task-run routing remain operation-owned. | R-036, R-037, R-043; AC-028–AC-030, AC-039 |
+tickets/in-progress/agent-team-hierarchical-handoffs/requirements.md:41:| BEH-015 | Current structured durable stores contain member paths/routes, duplicated generic/kind-specific run IDs, coordinator routes, or `ConversationTargetAddress`; ordinary readers normalize several variants. Historical flat and predecessor `memberTree` TeamRun schemas treated `memberName` as display/presentation text independently from structural `memberRouteKey`/`memberPath`, and the stable prerequisite migration may already be recorded terminal. | A blocking ordered chain converts framework-owned structured data before services start. Pending flat data first becomes the stable predecessor `memberTree`; the later canonical migration then derives address only from a validated agreeing route/path pair. If the stable record is already terminal, the canonical migration consumes its predecessor tree or composes the same migration-only flat decoder for a residual/repaired safe flat item left by a terminal warning. Display-name divergence is not a structural contradiction. Normal runtime readers accept only schema v3. | Definition handoffs, timestamps, settings, history, communication content, task lifecycle records, token usage, external bindings, application configurations, and genuine Agent facts are preserved. Obsolete legacy `memberName` is consumed only as historical presentation input and is not promoted into target routing identity. | R-041–R-043; AC-031–AC-034, AC-037, AC-039 |
+tickets/in-progress/agent-team-hierarchical-handoffs/requirements.md:42:| BEH-016 | GraphQL, REST, WebSocket, internal application SDKs, external-channel contracts, and the production web client expose or key state by route/path bundles and synthetic task-scoped route strings. Existing application/backend manifests and the backend definition loader admit exact backend-definition/frontend-SDK V4 contracts containing those legacy identity fields. | Public/internal project contracts expose `memberAddress`, `coordinatorAddress`, kind-specific run IDs, or `TeamExecutionAddress`; frontend projects the rooted tree and derives an address index while concrete executions use canonical execution-address serialization. The breaking application backend-definition and frontend-SDK contracts are V5 at every admission/build boundary; older bundles are excluded before execution with actionable observed/required-version diagnostics. | Existing desktop/mobile workflows, hierarchy, focus, status, task, history, memory, approval, and same-name disambiguation behavior remain observable-equivalent. Durable per-application database discovery/migration is independent of whether its bundle is V5-admitted. | R-038, R-041–R-043; AC-033, AC-035–AC-039 |
+tickets/in-progress/agent-team-hierarchical-handoffs/requirements.md:200:- **R-036 — One execution address:** Conversation, task record, event/status, command, WebSocket, token-usage, streaming, and history projection paths shall use exactly `TeamExecutionAddress {rootTeamRunId,taskTeamRunIds,memberAddress,taskAgentRunId}`. The ordered run-ID chain shall resolve through task AgentTeam identities to the correct nested Team scope and the final member address shall validate against that scope. A task AgentTeam's logical address shall not be repeated in the execution locator. Operations may add their own task/invocation IDs but shall not add source/member/team/local route or path identity bundles.
+tickets/in-progress/agent-team-hierarchical-handoffs/requirements.md:205:- **R-041 — Structured data migration:** Framework-owned TeamRun metadata, Team communication projections, task delegation records, token-usage storage, external-channel bindings, and application platform databases shall be converted to the current canonical model with per-item/file/database validation, backups immediately before mutation where applicable, same-directory atomic file replacement or database transaction, actionable failure details, byte-stable rejection, and idempotent rerun. For historical flat and predecessor `memberTree` TeamRun data, `memberName` is display/presentation input and is never required to equal a structural segment. One migration-only flat decoder shall preserve that value while producing the structural predecessor tree; the stable prerequisite and, only for residual flat input after a terminal prerequisite record, the canonical migration shall reuse that same decoder rather than duplicate flat interpretation. The canonical converter shall derive address only after normalized `memberRouteKey` and `memberPath` agree exactly, shall retain genuine Agent/role/description fields, shall drop obsolete legacy display/name/path/route fields from the target, and shall fail missing/contradictory structural route/path, unsafe flat nesting, parent/child topology, duplicate address, coordinator, or generic/kind-specific run identity rather than guess. The application-database migration inventory shall enumerate existing platform databases from the application-data directory/store, not from the admitted application-bundle catalog, so an old or invalid bundle cannot hide required durable state.
+tickets/in-progress/agent-team-hierarchical-handoffs/requirements.md:245:- **AC-029:** The exact `TeamExecutionAddress {rootTeamRunId,taskTeamRunIds,memberAddress,taskAgentRunId}` round trips through task records, Team communication, token usage, events, WebSocket commands, and frontend state for a persistent Agent, task Agent, task-AgentTeam coordinator, and two-level nested task AgentTeam without information loss or a route/path side channel. Each ordered task AgentTeam run ID resolves to one task identity/receiver/active execution and its logical Team address is not repeated in the locator.
+tickets/in-progress/agent-team-hierarchical-handoffs/requirements.md:248:- **AC-032:** Representative Team communication and task record fixtures, including nested task-AgentTeam segments and task-Agent suffixes, migrate to exact `TeamExecutionAddress` values. Token usage history preserves grouping/cost facts under the same address. Current readers reject the old structured shapes.
+tickets/in-progress/agent-team-hierarchical-handoffs/requirements.md:346:| UC-017 | R-032–R-035, R-041–R-043 |
+tickets/in-progress/agent-team-hierarchical-handoffs/requirements.md:349:| UC-020 | R-038, R-041–R-043 |
+tickets/in-progress/agent-team-hierarchical-handoffs/team-run-canonical-identity-refactor.md:651:| Token usage ledger | columns for root TeamRun ID, ordered task Team run IDs, member address, optional task Agent run ID; domain exposes `TeamExecutionAddress` |
+
+## Focused observed failure
+80:⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+82: FAIL  tests/unit/app-data-migrations/token-usage-execution-address-backfill-migration.test.ts > TokenUsageExecutionAddressBackfillMigration > backfills exact direct/task-agent addresses and reconstructs task-team root and chain
+83:AssertionError: expected 'taskTeamRun1' to be 'rootA' // Object.is equality
+85:Expected: "rootA"
+86:Received: "taskTeamRun1"
+89:    222|     expect(rows[0]!.root_team_run_id).toBe("rootA");
+91:    224|     expect(rows[1]!.root_team_run_id).toBe("rootA");
+99: Test Files  1 failed (1)
+100:      Tests  1 failed | 3 passed (4)
+
+## Current source evidence
+33:  const taskTeamRunIds: string[] = [];
+45:      if (id) taskTeamRunIds.push(id);
+49:  const rootTeamRunId = text(row.root_team_run_id);
+51:  return createTeamExecutionAddress({ rootTeamRunId, taskTeamRunIds, memberAddress: rooted(member), taskAgentRunId });
+88:  constructor(_memoryDir: string, database?: TokenUsageExecutionAddressBackfillDatabase) { this.database = database ?? null; }
+
+## Regression-introducing source diff summary
+3927e878d refactor: adopt canonical rooted AgentTeam identity
+ ...n-usage-execution-address-backfill-migration.ts | 511 ++++-----------------
+ 1 file changed, 78 insertions(+), 433 deletions(-)
+6:-import fs from "node:fs/promises";
+7:-import type { Dirent } from "node:fs";
+8:-import path from "node:path";
+11:-import { TASK_DELEGATION_RECORDS_FILE_NAME } from "../../agent-team-execution/task-delegation/task-delegation-record.js";
+12:-import { normalizeTaskDelegationRecordsFile } from "../../agent-team-execution/task-delegation/records/task-delegation-records-normalizer.js";
+13:-import {
+21:-import type {
+27:+import { createAgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
+28:+import { createTeamExecutionAddress, type TeamExecutionAddress } from "../../agent-team-execution/domain/team-execution-address.js";
+29:+import { normalizeTokenUsageExecutionAddress } from "../../token-usage/domain/execution-address.js";
+30:+import type { AppDataMigrationDefinition, AppDataMigrationExecutionResult, AppDataMigrationItemDetail, AppDataMigrationSummary } from "../domain/app-data-migration-types.js";
+65:-    rootTeamRunId: string;
+68:+  updateTokenUsageLedgerRow(input: { id: number; rootTeamRunId: string; executionAddressJson: string }): Promise<void>;
+72:-type TaskTeamRunIndexEntry = {
+73:-  rootTeamRunId: string;
+77:-type TaskTeamRunIndex = {
+78:-  entries: Map<string, TaskTeamRunIndexEntry>;
+85:-      kind: "task_team_correction" | "task_agent_backfill" | "direct_member_backfill";
+86:-      rootTeamRunId: string;
+150:-  entry: TaskTeamRunIndexEntry,
+160:-  taskTeamRunIndex: TaskTeamRunIndex,
+162:-  const rootTeamRunId = asNonEmptyString(row.root_team_run_id);
+165:-  if (rootTeamRunId && taskTeamRunIndex.conflicts.has(rootTeamRunId)) {
+169:-  const taskTeamEntry = rootTeamRunId ? taskTeamRunIndex.entries.get(rootTeamRunId) : null;
+175:-    if (row.root_team_run_id === taskTeamEntry.rootTeamRunId && sameExecutionAddress(existingAddress, targetAddress)) {
+179:-      kind: "task_team_correction",
+180:-      rootTeamRunId: taskTeamEntry.rootTeamRunId,
+185:-  if (!existingAddress && rootTeamRunId) {
+188:-      return { kind: "task_agent_backfill", rootTeamRunId, address: taskAgentAddress };
+199:+  const taskTeamRunIds: string[] = [];
+211:-      return { kind: "direct_member_backfill", rootTeamRunId, address: directMemberAddress };
+214:+      if (id) taskTeamRunIds.push(id);
+220:-  if (!rootTeamRunId) return { kind: "standalone_skip" };
+232:+  const rootTeamRunId = text(row.root_team_run_id);
+233:+  if (!rootTeamRunId || !member) return null;
+234:+  return createTeamExecutionAddress({ rootTeamRunId, taskTeamRunIds, memberAddress: rooted(member), taskAgentRunId });
+238:-  rootTeamRunId: string;
+252:-      rootTeamRunId: entry.name,
+255:-    .sort((left, right) => left.rootTeamRunId.localeCompare(right.rootTeamRunId));
+258:-const buildTaskTeamRunIndex = async (memoryDir: string): Promise<TaskTeamRunIndex> => {
+259:-  const entries = new Map<string, TaskTeamRunIndexEntry>();
+266:-    const recordsFile = normalizeTaskDelegationRecordsFile(payload, { teamRunId: candidate.rootTeamRunId });
+277:-        rootTeamRunId: recordsFile.teamRunId,
+285:-      const sameRoot = existingEntry.rootTeamRunId === nextEntry.rootTeamRunId;
+331:-  index: TaskTeamRunIndex,
+337:-    `Scanned ${index.scannedRecords} task delegation records; indexed ${index.entries.size} task-team run addresses; conflicts ${index.conflicts.size}.`,
+379:-  index: TaskTeamRunIndex,
+399:-  constructor(prisma?: PrismaClient) {
+403:+  constructor(prisma?: PrismaClient) { this.prisma = prisma ?? null; this.owns = !prisma; }
+435:-    rootTeamRunId: string;
+441:-        "root_team_run_id" = ${input.rootTeamRunId},
+449:+  async updateTokenUsageLedgerRow(input: { id: number; rootTeamRunId: string; executionAddressJson: string }): Promise<void> {
+451:+      SET "root_team_run_id"=${input.rootTeamRunId}, "execution_address_json"=${input.executionAddressJson}
+466:-  constructor(
+478:+  constructor(_memoryDir: string, database?: TokenUsageExecutionAddressBackfillDatabase) { this.database = database ?? null; }
+484:-    const taskTeamRunIndex = await buildTaskTeamRunIndex(this.memoryDir);
+503:+        if (!address || address.rootTeamRunId !== text(row.root_team_run_id)) {
+521:-          rootTeamRunId: classification.rootTeamRunId,
+524:-        if (classification.kind === "task_team_correction") counts.taskTeamCorrections += 1;
+536:+        await this.db.updateTokenUsageLedgerRow({ id: row.id, rootTeamRunId: address.rootTeamRunId, executionAddressJson: JSON.stringify(address) });
+
+## Current durable correction boundary
+diff --git a/autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-execution-address-backfill-migration.test.ts b/autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-execution-address-backfill-migration.test.ts
+index 7a9e07089..78bec2922 100644
+--- a/autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-execution-address-backfill-migration.test.ts
++++ b/autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-execution-address-backfill-migration.test.ts
+@@ -31,6 +31,13 @@ class InMemoryBackfillDatabase implements TokenUsageExecutionAddressBackfillData
+ 
+ let nextRowId = 1;
+ 
++const executionAddress = (
++  rootTeamRunId: string,
++  memberAddress: string,
++  taskTeamRunIds: string[] = [],
++  taskAgentRunId: string | null = null,
++) => ({ rootTeamRunId, taskTeamRunIds, memberAddress, taskAgentRunId });
++
+ const tokenRow = (
+   overrides: Partial<RawTokenUsageLedgerBackfillRow>,
+ ): RawTokenUsageLedgerBackfillRow => {
+@@ -67,18 +74,20 @@ const writeTaskRecordsFile = async (input: {
+       records: input.taskTeamRuns.map((taskRun, index) => ({
+         taskId: taskRun.taskId,
+         status: "accepted",
+-        senderAddress: { segments: [{ kind: "member", memberRouteKey: "Teacher" }] },
+-        receiverAddress: { segments: [{ kind: "member", memberRouteKey: taskRun.logicalMemberRouteKey }] },
+-        receiverTargetKind: "team",
++        senderAddress: executionAddress(input.rootTeamRunId, "/Teacher"),
++        receiverAddress: executionAddress(
++          input.rootTeamRunId,
++          `/${taskRun.logicalMemberRouteKey}`,
++        ),
++        receiverTargetKind: "agent_team",
+         content: `Task ${taskRun.taskId}`,
+         referenceFiles: [],
+         taskRun: {
+-          address: {
+-            segments: [
+-              { kind: "member", memberRouteKey: taskRun.logicalMemberRouteKey },
+-              { kind: "task_team", taskTeamRunId: taskRun.taskTeamRunId },
+-            ],
+-          },
++          address: executionAddress(
++            input.rootTeamRunId,
++            `/${taskRun.logicalMemberRouteKey}`,
++            [taskRun.taskTeamRunId],
++          ),
+           startedAt: `2026-07-03T10:0${index}:00.000Z`,
+         },
+         updates: [],
+@@ -154,9 +163,9 @@ describe("TokenUsageExecutionAddressBackfillMigration", () => {
+       });
+       expect(rows).toHaveLength(1);
+       expect(rows[0]!.root_team_run_id).toBe("rootSql");
+-      expect(rows[0]!.execution_address_json).toBe(JSON.stringify({
+-        segments: [{ kind: "member", memberRouteKey: "Teacher" }],
+-      }));
++      expect(rows[0]!.execution_address_json).toBe(JSON.stringify(
++        executionAddress("rootSql", "/Teacher"),
++      ));
+       expect(rows[0]!.team_run_path_json).toBeNull();
+       expect(rows[0]!.member_path_json).toBeNull();
+     } finally {
+@@ -164,7 +173,7 @@ describe("TokenUsageExecutionAddressBackfillMigration", () => {
+     }
+   });
+ 
+-  it("backfills direct/task-agent rows, corrects task-team rows, and records category counts", async () => {
++  it("backfills exact direct/task-agent addresses and reconstructs task-team root and chain", async () => {
+     nextRowId = 1;
+     const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "token-usage-address-backfill-"));
+     await writeTaskRecordsFile({
+@@ -182,7 +191,6 @@ describe("TokenUsageExecutionAddressBackfillMigration", () => {
+       tokenRow({ root_team_run_id: "taskTeamRun2", member_route_key: "student_one" }),
+       tokenRow({ root_team_run_id: "rootA", member_route_key: "assistant", task_agent_run_id: "taskAgentRun1" }),
+       tokenRow({ root_team_run_id: null, run_id: "standalone-agent-run" }),
+-      tokenRow({ root_team_run_id: "rootA" }),
+       tokenRow({
+         root_team_run_id: "rootA",
+         execution_address_json: JSON.stringify({
+@@ -205,61 +213,70 @@ describe("TokenUsageExecutionAddressBackfillMigration", () => {
+ 
+     expect(result.status).toBe("SUCCEEDED");
+     expect(result.summary).toMatchObject({
+-      scannedCount: 8,
+-      migratedCount: 5,
+-      skippedCount: 3,
++      scannedCount: 7,
++      migratedCount: 6,
++      skippedCount: 1,
+       failedCount: 0,
+     });
+-    expect(detailText(result.summary.details)).toContain("Direct member backfills: 1.");
+-    expect(detailText(result.summary.details)).toContain("Task-team corrections: 3.");
+-    expect(detailText(result.summary.details)).toContain("Task-agent backfills: 1.");
+-    expect(detailText(result.summary.details)).toContain("Already-addressed rows: 1.");
+-    expect(detailText(result.summary.details)).toContain("Standalone skips: 1.");
+-    expect(detailText(result.summary.details)).toContain("Insufficient-data skips: 1.");
+-    expect(detailText(result.summary.details)).toContain("Failures: 0.");
+ 
+     expect(rows[0]!.root_team_run_id).toBe("rootA");
+-    expect(parseAddress(rows[0]!)).toEqual({ segments: [{ kind: "member", memberRouteKey: "Teacher" }] });
++    expect(parseAddress(rows[0]!)).toEqual(executionAddress("rootA", "/Teacher"));
+     expect(rows[1]!.root_team_run_id).toBe("rootA");
+-    expect(parseAddress(rows[1]!)).toEqual({
+-      segments: [
+-        { kind: "member", memberRouteKey: "StudentStudyGroup" },
+-        { kind: "task_team", taskTeamRunId: "taskTeamRun1" },
+-        { kind: "member", memberRouteKey: "student_one" },
+-      ],
+-    });
++    expect(parseAddress(rows[1]!)).toEqual(executionAddress(
++      "rootA",
++      "/StudentStudyGroup/student_one",
++      ["taskTeamRun1"],
++    ));
+     expect(rows[2]!.root_team_run_id).toBe("rootA");
+-    expect(parseAddress(rows[2]!)).toEqual({
+-      segments: [
+-        { kind: "member", memberRouteKey: "StudentStudyGroup" },
+-        { kind: "task_team", taskTeamRunId: "taskTeamRun2" },
+-        { kind: "member", memberRouteKey: "student_one" },
+-      ],
+-    });
+-    expect(parseAddress(rows[3]!)).toEqual({
+-      segments: [
+-        { kind: "member", memberRouteKey: "assistant" },
+-        { kind: "task_agent", taskAgentRunId: "taskAgentRun1" },
+-      ],
+-    });
++    expect(parseAddress(rows[2]!)).toEqual(executionAddress(
++      "rootA",
++      "/StudentStudyGroup/student_one",
++      ["taskTeamRun2"],
++    ));
++    expect(parseAddress(rows[3]!)).toEqual(executionAddress(
++      "rootA",
++      "/assistant",
++      [],
++      "taskAgentRun1",
++    ));
+     expect(rows[4]!.execution_address_json).toBeNull();
+-    expect(rows[5]!.execution_address_json).toBeNull();
+-    expect(parseAddress(rows[7]!)).toEqual({
+-      segments: [
+-        { kind: "member", memberRouteKey: "StudentStudyGroup" },
+-        { kind: "task_team", taskTeamRunId: "taskTeamRun1" },
+-        { kind: "member", memberRouteKey: "student_two" },
+-      ],
+-    });
++    expect(parseAddress(rows[5]!)).toEqual(executionAddress(
++      "rootA",
++      "/StudentStudyGroup/already_done",
++      ["taskTeamRun1"],
++    ));
++    expect(rows[6]!.root_team_run_id).toBe("rootA");
++    expect(parseAddress(rows[6]!)).toEqual(executionAddress(
++      "rootA",
++      "/StudentStudyGroup/student_two",
++      ["taskTeamRun1"],
++    ));
+ 
+     const secondRun = await new TokenUsageExecutionAddressBackfillMigration(memoryDir, database).execute();
+     expect(secondRun.summary).toMatchObject({
+-      scannedCount: 8,
++      scannedCount: 7,
+       migratedCount: 0,
+-      skippedCount: 8,
++      skippedCount: 7,
+       failedCount: 0,
+     });
+-    expect(detailText(secondRun.summary.details)).toContain("Already-addressed rows: 6.");
++  });
++
++  it("fails an unresolved Team token row instead of inventing an execution address", async () => {
++    const rows = [tokenRow({ root_team_run_id: "rootA" })];
++
++    const result = await new TokenUsageExecutionAddressBackfillMigration(
++      "/unused-memory-root",
++      new InMemoryBackfillDatabase(rows),
++    ).execute();
++
++    expect(result).toMatchObject({
++      status: "FAILED",
++      summary: { scannedCount: 1, migratedCount: 0, skippedCount: 0, failedCount: 1 },
++    });
++    expect(detailText(result.summary.details)).toContain(
++      "lacks a reconstructable canonical execution address",
++    );
++    expect(rows[0]!.execution_address_json).toBeNull();
+   });
+ 
+   it("keeps active token usage hierarchy paths off legacy path columns and keeps physical drop out of normal Prisma migrations", async () => {
+@@ -270,7 +287,7 @@ describe("TokenUsageExecutionAddressBackfillMigration", () => {
+       "autobyteus-server-ts/src/token-usage/providers/task-statistics-tree-builder.ts",
+       "autobyteus-server-ts/src/token-usage/providers/token-usage-ledger-store.ts",
+       "autobyteus-server-ts/src/api/graphql/types/token-usage-stats.ts",
+-      "autobyteus-server-ts/src/agent-team-execution/services/token-usage-execution-address-builder.ts",
++      "autobyteus-server-ts/src/agent-team-execution/domain/team-execution-address.ts",
+       "autobyteus-server-ts/src/agent-execution/events/processors/token-usage/token-usage-event-persistence-processor.ts",
+       "autobyteus-server-ts/src/agent-execution/domain/agent-run-token-usage.ts",
+       "autobyteus-web/graphql/queries/token_usage_statistics_queries.ts",
+
+## Classification
+Expected: a row scoped by historical taskTeamRun1 plus the current task-delegation record resolves to rootTeamRunId=rootA, taskTeamRunIds=[taskTeamRun1], memberAddress=/StudentStudyGroup/student_one, taskAgentRunId=null.
+Observed: root_team_run_id remains taskTeamRun1; current source ignores memoryDir and no longer indexes current task-delegation records, so it cannot reconstruct the root or logical member prefix.
+Preliminary: implementation Local Fix. The requirement-valid task-Team reconstruction assertion is retained; old {segments} result assertions and the deleted-source audit path were corrected before rerun.
+Execution halt: critical persisted token attribution failure blocks remaining deterministic and mandatory live validation. No live row is counted as skip/pass.

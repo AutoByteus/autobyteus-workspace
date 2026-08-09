@@ -1,0 +1,6 @@
+# API-REV-014 Server Environment Collision
+
+- The first API-REV-014 server start used `--data-dir` but inherited the tool shell's already-exported `DATABASE_URL` and `AUTOBYTEUS_SERVER_HOST`. Dotenv reported `injecting env (0)`, the public URL resolved to `http://127.0.0.1:29695`, and Prisma resolved `/Users/normy/.autobyteus/server-data/db/production.db` rather than the disposable database.
+- The process was stopped before it listened. Before termination, Prisma applied pending migration `20260801090000_token_usage_member_display_name` to that inherited database and the required canonical app-data migration recorded `FAILED` with 203 failed items. No rollback was attempted because blindly reversing an operational schema/data record would create additional risk.
+- Containment: the process was terminated; no service remains on the attempted port. All subsequent starts must source the API-REV-014 test-owned `.env` into the process environment so its exact disposable `DATABASE_URL` and port override inherited values. Readiness must verify both the public URL and the Prisma datasource before any API/browser action.
+- Classification: test-environment setup defect, owned by API/E2E. It is not product acceptance evidence. The accidental operational database mutation must be disclosed in the final report/handoff.
