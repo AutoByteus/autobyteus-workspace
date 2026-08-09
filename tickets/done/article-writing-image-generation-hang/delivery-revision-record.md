@@ -7,6 +7,7 @@
 | DR-001 | `CRR-008` Pass after `API-REV-004` | N/A | Latest base integrated; docs synchronized; ready for user verification; finalization held | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-integration-evidence.log` |
 | DR-002 | User requested README-directed Electron build | DR-001 — ready / held | Local macOS ARM64 Electron package and terminal-runtime verification passed; user verification/finalization hold remains | `handoff-summary.md`, `release-deployment-report.md`, `electron-build-macos-arm64-delivery.log` |
 | DR-003 | User confirmed the app works and requested finalization without a new release | DR-002 — package passed / held | User verification accepted; final target unchanged; repository finalization authorized and in progress; release explicitly skipped | `handoff-summary.md`, `release-deployment-report.md`, `delivery-finalization.log` |
+| DR-004 | Repository finalization and task-owned cleanup completed | DR-003 — authorized / in progress | Ticket archived and merged into `personal`; target pushed; worktree and ticket branches removed; no release performed | `handoff-summary.md`, `release-deployment-report.md`, `delivery-finalization.log` |
 
 ## Revision Entries
 
@@ -50,3 +51,16 @@
 - Current authoritative result: `Pass — user verification received and repository finalization authorized`; archive/commit/push/target-merge/cleanup execution is in progress.
 - Next recipient/action: Delivery completes the recorded ticket-branch to `personal` finalization sequence, safely removes task-owned worktree/branch state after the target push, and records the terminal result in a later delivery revision.
 - Remaining blockers, rollback concerns, or untested scope: No current delivery blocker. Until the target push succeeds, rollback is to retain the ticket branch and leave `personal` unchanged. Approved provider-SDK-specific best-effort cancellation and the historical-cause uncertainty remain bounded residuals rather than blockers.
+
+### DR-004 — Terminal repository finalization and cleanup
+
+- Delivery round and trigger: Completion of the user-authorized finalization sequence recorded in `DR-003`.
+- Prior authoritative result: `DR-003 — user verification received; final target unchanged; repository finalization authorized without a release.`
+- Repository result: The ticket package and durable docs were committed on the ticket branch as `15067e5fcb322fb43dd88a4e77de74caee465d14`; a delivery-local archived-probe newline normalization followed as `3db9dd3afff8aa2f40eb44be379f538330fe84d7`. The ticket branch was pushed, then merged into `personal` as `c6d18abfc43dfc77ebf623522a5bd24f264c9744`, and that merge was pushed to `origin/personal`.
+- Finalization quality correction: An initial local, unpushed merge exposed one blank-line-at-EOF finding in the archived `bible-study-trace-probe.md`. Delivery reset the unpushed target merge, normalized only that ticket artifact on the ticket branch, reran the full branch `git diff --check`, and then performed the authoritative merge/push. No product source or verified runtime behavior changed.
+- Ticket and cleanup result: The ticket is archived at `tickets/done/article-writing-image-generation-hang`. The dedicated worktree was removed, worktree metadata pruned, and local plus remote `codex/article-writing-image-generation-hang` branches deleted after ancestry and target-push checks passed.
+- Release result: `Not required — explicitly declined by the user`. No version bump, tag, release, publication, notarization, deployment, or rollout action was performed.
+- Current authoritative result: `Complete — repository finalized and task-owned cleanup completed without a release.`
+- Exact evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/article-writing-image-generation-hang/delivery-finalization.log`; `handoff-summary.md`; `release-deployment-report.md`.
+- Next recipient/action: `N/A` — terminal delivery complete.
+- Remaining blockers, rollback concerns, or untested scope: No delivery blocker remains. Approved provider-SDK-specific best-effort cancellation, non-interruptible filesystem rename boundaries, no live external provider call, and historical-cause uncertainty remain explicitly bounded. Any later regression should be corrected by reverting the merge or a follow-up commit; no release rollback applies.

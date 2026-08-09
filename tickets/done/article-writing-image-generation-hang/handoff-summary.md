@@ -3,10 +3,10 @@
 ## Delivery State
 
 - Ticket: `article-writing-image-generation-hang`
-- Result: `User verified; repository finalization authorized and in progress; no release requested`
-- Current delivery revision: `DR-003`
-- Ticket worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/article-writing-image-generation-hang`
-- Ticket branch: `codex/article-writing-image-generation-hang`
+- Result: `Complete — user verified; repository finalized; no release performed`
+- Current delivery revision: `DR-004`
+- Ticket worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/article-writing-image-generation-hang` — removed after successful target push.
+- Ticket branch: `codex/article-writing-image-generation-hang` — pushed for finalization, then deleted locally and remotely after merge.
 - Finalization target: `origin/personal` / local `personal`
 - Bootstrap base: `origin/personal` at `edf2d428b007eb4f8445da3e1e3e60076b8eec46`
 - Delivery safety checkpoint: `afdf72d5fffae564fbf74d440967c3f47d307fa0`
@@ -16,7 +16,7 @@
 - User-requested Electron build: Passed — local macOS ARM64 DMG/ZIP packaging plus packaged terminal-runtime/helper validation and real `node-pty` spawn probe.
 - User verification: Received — user confirmed the local Electron app works and requested finalization.
 - Finalization-time target refresh: Passed — `origin/personal` remained `7f0fc49965950d9689726a048371f2e2b78eef31`, so the verified state did not materially change and renewed verification was not required.
-- Finalization state: Authorized and in progress. No version bump, tag, release, publication, or deployment will be performed, per the user's explicit request.
+- Finalization state: Completed — ticket tip `3db9dd3afff8aa2f40eb44be379f538330fe84d7` was merged into `personal` as `c6d18abfc43dfc77ebf623522a5bd24f264c9744` and pushed to `origin/personal`; task-owned worktree/branches were removed. No version bump, tag, release, publication, or deployment was performed, per the user's explicit request.
 
 ## Delivered Behavior
 
@@ -56,6 +56,7 @@
 - Packaged runtime verification: `pnpm verify-packaged-terminal-runtime --server-root electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server --platform darwin --arch arm64 --spawn-probe` passed. Target and selected `node-pty` helpers are executable ARM64 binaries, and the real spawn probe passed.
 - Full log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/article-writing-image-generation-hang/electron-build-macos-arm64-delivery.log`.
 - Repository effect: Generated `dist`, `dist-mobile`, `resources`, and `electron-dist` outputs are ignored; no tracked source/package/lockfile change was created by the build.
+- Post-verification disposition: The local app/DMG/ZIP were removed with the dedicated worktree after the user confirmed the app works. Their build-time paths, checksums, and complete build/runtime-verifier evidence remain recorded above and in the archived log.
 
 ## Documentation Synchronized
 
@@ -83,8 +84,8 @@ Authoritative docs-sync details: `/Users/normy/autobyteus_org/autobyteus-workspa
 - No live external media-provider call or full production process restart was run. Deterministic provider/transfer fakes, isolated SQLite server E2E, raw/snapshot restore, lifecycle continuation, builds, and typechecks directly exercise the approved owners.
 - The local Electron artifacts are unsigned and unnotarized by explicit README-directed environment configuration. They are suitable for local verification, not public release distribution.
 
-## User Verification And Finalization Authorization
+## User Verification And Repository Finalization
 
 The user confirmed the local Electron app works and explicitly requested ticket finalization without releasing a new version. The mandatory final refresh kept `origin/personal` at `7f0fc49965950d9689726a048371f2e2b78eef31`, already contained by merge `2264d112bb52044d203295648aea910f15c7886d`; therefore the verified handoff did not change and renewed verification was not required.
 
-Delivery is authorized to archive the ticket, commit and push the ticket branch, merge it into `personal`, push the target, and then remove task-owned worktree/branch state. Versioning, tagging, release publication, notarization, and deployment are explicitly out of scope.
+Delivery archived the ticket, committed and pushed the ticket branch, merged it into `personal`, pushed the target, then removed task-owned worktree/branch state. The authoritative target merge is `c6d18abfc43dfc77ebf623522a5bd24f264c9744`. Versioning, tagging, release publication, notarization, and deployment were explicitly out of scope and were not performed.
