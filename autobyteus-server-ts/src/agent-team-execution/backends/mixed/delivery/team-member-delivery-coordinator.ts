@@ -15,6 +15,15 @@ export type LogicalMessageDeliveryRecipient = Readonly<{
   targetAgentRunId: string;
 }>;
 
+export type ResolvedMessageDeliveryRoute = Readonly<{
+  endpoint: InterAgentMessageDeliveryEndpoint;
+  targetAgentRunId: string;
+  deliver: (
+    request: ResolvedInterAgentMessageDeliveryRequest,
+    beforePublishMemberInput: (() => void) | null,
+  ) => Promise<AgentOperationResult>;
+}>;
+
 export class TeamMemberDeliveryCoordinator {
   constructor(private readonly options: {
     teamContext: TeamRunContext<MixedTeamRunContext>;
@@ -23,20 +32,32 @@ export class TeamMemberDeliveryCoordinator {
   }) {}
 
   async deliver(intent: InterAgentMessageDeliveryIntent, recipient: LogicalMessageDeliveryRecipient): Promise<AgentOperationResult> {
+    return this.deliverViaResolvedRoute(intent, {
+      endpoint: recipient.endpoint,
+      targetAgentRunId: recipient.targetAgentRunId,
+      deliver: (request, beforePublishMemberInput) => this.options.memberRegistry
+        .getOrCreate(recipient.memberContext)
+        .deliverInterMemberMessage(request, beforePublishMemberInput),
+    });
+  }
+
+  async deliverViaResolvedRoute(
+    intent: InterAgentMessageDeliveryIntent,
+    recipient: ResolvedMessageDeliveryRoute,
+  ): Promise<AgentOperationResult> {
     const request = this.normalize(intent, recipient);
     const payload = this.payload(request);
     const traced = this.trace(request, payload);
-    const result = await this.options.memberRegistry.getOrCreate(recipient.memberContext)
-      .deliverInterMemberMessage(traced, () => this.options.publish({
-        eventSourceType: TeamRunEventSourceType.COMMUNICATION,
-        teamRunId: intent.rootTeamRunId,
-        executionAddress: traced.senderAddress,
-        data: payload,
-      }));
+    const result = await recipient.deliver(traced, () => this.options.publish({
+      eventSourceType: TeamRunEventSourceType.COMMUNICATION,
+      teamRunId: intent.rootTeamRunId,
+      executionAddress: traced.senderAddress,
+      data: payload,
+    }));
     return { ...result, agentRunId: recipient.targetAgentRunId, displayName: recipient.endpoint.participant.displayName };
   }
 
-  private normalize(intent: InterAgentMessageDeliveryIntent, recipient: LogicalMessageDeliveryRecipient): ResolvedInterAgentMessageDeliveryRequest {
+  private normalize(intent: InterAgentMessageDeliveryIntent, recipient: ResolvedMessageDeliveryRoute): ResolvedInterAgentMessageDeliveryRequest {
     return {
       ...intent,
       recipient: recipient.endpoint,
