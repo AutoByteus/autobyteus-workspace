@@ -7,6 +7,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | `architecture_reviewer` / `design-review-report.md` / ARCH-REV-004 handoff | N/A | `Initial Baseline` | `SR-004`, `ARCH-REV-004`; `CRR N/A`, `API-REV N/A`, `DR N/A` | Shared egress, explicit projection effects, Event Monitor lifecycle, and indexed navigation implementation complete; ready for source review |
+| IR-002 | `code_reviewer` / `code-review-report.md` / CRR-001 | `CR-001–CR-006` | `Local Fix` | `SR-004`, `ARCH-REV-004`, `CRR-001`; `API-REV N/A`, `DR N/A` | Six bounded source/test findings corrected and locally validated; ready for complete source re-review |
 
 ## Revision Entries
 
@@ -42,3 +43,38 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 - Development source commit: `d1c48db5a59ecf42a8a1d528763196c815b0c11a`.
 - Next recipient or routing: `code_reviewer` for initial complete source/architecture review before any API/E2E investigation or execution.
 - Remaining limitations or risks: Realistic aggregate performance, retained WebSocket integration/canonical-subscriber behavior, collapsed/unfocused nested correctness, latest-100 executable coverage, paste/fake-media responsiveness, and final Electron voice/file smoke remain downstream API/E2E work. Delivery-owned branch refresh and documentation synchronization remain intentionally deferred.
+
+### IR-002 — Immutable Controls And Exact Projection Rework
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/code-review-report.md`; `CRR-001` initial implementation review.
+- Triggering finding IDs: `CR-001–CR-006`.
+- Classification: `Local Fix`.
+- Prior authoritative result: `CRR-001 — Fail / Local Fix`; API/E2E must not begin.
+- Current authoritative result: All six implementation-owned findings are corrected at source and focused-unit scope; the cumulative package is ready for complete source re-review.
+- Related solution revision IDs: `SR-004`.
+- Related architecture-review revision IDs: `ARCH-REV-004`.
+- Related code-review revision IDs: `CRR-001`.
+- Related API/E2E revision IDs: `N/A`.
+- Related delivery revision IDs: `N/A`.
+- Why this implementation revision is recorded: Closes the review-identified gaps in control immutability, combined navigation effects, local submission projection, root lifecycle patching, workspace-bucket identity, and final Event Monitor priming without changing the reviewed design or protocol.
+- Approved behavior or requirement IDs affected: `BEH-004–BEH-006`, `BEH-009`; `FR-002`, `FR-003`, `FR-005`, `FR-007`; `AC-002`, `AC-003`, `AC-007`, `AC-010`; `UC-007`.
+- Implementation delta:
+  - `CR-001`: deep-clones and recursively freezes observer/filter control messages while preserving the original semantic message for the sole scheduler/sink; nested mutation attempts cannot alter delivery.
+  - `CR-002`: combines presentation plus activity into one navigation effect and exact branch patch, preserving terminal status, completion, timestamp, and activity without a topology build.
+  - `CR-003`: gives local submission a retargetable standalone/team navigation identity and applies exact first-user summary/activity effects for begin, real attachment replacement, and failure; equal attachments no-op.
+  - `CR-004`: makes root team lifecycle return actual mutation and use an exact `team_run` presentation patch; equal or mismatched snapshots do not rebuild or patch.
+  - `CR-005`: retains equal top-level collections and unchanged per-workspace team bucket arrays across topology builds.
+  - `CR-006`: removes the intermediate team-member prime and performs one final baseline prime only after activity hydration, without re-priming preserved subscribed members.
+- Changed files or areas: server egress control contracts/sink/identity/filter and unit coverage; frontend mutation effects/projector coverage; team lifecycle handler/service; local submission and standalone/team callers; run-history exact patches and reference reconciliation; team-open coordinator and focused lifecycle coverage.
+- Local validation and result:
+  - server egress unit: **1 file / 32 tests pass**;
+  - server production build-config TypeScript check: **pass**;
+  - frontend broad affected set during rework: **37 files / 401 tests pass**;
+  - final post-edit frontend focused set: **9 files / 192 tests pass**;
+  - web/localization boundary guards and reviewed negative/static scans: **pass**;
+  - frontend repository typecheck remains at the recorded baseline **220 diagnostics**, with **zero diagnostics on changed frontend paths**;
+  - current IR-002 and full task-range `git diff --check`: **pass**;
+  - every changed production implementation file is `<= 500` effective non-empty lines.
+- Development source commit: `21c85e91e355c71d643cab61fa8d24acf9dc78dd`.
+- Next recipient or routing: `code_reviewer` for complete source re-review before API/E2E resumes.
+- Remaining limitations or risks: No new implementation limitation was introduced. Realistic aggregate performance, retained WebSocket/API/browser/Electron coverage, and delivery-owned branch refresh/docs synchronization remain with their downstream owners after source review passes.
