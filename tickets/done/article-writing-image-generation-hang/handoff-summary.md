@@ -4,7 +4,7 @@
 
 - Ticket: `article-writing-image-generation-hang`
 - Result: `Complete — user verified; repository finalized; no release performed`
-- Current delivery revision: `DR-004`
+- Current delivery revision: `DR-005`
 - Ticket worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/article-writing-image-generation-hang` — removed after successful target push.
 - Ticket branch: `codex/article-writing-image-generation-hang` — pushed for finalization, then deleted locally and remotely after merge.
 - Finalization target: `origin/personal` / local `personal`
@@ -17,6 +17,7 @@
 - User verification: Received — user confirmed the local Electron app works and requested finalization.
 - Finalization-time target refresh: Passed — `origin/personal` remained `7f0fc49965950d9689726a048371f2e2b78eef31`, so the verified state did not materially change and renewed verification was not required.
 - Finalization state: Completed — ticket tip `3db9dd3afff8aa2f40eb44be379f538330fe84d7` was merged into `personal` as `c6d18abfc43dfc77ebf623522a5bd24f264c9744` and pushed to `origin/personal`; task-owned worktree/branches were removed. No version bump, tag, release, publication, or deployment was performed, per the user's explicit request.
+- Main-repository follow-up build: Passed — `personal` was confirmed current at `4556d6e8db69c53815078106dbfb5b0aea6998f9`, then a personal-flavor macOS ARM64 Electron app/DMG/ZIP was built and verified locally.
 
 ## Delivered Behavior
 
@@ -57,6 +58,17 @@
 - Full log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/article-writing-image-generation-hang/electron-build-macos-arm64-delivery.log`.
 - Repository effect: Generated `dist`, `dist-mobile`, `resources`, and `electron-dist` outputs are ignored; no tracked source/package/lockfile change was created by the build.
 - Post-verification disposition: The local app/DMG/ZIP were removed with the dedicated worktree after the user confirmed the app works. Their build-time paths, checksums, and complete build/runtime-verifier evidence remain recorded above and in the archived log.
+
+## Main Personal Follow-Up Electron Build
+
+- Refresh result: Main repository `personal` and `origin/personal` were already identical at `4556d6e8db69c53815078106dbfb5b0aea6998f9` before building.
+- Build result: `Pass` — README-documented no-notarization macOS command completed with exit 0 on ARM64 and produced personal-flavor version `1.4.45` artifacts.
+- App: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`.
+- DMG: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.45.dmg` — SHA-256 `521abc3797d8661f1c29da699e2ab7c1e6f5585523b11e1010a610c7ccde0c53`.
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.45.zip` — SHA-256 `003526e6c3c5188b17540960d54f316b5b984a72a9ed8b9f1c00ddc8129ef99a`.
+- Verification: Packaged Darwin ARM64 terminal-runtime helper checks and real `node-pty` spawn probe passed; root app executable is Mach-O ARM64; `hdiutil verify` reported a valid DMG.
+- Posture: Local unsigned/unnotarized build only; no release/version/tag/publication/deployment action.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/article-writing-image-generation-hang/electron-build-main-personal-macos-arm64.log`.
 
 ## Documentation Synchronized
 
