@@ -2,97 +2,55 @@
 
 ## Status
 
-**Ready for hands-on user verification.** The current native-Qwen/exact-only implementation is integrated with the latest tracked base, passed source/API/E2E/browser validation, has synchronized long-lived documentation, and is packaged as a verified macOS arm64 Electron 1.4.45 build. Repository finalization remains intentionally on hold until the user explicitly accepts or verifies this handoff.
+**Blocked — not ready for hands-on user verification.** Delivery protected the review-passed SR-016 candidate, but the mandatory latest-base merge conflicts in AppConfig production and unit-test boundaries. The merge was aborted. No current Electron build was started, and the older DR-005 v1.4.45 build must not be treated as the SR-016/current-base package.
 
 ## Worktree / Branch / Target
 
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata`
-- Ticket branch: `codex/custom-provider-model-context-metadata`
-- Recorded finalization target: `personal` / `origin/personal`
-- Latest tracked base checked: `origin/personal@7f0fc49965950d9689726a048371f2e2b78eef31`
-- Integrated HEAD: `f31f378d712b1b1f4e839a671104c410b51c6d06`
-- Merge parents: protected delivery checkpoint `93c731cfa74fa961da8f8746a9af89ac1e407f74`; current base `7f0fc49965950d9689726a048371f2e2b78eef31`
-- API-REV-005-authorized ticket merge retained in history: `9817d3b1fdcbfec4c5249eb782ae2d9acfb25688`
-- Fresh delivery divergence: ahead 11 / behind 0
-- Integrated-state evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/delivery-integrated-state-refresh.log`
+- Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata
+- Ticket branch: codex/custom-provider-model-context-metadata
+- Recorded finalization target: personal / origin/personal
+- Latest tracked base checked: origin/personal@3cddeec6b93602da172fec2e7b9a80acc7c05117
+- Protected reviewed checkpoint / current HEAD: 7ea8a728420d584218aaf141af754145fa7a5329
+- Divergence after abort: ahead 12, behind 20
+- Integration evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/delivery-integrated-state-refresh.log
 
-## Fresh Delivery Refresh
+## Upstream Authorization At Checkpoint
 
-- Before the requested build, `git fetch origin personal --prune` found ten newer progressive-rendering/release commits. Delivery stopped, protected the current package in checkpoint `93c731cfa74fa961da8f8746a9af89ac1e407f74`, and merged `origin/personal@7f0fc49965950d9689726a048371f2e2b78eef31` without conflict.
-- The new base changed conversation rendering, its tests/docs, and release metadata to v1.4.45; no Qwen, LLM metadata, AppConfig, provider Settings, or GraphQL LLM source path changed.
-- The shared web architecture doc merged automatically and retains both progressive-rendering and Token Meter contracts.
-- Required post-integration execution passed through the full README-guided Electron pipeline and artifact validation.
-- `git merge-base --is-ancestor origin/personal HEAD`: passed.
-- Post-build refetch at 2026-08-08T20:21:52Z remained at `7f0fc49965950d9689726a048371f2e2b78eef31`; divergence stayed ahead 11 / behind 0.
-- Final post-artifact refetch at 2026-08-08T20:25:47Z remained unchanged; tracked diff check passed and source/test working-tree diff was empty.
-- `git diff --check` after docs sync: passed.
+- Solution: SR-016 current readable-identity contract.
+- Implementation: IR-010.
+- Implementation source review: CRR-012 Pass, 9.35/10.
+- API/E2E: API-REV-007 Pass, 96.4%; identical four-file serial selection passed 4 files / 12 tests.
+- Durable-test review: CRR-014 Pass; TR-004 resolved.
+- Unresolved upstream findings before delivery integration: none.
 
-## Delivered Behavior
+These results authorize the protected checkpoint, not an unresolved merge or the latest base.
 
-### Native Qwen
+## Latest-Base Integration Result
 
-- Settings provides one paired Base URL + API-key setup path for Qwen.
-- The endpoint is probed before persistence; the key remains in the encrypted vault and `QWEN_BASE_URL` is durably committed through `AppConfig`.
-- Status exposes only the effective URL, server-owned `DEFAULT|CONFIGURED` source, and value-free key configuration state.
-- URL-write failure restores the previous key pair when possible; the bounded compensation double-failure reports repair-required without claiming rollback.
-- Fresh Qwen clients resolve the persisted endpoint normally; the catalog owns exact `qwen3.8-max`, `qwen:deepseek-v4-pro`, and `qwen:glm-5.2` entries. `qwen3.8-max-preview` is absent.
+1. git fetch origin personal --prune advanced the tracked base to 3cddeec6b93602da172fec2e7b9a80acc7c05117.
+2. Delivery committed the exact reviewed dirty state as safety checkpoint 7ea8a728420d584218aaf141af754145fa7a5329.
+3. git merge --no-edit origin/personal conflicted in:
+   - autobyteus-server-ts/src/config/app-config.ts
+   - autobyteus-server-ts/tests/unit/config/app-config.test.ts
+4. Ticket-owned durable QWEN_BASE_URL persistence/secret guards overlap current-base AUTOBYTEUS_STREAM_PARSER retirement/line-mutation behavior and tests.
+5. Delivery ran git merge --abort; the checkpoint is intact and no unmerged path remains.
+6. No post-integration test or Electron build was run because no integrated state exists.
 
-### Custom OpenAI-compatible providers
+## Required Rework And Route
 
-- Discovery retains normalized IDs and bounded positive-integer context/input/output aliases without retaining raw payloads or secrets.
-- Each numeric field resolves independently: live endpoint value, exact built-in `SupportedModelDefinition.value` fallback, then unknown.
-- Endpoint URL/region/plan profiles, canonical wire references, suffix/family/display-name/case-folded/fuzzy matching, and nearest-model inference are removed.
-- Provider-owned deletion, last-known-good behavior, and GraphQL secret/raw-payload boundaries remain intact.
+- Classification: Local Fix
+- Owner: implementation_engineer
+- Required behavior: reconcile both AppConfig contracts and combined unit coverage on the current base without weakening durable Qwen persistence, secret boundaries, or exact retired-setting cleanup.
+- Required return path: source review, applicable integrated API/E2E validation, then delivery must begin again with another fresh tracked-base fetch.
 
-### Web recovery and Token Meter
+## Documentation / Build / Finalization State
 
-- A committed Qwen save remains success even if the subsequent provider-data refresh warns; reload retries both provider settings and catalog owners before showing success.
-- Known model capacity renders progress. Unknown capacity keeps the latest-prompt token count visible with explicit unavailable copy and no fabricated denominator or percentage.
-
-## Review And Validation Summary
-
-- Architecture: `ARCH-REV-005` Pass.
-- Integrated implementation: `IR-007`.
-- Integrated source review: `CRR-010` Pass, `9.40/10`.
-- Integrated API/E2E: `API-REV-005` Pass, `96.4%` final confidence on the ticket merge; API-REV-004 was not inferred forward. Delivery then integrated the unrelated memory-lineage base advance and reran the relevant 4-file / 25-test Qwen/metadata smoke successfully.
-- Durable coverage: unchanged from the `CRR-009`-reviewed files; no additional proportional test-code review required.
-- Core exact metadata/Qwen: 4 files / 25 tests passed.
-- Conflict/Qwen-focused server: 5 files / 73 passed / 1 intentional Windows-only skip.
-- Current Qwen Settings: 5 files / 32 tests passed.
-- Server/shared production build, Prisma generation, built-in-agent bootstrap, and sanitized no-`DATABASE_URL` smoke: passed.
-- Live Qwen lifecycle + custom-provider GraphQL E2E: 2 files / 4 tests passed.
-- Web boundary/localization guards, integrated browser journey, desktop/narrow visual inspection, integrity, and cleanup: passed.
-- README-guided Electron 1.4.45 build on final integrated HEAD: passed; DMG, ZIP, arm64 app bundle, packaged terminal helpers, and real node-pty spawn probe verified.
-
-## Docs / Release / Finalization State
-
-- Docs sync: `Updated / Pass`; see `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/docs-sync-report.md`.
-- Ticket remains in `tickets/in-progress`.
-- Ticket branch push, merge into `personal`, version/tag/release, deployment, archival, and cleanup: not started.
-- Current local verification build: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/electron-build-mac-report.md`.
-- Earlier endpoint-profile delivery evidence and the unsigned v1.4.40 Electron artifact are superseded.
-
-## Electron Test Artifact
-
-- Recommended DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.45.dmg`
-- SHA-256: `50f60d04c6bee092211941c6be8813fb679e6e66a291902c7168d3ebbc5652d8`
-- ZIP alternative: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.45.zip`
-- Build posture: local, unsigned, unnotarized; macOS may require right-click **Open**.
-- Integrated app data: `~/.autobyteus/server-data`; back it up first if preserving existing state matters.
-
-## Suggested User Verification
-
-1. Open Settings -> API Key Management -> Qwen and confirm the default/configured endpoint badge is truthful.
-2. Save a matching Qwen-compatible Base URL and API key; confirm the key field clears and configured status remains after reload/restart.
-3. Confirm `qwen3.8-max`, `DeepSeek V4 Pro (Qwen)`, and `GLM-5.2 (Qwen)` are available and the preview model is absent.
-4. If testing an endpoint failure, confirm the UI reports restored-previous or repair-required state without exposing secrets/internal details.
-
-Do not send credentials in the verification response. An explicit completion/acceptance reply is sufficient to authorize the finalization refresh.
+- Docs sync: blocked; no DR-006 long-lived docs edit was made.
+- Current Electron build: unavailable.
+- Historical DR-005 Electron 1.4.45 artifact: predates SR-016 and the current base; do not use it as current verification evidence.
+- Ticket remains under tickets/in-progress.
+- Branch push, target merge, tag, release, deployment, archival, and cleanup: not started.
 
 ## Bounded Residual Risk
 
-Real Alibaba availability, credentials, quota, region policy, TLS behavior, undocumented payload variation, and future source-dated fact drift were not exercised. The owned loopback provider proves the approved OpenAI-compatible request and persistence contract, not current live-vendor operation.
-
-## Next Action
-
-Wait for explicit user verification or acceptance. After that signal, delivery must refresh the target again before moving the ticket to `tickets/done`, committing/pushing, merging into `personal`, or performing any release/publication work.
+Preserve after the integration blocker is resolved: real Alibaba availability, credentials, quota, region policy, TLS behavior, undocumented payload variation/future drift; the ordinary recent RUNNING window; arbitrary interruption timing; actual cleanup-failure orphan risk; stale skipped selectors; and the package-wide TS6059 baseline.

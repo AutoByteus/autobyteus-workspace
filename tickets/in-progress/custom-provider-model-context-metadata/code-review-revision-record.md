@@ -18,6 +18,9 @@
 | CRR-012 | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-report.md` | Source re-review of IR-010 after CRR-011 | `Fail` | `Pass` | `CR-004` resolved |
 | CRR-013 | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-test-review-report.md` | Proportional SR-016 durable-test review after API-REV-006 | `Pass` (API/E2E execution) | `Fail` (test review) | `TR-004` |
 | CRR-014 | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-test-review-report.md` | Proportional re-review after API-REV-007 | `Fail` (CRR-013 test review) | `Pass` (test review) | `TR-004` resolved |
+| CRR-015 | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-report.md` | Integrated source review of IR-011 after DR-006 latest-base AppConfig conflict | `Pass` on pre-integration source/test state; delivery blocked | `Fail` | `CR-005` |
+| CRR-016 | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-report.md` | Source re-review of IR-012 after CRR-015 | `Fail` | `Pass` | `CR-005` resolved |
+| CRR-017 | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-test-review-report.md` | Proportional test-review determination after API-REV-008 | `Pass` (API/E2E execution) | `Not Applicable` | None |
 
 ## Revision Entries
 
@@ -385,3 +388,79 @@ None. Historical `TR-002` and `TR-003` remain resolved; no previously unresolved
 - Material score or classification changes: Proportional test review `Fail — Local Fix` -> `Pass`; implementation source remains CRR-012 `Pass`; API/E2E confidence remains `96.4%`.
 - Recommended recipient: `delivery_engineer`
 - Remaining risks or uncertainty: No test-review blocker remains. Real Alibaba availability/credentials/quota/region/TLS/payload drift, the literal ordinary RUNNING window, arbitrary interruption timing, actual cleanup-failure orphan risk, stale skipped selectors, package-wide TS6059 baseline, and delivery-owned tracked-base integration remain the bounded residuals.
+
+
+### CRR-015 — Integrated source review: restrictive umask defeats AppConfig mode preservation
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `9`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/implementation-handoff.md`; `IR-011`; delivery blocker `DR-006`; `CR-005`, `PREM-QWEN-004`
+- Relevant solution revision IDs: `SR-010`–`SR-012`, `SR-016`
+- Relevant architecture-review revision IDs: `ARCH-REV-005`, `ARCH-REV-010`
+- Relevant implementation revision IDs: `IR-009`–`IR-011`
+- Relevant API/E2E revision IDs: `API-REV-007` as pre-integration context only
+- Relevant delivery revision IDs: `DR-006`
+- Prior authoritative result: `CRR-012` source review, `API-REV-007` execution, and `CRR-014` durable-test review passed protected checkpoint `7ea8a728420d584218aaf141af754145fa7a5329`; delivery then blocked on current-base AppConfig conflicts. Those results do not authorize merge commit `ea8dbfd2d4f78312806bee7a41f38daa6a0e9a06`.
+- Current authoritative result: `Fail — Local Fix`. The integration correctly preserves exact retired-setting discard/rejection, current-base line-transform reuse, Qwen secret guards/commit ordering, atomic rename/pre-commit cleanup, and unchanged SR-016 behavior. Its claimed file-mode preservation is false under a restrictive process umask because the prior mode is passed only to exclusive create.
+- What changed in the review result and why: Completed a fresh integrated-source review of both conflict paths and current cumulative behavior. The focused AppConfig suite independently passed `1 file / 26 tests`, but a direct run of the current built helper with existing mode `0660` and umask `0077` committed mode `0600` while succeeding. The existing mode assertion uses ambient umask and therefore misses the supported operational condition.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-004` | Resolved at `CRR-012` | Remains resolved | `IR-010`, `IR-011`; `PREM-CPMIG-005`; `BEH-007` | Readable migration source is unchanged by the AppConfig merge; trusted strict-V2 cleanup IDs remain independent of selector mapping and cleanup remains post-V3/removal-only. |
+
+- New or remaining finding IDs: `CR-005`
+- Material score or classification changes: pre-integration source `Pass` at `9.35/10` -> integrated source `Fail — Local Fix` at `9.23/10`; API/E2E Readiness is `8.8` and Runtime Correctness is `8.7` because exact permission preservation is not implemented or covered under restrictive umask.
+- Recommended recipient: `implementation_engineer`
+- Remaining risks or uncertainty: Apply the exact existing permission bits independently of umask, add the focused POSIX regression, and return for source review before integrated API/E2E resumes. The tracked remote may advance again; the DR-005 Electron package is stale. Real Alibaba behavior, ordinary recent `RUNNING`, actual cleanup-failure orphan risk, invalid/untrusted cleanup absence, skipped selectors, exact-name/suffix recreation, and documented typecheck baselines remain bounded residuals.
+
+
+### CRR-016 — Source re-review: descriptor-level mode application resolves restrictive umask
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `10`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/implementation-handoff.md`; `IR-012`; `CR-005`, `PREM-QWEN-004`
+- Relevant solution revision IDs: `SR-010`–`SR-012`, `SR-016`
+- Relevant architecture-review revision IDs: `ARCH-REV-005`, `ARCH-REV-010`
+- Relevant implementation revision IDs: `IR-011`, `IR-012`
+- Relevant API/E2E revision IDs: `API-REV-007` as pre-integration context only
+- Relevant delivery revision IDs: `DR-006`
+- Prior authoritative result: `Fail — Local Fix` at CRR-015 because `openSync(..., mode)` allowed a restrictive POSIX umask to narrow the replacement `.env` permissions while Qwen save reported success.
+- Current authoritative result: `Pass`. IR-012 calls `fchmodSync(descriptor, mode)` immediately after exclusive same-directory creation and before write/fsync/rename, applying the exact prior permission bits independently of umask. Failure remains pre-commit and flows through existing close/unlink cleanup and sanitized AppConfig compensation behavior.
+- What changed in the review result and why: Re-reviewed the two-file 22-line delta and current production path. The new real-AppConfig regression controls existing mode `0660` and umask `0077` with try/finally restoration. Independent execution passed `1 file / 27 tests`; the current built helper independently committed `0660`, updated `QWEN_BASE_URL`, and left no temp file; `git diff --check` and unmerged scan passed.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-005` | Open; blocking; `Local Fix` | Resolved | `IR-012`; `CRR-015`; `BEH-004`; `REQ-011`; `PREM-QWEN-004` | `environment-assignment-file.ts:42-49` explicitly reapplies `mode` through the open descriptor before write/fsync/rename. `app-config.test.ts:403-422` drives real `setDurably` under old mode `0660` / umask `0077` and restores umask in `finally`. Reviewer focused execution passed 27/27, and `/probes/code-review/app-config-mode-umask-crr-016.log` records exact mode/content/temp-file success from current built code. |
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: `Fail — Local Fix` at `9.23/10` -> `Pass` at `9.40/10`; API/E2E Readiness rises to `9.3` and Runtime Correctness to `9.5`; all categories meet the clean-pass threshold.
+- Recommended recipient: `api_e2e_engineer`
+- Remaining risks or uncertainty: Current integrated-state coverage investigation/execution remains required because API-REV-007 predates merge `ea8dbfd2d4f` and IR-012. The tracked remote may advance again and DR-005 Electron evidence is stale. Real Alibaba behavior, ordinary recent `RUNNING`, actual cleanup-failure orphan risk, invalid/untrusted cleanup absence, skipped selectors, exact-name/suffix recreation, and documented typecheck baselines remain bounded residuals.
+
+
+### CRR-017 — Proportional test-review determination: no API-REV-008 durable delta
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-test-review-report.md`
+- Review entry point and round: `Proportional API/E2E test-code review`, round `7`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-revision-record.md`; `API-REV-008`; no test finding or failing scenario
+- Relevant solution revision IDs: `SR-010`–`SR-012`, `SR-016`
+- Relevant architecture-review revision IDs: `ARCH-REV-005`, `ARCH-REV-010`
+- Relevant implementation revision IDs: `IR-011`, `IR-012`
+- Relevant API/E2E revision IDs: `API-REV-007` as pre-integration context; `API-REV-008` current
+- Relevant delivery revision IDs: `DR-006`; delivery restart pending
+- Prior authoritative result: `CRR-016` source review passed. API-REV-008 then passed the current integrated merge plus IR-012 at `96.9%`, with required broader repository/API/browser validation complete.
+- Current authoritative result: `Not Applicable`. API-REV-008 added, updated, or removed no repository-resident durable coverage. The IR-012 AppConfig unit regression was implementation-owned, reviewed at CRR-016, and only re-executed unchanged by API/E2E. Previously reviewed durable E2E paths were also re-executed unchanged.
+- What changed in the review result and why: Completed the mandatory separate determination against the refreshed coverage investigation, execution report, and revision record. All three record a zero durable delta. Temporary browser attempt 1 changed only a disposable harness assertion and produced no repository test edit, so there is no proportional code scope.
+
+#### Prior Finding Resolution
+
+None. `TR-004` remains resolved; no current test finding entered API-REV-008.
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: No implementation-source score change; CRR-016 remains `Pass` at `9.40/10`. API-REV-008 remains `Pass / 96.9%`. Proportional test review is `Not Applicable` rather than `Pass` because no durable test code changed.
+- Recommended recipient: `delivery_engineer`
+- Remaining risks or uncertainty: Delivery must first perform its mandatory fresh tracked-base refresh, then refresh docs and current Electron/package evidence against the resulting integrated state. DR-005 v1.4.45 packaging is stale. Real Alibaba behavior, recent-`RUNNING`, interruption/orphan, stale-selector, POSIX-permission, base-divergence, and documented typecheck limitations remain bounded residuals.

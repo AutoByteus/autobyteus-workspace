@@ -400,6 +400,27 @@ describe("AppConfig", () => {
     await fsPromises.rm(configDir, { recursive: true, force: true });
   });
 
+  it("preserves the exact env file mode under a restrictive process umask", async () => {
+    if (process.platform === "win32") return;
+    const configDir = await createTempConfigDir(
+      "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nQWEN_BASE_URL=https://old.example/v1\n",
+    );
+    const configFile = path.join(configDir, ".env");
+    await fsPromises.chmod(configFile, 0o660);
+    const config = new AppConfig({ appDataDir: configDir });
+    config.initialize();
+    const previousUmask = process.umask(0o077);
+
+    try {
+      expect(config.setDurably("QWEN_BASE_URL", "https://new.example/v1"))
+        .toEqual({ persisted: true });
+      expect((await fsPromises.stat(configFile)).mode & 0o777).toBe(0o660);
+    } finally {
+      process.umask(previousUmask);
+      await fsPromises.rm(configDir, { recursive: true, force: true });
+    }
+  });
+
   it("keeps file and runtime state unchanged when durable replacement fails before commit", async () => {
     const original = [
       "AUTOBYTEUS_SERVER_HOST=http://localhost:8000",

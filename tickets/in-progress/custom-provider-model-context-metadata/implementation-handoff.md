@@ -10,23 +10,38 @@
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/solution-revision-record.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/design-review-report.md`
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/architecture-review-revision-record.md`
-- Triggering source-review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-report.md`
-- Code-review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-revision-record.md` (`CRR-011`)
-- Triggering rework evidence: `CR-004` / `PREM-CPMIG-005` in `CRR-011`; `ARCH-REV-010` remains the current architecture pass for `SR-016`.
+- Triggering integrated source-review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-report.md`
+- Code-review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-revision-record.md` (`CRR-015`; `CRR-012` and `CRR-014` are pre-integration context)
+- CRR-015 restrictive-umask reproduction: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/probes/code-review/app-config-mode-umask-crr-015.log`
+- API/E2E coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-coverage-investigation.md`
+- API/E2E execution report: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-execution-coverage-report.md`
+- API/E2E revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-revision-record.md` (`API-REV-007`)
+- API/E2E durable-test review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-test-review-report.md`
+- Triggering delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/delivery-revision-record.md` (`DR-006`)
+- Triggering tracked-base refresh/conflict evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/delivery-integrated-state-refresh.log`
+- Delivery-state artifacts retained for the later restart: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/docs-sync-report.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/handoff-summary.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/release-deployment-report.md`, and `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/electron-build-mac-report.md`.
 
-Earlier code-review, API/E2E, delivery, docs, integration, and build artifacts predate `SR-016` for the readable-identity scope. They are historical only and are not included as current proof.
+`CRR-015` is the current implementation trigger and its sole source finding is addressed by IR-012. `CRR-012`, `API-REV-007`, and `CRR-014` are valid evidence for checkpoint `7ea8a728420d584218aaf141af754145fa7a5329`, but they do not authorize the conflict-resolved merge plus current local fix. The older `DR-005` v1.4.45 Electron package remains explicitly stale and must not be relabeled as current.
 
 ## Current Implementation Summary
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/implementation-revision-record.md`
-- Current implementation revision ID: `IR-010`
+- Current implementation revision ID: `IR-012`
 - Related solution revision IDs: `SR-010`–`SR-012`, `SR-016`; `SR-013`–`SR-015` are superseded for the readable-identity transition.
 - Related architecture-review revision IDs: `ARCH-REV-010`; `ARCH-REV-009` is superseded.
-- Related code-review revision IDs: `CRR-011` (`Fail — Local Fix`); source re-review of `IR-010` is required.
-- Related API/E2E revision IDs: `N/A` for the current `SR-016` source; fresh coverage investigation/execution is required after source review.
-- Related delivery revision IDs: `N/A` for current approval; delivery retains tracked-base refresh/integration ownership.
-- Triggering finding IDs: `CR-004`, `PREM-CPMIG-005`; `ARCH-DESIGN-006` remains obsolete upstream and `ARCH-DESIGN-007` remains resolved.
+- Related code-review revision IDs: `CRR-015` (`Fail — Local Fix`, `CR-005`); fresh source re-review of `IR-012` is required. `CRR-012` source Pass and `CRR-014` durable-test Pass apply only to the pre-integration checkpoint.
+- Related API/E2E revision IDs: `API-REV-007` Pass at 96.4% on the pre-integration checkpoint; applicable integrated-state validation is required only after fresh source review passes.
+- Related delivery revision IDs: `DR-006` (`Local Fix`), still blocked pending source and applicable integrated API/E2E gates.
+- Triggering finding IDs: `CR-005`, `PREM-QWEN-004`; `CR-004` / `PREM-CPMIG-005` remain resolved in the unchanged readable migration.
+- Recorded current base: `origin/personal@3cddeec6b93602da172fec2e7b9a80acc7c05117`.
+- Integrated merge commit: `ea8dbfd2d4f78312806bee7a41f38daa6a0e9a06`, with parents `7ea8a728420d584218aaf141af754145fa7a5329` and `3cddeec6b93602da172fec2e7b9a80acc7c05117`.
+- IR-012 current worktree delta: descriptor-level exact mode application plus its POSIX restrictive-umask regression; current code and this handoff are authoritative.
+- Divergence at handoff: ahead `13`, behind `0` relative to the recorded remote base; no new base refresh or merge was performed for IR-012.
+
+IR-012 corrects the one CRR-015 durability defect: `openSync("wx", mode)` remains the exclusive same-directory creation step, then `fchmodSync(descriptor, mode)` explicitly applies the existing permission bits independently of process umask before the existing write/fsync/close/atomic-rename sequence. Under existing mode `0660` and umask `0077`, both the focused AppConfig path and direct built-helper probe now commit `0660`. A pre-commit failure still closes/unlinks the temporary file, AppConfig still sanitizes the error, and runtime state is still published only after rename. No generalized transaction or recovery machinery was added.
+
+IR-011's current-base reconciliation remains otherwise unchanged: initialization discards only exact `AUTOBYTEUS_STREAM_PARSER`; normal and durable writes reject its reintroduction; suffix and unrelated settings remain intact; failed persisted cleanup leaves the retired runtime value inert; and normal upsert/removal plus durable replacement share current-base line transforms.
 
 The current source preserves the reviewed `SR-010`–`SR-012` exact-custom/native-Qwen behavior and implements the `SR-016` readable identity replacement. New custom-provider IDs are deterministic derivatives of the canonical provider name and are committed under store-owned name/ID uniqueness. Current runtime/store parsing is strict V3 only.
 
@@ -41,9 +56,9 @@ Unavailable selector strings remain authoritative persisted values. The applicat
 | `BEH-001` | Preserve recognized advertised custom-model metadata and discovery resilience. | Core OpenAI-compatible discovery/provider and exact metadata resolver. | Positive advertised fields remain highest priority; URL/key validation, duplicate handling, timeouts, and last-known-good behavior remain intact. |
 | `BEH-002` | Remove endpoint/region/plan/profile/alias policy; infer only by exact built-in `value`. | `autobyteus-ts/src/llm/metadata/` and `openai-compatible-endpoint-provider.ts`. | No URL/profile matching, aliases, references, `endpoint_profile`, fuzzy matching, or preview compatibility remains. |
 | `BEH-003` | Preserve resolved metadata and truthful known/unknown provenance through runtime/catalog/budget/UI. | Core model types -> server metadata provisioning -> existing token budget/compaction/Token Meter paths. | Reduced `live | inferred_builtin | static_definition | unknown` provenance is preserved. Token history identity is not rewritten. |
-| `BEH-004` | Save Qwen Base URL/key as one strict pair with bounded compensation and truthful errors. | Server `LlmProviderService` -> secret vault + `AppConfig.setDurably` -> GraphQL -> web Settings runtime/store. | Probe, prior command-scoped snapshot, key save, atomic durable URL commit, prior-key restore/new-key removal on pre-commit failure, sanitized previous-restored failure, and repair-required double-failure remain implemented. |
+| `BEH-004` | Save Qwen Base URL/key as one strict pair with bounded compensation and truthful errors. | Server `LlmProviderService` -> secret vault + `AppConfig.setDurably` -> GraphQL -> web Settings runtime/store. | Probe, prior command-scoped snapshot, key save, atomic durable URL commit, prior-key restore/new-key removal on pre-commit failure, sanitized previous-restored failure, and repair-required double-failure remain implemented. The durable helper explicitly reapplies existing permission bits after exclusive creation so restrictive umask cannot narrow the committed file. |
 | `BEH-005` | Expose exact native Qwen offerings and remove preview behavior. | `autobyteus-ts/src/llm/qwen-supported-model-definitions.ts`. | Exact values include `qwen3.8-max`, `deepseek-v4-pro`, `deepseek-v4-flash-0731`, and `glm-5.2`; collisions use only `modelIdentifierOverride`. |
-| `BEH-006` | Preserve key-only default use and expose Qwen-only setup status. | Qwen config/runtime, server status command/GraphQL, web store/form/reload lifecycle. | `{effectiveBaseUrl, endpointSource, apiKeyConfigured}` derives source from normalized setting presence. Successful mutation status is authoritative; later view refresh failure is a warning and Reload Models retries both required refreshes. |
+| `BEH-006` | Preserve key-only default use and expose Qwen-only setup status. | Qwen config/runtime, server status command/GraphQL, web store/form/reload lifecycle. | `{effectiveBaseUrl, endpointSource, apiKeyConfigured}` derives source from normalized setting presence. Successful mutation status is authoritative; later view refresh failure is a warning and Reload Models retries both required refreshes. Exact retired-setting discard cannot become a configured Qwen URL source. |
 | `BEH-007` | Use readable custom IDs; reset legacy providers/credentials while preserving exact active/default/resumable selector intent; retain unavailable selectors. | Core identity/V3 schema -> server store/create flow; V1/name-snapshot/readable migration adapters -> registry/startup gate; application launch editor. | Exact `provider_<name-derived-body>` identity, atomic store invariant, secretless V1, transient V2 mapping, allowlisted selector rewrites, empty V3 last, cleanup identities independent of mapping success, removal-only cleanup, ordinary retry semantics, and explicit unavailable-selector blocking are implemented. |
 
 ## Key Files Or Areas
@@ -77,6 +92,14 @@ Unavailable selector strings remain authoritative persisted values. The applicat
 
 - Core metadata resolver, Qwen provider config/runtime, supported definitions, server strict AppConfig/provider service/GraphQL, and web Qwen Settings/store/runtime paths remain the current `SR-010`–`SR-012` implementation.
 
+### Current-base AppConfig integration
+
+- `autobyteus-server-ts/src/config/app-config.ts`: single runtime/persistence owner for normal and durable settings, exact retired-setting discard/rejection, strict sensitive-setting guards, and runtime publication after durable commit.
+- `autobyteus-server-ts/src/config/app-config-setting-policy.ts`: bounded policy inventory for generic secret settings and the exact retired setting, extracted to keep AppConfig below the source-size guardrail.
+- `autobyteus-server-ts/src/config/environment-assignment-lines.ts`: current-base line-preserving upsert/removal transforms.
+- `autobyteus-server-ts/src/config/environment-assignment-file.ts`: normal and durable filesystem operations using the shared transforms; durable replacement retains same-directory temp/fsync/rename semantics and applies the existing permission bits explicitly to the open descriptor.
+- `autobyteus-server-ts/tests/unit/config/app-config.test.ts`: combined exact retirement, failure/permission, sensitive-boundary, Qwen durability, initialization, and restrictive-umask mode-preservation coverage.
+
 ## Important Assumptions
 
 - The browser continues to submit only custom provider name, Base URL, and key; the backend derives the immutable ID.
@@ -89,7 +112,8 @@ Unavailable selector strings remain authoritative persisted values. The applicat
 
 ## Known Risks
 
-- The tracked branch is currently behind its recorded remote base. Per the reviewed package, delivery—not implementation—must perform the mandatory final tracked-base refresh/integration. No merge, push, archival, cleanup, or base refresh was performed in IR-009.
+- IR-011 integrated `origin/personal@3cddeec6b93602da172fec2e7b9a80acc7c05117` and was ahead `13` / behind `0` at handoff, but the remote can advance again. Delivery must still perform its mandatory fresh tracked-base fetch after source review and applicable integrated API/E2E gates. No push, archival, final target merge, release, or cleanup was performed.
+- Pre-integration `CRR-012`, `API-REV-007`, and `CRR-014` cannot be treated as review or executable authorization for merge commit `ea8dbfd2d4f78312806bee7a41f38daa6a0e9a06` plus the IR-012 fix. `CRR-015` is a failure report, not approval; fresh source re-review is required.
 - Ordinary runner semantics can keep an interrupted recent `RUNNING` record non-retryable for approximately 15 minutes; immediate crash recovery is intentionally removed.
 - A crash or cleanup failure after empty-V3 publication can leave an old secret orphan. It is unreachable from strict V3/runtime and there is no fallback lookup.
 - Malformed, read-only, concurrently changed, unsafe, or otherwise unwritable selector targets are skipped with warnings and remain stale for manual reselection.
@@ -99,12 +123,12 @@ Unavailable selector strings remain authoritative persisted values. The applicat
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: `Behavior Change / Refactor`
-- Reviewed root-cause classification: `Boundary Or Ownership Issue`, `Missing Invariant`, `Duplicated Policy Or Coordination`, `Legacy Or Compatibility Pressure`
-- Reviewed refactor decision: `Refactor Needed Now`
-- Implementation matched the reviewed assessment: `Yes`
+- IR-012 change posture: `Bug Fix / Local Fix`
+- IR-012 root-cause classification: `Local Implementation Defect`; the file-mechanics owner read the correct mode but relied on a creation call whose POSIX semantics allow umask to narrow it.
+- IR-012 refactor decision: `No additional refactor needed`; one descriptor-level permission application fulfills the existing contract inside the correct owner.
+- Implementation matched the reviewed cumulative assessment: `Yes`
 - If challenged, routed as `Design Impact`: `N/A`
-- Evidence / notes: Name/ID policy is centralized in core and enforced by the store commit; legacy parsing is isolated to migrations; exact selector adapters serve one migration coordinator; existing provider creation remains the public recreation boundary. The rejected secret-transfer/recovery/reconnect coordination was deleted rather than generalized.
+- Evidence / notes: AppConfig remains the authoritative setting/runtime boundary; the file owner owns exclusive creation, exact mode application, write/fsync, rename, and cleanup. No caller bypass or second transaction owner was introduced. The exact retired-setting inventory, generic-secret inventory, name/ID policy, migration isolation, selector adapters, and ordinary provider recreation remain unchanged.
 
 ## Legacy / Compatibility Removal Check
 
@@ -113,7 +137,7 @@ Unavailable selector strings remain authoritative persisted values. The applicat
 - Dead/obsolete code, files, helpers, tests, flags, adapters, and dormant replaced paths removed in scope: `Yes` — SR-015 journal/state/backup/receipt/secret-migrator/startup-recovery/PID-recovery/runner-bypass code and crash-specific tests were removed.
 - Shared structures remain tight: `Yes` — no credential-state record, generalized provider identity object, reconnect DTO, offering/route attributes, runtime alias, or transaction/recovery framework was added.
 - Canonical shared design guidance was reapplied: `Yes`
-- Changed source implementation files stayed within proactive size-pressure guardrails: `Yes` — every changed implementation source is at or below 500 effective non-empty lines; the largest inspected changed source remains below the limit. The migration concerns were split into prerequisite, JSON, application-SQLite, name-snapshot, and coordinator owners rather than one oversized file.
+- Changed source implementation files stayed within proactive size-pressure guardrails: `Yes` — `app-config.ts` is `496`, `app-config-setting-policy.ts` is `11`, and `environment-assignment-file.ts` is `62` effective non-empty lines. Migration concerns remain split into prerequisite, JSON, application-SQLite, name-snapshot, and coordinator owners.
 - Notes: Current provider services/stores are V3-only. Migration-local readers/adapters are the sole historical-schema boundary.
 
 ## Persisted Data Transition Check
@@ -136,31 +160,29 @@ Unavailable selector strings remain authoritative persisted values. The applicat
 - Core/server/web workspace dependencies were already installed.
 - Server build regenerated the existing Prisma client as part of the supported build.
 - Normal root `pnpm dev` was used only for the frontend implementation feedback loop; the server shut down cleanly afterward. The temporary preview page was deleted before final checks and is not product source.
-- Delivery retains remote fetch/merge and final integrated-state ownership.
+- Implementation reconciled only the DR-006 recorded base and produced the reviewed-state candidate merge. Delivery retains the mandatory later fresh fetch, final integrated-state check, docs sync, Electron packaging, and repository finalization ownership.
 
 ## Local Implementation Checks Run
 
 These are implementation-scoped checks, not API/E2E sign-off.
 
-- IR-010 focused readable-migration regression: `1 file / 10 tests` — passed. Collision coverage proves no selector map, empty V3 first, and removal attempts for both trusted old IDs; non-derivable-name coverage proves post-V3 removal is attempted and a genuine cleanup failure remains warning-only with no status/resolve/save call.
-- IR-010 related migration/startup selection: `7 files / 37 tests` — passed (readable migration, prerequisite ordering, V1, name snapshot, token name snapshot, ordinary runner behavior, and startup gate).
-- IR-010 server build TypeScript no-emit check: passed.
-- Core production build: `pnpm --dir autobyteus-ts build` — passed.
-- Core focused unit selection: `5 files / 37 tests` — passed (readable identity, exact metadata, supported definitions/Qwen catalog, endpoint provider, and discovery).
-- Server focused unit selection: `14 files / 115 tests passed`, `1 intentionally skipped` — passed. Coverage included AppConfig, application database location, custom provider service/store, V1/readable/prerequisite/name-snapshot/token migrations, runner ordinary stale/recent behavior, startup gate, legacy secret-source non-authority, GraphQL provider, and metadata provisioning.
-- Server build: `pnpm --dir autobyteus-server-ts build` — passed, including shared builds, Prisma generation, TypeScript build, assets, and sanitized built/bootstrap smoke.
-- Server build TypeScript no-emit check — passed.
-- Web focused unit selection: `7 files / 29 tests` — passed across Qwen Settings lifecycle and application setup, including the unavailable-selector regression. The corrected new test was re-run alone and passed `1 file / 1 test`.
-- Web boundary guard, localization boundary guard, and localization literal audit — passed.
-- Web production build: `pnpm --dir autobyteus-web build` — passed with `15` prerendered routes. Existing browserslist-age and chunk-size warnings remain non-blocking.
-- Repository-wide Nuxt typecheck: retried with an 8 GiB Node heap and failed on a broad existing baseline across build scripts, unrelated components/stores/tests, missing generated/exported types, and dependency declarations. It initially also exposed an inferred `string[]` type in the new test fixture; that local issue was corrected with the contract type and the focused test re-passed. No production-build failure remains.
-- Normal full development startup: root `pnpm dev` reached server/Nuxt readiness, ran app-data migrations, passed the new readable terminal gate, and shut down cleanly.
-- Final source hygiene: `git diff --check` passed; untracked changed source/test whitespace check passed; no unmerged paths or conflict markers remain; no rejected SR-015 recovery/journal/receipt/secret-transfer source reference remains; temporary preview source is absent. The readable coordinator is `327` effective non-empty lines.
+- IR-012 focused AppConfig regression: `1 file / 27 tests` — passed. The new POSIX test sets the existing `.env` mode to `0660`, changes process umask to `0077`, invokes the real `AppConfig.setDurably` path, proves the committed mode remains `0660`, and restores the previous umask in `finally`.
+- IR-012 integrated server build: `pnpm --dir autobyteus-server-ts build` — passed, including shared core/contracts/backend builds, Prisma generation, server TypeScript, managed assets, and sanitized built/bootstrap smoke.
+- IR-012 direct built-helper probe: existing mode `0660` plus umask `0077` produced committed mode `0660`, updated `QWEN_BASE_URL`, and no `.tmp` file.
+- DR-006 merge execution: `git merge --no-edit origin/personal` was resolved and committed as `ea8dbfd2d4f78312806bee7a41f38daa6a0e9a06`; its parents are the protected reviewed checkpoint `7ea8a728420d584218aaf141af754145fa7a5329` and recorded base `3cddeec6b93602da172fec2e7b9a80acc7c05117`. Branch divergence was ahead `13` / behind `0`; no unmerged path remained.
+- IR-011 focused AppConfig baseline before the CRR-015 correction: `1 file / 26 tests` — passed but used ambient umask and therefore did not close `PREM-QWEN-004`; it is retained only as merge context.
+- IR-011 integrated server selection: `8 files / 123 passed / 1 intentionally skipped` — passed. Files covered AppConfig, application database location, provider service/settings/GraphQL, readable migration/prerequisites, and the post-migration startup gate.
+- IR-011 integrated server build: `pnpm --dir autobyteus-server-ts build` — passed, including shared core/contracts/backend builds, Prisma generation, server TypeScript, managed assets, and sanitized built/bootstrap smoke.
+- Merge/source hygiene before the commit: `git diff --cached --check` passed. The resolved code was committed only after no unmerged path remained.
+- Final handoff hygiene: current `git diff --check` passed; no unmerged path or conflict marker exists in the current fix/artifact files; source sizes are AppConfig `496`, setting policy `11`, assignment file `62`, and assignment lines `35` effective non-empty lines; the source/test delta is `22` insertions across two files; IR-012/CRR-015/CR-005 artifact anchors are present.
+- Pre-integration implementation checks from IR-010 remain documented in that revision entry, and downstream evidence is retained in `API-REV-007` / `CRR-014`; neither is represented as fresh proof of this merge.
 
-Expected non-failing local output included an unavailable local Ollama warning in core tests, stale browserslist data, and the documented Nuxt chunk-size warning.
+Expected non-failing local output included Node's experimental SQLite warning, ordinary AppConfig initialization logs, and one intentional Windows-path skip on the current non-Windows host.
 
 ## Frontend Rendered-Result Check
 
+- IR-012 applicability: `Not Applicable` — this correction changes backend environment-file permission application and its unit test only. No rendered frontend or user interaction changed.
+- Current cumulative frontend state: the IR-009 rendered interaction check below remains implementation context for the unchanged missing-selector behavior; it is not new IR-011 executable authorization.
 - Affected surfaces / journeys: Application agent launch-profile editor loading an exact saved selector absent from the current model catalog, then selecting an available model.
 - Approved references: `BEH-007`, `REQ-015`, `AC-019`, the missing-selector lifecycle in `design-spec.md`, and `custom-provider-readable-id-migration-spec.md`.
 - Existing design system/shared components reviewed: the existing runtime select, `SearchableGroupedSelect`, workspace selector, readiness output, amber warning treatment, spacing, typography, and adjacent application setup behavior.
@@ -179,7 +201,8 @@ Expected non-failing local output included an unavailable local Ollama warning i
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
-- Treat all pre-SR-016 readable-identity coverage decisions as stale and perform a fresh coverage investigation before execution or durable test edits.
+- Treat `API-REV-007` as pre-integration evidence. Refresh the coverage investigation for merge commit `ea8dbfd2d4f78312806bee7a41f38daa6a0e9a06` and decide which current durable cases remain valid before integrated execution or coverage edits.
+- Revalidate the integrated AppConfig intersection directly: exact `AUTOBYTEUS_STREAM_PARSER` is removed at initialization and cannot return through either `set()` or `setDurably()`; suffix/unrelated keys survive; read-only cleanup stays runtime-inert; current-base line endings/exported assignments remain correct; an existing broader `.env` mode survives restrictive service umask; and Qwen's durable failure still leaves runtime/file state uncommitted for server compensation.
 - Exercise a direct multi-version fixture with the exact five prerequisites, including token provider-name snapshot before empty-V3 reset and current selector-writer output surviving the final migration.
 - Validate V1 inline-secret disposal and V2 old-secret non-resolution: no status/resolve/save/copy/re-encryption call, no readable secret, and removal attempts only after empty V3. Include slug collision, built-in-name conflict, and non-derivable-name cases to prove every trusted strict-V2 old ID is cleaned independently of selector-map success while invalid/untrusted files are not.
 - Cover every exact JSON and application-SQLite selector shape with byte-identical suffix preservation; prove excluded traces/free text/token identifiers/history indexes are unchanged.
@@ -190,4 +213,4 @@ Expected non-failing local output included an unavailable local Ollama warning i
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Fresh source review must pass first. Then `api_e2e_engineer` must create a new coverage investigation for the current SR-016 source, decide which prior durable coverage remains valid or is stale, execute the applicable API/E2E/broader checks, and record evidence and residual risk. If durable repository coverage is added, updated, or removed, the cumulative package must return through `code_reviewer` before delivery. Delivery must then perform the mandatory tracked-base refresh/integration and integrated-state validation before documentation/final handoff work.
+Fresh source re-review of IR-012 must pass first. Then `api_e2e_engineer` must refresh the coverage investigation for the integrated merge plus correction, decide which prior durable coverage remains valid or stale, execute the applicable API/E2E/broader checks, and record evidence and residual risk. If durable repository coverage is added, updated, or removed, the cumulative package must return through `code_reviewer` before delivery. Delivery must then restart from another mandatory fresh tracked-base fetch before documentation, current Electron packaging, final handoff, or repository finalization.

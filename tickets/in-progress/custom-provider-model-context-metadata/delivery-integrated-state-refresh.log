@@ -1,60 +1,63 @@
-Delivery integrated-state refresh — DR-005 Electron verification build
-Timestamp: 2026-08-08T20:15:33Z
+Delivery integrated-state refresh — DR-006 SR-016 restart
+Timestamp: 2026-08-09T15:11:18Z
 Ticket branch: codex/custom-provider-model-context-metadata
 Recorded base/finalization target: origin/personal
-Pre-refresh HEAD: 894f01ac43b8ace816ca6f78da180507647cc59d
-Pre-refresh origin/personal: 7f0fc49965950d9689726a048371f2e2b78eef31
-Pre-refresh divergence: ahead 9, behind 10
+Entry authorization: SR-016 / IR-010 / CRR-012 Pass / API-REV-007 Pass 96.4% / CRR-014 Pass
+Standing user request: README-guided Electron build for hands-on testing
+
+Pre-refresh state
+HEAD: f31f378d712b1b1f4e839a671104c410b51c6d06
+Previous integrated base: 7f0fc49965950d9689726a048371f2e2b78eef31
+Pre-fetch status: reviewed SR-016 source, durable coverage, and cumulative artifacts were uncommitted
 
 Tracked-base refresh
 Command: git fetch origin personal --prune
 Result: exit 0
-Tracked base: 7f0fc49965950d9689726a048371f2e2b78eef31
-New base scope: progressive rich Markdown restoration/finalization plus release v1.4.45. Changed runtime paths were conversation rendering components/tests/docs and release metadata; no Qwen, LLM metadata, AppConfig, GraphQL LLM, or provider Settings source path changed.
+Tracked base: 3cddeec6b93602da172fec2e7b9a80acc7c05117
+Pre-checkpoint divergence: ahead 11, behind 20
+Base advance includes native tool-calling removal/finalization and image-generation recovery/finalization. Conflict-related base changes retire AUTOBYTEUS_STREAM_PARSER through AppConfig and add matching tests.
 
 Delivery-safety checkpoint
-Tracked diff check: passed
-Checkpoint: 93c731cfa74fa961da8f8746a9af89ac1e407f74
-Checkpoint subject: chore(delivery): checkpoint refreshed Qwen handoff state
-
-Integration
-Command: git merge --no-edit origin/personal
-Result: exit 0; no conflict
-Integrated HEAD: f31f378d712b1b1f4e839a671104c410b51c6d06
-Merge parents: 93c731cfa74fa961da8f8746a9af89ac1e407f74 7f0fc49965950d9689726a048371f2e2b78eef31
-Post-merge divergence: ahead 11, behind 0
-Documentation intersection: autobyteus-web/docs/agent_execution_architecture.md merged automatically and retains both progressive-rendering truth and this ticket's unknown-context Token Meter contract.
-
-README-guided post-integration Electron build
-Command: NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* corepack pnpm -C autobyteus-web build:electron:mac
+Exact dirty paths protected: 89
+Source/test/Markdown/JSON whitespace check: passed; retained raw execution logs were excluded from normalization
+Command: git commit -m "checkpoint SR-016 reviewed readable provider identity"
 Result: exit 0
-Version: 1.4.45
-Platform/architecture: macOS arm64
-Started: 2026-08-08T20:16:12Z
-Completed: 2026-08-08T20:20:29Z
-Build log: /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/electron-build-mac-dr-005.log
+Checkpoint: 7ea8a728420d584218aaf141af754145fa7a5329
+Post-checkpoint status: clean
+Post-checkpoint divergence: ahead 12, behind 20
 
-Artifact verification
-- DMG checksum verification: passed
-- ZIP integrity: passed
-- App executable architecture: Mach-O arm64
-- Target/selected packaged node-pty helper verification: passed
-- Real packaged node-pty spawn probe: passed
-- Verification log: /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/electron-build-mac-dr-005-verification.log
+Integration attempt
+Command: git merge --no-edit origin/personal
+Result: exit 1; automatic merge failed
+Conflicts:
+- autobyteus-server-ts/src/config/app-config.ts
+- autobyteus-server-ts/tests/unit/config/app-config.test.ts
 
-Post-build ref confirmation
-Timestamp: 2026-08-08T20:21:52Z
-Command: git fetch origin personal --prune
-Result: exit 0; origin/personal remained 7f0fc49965950d9689726a048371f2e2b78eef31
-Final divergence: ahead 11, behind 0
-Ancestor check: passed
+Conflict boundary
+- Ticket side: durable atomic QWEN_BASE_URL replacement, generic secret guards for normal and durable mutation, and durability/failure/permission tests.
+- Base side: exact AUTOBYTEUS_STREAM_PARSER retirement, line-based upsert/removal imports/helpers, initialization discard behavior, and retirement tests.
+- Overlap: imports, AppConfig.set(), private mutation helpers, environment-key cleanup, and the adjacent unit-test region.
+- Delivery decision: do not resolve production/test semantics in delivery; classify Local Fix and reroute.
 
-Final post-artifact ref confirmation
-Timestamp: 2026-08-08T20:25:47Z
-Command: git fetch origin personal --prune
-Result: exit 0; origin/personal remained 7f0fc49965950d9689726a048371f2e2b78eef31
-Tracked diff check: passed
-Source/test working-tree diff: empty
+Safety recovery
+Command: git merge --abort
+Result: exit 0
+Restored HEAD: 7ea8a728420d584218aaf141af754145fa7a5329
+Tracked base: 3cddeec6b93602da172fec2e7b9a80acc7c05117
+Restored divergence: ahead 12, behind 20
+Unmerged paths: none
+Working tree after abort: clean before DR-006 artifact updates
+
+Post-integration execution and packaging
+Integrated state exists: no
+Executable rerun: not run; a post-integration check would not represent an integrated branch
+Electron build: not started
+Prior DR-005 v1.4.45 package: historical and stale for SR-016/current-base verification; do not use as the current test artifact
+
+Docs and handoff
+Docs sync: blocked; no long-lived docs edited or declared current
+Handoff: blocked; not ready for user verification
+Finalization/release/deployment/archive/cleanup: not started
 
 Delivery result
-Pass. The current tracked base is integrated, the full Electron packaging pipeline and artifact verification passed on integrated HEAD, and macOS arm64 v1.4.45 artifacts are ready for hands-on user testing. Finalization remains held pending explicit user verification.
+Blocked — origin/personal cannot be integrated without implementation-owned reconciliation of the AppConfig durable-write and retired-setting contracts plus their combined unit tests. Route to implementation_engineer, then repeat source review and applicable integrated API/E2E before delivery restarts from a fresh tracked-base fetch.

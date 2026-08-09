@@ -2,71 +2,41 @@
 
 ## Scope
 
-- Ticket: `custom-provider-model-context-metadata`
-- Trigger: Integrated implementation `IR-007`, source review `CRR-010` Pass, and independently re-established integrated API/E2E `API-REV-005` Pass at 96.4%.
-- Bootstrap base reference: `personal`, tracked as `origin/personal`
-- Integrated base reference used for docs sync: `origin/personal@7f0fc49965950d9689726a048371f2e2b78eef31`, integrated as `HEAD^2` of `f31f378d712b1b1f4e839a671104c410b51c6d06`
-- Post-integration verification reference: `API-REV-005` for ticket behavior plus the README-guided full Electron build and verification recorded in `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/electron-build-mac-report.md`.
+- Ticket: custom-provider-model-context-metadata
+- Delivery revision: DR-006
+- Trigger: SR-016, IR-010, CRR-012 Pass, API-REV-007 Pass at 96.4%, and CRR-014 Pass.
+- Recorded base/finalization target: personal, tracked as origin/personal.
+- Latest tracked base checked: origin/personal@3cddeec6b93602da172fec2e7b9a80acc7c05117.
+- Protected reviewed checkpoint: 7ea8a728420d584218aaf141af754145fa7a5329.
 
-## Why Docs Were Updated
+## Result
 
-- Summary: The integrated candidate already carried accurate exact-only custom metadata, Qwen-served catalog, and unknown-context Token Meter updates. Delivery validated all seven changed long-lived docs against `IR-007`/`CRR-010`/`API-REV-005` and expanded the server, core Node.js, and web Settings docs with the final native Qwen endpoint/key persistence and recovery contract. Subsequent base updates were integrated before handoff/build. The latest update restored progressive rich rendering and modified `autobyteus-web/docs/agent_execution_architecture.md`; its automatic merge retained both that base-owned rendering contract and this ticket's Token Meter contract. No additional Qwen docs edit was required.
-- Why this should live in long-lived project docs: Qwen endpoint ownership, durable pair-save semantics, GraphQL status/errors, Settings refresh behavior, exact model identifiers, and exact-only custom metadata inference are stable runtime/operator contracts that future implementation and maintenance work must not rediscover from ticket history.
+**Blocked — no integrated state exists, so no long-lived documentation was edited or declared synchronized.**
 
-## Long-Lived Docs Reviewed
+The mandatory merge of the latest tracked base failed in:
 
-| Doc Path | Why It Was Reviewed | Result (`Updated`/`No change`/`Needs follow-up`) | Notes |
-| --- | --- | --- | --- |
-| `autobyteus-ts/docs/llm_module_design.md` | Core metadata provenance and custom sync ownership | `No change` | Integrated candidate text accurately documents advertised -> exact built-in value -> unknown and forbids URL/alias/fuzzy matching. |
-| `autobyteus-ts/docs/llm_module_design_nodejs.md` | Qwen endpoint resolution and Node.js provider construction | `Updated` | Added `QWEN_BASE_URL`/default resolution through `qwen-provider-config.ts` and provider-owned credential separation. |
-| `autobyteus-ts/docs/provider_model_catalogs.md` | Qwen-served exact catalog identifiers and metadata ownership | `No change` | Integrated rows accurately document `qwen3.8-max`, `qwen:deepseek-v4-pro`, and `qwen:glm-5.2`; preview remains removed. |
-| `autobyteus-server-ts/docs/modules/llm_management.md` | Qwen GraphQL, pair-save, AppConfig/vault persistence, errors, and custom metadata | `Updated` | Added the final `qwenSetupStatus`/`saveQwenConfiguration` contract, strict durable URL write, compensation outcomes, and merged database/Qwen ownership boundary. |
-| `autobyteus-server-ts/docs/modules/token_usage.md` | Unknown model-context rendering contract | `No change` | Integrated candidate text accurately keeps latest-prompt tokens visible without a fabricated denominator. |
-| `autobyteus-web/docs/settings.md` | User-facing Qwen setup/save/recovery/reload behavior | `Updated` | Added the paired form, server-owned status, committed-save truth, two-owner refresh, warning recovery, exact catalog, and preview absence. |
-| `autobyteus-web/docs/agent_execution_architecture.md` | Token Meter consumption of nullable context metadata | `No change` | Integrated candidate text accurately describes known versus unavailable capacity. |
+- autobyteus-server-ts/src/config/app-config.ts
+- autobyteus-server-ts/tests/unit/config/app-config.test.ts
 
-## Docs Updated
+The ticket side owns durable atomic QWEN_BASE_URL persistence and generic secret guards. The current base owns exact AUTOBYTEUS_STREAM_PARSER retirement through AppConfig and its tests. These contracts overlap in imports, normal mutation, private file helpers, environment cleanup, and adjacent tests. Delivery aborted the merge rather than selecting production semantics outside delivery ownership.
 
-| Doc Path | Type Of Update | What Changed | Why |
-| --- | --- | --- | --- |
-| `autobyteus-ts/docs/llm_module_design.md` | Integrated candidate documentation | Added per-field `inferred_builtin` provenance and exact-only custom metadata resolution. | Preserve the core owner and precedence contract. |
-| `autobyteus-ts/docs/llm_module_design_nodejs.md` | Integrated candidate + delivery expansion | Documented exact-only custom metadata and native Qwen `QWEN_BASE_URL` resolution at construction. | Keep Node.js runtime endpoint ownership explicit. |
-| `autobyteus-ts/docs/provider_model_catalogs.md` | Integrated candidate documentation | Added exact-only custom metadata rules and the three Qwen-served catalog rows. | Keep model values, identifiers, context facts, and provenance source-owned. |
-| `autobyteus-server-ts/docs/modules/llm_management.md` | Integrated candidate + delivery expansion | Documented custom metadata projection plus Qwen status, dedicated save command, strict AppConfig/vault persistence, compensation, and sanitization. | Keep public API and persistence behavior operationally complete. |
-| `autobyteus-server-ts/docs/modules/token_usage.md` | Integrated candidate documentation | Replaced hidden unknown-capacity behavior with explicit unavailable-context rendering. | Prevent future UI from fabricating or hiding useful prompt state. |
-| `autobyteus-web/docs/settings.md` | Integrated candidate + delivery expansion | Documented Qwen paired setup, committed-save truth, refresh/recovery, exact models, preview absence, and unknown-capacity Token Meter behavior. | Keep the user journey and state ownership clear. |
-| `autobyteus-web/docs/agent_execution_architecture.md` | Integrated candidate documentation | Documented unknown-capacity Token Meter rendering. | Keep renderer behavior aligned with nullable server metadata. |
+## Long-Lived Docs Impact Pending Reconciliation
 
-## Durable Design / Runtime Knowledge Promoted
+Once an integrated, reviewed, and revalidated source state exists, the delivery docs pass must verify and promote at least:
 
-| Topic | What Future Readers Need To Understand | Source Ticket Artifact(s) | Target Long-Lived Doc |
-| --- | --- | --- | --- |
-| Native Qwen configuration | Qwen resolves explicit `QWEN_BASE_URL` or the core default; endpoint and key are submitted together; status is `DEFAULT|CONFIGURED` plus value-free key state. | `requirements.md`, `design-spec.md`, `implementation-handoff.md` | `llm_module_design_nodejs.md`, server `llm_management.md`, web `settings.md` |
-| Durable pair save | Probe first; retain prior secret only in command scope; save key; durably commit URL; restore/remove the key on URL failure; report repair-required if compensation fails. | `design-spec.md`, `implementation-handoff.md`, `code-review-report.md` | Server `llm_management.md` |
-| Exact-only custom metadata | Per field: advertised value, exact built-in `value` fallback, then unknown; no endpoint profile, URL policy, wire alias, suffix, family, or fuzzy matching. | `requirements.md`, `design-spec.md`, `api-e2e-execution-coverage-report.md` | Core LLM design, Node.js LLM design, provider catalogs, server LLM management |
-| Qwen Settings recovery | Mutation success is committed truth; provider settings and catalog refresh afterward; subordinate failure warns without undoing saved state; reload success waits for both owners. | `qwen-native-provider-setup-ui-spec.md`, `implementation-handoff.md`, `API-REV-005` | Web `settings.md` |
-
-## Removed / Replaced Components Recorded
-
-| Old Component / Path / Concept | What Replaced It | Where The New Truth Is Documented |
+| Topic | Candidate durable docs | Current status |
 | --- | --- | --- |
-| Endpoint-scoped Alibaba profiles, URL/plan matching, and wire aliases in custom metadata | Generic advertised metadata plus exact built-in-value fallback, otherwise unknown | Core/Node.js LLM design, provider catalogs, server LLM management |
-| Native `qwen3.8-max-preview` offering | Exact `qwen3.8-max`; no alias or compatibility row | Provider catalog and web Settings docs |
-| Hardcoded-only native Qwen endpoint | Server-persisted `QWEN_BASE_URL` with core default fallback and paired API-key setup | Node.js LLM design, server LLM management, web Settings docs |
+| Deterministic readable custom-provider IDs and uniqueness | autobyteus-ts/docs/llm_module_design.md, autobyteus-ts/docs/llm_module_design_nodejs.md | Pending integrated state |
+| Startup migration ordering, V3 publication, selector rewriting, prerequisite/terminal gating, and best-effort old-secret removal | autobyteus-server-ts/docs/modules/llm_management.md and any canonical app-data/secret-management doc discovered during final sync | Pending integrated state |
+| User-facing unavailable-selector behavior and readable provider identity | autobyteus-web/docs/settings.md and application setup docs if present | Pending integrated state |
+| Removed obsolete V1 startup behavior/coverage | Relevant server migration documentation | Pending integrated state |
+| Coexistence of durable Qwen configuration and retired stream-parser cleanup | Server configuration documentation, if the reconciled implementation changes durable operator behavior | Pending implementation decision |
 
-## No-Impact Decision (Use Only If Truly No Docs Changes Are Needed)
+Previously synchronized exact-only model metadata, native Qwen, Settings recovery, and Token Meter documentation remains historical context only until the latest base is integrated and checked.
 
-- Docs impact: Not applicable; durable docs changes were required and completed.
-- Rationale: N/A
+## Escalation
 
-## Delivery Continuation
-
-- Result: `Pass`
-- Next delivery action: Present the integrated handoff for explicit user verification. After acceptance, refresh `origin/personal` again before archival, commit/push, final target merge, or any release work.
-- Notes: Latest tracked base `7f0fc49965950d9689726a048371f2e2b78eef31` is integrated. The current v1.4.45 local Electron build is verification-only; no migration, release, publication, or deployment is in scope. The prior endpoint-profile delivery artifacts and v1.4.40 Electron build remain historical only.
-
-## Blocked Or Escalated Follow-Up (Use Only If Docs Sync Cannot Complete)
-
-- Classification: N/A
-- Recommended recipient: N/A
-- Why docs could not be finalized truthfully: N/A
+- Classification: Local Fix
+- Recommended recipient: implementation_engineer
+- Required return path: implementation reconciliation -> source review -> applicable integrated API/E2E -> delivery fresh tracked-base refresh.
+- Docs must not resume on the current ahead 12 / behind 20 state.

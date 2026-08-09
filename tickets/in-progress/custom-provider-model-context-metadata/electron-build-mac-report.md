@@ -1,3 +1,7 @@
+# Current Status — Superseded By DR-006 Blocker
+
+The DR-005 report below is retained as historical evidence only. It predates SR-016 and current origin/personal@3cddeec6b93602da172fec2e7b9a80acc7c05117. DR-006 could not integrate the latest base because AppConfig production/test paths conflict, so no current Electron build exists. Do not use the v1.4.45 artifact below as the current SR-016 verification package.
+
 # Electron macOS Build Report — DR-005
 
 ## Request And Documentation Basis

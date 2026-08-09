@@ -14,6 +14,8 @@
 | IR-008 | `architecture_reviewer` architecture re-review round `ARCH-REV-006` after approved `SR-012` | N/A | `Local Fix` | `SR-010`–`SR-012`, `ARCH-REV-005`, `ARCH-REV-006`; prior downstream evidence superseded | Added the exact native Qwen `deepseek-v4-flash-0731` definition, stable identifier, curated provenance, and exact custom-fallback coverage; handoff is ready for fresh source review. |
 | IR-009 | `architecture_reviewer` fresh architecture review round `ARCH-REV-010` after material replacement `SR-016` | N/A; `ARCH-DESIGN-006` obsolete and `ARCH-DESIGN-007` resolved upstream | `Local Fix` | `SR-010`–`SR-012`, `SR-016`, `ARCH-REV-010`; `SR-013`–`SR-015` and prior downstream evidence superseded | Implemented readable custom IDs, secretless V1 staging, exact selector migration, empty-V3 reset/recreation, final startup gate, and unavailable-selector retention; current source is ready for fresh review. |
 | IR-010 | `code_reviewer` fresh SR-016 source review round `CRR-011` | `CR-004`, `PREM-CPMIG-005` | `Local Fix` | `SR-016`, `ARCH-REV-010`, `IR-009`, `CRR-011`; `API-REV/DR: N/A` | Decoupled trusted strict-V2 cleanup IDs from selector-map success so collisions/non-derivable names still receive post-V3 removal-only attempts; handoff is ready for source re-review. |
+| IR-011 | `delivery_engineer` latest-base refresh round `DR-006` | N/A — two AppConfig content conflicts | `Local Fix` | `SR-010`–`SR-012`, `SR-016`, `ARCH-REV-010`, `IR-010`, `CRR-012`, `CRR-014`, `API-REV-007`, `DR-006` | Integrated `origin/personal@3cddeec6b`, preserving strict Qwen durability/secret boundaries together with exact retired-setting cleanup; integrated source is ready for re-review. |
+| IR-012 | `code_reviewer` integrated source review round `CRR-015` | `CR-005`, `PREM-QWEN-004` | `Local Fix` | `SR-010`–`SR-012`, `SR-016`, `ARCH-REV-010`, `IR-011`, `CRR-015`, `API-REV-007`, `DR-006` | Applied the prior `.env` permission bits explicitly after exclusive creation and added a restrictive-umask regression; handoff is ready for source re-review. |
 
 ## Revision Entries
 
@@ -231,3 +233,54 @@
 - Local validation and result: Focused readable-migration run passed `1 file / 10 tests`; related migration/startup selection passed `7 files / 37 tests`; server build TypeScript no-emit passed; final whitespace/conflict/stale-machinery/source-size hygiene is recorded in `implementation-handoff.md`.
 - Next recipient or routing: `code_reviewer` for source re-review. Do not advance to API/E2E until it passes.
 - Remaining limitations or risks: Actual cleanup failure/interruption may still leave an unreachable orphan by approved policy. Invalid/untrusted provider files cannot safely supply cleanup IDs. Ordinary recent `RUNNING`, stale skipped selector targets, exact-name/suffix recreation, real Alibaba behavior, and delivery-owned base divergence remain unchanged bounded risks.
+
+### IR-011 — Reconcile current-base AppConfig retirement with strict Qwen durability
+
+- Triggering role, report path, and round: `delivery_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/delivery-revision-record.md` and `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/delivery-integrated-state-refresh.log`; delivery round `DR-006`.
+- Triggering finding IDs: `N/A` — DR-006 recorded content conflicts in `autobyteus-server-ts/src/config/app-config.ts` and `autobyteus-server-ts/tests/unit/config/app-config.test.ts` and classified them as `Local Fix`.
+- Classification: `Local Fix`.
+- Prior authoritative result: Checkpoint `7ea8a728420d584218aaf141af754145fa7a5329` had passed implementation source review `CRR-012`, API/E2E `API-REV-007` at 96.4%, and proportional durable-test review `CRR-014`, but it was 20 commits behind `origin/personal@3cddeec6b93602da172fec2e7b9a80acc7c05117`. Delivery correctly aborted rather than choosing between overlapping AppConfig contracts.
+- Current authoritative result: Merge commit `ea8dbfd2d4f78312806bee7a41f38daa6a0e9a06` integrates that recorded base with no unmerged paths and ahead `13` / behind `0` divergence at implementation handoff time. AppConfig preserves the SR-011 atomic durable `QWEN_BASE_URL` path and generic-secret boundary while also discarding exact retired `AUTOBYTEUS_STREAM_PARSER` state during initialization and rejecting its normal or durable reintroduction. Current-base assignment-line semantics are shared by normal, removal, and durable file mutation.
+- Related solution revision IDs: `SR-010`–`SR-012`, `SR-016`.
+- Related architecture-review revision IDs: `ARCH-REV-010`.
+- Related implementation revision IDs: `IR-010`, `IR-011`.
+- Related code-review revision IDs: `CRR-012` (pre-integration source Pass), `CRR-014` (pre-integration durable-test Pass).
+- Related API/E2E revision IDs: `API-REV-007` (pre-integration Pass; applicable integrated-state revalidation required after source review).
+- Related delivery revision IDs: `DR-006`.
+- Why this implementation revision is recorded: The mandatory delivery refresh exposed a real intersection between ticket-owned Qwen persistence and current-base retired-setting behavior. The integrated source is a new review subject; pre-integration approvals cannot be inferred across the merge.
+- Approved behavior or requirement IDs affected: `BEH-004`, `BEH-006`; `REQ-005`, `REQ-006`, `REQ-008`, `REQ-011`, `REQ-012`; `AC-007`, `AC-008`, `AC-011`–`AC-014`. `BEH-007` / SR-016 readable identity remains unchanged and preserved. Current-base `AUTOBYTEUS_STREAM_PARSER` retirement is an integrated base contract rather than a new ticket requirement.
+- Implementation delta:
+  - Merged `origin/personal@3cddeec6b93602da172fec2e7b9a80acc7c05117` with parents `7ea8a728420d584218aaf141af754145fa7a5329` and `3cddeec6b93602da172fec2e7b9a80acc7c05117`.
+  - Extracted generic-secret and retired-setting names into `app-config-setting-policy.ts` so `app-config.ts` stays within the source-size guardrail while retaining one AppConfig policy boundary.
+  - Retained current-base initialization cleanup for only the exact retired key, made both `set()` and `setDurably()` reject its reintroduction, kept suffix/unrelated names intact, and preserved runtime inertness even when persisted cleanup fails.
+  - Reused current-base `environment-assignment-lines.ts` transforms from both ordinary and durable environment-file mutation rather than keeping duplicate serialization rules.
+  - Preserved the ticket's same-directory exclusive temporary file, mode preservation, complete write/fsync, atomic rename, pre-commit cleanup, runtime publication after commit, sanitized error, and generic sensitive-setting guards.
+  - Combined current-base retirement/line-mutation tests with Qwen durability, initialization, failure, permission, and sensitive-setting coverage. No generalized transaction/recovery mechanism or compatibility path was added.
+- Changed files or areas: `autobyteus-server-ts/src/config/app-config.ts`; new `autobyteus-server-ts/src/config/app-config-setting-policy.ts`; `autobyteus-server-ts/src/config/environment-assignment-file.ts`; current-base `autobyteus-server-ts/src/config/environment-assignment-lines.ts`; `autobyteus-server-ts/tests/unit/config/app-config.test.ts`; merge context from the current base; refreshed implementation handoff/revision artifacts.
+- Local validation and result: Focused AppConfig coverage passed `1 file / 26 tests`. The integrated server selection passed `8 files / 123 passed / 1 intentional skip`, covering AppConfig, application database location, provider settings, Qwen/provider service/GraphQL, readable migration/prerequisites, and the startup gate. `pnpm --dir autobyteus-server-ts build` passed through shared builds, Prisma generation, server TypeScript, managed assets, and sanitized built/bootstrap smoke. Staged/current diff checks passed before the merge commit; final merge/source hygiene is recorded in `implementation-handoff.md`.
+- Next recipient or routing: `code_reviewer` for fresh integrated-source review. On Pass, the applicable integrated API/E2E validation returns to `api_e2e_engineer`; delivery must restart afterward with another fresh tracked-base fetch.
+- Remaining limitations or risks: `CRR-012`, `API-REV-007`, and `CRR-014` do not authorize the new merge commit. The tracked remote may advance again before delivery. Real Alibaba availability/credentials/quota/region/TLS/payload drift, the ordinary recent `RUNNING` window, arbitrary interruption timing, actual cleanup-failure orphan risk, stale skipped selectors, and package-wide TS6059 baseline remain bounded residuals.
+
+### IR-012 — Preserve exact durable-file mode under restrictive umask
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-report.md`; integrated source review round `CRR-015`.
+- Triggering finding IDs: `CR-005`, `PREM-QWEN-004`.
+- Classification: `Local Fix`.
+- Prior authoritative result: `IR-011` passed its focused tests but failed fresh integrated-source review at `CRR-015`. The durable replacement read the existing `.env` mode and passed it only to `fs.openSync(..., "wx", mode)`, allowing POSIX umask to narrow an existing `0660` mode to `0600` while the Qwen save reported success.
+- Current authoritative result: Immediately after exclusive same-directory creation, the durable helper applies the exact prior permission bits to the open temporary descriptor with `fs.fchmodSync(descriptor, mode)`. A restrictive umask can affect initial creation but cannot narrow the final permission bits committed by atomic rename. The existing write/fsync/close/rename order, pre-commit close/unlink cleanup, sanitized AppConfig error, and runtime publication after commit are unchanged.
+- Related solution revision IDs: `SR-010`–`SR-012`, `SR-016`.
+- Related architecture-review revision IDs: `ARCH-REV-005`, `ARCH-REV-010`.
+- Related implementation revision IDs: `IR-011`, `IR-012`.
+- Related code-review revision IDs: `CRR-015` (`Fail — Local Fix`).
+- Related API/E2E revision IDs: `API-REV-007` remains pre-integration context only; API/E2E stays blocked until source re-review passes.
+- Related delivery revision IDs: `DR-006`; delivery remains blocked.
+- Why this implementation revision is recorded: Resolve the sole integrated-source blocker without changing the AppConfig ownership boundary, Qwen compensation command, current-base retirement behavior, or SR-016 readable identity.
+- Approved behavior or requirement IDs affected: `BEH-004`; `REQ-011`; `AC-013`; `PREM-QWEN-004`.
+- Implementation delta:
+  - Added one descriptor-level `fchmodSync` immediately after `openSync("wx", mode)` so the exact existing permission bits are applied independently of process umask and are included before the existing fsync/rename commit.
+  - Added a POSIX-only AppConfig regression that gives the existing `.env` mode `0660`, switches the process umask to `0077`, performs the real `setDurably` path, proves the committed mode remains `0660`, and restores the prior umask in `finally`.
+  - Added no transaction, recovery, compatibility, metadata-copy, ownership, or unrelated durability mechanism.
+- Changed files or areas: `autobyteus-server-ts/src/config/environment-assignment-file.ts`; `autobyteus-server-ts/tests/unit/config/app-config.test.ts`; current implementation handoff/revision artifacts.
+- Local validation and result: Focused AppConfig coverage passed `1 file / 27 tests`; the server production build passed through shared builds, Prisma generation, server TypeScript, managed assets, and sanitized built/bootstrap smoke; a direct built-helper probe with existing mode `0660` and umask `0077` observed committed mode `0660`, updated content, and no temporary file. Final hygiene is recorded in `implementation-handoff.md`.
+- Next recipient or routing: `code_reviewer` for fresh integrated-source re-review. Do not resume API/E2E or delivery until source review passes.
+- Remaining limitations or risks: POSIX permission bits are meaningful on POSIX; the regression intentionally skips Windows. The recorded remote may advance before delivery's later required refresh. Pre-integration review/API evidence remains non-authoritative for the current integrated state. Existing Alibaba, recent-`RUNNING`, interruption/orphan, stale-selector, and package typecheck baseline risks remain unchanged.

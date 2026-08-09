@@ -11,6 +11,7 @@
 | API-REV-005 | `code_reviewer` CRR-010; integrated-state round `5` after IR-007/DR-003 | `API-REV-004`, `CRR-009`, `DR-003`, `IR-007`, `CRR-010` | Pre-integration `Pass` / `96.4%`; merge not authorized | Integrated `Pass` / `96.4%` |
 | API-REV-006 | `code_reviewer` CRR-012; fresh SR-016 readable-identity round `6` | `SR-016`, `ARCH-REV-010`, `IR-010`, `CRR-012`, `API-REV-005` | `Pass` / `96.4%`, historical for readable identity | `Pass` / `96.4%`, pending proportional review |
 | API-REV-007 | `code_reviewer` CRR-013 `TR-004`; corrective round `7` | `API-REV-006`, `CRR-013`, `SR-016`, `AC-019` | Execution `Pass / 96.4%`; proportional review `Fail` | `Pass / 96.4%`, pending proportional re-review |
+| API-REV-008 | `code_reviewer` CRR-016; integrated AppConfig/Qwen round `8` | `DR-006`, `IR-011`–`IR-012`, `CRR-015`–`CRR-016`, `SR-016` | Pre-integration `Pass / 96.4%`; current merge not authorized | Integrated `Pass / 96.9%` |
 
 ## Revision Entries
 
@@ -213,3 +214,44 @@ None was carried into API-REV-006. During execution, a combined E2E run exposed 
 - New or remaining API/E2E failure IDs: `None`; `TR-004` awaits proportional reviewer closure.
 - Recommended recipient: `code_reviewer` for proportional re-review; delivery remains blocked.
 - Remaining risks: unchanged from API-REV-006 — real Alibaba policy/availability, literal 15-minute wait, arbitrary interruption timing, delivery base divergence, and unrelated TS6059 test-root configuration.
+
+### API-REV-008 — Integrated exact-mode AppConfig, Qwen lifecycle, and real Settings authorization
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-report.md` (`CRR-016`); current integrated execution round `8`.
+- Triggering finding or scenario IDs: current authorization after `DR-006`, integrated `IR-011`, resolved `CR-005` / `PREM-QWEN-004` in `IR-012`/`CRR-016`; `CFG-008-001/002`, retained `QW-E2E-001`–`004`, `RID-E2E-001`–`004`, `CUS-E2E-READABLE`, `META-E2E-001`, `HIST-001`, and current `QW-BRW-008`.
+- Related revisions: `SR-010`–`SR-012`, `SR-016`; `ARCH-REV-005`, `ARCH-REV-010`; `API-REV-007`, `CRR-014`; `DR-006`; `IR-011`–`IR-012`; `CRR-015`–`CRR-016`.
+- Source subject: merge `ea8dbfd2d4f78312806bee7a41f38daa6a0e9a06` plus reviewed uncommitted IR-012 descriptor-level exact-mode correction and its implementation-owned regression.
+- Why recorded: API-REV-007/CRR-014 authorized checkpoint `7ea8a728420d584218aaf141af754145fa7a5329`, not the latest-base AppConfig integration or restrictive-umask correction. Fresh coverage classification, repository/API execution, and renderer-equivalent browser evidence were mandatory.
+- Coverage decisions: every CRR-014-reviewed API/E2E scenario remains `Still Valid` but required current execution. The IR-012 AppConfig test required execution, not API-owned editing. Historical `qwen3.8-max-preview` remains valid only as opaque historical/custom data and absent from native Qwen. No current endpoint-profile/alias coverage is valid.
+- Durable coverage delta: `None`. API/E2E added, updated, or removed no repository-resident durable test or production source.
+- Repository execution delta:
+  - AppConfig `1 file / 27 tests passed`;
+  - core exact identity/metadata/Qwen `5 files / 24 tests passed`, plus one opt-in live file / 4 skipped;
+  - server migration/gate/provider selection `12 files / 91 tests passed`, one intentional platform skip;
+  - current server production build/sanitized bootstrap `Pass`;
+  - critical lifecycle/API E2E `4 files / 12 tests passed`;
+  - current Nuxt Settings/application/store `6 files / 33 tests passed`;
+  - web guards/localization/audit and production build with 15 prerendered routes `Pass`;
+  - diff, source-order, no-child-override, exact-native, secret, and owned-cleanup scans `Pass`.
+- E2E timing observation: the critical command reported `8736.57s` import and `103.22s` test-body time; all 12 tests passed and later build/browser work was normal. This is transparent runner evidence, not a hidden product result.
+- Broader validation: `Required and completed — Pass`. Headless Chrome used the documented Nuxt proxy, actual current built backend, real GraphQL/vault/.env/SQLite, and an owned protocol-compatible Qwen endpoint. The built server inherited umask `0077`; the pre-existing real `.env` was `0660`; the UI save retained `0660`, persisted the exact Base URL, kept the key out of `.env` and retained evidence, showed configured success, cleared plaintext, displayed exact collision-safe native models, omitted preview, and passed 390px no-overflow.
+- Temporary attempt resolution: attempt 1 reached a configured save but incorrectly expected friendly display titles instead of current collision-safe selection identifiers. The investigation was updated; the authoritative rerun asserted exact GraphQL values/identifiers plus actual visible identifiers and passed. No product or durable-test change resulted.
+
+#### Prior Failure / Authorization Resolution
+
+| Prior Reference | Previous State | Current Resolution | Evidence |
+| --- | --- | --- | --- |
+| `CR-005` / `PREM-QWEN-004` | IR-011 could narrow existing mode under restrictive umask; source review failed | `Resolved and directly executed` | `app-config-api-rev-008.log`; browser evidence mode `660` under child umask `0077`; integrity ordering scan |
+| `DR-006` / pre-integration API-REV-007 | Delivery integration blocked; prior API result did not authorize the merge | `Current executable authorization established` | Server build, 4-file E2E, current Chrome evidence, and cleanup/integrity logs |
+| `TR-004` | Resolved by API-REV-007, then CRR-014 Pass | `Rechecked unchanged in current combined E2E` | `server-e2e-api-rev-008.log` — readable lifecycle 4/4 and total 12/12 |
+
+- Canonical artifacts updated:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-execution-coverage-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-revision-record.md`
+- Prior result and confidence: API-REV-007 `Pass / 96.4%`, explicitly insufficient for the current merge/IR-012 state.
+- Current result and confidence: API-REV-008 `Pass / 96.9%`; no category below 90%, every critical criterion directly proven, and required broader validation passed.
+- New or remaining API/E2E failure IDs: `None`.
+- Proportional durable-test review: expected `Not Applicable` because no API-REV-008 durable test changed; the separate determination is still required by workflow.
+- Recommended recipient: `code_reviewer`; on Pass/N/A, route to `delivery_engineer` for another fresh tracked-base refresh.
+- Remaining risks: real Alibaba availability, credentials, quota, region, TLS, and payload drift; literal recent-RUNNING wait; arbitrary interruption timing; approved cleanup-orphan/stale-selector boundaries; POSIX-only permission semantics; delivery base divergence; known package-wide typecheck configuration limitations.

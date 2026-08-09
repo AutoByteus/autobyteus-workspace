@@ -8,202 +8,173 @@
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/design-spec.md`
 - Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/qwen-native-provider-setup-ui-spec.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/custom-provider-readable-id-migration-spec.md`
 - Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-010`–`SR-012`, `SR-016`; `SR-013`–`SR-015` are superseded for readable identity
+- Relevant Solution Revision IDs: `SR-010`–`SR-012`, `SR-016`; `SR-013`–`SR-015` remain superseded for readable identity
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/design-review-report.md`
 - Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/architecture-review-revision-record.md`
-- Relevant Architecture Review Revision IDs: `ARCH-REV-010`; `ARCH-REV-009` is superseded
+- Relevant Architecture Review Revision IDs: `ARCH-REV-005` for strict Qwen persistence; `ARCH-REV-010` for SR-016
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/implementation-revision-record.md`
-- Relevant Implementation Revision IDs: `IR-009`, `IR-010`; IR-010 is current
+- Relevant Implementation Revision IDs: `IR-009`–`IR-012`; `IR-012` is current
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-012`
-- Current Review Round: `8`
-- Trigger: `implementation_engineer` handoff of `IR-010` for `CR-004` / `PREM-CPMIG-005`
-- Prior Review Round Reviewed: `CRR-011`, `Fail — Local Fix`
-- Latest Authoritative Round: `CRR-012`
-- Coverage Investigation Reviewed: Prior API/E2E artifacts are historical only; current SR-016 coverage investigation has not begun
-- Execution Coverage Report Reviewed: Prior API/E2E artifacts are historical only; current SR-016 execution has not begun
-- API/E2E Revision Record Reviewed: Historical context only
-- Relevant API/E2E Revision IDs: `N/A` for current SR-016 source
-- Delivery Revision Record Reviewed: Historical context only; this is not a delivery re-entry review
-- Relevant Delivery Revision IDs: `N/A` for current source approval
-- Failing Scenario IDs: N/A
-- Exact Failing Commands / Execution Mode: N/A; independent focused re-review run passed
-- Failure Evidence Paths: N/A
+- Current Code Review Revision ID: `CRR-016`
+- Current Review Round: `10`
+- Trigger: `implementation_engineer` handoff of `IR-012` resolving `CRR-015` / `CR-005` / `PREM-QWEN-004`
+- Prior Review Round Reviewed: `CRR-015`, `Fail — Local Fix`
+- Latest Authoritative Round: `CRR-016`
+- Coverage Investigation Reviewed: API-REV-007 artifacts remain pre-integration context; applicable integrated-state coverage begins after this source pass
+- Execution Coverage Report Reviewed: API-REV-007 artifacts remain pre-integration context
+- API/E2E Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-revision-record.md`
+- Relevant API/E2E Revision IDs: `API-REV-007` as pre-integration evidence only
+- Delivery Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/delivery-revision-record.md`
+- Relevant Delivery Revision IDs: `DR-006`
+- Failing Scenario IDs: N/A; `PREM-QWEN-004` was re-executed successfully
+- Exact Failing Commands / Execution Mode: N/A. Independent focused command `pnpm exec vitest run tests/unit/config/app-config.test.ts --no-watch` passed `1 file / 27 tests`. The current built helper under existing mode `0660` and process umask `0077` committed mode `0660`, updated the URL, and left no temporary file.
+- Failure Evidence Paths: Resolution evidence at `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/probes/code-review/app-config-mode-umask-crr-016.log`; prior failure evidence at `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/probes/code-review/app-config-mode-umask-crr-015.log`
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: IR-010's independent strict-V2 cleanup identity projection and corrected collision/non-derivable regressions; revalidation of the full SR-016 readable identity/reset/recreation source package and retained SR-010–SR-012 exact-metadata/native-Qwen behavior.
-- Files / areas reviewed: current cumulative core/server/web implementation; specifically `custom-provider-readable-id-app-data-migration.ts` and its focused test; current requirements/design/architecture/implementation/review revision chain; source structure, cleanup, test readiness, and removal of superseded SR-015 machinery.
-- Explicit exclusions: no API/E2E sign-off, real Alibaba call, Electron shell validation, deployment, base refresh/merge, push, archival, or repository cleanup was performed. The repository-wide Nuxt typecheck baseline was not treated as a pass. Reviewer changed only review artifacts.
+- Changed implementation and behavior reviewed: IR-012's descriptor-level exact-mode application and restrictive-umask regression; revalidation of merge commit `ea8dbfd2d4f78312806bee7a41f38daa6a0e9a06`, the current-base exact retired-setting contract, SR-011 Qwen durability/compensation, and unchanged SR-016 readable identity/reset/recreation.
+- Files / areas reviewed: `autobyteus-server-ts/src/config/environment-assignment-file.ts`; `tests/unit/config/app-config.test.ts`; retained `app-config.ts`, `app-config-setting-policy.ts`, and `environment-assignment-lines.ts`; production Qwen caller/compensation boundary; current cumulative artifacts and prior findings.
+- Explicit exclusions: no source/test fix, merge, push, base refresh, archival, cleanup, API/E2E execution, Electron rebuild, release, or deployment was performed by the reviewer. DR-005 v1.4.45 Electron evidence remains stale.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: Yes. SR-016 preserves exact custom metadata/native Qwen and replaces legacy provider/credential preservation with selector-only migration, empty V3, and ordinary recreation.
-- Design-spec behavior map verified against the implementation: Yes. IR-010 closes the only CRR-011 contradiction by separating trusted strict-V2 cleanup identities from selector-map success.
-- Design review report and round confirmed: `ARCH-REV-010`, `Pass`, against `SR-016`.
+- Approved requirements basis understood: exact-only custom metadata, strict Qwen pair persistence and compensation, exact native offerings/status, readable custom identity with secretless reset and exact selector migration, and retained unavailable selectors.
+- Design-spec behavior map verified against the implementation: all seven spines remain present. IR-012 changes only the durable file-mechanics owner and its unit coverage.
+- Design review report and round confirmed: `ARCH-REV-005` resolved strict Qwen commit ordering; `ARCH-REV-010` approved the current readable-ID transition.
 - Behavior-basis status: `Confirmed`
-- Changed or newly discovered behavior, if any: None.
-- Remaining material ambiguity, if any: None.
+- Changed or newly discovered behavior, if any: none.
+- Remaining material ambiguity, if any: none.
 
-| Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence |
+| Behavior ID | Current Status (`Confirmed`/`Contradicted`/`Unclear`/`Newly Discovered`) | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence (Only When Applicable) |
 | --- | --- | --- | --- |
-| `BEH-001` | Confirmed | Advertised positive fields and discovery resilience remain in the existing OpenAI-compatible discovery/resolver path. | N/A |
-| `BEH-002` | Confirmed | Exact advertised value -> exact built-in value -> unknown remains; no endpoint/profile/alias/reference machinery returned. | N/A |
-| `BEH-003` | Confirmed | Provenance, runtime/catalog propagation, token accounting, and migration-only provider-name snapshot ownership remain separated. | N/A |
-| `BEH-004` | Confirmed | Existing Qwen probe/key/durable-URL/compensation/status path remains intact. | N/A |
-| `BEH-005` | Confirmed | Native Qwen owns the exact approved values, including `deepseek-v4-flash-0731`, with identifier overrides only for catalog collisions. | N/A |
-| `BEH-006` | Confirmed | Qwen default/configured resolution and truthful save/refresh/retry behavior remain intact. | N/A |
-| `BEH-007` | Confirmed | Core codec -> strict V3 store; runner -> exact prerequisites -> independent trusted cleanup IDs plus transient selector map -> exact adapters -> empty V3 -> removal-only cleanup -> terminal gate; unavailable selectors remain visible/blocking until recreation or reselection. | N/A |
+| `BEH-001` | Confirmed | Settings/custom GraphQL -> service -> discovery -> exact resolver -> catalog/token consumers remains unchanged. | N/A |
+| `BEH-002` | Confirmed | Exact advertised -> exact built-in value -> unknown resolution remains; no endpoint/profile/alias machinery reappears. | N/A |
+| `BEH-003` | Confirmed | Resolved metadata/provenance continues through model, server catalog, budget/compaction, and Token Meter. | N/A |
+| `BEH-004` | Confirmed | Settings Qwen save -> GraphQL -> service probe/key save -> `AppConfig.setDurably` -> exclusive same-directory temp -> exact `fchmodSync` -> write/fsync/rename -> runtime publication or command-local compensation. Existing mode `0660` is retained under umask `0077`. | N/A |
+| `BEH-005` | Confirmed | Exact native Qwen definition values and collision-only identifier overrides are unchanged. | N/A |
+| `BEH-006` | Confirmed | Qwen configured/default status, authoritative save result, and both Reload Models refreshes are unchanged; the exact retired setting cannot become endpoint state. | N/A |
+| `BEH-007` | Confirmed | Deterministic V3 identity, five-prerequisite secretless migration, selector rewrites, empty-V3-last publication, independent trusted-ID cleanup, terminal gate, and unavailable-selector retention are unchanged; `CR-004` remains resolved. | N/A |
 
 ## Structural / Design Checks
 
-| Check | Result | Evidence | Required Action |
+| Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | IR-009/IR-010 preserve the reviewed behavior-change/refactor posture and delete rejected SR-015 recovery machinery. | None. |
-| Implementation matches approved behavior-defining supplemental artifacts | Pass | Selector mapping stays all-or-nothing while every trusted strict-V2 old ID independently reaches post-V3 removal-only cleanup. | None. |
-| Data-flow spine inventory clarity and preservation under shared principles | Pass | Identity, reset, cleanup, recreation, and missing-selector spines now have correct independent inputs and ordering. | None. |
-| Ownership boundary preservation and clarity | Pass | Core owns identity; store owns V3 uniqueness; migration owns transition; adapters own physical persistence; runtime owns gate. | None. |
-| Off-spine concern clarity | Pass | Name projection, prerequisites, JSON, SQLite, and secret removal remain bounded migration concerns. | None. |
-| Existing capability/subsystem reuse check | Pass | Existing runner, record repository, file lock, secret vault, create path, and selector components are reused. | None. |
-| Reusable owned structures check | Pass | Identity codec and migration mapping are single-owner structures; cleanup IDs remain a narrow local projection. | None. |
-| Shared-structure/data-model tightness check | Pass | V3 adds no attributes; historical snapshot exposes only `{id,name}`; no credential/route/offering schema exists. | None. |
-| Repeated coordination ownership check | Pass | One readable migration sequences the transition and one store owns commit uniqueness. | None. |
-| Empty indirection check | Pass | New guard/readers/adapters own real policy or physical semantics. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Coordinator, prerequisites, JSON, SQLite, snapshot, codec, store, and UI remain distinct. | None. |
-| Ownership-driven dependency check | Pass | Runtime depends on runner results; normal provider services do not read migration schemas. | None. |
-| Authoritative Boundary Rule check | Pass | Production callers use the service/store/runner boundaries without bypassing their internals. | None. |
-| File placement check | Pass | New source remains under the established core LLM, app-data migration, and application setup owners. | None. |
-| Flat-vs-over-split layout judgment | Pass | The migration folder is split by real concern without artificial layers. | None. |
-| Interface/API/query/command/service-method boundary clarity | Pass | Browser still sends name/Base URL/key; server derives ID; cleanup uses only trusted old provider IDs. | None. |
-| Naming quality and naming-to-responsibility alignment check | Pass | `cleanupProviderIds` now makes the independent post-commit responsibility explicit. | None. |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | Core normalization is reused; physical adapters share only the exact rewrite primitive. | None. |
-| Patch-on-patch complexity control | Pass | IR-010 is a three-line data-flow correction with no framework or compatibility machinery. | None. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | No SR-015 journal/state/backup/receipt/secret-transfer/runner-bypass source remains. | None. |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Collision proves empty V3 precedes both removals and no selector mapping; non-derivable cleanup failure proves warning-only behavior and no secret reads/writes. | None. |
-| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | The shared fixture still covers exact selectors, SQLite, excluded content, failure, retry, and cleanup lifecycle. | None. |
-| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | The incorrect no-cleanup collision assertion is gone; SR-015 crash-perfect tests remain removed. | None. |
-| API/E2E readiness for the next workflow stage | Pass | Source behavior and focused proof are coherent; downstream can now investigate current durable coverage. | Begin fresh API/E2E coverage investigation. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | IR-012 is a one-line file-owner correction plus one focused regression. | None. |
+| Implementation matches approved behavior-defining supplemental artifacts | Pass | Exact-mode preservation now joins the existing strict Qwen ordering without changing UI/status behavior. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | Qwen and retirement paths converge at AppConfig; IR-012 adds no spine or coordinator. | None. |
+| Ownership boundary preservation and clarity | Pass | AppConfig owns runtime/config state; file helper owns permission/write/rename mechanics. | None. |
+| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Mode application is local file metadata handling inside the file owner. | None. |
+| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | Existing AppConfig/file helper and assignment transforms are reused. | None. |
+| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | Shared line transforms and setting policy remain centralized. | None. |
+| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | No provider, recovery, compatibility, or metadata structure changed. | None. |
+| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | AppConfig still enforces normal/durable policy once. | None. |
+| Empty indirection check (no pass-through-only boundary) | Pass | Policy, line, file, and AppConfig modules retain distinct responsibilities. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | `fchmodSync` sits immediately beside exclusive creation in the correct file owner. | None. |
+| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | Production callers depend on AppConfig, not its file helper. | None. |
+| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | No caller bypass was added. | None. |
+| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | Source and regression remain in server config ownership. | None. |
+| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | One existing helper and one existing test file were extended. | None. |
+| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | Public methods/shapes are unchanged; `setDurably` now fulfills its existing postcondition. | None. |
+| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | Existing mode/descriptor names remain accurate after explicit application. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | No duplicated mode or assignment path was added. | None. |
+| Patch-on-patch complexity control | Pass | One descriptor operation closes the defect without generalized machinery. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | No temporary compatibility path or unused helper was introduced. | None. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | The new POSIX test invokes real `AppConfig.setDurably`, controls old mode/umask, asserts committed exact mode, and restores global state in `finally`. | None. |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Existing temp-config helper and AppConfig suite are reused. | None. |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | The new regression complements the ambient-umask durability test rather than duplicating it. | None. |
+| API/E2E readiness for the next workflow stage | Pass | CR-005 is resolved; independent focus passed 27/27 and direct built-helper proof passed. | Proceed to integrated-state coverage investigation/execution. |
 
-## Source File Size And Structure Audit
-
-No changed implementation source exceeds the `>500` hard limit. Files above `220` effective non-empty lines were revalidated for ownership pressure; IR-010 does not introduce structural drift.
+## Source File Size And Structure Audit (If Applicable)
 
 | Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
 | --- | ---: | --- | --- | --- | --- | --- | --- |
-| `autobyteus-ts/src/llm/custom-llm-provider-identity.ts` | 28 | Pass | N/A | One pure identity codec | Pass | Pass | None |
-| `autobyteus-ts/src/llm/custom-llm-provider-config.ts` | 65 | Pass | N/A | Strict current V3 schema/invariants | Pass | Pass | None |
-| `autobyteus-ts/src/llm/index.ts` | 18 | Pass | N/A | Existing public barrel | Pass | Pass | None |
-| `autobyteus-ts/src/llm/qwen-supported-model-definitions.ts` | 77 | Pass | N/A | Existing Qwen fact owner | Pass | Pass | None |
-| `autobyteus-server-ts/src/llm-management/llm-providers/domain/models.ts` | 67 | Pass | N/A | Reuses core normalizer | Pass | Pass | None |
-| `autobyteus-server-ts/src/llm-management/llm-providers/stores/custom-llm-provider-store.ts` | 129 | Pass | N/A | V3 persistence and atomic uniqueness | Pass | Pass | None |
-| `autobyteus-server-ts/src/llm-management/llm-providers/services/llm-provider-service.ts` | 477 | Pass | Reviewed | Pre-existing service; narrow readable-name validation adds no owner | Pass | Pass | None |
-| `autobyteus-server-ts/src/app-data-migrations/migrations/custom-provider-v1-app-data-migration.ts` | 196 | Pass | N/A | Historical V1 staging only | Pass | Pass | None |
-| `autobyteus-server-ts/src/app-data-migrations/migrations/custom-provider-v1-migration-file.ts` | 151 | Pass | N/A | V1 file atomicity only | Pass | Pass | None |
-| `autobyteus-server-ts/src/app-data-migrations/migrations/custom-provider-migration-name-snapshot.ts` | 77 | Pass | N/A | Migration-only strict name projection | Pass | Pass | None |
-| `autobyteus-server-ts/src/app-data-migrations/migrations/custom-provider-readable-id-prerequisite-guard.ts` | 53 | Pass | N/A | Exact fixed prerequisite policy | Pass | Pass | None |
-| `autobyteus-server-ts/src/app-data-migrations/migrations/custom-provider-readable-id-json-selector-migrator.ts` | 285 | Pass | Reviewed | Cohesive JSON inventory/rewrite/atomicity adapter | Pass | Pass | None |
-| `autobyteus-server-ts/src/app-data-migrations/migrations/custom-provider-readable-id-application-selector-migrator.ts` | 193 | Pass | N/A | Cohesive application-SQLite adapter | Pass | Pass | None |
-| `autobyteus-server-ts/src/app-data-migrations/migrations/custom-provider-readable-id-app-data-migration.ts` | 327 | Pass | Reviewed | Cohesive transition sequencer; mapping and cleanup inputs are now distinct | Pass | Pass | None |
-| `autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-provider-name-snapshot-backfill-migration.ts` | 453 | Pass | Reviewed | Pre-existing token migration with narrow migration-only reader change | Pass | Pass | None |
-| `autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts` | 63 | Pass | N/A | Existing order owner | Pass | Pass | None |
-| `autobyteus-server-ts/src/server-runtime.ts` | 255 | Pass | Reviewed | Existing startup owner; gate remains thin | Pass | Pass | None |
-| `autobyteus-web/components/applications/setup/ApplicationAgentLaunchProfileEditor.vue` | 177 | Pass | N/A | Existing application-agent selector owner | Pass | Pass | None |
-| `autobyteus-web/localization/messages/en/applications.ts` | 192 | Pass | N/A | Locale resource | Pass | Pass | None |
-| `autobyteus-web/localization/messages/zh-CN/applications.ts` | 191 | Pass | N/A | Locale resource | Pass | Pass | None |
+| `autobyteus-server-ts/src/config/app-config.ts` | 496 | Pass | Reviewed; integration extraction prevents added responsibility | Pass | Pass | Pass | None. |
+| `autobyteus-server-ts/src/config/app-config-setting-policy.ts` | 11 | Pass | Pass | Pass | Pass | Pass | None. |
+| `autobyteus-server-ts/src/config/environment-assignment-file.ts` | 62 | Pass | Pass | Pass; exact mode application belongs with exclusive creation/write/fsync/rename | Pass | Pass | None. |
+| `autobyteus-server-ts/src/config/environment-assignment-lines.ts` | 35 | Pass | Pass | Pass | Pass | Pass | None. |
 
 ## Legacy / Backward-Compatibility Verdict
 
-| Check | Result | Notes |
+| Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | Historical V1/V2 knowledge is migration-private; runtime/store are V3-only. |
-| No legacy old-behavior retention in changed scope | Pass | No UUID runtime alias, reconnect branch, credential state, or secret fallback exists. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | Rejected SR-015 recovery/receipt/journal/secret-transfer source and crash tests are absent. |
-| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Exact selectors migrate, provider records reset, and trusted old IDs receive removal-only best effort after V3. |
-| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | V2 decoding stays in startup migration owners. |
-| Approved transition mechanics match the reviewed design, including migration safety only when required | Pass | IR-010 resolves the sole prior mismatch without new machinery. |
+| No backward-compatibility mechanisms in changed scope | Pass | IR-012 adds only exact current-file permission application. |
+| No legacy old-behavior retention in changed scope | Pass | Exact retired-setting rejection/discard remains. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | No obsolete helper/test was introduced. |
+| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | SR-016 migration is unchanged. |
+| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | No runtime alias or schema fallback was added. |
+| Approved transition mechanics match the reviewed design, including migration safety only when required | Pass | Five prerequisites, selector rewrites, V3-last publication, and removal-only cleanup remain intact. |
 
-## Dead / Obsolete / Legacy Items Requiring Removal
+## Dead / Obsolete / Legacy Items Requiring Removal (Mandatory If Any Exist)
 
 None.
 
 ## Docs-Impact Verdict
 
 - Docs impact: `Yes`
-- Why: readable provider IDs, provider-absent/recreation behavior, exact Qwen catalog, and upgrade outcomes are user/operator-visible.
-- Files or areas likely affected: provider Settings/custom-provider documentation, application setup/missing-model guidance, and upgrade/release notes. Delivery should reassess against the later integrated state.
+- Why: the cumulative feature changes durable Qwen setup and readable custom-provider identity/migration. Delivery must refresh integrated documentation and package evidence after downstream gates.
+- Files or areas likely affected: ticket docs/handoff/release records and user-facing configuration/migration guidance; DR-005 v1.4.45 Electron evidence remains stale.
 
-## Material Premise Validation
+## Material Premise Validation (Only When Needed)
 
 ### Upstream Design-Review Material-Premise Decisions
 
-| Premise ID | Current Status | Changed Evidence / Reason |
+| Premise ID | Current Status (`Confirmed`/`Reclassified`/`No Longer Relevant`) | Changed Evidence / Reason (Required For `Reclassified` Or `No Longer Relevant`) |
 | --- | --- | --- |
-| `PREM-CPMIG-001` | No Longer Relevant | SR-016 removed immediate crash recovery and accepts ordinary recent-`RUNNING` delay. |
-| `PREM-CPMIG-002` | No Longer Relevant | SR-016 removed the journaled V2/V3 recovery-state contract. |
-| `PREM-CPMIG-003` | Confirmed | Token provider-name snapshot remains before readable reset and uses the migration-only name reader. |
-| `PREM-CPMIG-004` | Confirmed | Current selector-writing prerequisites remain before the final readable migration. |
+| `PREM-QWEN-001` | Confirmed | Strict URL persistence and command-local compensation remain implemented. |
+| `PREM-QWEN-004` | Confirmed | The reachable restrictive-umask state remains valid; descriptor-level `fchmodSync` now fulfills exact mode preservation, and independent real-path plus built-helper executions pass. |
+| `PREM-CPMIG-003` | Confirmed | Fixed prerequisite ordering/final migration are unchanged. |
+| `PREM-CPMIG-004` | Confirmed | Token-name snapshot ordering is unchanged. |
+| `PREM-CPMIG-005` | Confirmed | Independent trusted strict-V2 cleanup IDs remain present; `CR-004` stays resolved. |
 
-### `PREM-CPMIG-005` — Strict V2 readable-ID collision still owns removable old UUID secret identities
+No new or reclassified material premise was introduced in this round.
 
-- Origin: `New at CRR-011`; revalidated for IR-010
-- Related approved requirement or established contract: `REQ-014`; `AC-016`, `AC-017`; supplemental persisted-data, transient mapping, optimistic execution, and collision outcomes.
-- Relevant behavior ID(s): `BEH-007`
-- Initiating basis kind: `System` / `Contract`
-- Independent product-supported initiating trigger or applicable governing contract: Startup of an upgraded installation whose strict V2 file contains distinct valid legacy names/UUIDs that derive the same readable ID, such as `A-B` and `A B`.
-- Support evidence: Collision handling is explicit approved behavior; selector mapping must be absent while old UUID removal remains post-V3 best effort.
-- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: `startConfiguredServer()` -> `runPending()` -> final readable migration -> strict V2 classification -> independent `cleanupProviderIds` plus failed mapping -> unchanged selectors -> empty V3 -> removal loop over both trusted IDs -> warning-capable terminal result.
-- Lifecycle preconditions and material consequence at the claimed point: Strict V2 validates unique old IDs before mapping. IR-010 submits every trusted ID for removal only after V3, even when mapping fails; invalid/untrusted data supplies no IDs.
-- Reachability: `Reachable`
-- Review consequence / proportionate response: `Resolved`. The bounded local implementation now matches the contract without secret reads, transfer, runtime fallback, or recovery machinery.
+## Review Scorecard (Mandatory)
 
-## Review Scorecard
+- Overall score (`/10`): `9.40`
+- Overall score (`/100`): `94.0`
+- Score calculation note: simple average across the ten categories; every category meets the clean-pass threshold.
 
-- Overall score (`/10`): `9.35`
-- Overall score (`/100`): `93.5`
-- Score calculation note: Simple average for trend visibility only. Every category meets the `>=9.0` clean-pass threshold.
-
-| Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
-| `1` | Data-Flow Spine Inventory and Clarity | `9.4` | Identity, mapping, cleanup, reset, recreation, and unavailable-selector paths are explicit and correctly ordered. | Optimistic interruption still requires careful downstream coverage. | Preserve direct multi-version lifecycle tests. |
-| `2` | Ownership Clarity and Boundary Encapsulation | `9.4` | Core/store/migration/adapters/runtime/UI have clear owners. | Migration necessarily coordinates several physical stores. | Keep adapters bounded as target inventory evolves. |
-| `3` | API / Interface / Query / Command Clarity | `9.3` | Existing create API remains stable; cleanup consumes only old provider identities. | Composite selectors remain an accepted existing constraint. | Avoid widening public identity shapes. |
-| `4` | Separation of Concerns and File Placement | `9.3` | Policy and physical-store concerns are split without empty layers. | Coordinator is above 220 lines due the full transition lifecycle. | Keep future physical concerns out of the coordinator. |
-| `5` | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | `9.4` | V3/snapshots/mappings are narrow and reusable at the right boundary. | No material weakness in changed scope. | Preserve current minimal shapes. |
-| `6` | Naming Quality and Local Readability | `9.4` | `cleanupProviderIds` makes the repaired responsibility explicit. | Migration result detail strings remain necessarily verbose. | Preserve sanitized stable codes. |
-| `7` | API/E2E Readiness | `9.2` | Focused source tests/build/startup/render evidence are strong and the prior proof defect is corrected. | Current SR-016 durable system coverage has not yet been investigated/executed. | API/E2E should create a fresh coverage investigation and multi-version fixture. |
-| `8` | Runtime Correctness And Behavioral Fidelity | `9.4` | All reviewed SR-016 outcomes, including collision cleanup and unavailable selection, align. | Real vendor behavior remains external. | Validate realistic restart/create/selector recovery downstream. |
-| `9` | No Backward-Compatibility / No Legacy Retention | `9.4` | Runtime is clean V3 and rejected alias/reconnect/recovery paths are absent. | Migration-private V1/V2 code remains necessarily until upgrade completion. | Keep it isolated from runtime. |
-| `10` | Cleanup Completeness | `9.3` | Superseded source is removed and every trusted V2 ID now receives post-V3 removal best effort. | Genuine removal failure/interruption and invalid/untrusted input can still leave unreachable orphans by approved policy. | Preserve warning-only evidence and no fallback. |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.4 | Qwen, retirement, and readable-ID spines retain clear triggers, owners, and consequences. | No blocking weakness. | Preserve the current spines. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.4 | AppConfig remains authoritative; exact permission handling stays internal to its file owner. | No blocking weakness. | Preserve the boundary. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.4 | Existing narrow Qwen/AppConfig/status interfaces now fulfill their postconditions. | No blocking weakness. | Preserve the interfaces. |
+| `4` | `Separation of Concerns and File Placement` | 9.4 | Policy, line mutation, file mechanics, and runtime state remain distinct. | No blocking weakness. | Preserve the layout. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.4 | Current-base transformers are reused and no generalized shape appears. | No blocking weakness. | Preserve reuse. |
+| `6` | `Naming Quality and Local Readability` | 9.4 | Names and the adjacent open/fchmod/write sequence are direct and readable. | No blocking weakness. | Preserve locality. |
+| `7` | `API/E2E Readiness` | 9.3 | Focused real-path and built-helper proof close the source blocker; implementation build is green. | Integrated API/E2E has not yet rerun, as required by workflow. | Execute the current integrated-state coverage plan downstream. |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.5 | Exact mode, atomic commit, runtime ordering, compensation, retirement, and SR-016 now coexist correctly. | No blocking weakness. | Preserve exact file and command ordering. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.4 | No fallback, alias, dual-schema, or compatibility branch was introduced. | No blocking weakness. | Preserve clean-cut behavior. |
+| `10` | `Cleanup Completeness` | 9.4 | Pre-commit close/unlink, obsolete-owner removal, and trusted-ID cleanup remain correct. | No blocking weakness. | Preserve cleanup behavior. |
 
 ## Findings
 
-None.
+None. `CR-005` is resolved in IR-012; resolution evidence is recorded in `CRR-016`.
 
 ## Classification
 
-- N/A — clean `Pass`.
+N/A — current review passes.
 
 ## Recommended Recipient
 
 - `api_e2e_engineer`
-- Routing note: Perform a fresh SR-016 coverage investigation and applicable API/E2E/broader execution. If durable repository coverage changes, return through proportional test-code review before delivery.
+- Refresh the coverage investigation for merge `ea8dbfd2d4f78312806bee7a41f38daa6a0e9a06` plus IR-012, determine current coverage validity, and execute applicable integrated-state API/E2E/broader checks before delivery resumes.
 
 ## Residual Risks
 
+- The recorded remote base can advance again; delivery must perform another mandatory tracked-base refresh after all review/API gates.
+- DR-005 v1.4.45 Electron evidence is stale and cannot be treated as current release evidence.
 - Real Alibaba availability, credentials, quota, region policy, TLS behavior, and undocumented payload variation remain unexercised.
-- Ordinary recent `RUNNING` can block retry for about 15 minutes by approved policy.
-- Genuine post-V3 cleanup failure/interruption may leave an unreachable orphan; invalid/untrusted data cannot safely supply cleanup identities.
-- Malformed/read-only/concurrently changed selector targets remain stale for manual reselection.
-- Same-name recreation restores a selector only when the exact suffix is still advertised.
-- The branch remains behind its tracked base; delivery retains refresh/integration ownership.
+- Ordinary recent `RUNNING` can block migration retry for about 15 minutes; actual cleanup failure/interruption can leave an unreachable orphan; invalid/untrusted data supplies no cleanup IDs; skipped selectors remain stale; restoration requires the same canonical name and exact still-advertised suffix.
+- Package-wide server test typecheck TS6059 and broad Nuxt typecheck failures remain documented baseline limitations; production builds and focused changed paths are green.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
 - Review Entry Point: `Implementation Review`
-- Material-Premise Gate: `Pass`
-- Score Summary: `9.35/10` (`93.5/100`); every category is at least `9.0`
-- Failure Origin: N/A; `CR-004` is resolved by IR-010
-- Recommended Recipient: `api_e2e_engineer`
-- Notes: Independent re-review confirmed the source/test delta and passed the focused readable migration run (`1 file / 10 tests`) plus `git diff --check`. CRR-011's broader current-package reruns remain applicable to unaffected source. API/E2E now owns fresh current-contract coverage investigation/execution.
+- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass`
+- Score Summary: `9.40/10` (`94.0/100`); all categories are at least `9.3`.
+- Failure Origin (when applicable): N/A; `CR-005` resolved.
+- Recommended Recipient (when applicable): `api_e2e_engineer`
+- Notes: IR-012 applies the exact prior mode independently of umask and adds direct regression proof without changing ownership or adding machinery. CRR-012/API-REV-007/CRR-014 remain pre-integration context, so current integrated-state API/E2E is still required before delivery.

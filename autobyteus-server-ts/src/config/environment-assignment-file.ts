@@ -40,6 +40,7 @@ export const replaceEnvironmentAssignmentFileDurably = (
 
   try {
     descriptor = fs.openSync(temporaryFile, "wx", mode);
+    fs.fchmodSync(descriptor, mode);
     fs.writeFileSync(descriptor, replacement, { encoding: "utf-8" });
     fs.fsyncSync(descriptor);
     fs.closeSync(descriptor);
