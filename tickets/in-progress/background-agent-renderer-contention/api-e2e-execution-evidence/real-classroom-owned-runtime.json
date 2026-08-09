@@ -1,0 +1,14 @@
+{
+  "runtimeDir": "/tmp/autobyteus-bg-classroom-real.igRQqz",
+  "port": 63362,
+  "databaseUrl": "file:/tmp/autobyteus-bg-classroom-real.igRQqz/db/production.db",
+  "workspace": "/tmp/autobyteus-bg-classroom-real.igRQqz/workspace",
+  "owner": "api_e2e_engineer",
+  "secretsSource": "/Users/normy/.autobyteus/server-data/.env",
+  "agentPackage": "/Users/normy/autobyteus_org/autobyteus-agents",
+  "teamRunId": "classroom_simulation_team_9fc48854a3844905bdc5f308522e222b",
+  "modelIdentifier": "deepseek-v4-flash",
+  "runtimeKind": "autobyteus",
+  "frontendPort": 63712,
+  "uiTeamRunId": "classroom_simulation_team_9ab47cde901a4b7a845b5d4106964c8b"
+}

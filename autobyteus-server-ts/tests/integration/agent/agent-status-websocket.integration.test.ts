@@ -221,10 +221,12 @@ describe("Agent status WebSocket contract integration", () => {
   ] as const;
 
   it.each(runtimeCases)(
-    "pairs every %s activity/terminal event with status-only lifecycle over a real standalone socket",
+    "projects only %s status transitions to a real standalone socket while preserving canonical companions",
     async (runtimeKind) => {
       const backend = new ScriptedAgentRunBackend(`run-${runtimeKind}`, runtimeKind);
       const run = new AgentRun({ context: backend.context, backend });
+      const canonicalEvents: AgentRunEvent[] = [];
+      const unsubscribe = run.subscribeToEvents((runEvent) => canonicalEvents.push(runEvent));
       const harness = await openAgentApp(run);
       const connection = await openSocket(`${harness.baseUrl}/ws/agent/${run.runId}`);
 
@@ -255,24 +257,34 @@ describe("Agent status WebSocket contract integration", () => {
           event(run.runId, AgentRunEventType.TURN_COMPLETED, { turn_id: "turn-a" }),
         ]);
 
-        await waitForMessageCount(connection.messages, 9);
+        await waitForMessageCount(connection.messages, 7);
         const liveTrace = connection.messages.slice(2);
         expect(liveTrace.map((message) => message.type)).toEqual([
           "AGENT_STATUS",
           "TURN_STARTED",
-          "AGENT_STATUS",
-          "AGENT_STATUS",
           "SEGMENT_CONTENT",
           "TURN_COMPLETED",
           "AGENT_STATUS",
         ]);
         expectStatusOnlyPayload(liveTrace[0]!, "running");
-        expectStatusOnlyPayload(liveTrace[2]!, "running");
-        expectStatusOnlyPayload(liveTrace[3]!, "running");
-        expectStatusOnlyPayload(liveTrace[6]!, "idle");
-        expect(liveTrace[4]?.payload.delta).toBe("onetwo");
-        expect(liveTrace.filter((message) => message.type === "AGENT_STATUS")).toHaveLength(4);
+        expectStatusOnlyPayload(liveTrace[4]!, "idle");
+        expect(liveTrace[2]?.payload.delta).toBe("onetwo");
+        expect(liveTrace.filter((message) => message.type === "AGENT_STATUS")).toHaveLength(2);
         expect(liveTrace.filter((message) => message.type !== "AGENT_STATUS")).toHaveLength(3);
+
+        expect(canonicalEvents.map((runEvent) => runEvent.eventType)).toEqual([
+          AgentRunEventType.AGENT_STATUS,
+          AgentRunEventType.TURN_STARTED,
+          AgentRunEventType.AGENT_STATUS,
+          AgentRunEventType.SEGMENT_CONTENT,
+          AgentRunEventType.AGENT_STATUS,
+          AgentRunEventType.SEGMENT_CONTENT,
+          AgentRunEventType.TURN_COMPLETED,
+          AgentRunEventType.AGENT_STATUS,
+        ]);
+        expect(canonicalEvents.filter(
+          (runEvent) => runEvent.eventType === AgentRunEventType.AGENT_STATUS,
+        )).toHaveLength(4);
 
         const reconnect = await openSocket(`${harness.baseUrl}/ws/agent/${run.runId}`);
         try {
@@ -282,6 +294,7 @@ describe("Agent status WebSocket contract integration", () => {
           reconnect.socket.close();
         }
       } finally {
+        unsubscribe();
         connection.socket.close();
         await harness.app.close();
       }
@@ -442,20 +455,17 @@ describe("Agent status WebSocket contract integration", () => {
         }),
       ]);
 
-      await waitForMessageCount(primary.messages, 14);
+      await waitForMessageCount(primary.messages, 11);
       const trace = primary.messages.slice(2);
       expect(trace.map((message) => [message.type, message.payload.status ?? message.payload.turn_id])).toEqual([
         ["AGENT_STATUS", "running"],
         ["TURN_STARTED", "turn-a"],
         ["TURN_COMPLETED", "turn-a"],
         ["AGENT_STATUS", "idle"],
-        ["AGENT_STATUS", "idle"],
         ["TOOL_EXECUTION_SUCCEEDED", "turn-a"],
         ["AGENT_STATUS", "running"],
         ["TURN_STARTED", "turn-b"],
         ["TURN_COMPLETED", "turn-a"],
-        ["AGENT_STATUS", "running"],
-        ["AGENT_STATUS", "running"],
         ["SEGMENT_CONTENT", "turn-a"],
       ]);
       expect(run.getStatusSnapshot()).toEqual({
@@ -475,7 +485,7 @@ describe("Agent status WebSocket contract integration", () => {
       await backend.emitSource([
         event(run.runId, AgentRunEventType.TURN_INTERRUPTED, { turn_id: "turn-b" }),
       ]);
-      await waitForMessageCount(primary.messages, 16);
+      await waitForMessageCount(primary.messages, 13);
       expect(primary.messages.slice(-2).map((message) => message.type)).toEqual([
         "TURN_INTERRUPTED",
         "AGENT_STATUS",
@@ -520,23 +530,21 @@ describe("Agent status WebSocket contract integration", () => {
         }),
       ]);
 
-      await waitForMessageCount(connection.messages, 8);
+      await waitForMessageCount(connection.messages, 7);
       const trace = connection.messages.slice(2);
       expect(trace.map((message) => message.type)).toEqual([
         "AGENT_STATUS",
         "TURN_STARTED",
         "ERROR",
-        "AGENT_STATUS",
         "ERROR",
         "AGENT_STATUS",
       ]);
-      expectStatusOnlyPayload(trace[3]!, "running");
-      expectStatusOnlyPayload(trace[5]!, "error");
+      expectStatusOnlyPayload(trace[4]!, "error");
       expect(run.getStatusSnapshot().status).toBe("error");
 
       await run.terminate();
-      await waitForMessageCount(connection.messages, 9);
-      expectStatusOnlyPayload(connection.messages[8]!, "offline");
+      await waitForMessageCount(connection.messages, 8);
+      expectStatusOnlyPayload(connection.messages[7]!, "offline");
     } finally {
       connection.socket.close();
       await harness.app.close();

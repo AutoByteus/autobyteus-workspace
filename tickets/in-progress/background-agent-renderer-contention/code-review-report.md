@@ -10,65 +10,67 @@
 - Relevant Solution / Architecture Revisions: `SR-004 / ARCH-REV-004`
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/design-review-report.md`
 - Implementation Handoff / Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/implementation-handoff.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/implementation-revision-record.md`
-- Relevant Implementation Revision: `IR-004`
+- Relevant Implementation Revision: `IR-005`
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/code-review-revision-record.md`
-- Current Code Review Revision ID / Round: `CRR-004 / 4`
-- Trigger: IR-004 source commit `85c3cf9032c48f14e2b996cf7ce2419041d8de9c` at clean HEAD `77c0f3027c3d2547fa0f7d744889d505a83711a8`.
-- Prior Authoritative Review: `CRR-003 — Fail — Local Fix`
-- Latest Authoritative Round: `CRR-004`
+- Current Code Review Revision ID / Round: `CRR-005 / 5`
+- Trigger: IR-005 source commit `81a8e8b64aad0fd2253081fe9a94f88e3a9ffa46` at clean HEAD `242b466d8497be1a00f65594df4503d40092a73c`.
+- Prior Authoritative Review: `CRR-004 — Fail — Local Fix`
+- Latest Authoritative Round: `CRR-005`
 - API/E2E / delivery failure-origin inputs: `N/A — API/E2E has not started`
 
 ## Review Scope
 
-- Re-reviewed reopened CR-006 first, then the complete implementation-source range from task base `7f0fc49965950d9689726a048371f2e2b78eef31` through current HEAD, all prior findings, the IR-004 source/test delta, and the approved cumulative package.
+- Re-reviewed CR-006 first, then the complete implementation-source range from task base `7f0fc49965950d9689726a048371f2e2b78eef31` through current HEAD, all prior findings, IR-005 tests, and the complete approved package.
 - Explicit exclusions: API/E2E execution, aggregate browser/Electron proof, delivery-owned base refresh, and durable documentation synchronization.
 - Reviewer checks:
-  - Direct IR-004 composition subset — Pass, 2 files / 9 tests.
-  - Affected frontend matrix — Pass, 9 files / 164 tests.
-  - Unchanged server egress/build evidence retained from prior review.
-  - IR-004 delta and complete task-range `git diff --check` — Pass.
+  - Real prime-ownership subset — Pass, 4 files / 16 tests.
+  - Affected frontend matrix — Pass, 11 files / 171 tests.
+  - Unchanged server egress/build evidence retained from prior rounds.
+  - IR-005 delta and complete task-range `git diff --check` — Pass.
+  - Production prime-owner inventory and production caller search — Pass.
   - Worktree was clean before review-artifact edits.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
 - Approved requirements and business intent understood: Yes.
-- Behavior-basis status: `Contradicted` only at the Event Monitor final-baseline lifecycle; requirements and design are sufficient.
+- Behavior-basis status: `Confirmed`.
+- No changed or newly discovered behavior and no material ambiguity remain.
 
 | Behavior ID | Status | Evidence |
 | --- | --- | --- |
-| BEH-001 | Confirmed | Shared server/frontend presentation ownership remains intact. |
-| BEH-002 | Confirmed | Attachment/file/voice owners remain off the projection spine. |
-| BEH-003 | Confirmed | Task-agent mutation remains router-owned and resolution is read-only. |
-| BEH-004 | Confirmed | Exact effects, Error ordering, and team activation ordering remain corrected. |
-| BEH-005 | Contradicted | IR-004 removed the activity helper's prime, but context construction and historical projection application can still prime before team-open/live-recovery outer owners prime the same contexts again. CR-006 remains open. |
-| BEH-006 | Confirmed | Exact lifecycle/navigation patches and stable collection identity remain correct. |
-| BEH-007 | Confirmed | Status filtering remains exact and per connection. |
-| BEH-008 | Confirmed | Cadence/coalescing and progressive rich rendering are preserved. |
-| BEH-009 | Confirmed | Frozen cloned control snapshots remain non-authoritative. |
+| BEH-001 | Confirmed | Shared server/frontend presentation ownership and cached navigation replace multiplied work. |
+| BEH-002 | Confirmed | Attachment/file/voice owners remain independent and unchanged. |
+| BEH-003 | Confirmed | Task-agent ensure/repair is router-owned, mutation-bearing, and followed by read-only resolution. |
+| BEH-004 | Confirmed | Shared projector applies actual effects; terminal activity, local failures, and root lifecycle use exact patches. |
+| BEH-005 | Confirmed | Open, live recovery, and lazy historical hydration each have one explicit final-prime owner after their last conversation/activity writer. |
+| BEH-006 | Confirmed | Indexed navigation publishes exact patches and stable unchanged collection identities. |
+| BEH-007 | Confirmed | Exact repeated UI statuses are filtered per enriched connection identity only. |
+| BEH-008 | Confirmed | Existing cadence/coalescing, wire shape, and progressive rich rendering remain preserved. |
+| BEH-009 | Confirmed | Ordered controls receive immutable snapshots and cannot alter terminal delivery. |
 
 ## Structural / Design Checks
 
-| Check | Result | Evidence / Required Action |
+| Check | Result | Evidence |
 | --- | --- | --- |
-| Design health and reviewed scope preserved | Pass | Approved Performance Bug + Refactor posture remains implemented. |
-| Implementation matches approved behavior artifacts | Fail | DS-006 still does not guarantee exactly one final prime across the full real composition. |
-| Data-flow spine clarity | Pass | Primary egress, projector, navigation, and baseline paths remain traceable. |
-| Ownership boundary preservation | Fail | Builder/projection helpers and outer team lifecycle owners both claim final-prime ownership on supported branches. |
-| Off-spine concern clarity / subsystem reuse | Pass | Existing Event Monitor, run history, egress, and activity subsystems remain correctly located. |
-| Reusable structures / data-model tightness | Pass | Effects, navigation indexes, and execution rows remain coherent. |
-| Repeated coordination ownership | Fail | CR-006 still repeats final witness capture across nested context-construction/projection and outer open/recovery owners. |
-| Empty indirection / patch-on-patch control | Pass | No compatibility or forwarding-only mechanism was added. |
-| Separation, dependency direction, placement | Pass | Capability boundaries remain clean. |
-| Interface/API clarity | Fail | Removing the activity helper side effect is correct, but other nested constructors still carry prime side effects hidden by current mocks. |
-| Naming and readability | Pass | Source remains bounded and navigable. |
-| Cleanup and obsolete-path removal | Pass | Removed paths remain absent. |
-| Relevant tests requirement-aligned | Fail | New tests use mocked context builders/loaders, so they cannot prove production projection-absent or historical composition call counts. |
-| Fixture coherence / no stale compatibility tests | Pass | Test files remain coherent and no legacy path is retained. |
-| API/E2E readiness | Fail | One bounded source/test correction remains before API/E2E. |
+| Design health and reviewed scope preserved | Pass | Approved Performance Bug + Refactor posture is implemented without cadence inflation, disconnects, renderer downgrade, or worker detour. |
+| Implementation matches approved behavior artifacts | Pass | SR-004 owners, effects, exact lifecycle ordering, and removal inventory are present. |
+| Data-flow spine clarity | Pass | Server egress, client projection, Event Monitor, task mutation, and navigation paths are explicit. |
+| Ownership boundary preservation | Pass | One scheduler/projector/navigation owner and unambiguous final-prime owners remain. |
+| Off-spine concern clarity and subsystem reuse | Pass | Existing settings, activity, Event Monitor, task-detail, attachment, and voice capabilities retain ownership. |
+| Reusable owned structures / data-model tightness | Pass | Effects, indexes, rows, identities, and control contracts are narrow and non-overlapping. |
+| Repeated coordination ownership | Pass | Duplicate dispatch/build/prime coordination is removed. |
+| Empty indirection / patch-on-patch control | Pass | No forwarding-only, fallback, or compatibility layer was introduced. |
+| Separation, dependency direction, authoritative boundary, placement | Pass | Components consume run-history output; task/source helpers do not bypass owners; files remain capability-local. |
+| Interface/API clarity | Pass | Activity hydration is activity-only; open/recovery/lazy transactions own their explicit final prime. |
+| Naming and readability | Pass | Source remains bounded and responsibilities are apparent from names and paths. |
+| Cleanup and obsolete-path removal | Pass | Old egress policy, duplicate dispatcher, Event Monitor API, and component builder remain deleted. |
+| Relevant tests requirement-aligned | Pass | Real loader/builder tests cover historical/active projection present, projection absent, replacement, preserved reuse, live recovery, and lazy hydration. |
+| Fixture coherence / no stale compatibility tests | Pass | Focused suites remain coherent and no legacy path is retained. |
+| API/E2E readiness | Pass | Source and architecture are ready for coverage investigation and realistic execution. |
 
 ## Source File Size And Structure Audit
 
-All 65 changed production-source files were re-audited. Tests, fixtures, generated files, documentation, and evidence are excluded. No current changed source exceeds 500 effective non-empty lines; no new file exceeds the reviewed 220-line threshold. Only the three current CR-006 participants fail the contract audit.
+All 65 changed production-source files were re-audited. Tests, fixtures, generated files, documentation, and evidence are excluded. No changed source exceeds 500 effective non-empty lines; no new source exceeds the reviewed 220-line threshold. All source rows pass ownership, placement, and structure checks.
 
 | Source File | Effective Non-Empty Lines | `>500` Check | `>220` New-File Delta | SoC / Contract | Placement | Classification | Required Action |
 | --- | ---: | --- | --- | --- | --- | --- | --- |
@@ -116,9 +118,9 @@ All 65 changed production-source files were re-audited. Tests, fixtures, generat
 | `autobyteus-web/services/eventMonitor/recentEventMonitorMutationCommit.ts` | Removed | N/A | Pass (deletion) | Pass | Pass | Pass | None |
 | `autobyteus-web/services/eventMonitor/recentEventMonitorMutationCoordinator.ts` | 62 | Pass | Pass (+69) | Pass | Pass | Pass | None |
 | `autobyteus-web/services/runHydration/runContextHydrationService.ts` | 173 | Pass | Pass (+3) | Pass | Pass | Pass | None |
-| `autobyteus-web/services/runHydration/teamRunContextHydrationService.ts` | 488 | Pass | Pass (+10) | Fail | Pass | Local Fix (CR-006) | Resolve CR-006 |
+| `autobyteus-web/services/runHydration/teamRunContextHydrationService.ts` | 489 | Pass | Pass (+11) | Pass | Pass | Pass | None |
 | `autobyteus-web/services/runOpen/agentRunOpenCoordinator.ts` | 83 | Pass | Pass (+4) | Pass | Pass | Pass | None |
-| `autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts` | 249 | Pass | Pass (+20) | Fail | Pass | Local Fix (CR-006) | Resolve CR-006 |
+| `autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts` | 249 | Pass | Pass (+20) | Pass | Pass | Pass | None |
 | `autobyteus-web/services/runStatus/agentRuntimeStatusState.ts` | 62 | Pass | Pass (+5) | Pass | Pass | Pass | None |
 | `autobyteus-web/services/runSubmission/localUserSubmission.ts` | 113 | Pass | Pass (+58) | Pass | Pass | Pass | None |
 | `autobyteus-web/stores/agentContextsStore.ts` | 196 | Pass | Pass (+12) | Pass | Pass | Pass | None |
@@ -133,7 +135,7 @@ All 65 changed production-source files were re-audited. Tests, fixtures, generat
 | `autobyteus-web/stores/runHistoryStore.ts` | 488 | Pass | Pass (+88) | Pass | Pass | Pass | None |
 | `autobyteus-web/stores/runHistoryTeamExecutionRows.ts` | 100 | Pass | Pass (+109) | Pass | Pass | Pass | None |
 | `autobyteus-web/stores/runHistoryTeamHelpers.ts` | 156 | Pass | Pass (+3) | Pass | Pass | Pass | None |
-| `autobyteus-web/stores/runHistoryTeamMemberProjectionHydrator.ts` | 305 | Pass | Pass (+9) | Fail | Pass | Local Fix (CR-006) | Resolve CR-006 |
+| `autobyteus-web/stores/runHistoryTeamMemberProjectionHydrator.ts` | 302 | Pass | Pass (+6) | Pass | Pass | Pass | None |
 | `autobyteus-web/stores/runHistoryTypes.ts` | 248 | Pass | Pass (+24) | Pass | Pass | Pass | None |
 | `autobyteus-web/stores/tokenUsageMeterStore.ts` | 289 | Pass | Pass (+4) | Pass | Pass | Pass | None |
 | `autobyteus-web/utils/workspaceTeamExecutionDisplayRows.ts` | Removed | N/A | Pass (deletion) | Pass | Pass | Pass | None |
@@ -154,95 +156,75 @@ None.
 ## Docs-Impact Verdict
 
 - Docs impact: `Yes`.
-- After source/API/E2E pass, delivery should synchronize `autobyteus-server-ts/docs/modules/agent_streaming.md`, `autobyteus-web/docs/agent_execution_architecture.md`, and `autobyteus-web/docs/settings.md`; verify `autobyteus-web/docs/content_rendering.md` remains accurate.
+- After API/E2E passes, delivery should synchronize `autobyteus-server-ts/docs/modules/agent_streaming.md`, `autobyteus-web/docs/agent_execution_architecture.md`, and `autobyteus-web/docs/settings.md`; verify `autobyteus-web/docs/content_rendering.md` remains accurate.
 
 ## Material Premise Validation
 
-### Upstream premise
-
-| Premise ID | Status | Evidence |
+| Premise ID | Status | Current Resolution Evidence |
 | --- | --- | --- |
-| ARCH-PREM-004 | Confirmed | Task-agent ensure/repair is router-owned, reports its mutation, and precedes read-only resolution. |
-
-### CR-PREM-006A — Opening persisted historical team content reaches both projection and outer final-prime owners
-
-- Reachability: `Reachable`.
-- Related contracts: BEH-005, FR-002, AC-003/AC-007, DS-006.
-- Independent trigger: the user selects an inactive/completed team member from workspace history.
-- Production trace: history selection -> `openTeamRun` -> `loadHistoricalTeamRunContextHydrationPayload` -> `applyProjectionToTeamMemberContext` -> activity hydration + prime -> return hydrated members -> outer `finalTeamContext...forEach(primeRecentEventMonitorBaseline)`.
-- Consequence: the focused projected member receives two full final-witness captures at one supported open boundary. No presentation corruption is claimed; this is redundant work in the performance-sensitive lifecycle.
-
-### CR-PREM-006B — Active team construction can have no member projection
-
-- Reachability: `Reachable` by the reviewed new/empty-context lifecycle and the explicitly supported projection-absent open/recovery result.
-- Independent trigger: the user opens an active team whose member has no persisted projection yet, including a newly started/empty member.
-- Production trace: history/recovery -> `buildLiveTeamMemberContexts` -> `buildTeamMemberContextsFromReferences` sees no projection and primes the new context -> activity helper skips it -> outer open/recovery primes every final member.
-- Consequence: the projection-absent branch also captures twice. IR-004's new tests mock `buildLiveTeamMemberContexts` or the complete hydration payload, so they begin after the first production prime and cannot establish the claimed one-call result.
+| ARCH-PREM-004 | Confirmed | Task-agent ensure/repair remains router-owned and reports its actual mutation. |
+| CR-PREM-006A | Reachable / Addressed | Historical open now writes projection/activity without a nested prime; outer open primes the final context once. |
+| CR-PREM-006B | Reachable / Addressed | Projection-absent builders no longer prime; outer open/live recovery primes the final context once. |
+| CR-PREM-007 | Reachable / Addressed | Failure cleanup sets Error before exact failure navigation. |
+| CR-PREM-008 | Reachable / Addressed | Team source activity precedes cached-root publication and equal initial lifecycle no-ops. |
+| CR-PREM-009 | Reachable / Addressed | Preserved subscribed contexts receive a no-reset idempotent final prime. |
 
 ## Prior Finding Resolution
 
 | Finding | Resolution | Evidence |
 | --- | --- | --- |
-| CR-001–CR-005 | Resolved | Prior corrections remain intact. |
-| CR-006 | Partially Resolved / Open | IR-004 makes activity hydration correctly activity-only and fixes projection-present active composition. Historical projection application and projection-absent context construction still prime before outer owners. |
-| CR-007 | Resolved | Failure navigation receives authoritative Error. |
-| CR-008 | Resolved | Team activity source state precedes cached-root publication. |
-| CR-009 | Resolved | Preserved subscribed members receive no-reset idempotent final prime. |
+| CR-001 | Resolved | Immutable cloned control observations cannot change sink delivery. |
+| CR-002 | Resolved | Combined terminal presentation/activity is preserved. |
+| CR-003 | Resolved | Local submission summary/activity/navigation effects are exact. |
+| CR-004 | Resolved | Root lifecycle change/no-op uses exact behavior. |
+| CR-005 | Resolved | Equal projection collections retain identity. |
+| CR-006 | Resolved | Lower construction/projection/activity writers do not prime; outer open/live recovery and separate lazy hydration each prime once after the final writer. |
+| CR-007 | Resolved | Failure navigation sees authoritative Error. |
+| CR-008 | Resolved | Active team source state exists before navigation publication. |
+| CR-009 | Resolved | Preserved subscribed members are primed idempotently without reset. |
 
 ## Review Scorecard
 
-- Overall score: `9.25/10 (92.5/100)`.
-- Calculation: simple average. Result is `Fail` because categories 2, 3, 7, and 8 remain below 9.0 and CR-006 remains actionable.
+- Overall score: `9.62/10 (96.2/100)`.
+- Calculation: simple average of ten categories. Every category is at least 9.0 and no actionable finding remains.
 
-| Priority | Category | Score | Basis / Improvement |
+| Priority | Category | Score | Basis |
 | --- | --- | ---: | --- |
-| 1 | Data-Flow Spine Inventory and Clarity | 9.5 | Main paths are explicit and complete. |
-| 2 | Ownership Clarity and Boundary Encapsulation | 8.8 | Final-prime ownership remains distributed across nested and outer owners. |
-| 3 | API / Interface / Query / Command Clarity | 8.8 | Builder/projection prime side effects are not visible in composition tests. |
-| 4 | Separation of Concerns and File Placement | 9.5 | Capability placement remains strong. |
-| 5 | Shared-Structure / Data-Model Tightness | 9.4 | Effects/navigation structures remain tight. |
-| 6 | Naming Quality and Local Readability | 9.5 | Local code is readable and bounded. |
-| 7 | API/E2E Readiness | 8.6 | Green tests prove mocked sub-compositions, not the full production lifecycle. |
-| 8 | Runtime Correctness and Behavioral Fidelity | 8.8 | Presentation is correct, but witness work still repeats on supported branches. |
-| 9 | No Backward-Compatibility / Legacy Retention | 9.8 | Clean replacement remains intact. |
-| 10 | Cleanup Completeness | 9.8 | Removed paths stay gone and diff checks pass. |
+| 1 | Data-Flow Spine Inventory and Clarity | 9.7 | Complete paths and governing owners are explicit. |
+| 2 | Ownership Clarity and Boundary Encapsulation | 9.6 | Authority is singular across egress, projection, navigation, task mutation, and baseline lifecycle. |
+| 3 | API / Interface / Query / Command Clarity | 9.5 | Typed identities/effects and activity-only hydration expose intent directly. |
+| 4 | Separation of Concerns and File Placement | 9.6 | Capability-local files and thin consumers match SR-004. |
+| 5 | Shared-Structure / Data-Model Tightness | 9.6 | Shared structures are narrow and preserve referential stability. |
+| 6 | Naming Quality and Local Readability | 9.6 | Responsibilities and lifecycle boundaries are easy to follow. |
+| 7 | API/E2E Readiness | 9.5 | Focused real-composition coverage and build/guard evidence support downstream execution. |
+| 8 | Runtime Correctness and Behavioral Fidelity | 9.5 | Supported source paths preserve exact status, content, hierarchy, navigation, and final-witness semantics. |
+| 9 | No Backward-Compatibility / Legacy Retention | 9.8 | Clean replacement with no dual behavior. |
+| 10 | Cleanup Completeness | 9.8 | Obsolete paths remain removed and both diff checks pass. |
 
 ## Findings
 
-### CR-006 — Nested context/projection owners still duplicate outer Event Monitor final primes
-
-- Status: `Partially Resolved / Open`.
-- Classification: `Local Fix`.
-- Affected contracts: BEH-005, FR-002, AC-003/AC-007, DS-006.
-- Material premises: CR-PREM-006A and CR-PREM-006B (`Reachable`).
-- Evidence:
-  - `runHistoryTeamMemberProjectionHydrator.ts:162-213` primes after historical projection application; `teamRunContextHydrationService.ts:294-360` invokes it during initial historical load; `teamRunOpenCoordinator.ts:245-246` primes that final context again.
-  - `runHistoryTeamMemberProjectionHydrator.ts:221-261` primes newly built contexts when projection is absent; active open and `hydrateLiveTeamRunContext.ts:450-454` then prime all final members again.
-  - `teamRunContextHydrationService.spec.ts` mocks `buildLiveTeamMemberContexts`; `teamRunOpenCoordinator.spec.ts` mocks the entire load payload. Both therefore bypass the nested production primes they claim to count.
-- Consequence: historical projected members and active projection-absent members still receive two full witness captures in one lifecycle transaction.
-- Required action: Inventory the complete prime ownership from member construction/projection through open/recovery. Ensure exactly one final prime per context after the last conversation/activity writer for historical projection-present, active projection-present, projection-absent, existing replacement, and preserved subscribed branches. Keep lazy historical member hydration's separate final-prime transaction correct. Add at least one test per outer lifecycle that uses the real builder/loader composition rather than starting after nested baseline ownership.
+None.
 
 ## Classification
 
-- Overall failure classification: `Local Fix`.
-- SR-004 already defines the required lifecycle; only bounded ownership/test correction is needed.
+- Review outcome: `Pass`.
+- Failure classification: `N/A`.
 
 ## Recommended Recipient
 
-- `implementation_engineer`.
-- API/E2E remains paused pending the next source-review pass.
+- `api_e2e_engineer` for coverage investigation and execution.
 
 ## Residual Risks
 
-- Aggregate browser/Electron responsiveness and sustained background correctness remain downstream API/E2E work.
-- Repository-wide Nuxt/server typecheck baselines remain as recorded.
-- Durable documentation synchronization remains delivery-owned.
+- Realistic aggregate browser responsiveness, retained WebSocket/canonical-subscriber correctness, nested collapsed/unfocused behavior, latest-100 Event Monitor behavior, paste/fake-media latency, and final Electron voice/file smoke remain API/E2E responsibilities.
+- Repository-wide Nuxt/server typecheck baselines remain as recorded; focused evidence does not convert them into broad passes.
+- Durable documentation synchronization and base refresh remain delivery-owned.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
+- Review Decision: `Pass`
 - Review Entry Point: `Implementation Review`
 - Material-Premise Gate: `Pass`
-- Score: `9.25/10 (92.5/100)`
-- Recommended Recipient: `implementation_engineer`
-- Notes: IR-004 removes the activity-helper double prime, but CR-006 remains open on historical and projection-absent real compositions.
+- Score: `9.62/10 (96.2/100)`
+- Recommended Recipient: `api_e2e_engineer`
+- Notes: CR-001–CR-009 are resolved. API/E2E may begin with the retained WebSocket regression and the reviewed realistic coverage plan.

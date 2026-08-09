@@ -8,6 +8,8 @@
 | CRR-002 | `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/code-review-report.md` | Implementation Review / IR-002 full source re-review | CRR-001: Fail — Local Fix | Fail — Local Fix | CR-001–CR-009 |
 | CRR-003 | `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/code-review-report.md` | Implementation Review / IR-003 full source re-review | CRR-002: Fail — Local Fix | Fail — Local Fix | CR-006–CR-009 |
 | CRR-004 | `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/code-review-report.md` | Implementation Review / IR-004 full source re-review | CRR-003: Fail — Local Fix | Fail — Local Fix | CR-006 |
+| CRR-005 | `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/code-review-report.md` | Implementation Review / IR-005 full source re-review | CRR-004: Fail — Local Fix | Pass | CR-006 |
+| CRR-006 | `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/api-e2e-test-review-report.md` | Successful API/E2E Test-Code Review / API-REV-001 | CRR-005: Pass; API-REV-001: Pass / 98.4% | Pass | None |
 
 ## Revision Entries
 
@@ -112,3 +114,50 @@ None.
 - Review-gap attribution: CRR-003 named activity-helper composition but did not finish the prime inventory through member construction and historical projection application. IR-004 tests likewise mock those upstream owners.
 - Recommended recipient: `implementation_engineer`
 - Remaining risks: API/E2E remains paused; realistic browser/Electron performance and sustained correctness remain downstream. Broad typecheck baselines remain red; both diff checks pass.
+
+### CRR-005 — IR-005 completes prime ownership and passes full source review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round 5
+- Triggering role/report/finding: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/implementation-handoff.md`; IR-005; CR-006
+- Relevant revisions: `SR-004`, `ARCH-REV-004`, `IR-005`; API/E2E and delivery `N/A`
+- Prior authoritative result: `CRR-004 — Fail — Local Fix — 9.25/10 (92.5/100)`
+- Current authoritative result: `Pass — 9.62/10 (96.2/100)`
+- What changed: Lower member construction, projection application, and activity hydration now write state only. `openTeamRun` and `hydrateLiveTeamRunContext` each own one final prime after their complete transaction, while lazy historical member hydration owns one separate final prime. Real production-composition tests exercise the actual loader/builder/projection/activity path for every material branch.
+
+#### Prior Finding Resolution
+
+| Finding ID | Resolution | Current Evidence |
+| --- | --- | --- |
+| CR-006 | Resolved | Historical projection-present, active projection-present, active projection-absent, existing replacement, preserved subscribed, live recovery, and lazy historical hydration each show one final prime after the last writer. |
+
+- New or remaining finding IDs: `None`
+- Material score/classification change: Score rises 0.37/10; all categories meet the 9.0 threshold and the result advances to Pass.
+- Material premises: CR-PREM-006A/B remain Reachable and are directly addressed; prior CR-PREM-007–009 resolutions remain intact.
+- Reviewer evidence: Real prime-ownership subset 4 files / 16 tests pass; affected frontend matrix 11 files / 171 tests pass; complete 65-file source audit and both diff checks pass.
+- Recommended recipient: `api_e2e_engineer`
+- Remaining risks: Realistic aggregate WebSocket/browser/Electron performance, exact hierarchy/focus, latest-100 Event Monitor behavior, paste/fake-media latency, and voice/file smoke remain downstream API/E2E work. Broad typecheck baselines remain red; delivery retains base refresh/docs ownership.
+
+### CRR-006 — API-REV-001 durable coverage passes proportional test-code review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/api-e2e-test-review-report.md`
+- Review entry point and round: `Successful API/E2E Test-Code Review`, round 1
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/api-e2e-execution-coverage-report.md`; `WS-STATUS-001`, `BG-BROWSER-000–007`, `API-REV-001`
+- Relevant solution revision IDs: `SR-004`
+- Relevant architecture-review revision IDs: `ARCH-REV-004`
+- Relevant implementation revision IDs: `IR-005`
+- Relevant API/E2E revision IDs: `API-REV-001`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: `CRR-005 — Implementation Review Pass — 9.62/10 (96.2/100)`; API/E2E `API-REV-001 — Pass / 98.4%`
+- Current authoritative result: `Pass — proportional durable test-code review`
+- What changed in the review result and why: API/E2E updated one retained real-WebSocket integration file, added one durable Chrome runner and its paired production-composition fixture, and added one package command. The assertions directly prove approved transition-only status behavior, canonical subscriber preservation, exact state/navigation/Event Monitor bounds, and browser responsiveness thresholds. The fixture and runner are coherent, isolated, deterministic for their boundaries, and cleaned up owned resources; no durable coverage was removed or disabled.
+
+#### Prior Finding Resolution
+
+None — no unresolved source or test-review finding entered this round. The five stale duplicate-status expectations identified during API/E2E were corrected by API/E2E before this successful review and are recorded in API-REV-001.
+
+- New or remaining finding IDs: `None`
+- Material score or classification changes: `N/A — proportional test review has no implementation scorecard; result is Pass.`
+- Reviewer evidence: changed durable paths and aggregate patch inspected; corrected socket execution 7/7; durable Chrome scenarios BG-BROWSER-000–007 green; package parse, probe syntax, diff check, temporary-route absence, and disabled/skip/TODO scan pass. The API/E2E workflow was not rerun.
+- Recommended recipient: `delivery_engineer`
+- Remaining risks or uncertainty: Only the already-approved aggregate-equivalent provider model, deterministic fake media instead of a physical microphone, and deferred higher-scale parsing/worker work remain. Broad repository typecheck baselines remain non-green; delivery retains base refresh and documentation synchronization.
