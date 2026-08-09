@@ -58,4 +58,3 @@ The Bible traces therefore do not identify a second provider-specific root cause
 The available Bible Study raw traces do not prove that `edit_file` itself caused a hang. If the UI showed the study leader stopped after an edit operation, the available evidence is consistent with either a later missing event not retained in these active traces, a UI/status observation made before the subsequent event was persisted, or a different historical run. It is not consistent with an ordinary `edit_file` tool error being silently unreported in these two runs.
 
 The generic orphan-repair design remains justified and is strengthened by this comparison: explicit tool errors already recover normally; missing terminal results are the protocol violation that requires synthetic repair and lifecycle recovery.
-
