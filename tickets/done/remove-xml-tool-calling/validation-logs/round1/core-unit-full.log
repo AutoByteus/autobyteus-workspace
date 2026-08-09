@@ -565,7 +565,7 @@ Cleared 1 definitions from the AgentUserInputMessageProcessorRegistry.
  ✓ tests/unit/external-channel/external-message-envelope.test.ts (10 tests) 7ms
  ✓ tests/unit/memory/raw-trace-archive-manager.test.ts (4 tests) 31ms
 stderr | tests/unit/tools/base-tool.test.ts > BaseTool > test_set_agent_id_validates
-Attempted to set invalid agentId: 
+Attempted to set invalid agentId:
 Attempted to set invalid agentId: null
 
 stderr | tests/unit/tools/base-tool.test.ts > BaseTool > test_execute_missing_required_raises
@@ -1959,7 +1959,7 @@ TypeError: definition?.getUsageJson is not a function
      67|     const definition = defaultToolRegistry.getToolDefinition(TOOL_NAME…
      68|     const jsonOutput = definition?.getUsageJson() as Record<string, an…
        |                                    ^
-     69| 
+     69|
      70|     expect(jsonOutput.name).toBe(TOOL_NAME_READ_FILE);
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
@@ -1969,4 +1969,3 @@ TypeError: definition?.getUsageJson is not a function
       Tests  3 failed | 1510 passed (1513)
    Start at  09:15:22
    Duration  11.02s (transform 10.43s, setup 1.80s, import 34.92s, tests 17.12s, environment 36ms)
-

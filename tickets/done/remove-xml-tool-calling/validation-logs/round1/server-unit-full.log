@@ -1101,12 +1101,12 @@ stdout | tests/unit/secret-management/secret-vault-lifecycle.test.ts > one-datab
 prisma:info Starting a sqlite pool with 21 connections.
 
 stdout | tests/unit/secret-management/secret-vault-lifecycle.test.ts > one-database secret vault lifecycle > rolls back the full batch on a later write failure
-prisma:error 
+prisma:error
 Invalid `this.create()` invocation in
 /Users/normy/autobyteus_org/autobyteus-worktrees/remove-xml-tool-calling/autobyteus-server-ts/src/secret-management/persistence/secret-entry-repository.ts:56:16
 
   53 }
-  54 
+  54
   55 async createEntry(record: EncryptedSecretEntryRecord): Promise<void> {
 → 56   await this.create(
 Foreign key constraint violated: `foreign key`
@@ -1124,12 +1124,12 @@ stdout | tests/unit/secret-management/secret-vault-lifecycle.test.ts > one-datab
 prisma:info Starting a sqlite pool with 21 connections.
 
 stdout | tests/unit/secret-management/secret-vault-lifecycle.test.ts > one-database secret vault lifecycle > rolls back every create-only migration row when one insert fails
-prisma:error 
+prisma:error
 Invalid `this.create()` invocation in
 /Users/normy/autobyteus_org/autobyteus-worktrees/remove-xml-tool-calling/autobyteus-server-ts/src/secret-management/persistence/secret-entry-repository.ts:56:16
 
   53 }
-  54 
+  54
   55 async createEntry(record: EncryptedSecretEntryRecord): Promise<void> {
 → 56   await this.create(
 Foreign key constraint violated: `foreign key`
@@ -1402,12 +1402,12 @@ stdout | tests/unit/app-data-migrations/custom-provider-v1-app-data-migration.te
 prisma:info Starting a sqlite pool with 21 connections.
 
 stdout | tests/unit/app-data-migrations/custom-provider-v1-app-data-migration.test.ts > CustomProviderV1AppDataMigration > rolls back the entire vault batch and deletes v1 after a database write failure
-prisma:error 
+prisma:error
 Invalid `this.create()` invocation in
 /Users/normy/autobyteus_org/autobyteus-worktrees/remove-xml-tool-calling/autobyteus-server-ts/src/secret-management/persistence/secret-entry-repository.ts:56:16
 
   53 }
-  54 
+  54
   55 async createEntry(record: EncryptedSecretEntryRecord): Promise<void> {
 → 56   await this.create(
 Foreign key constraint violated: `foreign key`
@@ -5075,7 +5075,7 @@ Closed all file explorer sessions
  ✓ tests/unit/services/file-explorer-streaming/file-explorer-session-manager.test.ts (9 tests) 5ms
  ✓ tests/unit/external-channel/runtime/gateway-callback-outbox-store.test.ts (2 tests) 80ms
 stdout | tests/unit/file-explorer/file-system-watcher-runtime.test.ts > FileSystemWatcher runtime boundary > logical stop returns after requesting child stop without waiting for child stopped
-FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/watcher-runtime-unit-IsmwIA' with ignore strategies: 
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/watcher-runtime-unit-IsmwIA' with ignore strategies:
 
 stdout | tests/unit/file-explorer/file-system-watcher-runtime.test.ts > FileSystemWatcher runtime boundary > logical stop returns after requesting child stop without waiting for child stopped
 Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/watcher-runtime-unit-IsmwIA
@@ -5084,7 +5084,7 @@ stdout | tests/unit/file-explorer/file-system-watcher-runtime.test.ts > FileSyst
 Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/watcher-runtime-unit-IsmwIA
 
 stdout | tests/unit/file-explorer/file-system-watcher-runtime.test.ts > FileSystemWatcher runtime boundary > ignores raw events whose watcher generation is stale
-FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/watcher-runtime-unit-IaCgFK' with ignore strategies: 
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/watcher-runtime-unit-IaCgFK' with ignore strategies:
 
 stdout | tests/unit/file-explorer/file-system-watcher-runtime.test.ts > FileSystemWatcher runtime boundary > ignores raw events whose watcher generation is stale
 Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/watcher-runtime-unit-IaCgFK
@@ -6506,7 +6506,7 @@ AssertionError: expected { sharedAgentCount: 1, …(3) } to deeply equal { share
   }
 
  ❯ tests/unit/agent-packages/package-root-summary.test.ts:59:43
-     57| 
+     57|
      58|     expect(validatePackageRoot(rootPath)).toBe(rootPath);
      59|     expect(buildPackageSummary(rootPath)).toEqual({
        |                                           ^
@@ -6585,7 +6585,7 @@ AssertionError: expected { activeMode: 'VERTEX_EXPRESS', …(6) } to deeply equa
       "kind": "unconfigured",
 
  ❯ tests/unit/llm-management/gemini-configuration-service.test.ts:61:44
-     59| 
+     59|
      60|   it('starts with no selected mode and no implicit priority', async ()…
      61|     expect(await service.getSetupStatus()).toEqual({
        |                                            ^
@@ -6600,7 +6600,7 @@ AssertionError: expected { activeMode: 'VERTEX_EXPRESS', …(6) } to deeply equa
 TypeError: Cannot read properties of undefined (reading 'CURATED_ONLY')
  ❯ tests/unit/llm-management/model-metadata-provisioning-service.test.ts:61:70
      59|       .enrichBestEffort([model(LLMProvider.GEMINI, 'gemini-3-flash-pre…
-     60| 
+     60|
      61|     expect(result?.metadata_provenance).toBe(ModelMetadataProvenance.C…
        |                                                                      ^
      62|     expect(resolve).not.toHaveBeenCalledWith('GEMINI', expect.any(Stri…
@@ -6626,11 +6626,11 @@ TypeError: Cannot read properties of undefined (reading 'LIVE')
 TypeError: Cannot read properties of undefined (reading 'CURATED_FALLBACK')
  ❯ tests/unit/llm-management/model-metadata-provisioning-service.test.ts:115:70
     113|       .enrichBestEffort([model(LLMProvider.GEMINI, 'gemini-3-flash-pre…
-    114| 
+    114|
     115|     expect(result?.metadata_provenance).toBe(ModelMetadataProvenance.C…
        |                                                                      ^
     116|   });
-    117| 
+    117|
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/32]⎯
 
@@ -6646,7 +6646,7 @@ Received: "/rest/files/images/downloaded.png"
      50|     expect(url).toBe("http://unittest.server:8000/rest/files/images/do…
        |                 ^
      51|   });
-     52| 
+     52|
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/32]⎯
 
@@ -6657,7 +6657,7 @@ AssertionError: expected "vi.fn()" to be called 1 times, but got 0 times
      59|     expect(createSpy).toHaveBeenCalledWith(skillName);
      60|     expect(mockWorkspace.initialize).toHaveBeenCalledTimes(1);
        |                                      ^
-     61| 
+     61|
      62|     const cached = (manager as unknown as { activeWorkspaces: Map<stri…
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/32]⎯
@@ -6673,7 +6673,7 @@ AssertionError: expected 404 to be 200 // Object.is equality
 
  ❯ tests/unit/api/rest/application-backends-execution-resource-configurations.test.ts:105:35
     103|       });
-    104| 
+    104|
     105|       expect(response.statusCode).toBe(200);
        |                                   ^
     106|       expect(response.json()).toEqual(responseBody);
@@ -6692,7 +6692,7 @@ AssertionError: expected 404 to be 200 // Object.is equality
 
  ❯ tests/unit/api/rest/application-backends-execution-resource-configurations.test.ts:141:35
     139|       });
-    140| 
+    140|
     141|       expect(response.statusCode).toBe(200);
        |                                   ^
     142|       expect(response.json()).toEqual(responseBody);
@@ -6711,7 +6711,7 @@ AssertionError: expected 404 to be 200 // Object.is equality
 
  ❯ tests/unit/api/rest/application-backends-execution-resource-configurations.test.ts:188:35
     186|       });
-    187| 
+    187|
     188|       expect(response.statusCode).toBe(200);
        |                                   ^
     189|       expect(response.json()).toEqual(responseBody);
@@ -6730,7 +6730,7 @@ AssertionError: expected 404 to be 400 // Object.is equality
 
  ❯ tests/unit/api/rest/application-backends-execution-resource-configurations.test.ts:243:35
     241|       });
-    242| 
+    242|
     243|       expect(response.statusCode).toBe(400);
        |                                   ^
     244|       expect(response.json()).toEqual({
@@ -6749,7 +6749,7 @@ AssertionError: expected 404 to be 200 // Object.is equality
 
  ❯ tests/unit/api/rest/application-backends-prefix.test.ts:41:33
      39|     });
-     40| 
+     40|
      41|     expect(response.statusCode).toBe(200);
        |                                 ^
      42|     expect(response.json()).toEqual({
@@ -6769,7 +6769,7 @@ Received: "PUBLISH_PENDING"
     681|   expect(record?.status).toBe(status);
        |                          ^
     682| };
-    683| 
+    683|
  ❯ tests/unit/external-channel/runtime/channel-run-output-delivery-runtime.test.ts:468:5
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/32]⎯
@@ -6891,4 +6891,3 @@ The latest test that might've caused the error is "does not publish explicit mem
      Errors  4 errors
    Start at  09:24:47
    Duration  219.75s (transform 9.67s, setup 1.72s, import 156.03s, tests 15.00s, environment 982ms)
-

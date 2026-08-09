@@ -719,7 +719,7 @@ Error: LIVE_E2E_COMPACTION_LIFECYCLE_NOT_COMPLETED
     726|         throw new Error('LIVE_E2E_COMPACTION_LIFECYCLE_NOT_COMPLETED');
        |               ^
     727|       }
-    728| 
+    728|
  ❯ safeExternalOperation tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts:29:12
  ❯ tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts:119:24
 

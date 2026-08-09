@@ -1485,7 +1485,7 @@ Error processing image data:image/png;base64,: Error: Invalid data URI media sou
  ✓ tests/unit/skills/loader.test.ts (5 tests) 12ms
  ✓ tests/unit/llm/metadata/gemini-developer-api-model-metadata-provider.test.ts (2 tests) 6ms
 stderr | tests/unit/tools/base-tool.test.ts > BaseTool > test_set_agent_id_validates
-Attempted to set invalid agentId: 
+Attempted to set invalid agentId:
 Attempted to set invalid agentId: null
 
 stderr | tests/unit/tools/base-tool.test.ts > BaseTool > test_execute_missing_required_raises
@@ -1923,4 +1923,3 @@ Cleared 1 definitions from the SystemPromptProcessorRegistry.
       Tests  1512 passed (1512)
    Start at  09:16:44
    Duration  12.66s (transform 10.93s, setup 2.41s, import 43.40s, tests 17.35s, environment 43ms)
-

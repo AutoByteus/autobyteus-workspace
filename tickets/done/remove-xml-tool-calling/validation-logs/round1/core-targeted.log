@@ -3,7 +3,7 @@
 
  ✓ tests/unit/llm/prompt-renderers/autobyteus-prompt-renderer.test.ts (5 tests) 5ms
 stderr | tests/unit/tools/base-tool.test.ts > BaseTool > test_set_agent_id_validates
-Attempted to set invalid agentId: 
+Attempted to set invalid agentId:
 Attempted to set invalid agentId: null
 
 stderr | tests/unit/tools/base-tool.test.ts > BaseTool > test_execute_missing_required_raises
@@ -182,4 +182,3 @@ AgentFactory (Singleton) initialized.
       Tests  113 passed (113)
    Start at  09:12:22
    Duration  2.40s (transform 4.43s, setup 217ms, import 7.30s, tests 120ms, environment 2ms)
-

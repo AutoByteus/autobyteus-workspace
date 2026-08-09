@@ -2341,4 +2341,3 @@ AgentRuntime for 'runtime_external_tool_mode_failure_1786259832199' stop() metho
       Tests  18 passed (18)
    Start at  09:17:10
    Duration  2.00s (transform 1.59s, setup 53ms, import 2.48s, tests 1.24s, environment 0ms)
-

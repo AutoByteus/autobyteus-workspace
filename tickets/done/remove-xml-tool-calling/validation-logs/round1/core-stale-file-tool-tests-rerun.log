@@ -19,4 +19,3 @@ Successfully registered tool definition: 'read_file'
       Tests  3 passed (3)
    Start at  09:16:39
    Duration  267ms (transform 227ms, setup 39ms, import 255ms, tests 9ms, environment 0ms)
-

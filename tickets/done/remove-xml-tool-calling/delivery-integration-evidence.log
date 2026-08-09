@@ -1,0 +1,55 @@
+DELIVERY INTEGRATION EVIDENCE
+Ticket: remove-xml-tool-calling
+Date: 2026-08-09 (Europe/Berlin)
+
+RECORDED IMPLEMENTATION BASE
+origin/personal = 7f0fc49965950d9689726a048371f2e2b78eef31
+implementation commit = 33f632054c39a088618723b506f368f5e934608f
+
+INITIAL DELIVERY FETCH
+command = git fetch origin personal
+origin/personal before fetch = 3edb88bc6f7e15d074474f51c870a13d69d5d7b7
+origin/personal after fetch  = 3edb88bc6f7e15d074474f51c870a13d69d5d7b7
+new commits since recorded implementation base = 13
+
+REVIEWED-STATE PROTECTION
+checkpoint commit = 8ca207ffed4bdc15ce2acddd693ca869266ce91a
+subject = test: align coverage with native tool calling
+contents = API/E2E durable coverage changes plus cumulative review/execution artifacts and retained value-safe validation evidence
+
+INTEGRATION
+method = merge
+command = git merge --no-edit origin/personal
+result = pass, no conflicts
+merge commit = 91c9eac86e60a3b4454486d68b9e237f8e3964fe
+integrated base parent = 3edb88bc6f7e15d074474f51c870a13d69d5d7b7
+
+POST-INTEGRATION EXECUTABLE CHECK
+Temporary dependency method = package-local autobyteus-ts/node_modules symlink to the installed main-workspace dependency tree; removed after execution
+Authoritative command = pnpm -C autobyteus-ts exec vitest run tests/unit/agent/streaming/handlers/api-tool-call-streaming-response-handler.test.ts tests/unit/agent/loop/tool-result-continuation-builder.test.ts tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts --no-watch
+Result = PASS
+Test files = 3 passed / 3
+Tests = 29 passed / 29
+Exit code = 0
+Duration reported by Vitest = 866ms
+
+Operational note = An initial runner lookup attempt linked only the worktree root dependency tree and did not execute tests because package-local vitest was not found. The corrected package-local link produced the authoritative passing result above. No source or persisted user data changed during dependency setup.
+
+DELIVERY DOCUMENTATION CHECKS
+git diff --check = PASS
+obsolete deleted class/path identifier scan in current long-lived docs = PASS
+references from current long-lived docs to retired tool_call_formatting_and_parsing.md or streaming_parser_design.md = none, PASS
+exact AUTOBYTEUS_STREAM_PARSER long-lived occurrence = one intentional decommission entry in api_tool_call_streaming_design.md, PASS
+retired design files absent = PASS
+delivery artifact existence/trailing-whitespace checks = PASS
+
+FINAL REMOTE REFRESH BEFORE HANDOFF
+command = git fetch origin personal
+origin/personal before fetch = 3edb88bc6f7e15d074474f51c870a13d69d5d7b7
+origin/personal after fetch  = 3edb88bc6f7e15d074474f51c870a13d69d5d7b7
+origin/personal ancestor of ticket HEAD = yes
+committed ahead / behind = 3 / 0
+
+FINAL STATUS
+PASS = integrated candidate and delivery documentation are ready for explicit user verification.
+HOLD = ticket archive, remaining commit, push, target merge/push, release/deployment, and cleanup await explicit user completion verification.
