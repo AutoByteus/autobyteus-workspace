@@ -41,14 +41,12 @@ export const handleTeamToolApprovalCommand = async (input: {
     return;
   }
   const reason = typeof input.payload.reason === "string" ? input.payload.reason : null;
-  const result = await input.activeRun.approveToolInvocation(
-    address.memberAddress,
+  const result = await input.activeRun.executeMemberCommand(address, {
+    kind: "approve_tool",
     invocationId,
-    input.approved,
+    approved: input.approved,
     reason,
-    address.taskAgentRunId,
-    address.taskTeamRunIds.at(-1) ?? null,
-  );
+  });
   if (!result.accepted) {
     logger.warn(
       `TOOL_APPROVAL rejected for team run ${input.teamRunId}: [${result.code ?? "UNKNOWN"}] ${result.message ?? "no message"}`,

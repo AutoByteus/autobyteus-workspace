@@ -11,6 +11,8 @@ import type { StartTaskAgentInstanceRequest } from "../domain/task-agent-instanc
 import type { StartTaskTeamInstanceRequest } from "../domain/task-team-instance.js";
 import type { MemberLogicalAddressContext } from "../domain/member-logical-address-context.js";
 import type { ResolvedTeamRecipient } from "../services/resolved-team-recipient.js";
+import type { TeamExecutionAddress } from "../domain/team-execution-address.js";
+import type { TeamMemberExecutionCommand } from "../domain/team-member-execution-command.js";
 
 export interface TeamManager {
   hasActiveMembers(): boolean;
@@ -20,6 +22,10 @@ export interface TeamManager {
     message: AgentInputUserMessage,
     target: AgentTeamAddress,
     targetAgentRunId?: string | null,
+  ): Promise<AgentOperationResult>;
+  executeMemberCommand(
+    executionAddress: TeamExecutionAddress,
+    command: TeamMemberExecutionCommand,
   ): Promise<AgentOperationResult>;
   deliverInterAgentMessage(
     intent: InterAgentMessageDeliveryIntent,

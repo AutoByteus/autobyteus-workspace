@@ -64,6 +64,13 @@ export class MixedTaskAgentInstanceRegistry implements TaskAgentInstanceDelivery
     return "accepted" in resolved ? Promise.resolve(resolved) : resolved.approveToolInvocation(address, invocationId, approved, reason);
   }
 
+  interrupt(address: AgentTeamAddress, taskAgentRunId: string) {
+    const resolved = this.resolve(address, taskAgentRunId);
+    return "accepted" in resolved
+      ? Promise.resolve(resolved)
+      : resolved.interrupt(address, taskAgentRunId);
+  }
+
   async settle(address: AgentTeamAddress, taskAgentRunId: string) {
     const resolved = this.resolve(address, taskAgentRunId);
     if ("accepted" in resolved) return resolved;

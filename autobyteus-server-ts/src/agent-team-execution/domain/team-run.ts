@@ -13,6 +13,8 @@ import type { TeamRunEvent, TeamRunEventListener, TeamRunEventUnsubscribe } from
 import type { StartTaskAgentInstanceRequest } from "./task-agent-instance.js";
 import type { StartTaskTeamInstanceRequest } from "./task-team-instance.js";
 import type { MemberLogicalAddressContext } from "./member-logical-address-context.js";
+import { createTeamExecutionAddress, type TeamExecutionAddress } from "./team-execution-address.js";
+import type { TeamMemberExecutionCommand } from "./team-member-execution-command.js";
 
 export class TeamRun {
   readonly context: TeamRunContext<RuntimeTeamRunContext>;
@@ -46,6 +48,16 @@ export class TeamRun {
       ? assertAgentTeamAddress(targetMemberAddress)
       : this.context.index.getTeam(this.context.teamAddress)?.coordinatorAddress ?? null;
     return this.backend.postMessage(message, target, targetAgentRunId);
+  }
+
+  executeMemberCommand(
+    executionAddress: TeamExecutionAddress,
+    command: TeamMemberExecutionCommand,
+  ): Promise<AgentOperationResult> {
+    return this.backend.executeMemberCommand(
+      createTeamExecutionAddress(executionAddress),
+      command,
+    );
   }
 
   deliverInterAgentMessage(intent: InterAgentMessageDeliveryIntent): Promise<AgentOperationResult> {

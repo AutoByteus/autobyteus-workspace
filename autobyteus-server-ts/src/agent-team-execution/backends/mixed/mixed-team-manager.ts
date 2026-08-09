@@ -15,7 +15,8 @@ import type {
 } from "../../domain/inter-agent-message-delivery.js";
 import { buildDeliveryEndpointForParticipant } from "../../domain/inter-agent-message-delivery.js";
 import type { MemberLogicalAddressContext } from "../../domain/member-logical-address-context.js";
-import { createTeamExecutionAddress } from "../../domain/team-execution-address.js";
+import { createTeamExecutionAddress, type TeamExecutionAddress } from "../../domain/team-execution-address.js";
+import type { TeamMemberExecutionCommand } from "../../domain/team-member-execution-command.js";
 import { resolveRuntimeAgentContext } from "../../domain/team-run-context.js";
 import type { TeamRunEvent, TeamRunEventListener, TeamRunEventUnsubscribe } from "../../domain/team-run-event.js";
 import type { TeamManager } from "../team-manager.js";
@@ -31,9 +32,9 @@ import {
   type ResolvedMessageDeliveryRoute,
 } from "./delivery/team-member-delivery-coordinator.js";
 import {
-  TaskTeamMessageExecutionResolver,
-  type ActiveTaskTeamMessageExecution,
-} from "./delivery/task-team-message-execution-resolver.js";
+  TaskTeamActiveExecutionResolver,
+  type ActiveTaskTeamExecution,
+} from "./delivery/task-team-active-execution-resolver.js";
 import { disposeTaskAgentDirectory, getTaskAgentDirectory } from "../../task-delegation/task-agent-directory.js";
 import { disposeTaskTeamActiveRunDirectoryForParentTeamRun, getTaskTeamActiveRunDirectory } from "../../task-delegation/task-team-active-run-directory.js";
 import { TeamRecipientResolver } from "../../services/team-recipient-resolver.js";
@@ -48,7 +49,7 @@ export class MixedTeamManager implements TeamManager {
   private readonly taskAgentInstances: MixedTaskAgentInstanceRegistry;
   private readonly taskTeamInstances: MixedTaskTeamInstanceRegistry;
   private readonly deliveryCoordinator: TeamMemberDeliveryCoordinator;
-  private readonly taskTeamMessageExecutionResolver: TaskTeamMessageExecutionResolver;
+  private readonly taskTeamActiveExecutionResolver: TaskTeamActiveExecutionResolver;
   private readonly recipientResolver = new TeamRecipientResolver();
   private readonly eventListeners = new Set<TeamRunEventListener>();
 
@@ -73,7 +74,7 @@ export class MixedTeamManager implements TeamManager {
       memberRegistry: this.persistentMembers,
       publish: callbacks.publish,
     });
-    this.taskTeamMessageExecutionResolver = new TaskTeamMessageExecutionResolver({
+    this.taskTeamActiveExecutionResolver = new TaskTeamActiveExecutionResolver({
       rootContext: context,
       taskAgentDirectory,
       taskTeamDirectory,
@@ -112,10 +113,46 @@ export class MixedTeamManager implements TeamManager {
     if (!this.getContext()) return buildRunNotFoundResult("unknown");
     const resolved = this.persistentMembers.resolveContext(target);
     if (isAgentOperationResult(resolved)) return resolved;
+    if (resolved.kind === "agent_team") {
+      return this.persistentMembers.getOrCreate(resolved)
+        .postMessageToAddress(message, target, targetAgentRunId);
+    }
     const taskRun = targetAgentRunId?.trim();
     if (taskRun) return this.taskAgentInstances.postMessage(target, taskRun, message);
-    if (resolved.kind === "agent" && resolved.address !== target) return { accepted: false, code: "TARGET_MEMBER_NOT_FOUND", message: `Agent '${target}' was not found.` };
+    if (resolved.address !== target) return { accepted: false, code: "TARGET_MEMBER_NOT_FOUND", message: `Agent '${target}' was not found.` };
     return this.persistentMembers.getOrCreate(resolved).postMessageToAddress(message, target, targetAgentRunId);
+  }
+
+  async executeMemberCommand(
+    executionAddress: TeamExecutionAddress,
+    command: TeamMemberExecutionCommand,
+  ): Promise<AgentOperationResult> {
+    const context = this.getContext();
+    if (!context) return buildRunNotFoundResult("unknown");
+    try {
+      const taskTeamExecution = this.taskTeamActiveExecutionResolver
+        .resolveCommandTarget(executionAddress);
+      if (!this.sameTaskTeamRunChain(
+        executionAddress.taskTeamRunIds,
+        context.taskTeamRunIds,
+      )) {
+        const ownsRootSelection = context.teamAddress === "/" &&
+          context.teamRunId === context.config.rootTeam.teamRunId;
+        if (!ownsRootSelection || context.taskTeamRunIds.length > 0 || !taskTeamExecution) {
+          return this.invalidExecutionResult(
+            `Execution chain does not select active TeamRun '${context.teamRunId}'.`,
+          );
+        }
+        return taskTeamExecution.activeRun.executeMemberCommand(
+          executionAddress,
+          command,
+        );
+      }
+      return this.executeLocalMemberCommand(executionAddress, command);
+    } catch (error) {
+      if (!isCollaborationContractError(error)) throw error;
+      return this.invalidExecutionResult(error.message);
+    }
   }
 
   async deliverInterAgentMessage(intent: InterAgentMessageDeliveryIntent): Promise<AgentOperationResult> {
@@ -134,12 +171,12 @@ export class MixedTeamManager implements TeamManager {
       if (targetAddress === intent.callerAddressing.memberAddress) throw new CollaborationContractError(
         "COLLABORATION_SELF_TARGET_REJECTED", `Collaboration target '${recipient.address}' resolves to the calling Agent.`,
       );
-      const taskTeamExecution = this.taskTeamMessageExecutionResolver.resolve(
+      const taskTeamExecution = this.taskTeamActiveExecutionResolver.resolveMessageSender(
         intent.sender.participant,
         intent.callerAddressing,
       );
       if (taskTeamExecution &&
-        this.taskTeamMessageExecutionResolver.containsTarget(taskTeamExecution, targetAddress)) {
+        this.taskTeamActiveExecutionResolver.containsTarget(taskTeamExecution, targetAddress)) {
         return this.deliveryCoordinator.deliverViaResolvedRoute(
           intent,
           this.materializeTaskTeamMessageRecipient(taskTeamExecution, targetAddress),
@@ -216,6 +253,10 @@ export class MixedTeamManager implements TeamManager {
     if (taskTeamRunId?.trim()) return this.taskTeamInstances.approveToolInvocation(taskTeamRunId.trim(), target, invocationId, approved, reason, targetAgentRunId);
     const resolved = this.persistentMembers.resolveContext(target);
     if (isAgentOperationResult(resolved)) return resolved;
+    if (resolved.kind === "agent_team") {
+      return this.persistentMembers.getOrCreate(resolved)
+        .approveToolInvocation(target, invocationId, approved, reason, targetAgentRunId);
+    }
     if (targetAgentRunId?.trim()) return this.taskAgentInstances.approveToolInvocation(target, targetAgentRunId.trim(), invocationId, approved, reason);
     return this.persistentMembers.getOrCreate(resolved).approveToolInvocation(target, invocationId, approved, reason, targetAgentRunId);
   }
@@ -224,6 +265,12 @@ export class MixedTeamManager implements TeamManager {
     if (!this.getContext()) return buildRunNotFoundResult("unknown");
     const resolved = this.persistentMembers.resolveContext(target);
     if (isAgentOperationResult(resolved)) return resolved;
+    if (resolved.kind === "agent_team") {
+      return this.persistentMembers.getOrCreate(resolved).interrupt(target, targetAgentRunId);
+    }
+    if (targetAgentRunId?.trim()) {
+      return this.taskAgentInstances.interrupt(target, targetAgentRunId.trim());
+    }
     return this.persistentMembers.getOrCreate(resolved).interrupt(target, targetAgentRunId);
   }
 
@@ -284,7 +331,7 @@ export class MixedTeamManager implements TeamManager {
   }
 
   private materializeTaskTeamMessageRecipient(
-    execution: ActiveTaskTeamMessageExecution,
+    execution: ActiveTaskTeamExecution,
     address: AgentTeamAddress,
   ): ResolvedMessageDeliveryRoute {
     if (!execution.activeRun.isActive()) throw new CollaborationContractError(
@@ -326,6 +373,81 @@ export class MixedTeamManager implements TeamManager {
   private sameTaskTeamRunChain(actual: readonly string[], expected: readonly string[]): boolean {
     return actual.length === expected.length &&
       actual.every((taskTeamRunId, index) => taskTeamRunId === expected[index]);
+  }
+
+  private async executeLocalMemberCommand(
+    executionAddress: TeamExecutionAddress,
+    command: TeamMemberExecutionCommand,
+  ): Promise<AgentOperationResult> {
+    const target = executionAddress.memberAddress;
+    const resolved = this.persistentMembers.resolveContext(target);
+    if (isAgentOperationResult(resolved)) return resolved;
+    if (resolved.kind === "agent_team") {
+      return this.executeHandleCommand(
+        this.persistentMembers.getOrCreate(resolved),
+        executionAddress,
+        command,
+      );
+    }
+    if (resolved.address !== target) {
+      return this.invalidExecutionResult(`Agent '${target}' is not owned by the selected TeamRun.`);
+    }
+    const taskAgentRunId = executionAddress.taskAgentRunId;
+    if (taskAgentRunId) {
+      if (command.kind === "post_message") {
+        return this.taskAgentInstances.postMessage(target, taskAgentRunId, command.message);
+      }
+      if (command.kind === "approve_tool") {
+        return this.taskAgentInstances.approveToolInvocation(
+          target,
+          taskAgentRunId,
+          command.invocationId,
+          command.approved,
+          command.reason,
+        );
+      }
+      return this.taskAgentInstances.interrupt(target, taskAgentRunId);
+    }
+    return this.executeHandleCommand(
+      this.persistentMembers.getOrCreate(resolved),
+      executionAddress,
+      command,
+    );
+  }
+
+  private executeHandleCommand(
+    handle: ReturnType<MixedPersistentMemberRegistry["getOrCreate"]>,
+    executionAddress: TeamExecutionAddress,
+    command: TeamMemberExecutionCommand,
+  ): Promise<AgentOperationResult> {
+    if (command.kind === "post_message") {
+      return handle.postMessageToAddress(
+        command.message,
+        executionAddress.memberAddress,
+        executionAddress.taskAgentRunId,
+      );
+    }
+    if (command.kind === "approve_tool") {
+      return handle.approveToolInvocation(
+        executionAddress.memberAddress,
+        command.invocationId,
+        command.approved,
+        command.reason,
+        executionAddress.taskAgentRunId,
+      );
+    }
+    return handle.interrupt(
+      executionAddress.memberAddress,
+      executionAddress.taskAgentRunId,
+    );
+  }
+
+  private invalidExecutionResult(message: string): AgentOperationResult {
+    return {
+      accepted: false,
+      code: "TEAM_EXECUTION_ADDRESS_INVALID",
+      message,
+    };
   }
 
   private async runTermination(): Promise<AgentOperationResult> {

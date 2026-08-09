@@ -58,10 +58,9 @@ export const handleTeamInterruptGenerationCommand = async (input: {
     return;
   }
   try {
-    const result = await input.activeRun.interruptMember(
-      address.memberAddress,
-      address.taskAgentRunId,
-    );
+    const result = await input.activeRun.executeMemberCommand(address, {
+      kind: "interrupt",
+    });
     sendAck(buildInterruptGenerationCommandAck({ commandId, target, result }));
   } catch (executionError) {
     sendAck(buildInterruptGenerationCommandAck({ commandId, target, executionError }));

@@ -381,12 +381,10 @@ export class AgentTeamStreamHandler {
       metadata,
     });
 
-    const taskTeamRunId = executionAddress.taskTeamRunIds.at(-1) ?? null;
-    const result = executionAddress.taskAgentRunId
-      ? await teamRun.postMessage(userMessage, executionAddress.memberAddress, executionAddress.taskAgentRunId)
-      : taskTeamRunId
-        ? await teamRun.postMessageToTaskTeamInstance(executionAddress.memberAddress, taskTeamRunId, userMessage)
-        : await teamRun.postMessage(userMessage, executionAddress.memberAddress);
+    const result = await teamRun.executeMemberCommand(executionAddress, {
+      kind: "post_message",
+      message: userMessage,
+    });
     if (!result.accepted) {
       logger.warn(
         `SEND_MESSAGE rejected for team run ${teamRunId}: [${result.code ?? "UNKNOWN"}] ${result.message ?? "no message"}`,
@@ -471,6 +469,7 @@ export class AgentTeamStreamHandler {
     return code.includes("TARGET") ||
       code.includes("TASK_AGENT") ||
       code.includes("TASK_TEAM") ||
+      code === "TEAM_EXECUTION_ADDRESS_INVALID" ||
       code === "RUN_NOT_FOUND";
   }
 

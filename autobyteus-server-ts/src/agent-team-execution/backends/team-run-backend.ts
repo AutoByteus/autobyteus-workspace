@@ -13,6 +13,8 @@ import type { StartTaskAgentInstanceRequest } from "../domain/task-agent-instanc
 import type { StartTaskTeamInstanceRequest } from "../domain/task-team-instance.js";
 import type { MemberLogicalAddressContext } from "../domain/member-logical-address-context.js";
 import type { ResolvedTeamRecipient } from "../services/resolved-team-recipient.js";
+import type { TeamExecutionAddress } from "../domain/team-execution-address.js";
+import type { TeamMemberExecutionCommand } from "../domain/team-member-execution-command.js";
 
 export interface TeamRunBackend {
   readonly teamRunId: string;
@@ -23,6 +25,7 @@ export interface TeamRunBackend {
   hasOpenExecutionWork(): boolean;
   subscribeToEvents(listener: TeamRunEventListener): TeamRunEventUnsubscribe;
   postMessage(message: AgentInputUserMessage, target: AgentTeamAddress | null, targetAgentRunId?: string | null): Promise<AgentOperationResult>;
+  executeMemberCommand(executionAddress: TeamExecutionAddress, command: TeamMemberExecutionCommand): Promise<AgentOperationResult>;
   deliverInterAgentMessage(intent: InterAgentMessageDeliveryIntent): Promise<AgentOperationResult>;
   deliverResolvedInterAgentMessage(request: ResolvedInterAgentMessageDeliveryRequest, beforePublishMemberInput?: (() => void) | null): Promise<AgentOperationResult>;
   resolveRecipient(recipientAddress: string, caller: MemberLogicalAddressContext): ResolvedTeamRecipient;
