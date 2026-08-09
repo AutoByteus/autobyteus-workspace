@@ -10,8 +10,8 @@ import { SenderType } from '../../../../src/agent/sender-type.js';
 import { InterAgentMessageReceivedEvent, UserMessageReceivedEvent } from '../../../../src/agent/events/agent-events.js';
 import { InterAgentMessage } from '../../../../src/agent/message/inter-agent-message.js';
 import {
+  NATIVE_API_TOOL_CONTINUATION_MODE,
   TOOL_CONTINUATION_MODE_METADATA_KEY,
-  TOOL_HISTORY_ONLY_CONTINUATION_MODE,
 } from '../../../../src/agent/message/tool-continuation-metadata.js';
 import { SYSTEM_TASK_NOTIFICATION_SUPPRESSION_METADATA_KEY } from '../../../../src/agent/message/system-task-notification-metadata.js';
 import { AgentTurn } from '../../../../src/agent/agent-turn.js';
@@ -73,11 +73,11 @@ describe('AgentInputPipeline', () => {
     expect(result.llmUserMessage.image_urls).toContain('/tmp/image.png');
   });
 
-  it('marks canonical text-history tool continuations as tool-history-only requests', async () => {
+  it('marks canonical native tool continuations as tool-history-only requests', async () => {
     const { context, turn } = makeContextAndTurn();
     const pipeline = new AgentInputPipeline();
-    const toolMessage = new AgentInputUserMessage('tool history continuation', SenderType.TOOL, null, {
-      [TOOL_CONTINUATION_MODE_METADATA_KEY]: TOOL_HISTORY_ONLY_CONTINUATION_MODE,
+    const toolMessage = new AgentInputUserMessage('native tool continuation', SenderType.TOOL, null, {
+      [TOOL_CONTINUATION_MODE_METADATA_KEY]: NATIVE_API_TOOL_CONTINUATION_MODE,
     });
 
     const result = await pipeline.processToolContinuation(toolMessage, context, turn);
@@ -89,14 +89,14 @@ describe('AgentInputPipeline', () => {
     const { context, turn } = makeContextAndTurn();
     const pipeline = new AgentInputPipeline();
     const toolMessage = new AgentInputUserMessage(
-      'tool history continuation',
+      'native tool continuation',
       SenderType.TOOL,
       [
         new ContextFile('/tmp/sample.mp3', ContextFileType.AUDIO),
         new ContextFile('/tmp/clip.mp4', ContextFileType.VIDEO)
       ],
       {
-        [TOOL_CONTINUATION_MODE_METADATA_KEY]: TOOL_HISTORY_ONLY_CONTINUATION_MODE,
+        [TOOL_CONTINUATION_MODE_METADATA_KEY]: NATIVE_API_TOOL_CONTINUATION_MODE,
       }
     );
 

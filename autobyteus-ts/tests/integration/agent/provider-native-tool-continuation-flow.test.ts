@@ -354,8 +354,7 @@ describe('provider-native tool continuation integration flow', () => {
 
   beforeEach(() => {
     process.env = {
-      ...originalEnv,
-      AUTOBYTEUS_STREAM_PARSER: 'api_tool_call'
+      ...originalEnv
     };
     registrySnapshot = defaultToolRegistry.snapshot();
   });

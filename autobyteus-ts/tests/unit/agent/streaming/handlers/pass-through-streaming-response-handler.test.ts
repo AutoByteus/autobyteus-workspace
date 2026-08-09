@@ -28,12 +28,17 @@ describe('PassThroughStreamingResponseHandler', () => {
     expect(events[0].payload.delta).toBe(' World');
   });
 
-  it('treats legacy tags as raw text', () => {
+  it.each([
+    '<tool name="run_bash"><arguments><command>echo unsafe</command></arguments></tool>',
+    '{"tool":"run_bash","arguments":{"command":"echo unsafe"}}',
+    '[[SEG_START tool]] run_bash {"command":"echo unsafe"} [[SEG_END tool]]',
+    '[TOOL_CALL] run_bash {"command":"echo unsafe"}'
+  ])('treats legacy-looking syntax as raw text: %s', (content) => {
     const handler = new PassThroughStreamingResponseHandler({ turnId: TURN_ID });
-    const events = handler.feed(chunk('<write_file>'));
+    const events = handler.feed(chunk(content));
 
     expect(events).toHaveLength(2);
-    expect(events[1].payload.delta).toBe('<write_file>');
+    expect(events[1].payload.delta).toBe(content);
     expect(handler.getAllInvocations()).toEqual([]);
   });
 

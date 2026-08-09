@@ -1,0 +1,185 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/remove-xml-tool-calling/autobyteus-ts
+
+ ✓ tests/unit/llm/prompt-renderers/autobyteus-prompt-renderer.test.ts (5 tests) 5ms
+stderr | tests/unit/tools/base-tool.test.ts > BaseTool > test_set_agent_id_validates
+Attempted to set invalid agentId: 
+Attempted to set invalid agentId: null
+
+stderr | tests/unit/tools/base-tool.test.ts > BaseTool > test_execute_missing_required_raises
+Invalid arguments for tool 'RecordingTool': Required parameter 'count' is missing.
+
+stderr | tests/unit/tools/base-tool.test.ts > BaseTool > test_execute_invalid_type_raises
+Invalid arguments for tool 'RecordingTool': Invalid value for parameter 'count': 'not-a-number...'. Expected type compatible with integer.
+
+stderr | tests/unit/tools/base-tool.test.ts > BaseTool > test_execute_allows_args_without_schema
+Tool 'RecordingTool' does not define an argument schema but received arguments: {"message":"hello"}.
+
+stderr | tests/unit/tools/base-tool.test.ts > BaseTool > test_prepare_execution_preserves_validation_errors_and_mode_errors
+Invalid arguments for tool 'ExternalPreparationTool': Required parameter 'count' is missing.
+
+ ✓ tests/unit/tools/base-tool.test.ts (8 tests) 12ms
+stdout | tests/unit/agent/streaming/handlers/api-tool-call-streaming-response-handler.test.ts > ApiToolCallStreamingResponseHandler basics > finalize creates invocations from accumulated args
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/unit/agent/streaming/handlers/api-tool-call-streaming-response-handler.test.ts > ApiToolCallStreamingResponseHandler basics > carries provider-native context from deltas to tool invocations
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/unit/agent/streaming/handlers/api-tool-call-streaming-response-handler.test.ts > ApiToolCallStreamingResponseHandler parallel tool calls > tracks multiple tool calls by index
+ApiToolCallStreamingResponseHandler finalized 2 tool invocations.
+
+stdout | tests/unit/agent/streaming/handlers/api-tool-call-streaming-response-handler.test.ts > ApiToolCallStreamingResponseHandler parallel tool calls > keeps multiple Gemini functionCall parts as distinct invocations
+ApiToolCallStreamingResponseHandler finalized 2 tool invocations.
+
+stdout | tests/unit/agent/streaming/handlers/api-tool-call-streaming-response-handler.test.ts > ApiToolCallStreamingResponseHandler file streaming > decodes escaped content
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/unit/agent/streaming/handlers/api-tool-call-streaming-response-handler.test.ts > ApiToolCallStreamingResponseHandler callbacks > invokes onToolInvocation callback
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/unit/agent/streaming/handlers/api-tool-call-streaming-response-handler.test.ts > ApiToolCallStreamingResponseHandler callbacks > emits the tool segment end before publishing the finalized invocation
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+
+ ✓ tests/unit/agent/streaming/handlers/api-tool-call-streaming-response-handler.test.ts (21 tests) 13ms
+ ✓ tests/unit/agent/streaming/handlers/pass-through-streaming-response-handler.test.ts (10 tests) 6ms
+ ✓ tests/unit/agent/loop/tool-result-continuation-builder.test.ts (4 tests) 5ms
+stdout | tests/unit/agent/context/agent-config.test.ts > AgentConfig > uses only current default system prompt processors
+AgentConfig created for name='name', role='role'.
+
+stdout | tests/unit/agent/context/agent-config.test.ts > AgentConfig > copy creates a new config with cloned lists and data
+AgentConfig created for name='name', role='role'.
+AgentConfig created for name='name', role='role'.
+
+stdout | tests/unit/agent/context/agent-config.test.ts > AgentConfig > defaults skillAccessMode to PRELOADED_ONLY when skills are configured
+AgentConfig created for name='name', role='role'.
+
+stdout | tests/unit/agent/context/agent-config.test.ts > AgentConfig > defaults skillAccessMode to PRELOADED_ONLY when no skills are configured
+AgentConfig created for name='name', role='role'.
+
+stdout | tests/unit/agent/context/agent-config.test.ts > AgentConfig > respects explicit skillAccessMode
+AgentConfig created for name='name', role='role'.
+
+ ✓ tests/unit/agent/context/agent-config.test.ts (6 tests) 11ms
+stdout | tests/unit/llm/prompt-renderers/provider-native-tool-history-renderers.test.ts > provider native tool history renderers > reconciles stream-start native metadata with final normalized arguments
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/unit/llm/prompt-renderers/provider-native-tool-history-renderers.test.ts > provider native tool history renderers > reconciles stream-start native metadata with final normalized arguments
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/unit/llm/prompt-renderers/provider-native-tool-history-renderers.test.ts > provider native tool history renderers > reconciles stream-start native metadata with final normalized arguments
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+
+ ✓ tests/unit/llm/prompt-renderers/provider-native-tool-history-renderers.test.ts (5 tests) 8ms
+ ✓ tests/unit/tools/registry/tool-definition.test.ts (3 tests) 3ms
+stdout | tests/unit/agent/tool-execution-result-processor/memory-ingest-tool-result-processor.test.ts > MemoryIngestToolResultProcessor > ingests tool result when turn id is available
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+MemoryIngestToolResultProcessor stored tool result for turnId turn_0001
+
+stdout | tests/unit/agent/tool-execution-result-processor/memory-ingest-tool-result-processor.test.ts > MemoryIngestToolResultProcessor > no-ops when memory manager missing
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/tool-execution-result-processor/memory-ingest-tool-result-processor.test.ts > MemoryIngestToolResultProcessor > skips ingestion when turn id is missing
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+MemoryIngestToolResultProcessor skipping tool result without turnId for tool 'tool'.
+
+stdout | tests/unit/agent/tool-execution-result-processor/memory-ingest-tool-result-processor.test.ts > MemoryIngestToolResultProcessor > falls back to active agent turn id when event turn id missing
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+MemoryIngestToolResultProcessor stored tool result for turnId turn_active
+
+stdout | tests/unit/agent/tool-execution-result-processor/memory-ingest-tool-result-processor.test.ts > MemoryIngestToolResultProcessor > defers active native API batch results to ordered batch ingestion
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+MemoryIngestToolResultProcessor deferred active native API batch result for turnId turn_native
+
+ ✓ tests/unit/agent/tool-execution-result-processor/memory-ingest-tool-result-processor.test.ts (5 tests) 7ms
+stdout | tests/unit/agent/pipelines/agent-input-pipeline.test.ts > AgentInputPipeline > preserves SenderType.TOOL same-turn continuation through input processors and LLM message building
+AgentConfig created for name='agent', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/pipelines/agent-input-pipeline.test.ts > AgentInputPipeline > marks canonical native tool continuations as tool-history-only requests
+AgentConfig created for name='agent', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/pipelines/agent-input-pipeline.test.ts > AgentInputPipeline > appends canonical tool continuations when they carry media context files
+AgentConfig created for name='agent', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/pipelines/agent-input-pipeline.test.ts > AgentInputPipeline > rejects SenderType.TOOL as a new external turn trigger
+AgentConfig created for name='agent', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/pipelines/agent-input-pipeline.test.ts > AgentInputPipeline > publishes system task notifications through the semantic notifier exactly once
+AgentConfig created for name='agent', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/pipelines/agent-input-pipeline.test.ts > AgentInputPipeline > suppresses only the generic system task notifier when explicit metadata requests suppression
+AgentConfig created for name='agent', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/pipelines/agent-input-pipeline.test.ts > AgentInputPipeline > converts inter-agent messages with sender id and strict recipient input shape
+AgentConfig created for name='agent', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/pipelines/agent-input-pipeline.test.ts > AgentInputPipeline > includes explicit reference files once in recipient runtime input and metadata
+AgentConfig created for name='agent', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/pipelines/agent-input-pipeline.test.ts > AgentInputPipeline > keeps strict inter-agent template when sender name cannot be resolved
+AgentConfig created for name='agent', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+ ✓ tests/unit/agent/pipelines/agent-input-pipeline.test.ts (9 tests) 15ms
+ ✓ tests/unit/agent/streaming/handlers/streaming-handler-factory.test.ts (8 tests) 5ms
+ ✓ tests/unit/llm/api/lmstudio-llm.test.ts (2 tests) 5ms
+stdout | tests/unit/agent/system-prompt-processor/register-system-prompt-processors.test.ts > registerSystemPromptProcessors > registers default system prompt processors
+Cleared 0 definitions from the SystemPromptProcessorRegistry.
+
+stdout | tests/unit/agent/system-prompt-processor/register-system-prompt-processors.test.ts > registerSystemPromptProcessors > registers default system prompt processors
+System prompt processor definition 'AvailableSkillsProcessor' (class: 'AvailableSkillsProcessor') registered successfully.
+
+stdout | tests/unit/agent/system-prompt-processor/register-system-prompt-processors.test.ts > registerSystemPromptProcessors > registers default system prompt processors
+Cleared 1 definitions from the SystemPromptProcessorRegistry.
+
+ ✓ tests/unit/agent/system-prompt-processor/register-system-prompt-processors.test.ts (1 test) 3ms
+ ✓ tests/unit/tools/index.test.ts (2 tests) 2ms
+ ✓ tests/unit/llm/api/provider-native-request-payloads.test.ts (8 tests) 15ms
+stdout | tests/unit/legacy-tool-calling-public-surfaces-removed.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/legacy-tool-calling-public-surfaces-removed.test.ts (16 tests) 4ms
+
+ Test Files  16 passed (16)
+      Tests  113 passed (113)
+   Start at  09:12:22
+   Duration  2.40s (transform 4.43s, setup 217ms, import 7.30s, tests 120ms, environment 2ms)
+

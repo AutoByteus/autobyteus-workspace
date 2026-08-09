@@ -5,10 +5,9 @@ import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMUserMessage } from '../../../../src/llm/user-message.js';
 import { ApiToolCallStreamingResponseHandler } from '../../../../src/agent/streaming/handlers/api-tool-call-streaming-response-handler.js';
 import { SegmentEventType } from '../../../../src/agent/streaming/segments/segment-events.js';
-import { defaultToolRegistry, ToolRegistry } from '../../../../src/tools/registry/tool-registry.js';
-import { ToolDefinition } from '../../../../src/tools/registry/tool-definition.js';
+import { defaultToolRegistry } from '../../../../src/tools/registry/tool-registry.js';
 import { registerWriteFileTool } from '../../../../src/tools/file/write-file.js';
-import { MistralJsonSchemaFormatter } from '../../../../src/tools/usage/formatters/mistral-json-schema-formatter.js';
+import { ToolSchemaProvider } from '../../../../src/tools/usage/providers/tool-schema-provider.js';
 
 const apiKey = process.env.MISTRAL_API_KEY;
 const runIntegration = apiKey ? describe : describe.skip;
@@ -26,8 +25,7 @@ runIntegration('ApiToolCallStreamingResponseHandler (Mistral live)', () => {
     const toolDef = defaultToolRegistry.getToolDefinition('write_file');
     expect(toolDef).toBeDefined();
 
-    const formatter = new MistralJsonSchemaFormatter();
-    const toolsSchema = [formatter.provide(toolDef!)];
+    const toolsSchema = new ToolSchemaProvider().buildSchema(['write_file'], LLMProvider.MISTRAL);
 
     const llm = new OpenAICompatibleLLM(
       new LLMModel({

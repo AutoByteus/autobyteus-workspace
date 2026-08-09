@@ -11,19 +11,6 @@ import { OllamaPromptRenderer } from '../../../../src/llm/prompt-renderers/ollam
 import { AnthropicPromptRenderer } from '../../../../src/llm/prompt-renderers/anthropic-prompt-renderer.js';
 import { MistralPromptRenderer } from '../../../../src/llm/prompt-renderers/mistral-prompt-renderer.js';
 import { OpenAIResponsesRenderer } from '../../../../src/llm/prompt-renderers/openai-responses-renderer.js';
-import { GeminiTextToolHistoryRenderer } from '../../../../src/llm/prompt-renderers/gemini-text-tool-history-renderer.js';
-import { OllamaTextToolHistoryRenderer } from '../../../../src/llm/prompt-renderers/ollama-text-tool-history-renderer.js';
-import { AnthropicTextToolHistoryRenderer } from '../../../../src/llm/prompt-renderers/anthropic-text-tool-history-renderer.js';
-import { MistralTextToolHistoryRenderer } from '../../../../src/llm/prompt-renderers/mistral-text-tool-history-renderer.js';
-import { OpenAIResponsesTextToolHistoryRenderer } from '../../../../src/llm/prompt-renderers/openai-responses-text-tool-history-renderer.js';
-import {
-  createAnthropicPromptRendererForToolFormat,
-  createGeminiPromptRendererForToolFormat,
-  createMistralPromptRendererForToolFormat,
-  createOllamaPromptRendererForToolFormat,
-  createOpenAIResponsesRendererForToolFormat,
-} from '../../../../src/llm/prompt-renderers/provider-tool-history-renderer-selection.js';
-import type { ToolCallFormat } from '../../../../src/utils/tool-call-format.js';
 import { ApiToolCallStreamingResponseHandler } from '../../../../src/agent/streaming/handlers/api-tool-call-streaming-response-handler.js';
 import { ChunkResponse } from '../../../../src/llm/utils/response-types.js';
 import type { ProviderNativeToolCallContext } from '../../../../src/llm/utils/tool-call-delta.js';
@@ -212,48 +199,5 @@ describe('provider native tool history renderers', () => {
       name: 'search',
       arguments: JSON.stringify({ query: 'abc' })
     });
-  });
-});
-
-describe('provider renderer mode isolation', () => {
-  const formats: ToolCallFormat[] = ['xml', 'json', 'sentinel'];
-
-  it.each(formats)('selects explicit text-history renderers in %s mode', (format) => {
-    expect(createGeminiPromptRendererForToolFormat(format)).toBeInstanceOf(GeminiTextToolHistoryRenderer);
-    expect(createOllamaPromptRendererForToolFormat(format)).toBeInstanceOf(OllamaTextToolHistoryRenderer);
-    expect(createAnthropicPromptRendererForToolFormat(format)).toBeInstanceOf(AnthropicTextToolHistoryRenderer);
-    expect(createMistralPromptRendererForToolFormat(format)).toBeInstanceOf(MistralTextToolHistoryRenderer);
-    expect(createOpenAIResponsesRendererForToolFormat(format)).toBeInstanceOf(OpenAIResponsesTextToolHistoryRenderer);
-  });
-
-  it('selects native renderers only in api_tool_call mode', () => {
-    expect(createGeminiPromptRendererForToolFormat('api_tool_call')).toBeInstanceOf(GeminiPromptRenderer);
-    expect(createOllamaPromptRendererForToolFormat('api_tool_call')).toBeInstanceOf(OllamaPromptRenderer);
-    expect(createAnthropicPromptRendererForToolFormat('api_tool_call')).toBeInstanceOf(AnthropicPromptRenderer);
-    expect(createMistralPromptRendererForToolFormat('api_tool_call')).toBeInstanceOf(MistralPromptRenderer);
-    expect(createOpenAIResponsesRendererForToolFormat('api_tool_call')).toBeInstanceOf(OpenAIResponsesRenderer);
-  });
-
-  it.each(formats)('text-history renderers preserve legacy text and avoid native tool result objects in %s mode', async (format) => {
-    const messages = buildSingleToolMessages();
-    const renderers = [
-      createGeminiPromptRendererForToolFormat(format),
-      createOllamaPromptRendererForToolFormat(format),
-      createAnthropicPromptRendererForToolFormat(format),
-      createMistralPromptRendererForToolFormat(format),
-      createOpenAIResponsesRendererForToolFormat(format),
-    ];
-
-    for (const renderer of renderers) {
-      const rendered = await renderer.render(messages);
-      const text = serialized(rendered);
-      expect(text).toContain('[TOOL_CALL]');
-      expect(text).toContain('[TOOL_RESULT]');
-      expect(text).not.toContain('functionResponse');
-      expect(text).not.toContain('tool_result');
-      expect(text).not.toContain('function_call_output');
-      const providerMessages = rendered as any[];
-      expect(providerMessages.some((message) => message.role === 'tool')).toBe(false);
-    }
   });
 });

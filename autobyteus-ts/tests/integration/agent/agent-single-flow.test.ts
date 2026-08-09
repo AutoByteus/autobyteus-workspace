@@ -101,22 +101,14 @@ const runIntegration = hasLmstudioConfig() ? describe : describe.skip;
 
 runIntegration('Agent single-flow integration (LM Studio)', () => {
   let tempDir: string;
-  let originalParserEnv: string | undefined;
 
   beforeEach(async () => {
-    originalParserEnv = process.env.AUTOBYTEUS_STREAM_PARSER;
-    process.env.AUTOBYTEUS_STREAM_PARSER = 'api_tool_call';
     SkillRegistry.getInstance().clear();
     resetFactory();
     tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'autobyteus-agent-'));
   });
 
   afterEach(async () => {
-    if (originalParserEnv === undefined) {
-      delete process.env.AUTOBYTEUS_STREAM_PARSER;
-    } else {
-      process.env.AUTOBYTEUS_STREAM_PARSER = originalParserEnv;
-    }
     SkillRegistry.getInstance().clear();
     resetFactory();
     await fs.rm(tempDir, { recursive: true, force: true });
