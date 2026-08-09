@@ -1,9 +1,10 @@
 import { randomUUID } from 'node:crypto';
 import { CompleteResponse, type ChunkResponse } from '../../llm/utils/response-types.js';
 import { BaseLLM } from '../../llm/base.js';
-import { StreamingResponseHandlerFactory } from '../streaming/handlers/streaming-handler-factory.js';
+import { LlmStreamingResponseHandler } from '../streaming/handlers/llm-streaming-response-handler.js';
 import { SegmentEvent, SegmentType } from '../streaming/segments/segment-events.js';
 import { OpenAIChatRenderer } from '../../llm/prompt-renderers/openai-chat-renderer.js';
+import { ToolSchemaProvider } from '../../tools/usage/providers/tool-schema-provider.js';
 import { LLMRequestAssembler, type RequestPackage } from '../llm-request-assembler.js';
 import { CompactionPreparationError } from '../compaction/compaction-preparation-error.js';
 import { CompactionRuntimeReporter } from '../compaction/compaction-runtime-reporter.js';
@@ -87,18 +88,20 @@ export class LlmPhase {
     }
 
     const toolNames = resolveTurnToolNames(context);
+    const toolCallsEnabled = toolNames.length > 0;
     const provider = llmInstance.model?.provider ?? null;
-    const handlerResult = StreamingResponseHandlerFactory.create({
-      toolNames,
-      provider,
+    const streamingHandler = new LlmStreamingResponseHandler({
       onSegmentEvent: (segmentEvent) => notifier?.notifyAgentSegmentEvent(segmentEvent.toDict()),
-      turnId: activeTurnId
+      turnId: activeTurnId,
+      toolCallsEnabled
     });
-    const streamingHandler = handlerResult.handler;
+    const toolSchemas = toolCallsEnabled
+      ? new ToolSchemaProvider().buildSchema(toolNames, provider)
+      : [];
 
     const streamKwargs: Record<string, any> = { logicalConversationId: agentId };
-    if (handlerResult.toolSchemas) {
-      streamKwargs.tools = handlerResult.toolSchemas;
+    if (toolSchemas.length) {
+      streamKwargs.tools = toolSchemas;
     }
 
     const renderer = (llmInstance as any)._renderer ?? new OpenAIChatRenderer();
@@ -174,16 +177,11 @@ export class LlmPhase {
     try {
       request = await turn.executionScope.runAbortable(
         { kind: 'llm_request_assembly' },
-        () => input.llmRequestMode === 'tool_history_only'
-          ? assembler.prepareToolContinuationRequest(
-              { turnId: activeTurnId, requestId: llmCallId },
-              systemPrompt ?? undefined,
-            )
-          : assembler.prepareRequest(
-              input.llmUserMessage,
-              { turnId: activeTurnId, requestId: llmCallId },
-              systemPrompt ?? undefined,
-            )
+        () => assembler.prepareRequest(
+          input.llmUserMessage,
+          { turnId: activeTurnId, requestId: llmCallId },
+          systemPrompt ?? undefined,
+        )
       );
     } catch (error) {
       if (error instanceof CompactionPreparationError) {
@@ -295,7 +293,7 @@ export class LlmPhase {
         });
       }
 
-      if (toolNames.length) {
+      if (toolCallsEnabled) {
         const toolInvocations = streamingHandler.getAllInvocations();
         if (toolInvocations.length) {
           parsedToolInvocationCount = toolInvocations.length;

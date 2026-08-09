@@ -1,4 +1,3 @@
-import { StreamingResponseHandler } from './streaming-response-handler.js';
 import { SegmentEvent, SegmentEventType, SegmentType } from '../segments/segment-events.js';
 import { WriteFileContentStreamer, EditFileContentStreamer } from '../api-tool-call/file-content-streamer.js';
 import { ToolInvocation } from '../../tool-invocation.js';
@@ -21,28 +20,33 @@ type ToolCallState = {
   nativeToolCallContext?: ProviderNativeToolCallContext;
 };
 
-export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandler {
+export class LlmStreamingResponseHandler {
   private onSegmentEvent?: (event: SegmentEvent) => void;
   private onToolInvocation?: (invocation: ToolInvocation) => void;
   private turnId: string;
   private segmentIdPrefix: string;
+  private readonly toolCallsEnabled: boolean;
   private textSegmentId: string | null = null;
   private activeTools: Map<number, ToolCallState> = new Map();
   private allEvents: SegmentEvent[] = [];
   private allInvocations: ToolInvocation[] = [];
   private isFinalized = false;
 
-  constructor(options?: {
+  constructor(options: {
     onSegmentEvent?: (event: SegmentEvent) => void;
     onToolInvocation?: (invocation: ToolInvocation) => void;
     turnId: string;
     segmentIdPrefix?: string;
+    toolCallsEnabled: boolean;
   }) {
-    super();
-    this.onSegmentEvent = options?.onSegmentEvent;
-    this.onToolInvocation = options?.onToolInvocation;
-    this.turnId = options?.turnId ?? (() => { throw new Error('ApiToolCallStreamingResponseHandler requires turnId.'); })();
-    this.segmentIdPrefix = options?.segmentIdPrefix ?? '';
+    if (!options.turnId) {
+      throw new Error('LlmStreamingResponseHandler requires turnId.');
+    }
+    this.onSegmentEvent = options.onSegmentEvent;
+    this.onToolInvocation = options.onToolInvocation;
+    this.turnId = options.turnId;
+    this.segmentIdPrefix = options.segmentIdPrefix ?? `turn_${randomUUID().replace(/-/g, '')}:`;
+    this.toolCallsEnabled = options.toolCallsEnabled;
   }
 
   private generateId(): string {
@@ -130,7 +134,7 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
       events.push(contentEvent);
     }
 
-    if (chunk.tool_calls) {
+    if (this.toolCallsEnabled && chunk.tool_calls) {
       for (const delta of chunk.tool_calls as ToolCallDelta[]) {
         if (!this.activeTools.has(delta.index)) {
           const segId = delta.call_id ?? this.generateId();
@@ -346,7 +350,7 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
 
     if (this.allInvocations.length) {
       console.info(
-        `ApiToolCallStreamingResponseHandler finalized ${this.allInvocations.length} tool invocations.`
+        `LlmStreamingResponseHandler finalized ${this.allInvocations.length} tool invocations.`
       );
     }
 

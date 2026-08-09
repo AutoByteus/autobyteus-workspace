@@ -176,19 +176,6 @@ export class MemoryManager {
     this.store.add([trace]);
   }
 
-  ingestToolContinuationBoundary(turnId: string, sourceEvent: string, content = 'Tool continuation'): void {
-    const trace = new RawTraceItem({
-      id: `rt_${Date.now()}_tool_continuation`,
-      ts: Date.now() / 1000,
-      turnId,
-      seq: this.nextSeq(turnId),
-      traceType: 'tool_continuation',
-      content,
-      sourceEvent
-    });
-    this.store.add([trace]);
-  }
-
   ensureWorkingContextSystemMessage(content: string, options: WorkingContextAppendOptions = {}): boolean {
     if (!content.trim() || this.getWorkingContextMessages().length) {
       return false;

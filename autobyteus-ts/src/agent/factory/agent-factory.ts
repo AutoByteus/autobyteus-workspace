@@ -17,7 +17,6 @@ import { WorkingContextSnapshotStore } from '../../memory/store/working-context-
 import { FileCompactionLineageStore } from '../../memory/store/file-compaction-lineage-store.js';
 import { WorkingContextSnapshotBootstrapOptions } from '../../memory/restore/working-context-snapshot-bootstrapper.js';
 import { MemoryIngestInputProcessor } from '../input-processor/memory-ingest-input-processor.js';
-import { MemoryIngestToolResultProcessor } from '../tool-execution-result-processor/memory-ingest-tool-result-processor.js';
 import { AgentRuntime } from '../runtime/agent-runtime.js';
 import { registerTools } from '../../tools/register-tools.js';
 import { initializeLogging } from '../../utils/logger.js';
@@ -152,14 +151,6 @@ export class AgentFactory extends Singleton {
     if (!config.inputProcessors.some((processor) => processor instanceof MemoryIngestInputProcessor)) {
       config.inputProcessors.push(new MemoryIngestInputProcessor());
     }
-    if (
-      !config.toolExecutionResultProcessors.some(
-        (processor) => processor instanceof MemoryIngestToolResultProcessor
-      )
-    ) {
-      config.toolExecutionResultProcessors.push(new MemoryIngestToolResultProcessor());
-    }
-
     runtimeState.llmInstance = config.llmInstance;
     runtimeState.toolInstances = this.prepareToolInstances(agentId, config);
 

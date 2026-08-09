@@ -4,43 +4,17 @@ import { ContextFileType } from '../message/context-file-type.js';
 import { AgentInputUserMessage } from '../message/agent-input-user-message.js';
 import { SenderType } from '../sender-type.js';
 import {
-  NATIVE_API_TOOL_CONTINUATION_MODE,
-  TOOL_CONTINUATION_MODE_METADATA_KEY
-} from '../message/tool-continuation-metadata.js';
-import {
   buildToolContinuationDisplayText,
   type CompletedToolContinuationSummary
 } from '../message/tool-continuation-display-text.js';
-import type { AgentContext } from '../context/agent-context.js';
-import type { AgentTurn } from '../agent-turn.js';
 
-export class ToolResultContinuationBuilder {
-  build(
-    processedEvents: ToolResultEvent[],
-    options: { context?: AgentContext | null; turn?: AgentTurn | null } = {}
-  ): AgentInputUserMessage {
-    if (options.context && options.turn) {
-      return this.buildToolHistoryContinuation(processedEvents, options.context, options.turn);
+export class ToolContinuationInputBuilder {
+  build(processedEvents: ToolResultEvent[], turnId: string): AgentInputUserMessage {
+    const normalizedTurnId = turnId.trim();
+    if (!normalizedTurnId) {
+      throw new Error('ToolContinuationInputBuilder requires a non-empty turnId.');
     }
 
-    throw new Error('ToolResultContinuationBuilder requires context and turn for canonical tool-history continuation.');
-  }
-
-  private buildToolHistoryContinuation(
-    processedEvents: ToolResultEvent[],
-    context: AgentContext,
-    turn: AgentTurn
-  ): AgentInputUserMessage {
-    const turnId = this.resolveContinuationTurnId(processedEvents, turn);
-    if (!turnId) {
-      throw new Error(
-        `Agent '${context.agentId}' cannot continue tool results without an active turn or result turnId.`
-      );
-    }
-
-    context.state.memoryManager?.ingestToolResults(processedEvents, turnId, {
-      source: 'native_api_ordered_batch'
-    });
     const contextFiles = this.collectContextFiles(processedEvents);
     const content = buildToolContinuationDisplayText(this.buildDisplayTextSummaries(processedEvents));
 
@@ -49,20 +23,10 @@ export class ToolResultContinuationBuilder {
       SenderType.TOOL,
       contextFiles.length > 0 ? contextFiles : null,
       {
-        [TOOL_CONTINUATION_MODE_METADATA_KEY]: NATIVE_API_TOOL_CONTINUATION_MODE,
-        turn_id: turnId,
+        turn_id: normalizedTurnId,
         tool_result_count: processedEvents.length
       }
     );
-  }
-
-  private resolveContinuationTurnId(processedEvents: ToolResultEvent[], turn: AgentTurn): string | null {
-    for (const processedEvent of processedEvents) {
-      if (typeof processedEvent.turnId === 'string' && processedEvent.turnId.trim().length > 0) {
-        return processedEvent.turnId.trim();
-      }
-    }
-    return turn.turnId ?? null;
   }
 
   private buildDisplayTextSummaries(processedEvents: ToolResultEvent[]): CompletedToolContinuationSummary[] {
