@@ -13,7 +13,7 @@
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/architecture-review-revision-record.md`
 - Triggering rework report, revision record, or evidence:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/code-review-report.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/code-review-revision-record.md` (`CRR-001`)
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/code-review-revision-record.md` (`CRR-001`, `CRR-002`)
 
 ## Current Implementation Summary
 
@@ -21,18 +21,18 @@ The implementation replaces multiplied presentation work with the reviewed share
 
 Standalone and team frontend dispatch now share one generic projector. Handlers report actual conversation, Event Monitor, and navigation effects; the Event Monitor coordinator uses explicit reset/prime/commit lifecycle operations. Run history owns an indexed navigation projection with completed stable/transient execution rows and cached focus. Task-agent ensure/repair is mutation-bearing in the task router, `TeamStreamingService` commits the required mutation before every outcome, and member resolution is read-only. Workspace navigation consumes the completed projection instead of rebuilding from live contexts.
 
-IR-002 closes CRR-001's six bounded implementation findings without changing SR-004 boundaries: server controls receive deep-cloned/frozen snapshots; terminal status presentation preserves simultaneous activity; local submissions apply exact summary/activity effects; root team lifecycle snapshots no-op or exact-patch by actual change; unchanged per-workspace team buckets retain identity; and team replacement primes Event Monitor exactly once after activity hydration.
+IR-003 retains the resolved CR-001–CR-006 corrections and closes CRR-002's three lifecycle-order findings without changing SR-004 boundaries: standalone/team failure cleanup establishes Error before failure navigation; new/restored teams establish active source state before cached-root publication; and every final team member context, including preserved subscribed live members, receives one idempotent final Event Monitor prime after any required activity hydration.
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002`
+- Current implementation revision ID: `IR-003`
 - Related solution revision IDs: `SR-004`
 - Related architecture-review revision IDs: `ARCH-REV-004`
-- Related code-review revision IDs: `CRR-001`
+- Related code-review revision IDs: `CRR-001`, `CRR-002`
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `CR-001–CR-006`
-- Development source commit: `21c85e91e355c71d643cab61fa8d24acf9dc78dd`
+- Triggering finding IDs: `CR-007–CR-009` (`CR-001–CR-006` remain resolved)
+- Development source commit: `145f7de4dc3cfca138cc022b0a7f4370077b891a`
 
 ## Reviewed Behavior Implementation Trace
 
@@ -41,9 +41,9 @@ IR-002 closes CRR-001's six bounded implementation findings without changing SR-
 | BEH-001 | Keep microphone/device semantics unchanged while removing multiplied background projection work. | Shared frontend projector/effects and cached navigation paths; existing voice owners unchanged. | Implemented structural contention correction; real aggregate fake-media and Electron timing remain downstream. |
 | BEH-002 | Keep paste/upload/file/panel contracts unchanged while bounding background work. | Shared projector, Event Monitor coordinator, indexed run-history projection; existing attachment/file owners unchanged. | Implemented structural contention correction; aggregate browser/Electron latency remains downstream. |
 | BEH-003 | Preserve all active subscriptions and exact live hierarchy, including first ordinary task-agent messages. | `teamTaskExecutionEventRouter.ts`, `teamTaskAgentContextProjection.ts`, `TeamStreamingService.ts`, read-only `teamStreamMemberContextResolver.ts`, run-history execution rows. | First status/content, repair, no-op, generic-status coordination, offline cleanup, and bounded build/patch paths are covered. |
-| BEH-004 | Use one generic standalone/team projector with actual mutation effects. | `agentStreamMessageProjector.ts`, `agentStreamMutationEffects.ts`, `localUserSubmission.ts`, `AgentStreamingService.ts`, `TeamStreamingService.ts`, handler result conversions. | Combined presentation/activity survives effect merging and applies in one exact patch. Standalone/team local submission, attachment, and failure mutations apply exact summary/activity effects; equal attachment replacement is a no-op. |
-| BEH-005 | Make recent Event Monitor work effect-driven with explicit lifecycle baselines. | `recentEventMonitorMutationCoordinator.ts` plus context/store/open/hydration/submission callers. | Old before/after witness API removed; reset/prime/commit covers create, replace, hydrate, promote, task, and removal lifecycles. Team replacement now primes once, after final activity hydration. |
-| BEH-006 | Cache/index navigation once per relevant change and publish completed stable/transient rows and focus. | `runHistoryNavigationProjection.ts`, `runHistoryNavigationPatches.ts`, `runHistoryNavigationStoreActions.ts`, `runHistoryTeamExecutionRows.ts`, `runHistoryStore.ts`, workspace history components/composables. | Component/live-context builder path removed; detail-only task changes stay out of navigation; root team lifecycle and local/status presentation use exact patches; equal workspace branches and per-workspace team buckets retain identity. |
+| BEH-004 | Use one generic standalone/team projector with actual mutation effects. | `agentStreamMessageProjector.ts`, `agentStreamMutationEffects.ts`, `localUserSubmission.ts`, `AgentStreamingService.ts`, `TeamStreamingService.ts`, handler result conversions and run-store callers. | Combined presentation/activity survives effect merging and applies in one exact patch. Standalone/team local submission, attachment, and failure mutations apply exact summary/activity effects; failure callers establish authoritative Error first and equal attachment replacement is a no-op. |
+| BEH-005 | Make recent Event Monitor work effect-driven with explicit lifecycle baselines. | `recentEventMonitorMutationCoordinator.ts` plus context/store/open/hydration/submission callers. | Old before/after witness API removed; reset/prime/commit covers create, replace, hydrate, promote, task, reuse, and removal lifecycles. New/replaced contexts prime once after activity hydration; preserved subscribed live contexts are not reset and receive the required idempotent final prime. |
+| BEH-006 | Cache/index navigation once per relevant change and publish completed stable/transient rows and focus. | `runHistoryNavigationProjection.ts`, `runHistoryNavigationPatches.ts`, `runHistoryNavigationStoreActions.ts`, `runHistoryTeamExecutionRows.ts`, `runHistoryStore.ts`, team activation callers, and workspace history components/composables. | Component/live-context builder path removed; detail-only task changes stay out of navigation; root team lifecycle and local/status presentation use exact patches; new/restored team source state is active before its topology publication; equal workspace branches and per-workspace team buckets retain identity. |
 | BEH-007 | Suppress only exact redundant UI status projections after identity enrichment. | `agent-status-projection-identity.ts`, `agent-status-transition-filter.ts`, shared egress composition and focused server unit coverage. | Initial/changed statuses forward, identities remain isolated, malformed/unkeyable payloads fail open, and filter state is per connection. Canonical runtime publishers were not changed. |
 | BEH-008 | Preserve the configurable/default 500 ms cadence, lossless ordering/flush rules, wire shape, and progressive rich Markdown. | `agent-stream-content-cadence-scheduler.ts`, `stream-content-coalescing.ts`, `agent-stream-websocket-egress.ts`; existing frontend rich-render path unchanged. | Existing cadence/flush unit cases pass. No frontend timer, content downgrade, or protocol envelope was added. |
 | BEH-009 | Provide one typed composition point for a bounded filter or observer. | `agent-stream-egress-control.ts`, `agent-stream-egress-control-composition.ts`, `AgentStreamWebSocketEgress`. | Control inputs are deep-cloned/frozen snapshots. Nested observer/filter mutation attempts fail and cannot alter identity, scheduling, or delivered bytes; order, exception isolation, sink behavior, and disposal remain covered. |
@@ -125,6 +125,9 @@ IR-002 closes CRR-001's six bounded implementation findings without changing SR-
 - IR-002 frontend affected-path checks:
   - Broad affected projection/Event Monitor/navigation set: **Pass — 37 files / 401 tests**.
   - Final post-edit focused service/submission/open/navigation/store set: **Pass — 9 files / 192 tests**.
+- IR-003 frontend affected-path check:
+  - `pnpm test:nuxt --run` across `TeamStreamingService`, shared projector, local submission, team open, standalone/team run stores, navigation projection, and run-history store.
+  - Result: **Pass — 8 files / 161 tests**.
 - Frontend boundary guards:
   - `pnpm guard:web-boundary` → **Pass**.
   - `pnpm guard:localization-boundary` → **Pass**.
@@ -153,13 +156,13 @@ IR-002 closes CRR-001's six bounded implementation findings without changing SR-
   - Collapsing the definition removed descendant rows from the DOM; re-expansion restored both exact transient rows and focus.
   - Mobile showed history, running surface, and transient rows with document/body width equal to the `390 px` viewport (no horizontal overflow).
 - Visual or interaction issues found and corrected: Stable parents initially lacked descendant disclosure because `hasChildren` was derived only from stable children. The relocated execution-row composer was corrected to infer a child from the next live row's greater depth, and focused/component coverage was updated. Fixture navigation contracts were also completed before the final rendered pass.
-- Supporting evidence and remaining unverified states or limitations: Local inspection output is `/tmp/background-render-inspection.json`; screenshots are `/tmp/background-render-desktop.png` and `/tmp/background-render-mobile.png`. IR-002 changes state/effect/egress behavior only and does not change component markup, styling, or layout, so the IR-001 real-component rendered inspection remains authoritative for the current rendered surface. This was an implementation feedback loop, not API/E2E sign-off. Aggregate sustained traffic, collapsed nested task teams, paste/fake-media latency, and Electron behavior remain downstream.
+- Supporting evidence and remaining unverified states or limitations: Local inspection output is `/tmp/background-render-inspection.json`; screenshots are `/tmp/background-render-desktop.png` and `/tmp/background-render-mobile.png`. IR-002 and IR-003 change state/effect/egress sequencing only and do not change component markup, styling, or layout, so the IR-001 real-component rendered inspection remains authoritative for the current rendered surface. This was an implementation feedback loop, not API/E2E sign-off. Aggregate sustained traffic, collapsed nested task teams, paste/fake-media latency, and Electron behavior remain downstream.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
 1. Run the exact retained WebSocket regression first, then prove initial/changed/repeated status behavior across standalone, stable team member, task agent, task-team root/child, interleaved identity, reconnect, malformed fail-open, terminal flush, and canonical subscriber preservation.
 2. Exercise collapsed and unfocused live teams through first task-agent status/content, reparent/repair, task-team nesting, cleanup/fallback focus, then expand/reselect and assert exact stable/transient order, depth, disclosure, current status, and focus.
-3. Assert zero navigation build/patch for background content, connection, token, unchanged status/root-lifecycle snapshots, and right-pane task-detail bursts; assert exact summary/activity after standalone/team local submission and combined terminal status/activity; assert at most one topology build plus a necessary exact status patch for supported first-message/offline paths.
+3. Assert zero navigation build/patch for background content, connection, token, unchanged status/root-lifecycle snapshots, and right-pane task-detail bursts; assert exact Error/summary/activity after standalone/team local failure and combined terminal status/activity; prove new/restored team roots publish active before equal initial lifecycle; assert at most one topology build plus a necessary exact status patch for supported first-message/offline paths.
 4. Verify recent Event Monitor latest-100 correctness after create/reuse/replacement/hydration/promotion/task/removal lifecycles and that no-effect/content-only inputs avoid full retention work.
 5. Run the approved one-run and aggregate twenty-background-run browser responsiveness probes for file/panel, paste placeholder, and fake-media microphone timings, then finish with real Electron voice/file smoke evidence.
 6. Confirm ordered accumulated content/tools/lifecycle/status after sustained background traffic and preserve progressive rich Markdown at the configured/default 500 ms cadence.

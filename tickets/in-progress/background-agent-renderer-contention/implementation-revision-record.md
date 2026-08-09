@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | `architecture_reviewer` / `design-review-report.md` / ARCH-REV-004 handoff | N/A | `Initial Baseline` | `SR-004`, `ARCH-REV-004`; `CRR N/A`, `API-REV N/A`, `DR N/A` | Shared egress, explicit projection effects, Event Monitor lifecycle, and indexed navigation implementation complete; ready for source review |
 | IR-002 | `code_reviewer` / `code-review-report.md` / CRR-001 | `CR-001–CR-006` | `Local Fix` | `SR-004`, `ARCH-REV-004`, `CRR-001`; `API-REV N/A`, `DR N/A` | Six bounded source/test findings corrected and locally validated; ready for complete source re-review |
+| IR-003 | `code_reviewer` / `code-review-report.md` / CRR-002 | `CR-007–CR-009` | `Local Fix` | `SR-004`, `ARCH-REV-004`, `CRR-002`; `API-REV N/A`, `DR N/A` | Three caller/lifecycle ordering defects corrected and locally validated; ready for complete source re-review |
 
 ## Revision Entries
 
@@ -78,3 +79,33 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 - Development source commit: `21c85e91e355c71d643cab61fa8d24acf9dc78dd`.
 - Next recipient or routing: `code_reviewer` for complete source re-review before API/E2E resumes.
 - Remaining limitations or risks: No new implementation limitation was introduced. Realistic aggregate performance, retained WebSocket/API/browser/Electron coverage, and delivery-owned branch refresh/docs synchronization remain with their downstream owners after source review passes.
+
+### IR-003 — Failure, Activation, And Reuse Ordering
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/code-review-report.md`; `CRR-002` full source re-review of IR-002.
+- Triggering finding IDs: `CR-007–CR-009` (`CR-001–CR-006` remain resolved).
+- Classification: `Local Fix`.
+- Prior authoritative result: `CRR-002 — Fail / Local Fix — 9.17/10 (91.7/100)`; API/E2E must remain paused.
+- Current authoritative result: All three CRR-002 implementation-owned lifecycle-order findings are corrected at source and caller-focused-unit scope; the cumulative package is ready for complete source re-review.
+- Related solution revision IDs: `SR-004`.
+- Related architecture-review revision IDs: `ARCH-REV-004`.
+- Related code-review revision IDs: `CRR-002`.
+- Related API/E2E revision IDs: `N/A`.
+- Related delivery revision IDs: `N/A`.
+- Why this implementation revision is recorded: Closes the remaining ordering gaps between authoritative runtime state, cached navigation publication, and final Event Monitor baseline establishment without adding another owner or changing protocol/persistence.
+- Approved behavior or requirement IDs affected: `BEH-004–BEH-006`; `FR-002`, `FR-003`; `AC-002`, `AC-003`, `AC-007`; `DS-006`.
+- Implementation delta:
+  - `CR-007`: both standalone and team failure callers now apply terminal Error cleanup before `failLocalSubmission`, so its exact failure navigation patch reads the authoritative Error status while preserving first-user summary and failure activity.
+  - `CR-008`: `sendMessageToFocusedMember` resolves the final team context and sets `isActive=true` before `markTeamAsActive` rebuilds cached navigation; new/restored caller tests verify active publication and the later equal active lifecycle snapshot no-ops.
+  - `CR-009`: team-open separates activity-hydration membership from final-baseline membership, hydrates only new/replaced live members, then primes every final context once; preserved subscribed contexts are primed idempotently without reset.
+- Changed files or areas: `agentRunStore.ts`, `agentTeamRunStore.ts`, `teamRunOpenCoordinator.ts`, their caller/lifecycle unit suites, and the retained CRR-002 review artifacts.
+- Local validation and result:
+  - CRR-002 affected frontend matrix: **8 files / 161 tests pass**;
+  - direct three-file caller/open subset: **3 files / 45 tests pass**;
+  - web/localization boundary guards and lifecycle-order/static scans: **pass**;
+  - frontend repository typecheck remains at the recorded baseline **220 diagnostics**, with **zero diagnostics on changed frontend paths**;
+  - current IR-003 and full task-range `git diff --check`: **pass**;
+  - every changed production implementation file is `<= 500` effective non-empty lines.
+- Development source commit: `145f7de4dc3cfca138cc022b0a7f4370077b891a`.
+- Next recipient or routing: `code_reviewer` for complete source re-review before API/E2E resumes.
+- Remaining limitations or risks: No new implementation limitation was introduced. Realistic aggregate performance and WebSocket/API/browser/Electron coverage remain downstream after source review passes; delivery still owns base refresh and durable docs synchronization.
