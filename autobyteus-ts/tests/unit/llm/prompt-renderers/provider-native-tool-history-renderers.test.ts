@@ -11,7 +11,7 @@ import { OllamaPromptRenderer } from '../../../../src/llm/prompt-renderers/ollam
 import { AnthropicPromptRenderer } from '../../../../src/llm/prompt-renderers/anthropic-prompt-renderer.js';
 import { MistralPromptRenderer } from '../../../../src/llm/prompt-renderers/mistral-prompt-renderer.js';
 import { OpenAIResponsesRenderer } from '../../../../src/llm/prompt-renderers/openai-responses-renderer.js';
-import { ApiToolCallStreamingResponseHandler } from '../../../../src/agent/streaming/handlers/api-tool-call-streaming-response-handler.js';
+import { LlmStreamingResponseHandler } from '../../../../src/agent/streaming/handlers/llm-streaming-response-handler.js';
 import { ChunkResponse } from '../../../../src/llm/utils/response-types.js';
 import type { ProviderNativeToolCallContext } from '../../../../src/llm/utils/tool-call-delta.js';
 
@@ -55,7 +55,7 @@ const assistantToolMessageFromStream = (
   nativeContext: ProviderNativeToolCallContext,
   argumentsDelta = '{"query":"abc"}'
 ) => {
-  const handler = new ApiToolCallStreamingResponseHandler({ turnId: 'turn_stream' });
+  const handler = new LlmStreamingResponseHandler({ turnId: 'turn_stream', toolCallsEnabled: true });
   handler.feed(new ChunkResponse({
     content: '',
     tool_calls: [{

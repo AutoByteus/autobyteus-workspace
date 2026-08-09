@@ -43,7 +43,6 @@ describe('MemoryIngestInputProcessor', () => {
     const processor = new MemoryIngestInputProcessor();
     const memoryManager = {
       ingestUserMessage: vi.fn(),
-      ingestToolContinuationBoundary: vi.fn(),
     };
     context.state.memoryManager = memoryManager as any;
     context.state.activeTurn = { turnId: 'turn_0001' } as any;
@@ -57,15 +56,13 @@ describe('MemoryIngestInputProcessor', () => {
       'turn_0001',
       'LLMUserMessageReadyEvent'
     );
-    expect(memoryManager.ingestToolContinuationBoundary).not.toHaveBeenCalled();
   });
 
-  it('persists a lightweight tool continuation boundary for TOOL-originated input', async () => {
+  it('keeps TOOL-originated input in the processor lifecycle without a memory write', async () => {
     const context = makeContext();
     const processor = new MemoryIngestInputProcessor();
     const memoryManager = {
       ingestUserMessage: vi.fn(),
-      ingestToolContinuationBoundary: vi.fn(),
     };
     context.state.memoryManager = memoryManager as any;
     context.state.activeTurn = { turnId: 'turn_existing' } as any;
@@ -75,11 +72,7 @@ describe('MemoryIngestInputProcessor', () => {
 
     expect(result).toBe(message);
     expect(memoryManager.ingestUserMessage).not.toHaveBeenCalled();
-    expect(memoryManager.ingestToolContinuationBoundary).toHaveBeenCalledWith(
-      'turn_existing',
-      'ToolContinuationInput',
-      'Tool continuation'
-    );
+    expect(Object.keys(memoryManager)).toEqual(['ingestUserMessage']);
   });
 
   it('fails when TOOL continuation input reaches memory ingest without an active turn', async () => {
@@ -87,7 +80,6 @@ describe('MemoryIngestInputProcessor', () => {
     const processor = new MemoryIngestInputProcessor();
     context.state.memoryManager = {
       ingestUserMessage: vi.fn(),
-      ingestToolContinuationBoundary: vi.fn(),
     } as any;
 
     await expect(

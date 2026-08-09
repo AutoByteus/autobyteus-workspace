@@ -41,7 +41,7 @@ describe('memory-to-render tool continuation reasoning spine', () => {
       const defaultRequest = await new LLMRequestAssembler(
         manager,
         new OpenAIChatRenderer()
-      ).prepareToolContinuationRequest({ turnId, requestId: `${turnId}:llm:1` });
+      ).prepareRequest(null, { turnId, requestId: `${turnId}:llm:1` });
       const defaultRendered = defaultRequest.renderedPayload as any[];
 
       expect(defaultRendered[0]).toMatchObject({
@@ -63,7 +63,7 @@ describe('memory-to-render tool continuation reasoning spine', () => {
       const deepSeekRequest = await new LLMRequestAssembler(
         manager,
         new DeepSeekChatRenderer()
-      ).prepareToolContinuationRequest({ turnId, requestId: `${turnId}:llm:2` });
+      ).prepareRequest(null, { turnId, requestId: `${turnId}:llm:2` });
       const deepSeekRendered = deepSeekRequest.renderedPayload as any[];
 
       expect(deepSeekRendered[0]).toMatchObject({

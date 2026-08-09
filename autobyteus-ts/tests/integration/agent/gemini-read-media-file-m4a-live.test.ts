@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { AgentTurn } from '../../../src/agent/agent-turn.js';
 import { ToolResultEvent } from '../../../src/agent/events/agent-events.js';
 import { LLMRequestAssembler } from '../../../src/agent/llm-request-assembler.js';
-import { ToolResultContinuationBuilder } from '../../../src/agent/loop/tool-result-continuation-builder.js';
+import { ToolContinuationInputBuilder } from '../../../src/agent/loop/tool-continuation-input-builder.js';
 import { ContextFile } from '../../../src/agent/message/context-file.js';
 import { ContextFileType } from '../../../src/agent/message/context-file-type.js';
 import { AgentInputPipeline } from '../../../src/agent/pipelines/agent-input-pipeline.js';
@@ -119,7 +119,7 @@ runLiveM4aIntegration('Gemini read_media_file .m4a live integration (env gated)'
       assistantContent: 'I will read the requested audio file.'
     });
 
-    const continuation = new ToolResultContinuationBuilder().build([
+    const results = [
       new ToolResultEvent(
         'read_media_file',
         contextFile,
@@ -128,18 +128,22 @@ runLiveM4aIntegration('Gemini read_media_file .m4a live integration (env gated)'
         { file_path: 'test_audio.m4a' },
         turn.turnId
       )
-    ], { context, turn });
+    ];
+    memoryManager.ingestToolResults(results, turn.turnId, {
+      source: 'native_api_ordered_batch',
+    });
+    const continuation = new ToolContinuationInputBuilder().build(results, turn.turnId);
 
     const pipelineResult = await new AgentInputPipeline().processToolContinuation(continuation, context, turn);
-    expect(pipelineResult.llmRequestMode).toBe('append_user_message');
-    expect(pipelineResult.llmUserMessage.audio_urls).toEqual([workspaceAudioPath]);
+    expect(pipelineResult.llmUserMessage).not.toBeNull();
+    expect(pipelineResult.llmUserMessage?.audio_urls).toEqual([workspaceAudioPath]);
 
     const request = await new LLMRequestAssembler(
       memoryManager,
       new GeminiPromptRenderer()
     ).prepareRequest(
       pipelineResult.llmUserMessage,
-      turn.turnId,
+      { turnId: turn.turnId, requestId: `${turn.turnId}:llm:1` },
       'You are validating direct Gemini audio input. Follow the user transcription instruction.'
     );
 

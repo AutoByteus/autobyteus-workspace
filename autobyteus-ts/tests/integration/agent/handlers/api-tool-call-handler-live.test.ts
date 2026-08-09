@@ -3,7 +3,7 @@ import { OpenAILLM } from '../../../../src/llm/api/openai-llm.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMUserMessage } from '../../../../src/llm/user-message.js';
-import { ApiToolCallStreamingResponseHandler } from '../../../../src/agent/streaming/handlers/api-tool-call-streaming-response-handler.js';
+import { LlmStreamingResponseHandler } from '../../../../src/agent/streaming/handlers/llm-streaming-response-handler.js';
 import { SegmentEventType } from '../../../../src/agent/streaming/segments/segment-events.js';
 import { defaultToolRegistry, ToolRegistry } from '../../../../src/tools/registry/tool-registry.js';
 import { ToolDefinition } from '../../../../src/tools/registry/tool-definition.js';
@@ -20,7 +20,7 @@ const resetRegistry = () => {
   registerWriteFileTool();
 };
 
-runIntegration('ApiToolCallStreamingResponseHandler (OpenAI live)', () => {
+runIntegration('LlmStreamingResponseHandler (OpenAI live)', () => {
   it('processes tool call stream into invocations', async () => {
     resetRegistry();
     const toolDef = defaultToolRegistry.getToolDefinition('write_file');
@@ -37,8 +37,9 @@ runIntegration('ApiToolCallStreamingResponseHandler (OpenAI live)', () => {
     }));
 
     const events: any[] = [];
-    const handler = new ApiToolCallStreamingResponseHandler({
+    const handler = new LlmStreamingResponseHandler({
       turnId: TURN_ID,
+      toolCallsEnabled: true,
       onSegmentEvent: (event) => events.push(event)
     });
 

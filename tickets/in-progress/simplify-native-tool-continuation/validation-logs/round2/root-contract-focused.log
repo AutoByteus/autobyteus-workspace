@@ -1,0 +1,52 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/autobyteus-ts
+
+stdout | tests/unit/legacy-tool-calling-public-surfaces-removed.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+·x·································
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/legacy-tool-calling-public-surfaces-removed.test.ts > simplified native tool-loop public surface > exports the retained native stream, schema, segment, and custom processor contracts from the root package
+AssertionError: expected { …(284), …(1) } to match object { …(5) }
+(786 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "BaseToolExecutionResultProcessor": [Function BaseToolExecutionResultProcessor],
+    "LlmStreamingResponseHandler": [Function LlmStreamingResponseHandler],
+    "SegmentEvent": [Function SegmentEvent],
+    "ToolExecutionResultProcessorRegistry": [Function ToolExecutionResultProcessorRegistry],
+-   "ToolSchemaProvider": [Function ToolSchemaProvider],
+  }
+
+ ❯ tests/unit/legacy-tool-calling-public-surfaces-removed.test.ts:25:23
+     23|
+     24|   it('exports the retained native stream, schema, segment, and custom …
+     25|     expect(publicApi).toMatchObject({
+       |                       ^
+     26|       LlmStreamingResponseHandler,
+     27|       ToolSchemaProvider,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 34 passed (35)
+   Start at  13:46:22
+   Duration  2.39s (transform 1.34s, setup 22ms, import 2.24s, tests 14ms, environment 0ms)

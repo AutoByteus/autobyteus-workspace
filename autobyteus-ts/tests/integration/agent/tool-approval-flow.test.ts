@@ -149,6 +149,10 @@ const runToolPhaseForApprovalTest = async (
       await applyEventAndDeriveStatus(processed, fixture.agent.context);
     }
 
+    memoryManager.ingestToolResults(processedResults, turn.turnId, {
+      source: 'native_api_ordered_batch'
+    });
+
     return processedResults;
   } catch (error) {
     outcome = { kind: 'failed', turnId: turn.turnId, error };
@@ -258,11 +262,13 @@ describe('Tool approval integration flow', () => {
     expect(result).toBeDefined();
     expect(result).toHaveProperty('tool_result');
     expect(result).toHaveProperty('tool_error', null);
-    expect(result).not.toHaveProperty('tool_name');
-    expect(result).not.toHaveProperty('tool_args');
+    expect(result).toMatchObject({
+      tool_name: 'write_file',
+      tool_args: { path: finalPath, content }
+    });
 
     const rawJsonl = await readRawTraceText(fixture.memoryDir, fixture.agent.agentId);
-    expect(rawJsonl.split(content)).toHaveLength(2);
+    expect(rawJsonl.split(content)).toHaveLength(3);
   });
 
   it('executes read_file after approval and records tool output', async () => {
@@ -312,8 +318,10 @@ describe('Tool approval integration flow', () => {
         String(trace.tool_result ?? '').includes('1: line1')
     );
     expect(lastToolTrace).toBeDefined();
-    expect(lastToolTrace).not.toHaveProperty('tool_name');
-    expect(lastToolTrace).not.toHaveProperty('tool_args');
+    expect(lastToolTrace).toMatchObject({
+      tool_name: 'read_file',
+      tool_args: expect.objectContaining({ path: targetPath })
+    });
     expect(traces.find(
       (trace) => trace.trace_type === 'tool_call' && trace.tool_call_id === invocationId
     )).toMatchObject({
