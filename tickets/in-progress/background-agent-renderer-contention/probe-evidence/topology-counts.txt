@@ -64,7 +64,7 @@ To update your account to use zsh, please run `chsh
  -s /bin/zsh`.
 For more details, please visit https://support.appl
 e.com/kb/HT208050.
-~ $  
+~ $
 Expanded team list capture
 Agents
 Agent Teams
@@ -197,4 +197,4 @@ To update your account to use zsh, please run `chsh
  -s /bin/zsh`.
 For more details, please visit https://support.appl
 e.com/kb/HT208050.
-~ $  
+~ $

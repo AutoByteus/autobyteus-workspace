@@ -27,4 +27,3 @@ BACKGROUND_CONTENTION_PROBE={"environment":"Vitest/Node current-source lower-bou
       Tests  1 passed (1)
    Start at  22:18:27
    Duration  13.66s (transform 3.40s, setup 6.06s, collect 33ms, tests 6.84s, environment 225ms, prepare 177ms)
-
