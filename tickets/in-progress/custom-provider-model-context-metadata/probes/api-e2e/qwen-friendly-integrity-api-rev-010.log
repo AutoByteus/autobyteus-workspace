@@ -1,0 +1,37 @@
+$ git diff --check
+PASS: git diff --check
+$ git ls-files -u
+PASS: no unmerged paths
+$ temporary probe cleanup
+PASS: temporary page/scripts removed and owned port 3138 free
+$ actual embedded backend preservation
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 31475 normy   31u  IPv4 0xc7bc8fba3a7d5e65      0t0  TCP *:29695 (LISTEN)
+PASS: user-running Electron backend remains available and was not stopped
+$ current label/selector/wire owners
+12:const isQwenModel = (model: ModelSelectionLabelModel): boolean =>
+24:  const normalizedName = model.name?.trim()
+26:  if (isCustomOpenAiCompatibleModel(model) && normalizedName) {
+27:    return normalizedName
+30:  if (isQwenModel(model) && normalizedName) {
+31:    return normalizedName
+38:  return normalizedName || model.modelIdentifier
+138:        id: model.modelIdentifier,
+179:    activeLaunchPreset.value.llmModelIdentifier = value;
+126:      model: this.model.value,
+154:      model: this.model.value,
+PASS: friendly label, exact selector, and exact wire owners remain distinct
+$ retained evidence secret-shape scan
+PASS: no secret-shaped values in retained API-REV-010 JSON evidence
+$ IR-013 production/durable diff inventory
+autobyteus-web/components/settings/providerApiKey/__tests__/ProviderModelBrowser.spec.ts
+autobyteus-web/composables/messaging-binding-flow/__tests__/launch-preset-model-selection.spec.ts
+autobyteus-web/utils/__tests__/modelSelectionLabel.spec.ts
+autobyteus-web/utils/modelSelectionLabel.ts
+$ final canonical-artifact and cleanup verification
+PASS: API-REV-010 canonical artifacts/evidence are complete; diff clean; no owned runtime residue
+$ current modified production/durable source paths
+autobyteus-web/components/settings/providerApiKey/__tests__/ProviderModelBrowser.spec.ts
+autobyteus-web/composables/messaging-binding-flow/__tests__/launch-preset-model-selection.spec.ts
+autobyteus-web/utils/__tests__/modelSelectionLabel.spec.ts
+autobyteus-web/utils/modelSelectionLabel.ts

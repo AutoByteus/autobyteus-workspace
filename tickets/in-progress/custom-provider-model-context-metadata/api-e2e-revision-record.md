@@ -12,6 +12,8 @@
 | API-REV-006 | `code_reviewer` CRR-012; fresh SR-016 readable-identity round `6` | `SR-016`, `ARCH-REV-010`, `IR-010`, `CRR-012`, `API-REV-005` | `Pass` / `96.4%`, historical for readable identity | `Pass` / `96.4%`, pending proportional review |
 | API-REV-007 | `code_reviewer` CRR-013 `TR-004`; corrective round `7` | `API-REV-006`, `CRR-013`, `SR-016`, `AC-019` | Execution `Pass / 96.4%`; proportional review `Fail` | `Pass / 96.4%`, pending proportional re-review |
 | API-REV-008 | `code_reviewer` CRR-016; integrated AppConfig/Qwen round `8` | `DR-006`, `IR-011`–`IR-012`, `CRR-015`–`CRR-016`, `SR-016` | Pre-integration `Pass / 96.4%`; current merge not authorized | Integrated `Pass / 96.9%` |
+| API-REV-009 | User-reported Qwen prefix; targeted DR-009 live round `9` | `API-REV-008`, `CRR-017`, `DR-009`, `REQ-007`, `AC-010` | Full-ticket `Pass / 96.9%`; current display explanation incomplete | Targeted `Pass`; full-ticket confidence remains `96.9%` |
+| API-REV-010 | `code_reviewer` CRR-019; current SR-017 friendly-Qwen round `10` | `SR-017`, `ARCH-REV-011`, `IR-013`, `CRR-019`, `API-REV-009` | Targeted old-label `Pass`; visible expectation superseded | `Pass / 97.3%` |
 
 ## Revision Entries
 
@@ -255,3 +257,76 @@ None was carried into API-REV-006. During execution, a combined E2E run exposed 
 - Proportional durable-test review: expected `Not Applicable` because no API-REV-008 durable test changed; the separate determination is still required by workflow.
 - Recommended recipient: `code_reviewer`; on Pass/N/A, route to `delivery_engineer` for another fresh tracked-base refresh.
 - Remaining risks: real Alibaba availability, credentials, quota, region, TLS, and payload drift; literal recent-RUNNING wait; arbitrary interruption timing; approved cleanup-orphan/stale-selector boundaries; POSIX-only permission semantics; delivery base divergence; known package-wide typecheck configuration limitations.
+
+### API-REV-009 — Reproduce and explain visible Qwen selector prefixes on DR-009
+
+- Triggering role, report path, and round: user report during hands-on testing of delivery build DR-009; canonical coverage investigation and execution report; targeted round `9`.
+- Triggering scenario: `QW-LABEL-009`. The Electron Settings screen visibly lists `qwen:deepseek-v4-pro`, `qwen:deepseek-v4-flash-0731`, and `qwen:glm-5.2`; the user requested direct reproduction with the running Electron backend and an explanation.
+- Related revisions: `API-REV-008`; `CRR-017` Not Applicable durable-test review; `DR-009` v1.4.46 build at `331ff94da3c2c9a2a07e11efff68f5307a4cfabb`; current `REQ-007` and `AC-010`.
+- Investigation decision: the approved contract deliberately distinguishes a collision-safe `modelIdentifier`, friendly `name`, and exact provider `value`. The `qwen:` selectors are not endpoint profiles or values sent to Alibaba. They disambiguate Qwen-served DeepSeek/GLM offerings from the direct DeepSeek/GLM providers, which own the same wire values.
+- Live execution:
+  - queried the user's already-running packaged backend process at `http://127.0.0.1:29695/graphql` and captured all six Qwen triples;
+  - started current Nuxt on owned port `3137` with that embedded backend as its backend;
+  - used real headless Google Chrome to open Settings/Qwen and reproduced the exact three prefixed visible labels, with no friendly aliases shown;
+  - observed only successful read-only `GetProviderSettings`, `GetGeminiSetupConfig`, and `GetQwenSetupStatus` operations and no browser console error;
+  - traced `ProviderModelBrowser` to the default-runtime selection-label helper, which intentionally chooses `modelIdentifier`;
+  - traced outbound OpenAI-compatible request construction to `model: this.model.value`; API-REV-008's retained Qwen lifecycle E2E directly observed `deepseek-v4-pro` and `glm-5.2` on the provider wire.
+- Durable coverage delta: `None`. No production or repository test file changed.
+- Cleanup: the owned Chrome instance and Nuxt process were stopped, the temporary probe was removed, port 3137 is free, and the user's Electron/backend remained running on 29695. No mutation or user-data change was performed.
+- Classification: `No defect against current approved behavior`. If the desired UI should show `DeepSeek V4 Pro (Qwen)` while storing `qwen:deepseek-v4-pro`, that is a presentation requirement change rather than a routing fix.
+- Canonical artifacts updated:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-execution-coverage-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-revision-record.md`
+- Evidence:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/probes/api-e2e/qwen-prefix-electron-backend-api-rev-009.json`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/probes/api-e2e/qwen-prefix-browser-evidence-api-rev-009.json`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/probes/api-e2e/qwen-prefix-live-electron-backend-api-rev-009.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/probes/api-e2e/qwen-prefix-integrity-api-rev-009.log`
+- Prior result and confidence: API-REV-008 full-ticket `Pass / 96.9%`.
+- Current result and confidence: targeted API-REV-009 `Pass`; full-ticket confidence remains `96.9%`, and confidence in the prefix explanation is `99%`.
+- New or remaining API/E2E failure IDs: `None`.
+- Proportional durable-test review: expected `Not Applicable`; no durable coverage changed.
+- Recommended recipient: `code_reviewer` for the mandatory separate determination. No implementation reroute is recommended unless the user explicitly changes the presentation requirement.
+
+### API-REV-010 — Friendly live Qwen labels with exact selector and wire identity
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-report.md` (`CRR-019`); current API/E2E round `10`.
+- Triggering behavior/scenario IDs: `BEH-008`, `REQ-016`, `AC-020`, `AC-021`; `QW-LABEL-010-01/02`, `QW-SELECT-010-01/02`, `QW-RAW-010-01`, `QW-ID-010-01`, `QW-WIRE-010-01`, `QW-BUILD-010-01`, and `QW-CLEAN-010-01`.
+- Related revisions: `SR-017`; `ARCH-REV-011`; `IR-013`; `CRR-019`; retained `SR-010`–`SR-012`, `SR-016`, `API-REV-008`, and historical targeted `API-REV-009`.
+- Source subject: `331ff94da3c2c9a2a07e11efff68f5307a4cfabb` plus CRR-019-reviewed uncommitted IR-013 shared-label/test changes.
+- Why recorded: API-REV-009 directly reproduced and explained the old visible-prefix behavior, but SR-017 deliberately superseded that visible expectation. Current-source independent evidence was required before a new Electron build could be authorized.
+- Coverage investigation decision: the only changed production boundary is the existing shared web selection-label helper. Three implementation-owned focused durable tests required re-execution; the retained application missing-selector regression and Qwen lifecycle E2E remained valid. The live Settings and shared-selector composition gaps were assigned temporary read-only browser probes rather than a permanent product test route.
+- Durable coverage delta owned by API/E2E: `None`. IR-013's modified helper/Settings/binding tests were executed without further edit.
+- Repository execution delta:
+  - focused Nuxt `4 files / 12 tests passed`;
+  - Qwen lifecycle GraphQL E2E `1 file / 1 test passed`, including restart/fresh-process routing and exact outbound request values;
+  - web boundary/localization/literal guards passed;
+  - Nuxt production build passed and prerendered 15 routes;
+  - diff, unmerged, source-owner, secret, temporary-resource, port, and backend-preservation checks passed.
+- Browser execution delta:
+  - current IR-013 Nuxt ran on owned port 3138 against the user's real running DR-009 embedded backend on 29695;
+  - Settings displayed `DeepSeek V4 Flash 0731 (Qwen)`, `DeepSeek V4 Pro (Qwen)`, and `GLM-5.2 (Qwen)` and displayed none of the three internal `qwen:` selectors;
+  - a temporary page imported the production catalog store, binding selection composable, and shared select, then Chrome selected `GLM-5.2 (Qwen)` and observed exact bound selector `qwen:glm-5.2` plus live catalog value `glm-5.2`;
+  - all actual backend GraphQL operations returned HTTP 200, no backend mutation was issued, and no browser console error occurred;
+  - both screenshots were visually inspected and passed.
+- Cleanup: temporary Nuxt page and Playwright scripts removed; owned Chrome/Nuxt stopped; port 3138 free; user's Electron/backend remained running; no user data was changed.
+
+#### Prior Result Resolution
+
+| Prior Reference | Prior State | API-REV-010 Resolution | Evidence |
+| --- | --- | --- | --- |
+| `API-REV-009` visible prefix expectation | Correct under pre-SR-017 requirements; now superseded | Replaced by current friendly-label expectation and direct Pass | Settings browser JSON/screenshot and focused web tests |
+| API-REV-009 identifier/wire explanation | Valid | Retained and re-correlated through current live catalog, binding selector, and Qwen E2E | Backend JSON, binding JSON, lifecycle E2E log |
+| `DR-009` packaged frontend | Predates IR-013 | Not treated as current presentation authorization; only its unchanged embedded backend was reused read-only | Nuxt evidence identifies current source separately from backend owner |
+
+- Canonical artifacts updated:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-execution-coverage-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-revision-record.md`
+- Prior result/confidence: API-REV-009 targeted `Pass`; full-ticket confidence remained `96.9%`, but its visible-label expectation was superseded by SR-017.
+- Current result/confidence: `Pass / 97.3%`; every critical SR-017 criterion is directly proven and no applicable category is below 96%.
+- New or remaining API/E2E failure IDs: `None`.
+- Proportional durable-test review: cumulative package must return to `code_reviewer`; expected `Not Applicable` for API/E2E-owned changes because no durable file changed during API-REV-010.
+- Recommended next step: after the separate reviewer determination, `delivery_engineer` refreshes against the latest tracked base and produces/verifies a new Electron package containing IR-013.
+- Residual risks: real Alibaba availability, credentials, quota, region policy, TLS behavior, and undocumented payload variation; unchanged migration/interruption/platform risks from API-REV-008; delivery base divergence; DR-009 packaged frontend is intentionally stale for the new presentation.

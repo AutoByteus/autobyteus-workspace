@@ -2,19 +2,22 @@
 
 ## Current-State Read
 
-The ticket has three related paths:
+The ticket has four related paths on the current DR-009 v1.4.46 branch:
 
-1. **Custom metadata:** `Settings -> GraphQL -> LlmProviderService -> saved custom provider/key -> GET /models -> strict row normalization -> custom metadata resolver -> LLMModel -> LLMFactory -> server catalog -> token budget/compaction/meter`. Advertised numeric metadata already flows correctly. The defect is that the generic resolver also owns Alibaba endpoint profiles, URL/plan policy, and aliases.
-2. **Native Qwen:** `supported definition -> LLMFactory -> QwenLLM -> OpenAI-compatible client`. Qwen currently assumes one Singapore pay-as-you-go URL while Settings is key-only. Existing `modelIdentifierOverride` already makes provider-specific catalog identity distinct without altering the API model value.
-3. **Custom identity:** Browser creates with `{name,baseUrl,apiKey}`, but `CustomLlmProviderStore` generates `provider_<UUID>`. Custom models then correctly compose `openai-compatible:<providerId>:<exact-model-value>`, so the provider component—not the overall identity shape—is the readability defect. The service checks name availability before a network probe, while the store commits later without an atomic name/derived-ID invariant.
+1. **Custom metadata:** `Settings -> GraphQL -> LlmProviderService -> saved custom provider/key -> GET /models -> strict row normalization -> custom metadata resolver -> LLMModel -> LLMFactory -> server catalog -> token budget/compaction/meter`. SR-016's advertised/exact-only behavior is implemented; Alibaba profiles/aliases are removed.
+2. **Native Qwen routing:** `supported definition -> LLMFactory -> QwenLLM -> OpenAI-compatible client`. User-configured Base URL/key, server-owned endpoint source, four exact Qwen offerings, collision-safe `modelIdentifierOverride`, and exact `model.value` request behavior are implemented and covered.
+3. **Custom identity:** New providers use name-derived readable V3 identity; legacy provider reset/selector migration and provider-absent handling are implemented. `ARCH-REV-010` passed this contract and current downstream evidence remains authoritative for it.
+4. **Qwen presentation:** `Qwen definition -> GraphQL ModelInfo -> getModelSelectionOptionLabel -> Settings card/grouped option/selected label`. Live rows already expose distinct `name`, `modelIdentifier`, `value`, and `providerType`. The helper special-cases custom OpenAI-compatible friendly names, then uses `modelIdentifier` for other default-AutoByteus models. API-REV-009 therefore reproduces visible `qwen:...` prefixes even though Qwen friendly names exist. The selected option ID and outbound request remain correct.
 
-Legacy names can deterministically derive future readable selector prefixes, but the user now accepts discarding legacy provider records, Base URLs, and all credentials for simplicity. Existing custom creation already accepts/probes/saves `{name,baseUrl,apiKey}` and reloads models. Current `saveProviderApiKey` rejects custom IDs and saved details has no key editor; adding those branches is unnecessary when empty-V3 reset plus ordinary recreation is accepted. Missing selectors are generally retained and fail explicitly at model activation; `ApplicationAgentLaunchProfileEditor.vue` alone clears a non-catalog value.
+The current presentation owner is healthy: Settings provider cards, shared runtime-scoped agent/team/application/member selectors, channel binding launch selectors, and media defaults already call the same helper. Missing/current choices without a live catalog row are synthesized by their caller as raw identifiers and must remain exact. The unused legacy `components/agentInput/GroupedSelect.vue` has no active source consumer and is not a reason to broaden this change.
 
-Startup migrations already provide ordered definitions, durable result records, atomic file utilities, and ordinary stale-`RUNNING` retry after 15 minutes. `TokenUsageProviderNameSnapshotBackfillMigration` must consume the UUID-to-name map before readable publication. Current migrations that write bindings/run/team metadata must complete before readable selector rewriting. The earlier SR-015 journal, backups, secret re-encryption, completion receipt, PID-lock recovery matrix, and runner timestamp bypass are no longer justified; they are superseded by the user-approved optimistic hybrid.
+No core/server/catalog/GraphQL/persistence change is needed for SR-017. `providerType=QWEN` is already available at the shared helper boundary, Qwen definitions already carry the intended names, and OpenAI-compatible request construction already sends `this.model.value`.
 
-Source/test edits visible in the worktree from the SR-015 implementation attempt are not target authority. Implementation must reconcile them to this SR-016 design after architecture passes.
+The current worktree contains API-REV-009/DR-009 report and probe edits that are downstream-owned evidence. The solution designer changes only authoritative solution artifacts. Production/test edits for SR-017 begin only after fresh architecture review.
 
 ## Intended Change
+
+The implemented SR-016 design remains unchanged:
 
 1. Preserve strict provider-advertised metadata as highest priority per field.
 2. Simplify custom fallback to exact, case-sensitive built-in `value` lookup only; unknown/near-match values remain unknown.
@@ -30,6 +33,9 @@ Source/test edits visible in the worktree from the SR-015 implementation attempt
 12. Keep unavailable selectors stored and visible with no fallback. Launch, external dispatch, and resume fail through existing missing-model/activation paths until recreation or reselection.
 13. Retain only required migration ordering and gating: five exact prerequisites, readable migration last, empty-V3-last publication, ordinary runner retry semantics, and one terminal status gate before runtime/listen.
 14. Remove the private journal, backups, receipt, secret migrator, recovery coordinator, special runner method, and crash-perfect fault matrix.
+15. Extend the existing shared model-selection label policy: for a live row with `providerType === 'QWEN'` and a nonblank `name`, return the trimmed name before applying the generic default-AutoByteus identifier rule.
+16. Apply that one policy through every existing helper consumer rather than adding a Settings-only branch. Settings cards, grouped runtime/binding options, and selected labels then remain consistent.
+17. Keep option IDs, persisted values, GraphQL `modelIdentifier`, factory lookup, and diagnostics on the exact collision-safe selector. Keep provider requests on exact `model.value`. A missing selector without a live row continues to render raw through its existing unavailable/current-value path.
 
 ### Minimal Representation Constraint
 
@@ -43,34 +49,37 @@ The design adds only:
 
 It does not add provider producer/origin/offering/deployment/route/region/plan/revision/alias fields, credential state fields, frontend-supplied IDs, per-model serving overrides, runtime UUID aliases, or migration transaction/recovery schemas.
 
+SR-017 adds no data field at all. Existing `ModelInfo.name`, `providerType`, `modelIdentifier`, and `value` retain one meaning each: presentation, provider classification, selection/routing identity, and wire identity.
+
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
 | Behavior ID | Kind | Approved Requirement / Intent And Acceptance-Criteria IDs | Approved Trigger Or Governing Contract | Relevant Existing Behavior And Evidence Reference | Approved Change Or Preserved Outcome | Target Production Path / Lifecycle And Spine ID(s) |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH-001 | User/System | REQ-001, REQ-008; AC-001, AC-002 | Custom provider probe/reload returns model rows | Investigation: discovery normalizes strict optional positive integers | Preserve advertised metadata and resilience | DS-003, LS-001 |
-| BEH-002 | System/Contract | REQ-002, REQ-003; AC-003, AC-004 | One or more discovered limit fields are absent | Investigation: resolver currently owns profiles/aliases and exact fallback | Delete route policy; exact built-in `value` fallback only | DS-003, LS-001 |
-| BEH-003 | System/User | REQ-004, REQ-009; AC-005, AC-006 | Runtime consumes known/unknown capacity | Investigation: canonical fields already feed budget/compaction/meter | Preserve propagation with reduced source union | DS-003, DS-004 |
-| BEH-004 | User | REQ-005, REQ-008, REQ-011; AC-007, AC-012, AC-013 | User submits Qwen Base URL/key in Settings | Investigation: key-only flow; `AppConfig.set` may be session-only after file failure | Probe pair; key-first; strict durable URL; bounded restore/remove on URL failure | DS-001 |
-| BEH-005 | User/System | REQ-006; AC-008, AC-011 | Qwen runtime instance is constructed | Investigation: constructor uses one literal URL | Resolve saved URL or historical default | DS-002 |
-| BEH-006 | User/System | REQ-007, REQ-010, REQ-012; AC-009–AC-011, AC-014 | Qwen catalog/status is queried or a Qwen model is selected | Investigation: required exact offerings/status projection are incomplete | Add four exact offerings and Qwen-only server projection | DS-001, DS-002, DS-004 |
-| BEH-007 | User/Operational | REQ-013–REQ-015; AC-015–AC-019 | Create custom provider; startup resets V1/V2; user opens/launches/resumes saved selector; user recreates | Investigation: UUID store, split uniqueness, existing create flow, mostly retained missing selectors, old-ID snapshot/order dependencies | Derive/store readable identity for new providers, map exact selectors, publish empty V3, recreate through existing form, retain unavailable selections, and use optimistic final migration/gate | DS-005–DS-007, LS-002 |
+| BEH-001 | User/System | REQ-001, REQ-008; AC-001, AC-002 | Custom provider probe/reload returns model rows | Current discovery normalizes strict optional positive integers; retained coverage passes | Preserve advertised metadata and resilience | DS-003, LS-001 |
+| BEH-002 | System/Contract | REQ-002, REQ-003; AC-003, AC-004 | One or more discovered limit fields are absent | Current resolver is advertised/exact-only; profiles/aliases are removed | Preserve exact built-in `value` fallback only | DS-003, LS-001 |
+| BEH-003 | System/User | REQ-004, REQ-009; AC-005, AC-006 | Runtime consumes known/unknown capacity | Current canonical fields feed budget/compaction/meter with reduced source union | Preserve propagation | DS-003, DS-004 |
+| BEH-004 | User | REQ-005, REQ-008, REQ-011; AC-007, AC-012, AC-013 | User submits Qwen Base URL/key in Settings | Current Qwen command implements probe, key-first mutation, strict URL durability, and bounded compensation | Preserve pair contract | DS-001 |
+| BEH-005 | User/System | REQ-006; AC-008, AC-011 | Qwen runtime instance is constructed | Current adapter resolves configured URL or historical absent-setting default | Preserve effective route resolution | DS-002 |
+| BEH-006 | User/System | REQ-007, REQ-010, REQ-012; AC-009–AC-011, AC-014 | Qwen catalog/status is queried or a Qwen model is selected | Current branch exposes four exact offerings and Qwen-only status; API-REV-009 confirms identity triples | Preserve catalog/status/routing; presentation changes only through BEH-008 | DS-001, DS-002, DS-004 |
+| BEH-007 | User/Operational | REQ-013–REQ-015; AC-015–AC-019 | Create custom provider; startup resets V1/V2; user opens/launches/resumes saved selector; user recreates | ARCH-REV-010 and downstream evidence confirm readable V3 creation, selector reset/mapping, ordinary recreation, and retained missing selections | Preserve SR-016 unchanged | DS-005–DS-007, LS-002 |
+| BEH-008 | User | REQ-007, REQ-016; AC-010, AC-020, AC-021 | User opens Settings/Qwen or a live AutoByteus model selector and sees a Qwen-served duplicate | API-REV-009: live GraphQL returns distinct selector/name/value; real Chrome shows selector because shared helper's generic AutoByteus branch wins | Use existing friendly Qwen name across shared live-catalog presentation; retain internal selector and exact wire value | DS-002, DS-008 |
 
 ## Relevant Supplemental Task Artifacts
 
 | Artifact Path | Purpose | Related Requirement / Acceptance-Criteria IDs | Relationship To This Design | Status / Approval Applicability |
 | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/qwen-native-provider-setup-ui-spec.md` | Qwen connection journey, default/configured states, errors, accessibility | REQ-005, REQ-006, REQ-008, REQ-010–REQ-012; AC-007, AC-008, AC-011–AC-014 | Observable contract for DS-001 | User-approved; unchanged in SR-016 |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/custom-provider-readable-id-migration-spec.md` | Name/ID codec, legacy reset/selector transition, exact order, provider-absent interval, recreation | REQ-013–REQ-015; AC-015–AC-019 | Detailed contract for DS-005–DS-007 and LS-002 | Replaced for SR-016; pending architecture review |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/qwen-native-provider-setup-ui-spec.md` | Qwen connection journey, default/configured states, errors, accessibility, and friendly live-catalog presentation | REQ-005–REQ-008, REQ-010–REQ-012, REQ-016; AC-007–AC-014, AC-020, AC-021 | Observable contract for DS-001 and DS-008 | Refined for SR-017; hands-on label intent established; architecture review pending |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/custom-provider-readable-id-migration-spec.md` | Name/ID codec, legacy reset/selector transition, exact order, provider-absent interval, recreation | REQ-013–REQ-015; AC-015–AC-019 | Detailed contract for DS-005–DS-007 and LS-002 | SR-016 authority passed by ARCH-REV-010; no SR-017 change |
 
 ## Task Design Health Assessment (Mandatory)
 
-- Change posture: `Behavior Change / Refactor`
+- Change posture: cumulative `Behavior Change / Refactor`; SR-017 delta `Presentation Behavior Change`
 - Current design issue found: `Yes`
-- Root cause classification: `Boundary Or Ownership Issue`, `Missing Invariant`, `Duplicated Policy Or Coordination`, `Legacy Or Compatibility Pressure`
-- Refactor needed now: `Yes`
-- Evidence: Generic custom metadata owns Alibaba route knowledge; Qwen endpoint ownership is hidden in an adapter literal; the custom store ignores the meaningful name and does not atomically enforce identity uniqueness; and SR-015 added secret/recovery/reconnect coordination no longer supported once provider recreation is acceptable.
-- Design response: Move Alibaba connection/catalog facts to native Qwen, keep generic inference exact, centralize custom name/ID policy, strengthen the store boundary, use old names only for selector mapping, publish empty V3, reuse existing custom creation, and remove superseded secret/recovery/reconnect mechanisms.
-- Refactor rationale: Adding another alias/profile or layering a reset path over UUID identity would leave conflicting truth and unnecessary attributes. The selected refactor replaces those paths cleanly.
+- Root cause classification: cumulative findings remain as recorded; SR-017 is `Missing Invariant`.
+- Refactor needed now: `No` for SR-017; previous structural work is already implemented.
+- Evidence: The live API shape is tight and routing is correct. One shared helper already owns option and selected labels for the identified active surfaces. Its current generic AutoByteus branch simply lacks the rule that Qwen's collision key is internal when a friendly catalog name exists.
+- Design response: Extend the shared helper with one Qwen/nonblank-name condition and its focused regression coverage. Do not branch in components or create a generalized provider presentation schema.
+- Refactor rationale: The current owner, boundary, file placement, and `ModelInfo` fields are correct for this scope. A local shared-policy change fixes every active consumer and preserves dependency direction.
 - Intentional deferrals and residual risk: Provider rename/Base-URL edit, multiple simultaneous Qwen endpoints, dynamic native model discovery, and a global `{providerId,value}` registry refactor remain out of scope. Missing selectors remain strings and can require manual reselection when an offering disappears.
 
 ## Terminology
@@ -84,6 +93,8 @@ It does not add provider producer/origin/offering/deployment/route/region/plan/r
 - **Provider-absent interval:** Period after empty-V3 publication and before the user recreates a provider; migrated selectors can reference the future readable ID while no record/model exists.
 - **Empty-V3 publication:** Atomic replacement of `custom-llm-providers.json` with version 3 and `providers: []`; the reset commit point.
 - **Optimistic transition:** Bounded idempotent rewrites using existing migration status/retry, without private rollback/recovery state or immediate crash convergence.
+- **Internal Qwen selector:** Collision-safe `modelIdentifier` such as `qwen:deepseek-v4-pro`, used by option identity, persistence, and `LLMFactory`, not as the live friendly label.
+- **Friendly Qwen label:** Trimmed nonblank Qwen catalog `name`, used only for live catalog-backed option/card/selected-value presentation.
 
 ## Legacy Removal Policy (Mandatory)
 
@@ -94,6 +105,7 @@ It does not add provider producer/origin/offering/deployment/route/region/plan/r
 - Remove all SR-015 private migration state, backups, receipt, secret transfer, startup recovery, and runner bypass.
 - Keep V1/V2 readers only inside app-data migration sources/tests. Normal store/runtime is V3-only.
 - Preserve absent Qwen URL as default-setting semantics, not as a legacy runtime branch.
+- Remove the shared helper's exposure of a live Qwen internal selector as its user-facing label. Do not remove or rename the selector itself.
 
 ## Persisted Data / State Transition Decision (Mandatory When Persisted Data May Be Affected)
 
@@ -109,7 +121,7 @@ It does not add provider producer/origin/offering/deployment/route/region/plan/r
 - Physical-store/privacy/operational constraints: V1 inline secret must leave the provider file. Migration cannot log/serialize secret or endpoint contents. JSON publication must be atomic; application database updates use per-database transactions.
 - Decision: `Migration Required` only for exact active/default/resumable selectors; `Discard or Rebuild` by ordinary frontend recreation for legacy provider records, Base URLs, and credentials; `Directly Usable — No Migration` for Qwen key-only installs and historical traces/token/index data.
 - Decision rationale: Selector mapping is deterministic and preserves meaningful choices. Provider/Base-URL/secret preservation would require extra migration/reconnect behavior the user does not value. Empty V3 plus existing creation is simpler. Historical rewrites provide no runtime benefit. Optimistic partial selector skips are acceptable because missing selectors remain visible/actionable.
-- Acceptance criteria/design constraints: REQ-010, REQ-013–REQ-015; AC-011, AC-015–AC-019.
+- Acceptance criteria/design constraints: REQ-010, REQ-013–REQ-016; AC-011, AC-015–AC-021. SR-017 has no persisted-data transition.
 
 ### Migration Plan (Only When Decision Is `Migration Required`)
 
@@ -245,7 +257,7 @@ type QwenSetupStatus = {
 
 ### Native Qwen Definitions
 
-| Display / Global Identifier | Exact `value` / Wire Model | Context | Notes |
+| Friendly `name` / Internal global `modelIdentifier` | Exact `value` / Wire Model | Context | Notes |
 | --- | --- | ---: | --- |
 | `qwen3.8-max` | `qwen3.8-max` | 1,000,000 | No preview alias |
 | `DeepSeek V4 Pro (Qwen)` / `qwen:deepseek-v4-pro` | `deepseek-v4-pro` | 1,000,000 | Direct-provider entry remains distinct |
@@ -253,6 +265,47 @@ type QwenSetupStatus = {
 | `GLM-5.2 (Qwen)` / `qwen:glm-5.2` | `glm-5.2` | 198,000 | Direct-provider entry remains distinct |
 
 Input/output limits remain null unless route-specific evidence is recorded. Static definitions carry source URL and verification date. `modelIdentifierOverride` is internal catalog identity only and never changes the API `model` value.
+
+### Qwen Live-Selection Presentation Contract
+
+`autobyteus-web/utils/modelSelectionLabel.ts` remains the single owner for catalog-backed option and selected-value text. Extend its existing narrow provider exception; do not change `shouldUseModelIdentifierLabel` or duplicate a Qwen branch in a component:
+
+```ts
+const normalizedName = model.name?.trim();
+
+if (model.providerType === 'OPENAI_COMPATIBLE' && normalizedName) {
+  return normalizedName;
+}
+
+if (model.providerType === 'QWEN' && normalizedName) {
+  return normalizedName;
+}
+
+if (shouldUseModelIdentifierLabel(runtimeKind)) {
+  return model.modelIdentifier;
+}
+
+return normalizedName || model.modelIdentifier;
+```
+
+The exact condition order is part of the contract:
+
+- custom OpenAI-compatible friendly labels remain unchanged;
+- a live Qwen row uses its existing nonblank name on every helper-backed AutoByteus surface;
+- unrelated built-in AutoByteus models retain identifier labels;
+- non-AutoByteus fallback behavior remains name then identifier;
+- missing/unavailable selections do not have a live `ModelInfo`, so their existing caller-owned raw-identifier option remains unchanged.
+
+Consumer contract:
+
+| Consumer | Display input | Selected/persisted value | Required SR-017 result |
+| --- | --- | --- | --- |
+| `ProviderModelBrowser.vue` | Shared option label | N/A | Friendly Qwen model card text |
+| `useRuntimeScopedModelSelection.ts` consumers | Shared option + selected labels | Exact `modelIdentifier` | Friendly agent/team/application/member model choices |
+| `launch-preset-model-selection.ts` | Shared option + selected labels | Exact `modelIdentifier` | Friendly external binding model choices |
+| `useMediaDefaultModelsCard.ts` | Shared live catalog labels; caller-owned raw missing choice | Exact `modelIdentifier` | Same policy if a Qwen row is applicable; missing fallback unchanged |
+
+No GraphQL operation/type, Qwen definition, store schema, factory key, selected option ID, or request builder changes. Focused tests must assert both the new Qwen case and the existing generic/custom cases. One UI/component or browser-level assertion must cover Settings and one shared selection surface so the design is not implemented as a Settings-only branch.
 
 ### Custom Provider Identity And Store Contract
 
@@ -322,6 +375,7 @@ After empty-V3 publication and before recreation:
 | DS-005 | Primary End-to-End | BEH-007 | User creates/recreates custom provider | Readable provider/model catalog becomes usable | `LlmProviderService` + store commit | Reuses existing create flow and establishes readable identity |
 | DS-006 | Primary End-to-End | BEH-007 | Server startup with V1/V2/V3 data | Exact selectors mapped, empty V3 published, terminal status permits runtime | App-data runner + readable migration | Resets providers while preserving deterministic selector intent |
 | DS-007 | Primary End-to-End | BEH-007 | User opens/launches/resumes unavailable saved selector | Explicit unavailable/activation failure or restored execution after recreation | Config owner + `LLMFactory` | Prevents silent fallback/data loss |
+| DS-008 | Return/Event | BEH-008 | Live Qwen `ModelInfo` enters web catalog state | Friendly card/option/selected text reaches user while exact selector remains the option value | Shared `modelSelectionLabel` policy | Keeps presentation distinct from storage/routing/wire identity across active surfaces |
 | LS-001 | Bounded Local | BEH-001–BEH-003 | One discovered model row | Per-field resolved metadata | Custom metadata resolver | Exact deterministic precedence |
 | LS-002 | Bounded Local | BEH-007 | One legacy mapping/managed target | Exact prefix rewrite or warning | Readable migration | Optimistic bounded transition |
 
@@ -333,6 +387,7 @@ After empty-V3 publication and before recreation:
 - DS-005 create/recreate: `Existing custom form -> GraphQL -> LlmProviderService -> probe -> CustomLlmProviderStore locked readable-ID commit -> secret save -> runtime sync -> model group`
 - DS-006: `server startup -> ordinary ordered runPending -> V1/other prerequisites -> final readable migration -> selector attempts -> empty-V3 publication/cleanup -> runner terminal record -> thin status gate -> runtime/listen`
 - DS-007: `Stored future-readable selector -> UI/config owner retains raw value -> launch/resume -> explicit unavailable failure OR same-name recreation/reload -> exact model execution`
+- DS-008: `Qwen definitions -> GraphQL ModelInfo{name,modelIdentifier,value,providerType} -> web catalog store -> shared modelSelectionLabel -> Settings/runtime/binding option and selected label -> user sees friendly name`
 
 ## Spine Narratives (Mandatory)
 
@@ -344,6 +399,7 @@ After empty-V3 publication and before recreation:
 | DS-005 | Existing create flow establishes readable identity, endpoint, key, and models after reset. Same-name recreation matches migrated selectors without a new repair path. | create form/command, store record, secret, runtime models | Service/store | probe and store-atomic uniqueness |
 | DS-006 | Existing migrations finish old-ID and target writes; final readable migration stages V1 without keys, maps exact selectors from legacy names, publishes empty V3 last, and relies on ordinary runner status/gate. | migration ledger, legacy names, selectors, empty V3, startup gate | Readable migration | migration-only name reader, atomic adapters, best-effort secret removal |
 | DS-007 | Provider-absent selectors remain data, not fallback instructions. UI shows unavailable and runtime fails explicitly until same-name recreation returns the exact model or the user reselects. | stored selector, editor, factory, activation | Each config owner + factory | model-group refresh/error copy |
+| DS-008 | The catalog returns singular presentation/routing/wire fields. The shared web policy chooses the friendly Qwen name without changing the option ID; every active helper consumer receives the same label. | Qwen catalog row, web catalog state, label policy, option/card/selected text | `modelSelectionLabel` | missing-row synthesis remains caller-owned |
 
 ## Spine Actors / Main-Line Nodes
 
@@ -357,6 +413,7 @@ After empty-V3 publication and before recreation:
 - App-data runner/readable migration: startup transition lifecycle and terminal status.
 - Config/application/run owners: exact selector persistence.
 - `LLMFactory`: final model availability/identity lookup.
+- Shared model-selection label policy: catalog-backed option/card/selected text only; never selected identity or request value.
 
 ## Ownership Map
 
@@ -374,6 +431,7 @@ After empty-V3 publication and before recreation:
 | Migration-only name reader | Strict missing/V2/V3 `{id,name}` projection | Normal runtime/store reads |
 | Config/UI owners | Persist/display exact selector | Selecting fallback on missing model |
 | `LLMFactory` | Exact global selector lookup | UI clearing or provider-ID migration |
+| `modelSelectionLabel` | Friendly-versus-identifier text for live catalog rows | Option IDs, persistence, model routing, missing-row synthesis, or provider wire values |
 
 ## Thin Entry Facades / Public Wrappers
 
@@ -382,6 +440,7 @@ After empty-V3 publication and before recreation:
 | GraphQL provider query/mutations | `LlmProviderService` | Auth/schema/error projection | Probe/write order or custom/built-in identity rules |
 | `ProviderAPIKeyManager.vue` | Settings runtime/store | Compose provider-specific forms/details | Server source inference or key persistence |
 | `server-runtime.ts` migration gate | Runner result + readable migration definition | Stop before runtime on non-terminal result | Rerun/recovery/state interpretation |
+| Settings/selection components and composables | Shared `modelSelectionLabel` policy | Render catalog rows in their owning surface | Provider-specific label logic or display-text persistence |
 
 ## Removal / Decommission Plan (Mandatory)
 
@@ -400,6 +459,7 @@ After empty-V3 publication and before recreation:
 | Migration journal/backups/completion receipt/phase/lock machinery beyond ordinary atomic store utilities | Crash-perfect protocol rejected | Optimistic empty-V3-last transition | In This Change | Remove PID-recovery-specific files/tests |
 | Crash-point/receipt/runner-handoff test matrix | No longer acceptance authority | Ordinary interruption/idempotency/status-gate tests | In This Change | Keep proportional failure tests |
 | Application-agent missing-selector clearing watcher | Conflicts with provider-absent selector contract | Retain-and-block state | In This Change | Align team/editor behavior |
+| Live Qwen `modelIdentifier` as user-facing text in the generic AutoByteus label branch | Internal collision key is not presentation when `name` exists | Qwen/nonblank-name branch in shared `modelSelectionLabel` | SR-017 | Keep selector unchanged as option ID/persisted/routing identity |
 
 ## Return Or Event Spine(s)
 
@@ -408,6 +468,10 @@ DS-004:
 `resolved model/Qwen status -> provider/model service -> GraphQL typed projection -> web store/runtime -> model group, source state, token meter, or error UI`.
 
 Secrets and raw causes never enter this return path. Metadata source/provenance and Qwen endpoint source are explicit server projections.
+
+DS-008:
+
+`Qwen ModelInfo -> web catalog store -> shared label policy -> Settings card or grouped option/selected label`. The return text uses the friendly `name`; the forward selection path continues to carry exact `modelIdentifier`, and DS-002 continues to send exact `value`.
 
 ## Bounded Local / Internal Spines
 
@@ -425,6 +489,7 @@ Secrets and raw causes never enter this return path. Metadata source/provenance 
 | Atomic JSON/SQLite adapters | DS-006, LS-002 | Readable migration | Shape-specific exact writes | Storage semantics differ | Migration becomes broad text rewriter |
 | Migration-only provider names | DS-006 | Token snapshot/readable migration | Historical `{id,name}` lookup | Old-ID consumer ordering | Normal store gains V2 alias |
 | Missing-model presentation | DS-007 | Config editors | Retain raw value and mark unavailable | Actionable repair | UI silently changes user choice |
+| Live model label policy | DS-008 | Web model-selection surfaces | Choose friendly versus identifier text once | Cross-surface consistency | Settings/runtime/binding diverge or display text becomes identity |
 
 ## Ownership Boundaries
 
@@ -435,6 +500,7 @@ Secrets and raw causes never enter this return path. Metadata source/provenance 
 - Secret service owns values. Readable migration may request removal by old consumer identity only; it never resolves the value.
 - Each selector store's adapter owns its physical atomicity; readable migration owns enumeration/order and exact mapping.
 - `server-runtime` only checks terminal migration status; it does not implement retry/recovery or infer completion from V3.
+- Catalog components/composables call the shared label owner and keep `modelIdentifier` as option ID. They do not format Qwen identifiers locally or persist display text.
 
 ## Boundary Encapsulation Map
 
@@ -445,6 +511,7 @@ Secrets and raw causes never enter this return path. Metadata source/provenance 
 | `CustomLlmProviderStore.createProvider` | lock, V3 parse, derive/recheck/append | provider service | service generates ID/appends file | Return committed record/conflict code |
 | Readable migration definition | prerequisites, transient mapping, target adapters, empty-V3 commit/cleanup | app-data runner | server runtime invokes adapters/state | Keep one execute boundary |
 | `LLMFactory` | registry exact lookup | launch/resume backends | caller silently substitutes default | Surface not-found |
+| `getModelSelectionOptionLabel` / `getModelSelectionSelectedLabel` | provider-scoped live label policy | Settings/runtime/binding catalog consumers | components reimplement Qwen formatting or use the label as identity | Extend the shared policy and tests |
 
 ## Dependency Rules
 
@@ -456,6 +523,7 @@ Allowed:
 - Custom store/schema/migration -> core identity codec.
 - Readable migration -> migration-only name reader/prerequisite guard/shape adapters/secret removal.
 - Token snapshot migration -> migration-only name reader.
+- Active catalog-backed Settings/runtime/binding selectors -> shared `modelSelectionLabel` policy.
 
 Forbidden:
 
@@ -466,6 +534,7 @@ Forbidden:
 - Readable migration resolving/copying legacy secret values or rewriting token/history/free text.
 - `server-runtime` bypassing runner/definition boundaries or implementing custom recovery.
 - Missing selector code selecting a fallback or clearing persisted value solely because catalog entry is absent.
+- Component-local Qwen label branches, changing option IDs to friendly names, or sending `modelIdentifier` rather than `value` to Alibaba.
 
 ## Interface Boundary Mapping
 
@@ -480,6 +549,7 @@ Forbidden:
 | `CustomProviderMigrationNameSnapshotReader.read()` | Migration provider-name projection | Strict missing/V2/V3 `{id,name}` | Historical/current provider IDs | Migration-only |
 | `CustomProviderReadableIdPrerequisiteGuard.requireTerminalSuccess()` | Readable prerequisites | Fixed exact status check | Five migration IDs | No graph/framework |
 | `CustomProviderReadableIdAppDataMigration.execute()` | Reset/selector transition | Map/rewrite/empty-V3-last/cleanup | Complete transient V2 old->future mapping | No record/Base-URL/secret preservation |
+| `getModelSelectionOptionLabel(model,runtimeKind)` | Live catalog presentation | Choose friendly Qwen/custom or existing identifier/name policy | Existing `ModelInfo` fields | Returns display text only; no identity mutation |
 
 ## Interface Boundary Check
 
@@ -491,6 +561,7 @@ Forbidden:
 | Exact metadata resolver | Yes | Yes | Low | Remove endpoint/profile input |
 | Readable migration | Yes | Yes | Medium | Exact prefix inventory and suffix preservation |
 | Missing selector runtime | Yes | Yes | Medium | Preserve raw value; exact factory failure |
+| Shared selection label | Yes | Yes | Low | Qwen friendly-name branch; option ID remains exact selector |
 
 ## Main Domain Subject Naming Check
 
@@ -514,6 +585,7 @@ Forbidden:
 | Legacy provider names | App-data migrations | Create New migration-only file | Normal store must stay V3-only | N/A |
 | Selector rewrites | App-data migration adapters | Extend/Add bounded files | Store-specific atomicity | No general text migration |
 | Migration dependencies/recovery | Existing runner/records | Reuse ordinary status only | Special framework not required | N/A |
+| Friendly live Qwen labels | Existing shared `modelSelectionLabel` utility | Extend | Already owns option and selected labels for every identified active catalog-backed surface | N/A |
 
 ## Subsystem / Capability-Area Allocation
 
@@ -525,6 +597,7 @@ Forbidden:
 | App-data migrations | V1 staging, ordering, transient mapping, exact adapters, empty-V3 commit | DS-006, LS-002 | App-data runner | Simplify existing/new | No private recovery subsystem |
 | Web Settings | Qwen form and existing custom create/delete UI | DS-001, DS-005 | Settings runtime/store | Reuse/extend Qwen only | No custom reconnect/credential state |
 | Web application setup | Missing selector presentation/readiness | DS-007 | Application editors | Modify | Align agent/team behavior |
+| Web model selection | Live catalog option/card/selected labels | DS-008 | Shared label policy | Extend one narrow condition | No Settings-only formatting or identity change |
 
 ## Draft File Responsibility Mapping
 
@@ -536,6 +609,7 @@ Forbidden:
 | readable migration | Migration | Transition sequencer | prerequisites/transient map/adapters/empty-V3/cleanup | One migration lifecycle | codec/readers/adapters |
 | name snapshot | Migration | Historical projection | missing/V2/V3 `{id,name}` | Narrow shared migration data | codec/parsers |
 | JSON/SQLite selector migrators | Migration | Physical adapters | Exact shape-specific atomic writes | Separate physical stores | mapping shape |
+| `modelSelectionLabel.ts` | Web model selection | Presentation policy | Qwen friendly label before generic AutoByteus identifier fallback | One existing cross-surface owner | Existing `ModelInfo` fields |
 
 ## Reusable Owned Structures Check
 
@@ -545,6 +619,7 @@ Forbidden:
 | Qwen effective endpoint | `autobyteus-ts/src/llm/qwen-provider-config.ts` | Core Qwen | Runtime and server status must agree | Yes | Yes | General provider route bag |
 | Old/new selector prefix | Migration-local mapping type | App-data migration | Every adapter needs exact pair | Yes | Yes | Public model identity type |
 | Migration provider name | `custom-provider-migration-name-snapshot.ts` | App-data migration | Token snapshot/readable mapping need legacy names | Yes | Yes | Runtime dual reader |
+| Catalog option/selected text | `autobyteus-web/utils/modelSelectionLabel.ts` | Web model selection | Settings/runtime/binding consumers already need identical policy | Yes | Yes | A general provider presentation schema |
 
 ## Shared Structure / Data Model Tightness Check
 
@@ -555,6 +630,7 @@ Forbidden:
 | V3 provider record | Yes | Yes | Low | Same four fields; ID/name invariant |
 | Custom model selector | Yes | Yes | Medium | Keep current composite; no second structured identity |
 | Migration mapping | Yes | Yes | Low | Old/new IDs/prefixes only; no secrets |
+| `ModelInfo` label/identity/value fields | Yes: `name`/`modelIdentifier`/`value` | Yes | Low | Reuse as-is; never add `displayName` or overwrite identity for SR-017 |
 
 ## Final File Responsibility Mapping
 
@@ -583,6 +659,9 @@ Forbidden:
 | `autobyteus-server-ts/src/server-runtime.ts` | Startup | Thin gate | accept terminal readable status only | Existing lifecycle owner | runner result |
 | `autobyteus-web/components/settings/providerApiKey/QwenSetupForm.vue` | Web Settings | Form | URL/key journey/states | Distinct Qwen UI | runtime/store |
 | `autobyteus-web/components/applications/setup/ApplicationAgentLaunchProfileEditor.vue` | Web application | Selector editor | retain unavailable raw value and block readiness | Existing owner | grouped select/readiness patterns |
+| `autobyteus-web/utils/modelSelectionLabel.ts` | Web model selection | Shared presentation policy | Qwen/custom friendly names and existing runtime identifier policy | Existing active cross-surface owner | `ModelInfo` |
+| `autobyteus-web/utils/__tests__/modelSelectionLabel.spec.ts` | Web model selection tests | Shared presentation contract | Qwen friendly option/selected labels plus retained generic/custom cases | One focused unit contract | production helper |
+| Existing `ProviderModelBrowser`, runtime-scoped selection, binding selection, and relevant component/browser tests | Web surfaces | Policy consumers/evidence | Prove Settings and one shared selection surface receive friendly text while IDs remain exact | Existing consumer paths | shared helper |
 | GraphQL ops/store/runtime/generated types/locales/tests | Web Settings | Client boundary | query/mutation/status refresh/copy | Existing frontend paths | provider GraphQL |
 
 ## Applied Patterns
@@ -592,6 +671,7 @@ Forbidden:
 - **Current-schema runtime with isolated migration:** V1/V2 knowledge stays in app-data migrations.
 - **Empty-V3-last optimistic reset:** Exact repairable target failures warn; provider reset publication is the hard boundary.
 - **Server-owned UI projection:** Qwen endpoint source is explicit, not inferred in browser.
+- **Shared presentation policy:** Existing `ModelInfo` stays singular; one helper chooses live display text while consumers retain exact option identity.
 
 ## Target Subsystem / Folder / File Mapping
 
@@ -603,6 +683,7 @@ Forbidden:
 | `autobyteus-server-ts/src/app-data-migrations/migrations/` | Folder | Startup transitions | Historical parsers, exact adapters, readable sequencing | Existing migration owner; flat bounded set is clearest | Runtime aliases/public schemas |
 | `autobyteus-web/components/settings/providerApiKey/` | Folder | Settings | Qwen form plus unchanged existing custom create/delete flow | Existing provider settings area | Migration/reconnect logic |
 | `autobyteus-web/components/applications/setup/` | Folder | Application setup | Missing selector readiness/presentation | Existing application editor owner | Migration mapping |
+| `autobyteus-web/utils/modelSelectionLabel.ts` | File | Web model-selection presentation | Provider/runtime-aware live label policy shared by active surfaces | Existing narrow owner; no new folder/module justified | Store/routing/wire mutation |
 
 ## Folder Boundary Check
 
@@ -613,6 +694,7 @@ Forbidden:
 | server provider management | Main-Line Domain-Control/Persistence | Yes | Medium | Service/store subfolders already separate authority |
 | app-data migrations | Main-Line transition + bounded adapters | Yes | Medium | Keep small named adapters; remove state/recovery proliferation |
 | web provider settings | Transport/UI | Yes | Low | Reuse existing editor/runtime |
+| web shared model-selection utility | Off-spine presentation concern | Yes | Low | One file already serves all identified active consumers; a new subsystem would be empty indirection |
 
 ## Concrete Examples / Shape Guidance
 
@@ -624,6 +706,8 @@ Forbidden:
 | Selector migration | change exact provider prefix; copy suffix bytes | normalize `0731`, rewrite free text/traces | Preserves actual wire selection/history |
 | Provider-absent interval | show retained selector unavailable; recreate/reselect | clear it or choose a default | No silent user-choice loss |
 | Secret transition | empty V3 has no provider/key; user recreates | decrypt/re-encrypt old key or runtime alias | Matches explicit simplification/security posture |
+| Qwen live presentation | label `DeepSeek V4 Pro (Qwen)`; option ID `qwen:deepseek-v4-pro`; wire `deepseek-v4-pro` | display internal selector, persist friendly name, or send prefixed value | Keeps presentation, routing, and provider protocol singular and separate |
+| Missing Qwen selector | show raw `qwen:...` in existing unavailable/current state | invent a stale friendly label or clear/fallback | No live catalog row exists to authorize a friendly name |
 
 ## Backward-Compatibility Rejection Log (Mandatory)
 
@@ -639,6 +723,9 @@ Forbidden:
 | Broad selector rewrite | Find every UUID occurrence | Rejected | Exact allowlisted structured inventory |
 | New reconnect mutation/editor/credential field | Repair a preserved record | Rejected | Do not preserve the record; reuse existing create flow |
 | Structured `{providerId,value}` registry | Cleaner long-term identity | Rejected for scope | Keep existing composite selector |
+| Settings-only Qwen label branch | Fast visual fix | Rejected | Extend shared label owner so every active catalog-backed selection surface is consistent |
+| New `displayName`/`isInternalIdentifier` field | Could encode presentation explicitly | Rejected | Existing `name` and `providerType` fully express the narrow rule |
+| Remove Qwen prefix from `modelIdentifier` | Would make label pretty by collapsing identity | Rejected | Keep collision-safe selector; change display text only |
 
 ## Derived Layering (If Useful)
 
@@ -648,16 +735,11 @@ Startup transition is a separate lane: `server runtime -> app-data runner -> mig
 
 ## Change / Refactor Sequence
 
-1. Reconcile dirty SR-015 work to this authority; inventory/remove recovery/secret-transfer code before extending it further.
-2. Finalize core exact custom resolver/source contraction and Qwen endpoint/catalog behavior.
-3. Finalize strict AppConfig Qwen save/status and web Qwen form behavior.
-4. Finalize core name/ID codec, strict V3 schema, and store-atomic create invariant.
-5. Change V1 migration to secretless staging and migration-only name snapshot behavior.
-6. Simplify readable migration to fixed prerequisites, exact selector adapters, empty-V3-last publication, and best-effort old-secret removal; remove journal/state/receipt/secret/recovery/runner-bypass files and tests.
-7. Register readable last; add the thin terminal post-run gate and multi-version ordering fixture.
-8. Keep existing custom create/delete UI/API unchanged apart from readable-ID creation; add no reconnect branch.
-9. Correct application-agent missing selector retention; verify agent/team defaults, bindings, applications, and resume paths use no fallback during provider absence.
-10. Update unit/integration/API/E2E coverage proportionately, then repeat code review and downstream stages because prior evidence predates SR-016.
+1. Treat the implemented SR-016 custom metadata, Qwen configuration/catalog/routing, readable identity/reset, and missing-selector behavior as a locked baseline; do not reopen it for presentation.
+2. Modify only `autobyteus-web/utils/modelSelectionLabel.ts` to use a nonblank Qwen `name` before the generic default-AutoByteus identifier branch.
+3. Extend the focused helper unit contract for Qwen option/selected text while retaining generic built-in and custom OpenAI-compatible assertions.
+4. Verify Settings plus at least one shared runtime/binding consumer displays friendly names, keeps exact `qwen:...` option identity, and retains prior exact `model.value` wire evidence.
+5. Repeat focused source review, API/E2E coverage investigation/execution, and delivery packaging for the presentation delta. Run broader regressions only where downstream investigation finds them applicable.
 
 No temporary runtime dual reader, alias, or secret fallback is permitted at any step.
 
@@ -670,6 +752,8 @@ No temporary runtime dual reader, alias, or secret fallback is permitted at any 
 - **Ordinary recreation over reconnect/seamlessness:** Users enter name, Base URL, and key again through an existing path, eliminating secret-transfer and repair branches.
 - **Optimistic transition over immediate crash convergence:** Ordinary runner delay and manual stale-selector repair are accepted; no custom transaction protocol.
 - **Current composite selector over global registry refactor:** Solves the present identity defect without broad churn.
+- **Friendly presentation over exposing registry syntax:** Users recognize provider-qualified model names; internal collision safety remains unchanged.
+- **Shared policy over Settings expedience:** One additional condition updates every active catalog-backed surface and avoids inconsistent copy.
 
 ## Risks
 
@@ -680,18 +764,20 @@ No temporary runtime dual reader, alias, or secret fallback is permitted at any 
 5. Old secret cleanup can leave unreachable vault orphan; no runtime fallback may use it.
 6. Qwen URL and key span two owners; bounded compensation covers single write failures, while double failure is explicitly repair-required.
 7. Future required migrations appended after readable can violate ordering; registry invariant/review must catch it.
-8. Existing SR-015 source/tests can mislead implementation unless removed/simplified explicitly.
+8. API-REV-009 current evidence proves the old display and correct routing, but it must not be mistaken for approval to keep the old display after SR-017.
 9. Branch divergence remains delivery-owned integration risk.
+10. A future active model-selection surface could bypass the shared helper and re-expose internal selectors; source review and focused inventory tests mitigate this without a generalized UI framework.
+11. A blank future Qwen `name` must fall back to the identifier; the nonblank guard prevents an empty label.
 
 ## Guidance For Implementation
 
-- Treat `requirements.md`, this design, and both supplements as authority; treat SR-015 code/review as superseded where they conflict.
-- Do not preserve or adapt the secret migrator/journal/receipt/startup recovery. Delete it.
-- Do not resolve a legacy custom-provider credential even “only to test” migration. Assert call absence in tests.
-- Preserve exact model suffix bytes and wire values. Never send `modelIdentifierOverride` to a provider.
-- Keep migration warnings sanitized: IDs/status/path categories are acceptable; endpoints, response bodies, keys, prompts, and file contents are not.
-- Keep `saveProviderApiKey` behavior unchanged and built-in-only. Custom re-entry goes through existing `createCustomProvider({name,baseUrl,apiKey})`; do not add a saved-record key branch.
-- Keep UI missing selections visible. Add an unavailable state/message rather than clearing/selecting another model.
-- Use one direct multi-version upgrade fixture containing: V1/V2 provider, old-ID token row missing provider name, selector writes from prerequisite migrations, every managed selector class, empty-V3-last publication, no migrated record/Base URL/secret, and same-name recreation through the existing create flow.
-- Coverage must prove both source removal and behavior: no endpoint profile/alias; no preview; no random UUID; no secret transfer; no journal/receipt/runner bypass; no silent fallback/clearing.
+- Treat `requirements.md`, this design, and both supplements as authority. Preserve the ARCH-REV-010/DR-009 SR-016 baseline; do not touch migration, provider identity, Qwen persistence, or core catalog/routing for this presentation change.
+- Preserve exact model suffix bytes, internal selectors, and wire values. Never send `modelIdentifierOverride` to a provider.
+- Keep UI missing selections raw and visible; do not add a historical label map, clear the selection, or choose a fallback.
+- Implement SR-017 in `autobyteus-web/utils/modelSelectionLabel.ts`; do not edit Qwen definitions merely to hide the prefix, because their names/identifiers/values are already correct.
+- Keep `id: model.modelIdentifier` in grouped options and keep selected/persisted values exact. Only `name`/`selectedLabel` text changes.
+- Do not add Qwen presentation logic to `ProviderModelBrowser.vue`, `SearchableGroupedSelect.vue`, individual application forms, or binding components.
+- Extend `modelSelectionLabel.spec.ts` with a Qwen duplicate and assert option plus provider-qualified selected text. Preserve the generic AutoByteus built-in and custom OpenAI-compatible regression cases.
+- Add/adjust only proportionate consumer/browser coverage: Settings plus one shared runtime/binding selector, and retain exact GraphQL/request-value assertions. API/E2E must not reinterpret friendly text as the selected ID.
+- A missing catalog selector remains raw because no `ModelInfo` reaches the helper. Do not maintain a historical label map.
 - Implementation engineer owns source changes and `implementation-handoff.md`; solution artifacts must not be replaced by implementation notes.

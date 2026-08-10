@@ -21,6 +21,9 @@
 | CRR-015 | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-report.md` | Integrated source review of IR-011 after DR-006 latest-base AppConfig conflict | `Pass` on pre-integration source/test state; delivery blocked | `Fail` | `CR-005` |
 | CRR-016 | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-report.md` | Source re-review of IR-012 after CRR-015 | `Fail` | `Pass` | `CR-005` resolved |
 | CRR-017 | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-test-review-report.md` | Proportional test-review determination after API-REV-008 | `Pass` (API/E2E execution) | `Not Applicable` | None |
+| CRR-018 | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-test-review-report.md` | Proportional test-review determination after targeted API-REV-009 | `Targeted Pass` (API/E2E execution) | `Not Applicable` | None |
+| CRR-019 | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-report.md` | Fresh SR-017 presentation source review of IR-013 | `Pass` on retained pre-SR-017 source; presentation not implemented | `Pass` | None |
+| CRR-020 | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-test-review-report.md` | Proportional test-review determination after API-REV-010 | `Pass` (API/E2E execution) | `Not Applicable` | None |
 
 ## Revision Entries
 
@@ -464,3 +467,75 @@ None. `TR-004` remains resolved; no current test finding entered API-REV-008.
 - Material score or classification changes: No implementation-source score change; CRR-016 remains `Pass` at `9.40/10`. API-REV-008 remains `Pass / 96.9%`. Proportional test review is `Not Applicable` rather than `Pass` because no durable test code changed.
 - Recommended recipient: `delivery_engineer`
 - Remaining risks or uncertainty: Delivery must first perform its mandatory fresh tracked-base refresh, then refresh docs and current Electron/package evidence against the resulting integrated state. DR-005 v1.4.45 packaging is stale. Real Alibaba behavior, recent-`RUNNING`, interruption/orphan, stale-selector, POSIX-permission, base-divergence, and documented typecheck limitations remain bounded residuals.
+
+
+### CRR-018 — Proportional test-review determination: Qwen prefix probe has no durable delta
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-test-review-report.md`
+- Review entry point and round: `Proportional API/E2E test-code review`, round `8`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-revision-record.md`; targeted `API-REV-009`; `QW-LABEL-009`; no test finding
+- Relevant solution revision IDs: `SR-010`–`SR-012`, `SR-016`
+- Relevant architecture-review revision IDs: `ARCH-REV-005`, `ARCH-REV-010`
+- Relevant implementation revision IDs: `IR-012`; unchanged
+- Relevant API/E2E revision IDs: `API-REV-008` full-ticket Pass; `API-REV-009` targeted Pass
+- Relevant delivery revision IDs: `DR-009`
+- Prior authoritative result: `CRR-017` was `Not Applicable` after API-REV-008 because that round changed no durable coverage. DR-009 later integrated updated personal and produced the v1.4.46 user-test package.
+- Current authoritative result: `Not Applicable`. API-REV-009 changed no production source and added, updated, or removed no repository-resident durable coverage. Its read-only backend query, owned Nuxt/Chrome reproduction, and retained JSON/log/screenshot evidence are temporary execution artifacts.
+- What changed in the review result and why: Completed the mandatory separate determination after the user's reported visible `qwen:` prefixes were reproduced against the already-running DR-009 backend. Current source deliberately exposes collision-safe built-in selection identifiers while the request boundary sends exact unprefixed model values. This matches `REQ-007`/`AC-010`; no test or routing defect and no durable code delta exists.
+
+#### Prior Finding Resolution
+
+None. No current test finding entered API-REV-009.
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: No implementation-source score/result change; CRR-016 remains `Pass` at `9.40/10`. Full-ticket API confidence remains `96.9%`; targeted explanation confidence is `99%`. Proportional test review is `Not Applicable`.
+- Recommended recipient: `delivery_engineer`
+- Remaining risks or uncertainty: Continue the existing DR-009 user-verification stage. If the user explicitly requests friendly visible titles while retaining collision-safe stored selectors, route that presentation requirement through solution design rather than implementation defect handling. External Alibaba, recent-`RUNNING`, interruption/orphan, stale-selector, POSIX-permission, non-notarized package, full post-DR-009 merge-suite, and future-base risks remain as recorded.
+
+
+### CRR-019 — Fresh SR-017 source review: shared friendly Qwen labels preserve identity
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `11`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/implementation-handoff.md`; `IR-013`; approved presentation behavior `BEH-008`; prior targeted evidence `QW-LABEL-009`; no review finding
+- Relevant solution revision IDs: `SR-017`, retaining `SR-010`–`SR-012`, `SR-016`
+- Relevant architecture-review revision IDs: `ARCH-REV-011`, retaining `ARCH-REV-005`, `ARCH-REV-010`
+- Relevant implementation revision IDs: `IR-013`, retaining `IR-012`
+- Relevant API/E2E revision IDs: `API-REV-008` retained identity/wire context; `API-REV-009` superseded for visible presentation only
+- Relevant delivery revision IDs: `DR-009`; package predates IR-013
+- Prior authoritative result: `CRR-016` passed the retained source before SR-017. API-REV-009/CRR-018 later proved that the old visible prefix matched the then-current contract and required a presentation requirement change rather than a routing fix. SR-017/ARCH-REV-011 now approve that change.
+- Current authoritative result: `Pass`. IR-013 returns a trimmed nonblank live Qwen `name` from the existing shared label owner before the generic AutoByteus identifier fallback. Settings and existing runtime/binding/media consumers therefore receive friendly text while their option IDs, persisted values, factory routing, GraphQL triples, and outbound exact model values remain unchanged. Blank live names and missing rows retain exact raw identifiers.
+- What changed in the review result and why: Completed a full focused source/structure review against SR-017 and the retained cumulative package. The only production delta is the 43-effective-line shared utility. Consumer inventory found the identified active selection surfaces use it. Independent focused execution passed `4 files / 12 tests`; helper, Settings, binding identity, and missing-selector assertions all passed, and `git diff --check`/unmerged checks passed.
+
+#### Prior Finding Resolution
+
+None. No source finding was open entering IR-013.
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: Retained source remains `Pass`; current score rises from `9.40/10` to `9.44/10` for the focused SR-017 state. All categories are at least `9.4`; no classification applies.
+- Recommended recipient: `api_e2e_engineer`
+- Remaining risks or uncertainty: Perform focused live Settings and one shared selection/persistence/routing validation before delivery rebuilds. A future consumer could bypass the shared label owner; blank Qwen names intentionally show the selector. DR-009 predates the presentation change. External Alibaba, recent-`RUNNING`, interruption/orphan, stale-selector, POSIX-permission, package-typecheck, non-notarized packaging, and future-base risks remain bounded.
+
+### CRR-020 — Proportional test-review determination: API-REV-010 has no durable delta
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-test-review-report.md`
+- Review entry point and round: `Proportional API/E2E test-code review`, round `9`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-revision-record.md`; `API-REV-010`; no test finding
+- Relevant solution revision IDs: `SR-017`, retaining `SR-010`–`SR-012` and `SR-016`
+- Relevant architecture-review revision IDs: `ARCH-REV-011`, retaining `ARCH-REV-005` and `ARCH-REV-010`
+- Relevant implementation revision IDs: `IR-013`, retaining `IR-012`
+- Relevant code-review revision IDs: `CRR-019`, `CRR-020`
+- Relevant API/E2E revision IDs: `API-REV-009` as historical prefix evidence; `API-REV-010` current
+- Relevant delivery revision IDs: `DR-009`; packaged frontend predates IR-013
+- Prior authoritative result: `CRR-019` passed the IR-013 source and its implementation-owned focused web tests at `9.44/10`. API-REV-010 then passed current focused, lifecycle, build, live Settings, shared-selector, exact-selector, exact-wire, and cleanup validation at `97.3%`.
+- Current authoritative result: `Not Applicable`. API-REV-010 added, updated, or removed no repository-resident durable coverage. The three modified web tests are implementation-owned IR-013 changes reviewed at CRR-019 and were executed without further edit.
+- What changed in the review result and why: Completed the mandatory separate proportional determination against the current coverage investigation, execution report, and API revision record. All record a zero API/E2E-owned durable delta. Removed-after-run browser pages/scripts and retained logs, JSON, and screenshots are execution evidence rather than durable test code.
+
+#### Prior Finding Resolution
+
+None. No unresolved test-review finding entered API-REV-010; `TR-004` remains resolved.
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: No implementation-source score change; CRR-019 remains `Pass` at `9.44/10`. API-REV-010 remains `Pass / 97.3%`. The proportional test review is `Not Applicable` because no API/E2E-owned durable test changed.
+- Recommended recipient: `delivery_engineer`
+- Remaining risks or uncertainty: Delivery must freshly refresh the tracked base and create/verify a new Electron package containing IR-013; DR-009's packaged frontend is stale for friendly Qwen presentation. Real Alibaba availability, credentials, quota, region policy, TLS behavior, and undocumented payload variation remain unexercised. Previously accepted recent-`RUNNING`, interruption/orphan, stale-selector, POSIX-permission, package-typecheck, non-notarized packaging, and future-base risks remain bounded.

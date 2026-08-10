@@ -7,248 +7,221 @@
 - Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/design-spec.md`
 - Supplemental Task Artifacts Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/qwen-native-provider-setup-ui-spec.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/custom-provider-readable-id-migration-spec.md`
 - Solution Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-016` is the current user-approved material replacement for legacy custom-provider transition; `SR-010`–`SR-012` remain authoritative for unchanged exact-only custom metadata and native Qwen; `SR-013`–`SR-015` and `ARCH-REV-009` are historical evidence for the superseded secret-preserving transition
+- Relevant Solution Revision IDs: `SR-017` adds the friendly live-Qwen presentation rule; `SR-016` remains authoritative for readable custom identity/reset; `SR-010`–`SR-012` remain authoritative for exact-only custom metadata and native Qwen configuration/catalog/routing
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-010`
-- Current Review Round: `10`
-- Trigger: Fresh cumulative review of the user-approved `SR-016` empty-V3 reset, selector transition, provider-absent interval, and ordinary recreation replacement
-- Prior Review Round Reviewed: `ARCH-REV-009` (`Pass`, now superseded as implementation authority by the material product replacement)
-- Latest Authoritative Round: `ARCH-REV-010`
-- Current-State Evidence Basis: Ticket branch `codex/custom-provider-model-context-metadata` recorded at `f31f378d712b1b1f4e839a671104c410b51c6d06`; review covered the baseline and dirty current app-data runner/records/registry, V1 migration, token provider-name snapshot, current selector writers/readers, custom create/delete/key boundaries, model-factory activation failures, application agent/team editors, grouped selector behavior, and all cumulative solution artifacts. Dirty SR-015 source/tests and prior downstream reports are superseded evidence only and do not prove SR-016. Delivery retains tracked-base refresh ownership.
+- Current Architecture Review Revision ID: `ARCH-REV-011`
+- Current Review Round: `11`
+- Trigger: Fresh cumulative review after the user's DR-009 hands-on objection to visible internal `qwen:...` selectors and the `SR-017` shared-label-owner response
+- Prior Review Round Reviewed: `ARCH-REV-010` (`Pass` for `SR-016`)
+- Latest Authoritative Round: `ARCH-REV-011`
+- Current-State Evidence Basis: Ticket branch `codex/custom-provider-model-context-metadata` at `331ff94da3c2c9a2a07e11efff68f5307a4cfabb`, ahead `17`/behind `0` relative to recorded `origin/personal` `37660dd61347b630889a698769af5641566357bb`. Review covered the live API-REV-009 browser/API/integrity evidence, Qwen definitions and request adapter, `modelSelectionLabel.ts` and its tests, every current helper consumer, grouped-selection missing-row behavior, and the complete cumulative solution package. Delivery retains tracked-base refresh/integration ownership.
 
-## SR-016 Scope Delta / Complexity Check
+## SR-017 Scope Delta / Complexity Check
 
-- **Added narrowly:** secretless V1 staging, transient legacy-name selector mapping, empty-V3-last reset, best-effort old-secret removal by identity only, a thin terminal status gate, and one application-agent missing-selector retention correction.
-- **Removed:** provider/Base-URL preservation, credential transfer, secret resolution/re-encryption, migrated credential state, reconnect API/UI, journal/backups/receipt/phases, dedicated recovery/lock state, runner timestamp bypass, and crash-perfect coverage.
-- **Preserved:** fixed migration prerequisites/final registry position, ordinary runner semantics, exact selector suffixes, V3-only runtime, historical exclusions, unchanged add-custom-provider flow, and all passed Qwen/custom-metadata behavior.
-- **Incremental complexity verdict:** Materially simpler and proportionate. The remaining work directly preserves deterministic non-secret selection intent or enforces normal startup ordering; no transition mechanism exists solely to preserve re-enterable credentials or guarantee immediate crash convergence.
+- **Change:** For a live catalog row with `providerType === 'QWEN'` and a trimmed nonblank `name`, the existing shared label owner returns the name before the generic default-AutoByteus identifier rule.
+- **Preserved identities:** `name` remains presentation, `modelIdentifier` remains selection/persistence/factory identity, and `value` remains provider wire identity.
+- **Cross-surface reach:** Settings cards, runtime-scoped agent/team/application/member selectors, binding selectors, and applicable media-default rows already delegate catalog-backed option/selected text to the same helper.
+- **Unchanged missing state:** A stored selector with no live catalog row never reaches the helper; its caller continues to show the raw actionable identifier without clearing or guessing.
+- **Complexity verdict:** Small and proportionate. One existing policy owner and focused tests replace a visible internal label consistently without a new field, catalog rule, schema, component branch, or routing change.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
 - Overall Basis Status (`Confirmed`/`Contradicted`/`Blocked`): `Confirmed`
-- Approved requirements / intended behavior understood: `Confirmed`. New provider IDs remain readable/name-derived, while legacy records, Base URLs, and credentials are deliberately discarded. Only exact allowlisted non-secret selectors move to future readable prefixes; users recreate providers through the existing form.
-- Relevant existing behavior and evidence confirmed: `Confirmed`. Current create already accepts/probes/saves `{name,baseUrl,apiKey}` and rolls back its record on secret-save failure. Missing selector strings survive in the reviewed config/binding/run paths and fail exact factory activation without fallback; `SearchableGroupedSelect` displays an absent raw value. `ApplicationAgentLaunchProfileEditor` is the verified clearing exception. The existing runner/order/old-ID token consumer and selector-writer evidence remains applicable.
-- Approved change, preserved behavior, and outside scope understood: `Confirmed`. V1 becomes secretless V2 only to retain mapping; the final readable migration attempts exact rewrites, commits empty V3 last, never resolves an old key, accepts manually repairable skips as warnings, and relies on ordinary stale-run retry. No provider reconnect/credential record, runtime alias, historical rewrite, or custom recovery protocol remains.
-- Remaining material ambiguity, if any: None. User re-entry, temporarily unavailable selectors, ordinary restart delay, manually repairable skipped selectors, and inaccessible orphan secrets are explicit approved outcomes.
+- Approved requirements / intended behavior understood: `Confirmed`. Friendly names are required only for live Qwen catalog presentation. Collision-safe selectors and exact provider wire values remain unchanged.
+- Relevant existing behavior and evidence confirmed: `Confirmed`. API-REV-009 reproduces the visible prefixes in real Chrome and proves the live GraphQL row already contains distinct `name`, `modelIdentifier`, `value`, and `providerType`. Current source proves the shared helper governs every identified active catalog-backed Settings/runtime/binding surface, while missing values are synthesized raw by callers.
+- Approved change, preserved behavior, and outside scope understood: `Confirmed`. The helper changes text only. Generic non-Qwen built-ins, custom OpenAI-compatible labels, diagnostics/history, persistence, factory routing, request construction, custom identity/reset, Qwen setup, and GraphQL/core catalog shapes remain unchanged.
+- Remaining material ambiguity, if any: None.
 
 | Behavior ID | Kind | Design Alignment With Approved Intent (`Pass`/`Fail`) | Approved Trigger / Contract And Current-State Evidence (`Pass`/`Fail`/`Unclear`) | Target Outcome / Path / Spine Coherence (`Pass`/`Fail`/`Unclear`) | Status (`Confirmed`/`Needs Correction`/`Unclear`) | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
 | `BEH-001` | User/System | Pass | Pass | Pass | Confirmed | Preserve advertised custom metadata and discovery resilience. |
-| `BEH-002` | System/Contract | Pass | Pass | Pass | Confirmed | Remove profiles/aliases and retain exact-value fallback only. |
-| `BEH-003` | System/User | Pass | Pass | Pass | Confirmed | Preserve resolved metadata propagation and let only the existing token snapshot owner fill a missing historical provider name before reset. |
-| `BEH-004` | User | Pass | Pass | Pass | Confirmed | Retain the reviewed Qwen pair command and compensation. |
-| `BEH-005` | System | Pass | Pass | Pass | Confirmed | Retain configured/default native Qwen endpoint resolution. |
-| `BEH-006` | User/System | Pass | Pass | Pass | Confirmed | Retain the four exact Qwen definitions and setup status. |
-| `BEH-007` | User/Operational/Startup | Pass | Pass | Pass | Confirmed | Map exact selectors from valid legacy names, publish empty V3 last, keep unavailable values visible/failing explicitly, and restore usability only through ordinary same-name recreation or reselection. |
+| `BEH-002` | System/Contract | Pass | Pass | Pass | Confirmed | Preserve exact-value fallback only. |
+| `BEH-003` | System/User | Pass | Pass | Pass | Confirmed | Preserve resolved metadata propagation and historical exclusions. |
+| `BEH-004` | User | Pass | Pass | Pass | Confirmed | Preserve the implemented Qwen pair-save/status contract. |
+| `BEH-005` | User/System | Pass | Pass | Pass | Confirmed | Preserve configured/default native Qwen endpoint behavior. |
+| `BEH-006` | User/System | Pass | Pass | Pass | Confirmed | Preserve the exact Qwen catalog, collision-safe selectors, and exact request values. |
+| `BEH-007` | User/Operational | Pass | Pass | Pass | Confirmed | Preserve the implemented SR-016 readable identity/reset/recreation behavior. |
+| `BEH-008` | User | Pass | Pass | Pass | Confirmed | Use the live Qwen row's trimmed friendly name through the shared label owner; retain exact option identity and raw missing-row labels. |
 
 ## Supplemental Artifact Coherence Verdict
 
 | Artifact | Purpose And Scope Are Clear? (`Pass`/`Fail`) | Linked To Relevant Core Artifacts? (`Pass`/`Fail`) | Internally Complete? (`Pass`/`Fail`) | Consistent With Related Core Artifacts? (`Pass`/`Fail`) | Status And Approval Applicability Are Clear? (`Pass`/`Fail`) | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| `qwen-native-provider-setup-ui-spec.md` | Pass | Pass | Pass | Pass | Pass | None; unchanged reviewed authority. |
-| `custom-provider-readable-id-migration-spec.md` | Pass | Pass | Pass | Pass | Pass | None; SR-016 clearly owns reset, exact selector inventory, optimistic interruption, provider-absent behavior, recreation, removal, and coverage. |
+| `qwen-native-provider-setup-ui-spec.md` | Pass | Pass | Pass | Pass | Pass | None; `UXJ-004` specifies live friendly labels, exact selector identity, exact wire value, cross-surface ownership, and raw missing state. |
+| `custom-provider-readable-id-migration-spec.md` | Pass | Pass | Pass | Pass | Pass | None; SR-016 authority is unchanged by the presentation-only delta. |
 
 ## Task Design Health Assessment Verdict
 
 | Assessment Area | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Assessment is present for the current task posture | Pass | The package distinguishes current readable identity, selector transition, deliberate provider/credential discard, and provider-absent UX. | None. |
-| Root-cause classification is explicit and evidence-backed | Pass | UUID generation/split uniqueness, misplaced endpoint policy, and prior unnecessary secret/recovery coordination are grounded in current code and user tradeoff. | None. |
-| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | Codec/V3/store/exact selector migration and one UI correction are required; reconnect, secret transfer, generalized identity/recovery, and immediate crash convergence are rejected. | None. |
-| Refactor decision is supported by the concrete design sections or residual-risk rationale | Pass | Spines, empty-V3-last sequence, exact target inventory, missing-model lifecycle, decommission plan, files, examples, and coverage support the simplified approach. | None. |
+| Assessment is present for the current task posture | Pass | The package identifies SR-017 as a small presentation behavior change against the implemented cumulative baseline. | None. |
+| Root-cause classification is explicit and evidence-backed | Pass | `Missing Invariant` is evidenced by the current helper: custom rows use friendly names, while all other default-AutoByteus rows fall to `modelIdentifier`, exposing internal Qwen collision keys. | None. |
+| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | No structural refactor is needed; the existing shared owner and existing `ModelInfo` fields are sufficient. | None. |
+| Refactor decision is supported by the concrete design sections or residual-risk rationale | Pass | Source inventory, DS-008, boundaries, file map, examples, rejected alternatives, and focused test sequence all support one narrow helper extension. | None. |
 
 ## Spine Inventory Verdict
 
 | Spine ID | Scope | Spine Is Readable? (`Pass`/`Fail`) | Narrative Is Clear? (`Pass`/`Fail`) | Facade Vs Governing Owner Is Clear? (`Pass`/`Fail`/`N/A`) | Main Domain Subject Naming Is Clear? (`Pass`/`Fail`) | Ownership Is Clear? (`Pass`/`Fail`) | Off-Spine Concerns Stay Off Main Line? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `DS-001` | Qwen Settings pair save/status | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| `DS-002` | Qwen selection to provider request | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| `DS-003` | Generic custom metadata to compaction | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| `DS-004` | Catalog/token/setup projection | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| `DS-005` | Custom create/recreate to readable identity/catalog | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| `DS-006` | Required startup selector transition and empty-V3 reset | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| `DS-007` | Provider-absent selector display/failure/recreation | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| `LS-001` | Exact custom fallback | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
-| `LS-002` | One legacy mapping/managed selector attempt | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
+| `DS-001`–`DS-007` | Existing Qwen configuration/routing, custom metadata, readable identity/reset, and missing-selector behavior | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| `DS-008` | Live Qwen catalog row to friendly cross-surface text | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| `LS-001`–`LS-002` | Exact custom fallback and legacy selector rewrite | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
 
-SR-016 makes the simplified transition readable end to end: existing migrations finish, exact selectors are attempted, empty V3 commits last, the ordinary runner records a terminal result, and the thin gate allows runtime. Provider absence is an explicit user journey rather than hidden fallback or credential-state machinery.
+DS-008 spans the real return path: `Qwen definitions -> GraphQL ModelInfo{name,modelIdentifier,value,providerType} -> web catalog store -> shared modelSelectionLabel -> Settings/runtime/binding option and selected label -> user`. The forward selection/request path remains `friendly row -> exact modelIdentifier -> LLMFactory -> QwenLLM -> exact model.value`.
 
 ## Boundary Encapsulation Verdict
 
 | Boundary / Owner | Authoritative Public Entry Point Is Clear? (`Pass`/`Fail`) | Internal Owned Mechanisms Stay Internal? (`Pass`/`Fail`) | Caller Bypass Risk Is Controlled? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Core identity codec / V3 store | Pass | Pass | Pass | Pass | Pure codec and store-atomic commit remain authoritative. |
-| V1 secretless staging | Pass | Pass | Pass | Pass | Historical V1 owner atomically removes inline values into V2 without touching the vault. |
-| `CustomProviderReadableIdAppDataMigration` | Pass | Pass | Pass | Pass | One definition owns fixed prerequisites, transient mapping, exact adapter attempts, empty-V3-last commit, and best-effort identity-only cleanup. |
-| Migration-only name reader / prerequisite guard | Pass | Pass | Pass | Pass | V2 names and fixed terminal-status policy remain confined to migrations; readable identity stays final. |
-| Thin readable terminal gate | Pass | Pass | Pass | Pass | Server runtime accepts only the ordinary terminal-success set and owns no retry, journal, receipt, or recovery inference. |
-| Missing-selector UI/factory boundaries | Pass | Pass | Pass | Pass | Config owners retain raw values; exact model lookup remains the failure authority; only the verified clearing editor changes. |
-| Qwen/AppConfig/custom metadata owners | Pass | Pass | Pass | Pass | Prior reviewed boundaries remain unchanged. |
+| Shared `modelSelectionLabel` policy | Pass | Pass | Pass | Pass | It returns display text only; active consumers retain `modelIdentifier` as option identity and do not reimplement Qwen formatting. |
+| Catalog/core/GraphQL model row | Pass | Pass | Pass | Pass | Existing fields retain singular presentation, routing, wire, and provider-classification meanings. |
+| Settings/runtime/binding consumers | Pass | Pass | Pass | Pass | They delegate catalog-backed text to the helper; caller-owned missing-row synthesis remains outside it. |
+| Existing Qwen/custom identity/migration owners | Pass | Pass | Pass | Pass | SR-017 does not cross or reopen these reviewed boundaries. |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
 
 | Owner / Boundary | Allowed Dependencies Are Clear? (`Pass`/`Fail`) | Forbidden Shortcuts Are Explicit? (`Pass`/`Fail`) | Direction Is Coherent With Ownership? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Custom create/V3 runtime | Pass | Pass | Pass | Pass | Runtime has no migration/V2/alias dependency. |
-| Migration to secret/selector stores | Pass | Pass | Pass | Pass | Selector adapters use exact atomic/transactional owners; secret service is removal-only and never exposes a value. |
-| Ordinary runner to thin startup gate | Pass | Pass | Pass | Pass | Existing status semantics remain unchanged; server runtime neither retries nor interprets private state. |
-| Migration registry/prerequisites | Pass | Pass | Pass | Pass | Existing relative order is retained; token snapshot uses the migration-only name projection; readable reset is final with fixed status proof. |
-| Provider-absent config to model factory | Pass | Pass | Pass | Pass | Raw selectors persist across UI/config owners and exact factory failure prevents silent fallback. |
-| Qwen and exact custom metadata | Pass | Pass | Pass | Pass | SR-016 introduces no dependency change. |
+| Web catalog consumers -> shared label policy | Pass | Pass | Pass | Pass | Component-local Qwen label branches and display-text persistence are explicitly forbidden. |
+| Label policy -> existing `ModelInfo` projection | Pass | Pass | Pass | Pass | The helper reads existing fields and cannot mutate catalog, storage, routing, or wire values. |
+| Selection/persistence -> exact `modelIdentifier` | Pass | Pass | Pass | Pass | Friendly text is never accepted as identity. |
+| Qwen adapter -> exact `model.value` | Pass | Pass | Pass | Pass | Existing request construction remains independent of presentation. |
 
 ## Interface Boundary Verdict
 
 | Interface / API / Query / Command / Method | Subject Is Clear? (`Pass`/`Fail`) | Responsibility Is Singular? (`Pass`/`Fail`) | Identity Shape Is Explicit? (`Pass`/`Fail`) | Generic Boundary Risk (`Low`/`Medium`/`High`) | Verdict (`Pass`/`Fail`) |
 | --- | --- | --- | --- | --- | --- |
-| `normalizeProviderName` / `buildCustomProviderId` | Pass | Pass | Pass | Low | Pass |
-| `CustomLlmProviderStore.createProvider(...)` | Pass | Pass | Pass | Low | Pass |
-| `createCustomProvider({name,baseUrl,apiKey})` | Pass | Pass | Pass | Low | Pass |
-| `CustomProviderReadableIdAppDataMigration.execute()` | Pass | Pass | Pass | Low | Pass |
-| `CustomProviderMigrationNameSnapshotReader.read()` | Pass | Pass | Pass | Low | Pass |
-| `CustomProviderReadableIdPrerequisiteGuard.requireTerminalSuccess()` | Pass | Pass | Pass | Low | Pass |
-| Post-`runPending` readable terminal-status gate | Pass | Pass | Pass | Low | Pass |
-| Existing Qwen commands and exact metadata resolver | Pass | Pass | Pass | Low | Pass |
+| `getModelSelectionOptionLabel(model,runtimeKind)` | Pass | Pass | Pass | Low | Pass |
+| `getModelSelectionSelectedLabel(providerLabel,model,runtimeKind)` | Pass | Pass | Pass | Low | Pass |
+| Existing GraphQL `ModelInfo` | Pass | Pass | Pass | Low | Pass |
+| Existing grouped option `{id,name,selectedLabel}` | Pass | Pass | Pass | Low | Pass |
+
+The Qwen condition is appropriately provider-scoped and nonblank-name guarded. It precedes only the generic identifier fallback and therefore leaves the existing custom-friendly and generic non-Qwen cases intact.
 
 ## Existing Capability / Subsystem Reuse Verdict
 
 | Need / Concern | Existing Capability Area Was Checked? (`Pass`/`Fail`) | Reuse / Extension Decision Is Sound? (`Pass`/`Fail`) | New Support Piece Is Justified? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Identity/store/atomic files/SQLite/secret removal | Pass | Pass | N/A | Pass | Existing owners are reused; migration never resolves or transfers a credential. |
-| Ordinary runner status/stale retry | Pass | Pass | N/A | Pass | User-approved optimistic behavior needs no runner extension. |
-| Existing custom provider creation | Pass | Pass | N/A | Pass | The unchanged form/service already accepts the full replacement name/Base URL/key input and reloads models. |
-| Existing migration registry/order | Pass | Pass | N/A | Pass | Existing relative order is preserved; the readable migration is appended last and a registry invariant checks every exact prerequisite. |
-| Missing-model selection/presentation | Pass | Pass | N/A | Pass | Existing raw-value display and exact activation failure are reused; one clearing watcher is corrected. |
-| Qwen and exact fallback | Pass | Pass | N/A | Pass | Prior reuse decisions remain valid. |
+| Cross-surface Qwen live labels | Pass | Pass | N/A | Pass | The current shared helper already owns all identified active catalog-backed option/selected labels. |
+| Friendly Qwen source text | Pass | Pass | N/A | Pass | Existing Qwen catalog `name` is already correct; no definition or API edit is needed. |
+| Missing-row repair text | Pass | Pass | N/A | Pass | Existing caller synthesis remains raw and actionable without a historical label map. |
+| Identity/routing/wire separation | Pass | Pass | N/A | Pass | Existing `modelIdentifier` and `value` boundaries remain authoritative. |
 
 ## Subsystem / Capability-Area Allocation Verdict
 
 | Subsystem / Capability Area | Ownership Allocation Is Clear? (`Pass`/`Fail`) | Reuse / Extend / Create-New Decision Is Sound? (`Pass`/`Fail`) | Supports The Right Spine Owners? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Core identity / custom persistence | Pass | Pass | Pass | Pass | Current identity and store invariant are bounded. |
-| Readable-ID reset/selector migration | Pass | Pass | Pass | Pass | Transient mapping, exact adapters, empty V3, and cleanup are bounded to one ordinary definition. |
-| Generic runner | Pass | Pass | Pass | Pass | Unchanged ordinary stale/retry/status behavior; no new API. |
-| Registry/startup lifecycle | Pass | Pass | Pass | Pass | Final definition plus thin terminal gate protects runtime without custom recovery. |
-| Provider-absent UI/runtime | Pass | Pass | Pass | Pass | Config owners retain/display selections and factory/activation remains the exact failure boundary. |
-| Qwen/config/metadata/UI | Pass | Pass | Pass | Pass | Prior allocations remain sound. |
+| Web model-selection presentation | Pass | Pass | Pass | Pass | Extend the existing shared helper only. |
+| Settings/runtime/binding surfaces | Pass | Pass | Pass | Pass | Consume the shared result while retaining exact IDs. |
+| Core catalog/GraphQL/Qwen adapter | Pass | Pass | Pass | Pass | Reuse unchanged; no presentation ownership moves server-side. |
+| Custom identity/reset and Qwen setup | Pass | Pass | Pass | Pass | Unchanged cumulative owners remain sound. |
 
 ## Reusable Owned Structures Verdict
 
 | Repeated Structure / Logic | Extraction Need Was Evaluated? (`Pass`/`Fail`) | Shared File Choice Is Sound? (`Pass`/`Fail`/`N/A`) | Ownership Of Shared Structure Is Clear? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Name normalization and ID derivation | Pass | Pass | Pass | Pass | One core owner prevents drift. |
-| Composite custom model identity | Pass | N/A | Pass | Pass | Existing string contract remains sufficient. |
-| Old/future selector prefix mapping | Pass | Pass | Pass | Pass | One migration-local type feeds every exact physical adapter and carries no endpoint or secret. |
-| Prerequisite status and migration-only provider-name projection | Pass | Pass | Pass | Pass | Exact allowlists and `{id,name}` keep ordering proof and V2 knowledge migration-private. |
-| Qwen URL/status and metadata source semantics | Pass | Pass | Pass | Pass | Unchanged reviewed owners remain valid. |
+| Catalog-backed option/selected text | Pass | Pass | Pass | Pass | Existing `modelSelectionLabel.ts` is the narrow shared policy owner. |
+| Qwen label/selector/value triple | Pass | N/A | Pass | Pass | Existing `ModelInfo` is sufficient; no new reusable DTO or presentation schema is justified. |
+| Cumulative identity/config/migration structures | Pass | Pass | Pass | Pass | Unchanged from ARCH-REV-010. |
 
 ## Shared Structure / Data Model Tightness Verdict
 
 | Shared Structure / Type / Schema | One Clear Meaning Per Field? (`Pass`/`Fail`) | Redundant Attributes Removed? (`Pass`/`Fail`) | Overlapping Representation Risk Is Controlled? (`Pass`/`Fail`) | Shared Core Vs Specialized Variant / Composition Decision Is Sound? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| V3 custom-provider record | Pass | Pass | Pass | Pass | Pass | Same four fields and exact ID-from-name invariant. |
-| Composite model identifier | Pass | Pass | Pass | Pass | Pass | Provider component changes; exact value does not. |
-| Transient migration mapping | Pass | Pass | Pass | Pass | Pass | Old/future IDs and prefixes exist only for the current attempt; no alias, receipt, endpoint, or secret representation remains. |
-| Prerequisite result / name snapshot projection | Pass | Pass | Pass | Pass | Pass | Only allowlisted ID/status pairs and `{id,name}` cross their respective migration-local boundaries. |
-| Qwen/setup/model/source structures | Pass | Pass | Pass | Pass | Pass | No generalized attributes. |
+| `ModelInfo.name` / `modelIdentifier` / `value` / `providerType` | Pass | Pass | Pass | Pass | Pass | Presentation, collision-safe selection/routing, provider wire value, and provider classification remain singular. |
+| Grouped option `id` / `name` / `selectedLabel` | Pass | Pass | Pass | Pass | Pass | Only text changes; `id` remains exact selector. |
+| Existing Qwen/custom-provider structures | Pass | Pass | Pass | Pass | Pass | SR-017 adds no attribute or alternate representation. |
 
 ## File Responsibility Mapping Verdict
 
 | File | Responsibility Is Singular And Clear? (`Pass`/`Fail`) | Responsibility Matches The Intended Owner/Boundary? (`Pass`/`Fail`) | Responsibilities Were Re-Tightened After Shared-Structure Extraction? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Core identity/config and custom store/service | Pass | Pass | Pass | Pass | Codec, V3 schema, store authority, and service feedback are separated. |
-| `custom-provider-v1-app-data-migration.ts` | Pass | Pass | Pass | Pass | Historical-ID owner stages V1 without vault interaction and removes inline secret bytes. |
-| `custom-provider-readable-id-app-data-migration.ts` | Pass | Pass | Pass | Pass | Optimistic transition sequencer; no private recovery/state responsibility. |
-| JSON/SQLite selector migrators | Pass | Pass | Pass | Pass | Exact allowlisted transformations remain separated by physical atomicity owner. |
-| `custom-provider-migration-name-snapshot-reader.ts` / prerequisite guard | Pass | Pass | Pass | Pass | Migration-only historical projection and exact status policy remain outside the V3 store/runtime. |
-| `app-data-migration-registry.ts` / `server-runtime.ts` | Pass | Pass | Pass | Pass | Registry appends readable last; runtime performs only the terminal ordinary-status gate. |
-| `ApplicationAgentLaunchProfileEditor.vue` | Pass | Pass | Pass | Pass | Retains raw unavailable value and reports not-ready instead of silently clearing. |
-| Prior Qwen/metadata/UI files | Pass | Pass | Pass | Pass | Responsibilities remain bounded. |
+| `autobyteus-web/utils/modelSelectionLabel.ts` | Pass | Pass | Pass | Pass | Add one Qwen/nonblank-name policy before generic identifier fallback. |
+| `autobyteus-web/utils/__tests__/modelSelectionLabel.spec.ts` | Pass | Pass | Pass | Pass | Add Qwen option/selected-label assertions while retaining generic/custom regressions. |
+| Existing Settings/runtime/binding/media consumers | Pass | Pass | N/A | Pass | No production branch is added; proportionate consumer/browser coverage verifies propagation and exact IDs. |
+| `qwen-supported-model-definitions.ts` / Qwen request adapter | Pass | Pass | N/A | Pass | Existing names, selectors, and exact values are reused unchanged. |
 
 ## Subsystem / Folder / File Placement Verdict
 
 | Path / Item | Target Placement Is Clear? (`Pass`/`Fail`) | Folder Matches Owning Boundary? (`Pass`/`Fail`) | Mixed-Layer Or Over-Split Risk (`Low`/`Medium`/`High`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Core identity and custom-provider store/service | Pass | Pass | Low | Pass | Existing owners. |
-| Readable-ID migration sequencer/name guard/adapters | Pass | Pass | Medium | Pass | Small named files correspond to transition coordination, historical projection, ordering, and physical stores; recovery files are removed. |
-| Generic runner and server startup | Pass | Pass | Low | Pass | Runner remains unchanged; startup adds one terminal gate. |
-| Application setup missing-selector correction | Pass | Pass | Low | Pass | Existing editor is the verified clearing owner. |
-| Qwen/metadata/UI placement | Pass | Pass | Low | Pass | Unchanged from ARCH-REV-006. |
+| `autobyteus-web/utils/modelSelectionLabel.ts` | Pass | Pass | Low | Pass | Existing shared web presentation owner; no new folder or service. |
+| Helper and consumer coverage | Pass | Pass | Low | Pass | Focused unit coverage plus Settings and one shared selection surface are proportionate. |
+| Existing core/server files | Pass | Pass | Low | Pass | No SR-017 source edit belongs there. |
 
 ## Removal / Decommission Completeness Verdict
 
 | Item / Area | Redundant / Obsolete Piece To Remove Is Named? (`Pass`/`Fail`) | Replacement Owner / Structure Is Clear? (`Pass`/`Fail`/`N/A`) | Removal / Decommission Scope Is Explicit? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Random UUID creation / normal V2 reader / UUID alias | Pass | Pass | Pass | Pass | Codec plus empty-V3 reset/exact selector mapping replace them cleanly. |
-| Secret migrator, journal, backups, receipt, recovery coordinator, runner bypass | Pass | Pass | Pass | Pass | Explicitly deleted with their state/crash-specific tests; ordinary recreation and runner status replace them. |
-| Endpoint profiles/aliases / preview Qwen | Pass | Pass | Pass | Pass | Prior removals remain explicit. |
-| Generalized provider/offering/recovery schema | Pass | N/A | Pass | Pass | Explicitly rejected. |
+| Live Qwen internal selector as user-facing catalog text | Pass | Pass | Pass | Pass | Replace only at the existing shared label branch; do not remove the selector itself. |
+| Settings-only/local formatting alternatives | Pass | Pass | Pass | Pass | Explicitly rejected in favor of the shared owner. |
+| New display field/generalized presentation schema | Pass | N/A | Pass | Pass | Explicitly rejected as redundant. |
+| Earlier endpoint-profile/secret-recovery machinery | Pass | Pass | Pass | Pass | Remains removed under the unchanged SR-016 baseline. |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Area | Compatibility Wrapper / Dual-Path / Legacy Retention Exists? (`Yes`/`No`) | Clean-Cut Removal Is Explicit? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- |
-| V1/V2 custom-provider records / UUID model aliases | No | Pass | Pass | Legacy names exist only transiently in migrations; empty V3 and exact selector rewrite create a clean cut. |
-| Legacy custom credentials | No | Pass | Pass | Values are discarded/re-entered; no lookup, copy, reconnect state, or compatibility path remains. |
-| Custom endpoint profiles / preview Qwen | No | Pass | Pass | No compatibility path. |
-| Existing key-only Qwen install | No | Pass | Pass | Direct current-data use via absent setting. |
+| Qwen presentation | No | Pass | Pass | One current rule uses the live row; no historical label map or old/new display path. |
+| Missing selector | No | Pass | Pass | Raw identifier is current unavailable-state behavior, not a compatibility label. |
+| Identity/routing/wire values | No | Pass | Pass | No alias or alternate selector is introduced. |
+| Existing custom migration scope | No | Pass | Pass | Migration-only V1/V2 knowledge and V3-only runtime remain unchanged. |
 
 ## Persisted-Data Transition Verdict (When Applicable)
 
 | Area / Stored Subject | Approved Decision | Representative Reader / Semantic / Invariant Evidence Is Sufficient? (`Pass`/`Fail`) | Direct Use, Rebuild, Or Migration Choice Is Proportionate? (`Pass`/`Fail`) | Migration Safety Is Complete If Required? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| Qwen secret and optional `.env` URL | `Directly Usable — No Migration` | Pass | Pass | N/A | Pass | Existing key remains valid; absent URL preserves default. |
-| Legacy provider records and Base URLs | `Discard / Recreate` | Pass | Pass | N/A | Pass | Valid names are transient mapping input only; empty V3 is the explicit commit outcome. |
-| V1 inline and V2 vault custom secrets | `Discard / User Re-entry` | Pass | Pass | N/A | Pass | V1 stages without vault writes; V2 values are never resolved/copied; post-V3 deletion is best-effort and recreation uses the existing form. |
-| Exact active/default/resumable selectors | `Migration Required` | Pass | Pass | Pass | Pass | Fixed prerequisites, exact allowlist/suffix preservation, per-store atomicity, idempotent pre-V3 retry, empty-V3-last commit, and thin terminal gate are complete. |
-| Raw/work traces, token usage identity, free text, model-free indexes | `Directly Usable — No Rewrite` | Pass | Pass | N/A | Pass | Historical identity remains untouched; existing provider-name snapshot backfill runs while old IDs remain resolvable. |
+| SR-017 Qwen label presentation | `Not Affected` | Pass | Pass | N/A | Pass | Stored/selected `modelIdentifier` and wire `value` do not change. |
+| Existing SR-016 provider reset/selectors | Existing approved decisions retained | Pass | Pass | Pass | Pass | No migration file, ordering, state, or lifecycle change is introduced by SR-017. |
+| Existing Qwen key and Base URL | `Directly Usable — No Migration` | Pass | Pass | N/A | Pass | Presentation does not touch configuration. |
 
 ## Change / Refactor Safety Verdict
 
 | Area | Sequence Is Realistic? (`Pass`/`Fail`) | Temporary Seams Are Explicit? (`Pass`/`Fail`) | Cleanup / Removal Is Explicit? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) |
 | --- | --- | --- | --- | --- |
-| Exact custom metadata and native Qwen | Pass | Pass | Pass | Pass |
-| New custom-provider creation/V3 invariant | Pass | Pass | Pass | Pass |
-| Secretless V1 and optimistic empty-V3 reset | Pass | Pass | Pass | Pass |
-| Exact selector migration / ordinary interruption retry | Pass | Pass | Pass | Pass |
-| Migration registry/prerequisite/terminal gate | Pass | Pass | Pass | Pass |
-| Provider-absent UI/runtime and ordinary recreation | Pass | Pass | Pass | Pass |
-| Downstream revalidation after superseded evidence | Pass | Pass | Pass | Pass |
+| Shared helper rule and focused unit coverage | Pass | Pass | Pass | Pass |
+| Cross-surface consumer/browser verification | Pass | Pass | Pass | Pass |
+| Identity/routing/wire regression protection | Pass | Pass | Pass | Pass |
+| Downstream review/coverage/delivery repetition for label expectation | Pass | Pass | Pass | Pass |
 
 ## Example Adequacy Verdict
 
 | Topic / Area | Example Was Needed? (`Yes`/`No`) | Example Is Present And Clear? (`Pass`/`Fail`/`N/A`) | Bad / Avoided Shape Is Explained When Helpful? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Readable IDs/collisions and exact wire value | Yes | Pass | Pass | Pass | Identity examples remain clear. |
-| Exact selector mapping and empty-V3 reset | Yes | Pass | Pass | Pass | Valid/invalid legacy data, suffix preservation, warning skips, V3 publication failure, and ordinary stale retry are explicit. |
-| Provider-absent interval and recreation | Yes | Pass | Pass | Pass | Raw unavailable selector, same-name exact restoration, different-name/missing-suffix reselection, and no fallback are explicit. |
-| Direct upgrade with other pending migrations | Yes | Pass | Pass | Pass | AC-019 covers provider-name snapshot, existing selector writers, empty V3, token-history preservation, and same-name recreation through the unchanged form. |
-| Qwen save/status and exact fallback | Yes | Pass | Pass | Pass | Prior examples remain valid. |
+| Qwen presentation/selector/wire separation | Yes | Pass | Pass | Pass | `DeepSeek V4 Pro (Qwen)` / `qwen:deepseek-v4-pro` / `deepseek-v4-pro` is explicit. |
+| Missing live row | Yes | Pass | Pass | Pass | Raw selector remains visible; no guessed name, clear, or fallback. |
+| Non-Qwen and custom regression boundary | Yes | Pass | Pass | Pass | Generic built-in identifier labels and custom friendly labels are explicitly preserved. |
+| Cumulative migration examples | Yes | Pass | Pass | Pass | Unchanged approved examples remain sufficient. |
 
 ## Material Premise Validation (Only When Needed)
+
+No new SR-017 mechanism or finding depends on an assumed failure or lifecycle premise. The user-facing premise is already established directly by `BEH-008`: the exposed Settings/model-selection surfaces and supported browse/select action reach the observed internal-prefix label through the live catalog and shared helper.
+
+The following previously validated premises remain applicable only to unchanged SR-016 migration ordering:
 
 ### `PREM-CPMIG-003` — A supported direct upgrade needs old-ID token snapshot recovery before reset
 
 - Related approved requirement or established contract: `BEH-003`, `BEH-007`, `REQ-004`, `REQ-014`; existing required token-usage provider-name snapshot backfill.
 - Relevant behavior ID(s): `BEH-003`, `BEH-007`.
 - Initiating basis kind: `System`
-- Independent product-supported initiating trigger or applicable governing contract: Server startup on an existing installation whose V1/V2 custom providers and legacy token rows make multiple required app-data migrations pending in one upgrade. Running all pending required migrations is the current startup contract.
-- Support evidence: Current registry/backfill behavior parses the UUID from historical `model_identifier` and resolves its name from the custom-provider map (`app-data-migration-registry.ts:23-47`; `token-usage-provider-name-snapshot-backfill-migration.ts:38-65,339-357`). SR-016 retains the migration-only missing/V2/V3 `{id,name}` projection, makes the token backfill a fixed prerequisite, and publishes empty V3 only afterward (`custom-provider-readable-id-migration-spec.md:152-168,213-236`).
-- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: `server startup -> V1 stages secretless V2 if needed -> token provider-name backfill reads UUID/name through migration-only projection and fills a missing snapshot -> remaining current definitions finish -> final readable reset proves prerequisite status -> empty V3 publication removes the current provider map while historical token identifier/name remain unchanged`.
-- Lifecycle preconditions and material consequence at the claimed point: The token row and old provider-name map coexist only before reset. Ordering retains recoverable historical display information without copying credentials, rewriting token identity, or retaining a runtime V2 reader.
+- Independent product-supported initiating trigger or applicable governing contract: Server startup on an existing installation whose legacy custom providers and token rows make multiple required migrations pending.
+- Support evidence: The existing token backfill resolves an old provider ID to its name, and SR-016 retains it as an exact prerequisite before empty-V3 publication.
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: `server startup -> token provider-name backfill reads legacy UUID/name through migration-only projection -> remaining prerequisites finish -> final readable reset publishes empty V3`.
+- Lifecycle preconditions and material consequence at the claimed point: Old provider names are available before reset and unavailable afterward; correct order preserves the historical name snapshot without retaining a runtime legacy reader.
 - Reachability: `Reachable`
-- Review consequence / proportionate response: `Resolved by SR-016`; the exact prerequisite and two-field migration projection remain necessary and sufficient despite removal of the secret/recovery protocol.
+- Review consequence / proportionate response: Remains resolved by the unchanged fixed prerequisite and migration-only `{id,name}` reader.
 
 ### `PREM-CPMIG-004` — Current selector writers can overwrite transition targets if readable reset runs first
 
-- Related approved requirement or established contract: `REQ-014`, `AC-018`; existing required app-data migrations over run/team/binding metadata.
+- Related approved requirement or established contract: `REQ-014`, `AC-018`; existing required migrations over run/team/binding metadata.
 - Relevant behavior ID(s): `BEH-007`.
 - Initiating basis kind: `System`
-- Independent product-supported initiating trigger or applicable governing contract: A supported direct upgrade can make the readable transition and existing run/team/binding cleanup migrations pending together. Current `runPending` continues across definitions rather than creating an implicit exclusive transaction.
-- Support evidence: Current runner continuation and `RemoveGlobalSkillDiscoveryModeMigration` writes to `run_metadata.json`, `team_run_metadata.json`, and `bindings.json` (`app-data-migration-runner.ts:71-90`; `remove-global-skill-discovery-mode-migration.ts:14-18,153-176`). SR-016 preserves current relative order, checks the exact target writers as prerequisites, and registers readable reset last (`custom-provider-readable-id-migration-spec.md:152-168,286-298`).
-- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: `server startup -> current selector writers complete in retained order -> final readable definition proves their terminal records -> exact selector attempts -> empty V3 publication -> ordinary runner terminal record -> thin status gate -> runtime/listen`.
-- Lifecycle preconditions and material consequence at the claimed point: Current cleanup writes cannot overwrite newly mapped selectors after reset. A non-terminal prerequisite causes no readable mutation, and a registry test rejects a current definition appended after the reset.
+- Independent product-supported initiating trigger or applicable governing contract: A supported direct upgrade can make readable identity and current selector-cleanup migrations pending together.
+- Support evidence: Current `runPending` executes those definitions in registry order; SR-016 keeps the five exact terminal prerequisites and readable reset final.
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: `server startup -> current selector writers complete -> final readable definition proves their terminal records -> exact selector attempts -> empty V3 -> terminal gate -> runtime/listen`.
+- Lifecycle preconditions and material consequence at the claimed point: No current migration can overwrite a newly mapped selector after reset.
 - Reachability: `Reachable`
-- Review consequence / proportionate response: `Resolved by SR-016`; fixed prerequisite proof and final placement remain proportionate, while the obsolete coordinator/journal machinery is removed.
+- Review consequence / proportionate response: Remains resolved by fixed ordering and the final-position invariant; SR-017 does not change it.
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
@@ -256,7 +229,7 @@ None.
 
 ## Review Decision
 
-`Pass`: SR-016 is a coherent, implementation-ready replacement. It migrates only deterministic structured selector intent, commits empty V3 last, discards credentials and provider records by approved policy, reuses ordinary recreation and missing-model behavior, and removes the crash-perfect protocol. Exact prerequisites, atomic per-target writes, ordinary retry, terminal startup gating, explicit unavailable UX, and proportional coverage are sufficient for the approved optimistic contract.
+`Pass`: SR-017 is implementation-ready. It corrects a directly observed user-facing presentation defect at the existing shared owner while preserving the already-correct name/selector/value boundary. The rule propagates through the identified active catalog-backed surfaces, leaves missing selectors raw, and adds no field, schema, persistence, routing, catalog, or generalized presentation machinery.
 
 ## Findings
 
@@ -272,15 +245,14 @@ None.
 
 ## Residual Risks
 
-- Same-name recreation restores migrated selectors only when the canonical name and advertised exact model suffix still match; otherwise the user must reselect.
-- Non-derivable/colliding legacy data and malformed/read-only/concurrently changed selector targets intentionally reset or remain stale with sanitized warnings rather than receiving guessed mappings.
-- Process interruption may block startup through the ordinary fifteen-minute recent-`RUNNING` window; immediate recovery is explicitly not promised.
-- Best-effort old UUID secret deletion may leave unreachable orphan ciphertext; normal V3 lookup has no alias or fallback to it.
-- Vendor model facts remain source/date-sensitive and do not justify aliases or producer/offering attributes.
-- Dirty SR-015 source/tests must be removed or simplified rather than adapted implicitly. The branch is behind its tracked base, and all downstream evidence predating SR-016 is superseded for the readable-identity scope. Full implementation, review, coverage, docs, integration, and build stages must repeat; delivery retains refresh/integration ownership.
+- A future active catalog selection surface could bypass the shared helper and re-expose internal selectors; focused source review and consumer coverage should enforce use of the existing owner rather than adding a framework.
+- A blank Qwen catalog name intentionally falls back to the exact identifier so the UI never renders an empty label.
+- Provider-qualified selected text continues to use the existing `providerLabel / optionLabel` composition; SR-017 changes only the option-label component.
+- API-REV-009 and DR-009 remain valid evidence for the unchanged GraphQL identity triple, Qwen request value, setup, routing, and SR-016 behavior, but their visible-prefix expectation is superseded. Focused implementation, source review, API/E2E investigation/execution, and delivery packaging must repeat for the new presentation outcome.
+- Delivery retains remote refresh/integration ownership; architecture review does not merge, push, archive, clean, or finalize.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
 - Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass`
-- Notes: `ARCH-REV-010` freshly passes the user-approved SR-016 material replacement. `ARCH-DESIGN-006` is obsolete because immediate crash recovery was removed; `ARCH-DESIGN-007` remains resolved through retained exact prerequisites/final placement; `ARCH-DESIGN-001`–`ARCH-DESIGN-005` remain resolved/obsolete. Route the cumulative package to implementation; reconcile and remove superseded SR-015 machinery, and repeat all downstream validation.
+- Notes: `ARCH-REV-011` passes `SR-017`. Implement only the shared web label policy and proportionate tests; preserve exact `qwen:...` selectors, exact unprefixed wire values, raw missing-row behavior, generic non-Qwen built-in labels, custom-friendly labels, and the complete implemented SR-016 baseline.

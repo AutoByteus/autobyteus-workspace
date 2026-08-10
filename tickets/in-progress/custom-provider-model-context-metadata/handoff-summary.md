@@ -2,17 +2,18 @@
 
 ## Status
 
-**Ready for hands-on user verification.** The SR-016 readable-identity package is integrated with the latest tracked personal base, passed current source/API/E2E/browser validation, has synchronized durable documentation, and was rebuilt as a verified macOS arm64 Electron 1.4.45 package. Repository finalization remains held until explicit user acceptance.
+**Ready for hands-on user verification.** The reviewed SR-016 readable-identity package is integrated with the finalized v1.4.46 personal base, has synchronized durable documentation, and was rebuilt as a verified macOS arm64 Electron 1.4.46 package. The ticket-specific API/E2E/browser authorization predates this latest-base merge; delivery validated the combined state through the full build and package-integrity/runtime checks. Repository finalization remains held until explicit user acceptance.
 
 ## Worktree / Branch / Target
 
 - Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata
 - Ticket branch: codex/custom-provider-model-context-metadata
 - Finalization target: personal / origin/personal
-- Latest tracked base: origin/personal@3cddeec6b93602da172fec2e7b9a80acc7c05117
-- Integrated implementation merge: ea8dbfd2d4f78312806bee7a41f38daa6a0e9a06
-- Protected DR-008 rebuild checkpoint: eae34fd70ce7ae7d393dcc70ef3eb8d60328eb6e
-- Fresh pre-build and post-build divergence: ahead 15 / behind 0
+- Latest tracked base: origin/personal@37660dd61347b630889a698769af5641566357bb (v1.4.46)
+- Ticket implementation merge: ea8dbfd2d4f78312806bee7a41f38daa6a0e9a06
+- Latest-base integration merge: 331ff94da3c2c9a2a07e11efff68f5307a4cfabb
+- Protected DR-008 handoff checkpoint: 761442929910a91bb7a9d3a3baa7644eef1b994a
+- Post-merge and post-build divergence: ahead 17 / behind 0
 - Base ancestor check after build: passed
 - Integrated-state evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/delivery-integrated-state-refresh.log
 
@@ -21,9 +22,10 @@
 - Architecture: ARCH-REV-010 Pass.
 - Implementation: IR-012.
 - Source review: CRR-016 Pass, 9.40/10; CR-005 resolved.
-- API/E2E: API-REV-008 Pass, 96.9%; required broader validation completed.
+- Ticket-specific API/E2E before latest-base integration: API-REV-008 Pass, 96.9%; required broader validation completed.
 - Durable-test determination: CRR-017 Not Applicable; API-REV-008 changed no repository-resident durable coverage.
 - Unresolved findings: none.
+- Latest-base combined-state delivery check: full README-guided build and package/runtime verification passed; delivery did not rerun the complete ticket API/E2E/browser suite.
 
 ## Delivered Behavior
 
@@ -72,11 +74,11 @@ API-REV-008 passed:
 - Real Chrome -> Nuxt -> built backend -> loopback Qwen Settings journey, including restrictive umask/mode preservation and narrow layout.
 - Integrity, generated-secret absence, process/runtime cleanup, and evidence scans.
 
-Delivery then completed the full README-guided Electron pipeline and artifact verification again on checkpoint eae34fd70ce7ae7d393dcc70ef3eb8d60328eb6e. No production source, durable coverage, or long-lived documentation changed after DR-007.
+Delivery integrated 18 new personal-base commits without conflict as 331ff94da3c2c9a2a07e11efff68f5307a4cfabb, including the finalized v1.4.46 background renderer/contention, streaming, history/navigation, UI, test, and documentation work. The full README-guided Electron pipeline and artifact verification then passed on that integrated merge.
 
 ## Durable Documentation
 
-Docs sync: No Impact / Pass for DR-008. The five DR-007 durable updates remain current because base, source, coverage, and behavior are unchanged.
+Docs sync: Integrated Update / Pass for DR-009. Incoming Settings and execution-architecture documentation auto-merged without conflict and retained the readable-provider and Token Meter contracts.
 
 Updated:
 
@@ -90,15 +92,15 @@ Report: /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-c
 
 ## Electron Test Artifact
 
-- Recommended DMG: /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.45.dmg
-- SHA-256: 6046edba3d4f8e88cd68c9c82f2a4d6e77413f95a6c23fd3e158c95e8bf5edb9
-- ZIP: /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.45.zip
-- ZIP SHA-256: 36a28d8d17d7d573f663d320a501b82fdcac7f7f609388cde773cee952847a34
+- Recommended DMG: /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.46.dmg
+- SHA-256: d01a4fc54a665a65cf0ea6c0c6d863bb3ba322ea9f674b84ac06e6fb34a92d0a
+- ZIP: /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.46.zip
+- ZIP SHA-256: ff954fa0dfb1fb981ef23edfda92765989cb01f25c95a8379bfa484a5c280d78
 - Build posture: local macOS arm64; no Developer ID/team signature and no notarization; root executable carries only an ad-hoc linker signature.
 - App data: ~/.autobyteus/server-data. Back it up first if preserving existing state matters.
 - Build report: /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/electron-build-mac-report.md
 
-The DR-008 rebuild overwrote the same 1.4.45 filenames used by DR-007 and DR-005. Verify only against the DR-008 checksums above.
+The DR-009 package is version 1.4.46 and supersedes the DR-008 v1.4.45 test package. Verify only against the DR-009 checksums above.
 
 ## Suggested User Verification
 

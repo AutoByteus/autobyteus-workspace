@@ -85,6 +85,44 @@ describe('ProviderModelBrowser', () => {
     expect(wrapper.text()).not.toContain('openai-compatible:provider_gateway:model-a')
   })
 
+  it('shows friendly labels for Qwen-served duplicates in Settings', () => {
+    const wrapper = mountComponent({
+      providers: [
+        { id: 'QWEN', name: 'Qwen', label: 'Qwen', totalModels: 3 },
+      ],
+      selectedProviderId: 'QWEN',
+      selectedProviderLabel: 'Qwen',
+      selectedProviderConfigured: true,
+      llmModels: [
+        {
+          modelIdentifier: 'qwen:deepseek-v4-pro',
+          name: 'DeepSeek V4 Pro (Qwen)',
+          providerType: 'QWEN',
+        },
+        {
+          modelIdentifier: 'qwen:deepseek-v4-flash-0731',
+          name: 'DeepSeek V4 Flash 0731 (Qwen)',
+          providerType: 'QWEN',
+        },
+        {
+          modelIdentifier: 'qwen:glm-5.2',
+          name: 'GLM-5.2 (Qwen)',
+          providerType: 'QWEN',
+        },
+      ],
+      audioModels: [],
+      videoModels: [],
+      isProviderConfigured: () => true,
+    })
+
+    expect(wrapper.text()).toContain('DeepSeek V4 Pro (Qwen)')
+    expect(wrapper.text()).toContain('DeepSeek V4 Flash 0731 (Qwen)')
+    expect(wrapper.text()).toContain('GLM-5.2 (Qwen)')
+    expect(wrapper.text()).not.toContain('qwen:deepseek-v4-pro')
+    expect(wrapper.text()).not.toContain('qwen:deepseek-v4-flash-0731')
+    expect(wrapper.text()).not.toContain('qwen:glm-5.2')
+  })
+
   it('renders the draft row as the standard New Provider entry', () => {
     const wrapper = mountComponent()
     const draftButton = wrapper.findAll('button').find((button) => button.text().includes('New Provider'))

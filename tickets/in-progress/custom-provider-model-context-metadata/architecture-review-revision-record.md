@@ -14,6 +14,7 @@
 | ARCH-REV-008 | Recovery re-review plus current migration-order integration | `SR-014` (with `SR-013` and `SR-010`–`SR-012` retained) | `Fail` | `Fail` | `ARCH-DESIGN-006` resolved; `ARCH-DESIGN-007` |
 | ARCH-REV-009 | Re-review of final readable-ID registry boundary and prerequisites | `SR-015` (retaining `SR-014` and `SR-010`–`SR-013`) | `Fail` | `Pass` | `ARCH-DESIGN-007` resolved |
 | ARCH-REV-010 | Fresh review of secretless empty-V3 reset and ordinary recreation | `SR-016` (retaining `SR-010`–`SR-012`; replacing `SR-013`–`SR-015`) | `Pass` (superseded) | `Pass` | `ARCH-DESIGN-006` obsolete; `ARCH-DESIGN-007` remains resolved |
+| ARCH-REV-011 | Fresh review of friendly live-Qwen presentation with internal selectors unchanged | `SR-017` (retaining `SR-016` and `SR-010`–`SR-012`) | `Pass` | `Pass` | None |
 
 ## Revision Entries
 
@@ -241,3 +242,26 @@ None.
 - Material classification changes: Prior `Pass` is superseded but the fresh result is also `Pass`. `ARCH-DESIGN-006` becomes obsolete through approved removal of its governing guarantee; `ARCH-DESIGN-007` remains resolved by the still-required fixed ordering.
 - Recommended recipient: `implementation_engineer`.
 - Remaining risks or uncertainty: Same-name/exact-suffix recreation may fail and require manual reselection; invalid/colliding legacy names and skipped selector targets remain stale with warnings; ordinary recent-`RUNNING` delay is accepted; old secret cleanup may leave unreachable orphan ciphertext. Dirty SR-015 source/tests and all earlier downstream evidence are superseded. Delivery still owns tracked-base refresh/integration.
+
+### ARCH-REV-011 — Friendly live-Qwen labels pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/design-review-report.md`
+- Review round and trigger: Round `11`; solution designer delivered `SR-017` after the user's DR-009 hands-on testing showed collision-safe `qwen:...` selectors as visible Settings labels.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/solution-revision-record.md`; API-REV-009 evidence item `QW-LABEL-009`; no architecture finding ID.
+- Relevant solution revision IDs: `SR-017` adds the presentation rule; `SR-016` remains authoritative for readable custom identity/reset; `SR-010`–`SR-012` remain authoritative for exact-only custom metadata and native Qwen configuration/catalog/routing.
+- Prior authoritative decision: `Pass` at `ARCH-REV-010` for SR-016.
+- Current authoritative decision: `Pass`.
+- What changed in the review result or what baseline was established: API-REV-009 and current source prove the live contract is already correctly separated into friendly `name`, collision-safe `modelIdentifier`, exact provider `value`, and `providerType`. SR-017 extends the existing shared `modelSelectionLabel` owner with one Qwen/nonblank-name rule before the generic default-AutoByteus identifier fallback. Settings cards and the shared runtime/binding/media consumers receive the same friendly text while option IDs, persistence, factory lookup, GraphQL, and Qwen request values remain exact. A missing selector has no live row and remains raw/actionable through caller-owned behavior. No new field, component-specific branch, historical label map, catalog/core/server change, or generalized presentation schema is introduced.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `ARCH-DESIGN-006` | Obsolete at `ARCH-REV-010` | Remains obsolete | `SR-016`, retained by `SR-017` | SR-017 is presentation-only and does not restore credential preservation, private migration recovery, or immediate crash convergence. |
+| `ARCH-DESIGN-007` | Resolved under `SR-016` at `ARCH-REV-010` | Remains resolved | `SR-016`, retained by `SR-017`; `PREM-CPMIG-003`, `PREM-CPMIG-004` | The fixed prerequisite set, migration-only name reader, final readable placement, and terminal gate are unchanged. |
+| `ARCH-DESIGN-001`–`ARCH-DESIGN-005` | Resolved/obsolete in earlier rounds | Remain resolved/obsolete | `SR-010`–`SR-012`, retained by `SR-017` | Exact metadata, profile removal, Qwen durable configuration/status, and exact catalog/routing boundaries are unchanged. |
+
+- New or remaining finding IDs: None.
+- Material classification changes: None. The prior cumulative `Pass` remains valid, and the newly reviewed presentation delta also passes. No new failure/lifecycle premise is needed; `BEH-008` is directly reachable through the exposed Settings/model-selection surfaces and supported user browse/select action.
+- Recommended recipient: `implementation_engineer`.
+- Remaining risks or uncertainty: A future surface could bypass the shared label owner; a blank Qwen name intentionally falls back to the identifier. API-REV-009/DR-009 remain valid for unchanged identity/wire/setup/routing and SR-016 behavior but are superseded for the target visible label. Focused implementation, review, API/E2E, and delivery evidence must repeat; delivery retains refresh/finalization ownership.

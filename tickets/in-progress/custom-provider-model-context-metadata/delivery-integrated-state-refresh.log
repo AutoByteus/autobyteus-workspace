@@ -1,32 +1,41 @@
-DR-008 delivery integrated-state refresh
-CHECK_UTC=2026-08-10T08:43:10Z
-BRANCH=codex/custom-provider-model-context-metadata
-HEAD_PRE_FETCH=eae34fd70ce7ae7d393dcc70ef3eb8d60328eb6e
-BASE_PRE_FETCH=3cddeec6b93602da172fec2e7b9a80acc7c05117
-COMMAND=git fetch origin personal --prune
+DR-009 delivery integrated-state refresh
+TRIGGER=User reported origin/personal updated and requested a new Electron build.
+INITIAL_TICKET_HEAD=eae34fd70ce7ae7d393dcc70ef3eb8d60328eb6e
+INITIAL_FETCH_COMMAND=git fetch origin personal --prune
+FETCHED_BASE=37660dd61347b630889a698769af5641566357bb
+INITIAL_AHEAD=15
+INITIAL_BEHIND=18
+INITIAL_MERGE_BASE=3cddeec6b93602da172fec2e7b9a80acc7c05117
+DELIVERY_SAFETY_CHECKPOINT=761442929910a91bb7a9d3a3baa7644eef1b994a
+CHECKPOINT_PURPOSE=Protect DR-008 handoff and logs before latest-base integration; not repository finalization.
+INTEGRATION_COMMAND=git merge --no-edit origin/personal
+INTEGRATION_RESULT=PASS; automatic ort merge with no conflicts.
+INTEGRATED_HEAD=331ff94da3c2c9a2a07e11efff68f5307a4cfabb
+INTEGRATED_PARENTS=761442929910a91bb7a9d3a3baa7644eef1b994a 37660dd61347b630889a698769af5641566357bb
+INTEGRATED_BASE=37660dd61347b630889a698769af5641566357bb
+INCOMING_SCOPE=18 commits including v1.4.46 and reviewed background-agent renderer/contention, streaming, history/navigation, UI, tests, and documentation changes.
+DOCS_INTEGRATION=autobyteus-web/docs/settings.md and agent_execution_architecture.md auto-merged without conflict; readable-provider and Token Meter truth retained.
+POST_INTEGRATION_EXECUTABLE_CHECK=README-guided Electron build: PASS, exit 0, version 1.4.46.
+ARTIFACT_CHECKS=DMG verify PASS; ZIP integrity PASS; arm64 PASS; node-pty spawn PASS; packaged source identity PASS.
+POST_BUILD_FETCH_START_UTC=2026-08-10T10:20:35Z
+POST_BUILD_FETCH_COMMAND=git fetch origin personal --prune
 From github.com-ryan:AutoByteus/autobyteus-workspace
  * branch                personal   -> FETCH_HEAD
-HEAD_POST_FETCH=eae34fd70ce7ae7d393dcc70ef3eb8d60328eb6e
-BASE_POST_FETCH=3cddeec6b93602da172fec2e7b9a80acc7c05117
-MERGE_BASE=3cddeec6b93602da172fec2e7b9a80acc7c05117
-AHEAD=15
-BEHIND=0
-BASE_ANCESTOR_CHECK=PASS
-INTEGRATION_DECISION=No merge required; tracked base is unchanged and already an ancestor of the protected build checkpoint.
-POST_BUILD_CHECK=README-guided Electron pipeline exit 0 plus DMG, ZIP, arm64 executable, packaged node-pty spawn, and packaged-source identity checks passed.
-DOCS_IMPACT=No new durable documentation impact since DR-007; implementation, base, and long-lived documentation are unchanged.
-WORKTREE_STATUS_BEGIN
- M tickets/in-progress/custom-provider-model-context-metadata/delivery-integrated-state-refresh.log
-?? tickets/in-progress/custom-provider-model-context-metadata/electron-build-mac-dr-008-packaged-source.log
-?? tickets/in-progress/custom-provider-model-context-metadata/electron-build-mac-dr-008-verification.log
-?? tickets/in-progress/custom-provider-model-context-metadata/electron-build-mac-dr-008.log
-WORKTREE_STATUS_END
-END_UTC=2026-08-10T08:43:13Z
-FINAL_HANDOFF_FETCH_UTC=2026-08-10T08:46:23Z
+POST_BUILD_HEAD=331ff94da3c2c9a2a07e11efff68f5307a4cfabb
+POST_BUILD_BASE=37660dd61347b630889a698769af5641566357bb
+POST_BUILD_MERGE_BASE=37660dd61347b630889a698769af5641566357bb
+POST_BUILD_AHEAD=17
+POST_BUILD_BEHIND=0
+POST_BUILD_BASE_ANCESTOR_CHECK=PASS
+END_UTC=2026-08-10T10:20:37Z
+FINAL_HANDOFF_FETCH_START_UTC=2026-08-10T10:24:28Z
+FINAL_HANDOFF_FETCH_COMMAND=git fetch origin personal --prune
 From github.com-ryan:AutoByteus/autobyteus-workspace
  * branch                personal   -> FETCH_HEAD
-FINAL_HEAD=eae34fd70ce7ae7d393dcc70ef3eb8d60328eb6e
-FINAL_BASE=3cddeec6b93602da172fec2e7b9a80acc7c05117
-FINAL_AHEAD=15
-FINAL_BEHIND=0
-FINAL_BASE_ANCESTOR_CHECK=PASS
+FINAL_HANDOFF_HEAD=331ff94da3c2c9a2a07e11efff68f5307a4cfabb
+FINAL_HANDOFF_BASE=37660dd61347b630889a698769af5641566357bb
+FINAL_HANDOFF_MERGE_BASE=37660dd61347b630889a698769af5641566357bb
+FINAL_HANDOFF_AHEAD=17
+FINAL_HANDOFF_BEHIND=0
+FINAL_HANDOFF_BASE_ANCESTOR_CHECK=PASS
+FINAL_HANDOFF_FETCH_END_UTC=2026-08-10T10:24:30Z
