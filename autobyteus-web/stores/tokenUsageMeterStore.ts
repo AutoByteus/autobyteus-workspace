@@ -250,11 +250,11 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
     };
   }
 
-  function applyTokenUsageUpdated(payload: TokenUsageUpdatedPayload): void {
+  function applyTokenUsageUpdated(payload: TokenUsageUpdatedPayload): boolean {
     const runId = payload.run_id || payload.member_agent_run_id;
-    if (!runId) return;
+    if (!runId) return false;
     const seenKey = payload.usage_event_id || payload.idempotency_key;
-    if (seenKey && seenUsageKeys[seenKey]) return;
+    if (seenKey && seenUsageKeys[seenKey]) return false;
     if (seenKey) seenUsageKeys[seenKey] = true;
 
     runSummaries[runId] = applyToSummary(runSummaries[runId] ?? emptySummary(runId), payload);
@@ -265,6 +265,7 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
         teamSummarySources[teamRunId] = 'live_partial';
       }
     }
+    return true;
   }
 
   async function fetchAgentRunSummary(runId: string): Promise<TokenUsageRunSummary | null> {

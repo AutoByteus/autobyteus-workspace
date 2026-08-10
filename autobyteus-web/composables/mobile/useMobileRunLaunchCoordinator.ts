@@ -3,6 +3,7 @@ import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
+import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useAgentTeamDefinitionStore, type AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore';
 import { useMobileWorkStore } from '~/stores/mobileWorkStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
@@ -49,6 +50,7 @@ export function useMobileRunLaunchCoordinator() {
   const agentRunConfigStore = useAgentRunConfigStore();
   const selectionStore = useAgentSelectionStore();
   const teamContextsStore = useAgentTeamContextsStore();
+  const runHistoryStore = useRunHistoryStore();
   const teamDefinitionStore = useAgentTeamDefinitionStore();
   const teamRunConfigStore = useTeamRunConfigStore();
   const mobileWorkStore = useMobileWorkStore();
@@ -147,7 +149,7 @@ export function useMobileRunLaunchCoordinator() {
       throw new Error('This team has no focusable member for mobile Chat.');
     }
 
-    await teamContextsStore.focusMemberAndEnsureHydrated(teamRunId, fallbackRouteKey);
+    await runHistoryStore.focusTeamMemberAndEnsureHydrated(teamRunId, fallbackRouteKey);
     mobileWorkStore.rememberFocusedTeamMember(teamRunId, fallbackRouteKey);
     return teamContextsStore.getTeamContextById(teamRunId)?.focusedMemberRouteKey || fallbackRouteKey;
   }

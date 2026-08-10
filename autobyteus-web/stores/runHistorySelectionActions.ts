@@ -28,6 +28,7 @@ interface RunHistorySelectionStoreLike {
   openRun(runId: string, options?: RunHistoryOpenOptions): Promise<void>;
   ensureWorkspaceByRootPath(rootPath: string): Promise<string | null>;
   resolveWorkspaceMetadataByRootPath(rootPath: string): Promise<WorkspaceMetadata | null>;
+  focusTeamMemberAndEnsureHydrated(teamRunId: string, memberRouteKey: string): Promise<boolean>;
 }
 
 export const openTeamMemberRunFromHistory = async (
@@ -95,7 +96,7 @@ export const selectTreeRunFromHistory = async (
 
       try {
         selectionStore.selectRun(row.teamRunId, 'team');
-        await teamContextsStore.focusMemberAndEnsureHydrated?.(row.teamRunId, localTargetMemberRouteKey);
+        await store.focusTeamMemberAndEnsureHydrated(row.teamRunId, localTargetMemberRouteKey);
         store.selectedTeamRunId = row.teamRunId;
         store.selectedTeamMemberRouteKey = localTargetMemberRouteKey;
         store.selectedRunId = null;

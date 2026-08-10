@@ -1,6 +1,6 @@
 {
   "name": "autobyteus",
-  "version": "1.4.45",
+  "version": "1.4.46",
   "packageManager": "pnpm@10.28.1",
   "description": "AutoByteus Desktop Application",
   "license": "Apache-2.0",
@@ -45,7 +45,8 @@
     "build:electron:linux:arm64": "cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && cross-env AUTOBYTEUS_ELECTRON_LINUX_TARGET_ARCH=arm64 pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --linux --arm64",
     "test:e2e:workspace-responsive": "node tests/e2e/workspace-responsive-probe.mjs",
     "test:e2e:diagram-zoom-viewer": "node tests/e2e/diagram-zoom-viewer-probe.mjs",
-    "test:e2e:vnc-live": "node tests/e2e/vnc-live-probe.mjs"
+    "test:e2e:vnc-live": "node tests/e2e/vnc-live-probe.mjs",
+    "test:e2e:background-contention": "node tests/e2e/background-agent-renderer-contention-probe.mjs"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.7.2",

@@ -1,0 +1,213 @@
+{
+  "info": {
+    "title": "",
+    "url": "http://127.0.0.1:63712/agents?view=list",
+    "bodyText": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nReload\nCreate Agent\nFeatured agents\nDA\nDaily Assistant\n\nGeneral Agent\n\nTools 22\nrun_bash\nread_url\nsearch_web\n+19\nSkills 1\nshell-first-operating-practice\nRun\nView Details\n→\nCO\nCodex\n\nCodex\n\nTools 15\nclose_tab\ndom_snapshot\nlist_tabs\n+12\nSkills 1\nsoftware-engineering-workflow-skill\nRun\nView Details\n→\nIndividual agents\n7 agents\nMC\nMemory Compactor\n\nSummarizes earlier work so the same agent can continue later.\n\nTools 0\nNone\nSkills 0\nNone\nRun\nView Details\n→\nPP\nProduct Prototyper\n\nBuilds and evolves runnable product prototypes with precise requirements, realistic mocked behavior, and a deliberate visual-quality gate.\n\nTools 16\nedit_file\nread_file\nwrite_file\n+13\nSkills 1\nproduct-prototyping\nRun\nView Details\n→\nRE\nresearch engineer\n\nStandalone research engineer that owns investigation, source discovery, continuous notes, implementation when needed, validation, analysis, and next-loop decisions.\n\nTools 17\nedit_file\nread_file\nwrite_file\n+14\nSkills 1\nresearch-engineer\nRun\nView Details\n→\nRD\nResume Designer\n\nCreates frontend-based resume packages from user input or supplied resume sources, renders them, and exports print-ready PDFs.\n\nTools 16\nedit_file\nread_file\nwrite_file\n+13\nSkills 1\nresume-designer\nRun\nView Details\n→\nRS\nRetrospective Skill Improver\n\nImproves configured durable skill packages from target run work-trace evidence.\n\nTools 2\nrun_bash\nsend_message_to\nSkills 1\nretrospective-skill-improver\nRun\nView Details\n→\nSO\nSkill Optimizer\n\nReviews and improves existing skills for structure, grounding, clarity, consistency, and economy while preserving intended behavior.\n\nTools 4\nedit_file\nread_file\nwrite_file\n+1\nSkills 2\nskill-optimizer\nshell-first-operating-practice\nRun\nView Details\n→\nST\nSoftware Tutorial Video Maker\n\nTurns supplied software screenshots and rough teaching notes into a short narrated tutorial video package using TTS narration and ffmpeg.\n\nTools 4\nread_file\nwrite_file\nrun_bash\n+1\nSkills 1\nsoftware-tutorial-video-maker\nRun\nView Details\n→",
+    "buttons": [
+      {
+        "text": "Agents",
+        "title": null,
+        "aria": null,
+        "test": null
+      },
+      {
+        "text": "",
+        "title": "Collapse left panel",
+        "aria": null,
+        "test": null
+      },
+      {
+        "text": "Agent Teams",
+        "title": null,
+        "aria": null,
+        "test": null
+      },
+      {
+        "text": "Applications",
+        "title": null,
+        "aria": null,
+        "test": null
+      },
+      {
+        "text": "Skills",
+        "title": null,
+        "aria": null,
+        "test": null
+      },
+      {
+        "text": "Memory",
+        "title": null,
+        "aria": null,
+        "test": null
+      },
+      {
+        "text": "Nodes",
+        "title": null,
+        "aria": null,
+        "test": null
+      },
+      {
+        "text": "",
+        "title": "Add workspace",
+        "aria": null,
+        "test": null
+      },
+      {
+        "text": "Settings",
+        "title": null,
+        "aria": null,
+        "test": null
+      },
+      {
+        "text": "Reload",
+        "title": null,
+        "aria": null,
+        "test": null
+      },
+      {
+        "text": "Create Agent",
+        "title": null,
+        "aria": null,
+        "test": null
+      },
+      {
+        "text": "Run",
+        "title": null,
+        "aria": null,
+        "test": null
+      },
+      {
+        "text": "View Details\n→",
+        "title": null,
+        "aria": null,
+        "test": null
+      },
+      {
+        "text": "Run",
+        "title": null,
+        "aria": null,
+        "test": null
+      },
+      {
+        "text": "View Details\n→",
+        "title": null,
+        "aria": null,
+        "test": null
+      },
+      {
+        "text": "Run",
+        "title": null,
+        "aria": null,
+        "test": null
+      },
+      {
+        "text": "View Details\n→",
+        "title": null,
+        "aria": null,
+        "test": null
+      },
+      {
+        "text": "Run",
+        "title": null,
+        "aria": null,
+        "test": null
+      },
+      {
+        "text": "View Details\n→",
+        "title": null,
+        "aria": null,
+        "test": null
+      },
+      {
+        "text": "Run",
+        "title": null,
+        "aria": null,
+        "test": null
+      },
+      {
+        "text": "View Details\n→",
+        "title": null,
+        "aria": null,
+        "test": null
+      },
+      {
+        "text": "Run",
+        "title": null,
+        "aria": null,
+        "test": null
+      },
+      {
+        "text": "View Details\n→",
+        "title": null,
+        "aria": null,
+        "test": null
+      },
+      {
+        "text": "Run",
+        "title": null,
+        "aria": null,
+        "test": null
+      },
+      {
+        "text": "View Details\n→",
+        "title": null,
+        "aria": null,
+        "test": null
+      },
+      {
+        "text": "Run",
+        "title": null,
+        "aria": null,
+        "test": null
+      },
+      {
+        "text": "View Details\n→",
+        "title": null,
+        "aria": null,
+        "test": null
+      },
+      {
+        "text": "Run",
+        "title": null,
+        "aria": null,
+        "test": null
+      },
+      {
+        "text": "View Details\n→",
+        "title": null,
+        "aria": null,
+        "test": null
+      }
+    ]
+  },
+  "events": [
+    {
+      "type": "debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "log",
+      "text": "serverStore: Checking server health at /rest/health"
+    }
+  ]
+}

@@ -5,8 +5,8 @@ import { useTokenUsageMeterStore } from '~/stores/tokenUsageMeterStore';
 export function handleTokenUsageUpdated(
   payload: TokenUsageUpdatedPayload,
   context: AgentContext,
-): void {
-  useTokenUsageMeterStore().applyTokenUsageUpdated({
+): boolean {
+  return useTokenUsageMeterStore().applyTokenUsageUpdated({
     ...payload,
     run_id: payload.run_id || context.state.runId,
   });

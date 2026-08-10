@@ -1,0 +1,326 @@
+{
+  "probeId": "BG-CURRENT-TEAM-001",
+  "startedAt": "2026-08-08T20:12:50.475Z",
+  "completedAt": "2026-08-08T20:13:59.220Z",
+  "durationMs": 68745,
+  "fileOpens": [
+    {
+      "index": 1,
+      "name": "README.md",
+      "latencyMs": 1846,
+      "at": "2026-08-08T20:13:05.892Z"
+    },
+    {
+      "index": 2,
+      "name": "package.json",
+      "latencyMs": 1866.5999999046326,
+      "at": "2026-08-08T20:13:10.772Z"
+    },
+    {
+      "index": 3,
+      "name": "README.md",
+      "latencyMs": 42,
+      "at": "2026-08-08T20:13:13.831Z"
+    },
+    {
+      "index": 4,
+      "name": "package.json",
+      "latencyMs": 57.700000047683716,
+      "at": "2026-08-08T20:13:16.905Z"
+    },
+    {
+      "index": 5,
+      "name": "README.md",
+      "latencyMs": 37.60000014305115,
+      "at": "2026-08-08T20:13:19.961Z"
+    },
+    {
+      "index": 6,
+      "name": "package.json",
+      "latencyMs": 54.299999952316284,
+      "at": "2026-08-08T20:13:23.035Z"
+    },
+    {
+      "index": 7,
+      "name": "README.md",
+      "latencyMs": 35.59999990463257,
+      "at": "2026-08-08T20:13:26.086Z"
+    },
+    {
+      "index": 8,
+      "name": "package.json",
+      "latencyMs": 46.200000047683716,
+      "at": "2026-08-08T20:13:29.148Z"
+    }
+  ],
+  "voice": null,
+  "errors": [],
+  "summary": {
+    "fileP95Ms": 1866.5999999046326,
+    "maxLongTaskMs": 162,
+    "p95IntervalMs": 51,
+    "maxIntervalMs": 221.89999985694885,
+    "p95RafMs": 9.19999999999709,
+    "maxRafMs": 183,
+    "p95ArrivalTimerDelayMs": 35.200000047683716,
+    "maxArrivalTimerDelayMs": 39.200000047683716
+  },
+  "probe": {
+    "urls": [
+      "ws://127.0.0.1:3001/_nuxt/?token=L6cxI24MdOZA",
+      "ws://127.0.0.1:29695/ws/terminal/c351bba2-a325-4eed-bc9e-dc4f59094ac8",
+      "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_cca00c1c2ea04599ab3f980b587a9073",
+      "ws://127.0.0.1:29695/ws/file-explorer/agent_ws_2168e8191679724a362414b52618be3b82b0ef7fcfacc379b39c269325a4480c"
+    ],
+    "byUrl": {
+      "ws://127.0.0.1:3001/_nuxt/?token=L6cxI24MdOZA": {
+        "frames": 1,
+        "types": {
+          "connected": 1
+        }
+      },
+      "ws://127.0.0.1:29695/ws/terminal/c351bba2-a325-4eed-bc9e-dc4f59094ac8": {
+        "frames": 2,
+        "types": {
+          "output": 2
+        }
+      },
+      "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_cca00c1c2ea04599ab3f980b587a9073": {
+        "frames": 22,
+        "types": {
+          "CONNECTED": 1,
+          "AGENT_STATUS": 13,
+          "TEAM_RUN_LIFECYCLE": 1,
+          "SEGMENT_CONTENT": 2,
+          "SEGMENT_END": 1,
+          "TOOL_EXECUTION_STARTED": 1,
+          "TOOL_EXECUTION_SUCCEEDED": 1,
+          "TOKEN_USAGE_UPDATED": 1,
+          "COMPACTION_STATUS": 1
+        }
+      },
+      "ws://127.0.0.1:29695/ws/file-explorer/agent_ws_2168e8191679724a362414b52618be3b82b0ef7fcfacc379b39c269325a4480c": {
+        "frames": 1,
+        "types": {
+          "CONNECTED": 1
+        }
+      }
+    },
+    "types": {
+      "connected": 1,
+      "output": 2,
+      "CONNECTED": 2,
+      "AGENT_STATUS": 13,
+      "TEAM_RUN_LIFECYCLE": 1,
+      "SEGMENT_CONTENT": 2,
+      "SEGMENT_END": 1,
+      "TOOL_EXECUTION_STARTED": 1,
+      "TOOL_EXECUTION_SUCCEEDED": 1,
+      "TOKEN_USAGE_UPDATED": 1,
+      "COMPACTION_STATUS": 1
+    },
+    "status": {
+      "running": 8,
+      "offline": 5
+    },
+    "frames": 26,
+    "arrivals": [
+      {
+        "t": 38.299999952316284,
+        "type": "connected",
+        "route": "<none>",
+        "bytes": 20,
+        "timerDelay": 0.5
+      },
+      {
+        "t": 801.5999999046326,
+        "type": "output",
+        "route": "<none>",
+        "bytes": 271,
+        "timerDelay": 0.6000001430511475
+      },
+      {
+        "t": 802.5,
+        "type": "output",
+        "route": "<none>",
+        "bytes": 43,
+        "timerDelay": 0.20000004768371582
+      },
+      {
+        "t": 2826.2000000476837,
+        "type": "CONNECTED",
+        "route": "<none>",
+        "bytes": 155,
+        "timerDelay": 0.39999985694885254
+      },
+      {
+        "t": 2826.5999999046326,
+        "type": "AGENT_STATUS",
+        "route": "solution_designer",
+        "bytes": 301,
+        "timerDelay": 39.200000047683716
+      },
+      {
+        "t": 2834.2000000476837,
+        "type": "AGENT_STATUS",
+        "route": "architecture_reviewer",
+        "bytes": 325,
+        "timerDelay": 35.200000047683716
+      },
+      {
+        "t": 2842.9000000953674,
+        "type": "AGENT_STATUS",
+        "route": "implementation_engineer",
+        "bytes": 337,
+        "timerDelay": 26.5
+      },
+      {
+        "t": 2847.7999999523163,
+        "type": "AGENT_STATUS",
+        "route": "code_reviewer",
+        "bytes": 277,
+        "timerDelay": 21.600000143051147
+      },
+      {
+        "t": 2852.9000000953674,
+        "type": "AGENT_STATUS",
+        "route": "api_e2e_engineer",
+        "bytes": 295,
+        "timerDelay": 16.5
+      },
+      {
+        "t": 2858.9000000953674,
+        "type": "AGENT_STATUS",
+        "route": "delivery_engineer",
+        "bytes": 301,
+        "timerDelay": 10.699999809265137
+      },
+      {
+        "t": 2865.5,
+        "type": "TEAM_RUN_LIFECYCLE",
+        "route": "<none>",
+        "bytes": 133,
+        "timerDelay": 4.400000095367432
+      },
+      {
+        "t": 11853.900000095367,
+        "type": "CONNECTED",
+        "route": "<none>",
+        "bytes": 175,
+        "timerDelay": 0.2999999523162842
+      },
+      {
+        "t": 17056.299999952316,
+        "type": "AGENT_STATUS",
+        "route": "solution_designer",
+        "bytes": 301,
+        "timerDelay": 7.299999952316284
+      },
+      {
+        "t": 17356.799999952316,
+        "type": "SEGMENT_CONTENT",
+        "route": "solution_designer",
+        "bytes": 926,
+        "timerDelay": 7.799999952316284
+      },
+      {
+        "t": 31519.5,
+        "type": "AGENT_STATUS",
+        "route": "solution_designer",
+        "bytes": 301,
+        "timerDelay": 5.700000047683716
+      },
+      {
+        "t": 31820.799999952316,
+        "type": "SEGMENT_CONTENT",
+        "route": "solution_designer",
+        "bytes": 948,
+        "timerDelay": 5.700000047683716
+      },
+      {
+        "t": 35211.90000009537,
+        "type": "AGENT_STATUS",
+        "route": "solution_designer",
+        "bytes": 301,
+        "timerDelay": 11.299999952316284
+      },
+      {
+        "t": 35217.799999952316,
+        "type": "SEGMENT_END",
+        "route": "solution_designer",
+        "bytes": 420,
+        "timerDelay": 5.799999952316284
+      },
+      {
+        "t": 35223.59999990463,
+        "type": "AGENT_STATUS",
+        "route": "solution_designer",
+        "bytes": 301,
+        "timerDelay": 11.700000047683716
+      },
+      {
+        "t": 35228.90000009537,
+        "type": "TOOL_EXECUTION_STARTED",
+        "route": "solution_designer",
+        "bytes": 2797,
+        "timerDelay": 6.599999904632568
+      },
+      {
+        "t": 35400.200000047684,
+        "type": "AGENT_STATUS",
+        "route": "solution_designer",
+        "bytes": 301,
+        "timerDelay": 5.799999952316284
+      },
+      {
+        "t": 35406.09999990463,
+        "type": "TOOL_EXECUTION_SUCCEEDED",
+        "route": "solution_designer",
+        "bytes": 25077,
+        "timerDelay": 6.400000095367432
+      },
+      {
+        "t": 35412.799999952316,
+        "type": "AGENT_STATUS",
+        "route": "solution_designer",
+        "bytes": 301,
+        "timerDelay": 25.200000047683716
+      },
+      {
+        "t": 35419.700000047684,
+        "type": "TOKEN_USAGE_UPDATED",
+        "route": "solution_designer",
+        "bytes": 7026,
+        "timerDelay": 18.59999990463257
+      },
+      {
+        "t": 35426.200000047684,
+        "type": "AGENT_STATUS",
+        "route": "solution_designer",
+        "bytes": 301,
+        "timerDelay": 12.099999904632568
+      },
+      {
+        "t": 35431.700000047684,
+        "type": "COMPACTION_STATUS",
+        "route": "solution_designer",
+        "bytes": 1074,
+        "timerDelay": 6.599999904632568
+      }
+    ],
+    "longTasks": [
+      {
+        "start": 474.59999990463257,
+        "duration": 68
+      },
+      {
+        "start": 2699.0999999046326,
+        "duration": 118
+      },
+      {
+        "start": 18736.299999952316,
+        "duration": 162
+      }
+    ]
+  }
+}

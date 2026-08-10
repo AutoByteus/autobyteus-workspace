@@ -1,0 +1,13 @@
+Observed fresh-render order:
+1. WorkspaceAgentRunsTreePanel renders and its computed workspaceNodes calls runHistoryStore.getTreeNodes().
+2. IR-005 getTreeNodes() sees navigationProjection == null and calls refreshRunNavigationTopology('lazy-tree-read').
+3. workspaceStore.fetchAllWorkspaces() is still asynchronous, so the cached projection is seeded from an empty workspace catalog.
+4. fetchAllWorkspaces() later returns 26 workspaces, but the panel does not refresh the cached run-navigation topology.
+5. getTreeNodes() now sees a non-null projection and returns the stale empty workspaceNodes forever until an unrelated topology mutation occurs.
+
+Task/base contrast:
+- origin/personal getTreeNodes() built from reactive workspaceStore.allWorkspaces on each read.
+- IR-005 replaced that dynamic read with a cached projection in d1c48db5a and did not add a refresh after initial workspace metadata loading.
+- The component test explicitly asserts fetchTree is not called but does not model an initially empty workspace store that becomes populated after the first cached projection read.
+
+Preliminary origin: implementation source defect in the new cached-navigation initialization/invalidation contract, plus missing durable fresh-boot coverage.

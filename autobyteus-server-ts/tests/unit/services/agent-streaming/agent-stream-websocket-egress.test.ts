@@ -1,6 +1,10 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ServerMessage, ServerMessageType } from "../../../../src/services/agent-streaming/models.js";
 import { AgentStreamWebSocketEgress } from "../../../../src/services/agent-streaming/websocket-egress/agent-stream-websocket-egress.js";
+import type {
+  AgentStreamEgressFilter,
+  AgentStreamEgressObserver,
+} from "../../../../src/services/agent-streaming/websocket-egress/agent-stream-egress-control.js";
 
 const content = (
   delta: unknown,
@@ -19,6 +23,16 @@ const parseSent = (sendRaw: ReturnType<typeof vi.fn>) =>
     type: ServerMessageType;
     payload: Record<string, unknown>;
   });
+
+const status = (
+  value: string,
+  identity: Record<string, unknown> = { agent_id: "agent-run-1" },
+  extra: Record<string, unknown> = {},
+): ServerMessage => new ServerMessage(ServerMessageType.AGENT_STATUS, {
+  status: value,
+  ...identity,
+  ...extra,
+});
 
 describe("AgentStreamWebSocketEgress", () => {
   afterEach(() => vi.useRealTimers());
@@ -94,6 +108,162 @@ describe("AgentStreamWebSocketEgress", () => {
         [ServerMessageType.AGENT_STATUS, "running"],
         [ServerMessageType.SEGMENT_CONTENT, "a1a2"],
       ]);
+  });
+
+  it("suppresses an exact repeated standalone status but forwards a payload transition", () => {
+    const sendRaw = vi.fn();
+    const egress = new AgentStreamWebSocketEgress({ sendRaw });
+
+    egress.send(status("running"));
+    egress.send(status("running"));
+    egress.send(status("running", { agent_id: "agent-run-1" }, { detail: "changed" }));
+
+    expect(parseSent(sendRaw).map(({ payload }) => payload)).toEqual([
+      { status: "running", agent_id: "agent-run-1" },
+      { status: "running", agent_id: "agent-run-1", detail: "changed" },
+    ]);
+  });
+
+  it("isolates stable-member, task-agent, and nested task-team status identities", () => {
+    const sendRaw = vi.fn();
+    const egress = new AgentStreamWebSocketEgress({ sendRaw });
+    const stableA = { agent_id: "run-a", member_route_key: "root/a" };
+    const stableB = { agent_id: "run-b", member_route_key: "root/b" };
+    const taskAgent = {
+      agent_id: "task-agent-run",
+      task_agent_run_id: "task-agent-run",
+      task_agent_instance_id: "task-agent-instance",
+      source_route_key: "root/lead/task-agent",
+    };
+    const taskTeamLeaf = {
+      agent_id: "leaf-run",
+      task_team_run_id: "task-team-run",
+      task_team_instance_id: "task-team-instance",
+      task_id: "task-1",
+      team_route_key: "root/task-team",
+      task_team_relative_member_route_key: "researcher",
+    };
+
+    [stableA, stableB, taskAgent, taskTeamLeaf].forEach((identity) => {
+      egress.send(status("running", identity));
+      egress.send(status("running", identity));
+    });
+
+    expect(parseSent(sendRaw)).toHaveLength(4);
+    expect(parseSent(sendRaw).map(({ payload }) => payload.agent_id)).toEqual([
+      "run-a",
+      "run-b",
+      "task-agent-run",
+      "leaf-run",
+    ]);
+  });
+
+  it("fails open when a status identity is incomplete", () => {
+    const sendRaw = vi.fn();
+    const egress = new AgentStreamWebSocketEgress({ sendRaw });
+    const incompleteTaskTeam = {
+      agent_id: "leaf-run",
+      task_team_run_id: "task-team-run",
+    };
+
+    egress.send(status("running", incompleteTaskTeam));
+    egress.send(status("running", incompleteTaskTeam));
+
+    expect(parseSent(sendRaw)).toHaveLength(2);
+  });
+
+  it("resets status state per connection and on disposal", () => {
+    const sendRawA = vi.fn();
+    const sendRawB = vi.fn();
+    const first = new AgentStreamWebSocketEgress({ sendRaw: sendRawA });
+    const second = new AgentStreamWebSocketEgress({ sendRaw: sendRawB });
+
+    first.send(status("running"));
+    first.send(status("running"));
+    second.send(status("running"));
+    first.dispose();
+
+    expect(parseSent(sendRawA)).toHaveLength(1);
+    expect(parseSent(sendRawB)).toHaveLength(1);
+  });
+
+  it("runs registered filters in order and keeps observers non-authoritative", () => {
+    const sendRaw = vi.fn();
+    const filterCalls: string[] = [];
+    const observations: string[] = [];
+    const onObserverError = vi.fn();
+    const firstFilter: AgentStreamEgressFilter = {
+      evaluate: () => {
+        filterCalls.push("first");
+        return { action: "FORWARD" };
+      },
+    };
+    const secondFilter: AgentStreamEgressFilter = {
+      evaluate: () => {
+        filterCalls.push("second");
+        return { action: "FORWARD" };
+      },
+    };
+    const observer: AgentStreamEgressObserver = {
+      observe: ({ type }) => {
+        observations.push(type);
+        if (type === "MESSAGE_RECEIVED") throw new Error("observer failed");
+      },
+    };
+    const egress = new AgentStreamWebSocketEgress({
+      sendRaw,
+      onObserverError,
+      controlExtensions: {
+        filterFactories: [() => firstFilter, () => secondFilter],
+        observerFactories: [() => observer],
+      },
+    });
+
+    egress.send(new ServerMessage(ServerMessageType.CONNECTED, { session_id: "s-1" }));
+
+    expect(filterCalls).toEqual(["first", "second"]);
+    expect(parseSent(sendRaw)).toHaveLength(1);
+    expect(observations).toEqual(["MESSAGE_RECEIVED", "MESSAGE_FORWARDED"]);
+    expect(onObserverError).toHaveBeenCalledTimes(1);
+  });
+
+  it("keeps nested delivery data immutable across registered observers and filters", () => {
+    const sendRaw = vi.fn();
+    const mutationAttempts: boolean[] = [];
+    const observer: AgentStreamEgressObserver = {
+      observe: (observation) => {
+        if (observation.type !== "MESSAGE_RECEIVED") return;
+        const nested = observation.message.payload.nested as Record<string, unknown>;
+        mutationAttempts.push(Reflect.set(nested, "route", "observer-mutated"));
+      },
+    };
+    const filter: AgentStreamEgressFilter = {
+      evaluate: (message) => {
+        const nested = message.payload.nested as Record<string, unknown>;
+        mutationAttempts.push(Reflect.set(nested, "route", "filter-mutated"));
+        return { action: "FORWARD" };
+      },
+    };
+    const original = new ServerMessage(ServerMessageType.CONNECTED, {
+      session_id: "s-immutable",
+      nested: { route: "exact" },
+    });
+    const egress = new AgentStreamWebSocketEgress({
+      sendRaw,
+      controlExtensions: {
+        filterFactories: [() => filter],
+        observerFactories: [() => observer],
+      },
+    });
+
+    egress.send(original);
+
+    expect(mutationAttempts).toEqual([false, false]);
+    expect(original.payload).toEqual({ session_id: "s-immutable", nested: { route: "exact" } });
+    expect(parseSent(sendRaw)).toEqual([{
+      type: ServerMessageType.CONNECTED,
+      payload: { session_id: "s-immutable", nested: { route: "exact" } },
+    }]);
   });
 
   it.each([

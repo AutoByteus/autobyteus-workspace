@@ -120,6 +120,7 @@ export const buildTeamNodes = (params: {
       focusedMemberRouteKey,
       members: sortedMembers,
       memberTree,
+      executionRows: [],
     });
   }
 
@@ -135,9 +136,7 @@ export const buildTeamNodes = (params: {
       params.resolveWorkspaceRootPath,
     );
     const members = flattenTeamRows(memberTree);
-    const focusedMemberRouteKey =
-      members.find((member) => member.memberRouteKey === teamContext.focusedMemberRouteKey)?.memberRouteKey ||
-      members[0]?.memberRouteKey || '';
+    const focusedMemberRouteKey = teamContext.focusedMemberRouteKey || members[0]?.memberRouteKey || '';
     const deleteLifecycle = existing?.deleteLifecycle ?? ('READY' as const);
     const teamDefinitionId =
       existing?.teamDefinitionId ||
@@ -156,6 +155,7 @@ export const buildTeamNodes = (params: {
       focusedMemberRouteKey,
       members,
       memberTree,
+      executionRows: [],
     });
   }
 

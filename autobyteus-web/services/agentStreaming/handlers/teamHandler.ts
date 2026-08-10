@@ -22,7 +22,7 @@ import { useTeamCommunicationStore } from '~/stores/teamCommunicationStore';
 export function handleInterAgentMessage(
   payload: InterAgentMessagePayload,
   context: AgentContext
-) {
+): boolean {
   const messageId = payload.message_id?.trim() || '';
   if (messageId) {
     for (const message of context.conversation.messages) {
@@ -36,12 +36,12 @@ export function handleInterAgentMessage(
         || existing.recipientRoleName !== payload.recipient_role_name
         || existing.content !== payload.content
         || existing.messageType !== payload.message_type;
-      if (!changed) return;
+      if (!changed) return false;
       existing.senderAgentRunId = payload.sender_agent_id;
       existing.recipientRoleName = payload.recipient_role_name;
       existing.content = payload.content;
       existing.messageType = payload.message_type;
-      return;
+      return true;
     }
   }
   const aiMessage = findOrCreateAIMessage(context);
@@ -56,6 +56,7 @@ export function handleInterAgentMessage(
   };
   
   aiMessage.segments.push(segment);
+  return true;
 }
 
 /**
@@ -70,12 +71,14 @@ export function handleTeamCommunicationMessage(
 export function handleTeamRunLifecycle(
   payload: TeamRunLifecyclePayload,
   context: AgentTeamContext,
-): void {
+): boolean {
   if (payload.team_run_id !== context.teamRunId) {
     console.warn(
       `Ignoring lifecycle for team '${payload.team_run_id}' on '${context.teamRunId}'.`,
     );
-    return;
+    return false;
   }
+  if (context.isActive === payload.is_active) return false;
   context.isActive = payload.is_active;
+  return true;
 }

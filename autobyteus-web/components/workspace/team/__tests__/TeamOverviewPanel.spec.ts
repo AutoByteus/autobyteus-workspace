@@ -51,6 +51,25 @@ const buildTaskAgentNode = (taskId: string, runId = `${taskId}-run`) => ({
   currentStatus: 'running',
 });
 
+const buildMemberContext = (runId: string, currentStatus = 'idle') => ({
+  config: {
+    agentDefinitionId: `${runId}-definition`,
+    agentDefinitionName: runId,
+    workspaceId: null,
+    workspaceMetadata: null,
+  },
+  state: {
+    runId,
+    currentStatus,
+    conversation: {
+      id: runId,
+      messages: [],
+      createdAt: '2026-04-12T09:00:00.000Z',
+      updatedAt: '2026-04-12T09:00:00.000Z',
+    },
+  },
+});
+
 const seedActiveTeam = (options: { taskIds?: string[]; teamRunId?: string } = {}) => {
   const teamRunId = options.teamRunId ?? 'team-1';
   const implementationEngineer = {
@@ -69,10 +88,10 @@ const seedActiveTeam = (options: { taskIds?: string[]; teamRunId?: string } = {}
     memberTree,
     memberNodesByRouteKey: new Map<string, any>(memberTree.map((member) => [member.memberRouteKey, member])),
     leafAgentContextsByRouteKey: new Map<string, any>([
-      ['implementation_engineer', { state: { runId: 'impl-run', currentStatus: 'idle' } }],
+      ['implementation_engineer', buildMemberContext('impl-run')],
       ...taskNodes.map((member) => [
         member.memberRouteKey,
-        { state: { runId: member.memberRunId, currentStatus: 'running' } },
+        buildMemberContext(member.memberRunId, 'running'),
       ] as const),
     ]),
     focusedMemberRouteKey: 'implementation_engineer',
@@ -131,8 +150,8 @@ const seedFocusedSubteam = () => {
       ['BuildSquad/review_lead', reviewLead],
     ]),
     leafAgentContextsByRouteKey: new Map<string, any>([
-      ['program_manager', { state: { runId: 'pm-run' } }],
-      ['BuildSquad/review_lead', { state: { runId: 'review-run' } }],
+      ['program_manager', buildMemberContext('pm-run')],
+      ['BuildSquad/review_lead', buildMemberContext('review-run')],
     ]),
     focusedMemberRouteKey: 'BuildSquad',
     isActive: false,
@@ -234,7 +253,7 @@ describe('TeamOverviewPanel.vue', () => {
     ]);
     teamContext.leafAgentContextsByRouteKey = new Map([
       ...teamContext.leafAgentContextsByRouteKey,
-      [taskNode.memberRouteKey, { state: { runId: taskNode.memberRunId, currentStatus: 'running' } }],
+      [taskNode.memberRouteKey, buildMemberContext(taskNode.memberRunId, 'running')],
     ]);
     await wrapper.vm.$nextTick();
 
@@ -268,7 +287,7 @@ describe('TeamOverviewPanel.vue', () => {
     ]);
     teamContext.leafAgentContextsByRouteKey = new Map([
       ...teamContext.leafAgentContextsByRouteKey,
-      [nextTaskNode.memberRouteKey, { state: { runId: nextTaskNode.memberRunId, currentStatus: 'running' } }],
+      [nextTaskNode.memberRouteKey, buildMemberContext(nextTaskNode.memberRunId, 'running')],
     ]);
     await wrapper.vm.$nextTick();
 

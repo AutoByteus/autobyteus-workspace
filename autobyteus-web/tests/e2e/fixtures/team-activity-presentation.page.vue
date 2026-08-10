@@ -107,6 +107,17 @@ const historyRun = (
     focusedMemberRouteKey: 'critic',
     members: [member],
     memberTree: [member],
+    executionRows: [{
+      kind: 'stable_member',
+      teamRunId,
+      memberKind: member.memberKind,
+      memberRouteKey: member.memberRouteKey,
+      memberPath: [...member.memberPath],
+      displayName: member.displayName,
+      depth: 0,
+      hasChildren: false,
+      row: member,
+    }],
   };
 };
 
@@ -215,7 +226,6 @@ const historyState: WorkspaceHistorySectionState = {
     historyDefinitionExpanded.value = !historyDefinitionExpanded.value;
   },
   isTeamExpanded: () => false,
-  getLiveTeamContext: (teamRunId) => runningRuns.value.find((run) => run.teamRunId === teamRunId) ?? null,
   isTeamMemberExpanded: () => false,
   toggleTeamMember: () => {},
   canTerminateTeam: (isActive) => isActive && !stopPending.value,

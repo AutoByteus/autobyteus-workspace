@@ -28,6 +28,7 @@ import {
   beginLocalUserSubmission,
   failLocalSubmission,
   finalizeLocalSubmissionAttachments,
+  retargetLocalUserSubmission,
 } from '~/services/runSubmission/localUserSubmission';
 import { useToasts } from '~/composables/useToasts';
 import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
@@ -148,6 +149,7 @@ export const useAgentRunStore = defineStore('agentRun', {
       const localSubmission = beginLocalUserSubmission(currentAgent, {
         text: messageContent,
         attachments: draftAttachments,
+        navigationTarget: { kind: 'standalone', runId },
       });
 
       let preparedRunId: string | null = null;
@@ -193,6 +195,10 @@ export const useAgentRunStore = defineStore('agentRun', {
           finalRunId = permanentRunId;
           preparedRunId = permanentRunId;
           agentContextsStore.promoteTemporaryId(runId, permanentRunId);
+          retargetLocalUserSubmission(localSubmission, {
+            kind: 'standalone',
+            runId: permanentRunId,
+          });
         }
 
         agentContextsStore.lockConfig(finalRunId);
@@ -233,8 +239,8 @@ export const useAgentRunStore = defineStore('agentRun', {
             console.warn(`Failed to cancel prepared agent run '${preparedRunId}'.`, cancelError);
           });
         }
-        failLocalSubmission(localSubmission, error);
         applyOfflineOrTerminalCleanup(localSubmission.context, AgentStatus.Error);
+        failLocalSubmission(localSubmission, error);
 
         // We do NOT re-throw here because we've handled it by showing it in the UI.
         // If we re-throw, parent catch blocks might try to handle it again (e.g. log it).

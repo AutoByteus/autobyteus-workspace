@@ -58,10 +58,10 @@
 import { computed } from 'vue';
 import { Icon } from '@iconify/vue';
 import StatusDot from '~/components/workspace/common/StatusDot.vue';
-import type { WorkspaceTransientExecutionDisplayRow } from '~/utils/workspaceTeamExecutionDisplayRows';
+import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes';
 
 const props = withDefaults(defineProps<{
-  row: WorkspaceTransientExecutionDisplayRow;
+  row: RunHistoryTransientExecutionRow;
   focused?: boolean;
   hasChildren?: boolean;
   expanded?: boolean;
@@ -72,8 +72,8 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-  (e: 'select', row: WorkspaceTransientExecutionDisplayRow): void;
-  (e: 'toggle', row: WorkspaceTransientExecutionDisplayRow): void;
+  (e: 'select', row: RunHistoryTransientExecutionRow): void;
+  (e: 'toggle', row: RunHistoryTransientExecutionRow): void;
 }>();
 
 const rowStyle = computed(() => ({

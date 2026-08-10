@@ -9,7 +9,7 @@ export const handleMemberInputMessage = (
   payload: MemberInputMessagePayload,
   context: AgentContext,
 ) => {
-  upsertUserMessageByIdentity({
+  return upsertUserMessageByIdentity({
     context,
     userMessage: buildUserMessageFromProjectionPayload(payload),
     retainExistingNonExecutableContextFiles: true,
