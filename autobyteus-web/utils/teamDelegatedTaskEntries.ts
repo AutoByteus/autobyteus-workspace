@@ -53,6 +53,34 @@ const recordVisible = (record: TaskDelegationRecord, focused?: TeamExecutionAddr
   return Boolean(key && (addressKey(record.senderAddress) === key || addressKey(record.receiverAddress) === key));
 };
 
+const hasSameTaskTeamScope = (
+  left: readonly string[],
+  right: readonly string[],
+): boolean => left.length === right.length && left.every((id, index) => id === right[index]);
+
+const liveTaskBelongsToFocusedPlacement = (
+  team: AgentTeamContext,
+  node: TeamMemberNode,
+  focused: TeamExecutionAddress,
+): boolean => {
+  const task = node.executionAddress;
+  if (!node.isTaskExecution || !node.taskId || !task || focused.taskAgentRunId
+    || focused.rootTeamRunId !== team.teamRunId || task.rootTeamRunId !== team.teamRunId
+    || task.memberAddress !== focused.memberAddress || node.address !== task.memberAddress
+    || team.memberNodesByAddress.get(focused.memberAddress)?.kind !== node.kind) return false;
+
+  if (node.kind === 'agent') {
+    return Boolean(task.taskAgentRunId)
+      && node.agentRunId === task.taskAgentRunId
+      && hasSameTaskTeamScope(task.taskTeamRunIds, focused.taskTeamRunIds);
+  }
+
+  return task.taskAgentRunId === null
+    && task.taskTeamRunIds.length === focused.taskTeamRunIds.length + 1
+    && focused.taskTeamRunIds.every((id, index) => id === task.taskTeamRunIds[index])
+    && node.teamRunId === task.taskTeamRunIds.at(-1);
+};
+
 const taskArguments = (record: TaskDelegationRecord): Record<string, unknown> => ({
   target: { kind: record.receiverTargetKind, address: record.receiverAddress },
   description: record.content,
@@ -127,15 +155,14 @@ export const deriveDelegatedTaskEntries = (
 ): DelegatedTaskEntry[] => {
   const liveNodes = collectLiveTaskNodes(team.rootTeam.children);
   const byTaskId = new Map(liveNodes.flatMap((node) => node.taskId ? [[node.taskId, node] as const] : []));
-  const consumed = new Set<TeamMemberNode>();
+  const persistedTaskIds = new Set(records.map((record) => record.taskId));
   const persisted = records.filter((record) => recordVisible(record, focusedAddress)).map((record) => {
     const node = byTaskId.get(record.taskId) ?? null;
-    if (node) consumed.add(node);
     return node ? liveEntry(team, node, record) : persistedEntry(team, record);
   });
-  const live = liveNodes.filter((node) => !consumed.has(node)).filter((node) => {
+  const live = liveNodes.filter((node) => !node.taskId || !persistedTaskIds.has(node.taskId)).filter((node) => {
     if (focusedAddress === undefined) return true;
-    return addressKey(node.executionAddress) === addressKey(focusedAddress);
+    return Boolean(focusedAddress && liveTaskBelongsToFocusedPlacement(team, node, focusedAddress));
   }).map((node) => liveEntry(team, node, null));
   return [...persisted, ...live];
 };
