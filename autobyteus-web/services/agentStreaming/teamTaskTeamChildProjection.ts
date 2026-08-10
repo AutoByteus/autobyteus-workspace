@@ -17,11 +17,18 @@ import type { ServerMessage } from './protocol';
 import {
   buildRouteKeyFromPath,
   buildTaskTeamScopedChildRouteKey,
+  captureTaskExecutionNavigationSnapshot,
+  deriveTaskExecutionProjectionMutation,
   normalizeProjectionPath,
   normalizeProjectionString,
+  type TaskExecutionProjectionMutation,
 } from './teamTaskExecutionProjection';
 import type { TaskTeamExecutionProjectionIdentity } from './teamTaskTeamExecutionProjection';
 import { normalizeAgentRuntimeStatus } from '~/services/runHydration/runtimeStatusNormalization';
+import {
+  primeRecentEventMonitorBaseline,
+  resetRecentEventMonitorBaseline,
+} from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
 
 export interface TaskTeamChildMemberProjectionIdentity {
   parentTaskTeamRunId: string;
@@ -189,7 +196,9 @@ const cloneNode = (
   teamContext.memberNodesByRouteKey.set(scopedMemberRouteKey, clonedAgent);
   if (!teamContext.leafAgentContextsByRouteKey.has(scopedMemberRouteKey)) {
     const structuralContext = teamContext.leafAgentContextsByRouteKey.get(structuralSourceRouteKey) ?? null;
-    teamContext.leafAgentContextsByRouteKey.set(scopedMemberRouteKey, createChildAgentContext(clonedAgent, structuralContext));
+    const childContext = createChildAgentContext(clonedAgent, structuralContext);
+    primeRecentEventMonitorBaseline(childContext);
+    teamContext.leafAgentContextsByRouteKey.set(scopedMemberRouteKey, childContext);
   }
   return clonedAgent;
 };
@@ -297,7 +306,8 @@ const promoteScopedContextRunId = (
 export const ensureTaskTeamChildProjection = (
   teamContext: AgentTeamContext,
   identity: TaskTeamChildMemberProjectionIdentity,
-): { node: TeamMemberNode; context: AgentContext | null } | null => {
+): { node: TeamMemberNode; context: AgentContext | null; mutation: TaskExecutionProjectionMutation } | null => {
+  const before = captureTaskExecutionNavigationSnapshot(teamContext);
   const node = teamContext.memberNodesByRouteKey.get(identity.scopedMemberRouteKey) ?? null;
   if (!node?.isTaskTeamChildProjection) {
     console.warn('Task-team scoped child projection missing for stamped event', identity);
@@ -308,7 +318,11 @@ export const ensureTaskTeamChildProjection = (
     node.memberRunId = identity.runtimeMemberRunId;
   }
   if (node.memberKind === 'agent_team') {
-    return { node, context: null };
+    return {
+      node,
+      context: null,
+      mutation: deriveTaskExecutionProjectionMutation(before, teamContext, 'ensure task-team child'),
+    };
   }
 
   const context = teamContext.leafAgentContextsByRouteKey.get(identity.scopedMemberRouteKey) ?? null;
@@ -317,25 +331,35 @@ export const ensureTaskTeamChildProjection = (
     return null;
   }
   promoteScopedContextRunId(context, identity.runtimeMemberRunId);
-  return { node, context };
+  return {
+    node,
+    context,
+    mutation: deriveTaskExecutionProjectionMutation(before, teamContext, 'ensure task-team child'),
+  };
 };
 
 export const updateTaskTeamChildStatus = (
+  teamContext: AgentTeamContext,
   node: TeamMemberNode,
   message: ServerMessage,
-): void => {
-  if (message.type !== 'AGENT_STATUS' || node.memberKind !== 'agent') return;
+): TaskExecutionProjectionMutation => {
+  const before = captureTaskExecutionNavigationSnapshot(teamContext);
+  if (message.type !== 'AGENT_STATUS' || node.memberKind !== 'agent') {
+    return deriveTaskExecutionProjectionMutation(before, teamContext, 'unchanged task-team child status');
+  }
   const payload = payloadFor(message);
-  if (!payload) return;
+  if (!payload) return deriveTaskExecutionProjectionMutation(before, teamContext, 'missing task-team child status');
   node.currentStatus = normalizeAgentRuntimeStatus(
     typeof payload.status === 'string' ? payload.status : null,
   ) ?? AgentStatus.Offline;
+  return deriveTaskExecutionProjectionMutation(before, teamContext, 'update task-team child status');
 };
 
 export const removeTaskTeamChildProjections = (
   teamContext: AgentTeamContext,
   taskTeamRunId: string,
-): void => {
+): TaskExecutionProjectionMutation => {
+  const before = captureTaskExecutionNavigationSnapshot(teamContext);
   const scopedPrefix = `${taskTeamRunId}/`;
   const memberNodes = new Map(teamContext.memberNodesByRouteKey);
   const routeKeysToRemove = new Set<string>();
@@ -355,9 +379,11 @@ export const removeTaskTeamChildProjections = (
       conversationId.startsWith(scopedPrefix) ||
       runId.startsWith(scopedPrefix)
     ) {
+      resetRecentEventMonitorBaseline(context);
       leafContexts.delete(routeKey);
     }
   }
   teamContext.memberNodesByRouteKey = memberNodes;
   teamContext.leafAgentContextsByRouteKey = leafContexts;
+  return deriveTaskExecutionProjectionMutation(before, teamContext, 'remove task-team children');
 };

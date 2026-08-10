@@ -7,10 +7,8 @@ import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import type { AgentTeamContext, AgentTeamMemberNode } from '~/types/agent/AgentTeamContext';
-import {
-  hydrateTeamMemberActivitiesFromProjection,
-  loadTeamRunContextHydrationPayload,
-} from '~/services/runHydration/teamRunContextHydrationService';
+import { loadTeamRunContextHydrationPayload } from '~/services/runHydration/teamRunContextHydrationService';
+import { hydrateTeamMemberActivitiesFromProjection } from '~/services/runHydration/teamRunMemberStatusHydration';
 import { reconstructTeamRunConfigFromMetadata } from '~/utils/teamRunConfigUtils';
 import {
   applyMemberOrHistoryStatusSnapshot,
@@ -24,6 +22,10 @@ import {
   getTaskAgentIdentityFromContext,
   restoreTaskAgentContextProjections,
 } from '~/services/agentStreaming/teamTaskAgentContextProjection';
+import {
+  primeRecentEventMonitorBaseline,
+  resetRecentEventMonitorBaseline,
+} from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
 
 export type TeamRunOpenSelectionMode = 'desktop' | 'mobile';
 
@@ -59,6 +61,7 @@ const mergeHydratedMembers = (
     existingMemberContext.config = memberContext.config;
 
     if (!options.preserveLiveRuntimeState) {
+      resetRecentEventMonitorBaseline(existingMemberContext);
       existingMemberContext.state.runId = memberContext.state.runId;
       existingMemberContext.state.conversation = memberContext.state.conversation;
       existingMemberContext.state.hasEarlierActiveTraceEvents = memberContext.state.hasEarlierActiveTraceEvents;
@@ -167,7 +170,7 @@ export const openTeamRun = async (
     ? getTaskAgentContextsByRouteKey(existingTeamContext, liveTaskAgentNodesToRestore)
     : new Map<string, any>();
   let finalFocusedMemberRouteKey = resolvedFocusedMemberRouteKey;
-  let liveProjectionActivityMemberKeys = Array.from(members.keys());
+  let activityHydrationMemberKeys = Array.from(members.keys());
 
   if (existingTeamContext) {
     if (!shouldKeepLiveContext && existingTeamContext.unsubscribe) {
@@ -186,7 +189,7 @@ export const openTeamRun = async (
 
     if (shouldKeepLiveContext) {
       const existingMemberKeys = new Set(existingLeafAgentContextsByRouteKey.keys());
-      liveProjectionActivityMemberKeys = Array.from(members.keys()).filter(
+      activityHydrationMemberKeys = Array.from(members.keys()).filter(
         (memberRouteKey) => !existingMemberKeys.has(memberRouteKey),
       );
       existingTeamContext.leafAgentContextsByRouteKey = mergeHydratedMembers(existingLeafAgentContextsByRouteKey, members, {
@@ -210,7 +213,13 @@ export const openTeamRun = async (
     (existingTeamContext as any).members = existingTeamContext.leafAgentContextsByRouteKey;
 
     if (liveTaskAgentNodesToRestore.length > 0 || liveTaskAgentContextsToRestore.size > 0) {
-      restoreTaskAgentContextProjections(existingTeamContext, liveTaskAgentNodesToRestore);
+      const restoredTaskProjectionMutation = restoreTaskAgentContextProjections(
+        existingTeamContext,
+        liveTaskAgentNodesToRestore,
+      );
+      if (restoredTaskProjectionMutation.kind === 'PRESENTATION') {
+        throw new Error('Task-agent restoration unexpectedly produced a presentation-only mutation.');
+      }
       if (shouldTreatAsLive) {
         const restoredFocus = resolveActiveExecutionFocusedMemberRouteKey(
           existingTeamContext,
@@ -225,14 +234,16 @@ export const openTeamRun = async (
     teamContextsStore.addTeamContext(hydratedContext);
   }
 
-  if (shouldTreatAsLive && liveProjectionActivityMemberKeys.length > 0) {
+  if (shouldTreatAsLive && activityHydrationMemberKeys.length > 0) {
     const teamContext = teamContextsStore.getTeamContextById(metadata.teamRunId) || hydratedContext;
     hydrateTeamMemberActivitiesFromProjection({
       members: teamContext.leafAgentContextsByRouteKey,
       projectionByMemberRouteKey,
-      memberRouteKeys: liveProjectionActivityMemberKeys,
+      memberRouteKeys: activityHydrationMemberKeys,
     });
   }
+  const finalTeamContext = teamContextsStore.getTeamContextById(metadata.teamRunId) || hydratedContext;
+  finalTeamContext.leafAgentContextsByRouteKey.forEach(primeRecentEventMonitorBaseline);
 
   if (input.selectRun !== false) {
     const selectionStore = useAgentSelectionStore();

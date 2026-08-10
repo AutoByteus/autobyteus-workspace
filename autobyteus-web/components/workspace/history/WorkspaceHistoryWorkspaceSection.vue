@@ -158,7 +158,7 @@
                 <Icon icon="heroicons:trash-20-solid" class="h-3.5 w-3.5" />
               </button>
               <span class="text-xs text-gray-400">
-                {{ state.formatRelativeTime(run.lastActivityAt) }}
+                {{ formatRelativeTime(run.lastActivityAt) }}
               </span>
             </div>
           </button>
@@ -284,7 +284,7 @@
                     <Icon icon="heroicons:trash-20-solid" class="h-3.5 w-3.5" />
                   </button>
                   <span class="text-xs text-gray-400">
-                    {{ state.formatRelativeTime(team.lastActivityAt) }}
+                    {{ formatRelativeTime(team.lastActivityAt) }}
                   </span>
                 </div>
               </div>
@@ -380,7 +380,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { Icon } from '@iconify/vue';
 import StatusDot from '~/components/workspace/common/StatusDot.vue';
 import TeamActivityDot from '~/components/workspace/common/TeamActivityDot.vue';
@@ -399,15 +399,10 @@ import {
   formatTeamRunLabel,
 } from '~/components/workspace/history/workspaceHistoryRunLabels';
 import type {
-  TeamMemberTreeRow,
+  RunHistoryTeamExecutionRow,
   TeamRunHistoryDefinitionGroup,
   TeamTreeNode,
 } from '~/stores/runHistoryTypes';
-import {
-  buildWorkspaceTeamExecutionDisplayRows,
-  type WorkspaceStableMemberDisplayRow,
-  type WorkspaceTeamExecutionDisplayRow,
-} from '~/utils/workspaceTeamExecutionDisplayRows';
 import type { RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
 
 const props = defineProps<{
@@ -426,48 +421,27 @@ const groupedTeamDefinitions = computed<WorkspaceHistoryTeamDefinitionDisplayGro
   ),
 );
 
+const relativeTimeTick = ref(0);
+let relativeTimeTimer: ReturnType<typeof setInterval> | null = null;
+const formatRelativeTime = (isoTime: string): string => {
+  void relativeTimeTick.value;
+  return props.state.formatRelativeTime(isoTime);
+};
+onMounted(() => {
+  relativeTimeTimer = setInterval(() => { relativeTimeTick.value += 1; }, 60_000);
+});
+onBeforeUnmount(() => {
+  if (relativeTimeTimer !== null) clearInterval(relativeTimeTimer);
+});
+
 interface VisibleTeamExecutionRow {
-  row: WorkspaceTeamExecutionDisplayRow;
+  row: RunHistoryTeamExecutionRow;
   hasChildren: boolean;
 }
 
-const rootTeamMembers = (team: TeamTreeNode): readonly TeamMemberTreeRow[] => team.memberTree.length > 0 ? team.memberTree : team.members;
-
-const teamExecutionRowsByTeamRunId = computed(() => new Map(
-  props.workspaceTeams.map((team) => [
-    team.teamRunId,
-    buildWorkspaceTeamExecutionDisplayRows({
-      team,
-      teamContext: props.state.getLiveTeamContext(team.teamRunId),
-    }),
-  ]),
-));
-
-const stableRowHasChildren = (
-  row: WorkspaceTeamExecutionDisplayRow,
-): row is WorkspaceStableMemberDisplayRow => (
-  row.kind === 'stable_member'
-  && row.row.memberKind === 'agent_team'
-  && row.row.children.length > 0
-);
-
-const transientRowHasChildren = (
-  row: WorkspaceTeamExecutionDisplayRow,
-  index: number,
-  rows: readonly WorkspaceTeamExecutionDisplayRow[],
-): boolean => row.kind === 'transient_execution'
-  && row.transientKind === 'task_team'
-  && (rows[index + 1]?.depth ?? -1) > row.depth;
-
-const teamDisplayRowHasChildren = (
-  row: WorkspaceTeamExecutionDisplayRow,
-  index: number,
-  rows: readonly WorkspaceTeamExecutionDisplayRow[],
-): boolean => stableRowHasChildren(row) || transientRowHasChildren(row, index, rows);
-
 const isTeamDisplayRowExpanded = (
   team: TeamTreeNode,
-  row: WorkspaceTeamExecutionDisplayRow,
+  row: RunHistoryTeamExecutionRow,
 ): boolean => props.state.isTeamMemberExpanded(
   props.workspaceNode.workspaceId,
   team.teamRunId,
@@ -476,7 +450,7 @@ const isTeamDisplayRowExpanded = (
 
 const toggleTeamDisplayRow = (
   team: TeamTreeNode,
-  row: WorkspaceTeamExecutionDisplayRow,
+  row: RunHistoryTeamExecutionRow,
 ): void => props.state.toggleTeamMember(
   props.workspaceNode.workspaceId,
   team.teamRunId,
@@ -485,10 +459,10 @@ const toggleTeamDisplayRow = (
 
 const visibleTeamExecutionRows = (team: TeamTreeNode): VisibleTeamExecutionRow[] => {
   const visibleRows: VisibleTeamExecutionRow[] = [];
-  const rows = teamExecutionRowsByTeamRunId.value.get(team.teamRunId) ?? [];
+  const rows = team.executionRows;
   let collapsedDepth: number | null = null;
 
-  for (const [index, row] of rows.entries()) {
+  for (const row of rows) {
     if (collapsedDepth !== null) {
       if (row.depth > collapsedDepth) {
         continue;
@@ -496,7 +470,7 @@ const visibleTeamExecutionRows = (team: TeamTreeNode): VisibleTeamExecutionRow[]
       collapsedDepth = null;
     }
 
-    const hasChildren = teamDisplayRowHasChildren(row, index, rows);
+    const hasChildren = row.hasChildren;
     visibleRows.push({ row, hasChildren });
 
     if (hasChildren && !isTeamDisplayRowExpanded(team, row)) {
@@ -507,22 +481,21 @@ const visibleTeamExecutionRows = (team: TeamTreeNode): VisibleTeamExecutionRow[]
   return visibleRows;
 };
 
-const focusedTeamMemberRouteKey = (team: TeamTreeNode): string => props.state.getLiveTeamContext(team.teamRunId)?.focusedMemberRouteKey || team.focusedMemberRouteKey;
+const focusedTeamMemberRouteKey = (team: TeamTreeNode): string => team.focusedMemberRouteKey;
 
-const teamExecutionRowStyle = (row: WorkspaceTeamExecutionDisplayRow): Record<string, string> => ({ marginLeft: `${row.depth * 12}px` });
+const teamExecutionRowStyle = (row: RunHistoryTeamExecutionRow): Record<string, string> => ({ marginLeft: `${row.depth * 12}px` });
 
 const selectTeamDisplayRow = (
   team: TeamTreeNode,
-  row: WorkspaceTeamExecutionDisplayRow,
+  row: RunHistoryTeamExecutionRow,
 ): Promise<void> | void => props.actions.onSelectTeamMember(
   row,
   props.workspaceNode.workspaceId,
-  rootTeamMembers(team),
 );
 
 const activateTeamDisplayRow = (
   team: TeamTreeNode,
-  row: WorkspaceTeamExecutionDisplayRow,
+  row: RunHistoryTeamExecutionRow,
   hasChildren: boolean,
 ): Promise<void> | void => {
   if (hasChildren) toggleTeamDisplayRow(team, row);

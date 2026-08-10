@@ -34,6 +34,7 @@ const teamNode = (overrides: Partial<TeamTreeNode>): TeamTreeNode => ({
   }],
   memberTree: [],
   ...overrides,
+  executionRows: overrides.executionRows ?? [],
 });
 
 const historyGroup = (

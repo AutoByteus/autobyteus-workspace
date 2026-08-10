@@ -1,0 +1,7 @@
+Closed AutoByteus browser tabs: 283024, a6013b
+Stopped owned Nuxt frontend ports: 63901, 63902
+Stopped owned isolated backend port: 63911
+Removed owned isolated data tree: /tmp/autobyteus-api-rev-002-home-20260810T0956
+User-owned /Applications/AutoByteus.app backend on 29695: left running and unmodified
+User-owned /Users/normy/.autobyteus/server-data: read only; never modified
+RESULT PASS

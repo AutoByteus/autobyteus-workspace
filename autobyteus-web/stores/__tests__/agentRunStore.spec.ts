@@ -42,6 +42,8 @@ const {
     markRunAsActive: vi.fn(),
     markRunAsInactive: vi.fn(),
     refreshTreeQuietly: vi.fn(),
+    refreshRunNavigationTopology: vi.fn(),
+    applyRunNavigationEffect: vi.fn(),
   },
   mockSendMessage: vi.fn(),
   mockInterruptGeneration: vi.fn(),
@@ -233,6 +235,43 @@ describe('agentRunStore', () => {
             dedupeKey: expect.stringMatching(/^agent_run_input:perm-agent-id:client_/),
           }),
         );
+    });
+
+    it('publishes the authoritative Error status with exact navigation when preparation fails', async () => {
+        mutateMock.mockResolvedValueOnce({
+          data: {
+            prepareAgentRun: {
+              success: false,
+              runId: null,
+              message: 'preparation failed',
+            },
+          },
+          errors: [],
+        });
+        const store = useAgentRunStore();
+
+        await store.sendUserInputAndSubscribe();
+
+        expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Error);
+        expect(mockAgentContext.state.conversation.messages).toHaveLength(2);
+        expect(mockAgentContext.state.conversation.messages[1]).toMatchObject({
+          type: 'ai',
+          isComplete: true,
+          segments: [expect.objectContaining({ type: 'error', message: 'preparation failed' })],
+        });
+        expect(runHistoryStoreMock.applyRunNavigationEffect).toHaveBeenCalledTimes(2);
+        expect(runHistoryStoreMock.applyRunNavigationEffect).toHaveBeenLastCalledWith({
+          kind: 'standalone',
+          runId: 'temp-1',
+          currentStatus: AgentStatus.Error,
+          summary: 'do something',
+        }, {
+          kind: 'PRESENTATION',
+          occurredAt: mockAgentContext.state.conversation.updatedAt,
+        });
+        expect(runHistoryStoreMock.refreshRunNavigationTopology).not.toHaveBeenCalled();
+        expect(runHistoryStoreMock.refreshTreeQuietly).not.toHaveBeenCalled();
+        expect(mockSendMessage).not.toHaveBeenCalled();
     });
 
     it('retains mixed unsupported metadata locally while sending only executable agent attachments', async () => {

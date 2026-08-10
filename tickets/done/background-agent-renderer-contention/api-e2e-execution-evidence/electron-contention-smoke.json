@@ -1,0 +1,216 @@
+{
+  "startedAt": "2026-08-09T11:41:18.931Z",
+  "baseUrl": "http://127.0.0.1:63712",
+  "meta": {
+    "runtimeDir": "/tmp/autobyteus-bg-electron-real.KTOGjp",
+    "home": "/tmp/autobyteus-bg-electron-real.KTOGjp/home",
+    "userData": "/tmp/autobyteus-bg-electron-real.KTOGjp/electron-user-data",
+    "backendPort": 63372,
+    "cdpPort": 63375,
+    "frontendPort": 63712,
+    "owner": "api_e2e_engineer",
+    "generatedConfigPatched": true
+  },
+  "assertions": {
+    "electronUserAgent": true,
+    "preloadBridgePresent": true,
+    "isolatedEmbeddedServerRunning": true,
+    "nativeFileBridgeExact": true,
+    "aggregateRepresentative": true,
+    "aggregateTopologyStable": true,
+    "fileTeamP95Under100Ms": true,
+    "noLongTask": true,
+    "voiceAggregateRepresentative": true,
+    "voiceStartingP95Under100Ms": true,
+    "voiceRecordingWithinRatio": true,
+    "voiceRecordingWithin50Ms": true,
+    "voiceNoLongTask": true,
+    "noRendererErrors": true
+  },
+  "metrics": {
+    "navigation": {
+      "count": 24,
+      "min": 21.757166999999754,
+      "p95": 35.12962500000003,
+      "max": 40.63541600000008
+    },
+    "voice": {
+      "voiceIdleSamples": [
+        {
+          "clickToStartingVisibleMs": 5.900000095367432,
+          "clickToRecordingVisibleMs": 22.90000009536743
+        },
+        {
+          "clickToStartingVisibleMs": 5.8999998569488525,
+          "clickToRecordingVisibleMs": 22.09999990463257
+        },
+        {
+          "clickToStartingVisibleMs": 6.700000047683716,
+          "clickToRecordingVisibleMs": 22.700000047683716
+        }
+      ],
+      "voiceAggregateSamples": [
+        {
+          "clickToStartingVisibleMs": 4.900000095367432,
+          "clickToRecordingVisibleMs": 22.90000009536743
+        },
+        {
+          "clickToStartingVisibleMs": 6.5,
+          "clickToRecordingVisibleMs": 23.09999990463257
+        },
+        {
+          "clickToStartingVisibleMs": 4.099999904632568,
+          "clickToRecordingVisibleMs": 29.299999952316284
+        }
+      ],
+      "idleStarting": {
+        "count": 3,
+        "min": 5.8999998569488525,
+        "p95": 6.700000047683716,
+        "max": 6.700000047683716
+      },
+      "idleRecording": {
+        "count": 3,
+        "min": 22.09999990463257,
+        "p95": 22.90000009536743,
+        "max": 22.90000009536743
+      },
+      "aggregateStarting": {
+        "count": 3,
+        "min": 4.099999904632568,
+        "p95": 6.5,
+        "max": 6.5
+      },
+      "aggregateRecording": {
+        "count": 3,
+        "min": 22.90000009536743,
+        "p95": 29.299999952316284,
+        "max": 29.299999952316284
+      }
+    }
+  },
+  "browserEvents": [
+    {
+      "type": "console:log",
+      "text": "Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+    }
+  ],
+  "shell": {
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) autobyteus/1.4.45 Chrome/148.0.7778.265 Electron/42.4.1 Safari/537.36",
+    "electronApi": true,
+    "serverStatus": {
+      "status": "running",
+      "urls": {
+        "graphql": "http://127.0.0.1:63372/graphql",
+        "rest": "http://127.0.0.1:63372/rest",
+        "ws": "ws://localhost:63372/graphql",
+        "transcription": "ws://localhost:63372/transcribe",
+        "health": "http://127.0.0.1:63372/rest/health"
+      },
+      "healthCheckStatus": "Healthy"
+    }
+  },
+  "fileBridge": {
+    "success": true,
+    "content": "ELECTRON_FILE_SMOKE_OK"
+  },
+  "navigationLoad": {
+    "mode": "aggregate",
+    "elapsedMs": 4501.600000143051,
+    "windows": 180,
+    "dispatches": 360,
+    "topologyDelta": 0,
+    "navigationReasons": [],
+    "patchDelta": 0,
+    "presentationRevisionDelta": 180,
+    "contentCharacterDelta": 790,
+    "statusValues": [
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running"
+    ],
+    "longTasks": [],
+    "actionLatencies": [
+      6.800000190734863,
+      5.599999904632568,
+      6.599999904632568,
+      6.799999952316284,
+      5.700000047683716,
+      6.799999952316284,
+      6.5,
+      5.8999998569488525,
+      5.799999952316284,
+      4.700000047683716,
+      6.099999904632568,
+      5.900000095367432,
+      6,
+      4,
+      6,
+      5.599999904632568,
+      5.400000095367432,
+      4.299999952316284,
+      5.799999952316284,
+      5.800000190734863,
+      5.799999952316284,
+      7,
+      6.200000047683716,
+      6,
+      6.299999952316284
+    ]
+  },
+  "voiceLoad": {
+    "mode": "aggregate",
+    "elapsedMs": 6501,
+    "windows": 260,
+    "dispatches": 520,
+    "topologyDelta": 0,
+    "navigationReasons": [],
+    "patchDelta": 0,
+    "presentationRevisionDelta": 260,
+    "contentCharacterDelta": 1190,
+    "statusValues": [
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running"
+    ],
+    "longTasks": [],
+    "actionLatencies": []
+  },
+  "errors": [],
+  "result": "Pass",
+  "completedAt": "2026-08-09T11:41:34.878Z"
+}

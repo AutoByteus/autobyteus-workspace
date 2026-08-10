@@ -16,37 +16,9 @@ import {
   type InterruptCommandTransportFailure,
   type PendingInterruptCommand,
 } from './protocol';
-import {
-  handleSegmentStart,
-  handleSegmentContent,
-  handleSegmentEnd,
-  handleExternalUserMessage,
-  handleToolApprovalRequested,
-  handleToolApproved,
-  handleToolDenied,
-  handleToolExecutionStarted,
-  handleToolExecutionSucceeded,
-  handleToolExecutionFailed,
-  handleToolExecutionInterrupted,
-  handleToolLog,
-  handleAgentStatus,
-  handleCompactionStatus,
-  handleTokenUsageUpdated,
-  handleAssistantComplete,
-  handleTurnCompleted,
-  handleTurnInterrupted,
-  handleTodoListUpdate,
-  handleError,
-  handleFileChange,
-  handleSystemTaskNotification,
-} from './handlers';
-import { handleBrowserToolExecutionSucceeded } from './browser/browserToolExecutionSucceededHandler';
 import { getActiveRemoteAccessCredential } from '~/utils/remoteAccess/authorizedTransport';
 import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAuth';
-import {
-  beginRecentEventMonitorMutation,
-  commitRecentEventMonitorMutation,
-} from '~/services/eventMonitor/recentEventMonitorMutationCommit';
+import { dispatchAgentStreamMessage } from './agentStreamMessageProjector';
 import {
   drainPendingInterruptTransportFailures,
   interruptCommandTargetsEqual,
@@ -307,126 +279,10 @@ export class AgentStreamingService {
    * Dispatch a parsed message to the appropriate handler.
    */
   private dispatchMessage(message: ServerMessage, context: AgentContext): void {
-    const presentationBaseline = beginRecentEventMonitorMutation(context);
-    // Update timestamp
-    context.conversation.updatedAt = new Date().toISOString();
-
-    switch (message.type) {
-      case 'SEGMENT_START':
-        handleSegmentStart(message.payload, context);
-        break;
-
-      case 'SEGMENT_CONTENT':
-        handleSegmentContent(message.payload, context);
-        break;
-
-      case 'SEGMENT_END':
-        handleSegmentEnd(message.payload, context);
-        break;
-
-      case 'EXTERNAL_USER_MESSAGE':
-        handleExternalUserMessage(message.payload, context);
-        break;
-
-      case 'TOOL_APPROVAL_REQUESTED':
-        handleToolApprovalRequested(message.payload, context);
-        break;
-
-      case 'TOOL_APPROVED':
-        handleToolApproved(message.payload, context);
-        break;
-
-      case 'TOOL_DENIED':
-        handleToolDenied(message.payload, context);
-        break;
-
-      case 'TOOL_EXECUTION_STARTED':
-        handleToolExecutionStarted(message.payload, context);
-        break;
-
-      case 'TOOL_EXECUTION_SUCCEEDED':
-        handleToolExecutionSucceeded(message.payload, context);
-        void handleBrowserToolExecutionSucceeded(message.payload);
-        break;
-
-      case 'TOOL_EXECUTION_FAILED':
-        handleToolExecutionFailed(message.payload, context);
-        break;
-
-      case 'TOOL_EXECUTION_INTERRUPTED':
-        handleToolExecutionInterrupted(message.payload, context);
-        break;
-
-      case 'TOOL_LOG':
-        handleToolLog(message.payload, context);
-        break;
-
-      case 'AGENT_STATUS':
-        handleAgentStatus(message.payload, context);
-        break;
-
-      case 'AGENT_COMMAND_ACK':
-        if (message.payload.command_type !== 'SEND_MESSAGE') break;
-        if (message.payload.status) {
-          handleAgentStatus(message.payload.status, context);
-        }
-        if (!message.payload.accepted) {
-          handleError({
-            code: message.payload.code ?? 'AGENT_COMMAND_REJECTED',
-            message: message.payload.message ?? 'Agent command was not accepted.',
-          }, context);
-        }
-        break;
-
-      case 'COMPACTION_STATUS':
-        handleCompactionStatus(message.payload, context);
-        break;
-
-      case 'TOKEN_USAGE_UPDATED':
-        handleTokenUsageUpdated(message.payload, context);
-        break;
-
-      case 'TURN_STARTED':
-        break;
-
-      case 'TURN_COMPLETED':
-        handleTurnCompleted(message.payload, context);
-        break;
-
-      case 'TURN_INTERRUPTED':
-        handleTurnInterrupted(message.payload, context);
-        break;
-
-      case 'ASSISTANT_COMPLETE':
-        handleAssistantComplete(message.payload, context);
-        break;
-
-      case 'TODO_LIST_UPDATE':
-        handleTodoListUpdate(message.payload, context);
-        break;
-
-      case 'ERROR':
-        handleError(message.payload, context);
-        break;
-
-      case 'SYSTEM_TASK_NOTIFICATION':
-        handleSystemTaskNotification(message.payload, context);
-        break;
-
-      case 'ARTIFACT_PERSISTED':
-        break;
-
-      case 'FILE_CHANGE':
-        handleFileChange(message.payload, context);
-        break;
-
-      case 'CONNECTED':
-        // Connection confirmed - nothing to do
-        break;
-
-      default:
-        console.warn('Unhandled message type:', (message as any).type);
-    }
-    commitRecentEventMonitorMutation(context, presentationBaseline);
+    dispatchAgentStreamMessage(message, {
+      kind: 'standalone',
+      context,
+      runId: context.state.runId,
+    });
   }
 }

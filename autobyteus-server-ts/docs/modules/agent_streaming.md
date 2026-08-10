@@ -17,11 +17,25 @@ Bridges runtime stream events to GraphQL and WebSocket transport clients.
 
 Each standalone or team WebSocket session owns one
 `AgentStreamWebSocketEgress`, and every mapped post-session server message uses
-that sink. This is the sole normal content-cadence owner between the
+that sink. The egress is a presentation-only pipeline between the
 fine-grained canonical run-event stream and `connection.send(...)`; runtime
 adapters, `AgentRun`/`TeamRun` publication, persistence, memory, raw traces, and
 other internal subscribers remain unthrottled.
 
+- The shared default composition runs mapped messages through ordered filters,
+  one scheduler, the terminal serializer/sink, and isolated observers. Filters
+  can only forward or suppress; the scheduler is the only control that can
+  buffer or reorder by flushing; observers receive immutable outcomes and
+  cannot change delivery. Standalone and team handlers use this same
+  composition after team/member/task identity enrichment.
+- `AgentStatusTransitionFilter` stores the last admitted `AGENT_STATUS` payload
+  for each exact standalone, stable-team-member, task-agent, or task-team-leaf
+  presentation identity. The first payload and every changed payload are
+  forwarded; an exact deep-equal repeat for that identity is suppressed. An
+  incomplete or inconsistent identity fails open rather than guessing. This
+  cache is connection-local and is cleared on disposal, so reconnect still
+  receives its fresh initial status snapshot. Canonical status companions and
+  non-WebSocket subscribers are upstream of this filter and remain unchanged.
 - A first pending `SEGMENT_CONTENT` message opens a fixed, non-sliding window.
   `AUTOBYTEUS_STREAMING_CONTENT_FLUSH_INTERVAL_MS` is resolved when the window
   opens, so a successful live setting change affects the next newly opened
@@ -43,6 +57,11 @@ other internal subscribers remain unthrottled.
 - Disposing an already-lost/closed session cancels its timer and discards
   pending unsendable connection state. The transport does not claim replay for
   a physical socket loss; normal supported open-socket boundaries flush first.
+- A bounded new presentation filter or observer is added by implementing its
+  narrow control contract and registering one factory in
+  `agent-stream-egress-control-composition.ts`. It must not introduce another
+  scheduler, bypass the egress, or move lifecycle/status authority out of the
+  canonical runtime pipeline.
 
 ## Operational Notes
 

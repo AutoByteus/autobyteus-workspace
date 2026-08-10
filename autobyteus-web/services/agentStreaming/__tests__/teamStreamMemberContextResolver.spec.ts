@@ -4,7 +4,7 @@ import { AgentRunState } from '~/types/agent/AgentRunState';
 import type { AgentTeamContext, AgentTeamMemberNode } from '~/types/agent/AgentTeamContext';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { resolveTeamStreamMemberContext } from '../teamStreamMemberContextResolver';
-import { ensureTaskAgentContext } from '../teamTaskAgentContextProjection';
+import { ensureTaskAgentProjection } from '../teamTaskAgentContextProjection';
 import type { ServerMessage } from '../protocol';
 
 const createLogicalAgentContext = (memberName: string, runId: string): AgentContext => {
@@ -79,7 +79,7 @@ const createTeamContext = (): AgentTeamContext => {
 };
 
 describe('teamStreamMemberContextResolver', () => {
-  it('routes explicit task-agent identity to a transient task-agent context', () => {
+  it('leaves explicit missing task-agent identity unresolved without mutating topology', () => {
     const teamContext = createTeamContext();
     const workerContext = teamContext.leafAgentContextsByRouteKey.get('worker')!;
     const message: ServerMessage = {
@@ -100,12 +100,9 @@ describe('teamStreamMemberContextResolver', () => {
 
     const resolution = resolveTeamStreamMemberContext(teamContext, message);
 
-    expect(resolution?.context).toBe(teamContext.leafAgentContextsByRouteKey.get('opaque-runtime-run'));
-    expect(teamContext.memberNodesByRouteKey.get('opaque-runtime-run')).toMatchObject({
-      isTaskAgentInstance: true,
-      logicalMemberRouteKey: 'worker',
-      taskAgentRunId: 'opaque-runtime-run',
-    });
+    expect(resolution).toBeNull();
+    expect(teamContext.leafAgentContextsByRouteKey.has('opaque-runtime-run')).toBe(false);
+    expect(teamContext.memberNodesByRouteKey.has('opaque-runtime-run')).toBe(false);
     expect(workerContext.state.runId).toBe('worker-run');
   });
 
@@ -130,13 +127,13 @@ describe('teamStreamMemberContextResolver', () => {
 
   it('routes identity-less follow-up messages to an existing task-agent context by exact run id', () => {
     const teamContext = createTeamContext();
-    const taskAgentContext = ensureTaskAgentContext(teamContext, {
+    const taskAgentContext = ensureTaskAgentProjection(teamContext, {
       taskAgentRunId: 'opaque-existing-task-agent',
       taskAgentInstanceId: 'task-agent-instance-2',
       taskId: 'task-2',
       logicalMemberRouteKey: 'worker',
       logicalMemberPath: ['worker'],
-    });
+    }).context;
     const message: ServerMessage = {
       type: 'SEGMENT_START',
       payload: {

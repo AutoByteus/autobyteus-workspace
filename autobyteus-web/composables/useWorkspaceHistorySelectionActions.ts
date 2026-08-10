@@ -24,7 +24,6 @@ export const useWorkspaceHistorySelectionActions = (params: {
     workspaceId: string,
     teamRunId: string,
     memberRouteKey: string,
-    memberTree: readonly TeamMemberTreeRow[],
   ) => boolean;
   emitRunSelected: (payload: { type: 'agent' | 'team'; runId: string }) => void;
   emitRunCreated: (payload: { type: 'agent'; definitionId: string }) => void;
@@ -56,9 +55,6 @@ export const useWorkspaceHistorySelectionActions = (params: {
     }
   };
 
-  const rootTeamMembers = (team: TeamTreeNode): readonly TeamMemberTreeRow[] =>
-    team.memberTree.length > 0 ? team.memberTree : team.members;
-
   const onSelectTeam = async (team: TeamTreeNode, workspaceId = ''): Promise<void> => {
     const isAlreadySelectedTeam =
       params.selectionStore.selectedType === 'team'
@@ -82,7 +78,6 @@ export const useWorkspaceHistorySelectionActions = (params: {
       workspaceId,
       team.teamRunId,
       targetMember.memberRouteKey,
-      rootTeamMembers(team),
     );
 
     try {
@@ -97,7 +92,6 @@ export const useWorkspaceHistorySelectionActions = (params: {
   const onSelectTeamMember = async (
     member: TeamMemberFocusTarget,
     workspaceId = '',
-    memberTree: readonly TeamMemberTreeRow[] = [],
   ): Promise<void> => {
     try {
       params.setTeamExpanded(member.teamRunId, true);
@@ -105,7 +99,6 @@ export const useWorkspaceHistorySelectionActions = (params: {
         workspaceId,
         member.teamRunId,
         member.memberRouteKey,
-        memberTree,
       );
       await params.runHistoryStore.selectTreeRun(member);
       params.emitRunSelected({ type: 'team', runId: member.teamRunId });

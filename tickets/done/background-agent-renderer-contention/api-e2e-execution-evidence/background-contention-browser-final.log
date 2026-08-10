@@ -1,0 +1,11 @@
+command: pnpm test:e2e:background-contention -- --output-dir=../tickets/in-progress/background-agent-renderer-contention/api-e2e-execution-evidence/background-contention-browser-final
+cwd: /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web
+started_utc: 2026-08-09T10:50:52Z
+
+> autobyteus@1.4.45 test:e2e:background-contention /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web
+> node tests/e2e/background-agent-renderer-contention-probe.mjs -- --output-dir=../tickets/in-progress/background-agent-renderer-contention/api-e2e-execution-evidence/background-contention-browser-final
+
+Background contention browser probe failed. See /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/api-e2e-execution-evidence/background-contention-browser-final/evidence.json
+ ELIFECYCLE  Command failed with exit code 1.
+exit_code: 1
+finished_utc: 2026-08-09T10:51:50Z

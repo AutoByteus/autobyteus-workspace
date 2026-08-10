@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.45 test:e2e:background-contention /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web
+> node tests/e2e/background-agent-renderer-contention-probe.mjs -- --output-dir ../tickets/in-progress/background-agent-renderer-contention/api-e2e-execution-evidence/api-rev-003/background-contention-browser
+
+Background contention browser probe passed. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/api-e2e-execution-evidence/api-rev-003/background-contention-browser/evidence.json

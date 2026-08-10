@@ -1,0 +1,18 @@
+{
+  "result": "MISMATCH",
+  "activeInstalledApp": {
+    "path": "/Applications/AutoByteus.app",
+    "version": "1.4.45",
+    "appMtime": "2026-08-08T19:17:54+0200",
+    "appAsarSha256": "14e4ead7ae0bd3cdef8e6ca1a6c0e0e078b5cba6ad11843ef51b5d7cb3cdb90a",
+    "backendPort": 29695,
+    "backendDataDir": "/Users/normy/.autobyteus/server-data"
+  },
+  "deliveryCandidate": {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app",
+    "version": "1.4.45",
+    "appMtime": "2026-08-09T14:09:33+0200",
+    "appAsarSha256": "a4a9a119a444aaf11fc13ac83929a53c2f589d7e371274409ce6606592952adf"
+  },
+  "interpretation": "The currently running /Applications artifact is not the DR-002 worktree build. This provenance mismatch does not explain away the failure because the reviewed branch frontend independently reproduces it against both the active real backend and an isolated real-data snapshot."
+}

@@ -1,0 +1,29 @@
+
+> autobyteus@1.4.45 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run services/eventMonitor/__tests__/backgroundContention.probe.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web
+
+stderr | services/eventMonitor/__tests__/backgroundContention.probe.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/eventMonitor/__tests__/backgroundContention.probe.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/eventMonitor/__tests__/backgroundContention.probe.spec.ts > background contention investigation probe > measures current no-op status witness scans and workspace team projection amplification
+BACKGROUND_CONTENTION_PROBE={"environment":"Vitest/Node current-source lower-bound; Vue DOM patching excluded","recentConversationVisualItems":100,"historyShape":{"teamRuns":33,"membersPerTeam":6,"workspaceRows":28},"handlerOnly":{"iterations":5000,"totalMs":8.741958000000523,"meanMs":0.0017483916000001045},"statusCommit":{"iterations":5000,"totalMs":2761.947042,"meanMs":0.5523894084},"witnessOverheadMeanMs":0.5506410167999999,"oneWorkspaceProjection":{"iterations":2000,"totalMs":594.9983749999992,"meanMs":0.2974991874999996},"allWorkspacePropExpressions":{"iterations":300,"totalMs":2424.7961250000008,"meanMs":8.082653750000002}}
+
+ ✓ services/eventMonitor/__tests__/backgroundContention.probe.spec.ts (1 test) 6836ms
+   ✓ background contention investigation probe > measures current no-op status witness scans and workspace team projection amplification  6835ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  22:18:27
+   Duration  13.66s (transform 3.40s, setup 6.06s, collect 33ms, tests 6.84s, environment 225ms, prepare 177ms)

@@ -11,6 +11,10 @@ import {
   applyMemberOrHistoryStatusSnapshot,
   initializeRuntimeStatusState,
 } from '~/services/runStatus/agentRuntimeStatusState';
+import {
+  primeRecentEventMonitorBaseline,
+  resetRecentEventMonitorBaseline,
+} from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
 
 interface AgentContextsStoreState {
   /** All running agent contexts, keyed by runId */
@@ -94,6 +98,7 @@ export const useAgentContextsStore = defineStore('agentContexts', {
 
       const runState = new AgentRunState(tempId, conversation);
       const runContext = new AgentContext(config, runState);
+      primeRecentEventMonitorBaseline(runContext);
       this.runs.set(tempId, runContext);
 
       const selectionStore = useAgentSelectionStore();
@@ -115,6 +120,7 @@ export const useAgentContextsStore = defineStore('agentContexts', {
       const isSelected = selectionStore.selectedType === 'agent' && selectionStore.selectedRunId === runId;
 
       if (this.runs.has(runId)) {
+        resetRecentEventMonitorBaseline(this.runs.get(runId)!);
         this.runs.delete(runId);
         if (isSelected) {
           // Auto-select another agent run if available
@@ -145,27 +151,16 @@ export const useAgentContextsStore = defineStore('agentContexts', {
       const runContext = this.runs.get(tempId);
       if (!runContext) return;
 
+      resetRecentEventMonitorBaseline(runContext);
       this.runs.delete(tempId);
       runContext.state.promoteTemporaryId(permanentId);
+      primeRecentEventMonitorBaseline(runContext);
       this.runs.set(permanentId, runContext);
 
       const selectionStore = useAgentSelectionStore();
       if (selectionStore.selectedType === 'agent' && selectionStore.selectedRunId === tempId) {
         selectionStore.selectRunWithoutShellNavigation(permanentId, 'agent');
       }
-    },
-
-    /**
-     * Hydrate or replace an existing run from persisted run projection data.
-     */
-    hydrateFromProjection(options: {
-      runId: string;
-      config: AgentRunConfig;
-      conversation: Conversation;
-      status?: AgentStatus;
-      hasEarlierActiveTraceEvents?: boolean;
-    }) {
-      this.upsertProjectionContext(options);
     },
 
     /**
@@ -178,11 +173,12 @@ export const useAgentContextsStore = defineStore('agentContexts', {
       conversation: Conversation;
       status?: AgentStatus;
       hasEarlierActiveTraceEvents?: boolean;
-    }) {
+    }): AgentContext {
       const existing = this.runs.get(options.runId);
       const nextStatus = options.status ?? AgentStatus.Offline;
 
       if (existing) {
+        resetRecentEventMonitorBaseline(existing);
         existing.config = {
           ...options.config,
         };
@@ -194,7 +190,7 @@ export const useAgentContextsStore = defineStore('agentContexts', {
         applyMemberOrHistoryStatusSnapshot(existing, nextStatus, {
           preserveCurrentStatus: shouldPreserveSubscribedLiveStatus,
         });
-        return;
+        return existing;
       }
 
       const state = new AgentRunState(options.runId, options.conversation);
@@ -202,6 +198,7 @@ export const useAgentContextsStore = defineStore('agentContexts', {
       initializeRuntimeStatusState(state, nextStatus);
       const runContext = new AgentContext(options.config, state);
       this.runs.set(options.runId, runContext);
+      return runContext;
     },
 
     /**

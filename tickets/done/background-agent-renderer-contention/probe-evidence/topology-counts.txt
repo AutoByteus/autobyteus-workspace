@@ -1,0 +1,200 @@
+Workspace tree body capture
+Agents
+Agent Teams
+Applications
+Skills
+Memory
+Nodes
+Workspaces
+2026-05-25-roma-fuqi-church
+2026-07-18-hackathon
+autobyteus_company_operation
+autobyteus_mcps
+autobyteus_private_mcps
+autobyteus_rpa_llm_workspace
+autobyteus-agents
+autobyteus-com-workspace
+autobyteus-investor-applications
+autobyteus-manga-videos
+autobyteus-marketing-workspace
+autobyteus-private-agents
+autobyteus-skills
+autobyteus-social-media
+autobyteus-tutorial-videos
+autobyteus-workspace-superrepo
+C
+Codex
+(6)
+RS
+Retrospective Skill Improver
+(1)
+TEAMS
+SE
+Software Engineering Team
+(33)
+AW
+Article Writing Team
+(6)
+bible_children_manga_book
+browser_docker
+church
+enpal-smart-energy-companion
+german_online_practice
+model-eval-analysis
+normy_job_search
+reonic_hackerthon
+repository_prisma
+Temp Workspace
+Settings
+No agent or team run selected
+
+Choose an agent or team, or open run history to continue.
+
+Choose an agent or team
+Open runs/history
+Files
+Terminal
+Activity
+Token
+Artifacts
+VNC Viewer
+➜ Terminal initialized
+The default interactive shell is now zsh.
+To update your account to use zsh, please run `chsh
+ -s /bin/zsh`.
+For more details, please visit https://support.appl
+e.com/kb/HT208050.
+~ $
+Expanded team list capture
+Agents
+Agent Teams
+Applications
+Skills
+Memory
+Nodes
+Workspaces
+2026-05-25-roma-fuqi-church
+2026-07-18-hackathon
+autobyteus_company_operation
+autobyteus_mcps
+autobyteus_private_mcps
+autobyteus_rpa_llm_workspace
+autobyteus-agents
+autobyteus-com-workspace
+autobyteus-investor-applications
+autobyteus-manga-videos
+autobyteus-marketing-workspace
+autobyteus-private-agents
+autobyteus-skills
+autobyteus-social-media
+autobyteus-tutorial-videos
+autobyteus-workspace-superrepo
+C
+Codex
+(6)
+RS
+Retrospective Skill Improver
+(1)
+TEAMS
+SE
+Software Engineering Team
+(33)
+i have one bug right now. Basically, I have run the latest article writing agent team. I have run...
+15h
+could you make my main repo personal latest, and read the readme and build the electron so i coul...
+15h
+first make my local main repo personal latest, then find out in the ticket done folder, there is ...
+2d
+i got one problem when i use autobyteus rutnime and when i run one skill optimizer agent using al...
+3d
+You in the current workspace projectg, we support mcp, could you find out how do we handl emcp en...
+4d
+analye and work on this ticket /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierar...
+5d
+currently in autobyteus-ts, we directly loaded the configured skill into the system prompt if you...
+6d
+I currently have a bug now. The bug is that as you can see that the interrupt button is not activ...
+1w
+continue please
+1w
+Currently, I have one problem. The problem I have is that if, for example, currently I already ad...
+1w
+currently in our codebase, we support nested agent teams. we could build nested agent teams which...
+1w
+please work on this ticket /Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memo...
+1w
+currently for the custom provider, it seems that i could not get the context size for that model....
+1w
+analyse this /Users/normy/Downloads/autobyteus-vertical-application-developer-experience-proposal.md
+1w
+could you please analyse our application framework, understand how it works. First i am not sure ...
+2w
+If you look at our server implementation, we have like the raw traces. Raw traces will be convert...
+3w
+i kinda have a bug in the agent status, as you can see. i have one software engineering agent tea...
+3w
+i have this ticket /Users/normy/autobyteus_org/autobyteus-worktrees/send-message-user-target whic...
+3w
+i actually wanna have a cronjob feature. As you can see that on the background, we support runnin...
+3w
+in autobyteus-ts, we support memory compaction. the current strategy seems when using compaction ...
+3w
+could you review this ticket. even though its reviewed. /Users/normy/autobyteus_org/autobyteus-wo...
+4w
+could you check wehther in the autobyteus server github docker pipeline when we build docker do w...
+4w
+could you search on the internent how does memory compaction work? could you first do investigati...
+4w
+i have one question if you look at the backend, we have generate speech, generate image, and gene...
+4w
+currently in autobyteus-ts, we support compression, could you please have a look how compression ...
+6w
+i feel like our frontend responsiblitiy is actually quite bad. if you look at it. But of course a...
+6w
+On our application have like an Apple on deploy GitHub pipeline, but I don't know why it doesn't ...
+6w
+currently autobyteus can be used as mcp gateway, but if you look at this "http://127.0.0.1:29695/...
+6w
+currently As you can see that the local tools and mcp server are two like manual items under sett...
+7w
+when i use add mcp server, and then after i add the mcp server, i click the preview tools, then t...
+7w
+please analyse this ticket /Users/normy/autobyteus_org/autobyteus-worktrees/claude-code-cli-runti...
+7w
+i would like to integrate the antigravity cli as another runtime. currently we have AutoByteus, C...
+9w
+could you check whether the send message to the target support "user", this tool, the reason is t...
+9w
+AW
+Article Writing Team
+(6)
+bible_children_manga_book
+browser_docker
+church
+enpal-smart-energy-companion
+german_online_practice
+model-eval-analysis
+normy_job_search
+reonic_hackerthon
+repository_prisma
+Temp Workspace
+Settings
+No agent or team run selected
+
+Choose an agent or team, or open run history to continue.
+
+Choose an agent or team
+Open runs/history
+Files
+Terminal
+Activity
+Token
+Artifacts
+VNC Viewer
+➜ Terminal initialized
+The default interactive shell is now zsh.
+To update your account to use zsh, please run `chsh
+ -s /bin/zsh`.
+For more details, please visit https://support.appl
+e.com/kb/HT208050.
+~ $
