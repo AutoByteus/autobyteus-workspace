@@ -1,0 +1,34 @@
+DR-010 packaged source identity
+HEAD=1d5340d37332df794bf82f97b61e05421527c76b
+== Built server files ==
+config/environment-assignment-file.js
+2fe63c215736c2541146f2959f2cae69347a2c5c2081ac499657ba452a06485c  autobyteus-server-ts/dist/config/environment-assignment-file.js
+2fe63c215736c2541146f2959f2cae69347a2c5c2081ac499657ba452a06485c  /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/config/environment-assignment-file.js
+cmp=PASS
+app-data-migrations/migrations/custom-provider-readable-id-app-data-migration.js
+d8d059e14576f6283c3921757962e71c22f71e7cbdbb2ba0aa4d01eedfb0fab6  autobyteus-server-ts/dist/app-data-migrations/migrations/custom-provider-readable-id-app-data-migration.js
+d8d059e14576f6283c3921757962e71c22f71e7cbdbb2ba0aa4d01eedfb0fab6  /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app-data-migrations/migrations/custom-provider-readable-id-app-data-migration.js
+cmp=PASS
+llm-management/llm-providers/stores/custom-llm-provider-store.js
+f565036843dbca1b6114547fd93622be98ead3d5f025d8d658c07f4f70c0bcbf  autobyteus-server-ts/dist/llm-management/llm-providers/stores/custom-llm-provider-store.js
+f565036843dbca1b6114547fd93622be98ead3d5f025d8d658c07f4f70c0bcbf  /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/llm-management/llm-providers/stores/custom-llm-provider-store.js
+cmp=PASS
+services/agent-streaming/websocket-egress/agent-stream-egress-control.js
+1776d8e583222d00afaccbe20320000355712dd7309cd9259d857db03e2a473a  autobyteus-server-ts/dist/services/agent-streaming/websocket-egress/agent-stream-egress-control.js
+1776d8e583222d00afaccbe20320000355712dd7309cd9259d857db03e2a473a  /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/services/agent-streaming/websocket-egress/agent-stream-egress-control.js
+cmp=PASS
+13:export const CUSTOM_PROVIDER_READABLE_ID_APP_DATA_MIGRATION_ID = '20260803_custom_provider_readable_identity';
+66:    id = CUSTOM_PROVIDER_READABLE_ID_APP_DATA_MIGRATION_ID;
+/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/server-runtime.js:178:                "CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED",
+== Packaged renderer app.asar files ==
+agentTeamContextsStore._B8OA5E-.js local_sha256=9cfad1431f214ef4ac3611b21dc97596749b469bde56224668bee241fad780d8
+agentTeamContextsStore._B8OA5E-.js packed_sha256=9cfad1431f214ef4ac3611b21dc97596749b469bde56224668bee241fad780d8
+agentTeamContextsStore._B8OA5E-.js cmp=PASS
+friendly_qwen_shared_label_branch=PASS
+settings.WwPIVPRz.js local_sha256=4e23d8709a12f8d19e85e3b9abd10ac25d9d680193d42aa1f43a7a3f9125a929
+settings.WwPIVPRz.js packed_sha256=4e23d8709a12f8d19e85e3b9abd10ac25d9d680193d42aa1f43a7a3f9125a929
+settings.WwPIVPRz.js cmp=PASS
+settings.b0dH-aeN.js local_sha256=bc725453558039d497a2c0fc4c8166985aa96aa475c8ef0539b96f3604cdca01
+settings.b0dH-aeN.js packed_sha256=bc725453558039d497a2c0fc4c8166985aa96aa475c8ef0539b96f3604cdca01
+settings.b0dH-aeN.js cmp=PASS
+RESULT=PASS

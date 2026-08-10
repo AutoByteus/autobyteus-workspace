@@ -37,13 +37,21 @@ server's centralized encrypted vault:
 
 A successful Qwen mutation is the committed setup result. The client then
 refreshes both provider settings and the model catalog so the saved endpoint and
-the exact Qwen catalog (`qwen3.8-max`, `qwen:deepseek-v4-pro`, and
-`qwen:glm-5.2`) converge in the UI. If a subordinate refresh fails, the UI keeps
-the committed configured state and shows a warning rather than relabeling the
-save as failed. Global and selected-provider reloads likewise await both
-provider-settings and catalog refresh owners before showing success; either
-refresh failure keeps the operation in its failure path. The removed
-`qwen3.8-max-preview` value must not reappear after save, reload, or recovery.
+the exact Qwen catalog (`qwen3.8-max`, `deepseek-v4-pro`,
+`deepseek-v4-flash-0731`, and `glm-5.2`) converge in the UI. Live catalog rows
+show the friendly names `DeepSeek V4 Pro (Qwen)`,
+`DeepSeek V4 Flash 0731 (Qwen)`, and `GLM-5.2 (Qwen)` across Settings and the
+shared agent, team, application/member, and binding selection paths. Their
+option values remain the collision-safe `qwen:...` model identifiers, and Qwen
+provider requests continue to send the exact unprefixed model values. A stored
+selector missing from the live catalog remains visible by its raw identifier
+for repair instead of receiving a guessed friendly name. If a subordinate
+refresh fails, the UI keeps the committed configured state and shows a warning
+rather than relabeling the save as failed. Global and selected-provider reloads
+likewise await both provider-settings and catalog refresh owners before showing
+success; either refresh failure keeps the operation in its failure path. The
+removed `qwen3.8-max-preview` value must not reappear after save, reload, or
+recovery.
 
 Custom OpenAI-compatible provider drafts still accept an API key for the probe
 and create transaction, but only non-secret provider metadata is persisted in
