@@ -1,99 +1,108 @@
 # Delivery / Release / Deployment Report
 
-## Scope And Status
+## Scope And Final Result
 
 - Ticket: `custom-provider-model-context-metadata`.
-- Current delivery revision: DR-011.
-- Scope: user-authorized repository finalization and next-patch desktop release after the accepted friendly-Qwen package.
-- Status: Finalization authorized and in progress; publication outcome is not yet claimed.
+- Current delivery revision: DR-012.
+- User acceptance: received on 2026-08-10; the user reported the task done and requested finalization plus a new version.
+- Repository finalization: Pass.
+- Stable release: Pass — `v1.4.47` published.
+- Rollout verification: Pass — all five tag-push workflows completed successfully.
+- Post-finalization cleanup: safely deferred because the user-owned DR-010 Electron package is still running from the ticket worktree.
 
-## Integrated-State Refresh
+## Finalization Refresh And Verification
 
-- Recorded base: `personal`, tracked as `origin/personal`.
-- Fresh fetched base: `37660dd61347b630889a698769af5641566357bb` (`v1.4.46`).
-- Initial subject: `331ff94da3c2c9a2a07e11efff68f5307a4cfabb` plus reviewed uncommitted IR-013 and current CRR/API evidence.
-- Initial divergence: ahead 17 / behind 0; merge base equals the tracked base.
-- Integration result: already current; no new base commit and no merge required.
-- Delivery-safety checkpoint: `1d5340d37332df794bf82f97b61e05421527c76b`.
-- Checkpoint divergence: ahead 18 / behind 0.
-- Post-refresh check: full README-guided Electron pipeline plus DMG/ZIP/native-runtime/built-server/renderer-package verification passed.
-- Post-build fetch: base unchanged; ancestor check passed; ahead 18 / behind 0.
-- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/done/custom-provider-model-context-metadata/delivery-integrated-state-refresh.log`.
+- Recorded target: `personal`, tracked as `origin/personal`.
+- Finalization fetch retained `origin/personal@37660dd61347b630889a698769af5641566357bb` (`v1.4.46`).
+- Accepted state divergence before final delivery edits: ahead 18 / behind 0; exact base remained the merge base and an ancestor.
+- Material user-facing change after acceptance: none; renewed user verification was not required.
+- Focused finalization rerun: Pass, 4 files / 12 tests for friendly Qwen labels, exact selectors, and shared launch/binding presentation.
+- Repository artifact hygiene and staged whitespace checks: Pass.
 
-## Current Authorization
+## Repository Finalization
 
-- Architecture: ARCH-REV-011 Pass.
-- Implementation: IR-013.
-- Source review: CRR-019 Pass at 9.44/10.
-- API/E2E: API-REV-010 Pass at 97.3%; every applicable category at least 96%.
-- Proportional durable-test review: CRR-020 Not Applicable.
-- Unresolved findings: none.
+- Ticket archived to `tickets/done/custom-provider-model-context-metadata` before the final ticket commit.
+- Final ticket commit: `6cbfc9fbc1c492eac86c2f2bf53470f2a0e49a21`.
+- Ticket branch push: Pass; exact commit published to `origin/codex/custom-provider-model-context-metadata` before the target merge.
+- `personal` target refresh: Pass; it was clean and equal to `origin/personal@37660dd61347b630889a698769af5641566357bb`.
+- Target merge: `156f6a0e285fd981318a4c0b787a495e8546c6ce`, with parents exact base and exact final ticket commit.
+- Post-merge focused rerun: Pass, 4 files / 12 tests.
+- Target push: Pass. Later independent delivery-record advancement on `personal` is a descendant of the immutable release commit and does not alter this ticket's release.
+
+## Stable v1.4.47 Release
+
+- Documented method executed exactly once from clean `personal`:
+  `pnpm release 1.4.47 --release-notes tickets/done/custom-provider-model-context-metadata/release-notes.md`.
+- Release commit: `e373cfb6d3f42240ce85504165f487fccf0bc6b8`.
+- Annotated tag object: `eecd7168410ef3d4ad2ed28406ee95566813a87f`, peeled to the release commit locally and remotely.
+- Package versions: desktop `1.4.47`; messaging gateway `1.4.47`.
+- Managed messaging manifest: `releaseTag=v1.4.47`, `artifactVersion=1.4.47`, server compatibility `0.1.1`.
+- GitHub Release: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.47
+- Release state: stable, non-draft, non-prerelease, 21 assets.
+- Curated notes: ticket-local `release-notes.md`, synchronized into the tagged `.github/release-notes/release-notes.md`.
+- No tag rewrite and no immediate/manual duplicate desktop dispatch occurred.
+
+## Rollout Verification
+
+All workflows were triggered by the exact `v1.4.47` tag commit and completed successfully:
+
+| Workflow | Run | Result |
+| --- | --- | --- |
+| Desktop Release | `31392099917` | Pass — Windows x64, macOS ARM64/x64, Linux x64/ARM64, updater metadata, signing/notarization policy checks, and GitHub Release publication. |
+| Server Docker Release | `31392099931` | Pass — default multi-arch server image published. |
+| Android APK Release | `31392101378` | Pass — APK and checksum published to the GitHub Release. |
+| Release Messaging Gateway | `31392101421` | Pass — archive, checksum, metadata, and manifest published. |
+| iOS App Store Connect Release | `31392101713` | Pass — build/test, signed IPA archive/export, and App Store Connect/TestFlight upload for `1.4.47 (109)`. |
+
+The iOS result does not claim App Store review approval or public App Store availability.
+
+## Published Outputs
+
+Selected release asset digests:
+
+- macOS ARM64 DMG: `sha256:6ed7c67025324edba230fffb73adfb022b72f45b40bc5e4915c8a6a530183415`.
+- macOS x64 DMG: `sha256:22b930a1ee65a1be10533a7fc1cfa5361ae1d1f491e8aea117ffd992e61238d5`.
+- Windows x64 EXE: `sha256:c3b5e54fc5a0334c78f13b10545fd32bd6a3b05370ae63cdc4fb58831e45bc2f`.
+- Linux x64 AppImage: `sha256:fe25d01a19803695d8372b4ee807649cc2dc2556843b054310135a2eadb0cecd`.
+- Linux ARM64 AppImage: `sha256:fe9ecd2ef78ad79924eef6c2845633ddcc734e54cca18ce06c048f0935e5dd44`.
+- Android APK: `sha256:fd1b5aa7f62402892e820a3994b5f5f4dd0594e297ea8dff749ce87f3a41a81a`.
+- Messaging-gateway archive: `sha256:cb4a4e19e496c0092133742887eb013492214e9ebc3fd75b6964b9c3ebd7b762`.
+
+Docker Hub `autobyteus/autobyteus-server:1.4.47` and `:latest` resolve to the same multi-arch digest `sha256:3ca9e5034bd7ff9ed17cd460c536b10316cf96fce3b9b3010221431a6fa2dee7`, with Linux AMD64 and ARM64 manifests.
+
+Evidence:
+
+- `probes/delivery/release-v1.4.47-verification.log`;
+- `probes/delivery/release-v1.4.47-workflows.json`;
+- `probes/delivery/release-v1.4.47-assets.json`.
 
 ## Docs Sync
 
 - Result: Updated / Pass.
-- Updated `autobyteus-web/docs/settings.md` and `autobyteus-ts/docs/provider_model_catalogs.md` for friendly live Qwen names, exact internal selectors, exact provider values, missing-selector fallback, and Flash 0731 catalog truth.
-- Artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/done/custom-provider-model-context-metadata/docs-sync-report.md`.
-
-## Local Electron Packaging
-
-- Applicable: Yes, for renewed user verification.
-- Command: `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* corepack pnpm -C autobyteus-web build:electron:mac`.
-- Result: Pass, exit 0; version 1.4.46, Electron 42.4.1, Darwin arm64.
-- Build interval: 2026-08-10T11:54:54Z–11:58:56Z.
-- DMG verification, ZIP integrity, app architecture, native-helper validation, real node-pty spawn, built-server identity, renderer `app.asar` byte identity, and packaged friendly-Qwen branch: Pass.
-- Build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/done/custom-provider-model-context-metadata/electron-build-mac-report.md`.
-- Recommended artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.46.dmg`.
-- SHA-256: `b85c6a308ffe5f41ab5955b160358953232ff0ec54bdfa62e356c5d0c8c20aca`.
-- Supersession: DR-009's same v1.4.46 filename/checksum is historical and must not be used for corrected friendly-label verification.
-- Release posture: local only; no Developer ID/team signature, no notarization, no publication.
-
-## User Verification
-
-- Explicit verification/acceptance of DR-010 received: Yes, on 2026-08-10.
-- Handoff: user reported the task done and requested finalization plus a new release.
-- Handoff artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/done/custom-provider-model-context-metadata/handoff-summary.md`.
-- Finalization refresh material change: No; tracked base was unchanged.
-- Focused finalization rerun: Pass, 4 files / 12 tests.
-- Renewed verification required: No, because the accepted user-facing state did not change.
-
-## Repository Finalization
-
-- Finalization target refresh after acceptance: Pass; `origin/personal@37660dd61347b630889a698769af5641566357bb`, ahead 18 / behind 0 before final delivery edits.
-- Ticket archive/final commit/push: in progress.
-- Merge and push of `personal`: in progress.
-- Repository finalization status: authorized; exact results will be recorded after completion.
-
-## Release / Publication / Deployment
-
-- Current released base: `v1.4.46`.
-- Planned next patch: `v1.4.47`.
-- Release method: after merging the ticket into `personal`, run `pnpm release 1.4.47 --release-notes tickets/done/custom-provider-model-context-metadata/release-notes.md`; the tag push is the sole release-workflow trigger.
-- Release/tag/publication status: not yet claimed; execution and rollout verification are in progress.
-- Rollback before tag publication: stop on the finalized `personal` commit. After publication, retain the release record and prepare a forward patch rather than rewriting the published tag.
+- Durable docs cover native Qwen endpoint/key configuration, exact catalog and routing metadata, friendly collision-safe presentation, readable custom-provider identities, intentional legacy reset/recreate behavior, and unavailable-selector repair.
+- Curated release notes truthfully expose the upgrade and migration boundary.
+- No later release-only source change invalidated those docs.
 
 ## Post-Finalization Cleanup
 
-- Worktree cleanup: pending successful repository finalization and publication verification.
-- Worktree prune: pending.
-- Local/remote ticket branch cleanup: pending.
-- Reason: cleanup must follow, not precede, successful merge/release evidence capture.
+- Ancestry prerequisite: Pass; the ticket branch is contained by `origin/personal`.
+- Cleanup audit: active DR-010 AutoByteus Electron processes and open packaged files remain under the ticket worktree.
+- Safety decision: do not terminate the user's running app and do not remove its executable files.
+- Retained temporarily: dedicated ticket worktree plus local and remote ticket branches.
+- Cleanup evidence: `probes/delivery/post-finalization-cleanup.log`.
+- Required next action: close the DR-010 app, then rerun the zero-reference audit and remove the now-ancestral task-owned worktree and branches.
 
-## Persisted-Data And Identity Boundary
+## Rollback
 
-- Friendly labels do not change stored selectors, factory routing, GraphQL triples, or provider request values.
-- Legacy custom providers remain Discard/Recreate while exact allowlisted selectors migrate to readable prefixes.
-- No delivery-time migration was executed against the user's app data.
+The stable tag is immutable and must not be rewritten. If a release defect is later found, prepare a reviewed forward patch and new patch version. The prior `v1.4.46` release remains independently addressable.
 
 ## Bounded Residual Risk
 
 - Real Alibaba availability, credentials, quota, region policy, TLS behavior, undocumented payload variation, and future vendor drift were not exercised.
-- Ordinary recent-RUNNING delay, arbitrary interruption, unreachable cleanup orphan, and stale-selector outcomes remain approved bounded behavior.
-- Permission preservation was validated on POSIX; Windows permission semantics are not claimed.
-- Package-wide typecheck limitations remain documented.
-- A later tracked-base advance can require renewed integration and verification.
-- The local package has no Developer ID/notarization and may require Gatekeeper approval.
+- The ordinary recent-`RUNNING` delay, arbitrary interruption, approved unreachable old-secret orphan and stale-selector outcomes, POSIX-only permission semantics, and package-wide typecheck limitations remain bounded and documented.
+- iOS upload success does not equal App Store review approval.
+- Node 20 deprecation annotations from GitHub Actions were non-blocking; all workflows passed under the runner's Node 24 compatibility posture.
 
 ## Final Status
 
-In Progress — the user accepted DR-010, the mandatory final refresh and focused rerun passed without material change, and repository finalization plus v1.4.47 publication are authorized. No tag or release success is claimed until the documented release workflow is verified.
+Pass — the user-accepted implementation is archived, merged, pushed, released as stable `v1.4.47`, and rollout-verified across desktop, Docker, Android, messaging gateway, and iOS. Only destructive cleanup of the still-running local DR-010 package is deferred for safety.

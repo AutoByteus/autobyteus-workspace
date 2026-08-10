@@ -1,115 +1,65 @@
 # Handoff Summary — Custom Provider Model Context Metadata
 
-## Status
+## Final Status
 
-**User-accepted; repository finalization and v1.4.47 release authorized.** The user explicitly reported the task done and requested finalization plus a new release. A mandatory final fetch retained `origin/personal@37660dd61347b630889a698769af5641566357bb` (`v1.4.46`) with no base advance, and the accepted SR-017 / IR-013 state passed a fresh 4-file / 12-test friendly-Qwen rerun. The user-facing state is unchanged from the accepted DR-010 package.
+**Released and rollout-verified as stable v1.4.47.** The user accepted the corrected DR-010 package. The ticket was archived, committed, pushed, merged into `personal`, and published through the documented release helper. All five tag-push release workflows passed.
 
-## Worktree / Branch / Target
-
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata`.
-- Ticket branch: `codex/custom-provider-model-context-metadata`.
-- Finalization target: `personal` / `origin/personal`.
-- Latest tracked base: `origin/personal@37660dd61347b630889a698769af5641566357bb` (`v1.4.46`).
-- Latest-base integration merge: `331ff94da3c2c9a2a07e11efff68f5307a4cfabb`.
-- Protected reviewed/package checkpoint: `1d5340d37332df794bf82f97b61e05421527c76b`.
-- Post-checkpoint and post-build divergence: ahead 18 / behind 0.
-- Base ancestor check: Pass.
-- Integrated-state evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/done/custom-provider-model-context-metadata/delivery-integrated-state-refresh.log`.
-
-## Current Authorization
-
-- Solution: SR-017.
-- Architecture: ARCH-REV-011 Pass.
-- Implementation: IR-013, retaining IR-012.
-- Source review: CRR-019 Pass at 9.44/10.
-- API/E2E: API-REV-010 Pass at 97.3%; every applicable confidence category is at least 96%.
-- Durable-test determination: CRR-020 Not Applicable; API/E2E changed no repository-resident durable coverage.
-- Unresolved findings: none.
+The only remaining operational action is local cleanup: the accepted DR-010 Electron app is still running from the dedicated ticket worktree, so delivery deliberately did not terminate it or remove its files.
 
 ## Delivered Behavior
 
-### Friendly Qwen presentation with exact identity
+- Alibaba/Qwen is a native configurable provider with server-owned Base URL and write-only API-key persistence.
+- The built-in Qwen catalog contains `qwen3.8-max`, `deepseek-v4-pro`, `deepseek-v4-flash-0731`, and `glm-5.2` with exact Alibaba-compatible routing metadata.
+- Qwen-hosted duplicate models show friendly `(Qwen)` names while selected and persisted values remain exact collision-safe `qwen:...` selectors.
+- Provider requests retain exact unprefixed wire values.
+- Custom OpenAI-compatible providers use deterministic readable `provider_...` identities.
+- Legacy custom providers and credentials are intentionally reset rather than transferred; users recreate them with the same canonical name, Base URL, and a newly entered key.
+- Missing selections remain visible and unavailable instead of being silently replaced.
 
-- Live Qwen rows show `DeepSeek V4 Pro (Qwen)`, `DeepSeek V4 Flash 0731 (Qwen)`, and `GLM-5.2 (Qwen)` in Settings and shared live agent/team/application/member/binding selectors.
-- Native names such as `qwen3.8-max` remain unchanged.
-- Option, selected, and persisted values remain exact collision-safe selectors such as `qwen:deepseek-v4-pro`, `qwen:deepseek-v4-flash-0731`, and `qwen:glm-5.2`.
-- Qwen requests continue to send exact unprefixed provider values: `deepseek-v4-pro`, `deepseek-v4-flash-0731`, and `glm-5.2`.
-- Generic non-Qwen built-ins retain identifier labels; custom OpenAI-compatible models retain friendly names.
-- A stored selector absent from the live catalog stays raw-visible and unavailable for repair; no label is guessed and no selector is cleared or replaced.
+## Repository Result
 
-### Qwen setup and catalog
+- Archived ticket: `tickets/done/custom-provider-model-context-metadata`.
+- Final ticket commit: `6cbfc9fbc1c492eac86c2f2bf53470f2a0e49a21`.
+- Target merge: `156f6a0e285fd981318a4c0b787a495e8546c6ce`.
+- Release commit: `e373cfb6d3f42240ce85504165f487fccf0bc6b8`.
+- Release tag: `v1.4.47`.
+- Release page: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.47
 
-- Settings saves a probed Base URL/key pair through strict AppConfig/vault ownership and reports server-owned default/configured status.
-- The current exact target catalog contains `qwen3.8-max`, `deepseek-v4-pro`, `deepseek-v4-flash-0731`, and `glm-5.2`; `qwen3.8-max-preview` remains absent.
-- Refresh failures after a committed save preserve the committed configured state and show a warning instead of relabeling the save as failed.
+The finalization refresh found no base advance. Friendly-Qwen regression coverage passed 4 files / 12 tests both before the final ticket commit and after the target merge.
 
-### Readable custom-provider identity and legacy reset
+## Release Result
 
-- New custom OpenAI-compatible providers receive an immutable `provider_<name-derived-body>` ID; invalid derivation and canonical-name/ID collisions fail atomically.
-- Legacy V1 credentials are discarded. Valid legacy names can map exact allowlisted selector prefixes before empty V3 is committed; old UUID secrets are removal-only afterward and are never resolved or copied.
-- No old provider record, Base URL, credential, catalog group, reconnect state, or UUID alias survives reset.
-- Users recreate desired providers with the existing form and a newly entered key. Reusing the same canonical name regenerates the same readable prefix.
-- Missing selectors stay visible/unavailable and block launch/resume instead of silently falling back.
+Successful exact-tag workflows:
 
-## Validation Summary
+- Desktop Release `31392099917`;
+- Server Docker Release `31392099931`;
+- Android APK Release `31392101378`;
+- Release Messaging Gateway `31392101421`;
+- iOS App Store Connect Release `31392101713`.
 
-API-REV-010 directly passed:
+The stable GitHub Release is non-draft/non-prerelease with 21 assets covering macOS ARM64/x64, Windows x64, Linux x64/ARM64, Android, messaging gateway, manifests, and updater metadata. iOS `1.4.47 (109)` was uploaded successfully to App Store Connect/TestFlight; App Store review approval is not claimed.
 
-- focused web behavior: 4 files / 12 tests;
-- restart-backed Qwen lifecycle and exact outbound wire values: 1 file / 1 test;
-- web boundary, localization, and literal guards;
-- Nuxt production build with 15 prerendered routes;
-- real Chrome Settings against the running Electron backend with zero visible duplicate-selector prefixes;
-- real shared binding selection showing friendly text while retaining exact selector and live provider value;
-- repository integrity, secret, temporary-resource, and cleanup checks.
+Recommended macOS ARM64 asset:
 
-Delivery then ran the complete README-guided Electron pipeline. DMG/ZIP integrity, arm64 executable, packaged node-pty helpers and spawn probe, built-server identity, `app.asar` renderer byte identity, and the packaged IR-013 shared-label branch all passed.
+- `AutoByteus_personal_macos-arm64-1.4.47.dmg`
+- SHA-256: `6ed7c67025324edba230fffb73adfb022b72f45b40bc5e4915c8a6a530183415`
 
-## Durable Documentation
+Docker Hub `autobyteus/autobyteus-server:1.4.47` and `:latest` share multi-arch digest `sha256:3ca9e5034bd7ff9ed17cd460c536b10316cf96fce3b9b3010221431a6fa2dee7`.
 
-Docs sync: Updated / Pass.
+## Documentation And Evidence
 
-Updated in DR-010:
+- Docs sync: `docs-sync-report.md` — Updated / Pass.
+- Release report: `release-deployment-report.md`.
+- Curated notes: `release-notes.md`.
+- Workflow/assets evidence: `probes/delivery/release-v1.4.47-workflows.json` and `probes/delivery/release-v1.4.47-assets.json`.
+- Verification summary: `probes/delivery/release-v1.4.47-verification.log`.
 
-- `autobyteus-web/docs/settings.md`;
-- `autobyteus-ts/docs/provider_model_catalogs.md`.
+## Cleanup Hold
 
-Prior readable-identity, secret-management, and migration docs remain accurate without further edits.
+The dedicated worktree remains at `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata` because the DR-010 `AutoByteus.app`, its helpers, built server, and node-pty bridge are still running from that path. Delivery found active process and open-file references and did not disrupt the user session.
 
-Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/done/custom-provider-model-context-metadata/docs-sync-report.md`.
-
-## Electron Test Artifact
-
-- Recommended DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.46.dmg`.
-- SHA-256: `b85c6a308ffe5f41ab5955b160358953232ff0ec54bdfa62e356c5d0c8c20aca`.
-- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.46.zip`.
-- ZIP SHA-256: `834566db8dabdf9f00c9a766b639f6b2610c408579acb80e96df0ba6291362ca`.
-- Build posture: local macOS arm64, no Developer ID/team signature and no notarization; the root executable carries only an ad-hoc linker signature.
-- App data: `~/.autobyteus/server-data`. Back it up first if preserving existing state matters.
-- Build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/done/custom-provider-model-context-metadata/electron-build-mac-report.md`.
-
-DR-010 overwrote DR-009's same v1.4.46 filenames. Verify only against the DR-010 checksums above.
-
-## Suggested User Verification
-
-1. Back up `~/.autobyteus/server-data` if it contains important state.
-2. Install/open the DMG. Use right-click **Open** or Privacy & Security approval if Gatekeeper blocks the non-notarized local build.
-3. Open Qwen in Settings and confirm the three Qwen-served duplicate models use friendly names rather than `qwen:...` labels.
-4. Open a live agent/team/application/member or binding model selector and confirm its option and selected text remain friendly.
-5. Select a Qwen duplicate and confirm ordinary save/launch behavior remains correct; do not send credentials in the verification response.
-6. Confirm any unavailable stored selector remains raw-visible and blocking rather than being renamed, cleared, or replaced.
-
-An explicit completion/acceptance response is sufficient.
-
-## Finalization State
-
-- Explicit user acceptance: Received on 2026-08-10.
-- Finalization refresh: Pass; `origin/personal` remained at `37660dd61347b630889a698769af5641566357bb`, ahead 18 / behind 0 before final delivery edits.
-- Finalization smoke: Pass; friendly-Qwen web selection suite passed 4 files / 12 tests.
-- Release target: `v1.4.47`, the next patch after `v1.4.46`.
-- Ticket archival, branch push, target merge/push, tag publication, workflow verification, and cleanup are authorized and in progress.
-- This artifact will be refreshed with exact commit, tag, workflow, and cleanup results after publication.
+After that app is closed, delivery can safely remove the dedicated worktree and delete the already-merged local and remote ticket branches. Evidence: `probes/delivery/post-finalization-cleanup.log`.
 
 ## Bounded Residual Risk
 
-Real Alibaba availability, credentials, quota, region policy, TLS behavior, undocumented payload variation, and future vendor drift were not exercised. Additional bounded risks are the ordinary recent-`RUNNING` delay, arbitrary interruption, approved unreachable old-secret orphan and stale-selector outcomes, POSIX-only permission semantics, package-wide typecheck limitations, future base divergence, and Gatekeeper behavior for the local non-notarized package.
+Real Alibaba availability, credentials, quota, region policy, TLS behavior, undocumented payload variation, and future vendor drift were not exercised. Previously accepted migration timing/interruption/orphan, stale-selector, POSIX-permission, and package-typecheck limitations remain bounded. The published desktop release passed signing/notarization policy checks; the earlier DR-010 local package was intentionally ad-hoc and is historical.
