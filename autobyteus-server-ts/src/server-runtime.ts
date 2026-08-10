@@ -215,28 +215,15 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
       readableProviderStatus?.status !== "SUCCEEDED"
       && readableProviderStatus?.status !== "SUCCEEDED_WITH_WARNINGS"
     ) {
-      logger.error(
-        `Readable provider identity migration did not complete successfully; startup halted: ${JSON.stringify({
-          migrationId: CUSTOM_PROVIDER_READABLE_ID_APP_DATA_MIGRATION_ID,
-          displayName: readableProviderStatus?.displayName ?? null,
-          status: readableProviderStatus?.status ?? "MISSING",
-          attempts: readableProviderStatus?.attempts ?? null,
-          failedCount: readableProviderStatus?.summary?.failedCount ?? null,
-          errorMessage: readableProviderStatus?.errorMessage ?? null,
-          logPath: readableProviderStatus?.logPath ?? null,
-        })}`,
-      );
-      return;
+      throw new Error([
+        "CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED",
+        readableProviderStatus?.status ?? "NOT_RUN",
+        readableProviderStatus?.logPath ?? "NO_LOG",
+      ].join(":"));
     }
   } catch (error) {
-    logger.error(
-      `Failed to run app data migrations; startup halted: ${JSON.stringify({
-        migrationId: TEAM_CANONICAL_IDENTITY_MIGRATION_ID,
-        status: "RUNNER_EXCEPTION",
-        errorMessage: error instanceof Error ? error.message : String(error),
-      })}`,
-    );
-    return;
+    logger.error(`Failed to run app data migrations: ${String(error)}`);
+    process.exit(1);
   }
 
   try {

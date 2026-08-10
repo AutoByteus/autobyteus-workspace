@@ -196,6 +196,19 @@ describe("startConfiguredServer required app-data migration gates", () => {
     expect(mocks.scheduleBackgroundTasks).not.toHaveBeenCalled();
   };
 
+  const expectControlledExit = async () => {
+    const exit = vi.spyOn(process, "exit").mockImplementation(((code: number) => {
+      throw new Error(`process.exit:${code}`);
+    }) as never);
+    try {
+      await expect(startConfiguredServer({ host: "127.0.0.1", port: 0 }))
+        .rejects.toThrow("process.exit:1");
+      expect(exit).toHaveBeenCalledWith(1);
+    } finally {
+      exit.mockRestore();
+    }
+  };
+
   it("blocks bootstrap and listen when the canonical identity migration reports FAILED", async () => {
     mocks.runPending.mockResolvedValueOnce([{
       migrationId: TEAM_CANONICAL_IDENTITY_MIGRATION_ID,
@@ -233,7 +246,7 @@ describe("startConfiguredServer required app-data migration gates", () => {
 
   it("blocks bootstrap and listen when migration execution throws", async () => {
     mocks.runPending.mockRejectedValueOnce(new Error("migration state store unavailable"));
-    await expect(startConfiguredServer({ host: "127.0.0.1", port: 0 })).resolves.toBeUndefined();
+    await expectControlledExit();
     expectStartupBlocked();
     expect(mocks.loggerError).toHaveBeenCalledWith(expect.stringContaining("Failed to run app data migrations"));
   });
@@ -244,16 +257,33 @@ describe("startConfiguredServer required app-data migration gates", () => {
       status: "FAILED",
       logPath: "/tmp/server-runtime-gate/readable-failed.log",
     }]);
-    await expect(startConfiguredServer({ host: "127.0.0.1", port: 0 })).resolves.toBeUndefined();
+    await expectControlledExit();
     expectStartupBlocked();
-    expect(mocks.loggerError).toHaveBeenCalledWith(expect.stringContaining('"status":"FAILED"'));
+    expect(mocks.loggerError).toHaveBeenCalledWith(expect.stringContaining(
+      "CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:FAILED:/tmp/server-runtime-gate/readable-failed.log",
+    ));
   });
 
   it("blocks startup when the readable identity result is missing", async () => {
     mocks.runPending.mockResolvedValueOnce([canonicalSuccess]);
-    await expect(startConfiguredServer({ host: "127.0.0.1", port: 0 })).resolves.toBeUndefined();
+    await expectControlledExit();
     expectStartupBlocked();
-    expect(mocks.loggerError).toHaveBeenCalledWith(expect.stringContaining('"status":"MISSING"'));
+    expect(mocks.loggerError).toHaveBeenCalledWith(expect.stringContaining(
+      "CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:NOT_RUN:NO_LOG",
+    ));
+  });
+
+  it("blocks startup when readable identity is still RUNNING and preserves its log path", async () => {
+    mocks.runPending.mockResolvedValueOnce([canonicalSuccess, {
+      migrationId: "20260803_custom_provider_readable_identity",
+      status: "RUNNING",
+      logPath: "/tmp/server-runtime-gate/readable-running.log",
+    }]);
+    await expectControlledExit();
+    expectStartupBlocked();
+    expect(mocks.loggerError).toHaveBeenCalledWith(expect.stringContaining(
+      "CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:RUNNING:/tmp/server-runtime-gate/readable-running.log",
+    ));
   });
 
   it("continues when both blocking migrations are terminal despite an unrelated failure", async () => {
