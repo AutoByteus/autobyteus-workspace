@@ -30,10 +30,10 @@
         <div class="mt-4 grid gap-3 md:grid-cols-2">
           <button
             v-for="child in focusedMemberNode.children"
-            :key="child.address"
+            :key="serializeTeamExecutionAddress(executionForNode(child))"
             type="button"
             class="rounded-lg border border-slate-200 bg-white p-3 text-left transition hover:border-indigo-200 hover:bg-indigo-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
-            @click="focusMemberAddress(child.address)"
+            @click="focusMember(child)"
           >
             <p class="truncate text-sm font-medium text-slate-900">{{ child.displayName }}</p>
             <p class="mt-0.5 truncate text-xs text-slate-500">{{ child.address }}</p>
@@ -62,6 +62,8 @@ import { useTeamMemberPresentation } from '~/composables/useTeamMemberPresentati
 import AgentEventMonitor from '~/components/workspace/agent/AgentEventMonitor.vue';
 import { shouldShowMemberConversation } from '~/utils/teamActiveExecutionMembers';
 import { serializeTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
+import { findTeamExecutionNode, executionAddressForTeamNode } from '~/services/agentStreaming/teamTaskExecutionTree';
+import type { TeamMemberNode } from '~/types/agent/AgentTeamContext';
 
 const teamContextsStore = useAgentTeamContextsStore();
 const { getInterAgentSenderNameById, getMemberAvatarUrl, getMemberDisplayName } = useTeamMemberPresentation();
@@ -81,7 +83,7 @@ const focusedMember = computed(() => {
 });
 const focusedMemberNode = computed(() => {
   const team = activeTeam.value;
-  return team ? team.memberNodesByAddress.get(team.focusedExecutionAddress.memberAddress) ?? null : null;
+  return team ? findTeamExecutionNode(team, team.focusedExecutionAddress) : null;
 });
 const conversationOfFocusedMember = computed(() => (
   shouldShowMemberConversation(focusedMemberNode.value, focusedMember.value)
@@ -117,11 +119,11 @@ const focusedBrowseSubject = computed(() => ({
   agentRunId: focusedMember.value?.state.runId || '',
 }));
 
-const focusMemberAddress = (memberAddress: string) => {
-  const teamRunId = activeTeam.value?.teamRunId;
-  if (!teamRunId) {
-    return;
-  }
-  void teamContextsStore.focusMemberAndEnsureHydrated(teamRunId, memberAddress);
+const executionForNode = (node: TeamMemberNode) => executionAddressForTeamNode(activeTeam.value!, node);
+
+const focusMember = (child: TeamMemberNode) => {
+  const team = activeTeam.value;
+  if (!team || focusedMemberNode.value?.kind !== 'agent_team' || !focusedMemberNode.value.children.includes(child)) return;
+  teamContextsStore.setFocusedExecutionAddress(executionAddressForTeamNode(team, child));
 };
 </script>

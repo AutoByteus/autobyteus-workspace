@@ -29,7 +29,7 @@ import {
 } from './teamTaskAgentContextProjection';
 import { resolveTeamStreamMemberContext } from './teamStreamMemberContextResolver';
 import { handleTaskExecutionProjectionMessage } from './teamTaskExecutionEventRouter';
-import { removeTaskTeamExecutionProjection } from './teamTaskTeamExecutionProjection';
+import { removeTaskExecutionProjection } from './teamTaskExecutionTree';
 import { dispatchGenericTeamMemberMessage } from './teamStreamGenericMessageDispatcher';
 import { getActiveRemoteAccessCredential } from '~/utils/remoteAccess/authorizedTransport';
 import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAuth';
@@ -309,9 +309,9 @@ export class TeamStreamingService {
     }
   }
 
-  private scheduleTaskTeamCleanup(teamContext: AgentTeamContext, taskTeamRunId?: string | null): void {
-    if (!taskTeamRunId) return;
-    const cleanup = () => removeTaskTeamExecutionProjection(teamContext, taskTeamRunId);
+  private scheduleTaskExecutionCleanup(teamContext: AgentTeamContext, executionAddress?: TeamExecutionAddress | null): void {
+    if (!executionAddress) return;
+    const cleanup = () => removeTaskExecutionProjection(teamContext, executionAddress);
     if (typeof setTimeout === 'function') {
       setTimeout(cleanup, 0);
       return;
@@ -363,7 +363,7 @@ export class TeamStreamingService {
       return;
     }
     if (projectionResult.outcome === 'handled') {
-      this.scheduleTaskTeamCleanup(teamContext, projectionResult.cleanupTaskTeamRunId);
+      this.scheduleTaskExecutionCleanup(teamContext, projectionResult.cleanupExecutionAddress);
       return;
     }
 

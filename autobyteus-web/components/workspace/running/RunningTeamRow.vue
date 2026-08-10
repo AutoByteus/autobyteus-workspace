@@ -45,7 +45,7 @@
     <div v-if="expanded" class="ml-5 mt-0.5">
       <TeamMemberRow
         v-for="member in displayMembers"
-        :key="member.node.address"
+        :key="serializeTeamExecutionAddress(executionForNode(member.node))"
         :member-name="member.node.displayName"
         :member-address="member.node.address"
         :member-context="member.context"

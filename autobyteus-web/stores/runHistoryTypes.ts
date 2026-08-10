@@ -3,7 +3,6 @@ import type { AgentStatus } from '~/types/agent/AgentStatus';
 import type { RunProjectionConversationEntry } from '~/services/runHydration/runProjectionConversation';
 import type { RunProjectionActivityEntry } from '~/services/runHydration/runProjectionActivityHydration';
 import type { TeamCommunicationMessage } from '~/stores/teamCommunicationTypes';
-import type { TaskDelegationRecord } from '~/stores/taskDelegationTypes';
 import type { TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
 export type RunKnownStatus = 'ACTIVE' | 'IDLE' | 'ERROR' | 'TERMINATED';
@@ -255,5 +254,5 @@ export interface GetTeamCommunicationMessagesQueryData {
 }
 
 export interface GetTaskDelegationRecordsQueryData {
-  getTaskDelegationRecords: TaskDelegationRecord[];
+  getTaskDelegationRecords: unknown[];
 }

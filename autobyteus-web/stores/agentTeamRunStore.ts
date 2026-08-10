@@ -56,6 +56,7 @@ import {
   serializeTeamExecutionAddress,
   type TeamExecutionAddress,
 } from '~/types/agent/TeamExecutionAddress';
+import { findTeamExecutionNode } from '~/services/agentStreaming/teamTaskExecutionTree';
 
 type CurrentTeamMemberConfigInput = Omit<TeamMemberConfigInput, 'memberName' | 'memberAddress'> & {
   memberAddress: string;
@@ -322,7 +323,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       const initialExecutionAddress = createTeamExecutionAddress(activeTeam.focusedExecutionAddress);
       const initialExecutionKey = serializeTeamExecutionAddress(initialExecutionAddress);
       const focusedMember = activeTeam.agentExecutionsByKey.get(initialExecutionKey) ?? null;
-      const focusedNode = activeTeam.memberNodesByAddress.get(initialExecutionAddress.memberAddress) ?? null;
+      const focusedNode = findTeamExecutionNode(activeTeam, initialExecutionAddress);
       if (!focusedNode) throw new Error(`Focused Team execution '${initialExecutionAddress.memberAddress}' is not present.`);
       const isTemporary = activeTeam.teamRunId.startsWith('temp-');
       let finalTeamRunId = activeTeam.teamRunId;

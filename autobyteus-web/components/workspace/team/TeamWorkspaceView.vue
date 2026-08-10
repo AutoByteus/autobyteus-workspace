@@ -88,6 +88,7 @@ import type { SkillImprovementComposerCtaTarget } from '~/components/workspace/s
 import WorkspaceHeaderActions from '~/components/workspace/common/WorkspaceHeaderActions.vue';
 import { buildEditableTeamRunSeed } from '~/composables/useDefinitionLaunchDefaults';
 import { serializeTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
+import { findTeamExecutionNode } from '~/services/agentStreaming/teamTaskExecutionTree';
 
 const teamContextsStore = useAgentTeamContextsStore();
 const teamRunStore = useAgentTeamRunStore();
@@ -111,7 +112,7 @@ const focusedMemberContext = computed(() => {
 });
 const focusedMemberNode = computed(() => {
   const team = activeTeamContext.value;
-  return team ? team.memberNodesByAddress.get(team.focusedExecutionAddress.memberAddress) ?? null : null;
+  return team ? findTeamExecutionNode(team, team.focusedExecutionAddress) : null;
 });
 const rosterFocusedMemberContext = focusedMemberContext;
 const rosterFocusedMemberNode = focusedMemberNode;

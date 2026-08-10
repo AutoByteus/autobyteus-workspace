@@ -1,7 +1,11 @@
 import { GetTaskDelegationRecords } from '~/graphql/queries/runHistoryQueries';
-import type { GetTaskDelegationRecordsQueryData } from '~/stores/runHistoryTypes';
 import { useTaskDelegationStore } from '~/stores/taskDelegationStore';
 import type { TaskDelegationRecord } from '~/stores/taskDelegationTypes';
+import { projectTaskDelegationRecordDtos } from './taskDelegationGraphqlDtoProjection';
+
+interface GetTaskDelegationRecordsGraphqlData {
+  getTaskDelegationRecords: unknown[];
+}
 
 export const hydrateTaskDelegationRecords = (
   teamRunId: string,
@@ -25,7 +29,7 @@ export const fetchAndHydrateTaskDelegationRecordsForTeam = async (params: {
   teamRunId: string;
 }): Promise<void> => {
   try {
-    const response = await params.client.query<GetTaskDelegationRecordsQueryData>({
+    const response = await params.client.query<GetTaskDelegationRecordsGraphqlData>({
       query: GetTaskDelegationRecords,
       variables: { teamRunId: params.teamRunId },
       fetchPolicy: 'network-only',
@@ -35,7 +39,7 @@ export const fetchAndHydrateTaskDelegationRecordsForTeam = async (params: {
     }
     hydrateTaskDelegationRecords(
       params.teamRunId,
-      response.data?.getTaskDelegationRecords || [],
+      projectTaskDelegationRecordDtos(response.data?.getTaskDelegationRecords),
     );
   } catch (error) {
     console.warn(

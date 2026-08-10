@@ -35,9 +35,9 @@ export type WorkspaceTeamExecutionDisplayRow = WorkspaceStableMemberDisplayRow |
 export interface BuildWorkspaceTeamExecutionDisplayRowsParams { team: TeamTreeNode; teamContext?: AgentTeamContext | null }
 
 const transientKindForNode = (node: TeamMemberNode): WorkspaceTransientExecutionKind => {
-  if (node.kind === 'agent_team' && node.executionAddress?.memberAddress === node.address) return 'task_team';
-  if (node.kind === 'agent_team') return 'task_team_child';
-  return 'task_agent';
+  if (node.executionAddress?.taskAgentRunId) return 'task_agent';
+  if (node.kind === 'agent_team' && node.taskTargetKind === 'agent_team' && node.taskId) return 'task_team';
+  return 'task_team_child';
 };
 
 const indexStableRows = (rows: readonly TeamMemberTreeRow[], target = new Map<string, TeamMemberTreeRow>()): Map<string, TeamMemberTreeRow> => {

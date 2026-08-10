@@ -24,6 +24,8 @@ import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
 import { applyLiveTeamMemberStatusSnapshot } from './teamRunMemberStatusHydration';
 import type { TeamMemberLiveSnapshot } from './teamRunMemberStatusHydration';
 import { createTeamExecutionAddress, serializeTeamExecutionAddress, type TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
+import { useTaskDelegationStore } from '~/stores/taskDelegationStore';
+import { restoreTaskExecutionProjections } from '~/services/agentStreaming/teamTaskExecutionRestore';
 
 export { applyLiveTeamMemberStatusSnapshot, hydrateTeamMemberActivitiesFromProjection } from './teamRunMemberStatusHydration';
 export type { TeamMemberStatusSnapshotSet, TeamMemberLiveSnapshot } from './teamRunMemberStatusHydration';
@@ -126,6 +128,7 @@ const buildHydratedTeamContext = (params: {
     isSubscribed: false,
   };
   applyLiveTeamMemberStatusSnapshot(context, { memberStatuses: params.memberStatuses });
+  restoreTaskExecutionProjections(context, useTaskDelegationStore().getRecordsForTeam(context.teamRunId));
   return context;
 };
 

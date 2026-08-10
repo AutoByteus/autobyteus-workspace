@@ -24,7 +24,7 @@
       <div v-if="teamMembers.length === 0" class="text-center text-sm text-gray-500 pt-8">{{ $t('workspace.components.workspace.team.TeamMembersPanel.no_active_team_members') }}</div>
       <div
         v-for="member in teamMembers"
-        :key="member.node.address"
+        :key="serializeTeamExecutionAddress(executionForNode(member.node))"
         @click="selectMember(member.node)"
         class="p-3 rounded-lg cursor-pointer transition-colors duration-150 border"
         :style="{ marginLeft: `${member.depth * 16}px` }"
@@ -69,7 +69,7 @@ import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import AgentStatusDisplay from '~/components/workspace/agent/AgentStatusDisplay.vue';
 import AgentDeleteConfirmDialog from '~/components/agents/AgentDeleteConfirmDialog.vue';
 import { flattenTeamMemberNodesForDisplay } from '~/utils/teamDefinitionMembers';
-import { createTeamExecutionAddress, sameTeamExecutionAddress, type TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
+import { createTeamExecutionAddress, sameTeamExecutionAddress, serializeTeamExecutionAddress, type TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 import type { TeamMemberNode } from '~/types/agent/AgentTeamContext';
 import { contextForTeamNode } from '~/utils/teamActiveExecutionMembers';
 

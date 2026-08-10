@@ -297,7 +297,7 @@
                   <div
                     v-if="displayRow.row.rowKind === 'stable_member'"
                     class="flex w-full cursor-pointer items-center rounded-md text-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
-                    :class="displayRow.row.memberAddress === focusedTeamMemberAddress(team) ? 'bg-indigo-50 text-indigo-900' : 'text-gray-600 hover:bg-gray-50'"
+                    :class="sameTeamExecutionAddress(displayRow.row.executionAddress, focusedTeamExecutionAddress(team)) ? 'bg-indigo-50 text-indigo-900' : 'text-gray-600 hover:bg-gray-50'"
                     :style="teamExecutionRowStyle(displayRow.row)"
                     :data-test="`workspace-team-member-${team.teamRunId}-${displayRow.row.memberAddress}`"
                     data-row-kind="stable_member"
@@ -362,7 +362,7 @@
                   <WorkspaceTransientExecutionRow
                     v-else
                     :row="displayRow.row"
-                    :focused="displayRow.row.memberAddress === focusedTeamMemberAddress(team)"
+                    :focused="sameTeamExecutionAddress(displayRow.row.executionAddress, focusedTeamExecutionAddress(team))"
                     :has-children="displayRow.hasChildren"
                     :expanded="isTeamDisplayRowExpanded(team, displayRow.row)"
                     @select="(row) => selectTeamDisplayRow(team, row)"
@@ -409,6 +409,7 @@ import {
   type WorkspaceTeamExecutionDisplayRow,
 } from '~/utils/workspaceTeamExecutionDisplayRows';
 import type { RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
+import { sameTeamExecutionAddress, serializeTeamExecutionAddress, type TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
 const props = defineProps<{
   workspaceNode: RunTreeWorkspaceNode;
@@ -468,7 +469,7 @@ const isTeamDisplayRowExpanded = (
 ): boolean => props.state.isTeamMemberExpanded(
   props.workspaceNode.workspaceId,
   team.teamRunId,
-  row.memberAddress,
+  row.rowKind === 'transient_execution' ? serializeTeamExecutionAddress(row.executionAddress) : row.memberAddress,
 );
 
 const toggleTeamDisplayRow = (
@@ -477,7 +478,7 @@ const toggleTeamDisplayRow = (
 ): void => props.state.toggleTeamMember(
   props.workspaceNode.workspaceId,
   team.teamRunId,
-  row.memberAddress,
+  row.rowKind === 'transient_execution' ? serializeTeamExecutionAddress(row.executionAddress) : row.memberAddress,
 );
 
 const visibleTeamExecutionRows = (team: TeamTreeNode): VisibleTeamExecutionRow[] => {
@@ -504,9 +505,9 @@ const visibleTeamExecutionRows = (team: TeamTreeNode): VisibleTeamExecutionRow[]
   return visibleRows;
 };
 
-const focusedTeamMemberAddress = (team: TeamTreeNode): string =>
-  props.state.getLiveTeamContext(team.teamRunId)?.focusedExecutionAddress.memberAddress
-  || team.focusedExecutionAddress.memberAddress;
+const focusedTeamExecutionAddress = (team: TeamTreeNode): TeamExecutionAddress =>
+  props.state.getLiveTeamContext(team.teamRunId)?.focusedExecutionAddress
+  ?? team.focusedExecutionAddress;
 
 const teamExecutionRowStyle = (row: WorkspaceTeamExecutionDisplayRow): Record<string, string> => ({ marginLeft: `${row.depth * 12}px` });
 

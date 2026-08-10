@@ -44,7 +44,7 @@ const kindFor = (address: TeamExecutionAddress | null, fallback: 'agent' | 'agen
 const runIdFor = (address: TeamExecutionAddress | null): string | null =>
   address?.taskAgentRunId ?? address?.taskTeamRunIds.at(-1) ?? null;
 const collectLiveTaskNodes = (nodes: readonly TeamMemberNode[]): TeamMemberNode[] => nodes.flatMap((node) => [
-  ...(node.isTaskExecution ? [node] : []),
+  ...(node.isTaskExecution && node.taskId ? [node] : []),
   ...(node.kind === 'agent_team' ? collectLiveTaskNodes(node.children) : []),
 ]);
 const recordVisible = (record: TaskDelegationRecord, focused?: TeamExecutionAddress | null): boolean => {

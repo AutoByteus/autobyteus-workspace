@@ -18,6 +18,7 @@ import {
   createTeamExecutionAddress,
   type TeamExecutionAddress,
 } from '~/types/agent/TeamExecutionAddress';
+import { findTeamExecutionNode } from '~/services/agentStreaming/teamTaskExecutionTree';
 
 export type TeamRunOpenSelectionMode = 'desktop' | 'mobile';
 
@@ -110,7 +111,7 @@ export const openTeamRun = async (
     }
     const requested = preferredFocus;
     existing.focusedExecutionAddress = requested && (
-      existing.memberNodesByAddress.has(requested.memberAddress) ||
+      Boolean(findTeamExecutionNode(existing, requested)) ||
       existing.agentExecutionsByKey.has(JSON.stringify(requested))
     ) ? requested : hydration.focusedExecutionAddress;
     current = existing;

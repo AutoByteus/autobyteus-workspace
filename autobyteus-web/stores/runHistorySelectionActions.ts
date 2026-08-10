@@ -11,6 +11,7 @@ import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import { openTeamRun } from '~/services/runOpen/teamRunOpenCoordinator';
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
 import { createTeamExecutionAddress, serializeTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
+import { findTeamExecutionNode } from '~/services/agentStreaming/teamTaskExecutionTree';
 
 type RunHistorySelectionMode = 'desktop' | 'mobile';
 
@@ -76,7 +77,7 @@ export const selectTreeRunFromHistory = async (
     const memberNodesByAddress = localTeamContext?.memberNodesByAddress ?? null;
     const shouldReuseLocalTeamContext = Boolean(
       localTeamContext && (
-        memberNodesByAddress?.has(row.memberAddress)
+        Boolean(findTeamExecutionNode(localTeamContext, executionAddress))
         || localTeamContext.agentExecutionsByKey.has(serializeTeamExecutionAddress(executionAddress))
       ),
     );

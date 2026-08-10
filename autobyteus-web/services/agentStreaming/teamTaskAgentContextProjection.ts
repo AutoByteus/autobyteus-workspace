@@ -8,10 +8,12 @@ import type { ServerMessage } from './protocol';
 import {
   createTeamExecutionAddress,
   memberAddressBasename,
+  parseTeamExecutionAddress,
   serializeTeamExecutionAddress,
   type TeamExecutionAddress,
 } from '~/types/agent/TeamExecutionAddress';
 import { applyTaskDelegationProjectionDetails, type TaskDelegationProjectionDetails } from './teamTaskExecutionProjection';
+import { findTeamExecutionNode, materializeTaskAgentProjectionNode, removeTaskExecutionProjection } from './teamTaskExecutionTree';
 
 export interface TaskAgentStreamIdentity {
   executionAddress: TeamExecutionAddress;
@@ -31,7 +33,7 @@ export const extractTaskAgentIdentity = (message: ServerMessage): TaskAgentStrea
     : null;
   if (!raw) return null;
   try {
-    const executionAddress = createTeamExecutionAddress(raw as never);
+    const executionAddress = parseTeamExecutionAddress(raw);
     return executionAddress.taskAgentRunId
       ? { executionAddress, taskAgentRunId: executionAddress.taskAgentRunId }
       : null;
@@ -72,6 +74,17 @@ export const ensureTaskAgentContext = (team: AgentTeamContext, identity: TaskAge
   team.agentExecutionsByKey = new Map(team.agentExecutionsByKey).set(key, context);
   return context;
 };
+export const ensureTaskAgentProjection = (
+  team: AgentTeamContext,
+  identity: TaskAgentStreamIdentity,
+  details: TaskDelegationProjectionDetails | null = null,
+): AgentTeamMemberNode | null => {
+  const node = materializeTaskAgentProjectionNode(team, identity.executionAddress);
+  if (!node) return null;
+  ensureTaskAgentContext(team, identity);
+  applyTaskDelegationProjectionDetails(node, details);
+  return node;
+};
 export const applyTaskAgentDelegationDetails = (
   team: AgentTeamContext,
   taskAgentRunId: string,
@@ -79,7 +92,7 @@ export const applyTaskAgentDelegationDetails = (
 ): AgentTeamMemberNode | null => {
   const context = getTaskAgentContextByRunId(team, taskAgentRunId);
   const identity = context ? getTaskAgentIdentityFromContext(context) : null;
-  const node = identity ? team.memberNodesByAddress.get(identity.executionAddress.memberAddress) : null;
+  const node = identity ? findTeamExecutionNode(team, identity.executionAddress) : null;
   if (!node || node.kind !== 'agent') return null;
   applyTaskDelegationProjectionDetails(node, details); return node;
 };
@@ -91,7 +104,7 @@ export const getTaskAgentContextByRunId = (team: AgentTeamContext, agentRunId: s
   return null;
 };
 export const removeTaskAgentContext = (team: AgentTeamContext, identity: TaskAgentStreamIdentity): void => {
-  const next = new Map(team.agentExecutionsByKey); next.delete(serializeTeamExecutionAddress(identity.executionAddress)); team.agentExecutionsByKey = next;
+  removeTaskExecutionProjection(team, identity.executionAddress);
 };
 export const shouldRemoveTaskAgentAfterMessage = (message: ServerMessage, identity: TaskAgentStreamIdentity | null): boolean =>
   Boolean(identity && message.type === 'AGENT_STATUS' && message.payload.status === AgentStatus.Offline);

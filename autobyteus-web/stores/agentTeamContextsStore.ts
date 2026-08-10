@@ -23,6 +23,7 @@ import {
   serializeTeamExecutionAddress,
   type TeamExecutionAddress,
 } from '~/types/agent/TeamExecutionAddress';
+import { findTeamExecutionNode } from '~/services/agentStreaming/teamTaskExecutionTree';
 
 interface AgentTeamContextsState { teams: Map<string, AgentTeamContext> }
 const executionForMember = (teamRunId: string, memberAddress: string): TeamExecutionAddress =>
@@ -44,7 +45,7 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
     },
     focusedMemberNode() {
       const team = this.activeTeamContext as AgentTeamContext | null;
-      return team?.memberNodesByAddress.get(team.focusedExecutionAddress.memberAddress) || null;
+      return team ? findTeamExecutionNode(team, team.focusedExecutionAddress) : null;
     },
     activeExecutionFocusedMemberAddress(): string {
       return (this.activeTeamContext as AgentTeamContext | null)?.focusedExecutionAddress.memberAddress || '';
@@ -144,7 +145,7 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
     },
     setFocusedExecutionAddress(address: TeamExecutionAddress) {
       const team = this.activeTeamContext;
-      if (!team || address.rootTeamRunId !== team.teamRunId || !team.memberNodesByAddress.has(address.memberAddress)) return;
+      if (!team || address.rootTeamRunId !== team.teamRunId || !findTeamExecutionNode(team, address)) return;
       team.focusedExecutionAddress = createTeamExecutionAddress(address);
     },
     async focusMemberAndEnsureHydrated(teamRunId: string, memberAddress: string): Promise<void> {
