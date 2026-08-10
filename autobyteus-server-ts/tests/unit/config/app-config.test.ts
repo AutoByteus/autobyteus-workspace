@@ -2,7 +2,7 @@ import fs from "node:fs";
 import fsPromises from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AppConfig, AppConfigError } from "../../../src/config/app-config.js";
 import { toPrismaSqliteUrl } from "../../../src/config/application-database-location.js";
 
@@ -21,6 +21,8 @@ const ENV_KEYS = [
   "AUTOBYTEUS_STREAM_PARSER_SUFFIX",
   "UNRELATED_SETTING",
   "LOG_LEVEL",
+  "QWEN_BASE_URL",
+  "TEST_KEY",
 ];
 
 const createTempConfigDir = async (envContents = ""): Promise<string> => {
@@ -40,6 +42,7 @@ describe("AppConfig", () => {
   });
 
   afterEach(async () => {
+    vi.restoreAllMocks();
     for (const key of ENV_KEYS) {
       if (originalEnv[key] === undefined) {
         delete process.env[key];
@@ -332,11 +335,13 @@ describe("AppConfig", () => {
     await fsPromises.rm(configDir, { recursive: true, force: true });
   });
 
-  it("rejects only the exact retired key and leaves custom settings writable", async () => {
+  it("rejects the exact retired key through normal and durable writes", async () => {
     const configDir = await createTempConfigDir("AUTOBYTEUS_SERVER_HOST=http://localhost:8000\n");
     const config = new AppConfig({ appDataDir: configDir });
 
     expect(() => config.set("AUTOBYTEUS_STREAM_PARSER", "api_tool_call"))
+      .toThrow("Server setting 'AUTOBYTEUS_STREAM_PARSER' has been retired and cannot be set.");
+    expect(() => config.setDurably("AUTOBYTEUS_STREAM_PARSER", "api_tool_call"))
       .toThrow("Server setting 'AUTOBYTEUS_STREAM_PARSER' has been retired and cannot be set.");
     expect(config.get("AUTOBYTEUS_STREAM_PARSER")).toBeUndefined();
     expect(process.env.AUTOBYTEUS_STREAM_PARSER).toBeUndefined();
@@ -368,6 +373,91 @@ describe("AppConfig", () => {
     expect(await fsPromises.readFile(envPath, "utf-8")).toContain("AUTOBYTEUS_STREAM_PARSER=json");
 
     await fsPromises.chmod(envPath, 0o600);
+    await fsPromises.rm(configDir, { recursive: true, force: true });
+  });
+
+  it("durably replaces the env file before publishing runtime state", async () => {
+    const configDir = await createTempConfigDir(
+      "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\r\nQWEN_BASE_URL=https://old.example/v1\r\n",
+    );
+    const configFile = path.join(configDir, ".env");
+    await fsPromises.chmod(configFile, 0o640);
+    const config = new AppConfig({ appDataDir: configDir });
+    config.initialize();
+
+    expect(config.setDurably("QWEN_BASE_URL", "https://new.example/v1"))
+      .toEqual({ persisted: true });
+
+    expect(await fsPromises.readFile(configFile, "utf-8")).toBe(
+      "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\r\nQWEN_BASE_URL=https://new.example/v1\r\n",
+    );
+    expect((await fsPromises.stat(configFile)).mode & 0o777).toBe(0o640);
+    expect(config.get("QWEN_BASE_URL")).toBe("https://new.example/v1");
+    expect(process.env.QWEN_BASE_URL).toBe("https://new.example/v1");
+    expect((await fsPromises.readdir(configDir)).filter((name) => name.endsWith(".tmp")))
+      .toEqual([]);
+
+    await fsPromises.rm(configDir, { recursive: true, force: true });
+  });
+
+  it("preserves the exact env file mode under a restrictive process umask", async () => {
+    if (process.platform === "win32") return;
+    const configDir = await createTempConfigDir(
+      "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nQWEN_BASE_URL=https://old.example/v1\n",
+    );
+    const configFile = path.join(configDir, ".env");
+    await fsPromises.chmod(configFile, 0o660);
+    const config = new AppConfig({ appDataDir: configDir });
+    config.initialize();
+    const previousUmask = process.umask(0o077);
+
+    try {
+      expect(config.setDurably("QWEN_BASE_URL", "https://new.example/v1"))
+        .toEqual({ persisted: true });
+      expect((await fsPromises.stat(configFile)).mode & 0o777).toBe(0o660);
+    } finally {
+      process.umask(previousUmask);
+      await fsPromises.rm(configDir, { recursive: true, force: true });
+    }
+  });
+
+  it("keeps file and runtime state unchanged when durable replacement fails before commit", async () => {
+    const original = [
+      "AUTOBYTEUS_SERVER_HOST=http://localhost:8000",
+      "QWEN_BASE_URL=https://old.example/v1",
+      "",
+    ].join("\n");
+    const configDir = await createTempConfigDir(original);
+    const configFile = path.join(configDir, ".env");
+    const config = new AppConfig({ appDataDir: configDir });
+    config.initialize();
+    const rename = vi.spyOn(fs, "renameSync").mockImplementationOnce(() => {
+      throw new Error("synthetic rename failure");
+    });
+
+    expect(() => config.setDurably("QWEN_BASE_URL", "https://new.example/v1"))
+      .toThrow(AppConfigError);
+
+    expect(rename).toHaveBeenCalledOnce();
+    expect(await fsPromises.readFile(configFile, "utf-8")).toBe(original);
+    expect(config.get("QWEN_BASE_URL")).toBe("https://old.example/v1");
+    expect(process.env.QWEN_BASE_URL).toBe("https://old.example/v1");
+    expect((await fsPromises.readdir(configDir)).filter((name) => name.endsWith(".tmp")))
+      .toEqual([]);
+
+    await fsPromises.rm(configDir, { recursive: true, force: true });
+  });
+
+  it("requires initialization and retains the sensitive-setting guard for durable writes", async () => {
+    const configDir = await createTempConfigDir("AUTOBYTEUS_SERVER_HOST=http://localhost:8000\n");
+    const config = new AppConfig({ appDataDir: configDir });
+
+    expect(() => config.setDurably("QWEN_BASE_URL", "https://new.example/v1"))
+      .toThrow("before AppConfig is initialized");
+    config.initialize();
+    expect(() => config.setDurably("QWEN_API_KEY", "must-not-persist"))
+      .toThrow("Sensitive values must be written");
+
     await fsPromises.rm(configDir, { recursive: true, force: true });
   });
 

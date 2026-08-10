@@ -517,9 +517,11 @@ The frontend treats token usage as display-only state:
   output tokens and estimated output cost. Calculation details labels their unit
   price as the output price / included in output cost so users do not
   double-count thinking.
-- Unknown latest-prompt/context-window pressure is hidden rather than rendered
-  as a noisy empty card. Context pressure appears only when a numeric percentage
-  and effective context window are present;
+- The `Latest prompt` block renders whenever latest-prompt tokens are present.
+  Known context capacity shows the percentage and progress bar; when capacity
+  is unknown, the panel shows the prompt-token count with explicit
+  `contextLimitUnavailable` copy and never fabricates a denominator or
+  percentage;
 - the frontend does not compute authoritative accounting deltas or model prices.
 
 "Unpriced" means token usage exists but trusted API-price metadata was missing;

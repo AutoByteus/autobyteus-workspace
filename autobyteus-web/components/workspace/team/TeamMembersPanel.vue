@@ -65,12 +65,14 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
+import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import AgentStatusDisplay from '~/components/workspace/agent/AgentStatusDisplay.vue';
 import AgentDeleteConfirmDialog from '~/components/agents/AgentDeleteConfirmDialog.vue';
 import { flattenTeamMemberNodesForDisplay } from '~/utils/teamDefinitionMembers';
 
 const teamContextsStore = useAgentTeamContextsStore();
+const runHistoryStore = useRunHistoryStore();
 const teamRunStore = useAgentTeamRunStore();
 
 const showTerminateConfirm = ref(false);
@@ -104,7 +106,8 @@ const isCoordinator = (memberRouteKey: string) => {
 };
 
 const selectMember = (memberRouteKey: string) => {
-  teamContextsStore.setFocusedMember(memberRouteKey);
+  const teamRunId = activeTeam.value?.teamRunId;
+  if (teamRunId) void runHistoryStore.focusTeamMemberAndEnsureHydrated(teamRunId, memberRouteKey);
 };
 
 const promptTerminateTeam = () => {

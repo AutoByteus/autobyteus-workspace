@@ -78,12 +78,19 @@ vi.mock('~/stores/agentRunStore', () => ({
 describe('openAgentRun', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    upsertProjectionContextMock.mockImplementation(({ runId, conversation }) => ({
+      state: { runId, conversation },
+      conversation,
+    }));
   });
 
   it('preserves live activities while merging file changes into an active subscribed context', async () => {
     getRunMock.mockReturnValue({
       isSubscribed: true,
-      state: { runId: 'run-1' },
+      state: {
+        runId: 'run-1',
+        conversation: { id: 'run-1', messages: [], createdAt: '', updatedAt: '' },
+      },
     });
     loadRunContextHydrationPayloadMock.mockResolvedValue({
       runId: 'run-1',
@@ -95,6 +102,9 @@ describe('openAgentRun', () => {
         isLocked: false,
       },
       conversation: {
+        id: 'run-2',
+        messages: [],
+        createdAt: '2026-04-10T00:00:00.000Z',
         updatedAt: '2026-04-10T00:00:00.000Z',
       },
       activities: [
@@ -154,6 +164,9 @@ describe('openAgentRun', () => {
         isLocked: false,
       },
       conversation: {
+        id: 'run-2',
+        messages: [],
+        createdAt: '2026-04-10T00:00:00.000Z',
         updatedAt: '2026-04-10T00:00:00.000Z',
       },
       activities: [

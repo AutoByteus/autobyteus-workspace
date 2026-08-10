@@ -1,9 +1,7 @@
 import { computed, ref, watch } from 'vue';
-import { buildWorkspaceTeamDefinitionDisplayGroups } from '~/components/workspace/history/workspaceHistoryTeamDefinitionGroups';
 import { normalizeRootPath } from '~/stores/runHistoryReadModel';
 import type {
   RunHistoryWorkspaceGroup,
-  TeamMemberTreeRow,
   TeamRunHistoryDefinitionGroup,
   TeamTreeNode,
 } from '~/stores/runHistoryTypes';
@@ -13,8 +11,21 @@ interface RunHistoryTreeStoreLike {
   selectedRunId: string | null;
   selectedTeamRunId: string | null;
   workspaceGroups: RunHistoryWorkspaceGroup[];
+  navigationTopologyRevision: number;
   getTreeNodes: () => RunTreeWorkspaceNode[];
   getTeamNodes: (workspaceRootPath?: string) => TeamTreeNode[];
+  getAgentNavigationAncestry: (runId: string) => {
+    workspaceId: string;
+    agentDefinitionId: string;
+  } | null;
+  getTeamNavigationAncestry: (teamRunId: string) => {
+    workspaceId: string;
+    teamDefinitionGroupKey: string;
+  } | null;
+  getTeamMemberNavigationAncestorRouteKeys: (
+    teamRunId: string,
+    memberRouteKey: string,
+  ) => string[];
 }
 
 interface SelectionStoreLike {
@@ -260,40 +271,13 @@ export const useWorkspaceHistoryTreeState = (params: {
     );
   };
 
-  const findTeamMemberAncestorRouteKeys = (
-    members: readonly TeamMemberTreeRow[],
-    targetMemberRouteKey: string,
-  ): string[] | null => {
-    for (const member of members) {
-      if (member.memberRouteKey === targetMemberRouteKey) {
-        return [];
-      }
-
-      const childAncestors = findTeamMemberAncestorRouteKeys(
-        member.children,
-        targetMemberRouteKey,
-      );
-      if (childAncestors) {
-        return member.memberKind === 'agent_team'
-          ? [member.memberRouteKey, ...childAncestors]
-          : childAncestors;
-      }
-    }
-
-    return null;
-  };
-
   const expandTeamMemberAncestors = (
     workspaceId: string,
     teamRunId: string,
     memberRouteKey: string,
-    memberTree: readonly TeamMemberTreeRow[],
   ): boolean => {
-    const ancestorRouteKeys = findTeamMemberAncestorRouteKeys(memberTree, memberRouteKey);
-    if (!ancestorRouteKeys) {
-      return false;
-    }
-
+    const ancestorRouteKeys = params.runHistoryStore
+      .getTeamMemberNavigationAncestorRouteKeys(teamRunId, memberRouteKey);
     for (const ancestorRouteKey of ancestorRouteKeys) {
       setTeamMemberExpanded(workspaceId, teamRunId, ancestorRouteKey, true);
     }
@@ -301,53 +285,20 @@ export const useWorkspaceHistoryTreeState = (params: {
   };
 
   const revealAgentRunAncestry = (runId: string): boolean => {
-    for (const workspaceNode of workspaceNodes.value) {
-      const workspaceId = workspaceKey(workspaceNode.workspaceId);
-      if (!workspaceId) {
-        continue;
-      }
-
-      const agentNode = workspaceNode.agents.find((agent) =>
-        agent.runs.some((run) => run.runId === runId),
-      );
-      if (!agentNode) {
-        continue;
-      }
-
-      setWorkspaceExpanded(workspaceId, true);
-      setAgentExpanded(workspaceId, agentNode.agentDefinitionId, true);
-      return true;
-    }
-
-    return false;
+    const ancestry = params.runHistoryStore.getAgentNavigationAncestry(runId);
+    if (!ancestry) return false;
+    setWorkspaceExpanded(ancestry.workspaceId, true);
+    setAgentExpanded(ancestry.workspaceId, ancestry.agentDefinitionId, true);
+    return true;
   };
 
   const revealTeamRunAncestry = (teamRunId: string): boolean => {
-    for (const workspaceNode of workspaceNodes.value) {
-      const workspaceId = workspaceKey(workspaceNode.workspaceId);
-      if (!workspaceId) {
-        continue;
-      }
-
-      const workspaceRootPath = workspaceNode.workspaceRootPath;
-      const teamGroups = buildWorkspaceTeamDefinitionDisplayGroups(
-        workspaceTeamHistoryGroups(workspaceRootPath),
-        workspaceTeams(workspaceRootPath),
-      );
-      const matchingGroup = teamGroups.find((group) =>
-        group.runs.some((team) => team.teamRunId === teamRunId),
-      );
-      if (!matchingGroup) {
-        continue;
-      }
-
-      setWorkspaceExpanded(workspaceId, true);
-      setTeamDefinitionExpanded(workspaceId, matchingGroup.key, true);
-      setTeamExpanded(teamRunId, true);
-      return true;
-    }
-
-    return false;
+    const ancestry = params.runHistoryStore.getTeamNavigationAncestry(teamRunId);
+    if (!ancestry) return false;
+    setWorkspaceExpanded(ancestry.workspaceId, true);
+    setTeamDefinitionExpanded(ancestry.workspaceId, ancestry.teamDefinitionGroupKey, true);
+    setTeamExpanded(teamRunId, true);
+    return true;
   };
 
   const revealSelectedAncestry = (key: string): boolean => {
@@ -396,33 +347,7 @@ export const useWorkspaceHistoryTreeState = (params: {
     pendingRevealKey.value = null;
   };
 
-  const revealDependencySignature = computed(() => {
-    const agentRuns = workspaceNodes.value
-      .map((workspaceNode) => {
-        const rootPath = normalizeRootPath(workspaceNode.workspaceRootPath);
-        const runs = workspaceNode.agents
-          .map((agent) => `${agent.agentDefinitionId}:${agent.runs.map((run) => run.runId).join(',')}`)
-          .join(';');
-        return `${rootPath}=${runs}`;
-      })
-      .join('|');
-
-    const teamRuns = params.runHistoryStore.getTeamNodes()
-      .map((team) => `${normalizeRootPath(team.workspaceRootPath)}:${team.teamRunId}:${team.teamDefinitionId}:${team.teamDefinitionName}`)
-      .join('|');
-
-    const teamHistoryGroups = (params.runHistoryStore.workspaceGroups ?? [])
-      .map((workspaceGroup) => {
-        const rootPath = normalizeRootPath(workspaceGroup.workspaceRootPath);
-        const groups = workspaceGroup.teamDefinitions
-          .map((group) => `${group.teamDefinitionId}:${group.teamDefinitionName}:${group.runs.map((run) => run.teamRunId).join(',')}`)
-          .join(';');
-        return `${rootPath}=${groups}`;
-      })
-      .join('|');
-
-    return `${agentRuns}::${teamRuns}::${teamHistoryGroups}`;
-  });
+  const revealDependencySignature = computed(() => params.runHistoryStore.navigationTopologyRevision);
 
   watch(
     [selectedRevealKey, revealDependencySignature],

@@ -5,6 +5,9 @@ import { LLMFactory } from '../../../src/llm/llm-factory.js';
 import { LLMProvider } from '../../../src/llm/providers.js';
 import { OpenAICompatibleEndpointLLM } from '../../../src/llm/api/openai-compatible-endpoint-llm.js';
 import { SecretValue } from '../../../src/secrets/secret-value.js';
+import { resolveTokenBudget } from '../../../src/agent/token-budget.js';
+import { CompactionPolicy } from '../../../src/memory/policies/compaction-policy.js';
+import { LLMConfig } from '../../../src/llm/utils/llm-config.js';
 
 const endpointA = {
   id: 'endpoint-a',
@@ -21,6 +24,12 @@ const endpointB = {
 };
 
 const discovered = (id: string) => ({ id, name: id, value: id, canonicalName: id });
+
+const unknownResolvedMetadata = {
+  maxContextTokens: { value: null, source: { kind: 'unknown' as const } },
+  maxInputTokens: { value: null, source: { kind: 'unknown' as const } },
+  maxOutputTokens: { value: null, source: { kind: 'unknown' as const } },
+};
 
 describe('OpenAICompatibleEndpointModelProvider', () => {
   beforeEach(() => LLMFactory.resetForTests());
@@ -45,10 +54,78 @@ describe('OpenAICompatibleEndpointModelProvider', () => {
     ]);
   });
 
+  it('constructs custom models with exact built-in metadata independent of endpoint URL', async () => {
+    const provider = new OpenAICompatibleEndpointModelProvider();
+    const report = await provider.reloadSavedEndpoints([{
+      endpoint: endpointA,
+      discoveredModels: [discovered('glm-5.2')],
+    }]);
+
+    expect(report.models[0]).toMatchObject({
+      maxContextTokens: 198_000,
+      maxInputTokens: 1_000_000,
+      maxOutputTokens: 128_000,
+      resolvedModelMetadata: {
+        maxContextTokens: {
+          value: 198_000,
+          source: {
+            kind: 'inferred_builtin', provider: LLMProvider.QWEN, value: 'glm-5.2',
+          },
+        },
+      },
+    });
+
+    const info = report.models[0]?.toModelInfo();
+    expect(info).toMatchObject({
+      max_context_tokens: 198_000,
+      resolved_model_metadata: {
+        maxContextTokens: {
+          value: 198_000,
+          source: { kind: 'inferred_builtin' },
+        },
+      },
+    });
+
+    const budget = resolveTokenBudget(
+      report.models[0]!,
+      new LLMConfig({ maxTokens: 4096 }),
+      new CompactionPolicy(),
+    );
+    expect(budget).toMatchObject({
+      effectiveContextCapacity: 198_000,
+      inputBudget: expect.any(Number),
+      triggerThresholdTokens: expect.any(Number),
+      overrideActive: false,
+    });
+  });
+
+  it('keeps unknown custom models without a fabricated budget while preserving the explicit override', async () => {
+    const provider = new OpenAICompatibleEndpointModelProvider();
+    const report = await provider.reloadSavedEndpoints([{
+      endpoint: endpointA,
+      discoveredModels: [discovered('unmatched-custom-wire-model')],
+    }]);
+    const model = report.models[0]!;
+
+    expect(model.maxContextTokens).toBeNull();
+    expect(resolveTokenBudget(model, new LLMConfig({ maxTokens: 4096 }), new CompactionPolicy())).toBeNull();
+
+    expect(resolveTokenBudget(
+      model,
+      new LLMConfig({ maxTokens: 4096 }),
+      new CompactionPolicy(),
+      { activeContextTokensOverride: 12000, triggerRatioOverride: null },
+    )).toMatchObject({
+      effectiveContextCapacity: 12000,
+      overrideActive: true,
+    });
+  });
+
   it('preserves last-known-good models for a failed discovery while keeping healthy results', async () => {
     const previousModel = new OpenAICompatibleEndpointModel({
       endpoint: endpointA,
       discoveredModel: discovered('model-stale'),
+      resolvedModelMetadata: unknownResolvedMetadata,
     });
     const provider = new OpenAICompatibleEndpointModelProvider();
 

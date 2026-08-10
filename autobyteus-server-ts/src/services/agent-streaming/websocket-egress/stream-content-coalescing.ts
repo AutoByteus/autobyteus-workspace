@@ -1,33 +1,5 @@
 import { ServerMessage, ServerMessageType } from "../models.js";
-
-const valuesEqual = (left: unknown, right: unknown): boolean => {
-  if (Object.is(left, right)) {
-    return true;
-  }
-  if (Array.isArray(left) || Array.isArray(right)) {
-    if (!Array.isArray(left) || !Array.isArray(right) || left.length !== right.length) {
-      return false;
-    }
-    return left.every((value, index) => valuesEqual(value, right[index]));
-  }
-  if (
-    !left ||
-    !right ||
-    typeof left !== "object" ||
-    typeof right !== "object"
-  ) {
-    return false;
-  }
-
-  const leftRecord = left as Record<string, unknown>;
-  const rightRecord = right as Record<string, unknown>;
-  const leftKeys = Object.keys(leftRecord).sort();
-  const rightKeys = Object.keys(rightRecord).sort();
-  return leftKeys.length === rightKeys.length &&
-    leftKeys.every((key, index) =>
-      key === rightKeys[index] && valuesEqual(leftRecord[key], rightRecord[key])
-    );
-};
+import { streamPayloadsEqual } from "./stream-payload-equality.js";
 
 const payloadWithoutDelta = (message: ServerMessage): Record<string, unknown> => {
   const { delta: _delta, ...payload } = message.payload;
@@ -47,7 +19,7 @@ export const canAppendStreamContent = (
 ): boolean =>
   isCoalescibleStreamContent(target) &&
   isCoalescibleStreamContent(incoming) &&
-  valuesEqual(payloadWithoutDelta(target), payloadWithoutDelta(incoming));
+  streamPayloadsEqual(payloadWithoutDelta(target), payloadWithoutDelta(incoming));
 
 export const appendStreamContent = (
   target: ServerMessage,

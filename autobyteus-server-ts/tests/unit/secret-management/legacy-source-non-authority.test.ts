@@ -84,7 +84,7 @@ describe("legacy source non-authority", () => {
     expect(await fs.readFile(configPath)).toEqual(source);
   });
 
-  it("keeps the current provider store v2-only without interpreting custom-provider v1", async () => {
+  it("keeps the current provider store V3-only without interpreting custom-provider V1", async () => {
     const providerDirectory = path.join(root, "llm");
     const providerPath = path.join(providerDirectory, "custom-llm-providers.json");
     await fs.mkdir(providerDirectory, { recursive: true });

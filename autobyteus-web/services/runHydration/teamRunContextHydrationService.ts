@@ -16,13 +16,16 @@ import { fetchAndHydrateTaskDelegationRecordsForTeam } from './taskDelegationHyd
 import { indexTeamMemberNodesByRouteKey } from '~/utils/teamDefinitionMembers';
 import { teamMemberNodesFromMetadata } from '~/utils/teamMemberMetadataNodes';
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
-import { applyLiveTeamMemberStatusSnapshot } from './teamRunMemberStatusHydration';
+import {
+  applyLiveTeamMemberStatusSnapshot,
+  hydrateTeamMemberActivitiesFromProjection,
+} from './teamRunMemberStatusHydration';
 import type { TeamMemberLiveSnapshot } from './teamRunMemberStatusHydration';
 import { resolveActiveExecutionFocusedMemberRouteKey } from '~/utils/teamActiveExecutionMembers';
+import { primeRecentEventMonitorBaseline } from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
 
 export {
   applyLiveTeamMemberStatusSnapshot,
-  hydrateTeamMemberActivitiesFromProjection,
 } from './teamRunMemberStatusHydration';
 export type {
   TeamMemberStatusSnapshotSet,
@@ -444,6 +447,11 @@ export const hydrateLiveTeamRunContext = async (
     memberStatuses: input.memberStatuses || [],
     historicalHydration: payload.historicalHydration,
   });
+  hydrateTeamMemberActivitiesFromProjection({
+    members: hydratedContext.leafAgentContextsByRouteKey,
+    projectionByMemberRouteKey: payload.projectionByMemberRouteKey,
+  });
+  hydratedContext.leafAgentContextsByRouteKey.forEach(primeRecentEventMonitorBaseline);
   return {
     teamRunId: payload.teamRunId,
     focusedMemberRouteKey: payload.focusedMemberRouteKey,
@@ -518,6 +526,7 @@ export const ensureHistoricalTeamMemberHydrated = async (params: {
       memberContext,
       isActive: false,
     });
+    primeRecentEventMonitorBaseline(memberContext);
     historicalHydration.memberProjectionLoadStateByRouteKey[normalizedMemberRouteKey] = 'loaded';
   })();
 

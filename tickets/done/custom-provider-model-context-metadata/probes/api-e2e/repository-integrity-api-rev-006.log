@@ -1,0 +1,47 @@
+$ git diff --check
+$ git status --short -- API/E2E durable paths
+ M autobyteus-server-ts/tests/e2e/llm-management/custom-provider-model-metadata-graphql.e2e.test.ts
+ D autobyteus-server-ts/tests/e2e/secret-management/custom-provider-v1-startup-migration.e2e.test.ts
+?? autobyteus-server-ts/tests/e2e/secret-management/custom-provider-readable-id-startup-migration.e2e.test.ts
+$ stale preserved-V2 assertions
+none
+$ historical qwen3.8-max-preview occurrences
+autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts:395:      expect(qwenProvider!.models.some(({ value }) => value === 'qwen3.8-max-preview')).toBe(false);
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:1136:    const customModel = `openai-compatible:${providerId}:qwen3.8-max-preview`;
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:1154:        modelValue: 'qwen3.8-max-preview',
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:1194:        modelValue: 'qwen3.8-max-preview',
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:1225:        modelValue: 'qwen3.8-max-preview',
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:1286:          modelDisplayName: 'alibaba_cloud:qwen3.8-max-preview',
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:1309:        modelDisplayNames: ['alibaba_cloud:qwen3.8-max-preview'],
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:1329:        modelValue: 'qwen3.8-max-preview',
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:1347:          modelDisplayName: 'alibaba_cloud:qwen3.8-max-preview',
+autobyteus-server-ts/tests/integration/token-usage/providers/statistics-provider.integration.test.ts:152:        model: "openai-compatible:provider_A:qwen3.8-max-preview",
+autobyteus-server-ts/tests/integration/token-usage/providers/statistics-provider.integration.test.ts:154:        modelValue: "qwen3.8-max-preview",
+autobyteus-server-ts/tests/integration/token-usage/providers/statistics-provider.integration.test.ts:173:      modelIdentifier: "openai-compatible:provider_A:qwen3.8-max-preview",
+autobyteus-server-ts/tests/integration/token-usage/providers/statistics-provider.integration.test.ts:174:      modelDisplayName: "renamed_provider:qwen3.8-max-preview",
+autobyteus-server-ts/tests/integration/token-usage/providers/statistics-provider.integration.test.ts:184:        model: "openai-compatible:provider_A:qwen3.8-max-preview",
+autobyteus-server-ts/tests/integration/token-usage/providers/statistics-provider.integration.test.ts:187:        modelValue: "qwen3.8-max-preview",
+autobyteus-server-ts/tests/integration/token-usage/providers/statistics-provider.integration.test.ts:205:    expect(result[0]).toMatchObject({ modelDisplayName: "historical_alibaba_cloud:qwen3.8-max-preview" });
+autobyteus-web/docs/settings.md:46:`qwen3.8-max-preview` value must not reappear after save, reload, or recovery.
+autobyteus-server-ts/tests/unit/token-usage/projections/token-usage-model-display-projection.test.ts:24:    ? "openai-compatible:provider_A:qwen3.8-max-preview"
+autobyteus-server-ts/tests/unit/token-usage/projections/token-usage-model-display-projection.test.ts:26:  model_value: input.model_value === undefined ? "qwen3.8-max-preview" : input.model_value,
+autobyteus-server-ts/tests/unit/token-usage/projections/token-usage-model-display-projection.test.ts:40:      "alibaba_cloud:qwen3.8-max-preview",
+autobyteus-server-ts/tests/unit/token-usage/projections/token-usage-model-display-projection.test.ts:43:      "historical_provider:qwen3.8-max-preview",
+autobyteus-server-ts/tests/unit/token-usage/projections/token-usage-model-display-projection.test.ts:60:      "OpenAI-Compatible (provider_A):qwen3.8-max-preview",
+autobyteus-ts/tests/unit/llm/supported-model-definitions.test.ts:354:    expect(qwenDefinitions.some((definition) => definition.value === 'qwen3.8-max-preview'))
+$ native Qwen exact identifiers
+23:    name: 'qwen3.8-max',
+24:    value: 'qwen3.8-max',
+27:    canonicalName: 'qwen3.8-max',
+38:    value: 'deepseek-v4-pro',
+41:    canonicalName: 'deepseek-v4-pro',
+42:    modelIdentifierOverride: 'qwen:deepseek-v4-pro',
+60:    value: 'glm-5.2',
+63:    canonicalName: 'glm-5.2',
+64:    modelIdentifierOverride: 'qwen:glm-5.2',
+$ owned runtime leftovers
+none
+$ browser log/evidence secret marker scan
+none
+$ browser evidence result
+PASS

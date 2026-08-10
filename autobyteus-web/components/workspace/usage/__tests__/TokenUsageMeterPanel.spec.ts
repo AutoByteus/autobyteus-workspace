@@ -21,6 +21,7 @@ const messages: Record<string, string> = {
   'shell.tokenUsage.cacheHitTooltip': 'Run-total cached input divided by run-total gross input.',
   'shell.tokenUsage.runTotalEstimateTooltip': 'Cumulative token total and estimated API cost for this Autobyteus run.',
   'shell.tokenUsage.contextTokens': 'context tokens',
+  'shell.tokenUsage.contextLimitUnavailable': 'context limit unavailable',
   'shell.tokenUsage.grossInput': 'Gross input',
   'shell.tokenUsage.output': 'Output',
   'shell.tokenUsage.totalEstimate': 'Total estimate',
@@ -256,6 +257,27 @@ describe('TokenUsageMeterPanel', () => {
     expect(calculationChevron.classes()).toContain('-rotate-90');
     expect((calculationToggle.element.firstElementChild as Element | null)?.getAttribute('data-test')).toBe('calculation-details-chevron');
     expect(wrapper.find('[data-test="calculation-details-panel"]').exists()).toBe(false);
+  });
+
+  it('shows prompt usage and an explicit unavailable context limit without a fake denominator', () => {
+    const agentContextsStore = useAgentContextsStore();
+    const selectionStore = useAgentSelectionStore();
+    const meterStore = useTokenUsageMeterStore();
+    agentContextsStore.runs.set('run-1', buildAgentContext('run-1', 'Story Agent'));
+    meterStore.upsertSummary(buildSummary({
+      effectiveContextWindowTokens: null,
+      contextWindowUsagePercent: null,
+      latestPromptTokens: 67_772,
+    }));
+    selectionStore.setRunSelection('run-1', 'agent');
+
+    const wrapper = mountPanel();
+    const contextCard = wrapper.get('[data-test="token-usage-primary"]');
+
+    expect(contextCard.get('[data-test="context-limit-unavailable"]').text()).toContain('67,772');
+    expect(contextCard.text()).toContain('context limit unavailable');
+    expect(contextCard.find('.bg-blue-500').exists()).toBe(false);
+    expect(contextCard.text()).not.toContain('/ 0');
   });
 
   it('expands calculation details with server-provided unit prices and thinking included copy', async () => {

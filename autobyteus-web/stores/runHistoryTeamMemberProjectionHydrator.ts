@@ -14,6 +14,9 @@ import {
   preserveCanonicalAgentStatus,
 } from '~/services/runStatus/agentRuntimeStatusState';
 import { flattenTeamRunAgentMetadata } from '~/stores/runHistoryMetadata';
+import {
+  resetRecentEventMonitorBaseline,
+} from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
 
 export const fetchTeamMemberProjections = async (params: {
   client: any;
@@ -169,6 +172,7 @@ export const applyProjectionToTeamMemberContext = (params: {
   }
 
   const memberRunId = params.member.memberRunId || normalizedMemberRouteKey;
+  resetRecentEventMonitorBaseline(params.memberContext);
   const conversation = buildTeamMemberConversation({
     teamRunId: params.teamRunId,
     metadata: params.metadata,
@@ -250,10 +254,8 @@ const buildTeamMemberContextsFromReferences = (params: {
     const state = new AgentRunState(memberRunId, conversation);
     state.hasEarlierActiveTraceEvents = projection?.hasEarlierActiveTraceEvents === true;
     initializeRuntimeStatusState(state, AgentStatus.Offline);
-    members.set(
-      normalizedMemberRouteKey,
-      new AgentContext(memberConfig, state),
-    );
+    const context = new AgentContext(memberConfig, state);
+    members.set(normalizedMemberRouteKey, context);
   }
 
   return {

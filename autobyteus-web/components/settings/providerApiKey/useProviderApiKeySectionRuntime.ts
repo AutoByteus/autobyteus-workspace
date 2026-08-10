@@ -3,6 +3,7 @@ import { computed, onBeforeUnmount, reactive, ref } from 'vue'
 import { useLocalization } from '~/composables/useLocalization'
 import {
   PROVIDER_SETTINGS_RUNTIME_KIND,
+  QwenConfigurationMutationError,
   useLLMProviderConfigStore,
   type CustomLlmProviderDraftInput,
   type CustomLlmProviderProbeResult,
@@ -25,7 +26,7 @@ export interface ProviderSummary {
 }
 
 export interface ProviderSectionNotification {
-  type: 'success' | 'error'
+  type: 'success' | 'warning' | 'error'
   message: string
 }
 
@@ -42,6 +43,7 @@ export function useProviderApiKeySectionRuntime() {
     reloadingProvider,
     providerSettingsGroups,
     geminiSetup,
+    qwenSetup,
   } = storeToRefs(store)
 
   const loading = ref(import.meta.env.MODE !== 'test')
@@ -50,6 +52,9 @@ export function useProviderApiKeySectionRuntime() {
   const notification = ref<ProviderSectionNotification | null>(null)
   const selectedProviderId = ref('')
   const providerEditorResetVersion = ref(0)
+  const qwenFormResetVersion = ref(0)
+  const qwenSaveErrorMessage = ref<string | null>(null)
+  const qwenSaveErrorCode = ref<string | null>(null)
   const customProviderDraft = reactive<CustomLlmProviderDraftInput>({ name: '', baseUrl: '', apiKey: '' })
   const isProbingCustomProvider = ref(false)
   const isSavingCustomProvider = ref(false)
@@ -182,7 +187,11 @@ export function useProviderApiKeySectionRuntime() {
   const initialize = async () => {
     loading.value = true
     try {
-      await Promise.all([store.fetchProviderSettings(), store.fetchGeminiSetupConfig()])
+      await Promise.all([
+        store.fetchProviderSettings(),
+        store.fetchGeminiSetupConfig(),
+        store.fetchQwenSetupStatus(),
+      ])
       selectedProviderId.value = resolvePreferredProviderId()
     } catch (error) {
       console.error('Failed to load provider settings:', error)
@@ -195,6 +204,7 @@ export function useProviderApiKeySectionRuntime() {
   const selectProvider = async (providerId: string) => {
     selectedProviderId.value = providerId
     if (providerId === 'GEMINI') await store.fetchGeminiSetupConfig()
+    if (providerId === 'QWEN') await store.fetchQwenSetupStatus()
   }
 
   const reloadAllModels = async () => {
@@ -257,6 +267,51 @@ export function useProviderApiKeySectionRuntime() {
     } finally {
       saving.value = false
     }
+  }
+
+  const clearQwenSaveError = () => {
+    qwenSaveErrorMessage.value = null
+    qwenSaveErrorCode.value = null
+  }
+
+  const saveQwenConfiguration = async (input: { baseUrl: string; apiKey: string }) => {
+    if (saving.value || !input.baseUrl.trim() || !input.apiKey.trim()) return false
+    saving.value = true
+    clearQwenSaveError()
+    try {
+      await store.saveQwenConfiguration(input)
+    } catch (error) {
+      const code = error instanceof QwenConfigurationMutationError ? error.code : null
+      const message = code === 'QWEN_CONFIGURATION_SAVE_FAILED_PREVIOUS_RESTORED'
+        ? t('settings.components.settings.ProviderAPIKeyManager.qwen_previous_configuration_active')
+        : code === 'QWEN_CONFIGURATION_REPAIR_REQUIRED'
+          ? t('settings.components.settings.ProviderAPIKeyManager.qwen_configuration_repair_required')
+          : error instanceof Error && error.message
+            ? error.message
+            : t('settings.components.settings.ProviderAPIKeyManager.failed_to_save_qwen_configuration')
+      qwenSaveErrorCode.value = code
+      qwenSaveErrorMessage.value = message
+      showNotification(message, 'error')
+      saving.value = false
+      return false
+    }
+
+    qwenFormResetVersion.value += 1
+    saving.value = false
+    showNotification(
+      t('settings.components.settings.ProviderAPIKeyManager.qwen_configuration_saved'),
+      'success',
+    )
+    try {
+      await store.refreshProviderDataAfterQwenSave()
+    } catch (error) {
+      console.error('Qwen configuration saved, but provider data refresh failed:', error)
+      showNotification(
+        t('settings.components.settings.ProviderAPIKeyManager.qwen_configuration_saved_refresh_failed'),
+        'warning',
+      )
+    }
+    return true
   }
 
   const probeCustomProviderDraft = async () => {
@@ -334,6 +389,10 @@ export function useProviderApiKeySectionRuntime() {
     reloadingProvider,
     providerSettingsGroups,
     geminiSetup,
+    qwenSetup,
+    qwenFormResetVersion,
+    qwenSaveErrorMessage,
+    qwenSaveErrorCode,
     allProvidersWithModels,
     selectedProviderLlmModels,
     selectedProviderAudioModels,
@@ -358,6 +417,8 @@ export function useProviderApiKeySectionRuntime() {
     reloadSelectedProvider,
     ...geminiActions,
     saveProviderApiKey,
+    saveQwenConfiguration,
+    clearQwenSaveError,
     updateCustomProviderDraft,
     probeCustomProviderDraft,
     saveCustomProviderDraft,

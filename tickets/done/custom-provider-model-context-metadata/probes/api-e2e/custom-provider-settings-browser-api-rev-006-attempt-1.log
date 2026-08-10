@@ -1,0 +1,14 @@
+AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected
+
+  {
++   apiKeyConfigured: false,
+-   apiKeyConfigured: true,
+    baseUrl: 'http://127.0.0.1:51045/v1',
+    id: 'provider_alibaba_cloud_token_plan',
+    isCustom: true,
+    name: 'Alibaba Cloud Token Plan',
+    status: 'READY'
+
+    at file:///private/tmp/custom-provider-settings-browser-api-rev-006.mjs:221:10
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)

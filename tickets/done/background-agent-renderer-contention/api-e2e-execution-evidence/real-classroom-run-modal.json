@@ -1,0 +1,249 @@
+{
+  "text": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nReload\nCreate Team\nAW\nArticle Writing Team\n\nA two-specialist article team for investigation-led understanding, style-aware drafting, critical review, and revision until publication-ready quality.\n\nwriting-and-editing\nRun\nView Details\n→\nA\narticle_writer\nA\narticle_reviewer\n\nCoordinator\n\narticle_writer\n\nMembers\n\n2\n\nNested Teams\n\n0\n\nCS\nClassroom Simulation Team\n\nA teacher-student classroom simulation for demonstrating agent-to-agent communication with required reply behavior.\n\neducation-simulation\nRun\nView Details\n→\nP\nprofessor\nS\nstudent\n\nCoordinator\n\nprofessor\n\nMembers\n\n2\n\nNested Teams\n\n0\n\nKC\nKids Coloring Story Team\n\nA child-friendly creative production team for multi-page A4 printable coloring stories, coloring bookmarks, activity sheets, and short line-art picture sequences.\n\ncreative-media\nRun\nView Details\n→\nS\nstory_activity_designer\nC\ncoloring_page_illustrator\nC\nchild_experience_reviewer\nP\nprintable_pack_producer\n\nCoordinator\n\nstory_activity_designer\n\nMembers\n\n4\n\nNested Teams\n\n0\n\nKP\nKids Picture Story Team\n\nA child-friendly creative production team for illustrated picture books with approved text composed into each text-bearing page image.\n\ncreative-media\nRun\nView Details\n→\nS\nstory_picture_book_author\nP\npicture_book_illustrator\nP\npicture_book_reviewer\nB\nbook_production_editor\n\nCoordinator\n\nstory_picture_book_author\n\nMembers\n\n4\n\nNested Teams\n\n0\n\nMV\nManga Video Studio Team\n\nA story-first creative production team for original manga canon design, consistent image generation, and optional narrated motion-comic video delivery.\n\ncreative-media\nRun\nView Details\n→\nM\nmanga_showrunner\nS\nstoryboard_director\nM\nmanga_illustrator\nV\nvoice_video_producer\n\nCoordinator\n\nmanga_showrunner\n\nMembers\n\n4\n\nNested Teams\n\n0\n\nNP\nNarrated Presentation Video Team\n\nA slide-based explainer and teaching-style video team for researched narration scripts, clean presentation visuals, voiceover, and simple still-slide video assembly.\n\ncreative-media\nRun\nView Details\n→\nP\npresentation_director\nN\nnarration_script_reviewer\nS\nslide_video_producer\n\nCoordinator\n\npresentation_director\n\nMembers\n\n3\n\nNested Teams\n\n0\n\nNO\nNorthstar Operating Company\n\nA realistic fictional SaaS company simulation with an executive leadership team and nested department organizations.\n\nbusiness-simulation\nRun\nView Details\n→\nC\nceo\nC\nchief_of_staff\nC\ncto\nC\ncpo\n+11 more\n\nCoordinator\n\nceo\n\nMembers\n\n15\n\nNested Teams\n\n6\n\nPB\nPicture Book Studio Team\n\nA creative production team for any illustrated picture book, from concept and global-scene reasoning through approved storyboard, cohesive page illustration, independent review, and ordered digital or print exports.\n\ncreative-media\nRun\nView Details\n→\nP\npicture_book_concept_director\nP\npicture_book_illustrator\nP\npicture_book_reviewer\nB\nbook_production_editor\n\nCoordinator\n\npicture_book_concept_director\n\nMembers\n\n4\n\nNested Teams\n\n0\n\nRE\nRequirements Engineering Team\n\nA focused team for codebase-informed product and technical requirements engineering, conditional product prototyping, user approval, and architecture-ready requirements handoff.\n\nsoftware-engineering\nRun\nView Details\n→\nR\nrequirements_engineer\nP\nproduct_prototyper\nP\nprototype_bootstrapper\n\nCoordinator\n\nrequirements_engineer\n\nMembers\n\n3\n\nNested Teams\n\n0\n\nRT\nResearch To Deck Team\n\nA three-specialist team for deep research, user-approved slide planning, image-only slide production, and independent deck review.\n\ncontent-and-presentations\nRun\nView Details\n→\nD\ndeep_researcher\nI\ninfographic_powerpoint_designer\nD\ndeck_reviewer\n\nCoordinator\n\ndeep_researcher\n\nMembers\n\n3\n\nNested Teams\n\n0\n\nSE\nSoftware Engineering Team\n\nA lightweight self-operating software engineering team for upstream solution design, implementation, API/E2E coverage investigation and execution, review, documentation sync, and final handoff.\n\nsoftware-engineering\nRun\nView Details\n→\nS\nsolution_designer\nA\narchitecture_reviewer\nI\nimplementation_engineer\nC\ncode_reviewer\n+2 more\n\nCoordinator\n\nsolution_designer\n\nMembers\n\n6\n\nNested Teams\n\n0\n\nSP\nSoftware Product Promo Video Team\n\nA product-marketing video team for software products, mobile apps, websites, SaaS tools, and digital services.\n\ncreative-media\nRun\nView Details\n→\nP\npromo_director\nV\nvisual_director\nV\nvisual_reviewer\nP\npromo_video_producer\n\nCoordinator\n\npromo_director\n\nMembers\n\n4\n\nNested Teams\n\n0\n\nST\nSTORM Team\n\nA Stanford STORM-inspired knowledge curation team for researching a topic, mining perspectives, asking retrieval-grounded questions, synthesizing an outline, and writing a cited article.\n\nresearch-writing\nRun\nView Details\n→\nT\ntopic_research_coordinator\nP\nperspective_miner\nE\nexpert_interviewer\nO\noutline_architect\n+2 more\n\nCoordinator\n\ntopic_research_coordinator\n\nMembers\n\n6\n\nNested Teams\n\n0\n\nSM\nSocratic Math Team\n\nCoordinates the bundled Socratic Math Tutor agent for the Socratic Math Teacher application.\n\nEducation\nApplication-owned\n\nApplication: Socratic Math Teacher · application-local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-workspace-superrepo%2Fapplications%2Fsocratic-math-teacher%2Fdist%2Fimportable-package\n\nRun\nView Details\n→\nT\ntutor\n\nCoordinator\n\ntutor\n\nMembers\n\n1\n\nNested Teams\n\n0",
+  "dialogs": [],
+  "buttons": [
+    {
+      "i": 0,
+      "text": "Agents",
+      "disabled": false,
+      "title": ""
+    },
+    {
+      "i": 1,
+      "text": "",
+      "disabled": false,
+      "title": "Collapse left panel"
+    },
+    {
+      "i": 2,
+      "text": "Agent Teams",
+      "disabled": false,
+      "title": ""
+    },
+    {
+      "i": 3,
+      "text": "Applications",
+      "disabled": false,
+      "title": ""
+    },
+    {
+      "i": 4,
+      "text": "Skills",
+      "disabled": false,
+      "title": ""
+    },
+    {
+      "i": 5,
+      "text": "Memory",
+      "disabled": false,
+      "title": ""
+    },
+    {
+      "i": 6,
+      "text": "Nodes",
+      "disabled": false,
+      "title": ""
+    },
+    {
+      "i": 7,
+      "text": "",
+      "disabled": false,
+      "title": "Add workspace"
+    },
+    {
+      "i": 8,
+      "text": "Settings",
+      "disabled": false,
+      "title": ""
+    },
+    {
+      "i": 9,
+      "text": "Reload",
+      "disabled": false,
+      "title": ""
+    },
+    {
+      "i": 10,
+      "text": "Create Team",
+      "disabled": false,
+      "title": ""
+    },
+    {
+      "i": 11,
+      "text": "Run",
+      "disabled": false,
+      "title": ""
+    },
+    {
+      "i": 12,
+      "text": "View Details\n→",
+      "disabled": false,
+      "title": ""
+    },
+    {
+      "i": 13,
+      "text": "Run",
+      "disabled": false,
+      "title": ""
+    },
+    {
+      "i": 14,
+      "text": "View Details\n→",
+      "disabled": false,
+      "title": ""
+    },
+    {
+      "i": 15,
+      "text": "Run",
+      "disabled": false,
+      "title": ""
+    },
+    {
+      "i": 16,
+      "text": "View Details\n→",
+      "disabled": false,
+      "title": ""
+    },
+    {
+      "i": 17,
+      "text": "Run",
+      "disabled": false,
+      "title": ""
+    },
+    {
+      "i": 18,
+      "text": "View Details\n→",
+      "disabled": false,
+      "title": ""
+    },
+    {
+      "i": 19,
+      "text": "Run",
+      "disabled": false,
+      "title": ""
+    },
+    {
+      "i": 20,
+      "text": "View Details\n→",
+      "disabled": false,
+      "title": ""
+    },
+    {
+      "i": 21,
+      "text": "Run",
+      "disabled": false,
+      "title": ""
+    },
+    {
+      "i": 22,
+      "text": "View Details\n→",
+      "disabled": false,
+      "title": ""
+    },
+    {
+      "i": 23,
+      "text": "Run",
+      "disabled": false,
+      "title": ""
+    },
+    {
+      "i": 24,
+      "text": "View Details\n→",
+      "disabled": false,
+      "title": ""
+    },
+    {
+      "i": 25,
+      "text": "Run",
+      "disabled": false,
+      "title": ""
+    },
+    {
+      "i": 26,
+      "text": "View Details\n→",
+      "disabled": false,
+      "title": ""
+    },
+    {
+      "i": 27,
+      "text": "Run",
+      "disabled": false,
+      "title": ""
+    },
+    {
+      "i": 28,
+      "text": "View Details\n→",
+      "disabled": false,
+      "title": ""
+    },
+    {
+      "i": 29,
+      "text": "Run",
+      "disabled": false,
+      "title": ""
+    },
+    {
+      "i": 30,
+      "text": "View Details\n→",
+      "disabled": false,
+      "title": ""
+    },
+    {
+      "i": 31,
+      "text": "Run",
+      "disabled": false,
+      "title": ""
+    },
+    {
+      "i": 32,
+      "text": "View Details\n→",
+      "disabled": false,
+      "title": ""
+    },
+    {
+      "i": 33,
+      "text": "Run",
+      "disabled": false,
+      "title": ""
+    },
+    {
+      "i": 34,
+      "text": "View Details\n→",
+      "disabled": false,
+      "title": ""
+    },
+    {
+      "i": 35,
+      "text": "Run",
+      "disabled": false,
+      "title": ""
+    },
+    {
+      "i": 36,
+      "text": "View Details\n→",
+      "disabled": false,
+      "title": ""
+    },
+    {
+      "i": 37,
+      "text": "Run",
+      "disabled": false,
+      "title": ""
+    },
+    {
+      "i": 38,
+      "text": "View Details\n→",
+      "disabled": false,
+      "title": ""
+    }
+  ],
+  "inputs": [
+    {
+      "i": 0,
+      "placeholder": "Search teams by name",
+      "value": "",
+      "type": "text"
+    }
+  ],
+  "selects": []
+}

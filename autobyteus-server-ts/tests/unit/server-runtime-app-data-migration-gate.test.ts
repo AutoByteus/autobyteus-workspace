@@ -113,7 +113,13 @@ vi.mock("../../src/application-orchestration/services/application-execution-even
   }),
 }));
 vi.mock("../../src/app-data-migrations/app-data-migration-runner.js", () => ({
-  getAppDataMigrationRunner: () => ({ runPending: mocks.runPending }),
+  getAppDataMigrationRunner: () => ({
+    runPending: mocks.runPending,
+    listStatuses: vi.fn(),
+  }),
+}));
+vi.mock("../../src/app-data-migrations/migrations/custom-provider-readable-id-app-data-migration.js", () => ({
+  CUSTOM_PROVIDER_READABLE_ID_APP_DATA_MIGRATION_ID: "20260803_custom_provider_readable_identity",
 }));
 vi.mock("../../src/built-in-agents/built-in-agent-bootstrapper.js", () => ({
   bootstrapBuiltInAgents: mocks.bootstrapBuiltInAgents,
@@ -168,15 +174,24 @@ import { startConfiguredServer } from "../../src/server-runtime.js";
 describe("startConfiguredServer ordinary app-data migration execution", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mocks.runPending.mockResolvedValue([]);
+    mocks.runPending.mockResolvedValue([{
+      migrationId: "20260803_custom_provider_readable_identity",
+      status: "SUCCEEDED",
+      logPath: "/tmp/server-runtime-gate/readable.log",
+    }]);
   });
 
-  it("continues bootstrap, app construction, and listen when the runner reports a FAILED result", async () => {
+  it("continues when readable identity is terminal even if another migration reports failure", async () => {
     mocks.runPending.mockResolvedValueOnce([
       {
         migrationId: "migrate_native_working_context_snapshots_v5",
         status: "FAILED",
         details: { diagnostics: [{ status: "FAILED", reason: "identity mismatch" }] },
+      },
+      {
+        migrationId: "20260803_custom_provider_readable_identity",
+        status: "SUCCEEDED_WITH_WARNINGS",
+        logPath: "/tmp/server-runtime-gate/readable.log",
       },
     ]);
 
@@ -195,6 +210,8 @@ describe("startConfiguredServer ordinary app-data migration execution", () => {
     });
     expect(mocks.initializeSecretVault).toHaveBeenCalledTimes(1);
     expect(mocks.runPending).toHaveBeenCalledTimes(1);
+    expect(mocks.runPending.mock.invocationCallOrder[0])
+      .toBeLessThan(mocks.bootstrapBuiltInAgents.mock.invocationCallOrder[0]!);
     expect(mocks.bootstrapBuiltInAgents).toHaveBeenCalledTimes(1);
     expect(mocks.fastify).toHaveBeenCalledTimes(1);
     expect(mocks.app.listen).toHaveBeenCalledWith({ host: "127.0.0.1", port: 0 });
@@ -204,18 +221,61 @@ describe("startConfiguredServer ordinary app-data migration execution", () => {
     );
   });
 
-  it("logs an infrastructure exception from the runner and still starts", async () => {
+  it("logs an infrastructure exception from the runner and stops startup", async () => {
     const runnerFailure = new Error("migration state store unavailable");
     mocks.runPending.mockRejectedValueOnce(runnerFailure);
+    const exit = vi.spyOn(process, "exit").mockImplementation(((code: number) => {
+      throw new Error(`process.exit:${code}`);
+    }) as never);
 
-    await expect(startConfiguredServer({ host: "127.0.0.1", port: 0 })).resolves.toBeUndefined();
+    await expect(startConfiguredServer({ host: "127.0.0.1", port: 0 }))
+      .rejects.toThrow("process.exit:1");
 
     expect(mocks.runPending).toHaveBeenCalledTimes(1);
-    expect(mocks.bootstrapBuiltInAgents).toHaveBeenCalledTimes(1);
-    expect(mocks.fastify).toHaveBeenCalledTimes(1);
-    expect(mocks.app.listen).toHaveBeenCalledTimes(1);
+    expect(mocks.bootstrapBuiltInAgents).not.toHaveBeenCalled();
+    expect(mocks.fastify).not.toHaveBeenCalled();
+    expect(mocks.app.listen).not.toHaveBeenCalled();
     expect(mocks.loggerError).toHaveBeenCalledWith(
       expect.stringContaining("Failed to run app data migrations"),
     );
+    exit.mockRestore();
+  });
+
+  it("stops startup when readable identity has a non-terminal failure", async () => {
+    mocks.runPending.mockResolvedValueOnce([{
+      migrationId: "20260803_custom_provider_readable_identity",
+      status: "FAILED",
+      logPath: "/tmp/server-runtime-gate/readable-failed.log",
+    }]);
+    const exit = vi.spyOn(process, "exit").mockImplementation(((code: number) => {
+      throw new Error(`process.exit:${code}`);
+    }) as never);
+
+    await expect(startConfiguredServer({ host: "127.0.0.1", port: 0 }))
+      .rejects.toThrow("process.exit:1");
+
+    expect(mocks.runPending).toHaveBeenCalledOnce();
+    expect(mocks.bootstrapBuiltInAgents).not.toHaveBeenCalled();
+    expect(mocks.fastify).not.toHaveBeenCalled();
+    expect(mocks.loggerError).toHaveBeenCalledWith(expect.stringContaining(
+      "CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:FAILED:/tmp/server-runtime-gate/readable-failed.log",
+    ));
+    exit.mockRestore();
+  });
+
+  it("stops startup when the readable identity result is missing", async () => {
+    mocks.runPending.mockResolvedValueOnce([]);
+    const exit = vi.spyOn(process, "exit").mockImplementation(((code: number) => {
+      throw new Error(`process.exit:${code}`);
+    }) as never);
+
+    await expect(startConfiguredServer({ host: "127.0.0.1", port: 0 }))
+      .rejects.toThrow("process.exit:1");
+
+    expect(mocks.bootstrapBuiltInAgents).not.toHaveBeenCalled();
+    expect(mocks.loggerError).toHaveBeenCalledWith(expect.stringContaining(
+      "CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:NOT_RUN:NO_LOG",
+    ));
+    exit.mockRestore();
   });
 });

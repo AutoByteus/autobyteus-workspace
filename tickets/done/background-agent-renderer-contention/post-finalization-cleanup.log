@@ -1,0 +1,20 @@
+=== Background agent renderer contention post-finalization cleanup ===
+Recorded: 2026-08-10T13:17:20Z
+Current personal: e373cfb6d3f42240ce85504165f487fccf0bc6b8
+Current origin/personal: e373cfb6d3f42240ce85504165f487fccf0bc6b8
+Ticket branch: ff3edb2ddb2ec34aa9cb7330f91113fa37342a9f
+Ticket branch ancestor of origin/personal: yes.
+Process references to ticket worktree: 0
+Open-file references to ticket worktree: 0
++ git worktree remove --force /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention
++ git worktree prune
++ git branch -d codex/background-agent-renderer-contention
+Deleted branch codex/background-agent-renderer-contention (was ff3edb2dd).
++ git push origin --delete codex/background-agent-renderer-contention
+remote:
+remote: GitHub found 792 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 325 high, 381 moderate, 66 low). To find out more, visit:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot
+remote:
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+ - [deleted]             codex/background-agent-renderer-contention
+Result: dedicated worktree removed, worktrees pruned, local and remote ticket branches deleted.

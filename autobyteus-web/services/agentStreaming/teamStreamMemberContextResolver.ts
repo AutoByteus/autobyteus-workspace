@@ -2,7 +2,6 @@ import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import type { ServerMessage } from './protocol';
 import {
-  ensureTaskAgentContext,
   extractTaskAgentIdentity,
   getTaskAgentContextByRunId,
 } from './teamTaskAgentContextProjection';
@@ -10,6 +9,7 @@ import { hasTaskTeamScopedFields } from './teamTaskTeamChildProjection';
 
 export interface TeamStreamMemberContextResolution {
   context: AgentContext;
+  memberRouteKey: string;
 }
 
 type TeamScopedPayload = {
@@ -83,9 +83,8 @@ export const resolveTeamStreamMemberContext = (
 
   const taskAgentIdentity = extractTaskAgentIdentity(message);
   if (taskAgentIdentity) {
-    return {
-      context: ensureTaskAgentContext(teamContext, taskAgentIdentity),
-    };
+    const context = getTaskAgentContextByRunId(teamContext, taskAgentIdentity.taskAgentRunId);
+    return context ? { context, memberRouteKey: taskAgentIdentity.taskAgentRunId } : null;
   }
 
   const payload = payloadFor(message);
@@ -99,6 +98,7 @@ export const resolveTeamStreamMemberContext = (
     if (taskAgentContext) {
       return {
         context: taskAgentContext,
+        memberRouteKey: agentId,
       };
     }
   }
@@ -114,11 +114,15 @@ export const resolveTeamStreamMemberContext = (
     }
     return {
       context: routedContext,
+      memberRouteKey: routeKey!,
     };
   }
 
   const runMatchedContext = agentId
     ? resolveLogicalContextByRunId(teamContext, agentId)
     : null;
-  return runMatchedContext ? { context: runMatchedContext } : null;
+  if (!runMatchedContext) return null;
+  const matchedRouteKey = Array.from(teamContext.leafAgentContextsByRouteKey.entries())
+    .find(([, context]) => context === runMatchedContext)?.[0] ?? agentId!;
+  return { context: runMatchedContext, memberRouteKey: matchedRouteKey };
 };

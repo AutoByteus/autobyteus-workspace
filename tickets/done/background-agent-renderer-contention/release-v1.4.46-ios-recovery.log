@@ -1,0 +1,24 @@
+=== v1.4.46 iOS release recovery ===
+Initial workflow: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/31376117877
+Tag/commit: v1.4.46 / 37660dd61347b630889a698769af5641566357bb
+
+Attempt 1 result: failure in the simulator smoke only.
+- Release metadata, Xcode selection, project generation, simulator build, and core tests passed.
+- Fake server health returned 200, but the first UI smoke observed no WKWebView/mobile marker and the fake server recorded no /mobile request.
+- The independent native unreachable-node diagnostic passed.
+- Prior v1.4.45 and earlier iOS release workflows passed the same boundary.
+- Classification: runner/simulator-local flake; no repository or release-tag correction.
+
+Recovery command:
+  gh run rerun 31376117877 --repo AutoByteus/autobyteus-workspace --failed
+This reran the failed immutable-tag workflow jobs only. The tag was not rewritten and no manual dispatch was used.
+
+Attempt 2 result: success.
+- Build And Test iOS App: success, including implementation checks/simulator smoke.
+- Validate iOS Publish Secrets: success.
+- Archive And Upload To App Store Connect: success.
+- Signed IPA: AutoByteus_personal_ios-1.4.46.ipa.
+- iOS marketing/build: 1.4.46 (108).
+- App Store Connect upload: “UPLOAD SUCCEEDED with no errors”.
+- Delivery UUID: 1e668c6e-f912-41ae-8292-d256be46ada2.
+- Scope: uploaded to App Store Connect/TestFlight; the workflow does not submit for final App Store review/public release.

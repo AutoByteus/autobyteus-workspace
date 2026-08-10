@@ -1,0 +1,52 @@
+{
+  "result": "pass",
+  "probeType": "temporary executable page removed after run",
+  "productionOwnersExercised": [
+    "useLLMProviderConfigStore.fetchProvidersWithModels",
+    "useBindingLaunchPresetModelSelection.groupedModelOptions/updateModel",
+    "SearchableGroupedSelect option and selected-label behavior"
+  ],
+  "frontendUrl": "http://127.0.0.1:3138/__api_rev_010_qwen_binding_probe",
+  "backendUrl": "http://127.0.0.1:29695/graphql",
+  "backendMutation": false,
+  "initial": {
+    "visibleLabel": "Qwen / DeepSeek V4 Pro (Qwen)",
+    "selector": "qwen:deepseek-v4-pro",
+    "catalogWireValue": "deepseek-v4-pro"
+  },
+  "selectedOptionLabel": "GLM-5.2 (Qwen)",
+  "final": {
+    "visibleLabel": "Qwen / GLM-5.2 (Qwen)",
+    "selector": "qwen:glm-5.2",
+    "catalogWireValue": "glm-5.2"
+  },
+  "graphqlRequests": [
+    {
+      "operationName": "GetAvailableLLMProvidersWithModels",
+      "url": "http://127.0.0.1:29695/graphql",
+      "status": 200
+    },
+    {
+      "operationName": "GetApplicationsCapability",
+      "url": "http://127.0.0.1:29695/graphql",
+      "status": 200
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "url": "http://127.0.0.1:29695/graphql",
+      "status": 200
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "url": "http://127.0.0.1:29695/graphql",
+      "status": 200
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "url": "http://127.0.0.1:29695/graphql",
+      "status": 200
+    }
+  ],
+  "consoleErrors": [],
+  "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/probes/api-e2e/qwen-friendly-binding-live-catalog-api-rev-010.png"
+}

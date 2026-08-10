@@ -1,0 +1,57 @@
+DR-011 finalization focused rerun
+START_UTC=2026-08-10T13:13:02Z
+HEAD=1d5340d37332df794bf82f97b61e05421527c76b
+BASE=37660dd61347b630889a698769af5641566357bb
+COMMAND=corepack pnpm -C autobyteus-web test:nuxt utils/__tests__/modelSelectionLabel.spec.ts components/settings/providerApiKey/__tests__/ProviderModelBrowser.spec.ts composables/messaging-binding-flow/__tests__/launch-preset-model-selection.spec.ts components/applications/setup/__tests__/ApplicationAgentLaunchProfileEditor.spec.ts --run
+
+> autobyteus@1.4.46 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web
+> cross-env NUXT_TEST=true vitest utils/__tests__/modelSelectionLabel.spec.ts components/settings/providerApiKey/__tests__/ProviderModelBrowser.spec.ts composables/messaging-binding-flow/__tests__/launch-preset-model-selection.spec.ts components/applications/setup/__tests__/ApplicationAgentLaunchProfileEditor.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web
+
+stderr | utils/__tests__/modelSelectionLabel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/messaging-binding-flow/__tests__/launch-preset-model-selection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/providerApiKey/__tests__/ProviderModelBrowser.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/applications/setup/__tests__/ApplicationAgentLaunchProfileEditor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/providerApiKey/__tests__/ProviderModelBrowser.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/messaging-binding-flow/__tests__/launch-preset-model-selection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/applications/setup/__tests__/ApplicationAgentLaunchProfileEditor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/__tests__/modelSelectionLabel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/__tests__/modelSelectionLabel.spec.ts (4 tests) 2ms
+ ✓ composables/messaging-binding-flow/__tests__/launch-preset-model-selection.spec.ts (2 tests) 4ms
+ ✓ components/applications/setup/__tests__/ApplicationAgentLaunchProfileEditor.spec.ts (1 test) 18ms
+ ✓ components/settings/providerApiKey/__tests__/ProviderModelBrowser.spec.ts (5 tests) 31ms
+
+ Test Files  4 passed (4)
+      Tests  12 passed (12)
+   Start at  15:13:05
+   Duration  6.24s (transform 3.29s, setup 21.75s, collect 214ms, tests 56ms, environment 1.12s, prepare 718ms)
+
+EXIT_CODE=0
+END_UTC=2026-08-10T13:13:12Z

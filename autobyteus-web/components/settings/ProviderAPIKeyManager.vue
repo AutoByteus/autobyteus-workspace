@@ -1,7 +1,7 @@
 <template>
   <div class="provider-api-key-manager flex-1 flex flex-col h-full overflow-hidden">
     <div class="flex-1 flex flex-col h-full min-h-0">
-      <div class="flex items-center justify-between px-8 pt-8 pb-4">
+      <div class="flex flex-wrap items-center justify-between gap-3 px-4 pb-4 pt-6 sm:px-8 sm:pt-8">
         <div class="flex flex-col">
           <h2 class="text-xl font-semibold text-gray-900">{{ $t('settings.components.settings.ProviderAPIKeyManager.api_key_management') }}</h2>
           <p class="text-sm text-gray-500 mt-1">{{ $t('settings.components.settings.ProviderAPIKeyManager.manage_provider_keys_and_reload_available') }}</p>
@@ -23,7 +23,7 @@
         <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
       </div>
 
-      <div v-else class="flex-1 flex flex-col overflow-auto px-8 pb-8">
+      <div v-else class="flex-1 flex flex-col overflow-auto px-4 pb-6 sm:px-8 sm:pb-8">
         <div class="flex-1 flex flex-col">
           <div
             v-if="isLoadingModels || isReloadingModels"
@@ -92,6 +92,16 @@
                   @save-and-activate="saveAndActivateGeminiConfigurationOption"
                   @activate="activateGeminiConfigurationOption"
                 />
+                <QwenSetupForm
+                  v-else-if="selectedProviderId === 'QWEN'"
+                  :setup="qwenSetup"
+                  :saving="saving"
+                  :reset-version="qwenFormResetVersion"
+                  :error-message="qwenSaveErrorMessage"
+                  :error-code="qwenSaveErrorCode"
+                  @save="saveQwenConfiguration"
+                  @clear-error="clearQwenSaveError"
+                />
                 <ProviderApiKeyEditor
                   v-else-if="selectedProviderId"
                   :configured="selectedProviderConfigured"
@@ -108,7 +118,11 @@
       <div
         v-if="notification"
         class="fixed bottom-4 right-4 p-4 rounded-lg shadow-lg"
-        :class="notification.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
+        :class="notification.type === 'success'
+          ? 'bg-green-100 text-green-800'
+          : notification.type === 'warning'
+            ? 'bg-amber-100 text-amber-900'
+            : 'bg-red-100 text-red-800'"
       >
         {{ notification.message }}
       </div>
@@ -119,6 +133,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import GeminiSetupForm from '~/components/settings/providerApiKey/GeminiSetupForm.vue'
+import QwenSetupForm from '~/components/settings/providerApiKey/QwenSetupForm.vue'
 import ProviderApiKeyEditor from '~/components/settings/providerApiKey/ProviderApiKeyEditor.vue'
 import ProviderModelBrowser from '~/components/settings/providerApiKey/ProviderModelBrowser.vue'
 import CustomProviderEditor from '~/components/settings/providerApiKey/customProvider/CustomProviderEditor.vue'
@@ -135,6 +150,10 @@ const {
   isLoadingModels,
   isReloadingModels,
   geminiSetup,
+  qwenSetup,
+  qwenFormResetVersion,
+  qwenSaveErrorMessage,
+  qwenSaveErrorCode,
   allProvidersWithModels,
   selectedProviderId,
   selectedProviderSummary,
@@ -164,6 +183,8 @@ const {
   saveAndActivateGeminiConfigurationOption,
   activateGeminiConfigurationOption,
   saveProviderApiKey,
+  saveQwenConfiguration,
+  clearQwenSaveError,
   updateCustomProviderDraft,
   probeCustomProviderDraft,
   saveCustomProviderDraft,

@@ -134,11 +134,7 @@ class FakeDatabase implements TokenUsageProviderNameSnapshotBackfillDatabase {
 }
 
 const providerStore = (providers: Array<{ id: string; name: string }> = [{ id: "provider_A", name: "Alibaba Cloud" }]) => ({
-  listProviders: async () => providers.map((provider) => ({
-    ...provider,
-    providerType: "OPENAI_COMPATIBLE" as const,
-    baseUrl: "https://example.test",
-  })),
+  read: async () => providers.map((provider) => ({ ...provider })),
 });
 
 const preservedFacts = (value: RawTokenUsageProviderNameBackfillRow) => ({
@@ -278,7 +274,7 @@ describe("token usage provider-name snapshot backfill migration", () => {
     const database = new FakeDatabase([row()]);
     const result = await new TokenUsageProviderNameSnapshotBackfillMigration(
       database,
-      { listProviders: async () => { throw new Error("provider map unavailable"); } },
+      { read: async () => { throw new Error("provider map unavailable"); } },
     ).execute();
 
     expect(result.status).toBe("FAILED");

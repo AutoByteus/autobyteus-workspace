@@ -1,0 +1,63 @@
+$ git rev-parse HEAD
+9817d3b1fdcbfec4c5249eb782ae2d9acfb25688
+$ git rev-parse HEAD^2
+647b1119a9dc3ba2ba301243e1b5e752943454db
+$ git rev-list --left-right --count HEAD...origin/personal
+7	0
+PASS: integrated merge identity and recorded base match
+$ verify API-REV-005 made no production or durable-test edits
+PASS: no production or repository-resident durable coverage changed in API-REV-005
+$ git diff --check
+PASS: tracked diff has no whitespace errors
+$ verify no unmerged paths or conflict markers in integrated AppConfig boundary
+PASS: no unmerged path or conflict marker remains
+$ verify restart-backed child receives no explicit Qwen endpoint
+    const config = appConfigProvider.initialize({ appDataDir: runtimeRoot });
+    config.initialize();
+PASS: fresh request child loads owned runtime through AppConfig without endpoint override
+$ verify provider-scoped cleanup remains current
+          models { providerId }
+    expect(remainingModelProviderIds).not.toContain(deletedProviderId);
+PASS: cleanup remains scoped to deleted provider/model ownership
+$ verify historical preview classification
+Production source occurrences:
+none
+Durable test occurrences:
+autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts:395:      expect(qwenProvider!.models.some(({ value }) => value === 'qwen3.8-max-preview')).toBe(false);
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:1136:    const customModel = `openai-compatible:${providerId}:qwen3.8-max-preview`;
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:1154:        modelValue: 'qwen3.8-max-preview',
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:1194:        modelValue: 'qwen3.8-max-preview',
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:1225:        modelValue: 'qwen3.8-max-preview',
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:1286:          modelDisplayName: 'alibaba_cloud:qwen3.8-max-preview',
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:1309:        modelDisplayNames: ['alibaba_cloud:qwen3.8-max-preview'],
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:1329:        modelValue: 'qwen3.8-max-preview',
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:1347:          modelDisplayName: 'alibaba_cloud:qwen3.8-max-preview',
+autobyteus-server-ts/tests/integration/token-usage/providers/statistics-provider.integration.test.ts:152:        model: "openai-compatible:provider_A:qwen3.8-max-preview",
+autobyteus-server-ts/tests/integration/token-usage/providers/statistics-provider.integration.test.ts:154:        modelValue: "qwen3.8-max-preview",
+autobyteus-server-ts/tests/integration/token-usage/providers/statistics-provider.integration.test.ts:173:      modelIdentifier: "openai-compatible:provider_A:qwen3.8-max-preview",
+autobyteus-server-ts/tests/integration/token-usage/providers/statistics-provider.integration.test.ts:174:      modelDisplayName: "renamed_provider:qwen3.8-max-preview",
+autobyteus-server-ts/tests/integration/token-usage/providers/statistics-provider.integration.test.ts:184:        model: "openai-compatible:provider_A:qwen3.8-max-preview",
+autobyteus-server-ts/tests/integration/token-usage/providers/statistics-provider.integration.test.ts:187:        modelValue: "qwen3.8-max-preview",
+autobyteus-server-ts/tests/integration/token-usage/providers/statistics-provider.integration.test.ts:205:    expect(result[0]).toMatchObject({ modelDisplayName: "historical_alibaba_cloud:qwen3.8-max-preview" });
+autobyteus-server-ts/tests/unit/token-usage/projections/token-usage-model-display-projection.test.ts:24:    ? "openai-compatible:provider_A:qwen3.8-max-preview"
+autobyteus-server-ts/tests/unit/token-usage/projections/token-usage-model-display-projection.test.ts:26:  model_value: input.model_value === undefined ? "qwen3.8-max-preview" : input.model_value,
+autobyteus-server-ts/tests/unit/token-usage/projections/token-usage-model-display-projection.test.ts:40:      "alibaba_cloud:qwen3.8-max-preview",
+autobyteus-server-ts/tests/unit/token-usage/projections/token-usage-model-display-projection.test.ts:43:      "historical_provider:qwen3.8-max-preview",
+autobyteus-server-ts/tests/unit/token-usage/projections/token-usage-model-display-projection.test.ts:60:      "OpenAI-Compatible (provider_A):qwen3.8-max-preview",
+autobyteus-ts/tests/unit/llm/supported-model-definitions.test.ts:336:    expect(qwenDefinitions.some((definition) => definition.value === 'qwen3.8-max-preview'))
+PASS: preview is absent from production/native behavior and retained only in explicit absence or opaque historical ledger tests
+$ verify focused/build/API/browser results
+      Tests  25 passed (25)
+      Tests  73 passed | 1 skipped (74)
+      Tests  32 passed (32)
+      Tests  4 passed (4)
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+PASS: repository, built-server lifecycle, and integrated browser evidence are green
+PASS: API-REV-005 desktop and narrow screenshots were visually inspected; configured Qwen/exact identifiers and usable narrow layout are visible
+$ verify canonical artifacts and text integrity
+- Current API/E2E Revision ID: `API-REV-005`
+- Current API/E2E Revision ID: `API-REV-005`
+### API-REV-005 — Integrated AppConfig/Qwen lifecycle and Settings recovery authorization
+PASS: canonical artifacts are API-REV-005 and contain no NUL/trailing whitespace
+$ verify owned cleanup
+PASS: temporary harness, owned Qwen state, and owned Nuxt process are absent

@@ -1,0 +1,43 @@
+=== v1.4.47 release verification ===
+Verified UTC: 2026-08-10T13:49:30Z
+Ticket final commit: 6cbfc9fbc1c492eac86c2f2bf53470f2a0e49a21
+Target merge: 156f6a0e285fd981318a4c0b787a495e8546c6ce
+Release commit: e373cfb6d3f42240ce85504165f487fccf0bc6b8
+Annotated tag object: eecd7168410ef3d4ad2ed28406ee95566813a87f
+Tag: v1.4.47
+GitHub Release: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.47
+Release state: stable, non-draft, non-prerelease
+Release assets: 21
+Package versions: autobyteus-web=1.4.47; autobyteus-message-gateway=1.4.47
+Managed messaging manifest: releaseTag=v1.4.47; artifactVersion=1.4.47; serverVersion=0.1.1
+
+Tag-push workflows for exact release commit:
+- Desktop Release 31392099917: success
+- Server Docker Release 31392099931: success
+- Android APK Release 31392101378: success
+- Release Messaging Gateway 31392101421: success
+- iOS App Store Connect Release 31392101713: success
+No manual desktop dispatch or second desktop release run was used.
+
+iOS result: marketing version 1.4.47, build 109; build/test, signed IPA archive/export, and Upload IPA to App Store Connect/TestFlight steps passed. This does not claim App Store review approval or public App Store availability.
+
+Docker result:
+- autobyteus/autobyteus-server:1.4.47
+- autobyteus/autobyteus-server:latest
+- shared multi-arch digest sha256:3ca9e5034bd7ff9ed17cd460c536b10316cf96fce3b9b3010221431a6fa2dee7
+- linux/amd64 manifest sha256:de2648dda4714401d65647e69f73dc8a08f8983fd6b724950a64e21320b9e999
+- linux/arm64 manifest sha256:213c4f8c876435d40ad535447136e029c8665dac328bb4c6bc532ec0d1027cf8
+
+Selected GitHub release asset digests:
+- macOS ARM64 DMG sha256:6ed7c67025324edba230fffb73adfb022b72f45b40bc5e4915c8a6a530183415
+- macOS x64 DMG sha256:22b930a1ee65a1be10533a7fc1cfa5361ae1d1f491e8aea117ffd992e61238d5
+- Windows x64 EXE sha256:c3b5e54fc5a0334c78f13b10545fd32bd6a3b05370ae63cdc4fb58831e45bc2f
+- Linux x64 AppImage sha256:fe25d01a19803695d8372b4ee807649cc2dc2556843b054310135a2eadb0cecd
+- Linux ARM64 AppImage sha256:fe9ecd2ef78ad79924eef6c2845633ddcc734e54cca18ce06c048f0935e5dd44
+- Android APK sha256:fd1b5aa7f62402892e820a3994b5f5f4dd0594e297ea8dff749ce87f3a41a81a
+- Messaging gateway archive sha256:cb4a4e19e496c0092133742887eb013492214e9ebc3fd75b6964b9c3ebd7b762
+
+Evidence JSON:
+- probes/delivery/release-v1.4.47-workflows.json
+- probes/delivery/release-v1.4.47-assets.json
+RESULT=PASS

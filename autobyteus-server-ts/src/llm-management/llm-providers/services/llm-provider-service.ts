@@ -1,7 +1,10 @@
 import {
+  buildCustomProviderId,
   OpenAICompatibleEndpointDiscovery,
+  QWEN_BASE_URL_ENV_VAR,
   SecretValue,
   normalizeOpenAICompatibleEndpointBaseUrl,
+  resolveQwenBaseUrl,
 } from 'autobyteus-ts';
 import type { ModelInfo } from 'autobyteus-ts/llm/models.js';
 import { LLMProvider } from 'autobyteus-ts/llm/providers.js';
@@ -9,6 +12,8 @@ import type { AudioModel } from 'autobyteus-ts/multimedia/audio/audio-model.js';
 import type { ImageModel } from 'autobyteus-ts/multimedia/image/image-model.js';
 import type { VideoModel } from 'autobyteus-ts/multimedia/video/video-model.js';
 import type { SecretConsumerIdentity } from '../../../secret-management/domain/secret-id.js';
+import { appConfigProvider } from '../../../config/app-config-provider.js';
+import type { AppConfig } from '../../../config/app-config.js';
 import {
   getSecretVaultRuntime,
   type SecretVaultRuntime,
@@ -40,6 +45,8 @@ import {
   type LlmProviderRecord,
   type LlmProviderWithModels,
   type ProviderSettingsGroup,
+  type QwenConfigurationInput,
+  type QwenSetupStatus,
 } from '../domain/models.js';
 import {
   getCustomLlmProviderStore,
@@ -51,6 +58,22 @@ import {
 } from './custom-llm-provider-runtime-sync-service.js';
 
 const DEFAULT_RUNTIME_KIND = RuntimeKind.AUTOBYTEUS;
+
+export const QWEN_CONFIGURATION_SAVE_FAILED_PREVIOUS_RESTORED =
+  'QWEN_CONFIGURATION_SAVE_FAILED_PREVIOUS_RESTORED';
+export const QWEN_CONFIGURATION_REPAIR_REQUIRED =
+  'QWEN_CONFIGURATION_REPAIR_REQUIRED';
+
+export class QwenConfigurationError extends Error {
+  constructor(
+    readonly code:
+      | typeof QWEN_CONFIGURATION_SAVE_FAILED_PREVIOUS_RESTORED
+      | typeof QWEN_CONFIGURATION_REPAIR_REQUIRED,
+  ) {
+    super(code);
+    this.name = 'QwenConfigurationError';
+  }
+}
 
 const resolveRuntimeKind = (runtimeKind?: string | null): RuntimeKind =>
   runtimeKindFromString(runtimeKind, DEFAULT_RUNTIME_KIND) ?? DEFAULT_RUNTIME_KIND;
@@ -86,6 +109,8 @@ export class LlmProviderService {
     private readonly secretVaultRuntime: SecretVaultRuntime = getSecretVaultRuntime(),
     private readonly geminiConfigurationService: GeminiConfigurationService =
       getGeminiConfigurationService(),
+    private readonly appConfig: Pick<AppConfig, 'get' | 'setDurably'> =
+      appConfigProvider.config,
   ) {}
 
   async listProvidersWithModels<TModel extends {
@@ -194,6 +219,7 @@ export class LlmProviderService {
     input: CustomLlmProviderDraftInput,
   ): Promise<CustomLlmProviderProbeResult> {
     const draft = await this.normalizeDraftInput(input);
+    buildCustomProviderId(draft.name);
     await this.assertProviderNameAvailable(draft.name);
     const discoveredModels = await this.discovery.probeEndpoint({
       baseUrl: draft.baseUrl,
@@ -206,6 +232,7 @@ export class LlmProviderService {
 
   async createCustomProvider(input: CustomLlmProviderDraftInput): Promise<string> {
     const draft = await this.normalizeDraftInput(input);
+    buildCustomProviderId(draft.name);
     await this.assertProviderNameAvailable(draft.name);
     await this.discovery.probeEndpoint({ baseUrl: draft.baseUrl, apiKey: draft.apiKey });
 
@@ -248,6 +275,9 @@ export class LlmProviderService {
 
   async setProviderApiKey(providerId: string, apiKey: string): Promise<void> {
     const normalizedProviderId = this.requireBuiltInProviderId(providerId);
+    if (normalizedProviderId === LLMProvider.QWEN) {
+      throw new Error('Qwen credentials must be saved with saveQwenConfiguration.');
+    }
     await this.secretVaultRuntime.requireService().saveForConsumer({
       consumer: this.builtInConsumer(normalizedProviderId),
       value: SecretValue.fromString(normalizeRequiredString(apiKey, 'apiKey')),
@@ -255,6 +285,59 @@ export class LlmProviderService {
     if (normalizedProviderId === LLMProvider.AUTOBYTEUS) {
       this.modelCatalogService.invalidateAutobyteusRemoteDiscoveryAfterCredentialReplacement();
     }
+  }
+
+  async getQwenSetupStatus(): Promise<QwenSetupStatus> {
+    const configuredBaseUrl = this.appConfig.get(QWEN_BASE_URL_ENV_VAR)?.trim() || undefined;
+    return {
+      effectiveBaseUrl: resolveQwenBaseUrl(configuredBaseUrl),
+      endpointSource: configuredBaseUrl ? 'CONFIGURED' : 'DEFAULT',
+      apiKeyConfigured: await this.isConsumerConfigured(
+        this.builtInConsumer(LLMProvider.QWEN),
+      ),
+    };
+  }
+
+  async saveQwenConfiguration(input: QwenConfigurationInput): Promise<QwenSetupStatus> {
+    const baseUrl = normalizeOpenAICompatibleEndpointBaseUrl(
+      normalizeRequiredString(input.baseUrl, 'baseUrl'),
+    );
+    const apiKey = normalizeRequiredString(input.apiKey, 'apiKey');
+    await this.discovery.probeEndpoint({ baseUrl, apiKey });
+
+    const consumer = this.builtInConsumer(LLMProvider.QWEN);
+    const secretService = this.secretVaultRuntime.requireService();
+    let previousSecret: SecretValue | null = null;
+    try {
+      if (await secretService.getStatusForConsumer(consumer) === 'CONFIGURED') {
+        previousSecret = await secretService.resolveForUse(consumer);
+      }
+      await secretService.saveForConsumer({
+        consumer,
+        value: SecretValue.fromString(apiKey),
+      });
+    } catch {
+      throw new Error('Could not save Qwen configuration. Your previous configuration is still active.');
+    }
+
+    try {
+      this.appConfig.setDurably(QWEN_BASE_URL_ENV_VAR, baseUrl);
+    } catch {
+      try {
+        if (previousSecret) {
+          await secretService.saveForConsumer({ consumer, value: previousSecret });
+        } else {
+          await secretService.removeForConsumer(consumer);
+        }
+      } catch {
+        throw new QwenConfigurationError(QWEN_CONFIGURATION_REPAIR_REQUIRED);
+      }
+      throw new QwenConfigurationError(
+        QWEN_CONFIGURATION_SAVE_FAILED_PREVIOUS_RESTORED,
+      );
+    }
+
+    return this.getQwenSetupStatus();
   }
 
   async reloadProviderModels(providerId: string, runtimeKind?: string | null): Promise<number> {

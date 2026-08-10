@@ -6,6 +6,9 @@ export type OpenAICompatibleEndpointDiscoveredModel = {
   name: string;
   value: string;
   canonicalName: string;
+  maxContextTokens?: number;
+  maxInputTokens?: number;
+  maxOutputTokens?: number;
 };
 
 export type OpenAICompatibleEndpointDiscoveryInput = {
@@ -95,24 +98,107 @@ const extractModelsArray = (payload: unknown): unknown[] => {
   return [];
 };
 
+const METADATA_ALIASES = {
+  maxContextTokens: [
+    'context_window',
+    'contextWindow',
+    'context_window_tokens',
+    'contextWindowTokens',
+    'max_context_tokens',
+    'maxContextTokens',
+    'context_length',
+    'contextLength',
+    'max_context_length',
+    'maxContextLength',
+  ],
+  maxInputTokens: [
+    'max_input_tokens',
+    'maxInputTokens',
+    'input_token_limit',
+    'inputTokenLimit',
+    'max_prompt_tokens',
+    'maxPromptTokens',
+    'max_input_length',
+    'maxInputLength',
+  ],
+  maxOutputTokens: [
+    'max_output_tokens',
+    'maxOutputTokens',
+    'output_token_limit',
+    'outputTokenLimit',
+    'max_completion_tokens',
+    'maxCompletionTokens',
+    'max_output_length',
+    'maxOutputLength',
+  ],
+} as const satisfies Record<
+  'maxContextTokens' | 'maxInputTokens' | 'maxOutputTokens',
+  readonly string[]
+>;
+
+export const openAICompatibleEndpointMetadataAliases = METADATA_ALIASES;
+
+const normalizePositiveInteger = (value: unknown): number | null =>
+  typeof value === 'number' && Number.isFinite(value) && Number.isInteger(value) && value > 0
+    ? value
+    : null;
+
+const extractAdvertisedMetadata = (
+  value: unknown,
+): Pick<OpenAICompatibleEndpointDiscoveredModel, 'maxContextTokens' | 'maxInputTokens' | 'maxOutputTokens'> => {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return {};
+  }
+
+  const record = value as Record<string, unknown>;
+  const metadata: Pick<
+    OpenAICompatibleEndpointDiscoveredModel,
+    'maxContextTokens' | 'maxInputTokens' | 'maxOutputTokens'
+  > = {};
+  for (const field of Object.keys(METADATA_ALIASES) as Array<keyof typeof METADATA_ALIASES>) {
+    for (const alias of METADATA_ALIASES[field]) {
+      const normalized = normalizePositiveInteger(record[alias]);
+      if (normalized !== null) {
+        metadata[field] = normalized;
+        break;
+      }
+    }
+  }
+  return metadata;
+};
+
 const mapDiscoveredModels = (payload: unknown): OpenAICompatibleEndpointDiscoveredModel[] => {
-  const uniqueModelIds = new Set<string>();
+  const modelsById = new Map<string, OpenAICompatibleEndpointDiscoveredModel>();
   for (const candidate of extractModelsArray(payload)) {
     const modelId = extractModelId(candidate);
-    if (modelId) {
-      uniqueModelIds.add(modelId);
+    if (!modelId) continue;
+
+    const existing = modelsById.get(modelId);
+    const advertised = extractAdvertisedMetadata(candidate);
+    if (!existing) {
+      modelsById.set(modelId, {
+        id: modelId,
+        name: modelId,
+        value: modelId,
+        canonicalName: modelId,
+        ...advertised,
+      });
+      continue;
+    }
+
+    for (const field of ['maxContextTokens', 'maxInputTokens', 'maxOutputTokens'] as const) {
+      if (existing[field] === undefined && advertised[field] !== undefined) {
+        existing[field] = advertised[field];
+      }
     }
   }
 
-  return Array.from(uniqueModelIds)
-    .sort((left, right) => left.localeCompare(right))
-    .map((modelId) => ({
-      id: modelId,
-      name: modelId,
-      value: modelId,
-      canonicalName: modelId,
-    }));
+  return Array.from(modelsById.values())
+    .sort((left, right) => left.id.localeCompare(right.id))
+    .map((model) => model);
 };
+
+export const normalizeOpenAICompatibleEndpointDiscoveredModels = mapDiscoveredModels;
 
 const buildDiscoveryEndpoint = (baseUrl: string): string => `${baseUrl}/models`;
 

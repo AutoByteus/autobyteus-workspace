@@ -20,6 +20,11 @@ import {
 import { buildTeamRunMemberConfigRecords } from '~/utils/teamRunMemberConfigBuilder';
 import { ensureHistoricalTeamMemberHydrated } from '~/services/runHydration/teamRunContextHydrationService';
 import { resolveActiveExecutionFocusedMemberRouteKey } from '~/utils/teamActiveExecutionMembers';
+import {
+  primeRecentEventMonitorBaseline,
+  resetRecentEventMonitorBaseline,
+} from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
+import { useRunHistoryStore } from '~/stores/runHistoryStore';
 
 interface AgentTeamContextsState {
   /** All active agent team runs, indexed by team run ID. */
@@ -163,6 +168,7 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
           new AgentRunState(conversation.id, conversation)
         );
 
+        primeRecentEventMonitorBaseline(memberContext);
         leafAgentContextsByRouteKey.set(memberRecord.memberRouteKey, memberContext);
       }
 
@@ -187,6 +193,7 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
       };
 
       this.teams.set(teamRunId, newContext);
+      useRunHistoryStore().refreshRunNavigationTopology('team-draft-create');
       if (options.selectionMode === 'mobile') {
         selectionStore.selectRunWithoutShellNavigation(teamRunId, 'team');
       } else {
@@ -210,6 +217,7 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
       const context = this.teams.get(temporaryTeamRunId);
       if (!context) return;
 
+      context.leafAgentContextsByRouteKey.forEach(resetRecentEventMonitorBaseline);
       context.teamRunId = permanentTeamRunId;
       context.leafAgentContextsByRouteKey.forEach(member => {
         if (member.state.conversation.id.startsWith(temporaryTeamRunId)) {
@@ -221,9 +229,11 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
           member.state.runId = memberRunId;
         }
       });
+      context.leafAgentContextsByRouteKey.forEach(primeRecentEventMonitorBaseline);
 
       this.teams.delete(temporaryTeamRunId);
       this.teams.set(permanentTeamRunId, context);
+      useRunHistoryStore().refreshRunNavigationTopology('team-identity-promotion');
 
       const selectionStore = useAgentSelectionStore();
       if (
@@ -236,6 +246,7 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
 
     addTeamContext(context: AgentTeamContext) {
       this.teams.set(context.teamRunId, context);
+      useRunHistoryStore().refreshRunNavigationTopology('team-context-add');
     },
 
     /**
@@ -246,7 +257,9 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
       const context = this.teams.get(teamRunId);
       if (context) {
         context.unsubscribe?.();
+        context.leafAgentContextsByRouteKey.forEach(resetRecentEventMonitorBaseline);
         this.teams.delete(teamRunId);
+        useRunHistoryStore().refreshRunNavigationTopology('team-context-remove');
 
         const selectionStore = useAgentSelectionStore();
         if (selectionStore.selectedType === 'team' && selectionStore.selectedRunId === teamRunId) {

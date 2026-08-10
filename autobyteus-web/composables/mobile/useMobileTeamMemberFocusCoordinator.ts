@@ -1,6 +1,7 @@
 import { computed, ref, type Ref } from 'vue'
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore'
+import { useRunHistoryStore } from '~/stores/runHistoryStore'
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
 import { useMobileWorkStore } from '~/stores/mobileWorkStore'
 import type { AgentTeamMemberNode, TeamMemberNode } from '~/types/agent/AgentTeamContext'
@@ -32,6 +33,7 @@ export function useMobileTeamMemberFocusCoordinator(contextRef: Ref<MobileWorkCo
   const agentDefinitionStore = useAgentDefinitionStore()
   const teamDefinitionStore = useAgentTeamDefinitionStore()
   const teamContextsStore = useAgentTeamContextsStore()
+  const runHistoryStore = useRunHistoryStore()
   const mobileWorkStore = useMobileWorkStore()
   const isUpdating = ref(false)
   const error = ref<string | null>(null)
@@ -98,7 +100,7 @@ export function useMobileTeamMemberFocusCoordinator(contextRef: Ref<MobileWorkCo
 
     isUpdating.value = true
     try {
-      await teamContextsStore.focusMemberAndEnsureHydrated(context.teamRunId, normalizedMemberRouteKey)
+      await runHistoryStore.focusTeamMemberAndEnsureHydrated(context.teamRunId, normalizedMemberRouteKey)
       mobileWorkStore.updateFocusedTeamMember(context.teamRunId, normalizedMemberRouteKey)
       mobileWorkStore.rememberFocusedTeamMember(context.teamRunId, normalizedMemberRouteKey)
     } catch (cause) {

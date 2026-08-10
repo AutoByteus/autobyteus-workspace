@@ -1,0 +1,109 @@
+{
+  "revisionId": "API-REV-003",
+  "result": "PASS",
+  "confidencePercent": 98.9,
+  "priorResult": "FAIL",
+  "priorConfidencePercent": 77.1,
+  "resolvedFailure": "API-F-001 / WORKSPACE-BOOT-001",
+  "behavioralExecutionOrder": [
+    "WORKSPACE-BOOT-001",
+    "WORKSPACE-BOOT-002",
+    "WORKSPACE-BOOT-002-RELOAD",
+    "NAV-STARTUP-003",
+    "WS-STATUS-003",
+    "FRONT-AFFECTED-003",
+    "BG-BROWSER-000-007",
+    "BUILD-GUARD-003"
+  ],
+  "workspaceBoot001": {
+    "scenarioId": "WORKSPACE-BOOT-001",
+    "result": "PASS",
+    "timestamp": "2026-08-10T08:49:35.139Z",
+    "frontendUrl": "http://127.0.0.1:63932/workspace",
+    "backendUrl": "http://127.0.0.1:63931",
+    "dataSource": "owned SQLite snapshot and copied workspace/history/package state from /Users/normy/.autobyteus/server-data",
+    "setup": {
+      "secretImport": "PASS: required pnpm secrets:import completed against the owned snapshot; 9 identifiers replaced and no values recorded",
+      "agentPackage": "/Users/normy/autobyteus_org/autobyteus-agents",
+      "classroomCatalogPresent": true
+    },
+    "api": {
+      "workspaceCount": 26,
+      "historyGroupCount": 18,
+      "agentRunCount": 79,
+      "teamRunCount": 0,
+      "errors": []
+    },
+    "ui": {
+      "workspaceRowCount": 26,
+      "visibleWorkspaceRowCount": 26,
+      "visibleUniqueWorkspaceNameCount": 26,
+      "visibleNoHistory": false,
+      "selectedPaneText": "No agent or team run selected \u2014 Choose an agent or team, or open run history to continue."
+    },
+    "expected": "all 26 existing workspaces visible immediately after a fresh renderer load",
+    "observed": "all 26 workspace rows rendered; stale No run history yet state absent",
+    "apiF001Resolution": "Resolved on the exact formerly failing fresh real-data boundary",
+    "screenshot": "isolated-real-data-workspaces-pass.png"
+  },
+  "workspaceBoot002": {
+    "scenarioId": "WORKSPACE-BOOT-002",
+    "result": "PASS",
+    "timestamp": "2026-08-10T08:50:34.100Z",
+    "frontendUrl": "http://127.0.0.1:63933/workspace",
+    "backendUrl": "http://127.0.0.1:29695",
+    "backendOwner": "/Applications/AutoByteus.app",
+    "backendDataDir": "/Users/normy/.autobyteus/server-data",
+    "api": {
+      "workspaceCount": 26,
+      "historyGroupCount": 28,
+      "agentRunCount": 79,
+      "teamRunCount": 184,
+      "errors": []
+    },
+    "ui": {
+      "workspaceRowCount": 26,
+      "visibleWorkspaceRowCount": 26,
+      "visibleUniqueWorkspaceNameCount": 26,
+      "visibleNoHistory": false,
+      "selectedPaneText": "No agent or team run selected \u2014 Choose an agent or team, or open run history to continue."
+    },
+    "expected": "all existing workspaces visible immediately after a fresh renderer load against the active Electron backend",
+    "observed": "all 26 workspace rows rendered; stale No run history yet state absent",
+    "userRuntimeEffect": "read-only backend access; the user-owned Electron process and data were not stopped or modified",
+    "screenshot": "active-electron-backend-workspaces-pass.png"
+  },
+  "workspaceReload": {
+    "scenarioId": "WORKSPACE-BOOT-002-RELOAD",
+    "result": "PASS",
+    "timestamp": "2026-08-10T08:54:40.439Z",
+    "url": "http://127.0.0.1:63933/workspace?api_rev_003_reload=1",
+    "workspaceRowCount": 26,
+    "visibleWorkspaceRowCount": 26,
+    "firstWorkspace": "2026-05-25-roma-fuqi-church",
+    "lastWorkspace": "Temp Workspace",
+    "visibleNoHistory": false,
+    "observation": "A second full navigation/reload against the active Electron backend again populated all 26 workspace rows."
+  },
+  "repository": {
+    "workspaceNavigation": "5 files / 126 tests passed",
+    "serverRealWebSocket": "4 files / 57 tests passed",
+    "frontendAffected": "28 files / 345 tests passed",
+    "buildAndGuards": "passed"
+  },
+  "performance": {
+    "idleFilesTeamsP95Ms": 6.700000047683716,
+    "aggregateFilesTeamsP95Ms": 6.900000095367432,
+    "aggregateToIdleRatio": 1.0298507531731822,
+    "aggregateWindows": 260,
+    "aggregateDispatches": 520,
+    "topologyDelta": 0,
+    "longTaskCount": 0,
+    "aggregatePasteP95Ms": 7.6000001430511475,
+    "aggregateVoiceStartingP95Ms": 5.900000095367432,
+    "aggregateVoiceRecordingP95Ms": 32.5
+  },
+  "durableCoverageChanged": false,
+  "productionSourceChangedByApiE2e": false,
+  "cleanup": "owned tabs/services/snapshot removed; ports 63931-63933 free; user port 29695 still listening"
+}

@@ -1,0 +1,129 @@
+{
+  "result": "PASS",
+  "revision": "API-REV-008",
+  "integratedHead": "ea8dbfd2d4f78312806bee7a41f38daa6a0e9a06 plus reviewed IR-012 working-tree correction",
+  "startedAt": "2026-08-09T18:36:55.526Z",
+  "completedAt": "2026-08-09T18:37:06.721Z",
+  "mode": "headless Google Chrome through Nuxt browser-development path",
+  "frontendUrl": "http://127.0.0.1:55692",
+  "backendUrl": "http://127.0.0.1:55689",
+  "qwenProviderBaseUrl": "http://127.0.0.1:55688/compatible-mode/v1",
+  "assertions": {
+    "defaultStatus": true,
+    "maskedApiKey": true,
+    "realProviderProbe": true,
+    "browserSaveConfiguredPair": true,
+    "graphqlConfiguredStatus": true,
+    "runtimeEnvironmentPersistedBaseUrl": true,
+    "apiKeyAbsentFromEnvironment": true,
+    "restrictiveChildUmaskPreservedExistingMode0660": true,
+    "exactNativeValuesAndIdentifiers": true,
+    "previewAliasAbsent": true,
+    "plaintextKeyCleared": true,
+    "narrowViewportNoHorizontalOverflow": true
+  },
+  "exactNativeValues": [
+    "deepseek-v4-flash-0731",
+    "deepseek-v4-pro",
+    "glm-5.2",
+    "qwen3-max",
+    "qwen3.7-max",
+    "qwen3.8-max"
+  ],
+  "exactNativeIdentifiers": [
+    "qwen3-max",
+    "qwen3.7-max",
+    "qwen3.8-max",
+    "qwen:deepseek-v4-flash-0731",
+    "qwen:deepseek-v4-pro",
+    "qwen:glm-5.2"
+  ],
+  "runtimeEnvironmentModeOctal": "660",
+  "providerEvents": [
+    {
+      "method": "GET",
+      "path": "/compatible-mode/v1/models",
+      "authorizationPresent": true,
+      "authorized": true
+    }
+  ],
+  "graphqlEvents": [
+    {
+      "operationName": "GetProviderSettings",
+      "method": "POST"
+    },
+    {
+      "operationName": "GetGeminiSetupConfig",
+      "method": "POST"
+    },
+    {
+      "operationName": "GetQwenSetupStatus",
+      "method": "POST"
+    },
+    {
+      "operationName": "GetQwenSetupStatus",
+      "method": "POST"
+    },
+    {
+      "operationName": "SaveQwenConfiguration",
+      "method": "POST"
+    },
+    {
+      "operationName": "GetProviderSettings",
+      "method": "POST"
+    },
+    {
+      "operationName": "GetAvailableLLMProvidersWithModels",
+      "method": "POST"
+    }
+  ],
+  "responsive": {
+    "viewportWidth": 390,
+    "documentClientWidth": 390,
+    "documentScrollWidth": 390,
+    "bodyScrollWidth": 390,
+    "form": {
+      "left": 45,
+      "right": 345,
+      "width": 300
+    }
+  },
+  "browserConsole": [
+    {
+      "type": "debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "verbose",
+      "text": "[DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o"
+    },
+    {
+      "type": "verbose",
+      "text": "[DOM] Password forms should have (optionally hidden) username fields for accessibility: (More info: https://goo.gl/9p2vKq) %o"
+    }
+  ],
+  "screenshots": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/probes/api-e2e/qwen-settings-api-rev-008-desktop.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/probes/api-e2e/qwen-settings-api-rev-008-narrow.png"
+  ]
+}

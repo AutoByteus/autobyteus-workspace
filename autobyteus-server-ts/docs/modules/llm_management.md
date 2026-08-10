@@ -4,7 +4,8 @@
 
 Provider lifecycle, model-catalog reads, provider-targeted reload, centralized
 provider credential writes/status, and custom OpenAI-compatible provider
-metadata persistence/sync for the TypeScript server.
+metadata persistence/sync for the TypeScript server. This module also owns the
+native Qwen Base URL/API-key setup command and its value-free status projection.
 
 ## TS Source
 
@@ -21,6 +22,7 @@ metadata persistence/sync for the TypeScript server.
   (`src/llm-management/llm-providers/services/llm-provider-service.ts`)
   - provider-centered public read model
   - fixed-provider API-key writes
+  - native Qwen endpoint/key probe, durable pair save, and setup status
   - custom-provider probe + create + delete
   - authoritative normalized provider-name uniqueness checks
 - **`SecretManagementService`**
@@ -86,12 +88,19 @@ defaults, history, workspace, and other non-Settings consumers:
 - `availableImageProvidersWithModels(runtimeKind?)`
 - `availableVideoProvidersWithModels(runtimeKind?)`
 - `getGeminiSetupConfig()`
+- `qwenSetupStatus()`
 
 They are not API-key Settings credential authorities.
+
+`qwenSetupStatus()` is the Qwen-specific setup authority. It returns only
+`effectiveBaseUrl`, server-owned `endpointSource = DEFAULT | CONFIGURED`, and
+`apiKeyConfigured`. Endpoint source is based on whether `QWEN_BASE_URL` was
+explicitly saved, not on comparing its value with the built-in default URL.
 
 ### Mutations
 
 - `saveProviderApiKey(providerId, apiKey)` -> Boolean
+- `saveQwenConfiguration({ baseUrl, apiKey })` -> `QwenSetupStatus`
 - `probeCustomProvider(input)` -> discovered `{ id, name }` models only
 - `createCustomProvider(input)` -> assigned provider ID only
 - `deleteCustomProvider(providerId)` -> Boolean
@@ -105,6 +114,19 @@ They are not API-key Settings credential authorities.
 Gemini mutations return the same exact `GeminiSetupStateObject`; ordinary
 failures use the typed GraphQL error path rather than a parallel outcome,
 instruction-code, or generic status-message protocol.
+
+Qwen must use `saveQwenConfiguration`; the generic API-key mutation rejects the
+`QWEN` provider. The Qwen command normalizes and probes the submitted
+OpenAI-compatible endpoint before changing persisted state. It then retains the
+previous Qwen secret only in command scope, saves the new secret, and calls
+strict `AppConfig.setDurably("QWEN_BASE_URL", ...)`. Success is returned only
+after that file commit. If the URL commit fails, the command restores or removes
+the key and returns the sanitized
+`QWEN_CONFIGURATION_SAVE_FAILED_PREVIOUS_RESTORED` error. If that bounded
+compensation also fails, it returns `QWEN_CONFIGURATION_REPAIR_REQUIRED` and
+does not claim rollback. GraphQL exposes only the approved code/message; raw
+secrets, provider payloads, filesystem details, and internal exceptions remain
+private.
 
 ### Model Detail
 
@@ -120,6 +142,14 @@ Model `description` is optional plain-text catalog metadata, not model identity.
 Runtime-specific catalogs should preserve it when their authoritative discovery
 source provides it, while callers must continue to support name-only rows.
 `modelIdentifier` remains the executable and persisted selection value.
+
+For custom OpenAI-compatible models, the numeric context/input/output fields
+and their non-secret resolution state are carried from `autobyteus-ts` model
+metadata. Endpoint-advertised values are `LIVE`; exact built-in-value fallbacks
+are exposed as the coarse `CURATED_FALLBACK` provenance; unmatched fields
+remain nullable and `CURATED_ONLY`. The GraphQL contract intentionally does not
+expose raw `/models` payloads or API keys. Custom resolution never inspects the
+endpoint URL and does not perform alias, suffix, family, or fuzzy matching.
 
 ### Claude Agent SDK Model Descriptions
 
@@ -157,6 +187,11 @@ remain unchanged.
   built-in provider Settings exposes no standalone credential-removal action.
 - Readback exposes only provider-owned `apiKeyConfigured`; raw secret values are
   never returned.
+- Qwen is the built-in exception to the ordinary key-only save path. Its
+  effective OpenAI-compatible endpoint is resolved from explicit
+  `QWEN_BASE_URL` or the core default, while its API key remains in the encrypted
+  provider vault. The endpoint and replacement key are always submitted
+  together through the dedicated Qwen command.
 - Gemini keeps three exact construction modes while projecting into the same
   provider-centered list: AI Studio supplies `{apiKey}`, Vertex Express
   supplies `{vertexai: true, apiKey}`, and Vertex Project supplies
@@ -191,9 +226,16 @@ mode fallback.
 
 - Custom providers are currently limited to
   `providerType = OPENAI_COMPATIBLE`.
-- Each saved custom provider gets its own stable provider ID
-  (`provider_<uuid>`), name, server-owned `OPENAI_COMPATIBLE` type/runtime, and
-  base URL. Its API key is stored separately by Secret Management.
+- Each saved custom provider gets an immutable readable ID derived from its
+  normalized display name, for example `provider_alibaba_cloud`. ASCII words
+  and deterministic non-ASCII `u<hex>` tokens form the ID body. There is no
+  UUID, counter, or collision suffix.
+- The store atomically enforces canonical-name and derived-ID uniqueness.
+  Invalid derivation, built-in-name conflicts, or collisions fail creation
+  without committing provider metadata or a readable-ID credential.
+- The provider record contains its name, server-owned `OPENAI_COMPATIBLE`
+  type/runtime, and Base URL. Its API key is stored separately by Secret
+  Management.
 - Custom providers are returned in the same `providerSettings` collection as
   built-ins.
 - Saved custom providers can be removed through
@@ -219,31 +261,76 @@ and currently contains:
   - `providerType`
   - `baseUrl`
 
-The current file version is `2` and is metadata-only. Credentials are stored in
+The current file version is `3` and is metadata-only. Every stored ID must equal
+the deterministic ID derived from its stored name, and canonical names and IDs
+must be unique. Credentials are stored in
 the encrypted vault inside the current application database under the custom
 provider's stable definition ID. See [Secret Management](./secret_management.md).
 
-### Upgrade From The Supported V1 File
+Native Qwen does not use the custom-provider JSON file. Its API key is stored in
+the built-in Qwen vault slot, while `QWEN_BASE_URL` is stored in the server's
+owned environment-assignment file through `AppConfig`. The strict write path
+writes and syncs a same-directory temporary file, renames it over the target,
+and updates `AppConfig`/`process.env` only after the rename succeeds. It reuses
+the latest-base shared assignment-line parser while leaving database URL
+normalization under `ApplicationDatabaseLocation`/`toPrismaSqliteUrl`.
 
-Startup has one bounded transition for the canonical version-1 custom-provider
-file created by the supported pre-vault application. It runs after the
-application database and vault are ready and before normal provider discovery:
+### Readable-Identity Reset From Legacy V1/V2
 
-- a complete valid v1 set migrates all providers atomically, preserving IDs and
-  names, storing credentials in the vault, and publishing secret-free v2
-  metadata;
-- an invalid, duplicated, unsafe, or vault-colliding set is not partially
-  preserved; the plaintext v1 file is removed and the user re-adds providers
-  through **New Provider**;
-- if the v1 file cannot be removed safely, built-in providers and general
-  Settings remain available, but custom-provider creation remains unavailable
-  until the filesystem issue is fixed and the application restarts;
-- an aged zero-byte lock left by the supported v1 writer can be reclaimed,
-  while a live positive-PID owner is never displaced.
+Normal runtime is strict V3 only. Startup reaches it through two ordered,
+required app-data migrations after the application database and vault are
+ready:
 
-Normal runtime remains v2-only. There is no v1 compatibility reader, backup or
-quarantine copy, alternate legacy source, automatic `.env` import, or partial
-provider migration. Migration outcomes and APIs remain value-free.
+1. The bounded V1 migration never transfers an inline credential. Valid V1 is
+   staged as secretless V2 metadata with a reconfiguration warning; invalid or
+   unsafe V1 is reset through the existing sanitized failure path.
+2. The final `20260803_custom_provider_readable_identity` migration uses valid
+   V2 names only to derive transient old-to-readable selector prefixes. It
+   attempts the exact allowlisted active/default/resumable selectors, then
+   atomically publishes `{version:3, providers:[]}` as the commit point.
+3. After empty V3 is durable, old UUID vault consumers are removed best effort
+   by identity. Their values are never resolved, copied, re-encrypted, aliased,
+   or used as runtime fallback.
+
+The readable migration first requires terminal success
+(`SUCCEEDED | SUCCEEDED_WITH_WARNINGS`) for the exact V1, global-skill-mode,
+team-member-tree, token provider-name snapshot, and self-evolution metadata
+migrations. This keeps the token snapshot and every current selector writer
+ahead of the reset. The readable migration is the final current required
+definition, and server startup proceeds only when its own result is terminal
+success/warnings.
+
+Selector rewriting is deliberately narrow. It changes only the exact old
+`openai-compatible:<providerId>:` prefix while preserving the model suffix
+byte-for-byte in:
+
+- agent/team default launch configuration;
+- external-channel launch presets;
+- application agent/team/default/member launch-profile rows;
+- agent/team resumable run metadata; and
+- skill-improvement sessions.
+
+Traces, free text, token identifiers, arbitrary JSON keys, and unrelated
+indexes are not rewritten. Each JSON target uses same-directory durable
+replacement and each application database uses one SQLite transaction.
+Malformed, read-only, unsafe, or concurrently changed individual targets are
+left stale with sanitized warnings; empty V3 still publishes. Provider-file
+publication failure is fatal.
+
+After reset there is intentionally a provider-absent interval: no legacy
+provider record, Base URL, migrated credential, custom catalog group, UUID
+alias, or reconnect state exists. The user recreates a provider through the
+ordinary form. The same canonical name derives the prefix already stored in
+migrated selectors; a different name or absent model suffix requires manual
+reselection. Missing selectors remain stored and visible as unavailable and
+must never silently fall back or clear.
+
+There is no journal, backup, receipt, special runner bypass, dual V2/V3 runtime
+reader, or immediate-crash recovery protocol. Interruption before empty V3
+leaves V2 authoritative; after the ordinary runner's recent-`RUNNING` window,
+idempotent retry converges. Interruption or cleanup failure after empty V3 can
+leave an unreachable old-secret orphan and returns warning success rather than
+re-enabling legacy identity.
 
 ## Custom Provider Lifecycle
 
@@ -251,13 +338,15 @@ provider migration. Migration outcomes and APIs remain value-free.
 
 1. The user submits exactly `{ name, baseUrl, apiKey }`. Provider type and
    runtime are server-owned constants.
-2. `LlmProviderService` normalizes/validates required strings, an absolute
-   `http://` or `https://` base URL, and provider-name uniqueness across
-   built-ins and existing custom providers.
+2. `LlmProviderService` normalizes/validates required strings and an absolute
+   `http://` or `https://` Base URL. The store derives the readable ID and owns
+   atomic canonical-name/ID uniqueness across built-ins and existing custom
+   providers.
 3. Probe uses the OpenAI-compatible `/models` discovery owner and returns only
    discovered `{ id, name }` rows.
-4. Create persists metadata and the credential, returning only the assigned
-   provider ID. A failed credential write rolls back the metadata record.
+4. Create persists V3 metadata and the credential, returning only the assigned
+   readable provider ID. A failed credential write rolls back the metadata
+   record; rejected create leaves neither provider nor readable-ID secret.
 5. The client refetches canonical `providerSettings`; no echoed input,
    provider-type constant, runtime constant, or parallel outcome DTO is
    returned.

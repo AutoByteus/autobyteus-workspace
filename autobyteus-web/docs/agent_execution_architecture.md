@@ -267,10 +267,14 @@ actor/member roster, reference list, or Technical details in the right pane.
 
 The global Workspaces/run-history tree remains the navigation and execution-focus
 surface for workspaces, runs, teams, durable members, and live transient
-execution identities. It may reuse the shared status-dot presentation for
-workspace rows and stable member rows, but transient task executions must remain
-display-row projections rather than ordinary durable `TeamMemberTreeRow` history
-rows. Transient task-team roots with child rows are collapsed by default; their
+execution identities. `runHistoryStore` owns one cached, indexed navigation
+projection that includes completed stable-plus-transient `executionRows` and
+focused-member identity for every team. Components consume those rows rather
+than reading live `AgentTeamContext` or rebuilding rows per workspace. The
+projection may reuse the shared status-dot presentation for workspace rows and
+stable member rows, but transient task executions remain navigation-only rows
+rather than ordinary durable `TeamMemberTreeRow` history rows. Transient
+task-team roots with child rows are collapsed by default; their
 user-controlled disclosure state is keyed by the transient execution row identity
 so simultaneous task-team executions do not accidentally share expansion state.
 When a transient task-team row has children, activating the row body toggles that
@@ -424,18 +428,28 @@ stable-identity update may re-enter only once at the newest edge. Per-run
 Activity state is independently capped at 100 with the same completion rules.
 
 `eventMonitorPresentationRevision` describes the final bounded center
-presentation, not transport traffic. Mutation owners capture a lightweight
-ordered witness, apply the mutation and bound, and increment the revision once
-only when the final witness differs. The witness uses shallow rendered and
+presentation, not transport traffic. The shared stream projector receives an
+explicit `NONE`, `PRESENTATION`, or `STRUCTURAL` Event Monitor effect from the
+handler transaction. `NONE` performs no witness or window work;
+`PRESENTATION` compares the final display against the cached baseline; and
+`STRUCTURAL` first enforces the latest-100 window, then compares the final
+display. The coordinator increments the revision once only when the final
+lightweight ordered witness differs. The witness uses shallow rendered and
 retained-interaction values such as content, attachment identity and preview
 inputs, displayed usage text, and tool name/summary/status/error/action state.
 It excludes generic timestamps, raw object identity, tool logs/results that are
 Activity-only, and recursive argument serialization. Equal retained
 member-echo attachment metadata is therefore revision-neutral, while adding,
 refreshing, or removing a rendered executable attachment revises the
-presentation. Conversation replacement resets the revision baseline; an
-already-subscribed live team context preserves both its conversation and
-revision.
+presentation.
+
+The witness baseline is keyed by `AgentContext`. Context/open/hydration owners
+reset it before wholesale replacement or removal and prime it only after both
+conversation and Activity hydration have reached their final state. Active and
+historical open, live recovery, and lazy member hydration each have one final
+prime owner; already-subscribed live contexts preserve their final baseline.
+This prevents a partial hydration witness and removes the former full
+before/after rebuild from every background message.
 
 When pinned, a real presentation change follows the bottom. In latest mode,
 manual return to the bottom clears ordinary unseen state. A frozen browse
@@ -487,6 +501,14 @@ current expansion state.
   workspace descriptors, ignores unrelated transient descriptors such as skill
   workspaces, and does not let history-only roots for unregistered or removed
   workspaces create desktop top-level rows.
+- The panel delegates its initial workspace-catalog transaction to
+  `runHistoryStore.loadWorkspaceCatalogForNavigation()`. If the catalog has not
+  yet been fetched, that transaction awaits the backend load and performs one
+  navigation-topology refresh only after successful population. Later calls
+  are no-ops once `workspacesFetched` is true. This prevents an empty cached
+  navigation projection created before the asynchronous catalog response from
+  remaining stale, without adding a watcher, eager global history fetch, or
+  per-read topology rebuild.
 - If multiple visible descriptors resolve to the same normalized root, the tree
   renders one workspace row for that root. The fixed temp descriptor wins over a
   same-root filesystem descriptor so the default temp workspace stays
@@ -542,6 +564,19 @@ and Focus display even when the member is offline or has no active runtime
 context. Live/hydrated team-context merges must preserve the persisted history
 row's workspace grouping and use this roster focus for selected-row
 highlighting; the shared composer remains active-execution-owned separately.
+
+Topology operations build and index the complete run-history navigation
+projection once, retaining equal workspace/team branches by reference. The
+indexes cover standalone runs, team runs, team members, ancestry, completed
+execution rows, and cached focus. Actual activity/status/summary/focus changes
+patch only the indexed row and its containing branches; repeated or final-equal
+updates are no-ops. Task source projection classifies identity/path/kind/order/
+depth/child changes as `TOPOLOGY`, existing-row display-name or visible-status
+changes as field-tight `PRESENTATION`, and task-detail-only changes as `NONE`.
+The task router reports that result on every outcome, `TeamStreamingService`
+commits it before returning, and member resolution is read-only. Selection
+reveal consumes ancestry indexes, while labels that depend on elapsed time use
+a minute clock rather than background stream traffic.
 
 ### Workspace History Archive And Delete Actions
 
@@ -770,9 +805,12 @@ The service layer bridges the gap between the WebSocket transport and the applic
 - **Responsibilities**:
   1.  Maintains the WebSocket connection (`transport/WebSocketClient`).
   2.  Parses raw JSON messages into typed `ServerMessage` objects (`protocol/messageTypes`).
-  3.  Dispatches every parsed message to the appropriate pure-function handler.
-      `SEGMENT_CONTENT` is applied once and immediately because the server has
-      already shaped the transport cadence.
+  3.  Passes generic standalone messages to the shared
+      `dispatchAgentStreamMessage(...)` projector. Team routing resolves exact
+      task/member identity and required task-navigation mutation first, then
+      uses the same projector for the resolved context.
+  4.  Applies each `SEGMENT_CONTENT` message once and immediately because the
+      server has already shaped the transport cadence.
 
 ### Server-Owned Stream-Content Cadence And Immediate Frontend Projection
 
@@ -782,6 +820,12 @@ fine-grained canonical event; only the client-bound WebSocket content lane is
 shaped. The policy does not select a different path for AutoByteus, Codex,
 Claude, a particular provider, or a particular model.
 
+- The shared per-connection presentation pipeline runs identity-aware filters,
+  one content scheduler, the terminal sink, and non-mutating observers. Its
+  default status filter forwards the first and every changed `AGENT_STATUS` for
+  an exact standalone/member/task identity and suppresses only an exact repeated
+  payload. Reconnect starts with fresh filter state; canonical runtime status
+  companions and non-WebSocket subscribers remain unchanged.
 - The first pending `SEGMENT_CONTENT` receipt opens a fixed, non-sliding window.
   The interval is read when that window opens from
   `AUTOBYTEUS_STREAMING_CONTENT_FLUSH_INTERVAL_MS`; the effective default is
@@ -799,9 +843,9 @@ Claude, a particular provider, or a particular model.
   transitions, errors, completion, interruption, and conservative unknown
   messages flush earlier content before they are sent.
 - `AgentStreamingService`, `TeamStreamingService`, and the team generic
-  dispatcher apply each shaped content message through the normal immediate
-  handler transaction. There is no frontend stream-content scheduler,
-  projector, presentation timer, or second cadence delay.
+  dispatcher pass each shaped content message through the shared projector's
+  normal immediate handler transaction. There is no frontend stream-content
+  scheduler, presentation timer, or second cadence delay.
 - Team routing still resolves structural members and transient task-agent or
   task-team children before applying the message. The server egress preserves
   the mapped identity and does not guess frontend context.
@@ -811,6 +855,27 @@ events, internal subscribers, raw traces, working-context snapshots, run
 history, and other persisted data remain fine-grained/unchanged and require no
 migration. A physically lost/closed socket still has no replay guarantee; the
 session disposes pending unsendable state instead of claiming delivery.
+
+### Explicit Stream Mutation Effects
+
+`agentStreamMessageProjector.ts` is the single generic message-to-context
+projection boundary for standalone and team-member streams. Each handler
+reports actual effects instead of relying on message type alone:
+
+- `conversationChanged` controls the one authoritative `conversation.updatedAt`
+  assignment;
+- Event Monitor work is `NONE`, `PRESENTATION`, or `STRUCTURAL`; and
+- run-history work is `NONE`, minute-bucketed `ACTIVITY`, or exact
+  `PRESENTATION`.
+
+The projector commits those effects once after the handler transaction.
+Duplicate, invalid, final-equal, Activity-only-detail, or other unrepresented
+traffic remains a no-op for unrelated consumers. Team task projection keeps a
+separate required mutation result: topology changes rebuild the cached
+navigation once, visible display/status changes patch an exact indexed row, and
+right-pane task details do not invalidate navigation. This prevents an
+unfocused stream from multiplying complete Event Monitor and workspace-tree
+projections while preserving the selected stream's progressive rendering.
 
 ### Progressive Rich Text/Reasoning Presentation
 
@@ -829,9 +894,11 @@ segment and message state for lifecycle, terminalization, and Event Monitor
 consumers. That completion metadata no longer chooses a presentation renderer
 or causes a live-to-final renderer switch. Server-owned WebSocket cadence is
 the only normal content-shaping delay; the frontend adds no presentation timer.
-Very large or feature-heavy accumulated revisions can still be expensive, and
-renderer-wide background or unfocused contention remains outside this
-presentation contract.
+Background streams now avoid blanket Event Monitor witness work and dynamic
+run-history reconstruction through explicit mutation effects and the cached
+navigation projection. Very large or feature-heavy focused Markdown revisions
+can still be expensive; higher-scale parsing/worker isolation remains a
+separate deferred optimization rather than part of this contract.
 
 ### Dispatch Logic
 
@@ -987,7 +1054,7 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
     - `Calculation details` is the explicit unit-price disclosure. It shows component rows with tokens, server-provided unit price, cost, and the formula `tokens ÷ 1,000,000 × unit price`; mixed, missing, partial-missing, and local/no-bill unit-price states render as labels such as `varies by call`, `unpriced`, `partially missing`, or `Local / no API bill` instead of a frontend price table or blended rate.
     - `Usage reports` in pricing details is `usageReportCount`, usually model calls or model turns. It is not user messages, chat rows, or a raw primary `events` label.
     - Reasoning output appears only inside the Output card and only when the server summary reports positive reasoning output tokens. The copy states that thinking tokens are included in output tokens and estimated output cost; calculation details show the reasoning unit price as the output price / included in output cost so users do not double-count thinking.
-    - Unknown latest-prompt/context-window pressure is intentionally hidden; the latest prompt block renders only when both a numeric pressure percentage and effective context window are present.
+    - The `Latest prompt` block renders when latest-prompt tokens are present. Known context capacity shows percentage/progress; unknown capacity shows the prompt-token count with explicit `contextLimitUnavailable` copy and never fabricates a denominator or percentage.
     - Browser-facing proof should validate clean agent/team headers with no token chip and validate the Token tab against server/GraphQL-backed summaries, including focused member primary selection, the scoped horizontally scrollable grouped Team table at constrained widths, absence of a standalone Cost column, the `Total` grouped metric column remaining reachable and row-associated, normal estimated rows omitting repeated status copy, subordinate final-row team total, price-missing, partial-price, local/no-bill, mixed-currency, cache-positive, unit-price calculation details, reasoning-token included-in-output copy, model/runtime, usage-report, and latest-prompt display where present.
     - Live store coverage must preserve runtime-native summary fields from server events, including Codex-style cache/reasoning tokens/cost, component unit prices, latest runtime/ingestion/model metadata, and latest prompt/context-window fields used by the token meter. Live-event unit prices and hydrated GraphQL summaries should converge to the same display shape.
     - Current durable regression coverage includes GraphQL E2E for cached gross input, provider-specific semantics, local/no-bill, custom missing price, mixed currency, runtime field names, and unit-price hydration across run/team/member/statistics summaries, plus frontend store/component tests for live aggregation, provisional-live team total hydration, live/hydrated unit-price convergence, GraphQL hydration replacement, focused team member primary selection, grouped Team table headers/rows, paired token+cost metric cells, absence of a standalone Cost column, scoped table-scroll hooks, clean header rendering, Token Meter hierarchy, calculation details, cache-aware rows, price-status labels, localization catalog coverage, and latest prompt fields. Latest visual evidence for the cache-aware Token Meter is under `tickets/token-input-prompt-discrepancy-analysis/implementation-evidence/`.
