@@ -1,0 +1,8 @@
+server_pid=11399
+listener=node    11399 normy   26u  IPv4 0x4e1bc0d26dbf6b01      0t0  TCP 127.0.0.1:60018 (LISTEN)
+sqlite_open_files:
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/sr015-api-rev-018-20260810-1.db
+production_db_referenced:
+no
+isolated_db_referenced:
+yes

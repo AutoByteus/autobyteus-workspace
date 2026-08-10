@@ -1,1245 +1,403 @@
-import { describe, expect, it, vi } from "vitest";
-import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { AgentRunEventType } from "../../../../src/agent-execution/domain/agent-run-event.js";
 import { TeamRunEventSourceType } from "../../../../src/agent-team-execution/domain/team-run-event.js";
+import { createTeamExecutionAddress } from "../../../../src/agent-team-execution/domain/team-execution-address.js";
+import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentTeamStreamHandler } from "../../../../src/services/agent-streaming/agent-team-stream-handler.js";
-import { TeamStreamBroadcaster } from "../../../../src/services/agent-streaming/team-stream-broadcaster.js";
 import { AgentSessionManager } from "../../../../src/services/agent-streaming/agent-session-manager.js";
+import { TeamStreamBroadcaster } from "../../../../src/services/agent-streaming/team-stream-broadcaster.js";
 import {
   ClientMessageType,
   ServerMessageType,
 } from "../../../../src/services/agent-streaming/models.js";
 
-const memberAddress = (memberRouteKey: string) => ({
-  segments: [{ kind: "member" as const, memberRouteKey }],
-});
+type ExecutionAddress = ReturnType<typeof createTeamExecutionAddress>;
 
-describe("AgentTeamStreamHandler", () => {
-  const createTeamRun = (overrides: Record<string, unknown> = {}) => ({
-    runId: "team-1",
-    runtimeKind: "autobyteus",
-    getLeafAgentStatusSnapshots: vi.fn().mockReturnValue([{
-      scopeKind: "ordinary_member",
-      teamRunId: "team-1",
-      payload: {
-        status: "running",
-        agent_id: "member-42",
-        agent_name: "worker-a",
-        member_route_key: "worker-a",
-        member_path: ["worker-a"],
-        source_route_key: "worker-a",
-        source_path: ["worker-a"],
-      },
-    }]),
-    hasOpenExecutionWork: vi.fn().mockReturnValue(true),
-    subscribeToEvents: vi.fn().mockReturnValue(() => {}),
-    postMessage: vi.fn().mockResolvedValue({ accepted: true }),
-    postMessageToConversationTarget: vi.fn().mockResolvedValue({ accepted: true }),
-    approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
-    interruptMember: vi.fn().mockResolvedValue({ accepted: true }),
-    context: {
-      runtimeContext: {
-        memberContexts: [
-          {
-            memberKind: "agent",
-            memberName: "worker-a",
-            memberPath: ["worker-a"],
-            memberRouteKey: "worker-a",
-            memberRunId: "member-42",
-            getPlatformAgentRunId: () => null,
+const executionCases: Array<{ name: string; address: ExecutionAddress }> = [
+  {
+    name: "persistent member",
+    address: createTeamExecutionAddress({
+      rootTeamRunId: "team-1",
+      taskTeamRunIds: [],
+      memberAddress: "/worker",
+      taskAgentRunId: null,
+    }),
+  },
+  {
+    name: "direct task Agent",
+    address: createTeamExecutionAddress({
+      rootTeamRunId: "team-1",
+      taskTeamRunIds: [],
+      memberAddress: "/worker",
+      taskAgentRunId: "task-agent-run-1",
+    }),
+  },
+  {
+    name: "outer task AgentTeam member",
+    address: createTeamExecutionAddress({
+      rootTeamRunId: "team-1",
+      taskTeamRunIds: ["task-team-outer"],
+      memberAddress: "/BuildSquad/reviewer",
+      taskAgentRunId: null,
+    }),
+  },
+  {
+    name: "nested task AgentTeam member",
+    address: createTeamExecutionAddress({
+      rootTeamRunId: "team-1",
+      taskTeamRunIds: ["task-team-outer", "task-team-inner"],
+      memberAddress: "/BuildSquad/ReviewCell/reviewer",
+      taskAgentRunId: null,
+    }),
+  },
+];
+
+const parseSent = (connection: { send: ReturnType<typeof vi.fn> }) =>
+  connection.send.mock.calls.map(([raw]) => JSON.parse(String(raw)) as {
+    type: ServerMessageType;
+    payload: Record<string, unknown>;
+  });
+
+const createHarness = async (input: {
+  executeResult?: { accepted: boolean; code?: string; message?: string };
+  resolveRun?: boolean;
+} = {}) => {
+  let eventListener: ((event: unknown) => void) | null = null;
+  const executeMemberCommand = vi.fn(async () => input.executeResult ?? { accepted: true });
+  const teamRun = {
+    teamRunId: "team-1",
+    subscribeToEvents: vi.fn((listener: (event: unknown) => void) => {
+      eventListener = listener;
+      return () => undefined;
+    }),
+    getLeafAgentStatusSnapshots: vi.fn(() => []),
+    hasOpenExecutionWork: vi.fn(() => false),
+    executeMemberCommand,
+  };
+  const teamRunService = {
+    resolveTeamRun: vi.fn(async () => input.resolveRun === false ? null : teamRun),
+    getTeamRun: vi.fn(() => input.resolveRun === false ? null : teamRun),
+    recordRunActivity: vi.fn(async () => undefined),
+    refreshRunMetadata: vi.fn(async () => undefined),
+  };
+  const teamRunManager = {
+    getLifecycleSnapshot: vi.fn(() => ({ teamRunId: "team-1", isActive: true })),
+    subscribeToLifecycle: vi.fn(() => () => undefined),
+  };
+  const handler = new AgentTeamStreamHandler(
+    new AgentSessionManager(),
+    teamRunService as never,
+    new TeamStreamBroadcaster(),
+    undefined,
+    { getInitialMessages: vi.fn(() => []) } as never,
+    teamRunManager as never,
+  );
+  const connection = { send: vi.fn(), close: vi.fn() };
+  const sessionId = await handler.connect(connection, "team-1");
+  if (sessionId) connection.send.mockClear();
+  return {
+    connection,
+    eventListener: () => eventListener,
+    executeMemberCommand,
+    handler,
+    sessionId,
+    teamRun,
+    teamRunManager,
+    teamRunService,
+  };
+};
+
+const handle = async (
+  harness: Awaited<ReturnType<typeof createHarness>>,
+  type: ClientMessageType,
+  payload: Record<string, unknown>,
+) => {
+  expect(harness.sessionId).toBeTruthy();
+  await harness.handler.handleMessage(
+    harness.sessionId as string,
+    JSON.stringify({ type, payload }),
+  );
+};
+
+describe("AgentTeamStreamHandler current execution-address commands", () => {
+  afterEach(() => vi.useRealTimers());
+
+  it("parses valid messages and rejects malformed envelopes", () => {
+    expect(AgentTeamStreamHandler.parseMessage(JSON.stringify({
+      type: ClientMessageType.SEND_MESSAGE,
+      payload: { content: "hello" },
+    }))).toMatchObject({ type: ClientMessageType.SEND_MESSAGE });
+    expect(() => AgentTeamStreamHandler.parseMessage("not-json")).toThrow("Invalid JSON");
+    expect(() => AgentTeamStreamHandler.parseMessage("{}")).toThrow("Message missing 'type' field");
+  });
+
+  it("connects through TeamRunService and publishes the current lifecycle snapshot", async () => {
+    const harness = await createHarness();
+
+    expect(harness.sessionId).toBeTruthy();
+    expect(harness.teamRunService.resolveTeamRun).toHaveBeenCalledWith("team-1");
+    expect(harness.teamRun.subscribeToEvents).toHaveBeenCalledWith(expect.any(Function));
+    expect(harness.teamRunManager.subscribeToLifecycle).toHaveBeenCalledWith(
+      "team-1",
+      expect.any(Function),
+    );
+    expect(harness.connection.close).not.toHaveBeenCalled();
+  });
+
+  it("closes with TEAM_NOT_FOUND when the TeamRun identity cannot be resolved", async () => {
+    const harness = await createHarness({ resolveRun: false });
+
+    expect(harness.sessionId).toBeNull();
+    expect(harness.connection.close).toHaveBeenCalledWith(4004);
+    expect(parseSent(harness.connection)).toEqual([
+      expect.objectContaining({
+        type: ServerMessageType.ERROR,
+        payload: expect.objectContaining({ code: "TEAM_NOT_FOUND" }),
+      }),
+    ]);
+  });
+
+  it.each(executionCases)(
+    "preserves the complete $name address across send, approval, and interrupt",
+    async ({ address }) => {
+      const harness = await createHarness();
+      const exactAddress = JSON.parse(JSON.stringify(address));
+
+      await handle(harness, ClientMessageType.SEND_MESSAGE, {
+        execution_address: exactAddress,
+        content: "perform exact work",
+        message_id: "message-1",
+        dedupe_key: "dedupe-1",
+        context_file_paths: ["/tmp/context.txt"],
+        image_urls: ["https://example.invalid/image.png"],
+      });
+      await handle(harness, ClientMessageType.APPROVE_TOOL, {
+        execution_address: exactAddress,
+        invocation_id: "invocation-1",
+        reason: "approved by user",
+      });
+      await handle(harness, ClientMessageType.INTERRUPT_GENERATION, {
+        execution_address: exactAddress,
+        command_id: "interrupt-1",
+      });
+
+      expect(harness.executeMemberCommand).toHaveBeenCalledTimes(3);
+      expect(harness.executeMemberCommand.mock.calls.map(([actual]) => actual)).toEqual([
+        address,
+        address,
+        address,
+      ]);
+      expect(harness.executeMemberCommand.mock.calls[0]?.[1]).toMatchObject({
+        kind: "post_message",
+        message: expect.objectContaining({ content: "perform exact work" }),
+      });
+      expect(harness.executeMemberCommand.mock.calls[1]?.[1]).toEqual({
+        kind: "approve_tool",
+        invocationId: "invocation-1",
+        approved: true,
+        reason: "approved by user",
+      });
+      expect(harness.executeMemberCommand.mock.calls[2]?.[1]).toEqual({ kind: "interrupt" });
+      expect(harness.teamRunService.recordRunActivity).toHaveBeenCalledOnce();
+      expect(parseSent(harness.connection)).toContainEqual({
+        type: ServerMessageType.AGENT_COMMAND_ACK,
+        payload: {
+          command_type: "INTERRUPT_GENERATION",
+          command_id: "interrupt-1",
+          state: "accepted",
+          target: {
+            target_kind: "team_member",
+            team_run_id: "team-1",
+            execution_address: address,
           },
-        ],
-      },
+        },
+      });
     },
-    config: {
-      memberConfigs: [
-        {
-          memberKind: "agent",
-          memberName: "worker-a",
-          memberPath: ["worker-a"],
-          memberRunId: "member-42",
-        },
-      ],
-    },
-    ...overrides,
-  });
+  );
 
-  const createTeamRunService = (
-    teamRun: ReturnType<typeof createTeamRun> | null,
-    options: {
-      activeTeamRun?: ReturnType<typeof createTeamRun> | null;
-      resolvedTeamRun?: ReturnType<typeof createTeamRun> | null;
-    } = {},
-  ) => ({
-    getTeamRun: vi.fn().mockReturnValue(
-      "activeTeamRun" in options ? options.activeTeamRun : teamRun,
-    ),
-    resolveTeamRun: vi.fn().mockResolvedValue(
-      "resolvedTeamRun" in options ? options.resolvedTeamRun : teamRun,
-    ),
-    recordRunActivity: vi.fn().mockResolvedValue(undefined),
-    refreshRunMetadata: vi.fn().mockResolvedValue(undefined),
-  });
-
-  const getSentMessages = (connection: { send: ReturnType<typeof vi.fn> }) =>
-    connection.send.mock.calls.map(([raw]) => JSON.parse(raw as string));
-
-  const getSentErrors = (connection: { send: ReturnType<typeof vi.fn> }) =>
-    getSentMessages(connection).filter(
-      (message) => message.type === ServerMessageType.ERROR,
-    );
-
-  it("rebroadcasts agent lifecycle events with member context", () => {
-    const handler = new AgentTeamStreamHandler(
-      undefined,
-      createTeamRunService(null) as any,
-    );
-
-    const teamEvent = {
-      eventSourceType: TeamRunEventSourceType.AGENT,
-      teamRunId: "team-1",
-      data: {
-        runtimeKind: RuntimeKind.AUTOBYTEUS,
-        memberName: "worker-a",
-        memberRunId: "agent-xyz",
-        agentEvent: {
-          runId: "agent-xyz",
-          eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
-          payload: {
-            invocation_id: "inv-1",
-            tool_name: "read_file",
-            result: { ok: true },
-          },
-          statusHint: null,
-        },
+  it.each([
+    ClientMessageType.SEND_MESSAGE,
+    ClientMessageType.APPROVE_TOOL,
+    ClientMessageType.INTERRUPT_GENERATION,
+  ])("rejects %s before effect when execution_address is incomplete", async (type) => {
+    const harness = await createHarness();
+    await handle(harness, type, {
+      execution_address: {
+        rootTeamRunId: "team-1",
+        taskTeamRunIds: ["task-team-outer"],
+        memberAddress: "/BuildSquad/reviewer",
       },
-    };
+      content: "must not send",
+      invocation_id: "invocation-1",
+      command_id: "interrupt-1",
+    });
 
-    const message = handler.convertTeamEvent(teamEvent);
-    expect(message.type).toBe(ServerMessageType.TOOL_EXECUTION_SUCCEEDED);
-    expect(message.payload.invocation_id).toBe("inv-1");
-    expect(message.payload.agent_name).toBe("worker-a");
-    expect(message.payload.agent_id).toBe("agent-xyz");
+    expect(harness.executeMemberCommand).not.toHaveBeenCalled();
+    expect(parseSent(harness.connection)).toContainEqual(expect.objectContaining({
+      type: ServerMessageType.ERROR,
+      payload: expect.objectContaining({ code: "INVALID_TARGET" }),
+    }));
   });
 
-  it("projects canonical team communication events to the address-first websocket payload", () => {
-    const handler = new AgentTeamStreamHandler(
-      undefined,
-      createTeamRunService(null) as any,
-    );
+  it.each([
+    ClientMessageType.SEND_MESSAGE,
+    ClientMessageType.APPROVE_TOOL,
+    ClientMessageType.INTERRUPT_GENERATION,
+  ])("rejects %s before effect when execution_address names a foreign root", async (type) => {
+    const harness = await createHarness();
+    await handle(harness, type, {
+      execution_address: {
+        rootTeamRunId: "foreign-root",
+        taskTeamRunIds: [],
+        memberAddress: "/worker",
+        taskAgentRunId: null,
+      },
+      content: "must not send",
+      invocation_id: "invocation-1",
+      command_id: "interrupt-1",
+    });
 
-    const message = handler.convertTeamEvent({
-      eventSourceType: TeamRunEventSourceType.COMMUNICATION,
-      teamRunId: "team-1",
-      sourcePath: ["program_manager"],
-      data: {
-        messageId: "message-1",
-        teamRunId: "team-1",
-        senderAddress: memberAddress("program_manager"),
-        receiverAddress: memberAddress("BuildSquad/review_lead"),
-        content: "Reply with exactly token.",
-        messageType: "frontend_parent_to_subteam",
-        referenceFiles: [],
-        createdAt: "2026-05-13T06:00:00.000Z",
+    expect(harness.executeMemberCommand).not.toHaveBeenCalled();
+    expect(parseSent(harness.connection)).toContainEqual(expect.objectContaining({
+      type: ServerMessageType.ERROR,
+      payload: expect.objectContaining({ code: "INVALID_TARGET" }),
+    }));
+  });
+
+  it("passes an exact stale nested task chain once and surfaces rejection without fallback", async () => {
+    const harness = await createHarness({
+      executeResult: {
+        accepted: false,
+        code: "TASK_TEAM_INSTANCE_NOT_ACTIVE",
+        message: "Nested task TeamRun is stale.",
       },
     });
-
-    expect(message.type).toBe(ServerMessageType.TEAM_COMMUNICATION_MESSAGE);
-    expect(message.payload).toMatchObject({
-      messageId: "message-1",
-      teamRunId: "team-1",
-      senderAddress: memberAddress("program_manager"),
-      receiverAddress: memberAddress("BuildSquad/review_lead"),
-      content: "Reply with exactly token.",
-      messageType: "frontend_parent_to_subteam",
-      referenceFiles: [],
-      createdAt: "2026-05-13T06:00:00.000Z",
-      source_path: ["program_manager"],
-      source_route_key: "program_manager",
+    const stale = createTeamExecutionAddress({
+      rootTeamRunId: "team-1",
+      taskTeamRunIds: ["stale-outer", "stale-inner"],
+      memberAddress: "/BuildSquad/ReviewCell/reviewer",
+      taskAgentRunId: null,
     });
-    expect(message.payload.sender).toBeUndefined();
-    expect(message.payload.receiver).toBeUndefined();
-    expect(message.payload.senderRunId).toBeUndefined();
-    expect(message.payload.receiverRunId).toBeUndefined();
-  });
 
-  it("maps member input events to member input messages with canonical nested source identity", () => {
-    const handler = new AgentTeamStreamHandler(
-      undefined,
-      createTeamRunService(null) as any,
+    await handle(harness, ClientMessageType.SEND_MESSAGE, {
+      execution_address: stale,
+      content: "must not fall back",
+    });
+
+    expect(harness.executeMemberCommand).toHaveBeenCalledOnce();
+    expect(harness.executeMemberCommand).toHaveBeenCalledWith(
+      stale,
+      expect.objectContaining({ kind: "post_message" }),
     );
-
-    const message = handler.convertTeamEvent({
-      eventSourceType: TeamRunEventSourceType.MEMBER_INPUT,
-      teamRunId: "team-1",
-      sourcePath: ["BuildSquad", "review_lead"],
-      data: {
-        messageId: "member-input-1",
-        dedupeKey: "member_input:team-1:BuildSquad/review_lead:member-input-1",
-        teamRunId: "team-1",
-        recipientMemberRunId: "review-lead-run",
-        recipientMemberName: "review_lead",
-        recipientMemberPath: ["review_lead"],
-        recipientMemberRouteKey: "review_lead",
-        content: "You received a message from sender name: program_manager",
-        inputOrigin: "inter_agent_delivery",
-        receivedAt: "2026-05-13T06:30:00.000Z",
-        contextFilePaths: [],
-        senderRunId: "program-manager-run",
-        senderMemberName: "program_manager",
-        senderMemberPath: ["program_manager"],
-        senderMemberRouteKey: "program_manager",
-        parentCommunicationMessageId: "team-message-1",
-      },
-    });
-
-    expect(message.type).toBe(ServerMessageType.MEMBER_INPUT_MESSAGE);
-    expect(message.payload).toMatchObject({
-      content: "You received a message from sender name: program_manager",
-      message_id: "member-input-1",
-      dedupe_key: "member_input:team-1:BuildSquad/review_lead:member-input-1",
-      input_origin: "inter_agent_delivery",
-      received_at: "2026-05-13T06:30:00.000Z",
-      agent_name: "review_lead",
-      agent_id: "review-lead-run",
-      member_route_key: "BuildSquad/review_lead",
-      member_path: ["BuildSquad", "review_lead"],
-      source_route_key: "BuildSquad/review_lead",
-      source_path: ["BuildSquad", "review_lead"],
-      sender_agent_id: "program-manager-run",
-      sender_agent_name: "program_manager",
-      sender_member_route_key: "program_manager",
-      sender_member_path: ["program_manager"],
-      parent_communication_message_id: "team-message-1",
-    });
-  });
-
-  it("maps task-agent member input events with concrete task-agent identity", () => {
-    const handler = new AgentTeamStreamHandler(
-      undefined,
-      createTeamRunService(null) as any,
-    );
-
-    const message = handler.convertTeamEvent({
-      eventSourceType: TeamRunEventSourceType.MEMBER_INPUT,
-      teamRunId: "team-1",
-      sourcePath: ["worker"],
-      data: {
-        messageId: "task-agent-input-1",
-        dedupeKey: "member_input:team-1:worker:task-agent-input-1",
-        teamRunId: "team-1",
-        recipientMemberRunId: "task-agent-run-1",
-        recipientMemberName: "worker",
-        recipientMemberPath: ["worker"],
-        recipientMemberRouteKey: "worker",
-        content: "Delegated task work packet",
-        inputOrigin: "user_message",
-        receivedAt: "2026-05-30T08:00:00.000Z",
-        contextFilePaths: [],
-        taskAgentInstance: {
-          taskAgentInstanceId: "task-agent-instance-1",
-          taskAgentRunId: "task-agent-run-1",
-          taskId: "task-1",
-          logicalMember: {
-            memberName: "worker",
-            memberPath: ["worker"],
-            memberRouteKey: "worker",
-          },
-        },
-      },
-    });
-
-    expect(message.type).toBe(ServerMessageType.MEMBER_INPUT_MESSAGE);
-    expect(message.payload).toMatchObject({
-      content: "Delegated task work packet",
-      message_id: "task-agent-input-1",
-      agent_name: "worker",
-      agent_id: "task-agent-run-1",
-      member_route_key: "worker",
-      member_path: ["worker"],
-      source_route_key: "worker",
-      source_path: ["worker"],
-      task_agent_instance_id: "task-agent-instance-1",
-      task_agent_run_id: "task-agent-run-1",
-      task_id: "task-1",
-    });
-  });
-
-  it("connects through TeamRunService.resolveTeamRun and sends CONNECTED, leaf status, and lifecycle", async () => {
-    const teamRun = createTeamRun();
-    const teamRunService = createTeamRunService(null, {
-      activeTeamRun: null,
-      resolvedTeamRun: teamRun,
-    });
-    const handler = new AgentTeamStreamHandler(
-      new AgentSessionManager(),
-      teamRunService as any,
-      undefined,
-      undefined,
-      undefined,
-      {
-        getLifecycleSnapshot: vi.fn(() => ({ teamRunId: "team-1", isActive: true })),
-        subscribeToLifecycle: vi.fn(() => () => {}),
-      } as any,
-    );
-    const connection = {
-      send: vi.fn(),
-      close: vi.fn(),
-    };
-
-    const sessionId = await handler.connect(connection, "team-1");
-
-    expect(sessionId).toBeTruthy();
-    expect(teamRunService.resolveTeamRun).toHaveBeenCalledWith("team-1");
-    expect(teamRunService.getTeamRun).not.toHaveBeenCalled();
-    expect(teamRun.subscribeToEvents).toHaveBeenCalledWith(expect.any(Function));
-    expect(JSON.parse(connection.send.mock.calls[0][0])).toMatchObject({
-      type: ServerMessageType.CONNECTED,
-      payload: {
-        team_id: "team-1",
-        session_id: sessionId,
-      },
-    });
-    expect(JSON.parse(connection.send.mock.calls[1][0])).toMatchObject({
-      type: ServerMessageType.AGENT_STATUS,
-      payload: {
-        status: "running",
-        agent_id: "member-42",
-        agent_name: "worker-a",
-        member_route_key: "worker-a",
-        source_path: ["worker-a"],
-      },
-    });
-    expect(JSON.parse(connection.send.mock.calls[2][0])).toMatchObject({
-      type: ServerMessageType.TEAM_RUN_LIFECYCLE,
-      payload: {
-        team_run_id: "team-1",
-        is_active: true,
-      },
-    });
-  });
-
-  it("continues lifecycle publication after the backend event listener is torn down", async () => {
-    let lifecycleListener: ((snapshot: { teamRunId: string; isActive: boolean }) => void) | null = null;
-    const unsubscribeEvents = vi.fn();
-    const unsubscribeLifecycle = vi.fn();
-    const teamRun = createTeamRun({
-      subscribeToEvents: vi.fn(() => unsubscribeEvents),
-    });
-    const handler = new AgentTeamStreamHandler(
-      new AgentSessionManager(),
-      createTeamRunService(teamRun) as any,
-      undefined,
-      undefined,
-      undefined,
-      {
-        getLifecycleSnapshot: vi.fn(() => ({ teamRunId: "team-1", isActive: true })),
-        subscribeToLifecycle: vi.fn((_teamRunId, listener) => {
-          lifecycleListener = listener;
-          return unsubscribeLifecycle;
-        }),
-      } as any,
-    );
-    const connection = { send: vi.fn(), close: vi.fn() };
-    const sessionId = await handler.connect(connection, "team-1");
-
-    unsubscribeEvents();
-    lifecycleListener?.({ teamRunId: "team-1", isActive: false });
-
-    expect(getSentMessages(connection).at(-1)).toEqual({
-      type: ServerMessageType.TEAM_RUN_LIFECYCLE,
-      payload: { team_run_id: "team-1", is_active: false },
-    });
-    await handler.disconnect(sessionId as string);
-    expect(unsubscribeLifecycle).toHaveBeenCalledTimes(1);
-  });
-
-  it("closes with 4004 when the team run is missing", async () => {
-    const teamRunService = createTeamRunService(null);
-    const handler = new AgentTeamStreamHandler(
-      new AgentSessionManager(),
-      teamRunService as any,
-    );
-    const connection = {
-      send: vi.fn(),
-      close: vi.fn(),
-    };
-
-    const sessionId = await handler.connect(connection, "missing-team");
-
-    expect(sessionId).toBeNull();
-    expect(teamRunService.resolveTeamRun).toHaveBeenCalledWith("missing-team");
-    expect(connection.close).toHaveBeenCalledWith(4004);
-    expect(JSON.parse(connection.send.mock.calls[0][0])).toMatchObject({
+    expect(harness.teamRunService.recordRunActivity).not.toHaveBeenCalled();
+    expect(parseSent(harness.connection)).toContainEqual(expect.objectContaining({
       type: ServerMessageType.ERROR,
       payload: {
-        code: "TEAM_NOT_FOUND",
-      },
-    });
-  });
-
-  it("handles SEND_MESSAGE via the service-resolved TeamRun subject", async () => {
-    const teamRun = createTeamRun();
-    const teamRunService = createTeamRunService(teamRun);
-    const handler = new AgentTeamStreamHandler(
-      new AgentSessionManager(),
-      teamRunService as any,
-    );
-    const connection = {
-      send: vi.fn(),
-      close: vi.fn(),
-    };
-
-    const sessionId = await handler.connect(connection, "team-1");
-
-    await handler.handleMessage(
-      sessionId as string,
-      JSON.stringify({
-        type: ClientMessageType.SEND_MESSAGE,
-        payload: {
-          content: "hello team",
-          target_member_route_key: "worker-a",
-          context_file_paths: ["/tmp/info.txt"],
-        },
-      }),
-    );
-
-    expect(teamRun.postMessageToConversationTarget).toHaveBeenCalledTimes(1);
-    expect(teamRun.postMessageToConversationTarget.mock.calls[0]?.[1]).toEqual({
-      segments: [{ kind: "member", memberRouteKey: "worker-a" }],
-    });
-    expect(teamRunService.recordRunActivity).toHaveBeenCalledWith(
-      teamRun,
-      expect.objectContaining({
-        summary: "hello team",
-      }),
-    );
-  });
-
-  it("handles SEND_MESSAGE with structured camelCase route and path selectors", async () => {
-    const teamRun = createTeamRun();
-    const teamRunService = createTeamRunService(teamRun);
-    const handler = new AgentTeamStreamHandler(
-      new AgentSessionManager(),
-      teamRunService as any,
-    );
-    const connection = {
-      send: vi.fn(),
-      close: vi.fn(),
-    };
-
-    const sessionId = await handler.connect(connection, "team-1");
-
-    await handler.handleMessage(
-      sessionId as string,
-      JSON.stringify({
-        type: ClientMessageType.SEND_MESSAGE,
-        payload: {
-          content: "hello route",
-          targetMemberRouteKey: "BuildSquad/review_lead",
-        },
-      }),
-    );
-    await handler.handleMessage(
-      sessionId as string,
-      JSON.stringify({
-        type: ClientMessageType.SEND_MESSAGE,
-        payload: {
-          content: "hello path",
-          targetMemberPath: ["BuildSquad", "qa_specialist"],
-        },
-      }),
-    );
-
-    expect(teamRun.postMessageToConversationTarget).toHaveBeenNthCalledWith(
-      1,
-      expect.anything(),
-      {
-        segments: [{ kind: "member", memberRouteKey: "BuildSquad/review_lead" }],
-      },
-    );
-    expect(teamRun.postMessageToConversationTarget).toHaveBeenNthCalledWith(
-      2,
-      expect.anything(),
-      {
-        segments: [{ kind: "member", memberPath: ["BuildSquad", "qa_specialist"] }],
-      },
-    );
-  });
-
-  it("rejects every scalar SEND_MESSAGE target alias with invalid-target errors", async () => {
-    const teamRun = createTeamRun();
-    const teamRunService = createTeamRunService(teamRun);
-    const handler = new AgentTeamStreamHandler(
-      new AgentSessionManager(),
-      teamRunService as any,
-    );
-    const connection = {
-      send: vi.fn(),
-      close: vi.fn(),
-    };
-
-    const sessionId = await handler.connect(connection, "team-1");
-    for (const legacyKey of [
-      "target_member_name",
-      "target_member_id",
-      "target_agent_name",
-      "target_agent_id",
-      "targetMemberName",
-      "targetMemberId",
-      "targetAgentName",
-      "targetAgentId",
-      "agent_name",
-      "agent_id",
-      "agentName",
-      "agentId",
-      "member_name",
-      "member_id",
-      "memberName",
-      "memberId",
-    ]) {
-      await handler.handleMessage(
-        sessionId as string,
-        JSON.stringify({
-          type: ClientMessageType.SEND_MESSAGE,
-          payload: {
-            content: `legacy target via ${legacyKey}`,
-            [legacyKey]: "worker-a",
-          },
-        }),
-      );
-    }
-
-    expect(teamRun.postMessageToConversationTarget).not.toHaveBeenCalled();
-    expect(teamRunService.recordRunActivity).not.toHaveBeenCalled();
-    const errorMessages = getSentErrors(connection);
-    expect(errorMessages).toHaveLength(16);
-    expect(
-      errorMessages.every(
-        (message) => message.payload?.code === "INVALID_TARGET",
-      ),
-    ).toBe(true);
-  });
-
-  it("restores and rebinds a team run before SEND_MESSAGE when the active subject was removed", async () => {
-    const initialRun = createTeamRun({
-      subscribeToEvents: vi.fn().mockReturnValue(vi.fn()),
-    });
-    const restoredRun = createTeamRun({
-      postMessageToConversationTarget: vi.fn().mockResolvedValue({ accepted: true }),
-      subscribeToEvents: vi.fn().mockReturnValue(vi.fn()),
-    });
-    const teamRunService = createTeamRunService(null, {
-      activeTeamRun: null,
-      resolvedTeamRun: initialRun,
-    });
-    teamRunService.resolveTeamRun
-      .mockResolvedValueOnce(initialRun)
-      .mockResolvedValueOnce(restoredRun);
-    const handler = new AgentTeamStreamHandler(
-      new AgentSessionManager(),
-      teamRunService as any,
-    );
-    const connection = {
-      send: vi.fn(),
-      close: vi.fn(),
-    };
-
-    const sessionId = await handler.connect(connection, "team-1");
-    await handler.handleMessage(
-      sessionId as string,
-      JSON.stringify({
-        type: ClientMessageType.SEND_MESSAGE,
-        payload: {
-          content: "resume team",
-          target_member_route_key: "worker-a",
-        },
-      }),
-    );
-
-    expect(teamRunService.resolveTeamRun).toHaveBeenCalledTimes(2);
-    expect(restoredRun.postMessageToConversationTarget).toHaveBeenCalledTimes(1);
-    expect(initialRun.postMessageToConversationTarget).not.toHaveBeenCalled();
-    expect(restoredRun.subscribeToEvents).toHaveBeenCalledWith(expect.any(Function));
-    expect(teamRunService.recordRunActivity).toHaveBeenCalledWith(
-      restoredRun,
-      expect.objectContaining({
-        summary: "resume team",
-      }),
-    );
-  });
-
-  it("keeps interrupt-generation active-only and does not restore a stopped team run", async () => {
-    const teamRun = createTeamRun();
-    const teamRunService = createTeamRunService(teamRun);
-    const handler = new AgentTeamStreamHandler(
-      new AgentSessionManager(),
-      teamRunService as any,
-    );
-    const connection = {
-      send: vi.fn(),
-      close: vi.fn(),
-    };
-
-    const sessionId = await handler.connect(connection, "team-1");
-    teamRunService.getTeamRun.mockReturnValue(null);
-    teamRunService.resolveTeamRun.mockClear();
-
-    await handler.handleMessage(
-      sessionId as string,
-      JSON.stringify({
-        type: ClientMessageType.INTERRUPT_GENERATION,
-        payload: {
-          command_id: "client_interrupt_missing_team",
-          target_member_route_key: "worker-a",
-          target_member_run_id: "member-42",
-        },
-      }),
-    );
-
-    expect(teamRunService.resolveTeamRun).not.toHaveBeenCalled();
-    expect(teamRun.interruptMember).not.toHaveBeenCalled();
-    expect(getSentMessages(connection).at(-1)).toMatchObject({
-      type: ServerMessageType.AGENT_COMMAND_ACK,
-      payload: {
-        command_id: "client_interrupt_missing_team",
-        state: "rejected",
-        code: "RUN_NOT_FOUND",
-        target: {
-          target_kind: "team_member", team_run_id: "team-1",
-          member_route_key: "worker-a", member_run_id: "member-42",
-        },
-      },
-    });
-  });
-
-  it("routes interrupt-generation to the explicit member route key with run-id as guard", async () => {
-    const teamRun = createTeamRun();
-    const teamRunService = createTeamRunService(teamRun);
-    const handler = new AgentTeamStreamHandler(
-      new AgentSessionManager(),
-      teamRunService as any,
-    );
-    const connection = {
-      send: vi.fn(),
-      close: vi.fn(),
-    };
-
-    const sessionId = await handler.connect(connection, "team-1");
-
-    await handler.handleMessage(
-      sessionId as string,
-      JSON.stringify({
-        type: ClientMessageType.INTERRUPT_GENERATION,
-        payload: {
-          command_id: "client_interrupt_worker",
-          target_member_route_key: "worker-a",
-          target_member_run_id: "member-42",
-        },
-      }),
-    );
-
-    expect(teamRun.interruptMember).toHaveBeenCalledWith("worker-a", "member-42");
-    expect(getSentMessages(connection).at(-1)).toEqual({
-      type: ServerMessageType.AGENT_COMMAND_ACK,
-      payload: {
-        command_type: "INTERRUPT_GENERATION",
-        command_id: "client_interrupt_worker",
-        state: "accepted",
-        target: {
-          target_kind: "team_member", team_run_id: "team-1",
-          member_route_key: "worker-a", member_run_id: "member-42",
-        },
-      },
-    });
-  });
-
-  it("routes interrupt-generation with structured camelCase member path selectors", async () => {
-    const teamRun = createTeamRun();
-    const teamRunService = createTeamRunService(teamRun);
-    const handler = new AgentTeamStreamHandler(
-      new AgentSessionManager(),
-      teamRunService as any,
-    );
-    const connection = {
-      send: vi.fn(),
-      close: vi.fn(),
-    };
-
-    const sessionId = await handler.connect(connection, "team-1");
-
-    await handler.handleMessage(
-      sessionId as string,
-      JSON.stringify({
-        type: ClientMessageType.INTERRUPT_GENERATION,
-        payload: {
-          command_id: "client_interrupt_nested",
-          targetMemberPath: ["BuildSquad", "review_lead"],
-          targetMemberRunId: "child-member-1",
-        },
-      }),
-    );
-
-    expect(teamRun.interruptMember).toHaveBeenCalledWith("BuildSquad/review_lead", "child-member-1");
-  });
-
-  it("rejects interrupt-generation without a target instead of falling back to team-wide interrupt", async () => {
-    const teamRun = createTeamRun();
-    const teamRunService = createTeamRunService(teamRun);
-    const handler = new AgentTeamStreamHandler(
-      new AgentSessionManager(),
-      teamRunService as any,
-    );
-    const connection = {
-      send: vi.fn(),
-      close: vi.fn(),
-    };
-
-    const sessionId = await handler.connect(connection, "team-1");
-
-    await handler.handleMessage(
-      sessionId as string,
-      JSON.stringify({
-        type: ClientMessageType.INTERRUPT_GENERATION,
-        payload: { command_id: "client_interrupt_no_target" },
-      }),
-    );
-
-    expect(teamRun.interruptMember).not.toHaveBeenCalled();
-    expect(getSentErrors(connection).at(-1)).toMatchObject({
-      payload: {
         code: "INVALID_TARGET",
-      },
-    });
-    expect(getSentMessages(connection).filter(
-      (message) => message.type === ServerMessageType.AGENT_COMMAND_ACK,
-    ).at(-1)).toMatchObject({
-      payload: {
-        command_id: "client_interrupt_no_target", state: "rejected", code: "INVALID_TARGET",
-      },
-    });
-  });
-
-  it("rejects scalar interrupt target aliases with invalid-target errors", async () => {
-    const teamRun = createTeamRun();
-    const teamRunService = createTeamRunService(teamRun);
-    const handler = new AgentTeamStreamHandler(
-      new AgentSessionManager(),
-      teamRunService as any,
-    );
-    const connection = {
-      send: vi.fn(),
-      close: vi.fn(),
-    };
-
-    const sessionId = await handler.connect(connection, "team-1");
-
-    await handler.handleMessage(
-      sessionId as string,
-      JSON.stringify({
-        type: ClientMessageType.INTERRUPT_GENERATION,
-        payload: {
-          command_id: "client_interrupt_scalar",
-          target_member_name: "worker-a",
-        },
-      }),
-    );
-
-    expect(teamRun.interruptMember).not.toHaveBeenCalled();
-    expect(getSentErrors(connection).at(-1)).toMatchObject({
-      payload: {
-        code: "INVALID_TARGET",
-      },
-    });
-    expect(getSentMessages(connection).filter(
-      (message) => message.type === ServerMessageType.AGENT_COMMAND_ACK,
-    ).at(-1)).toMatchObject({
-      payload: {
-        command_id: "client_interrupt_scalar", state: "rejected", code: "INVALID_TARGET",
-      },
-    });
-  });
-
-  it("returns one failed acknowledgement when exact member interruption throws", async () => {
-    const teamRun = createTeamRun({
-      interruptMember: vi.fn().mockRejectedValue(new Error("provider channel failed")),
-    });
-    const handler = new AgentTeamStreamHandler(
-      new AgentSessionManager(), createTeamRunService(teamRun) as any,
-    );
-    const connection = { send: vi.fn(), close: vi.fn() };
-    const sessionId = await handler.connect(connection, "team-1");
-    connection.send.mockClear();
-
-    await handler.handleMessage(sessionId!, JSON.stringify({
-      type: ClientMessageType.INTERRUPT_GENERATION,
-      payload: {
-        command_id: "client_interrupt_throw", target_member_route_key: "worker-a",
-        target_member_run_id: "member-42",
+        message: "Nested task TeamRun is stale.",
       },
     }));
+  });
 
-    expect(connection.send).toHaveBeenCalledTimes(1);
-    expect(JSON.parse(connection.send.mock.calls[0][0])).toMatchObject({
-      type: ServerMessageType.AGENT_COMMAND_ACK,
-      payload: {
-        command_id: "client_interrupt_throw", state: "failed",
-        code: "INTERRUPT_EXECUTION_FAILED", message: "provider channel failed",
+  it("returns one failed interrupt acknowledgement for an exact stale address", async () => {
+    const harness = await createHarness({
+      executeResult: {
+        accepted: false,
+        code: "TASK_TEAM_INSTANCE_NOT_ACTIVE",
+        message: "Nested task TeamRun is stale.",
       },
     });
-  });
+    const stale = executionCases[3]!.address;
 
-  it("routes approval commands with explicit member path selectors", async () => {
-    const teamRun = createTeamRun();
-    const teamRunService = createTeamRunService(teamRun);
-    const handler = new AgentTeamStreamHandler(
-      new AgentSessionManager(),
-      teamRunService as any,
-    );
-    const connection = {
-      send: vi.fn(),
-      close: vi.fn(),
-    };
+    await handle(harness, ClientMessageType.INTERRUPT_GENERATION, {
+      execution_address: stale,
+      command_id: "interrupt-stale",
+    });
 
-    const sessionId = await handler.connect(connection, "team-1");
-
-    await handler.handleMessage(
-      sessionId as string,
-      JSON.stringify({
-        type: ClientMessageType.APPROVE_TOOL,
-        payload: {
-          invocation_id: "inv-1",
-          member_path: ["worker-a"],
-        },
-      }),
-    );
-
-    expect(teamRun.approveToolInvocation).toHaveBeenCalledWith(
+    expect(harness.executeMemberCommand).toHaveBeenCalledOnce();
+    expect(parseSent(harness.connection)).toEqual([
       {
-        kind: "path",
-        memberPath: ["worker-a"],
-      },
-      "inv-1",
-      true,
-      null,
-      null,
-      null,
-    );
-  });
-
-  it("routes approval commands with structured camelCase selector fields", async () => {
-    const teamRun = createTeamRun();
-    const teamRunService = createTeamRunService(teamRun);
-    const handler = new AgentTeamStreamHandler(
-      new AgentSessionManager(),
-      teamRunService as any,
-    );
-    const connection = {
-      send: vi.fn(),
-      close: vi.fn(),
-    };
-
-    const sessionId = await handler.connect(connection, "team-1");
-
-    await handler.handleMessage(
-      sessionId as string,
-      JSON.stringify({
-        type: ClientMessageType.APPROVE_TOOL,
+        type: ServerMessageType.AGENT_COMMAND_ACK,
         payload: {
-          invocation_id: "inv-camel-path",
-          sourcePath: ["BuildSquad", "review_lead"],
-        },
-      }),
-    );
-    await handler.handleMessage(
-      sessionId as string,
-      JSON.stringify({
-        type: ClientMessageType.DENY_TOOL,
-        payload: {
-          invocation_id: "inv-camel-route",
-          memberRouteKey: "BuildSquad/qa_specialist",
-          reason: "not allowed",
-        },
-      }),
-    );
-
-    expect(teamRun.approveToolInvocation).toHaveBeenNthCalledWith(
-      1,
-      {
-        kind: "path",
-        memberPath: ["BuildSquad", "review_lead"],
-      },
-      "inv-camel-path",
-      true,
-      null,
-      null,
-      null,
-    );
-    expect(teamRun.approveToolInvocation).toHaveBeenNthCalledWith(
-      2,
-      {
-        kind: "route_key",
-        memberRouteKey: "BuildSquad/qa_specialist",
-      },
-      "inv-camel-route",
-      false,
-      "not allowed",
-      null,
-      null,
-    );
-  });
-
-  it("routes approval commands with task-agent run identity as a concrete run guard", async () => {
-    const teamRun = createTeamRun();
-    const teamRunService = createTeamRunService(teamRun);
-    const handler = new AgentTeamStreamHandler(
-      new AgentSessionManager(),
-      teamRunService as any,
-    );
-    const connection = {
-      send: vi.fn(),
-      close: vi.fn(),
-    };
-
-    const sessionId = await handler.connect(connection, "team-1");
-
-    await handler.handleMessage(
-      sessionId as string,
-      JSON.stringify({
-        type: ClientMessageType.APPROVE_TOOL,
-        payload: {
-          invocation_id: "inv-task-agent",
-          member_route_key: "worker-a",
-          source_route_key: "worker-a",
-          task_agent_run_id: "task-agent-run-1",
-        },
-      }),
-    );
-
-    expect(teamRun.approveToolInvocation).toHaveBeenCalledWith(
-      {
-        kind: "route_key",
-        memberRouteKey: "worker-a",
-      },
-      "inv-task-agent",
-      true,
-      null,
-      "task-agent-run-1",
-      null,
-    );
-  });
-
-  it("routes task-team scoped approval commands with relative route selectors and run guards", async () => {
-    const teamRun = createTeamRun();
-    const teamRunService = createTeamRunService(teamRun);
-    const handler = new AgentTeamStreamHandler(
-      new AgentSessionManager(),
-      teamRunService as any,
-    );
-    const connection = {
-      send: vi.fn(),
-      close: vi.fn(),
-    };
-
-    const sessionId = await handler.connect(connection, "team-1");
-
-    await handler.handleMessage(
-      sessionId as string,
-      JSON.stringify({
-        type: ClientMessageType.APPROVE_TOOL,
-        payload: {
-          invocation_id: "inv-task-team-route",
-          task_team_run_id: "task-team-run-1",
-          task_team_relative_member_route_key: "solution_designer",
-          task_agent_run_id: "nested-task-agent-run",
-        },
-      }),
-    );
-
-    expect(teamRun.approveToolInvocation).toHaveBeenCalledWith(
-      {
-        kind: "route_key",
-        memberRouteKey: "solution_designer",
-      },
-      "inv-task-team-route",
-      true,
-      null,
-      "nested-task-agent-run",
-      "task-team-run-1",
-    );
-  });
-
-  it("routes task-team scoped denial commands with relative path selectors", async () => {
-    const teamRun = createTeamRun();
-    const teamRunService = createTeamRunService(teamRun);
-    const handler = new AgentTeamStreamHandler(
-      new AgentSessionManager(),
-      teamRunService as any,
-    );
-    const connection = {
-      send: vi.fn(),
-      close: vi.fn(),
-    };
-
-    const sessionId = await handler.connect(connection, "team-1");
-
-    await handler.handleMessage(
-      sessionId as string,
-      JSON.stringify({
-        type: ClientMessageType.DENY_TOOL,
-        payload: {
-          invocation_id: "inv-task-team-path",
-          taskTeamRunId: "task-team-run-2",
-          taskTeamRelativeMemberPath: ["review_lead"],
-          reason: "needs review",
-        },
-      }),
-    );
-
-    expect(teamRun.approveToolInvocation).toHaveBeenCalledWith(
-      {
-        kind: "path",
-        memberPath: ["review_lead"],
-      },
-      "inv-task-team-path",
-      false,
-      "needs review",
-      null,
-      "task-team-run-2",
-    );
-  });
-
-  it("rejects task-team scoped approvals without relative child selectors", async () => {
-    const teamRun = createTeamRun();
-    const teamRunService = createTeamRunService(teamRun);
-    const handler = new AgentTeamStreamHandler(
-      new AgentSessionManager(),
-      teamRunService as any,
-    );
-    const connection = {
-      send: vi.fn(),
-      close: vi.fn(),
-    };
-
-    const sessionId = await handler.connect(connection, "team-1");
-
-    await handler.handleMessage(
-      sessionId as string,
-      JSON.stringify({
-        type: ClientMessageType.APPROVE_TOOL,
-        payload: {
-          invocation_id: "inv-task-team-structural-only",
-          task_team_run_id: "task-team-run-1",
-          member_route_key: "SoftwareEngineeringTeam/solution_designer",
-        },
-      }),
-    );
-    await handler.handleMessage(
-      sessionId as string,
-      JSON.stringify({
-        type: ClientMessageType.DENY_TOOL,
-        payload: {
-          invocation_id: "inv-task-team-scalar",
-          task_team_run_id: "task-team-run-1",
-          target_member_name: "solution_designer",
-        },
-      }),
-    );
-
-    expect(teamRun.approveToolInvocation).not.toHaveBeenCalled();
-    const errorMessages = getSentErrors(connection);
-    expect(errorMessages).toHaveLength(2);
-    expect(
-      errorMessages.every(
-        (message) => message.payload?.code === "INVALID_TARGET",
-      ),
-    ).toBe(true);
-  });
-
-  it("rejects every scalar tool approval target alias with invalid-target errors", async () => {
-    const teamRun = createTeamRun();
-    const teamRunService = createTeamRunService(teamRun);
-    const handler = new AgentTeamStreamHandler(
-      new AgentSessionManager(),
-      teamRunService as any,
-    );
-    const connection = {
-      send: vi.fn(),
-      close: vi.fn(),
-    };
-
-    const sessionId = await handler.connect(connection, "team-1");
-    for (const legacyKey of [
-      "target_member_name",
-      "target_member_id",
-      "target_agent_name",
-      "target_agent_id",
-      "targetMemberName",
-      "targetMemberId",
-      "targetAgentName",
-      "targetAgentId",
-      "agent_name",
-      "agent_id",
-      "agentName",
-      "agentId",
-      "member_name",
-      "member_id",
-      "memberName",
-      "memberId",
-    ]) {
-      await handler.handleMessage(
-        sessionId as string,
-        JSON.stringify({
-          type: ClientMessageType.APPROVE_TOOL,
-          payload: {
-            invocation_id: `inv-legacy-${legacyKey}`,
-            [legacyKey]: "worker-a",
+          command_type: "INTERRUPT_GENERATION",
+          command_id: "interrupt-stale",
+          state: "failed",
+          code: "TASK_TEAM_INSTANCE_NOT_ACTIVE",
+          message: "Nested task TeamRun is stale.",
+          target: {
+            target_kind: "team_member",
+            team_run_id: "team-1",
+            execution_address: stale,
           },
-        }),
-      );
-    }
-
-    expect(teamRun.approveToolInvocation).not.toHaveBeenCalled();
-    const errorMessages = getSentErrors(connection);
-    expect(errorMessages).toHaveLength(16);
-    expect(
-      errorMessages.every(
-        (message) => message.payload?.code === "INVALID_TARGET",
-      ),
-    ).toBe(true);
-  });
-
-  it("rejects tool approvals without structured target identity with invalid-target errors", async () => {
-    const teamRun = createTeamRun();
-    const teamRunService = createTeamRunService(teamRun);
-    const handler = new AgentTeamStreamHandler(
-      new AgentSessionManager(),
-      teamRunService as any,
-    );
-    const connection = {
-      send: vi.fn(),
-      close: vi.fn(),
-    };
-
-    const sessionId = await handler.connect(connection, "team-1");
-    await handler.handleMessage(
-      sessionId as string,
-      JSON.stringify({
-        type: ClientMessageType.APPROVE_TOOL,
-        payload: {
-          invocation_id: "inv-missing-target",
         },
-      }),
-    );
-
-    expect(teamRun.approveToolInvocation).not.toHaveBeenCalled();
-    expect(getSentErrors(connection).at(-1)).toMatchObject({
-      payload: {
-        code: "INVALID_TARGET",
       },
-    });
+    ]);
   });
 
-  it("registers the websocket connection for team-scoped live message broadcasts", async () => {
-    const teamRun = createTeamRun();
-    const broadcaster = new TeamStreamBroadcaster();
+  it("projects the exact execution address on Agent events", () => {
+    const address = executionCases[3]!.address;
     const handler = new AgentTeamStreamHandler(
-      new AgentSessionManager(),
-      createTeamRunService(teamRun) as any,
-      broadcaster,
+      undefined,
+      { getTeamRun: vi.fn(), resolveTeamRun: vi.fn() } as never,
     );
-    const connection = {
-      send: vi.fn(),
-      close: vi.fn(),
-    };
 
-    const sessionId = await handler.connect(connection, "team-1");
-
-    expect(sessionId).toBeTruthy();
-    expect(
-      broadcaster.publishToTeamRun(
-        "team-1",
-        {
-          toJson: () =>
-            JSON.stringify({
-              type: ServerMessageType.EXTERNAL_USER_MESSAGE,
-              payload: {
-                content: "hello from telegram",
-                agent_name: "Professor",
-                agent_id: "prof-run-1",
-                member_route_key: "Professor",
-                member_path: ["Professor"],
-                source_route_key: "Professor",
-                source_path: ["Professor"],
-              },
-            }),
-        } as any,
-      ),
-    ).toBe(1);
-
-    const lastSentMessage = connection.send.mock.calls.at(-1)?.[0];
-    expect(lastSentMessage).toBeTypeOf("string");
-    expect(JSON.parse(lastSentMessage as string)).toMatchObject({
-      type: ServerMessageType.EXTERNAL_USER_MESSAGE,
-      payload: {
-        content: "hello from telegram",
-        agent_name: "Professor",
-        agent_id: "prof-run-1",
-        member_route_key: "Professor",
-        member_path: ["Professor"],
-        source_route_key: "Professor",
-        source_path: ["Professor"],
+    const message = handler.convertTeamEvent({
+      eventSourceType: TeamRunEventSourceType.AGENT,
+      teamRunId: "team-1",
+      executionAddress: address,
+      data: {
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+        executionAddress: address,
+        displayName: "reviewer",
+        agentEvent: {
+          runId: "task-reviewer-run",
+          eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+          payload: { invocation_id: "invocation-1", tool_name: "read_file", result: "ok" },
+          statusHint: null,
+        },
+        taskAgentInstance: null,
       },
+    });
+
+    expect(message.type).toBe(ServerMessageType.TOOL_EXECUTION_SUCCEEDED);
+    expect(message.payload).toMatchObject({
+      agent_name: "reviewer",
+      runtime_kind: RuntimeKind.CODEX_APP_SERVER,
+      execution_address: address,
+      invocation_id: "invocation-1",
     });
   });
 
-  it("coalesces metadata refresh work across a burst of streamed team events", async () => {
+  it("coalesces metadata refresh work across a burst of streamed Team events", async () => {
     vi.useFakeTimers();
-    try {
-      const teamRun = createTeamRun();
-      const teamRunService = createTeamRunService(teamRun);
-      const handler = new AgentTeamStreamHandler(
-        new AgentSessionManager(),
-        teamRunService as any,
-      );
-      const connection = {
-        send: vi.fn(),
-        close: vi.fn(),
-      };
-
-      await handler.connect(connection, "team-1");
-
-      const eventListener = teamRun.subscribeToEvents.mock.calls[0]?.[0];
-      expect(typeof eventListener).toBe("function");
-
-      const teamEvent = {
-        eventSourceType: TeamRunEventSourceType.AGENT,
-        teamRunId: "team-1",
-        data: {
-          runtimeKind: RuntimeKind.AUTOBYTEUS,
-          memberName: "worker-a",
-          memberRunId: "member-42",
-          agentEvent: {
-            runId: "member-42",
-            eventType: AgentRunEventType.AGENT_STATUS_UPDATED,
-            payload: { status: "running" },
-            statusHint: "running",
-          },
+    const harness = await createHarness();
+    const listener = harness.eventListener();
+    expect(listener).toBeTruthy();
+    const address = executionCases[0]!.address;
+    const event = {
+      eventSourceType: TeamRunEventSourceType.AGENT,
+      teamRunId: "team-1",
+      executionAddress: address,
+      data: {
+        runtimeKind: RuntimeKind.AUTOBYTEUS,
+        executionAddress: address,
+        displayName: "worker",
+        agentEvent: {
+          runId: "worker-run",
+          eventType: AgentRunEventType.SEGMENT_CONTENT,
+          payload: { id: "segment-1", segment_type: "text", delta: "x" },
+          statusHint: null,
         },
-      };
+        taskAgentInstance: null,
+      },
+    };
 
-      eventListener(teamEvent);
-      eventListener(teamEvent);
-      eventListener(teamEvent);
-
-      expect(teamRunService.refreshRunMetadata).not.toHaveBeenCalled();
-
-      await vi.advanceTimersByTimeAsync(2000);
-
-      expect(teamRunService.refreshRunMetadata).toHaveBeenCalledTimes(1);
-      expect(teamRunService.refreshRunMetadata).toHaveBeenCalledWith(teamRun);
-    } finally {
-      vi.useRealTimers();
-    }
+    listener?.(event);
+    listener?.(event);
+    listener?.(event);
+    expect(harness.teamRunService.refreshRunMetadata).not.toHaveBeenCalled();
+    await vi.advanceTimersByTimeAsync(2_000);
+    expect(harness.teamRunService.refreshRunMetadata).toHaveBeenCalledOnce();
+    expect(harness.teamRunService.refreshRunMetadata).toHaveBeenCalledWith(harness.teamRun);
   });
 });

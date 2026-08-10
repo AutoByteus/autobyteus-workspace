@@ -1,0 +1,8 @@
+COMMAND     PID  USER   FD   TYPE DEVICE  SIZE/OFF     NODE NAME
+AutoByteu 11918 normy 22u /Users/normy/.autobyteus/server-data/db/production.db
+AutoByteu 11918 normy 23u /Users/normy/.autobyteus/server-data/db/production.db
+AutoByteu 11918 normy 29u /Users/normy/.autobyteus/server-data/db/production.db
+AutoByteu 11918 normy 50u /Users/normy/.autobyteus/server-data/db/production.db
+AutoByteu 11918 normy 52u /Users/normy/.autobyteus/server-data/db/production.db
+AutoByteu 11918 normy 53u /Users/normy/.autobyteus/server-data/db/production.db
+AutoByteu 11918 normy 54u /Users/normy/.autobyteus/server-data/db/production.db

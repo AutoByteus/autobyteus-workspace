@@ -21,6 +21,7 @@ import type {
 import type { AgentRunBackendFactory } from "../../../src/agent-execution/backends/agent-run-backend-factory.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
 import { AgentRunMemoryRecorder } from "../../../src/agent-memory/services/agent-run-memory-recorder.js";
+import { AgentMemoryLocationService } from "../../../src/agent-memory/services/agent-memory-location-service.js";
 import { AgentMemoryService } from "../../../src/agent-memory/services/agent-memory-service.js";
 import { MemoryFileStore } from "../../../src/agent-memory/store/memory-file-store.js";
 import { AgentRunViewProjectionService } from "../../../src/run-history/services/agent-run-view-projection-service.js";
@@ -28,9 +29,14 @@ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.j
 import { MixedAgentMemberHandle } from "../../../src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.js";
 import { MixedAgentMemberContext, MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
-import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
-import { MemberTeamContext } from "../../../src/agent-team-execution/domain/member-team-context.js";
+import { createTeamExecutionAddress } from "../../../src/agent-team-execution/domain/team-execution-address.js";
+import {
+  address,
+  testAgentNode,
+  testMemberTeamContext,
+  testTeamRunConfig,
+} from "../../fixtures/current-team-run-fixtures.js";
 import {
   EPISODIC_MEMORY_FILE_NAME,
   RAW_TRACES_ACTIVE_MEMORY_FILE_NAME,
@@ -203,7 +209,7 @@ const emitConverted = async (
 };
 
 afterEach(async () => {
-  vi.clearAllMocks();
+  vi.restoreAllMocks();
   await Promise.all([...tempDirs].map((dir) => fs.rm(dir, { recursive: true, force: true })));
   tempDirs.clear();
 });
@@ -1324,6 +1330,11 @@ describe("cross-runtime memory persistence integration", () => {
     const teamRunId = "team-run-memory-1";
     const memberRunId = "team-run-memory-1::coordinator";
     const memberMemoryDir = path.join(memoryRoot, "agent_teams", teamRunId, memberRunId);
+    const memoryLocationService = new AgentMemoryLocationService({ memoryDir: memoryRoot });
+    vi.spyOn(
+      await import("../../../src/agent-memory/services/agent-memory-location-service.js"),
+      "getAgentMemoryLocationService",
+    ).mockReturnValue(memoryLocationService);
     const recorder = new AgentRunMemoryRecorder();
     const { factory: claudeMemberFactory, createdBackends } = createRuntimeBackendFactory(RuntimeKind.CLAUDE_AGENT_SDK);
     const agentRunManager = new AgentRunManager({
@@ -1335,67 +1346,57 @@ describe("cross-runtime memory persistence integration", () => {
       memoryRecorder: recorder,
     });
     const memberContext = new MixedAgentMemberContext({
-      memberName: "Coordinator",
-      memberPath: ["Coordinator"],
-      memberRouteKey: "coordinator",
-      memberRunId,
+      address: address("/Coordinator"),
+      agentRunId: memberRunId,
       runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
       platformAgentRunId: null,
     });
+    const memberNode = testAgentNode("/Coordinator", {
+      agentRunId: memberRunId,
+      agentDefinitionId: "agent-def-1",
+      llmModelIdentifier: "claude-sonnet",
+      autoExecuteTools: true,
+      skillAccessMode: SkillAccessMode.NONE,
+      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+      workspaceRootPath: "workspace-1",
+    });
+    const teamConfig = testTeamRunConfig({
+      rootTeamRunId: teamRunId,
+      rootTeamDefinitionId: "team-def-1",
+      coordinatorAddress: "/Coordinator",
+      children: [memberNode],
+    });
     const teamContext = new TeamRunContext({
-      runId: teamRunId,
+      teamRunId,
+      teamAddress: address("/"),
       teamBackendKind: TeamBackendKind.MIXED,
-      config: new TeamRunConfig({
-        teamDefinitionId: "team-def-1",
-        teamBackendKind: TeamBackendKind.MIXED,
-        coordinatorMemberRouteKey: "coordinator",
-        memberConfigs: [{
-          memberName: "Coordinator",
-          memberRouteKey: "coordinator",
-          memberRunId,
-          agentDefinitionId: "agent-def-1",
-          llmModelIdentifier: "claude-sonnet",
-          autoExecuteTools: true,
-          skillAccessMode: SkillAccessMode.NONE,
-          runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-          workspaceId: "workspace-1",
-          memoryDir: memberMemoryDir,
-        }],
-      }),
+      config: teamConfig,
       runtimeContext: new MixedTeamRunContext({
-        coordinatorMemberRouteKey: "coordinator",
         memberContexts: [memberContext],
+        teamExecutionAddress: createTeamExecutionAddress({
+          rootTeamRunId: teamRunId,
+          memberAddress: "/Coordinator",
+        }),
       }),
     });
     const handle = new MixedAgentMemberHandle({
       teamContext,
       context: memberContext,
-      config: teamContext.config!.memberConfigs[0]!,
+      config: memberNode,
       agentRunManager,
       memberTeamContextBuilder: {
-        build: vi.fn(async (input: {
-          teamRunId: string;
-          teamDefinitionId: string;
-          currentMemberName: string;
-          currentMemberRouteKey: string;
-          currentMemberRunId: string;
-        }) => new MemberTeamContext({
-          teamRunId: input.teamRunId,
-          teamDefinitionId: input.teamDefinitionId,
-          teamBackendKind: TeamBackendKind.MIXED,
-          memberName: input.currentMemberName,
-          memberRouteKey: input.currentMemberRouteKey,
-          memberRunId: input.currentMemberRunId,
-          collaboration: {
-            addressing: {
-              rootTeamRunId: input.teamRunId,
-              memberAddress: `/${input.currentMemberName}`,
-            },
-          },
+        build: vi.fn(async () => testMemberTeamContext({
+          rootTeamRunId: teamRunId,
+          teamRunId,
+          teamDefinitionId: "team-def-1",
+          teamAddress: "/",
+          coordinatorAddress: "/Coordinator",
+          memberAddress: "/Coordinator",
+          agentRunId: memberRunId,
+          runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
         })),
       } as never,
       publish: vi.fn(),
-      notifyStatusChange: vi.fn(),
       deliverInterAgentMessage: vi.fn(),
     });
 

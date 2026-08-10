@@ -1,0 +1,24 @@
+2026-08-10T17:55:39Z
+head=33b9b1e28e1c7f666dffdbcd349d394b2bfef875
+branch=codex/agent-team-hierarchical-handoffs
+ambient_DATABASE_URL_present=true
+ambient_DATABASE_URL_TEST_present=false
+owned_ports_before:
+60019=available
+31019=available
+user_stack:
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    71461 normy   26u  IPv4 0xbe9eaf34a35017b1      0t0  TCP 127.0.0.1:60004 (LISTEN)
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    73207 normy   12u  IPv4 0xe0271daf60061249      0t0  TCP 127.0.0.1:31004 (LISTEN)
+runtime_wrapper_sha256:
+a4a84d73ed623f87b0ff3174d137ed0725cf199bf4b7e3960bda793c8e7f965b  test-support/live-e2e/test-runtime-bootstrap.mjs
+product_source_tree_hash:
+45d62f9356fd9d5e302c1d448649b877689a864dae40d7276d1357f1c0f0c2a7  -
+six_durable_files:
+0e5001eca75fac42c34e206a3dc56b236be12b1861d6c94bc1adf3ea99f73cec  autobyteus-web/services/agentStreaming/__tests__/currentTaskExecutionFixture.ts
+0e1105bb7d452c84af11891999f6f3219e595b5653d8fdcf5b332aecbe6f63de  autobyteus-web/services/runHydration/__tests__/taskDelegationGraphqlDtoProjection.spec.ts
+061f8f1ba432d9db20a14eb4873cf135da114fd0ae355a5633388e13c22af95d  autobyteus-web/components/workspace/team/__tests__/TeamDelegatedTasksSection.current-contract.spec.ts
+bfa8f1c34d6052f5945af9969eaf31b1bf4819bf3834e249a2b885ef7931a500  autobyteus-web/services/agentStreaming/__tests__/teamTaskExecutionEventRouter.spec.ts
+ff479117a64b05ac921d985e3ed288f32d89e85cc2b1697cd02266c17c76585a  autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts
+dc8c8111d2f82ecf777a95164b67c80ee0a5bd8cc01bad63bd84937a690a50c5  autobyteus-web/services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts

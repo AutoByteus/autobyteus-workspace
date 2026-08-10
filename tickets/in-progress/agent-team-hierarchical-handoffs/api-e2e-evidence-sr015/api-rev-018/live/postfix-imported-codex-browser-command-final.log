@@ -1,0 +1,20 @@
+{
+  "result": "Pass",
+  "rows": [
+    {
+      "scenario": "Codex App Server",
+      "teamRunId": "nested_classroom_test_team_4182b55c4d2b49ff9129c4046e0e4d82",
+      "assertions": {
+        "currentTaskTeamVisibleActive": true,
+        "currentTaskTeamTransientRowVisible": true,
+        "awaitingReviewVisible": true,
+        "refreshRestoreVisible": true,
+        "exactTaskTeamSelection": true,
+        "acceptedPersisted": true,
+        "terminalTransientCleanup": true,
+        "exactRootedAddresses": true,
+        "allPersistentLeavesExact": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+revision=API-REV-016
+head=d557326b771ff5e7b5357f57b87865deb4b6c449
+branch=codex/agent-team-hierarchical-handoffs
+- Current API/E2E Revision: `API-REV-016`
+- Current result: `Pass / 95%`
+| API-REV-016 | `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`; Round 16 | SR-015; ARCH-REV-009; IR-020; CRR-035 | Pass / 96% (API-REV-015; pre-integration) | Pass / 95% |
+- Current API/E2E Revision ID: `API-REV-016` (`Pass / 95%`; prior `API-REV-015` completed `Pass / 96%`). API-REV-015 and API-REV-014 are historical pre-integration evidence and do not substitute for this round.
+inventory_rows=56
+inventory_delta_rows=4
+inventory_present_rows=54
+inventory_removed_rows=2
+real_browser_provider=Pass standalone=3 teams=3
+team_public_surface=Pass rows=3
+port_60004_listener_after_cleanup=0
+port_31004_listener_after_cleanup=0
+disposable_db_exists_after_cleanup=no
+durable_status:
+ M autobyteus-server-ts/tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts
+ M autobyteus-server-ts/tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts
+?? autobyteus-web/services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts
+result=pass

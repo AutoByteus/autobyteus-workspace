@@ -1,0 +1,7 @@
+pid=37924
+open_sqlite_files:
+node    37924 normy   19u      REG               1,13    323584           334387881 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/sr015-api-rev-018-20260810-1.db
+node    37924 normy   20u      REG               1,13    323584           334387881 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/sr015-api-rev-018-20260810-1.db
+production_db_referenced: no
+definitions:
+[{"id":"delegated-task-ui-validation","name":"Delegated Task UI Validation Team"},{"id":"nested-classroom-test","name":"Nested Classroom Test Team"},{"id":"team-local-team:delegated-task-ui-validation:work-group","name":"Work Group"},{"id":"team-local-team:nested-classroom-test:student-study-group","name":"Student Study Group"}]

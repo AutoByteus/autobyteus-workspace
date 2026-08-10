@@ -1,0 +1,35 @@
+{
+  "result": "Pass",
+  "databasePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/sr015-api-rev-019-20260810-1.db",
+  "operationalDatabaseTargetMatch": false,
+  "runtimeAvailability": {
+    "runtimeAvailabilities": [
+      {
+        "runtimeKind": "autobyteus",
+        "enabled": true,
+        "reason": null
+      },
+      {
+        "runtimeKind": "codex_app_server",
+        "enabled": true,
+        "reason": null
+      },
+      {
+        "runtimeKind": "claude_agent_sdk",
+        "enabled": true,
+        "reason": null
+      }
+    ]
+  },
+  "agentTeamDefinitionCount": 0,
+  "serverStopped": true
+}
+
+--- owned port after ---
+owned_port_cleanup=true
+
+--- user stack untouched ---
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    71461 normy   26u  IPv4 0xbe9eaf34a35017b1      0t0  TCP 127.0.0.1:60004 (LISTEN)
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    73207 normy   12u  IPv4 0xe0271daf60061249      0t0  TCP 127.0.0.1:31004 (LISTEN)

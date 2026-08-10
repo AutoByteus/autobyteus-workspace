@@ -1,0 +1,72 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts > toolLifecycleHandler > drops malformed denied payload without state mutation
+[toolLifecycleHandler] Dropping malformed TOOL_DENIED payload {
+  invocation_id: 'tool-4',
+  tool_name: 'delete_file',
+  reason: null,
+  error: null
+}
+
+ ✓ services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts (12 tests) 10ms
+ ✓ services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts (22 tests) 12ms
+stderr | services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts > TeamStreamingService exact execution-address serialization > echoes the complete 'persistent member' address for tool approval
+No member context found for message, skipping
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts > TeamStreamingService exact execution-address serialization > echoes the complete 'outer task AgentTeam member' address for tool approval
+No Agent exists at '/BuildSquad/reviewer'.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts > TeamStreamingService exact execution-address serialization > echoes the complete 'nested task AgentTeam member' address for tool approval
+No Agent exists at '/BuildSquad/ReviewCell/reviewer'.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts > TeamStreamingService exact execution-address serialization > accepts only an acknowledgement matching the exact pending execution address
+Ignoring unmatched team interrupt command acknowledgement. {
+  command_type: 'INTERRUPT_GENERATION',
+  command_id: 'interrupt-ack',
+  state: 'accepted',
+  target: {
+    target_kind: 'team_member',
+    team_run_id: 'team-1',
+    execution_address: {
+      rootTeamRunId: 'team-1',
+      taskTeamRunIds: [Array],
+      memberAddress: '/BuildSquad/ReviewCell/reviewer',
+      taskAgentRunId: null
+    }
+  }
+}
+
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts (16 tests) 9ms
+
+ Test Files  3 passed (3)
+      Tests  50 passed (50)
+   Start at  21:45:03
+   Duration  4.83s (transform 2.66s, setup 12.75s, collect 141ms, tests 31ms, environment 461ms, prepare 374ms)
+

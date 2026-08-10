@@ -1,0 +1,61 @@
+{
+  "scenario": "Codex App Server",
+  "kind": "standalone-agent-browser-provider",
+  "status": "Pass",
+  "startedAt": "2026-08-09T20:06:47.061Z",
+  "completedAt": "2026-08-09T20:06:50.667Z",
+  "runId": "api_rev_016_browser_agent_f6f283aef41445c5a40cb83777c79971",
+  "expected": {
+    "runtimeKind": "codex_app_server",
+    "modelIdentifier": "gpt-5.6-luna",
+    "reasoningEffort": "medium",
+    "token": "STANDALONE-CODEX"
+  },
+  "uiConfig": {
+    "runtimeKind": "codex_app_server",
+    "selectedModelLabel": "OpenAI / GPT-5.6-Luna (default reasoning: medium)",
+    "reasoningEffort": "medium",
+    "autoExecuteTools": true
+  },
+  "resumeConfig": {
+    "runId": "api_rev_016_browser_agent_f6f283aef41445c5a40cb83777c79971",
+    "isActive": true,
+    "metadataConfig": {
+      "agentDefinitionId": "api-rev-016-browser-agent",
+      "llmModelIdentifier": "gpt-5.6-luna",
+      "llmConfig": {
+        "reasoning_effort": "medium"
+      },
+      "autoExecuteTools": true,
+      "runtimeKind": "codex_app_server"
+    }
+  },
+  "assertion": {
+    "exactAssistantToken": true,
+    "terminated": false
+  },
+  "websocketEvidence": [
+    {
+      "url": "ws://127.0.0.1:31004/_nuxt/?token=Lg7oruHsYVNI",
+      "openedAt": "2026-08-09T20:06:47.118Z",
+      "frames": []
+    },
+    {
+      "url": "ws://127.0.0.1:60004/ws/file-explorer/temp_ws_default",
+      "openedAt": "2026-08-09T20:06:48.000Z",
+      "frames": []
+    },
+    {
+      "url": "ws://127.0.0.1:60004/ws/agent/api_rev_016_browser_agent_f6f283aef41445c5a40cb83777c79971",
+      "openedAt": "2026-08-09T20:06:50.381Z",
+      "frames": [
+        {
+          "at": "2026-08-09T20:06:50.431Z",
+          "direction": "sent",
+          "payload": "{\"type\":\"SEND_MESSAGE\",\"payload\":{\"content\":\"Reply with exactly STANDALONE-CODEX and nothing else.\",\"context_file_paths\":[],\"image_urls\":[],\"message_id\":\"client_8adc83d3-ddf7-4d5c-9715-0cda3f879c84\",\"dedupe_key\":\"agent_run_input:api_rev_016_browser_agent_f6f283aef41445c5a40cb83777c79971:client_8adc83d3-ddf7-4d5c-9715-0cda3f879c84\"}}"
+        }
+      ]
+    }
+  ],
+  "browserErrors": []
+}

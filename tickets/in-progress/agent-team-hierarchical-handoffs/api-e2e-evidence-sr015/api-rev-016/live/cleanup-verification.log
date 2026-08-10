@@ -1,0 +1,17 @@
+cleanup_started_at=2026-08-09T20:23:23.633776+00:00
+source_exists_before_cleanup=yes
+staged_exists_before_cleanup=yes
+disposable_db_exists_before_cleanup=yes
+operational_database_targeted=no
+port_60004_listener_before_cleanup=0
+port_31004_listener_before_cleanup=0
+cleanup_completed_at=2026-08-09T20:23:24.243687+00:00
+source_exists_after_cleanup=yes
+staged_exists_after_cleanup=no
+app_root_exists_after_cleanup=no
+disposable_db_exists_after_cleanup=no
+disposable_db_wal_exists_after_cleanup=no
+disposable_db_key_exists_after_cleanup=no
+port_60004_listener_after_cleanup=0
+port_31004_listener_after_cleanup=0
+operational_database_targeted=no

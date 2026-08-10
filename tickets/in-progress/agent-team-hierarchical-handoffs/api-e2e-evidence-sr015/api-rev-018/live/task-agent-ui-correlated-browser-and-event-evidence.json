@@ -1,0 +1,512 @@
+{
+  "revision": "API-REV-018",
+  "teamRunId": "delegated_task_ui_validation_team_41260eed517c47feb1b6a281e1b53493",
+  "sampleCount": 86,
+  "frameCount": 15,
+  "browserErrors": [],
+  "lastEightSamples": [
+    {
+      "at": "2026-08-10T17:11:33.173Z",
+      "headers": [
+        "Tasks\n1 task"
+      ],
+      "taskEntries": 1,
+      "taskTeamEntries": 1,
+      "taskAgentEntries": 0,
+      "transientRows": [
+        {
+          "kind": "task_team",
+          "memberAddress": "/WorkGroup",
+          "text": "WorkGroup",
+          "ariaLabel": "WorkGroup. /WorkGroup",
+          "className": "flex w-full cursor-pointer items-center rounded-md bg-indigo-50/40 text-sm transition-colors hover:bg-indigo-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-indigo-300 text-gray-600"
+        }
+      ],
+      "taskDetails": [
+        "Execute the delegated UI validation workflow exactly as specified. You are the active Lead coordinator: first call get_handoff_rules. Then delegate exactly one nested task to ./Worker (and no other tasks). Instruct Worker to call run_bash with command sleep 90 and timeout_seconds 120 before submitting exactly INNER-AUTOBYTEUS-018. After the nested result arrives, while the nested task awaits review, you must call run_bash with command sleep 10; then review that nested task using review_task_result with decision accept. Finally submit the outer task result with exactly OUTER-AUTOBYTEUS-018. Do not submit any other text or token as the task result, and do not ask Supervisor to review the outer result."
+      ],
+      "records": [
+        {
+          "taskId": "task_0001",
+          "status": "active",
+          "kind": "agent_team",
+          "taskRun": {
+            "rootTeamRunId": "delegated_task_ui_validation_team_41260eed517c47feb1b6a281e1b53493",
+            "taskTeamRunIds": [
+              "team_local_team_delegated_task_ui_validation_wor_e87a5975b2ed46f991ba505571efaea0"
+            ],
+            "memberAddress": "/WorkGroup",
+            "taskAgentRunId": null
+          }
+        },
+        {
+          "taskId": "task_0002",
+          "status": "active",
+          "kind": "agent",
+          "taskRun": {
+            "rootTeamRunId": "delegated_task_ui_validation_team_41260eed517c47feb1b6a281e1b53493",
+            "taskTeamRunIds": [
+              "team_local_team_delegated_task_ui_validation_wor_e87a5975b2ed46f991ba505571efaea0"
+            ],
+            "memberAddress": "/WorkGroup/Worker",
+            "taskAgentRunId": "ui_test_worker_ea2c55a63a6c45d8a618b255b0495555"
+          }
+        }
+      ]
+    },
+    {
+      "at": "2026-08-10T17:11:33.593Z",
+      "headers": [
+        "Tasks\n1 task"
+      ],
+      "taskEntries": 1,
+      "taskTeamEntries": 1,
+      "taskAgentEntries": 0,
+      "transientRows": [
+        {
+          "kind": "task_team",
+          "memberAddress": "/WorkGroup",
+          "text": "WorkGroup",
+          "ariaLabel": "WorkGroup. /WorkGroup",
+          "className": "flex w-full cursor-pointer items-center rounded-md bg-indigo-50/40 text-sm transition-colors hover:bg-indigo-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-indigo-300 text-gray-600"
+        }
+      ],
+      "taskDetails": [
+        "Execute the delegated UI validation workflow exactly as specified. You are the active Lead coordinator: first call get_handoff_rules. Then delegate exactly one nested task to ./Worker (and no other tasks). Instruct Worker to call run_bash with command sleep 90 and timeout_seconds 120 before submitting exactly INNER-AUTOBYTEUS-018. After the nested result arrives, while the nested task awaits review, you must call run_bash with command sleep 10; then review that nested task using review_task_result with decision accept. Finally submit the outer task result with exactly OUTER-AUTOBYTEUS-018. Do not submit any other text or token as the task result, and do not ask Supervisor to review the outer result."
+      ],
+      "records": [
+        {
+          "taskId": "task_0001",
+          "status": "active",
+          "kind": "agent_team",
+          "taskRun": {
+            "rootTeamRunId": "delegated_task_ui_validation_team_41260eed517c47feb1b6a281e1b53493",
+            "taskTeamRunIds": [
+              "team_local_team_delegated_task_ui_validation_wor_e87a5975b2ed46f991ba505571efaea0"
+            ],
+            "memberAddress": "/WorkGroup",
+            "taskAgentRunId": null
+          }
+        },
+        {
+          "taskId": "task_0002",
+          "status": "active",
+          "kind": "agent",
+          "taskRun": {
+            "rootTeamRunId": "delegated_task_ui_validation_team_41260eed517c47feb1b6a281e1b53493",
+            "taskTeamRunIds": [
+              "team_local_team_delegated_task_ui_validation_wor_e87a5975b2ed46f991ba505571efaea0"
+            ],
+            "memberAddress": "/WorkGroup/Worker",
+            "taskAgentRunId": "ui_test_worker_ea2c55a63a6c45d8a618b255b0495555"
+          }
+        }
+      ]
+    },
+    {
+      "at": "2026-08-10T17:11:34.017Z",
+      "headers": [
+        "Tasks\n1 task"
+      ],
+      "taskEntries": 1,
+      "taskTeamEntries": 1,
+      "taskAgentEntries": 0,
+      "transientRows": [
+        {
+          "kind": "task_team",
+          "memberAddress": "/WorkGroup",
+          "text": "WorkGroup",
+          "ariaLabel": "WorkGroup. /WorkGroup",
+          "className": "flex w-full cursor-pointer items-center rounded-md bg-indigo-50/40 text-sm transition-colors hover:bg-indigo-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-indigo-300 text-gray-600"
+        }
+      ],
+      "taskDetails": [
+        "Execute the delegated UI validation workflow exactly as specified. You are the active Lead coordinator: first call get_handoff_rules. Then delegate exactly one nested task to ./Worker (and no other tasks). Instruct Worker to call run_bash with command sleep 90 and timeout_seconds 120 before submitting exactly INNER-AUTOBYTEUS-018. After the nested result arrives, while the nested task awaits review, you must call run_bash with command sleep 10; then review that nested task using review_task_result with decision accept. Finally submit the outer task result with exactly OUTER-AUTOBYTEUS-018. Do not submit any other text or token as the task result, and do not ask Supervisor to review the outer result."
+      ],
+      "records": [
+        {
+          "taskId": "task_0001",
+          "status": "active",
+          "kind": "agent_team",
+          "taskRun": {
+            "rootTeamRunId": "delegated_task_ui_validation_team_41260eed517c47feb1b6a281e1b53493",
+            "taskTeamRunIds": [
+              "team_local_team_delegated_task_ui_validation_wor_e87a5975b2ed46f991ba505571efaea0"
+            ],
+            "memberAddress": "/WorkGroup",
+            "taskAgentRunId": null
+          }
+        },
+        {
+          "taskId": "task_0002",
+          "status": "active",
+          "kind": "agent",
+          "taskRun": {
+            "rootTeamRunId": "delegated_task_ui_validation_team_41260eed517c47feb1b6a281e1b53493",
+            "taskTeamRunIds": [
+              "team_local_team_delegated_task_ui_validation_wor_e87a5975b2ed46f991ba505571efaea0"
+            ],
+            "memberAddress": "/WorkGroup/Worker",
+            "taskAgentRunId": "ui_test_worker_ea2c55a63a6c45d8a618b255b0495555"
+          }
+        }
+      ]
+    },
+    {
+      "at": "2026-08-10T17:11:34.435Z",
+      "headers": [
+        "Tasks\n1 task"
+      ],
+      "taskEntries": 1,
+      "taskTeamEntries": 1,
+      "taskAgentEntries": 0,
+      "transientRows": [
+        {
+          "kind": "task_team",
+          "memberAddress": "/WorkGroup",
+          "text": "WorkGroup",
+          "ariaLabel": "WorkGroup. /WorkGroup",
+          "className": "flex w-full cursor-pointer items-center rounded-md bg-indigo-50/40 text-sm transition-colors hover:bg-indigo-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-indigo-300 text-gray-600"
+        }
+      ],
+      "taskDetails": [
+        "Execute the delegated UI validation workflow exactly as specified. You are the active Lead coordinator: first call get_handoff_rules. Then delegate exactly one nested task to ./Worker (and no other tasks). Instruct Worker to call run_bash with command sleep 90 and timeout_seconds 120 before submitting exactly INNER-AUTOBYTEUS-018. After the nested result arrives, while the nested task awaits review, you must call run_bash with command sleep 10; then review that nested task using review_task_result with decision accept. Finally submit the outer task result with exactly OUTER-AUTOBYTEUS-018. Do not submit any other text or token as the task result, and do not ask Supervisor to review the outer result."
+      ],
+      "records": [
+        {
+          "taskId": "task_0001",
+          "status": "active",
+          "kind": "agent_team",
+          "taskRun": {
+            "rootTeamRunId": "delegated_task_ui_validation_team_41260eed517c47feb1b6a281e1b53493",
+            "taskTeamRunIds": [
+              "team_local_team_delegated_task_ui_validation_wor_e87a5975b2ed46f991ba505571efaea0"
+            ],
+            "memberAddress": "/WorkGroup",
+            "taskAgentRunId": null
+          }
+        },
+        {
+          "taskId": "task_0002",
+          "status": "active",
+          "kind": "agent",
+          "taskRun": {
+            "rootTeamRunId": "delegated_task_ui_validation_team_41260eed517c47feb1b6a281e1b53493",
+            "taskTeamRunIds": [
+              "team_local_team_delegated_task_ui_validation_wor_e87a5975b2ed46f991ba505571efaea0"
+            ],
+            "memberAddress": "/WorkGroup/Worker",
+            "taskAgentRunId": "ui_test_worker_ea2c55a63a6c45d8a618b255b0495555"
+          }
+        }
+      ]
+    },
+    {
+      "at": "2026-08-10T17:11:34.853Z",
+      "headers": [
+        "Tasks\n1 task"
+      ],
+      "taskEntries": 1,
+      "taskTeamEntries": 1,
+      "taskAgentEntries": 0,
+      "transientRows": [
+        {
+          "kind": "task_team",
+          "memberAddress": "/WorkGroup",
+          "text": "WorkGroup",
+          "ariaLabel": "WorkGroup. /WorkGroup",
+          "className": "flex w-full cursor-pointer items-center rounded-md bg-indigo-50/40 text-sm transition-colors hover:bg-indigo-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-indigo-300 text-gray-600"
+        }
+      ],
+      "taskDetails": [
+        "Execute the delegated UI validation workflow exactly as specified. You are the active Lead coordinator: first call get_handoff_rules. Then delegate exactly one nested task to ./Worker (and no other tasks). Instruct Worker to call run_bash with command sleep 90 and timeout_seconds 120 before submitting exactly INNER-AUTOBYTEUS-018. After the nested result arrives, while the nested task awaits review, you must call run_bash with command sleep 10; then review that nested task using review_task_result with decision accept. Finally submit the outer task result with exactly OUTER-AUTOBYTEUS-018. Do not submit any other text or token as the task result, and do not ask Supervisor to review the outer result."
+      ],
+      "records": [
+        {
+          "taskId": "task_0001",
+          "status": "active",
+          "kind": "agent_team",
+          "taskRun": {
+            "rootTeamRunId": "delegated_task_ui_validation_team_41260eed517c47feb1b6a281e1b53493",
+            "taskTeamRunIds": [
+              "team_local_team_delegated_task_ui_validation_wor_e87a5975b2ed46f991ba505571efaea0"
+            ],
+            "memberAddress": "/WorkGroup",
+            "taskAgentRunId": null
+          }
+        },
+        {
+          "taskId": "task_0002",
+          "status": "active",
+          "kind": "agent",
+          "taskRun": {
+            "rootTeamRunId": "delegated_task_ui_validation_team_41260eed517c47feb1b6a281e1b53493",
+            "taskTeamRunIds": [
+              "team_local_team_delegated_task_ui_validation_wor_e87a5975b2ed46f991ba505571efaea0"
+            ],
+            "memberAddress": "/WorkGroup/Worker",
+            "taskAgentRunId": "ui_test_worker_ea2c55a63a6c45d8a618b255b0495555"
+          }
+        }
+      ]
+    },
+    {
+      "at": "2026-08-10T17:11:35.273Z",
+      "headers": [
+        "Tasks\n1 task"
+      ],
+      "taskEntries": 1,
+      "taskTeamEntries": 1,
+      "taskAgentEntries": 0,
+      "transientRows": [
+        {
+          "kind": "task_team",
+          "memberAddress": "/WorkGroup",
+          "text": "WorkGroup",
+          "ariaLabel": "WorkGroup. /WorkGroup",
+          "className": "flex w-full cursor-pointer items-center rounded-md bg-indigo-50/40 text-sm transition-colors hover:bg-indigo-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-indigo-300 text-gray-600"
+        }
+      ],
+      "taskDetails": [
+        "Execute the delegated UI validation workflow exactly as specified. You are the active Lead coordinator: first call get_handoff_rules. Then delegate exactly one nested task to ./Worker (and no other tasks). Instruct Worker to call run_bash with command sleep 90 and timeout_seconds 120 before submitting exactly INNER-AUTOBYTEUS-018. After the nested result arrives, while the nested task awaits review, you must call run_bash with command sleep 10; then review that nested task using review_task_result with decision accept. Finally submit the outer task result with exactly OUTER-AUTOBYTEUS-018. Do not submit any other text or token as the task result, and do not ask Supervisor to review the outer result."
+      ],
+      "records": [
+        {
+          "taskId": "task_0001",
+          "status": "active",
+          "kind": "agent_team",
+          "taskRun": {
+            "rootTeamRunId": "delegated_task_ui_validation_team_41260eed517c47feb1b6a281e1b53493",
+            "taskTeamRunIds": [
+              "team_local_team_delegated_task_ui_validation_wor_e87a5975b2ed46f991ba505571efaea0"
+            ],
+            "memberAddress": "/WorkGroup",
+            "taskAgentRunId": null
+          }
+        },
+        {
+          "taskId": "task_0002",
+          "status": "active",
+          "kind": "agent",
+          "taskRun": {
+            "rootTeamRunId": "delegated_task_ui_validation_team_41260eed517c47feb1b6a281e1b53493",
+            "taskTeamRunIds": [
+              "team_local_team_delegated_task_ui_validation_wor_e87a5975b2ed46f991ba505571efaea0"
+            ],
+            "memberAddress": "/WorkGroup/Worker",
+            "taskAgentRunId": "ui_test_worker_ea2c55a63a6c45d8a618b255b0495555"
+          }
+        }
+      ]
+    },
+    {
+      "at": "2026-08-10T17:11:35.689Z",
+      "headers": [
+        "Tasks\n1 task"
+      ],
+      "taskEntries": 1,
+      "taskTeamEntries": 1,
+      "taskAgentEntries": 0,
+      "transientRows": [
+        {
+          "kind": "task_team",
+          "memberAddress": "/WorkGroup",
+          "text": "WorkGroup",
+          "ariaLabel": "WorkGroup. /WorkGroup",
+          "className": "flex w-full cursor-pointer items-center rounded-md bg-indigo-50/40 text-sm transition-colors hover:bg-indigo-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-indigo-300 text-gray-600"
+        }
+      ],
+      "taskDetails": [
+        "Execute the delegated UI validation workflow exactly as specified. You are the active Lead coordinator: first call get_handoff_rules. Then delegate exactly one nested task to ./Worker (and no other tasks). Instruct Worker to call run_bash with command sleep 90 and timeout_seconds 120 before submitting exactly INNER-AUTOBYTEUS-018. After the nested result arrives, while the nested task awaits review, you must call run_bash with command sleep 10; then review that nested task using review_task_result with decision accept. Finally submit the outer task result with exactly OUTER-AUTOBYTEUS-018. Do not submit any other text or token as the task result, and do not ask Supervisor to review the outer result."
+      ],
+      "records": [
+        {
+          "taskId": "task_0001",
+          "status": "active",
+          "kind": "agent_team",
+          "taskRun": {
+            "rootTeamRunId": "delegated_task_ui_validation_team_41260eed517c47feb1b6a281e1b53493",
+            "taskTeamRunIds": [
+              "team_local_team_delegated_task_ui_validation_wor_e87a5975b2ed46f991ba505571efaea0"
+            ],
+            "memberAddress": "/WorkGroup",
+            "taskAgentRunId": null
+          }
+        },
+        {
+          "taskId": "task_0002",
+          "status": "active",
+          "kind": "agent",
+          "taskRun": {
+            "rootTeamRunId": "delegated_task_ui_validation_team_41260eed517c47feb1b6a281e1b53493",
+            "taskTeamRunIds": [
+              "team_local_team_delegated_task_ui_validation_wor_e87a5975b2ed46f991ba505571efaea0"
+            ],
+            "memberAddress": "/WorkGroup/Worker",
+            "taskAgentRunId": "ui_test_worker_ea2c55a63a6c45d8a618b255b0495555"
+          }
+        }
+      ]
+    },
+    {
+      "at": "2026-08-10T17:11:36.111Z",
+      "headers": [
+        "Tasks\n1 task"
+      ],
+      "taskEntries": 1,
+      "taskTeamEntries": 1,
+      "taskAgentEntries": 0,
+      "transientRows": [
+        {
+          "kind": "task_team",
+          "memberAddress": "/WorkGroup",
+          "text": "WorkGroup",
+          "ariaLabel": "WorkGroup. /WorkGroup",
+          "className": "flex w-full cursor-pointer items-center rounded-md bg-indigo-50/40 text-sm transition-colors hover:bg-indigo-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-indigo-300 text-gray-600"
+        }
+      ],
+      "taskDetails": [
+        "Execute the delegated UI validation workflow exactly as specified. You are the active Lead coordinator: first call get_handoff_rules. Then delegate exactly one nested task to ./Worker (and no other tasks). Instruct Worker to call run_bash with command sleep 90 and timeout_seconds 120 before submitting exactly INNER-AUTOBYTEUS-018. After the nested result arrives, while the nested task awaits review, you must call run_bash with command sleep 10; then review that nested task using review_task_result with decision accept. Finally submit the outer task result with exactly OUTER-AUTOBYTEUS-018. Do not submit any other text or token as the task result, and do not ask Supervisor to review the outer result."
+      ],
+      "records": [
+        {
+          "taskId": "task_0001",
+          "status": "active",
+          "kind": "agent_team",
+          "taskRun": {
+            "rootTeamRunId": "delegated_task_ui_validation_team_41260eed517c47feb1b6a281e1b53493",
+            "taskTeamRunIds": [
+              "team_local_team_delegated_task_ui_validation_wor_e87a5975b2ed46f991ba505571efaea0"
+            ],
+            "memberAddress": "/WorkGroup",
+            "taskAgentRunId": null
+          }
+        },
+        {
+          "taskId": "task_0002",
+          "status": "active",
+          "kind": "agent",
+          "taskRun": {
+            "rootTeamRunId": "delegated_task_ui_validation_team_41260eed517c47feb1b6a281e1b53493",
+            "taskTeamRunIds": [
+              "team_local_team_delegated_task_ui_validation_wor_e87a5975b2ed46f991ba505571efaea0"
+            ],
+            "memberAddress": "/WorkGroup/Worker",
+            "taskAgentRunId": "ui_test_worker_ea2c55a63a6c45d8a618b255b0495555"
+          }
+        }
+      ]
+    }
+  ],
+  "taskDelegationEvents": [
+    {
+      "at": "2026-08-10T17:11:05.542Z",
+      "direction": "received",
+      "event": {
+        "type": "TASK_DELEGATION_EVENT",
+        "payload": {
+          "event_type": "TASK_DELEGATION_ACTIVATED",
+          "execution_address": {
+            "rootTeamRunId": "delegated_task_ui_validation_team_41260eed517c47feb1b6a281e1b53493",
+            "taskTeamRunIds": [
+              "team_local_team_delegated_task_ui_validation_wor_e87a5975b2ed46f991ba505571efaea0"
+            ],
+            "memberAddress": "/WorkGroup/Lead",
+            "taskAgentRunId": null
+          },
+          "teamRunId": "delegated_task_ui_validation_team_41260eed517c47feb1b6a281e1b53493",
+          "rootTeamRunId": "delegated_task_ui_validation_team_41260eed517c47feb1b6a281e1b53493",
+          "target": {
+            "kind": "agent_team",
+            "address": "/WorkGroup",
+            "coordinatorAddress": "/WorkGroup/Lead"
+          },
+          "execution": {
+            "kind": "task_team",
+            "taskTeamInstance": {
+              "taskTeamInstanceId": "task_team_task_0001",
+              "taskTeamRunId": "team_local_team_delegated_task_ui_validation_wor_e87a5975b2ed46f991ba505571efaea0",
+              "parentTeamRunId": "delegated_task_ui_validation_team_41260eed517c47feb1b6a281e1b53493",
+              "taskId": "task_0001",
+              "createdAt": "2026-08-10T17:11:05.515Z"
+            }
+          },
+          "taskIds": [
+            "task_0001"
+          ],
+          "tasks": [
+            {
+              "taskId": "task_0001",
+              "taskLabel": "Execute the delegated UI validation workflow exactly as specified. You are th...",
+              "description": "Execute the delegated UI validation workflow exactly as specified. You are the active Lead coordinator: first call get_handoff_rules. Then delegate exactly one nested task to ./Worker (and no other tasks). Instruct Worker to call run_bash with command `sleep 90` and timeout_seconds 120 before submitting exactly `INNER-AUTOBYTEUS-018`. After the nested result arrives, while the nested task awaits review, you must call run_bash with command `sleep 10`; then review that nested task using review_task_result with decision `accept`. Finally submit the outer task result with exactly `OUTER-AUTOBYTEUS-018`. Do not submit any other text or token as the task result, and do not ask Supervisor to review the outer result.",
+              "status": "active",
+              "referenceFiles": [],
+              "taskArguments": {
+                "recipient_address": "/WorkGroup",
+                "description": "Execute the delegated UI validation workflow exactly as specified. You are the active Lead coordinator: first call get_handoff_rules. Then delegate exactly one nested task to ./Worker (and no other tasks). Instruct Worker to call run_bash with command `sleep 90` and timeout_seconds 120 before submitting exactly `INNER-AUTOBYTEUS-018`. After the nested result arrives, while the nested task awaits review, you must call run_bash with command `sleep 10`; then review that nested task using review_task_result with decision `accept`. Finally submit the outer task result with exactly `OUTER-AUTOBYTEUS-018`. Do not submit any other text or token as the task result, and do not ask Supervisor to review the outer result.",
+                "reference_files": []
+              },
+              "executionKind": "task_team",
+              "executionRunId": "team_local_team_delegated_task_ui_validation_wor_e87a5975b2ed46f991ba505571efaea0"
+            }
+          ],
+          "activatedAt": "2026-08-10T17:11:05.538Z"
+        }
+      }
+    },
+    {
+      "at": "2026-08-10T17:11:09.161Z",
+      "direction": "received",
+      "event": {
+        "type": "TASK_DELEGATION_EVENT",
+        "payload": {
+          "event_type": "TASK_DELEGATION_ACTIVATED",
+          "execution_address": {
+            "rootTeamRunId": "delegated_task_ui_validation_team_41260eed517c47feb1b6a281e1b53493",
+            "taskTeamRunIds": [
+              "team_local_team_delegated_task_ui_validation_wor_e87a5975b2ed46f991ba505571efaea0"
+            ],
+            "memberAddress": "/WorkGroup/Worker",
+            "taskAgentRunId": null
+          },
+          "teamRunId": "team_local_team_delegated_task_ui_validation_wor_e87a5975b2ed46f991ba505571efaea0",
+          "rootTeamRunId": "delegated_task_ui_validation_team_41260eed517c47feb1b6a281e1b53493",
+          "target": {
+            "kind": "agent",
+            "address": "/WorkGroup/Worker"
+          },
+          "execution": {
+            "kind": "task_agent",
+            "taskAgentInstance": {
+              "taskAgentInstanceId": "task_agent_task_0002",
+              "taskAgentRunId": "ui_test_worker_ea2c55a63a6c45d8a618b255b0495555",
+              "owningTeamRunId": "team_local_team_delegated_task_ui_validation_wor_e87a5975b2ed46f991ba505571efaea0",
+              "taskId": "task_0002",
+              "createdAt": "2026-08-10T17:11:09.140Z"
+            }
+          },
+          "taskIds": [
+            "task_0002"
+          ],
+          "tasks": [
+            {
+              "taskId": "task_0002",
+              "taskLabel": "Run the required nested workflow exactly: call run_bash with command `sleep 9...",
+              "description": "Run the required nested workflow exactly: call run_bash with command `sleep 90` and timeout_seconds 120 (in the task workspace), wait for it to complete, then submit the task result using submit_task_result with exactly `INNER-AUTOBYTEUS-018` and no other text. Do not perform any other tasks or communications.",
+              "status": "active",
+              "referenceFiles": [],
+              "taskArguments": {
+                "recipient_address": "/WorkGroup/Worker",
+                "description": "Run the required nested workflow exactly: call run_bash with command `sleep 90` and timeout_seconds 120 (in the task workspace), wait for it to complete, then submit the task result using submit_task_result with exactly `INNER-AUTOBYTEUS-018` and no other text. Do not perform any other tasks or communications.",
+                "reference_files": []
+              },
+              "executionKind": "task_agent",
+              "executionRunId": "ui_test_worker_ea2c55a63a6c45d8a618b255b0495555"
+            }
+          ],
+          "activatedAt": "2026-08-10T17:11:09.159Z"
+        }
+      }
+    }
+  ]
+}

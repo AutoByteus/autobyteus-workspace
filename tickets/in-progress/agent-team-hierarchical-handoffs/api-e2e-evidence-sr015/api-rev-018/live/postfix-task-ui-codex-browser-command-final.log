@@ -1,0 +1,24 @@
+{
+  "result": "Pass",
+  "rows": [
+    {
+      "scenario": "Codex App Server",
+      "teamRunId": "delegated_task_ui_validation_team_946b3b5d18c742e68e53472436a31a7a",
+      "assertions": {
+        "currentTaskTeamVisibleActive": true,
+        "currentTaskTeamTransientRowVisible": true,
+        "nestedTaskAgentTransientRowVisible": true,
+        "exactTaskAgentSelection": true,
+        "nestedTaskAgentAcceptedPersisted": true,
+        "nestedTaskAgentTerminalCleanup": true,
+        "awaitingReviewVisible": true,
+        "refreshRestoreVisible": true,
+        "exactTaskTeamSelection": true,
+        "acceptedPersisted": true,
+        "terminalTransientCleanup": true,
+        "exactRootedAddresses": true,
+        "allPersistentLeavesExact": true
+      }
+    }
+  ]
+}

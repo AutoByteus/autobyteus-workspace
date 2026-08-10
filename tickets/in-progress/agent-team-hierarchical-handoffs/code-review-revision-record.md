@@ -37,6 +37,13 @@
 | `CRR-031` | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md` | IR-018 source re-review of exact active task-Team peer routing | `Fail — Local Fix` | `Pass` | `CR-F-018`, `API-F-010` |
 | `CRR-032` | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-test-review-report.md` | API-REV-014 proportional review of cumulative SR-015 durable coverage | `N/A — CRR-031 source Pass; API-REV-014 execution Pass` | `Fail — Local Fix` | `TR-F-002`, `TR-F-003` |
 | `CRR-033` | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-test-review-report.md` | API-REV-015 proportional re-review of corrected cumulative SR-015 durable coverage | `Fail — Local Fix` | `Pass` | `TR-F-002`, `TR-F-003` |
+| `CRR-034` | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md` | IR-019 / DR-004 latest-base integrated source review | `CRR-031` source Pass; `CRR-033` durable-test Pass; `DR-004` Blocked | `Fail — Local Fix` | `CR-F-019` |
+| `CRR-035` | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md` | IR-020 focused source re-review of exact Team execution command selection | `Fail — Local Fix` | `Pass` | `CR-F-019` |
+| `CRR-036` | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-test-review-report.md` | API-REV-016 proportional review of the fresh integrated four-path durable delta | `CRR-035` source Pass; `API-REV-016` execution Pass / 95%; prior test review `CRR-033` Pass | `Pass` | `None` |
+| `CRR-037` | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md` | API-REV-017 failure-origin review of the empty delegated-task panel and missing transient task execution rows | `CRR-035` source Pass; `CRR-036` test Pass; `API-REV-016` execution Pass / 95% | `Fail — Local Fix` | `CR-F-020`, `CR-F-021`, `API-F-011`, `API-F-012` |
+| `CRR-038` | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md` | IR-021 source re-review of delegated-task UI corrections | `Fail — Local Fix` | `Pass` | `CR-F-020`, `CR-F-021`, `API-F-011`, `API-F-012` |
+| `CRR-039` | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md` | API-REV-018 failure-origin review of the inherited operational-database target | `CRR-038` source Pass; API-REV-018 product/runtime Pass | `Fail — Local Fix` | `CR-F-022`, `API-ENV-F-018-001` |
+| `CRR-040` | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-test-review-report.md` | API-REV-019 proportional review of the six-path delegated-task UI durable package | `CRR-039` Fail — API/E2E Local Fix; prior test review `CRR-036` Pass | `Pass` | `None` |
 
 ## Revision Entries
 
@@ -914,3 +921,210 @@ None. `CR-F-001`, `CR-F-002`, and `TR-F-001` remain resolved. `CR-F-003` and `CR
 - Material score or classification changes: proportional durable-test result changes `Fail — Local Fix` to `Pass`; no implementation scorecard or design result is reopened.
 - Recommended recipient: `delivery_engineer`
 - Remaining risks or uncertainty: delivery must retain the mandatory disclosure that API-REV-014 mutated `/Users/normy/.autobyteus/server-data/db/production.db` by applying one pending Prisma migration and writing a failed canonical-migration record with 203 failures before containment. No automatic rollback was attempted. All accepted evidence uses isolated test-owned SQLite targets. The bounded Claude teardown-only MCP 404 and unrelated non-clean whole-suite baselines remain disclosed.
+
+### CRR-034 — Integrated command conflicts preserve canonical wire identity but not exact task execution selection
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `19`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/implementation-handoff.md`; `IR-019`; `DR-004`; new `CR-F-019`
+- Relevant solution revision IDs: `SR-015`; exact-copy `SR-014`; cumulative `SR-013`, `SR-012`
+- Relevant architecture-review revision IDs: `ARCH-REV-009`; cumulative `ARCH-REV-008`
+- Relevant implementation revision IDs: `IR-019`; cumulative `IR-005` through `IR-018`
+- Relevant API/E2E revision IDs: `API-REV-014`, `API-REV-015` are pre-integration evidence only
+- Relevant delivery revision IDs: `DR-004`
+- Prior authoritative result: `CRR-031` source Pass (`9.6/10`, `95.5/100`); `CRR-033` proportional durable-test Pass; delivery then blocked on latest-base conflicts
+- Current authoritative result: `Fail — Local Fix` (`8.9/10`, `88.8/100`)
+- What changed in the review result and why: IR-019 correctly integrates both merge parents, retains latest-base deletion of the obsolete memory-origin service, composes server-owned WebSocket egress/cadence with canonical Team command wire shapes, removes the client presentation scheduler, and preserves fail-closed database-target isolation. Full command tracing found that exact task execution identity stops at parsing: send/approval keep only the last task-Team ID and interrupt drops the task-Team chain entirely. Root TeamRun/manager command APIs therefore cannot select nested task executions, and interruption routes task identity through a persistent member handle.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-F-018` / `API-F-010` | Resolved downstream | `Preserved in integrated source; fresh rerun pending` | `IR-018`; `CRR-031`; `API-REV-014`; `IR-019` | Merge does not alter the task-Team message execution resolver/delivery source; both parents and latest base ancestry are verified. |
+| `CR-F-016` / `API-F-008`; `CR-F-017` / `API-F-009` | Resolved downstream | `Preserved in integrated source; fresh rerun pending` | `IR-017`; `CRR-029`; `API-REV-013`, `API-REV-014`; `IR-019` | Routing/activation owners are outside the conflict delta and integrated builds pass. |
+| `TR-F-002`, `TR-F-003` | Resolved | `Remain resolved in the pre-integration package; integrated revalidation pending` | `CRR-032`; `CRR-033`; `API-REV-015`; `DR-004` | IR-019 preserves the harness isolation contract, but all accepted durable evidence predates the merge. |
+| `CR-F-012` through `CR-F-015`; `API-F-007` | Resolved | `Remain resolved in source` | `IR-014`–`IR-016`; `CRR-025`–`CRR-027`; `IR-019` | Canonical migration/token/provider owners are unaffected. |
+
+- New or remaining finding IDs: `CR-F-019` — Team WebSocket input/approval/interrupt validates the exact address but lacks full contextual task execution selection.
+- Material premises: `CR-PREM-014` is Reachable. A user can focus an active task-scoped Team member in the production desktop/mobile workspace and use the supported composer, approval, or interrupt control; frontend state and wire preserve the exact execution address before the server collapses it.
+- Material score or classification changes: source result changes `Pass` to `Fail — Local Fix`; overall `8.9/10` (`88.8/100`). `Data-Flow Spine`, `API/Command Clarity`, `Shared Structure`, `API/E2E Readiness`, and `Runtime Correctness` are below the clean-pass threshold. No design or requirement revision is needed.
+- Review-gap assessment: the defect predates IR-019 in the reviewed checkpoint and should have been caught by tracing `DS-007` beyond canonical serialization/parsing to the concrete active task execution. IR-019's built probe stubs TeamRun and proves only parser/argument projection; it explicitly omits the task-Team chain from interrupt.
+- Recommended recipient: `implementation_engineer`
+- Remaining risks or uncertainty: correct the exact command-selection boundary without fallback/retry/alias, re-review source, then perform a fresh integrated coverage investigation/execution and proportional durable-test review. The 15/16 memory fixture result remains API/E2E-owned; the operational DB mutation disclosure, protected stash, and backup remain intact.
+- Reviewer evidence: `/tmp/crr034-ir019-source-audit.log`, SHA-256 `803be99666c541e94f463a0b73537111eb8846a81b51c0031a0bb30dd766224f`.
+
+### CRR-035 — IR-020 restores exact Team execution command selection
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `20`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/implementation-handoff.md`; `IR-020`; `CR-F-019`; material premise `CR-PREM-014`
+- Relevant solution revision IDs: `SR-015`; exact-copy `SR-014`; cumulative `SR-013`, `SR-012`
+- Relevant architecture-review revision IDs: `ARCH-REV-009`; cumulative `ARCH-REV-008`
+- Relevant implementation revision IDs: `IR-020`; cumulative `IR-005` through `IR-019`
+- Relevant API/E2E revision IDs: `API-REV-014`, `API-REV-015` remain pre-integration evidence only
+- Relevant delivery revision IDs: `DR-004`
+- Prior authoritative result: `CRR-034` Fail — Local Fix (`8.9/10`, `88.8/100`)
+- Current authoritative result: `Pass` (`9.5/10`, `95.4/100`)
+- What changed in the review result and why: IR-020 carries the complete exact `TeamExecutionAddress` and one narrow `TeamMemberExecutionCommand` through TeamRun/backend/manager for send, approval, and interrupt. One shared `TaskTeamActiveExecutionResolver` now proves root, full ordered active task-Team chain, runtime/context/config/parent/Team identity, member placement, and exact active task-Agent ownership. Only the collaboration-root manager selects a nonlocal chain and forwards the unchanged command/address through the authoritative active leaf TeamRun, which revalidates before effect. No retry, fallback, alias, localization, alternate selector, or compatibility identity was added.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-F-019` | `Open — Local Fix` | `Resolved in source; downstream integrated API/E2E pending` | `CRR-034`; `IR-020`; `R-036`, `R-039`; `AC-029`, `AC-036`; `DS-007`; `CR-PREM-014` | All three Team streaming handlers preserve the exact complete address through `executeMemberCommand`; the shared active resolver validates the exact chain/ownership; reviewer reruns prove 12 exact persistent/direct-task-Agent/outer-task-Team/nested-task-Team effects, five invalid classes before effect, zero persistent fallback, and strict legacy-selector rejection. Reviewer audit `/tmp/crr035-ir020-source-audit.log` SHA-256 is `c2e70057c68779086d4c49998ace50519ec7c08ac38694a75ae04dac7a96e9c5`. |
+| `CR-F-018` / `API-F-010` | `Preserved in integrated source; fresh rerun pending` | `Preserved; fresh integrated rerun pending` | `IR-018`; `CRR-031`; `IR-020` | The renamed resolver retains the message-sender path and reviewer reruns the preserved IR-018 built peer-routing proof. |
+| `CR-F-016` / `API-F-008`; `CR-F-017` / `API-F-009` | `Preserved in integrated source; fresh rerun pending` | `Preserved; fresh integrated rerun pending` | `IR-017`; `CRR-029`; `IR-020` | Activation/ingress and nested persistent delivery owners are unchanged by IR-020. |
+| `TR-F-002`, `TR-F-003` | `Resolved pre-integration; integrated revalidation pending` | `Same` | `CRR-032`; `CRR-033`; `API-REV-015`; `IR-020` | IR-020 changes no durable coverage. All 53 retained paths and live-harness isolation still require fresh integrated investigation/execution. |
+
+- New or remaining finding IDs: `None` in implementation source.
+- Material score or classification changes: `Fail — Local Fix` -> `Pass`; full source score rises from `8.9/10` (`88.8/100`) to `9.5/10` (`95.4/100`), with every category at or above `9.0`. `CR-PREM-014` remains Reachable and is now addressed. No new or reclassified material premise exists.
+- Recommended recipient: `api_e2e_engineer`
+- Remaining risks or uncertainty: API-REV-014/015 predate the latest-base merge. API/E2E must produce a fresh investigation, adjudicate the known schema-v3-invalid memory fixture, revalidate exact Team command/task-Team routing, all retained durable/harness changes, streaming cadence/web, migration/build boundaries, and the real AutoByteus/Codex/Claude matrix against an explicitly isolated database. Any durable coverage add/update/removal returns through proportional review. The prior operational database mutation/no-rollback disclosure and protected delivery stash/backup remain mandatory.
+
+### CRR-036 — Fresh integrated durable coverage passes proportional review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-test-review-report.md`
+- Review entry point and round: `Successful API/E2E Test-Code Review`, round `7`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md`; `API-REV-016 Pass / 95%`; resolved source `CR-F-019`; non-blocking `API-OBS-016-001`
+- Relevant solution revision IDs: `SR-015`; cumulative `SR-014`, `SR-013`, `SR-012`
+- Relevant architecture-review revision IDs: `ARCH-REV-009`; cumulative `ARCH-REV-008`, `ARCH-REV-007`
+- Relevant implementation revision IDs: `IR-020`; cumulative `IR-005` through `IR-019`
+- Relevant API/E2E revision IDs: `API-REV-016`; pre-integration `API-REV-014`, `API-REV-015` retained only as history
+- Relevant delivery revision IDs: `DR-004`
+- Prior authoritative result: `CRR-035` source Pass (`9.5/10`, `95.4/100`); `API-REV-016` execution Pass / `95%`; prior proportional test result `CRR-033` Pass
+- Current authoritative result: `Pass`
+- What changed in the review result and why: Fresh post-integration investigation produced exactly one added and three updated durable tests. The memory integration now uses current rooted schema-v3 context while retaining physical persistence proof; manager and server streaming tests prove exact full-chain command selection and fail-closed no-fallback behavior; the new frontend suite proves exact serialization and acknowledgement matching. The 56-row inventory reconciles 54 present/revalidated paths and two approved removed owners. Exact server, cadence/harness, web, build, built-probe, and real three-runtime browser/provider evidence passes.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-F-019` | `Resolved in source; downstream integrated API/E2E pending` | `Resolved downstream` | `CRR-034`; `IR-020`; `CRR-035`; `API-REV-016` | Fresh exact server coverage and built probes preserve complete Team execution addresses; all fresh AutoByteus/Codex/Claude imported-Team rows pass persistent messaging, same-task-Team peer routing, submission, accepted review, and termination. |
+| `TR-F-002`, `TR-F-003` | `Resolved pre-integration; integrated revalidation pending` | `Remain Resolved` | `CRR-032`; `CRR-033`; `API-REV-016` | The current 56-row inventory explicitly accounts for 54 present/revalidated paths and two approved absent owners. The four-path current delta, Git state, cumulative patch, test selections, support audits, and evidence manifest agree. |
+| `CR-F-018` / `API-F-010`; `CR-F-016` / `API-F-008`; `CR-F-017` / `API-F-009` | `Resolved before integration; fresh rerun pending` | `Remain Resolved downstream` | `IR-017`, `IR-018`; `CRR-029`, `CRR-031`; `API-REV-016` | The fresh real three-provider imported-Team matrix exercises nested persistent delivery, exact task-Team activation/peer routing, exact task chains, result submission, and accepted review. |
+
+- New or remaining finding IDs: `None`
+- Material score or classification changes: no implementation scorecard or design result is reopened. The integrated durable-test package passes its proportional review.
+- Recommended recipient: `delivery_engineer`
+- Remaining risks or uncertainty: retain `API-OBS-016-001` as a transparent non-blocking observation: Claude required supported browser follow-ups after a turn collision and an initially absent peer projection, but the fresh authoritative reruns and final public projections passed. Also retain the mandatory historical disclosure that API-REV-014 mutated `/Users/normy/.autobyteus/server-data/db/production.db`; no automatic rollback was attempted. API-REV-016 did not target the operational database and cleaned up its disposable target. Reviewer audit `/tmp/crr036-api-rev-016-test-audit.log` SHA-256 is `187f73de36fb1b5a8d151fdc82302400d59ee8f7b9b00964ffe285d71e89884a`.
+
+### CRR-037 — Real delegated-task UI failure originates in two bounded frontend defects
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`
+- Review entry point and round: `API/E2E Failure-Origin Review`, round `21`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md`; `API-REV-017 Fail / 72%`; `API-UI-TASK-017-001` / `API-F-011`; `API-UI-TASK-017-002` / `API-F-012`; new source findings `CR-F-020`, `CR-F-021`
+- Relevant solution revision IDs: `SR-015`; cumulative `SR-014`, `SR-013`, `SR-012`
+- Relevant architecture-review revision IDs: `ARCH-REV-009`; cumulative `ARCH-REV-008`, `ARCH-REV-007`
+- Relevant implementation revision IDs: current `IR-020`; affected source originates in `IR-005`
+- Relevant API/E2E revision IDs: `API-REV-017`; `API-REV-016` remains valid only for its successful backend/runtime scenarios
+- Relevant delivery revision IDs: `DR-004`
+- Prior authoritative result: `CRR-035` source Pass (`9.5/10`, `95.4/100`); `CRR-036` proportional durable-test Pass; `API-REV-016` execution Pass / `95%`
+- Current authoritative result: `Fail — Local Fix`
+- What changed in the review result and why: The user challenged the claimed acceptance with a production-workspace screenshot, and independent real Chrome reproduced the same supported path. The backend task lifecycle is complete, but Apollo adds `__typename` to nested execution-address objects and the task store passes those DTOs directly to an exact four-key domain parser, filtering every record. Separately, Team task events create task-scoped Agent contexts but never materialize distinct transient task nodes required by the workspace display builder. Thus the Team panel remains `0 tasks` and the hierarchy exposes only persistent members.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-F-019` | `Resolved downstream` | `Remains Resolved` | `IR-020`; `CRR-035`; `API-REV-016`; `API-REV-017` | API-REV-017 public records show exact task chains and accepted task lifecycle; the new failure is downstream frontend projection. |
+| `CR-F-018` / `API-F-010`; `CR-F-016` / `API-F-008`; `CR-F-017` / `API-F-009` | `Resolved downstream` | `Remain Resolved for backend/runtime behavior` | `IR-017`, `IR-018`; `CRR-029`, `CRR-031`; `API-REV-017` | Public GraphQL returns complete task records with exact rooted addresses, distinct task-Team chains, submissions, and accepted reviews. |
+| `TR-F-002`, `TR-F-003` | `Resolved` | `Remain Resolved` | `CRR-032`; `CRR-033`; `CRR-036`; `API-REV-017` | API-REV-017 adds, updates, and removes zero durable paths. The four-file CRR-036 result is not reopened. |
+
+- New or remaining finding IDs: `CR-F-020` / `API-F-011`; `CR-F-021` / `API-F-012`.
+- Material premises: `CR-PREM-015` and `CR-PREM-016` are `Reachable`. The independent triggers are the supported production Team workspace `delegate_task` flow plus the Team panel and workspace hierarchy; the user and independent browser traces reach the exact failures through normal GraphQL/WebSocket execution.
+- Failure classification: both are `Local Fix` frontend implementation defects owned by `implementation_engineer`. The requirements/design already specify the expected task visibility and exact execution projection; no design or requirement revision is required.
+- Review-gap assessment: the defect predates IR-020 and originates in IR-005. The original canonical frontend review should have traced the Apollo DTO boundary into the exact parser and verified that current task-projection helpers had production consumers through visible rows. The stale route/path-based projection specs were also a warning. CRR-035's later bounded command-selection review did not introduce the defect.
+- Material score or classification changes: focused failure-origin review does not recompute the full scorecard. The prior source/durable passes are superseded for delivery readiness; current result is `Fail — Local Fix` until source and fresh API/E2E pass.
+- Recommended recipient: `implementation_engineer`
+- Remaining risks or uncertainty: preserve strict current identity and do not solve the Apollo case by weakening the domain parser. Materialize distinct transient task Agent/task Team projections without mutating persistent nodes or restoring route/path identity. Post-fix API/E2E must cover visible count/details, task Agent and nested task-Team rows, selection, lifecycle transitions, refresh/restore, cleanup, and all three runtimes. The user-requested manual stack remains running against the isolated target; zero operational database references were found. Historical API-REV-014 production-DB mutation/no-rollback disclosure remains mandatory. Reviewer audit `/tmp/crr037-api-rev-017-failure-origin-audit.log` SHA-256 is `7ca9ebcac01ee5f707abab6179ba3ccaf68af2891468254b44bac38c440b3b62`.
+
+### CRR-038 — IR-021 restores delegated-task visibility and exact transient execution projection
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `22`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/implementation-handoff.md`; `IR-021`; `CR-F-020` / `API-F-011`; `CR-F-021` / `API-F-012`; `API-UI-TASK-017-001`, `API-UI-TASK-017-002`
+- Relevant solution revision IDs: `SR-015`; cumulative `SR-014`, `SR-013`, `SR-012`
+- Relevant architecture-review revision IDs: `ARCH-REV-009`; cumulative `ARCH-REV-008`, `ARCH-REV-007`
+- Relevant implementation revision IDs: `IR-021`; cumulative `IR-005` through `IR-020`
+- Relevant API/E2E revision IDs: `API-REV-017`; `API-REV-016` remains historical for its successful backend/runtime scope
+- Relevant delivery revision IDs: `DR-004`
+- Prior authoritative result: `CRR-037 Fail — Local Fix`; prior source score from CRR-035 was `9.5/10` (`95.4/100`)
+- Current authoritative result: `Pass` (`9.5/10`, `94.8/100`)
+- What changed in the review result and why: IR-021 adds one exact GraphQL/Apollo DTO projector that removes only the expected `__typename` metadata before the unchanged strict four-key domain parser, and one recursive task-execution tree owner that materializes exact distinct task Agent/task AgentTeam projections for streaming and persisted non-terminal records. Exact focus/open/history selection, detail/timeline projection, nested task chains, task-scoped contexts, and terminal subtree cleanup now use canonical `TeamExecutionAddress` without mutating or substituting persistent nodes. No route/path alias, alternate identity, fallback, or compatibility reader was added.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-F-020` / `API-F-011` | `Open — Local Fix` | `Resolved in source; downstream browser/API/E2E pending` | `CRR-037`; `IR-021`; `R-039`; `UC-021`; `AC-036`; `CR-PREM-015` | The captured three-record Apollo response projects successfully; an extra removed `memberPath` still rejects. Implementation current-contract probe passes 4/4 and independent reviewer probe passes 3/3. |
+| `CR-F-021` / `API-F-012` | `Open — Local Fix` | `Resolved in source; downstream browser/API/E2E pending` | `CRR-037`; `IR-021`; `R-039`; `UC-021`; `AC-036`; `CR-PREM-016` | Exact task Team root/child projections are distinct and focusable; task details appear in the delegated-task entry; terminal cleanup removes only the exact task subtree and restores stable focus. Production build passes. |
+| `CR-F-019`; `CR-F-018`; `CR-F-016`; `CR-F-017` | `Resolved downstream` | `Remain resolved in source` | `IR-017`–`IR-020`; `CRR-029`, `CRR-031`, `CRR-035`; `API-REV-016`, `API-REV-017` | IR-021 changes frontend projection only and retains exact canonical server/runtime identity. |
+| `TR-F-002`, `TR-F-003` | `Resolved` | `Remain resolved` | `CRR-032`, `CRR-033`, `CRR-036` | IR-021 changes no durable coverage; the prior proportional durable-test result is not reopened. |
+
+- New or remaining finding IDs: `None` in implementation source.
+- Material premises: `CR-PREM-015` and `CR-PREM-016` remain `Reachable` and are now addressed; no new or reclassified premise exists.
+- Material score or classification changes: `Fail — Local Fix` -> `Pass`; full source score is `9.5/10` (`94.8/100`) with every category at or above `9.0`. No requirement or design revision is needed.
+- Recommended recipient: `api_e2e_engineer`
+- Remaining risks or uncertainty: fresh post-fix API/E2E must verify visible task count/details, task Agent and nested task-Team rows, exact selection, lifecycle transitions, refresh/restore, terminal cleanup, nested task chains, and AutoByteus/Codex/Claude browser rows. Any durable coverage add/update/removal returns for proportional review. The user-held isolated manual stack remains running and untouched. The disclosed whole-frontend typecheck baseline and historical API-REV-014 operational database mutation/no-rollback disclosure remain active.
+- Reviewer evidence: `/tmp/crr038-ir021-source-audit.log`, SHA-256 `b0c97f77379a828b06999da975fd6b5a2d132c2c4d020bf3fc6937cecfc8e9dd`.
+
+### CRR-039 — API-REV-018 product passes but raw server launch targets the operational database
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`
+- Review entry point and round: `API/E2E Failure-Origin Review`, round `23`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md`; `API-REV-018 Fail / 91%`; `API-ENV-F-018-001`; new review finding `CR-F-022`
+- Relevant solution revision IDs: `SR-015`; cumulative `SR-014`, `SR-013`, `SR-012`
+- Relevant architecture-review revision IDs: `ARCH-REV-009`; cumulative `ARCH-REV-008`, `ARCH-REV-007`
+- Relevant implementation revision IDs: `IR-021`; cumulative `IR-005` through `IR-020`
+- Relevant API/E2E revision IDs: `API-REV-018`; prior `API-REV-017`
+- Relevant delivery revision IDs: `DR-004`
+- Prior authoritative result: `CRR-038` implementation-source Pass (`9.5/10`, `94.8/100`); `API-REV-017 Fail / 72%`
+- Current authoritative result: `Fail — Local Fix`; product/runtime sub-result `Pass`, environment-safety sub-result `Fail`
+- What changed in the review result and why: API-REV-018 proves IR-021's delegated-task UI correction across focused durable tests and real AutoByteus/Codex/Claude browser rows, resolving CR-F-020/021 downstream. The overall run nevertheless fails because its first direct `node dist/app.js` launch inherited an ambient `DATABASE_URL`, bypassing the checked-in sanitized live-E2E launcher. Before listen, Prisma opened the operational database and the canonical app-data migration recorded a failed attempt with 203 failed items. Later isolated success cannot retroactively satisfy the mandatory no-target gate.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-F-020` / `API-F-011` | `Resolved in source; downstream pending` | `Resolved downstream` | `IR-021`; `CRR-038`; `API-REV-018` | Focused web coverage passes and six real browser/provider rows show one visible task with full details. |
+| `CR-F-021` / `API-F-012` | `Resolved in source; downstream pending` | `Resolved downstream` | `IR-021`; `CRR-038`; `API-REV-018` | All three runtimes show distinct task-Team/nested task-Agent rows, exact selection, lifecycle transitions, refresh/restore, and terminal cleanup. |
+| `CR-F-019`; `CR-F-018`; `CR-F-016`; `CR-F-017` | `Resolved` | `Remain resolved for product/runtime behavior` | `IR-017`–`IR-020`; `API-REV-018` | Retained server coverage and real provider journeys pass. |
+| `TR-F-002`, `TR-F-003` | `Resolved` | `Remain resolved; new six-path delta not yet proportionally reviewed` | `CRR-032`, `CRR-033`, `CRR-036`; `API-REV-018` | The 61-row inventory reconciles the current delta, but successful-test review is gated on an overall API/E2E Pass. |
+
+- New or remaining finding IDs: `CR-F-022` / `API-ENV-F-018-001`.
+- Material premise: `CR-PREM-017` is `Reachable` under the explicit disposable-environment/no-operational-target contract. The direct raw server launch inherited ambient configuration and reached the operational DB through normal startup before any post-start check.
+- Failure classification: `Local Fix` owned by `api_e2e_engineer`. This is an environment/execution-process defect, not a product implementation regression, design impact, or requirement gap.
+- Review-gap assessment: not an IR-021 source-review gap. API/E2E's pre-execution investigation already required a fail-closed target and the repository already contains a sanitized server-launch owner; the first command bypassed both. The recurrence after API-REV-014 makes the process gap material.
+- Proportional test-code review: deferred. The skill requires failure-origin and successful-test review to remain mutually exclusive; the six API-REV-018 paths return after a new overall API/E2E Pass.
+- Recommended recipient: `api_e2e_engineer`
+- Remaining risks or uncertainty: use the existing sanitized `startBuiltTestServer` boundary or an equally fail-closed wrapper; prove the exact disposable target before any migration-capable spawn; retain post-listen `lsof` as a secondary check; issue a new API/E2E revision. Preserve both operational DB incident disclosures and perform no automatic rollback, repair, deletion, or unapproved inspection. The user-held `60004/31004` stack remains untouched.
+- Reviewer evidence: `/tmp/crr039-api-rev018-env-origin-audit.log`, SHA-256 `d88b1285dded410e3646facb78a731e095973369c4f60d6852ea166e516ed3c7`.
+
+### CRR-040 — Delegated-task UI durable coverage passes proportional review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-test-review-report.md`
+- Review entry point and round: `Successful API/E2E Test-Code Review`, round `8`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md`; `API-REV-019 Pass / 97%`; resolved `API-ENV-F-018-001` / `CR-F-022`; retained resolved `API-F-011` / `CR-F-020` and `API-F-012` / `CR-F-021`
+- Relevant solution revision IDs: `SR-015`; cumulative `SR-014`, `SR-013`, `SR-012`
+- Relevant architecture-review revision IDs: `ARCH-REV-009`; cumulative `ARCH-REV-008`, `ARCH-REV-007`
+- Relevant implementation revision IDs: `IR-021`; cumulative `IR-005` through `IR-020`
+- Relevant API/E2E revision IDs: `API-REV-019`; retained product/browser proof `API-REV-018`; cumulative prior revisions
+- Relevant delivery revision IDs: `DR-004`
+- Prior authoritative result: `CRR-039 Fail — Local Fix` for environment execution; prior successful proportional review `CRR-036 Pass`; six API-REV-018 paths deferred
+- Current authoritative result: `Pass`
+- What changed in the review result and why: API-REV-019 resolves the execution-safety gate through the checked fail-closed server launcher and returns an overall Pass. The exact pending package contains three added and three updated web coverage paths. They coherently prove strict Apollo DTO projection, visible delegated-task count/details, distinct task-Agent/task-Team execution trees, ordered-chain restore/focus/cleanup, and exact frontend command serialization. The exact patch reverse-applies to the current tree, the 61-row inventory contains precisely six pending dispositions, no disabled or compatibility-only tests remain, and focused/affected/cadence execution passes.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-F-022` / `API-ENV-F-018-001` | `Open — API/E2E Local Fix` | `Resolved` | `CRR-039`; `API-REV-019` | The actual child excludes ambient database variables, resolves the exact disposable target before initialization, proves it with Prisma/secrets import and post-listen `lsof`, removes owned state, and does not act on the operational database or user-held stack. |
+| `CR-F-020` / `API-F-011` | `Resolved downstream; test review deferred` | `Remains resolved` | `IR-021`; `CRR-038`; `API-REV-018`; `API-REV-019` | The retained real three-runtime journeys show one visible task with details, and current DTO/component coverage passes in the fresh focused and affected selections. |
+| `CR-F-021` / `API-F-012` | `Resolved downstream; test review deferred` | `Remains resolved` | `IR-021`; `CRR-038`; `API-REV-018`; `API-REV-019` | Real task-Team/nested task-Agent rows, exact selection/lifecycle/restore/cleanup, and current projection coverage remain unchanged and passing. |
+| `TR-F-002`, `TR-F-003` | `Resolved` | `Remain resolved` | `CRR-032`, `CRR-033`, `CRR-036`; `API-REV-019` | The 61-row inventory has six exact pending paths and retains the previously reconciled coverage dispositions without stale, skipped, or unowned additions. |
+
+- New or remaining finding IDs: `None`.
+- Material score or classification changes: no implementation source scorecard is reopened. The proportional durable-test result is `Pass`.
+- Recommended recipient: `delivery_engineer`
+- Remaining risks or uncertainty: preserve API-REV-014's operational `production.db` mutation and API-REV-018's inherited-target incident as mandatory disclosures; no automatic rollback or repair occurred. API-REV-019 used only the exact disposable target and left the user-held `60004/31004` stack untouched. The reviewer did not rerun successful API/E2E execution because the exact patch and current artifacts were sufficient for proportional review.
+- Reviewer evidence: `/tmp/crr040-api-rev019-test-audit.log`, SHA-256 `f49d626ee42b343b33e77bd01272496569dc6b17b8e5663acd9930e2cd34d8e5`.

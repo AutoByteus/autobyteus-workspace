@@ -161,27 +161,37 @@ const attachTaskAgentRun = (
 };
 
 describe("MixedTeamManager focused member routing", () => {
-  it("interrupts only the requested canonical member address", async () => {
+  it("interrupts only the persistent Agent selected by its exact execution address", async () => {
     const { manager, context } = createMixedManager();
     const { solutionDesignerRun, codeReviewerRun } = attachMemberRuns(manager, context);
 
     await expect(
-      manager.interruptMember(codeReviewerAddress, "team-1::code_reviewer"),
+      manager.executeMemberCommand(createTeamExecutionAddress({
+        rootTeamRunId: teamRunId,
+        taskTeamRunIds: [],
+        memberAddress: codeReviewerAddress,
+        taskAgentRunId: null,
+      }), { kind: "interrupt" }),
     ).resolves.toEqual({ accepted: true });
 
     expect(codeReviewerRun.interrupt).toHaveBeenCalledTimes(1);
     expect(solutionDesignerRun.interrupt).not.toHaveBeenCalled();
   });
 
-  it("rejects an AgentRun guard mismatch without retargeting by run ID", async () => {
+  it("rejects an unknown task AgentRun selection without falling back to the persistent Agent", async () => {
     const { manager, context } = createMixedManager();
     const { solutionDesignerRun, codeReviewerRun } = attachMemberRuns(manager, context);
 
     await expect(
-      manager.interruptMember(codeReviewerAddress, "team-1::solution_designer"),
+      manager.executeMemberCommand(createTeamExecutionAddress({
+        rootTeamRunId: teamRunId,
+        taskTeamRunIds: [],
+        memberAddress: codeReviewerAddress,
+        taskAgentRunId: "team-1::solution_designer",
+      }), { kind: "interrupt" }),
     ).resolves.toMatchObject({
       accepted: false,
-      code: "TARGET_AGENT_RUN_MISMATCH",
+      code: "TEAM_EXECUTION_ADDRESS_INVALID",
     });
 
     expect(codeReviewerRun.interrupt).not.toHaveBeenCalled();

@@ -1,0 +1,24 @@
+{
+  "result": "Pass",
+  "rows": [
+    {
+      "scenario": "Claude Agent SDK",
+      "teamRunId": "delegated_task_ui_validation_team_8a8251c18aaa41809ba09f7899c25fa1",
+      "assertions": {
+        "currentTaskTeamVisibleActive": true,
+        "currentTaskTeamTransientRowVisible": true,
+        "nestedTaskAgentTransientRowVisible": true,
+        "exactTaskAgentSelection": true,
+        "nestedTaskAgentAcceptedPersisted": true,
+        "nestedTaskAgentTerminalCleanup": true,
+        "awaitingReviewVisible": true,
+        "refreshRestoreVisible": true,
+        "exactTaskTeamSelection": true,
+        "acceptedPersisted": true,
+        "terminalTransientCleanup": true,
+        "exactRootedAddresses": true,
+        "allPersistentLeavesExact": true
+      }
+    }
+  ]
+}

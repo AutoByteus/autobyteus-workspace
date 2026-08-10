@@ -1,0 +1,77 @@
+
+> autobyteus@1.4.45 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+> cross-env NUXT_TEST=true vitest services/agentStreaming/__tests__/teamTaskExecutionEventRouter.spec.ts services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts services/runHydration/__tests__/taskDelegationGraphqlDtoProjection.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+
+stderr | services/agentStreaming/__tests__/teamTaskExecutionEventRouter.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runHydration/__tests__/taskDelegationGraphqlDtoProjection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runHydration/__tests__/taskDelegationGraphqlDtoProjection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/teamTaskExecutionEventRouter.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/runHydration/__tests__/taskDelegationGraphqlDtoProjection.spec.ts (2 tests) 3ms
+ ✓ services/agentStreaming/__tests__/teamTaskExecutionEventRouter.spec.ts (3 tests) 5ms
+ ❯ services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts (3 tests | 1 failed) 11ms
+   × teamTaskTeamExecutionProjection current exact execution tree > materializes a distinct task Team root and children with visible task details 8ms
+     → expected { kind: 'agent', …(7) } to match object { kind: 'agent', …(4) }
+(4 matching properties omitted from actual)
+   ✓ teamTaskTeamExecutionProjection current exact execution tree > keeps exact ordered outer and nested task-Team identities and cleans up only the selected subtree 1ms
+   ✓ teamTaskTeamExecutionProjection current exact execution tree > restores active and awaiting-review task executions in depth order and excludes accepted records 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts > teamTaskTeamExecutionProjection current exact execution tree > materializes a distinct task Team root and children with visible task details
+AssertionError: expected { kind: 'agent', …(7) } to match object { kind: 'agent', …(4) }
+(4 matching properties omitted from actual)
+
+- Expected
++ Received
+
+@@ -6,7 +6,6 @@
+        "task-team-outer",
+      ],
+    },
+    "isTaskExecution": true,
+    "kind": "agent",
+-   "taskId": undefined,
+  }
+
+ ❯ services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts:90:19
+     88|     });
+     89|     expect(root).not.toBe(persistentGroup);
+     90|     expect(child).toMatchObject({
+       |                   ^
+     91|       kind: 'agent',
+     92|       address: '/StudentStudyGroup/student_one',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  1 failed | 7 passed (8)
+   Start at  18:33:58
+   Duration  5.74s (transform 2.82s, setup 14.74s, collect 97ms, tests 20ms, environment 1.03s, prepare 452ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

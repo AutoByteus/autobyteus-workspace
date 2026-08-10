@@ -1,103 +1,162 @@
-# API/E2E Execution And Coverage Report
+# API/E2E Execution Coverage Report
 
-## Report Meta
+## Execution Round Meta
 
-- Current API/E2E Revision: `API-REV-015`
-- Trigger: `CRR-032` — `Fail — Local Fix` for `TR-F-002` and `TR-F-003`
-- Product source basis: `SR-015` / `ARCH-REV-009` / `IR-018` (`035fba611e6895187f7f6d4644993e22efd8c38c`) / `CRR-031`
-- Prior completed result: `API-REV-014 — Pass / 96%`
-- Current result: `Pass / 96%`
-- Scope of this revision: bounded cumulative durable-coverage correction and reporting reissue. CRR-032 explicitly preserves API-REV-014's product/runtime result and real three-runtime evidence.
-- Working directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs`
-- Evidence root: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-015`
+- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/investigation-notes.md`
+- Design and supplemental contracts: `design-spec.md`, `agent-team-addressing-handoff-contract.md`, `agent-team-collaboration-system-instruction.md`, `team-run-canonical-identity-refactor.md`, and `nested-classroom-live-validation-contract.md` in the canonical ticket directory.
+- Implementation/review: `IR-021`; `CRR-038 Pass`; `CRR-039 Fail — Local Fix`; HEAD `33b9b1e28e1c7f666dffdbcd349d394b2bfef875`.
+- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-coverage-investigation.md`
+- API/E2E revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-revision-record.md`
+- Current revision / round: `API-REV-019`, round 19.
+- Trigger: CRR-039 confirmed `CR-F-022` / `API-ENV-F-018-001` as an API/E2E launcher/environment defect and required a checked fail-closed server start.
+- Prior authoritative result: `API-REV-018 Fail / 91%`; product/runtime Pass and environment-safety Fail.
+- Latest authoritative result: **Pass / 97%**.
 
-## Corrected Coverage Decisions
+## Investigation And Execution Basis
 
-### TR-F-002 — stale skipped/excluded paths
+- Investigation completed before API-REV-019 final execution: `Yes`.
+- Plan followed: `Yes`. The checked `startBuiltTestServer` boundary was used. Pre-spawn sanitized-environment, exact runtime `.env`, configuration-only path resolution, post-listen PID `lsof`, public GraphQL readiness, and owned cleanup were all executed.
+- Reroute required during this round: `No`.
+- Product source or new durable coverage changed in API-REV-019: `No`.
+- Cumulative pending durable package from API-REV-018: `3 added / 3 updated / 0 removed`; six paths remain pending proportional review.
+- Broader validation: `Required and completed` for the environment correction. API-REV-018 browser/provider proof was retained only after HEAD, source, durable-path, and all 110 final-evidence manifest entries were verified unchanged.
 
-| Path group | Final decision | Correction and evidence |
-| --- | --- | --- |
-| Seven changed capability-gated runtime E2Es | `Replace / Restore` | Restored exactly to artifact HEAD. Their ticket changes were mechanical `recipient_address` edits layered over stale create-run/schema/socket setup, so they are not maintained current coverage and are not counted as skipped passes. Current durable unit/integration/API owners plus the API-REV-014 real AutoByteus/Codex/Claude Team matrix replace their intended changed-boundary evidence. |
-| Duplicate `xml-patch-prompt-tool-parsing-state.test.{js,ts}` edits | `Out Of Scope / Restore` | Restored exactly to artifact HEAD. They are server-Vitest-excluded and import deleted source, so they provide no executable ticket evidence. |
+## Compatibility / Legacy Scope Check
 
-All nine restorations have zero current diff and recorded hashes in `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-015/restored-stale-paths-final.log`.
+- Invalid compatibility or legacy retention observed: `No`.
+- Approved current four-field execution-address and current task-execution tree remain exact: `Yes`.
+- Compatibility-only durable coverage retained: `No`.
+- Operational database migration/repair attempted: `No`. Both prior incident disclosures remain; no action was taken against the operational database.
 
-### TR-F-003 — exact inventory and live-harness ownership
+## Changed Boundary And Evidence Matrix
 
-API/E2E owns the two cumulative support changes:
+| Scenario ID | Boundary / requirement | Execution surface | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `API-ENV-019-001` | Sanitized server child excludes ambient DB selectors | `createSanitizedTestEnvironment` pre-spawn assertion | Pass | `api-rev-019/environment/pre-spawn-config-preflight.log` |
+| `API-ENV-019-002` | Materialized runtime `.env` names one exact absolute disposable SQLite target | Checked `materializeTestRuntime` | Pass | same preflight log |
+| `API-ENV-019-003` | Configuration resolves exact target before database initialization | Sanitized built `AppConfig` child; DB absent before/after | Pass | same preflight log |
+| `API-ENV-019-004` | Fresh schema and encrypted vault are prepared only at exact target | Prisma + real TTY `pnpm secrets:import` + read-only postcheck | Pass | `environment/prisma-migrate-deploy.log`; `secrets-import-execution.log`; `secrets-import-postcheck.log` |
+| `API-ENV-019-005` | Built server starts only through checked owner and opens no operational DB | `startBuiltTestServer`; after-listen PID `lsof` | Pass | `environment/safe-server-start-and-lsof.json`; `safe-server-pid-lsof.log`; `safe-server-output.log` |
+| `API-ENV-019-006` | Server is usable after safe setup | Public GraphQL runtime availability/team-definition queries | Pass | `environment/safe-server-start-and-lsof.json` |
+| `API-ENV-019-007` | Owned resources clean up without touching user stack | Checked `removeOwnedTestRuntime`; port/PID guards | Pass | `environment/owned-runtime-cleanup.log`; `user-stack-untouched-final.log` |
+| `API-UI-TASK-018-001`–`005` | Visible task count/details, task Agent and nested task Team, exact selection, lifecycle, refresh, cleanup | Retained real Chrome/provider rows plus fresh durable reruns | Pass | verified API-REV-018 manifest; API-REV-019 focused/affected web logs |
+| `API-LIVE-018-001` | AutoByteus/Codex/Claude imported/staged nested-classroom and test-owned nested task journeys | Retained real browser/provider evidence after integrity proof | Pass | API-REV-018 matrix summary and screenshots; API-REV-019 manifest verification |
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/test-support/live-e2e/live-e2e-harness.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/test-support/live-e2e/run-live-e2e.mjs`
+## Additional Repository Coverage Execution
 
-They propagate the exact launched `AUTOBYTEUS_TEST_DATABASE_URL`, canonicalize it through the existing safe test-database resolver, and make the in-process harness reject a mismatch before live scenario execution. Focused proof accepted an explicit owned disposable database and rejected a second safe-but-wrong test database with `LIVE_E2E_DATABASE_TARGET_MISMATCH`; the operational database was not referenced.
+| Order | Command / configuration | Boundary | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| 1 | Configuration-only preflight through temporary Node probe and checked launcher utilities | Fail-closed target resolution before database access | Pass | `environment/pre-spawn-config-preflight.log` |
+| 2 | `env -u DATABASE_URL -u DATABASE_URL_TEST DATABASE_URL=<exact-disposable> pnpm -C autobyteus-server-ts exec prisma migrate deploy` | Exact disposable schema | Pass: 20 migrations | `environment/prisma-migrate-deploy.log` |
+| 3 | `pnpm secrets:import -- --source /Users/normy/.autobyteus/server-data/.env --database-url <exact-disposable> --dry-run`, then real TTY import, then dry-run postcheck | Exact vault target, no secret values recorded | Pass: 9 configured; postcheck READY / 9 skip-configured | `environment/secrets-import-*.log` |
+| 4 | Checked `startBuiltTestServer` on `127.0.0.1:60019` | Safe built-server startup, runtime availability, exact open file | Pass | `environment/safe-server-*.log`; `.json` |
+| 5 | Exact task DTO/tree/component web selection | Current six-path durable package | Pass: 5 files / 26 tests | `repository/web-current-focused-final.log` |
+| 6 | Current affected web selection including streaming handlers | Current six paths plus affected handlers | Pass: 7 files / 60 tests | `repository/web-current-affected-final.log` |
+| 7 | Sanitized launcher/cadence selection | Test-runtime launcher and streaming cadence | Pass: 2 files / 43 tests | `repository/cadence-harness-final.log` |
+| 8 | Importer-required production server build/full sanitized bootstrap | Current production build | Pass | `environment/secrets-import-dry-run.log`; `secrets-import-postcheck.log` |
 
-The authoritative inventory is:
+One initial web command mistakenly inserted `--` before the paths and entered the already-known non-clean whole-web suite while its tee target was invalid. It is not acceptance evidence. The intended exact 5/26 and 7/60 selections were immediately rerun and are authoritative; see `repository/non-authoritative-command-deviation.log`.
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-015/cumulative-durable-coverage-inventory.tsv`
-- Current delta: `53` paths — `4 added / 47 updated / 2 removed`
-- Component split: `49 server / 2 web / 2 live-E2E support`
-- Additional explicit restored dispositions: `9` paths outside the current delta
-- Total inventory/disposition rows: `62`
+## Validation Confidence Scorecard
 
-The 49 server paths comprise 46 executable changed tests, one shared current-schema fixture, and two removed/replaced historical token-owner tests. The two web tests and both live-E2E support files are named individually in the inventory.
+| Category | Post-repository | Final | Supporting evidence | Residual uncertainty |
+| --- | ---: | ---: | --- | --- |
+| Requirement and acceptance-criteria proof | 98% | 98% | API-REV-018 direct UI/provider proof remains hash-verified; environment failure is resolved | Negligible |
+| Changed-boundary execution directness | 98% | 98% | Exact launcher utilities, built AppConfig, built server, lsof and public GraphQL executed | Negligible |
+| Cross-boundary integration realism and mock gap | 97% | 97% | Real SQLite, Prisma, encrypted vault, built server and GraphQL; retained real Chrome/providers | Electron shell itself is not material to this web-equivalent defect |
+| Environment, configuration, identity and fixture fidelity | 98% | 98% | Ambient selector present in parent but absent in child; exact `.env`; config-only preflight; exact PID open-file proof | Prior incidents remain historical disclosures |
+| Failure, edge-case, lifecycle and recovery evidence | 96% | 96% | Mismatch guards, absent-before/after proof, cleanup, prior strict UI/lifecycle rows | No material gap |
+| User-surface, browser and desktop-shell confidence | 98% | 98% | Six real browser/provider rows and screenshots remain unchanged and verified | No shell-only behavior in scope |
+| Durable regression coverage quality and relevance | 96% | 96% | Fresh 5/26 and 7/60; six exact current-contract paths; 61-row inventory | Proportional code review still required |
 
-## Executed Validation
+- Overall post-repository confidence: `97%`.
+- Overall final confidence: `97%` (`97.3%` arithmetic mean, rounded).
+- Every critical acceptance criterion directly proven: `Yes`.
+- Any applicable category below `90%`: `No`.
+- Default `95%` target met: `Yes`.
 
-| Validation | Exact command / mode | Result | Evidence |
+## Broader Validation Decision And Execution
+
+- Decision: `Required and completed`.
+- Selected mode: fresh disposable target, real importer, checked built-server launcher, after-listen PID open-file verification, public GraphQL readiness, then checked cleanup.
+- Parent state: ambient `DATABASE_URL` was deliberately left present as a canary; its value was never recorded. The actual child-environment object excluded both database selectors.
+- Exact target: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/sr015-api-rev-019-20260810-1.db`.
+- Operational target: `/Users/normy/.autobyteus/server-data/db/production.db`; exact match `false`; post-listen lsof reference `false`.
+- Runtime readiness: AutoByteus, Codex App Server, and Claude Agent SDK all returned `enabled: true` through GraphQL.
+- User-held stack: server `60004` PID `71461`; frontend `31004` PID `73207`; unchanged throughout.
+- Retained product execution: API-REV-018's real browser/provider evidence is accepted in API-REV-019 because HEAD/source/six durable path hashes and all 110 manifest entries are unchanged. Provider calls were not repeated solely for an environment launcher correction.
+
+## Tests Implemented Or Updated
+
+API-REV-019 itself adds or updates no repository-resident durable tests. The cumulative pending review package is unchanged from API-REV-018:
+
+### Added
+
+1. `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/currentTaskExecutionFixture.ts`
+2. `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/runHydration/__tests__/taskDelegationGraphqlDtoProjection.spec.ts`
+3. `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/team/__tests__/TeamDelegatedTasksSection.current-contract.spec.ts`
+
+### Updated
+
+1. `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskExecutionEventRouter.spec.ts`
+2. `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts`
+3. `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts`
+
+Removed: none. Inventory: `61` rows, `6` cumulative pending-review delta rows. Exact diff: `api-rev-019/pending-six-durable-diff.patch` (six files).
+
+## Temporary Execution Methods / Scaffolding
+
+| Method | Why | Result | Cleanup |
 | --- | --- | --- | --- |
-| Full server build and sanitized bootstrap | `pnpm --filter autobyteus-server-ts build` from repository root | `Pass`; TypeScript build, managed assets, built-in agent bootstrap, sanitized built-module smoke | `api-rev-015/harness-build.log` |
-| Production TypeScript | `pnpm exec tsc -p tsconfig.build.json --noEmit --pretty false` in `autobyteus-server-ts` | `Pass` | `api-rev-015/production-typecheck-final.log` |
-| Live-harness exact database isolation | Temporary executable probe starts built server with a unique database under `autobyteus-server-ts/db`, runs real-E2E preflight once with the exact URL and once with a distinct safe URL, then cleans both | `Pass`; matching target accepted (`1` preflight file), mismatch rejected with exact stable code, no operational DB reference | `api-rev-015/live-harness-isolation-final.log` |
-| Launcher/harness static validation | `node --check test-support/live-e2e/run-live-e2e.mjs` plus exact propagation/mismatch-source audit | `Pass` | `api-rev-015/live-harness-static-final.log` |
-| Exact active changed server selection | `pnpm exec vitest run <46 generated current active test paths> --no-watch` | `46 files / 298 tests passed`; `0 skipped` | `api-rev-015/changed-server-tests-final.log` |
-| Affected web streaming tests | `pnpm exec vitest run services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts --no-watch` | `2 files / 34 tests passed` | `api-rev-015/web-affected-final.log` |
-| Restored-path verification | Compare nine paths with artifact HEAD and hash current bytes | `Pass`; zero diff for all nine | `api-rev-015/restored-stale-paths-final.log` |
-| Exact delta reconciliation | Generate inventory from Git state across server tests, web tests, and live support | `Pass`; `53` current + `9` restored disposition rows | `api-rev-015/cumulative-durable-coverage-inventory.tsv`; summary log |
-| Diff and safety audit | `git diff --check`; exact restored-path/current-selection/inventory/harness/cleanup checks | `Pass` | `api-rev-015/final-audit.log` |
+| `/private/tmp/api-rev019-preflight.mjs` | Configuration-only target proof | Pass | Temporary outside repository; no process/data retained |
+| `/private/tmp/api-rev019-safe-server.mjs` | Checked start + lsof + GraphQL correlation | Pass | Server stopped |
+| `/private/tmp/api-rev019-cleanup.mjs` | Invoke checked cleanup owner | Pass | Runtime, DB, root key and journals removed |
 
-One non-evidence command attempt used the unavailable Bash `mapfile` builtin, which caused Vitest to begin an unintended broad selection. It was immediately interrupted after the first isolated test process began. It touched only the repository test database under `autobyteus-server-ts/tests/.tmp`; the corrected exact 46-file command was then run cleanly and is the sole final server-selection evidence.
+The first preflight attempt failed closed because the temporary probe lexically compared equivalent `file:///...` and `file:/...` spellings. It was corrected to compare resolved file paths before any database existed; `pre-spawn-config-preflight-first-failure-analysis.log` preserves that bounded probe correction.
 
-## Preserved Real-System Evidence
+## Cleanup And Incident Preservation
 
-CRR-032 explicitly states that API-REV-014's runtime result is not reopened. No production source changed during this correction, and the nine restored edits never supplied executable product proof. Therefore the following direct real evidence remains authoritative rather than being redundantly repeated:
+| Resource | Ownership | Action | Result |
+| --- | --- | --- | --- |
+| Server PID 46829 / port 60019 | API-REV-019 | `server.stop()` | Stopped; port closed |
+| Disposable runtime root | API-REV-019 | checked `removeOwnedTestRuntime` | Removed |
+| Disposable DB, adjacent vault key, WAL/SHM/journal | API-REV-019 | checked `removeOwnedTestRuntime` | Removed |
+| User server/frontend 60004/31004 | User | No action | Still running with original PIDs |
+| Operational production database | User/Electron | No inspection, repair, copy, rollback, delete, or other action | Prior API-REV-014 and API-REV-018 incidents remain disclosed |
 
-- Actual `pnpm secrets:import` against the exact disposable test application-data root/database, followed by a `READY` vault status with `9` configured identifiers and `0` blocked.
-- Public staged nested-classroom package import through the built server and real frontend.
-- Fresh AgentTeam rows for AutoByteus `gpt-5.6-luna`, Codex App Server `gpt-5.6-luna` with persisted `reasoning_effort: medium`, and authenticated Claude `sonnet` with medium reasoning.
-- Every row passed rooted metadata, exact persistent nested delivery, exact same-task-Team peer delivery with nonempty ordered task chain and task-scoped AgentRuns, exact submit result, accepted review, and lifecycle cleanup.
-- Structured summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-014/live/nested-classroom-live-matrix-summary.json`.
+## Prior Failure Resolution
 
-`pnpm secrets:import` makes the vault ready only for the selected application-data root/database when the imported source and target configuration are valid. API-REV-014 confirmed that exact target with a post-import status check; the command is not a global guarantee for every environment.
+| Failure | Prior classification | Resolution | Evidence |
+| --- | --- | --- | --- |
+| `API-ENV-F-018-001` / `CR-F-022` | API/E2E environment Local Fix | Resolved. Raw built-server launch is replaced by checked `startBuiltTestServer`; sanitized preflight, exact materialized target, config-only no-DB proof, post-listen exact-path lsof, GraphQL readiness and checked cleanup all pass. | `api-rev-019/environment/*` |
+| `API-F-011` / `CR-F-020` | Product defect, resolved by IR-021 | Remains resolved; current source/evidence unchanged and focused coverage reruns pass. | API-REV-018 matrix; API-REV-019 integrity and web logs |
+| `API-F-012` / `CR-F-021` | Product defect, resolved by IR-021 | Remains resolved; task Agent/task Team visible rows, exact selection, lifecycle and cleanup evidence unchanged. | same |
 
-## Confidence Scorecard
+## Result Summary
 
-| Category | Score | Evidence and remaining uncertainty |
-| --- | ---: | --- |
-| Requirement and acceptance-criteria proof | 97% | All critical collaboration, migration, provider, browser, and three-runtime live rows retain direct API-REV-014 proof; local-fix coverage reporting is now exact. |
-| Changed-boundary execution directness | 97% | 46/46 active changed server files, 298/298 tests, the exact affected web selection, and prior real task-Team execution directly cover the changed owners. |
-| Cross-boundary integration realism and mock gap | 95% | Built server, GraphQL/WebSocket, real frontend, and real providers were exercised. The retained Claude teardown-only MCP 404 remains bounded after accepted settlement. |
-| Environment, configuration, identity, and fixture fidelity | 96% | Exact disposable secret import/database/provider/model configuration is retained; current harness additionally proves explicit target acceptance and mismatch rejection. |
-| Failure, edge-case, lifecycle, and recovery evidence | 96% | Strict routing negatives, migration rollback/retry, task lifecycle, terminate/restore, and fail-closed harness mismatch are covered. |
-| User-surface, browser, and desktop-shell confidence | 95% | Real browser Agents/Teams across all runtimes passed. Native Electron-shell-only behavior was not material to this server/web change. |
-| Durable regression coverage quality and relevance | 95% | Exact current delta is fully reconciled; all maintained executable changed tests pass; stale skipped/excluded ticket edits are explicitly restored rather than misreported. Proportional reviewer approval is still required. |
+- Overall: **Pass**.
+- Product/runtime: **Pass**.
+- Environment safety: **Pass**.
+- Final confidence: **97%**.
+- Open API/E2E failures: `None`.
+- Residual workflow gate: proportional code review of the unchanged six-path durable package is mandatory before delivery.
+- Recommended recipient: `code_reviewer` for proportional test-code review.
 
-Overall confidence: `96%` (rounded mean `95.9%`). No category is below 90%, and no critical acceptance criterion is missing or failing.
+## Authoritative Evidence
 
-## Cleanup, Safety, And Residual Disclosures
+- API-REV-019 environment: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-019/environment/`
+- API-REV-019 repository reruns: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-019/repository/`
+- Retained API-REV-018 real browser/provider matrix: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-018/live/postfix-browser-provider-matrix-summary.json`
+- Retained incident disclosure: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-018/live/operational-production-db-targeting-incident.md`
+- Cumulative inventory/diff: `api-rev-019/cumulative-durable-coverage-inventory.tsv`; `api-rev-019/pending-six-durable-diff.patch`.
 
-- Focused API-REV-015 harness runtime/database artifacts were removed; no `api-rev-015-*` test database or runtime remains.
-- No live server/frontend/browser/provider process was started for this bounded reissue beyond the owned built-server harness probe; that server was stopped.
-- API-REV-014 already removed its disposable runtime/database/vault/stage and stopped owned ports/processes; all Team rows were inactive.
-- Source `/Users/normy/.autobyteus/server-data/.env` was not modified and secret values were not printed or copied into evidence.
-- Mandatory operational disclosure remains: an initial API-REV-014 setup attempt inherited `DATABASE_URL` and mutated `/Users/normy/.autobyteus/server-data/db/production.db` by applying pending Prisma migration `20260801090000_token_usage_member_display_name` and writing a failed canonical migration record with 203 failures. No automatic rollback was attempted. All accepted results, including this round's harness proof, use isolated test-owned databases.
-- Prior non-clean whole-server/web baselines remain classified as unrelated and are not represented as acceptance. The exact affected/cumulative selections above are the current evidence.
+## Latest Authoritative Result
 
-## Result And Routing
-
-- Result: `Pass`
-- Final validation confidence: `96%`
-- Prior API/E2E failure resolved: `API-F-010` remains resolved by API-REV-014 and CRR-031.
-- Test-review findings resolved locally: `TR-F-002`, `TR-F-003`
-- Open API/E2E findings: `None`
-- Durable repository delta: `4 added / 47 updated / 2 removed` across server, web, and live-E2E support (`53` current paths); exact per-path inventory attached.
-- Recommended recipient: `code_reviewer` for proportional re-review of the corrected cumulative durable coverage package. Delivery remains gated on that review.
+- Result: **Pass**
+- Final validation confidence: **97%**
+- Default confidence target met: `Yes`
+- Applicable category below 90%: `No`
+- Broader validation: `Required and completed`
+- Critical criteria lacking direct proof: `None`
+- Required next recipient: `code_reviewer` for proportional review of the six pending durable paths

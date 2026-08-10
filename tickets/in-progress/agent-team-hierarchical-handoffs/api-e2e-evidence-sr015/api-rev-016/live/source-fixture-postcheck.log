@@ -1,0 +1,12 @@
+source_repo_status_for_fixture:
+source_fixture_current_files:
+agent-teams/nested-classroom-test/agent-teams/student-study-group/agents/student-one/agent-config.json
+agent-teams/nested-classroom-test/agent-teams/student-study-group/agents/student-one/agent.md
+agent-teams/nested-classroom-test/agent-teams/student-study-group/agents/student-two/agent-config.json
+agent-teams/nested-classroom-test/agent-teams/student-study-group/agents/student-two/agent.md
+agent-teams/nested-classroom-test/agent-teams/student-study-group/team-config.json
+agent-teams/nested-classroom-test/agent-teams/student-study-group/team.md
+agent-teams/nested-classroom-test/agents/teacher/agent-config.json
+agent-teams/nested-classroom-test/agents/teacher/agent.md
+agent-teams/nested-classroom-test/team-config.json
+agent-teams/nested-classroom-test/team.md

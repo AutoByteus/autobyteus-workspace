@@ -1,0 +1,26 @@
+# API-REV-017 running manual stack target audit
+UTC 2026-08-10T15:18:47Z
+
+## Process command lines
+71461 node dist/app.js --host 127.0.0.1 --port 60004 --data-dir /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/manual-user-20260810-2
+72884 node /Users/normy/.nvm/versions/node/v22.21.1/bin/pnpm dev --host 127.0.0.1 --port 31004
+73207 node /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/node_modules/.bin/../nuxt/bin/nuxt.mjs dev --host 0.0.0.0 --host 127.0.0.1 --port 31004
+73217 /Users/normy/.hermes/node/bin/node --enable-source-maps /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/@nuxt+cli@3.33.1_@nuxt+schema@3.21.1_cac@6.7.14_magicast@0.5.2/node_modules/@nuxt/cli/dist/dev/index.mjs --host 0.0.0.0 --host 127.0.0.1 --port 31004
+73218 /Users/normy/.hermes/node/bin/node --enable-source-maps /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/@nuxt+cli@3.33.1_@nuxt+schema@3.21.1_cac@6.7.14_magicast@0.5.2/node_modules/@nuxt/cli/dist/dev/index.mjs --host 0.0.0.0 --host 127.0.0.1 --port 31004
+
+## Server open paths under the isolated target
+node    71461 normy   12w      REG               1,13    183637           333961086 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/manual-user-20260810-2/logs/server.log
+node    71461 normy   19u      REG               1,13    356352           333953956 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/manual-user-20260810-2.db
+node    71461 normy   20u      REG               1,13    356352           333953956 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/manual-user-20260810-2.db
+node    71461 normy   21u      REG               1,13    356352           333953956 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/manual-user-20260810-2.db
+node    71461 normy   22u      REG               1,13    356352           333953956 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/manual-user-20260810-2.db
+node    71461 normy   23u      REG               1,13    356352           333953956 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/manual-user-20260810-2.db
+
+## Operational production.db reference count in server open files
+0
+
+Expected isolated database:
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/manual-user-20260810-2.db
+Expected isolated application-data root:
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/manual-user-20260810-2
+Manual stack remains running for user verification; API/E2E does not own cleanup until the user finishes or asks to stop it.

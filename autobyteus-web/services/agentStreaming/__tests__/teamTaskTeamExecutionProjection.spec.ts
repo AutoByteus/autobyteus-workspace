@@ -1,210 +1,245 @@
 import { describe, expect, it } from 'vitest';
-import { AgentContext } from '~/types/agent/AgentContext';
-import { AgentRunState } from '~/types/agent/AgentRunState';
-import { AgentStatus } from '~/types/agent/AgentStatus';
+import { handleTaskExecutionProjectionMessage } from '../teamTaskExecutionEventRouter';
+import { restoreTaskExecutionProjections } from '../teamTaskExecutionRestore';
 import {
-  extractTaskTeamIdentity,
-  updateTaskTeamExecutionProjectionFromEvent,
-} from '../teamTaskTeamExecutionProjection';
-import { resolveTaskTeamScopedMessage } from '../teamTaskTeamChildProjection';
+  findTeamExecutionNode,
+  removeTaskExecutionProjection,
+} from '../teamTaskExecutionTree';
+import { extractTaskTeamIdentity } from '../teamTaskTeamExecutionProjection';
+import { deriveDelegatedTaskEntries } from '~/utils/teamDelegatedTaskEntries';
+import { buildWorkspaceTeamExecutionDisplayRows } from '~/utils/workspaceTeamExecutionDisplayRows';
+import type { TaskDelegationRecord } from '~/stores/taskDelegationTypes';
+import { createTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
+import {
+  buildCurrentTaskExecutionTeam,
+  currentTaskExecutionRootTeamRunId,
+  taskAgentAddress,
+  taskAgentEvent,
+  taskTeamEvent,
+} from './currentTaskExecutionFixture';
 
-const createAgentContext = (name: string, runId: string) => new AgentContext({
-  agentDefinitionId: `${name}-def`,
-  agentDefinitionName: name,
-  llmModelIdentifier: 'model',
-  runtimeKind: 'codex_app_server',
-  workspaceId: null,
-  workspaceMetadata: null,
-  autoExecuteTools: true,
-  skillAccessMode: 'NONE',
-  isLocked: true,
-  llmConfig: null,
-}, new AgentRunState(runId, {
-  id: runId,
-  messages: [],
-  createdAt: '2026-06-26T00:00:00.000Z',
-  updatedAt: '2026-06-26T00:00:00.000Z',
-  agentDefinitionId: `${name}-def`,
-  agentName: name,
-  llmModelIdentifier: 'model',
-}));
+const outerRootAddress = () => createTeamExecutionAddress({
+  rootTeamRunId: currentTaskExecutionRootTeamRunId,
+  taskTeamRunIds: ['task-team-outer'],
+  memberAddress: '/StudentStudyGroup',
+  taskAgentRunId: null,
+});
 
-const buildTeamContext = () => {
-  const solutionNode = {
-    memberKind: 'agent',
-    memberName: 'solution_designer',
-    displayName: 'Solution Designer',
-    memberPath: ['SoftwareEngineeringTeam', 'solution_designer'],
-    memberRouteKey: 'SoftwareEngineeringTeam/solution_designer',
-    memberRunId: 'solution-structural-run',
-    agentDefinitionId: 'solution-def',
-    currentStatus: AgentStatus.Offline,
-  };
-  const implementationNode = {
-    memberKind: 'agent',
-    memberName: 'implementation_engineer',
-    displayName: 'Implementation Engineer',
-    memberPath: ['SoftwareEngineeringTeam', 'implementation_engineer'],
-    memberRouteKey: 'SoftwareEngineeringTeam/implementation_engineer',
-    memberRunId: 'implementation-structural-run',
-    agentDefinitionId: 'implementation-def',
-    currentStatus: AgentStatus.Offline,
-  };
-  const teamNode = {
-    memberKind: 'agent_team',
-    memberName: 'SoftwareEngineeringTeam',
-    displayName: 'Software Engineering Team',
-    memberPath: ['SoftwareEngineeringTeam'],
-    memberRouteKey: 'SoftwareEngineeringTeam',
-    memberRunId: 'software-team-template-run',
-    teamDefinitionId: 'software-team-def',
-    teamRunId: null,
-    coordinatorMemberRouteKey: 'solution_designer',
-    children: [solutionNode, implementationNode],
-  };
-  return {
-    teamRunId: 'parent-team-run',
-    config: { teamDefinitionName: 'Parent' },
-    memberTree: [teamNode],
-    memberNodesByRouteKey: new Map<string, any>([
-      ['SoftwareEngineeringTeam', teamNode],
-      ['SoftwareEngineeringTeam/solution_designer', solutionNode],
-      ['SoftwareEngineeringTeam/implementation_engineer', implementationNode],
-    ]),
-    leafAgentContextsByRouteKey: new Map<string, any>([
-      ['SoftwareEngineeringTeam/solution_designer', createAgentContext('solution_designer', 'solution-structural-run')],
-      ['SoftwareEngineeringTeam/implementation_engineer', createAgentContext('implementation_engineer', 'implementation-structural-run')],
-    ]),
-    focusedMemberRouteKey: 'SoftwareEngineeringTeam',
-    isActive: true,
-    isSubscribed: true,
-  } as any;
-};
+const innerRootAddress = () => createTeamExecutionAddress({
+  rootTeamRunId: currentTaskExecutionRootTeamRunId,
+  taskTeamRunIds: ['task-team-outer', 'task-team-inner'],
+  memberAddress: '/StudentStudyGroup/LabGroup',
+  taskAgentRunId: null,
+});
 
-describe('teamTaskTeamExecutionProjection', () => {
-  it('resolves the multi-boundary wire identity to task-team-run-7/review_group/critic', () => {
-    const resolution = resolveTaskTeamScopedMessage(buildTeamContext(), {
-      type: 'AGENT_STATUS',
-      payload: {
-        status: 'running',
-        agent_id: 'critic-runtime-93',
-        member_path: ['research_group', 'review_team', 'review_group', 'critic'],
-        member_route_key: 'research_group/review_team/review_group/critic',
-        source_path: ['research_group', 'review_team', 'review_group', 'critic'],
-        source_route_key: 'research_group/review_team/review_group/critic',
-        task_team_run_id: 'task-team-run-7',
-        task_team_instance_id: 'task-team-instance-7',
-        task_id: 'task-42',
-        team_path: ['research_group', 'review_team'],
-        team_route_key: 'research_group/review_team',
-        task_team_relative_member_path: ['review_group', 'critic'],
-        task_team_relative_member_route_key: 'review_group/critic',
-      },
-    } as any);
+const record = (input: {
+  taskId: string;
+  status: 'active' | 'awaiting_review' | 'accepted';
+  receiverAddress: string;
+  receiverTargetKind: 'agent' | 'agent_team';
+  taskRunAddress: ReturnType<typeof createTeamExecutionAddress>;
+  createdAt: string;
+}): TaskDelegationRecord => ({
+  taskId: input.taskId,
+  status: input.status,
+  senderAddress: createTeamExecutionAddress({
+    rootTeamRunId: currentTaskExecutionRootTeamRunId,
+    memberAddress: '/Teacher',
+  }),
+  receiverAddress: createTeamExecutionAddress({
+    rootTeamRunId: currentTaskExecutionRootTeamRunId,
+    memberAddress: input.receiverAddress,
+  }),
+  receiverTargetKind: input.receiverTargetKind,
+  content: `Persisted ${input.taskId}`,
+  referenceFiles: [],
+  taskRun: { address: input.taskRunAddress, startedAt: input.createdAt },
+  updates: [],
+  createdAt: input.createdAt,
+});
 
-    expect(resolution).toMatchObject({
-      outcome: 'child',
-      identity: {
-        parentTaskTeamRunId: 'task-team-run-7',
-        relativeMemberPath: ['review_group', 'critic'],
-        relativeMemberRouteKey: 'review_group/critic',
-        structuralSourcePath: ['research_group', 'review_team', 'review_group', 'critic'],
-        scopedMemberPath: ['task-team-run-7', 'review_group', 'critic'],
-        scopedMemberRouteKey: 'task-team-run-7/review_group/critic',
-        runtimeMemberRunId: 'critic-runtime-93',
-      },
-    });
-  });
+describe('teamTaskTeamExecutionProjection current exact execution tree', () => {
+  it('materializes a distinct task Team root and children with visible task details', () => {
+    const team = buildCurrentTaskExecutionTeam();
+    const event = taskTeamEvent();
+    const address = outerRootAddress();
+    const persistentGroup = team.memberNodesByAddress.get('/StudentStudyGroup');
 
-  it('extracts task-team identity only from task-team delegation payloads', () => {
-    expect(extractTaskTeamIdentity({
-      type: 'TASK_DELEGATION_EVENT',
-      payload: {
-        execution_kind: 'task_team',
-        task_team_run_id: 'task-team-run-1',
-        task_team_instance_id: 'task-team-instance-1',
-        task_id: 'task_0001',
-        tasks: [{
-          taskId: 'task_0001',
-          taskLabel: 'Task 1',
-          description: 'Coordinate the implementation review.',
-          status: 'active',
-          referenceFiles: [{ referenceId: 'task-reference:0:/tmp/design.md', path: '/tmp/design.md', type: 'file', createdAt: '2026-06-28T00:00:00.000Z', updatedAt: '2026-06-28T00:00:00.000Z' }],
-          taskArguments: { target: { kind: 'team', name: 'SoftwareEngineeringTeam' }, description: 'Coordinate the implementation review.', reference_files: ['/tmp/design.md'] },
-        }],
-        target_name: 'SoftwareEngineeringTeam',
-        target: { kind: 'team' },
-        team_route_key: 'SoftwareEngineeringTeam',
-        team_path: ['SoftwareEngineeringTeam'],
-      },
-    } as any)).toMatchObject({
-      taskTeamRunId: 'task-team-run-1',
-      logicalTeamRouteKey: 'SoftwareEngineeringTeam',
+    expect(extractTaskTeamIdentity(event as any)).toEqual({ executionAddress: address });
+    expect(handleTaskExecutionProjectionMessage(team, event as any)).toMatchObject({
+      outcome: 'handled',
+      cleanupExecutionAddress: null,
     });
 
-    expect(extractTaskTeamIdentity({
-      type: 'TASK_DELEGATION_EVENT',
-      payload: { execution_kind: 'task_agent', task_agent_run_id: 'task-agent-run' },
-    } as any)).toBeNull();
-  });
-
-  it('creates a distinct root projection and scoped child clones without mutating structural nodes', () => {
-    const teamContext = buildTeamContext();
-    const structuralTeam = teamContext.memberNodesByRouteKey.get('SoftwareEngineeringTeam');
-    const structuralChild = teamContext.memberNodesByRouteKey.get('SoftwareEngineeringTeam/solution_designer');
-
-    updateTaskTeamExecutionProjectionFromEvent(teamContext, {
-      type: 'TASK_DELEGATION_EVENT',
-      payload: {
-        event_type: 'TASK_DELEGATION_ACTIVATED',
-        execution_kind: 'task_team',
-        task_team_run_id: 'task-team-run-1',
-        task_team_instance_id: 'task-team-instance-1',
-        task_id: 'task_0001',
-        tasks: [{
-          taskId: 'task_0001',
-          taskLabel: 'Task 1',
-          description: 'Coordinate the implementation review.',
-          status: 'active',
-          referenceFiles: [{ referenceId: 'task-reference:0:/tmp/design.md', path: '/tmp/design.md', type: 'file', createdAt: '2026-06-28T00:00:00.000Z', updatedAt: '2026-06-28T00:00:00.000Z' }],
-          taskArguments: { target: { kind: 'team', name: 'SoftwareEngineeringTeam' }, description: 'Coordinate the implementation review.', reference_files: ['/tmp/design.md'] },
-        }],
-        target_name: 'SoftwareEngineeringTeam',
-        target: { kind: 'team' },
-        team_route_key: 'SoftwareEngineeringTeam',
-        team_path: ['SoftwareEngineeringTeam'],
-      },
-    } as any);
-
-    const root = teamContext.memberNodesByRouteKey.get('task-team-run-1');
-    const clonedSolution = teamContext.memberNodesByRouteKey.get('task-team-run-1/solution_designer');
-
+    const root = findTeamExecutionNode(team, address);
+    const child = findTeamExecutionNode(team, createTeamExecutionAddress({
+      rootTeamRunId: team.teamRunId,
+      taskTeamRunIds: ['task-team-outer'],
+      memberAddress: '/StudentStudyGroup/student_one',
+      taskAgentRunId: null,
+    }));
     expect(root).toMatchObject({
-      memberKind: 'agent_team',
-      isTaskTeamInstance: true,
-      taskTeamRunId: 'task-team-run-1',
-      taskTeamInstanceId: 'task-team-instance-1',
-      taskId: 'task_0001',
-      taskLabel: 'Task 1',
-      taskDescription: 'Coordinate the implementation review.',
-      taskReferenceFiles: [expect.objectContaining({ referenceId: 'task-reference:0:/tmp/design.md', path: '/tmp/design.md' })],
-      taskArguments: expect.objectContaining({ reference_files: ['/tmp/design.md'] }),
-      taskTargetKind: 'team',
-      taskTargetName: 'SoftwareEngineeringTeam',
-      logicalTeamRouteKey: 'SoftwareEngineeringTeam',
+      kind: 'agent_team',
+      address: '/StudentStudyGroup',
+      teamRunId: 'task-team-outer',
+      isTaskExecution: true,
+      taskId: 'task-team-outer-0001',
+      taskDescription: 'Coordinate the study-group exercise.',
+      taskTargetKind: 'agent_team',
       taskExecutionStatus: 'active',
     });
-    expect(clonedSolution).toMatchObject({
-      memberRouteKey: 'task-team-run-1/solution_designer',
-      memberPath: ['task-team-run-1', 'solution_designer'],
-      isTaskTeamChildProjection: true,
-      parentTaskTeamRunId: 'task-team-run-1',
-      structuralSourceRouteKey: 'SoftwareEngineeringTeam/solution_designer',
-      memberRunId: null,
+    expect(root).not.toBe(persistentGroup);
+    expect(child).toMatchObject({
+      kind: 'agent',
+      address: '/StudentStudyGroup/student_one',
+      isTaskExecution: true,
+      executionAddress: {
+        taskTeamRunIds: ['task-team-outer'],
+        memberAddress: '/StudentStudyGroup/student_one',
+      },
     });
-    expect(clonedSolution).not.toBe(structuralChild);
-    expect(teamContext.memberNodesByRouteKey.get('SoftwareEngineeringTeam')).toBe(structuralTeam);
-    expect(teamContext.leafAgentContextsByRouteKey.get('task-team-run-1/solution_designer')?.state.runId).toBe('task-team-run-1/solution_designer');
-    expect((structuralChild as any).memberRunId).toBe('solution-structural-run');
+    expect(child).not.toHaveProperty('taskId');
+    expect(deriveDelegatedTaskEntries(team)).toEqual([
+      expect.objectContaining({
+        kind: 'task_team',
+        taskId: 'task-team-outer-0001',
+        taskDescription: 'Coordinate the study-group exercise.',
+        runId: 'task-team-outer',
+        statusLabel: 'Active',
+      }),
+    ]);
+  });
+
+  it('keeps exact ordered outer and nested task-Team identities and cleans up only the selected subtree', () => {
+    const team = buildCurrentTaskExecutionTeam();
+    handleTaskExecutionProjectionMessage(team, taskTeamEvent() as any);
+    const nested = handleTaskExecutionProjectionMessage(team, taskTeamEvent({ nested: true }) as any);
+
+    expect(nested).toMatchObject({ outcome: 'handled', cleanupExecutionAddress: null });
+    expect(findTeamExecutionNode(team, innerRootAddress())).toMatchObject({
+      kind: 'agent_team',
+      teamRunId: 'task-team-inner',
+      taskId: 'task-team-inner-0002',
+      executionAddress: {
+        taskTeamRunIds: ['task-team-outer', 'task-team-inner'],
+        memberAddress: '/StudentStudyGroup/LabGroup',
+      },
+    });
+    expect(findTeamExecutionNode(team, createTeamExecutionAddress({
+      rootTeamRunId: team.teamRunId,
+      taskTeamRunIds: ['task-team-inner', 'task-team-outer'],
+      memberAddress: '/StudentStudyGroup/LabGroup',
+      taskAgentRunId: null,
+    }))).toBeNull();
+
+    const accepted = handleTaskExecutionProjectionMessage(team, taskTeamEvent({ nested: true, status: 'accepted' }) as any);
+    expect(accepted).toMatchObject({ outcome: 'handled', cleanupExecutionAddress: innerRootAddress() });
+    removeTaskExecutionProjection(team, innerRootAddress());
+    expect(findTeamExecutionNode(team, innerRootAddress())).toBeNull();
+    expect(findTeamExecutionNode(team, outerRootAddress())).not.toBeNull();
+    expect(team.memberNodesByAddress.get('/StudentStudyGroup/LabGroup')).toMatchObject({
+      kind: 'agent_team',
+      teamRunId: 'lab-group-persistent-run',
+    });
+  });
+
+  it('restores active and awaiting-review task executions in depth order and excludes accepted records', () => {
+    const team = buildCurrentTaskExecutionTeam();
+    const outer = record({
+      taskId: 'task-team-outer-0001',
+      status: 'active',
+      receiverAddress: '/StudentStudyGroup',
+      receiverTargetKind: 'agent_team',
+      taskRunAddress: outerRootAddress(),
+      createdAt: '2026-08-10T12:00:00.000Z',
+    });
+    const nested = record({
+      taskId: 'task-team-inner-0002',
+      status: 'awaiting_review',
+      receiverAddress: '/StudentStudyGroup/LabGroup',
+      receiverTargetKind: 'agent_team',
+      taskRunAddress: innerRootAddress(),
+      createdAt: '2026-08-10T12:01:00.000Z',
+    });
+    const acceptedAddress = taskAgentAddress({ taskAgentRunId: 'accepted-task-agent' });
+    const accepted = record({
+      taskId: 'accepted-task-agent-0003',
+      status: 'accepted',
+      receiverAddress: '/Teacher',
+      receiverTargetKind: 'agent',
+      taskRunAddress: acceptedAddress,
+      createdAt: '2026-08-10T12:02:00.000Z',
+    });
+
+    restoreTaskExecutionProjections(team, [nested, accepted, outer]);
+    restoreTaskExecutionProjections(team, [nested, accepted, outer]);
+
+    expect(findTeamExecutionNode(team, outerRootAddress())).toMatchObject({
+      taskId: 'task-team-outer-0001',
+      taskExecutionStatus: 'active',
+      taskTimeline: [expect.objectContaining({ eventType: 'TASK_DELEGATION_RESTORED' })],
+    });
+    expect(findTeamExecutionNode(team, innerRootAddress())).toMatchObject({
+      taskId: 'task-team-inner-0002',
+      taskExecutionStatus: 'awaiting_review',
+      taskTimeline: [expect.objectContaining({ eventType: 'TASK_DELEGATION_RESTORED' })],
+    });
+    expect(findTeamExecutionNode(team, acceptedAddress)).toBeNull();
+    expect(deriveDelegatedTaskEntries(team).map((entry) => [entry.taskId, entry.statusLabel])).toEqual([
+      ['task-team-outer-0001', 'Active'],
+      ['task-team-inner-0002', 'Awaiting review'],
+    ]);
+  });
+
+  it('builds separately selectable UI rows for outer/nested task Teams and a task Agent', () => {
+    const team = buildCurrentTaskExecutionTeam();
+    handleTaskExecutionProjectionMessage(team, taskTeamEvent() as any);
+    handleTaskExecutionProjectionMessage(team, taskTeamEvent({ nested: true }) as any);
+    const agentAddress = taskAgentAddress({
+      memberAddress: '/StudentStudyGroup/student_two',
+      taskTeamRunIds: ['task-team-outer'],
+      taskAgentRunId: 'task-agent-inside-team-run-2',
+    });
+    handleTaskExecutionProjectionMessage(team, taskAgentEvent({ address: agentAddress }) as any);
+    const toHistoryRow = (node: any): any => ({
+      kind: node.kind,
+      memberAddress: node.address,
+      displayName: node.displayName,
+      teamRunId: team.teamRunId,
+      children: node.kind === 'agent_team' ? node.children.map(toHistoryRow) : [],
+    });
+    const rows = buildWorkspaceTeamExecutionDisplayRows({
+      team: {
+        rootTeam: {
+          children: team.rootTeam.children.filter((node) => !node.isTaskExecution).map(toHistoryRow),
+        },
+        members: [],
+      } as any,
+      teamContext: team,
+    });
+    const transient = rows.filter((row) => row.rowKind === 'transient_execution');
+
+    expect(transient).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        transientKind: 'task_team',
+        executionAddress: outerRootAddress(),
+      }),
+      expect.objectContaining({
+        transientKind: 'task_team',
+        executionAddress: innerRootAddress(),
+      }),
+      expect.objectContaining({
+        transientKind: 'task_agent',
+        executionAddress: agentAddress,
+      }),
+    ]));
+    for (const row of transient) {
+      expect(findTeamExecutionNode(team, row.executionAddress)).not.toBeNull();
+    }
+    team.focusedExecutionAddress = innerRootAddress();
+    expect(findTeamExecutionNode(team, team.focusedExecutionAddress)).toMatchObject({
+      kind: 'agent_team',
+      taskId: 'task-team-inner-0002',
+    });
   });
 });

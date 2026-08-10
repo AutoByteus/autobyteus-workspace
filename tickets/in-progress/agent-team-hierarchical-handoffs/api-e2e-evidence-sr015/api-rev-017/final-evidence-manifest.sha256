@@ -1,0 +1,13 @@
+dddcb4384ccd6ec88b12cffce3f3497ace6b655fad52ea05a3acb0a7691bea8f  ./apollo-task-normalization-temporary-probe-cleanup.log
+3f96ed2f11d4de03380daf4f2b2ed80467c33becd41485b52ae72c825981c390  ./apollo-task-normalization-temporary-probe.log
+cddde3311fde1e923aae38c72eff1c35e3f4109b14a4b16462b97a9e53839fcd  ./current-frontend-task-projection-source-audit.log
+d8740384c1c1d918c68ca8fe4e07ec61dea46dd140340307ba5dcee90307b66f  ./delegated-task-ui-failure-analysis.md
+f63594ac3feba97ccc8b09205709dc91ebee2317998600030b7f56b5602f07c5  ./live/fresh-browser-task-ui-missing.png
+fd60079a649dd0bbe573202fbb7990a1ed2420f7e20967196dd52d96ac81f240  ./live/fresh-browser-task-ui-observations.json
+c6f7f773b6c6af9e01982accb25f9dbbd5c5751c6691413d64a8c65217c4f5e0  ./live/fresh-browser-task-ui-reproduction.mjs
+1f60cc76b13e5440d8b3d1b2985841aab3f9265af8f753996a0775ad1964f0f1  ./live/fresh-browser-task-ui-stdout.json
+b45613db0f59d10800b9bcd543c0dd82f0a7759d2f3a0225de2b0180d75cb614  ./live/manual-stack-target-audit.log
+22f3b58c1b37c7dd1ec1640b0110de0ac54777e89b3c4e7696e2e3ab6ffd1259  ./live/user-reported-task-ui-missing.png
+54f2c407f1e4aba6b0d77848438104568efe9e7345d971512eae214e8db93bcf  ./live/user-root-task-records-apollo-shape-graphql.json
+e237a6d2f5fd73c197880c0a4e14d1426898016f2bbed95841e6867ff766ca9f  ./live/user-root-task-records-graphql.json
+70184c9d7cd81a57c212548d2550a90a050149073a5f1b66f5fbfd4d49df67da  ./live/user-root-task-server-correlation.log

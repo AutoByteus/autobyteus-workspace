@@ -1,0 +1,66 @@
+{
+  "endpoint": "http://127.0.0.1:60004/graphql",
+  "importInput": {
+    "sourceKind": "LOCAL_PATH",
+    "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-016-20260809-1/staged-agent-package-01"
+  },
+  "registeredPackage": [
+    {
+      "packageId": "local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Fagent-team-hierarchical-handoffs%2Fautobyteus-server-ts%2Ftests%2F.tmp%2Fsr015-api-rev-016-20260809-1%2Fstaged-agent-package-01",
+      "displayName": "staged-agent-package-01",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-016-20260809-1/staged-agent-package-01",
+      "sourceKind": "LOCAL_PATH",
+      "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/sr015-api-rev-016-20260809-1/staged-agent-package-01",
+      "sharedAgentCount": 0,
+      "teamLocalAgentCount": 1,
+      "agentTeamCount": 1,
+      "isDefault": false,
+      "isRemovable": true
+    }
+  ],
+  "discoveredNestedClassroomDefinitions": [
+    {
+      "id": "nested-classroom-test",
+      "name": "Nested Classroom Test Team",
+      "coordinatorMemberName": "Teacher",
+      "ownershipScope": "SHARED",
+      "ownerTeamId": null,
+      "nodes": [
+        {
+          "memberName": "Teacher",
+          "ref": "teacher",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "StudentStudyGroup",
+          "ref": "student-study-group",
+          "refType": "AGENT_TEAM",
+          "refScope": "TEAM_LOCAL"
+        }
+      ]
+    },
+    {
+      "id": "team-local-team:nested-classroom-test:student-study-group",
+      "name": "Student Study Group",
+      "coordinatorMemberName": "student_one",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamId": "nested-classroom-test",
+      "nodes": [
+        {
+          "memberName": "student_one",
+          "ref": "student-one",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "student_two",
+          "ref": "student-two",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        }
+      ]
+    }
+  ],
+  "result": "Pass"
+}
