@@ -1,0 +1,60 @@
+DR-010 delivery integrated-state refresh
+TRIGGER=IR-013 friendly Qwen labels; CRR-019 Pass 9.44/10; API-REV-010 Pass 97.3%; CRR-020 Not Applicable; new Electron required.
+INITIAL_TICKET_HEAD=331ff94da3c2c9a2a07e11efff68f5307a4cfabb plus reviewed uncommitted IR-013 and current evidence.
+INITIAL_FETCH_COMMAND=git fetch origin personal --prune
+FETCHED_BASE=37660dd61347b630889a698769af5641566357bb
+INITIAL_AHEAD=17
+INITIAL_BEHIND=0
+INITIAL_MERGE_BASE=37660dd61347b630889a698769af5641566357bb
+INTEGRATION_DECISION=No merge required; exact tracked base was already an ancestor and no new base commit existed.
+DELIVERY_SAFETY_CHECKPOINT=1d5340d37332df794bf82f97b61e05421527c76b
+CHECKPOINT_PURPOSE=Protect reviewed IR-013 source/tests and cumulative CRR/API/delivery evidence; not repository finalization.
+CHECKPOINT_AHEAD=18
+CHECKPOINT_BEHIND=0
+DOCS_SYNC=Updated autobyteus-web/docs/settings.md and autobyteus-ts/docs/provider_model_catalogs.md for friendly live Qwen labels, exact internal selectors, exact wire values, raw missing-selector repair, and the Flash 0731 catalog row.
+POST_REFRESH_EXECUTABLE_CHECK=README-guided Electron build PASS, exit 0, version 1.4.46.
+ARTIFACT_CHECKS=DMG verify PASS; ZIP integrity PASS; arm64 PASS; node-pty spawn PASS; packaged server identity PASS; packaged app.asar friendly-Qwen branch and renderer byte identity PASS.
+POST_BUILD_FETCH_START_UTC=2026-08-10T12:01:17Z
+POST_BUILD_FETCH_COMMAND=git fetch origin personal --prune
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+POST_BUILD_HEAD=1d5340d37332df794bf82f97b61e05421527c76b
+POST_BUILD_BASE=37660dd61347b630889a698769af5641566357bb
+POST_BUILD_MERGE_BASE=37660dd61347b630889a698769af5641566357bb
+POST_BUILD_AHEAD=18
+POST_BUILD_BEHIND=0
+POST_BUILD_BASE_ANCESTOR_CHECK=PASS
+END_UTC=2026-08-10T12:01:19Z
+FINAL_AUDIT_FETCH_START_UTC=2026-08-10T12:05:38Z
+FINAL_AUDIT_FETCH_COMMAND=git fetch origin personal --prune
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+FINAL_AUDIT_FETCH_EXIT=0
+FINAL_AUDIT_HEAD=1d5340d37332df794bf82f97b61e05421527c76b
+FINAL_AUDIT_BASE=37660dd61347b630889a698769af5641566357bb
+FINAL_AUDIT_MERGE_BASE=37660dd61347b630889a698769af5641566357bb
+FINAL_AUDIT_AHEAD=18
+FINAL_AUDIT_BEHIND=0
+FINAL_AUDIT_BASE_ANCESTOR_CHECK=PASS
+FINAL_AUDIT_END_UTC=2026-08-10T12:05:40Z
+FINAL_AUDIT_TRACKED_DIFF_CHECK=PASS
+FINAL_AUDIT_PRODUCTION_OR_TEST_DIRTY_DELTA=NONE
+FINAL_AUDIT_UNMERGED_PATHS=NONE
+FINAL_AUDIT_BUILD_EXIT=0
+FINAL_AUDIT_VERIFICATION_EXIT=0
+FINAL_AUDIT_PACKAGED_SOURCE_RESULT=PASS
+FINAL_AUDIT_DMG_SHA256=b85c6a308ffe5f41ab5955b160358953232ff0ec54bdfa62e356c5d0c8c20aca
+FINAL_AUDIT_ZIP_SHA256=834566db8dabdf9f00c9a766b639f6b2610c408579acb80e96df0ba6291362ca
+FINAL_HANDOFF_STATE=Ready for explicit user verification; finalization, push, merge, release, and deployment remain held.
+FINALIZATION_AUTHORIZATION_UTC=2026-08-10T13:14:33Z
+FINALIZATION_USER_SIGNAL=Explicit task-done acceptance and request to finalize and release a new version.
+FINALIZATION_REFRESH_COMMAND=git fetch origin personal --prune
+FINALIZATION_HEAD=1d5340d37332df794bf82f97b61e05421527c76b
+FINALIZATION_BASE=37660dd61347b630889a698769af5641566357bb
+FINALIZATION_MERGE_BASE=37660dd61347b630889a698769af5641566357bb
+FINALIZATION_AHEAD=18
+FINALIZATION_BEHIND=0
+FINALIZATION_INTEGRATION_DECISION=No merge required; the accepted state already contains the unchanged tracked base.
+FINALIZATION_FOCUSED_RERUN=PASS; 4 files / 12 tests.
+FINALIZATION_FOCUSED_RERUN_LOG=/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/done/custom-provider-model-context-metadata/probes/delivery/finalization-web-friendly-dr-011.log
+FINALIZATION_RELEASE_TARGET=v1.4.47

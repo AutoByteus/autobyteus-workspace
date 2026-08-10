@@ -1,0 +1,17 @@
+DR-007 packaged built-server identity
+HEAD=7f02e49f6897b3c2715d2c7e2fb712a424514f82
+config/environment-assignment-file.js
+2fe63c215736c2541146f2959f2cae69347a2c5c2081ac499657ba452a06485c  autobyteus-server-ts/dist/config/environment-assignment-file.js
+2fe63c215736c2541146f2959f2cae69347a2c5c2081ac499657ba452a06485c  autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/config/environment-assignment-file.js
+cmp=PASS
+app-data-migrations/migrations/custom-provider-readable-id-app-data-migration.js
+d8d059e14576f6283c3921757962e71c22f71e7cbdbb2ba0aa4d01eedfb0fab6  autobyteus-server-ts/dist/app-data-migrations/migrations/custom-provider-readable-id-app-data-migration.js
+d8d059e14576f6283c3921757962e71c22f71e7cbdbb2ba0aa4d01eedfb0fab6  autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app-data-migrations/migrations/custom-provider-readable-id-app-data-migration.js
+cmp=PASS
+llm-management/llm-providers/stores/custom-llm-provider-store.js
+f565036843dbca1b6114547fd93622be98ead3d5f025d8d658c07f4f70c0bcbf  autobyteus-server-ts/dist/llm-management/llm-providers/stores/custom-llm-provider-store.js
+f565036843dbca1b6114547fd93622be98ead3d5f025d8d658c07f4f70c0bcbf  autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/llm-management/llm-providers/stores/custom-llm-provider-store.js
+cmp=PASS
+13:export const CUSTOM_PROVIDER_READABLE_ID_APP_DATA_MIGRATION_ID = '20260803_custom_provider_readable_identity';
+178:                "CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED",
+RESULT=PASS

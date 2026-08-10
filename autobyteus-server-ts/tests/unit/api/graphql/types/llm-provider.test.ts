@@ -14,6 +14,8 @@ const mockModelCatalogService = vi.hoisted(() => ({
 const mockLlmProviderService = vi.hoisted(() => ({
   listProviderSettings: vi.fn(),
   getGeminiConfigurationStatus: vi.fn(),
+  getQwenSetupStatus: vi.fn(),
+  saveQwenConfiguration: vi.fn(),
   saveGeminiOptionConfiguration: vi.fn(),
   activateGeminiOption: vi.fn(),
   listProvidersWithModels: vi.fn(),
@@ -40,7 +42,8 @@ const mockBuiltInCatalog = vi.hoisted(() => ({
 vi.mock('../../../../../src/llm-management/services/model-catalog-service.js', () => ({
   getModelCatalogService: () => mockModelCatalogService,
 }));
-vi.mock('../../../../../src/llm-management/llm-providers/services/llm-provider-service.js', () => ({
+vi.mock('../../../../../src/llm-management/llm-providers/services/llm-provider-service.js', async (importOriginal) => ({
+  ...(await importOriginal<Record<string, unknown>>()),
   getLlmProviderService: () => mockLlmProviderService,
 }));
 vi.mock('../../../../../src/llm-management/llm-providers/builtins/built-in-llm-provider-catalog.js', () => ({
@@ -48,6 +51,11 @@ vi.mock('../../../../../src/llm-management/llm-providers/builtins/built-in-llm-p
 }));
 
 import { LlmProviderResolver } from '../../../../../src/api/graphql/types/llm-provider.js';
+import {
+  QwenConfigurationError,
+  QWEN_CONFIGURATION_REPAIR_REQUIRED,
+  QWEN_CONFIGURATION_SAVE_FAILED_PREVIOUS_RESTORED,
+} from '../../../../../src/llm-management/llm-providers/services/llm-provider-service.js';
 
 const setupStatus = (overrides: Record<string, unknown> = {}) => ({
   activeMode: null,
@@ -69,6 +77,11 @@ describe('LlmProviderResolver', () => {
     mockLlmProviderService.listProviderSettings.mockResolvedValue([]);
     mockLlmProviderService.listProvidersWithModels.mockResolvedValue([]);
     mockLlmProviderService.getGeminiConfigurationStatus.mockResolvedValue(setupStatus());
+    mockLlmProviderService.getQwenSetupStatus.mockResolvedValue({
+      effectiveBaseUrl: 'https://default.example/v1',
+      endpointSource: 'DEFAULT',
+      apiKeyConfigured: false,
+    });
   });
 
   it('maps one canonical provider and all four required model lists', async () => {
@@ -147,6 +160,50 @@ describe('LlmProviderResolver', () => {
     const resolver = new LlmProviderResolver();
     await expect(resolver.saveProviderApiKey('OPENAI', 'synthetic-key')).resolves.toBe(true);
     expect(mockLlmProviderService.setProviderApiKey).toHaveBeenCalledWith('OPENAI', 'synthetic-key');
+  });
+
+  it('uses the same tight Qwen status projection for query and successful mutation', async () => {
+    const configured = {
+      effectiveBaseUrl: 'https://regional.example/v1',
+      endpointSource: 'CONFIGURED',
+      apiKeyConfigured: true,
+    };
+    mockLlmProviderService.saveQwenConfiguration.mockResolvedValue(configured);
+    const resolver = new LlmProviderResolver();
+
+    await expect(resolver.qwenSetupStatus()).resolves.toEqual({
+      effectiveBaseUrl: 'https://default.example/v1',
+      endpointSource: 'DEFAULT',
+      apiKeyConfigured: false,
+    });
+    await expect(resolver.saveQwenConfiguration({
+      baseUrl: 'https://regional.example/v1', apiKey: 'synthetic-key',
+    })).resolves.toEqual(configured);
+    expect(mockLlmProviderService.saveQwenConfiguration).toHaveBeenCalledWith({
+      baseUrl: 'https://regional.example/v1', apiKey: 'synthetic-key',
+    });
+  });
+
+  it.each([
+    [
+      QWEN_CONFIGURATION_SAVE_FAILED_PREVIOUS_RESTORED,
+      'previous configuration is still active',
+    ],
+    [
+      QWEN_CONFIGURATION_REPAIR_REQUIRED,
+      'needs repair',
+    ],
+  ] as const)('allowlists sanitized Qwen failure code %s', async (code, message) => {
+    mockLlmProviderService.saveQwenConfiguration.mockRejectedValue(
+      new QwenConfigurationError(code),
+    );
+
+    await expect(new LlmProviderResolver().saveQwenConfiguration({
+      baseUrl: 'https://regional.example/v1', apiKey: 'synthetic-key',
+    })).rejects.toMatchObject({
+      message: expect.stringContaining(message),
+      extensions: { code },
+    });
   });
 
   it('keeps custom command contracts tight', async () => {

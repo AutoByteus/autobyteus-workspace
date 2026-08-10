@@ -1,7 +1,5 @@
 import { getLlmProviderDisplayName, isBuiltInLlmProviderId } from "autobyteus-ts/llm/provider-display-names.js";
 import { LLMProvider } from "autobyteus-ts/llm/providers.js";
-import type { CustomLlmProviderStore } from "../../llm-management/llm-providers/stores/custom-llm-provider-store.js";
-import { getCustomLlmProviderStore } from "../../llm-management/llm-providers/stores/custom-llm-provider-store.js";
 import { createConfiguredPrismaClient } from "../../config/prisma-client-factory.js";
 import type {
   AppDataMigrationDefinition,
@@ -16,6 +14,7 @@ import {
   type RawTokenUsageProviderNameBackfillRow,
   type TokenUsageProviderNameSnapshotBackfillDatabase,
 } from "./token-usage-provider-name-snapshot-backfill-row.js";
+import { CustomProviderMigrationNameSnapshotReader } from "./custom-provider-migration-name-snapshot.js";
 export type {
   RawTokenUsageProviderNameBackfillRow,
   TokenUsageProviderNameSnapshotBackfillDatabase,
@@ -321,14 +320,15 @@ export class TokenUsageProviderNameSnapshotBackfillMigration implements AppDataM
   readonly description = "Recovers exact provider display names for legacy AutoByteus ledger rows without snapshots.";
   readonly requiredOnStartup = true;
   private database: TokenUsageProviderNameSnapshotBackfillDatabase | null;
-  private readonly customProviderStore: Pick<CustomLlmProviderStore, "listProviders">;
+  private readonly providerNameReader: Pick<CustomProviderMigrationNameSnapshotReader, "read">;
 
   constructor(
     database?: TokenUsageProviderNameSnapshotBackfillDatabase,
-    customProviderStore: Pick<CustomLlmProviderStore, "listProviders"> = getCustomLlmProviderStore(),
+    providerNameReader: Pick<CustomProviderMigrationNameSnapshotReader, "read"> =
+      new CustomProviderMigrationNameSnapshotReader(),
   ) {
     this.database = database ?? null;
-    this.customProviderStore = customProviderStore;
+    this.providerNameReader = providerNameReader;
   }
 
   private getDatabase(): TokenUsageProviderNameSnapshotBackfillDatabase {
@@ -340,7 +340,7 @@ export class TokenUsageProviderNameSnapshotBackfillMigration implements AppDataM
     const database = this.getDatabase();
     let customProviderNames: Map<string, string>;
     try {
-      const providers = await this.customProviderStore.listProviders();
+      const providers = await this.providerNameReader.read();
       customProviderNames = new Map(
         providers.map((provider) => [provider.id, provider.name] as const),
       );

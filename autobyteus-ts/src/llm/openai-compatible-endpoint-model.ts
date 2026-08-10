@@ -5,6 +5,7 @@ import { LLMRuntime } from './runtimes.js';
 import type { CustomLlmProviderRecord } from './custom-llm-provider-config.js';
 import type { OpenAICompatibleEndpointDiscoveredModel } from './openai-compatible-endpoint-discovery.js';
 import { OpenAICompatibleEndpointLLM } from './api/openai-compatible-endpoint-llm.js';
+import type { ResolvedModelMetadata } from './metadata/model-metadata-resolver.js';
 
 export const buildOpenAICompatibleEndpointModelIdentifier = (
   providerId: string,
@@ -14,6 +15,7 @@ export const buildOpenAICompatibleEndpointModelIdentifier = (
 export type OpenAICompatibleEndpointModelInput = {
   endpoint: CustomLlmProviderRecord;
   discoveredModel: OpenAICompatibleEndpointDiscoveredModel;
+  resolvedModelMetadata: ResolvedModelMetadata;
 };
 
 export class OpenAICompatibleEndpointModel extends LLMModel {
@@ -37,6 +39,10 @@ export class OpenAICompatibleEndpointModel extends LLMModel {
       hostUrl: endpoint.baseUrl,
       defaultConfig: new LLMConfig(),
       modelIdentifierOverride: modelId,
+      maxContextTokens: input.resolvedModelMetadata.maxContextTokens.value,
+      maxInputTokens: input.resolvedModelMetadata.maxInputTokens.value,
+      maxOutputTokens: input.resolvedModelMetadata.maxOutputTokens.value,
+      resolvedModelMetadata: input.resolvedModelMetadata,
     });
 
     this.endpointId = endpoint.id;

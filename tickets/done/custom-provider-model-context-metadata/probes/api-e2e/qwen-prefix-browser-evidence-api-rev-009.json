@@ -1,0 +1,43 @@
+{
+  "result": "reproduced",
+  "frontendUrl": "http://127.0.0.1:3137/settings",
+  "backendUrl": "http://127.0.0.1:29695/graphql",
+  "observedModelLabels": [
+    "qwen:deepseek-v4-flash-0731",
+    "qwen:deepseek-v4-pro",
+    "qwen:glm-5.2",
+    "qwen3-max",
+    "qwen3.7-max",
+    "qwen3.8-max"
+  ],
+  "visiblePrefixedIdentifiers": [
+    "qwen:deepseek-v4-flash-0731",
+    "qwen:deepseek-v4-pro",
+    "qwen:glm-5.2"
+  ],
+  "friendlyNamesVisibleInSettings": [],
+  "graphqlRequests": [
+    {
+      "operationName": "GetProviderSettings",
+      "url": "http://127.0.0.1:29695/graphql",
+      "status": 200
+    },
+    {
+      "operationName": "GetGeminiSetupConfig",
+      "url": "http://127.0.0.1:29695/graphql",
+      "status": 200
+    },
+    {
+      "operationName": "GetQwenSetupStatus",
+      "url": "http://127.0.0.1:29695/graphql",
+      "status": 200
+    },
+    {
+      "operationName": "GetQwenSetupStatus",
+      "url": "http://127.0.0.1:29695/graphql",
+      "status": 200
+    }
+  ],
+  "consoleErrors": [],
+  "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/probes/api-e2e/qwen-prefix-live-electron-backend-api-rev-009.png"
+}

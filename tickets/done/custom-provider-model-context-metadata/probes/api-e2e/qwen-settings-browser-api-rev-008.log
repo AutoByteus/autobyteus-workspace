@@ -1,0 +1,18 @@
+{
+  "result": "PASS",
+  "evidencePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/probes/api-e2e/qwen-settings-browser-evidence-api-rev-008.json",
+  "assertions": {
+    "defaultStatus": true,
+    "maskedApiKey": true,
+    "realProviderProbe": true,
+    "browserSaveConfiguredPair": true,
+    "graphqlConfiguredStatus": true,
+    "runtimeEnvironmentPersistedBaseUrl": true,
+    "apiKeyAbsentFromEnvironment": true,
+    "restrictiveChildUmaskPreservedExistingMode0660": true,
+    "exactNativeValuesAndIdentifiers": true,
+    "previewAliasAbsent": true,
+    "plaintextKeyCleared": true,
+    "narrowViewportNoHorizontalOverflow": true
+  }
+}

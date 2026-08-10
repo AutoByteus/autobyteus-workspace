@@ -1,0 +1,109 @@
+$ git diff --check
+$ git status --short
+ M autobyteus-server-ts/docs/modules/llm_management.md
+ M autobyteus-server-ts/docs/modules/token_usage.md
+ M autobyteus-server-ts/src/api/graphql/types/llm-provider.ts
+ M autobyteus-server-ts/src/config/app-config.ts
+ M autobyteus-server-ts/src/config/index.ts
+ M autobyteus-server-ts/src/llm-management/llm-providers/domain/models.ts
+ M autobyteus-server-ts/src/llm-management/llm-providers/services/llm-provider-service.ts
+ M autobyteus-server-ts/src/llm-management/services/model-metadata-provisioning-service.ts
+ M autobyteus-server-ts/tests/e2e/llm-management/custom-provider-model-metadata-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/unit/api/graphql/types/llm-provider.test.ts
+ M autobyteus-server-ts/tests/unit/config/app-config.test.ts
+ M autobyteus-server-ts/tests/unit/llm-management/llm-providers/llm-provider-service.test.ts
+ M autobyteus-server-ts/tests/unit/llm-management/model-metadata-provisioning-service.test.ts
+ M autobyteus-ts/docs/llm_module_design.md
+ M autobyteus-ts/docs/llm_module_design_nodejs.md
+ M autobyteus-ts/docs/provider_model_catalogs.md
+ M autobyteus-ts/src/llm/api/qwen-llm.ts
+ M autobyteus-ts/src/llm/index.ts
+ M autobyteus-ts/src/llm/metadata/model-metadata-resolver.ts
+ M autobyteus-ts/src/llm/metadata/openai-compatible-endpoint-model-metadata.ts
+ M autobyteus-ts/src/llm/openai-compatible-endpoint-provider.ts
+ M autobyteus-ts/src/llm/supported-model-definitions.ts
+ M autobyteus-ts/tests/unit/llm/metadata/openai-compatible-endpoint-model-metadata.test.ts
+ M autobyteus-ts/tests/unit/llm/openai-compatible-endpoint-provider.test.ts
+ M autobyteus-ts/tests/unit/llm/supported-model-definitions.test.ts
+ M autobyteus-web/components/settings/ProviderAPIKeyManager.vue
+ M autobyteus-web/components/settings/__tests__/ProviderAPIKeyManager.spec.ts
+ M autobyteus-web/components/settings/providerApiKey/ProviderModelBrowser.vue
+ M autobyteus-web/components/settings/providerApiKey/__tests__/providerSettingsApolloContract.spec.ts
+ M autobyteus-web/components/settings/providerApiKey/__tests__/useProviderApiKeySectionRuntime.spec.ts
+ M autobyteus-web/components/settings/providerApiKey/useProviderApiKeySectionRuntime.ts
+ M autobyteus-web/docs/agent_execution_architecture.md
+ M autobyteus-web/docs/settings.md
+ M autobyteus-web/generated/graphql.ts
+ M autobyteus-web/graphql/mutations/llm_provider_mutations.ts
+ M autobyteus-web/graphql/queries/llm_provider_queries.ts
+ M autobyteus-web/localization/messages/en/settings.ts
+ M autobyteus-web/localization/messages/zh-CN/settings.ts
+ M autobyteus-web/stores/llmProviderConfig.ts
+ M autobyteus-web/stores/llmProviderConfigSupport.ts
+ M tickets/in-progress/custom-provider-model-context-metadata/api-e2e-coverage-investigation.md
+ M tickets/in-progress/custom-provider-model-context-metadata/architecture-review-revision-record.md
+ M tickets/in-progress/custom-provider-model-context-metadata/code-review-report.md
+ M tickets/in-progress/custom-provider-model-context-metadata/code-review-revision-record.md
+ M tickets/in-progress/custom-provider-model-context-metadata/design-review-report.md
+ M tickets/in-progress/custom-provider-model-context-metadata/design-spec.md
+ M tickets/in-progress/custom-provider-model-context-metadata/implementation-handoff.md
+ M tickets/in-progress/custom-provider-model-context-metadata/implementation-revision-record.md
+ M tickets/in-progress/custom-provider-model-context-metadata/investigation-notes.md
+ M tickets/in-progress/custom-provider-model-context-metadata/requirements.md
+ M tickets/in-progress/custom-provider-model-context-metadata/solution-revision-record.md
+?? autobyteus-server-ts/src/config/environment-assignment-file.ts
+?? autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts
+?? autobyteus-ts/src/llm/qwen-provider-config.ts
+?? autobyteus-ts/src/llm/qwen-supported-model-definitions.ts
+?? autobyteus-ts/tests/unit/llm/qwen-provider-config.test.ts
+?? autobyteus-web/components/settings/providerApiKey/QwenSetupForm.vue
+?? autobyteus-web/components/settings/providerApiKey/__tests__/QwenSetupForm.spec.ts
+?? tickets/in-progress/custom-provider-model-context-metadata/delivery-integrated-state-refresh.log
+?? tickets/in-progress/custom-provider-model-context-metadata/delivery-revision-record.md
+?? tickets/in-progress/custom-provider-model-context-metadata/docs-sync-report.md
+?? tickets/in-progress/custom-provider-model-context-metadata/electron-build-mac-report.md
+?? tickets/in-progress/custom-provider-model-context-metadata/electron-build-mac.log
+?? tickets/in-progress/custom-provider-model-context-metadata/handoff-summary.md
+?? tickets/in-progress/custom-provider-model-context-metadata/probes/
+?? tickets/in-progress/custom-provider-model-context-metadata/qwen-native-provider-setup-ui-spec.md
+?? tickets/in-progress/custom-provider-model-context-metadata/release-deployment-report.md
+$ rg qwen3.8-max-preview relevant durable coverage
+autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts:397:      expect(qwenProvider!.models.some(({ value }) => value === 'qwen3.8-max-preview')).toBe(false);
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:1136:    const customModel = `openai-compatible:${providerId}:qwen3.8-max-preview`;
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:1154:        modelValue: 'qwen3.8-max-preview',
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:1194:        modelValue: 'qwen3.8-max-preview',
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:1225:        modelValue: 'qwen3.8-max-preview',
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:1286:          modelDisplayName: 'alibaba_cloud:qwen3.8-max-preview',
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:1309:        modelDisplayNames: ['alibaba_cloud:qwen3.8-max-preview'],
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:1329:        modelValue: 'qwen3.8-max-preview',
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts:1347:          modelDisplayName: 'alibaba_cloud:qwen3.8-max-preview',
+autobyteus-server-ts/tests/integration/token-usage/providers/statistics-provider.integration.test.ts:152:        model: "openai-compatible:provider_A:qwen3.8-max-preview",
+autobyteus-server-ts/tests/integration/token-usage/providers/statistics-provider.integration.test.ts:154:        modelValue: "qwen3.8-max-preview",
+autobyteus-server-ts/tests/integration/token-usage/providers/statistics-provider.integration.test.ts:173:      modelIdentifier: "openai-compatible:provider_A:qwen3.8-max-preview",
+autobyteus-server-ts/tests/integration/token-usage/providers/statistics-provider.integration.test.ts:174:      modelDisplayName: "renamed_provider:qwen3.8-max-preview",
+autobyteus-server-ts/tests/integration/token-usage/providers/statistics-provider.integration.test.ts:184:        model: "openai-compatible:provider_A:qwen3.8-max-preview",
+autobyteus-server-ts/tests/integration/token-usage/providers/statistics-provider.integration.test.ts:187:        modelValue: "qwen3.8-max-preview",
+autobyteus-server-ts/tests/integration/token-usage/providers/statistics-provider.integration.test.ts:205:    expect(result[0]).toMatchObject({ modelDisplayName: "historical_alibaba_cloud:qwen3.8-max-preview" });
+autobyteus-server-ts/tests/unit/token-usage/projections/token-usage-model-display-projection.test.ts:24:    ? "openai-compatible:provider_A:qwen3.8-max-preview"
+autobyteus-server-ts/tests/unit/token-usage/projections/token-usage-model-display-projection.test.ts:26:  model_value: input.model_value === undefined ? "qwen3.8-max-preview" : input.model_value,
+autobyteus-server-ts/tests/unit/token-usage/projections/token-usage-model-display-projection.test.ts:40:      "alibaba_cloud:qwen3.8-max-preview",
+autobyteus-server-ts/tests/unit/token-usage/projections/token-usage-model-display-projection.test.ts:43:      "historical_provider:qwen3.8-max-preview",
+autobyteus-server-ts/tests/unit/token-usage/projections/token-usage-model-display-projection.test.ts:60:      "OpenAI-Compatible (provider_A):qwen3.8-max-preview",
+autobyteus-ts/tests/unit/llm/supported-model-definitions.test.ts:336:    expect(qwenDefinitions.some((definition) => definition.value === 'qwen3.8-max-preview'))
+$ final git diff --check
+$ final durable E2E summary
+
+ ✓ tests/e2e/llm-management/custom-provider-model-metadata-graphql.e2e.test.ts (3 tests) 2577ms
+
+ Test Files  2 passed (2)
+      Tests  4 passed (4)
+   Start at  19:34:39
+   Duration  20.76s (transform 5.66s, setup 20ms, import 9.72s, tests 10.13s, environment 0ms)
+
+$ final API/E2E artifact status
+ M autobyteus-server-ts/tests/e2e/llm-management/custom-provider-model-metadata-graphql.e2e.test.ts
+ M tickets/in-progress/custom-provider-model-context-metadata/api-e2e-coverage-investigation.md
+ M tickets/in-progress/custom-provider-model-context-metadata/api-e2e-execution-coverage-report.md
+ M tickets/in-progress/custom-provider-model-context-metadata/api-e2e-revision-record.md
+?? autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts
+?? tickets/in-progress/custom-provider-model-context-metadata/probes/api-e2e/

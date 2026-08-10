@@ -1,0 +1,25 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts
+
+ ✓ tests/unit/llm/custom-llm-provider-identity.test.ts (8 tests) 8ms
+ ✓ tests/unit/llm/metadata/openai-compatible-endpoint-model-metadata.test.ts (5 tests) 4ms
+ ✓ tests/integration/llm/llm-factory-metadata-resolution.test.ts (2 tests) 10ms
+stdout | tests/unit/llm/openai-compatible-endpoint-provider.test.ts > LLMFactory custom provider sync > registers discovered models and instantiates with separately supplied authentication
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stderr | tests/unit/llm/openai-compatible-endpoint-provider.test.ts > LLMFactory custom provider sync > registers discovered models and instantiates with separately supplied authentication
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+
+stdout | tests/unit/llm/openai-compatible-endpoint-provider.test.ts > LLMFactory custom provider sync > registers discovered models and instantiates with separately supplied authentication
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stdout | tests/unit/llm/openai-compatible-endpoint-provider.test.ts > LLMFactory custom provider sync > registers discovered models and instantiates with separately supplied authentication
+Finished LM Studio discovery. Total models registered: 14
+
+ ✓ tests/unit/llm/openai-compatible-endpoint-provider.test.ts (6 tests) 31ms
+
+ Test Files  4 passed (4)
+      Tests  21 passed (21)
+   Start at  14:08:53
+   Duration  1.30s (transform 982ms, setup 88ms, import 3.38s, tests 52ms, environment 0ms)
+

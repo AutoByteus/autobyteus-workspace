@@ -9,6 +9,7 @@ import {
   registerEnumType,
   Resolver,
 } from 'type-graphql';
+import { GraphQLError } from 'graphql';
 import { GraphQLJSON } from 'graphql-scalars';
 import type { ModelInfo } from 'autobyteus-ts/llm/models.js';
 import { getLlmProviderDisplayName } from 'autobyteus-ts/llm/provider-display-names.js';
@@ -24,7 +25,13 @@ import {
   getLlmProviderService,
   type LlmProviderService,
   type ProviderSettings,
+  QWEN_CONFIGURATION_REPAIR_REQUIRED,
+  QWEN_CONFIGURATION_SAVE_FAILED_PREVIOUS_RESTORED,
+  QwenConfigurationError,
 } from '../../../llm-management/llm-providers/services/llm-provider-service.js';
+import type {
+  QwenSetupStatus,
+} from '../../../llm-management/llm-providers/domain/models.js';
 import type {
   GeminiConfigurationOption,
   GeminiConfigurationState,
@@ -177,6 +184,34 @@ class CustomProviderInputObject {
   apiKey!: string;
 }
 
+enum QwenEndpointSourceGraphql {
+  DEFAULT = 'DEFAULT',
+  CONFIGURED = 'CONFIGURED',
+}
+
+registerEnumType(QwenEndpointSourceGraphql, { name: 'QwenEndpointSource' });
+
+@ObjectType('QwenSetupStatus')
+class QwenSetupStatusObject {
+  @Field(() => String)
+  effectiveBaseUrl!: string;
+
+  @Field(() => QwenEndpointSourceGraphql)
+  endpointSource!: QwenEndpointSourceGraphql;
+
+  @Field(() => Boolean)
+  apiKeyConfigured!: boolean;
+}
+
+@InputType('QwenConfigurationInput')
+class QwenConfigurationInputObject {
+  @Field(() => String)
+  baseUrl!: string;
+
+  @Field(() => String)
+  apiKey!: string;
+}
+
 type ModelInfoWithMetadataProvenance = ModelInfo & {
   metadata_provenance?: ModelMetadataProvenanceValue | null;
 };
@@ -257,6 +292,24 @@ const mapProviderSettings = (group: ProviderSettings): ProviderSettingsGroup => 
   videoModels: sortModels(group.videoModels.map(mapMultimediaModel)),
 });
 
+const mapQwenSetupStatus = (status: QwenSetupStatus): QwenSetupStatusObject => ({
+  effectiveBaseUrl: status.effectiveBaseUrl,
+  endpointSource: status.endpointSource as QwenEndpointSourceGraphql,
+  apiKeyConfigured: status.apiKeyConfigured,
+});
+
+const throwSanitizedQwenConfigurationError = (error: unknown): never => {
+  if (!(error instanceof QwenConfigurationError)) throw error;
+  const repairRequired = error.code === QWEN_CONFIGURATION_REPAIR_REQUIRED;
+  const code = repairRequired
+    ? QWEN_CONFIGURATION_REPAIR_REQUIRED
+    : QWEN_CONFIGURATION_SAVE_FAILED_PREVIOUS_RESTORED;
+  const message = repairRequired
+    ? 'Qwen configuration needs repair. Save a valid Base URL and API key again before using Qwen.'
+    : 'Could not save Qwen configuration. Your previous configuration is still active.';
+  throw new GraphQLError(message, { extensions: { code } });
+};
+
 @Resolver()
 export class LlmProviderResolver {
   private get runtimeModelCatalogService() {
@@ -281,6 +334,11 @@ export class LlmProviderResolver {
   @Query(() => GeminiSetupStateObject)
   async getGeminiSetupConfig(): Promise<GeminiSetupStateObject> {
     return mapGeminiSetup(await this.llmProviderService.getGeminiConfigurationStatus());
+  }
+
+  @Query(() => QwenSetupStatusObject)
+  async qwenSetupStatus(): Promise<QwenSetupStatusObject> {
+    return mapQwenSetupStatus(await this.llmProviderService.getQwenSetupStatus());
   }
 
   @Query(() => [ProviderWithModels])
@@ -324,6 +382,19 @@ export class LlmProviderResolver {
   ): Promise<boolean> {
     await this.llmProviderService.setProviderApiKey(providerId, apiKey);
     return true;
+  }
+
+  @Mutation(() => QwenSetupStatusObject)
+  async saveQwenConfiguration(
+    @Arg('input', () => QwenConfigurationInputObject) input: QwenConfigurationInputObject,
+  ): Promise<QwenSetupStatusObject> {
+    try {
+      return mapQwenSetupStatus(
+        await this.llmProviderService.saveQwenConfiguration(input),
+      );
+    } catch (error) {
+      return throwSanitizedQwenConfigurationError(error);
+    }
   }
 
   @Mutation(() => CustomProviderProbeResultObject)

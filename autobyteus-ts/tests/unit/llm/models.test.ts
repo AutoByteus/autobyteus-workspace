@@ -5,6 +5,12 @@ import { LLMRuntime } from '../../../src/llm/runtimes.js';
 import { LLMConfig } from '../../../src/llm/utils/llm-config.js';
 import { OpenAICompatibleEndpointModel } from '../../../src/llm/openai-compatible-endpoint-model.js';
 
+const unknownResolvedMetadata = {
+  maxContextTokens: { value: null, source: { kind: 'unknown' as const } },
+  maxInputTokens: { value: null, source: { kind: 'unknown' as const } },
+  maxOutputTokens: { value: null, source: { kind: 'unknown' as const } },
+};
+
 describe('LLMModel', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
@@ -71,6 +77,7 @@ describe('LLMModel', () => {
         value: 'model-a',
         canonicalName: 'model-a',
       },
+      resolvedModelMetadata: unknownResolvedMetadata,
     });
 
     expect(model.modelIdentifier).toBe('openai-compatible:provider_1:model-a');
@@ -81,6 +88,7 @@ describe('LLMModel', () => {
       provider_type: 'OPENAI_COMPATIBLE',
       runtime: 'openai_compatible',
       host_url: 'https://gateway.example.com/v1',
+      resolved_model_metadata: unknownResolvedMetadata,
     });
   });
 });

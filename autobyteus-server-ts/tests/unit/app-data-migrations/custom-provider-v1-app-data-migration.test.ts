@@ -1,469 +1,151 @@
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import { DatabaseSync } from 'node:sqlite';
-import { SecretValue } from 'autobyteus-ts';
-import { initializePrisma, shutdownPrisma } from 'repository_prisma';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { AppDataMigrationRegistry } from '../../../src/app-data-migrations/app-data-migration-registry.js';
 import {
   CUSTOM_PROVIDER_V1_APP_DATA_MIGRATION_ID,
   CustomProviderV1AppDataMigration,
 } from '../../../src/app-data-migrations/migrations/custom-provider-v1-app-data-migration.js';
-import { ApplicationDatabaseLocation } from '../../../src/config/application-database-location.js';
-import { SecretVaultBootstrap } from '../../../src/secret-management/bootstrap/secret-vault-bootstrap.js';
-import {
-  customProviderSecretId,
-} from '../../../src/secret-management/domain/secret-id.js';
-import { SecretVaultRepository } from '../../../src/secret-management/persistence/secret-vault-repository.js';
-import { SecretManagementService } from '../../../src/secret-management/services/secret-management-service.js';
+import { CustomProviderV1MigrationFile } from '../../../src/app-data-migrations/migrations/custom-provider-v1-migration-file.js';
 
-const TABLES = `
-  CREATE TABLE secret_entries (
-    secret_id TEXT NOT NULL PRIMARY KEY,
-    nonce BLOB NOT NULL CHECK (length(nonce) = 12),
-    ciphertext BLOB NOT NULL,
-    authentication_tag BLOB NOT NULL CHECK (length(authentication_tag) = 16)
-  );
-  CREATE TABLE secret_encryption_metadata (
-    singleton_id INTEGER NOT NULL PRIMARY KEY CHECK (singleton_id = 1),
-    encryption_domain_id BLOB NOT NULL UNIQUE CHECK (length(encryption_domain_id) = 16),
-    encryption_format_version INTEGER NOT NULL,
-    verifier_nonce BLOB NOT NULL CHECK (length(verifier_nonce) = 12),
-    verifier_ciphertext BLOB NOT NULL,
-    verifier_authentication_tag BLOB NOT NULL CHECK (length(verifier_authentication_tag) = 16)
-  );
-`;
+const secretRuntime = vi.hoisted(() => ({ requireService: vi.fn() }));
 
-const v1File = (providers = [{
-  id: 'provider_alpha',
-  name: 'Alpha',
-  providerType: 'OPENAI_COMPATIBLE',
-  baseUrl: 'https://alpha.synthetic.invalid/v1',
-  apiKey: 'synthetic-alpha-canary',
-}]) => ({
+vi.mock('../../../src/secret-management/secret-vault-runtime.js', () => ({
+  getSecretVaultRuntime: () => ({ requireService: secretRuntime.requireService }),
+}));
+
+const validV1 = {
   version: 1,
-  providers,
-});
+  providers: [{
+    id: 'provider_alpha_uuid',
+    name: 'Alpha Cloud',
+    providerType: 'OPENAI_COMPATIBLE',
+    baseUrl: 'https://alpha.synthetic.invalid/v1',
+    apiKey: 'synthetic-inline-secret-canary',
+  }],
+};
 
 describe('CustomProviderV1AppDataMigration', () => {
   let directory: string;
-  let providerDirectory: string;
   let providerPath: string;
-  let service: SecretManagementService;
 
   beforeEach(async () => {
-    await shutdownPrisma();
-    directory = await fs.mkdtemp(path.join(os.tmpdir(), 'custom-provider-v1-migration-'));
-    if (process.platform !== 'win32') await fs.chmod(directory, 0o700);
-    providerDirectory = path.join(directory, 'llm');
-    providerPath = path.join(providerDirectory, 'custom-llm-providers.json');
-    const location = ApplicationDatabaseLocation.fromConfiguredFileUrl(
-      'file:application.db',
-      directory,
-    );
-    const database = new DatabaseSync(location.databasePath);
-    database.exec(TABLES);
-    database.close();
-    await initializePrisma({ datasourceUrl: location.databaseUrl });
-    const repository = new SecretVaultRepository();
-    const bootstrap = await new SecretVaultBootstrap(location, repository).initializeOrVerify();
-    service = new SecretManagementService(
-      repository,
-      bootstrap.rootKey,
-      bootstrap.metadata,
-      bootstrap.health,
-    );
+    vi.clearAllMocks();
+    directory = await fs.mkdtemp(path.join(os.tmpdir(), 'custom-provider-v1-'));
+    providerPath = path.join(directory, 'llm', 'custom-llm-providers.json');
   });
 
   afterEach(async () => {
     vi.restoreAllMocks();
-    service?.close();
-    await shutdownPrisma();
     await fs.rm(directory, { recursive: true, force: true });
   });
 
-  const writeV1 = async (value = v1File()): Promise<Buffer> => {
-    await fs.mkdir(providerDirectory, { recursive: true });
+  const writeProviderFile = async (value: unknown): Promise<Buffer> => {
+    await fs.mkdir(path.dirname(providerPath), { recursive: true });
     const bytes = Buffer.from(`${JSON.stringify(value, null, 2)}\n`);
     await fs.writeFile(providerPath, bytes);
     return bytes;
   };
 
-  const migration = () => new CustomProviderV1AppDataMigration(directory, () => service);
-
-  it('is registered as the first required startup app-data migration', () => {
-    const definitions = new AppDataMigrationRegistry().listDefinitions();
-    expect(definitions[0]).toBeInstanceOf(CustomProviderV1AppDataMigration);
-    expect(definitions[0]).toMatchObject({
+  it('retains the historical required migration identity', () => {
+    expect(new CustomProviderV1AppDataMigration(directory)).toMatchObject({
       id: CUSTOM_PROVIDER_V1_APP_DATA_MIGRATION_ID,
       requiredOnStartup: true,
     });
   });
 
-  it('treats missing and current v2 files as idempotent no-ops without vault access', async () => {
-    const getSecretOwner = vi.fn(() => service);
-    await expect(new CustomProviderV1AppDataMigration(
-      directory,
-      getSecretOwner,
-    ).execute()).resolves.toMatchObject({
+  it('treats missing, strict V2, and strict V3 as no-ops without vault access', async () => {
+    const migration = new CustomProviderV1AppDataMigration(directory);
+    await expect(migration.execute()).resolves.toMatchObject({
       status: 'SUCCEEDED',
       summary: { migratedCount: 0, failedCount: 0 },
     });
 
-    await fs.mkdir(providerDirectory, { recursive: true });
-    const current = Buffer.from('{"version":2,"providers":[]}\n');
-    await fs.writeFile(providerPath, current);
-    await expect(new CustomProviderV1AppDataMigration(
-      directory,
-      getSecretOwner,
-    ).execute()).resolves.toMatchObject({
-      status: 'SUCCEEDED',
-      summary: { migratedCount: 0, failedCount: 0 },
-    });
-    expect(await fs.readFile(providerPath)).toEqual(current);
-    expect(getSecretOwner).not.toHaveBeenCalled();
+    for (const current of [
+      { version: 2, providers: [] },
+      { version: 3, providers: [] },
+    ]) {
+      const bytes = await writeProviderFile(current);
+      await expect(migration.execute()).resolves.toMatchObject({
+        status: 'SUCCEEDED',
+        summary: { migratedCount: 0, failedCount: 0 },
+      });
+      expect(await fs.readFile(providerPath)).toEqual(bytes);
+    }
+    expect(secretRuntime.requireService).not.toHaveBeenCalled();
   });
 
-  it('migrates every valid provider atomically and publishes owner-only secret-free v2', async () => {
-    await writeV1(v1File([
-      {
-        id: 'provider_alpha',
-        name: 'Alpha',
-        providerType: 'OPENAI_COMPATIBLE',
-        baseUrl: 'https://alpha.synthetic.invalid/v1',
-        apiKey: 'synthetic-alpha-canary',
-      },
-      {
-        id: 'provider_beta',
-        name: 'Beta',
-        providerType: 'OPENAI_COMPATIBLE',
-        baseUrl: 'https://beta.synthetic.invalid/v1',
-        apiKey: 'synthetic-beta-canary',
-      },
-    ]));
+  it('atomically stages valid V1 as owner-only secretless V2 and requires reconfiguration', async () => {
+    await writeProviderFile(validV1);
 
-    const result = await migration().execute();
+    const result = await new CustomProviderV1AppDataMigration(directory).execute();
+
     expect(result).toMatchObject({
-      status: 'SUCCEEDED',
-      summary: { migratedCount: 1, failedCount: 0 },
+      status: 'SUCCEEDED_WITH_WARNINGS',
+      summary: {
+        migratedCount: 1,
+        failedCount: 0,
+        details: [{ message: 'CUSTOM_PROVIDER_V1_RECONFIGURATION_REQUIRED' }],
+      },
     });
-    expect(JSON.stringify(result)).not.toContain('synthetic-alpha-canary');
-    expect(JSON.stringify(result)).not.toContain('synthetic-beta-canary');
-
     const currentBytes = await fs.readFile(providerPath);
     expect(JSON.parse(currentBytes.toString('utf8'))).toEqual({
       version: 2,
-      providers: [
-        {
-          id: 'provider_alpha',
-          name: 'Alpha',
-          providerType: 'OPENAI_COMPATIBLE',
-          baseUrl: 'https://alpha.synthetic.invalid/v1',
-        },
-        {
-          id: 'provider_beta',
-          name: 'Beta',
-          providerType: 'OPENAI_COMPATIBLE',
-          baseUrl: 'https://beta.synthetic.invalid/v1',
-        },
-      ],
+      providers: [{
+        id: 'provider_alpha_uuid',
+        name: 'Alpha Cloud',
+        providerType: 'OPENAI_COMPATIBLE',
+        baseUrl: 'https://alpha.synthetic.invalid/v1',
+      }],
     });
-    expect(currentBytes.includes(Buffer.from('synthetic-alpha-canary'))).toBe(false);
-    expect(currentBytes.includes(Buffer.from('synthetic-beta-canary'))).toBe(false);
+    expect(currentBytes.includes(Buffer.from('synthetic-inline-secret-canary'))).toBe(false);
+    expect(JSON.stringify(result)).not.toContain('synthetic-inline-secret-canary');
+    expect(secretRuntime.requireService).not.toHaveBeenCalled();
+    expect(await fs.readdir(path.dirname(providerPath))).toEqual(['custom-llm-providers.json']);
     if (process.platform !== 'win32') {
       expect((await fs.stat(providerPath)).mode & 0o777).toBe(0o600);
     }
-    await expect(service.resolveForUse({
-      kind: 'llm',
-      providerId: 'provider_alpha',
-      credentialSlot: 'apiKey',
-    }).then((value) => value.revealToTrustedConsumer())).resolves.toBe(
-      'synthetic-alpha-canary',
-    );
-    await expect(service.resolveForUse({
-      kind: 'llm',
-      providerId: 'provider_beta',
-      credentialSlot: 'apiKey',
-    }).then((value) => value.revealToTrustedConsumer())).resolves.toBe(
-      'synthetic-beta-canary',
-    );
-    expect((await fs.readdir(providerDirectory)).sort()).toEqual([
-      'custom-llm-providers.json',
-    ]);
   });
 
-  it('serializes live migration owners so only one batch can publish', async () => {
-    const source = await writeV1();
-    const originalCreate = service.createMissingBatchForCustomProviderMigration.bind(service);
-    let entered!: () => void;
-    let release!: () => void;
-    const enteredPromise = new Promise<void>((resolve) => {
-      entered = resolve;
-    });
-    const releasePromise = new Promise<void>((resolve) => {
-      release = resolve;
-    });
-    const createBatch = vi.spyOn(
-      service,
-      'createMissingBatchForCustomProviderMigration',
-    ).mockImplementation(async (entries) => {
-      entered();
-      await releasePromise;
-      return originalCreate(entries);
-    });
+  it('deletes invalid V1 data and returns a sanitized reconfiguration warning', async () => {
+    await writeProviderFile({ ...validV1, providers: [{ ...validV1.providers[0], apiKey: '' }] });
 
-    const first = migration().execute();
-    await enteredPromise;
-    const second = migration().execute();
-    await new Promise((resolve) => setTimeout(resolve, 30));
-    expect(createBatch).toHaveBeenCalledTimes(1);
-    expect(await fs.readFile(providerPath)).toEqual(source);
-    release();
-
-    await expect(first).resolves.toMatchObject({ status: 'SUCCEEDED' });
-    await expect(second).resolves.toMatchObject({
-      status: 'SUCCEEDED',
-      summary: { migratedCount: 0 },
-    });
-    expect(createBatch).toHaveBeenCalledTimes(1);
-  });
-
-  it('recovers a fixed-path lock owned by a terminated process', async () => {
-    await writeV1();
-    await fs.writeFile(`${providerPath}.lock`, '99999999\n', { mode: 0o600 });
-
-    await expect(migration().execute()).resolves.toMatchObject({
-      status: 'SUCCEEDED',
-      summary: { migratedCount: 1 },
-    });
-    await expect(fs.lstat(`${providerPath}.lock`)).rejects.toMatchObject({ code: 'ENOENT' });
-  });
-
-  it('recovers an aged zero-byte lock left by the pre-migration provider writer', async () => {
-    await writeV1();
-    const lockPath = `${providerPath}.lock`;
-    await fs.writeFile(lockPath, Buffer.alloc(0), { mode: 0o600 });
-    const aged = new Date(Date.now() - 61_000);
-    await fs.utimes(lockPath, aged, aged);
-
-    await expect(migration().execute()).resolves.toMatchObject({
-      status: 'SUCCEEDED',
-      summary: { migratedCount: 1 },
-    });
-    await expect(fs.lstat(lockPath)).rejects.toMatchObject({ code: 'ENOENT' });
-  });
-
-  it('does not reclaim an aged lock owned by a live positive PID', async () => {
-    const source = await writeV1();
-    const lockPath = `${providerPath}.lock`;
-    await fs.writeFile(lockPath, `${process.pid}\n`, { mode: 0o600 });
-    const aged = new Date(Date.now() - 61_000);
-    await fs.utimes(lockPath, aged, aged);
-    let settled = false;
-    const run = migration().execute().finally(() => {
-      settled = true;
-    });
-
-    await new Promise((resolve) => setTimeout(resolve, 75));
-    expect(settled).toBe(false);
-    expect(await fs.readFile(providerPath)).toEqual(source);
-    await fs.unlink(lockPath);
-
-    await expect(run).resolves.toMatchObject({
-      status: 'SUCCEEDED',
-      summary: { migratedCount: 1 },
-    });
-  });
-
-  it('deletes invalid or duplicate v1 without touching the vault', async () => {
-    await writeV1(v1File([
-      {
-        id: 'provider_duplicate',
-        name: 'Duplicate',
-        providerType: 'OPENAI_COMPATIBLE',
-        baseUrl: 'https://first.synthetic.invalid/v1',
-        apiKey: 'synthetic-first-canary',
-      },
-      {
-        id: 'provider_duplicate',
-        name: 'Other',
-        providerType: 'OPENAI_COMPATIBLE',
-        baseUrl: 'https://second.synthetic.invalid/v1',
-        apiKey: 'synthetic-second-canary',
-      },
-    ]));
-    const createBatch = vi.spyOn(service, 'createMissingBatchForCustomProviderMigration');
-
-    await expect(migration().execute()).resolves.toMatchObject({
-      status: 'SUCCEEDED_WITH_WARNINGS',
-      summary: { migratedCount: 0, skippedCount: 1, failedCount: 0 },
-    });
-
-    expect(createBatch).not.toHaveBeenCalled();
-    await expect(fs.lstat(providerPath)).rejects.toMatchObject({ code: 'ENOENT' });
-    await expect(service.getStatusForConsumer({
-      kind: 'llm',
-      providerId: 'provider_duplicate',
-      credentialSlot: 'apiKey',
-    })).resolves.toBe('MISSING');
-  });
-
-  it.skipIf(process.platform === 'win32')(
-    'removes an unsafe canonical symlink without reading or changing its target',
-    async () => {
-      await fs.mkdir(providerDirectory, { recursive: true });
-      const externalPath = path.join(directory, 'external-provider-data.json');
-      const external = Buffer.from(JSON.stringify(v1File()));
-      await fs.writeFile(externalPath, external);
-      await fs.symlink(externalPath, providerPath);
-      const createBatch = vi.spyOn(service, 'createMissingBatchForCustomProviderMigration');
-
-      await expect(migration().execute()).resolves.toMatchObject({
-        status: 'SUCCEEDED_WITH_WARNINGS',
-      });
-
-      expect(createBatch).not.toHaveBeenCalled();
-      await expect(fs.lstat(providerPath)).rejects.toMatchObject({ code: 'ENOENT' });
-      expect(await fs.readFile(externalPath)).toEqual(external);
-    },
-  );
-
-  it('treats an interrupted committed batch as a collision and never deletes it', async () => {
-    const source = await writeV1();
-    await service.createMissingBatchForCustomProviderMigration([{
-      secretId: customProviderSecretId('provider_alpha'),
-      input: SecretValue.fromString('synthetic-interrupted-canary'),
-    }]);
-
-    await expect(migration().execute()).resolves.toMatchObject({
-      status: 'SUCCEEDED_WITH_WARNINGS',
-      summary: { failedCount: 0 },
-    });
-
-    await expect(fs.lstat(providerPath)).rejects.toMatchObject({ code: 'ENOENT' });
-    await expect(service.resolveForUse({
-      kind: 'llm',
-      providerId: 'provider_alpha',
-      credentialSlot: 'apiKey',
-    }).then((value) => value.revealToTrustedConsumer())).resolves.toBe(
-      'synthetic-interrupted-canary',
-    );
-    expect(source.includes(Buffer.from('synthetic-alpha-canary'))).toBe(true);
-  });
-
-  it('compensates the exact new batch when atomic v2 publication fails', async () => {
-    await writeV1();
-    const originalRename = fs.rename.bind(fs);
-    vi.spyOn(fs, 'rename').mockImplementation(async (from, to) => {
-      if (String(from).endsWith('.v2-stage') && String(to) === providerPath) {
-        throw Object.assign(new Error('synthetic publish rejection'), { code: 'EIO' });
-      }
-      return originalRename(from, to);
-    });
-
-    await expect(migration().execute()).resolves.toMatchObject({
-      status: 'SUCCEEDED_WITH_WARNINGS',
-      summary: { failedCount: 0 },
-    });
-
-    await expect(fs.lstat(providerPath)).rejects.toMatchObject({ code: 'ENOENT' });
-    await expect(service.getStatusForConsumer({
-      kind: 'llm',
-      providerId: 'provider_alpha',
-      credentialSlot: 'apiKey',
-    })).resolves.toBe('MISSING');
-    expect(await fs.readdir(providerDirectory)).toEqual([]);
-  });
-
-  it('deletes v1 after stage failure without calling the database owner', async () => {
-    await writeV1();
-    const originalOpen = fs.open.bind(fs);
-    vi.spyOn(fs, 'open').mockImplementation(async (file, flags, mode) => {
-      if (String(file).endsWith('.v2-stage')) {
-        throw Object.assign(new Error('synthetic stage rejection'), { code: 'EIO' });
-      }
-      return originalOpen(file, flags, mode);
-    });
-    const createBatch = vi.spyOn(service, 'createMissingBatchForCustomProviderMigration');
-
-    await expect(migration().execute()).resolves.toMatchObject({
-      status: 'SUCCEEDED_WITH_WARNINGS',
-      summary: { failedCount: 0 },
-    });
-    expect(createBatch).not.toHaveBeenCalled();
-    await expect(fs.lstat(providerPath)).rejects.toMatchObject({ code: 'ENOENT' });
-  });
-
-  it('rolls back the entire vault batch and deletes v1 after a database write failure', async () => {
-    await writeV1(v1File([
-      {
-        id: 'provider_alpha',
-        name: 'Alpha',
-        providerType: 'OPENAI_COMPATIBLE',
-        baseUrl: 'https://alpha.synthetic.invalid/v1',
-        apiKey: 'synthetic-alpha-canary',
-      },
-      {
-        id: 'provider_beta',
-        name: 'Beta',
-        providerType: 'OPENAI_COMPATIBLE',
-        baseUrl: 'https://beta.synthetic.invalid/v1',
-        apiKey: 'synthetic-beta-canary',
-      },
-    ]));
-    const database = new DatabaseSync(
-      ApplicationDatabaseLocation.fromConfiguredFileUrl(
-        'file:application.db',
-        directory,
-      ).databasePath,
-    );
-    database.exec(`
-      CREATE TRIGGER reject_custom_beta_migration
-      BEFORE INSERT ON secret_entries
-      WHEN NEW.secret_id = 'provider.openai-compatible.provider_beta.api-key'
-      BEGIN
-        SELECT RAISE(ABORT, 'synthetic rejected migration write');
-      END;
-    `);
-    database.close();
-
-    await expect(migration().execute()).resolves.toMatchObject({
-      status: 'SUCCEEDED_WITH_WARNINGS',
-      summary: { migratedCount: 0, skippedCount: 1, failedCount: 0 },
-    });
-
-    await expect(fs.lstat(providerPath)).rejects.toMatchObject({ code: 'ENOENT' });
-    for (const providerId of ['provider_alpha', 'provider_beta']) {
-      await expect(service.getStatusForConsumer({
-        kind: 'llm',
-        providerId,
-        credentialSlot: 'apiKey',
-      })).resolves.toBe('MISSING');
-    }
-  });
-
-  it('leaves v1 byte-identical and reports FAILED when reset deletion is unavailable', async () => {
-    const source = await writeV1({ version: 1, providers: 'invalid' } as never);
-    const originalUnlink = fs.unlink.bind(fs);
-    vi.spyOn(fs, 'unlink').mockImplementation(async (file) => {
-      if (String(file) === providerPath) {
-        throw Object.assign(new Error('synthetic deletion rejection'), { code: 'EACCES' });
-      }
-      return originalUnlink(file);
-    });
-
-    const result = await migration().execute();
+    const result = await new CustomProviderV1AppDataMigration(directory).execute();
 
     expect(result).toMatchObject({
-      status: 'FAILED',
-      errorMessage: 'CUSTOM_PROVIDER_V1_RESET_UNAVAILABLE',
-      summary: { failedCount: 1 },
+      status: 'SUCCEEDED_WITH_WARNINGS',
+      summary: { skippedCount: 1, failedCount: 0 },
     });
-    expect(JSON.stringify(result)).not.toContain('synthetic-alpha-canary');
-    expect(await fs.readFile(providerPath)).toEqual(source);
-    expect((await fs.readdir(providerDirectory)).sort()).toEqual([
-      'custom-llm-providers.json',
-    ]);
+    expect(JSON.stringify(result)).not.toContain('alpha.synthetic.invalid');
+    await expect(fs.lstat(providerPath)).rejects.toMatchObject({ code: 'ENOENT' });
+    expect(secretRuntime.requireService).not.toHaveBeenCalled();
+  });
+
+  it('discards a failed stage and removes the original inline-secret file', async () => {
+    await writeProviderFile(validV1);
+    vi.spyOn(CustomProviderV1MigrationFile.prototype, 'syncStage')
+      .mockRejectedValueOnce(new Error('synthetic stage failure'));
+
+    const result = await new CustomProviderV1AppDataMigration(directory).execute();
+
+    expect(result).toMatchObject({ status: 'SUCCEEDED_WITH_WARNINGS' });
+    await expect(fs.lstat(providerPath)).rejects.toMatchObject({ code: 'ENOENT' });
+    expect((await fs.readdir(path.dirname(providerPath))).some((name) => name.includes('v2-stage')))
+      .toBe(false);
+    expect(secretRuntime.requireService).not.toHaveBeenCalled();
+  });
+
+  it.skipIf(process.platform === 'win32')('removes an unsafe canonical symlink without reading its target', async () => {
+    const target = path.join(directory, 'outside.json');
+    await writeProviderFile(validV1);
+    await fs.rename(providerPath, target);
+    await fs.symlink(target, providerPath);
+
+    await expect(new CustomProviderV1AppDataMigration(directory).execute()).resolves.toMatchObject({
+      status: 'SUCCEEDED_WITH_WARNINGS',
+    });
+    await expect(fs.lstat(providerPath)).rejects.toMatchObject({ code: 'ENOENT' });
+    expect(await fs.readFile(target, 'utf8')).toContain('synthetic-inline-secret-canary');
+    expect(secretRuntime.requireService).not.toHaveBeenCalled();
   });
 });

@@ -1,7 +1,8 @@
-import { randomUUID } from 'node:crypto';
 import path from 'node:path';
 import {
+  buildCustomProviderId,
   DEFAULT_CUSTOM_LLM_PROVIDER_CONFIG_FILE,
+  normalizeProviderName,
   parseCustomLlmProviderConfigFile,
   type CustomLlmProviderConfigFile,
   type CustomLlmProviderRecord,
@@ -21,7 +22,11 @@ const sortProviders = (providers: CustomLlmProviderRecord[]): CustomLlmProviderR
     });
 
 export class CustomLlmProviderStoreError extends Error {
-  constructor(readonly code: 'CUSTOM_PROVIDER_CONFIG_INVALID') {
+  constructor(readonly code:
+    | 'CUSTOM_PROVIDER_CONFIG_INVALID'
+    | 'CUSTOM_PROVIDER_NAME_INVALID'
+    | 'CUSTOM_PROVIDER_NAME_CONFLICT'
+    | 'CUSTOM_PROVIDER_ID_CONFLICT') {
     super(code);
     this.name = 'CustomLlmProviderStoreError';
   }
@@ -40,9 +45,13 @@ const parseCurrentConfig = (value: unknown): CustomLlmProviderConfigFile => {
 };
 
 export class CustomLlmProviderStore {
+  constructor(
+    private readonly appDataDir: string = appConfigProvider.config.getAppDataDir(),
+  ) {}
+
   private getFilePath(): string {
     return path.join(
-      appConfigProvider.config.getAppDataDir(),
+      this.appDataDir,
       'llm',
       'custom-llm-providers.json',
     );
@@ -66,26 +75,47 @@ export class CustomLlmProviderStore {
     providerType: LLMProvider.OPENAI_COMPATIBLE;
     baseUrl: string;
   }): Promise<CustomLlmProviderRecord> {
-    const nextRecord: CustomLlmProviderRecord = {
-      id: `provider_${randomUUID().replace(/-/g, '')}`,
-      name: input.name,
-      providerType: input.providerType,
-      baseUrl: input.baseUrl,
-    };
+    let committedRecord: CustomLlmProviderRecord | null = null;
 
     await updateJsonFile<unknown>(
       this.getFilePath(),
       DEFAULT_CUSTOM_LLM_PROVIDER_CONFIG_FILE,
       (existing) => {
         const parsed = parseCurrentConfig(existing);
+        const displayName = input.name.normalize('NFKC').trim().replace(/\s+/gu, ' ');
+        let providerId: string;
+        try {
+          providerId = buildCustomProviderId(displayName);
+        } catch {
+          throw new CustomLlmProviderStoreError('CUSTOM_PROVIDER_NAME_INVALID');
+        }
+        const canonicalName = normalizeProviderName(displayName);
+        if (parsed.providers.some(
+          (provider) => normalizeProviderName(provider.name) === canonicalName,
+        )) {
+          throw new CustomLlmProviderStoreError('CUSTOM_PROVIDER_NAME_CONFLICT');
+        }
+        if (parsed.providers.some((provider) => provider.id === providerId)) {
+          throw new CustomLlmProviderStoreError('CUSTOM_PROVIDER_ID_CONFLICT');
+        }
+        const nextRecord: CustomLlmProviderRecord = {
+          id: providerId,
+          name: displayName,
+          providerType: input.providerType,
+          baseUrl: input.baseUrl,
+        };
+        committedRecord = nextRecord;
         return {
-          version: 2,
+          version: 3,
           providers: sortProviders([...parsed.providers, nextRecord]),
         };
       },
     );
 
-    return nextRecord;
+    if (!committedRecord) {
+      throw new CustomLlmProviderStoreError('CUSTOM_PROVIDER_CONFIG_INVALID');
+    }
+    return committedRecord;
   }
 
   async deleteProvider(providerId: string): Promise<void> {
@@ -95,7 +125,7 @@ export class CustomLlmProviderStore {
       (existing) => {
         const parsed = parseCurrentConfig(existing);
         return {
-          version: 2,
+          version: 3,
           providers: sortProviders(parsed.providers.filter((provider) => provider.id !== providerId)),
         };
       },

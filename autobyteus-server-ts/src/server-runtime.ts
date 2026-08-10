@@ -18,6 +18,7 @@ import {
 import { SERVER_ROUTE_PARAM_MAX_LENGTH } from "./api/fastify-runtime-config.js";
 import { runMigrations } from "./startup/migrations.js";
 import { getAppDataMigrationRunner } from "./app-data-migrations/app-data-migration-runner.js";
+import { CUSTOM_PROVIDER_READABLE_ID_APP_DATA_MIGRATION_ID } from "./app-data-migrations/migrations/custom-provider-readable-id-app-data-migration.js";
 import { scheduleBackgroundTasks } from "./startup/background-runner.js";
 import { bootstrapBuiltInAgents } from "./built-in-agents/built-in-agent-bootstrapper.js";
 import { registerRestRoutes } from "./api/rest/index.js";
@@ -188,9 +189,24 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
   await getSecretVaultRuntime().initialize(databaseLocation);
 
   try {
-    await getAppDataMigrationRunner().runPending();
+    const appDataMigrationRunner = getAppDataMigrationRunner();
+    const pendingStatuses = await appDataMigrationRunner.runPending();
+    const readableStatus = pendingStatuses.find(
+      ({ migrationId }) => migrationId === CUSTOM_PROVIDER_READABLE_ID_APP_DATA_MIGRATION_ID,
+    );
+    if (
+      readableStatus?.status !== "SUCCEEDED"
+      && readableStatus?.status !== "SUCCEEDED_WITH_WARNINGS"
+    ) {
+      throw new Error([
+        "CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED",
+        readableStatus?.status ?? "NOT_RUN",
+        readableStatus?.logPath ?? "NO_LOG",
+      ].join(":"));
+    }
   } catch (error) {
     logger.error(`Failed to run app data migrations: ${String(error)}`);
+    process.exit(1);
   }
 
   try {

@@ -10,27 +10,16 @@ import {
   parsePositiveNumberConfig,
   resolveConfiguredDirectoryPath,
 } from "./config-value-parsers.js";
-import { LOCAL_IMPORT_CREDENTIAL_ALIAS_NAMES } from "../secret-management/provisioning/local-import-credential-alias-registry.js";
+import { forbiddenGenericSettingNames, retiredSettingNames } from "./app-config-setting-policy.js";
 import {
   ApplicationDatabaseLocation,
   toPrismaSqliteUrl,
 } from "./application-database-location.js";
 import {
-  removeEnvironmentAssignment,
-  upsertEnvironmentAssignment,
-} from "./environment-assignment-lines.js";
-
-const forbiddenGenericSettingNames = new Set<string>([
-  ...LOCAL_IMPORT_CREDENTIAL_ALIAS_NAMES,
-  "QWEN_API_KEY",
-  "ZHIPU_API_KEY",
-  "OLLAMA_API_KEY",
-  "GOOGLE_CSE_API_KEY",
-  "CLAUDE_CODE_API_KEY",
-  "CLAUDE_CODE_API_KEY_FILE_DESCRIPTOR",
-]);
-
-const retiredSettingNames = new Set<string>(["AUTOBYTEUS_STREAM_PARSER"]);
+  removeEnvironmentAssignmentFromFile,
+  replaceEnvironmentAssignmentFileDurably,
+  updateEnvironmentAssignmentFile,
+} from "./environment-assignment-file.js";
 
 export class AppConfigError extends Error {
   constructor(message: string) {
@@ -50,6 +39,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export type AppConfigOptions = { appDataDir?: string | null };
+export type DurableAppConfigWriteResult = { persisted: true };
 
 export class AppConfig {
   private isWindows: boolean;
@@ -505,18 +495,13 @@ export class AppConfig {
   }
 
   set(key: string, value: string): void {
-    if (retiredSettingNames.has(key)) {
-      throw new AppConfigError(`Server setting '${key}' has been retired and cannot be set.`);
-    }
-    if (forbiddenGenericSettingNames.has(key)) {
-      throw new AppConfigError("Sensitive values must be written through a subject-specific secret service.");
-    }
+    this.assertGenericSettingAllowed(key, "written");
     this.configData[key] = value;
     process.env[key] = value;
 
     if (this.configFile) {
       try {
-        this.updateEnvFile(this.configFile, key, value);
+        updateEnvironmentAssignmentFile(this.configFile, key, value);
       } catch (error) {
         console.info(
           `Could not update config file ${this.configFile}: ${String(error)}. ` +
@@ -526,16 +511,33 @@ export class AppConfig {
     }
   }
 
-  delete(key: string): void {
-    if (forbiddenGenericSettingNames.has(key)) {
-      throw new AppConfigError("Sensitive values must be removed through a subject-specific secret service.");
+  setDurably(key: string, value: string): DurableAppConfigWriteResult {
+    this.assertGenericSettingAllowed(key, "written");
+    if (!this.initialized || !this.configFile) {
+      throw new AppConfigError(
+        "Durable application configuration cannot be written before AppConfig is initialized.",
+      );
     }
+
+    try {
+      replaceEnvironmentAssignmentFileDurably(this.configFile, key, value);
+    } catch {
+      throw new AppConfigError("Unable to durably update application configuration.");
+    }
+
+    this.configData[key] = value;
+    process.env[key] = value;
+    return { persisted: true };
+  }
+
+  delete(key: string): void {
+    this.assertGenericSettingAllowed(key, "removed");
     delete this.configData[key];
     delete process.env[key];
 
     if (this.configFile) {
       try {
-        this.removeKeyFromEnvFile(this.configFile, key);
+        removeEnvironmentAssignmentFromFile(this.configFile, key);
       } catch (error) {
         console.info(
           `Could not update config file ${this.configFile}: ${String(error)}. ` +
@@ -556,19 +558,18 @@ export class AppConfig {
 
   private discardRetiredSettings(): void {
     for (const key of retiredSettingNames) {
-      if (process.env[key] !== undefined || this.configData[key] !== undefined) {
-        this.delete(key);
-      }
+      if (process.env[key] !== undefined || this.configData[key] !== undefined) this.delete(key);
     }
   }
 
-  private updateEnvFile(configFile: string, key: string, value: string): void {
-    const content = fs.readFileSync(configFile, "utf-8");
-    fs.writeFileSync(configFile, upsertEnvironmentAssignment(content, key, value));
-  }
-
-  private removeKeyFromEnvFile(configFile: string, key: string): void {
-    const content = fs.readFileSync(configFile, "utf-8");
-    fs.writeFileSync(configFile, removeEnvironmentAssignment(content, key));
+  private assertGenericSettingAllowed(key: string, operation: "written" | "removed"): void {
+    if (operation === "written" && retiredSettingNames.has(key)) {
+      throw new AppConfigError(`Server setting '${key}' has been retired and cannot be set.`);
+    }
+    if (forbiddenGenericSettingNames.has(key)) {
+      throw new AppConfigError(
+        `Sensitive values must be ${operation} through a subject-specific secret service.`,
+      );
+    }
   }
 }

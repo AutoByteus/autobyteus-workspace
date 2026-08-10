@@ -27,10 +27,11 @@ The architecture relies on a **Factory Pattern** combined with a **Registry** to
   Represents the _metadata_ of a model, not the active instance. It contains:
   - **Identifier:** A globally unique string (e.g., `gpt-4o`,
     `llama3:latest:ollama@localhost:11434`,
-    `openai-compatible:provider_1234567890abcdef:custom-chat-model`).
+    `openai-compatible:provider_alibaba_cloud:custom-chat-model`).
   - **Provider Identity:** `providerId`, `providerName`, and `providerType`.
     Built-in providers use stable enum IDs (for example `OPENAI`), while custom
-    OpenAI-compatible providers keep their own generated provider IDs.
+    OpenAI-compatible providers keep immutable provider IDs derived from their
+    normalized user-entered names.
   - **Runtime:** Where the model is hosted (e.g., `API`,
     `OPENAI_COMPATIBLE`, `OLLAMA`).
   - **Config Schema:** A JSON schema defining model-specific configuration parameters (e.g., `thinking_level` for reasoning models).
@@ -38,9 +39,10 @@ The architecture relies on a **Factory Pattern** combined with a **Registry** to
     states (`supported`, `unsupported`, or `unknown`). Built-in definitions
     carry verified states; discovered and unverified models default to unknown.
   - **Resolved metadata:** Numeric context/input/output limits retain per-field
-    provenance (`live`, `static_definition`, or `unknown`) through
-    `resolvedModelMetadata`. `activeContextTokens` remains runtime state and is
-    never taken from static catalog metadata.
+    provenance (`live`, `inferred_builtin`, `static_definition`, or `unknown`)
+    through `resolvedModelMetadata`.
+    `activeContextTokens` remains runtime state and is never taken from static
+    catalog metadata.
   - **Factory Method:** `LLMFactory.createLLM(...)` instantiates the concrete `BaseLLM` for this model.
 
 - **`LLMFactory` (Singleton):**
@@ -62,8 +64,10 @@ A key architectural distinction is made between **provider identity**,
 
 - **Provider Identity:** Which concrete provider record owns the model?
   - Built-ins use fixed IDs such as `OPENAI`, `ANTHROPIC`, or `LMSTUDIO`.
-  - Custom OpenAI-compatible providers use generated stable IDs such as
-    `provider_<uuid>`.
+  - Custom OpenAI-compatible providers use deterministic readable IDs such as
+    `provider_alibaba_cloud`. The ID is derived from the canonical display name
+    at creation, remains immutable, and has no collision suffix. Canonical-name
+    or derived-ID collisions are rejected atomically.
 - **`LLMProvider`:** What kind of provider is it?
   - Examples: `OPENAI`, `ANTHROPIC`, `MISTRAL`, `OPENAI_COMPATIBLE`.
 - **`LLMRuntime`:** Where is the model _running_?
@@ -105,7 +109,7 @@ new built-in enum value for every saved endpoint.
     // or
     const llm = await LLMFactory.createLLM('llama3:latest:ollama@localhost:11434');
     // or
-    const llm = await LLMFactory.createLLM('openai-compatible:provider_1234567890abcdef:custom-chat-model');
+    const llm = await LLMFactory.createLLM('openai-compatible:provider_alibaba_cloud:custom-chat-model');
     ```
 
 3.  **Interaction:**
@@ -254,7 +258,8 @@ business accounting.
 src/llm/
 ├── api/                                # Concrete BaseLLM implementations
 ├── extensions/                         # Optional explicit lifecycle extensions
-├── metadata/                           # Live model metadata resolvers
+├── metadata/                           # Model metadata resolution
+│   └── openai-compatible-endpoint-model-metadata.ts
 ├── transport/                          # Shared transport helpers
 ├── utils/                              # Config, message/usage observation types, pricing models
 ├── base.ts                             # Abstract base class
@@ -461,6 +466,20 @@ current static Anthropic catalog count until
 `src/llm/supported-model-definitions.ts` is updated.
 
 - Each saved provider is probed independently through its `/models` endpoint.
+- Saved-provider identity is `provider_<name-derived-body>`, produced by
+  `buildCustomProviderId(...)`. ASCII letters/digits are normalized into
+  underscore-delimited words; non-ASCII code points use deterministic `u<hex>`
+  tokens. A name that cannot derive an ID, a canonical-name collision, or an ID
+  collision is rejected rather than receiving a random or numeric suffix.
+- Discovery keeps only normalized model identity plus recognized positive
+  integer metadata aliases; credentials and raw provider payloads do not enter
+  model or persisted-provider projections.
+- Each custom model resolves numeric limits independently with this precedence:
+  endpoint-advertised value (`live`), an exact `SupportedModelDefinition.value`
+  fallback (`inferred_builtin`), then `unknown`. Resolution does not receive or
+  inspect the custom endpoint URL. Suffix stripping, family matching,
+  display-name matching, case folding, wire aliases, and other fuzzy inference
+  are forbidden.
 - Successful providers contribute fresh `OPENAI_COMPATIBLE` runtime models.
 - The synced model set is authoritative to the current saved-provider list, so
   deleting a saved custom provider removes that provider's models from the next

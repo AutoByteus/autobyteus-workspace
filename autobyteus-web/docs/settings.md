@@ -21,18 +21,59 @@ server's centralized encrypted vault:
   focuses exactly one editor at a time. Key inputs remain write-only password
   fields, the visibility control affects only the transient typed value, and a
   successful save clears that input;
+- Qwen uses a dedicated Base URL + API-key form rather than the ordinary
+  built-in key-only editor. Both values are required; the URL must be absolute
+  HTTP(S), and the server probes its `/models` contract before persistence. The
+  key stays write-only and is cleared after a successful committed mutation;
+- Qwen renders the server-owned `DEFAULT` or `CONFIGURED` endpoint source and
+  value-free key status. It never infers configured state by comparing the
+  effective URL with a frontend default. A failed durable URL commit reports
+  that the previous pair was restored; the bounded double-failure result tells
+  the user to save a valid pair again before using Qwen;
 - configured and active state are value-free badges derived from the
   authoritative setup state and remain accurate after a Settings reload; and
 - successful commands refetch the provider-centered Settings read so the UI
   reflects authoritative provider and catalog state.
 
+A successful Qwen mutation is the committed setup result. The client then
+refreshes both provider settings and the model catalog so the saved endpoint and
+the exact Qwen catalog (`qwen3.8-max`, `deepseek-v4-pro`,
+`deepseek-v4-flash-0731`, and `glm-5.2`) converge in the UI. Live catalog rows
+show the friendly names `DeepSeek V4 Pro (Qwen)`,
+`DeepSeek V4 Flash 0731 (Qwen)`, and `GLM-5.2 (Qwen)` across Settings and the
+shared agent, team, application/member, and binding selection paths. Their
+option values remain the collision-safe `qwen:...` model identifiers, and Qwen
+provider requests continue to send the exact unprefixed model values. A stored
+selector missing from the live catalog remains visible by its raw identifier
+for repair instead of receiving a guessed friendly name. If a subordinate
+refresh fails, the UI keeps the committed configured state and shows a warning
+rather than relabeling the save as failed. Global and selected-provider reloads
+likewise await both provider-settings and catalog refresh owners before showing
+success; either refresh failure keeps the operation in its failure path. The
+removed `qwen3.8-max-preview` value must not reappear after save, reload, or
+recovery.
+
 Custom OpenAI-compatible provider drafts still accept an API key for the probe
 and create transaction, but only non-secret provider metadata is persisted in
-the custom-provider JSON file. The credential is stored separately, and deleting
-the custom provider through the provider-entity lifecycle removes both its
+the strict V3 custom-provider JSON file. The server derives an immutable
+readable ID from the normalized name (for example `provider_alibaba_cloud`) and
+atomically rejects invalid names or canonical-name/ID collisions; the browser
+does not submit an ID. The credential is stored separately, and deleting the
+custom provider through the provider-entity lifecycle removes both its
 credential and metadata. AutoByteus gateway models retain their downstream
 display provider while credential configuration remains owned by the
 `AUTOBYTEUS` gateway provider.
+
+An upgrade from legacy UUID providers deliberately resets provider records,
+Base URLs, and credentials after migrating only exact allowlisted selector
+prefixes. The user recreates each desired provider through the same custom
+provider form with name, Base URL, and a new key. Reusing the same canonical
+name regenerates the readable prefix embedded in migrated selectors; a changed
+name or missing model suffix requires manual reselection. During the
+provider-absent interval, saved selectors remain visible as unavailable and
+block launch/resume instead of silently clearing or falling back. In
+particular, application agent launch profiles retain the raw missing value and
+show unavailable guidance until the user selects an advertised model.
 
 See `autobyteus-server-ts/docs/modules/secret_management.md` for encrypted-vault,
 migration, runtime resolution, Claude authentication, and real-E2E operator
@@ -998,7 +1039,7 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
     - `Calculation details` is the explicit unit-price disclosure. It shows component rows with tokens, server-provided unit price, cost, and the formula `tokens ÷ 1,000,000 × unit price`; mixed, missing, partial-missing, and local/no-bill unit-price states render as labels such as `varies by call`, `unpriced`, `partially missing`, or `Local / no API bill` instead of a frontend price table or blended rate.
     - `Usage reports` in pricing details is `usageReportCount`, usually model calls or model turns. It is not user messages, chat rows, or a raw primary `events` label.
     - Reasoning output appears only inside the Output card and only when the server summary reports positive reasoning output tokens. The copy states that thinking tokens are included in output tokens and estimated output cost; calculation details show the reasoning unit price as the output price / included in output cost so users do not double-count thinking.
-    - Unknown latest-prompt/context-window pressure is intentionally hidden; the latest prompt block renders only when both a numeric pressure percentage and effective context window are present.
+    - The `Latest prompt` block renders when latest-prompt tokens are present. Known context capacity shows percentage/progress; unknown capacity shows the prompt-token count with explicit `contextLimitUnavailable` copy and never fabricates a denominator or percentage.
     - Browser-facing proof should validate clean agent/team headers with no token chip and validate the Token tab against server/GraphQL-backed summaries, including focused member primary selection, the scoped horizontally scrollable grouped Team table at constrained widths, absence of a standalone Cost column, the `Total` grouped metric column remaining reachable and row-associated, normal estimated rows omitting repeated status copy, subordinate final-row team total, price-missing, partial-price, local/no-bill, mixed-currency, cache-positive, unit-price calculation details, reasoning-token included-in-output copy, model/runtime, usage-report, and latest-prompt display where present.
     - Live store coverage must preserve runtime-native summary fields from server events, including Codex-style cache/reasoning tokens/cost, component unit prices, latest runtime/ingestion/model metadata, and latest prompt/context-window fields used by the token meter. Live-event unit prices and hydrated GraphQL summaries should converge to the same display shape.
     - Current durable regression coverage includes GraphQL E2E for cached gross input, provider-specific semantics, local/no-bill, custom missing price, mixed currency, runtime field names, and unit-price hydration across run/team/member/statistics summaries, plus frontend store/component tests for live aggregation, provisional-live team total hydration, live/hydrated unit-price convergence, GraphQL hydration replacement, focused team member primary selection, grouped Team table headers/rows, paired token+cost metric cells, absence of a standalone Cost column, scoped table-scroll hooks, clean header rendering, Token Meter hierarchy, calculation details, cache-aware rows, price-status labels, localization catalog coverage, and latest prompt fields. Latest visual evidence for the cache-aware Token Meter is under `tickets/token-input-prompt-discrepancy-analysis/implementation-evidence/`.

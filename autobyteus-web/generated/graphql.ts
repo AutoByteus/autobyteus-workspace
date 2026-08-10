@@ -1214,6 +1214,7 @@ export type Mutation = {
   saveGeminiVertexProject: GeminiSetupStateObject;
   saveManagedMessagingGatewayProviderConfig: ManagedMessagingGatewayStatusObject;
   saveProviderApiKey: Scalars['Boolean']['output'];
+  saveQwenConfiguration: QwenSetupStatus;
   setApplicationsEnabled: ApplicationsCapability;
   setSearchConfig: Scalars['String']['output'];
   setSkillImprovementEnabled: SkillImprovementCapability;
@@ -1527,6 +1528,11 @@ export type MutationSaveProviderApiKeyArgs = {
 };
 
 
+export type MutationSaveQwenConfigurationArgs = {
+  input: QwenConfigurationInput;
+};
+
+
 export type MutationSetApplicationsEnabledArgs = {
   enabled: Scalars['Boolean']['input'];
 };
@@ -1726,6 +1732,7 @@ export type Query = {
   mcpServers: Array<McpServerConfigUnion>;
   previewMcpServerTools: Array<ToolDefinitionDetail>;
   providerSettings: Array<ProviderSettingsGroup>;
+  qwenSetupStatus: QwenSetupStatus;
   runtimeAvailabilities: Array<RuntimeAvailabilityObject>;
   searchFiles: Array<Scalars['String']['output']>;
   skill?: Maybe<Skill>;
@@ -2030,6 +2037,23 @@ export type QueryWorkspaceMetadataArgs = {
 export type QueryWorkspaceRunHistoryArgs = {
   limitPerAgent?: Scalars['Int']['input'];
   workspaceId: Scalars['String']['input'];
+};
+
+export type QwenConfigurationInput = {
+  apiKey: Scalars['String']['input'];
+  baseUrl: Scalars['String']['input'];
+};
+
+export enum QwenEndpointSource {
+  Configured = 'CONFIGURED',
+  Default = 'DEFAULT'
+}
+
+export type QwenSetupStatus = {
+  __typename?: 'QwenSetupStatus';
+  apiKeyConfigured: Scalars['Boolean']['output'];
+  effectiveBaseUrl: Scalars['String']['output'];
+  endpointSource: QwenEndpointSource;
 };
 
 export type RawTraceFileSummary = {
@@ -3061,6 +3085,13 @@ export type SaveProviderApiKeyMutationVariables = Exact<{
 
 export type SaveProviderApiKeyMutation = { __typename?: 'Mutation', saveProviderApiKey: boolean };
 
+export type SaveQwenConfigurationMutationVariables = Exact<{
+  input: QwenConfigurationInput;
+}>;
+
+
+export type SaveQwenConfigurationMutation = { __typename?: 'Mutation', saveQwenConfiguration: { __typename?: 'QwenSetupStatus', effectiveBaseUrl: string, endpointSource: QwenEndpointSource, apiKeyConfigured: boolean } };
+
 export type ReloadLlmModelsMutationVariables = Exact<{
   runtimeKind?: InputMaybe<Scalars['String']['input']>;
 }>;
@@ -3404,6 +3435,11 @@ export type GetGeminiSetupConfigQueryVariables = Exact<{ [key: string]: never; }
 
 
 export type GetGeminiSetupConfigQuery = { __typename?: 'Query', getGeminiSetupConfig: { __typename?: 'GeminiSetupStateObject', activeMode?: GeminiSetupMode | null, aiStudioConfigured?: boolean | null, vertexExpressConfigured?: boolean | null, vertexProject?: { __typename?: 'GeminiVertexProjectObject', project: string, location: string } | null } };
+
+export type GetQwenSetupStatusQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetQwenSetupStatusQuery = { __typename?: 'Query', qwenSetupStatus: { __typename?: 'QwenSetupStatus', effectiveBaseUrl: string, endpointSource: QwenEndpointSource, apiKeyConfigured: boolean } };
 
 export type ManagedMessagingGatewayStatusQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -5491,6 +5527,37 @@ export function useSaveProviderApiKeyMutation(options: VueApolloComposable.UseMu
   return VueApolloComposable.useMutation<SaveProviderApiKeyMutation, SaveProviderApiKeyMutationVariables>(SaveProviderApiKeyDocument, options);
 }
 export type SaveProviderApiKeyMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<SaveProviderApiKeyMutation, SaveProviderApiKeyMutationVariables>;
+export const SaveQwenConfigurationDocument = gql`
+    mutation SaveQwenConfiguration($input: QwenConfigurationInput!) {
+  saveQwenConfiguration(input: $input) {
+    effectiveBaseUrl
+    endpointSource
+    apiKeyConfigured
+  }
+}
+    `;
+
+/**
+ * __useSaveQwenConfigurationMutation__
+ *
+ * To run a mutation, you first call `useSaveQwenConfigurationMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useSaveQwenConfigurationMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useSaveQwenConfigurationMutation({
+ *   variables: {
+ *     input: // value for 'input'
+ *   },
+ * });
+ */
+export function useSaveQwenConfigurationMutation(options: VueApolloComposable.UseMutationOptions<SaveQwenConfigurationMutation, SaveQwenConfigurationMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<SaveQwenConfigurationMutation, SaveQwenConfigurationMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<SaveQwenConfigurationMutation, SaveQwenConfigurationMutationVariables>(SaveQwenConfigurationDocument, options);
+}
+export type SaveQwenConfigurationMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<SaveQwenConfigurationMutation, SaveQwenConfigurationMutationVariables>;
 export const ReloadLlmModelsDocument = gql`
     mutation ReloadLLMModels($runtimeKind: String) {
   reloadLlmModels(runtimeKind: $runtimeKind)
@@ -7282,6 +7349,35 @@ export function useGetGeminiSetupConfigLazyQuery(options: VueApolloComposable.Us
   return VueApolloComposable.useLazyQuery<GetGeminiSetupConfigQuery, GetGeminiSetupConfigQueryVariables>(GetGeminiSetupConfigDocument, {}, options);
 }
 export type GetGeminiSetupConfigQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetGeminiSetupConfigQuery, GetGeminiSetupConfigQueryVariables>;
+export const GetQwenSetupStatusDocument = gql`
+    query GetQwenSetupStatus {
+  qwenSetupStatus {
+    effectiveBaseUrl
+    endpointSource
+    apiKeyConfigured
+  }
+}
+    `;
+
+/**
+ * __useGetQwenSetupStatusQuery__
+ *
+ * To run a query within a Vue component, call `useGetQwenSetupStatusQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetQwenSetupStatusQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetQwenSetupStatusQuery();
+ */
+export function useGetQwenSetupStatusQuery(options: VueApolloComposable.UseQueryOptions<GetQwenSetupStatusQuery, GetQwenSetupStatusQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetQwenSetupStatusQuery, GetQwenSetupStatusQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetQwenSetupStatusQuery, GetQwenSetupStatusQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetQwenSetupStatusQuery, GetQwenSetupStatusQueryVariables>(GetQwenSetupStatusDocument, {}, options);
+}
+export function useGetQwenSetupStatusLazyQuery(options: VueApolloComposable.UseQueryOptions<GetQwenSetupStatusQuery, GetQwenSetupStatusQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetQwenSetupStatusQuery, GetQwenSetupStatusQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetQwenSetupStatusQuery, GetQwenSetupStatusQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetQwenSetupStatusQuery, GetQwenSetupStatusQueryVariables>(GetQwenSetupStatusDocument, {}, options);
+}
+export type GetQwenSetupStatusQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetQwenSetupStatusQuery, GetQwenSetupStatusQueryVariables>;
 export const ManagedMessagingGatewayStatusDocument = gql`
     query ManagedMessagingGatewayStatus {
   managedMessagingGatewayStatus {

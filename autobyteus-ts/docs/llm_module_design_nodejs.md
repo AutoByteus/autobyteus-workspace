@@ -25,7 +25,8 @@ under the same provider-centered model contract.
   - optional `host_url` and `config_schema`
   - `multimodalCapabilities` with explicit `supported`, `unsupported`, or
     `unknown` states for image, audio, and video input
-  - `resolvedModelMetadata` with per-field numeric provenance
+  - `resolvedModelMetadata` with per-field numeric provenance (`live`,
+    `inferred_builtin`, `static_definition`, or `unknown`)
 - **`LLMFactory`** (`src/llm/llm-factory.ts`): registry, discovery, reload
   logic, and custom OpenAI-compatible provider sync.
 
@@ -71,6 +72,12 @@ Two OpenAI-style paths coexist:
 
 - **Built-in OpenAI-style providers** such as DeepSeek, Grok, Kimi, Qwen, GLM,
   and the retained MiniMax M3 entry still use `OpenAICompatibleLLM`.
+- Qwen resolves its OpenAI-compatible endpoint through
+  `src/llm/qwen-provider-config.ts`. A nonblank `QWEN_BASE_URL` wins; otherwise
+  the built-in international DashScope URL is used. Both paths use the same
+  base-URL normalizer before `QwenLLM` construction. Endpoint selection is
+  independent from model identity, while the Qwen API key remains owned by the
+  provider credential resolver.
 - OpenAI-compatible Chat Completions payloads are built through
   `OpenAICompatibleRequestBuilder`, which maps `LLMConfig` generation controls,
   merges provider-specific `extraParams`, uses the shared provider-request
@@ -95,7 +102,21 @@ Two OpenAI-style paths coexist:
   - `OpenAICompatibleEndpointModelProvider`
 
 Custom providers keep `provider_type = OPENAI_COMPATIBLE` while each saved
-provider gets its own `provider_id` and `provider_name`.
+provider gets its own `provider_id` and `provider_name`. The provider ID is
+derived once from the normalized display name by
+`custom-llm-provider-identity.ts`: readable ASCII words are joined below the
+`provider_` prefix and non-ASCII code points use deterministic `u<hex>` tokens.
+The store commits canonical-name and derived-ID uniqueness together; it never
+adds a UUID, counter, or collision suffix.
+
+Custom `/models` discovery extracts normalized IDs and a bounded allowlist of
+positive integer context/input/output aliases. Model metadata is resolved per
+field in this order: endpoint-advertised value (`live`), exact
+`SupportedModelDefinition.value` as an explicitly inferred fallback
+(`inferred_builtin`), then `unknown`. The resolver never receives the custom
+endpoint URL and does not use wire aliases, suffix, family, case-insensitive,
+display-name, or nearest-model matching. API keys and raw discovery payloads
+remain outside model info and persisted custom-provider metadata.
 
 ### 3.3 Factory Config Composition
 
@@ -155,7 +176,8 @@ Dynamic custom runtime:
 
 - **Custom OpenAI-compatible providers**:
   `OPENAI_COMPATIBLE` runtime models backed by a saved provider record
-  (`id`, `name`, `baseUrl`, `apiKey`).
+  (`id`, `name`, `baseUrl`). The API key is a separate vault-owned secret and
+  is not part of the metadata record.
 
 ## 5. Model Identifiers
 
@@ -172,11 +194,13 @@ Dynamic custom runtime:
   Example:
 
   ```text
-  openai-compatible:provider_1234567890abcdef:custom-chat-model
+  openai-compatible:provider_alibaba_cloud:custom-chat-model
   ```
 
 This keeps model identity stable even when two providers expose the same model
-name.
+name. Recreating a reset provider with the same canonical name derives the same
+provider prefix; changing the name or model value produces a different exact
+identifier rather than an alias or fallback.
 
 ## 6. Built-In Model Catalog Ownership
 
@@ -187,9 +211,11 @@ definition's colocated `staticMetadata`, then registers the resulting
 `LLMModel` objects. Static metadata is defined by
 `src/llm/supported-model-static-metadata.ts` and includes numeric limits,
 multimodal capabilities, source URL, and verification date. The resolver keeps
-field-level provenance (`live`, `static_definition`, or `unknown`); it does not
-resolve `activeContextTokens`, which remains dynamic runtime state. There is no
-second `curated-model-metadata.ts` authority.
+field-level provenance (`live`, `static_definition`, or `unknown`) for built-in
+definitions; custom endpoint models additionally use `inferred_builtin`.
+Neither resolver resolves `activeContextTokens`,
+which remains dynamic runtime state. There is no second
+`curated-model-metadata.ts` authority.
 
 ### 6.1 Media input and failed-request recovery
 
@@ -282,12 +308,18 @@ models, see `docs/provider_model_catalogs.md`.
   reloads do not wipe the existing provider slice.
 - Saved custom OpenAI-compatible providers are synced through
   `LLMFactory.syncOpenAICompatibleEndpointModels(savedProviders)`.
+- Normal runtime accepts only strict version-3 custom-provider metadata, where
+  every record's ID must equal the deterministic ID derived from its name.
 - That sync is authoritative to the current saved-provider set, so removing a
   saved custom provider removes its `openai-compatible:<providerId>:<model>`
   identifiers from the next sync and from future cold-start registry state.
 - Custom-provider sync probes each saved provider independently, returns
   per-provider status, and preserves last-known-good models for providers that
   fail after a previously successful load (`STALE_ERROR`).
+
+The exact-value custom metadata resolver is owned by
+`src/llm/metadata/openai-compatible-endpoint-model-metadata.ts`. Provider route
+and plan facts do not belong in custom metadata resolution.
 
 This prevents one broken custom endpoint from wiping healthy custom providers.
 
