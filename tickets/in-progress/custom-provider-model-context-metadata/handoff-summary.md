@@ -11,8 +11,8 @@
 - Finalization target: personal / origin/personal
 - Latest tracked base: origin/personal@3cddeec6b93602da172fec2e7b9a80acc7c05117
 - Integrated implementation merge: ea8dbfd2d4f78312806bee7a41f38daa6a0e9a06
-- Protected reviewed/build checkpoint: 7f02e49f6897b3c2715d2c7e2fb712a424514f82
-- Fresh divergence before delivery-only docs/reports: ahead 14 / behind 0
+- Protected DR-008 rebuild checkpoint: eae34fd70ce7ae7d393dcc70ef3eb8d60328eb6e
+- Fresh pre-build and post-build divergence: ahead 15 / behind 0
 - Base ancestor check after build: passed
 - Integrated-state evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/delivery-integrated-state-refresh.log
 
@@ -72,11 +72,11 @@ API-REV-008 passed:
 - Real Chrome -> Nuxt -> built backend -> loopback Qwen Settings journey, including restrictive umask/mode preservation and narrow layout.
 - Integrity, generated-secret absence, process/runtime cleanup, and evidence scans.
 
-Delivery then completed the full README-guided Electron pipeline and artifact verification on the protected integrated state.
+Delivery then completed the full README-guided Electron pipeline and artifact verification again on checkpoint eae34fd70ce7ae7d393dcc70ef3eb8d60328eb6e. No production source, durable coverage, or long-lived documentation changed after DR-007.
 
 ## Durable Documentation
 
-Docs sync: Updated / Pass.
+Docs sync: No Impact / Pass for DR-008. The five DR-007 durable updates remain current because base, source, coverage, and behavior are unchanged.
 
 Updated:
 
@@ -91,14 +91,14 @@ Report: /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-c
 ## Electron Test Artifact
 
 - Recommended DMG: /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.45.dmg
-- SHA-256: afbe2e992e082a00a79095f7d589c9219ea8c522594df9cb393a50ff78f1e5d6
+- SHA-256: 6046edba3d4f8e88cd68c9c82f2a4d6e77413f95a6c23fd3e158c95e8bf5edb9
 - ZIP: /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.45.zip
-- ZIP SHA-256: 5f53b1e8e0e4cc80f8bb13ca73d2ded5080589005b5c5b470eb31dd730f91eaf
+- ZIP SHA-256: 36a28d8d17d7d573f663d320a501b82fdcac7f7f609388cde773cee952847a34
 - Build posture: local macOS arm64; no Developer ID/team signature and no notarization; root executable carries only an ad-hoc linker signature.
 - App data: ~/.autobyteus/server-data. Back it up first if preserving existing state matters.
 - Build report: /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/electron-build-mac-report.md
 
-The DR-007 build overwrote the same 1.4.45 filenames used by DR-005. Verify against the DR-007 checksums above.
+The DR-008 rebuild overwrote the same 1.4.45 filenames used by DR-007 and DR-005. Verify only against the DR-008 checksums above.
 
 ## Suggested User Verification
 

@@ -2,67 +2,65 @@
 
 ## Scope And Status
 
-- Ticket: custom-provider-model-context-metadata
-- Current delivery revision: DR-007
-- Scope: latest-base integrated-state refresh, durable docs synchronization, and requested local Electron verification package.
+- Ticket: `custom-provider-model-context-metadata`.
+- Current delivery revision: DR-008.
+- Scope: mandatory latest-base refresh, explicit docs no-impact determination, and user-requested README-guided Electron rebuild.
 - Status: Pass for pre-verification delivery; repository finalization and release/deployment remain held.
 
-## Initial Delivery Integration Refresh
+## Integrated-State Refresh
 
-- Recorded base: personal, tracked as origin/personal.
-- Fresh fetched base: 3cddeec6b93602da172fec2e7b9a80acc7c05117.
-- Branch at re-entry: ea8dbfd2d4f78312806bee7a41f38daa6a0e9a06 plus reviewed uncommitted IR-012 correction/evidence.
-- Base advanced beyond the implementation merge: No. It is the merge's second parent.
-- Initial divergence: ahead 13 / behind 0.
-- Integration method/result: Already integrated; no new merge required.
-- Delivery-safety checkpoint: 7f02e49f6897b3c2715d2c7e2fb712a424514f82.
-- Checkpoint divergence: ahead 14 / behind 0.
+- Recorded base: `personal`, tracked as `origin/personal`.
+- Fresh pre-build and post-build fetched base: `3cddeec6b93602da172fec2e7b9a80acc7c05117`.
+- Rebuild checkpoint: `eae34fd70ce7ae7d393dcc70ef3eb8d60328eb6e`.
+- Divergence: ahead 15 / behind 0.
+- Base ancestor check: Pass; merge base equals the fetched base.
+- Integration method/result: already integrated; no new base commit and no merge required.
 - Current validation authorization: CRR-016 Pass 9.40/10; API-REV-008 Pass 96.9%; CRR-017 Not Applicable.
-- Post-integration rerun decision: no separate rerun was needed because no base commit was newly integrated during DR-007 and API-REV-008 independently validated the exact merge plus correction. Delivery nevertheless ran the full Electron build pipeline afterward.
-- Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/delivery-integrated-state-refresh.log.
+- Rerun decision: a separate source/API rerun was unnecessary because neither base nor source changed. Delivery ran the complete README-guided Electron pipeline and artifact verification against the protected current state.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/delivery-integrated-state-refresh.log`.
 
 ## Docs Sync
 
-- Result: Updated / Pass.
-- Updated five long-lived docs for readable identity, strict V3, startup reset/order, secret cleanup, recreation, and unavailable selectors.
-- Artifact: /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/docs-sync-report.md.
+- Result: No Impact / Pass.
+- Reason: source, base, reviewed durable coverage, behavior, and the five DR-007 long-lived documentation updates are unchanged. README and packaging guidance matched the successful rebuild.
+- Artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/docs-sync-report.md`.
 
 ## Local Electron Packaging
 
-- Applicable: Yes, as user-verification packaging only.
-- Command: NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* corepack pnpm -C autobyteus-web build:electron:mac
-- Result: Pass, version 1.4.45, Electron 42.4.1, Darwin arm64.
-- Build interval: 2026-08-09T18:53:58Z–18:58:06Z.
+- Applicable: Yes, for user verification only.
+- Command: `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* corepack pnpm -C autobyteus-web build:electron:mac`.
+- Result: Pass, exit 0; version 1.4.45, Electron 42.4.1, Darwin arm64.
+- Build interval: 2026-08-10T08:38:02Z–08:41:52Z.
 - DMG verification, ZIP integrity, app architecture, native-helper validation, real node-pty spawn, and packaged built-server identity: Pass.
-- Build report: /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/electron-build-mac-report.md.
-- Recommended artifact: /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.45.dmg.
-- SHA-256: afbe2e992e082a00a79095f7d589c9219ea8c522594df9cb393a50ff78f1e5d6.
+- Build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/electron-build-mac-report.md`.
+- Recommended artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.45.dmg`.
+- SHA-256: `6046edba3d4f8e88cd68c9c82f2a4d6e77413f95a6c23fd3e158c95e8bf5edb9`.
 - Release posture: local only; no Developer ID/team signature, no notarization, no publication.
 
 ## User Verification
 
 - Explicit verification/acceptance received: No.
-- Handoff: ready for verification.
-- Handoff artifact: /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/handoff-summary.md.
-- Renewed verification required after a future material re-integration: Yes, if user-facing state changes.
+- Handoff: ready for hands-on verification.
+- Handoff artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/handoff-summary.md`.
+- Renewed verification required after future material re-integration: Yes, if the user-facing state changes.
 
 ## Repository Finalization
 
-- Ticket moved to tickets/done: No.
+- Ticket moved to `tickets/done`: No.
 - Ticket branch commit state: local delivery-safety checkpoints only; no finalization commit.
 - Ticket branch push: not started.
 - Finalization target refresh after acceptance: pending.
-- Merge into personal: not started.
-- Push personal: not started.
-- Repository finalization status: Held pending explicit user verification.
+- Merge into `personal`: not started.
+- Push `personal`: not started.
+- Repository finalization status: held pending explicit user verification.
 
 ## Release / Publication / Deployment
 
 - Version bump: not performed.
-- Release notes: not required for the local verification build; reassess only if repository release becomes in scope.
+- Release notes: not required for the local verification build; reassess only if a repository release becomes in scope.
 - Tag/release/publication/deployment: not performed.
 - Rollout verification: not applicable before finalization.
-- Rollback: stop at the local ticket branch and do not archive/push/merge/release.
+- Rollback: stop at the local ticket branch; do not archive, push, merge, or release.
 
 ## Post-Finalization Cleanup
 
@@ -77,8 +75,8 @@
 - V1 values are discarded; valid V1 stages secretless V2.
 - The readable migration attempts exact selector prefixes and publishes empty V3 last.
 - Old UUID consumers are removal-only after the commit.
-- User recreates desired providers with the ordinary form and a newly entered key.
-- No delivery-time migration was executed against the user's app data. The package will run the approved startup transition when the user launches it.
+- Users recreate desired providers with the ordinary form and a newly entered key.
+- No delivery-time migration was executed against the user's app data. The package will run the approved startup transition when launched.
 
 ## Bounded Residual Risk
 
@@ -87,8 +85,8 @@
 - Permission preservation was validated on POSIX; Windows permission semantics are not claimed.
 - Package-wide typecheck configuration limitations remain documented.
 - A later tracked-base advance can require renewed integration and verification.
-- Local package has no Developer ID/notarization and may require Gatekeeper approval.
+- The local package has no Developer ID/notarization and may require Gatekeeper approval.
 
 ## Final Status
 
-Pass — current integrated source is documented and packaged for hands-on user verification. Repository finalization, publication, deployment, archival, and cleanup remain held.
+Pass — current integrated source is documented and rebuilt as a verified local macOS arm64 package for hands-on user testing. Repository finalization, publication, deployment, archival, and cleanup remain held.

@@ -1,89 +1,32 @@
-Delivery integrated-state refresh — DR-007 SR-016 current build
-Timestamp range: 2026-08-09T18:43:00Z–2026-08-09T18:59:09Z
-Ticket branch: codex/custom-provider-model-context-metadata
-Recorded base/finalization target: origin/personal
-Entry authorization: IR-012 / CRR-016 Pass 9.40 / API-REV-008 Pass 96.9% / CRR-017 Not Applicable
-Standing user request: README-guided Electron build for hands-on testing
-
-Mandatory fresh tracked-base refresh
-Pre-fetch HEAD: ea8dbfd2d4f78312806bee7a41f38daa6a0e9a06
-Command: git fetch origin personal --prune
-Result: exit 0
-Tracked base: 3cddeec6b93602da172fec2e7b9a80acc7c05117
-Pre-checkpoint divergence: ahead 13, behind 0
-Merge base: 3cddeec6b93602da172fec2e7b9a80acc7c05117
-Integrated topology: ea8dbfd2d4f78312806bee7a41f38daa6a0e9a06 parents are reviewed checkpoint 7ea8a728420d584218aaf141af754145fa7a5329 and current tracked base 3cddeec6b93602da172fec2e7b9a80acc7c05117
-Integration decision: already current; no new base commit required another merge or a separate pre-doc rerun. API-REV-008 had independently validated this exact merge plus IR-012 correction.
-
-Delivery-safety checkpoint
-Reviewed dirty paths protected: 34
-Source/test/Markdown/JSON whitespace check: passed; raw execution logs retained verbatim
-Command: git commit -m "checkpoint reviewed API-REV-008 integrated state"
-Result: exit 0
-Checkpoint / build HEAD: 7f02e49f6897b3c2715d2c7e2fb712a424514f82
-Post-checkpoint divergence: ahead 14, behind 0
-
-Docs synchronization
-Result: Updated / Pass
-Long-lived docs updated:
-- autobyteus-ts/docs/llm_module_design.md
-- autobyteus-ts/docs/llm_module_design_nodejs.md
-- autobyteus-server-ts/docs/modules/llm_management.md
-- autobyteus-server-ts/docs/modules/secret_management.md
-- autobyteus-web/docs/settings.md
-Promoted truth: deterministic readable provider identity; strict V3 metadata; exact selector/reset ordering; V1 secretless staging; V2-to-empty-V3 commit; post-commit removal-only cleanup; ordinary recreation; raw-visible unavailable selectors; no UUID alias, credential transfer, or fallback.
-Doc diff check: passed
-
-README-guided Electron build
-Documentation basis:
-- root README.md
-- autobyteus-web/README.md macOS Build With Logs (No Notarization)
-- autobyteus-web/README.md integrated backend section
-- autobyteus-web/AGENTS.md
-- autobyteus-web/docs/electron_packaging.md
-Command: NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* corepack pnpm -C autobyteus-web build:electron:mac
-Result: exit 0
-Started: 2026-08-09T18:53:58Z
-Completed: 2026-08-09T18:58:06Z
-Version: 1.4.45
-Electron: 42.4.1
-Platform/architecture: macOS arm64
-Build flavor: enterprise
-Build posture: local/no Developer ID team/no notarization; root executable reports ad-hoc linker signature
-Build log: /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/electron-build-mac-dr-007.log
-
-Build pipeline result
-- web/localization/literal guards: passed
-- shared core/contracts/backend builds: passed
-- Prisma generation: passed
-- server TypeScript/assets/sanitized built-in-agent bootstrap: passed
-- mobile and Electron Nuxt generation: passed
-- Electron/build TypeScript: passed
-- integrated server deployment and native Electron rebuild: passed
-- DMG, ZIP, and blockmaps: produced
-
-Artifact verification
-DMG: /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.45.dmg
-DMG bytes: 402361061
-DMG SHA-256: afbe2e992e082a00a79095f7d589c9219ea8c522594df9cb393a50ff78f1e5d6
-ZIP: /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.45.zip
-ZIP bytes: 397887527
-ZIP SHA-256: 5f53b1e8e0e4cc80f8bb13ca73d2ded5080589005b5c5b470eb31dd730f91eaf
-- hdiutil DMG checksum: valid
-- unzip integrity: no errors
-- app executable: Mach-O 64-bit arm64
-- target and selected packaged node-pty helpers: passed
-- real packaged node-pty spawn probe: passed
-- packaged built-server bytes match the just-built AppConfig environment file owner, readable migration, and custom provider store: passed
-Verification log: /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/electron-build-mac-dr-007-verification.log
-Packaged-source log: /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/electron-build-mac-dr-007-packaged-source.log
-
-Post-build tracked-base confirmation
-Command: git fetch origin personal --prune
-Result: exit 0
-Tracked base remained: 3cddeec6b93602da172fec2e7b9a80acc7c05117
-Base ancestor check: passed
-Divergence before delivery-only report edits: ahead 14, behind 0
-
-Delivery result
-Pass — current tracked base is integrated, durable docs are synchronized, the README-guided current macOS arm64 package and artifact checks passed, and the DMG is ready for explicit hands-on user verification. Finalization remains held.
+DR-008 delivery integrated-state refresh
+CHECK_UTC=2026-08-10T08:43:10Z
+BRANCH=codex/custom-provider-model-context-metadata
+HEAD_PRE_FETCH=eae34fd70ce7ae7d393dcc70ef3eb8d60328eb6e
+BASE_PRE_FETCH=3cddeec6b93602da172fec2e7b9a80acc7c05117
+COMMAND=git fetch origin personal --prune
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+HEAD_POST_FETCH=eae34fd70ce7ae7d393dcc70ef3eb8d60328eb6e
+BASE_POST_FETCH=3cddeec6b93602da172fec2e7b9a80acc7c05117
+MERGE_BASE=3cddeec6b93602da172fec2e7b9a80acc7c05117
+AHEAD=15
+BEHIND=0
+BASE_ANCESTOR_CHECK=PASS
+INTEGRATION_DECISION=No merge required; tracked base is unchanged and already an ancestor of the protected build checkpoint.
+POST_BUILD_CHECK=README-guided Electron pipeline exit 0 plus DMG, ZIP, arm64 executable, packaged node-pty spawn, and packaged-source identity checks passed.
+DOCS_IMPACT=No new durable documentation impact since DR-007; implementation, base, and long-lived documentation are unchanged.
+WORKTREE_STATUS_BEGIN
+ M tickets/in-progress/custom-provider-model-context-metadata/delivery-integrated-state-refresh.log
+?? tickets/in-progress/custom-provider-model-context-metadata/electron-build-mac-dr-008-packaged-source.log
+?? tickets/in-progress/custom-provider-model-context-metadata/electron-build-mac-dr-008-verification.log
+?? tickets/in-progress/custom-provider-model-context-metadata/electron-build-mac-dr-008.log
+WORKTREE_STATUS_END
+END_UTC=2026-08-10T08:43:13Z
+FINAL_HANDOFF_FETCH_UTC=2026-08-10T08:46:23Z
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+FINAL_HEAD=eae34fd70ce7ae7d393dcc70ef3eb8d60328eb6e
+FINAL_BASE=3cddeec6b93602da172fec2e7b9a80acc7c05117
+FINAL_AHEAD=15
+FINAL_BEHIND=0
+FINAL_BASE_ANCESTOR_CHECK=PASS
