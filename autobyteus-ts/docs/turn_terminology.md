@@ -14,12 +14,15 @@ This project uses two different runtime concepts that previously both used the w
 - Scope: one set of tool calls emitted by a single LLM response.
 - Source: created by the active `AgentTurnRunner`/`LlmPhase` path when
   normalized provider-native deltas produce tool invocations.
-- Usage: temporarily collects tool results and gates when to continue the same outer turn.
-  - `ToolResultContinuationBuilder` ingests the completed native result batch in
-    call order and creates the internal `SenderType.TOOL` continuation carrier.
-  - When no context-file media must be carried, the continuation is marked
-    `tool_history_only`; `AgentTurnRunner` emits
-    `ToolContinuationReadyEvent` so the next LLM request uses structured
+- Usage: retains the expected invocation identities in provider order and admits
+  only matching results for the active outer turn.
+  - After processing the complete batch, `AgentTurnRunner` clears the batch and
+    calls `MemoryManager.ingestToolResults(...)` once in call order.
+  - The pure `ToolContinuationInputBuilder` then creates the internal
+    `SenderType.TOOL` semantic/context carrier.
+  - When no context-file media must be carried, `AgentInputPipeline` represents
+    that absence as `llmUserMessage: null`; `AgentTurnRunner` emits
+    `ToolContinuationReadyEvent`, and the next request uses structured
     provider-native tool-call/result history without adding an aggregate user
     message. If the continuation carries context-file media, the same batch
     stays in the outer turn but uses an appended user/media carrier with
