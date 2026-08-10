@@ -119,6 +119,14 @@ export const useRunHistoryStore = defineStore('runHistory', {
   },
 
   actions: {
+    async loadWorkspaceCatalogForNavigation(): Promise<void> {
+      const workspaceStore = useWorkspaceStore();
+      if (workspaceStore.workspacesFetched) return;
+      await workspaceStore.fetchAllWorkspaces();
+      if (!workspaceStore.workspacesFetched) return;
+      this.refreshRunNavigationTopology('workspace-catalog-load');
+    },
+
     async fetchTree(limitPerAgent = 6, options: { quiet?: boolean } = {}): Promise<void> {
       await fetchRunHistoryTree(this, limitPerAgent, options);
       this.refreshRunNavigationTopology('history-fetch');

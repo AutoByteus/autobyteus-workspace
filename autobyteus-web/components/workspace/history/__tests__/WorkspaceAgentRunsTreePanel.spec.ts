@@ -182,6 +182,7 @@ const {
         return 0;
       },
       fetchTree: vi.fn().mockResolvedValue(undefined),
+      loadWorkspaceCatalogForNavigation: vi.fn().mockResolvedValue(undefined),
       refreshTreeQuietly: vi.fn().mockResolvedValue(undefined),
       fetchWorkspaceHistory: vi.fn().mockResolvedValue(undefined),
       refreshWorkspaceHistoryQuietly: vi.fn().mockResolvedValue(undefined),
@@ -349,6 +350,9 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     runHistoryState.selectedTeamRunId = null;
     runHistoryState.workspaceHistoryLoadingById = {};
     runHistoryState.workspaceHistoryErrorById = {};
+    runHistoryStoreMock.loadWorkspaceCatalogForNavigation.mockImplementation(
+      () => workspaceStoreMock.fetchAllWorkspaces(),
+    );
     runHistoryState.nodes = [
       {
         workspaceRootPath: '/ws/a',
@@ -565,6 +569,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     mountComponent();
     await flushPromises();
 
+    expect(runHistoryStoreMock.loadWorkspaceCatalogForNavigation).toHaveBeenCalledTimes(1);
     expect(workspaceStoreMock.fetchAllWorkspaces).toHaveBeenCalledTimes(1);
     expect(runHistoryStoreMock.fetchTree).not.toHaveBeenCalled();
     expect(runHistoryStoreMock.fetchWorkspaceHistory).not.toHaveBeenCalled();

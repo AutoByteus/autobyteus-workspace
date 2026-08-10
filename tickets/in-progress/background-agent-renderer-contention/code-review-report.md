@@ -2,229 +2,108 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review`
+- Review Entry Point: `API/E2E Failure-Origin Review`
 - Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/investigation-notes.md`
 - Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/design-spec.md`
-- Supplemental Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/performance-evidence.md` and `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/probe-evidence`
 - Relevant Solution / Architecture Revisions: `SR-004 / ARCH-REV-004`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/design-review-report.md`
-- Implementation Handoff / Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/implementation-handoff.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/implementation-revision-record.md`
 - Relevant Implementation Revision: `IR-005`
-- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/code-review-revision-record.md`
-- Current Code Review Revision ID / Round: `CRR-005 / 5`
-- Trigger: IR-005 source commit `81a8e8b64aad0fd2253081fe9a94f88e3a9ffa46` at clean HEAD `242b466d8497be1a00f65594df4503d40092a73c`.
-- Prior Authoritative Review: `CRR-004 — Fail — Local Fix`
-- Latest Authoritative Round: `CRR-005`
-- API/E2E / delivery failure-origin inputs: `N/A — API/E2E has not started`
+- Relevant Prior Code Review Revisions: `CRR-005 — implementation-source Pass`; `CRR-006 — proportional test-code Pass`
+- Triggering API/E2E Revision: `API-REV-002 — Fail / 77.1%`
+- Relevant Delivery Revision: `DR-002`
+- Current Code Review Revision ID / Round: `CRR-007 / 7`
+- Failure IDs: `API-F-001 / WORKSPACE-BOOT-001`; corroborating `WORKSPACE-BOOT-002`
+- Canonical API/E2E Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/api-e2e-execution-coverage-report.md`
+- Failure Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/api-e2e-execution-evidence/api-rev-002/`
+- Integrated HEAD Reviewed: `26b9b3cb87c222611a03614d5608cf5af72e8952`
+- Prior API/E2E Pass Status: `Superseded by API-REV-002`
 
-## Review Scope
+## Focused Review Scope
 
-- Re-reviewed CR-006 first, then the complete implementation-source range from task base `7f0fc49965950d9689726a048371f2e2b78eef31` through current HEAD, all prior findings, IR-005 tests, and the complete approved package.
-- Explicit exclusions: API/E2E execution, aggregate browser/Electron proof, delivery-owned base refresh, and durable documentation synchronization.
-- Reviewer checks:
-  - Real prime-ownership subset — Pass, 4 files / 16 tests.
-  - Affected frontend matrix — Pass, 11 files / 171 tests.
-  - Unchanged server egress/build evidence retained from prior rounds.
-  - IR-005 delta and complete task-range `git diff --check` — Pass.
-  - Production prime-owner inventory and production caller search — Pass.
-  - Worktree was clean before review-artifact edits.
+This round classifies the fresh-start workspace-catalog failure only. It does not repeat the 65-file implementation audit or re-review successful durable API/E2E test code. The smallest relevant path was traced through the real user trigger, workspace API fetch, panel composition, cached navigation initialization, existing test boundary, and delivery-integrated source.
 
-## Upstream Behavior And Production-Path Basis Confirmation
+No production source or durable coverage was changed during this review. The relevant production source is unchanged between the IR-005 reviewed clean HEAD and the current delivery-integrated HEAD.
 
-- Approved requirements and business intent understood: Yes.
-- Behavior-basis status: `Confirmed`.
-- No changed or newly discovered behavior and no material ambiguity remain.
+## Approved Behavior And Product Reachability
 
-| Behavior ID | Status | Evidence |
+| Premise ID | Independent Trigger / Governing Contract | Production Trace | Status | Consequence |
+| --- | --- | --- | --- | --- |
+| `CR-PREM-010` | A user launches the supported Electron application or freshly opens `/workspace` with existing persisted workspace metadata. The governing contracts are `Directly Usable — No Migration`, FR-003, preserved BEH-006 sidebar grouping/hierarchy, and AC-007/AC-009. | Fresh renderer -> `WorkspaceAgentRunsTreePanel` -> async `workspaceStore.fetchAllWorkspaces()` -> GraphQL returns existing workspaces -> run-history navigation projection must incorporate that catalog exactly once. | `Reachable / Confirmed` | Existing workspaces and their history must appear; a permanently empty cached sidebar violates the preserved product surface. |
+
+This premise is not inferred from a synthetic test. The user exercised the shipped Electron surface, and API/E2E independently reproduced the same reviewed-source path against both the active backend/user data and an owned branch backend/real-data copy.
+
+## Expected And Observed Behavior
+
+- Expected: a fresh `/workspace` render shows the existing workspace catalog and enables its scoped history rows without migration or a separate topology mutation.
+- Observed against the active Electron backend: GraphQL returned 26 workspaces, 28 history groups, 79 agent runs, and 184 team runs with no errors; the reviewed branch frontend rendered zero workspace rows and `No run history yet.`
+- Observed against the owned branch backend and real-data copy: GraphQL returned 26 workspaces and 18 usable history groups; the reviewed branch frontend again rendered zero rows and `No run history yet.`
+- Electron provenance caveat: the currently running `/Applications/AutoByteus.app` is not the DR-002 candidate artifact. This does not explain the source failure because the reviewed branch frontend reproduced it against both real backends.
+
+## Source Failure Trace
+
+1. `useWorkspaceHistoryTreeState.ts:49` creates `workspaceNodes` from `runHistoryStore.getTreeNodes()`, so the first panel render reads navigation before mount-time async setup completes.
+2. `runHistoryStore.ts:463-465` sees `navigationProjection === null` and calls `refreshRunNavigationTopology('lazy-tree-read')` once.
+3. `runHistoryNavigationStoreActions.ts:31-39` builds and stores the projection from the current `workspaceStore.allWorkspaces`; during the first render that catalog is empty.
+4. `WorkspaceAgentRunsTreePanel.vue:366-371` then awaits `workspaceStore.fetchAllWorkspaces()`. `workspace.ts:228-286` asynchronously populates the workspace catalog, but neither the fetch owner nor the panel's completed mount transaction refreshes the run-history navigation topology.
+5. Later computed reads see a non-null `navigationProjection`; `getTreeNodes()` returns the stale empty `workspaceNodes` indefinitely until an unrelated topology operation occurs.
+6. Before IR-005, `getTreeNodes()` rebuilt from reactive `workspaceStore.allWorkspaces` on every read. Commit `d1c48db5a59ecf42a8a1d528763196c815b0c11a` correctly introduced caching to remove multiplied work but omitted the supported empty-to-populated initialization invalidation edge.
+
+## Failure-Origin Determination
+
+- Origin: `Implementation source defect`.
+- Classification: `Local Fix`.
+- Owner: `implementation_engineer`.
+- Design impact: `No`. SR-004 already requires a topology refresh for a real workspace mutation and at most one build per completed operation. The correction is to connect the supported workspace-catalog completion to that reviewed cached-navigation ownership without restoring reactive/per-frame rebuilds.
+- Requirement gap: `No`. Existing workspace visibility, preserved sidebar hierarchy, AC-007/AC-009, and the no-migration contract establish the expected outcome.
+- Environment/fixture origin: `No`. Two independent real-data backends returned populated catalogs without GraphQL errors, while the same reviewed frontend source remained empty.
+- Delivery integration origin: `No`. The relevant source has no diff between the IR-005 reviewed HEAD and integrated HEAD.
+- API/E2E test-code origin: `No`. API-REV-002 changed no durable coverage; it exposed a missing product-startup scenario.
+
+## Prior Review Gap
+
+CRR-005 should have caught this defect. The cached navigation projection has explicit source inputs, including `workspaceStore.allWorkspaces`, but the full source review did not trace the initial asynchronous writer for that input or verify that every supported navigation-relevant writer invalidated the cache once. The review accepted the general `workspace mutation -> topology refresh` design mapping and the panel test's no-eager-history assertion without noticing that the mock started with already-populated tree nodes and never exercised empty catalog -> populated catalog.
+
+Affected prior rationale:
+
+| CRR-005 Category / Claim | Prior Claim | Current Resolution |
 | --- | --- | --- |
-| BEH-001 | Confirmed | Shared server/frontend presentation ownership and cached navigation replace multiplied work. |
-| BEH-002 | Confirmed | Attachment/file/voice owners remain independent and unchanged. |
-| BEH-003 | Confirmed | Task-agent ensure/repair is router-owned, mutation-bearing, and followed by read-only resolution. |
-| BEH-004 | Confirmed | Shared projector applies actual effects; terminal activity, local failures, and root lifecycle use exact patches. |
-| BEH-005 | Confirmed | Open, live recovery, and lazy historical hydration each have one explicit final-prime owner after their last conversation/activity writer. |
-| BEH-006 | Confirmed | Indexed navigation publishes exact patches and stable unchanged collection identities. |
-| BEH-007 | Confirmed | Exact repeated UI statuses are filtered per enriched connection identity only. |
-| BEH-008 | Confirmed | Existing cadence/coalescing, wire shape, and progressive rich rendering remain preserved. |
-| BEH-009 | Confirmed | Ordered controls receive immutable snapshots and cannot alter terminal delivery. |
-
-## Structural / Design Checks
-
-| Check | Result | Evidence |
-| --- | --- | --- |
-| Design health and reviewed scope preserved | Pass | Approved Performance Bug + Refactor posture is implemented without cadence inflation, disconnects, renderer downgrade, or worker detour. |
-| Implementation matches approved behavior artifacts | Pass | SR-004 owners, effects, exact lifecycle ordering, and removal inventory are present. |
-| Data-flow spine clarity | Pass | Server egress, client projection, Event Monitor, task mutation, and navigation paths are explicit. |
-| Ownership boundary preservation | Pass | One scheduler/projector/navigation owner and unambiguous final-prime owners remain. |
-| Off-spine concern clarity and subsystem reuse | Pass | Existing settings, activity, Event Monitor, task-detail, attachment, and voice capabilities retain ownership. |
-| Reusable owned structures / data-model tightness | Pass | Effects, indexes, rows, identities, and control contracts are narrow and non-overlapping. |
-| Repeated coordination ownership | Pass | Duplicate dispatch/build/prime coordination is removed. |
-| Empty indirection / patch-on-patch control | Pass | No forwarding-only, fallback, or compatibility layer was introduced. |
-| Separation, dependency direction, authoritative boundary, placement | Pass | Components consume run-history output; task/source helpers do not bypass owners; files remain capability-local. |
-| Interface/API clarity | Pass | Activity hydration is activity-only; open/recovery/lazy transactions own their explicit final prime. |
-| Naming and readability | Pass | Source remains bounded and responsibilities are apparent from names and paths. |
-| Cleanup and obsolete-path removal | Pass | Old egress policy, duplicate dispatcher, Event Monitor API, and component builder remain deleted. |
-| Relevant tests requirement-aligned | Pass | Real loader/builder tests cover historical/active projection present, projection absent, replacement, preserved reuse, live recovery, and lazy hydration. |
-| Fixture coherence / no stale compatibility tests | Pass | Focused suites remain coherent and no legacy path is retained. |
-| API/E2E readiness | Pass | Source and architecture are ready for coverage investigation and realistic execution. |
-
-## Source File Size And Structure Audit
-
-All 65 changed production-source files were re-audited. Tests, fixtures, generated files, documentation, and evidence are excluded. No changed source exceeds 500 effective non-empty lines; no new source exceeds the reviewed 220-line threshold. All source rows pass ownership, placement, and structure checks.
-
-| Source File | Effective Non-Empty Lines | `>500` Check | `>220` New-File Delta | SoC / Contract | Placement | Classification | Required Action |
-| --- | ---: | --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/services/agent-streaming/websocket-egress/agent-status-projection-identity.ts` | 69 | Pass | Pass (+75) | Pass | Pass | Pass | None |
-| `autobyteus-server-ts/src/services/agent-streaming/websocket-egress/agent-status-transition-filter.ts` | 26 | Pass | Pass (+30) | Pass | Pass | Pass | None |
-| `autobyteus-server-ts/src/services/agent-streaming/websocket-egress/agent-stream-content-cadence-scheduler.ts` | 82 | Pass | Pass (+93) | Pass | Pass | Pass | None |
-| `autobyteus-server-ts/src/services/agent-streaming/websocket-egress/agent-stream-egress-control-composition.ts` | 25 | Pass | Pass (+27) | Pass | Pass | Pass | None |
-| `autobyteus-server-ts/src/services/agent-streaming/websocket-egress/agent-stream-egress-control.ts` | 64 | Pass | Pass (+77) | Pass | Pass | Pass | None |
-| `autobyteus-server-ts/src/services/agent-streaming/websocket-egress/agent-stream-websocket-egress-policy.ts` | Removed | N/A | Pass (deletion) | Pass | Pass | Pass | None |
-| `autobyteus-server-ts/src/services/agent-streaming/websocket-egress/agent-stream-websocket-egress.ts` | 88 | Pass | Pass (+59) | Pass | Pass | Pass | None |
-| `autobyteus-server-ts/src/services/agent-streaming/websocket-egress/stream-content-coalescing.ts` | 24 | Pass | Pass (+2) | Pass | Pass | Pass | None |
-| `autobyteus-server-ts/src/services/agent-streaming/websocket-egress/stream-payload-equality.ts` | 34 | Pass | Pass (+36) | Pass | Pass | Pass | None |
-| `autobyteus-web/components/mobile/MobileRemoteAccessShell.vue` | 278 | Pass | Pass (+1) | Pass | Pass | Pass | None |
-| `autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue` | 359 | Pass | Pass (+0) | Pass | Pass | Pass | None |
-| `autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue` | 477 | Pass | Pass (+27) | Pass | Pass | Pass | None |
-| `autobyteus-web/components/workspace/history/WorkspaceTransientExecutionRow.vue` | 84 | Pass | Pass (+4) | Pass | Pass | Pass | None |
-| `autobyteus-web/components/workspace/history/workspaceHistorySectionContracts.ts` | 71 | Pass | Pass (+0) | Pass | Pass | Pass | None |
-| `autobyteus-web/components/workspace/running/RunningAgentsPanel.vue` | 198 | Pass | Pass (+3) | Pass | Pass | Pass | None |
-| `autobyteus-web/components/workspace/team/AgentTeamEventMonitor.vue` | 130 | Pass | Pass (+3) | Pass | Pass | Pass | None |
-| `autobyteus-web/components/workspace/team/TeamMembersPanel.vue` | 113 | Pass | Pass (+4) | Pass | Pass | Pass | None |
-| `autobyteus-web/composables/mobile/useMobileRunLaunchCoordinator.ts` | 213 | Pass | Pass (+3) | Pass | Pass | Pass | None |
-| `autobyteus-web/composables/mobile/useMobileTeamMemberFocusCoordinator.ts` | 114 | Pass | Pass (+3) | Pass | Pass | Pass | None |
-| `autobyteus-web/composables/useWorkspaceHistorySelectionActions.ts` | 114 | Pass | Pass (+0) | Pass | Pass | Pass | None |
-| `autobyteus-web/composables/useWorkspaceHistoryTreeState.ts` | 353 | Pass | Pass (+27) | Pass | Pass | Pass | None |
-| `autobyteus-web/services/agentStreaming/AgentStreamingService.ts` | 260 | Pass | Pass (+6) | Pass | Pass | Pass | None |
-| `autobyteus-web/services/agentStreaming/TeamStreamingService.ts` | 423 | Pass | Pass (+52) | Pass | Pass | Pass | None |
-| `autobyteus-web/services/agentStreaming/agentStreamMessageProjector.ts` | 216 | Pass | Pass (+220) | Pass | Pass | Pass | None |
-| `autobyteus-web/services/agentStreaming/agentStreamMutationEffects.ts` | 58 | Pass | Pass (+66) | Pass | Pass | Pass | None |
-| `autobyteus-web/services/agentStreaming/handlers/agentStatusHandler.ts` | 277 | Pass | Pass (+40) | Pass | Pass | Pass | None |
-| `autobyteus-web/services/agentStreaming/handlers/externalUserMessageHandler.ts` | 15 | Pass | Pass (+1) | Pass | Pass | Pass | None |
-| `autobyteus-web/services/agentStreaming/handlers/memberInputMessageHandler.ts` | 16 | Pass | Pass (+1) | Pass | Pass | Pass | None |
-| `autobyteus-web/services/agentStreaming/handlers/segmentHandler.ts` | 402 | Pass | Pass (+25) | Pass | Pass | Pass | None |
-| `autobyteus-web/services/agentStreaming/handlers/systemTaskNotificationHandler.ts` | 20 | Pass | Pass (+2) | Pass | Pass | Pass | None |
-| `autobyteus-web/services/agentStreaming/handlers/teamHandler.ts` | 78 | Pass | Pass (+8) | Pass | Pass | Pass | None |
-| `autobyteus-web/services/agentStreaming/handlers/tokenUsageHandler.ts` | 12 | Pass | Pass (+2) | Pass | Pass | Pass | None |
-| `autobyteus-web/services/agentStreaming/handlers/toolLifecycleHandler.ts` | 440 | Pass | Pass (+112) | Pass | Pass | Pass | None |
-| `autobyteus-web/services/agentStreaming/handlers/userMessageProjection.ts` | 108 | Pass | Pass (+5) | Pass | Pass | Pass | None |
-| `autobyteus-web/services/agentStreaming/teamStreamGenericMessageDispatcher.ts` | Removed | N/A | Pass (deletion) | Pass | Pass | Pass | None |
-| `autobyteus-web/services/agentStreaming/teamStreamMemberContextResolver.ts` | 113 | Pass | Pass (+9) | Pass | Pass | Pass | None |
-| `autobyteus-web/services/agentStreaming/teamTaskAgentContextProjection.ts` | 461 | Pass | Pass (+28) | Pass | Pass | Pass | None |
-| `autobyteus-web/services/agentStreaming/teamTaskExecutionEventRouter.ts` | 194 | Pass | Pass (+98) | Pass | Pass | Pass | None |
-| `autobyteus-web/services/agentStreaming/teamTaskExecutionProjection.ts` | 345 | Pass | Pass (+101) | Pass | Pass | Pass | None |
-| `autobyteus-web/services/agentStreaming/teamTaskTeamChildProjection.ts` | 365 | Pass | Pass (+34) | Pass | Pass | Pass | None |
-| `autobyteus-web/services/agentStreaming/teamTaskTeamExecutionProjection.ts` | 261 | Pass | Pass (+27) | Pass | Pass | Pass | None |
-| `autobyteus-web/services/eventMonitor/recentEventMonitorMutationCommit.ts` | Removed | N/A | Pass (deletion) | Pass | Pass | Pass | None |
-| `autobyteus-web/services/eventMonitor/recentEventMonitorMutationCoordinator.ts` | 62 | Pass | Pass (+69) | Pass | Pass | Pass | None |
-| `autobyteus-web/services/runHydration/runContextHydrationService.ts` | 173 | Pass | Pass (+3) | Pass | Pass | Pass | None |
-| `autobyteus-web/services/runHydration/teamRunContextHydrationService.ts` | 489 | Pass | Pass (+11) | Pass | Pass | Pass | None |
-| `autobyteus-web/services/runOpen/agentRunOpenCoordinator.ts` | 83 | Pass | Pass (+4) | Pass | Pass | Pass | None |
-| `autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts` | 249 | Pass | Pass (+20) | Pass | Pass | Pass | None |
-| `autobyteus-web/services/runStatus/agentRuntimeStatusState.ts` | 62 | Pass | Pass (+5) | Pass | Pass | Pass | None |
-| `autobyteus-web/services/runSubmission/localUserSubmission.ts` | 113 | Pass | Pass (+58) | Pass | Pass | Pass | None |
-| `autobyteus-web/stores/agentContextsStore.ts` | 196 | Pass | Pass (+12) | Pass | Pass | Pass | None |
-| `autobyteus-web/stores/agentRunStore.ts` | 393 | Pass | Pass (+7) | Pass | Pass | Pass | None |
-| `autobyteus-web/stores/agentTeamContextsStore.ts` | 283 | Pass | Pass (+13) | Pass | Pass | Pass | None |
-| `autobyteus-web/stores/agentTeamRunStore.ts` | 498 | Pass | Pass (+32) | Pass | Pass | Pass | None |
-| `autobyteus-web/stores/runHistoryLoadActions.ts` | 322 | Pass | Pass (+0) | Pass | Pass | Pass | None |
-| `autobyteus-web/stores/runHistoryNavigationPatches.ts` | 187 | Pass | Pass (+199) | Pass | Pass | Pass | None |
-| `autobyteus-web/stores/runHistoryNavigationProjection.ts` | 178 | Pass | Pass (+187) | Pass | Pass | Pass | None |
-| `autobyteus-web/stores/runHistoryNavigationStoreActions.ts` | 107 | Pass | Pass (+115) | Pass | Pass | Pass | None |
-| `autobyteus-web/stores/runHistorySelectionActions.ts` | 128 | Pass | Pass (+2) | Pass | Pass | Pass | None |
-| `autobyteus-web/stores/runHistoryStore.ts` | 488 | Pass | Pass (+88) | Pass | Pass | Pass | None |
-| `autobyteus-web/stores/runHistoryTeamExecutionRows.ts` | 100 | Pass | Pass (+109) | Pass | Pass | Pass | None |
-| `autobyteus-web/stores/runHistoryTeamHelpers.ts` | 156 | Pass | Pass (+3) | Pass | Pass | Pass | None |
-| `autobyteus-web/stores/runHistoryTeamMemberProjectionHydrator.ts` | 302 | Pass | Pass (+6) | Pass | Pass | Pass | None |
-| `autobyteus-web/stores/runHistoryTypes.ts` | 248 | Pass | Pass (+24) | Pass | Pass | Pass | None |
-| `autobyteus-web/stores/tokenUsageMeterStore.ts` | 289 | Pass | Pass (+4) | Pass | Pass | Pass | None |
-| `autobyteus-web/utils/workspaceTeamExecutionDisplayRows.ts` | Removed | N/A | Pass (deletion) | Pass | Pass | Pass | None |
-
-## Legacy / Backward-Compatibility Verdict
-
-| Check | Result | Notes |
-| --- | --- | --- |
-| No compatibility machinery | Pass | No wrappers, dual paths, version gates, or aliases. |
-| No old behavior retained | Pass | Replaced paths remain deleted. |
-| Persisted-data decision followed | Pass | In-memory derived state only; no migration applies. |
-| No version-specific fallback | Pass | None exists. |
-
-## Dead / Obsolete / Legacy Items Requiring Removal
-
-None.
-
-## Docs-Impact Verdict
-
-- Docs impact: `Yes`.
-- After API/E2E passes, delivery should synchronize `autobyteus-server-ts/docs/modules/agent_streaming.md`, `autobyteus-web/docs/agent_execution_architecture.md`, and `autobyteus-web/docs/settings.md`; verify `autobyteus-web/docs/content_rendering.md` remains accurate.
-
-## Material Premise Validation
-
-| Premise ID | Status | Current Resolution Evidence |
-| --- | --- | --- |
-| ARCH-PREM-004 | Confirmed | Task-agent ensure/repair remains router-owned and reports its actual mutation. |
-| CR-PREM-006A | Reachable / Addressed | Historical open now writes projection/activity without a nested prime; outer open primes the final context once. |
-| CR-PREM-006B | Reachable / Addressed | Projection-absent builders no longer prime; outer open/live recovery primes the final context once. |
-| CR-PREM-007 | Reachable / Addressed | Failure cleanup sets Error before exact failure navigation. |
-| CR-PREM-008 | Reachable / Addressed | Team source activity precedes cached-root publication and equal initial lifecycle no-ops. |
-| CR-PREM-009 | Reachable / Addressed | Preserved subscribed contexts receive a no-reset idempotent final prime. |
-
-## Prior Finding Resolution
-
-| Finding | Resolution | Evidence |
-| --- | --- | --- |
-| CR-001 | Resolved | Immutable cloned control observations cannot change sink delivery. |
-| CR-002 | Resolved | Combined terminal presentation/activity is preserved. |
-| CR-003 | Resolved | Local submission summary/activity/navigation effects are exact. |
-| CR-004 | Resolved | Root lifecycle change/no-op uses exact behavior. |
-| CR-005 | Resolved | Equal projection collections retain identity. |
-| CR-006 | Resolved | Lower construction/projection/activity writers do not prime; outer open/live recovery and separate lazy hydration each prime once after the final writer. |
-| CR-007 | Resolved | Failure navigation sees authoritative Error. |
-| CR-008 | Resolved | Active team source state exists before navigation publication. |
-| CR-009 | Resolved | Preserved subscribed members are primed idempotently without reset. |
-
-## Review Scorecard
-
-- Overall score: `9.62/10 (96.2/100)`.
-- Calculation: simple average of ten categories. Every category is at least 9.0 and no actionable finding remains.
-
-| Priority | Category | Score | Basis |
-| --- | --- | ---: | --- |
-| 1 | Data-Flow Spine Inventory and Clarity | 9.7 | Complete paths and governing owners are explicit. |
-| 2 | Ownership Clarity and Boundary Encapsulation | 9.6 | Authority is singular across egress, projection, navigation, task mutation, and baseline lifecycle. |
-| 3 | API / Interface / Query / Command Clarity | 9.5 | Typed identities/effects and activity-only hydration expose intent directly. |
-| 4 | Separation of Concerns and File Placement | 9.6 | Capability-local files and thin consumers match SR-004. |
-| 5 | Shared-Structure / Data-Model Tightness | 9.6 | Shared structures are narrow and preserve referential stability. |
-| 6 | Naming Quality and Local Readability | 9.6 | Responsibilities and lifecycle boundaries are easy to follow. |
-| 7 | API/E2E Readiness | 9.5 | Focused real-composition coverage and build/guard evidence support downstream execution. |
-| 8 | Runtime Correctness and Behavioral Fidelity | 9.5 | Supported source paths preserve exact status, content, hierarchy, navigation, and final-witness semantics. |
-| 9 | No Backward-Compatibility / Legacy Retention | 9.8 | Clean replacement with no dual behavior. |
-| 10 | Cleanup Completeness | 9.8 | Obsolete paths remain removed and both diff checks pass. |
+| Runtime Correctness and Behavioral Fidelity | Supported navigation paths preserve exact hierarchy. | Reopened: fresh workspace-catalog startup loses all visible workspace hierarchy. |
+| API/E2E Readiness | Focused real-composition coverage supports downstream execution. | Reopened: panel coverage omitted the cache's initial empty-to-populated input transition, and the isolated Electron fixture pre-seeded topology. |
+| Source audit ownership/invalidation | Real workspace mutations refresh the navigation cache once. | Reopened: workspace creation/removal/history paths are wired, but initial catalog population is not. |
 
 ## Findings
 
-None.
+### CR-010 — Fresh workspace catalog is never committed to the cached navigation projection
 
-## Classification
+- Severity: `Critical`
+- Affected behavior/contracts: `BEH-006`, FR-003, AC-007, AC-009, `Directly Usable — No Migration`
+- Material premise: `CR-PREM-010 — Reachable / Confirmed`
+- Evidence: the production trace above; `active-electron-backend-browser-summary.json`; `isolated-real-data-browser-summary.json`; `source-failure-trace.txt`; panel test `loads workspace list without eager history tree on mount` does not model the transition.
+- User impact: every existing workspace can disappear from the primary Workspace history/sidebar surface on a fresh application render despite correct backend data.
+- Required action: establish one explicit cached-navigation topology refresh after the supported initial workspace-catalog population completes, preserving the reviewed no-eager-global-history behavior and zero rebuilds for background/non-navigation traffic. Add focused real-composition coverage that begins with an empty workspace store and null/empty cached projection, resolves the async catalog load, and proves the workspace rows become visible without an unrelated mutation. Recheck any directly affected startup/reset ownership rather than adding a reactive watcher or returning to per-read rebuilding.
+- Classification / owner: `Local Fix / implementation_engineer`
 
-- Review outcome: `Pass`.
-- Failure classification: `N/A`.
+## Required Re-Review And Validation
 
-## Recommended Recipient
+1. Implementation engineer corrects CR-010 and records a new implementation revision.
+2. Code reviewer performs complete source re-review of the correction and affected cached-navigation startup ownership.
+3. API/E2E reruns `WORKSPACE-BOOT-001` first against a fresh real-data renderer/backend boundary, then the corroborating real-backend path and the retained navigation/performance regressions.
+4. API/E2E owns the coverage investigation update and any repository-resident durable startup regression changes; if durable coverage changes, it returns for proportional test-code review before delivery.
+5. Delivery/finalization remains blocked; API-REV-001 and the CRR-006 delivery authorization are superseded as delivery gates by this failure.
 
-- `api_e2e_engineer` for coverage investigation and execution.
+## Classification And Routing
 
-## Residual Risks
-
-- Realistic aggregate browser responsiveness, retained WebSocket/canonical-subscriber correctness, nested collapsed/unfocused behavior, latest-100 Event Monitor behavior, paste/fake-media latency, and final Electron voice/file smoke remain API/E2E responsibilities.
-- Repository-wide Nuxt/server typecheck baselines remain as recorded; focused evidence does not convert them into broad passes.
-- Durable documentation synchronization and base refresh remain delivery-owned.
+- Review outcome: `Fail`
+- Failure classification: `Local Fix`
+- Recommended recipient: `implementation_engineer`
+- Delivery status: `Blocked pending correction, source re-review, and API/E2E rerun`
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass`
-- Review Entry Point: `Implementation Review`
-- Material-Premise Gate: `Pass`
-- Score: `9.62/10 (96.2/100)`
-- Recommended Recipient: `api_e2e_engineer`
-- Notes: CR-001–CR-009 are resolved. API/E2E may begin with the retained WebSocket regression and the reviewed realistic coverage plan.
+- Review Decision: `Fail — Local Fix`
+- Review Entry Point: `API/E2E Failure-Origin Review`
+- Failure ID: `API-F-001 / WORKSPACE-BOOT-001`
+- Finding ID: `CR-010`
+- Material-Premise Gate: `Pass — CR-PREM-010 Reachable / Confirmed`
+- Failure Origin: `IR-005 cached navigation initialization/invalidation defect; prior source-review coverage gap`
+- Recommended Recipient: `implementation_engineer`
+- Notes: Do not proceed to delivery. The exact fresh real-data boot regression must pass after reviewed source correction.

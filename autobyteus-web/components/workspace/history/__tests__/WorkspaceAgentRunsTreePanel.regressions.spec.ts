@@ -135,6 +135,7 @@ const {
         return 0;
       },
       fetchTree: vi.fn().mockResolvedValue(undefined),
+      loadWorkspaceCatalogForNavigation: vi.fn().mockResolvedValue(undefined),
       refreshTreeQuietly: vi.fn().mockResolvedValue(undefined),
       fetchWorkspaceHistory: vi.fn().mockResolvedValue(undefined),
       refreshWorkspaceHistoryQuietly: vi.fn().mockResolvedValue(undefined),

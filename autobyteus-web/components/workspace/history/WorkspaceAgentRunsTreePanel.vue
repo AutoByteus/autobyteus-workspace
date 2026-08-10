@@ -365,7 +365,7 @@ let refreshTimerId: ReturnType<typeof setInterval> | null = null;
 
 onMounted(async () => {
   await Promise.all([
-    workspaceStore.fetchAllWorkspaces().catch(() => undefined),
+    runHistoryStore.loadWorkspaceCatalogForNavigation().catch(() => undefined),
     agentDefinitionStore.fetchAllAgentDefinitions().catch(() => undefined),
     agentTeamDefinitionStore.fetchAllAgentTeamDefinitions().catch(() => undefined),
   ]);

@@ -10,6 +10,7 @@
 | CRR-004 | `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/code-review-report.md` | Implementation Review / IR-004 full source re-review | CRR-003: Fail — Local Fix | Fail — Local Fix | CR-006 |
 | CRR-005 | `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/code-review-report.md` | Implementation Review / IR-005 full source re-review | CRR-004: Fail — Local Fix | Pass | CR-006 |
 | CRR-006 | `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/api-e2e-test-review-report.md` | Successful API/E2E Test-Code Review / API-REV-001 | CRR-005: Pass; API-REV-001: Pass / 98.4% | Pass | None |
+| CRR-007 | `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/code-review-report.md` | API/E2E Failure-Origin Review / API-REV-002 | CRR-006: Pass; API-REV-001: Pass / 98.4% | Fail — Local Fix | CR-010 |
 
 ## Revision Entries
 
@@ -161,3 +162,28 @@ None — no unresolved source or test-review finding entered this round. The fiv
 - Reviewer evidence: changed durable paths and aggregate patch inspected; corrected socket execution 7/7; durable Chrome scenarios BG-BROWSER-000–007 green; package parse, probe syntax, diff check, temporary-route absence, and disabled/skip/TODO scan pass. The API/E2E workflow was not rerun.
 - Recommended recipient: `delivery_engineer`
 - Remaining risks or uncertainty: Only the already-approved aggregate-equivalent provider model, deterministic fake media instead of a physical microphone, and deferred higher-scale parsing/worker work remain. Broad repository typecheck baselines remain non-green; delivery retains base refresh and documentation synchronization.
+
+### CRR-007 — API-REV-002 confirms fresh-boot cached navigation source defect
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/code-review-report.md`
+- Review entry point and round: `API/E2E Failure-Origin Review`, round 7
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/api-e2e-execution-coverage-report.md`; `API-F-001`, `WORKSPACE-BOOT-001`, corroborating `WORKSPACE-BOOT-002`
+- Relevant solution revision IDs: `SR-004`
+- Relevant architecture-review revision IDs: `ARCH-REV-004`
+- Relevant implementation revision IDs: `IR-005`
+- Relevant API/E2E revision IDs: `API-REV-002` (supersedes `API-REV-001`)
+- Relevant delivery revision IDs: `DR-002`
+- Prior authoritative result: `CRR-006 — Pass`; `API-REV-001 — Pass / 98.4%`
+- Current authoritative result: `Fail — Local Fix — CR-010`
+- What changed in the review result and why: The user-supported fresh Electron `/workspace` trigger and two independent real-data executions prove that IR-005 seeds the navigation cache before async workspace metadata arrives and never invalidates it when the catalog becomes populated. Backend APIs are correct; the reviewed frontend remains empty. The active installed app artifact mismatch is real but non-causal because the branch frontend reproduces the same defect against both backends.
+
+#### Prior Finding Resolution
+
+None. CR-010 is new. CRR-005's runtime-correctness, cache-invalidation, and API/E2E-readiness rationales are reopened for this supported lifecycle; CRR-006 remains a historically valid review of API-REV-001 test code but no longer authorizes delivery after the superseding runtime failure.
+
+- New or remaining finding IDs: `CR-010`
+- Material score or classification changes: The prior implementation Pass is superseded as a delivery gate by `Fail — Local Fix`. No full scorecard was recalculated in this focused origin review.
+- Material premise: `CR-PREM-010 — Reachable / Confirmed` from fresh Electron or `/workspace` startup with existing persisted workspaces under AC-007/AC-009 and the no-migration contract.
+- Failure origin: implementation source defect introduced by the cached navigation change in `d1c48db5a59ecf42a8a1d528763196c815b0c11a`; prior source-review gap because the asynchronous workspace-catalog writer was not included in the cache invalidation audit.
+- Recommended recipient: `implementation_engineer`
+- Remaining risks or uncertainty: correction must preserve bounded one-build ownership and not restore per-read/reactive global rebuilding. After source re-review, API/E2E must run the exact fresh real-data boot first and update durable coverage as needed. Delivery/finalization remains blocked.
