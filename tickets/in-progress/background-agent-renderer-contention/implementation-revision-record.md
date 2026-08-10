@@ -11,6 +11,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 | IR-003 | `code_reviewer` / `code-review-report.md` / CRR-002 | `CR-007–CR-009` | `Local Fix` | `SR-004`, `ARCH-REV-004`, `CRR-002`; `API-REV N/A`, `DR N/A` | Three caller/lifecycle ordering defects corrected and locally validated; ready for complete source re-review |
 | IR-004 | `code_reviewer` / `code-review-report.md` / CRR-003 | `CR-006` (reopened) | `Local Fix` | `SR-004`, `ARCH-REV-004`, `CRR-003`; `API-REV N/A`, `DR N/A` | Nested Event Monitor prime ownership removed and real open/recovery composition locally validated; ready for complete source re-review |
 | IR-005 | `code_reviewer` / `code-review-report.md` / CRR-004 | `CR-006` (partially resolved / open) | `Local Fix` | `SR-004`, `ARCH-REV-004`, `CRR-004`; `API-REV N/A`, `DR N/A` | Complete team-hydration prime inventory centralized at outer/lazy lifecycle owners and real loader/builder paths validated; ready for complete source re-review |
+| IR-006 | `code_reviewer` / `code-review-report.md` / CRR-007 failure-origin review | `CR-010`; `API-F-001 / WORKSPACE-BOOT-001` | `Local Fix` | `SR-004`, `ARCH-REV-004`, `CRR-007`, `API-REV-002`, `DR-002` | Initial async workspace catalog now publishes exactly one cached-navigation topology refresh; ready for complete source re-review |
 
 ## Revision Entries
 
@@ -173,3 +174,35 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 - Development source commit: `81a8e8b64aad0fd2253081fe9a94f88e3a9ffa46`.
 - Next recipient or routing: `code_reviewer` for complete source re-review before API/E2E resumes.
 - Remaining limitations or risks: No new implementation limitation was introduced. Realistic aggregate performance and WebSocket/API/browser/Electron coverage remain downstream after source review passes; delivery still owns base refresh and durable docs synchronization.
+
+### IR-006 — Initial Workspace Catalog Navigation Publication
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/code-review-report.md`; `CRR-007` failure-origin review of `API-REV-002`.
+- Triggering finding IDs: `CR-010`; failure `API-F-001 / WORKSPACE-BOOT-001`.
+- Classification: `Local Fix`.
+- Prior authoritative result: `CRR-007 — Fail / Local Fix`; `API-REV-002 — Fail / 77.1%`; delivery remains paused at `DR-002`.
+- Current authoritative result: The supported fresh-workspace startup now connects successful initial catalog population to exactly one cached-navigation topology refresh, without restoring eager history loading, per-read rebuilding, or a watcher. The cumulative package is ready for complete source re-review.
+- Related solution revision IDs: `SR-004`.
+- Related architecture-review revision IDs: `ARCH-REV-004`.
+- Related code-review revision IDs: `CRR-007` (with `CRR-005` implementation-source Pass and `CRR-006` proportional test-code Pass retained as history).
+- Related API/E2E revision IDs: `API-REV-002`.
+- Related delivery revision IDs: `DR-002`.
+- Why this implementation revision is recorded: IR-005 correctly introduced cached navigation but omitted the supported empty workspace catalog -> populated catalog invalidation edge. CRR-007 independently traced the first missing boundary and classified it as an implementation-owned omission under unchanged SR-004 / ARCH-REV-004.
+- Approved behavior or requirement IDs affected: `BEH-006`; `FR-003`; `AC-007`, `AC-009`; `Directly Usable — No Migration`.
+- Implementation delta:
+  - adds `runHistoryStore.loadWorkspaceCatalogForNavigation` as the explicit startup transaction: no-op after the catalog is already fetched; otherwise await the initial workspace fetch and perform one topology refresh only after successful population;
+  - makes `WorkspaceAgentRunsTreePanel` delegate its mount-time catalog load to that run-history/navigation owner while preserving parallel definition catalog loads and avoiding global history fetches;
+  - adds a real run-history/navigation composition test starting from an empty workspace store and an already-lazily-seeded empty cache, then resolving the async catalog load and asserting one new topology revision plus the persisted workspace row;
+  - preserves all API/E2E and delivery-owned uncommitted artifacts unchanged.
+- Changed files or areas: `autobyteus-web/stores/runHistoryStore.ts`, `autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue`, their focused test suites, and the retained CRR-007 artifacts.
+- Local validation and result:
+  - direct startup/cache subset: **2 files / 109 tests pass**;
+  - affected workspace-navigation matrix: **5 files / 126 tests pass**;
+  - web-boundary and localization guard/audit: **pass**;
+  - static owner/caller/no-history/no-watcher scans: **pass**;
+  - delivery-integrated repository typecheck completes with 8 GB heap at **5,401 existing diagnostics**, with **zero diagnostics on all five IR-006 changed frontend paths**;
+  - source commit `26b9b3c..f0aa5270` `git diff --check`: **pass**;
+  - changed production implementation files remain `<= 500` effective non-empty lines and the production delta is 10 lines.
+- Development source commit: `f0aa52702c96dafc1d24cef5b9292a05ffb914a9`.
+- Next recipient or routing: `code_reviewer` for complete source re-review before API/E2E resumes.
+- Remaining limitations or risks: Implementation did not rerun the API/E2E-owned real-data/browser environment. After source review passes, API/E2E must rerun `WORKSPACE-BOOT-001` first against a fresh real-data boundary, then resume the remaining matrix. Delivery must remain paused until downstream review and execution pass.
