@@ -226,9 +226,16 @@ mode fallback.
 
 - Custom providers are currently limited to
   `providerType = OPENAI_COMPATIBLE`.
-- Each saved custom provider gets its own stable provider ID
-  (`provider_<uuid>`), name, server-owned `OPENAI_COMPATIBLE` type/runtime, and
-  base URL. Its API key is stored separately by Secret Management.
+- Each saved custom provider gets an immutable readable ID derived from its
+  normalized display name, for example `provider_alibaba_cloud`. ASCII words
+  and deterministic non-ASCII `u<hex>` tokens form the ID body. There is no
+  UUID, counter, or collision suffix.
+- The store atomically enforces canonical-name and derived-ID uniqueness.
+  Invalid derivation, built-in-name conflicts, or collisions fail creation
+  without committing provider metadata or a readable-ID credential.
+- The provider record contains its name, server-owned `OPENAI_COMPATIBLE`
+  type/runtime, and Base URL. Its API key is stored separately by Secret
+  Management.
 - Custom providers are returned in the same `providerSettings` collection as
   built-ins.
 - Saved custom providers can be removed through
@@ -254,7 +261,9 @@ and currently contains:
   - `providerType`
   - `baseUrl`
 
-The current file version is `2` and is metadata-only. Credentials are stored in
+The current file version is `3` and is metadata-only. Every stored ID must equal
+the deterministic ID derived from its stored name, and canonical names and IDs
+must be unique. Credentials are stored in
 the encrypted vault inside the current application database under the custom
 provider's stable definition ID. See [Secret Management](./secret_management.md).
 
@@ -266,27 +275,62 @@ and updates `AppConfig`/`process.env` only after the rename succeeds. It reuses
 the latest-base shared assignment-line parser while leaving database URL
 normalization under `ApplicationDatabaseLocation`/`toPrismaSqliteUrl`.
 
-### Upgrade From The Supported V1 File
+### Readable-Identity Reset From Legacy V1/V2
 
-Startup has one bounded transition for the canonical version-1 custom-provider
-file created by the supported pre-vault application. It runs after the
-application database and vault are ready and before normal provider discovery:
+Normal runtime is strict V3 only. Startup reaches it through two ordered,
+required app-data migrations after the application database and vault are
+ready:
 
-- a complete valid v1 set migrates all providers atomically, preserving IDs and
-  names, storing credentials in the vault, and publishing secret-free v2
-  metadata;
-- an invalid, duplicated, unsafe, or vault-colliding set is not partially
-  preserved; the plaintext v1 file is removed and the user re-adds providers
-  through **New Provider**;
-- if the v1 file cannot be removed safely, built-in providers and general
-  Settings remain available, but custom-provider creation remains unavailable
-  until the filesystem issue is fixed and the application restarts;
-- an aged zero-byte lock left by the supported v1 writer can be reclaimed,
-  while a live positive-PID owner is never displaced.
+1. The bounded V1 migration never transfers an inline credential. Valid V1 is
+   staged as secretless V2 metadata with a reconfiguration warning; invalid or
+   unsafe V1 is reset through the existing sanitized failure path.
+2. The final `20260803_custom_provider_readable_identity` migration uses valid
+   V2 names only to derive transient old-to-readable selector prefixes. It
+   attempts the exact allowlisted active/default/resumable selectors, then
+   atomically publishes `{version:3, providers:[]}` as the commit point.
+3. After empty V3 is durable, old UUID vault consumers are removed best effort
+   by identity. Their values are never resolved, copied, re-encrypted, aliased,
+   or used as runtime fallback.
 
-Normal runtime remains v2-only. There is no v1 compatibility reader, backup or
-quarantine copy, alternate legacy source, automatic `.env` import, or partial
-provider migration. Migration outcomes and APIs remain value-free.
+The readable migration first requires terminal success
+(`SUCCEEDED | SUCCEEDED_WITH_WARNINGS`) for the exact V1, global-skill-mode,
+team-member-tree, token provider-name snapshot, and self-evolution metadata
+migrations. This keeps the token snapshot and every current selector writer
+ahead of the reset. The readable migration is the final current required
+definition, and server startup proceeds only when its own result is terminal
+success/warnings.
+
+Selector rewriting is deliberately narrow. It changes only the exact old
+`openai-compatible:<providerId>:` prefix while preserving the model suffix
+byte-for-byte in:
+
+- agent/team default launch configuration;
+- external-channel launch presets;
+- application agent/team/default/member launch-profile rows;
+- agent/team resumable run metadata; and
+- skill-improvement sessions.
+
+Traces, free text, token identifiers, arbitrary JSON keys, and unrelated
+indexes are not rewritten. Each JSON target uses same-directory durable
+replacement and each application database uses one SQLite transaction.
+Malformed, read-only, unsafe, or concurrently changed individual targets are
+left stale with sanitized warnings; empty V3 still publishes. Provider-file
+publication failure is fatal.
+
+After reset there is intentionally a provider-absent interval: no legacy
+provider record, Base URL, migrated credential, custom catalog group, UUID
+alias, or reconnect state exists. The user recreates a provider through the
+ordinary form. The same canonical name derives the prefix already stored in
+migrated selectors; a different name or absent model suffix requires manual
+reselection. Missing selectors remain stored and visible as unavailable and
+must never silently fall back or clear.
+
+There is no journal, backup, receipt, special runner bypass, dual V2/V3 runtime
+reader, or immediate-crash recovery protocol. Interruption before empty V3
+leaves V2 authoritative; after the ordinary runner's recent-`RUNNING` window,
+idempotent retry converges. Interruption or cleanup failure after empty V3 can
+leave an unreachable old-secret orphan and returns warning success rather than
+re-enabling legacy identity.
 
 ## Custom Provider Lifecycle
 
@@ -294,13 +338,15 @@ provider migration. Migration outcomes and APIs remain value-free.
 
 1. The user submits exactly `{ name, baseUrl, apiKey }`. Provider type and
    runtime are server-owned constants.
-2. `LlmProviderService` normalizes/validates required strings, an absolute
-   `http://` or `https://` base URL, and provider-name uniqueness across
-   built-ins and existing custom providers.
+2. `LlmProviderService` normalizes/validates required strings and an absolute
+   `http://` or `https://` Base URL. The store derives the readable ID and owns
+   atomic canonical-name/ID uniqueness across built-ins and existing custom
+   providers.
 3. Probe uses the OpenAI-compatible `/models` discovery owner and returns only
    discovered `{ id, name }` rows.
-4. Create persists metadata and the credential, returning only the assigned
-   provider ID. A failed credential write rolls back the metadata record.
+4. Create persists V3 metadata and the credential, returning only the assigned
+   readable provider ID. A failed credential write rolls back the metadata
+   record; rejected create leaves neither provider nor readable-ID secret.
 5. The client refetches canonical `providerSettings`; no echoed input,
    provider-type constant, runtime constant, or parallel outcome DTO is
    returned.

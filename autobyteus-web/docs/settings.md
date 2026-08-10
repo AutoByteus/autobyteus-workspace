@@ -47,11 +47,25 @@ refresh failure keeps the operation in its failure path. The removed
 
 Custom OpenAI-compatible provider drafts still accept an API key for the probe
 and create transaction, but only non-secret provider metadata is persisted in
-the custom-provider JSON file. The credential is stored separately, and deleting
-the custom provider through the provider-entity lifecycle removes both its
+the strict V3 custom-provider JSON file. The server derives an immutable
+readable ID from the normalized name (for example `provider_alibaba_cloud`) and
+atomically rejects invalid names or canonical-name/ID collisions; the browser
+does not submit an ID. The credential is stored separately, and deleting the
+custom provider through the provider-entity lifecycle removes both its
 credential and metadata. AutoByteus gateway models retain their downstream
 display provider while credential configuration remains owned by the
 `AUTOBYTEUS` gateway provider.
+
+An upgrade from legacy UUID providers deliberately resets provider records,
+Base URLs, and credentials after migrating only exact allowlisted selector
+prefixes. The user recreates each desired provider through the same custom
+provider form with name, Base URL, and a new key. Reusing the same canonical
+name regenerates the readable prefix embedded in migrated selectors; a changed
+name or missing model suffix requires manual reselection. During the
+provider-absent interval, saved selectors remain visible as unavailable and
+block launch/resume instead of silently clearing or falling back. In
+particular, application agent launch profiles retain the raw missing value and
+show unavailable guidance until the user selects an advertised model.
 
 See `autobyteus-server-ts/docs/modules/secret_management.md` for encrypted-vault,
 migration, runtime resolution, Claude authentication, and real-E2E operator

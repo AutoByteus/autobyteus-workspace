@@ -102,7 +102,12 @@ Two OpenAI-style paths coexist:
   - `OpenAICompatibleEndpointModelProvider`
 
 Custom providers keep `provider_type = OPENAI_COMPATIBLE` while each saved
-provider gets its own `provider_id` and `provider_name`.
+provider gets its own `provider_id` and `provider_name`. The provider ID is
+derived once from the normalized display name by
+`custom-llm-provider-identity.ts`: readable ASCII words are joined below the
+`provider_` prefix and non-ASCII code points use deterministic `u<hex>` tokens.
+The store commits canonical-name and derived-ID uniqueness together; it never
+adds a UUID, counter, or collision suffix.
 
 Custom `/models` discovery extracts normalized IDs and a bounded allowlist of
 positive integer context/input/output aliases. Model metadata is resolved per
@@ -171,7 +176,8 @@ Dynamic custom runtime:
 
 - **Custom OpenAI-compatible providers**:
   `OPENAI_COMPATIBLE` runtime models backed by a saved provider record
-  (`id`, `name`, `baseUrl`, `apiKey`).
+  (`id`, `name`, `baseUrl`). The API key is a separate vault-owned secret and
+  is not part of the metadata record.
 
 ## 5. Model Identifiers
 
@@ -188,11 +194,13 @@ Dynamic custom runtime:
   Example:
 
   ```text
-  openai-compatible:provider_1234567890abcdef:custom-chat-model
+  openai-compatible:provider_alibaba_cloud:custom-chat-model
   ```
 
 This keeps model identity stable even when two providers expose the same model
-name.
+name. Recreating a reset provider with the same canonical name derives the same
+provider prefix; changing the name or model value produces a different exact
+identifier rather than an alias or fallback.
 
 ## 6. Built-In Model Catalog Ownership
 
@@ -300,6 +308,8 @@ models, see `docs/provider_model_catalogs.md`.
   reloads do not wipe the existing provider slice.
 - Saved custom OpenAI-compatible providers are synced through
   `LLMFactory.syncOpenAICompatibleEndpointModels(savedProviders)`.
+- Normal runtime accepts only strict version-3 custom-provider metadata, where
+  every record's ID must equal the deterministic ID derived from its name.
 - That sync is authoritative to the current saved-provider set, so removing a
   saved custom provider removes its `openai-compatible:<providerId>:<model>`
   identifiers from the next sync and from future cold-start registry state.
