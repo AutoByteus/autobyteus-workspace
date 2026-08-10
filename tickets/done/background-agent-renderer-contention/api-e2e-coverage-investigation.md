@@ -1,5 +1,53 @@
 # API/E2E Coverage Investigation — Background Agent Renderer Contention
 
+## API-REV-003 Recheck Plan — IR-006 Fresh-Catalog Correction (2026-08-10)
+
+- Trigger: `CRR-008` source-review Pass for `IR-006`, reviewed HEAD `1d6d9f2da40d30b9ef95faa04cf82a12b8e67d1f`, source correction `f0aa52702c96dafc1d24cef5b9292a05ffb914a9`.
+- Prior authoritative API/E2E result: `API-REV-002 Fail / 77.1%`, failure `API-F-001 / WORKSPACE-BOOT-001`.
+- Prior failure resolution claim to verify: `WorkspaceAgentRunsTreePanel` now delegates mount-time initialization to `runHistoryStore.loadWorkspaceCatalogForNavigation`; a successful initial asynchronous workspace catalog load publishes exactly one cached-navigation topology refresh, while later already-fetched calls no-op and no global history tree is fetched.
+- Existing coverage validity:
+  - IR-006 real composition coverage for an initially empty workspace store plus already-seeded empty navigation cache is `Still Valid` and directly targets the defect;
+  - API-REV-001 real WebSocket, production-effects, retained hierarchy/focus/latest-100, responsiveness, paste, fake-media, build/guard, and real Classroom evidence remains boundary-valid but must be proportionally rerun after the critical startup recheck;
+  - API-REV-002 browser/API probes are `Still Valid` as the exact failure baseline and will be reused without changing production source or user data.
+- Durable coverage decision before execution: `No API/E2E-owned repository edit planned initially`. IR-006 already adds durable source-level regression coverage at the ownership boundary. A new durable browser scenario will be added only if the real fresh-data result exposes a gap not captured by the existing reusable execution probe.
+- Required execution order:
+  1. **WORKSPACE-BOOT-001 first**: new owned snapshot of `/Users/normy/.autobyteus/server-data`, required `pnpm secrets:import`, requested `/Users/normy/autobyteus_org/autobyteus-agents` catalog verification, current branch backend, fresh current branch browser renderer, and immediate workspace-row/API assertions;
+  2. `WORKSPACE-BOOT-002`: current branch browser renderer against the already-running Electron backend on `29695` and the live data directory, read-only;
+  3. focused IR-006 workspace-navigation durable suites;
+  4. retained real-WebSocket regression, affected frontend correctness matrix, durable aggregate browser performance/correctness probe, guards/build, and only the proportional real-system checks necessary to re-establish the superseding result.
+- Pass condition: both fresh-data paths render every returned registered workspace row immediately; no `No run history yet` empty-state contradiction; the retained correctness/performance thresholds remain green; no material acceptance criterion remains unresolved.
+- Failure routing: any critical recheck failure updates the canonical report and appends `API-REV-003`, then returns to `code_reviewer` for failure-origin review. On Pass, any API/E2E-owned durable test change requires proportional test-code review; without such changes, the complete successful result still returns through `code_reviewer` as required by the cumulative workflow.
+
+### API-REV-003 Investigation Outcome
+
+- Result: **Pass / 98.9%**. `API-F-001` is resolved on the exact formerly failing boundary.
+- `WORKSPACE-BOOT-001` was the first behavioral execution. A fresh current-branch renderer and backend using an owned real-data snapshot returned 26 workspaces and rendered exactly 26 visible workspace rows; the contradictory `No run history yet.` state was absent. The setup used the required `pnpm secrets:import`, verified `/Users/normy/autobyteus_org/autobyteus-agents`, and confirmed both Classroom team definitions.
+- `WORKSPACE-BOOT-002` independently passed against the already-running Electron backend and `/Users/normy/.autobyteus/server-data`: API 26 workspaces / 28 history groups / 79 agent runs / 184 team runs; UI exactly 26 visible workspace rows. A second full navigation/reload again rendered 26/26.
+- The IR-006 workspace-navigation matrix passed 5 files / 126 tests. The retained server real-WebSocket matrix passed 4 files / 57 tests, and the retained affected frontend matrix passed 28 files / 345 tests.
+- The durable real-Chrome contention probe passed every `BG-BROWSER-000–007` scenario. Under the approved 40-window/80-dispatch-per-second aggregate equivalent, Files/Teams p95 was `6.9 ms` versus `6.7 ms` idle (`1.03×`), with zero topology rebuilds and no long tasks. Paste p95 was `7.6 ms`; fake-media Starting p95 was `5.9 ms` and Recording p95 `32.5 ms`.
+- Production build, `guard:web-boundary`, `guard:localization-boundary`, and localization literal audit passed. The committed production-source range is clean; retained historical evidence files still contain previously recorded whitespace and are not production source.
+- Coverage decision after execution: the existing retained API/E2E coverage remains valid; IR-006 already provides the durable empty-cache-to-populated-catalog regression at the real store/panel composition boundary. API/E2E added, updated, or removed **no repository-resident durable coverage** in this round.
+- Desktop strategy: actual packaged Electron rerun was not required for IR-006 because the changed boundary is web-equivalent renderer initialization and was directly exercised twice in a real browser, including once against the active Electron backend and real data. The user-owned Electron process on `29695` remained running and untouched.
+- Cleanup: owned tabs, both owned Nuxt frontends, the owned backend, and the owned snapshot were removed/stopped; owned ports `63931–63933` are free; user port `29695` still listens.
+
+## API-REV-002 Re-entry — Delivered Electron Workspace Catalog Failure (2026-08-10)
+
+- Trigger: the user reports that the Electron application built by delivery opens with no workspaces visible and explicitly rejects the prior isolated-fixture Electron evidence as insufficient for the delivered-build/real-data startup path.
+- Re-entry artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/delivery-revision-record.md` (`DR-002`), `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/handoff-summary.md`, and `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/electron-build-macos-arm64-delivery.log`.
+- Prior-evidence validity correction: `ELECTRON-SMOKE-001` remains valid only for the isolated shell/preload/file/media scenario it executed. It did **not** prove the delivery-built application against `/Users/normy/.autobyteus/server-data`, the real workspace catalog, or the installed application. The earlier direct-reload `No run history yet` observation is reclassified from a dismissed unsupported-precondition diagnostic to a material reproduction signal requiring resolution.
+- Current critical requirements at risk: AC-007 preserved workspace hierarchy/focus/current persisted history; AC-009 end-to-end product correctness; the approved `Directly Usable — No Migration` persisted-data outcome; and delivery startup/configuration fidelity.
+- Changed/runtime boundaries under investigation: installed-versus-candidate Electron artifact provenance; packaged renderer/backend configuration; real workspace metadata and run-history GraphQL responses; fresh renderer initialization and `runHistoryStore` population; real-data browser and Electron presentation.
+- Existing durable coverage decision: all Round-1 tests remain valid for their stated boundaries, but they are **insufficient** for initial workspace discovery from an existing Electron data directory. No durable test is edited or removed before reproduction and failure-origin review.
+- Required API-REV-002 execution order:
+  1. fingerprint `/Applications/AutoByteus.app` and the DR-002 worktree build to establish which artifact the user opened;
+  2. query the already-running Electron backend on `29695` read-only to distinguish missing data from frontend projection failure;
+  3. run the reviewed frontend against that real backend and inspect `/workspace` through a real browser;
+  4. reproduce on an owned copy of `/Users/normy/.autobyteus/server-data`, using `pnpm secrets:import -- --source /Users/normy/.autobyteus/server-data/.env` and importing `/Users/normy/autobyteus_org/autobyteus-agents`, without mutating the user's live data;
+  5. execute the DR-002 packaged candidate against the copied data if it can be done without stopping the user's application; otherwise record the exact fixed-port conflict and rely only on browser-equivalent evidence for source classification.
+- Expected behavior: existing workspaces are visible immediately after a fresh application open/reload, and normal selection exposes their existing run history without manual re-registration.
+- Failure condition: the backend returns existing workspaces/history while the fresh renderer shows no workspace entries, or the delivered/installed artifact uses an unintended data/configuration source.
+- Outcome routing: any reproduced critical failure will update the canonical execution report to `Fail`, append `API-REV-002`, and return the cumulative package to `code_reviewer` for focused failure-origin review. Delivery is not authorized by the superseded Round-1 result while this re-entry is unresolved.
+
 ## Investigation Meta
 
 - Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/requirements.md`
@@ -10,16 +58,16 @@
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/design-review-report.md`
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/architecture-review-revision-record.md` (`ARCH-REV-004`)
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/implementation-handoff.md`
-- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/implementation-revision-record.md` (`IR-005`)
+- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/implementation-revision-record.md` (`IR-006`)
 - Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/code-review-report.md`
-- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/code-review-revision-record.md` (`CRR-005`)
-- Delivery Revision Record: `N/A`
-- Relevant Delivery Revision IDs: `N/A`
-- API/E2E Revision Record: to be created after the first completed result
-- Current API/E2E Revision ID: planned `API-REV-001`
-- Current Investigation Round: `1`
-- Trigger: CRR-005 source-review Pass for IR-005, implementation source commit `81a8e8b64aad0fd2253081fe9a94f88e3a9ffa46`, reviewed clean HEAD `242b466d8497be1a00f65594df4503d40092a73c`
-- Prior Investigation Reviewed: `N/A`
+- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/code-review-revision-record.md` (`CRR-008`)
+- Delivery Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/delivery-revision-record.md`
+- Relevant Delivery Revision IDs: `DR-002`
+- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/api-e2e-revision-record.md`
+- Current API/E2E Revision ID: `API-REV-003`
+- Current Investigation Round: `3`
+- Trigger: `CRR-008` Pass for IR-006 correction of `API-F-001 / WORKSPACE-BOOT-001`.
+- Prior Investigation Reviewed: `API-REV-002 Fail / 77.1%` and the exact fresh real-data failure baseline.
 - Latest Authoritative Investigation: this file
 
 ## Current Requirement And Design Basis
@@ -226,15 +274,15 @@ The scores below are the state after repository checks and before real browser/E
 
 ## Ambiguities Or Reroute Triggers
 
-No implementation failure or requirement gap was observed. The unchanged WebSocket test's initial failure was stale test expectation, already planned and corrected locally. The direct-reload diagnostic used an unregistered temporary workspace; the supported UI registration/history/reselection path passed. Durable test code changed, so the cumulative package must return to `code_reviewer` for proportional test-code review.
+No active ambiguity remains. API-REV-002 conclusively exposed the IR-005 initialization/invalidation defect. API-REV-003 then proved IR-006 resolves that defect on both the owned real-data backend and the active Electron backend, including a second full reload, while the retained correctness/performance matrix remains green.
 
 ## Investigation Decision
 
-- Proceed To API/E2E Execution: `Completed`.
-- Repository-Resident Durable Coverage Added / Updated / Removed: `Yes — one server integration file updated; one browser probe and fixture added; one package script updated; none removed`.
-- Post-repository confidence: `91.4%`.
-- Final confidence after broader validation: `98.4%`.
-- Broader validation decision: `Required — completed with Pass in Chrome, actual Electron, and real DeepSeek Classroom UI`.
-- Current result: `Pass`.
-- Reroute Required: `Yes — success path to code_reviewer for proportional test-code review`.
+- Proceed To API/E2E Execution: `Completed with API-REV-003 Pass`.
+- Repository-Resident Durable Coverage Added / Updated / Removed In API-REV-003: `No`.
+- Prior API-REV-002 confidence: `77.1%`.
+- Current final confidence: `98.9%`.
+- Broader validation decision: `Required — completed against an owned real-data backend, the active Electron backend, and retained real-Chrome performance/correctness coverage`.
+- Current result: `Pass`; `API-F-001 / WORKSPACE-BOOT-001` resolved.
+- Reroute Required: `No`.
 - Recommended Recipient: `code_reviewer`.

@@ -228,9 +228,13 @@ historical Thinking disclosure.
 Each visible shaped revision runs the existing Markdown parsing, sanitization,
 syntax-highlighting, math, Mermaid, managed-image, link, and enabled file-action
 pipeline. Server-owned cadence bounds normal update frequency, but a very large
-or feature-heavy accumulated revision can still be expensive. Renderer-wide
-background or unfocused contention is not addressed by this presentation
-policy. See
+or feature-heavy accumulated revision can still be expensive. Background and
+unfocused streams now avoid unrelated renderer work through exact repeated-
+status suppression, explicit Event Monitor/navigation mutation effects, and a
+cached run-history projection; the selected stream still renders each shaped
+revision progressively through this same rich path. This does not introduce a
+Markdown parsing worker or transcript virtualization, so higher-scale parsing
+remains a separate optimization. See
 [Agent Execution Architecture](./agent_execution_architecture.md) for the
 transport and completion ownership boundaries.
 

@@ -11,6 +11,8 @@
 | CRR-005 | `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/code-review-report.md` | Implementation Review / IR-005 full source re-review | CRR-004: Fail — Local Fix | Pass | CR-006 |
 | CRR-006 | `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/api-e2e-test-review-report.md` | Successful API/E2E Test-Code Review / API-REV-001 | CRR-005: Pass; API-REV-001: Pass / 98.4% | Pass | None |
 | CRR-007 | `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/code-review-report.md` | API/E2E Failure-Origin Review / API-REV-002 | CRR-006: Pass; API-REV-001: Pass / 98.4% | Fail — Local Fix | CR-010 |
+| CRR-008 | `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/code-review-report.md` | Implementation Review / IR-006 full source re-review | CRR-007: Fail — Local Fix | Pass | CR-010 |
+| CRR-009 | `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/api-e2e-test-review-report.md` | Successful API/E2E Test-Code Review / API-REV-003 | CRR-008: Pass; API-REV-003: Pass / 98.9% | Not Applicable | None |
 
 ## Revision Entries
 
@@ -187,3 +189,52 @@ None. CR-010 is new. CRR-005's runtime-correctness, cache-invalidation, and API/
 - Failure origin: implementation source defect introduced by the cached navigation change in `d1c48db5a59ecf42a8a1d528763196c815b0c11a`; prior source-review gap because the asynchronous workspace-catalog writer was not included in the cache invalidation audit.
 - Recommended recipient: `implementation_engineer`
 - Remaining risks or uncertainty: correction must preserve bounded one-build ownership and not restore per-read/reactive global rebuilding. After source re-review, API/E2E must run the exact fresh real-data boot first and update durable coverage as needed. Delivery/finalization remains blocked.
+
+### CRR-008 — IR-006 publishes the initial workspace catalog once and passes full source review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round 8
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/implementation-handoff.md`; `IR-006`; `CR-010 / WORKSPACE-BOOT-001`
+- Relevant solution revision IDs: `SR-004`
+- Relevant architecture-review revision IDs: `ARCH-REV-004`
+- Relevant implementation revision IDs: `IR-006`
+- Relevant API/E2E revision IDs: `API-REV-002`
+- Relevant delivery revision IDs: `DR-002`
+- Prior authoritative result: `CRR-007 — Fail — Local Fix — CR-010`; API/E2E `API-REV-002 — Fail / 77.1%`
+- Current authoritative result: `Pass — 9.63/10 (96.3/100)`
+- What changed in the review result and why: IR-006 makes run history own the mount-time catalog-for-navigation transaction. From an empty workspace store and already-seeded empty cache, a successful initial catalog fetch now causes exactly one topology refresh and publishes the persisted workspace row; later calls no-op after the catalog is fetched. The panel delegates without eager global history fetch, watchers, or per-read rebuilding. Full source re-review found no remaining implementation finding.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-010 | Open / Critical / Local Fix | Resolved | `IR-006`, `API-REV-002`, `DR-002`, `CR-PREM-010` | Source trace through panel -> run-history catalog transaction -> workspace fetch -> one topology refresh; real composition coverage proves empty seeded cache -> populated cached row, topology revision 1 -> 2, no `fetchTree`, and later no-op. Reviewer run passes 5 files / 126 tests; guards/audit and IR-006 diff check pass. |
+
+- New or remaining finding IDs: `None`
+- Material score or classification changes: The superseding implementation gate changes from `Fail — Local Fix` to `Pass`; the full source scorecard is `9.63/10 (96.3/100)`. CR-PREM-010 is Reachable and addressed. CR-PREM-011 records that the inspected same-renderer backend-context reset is `Not Reachable` from any current production caller and therefore does not justify watcher/reset machinery.
+- Recommended recipient: `api_e2e_engineer`
+- Remaining risks or uncertainty: API/E2E must rerun the exact fresh real-data WORKSPACE-BOOT-001 scenario first and then re-establish the retained correctness/performance matrix. Any durable coverage change returns for proportional test-code review. Repository-wide Nuxt typecheck remains baseline-red, and delivery/finalization remains paused.
+
+### CRR-009 — API-REV-003 changes no durable test code; proportional review is Not Applicable
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/api-e2e-test-review-report.md`
+- Review entry point and round: `Successful API/E2E Test-Code Review`, round 2
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/api-e2e-execution-coverage-report.md`; `API-REV-003`, `WORKSPACE-BOOT-001`, `WORKSPACE-BOOT-002`
+- Relevant solution revision IDs: `SR-004`
+- Relevant architecture-review revision IDs: `ARCH-REV-004`
+- Relevant implementation revision IDs: `IR-006`
+- Relevant API/E2E revision IDs: `API-REV-003`
+- Relevant delivery revision IDs: `DR-002`
+- Prior authoritative result: `CRR-008 — Implementation Review Pass — 9.63/10 (96.3/100)`; API/E2E `API-REV-003 — Pass / 98.9%`
+- Current authoritative result: `Not Applicable — no API-REV-003 repository-resident durable test-code delta`
+- What changed in the review result and why: API-REV-003 resolves API-F-001 on the exact formerly failing owned real-data boundary, corroborates it against the active Electron backend and a second reload, and re-establishes the retained correctness/performance matrix. It changed only API/E2E reports and execution evidence; repository implementation source and durable coverage remain byte-for-byte at reviewed HEAD `1d6d9f2da40d30b9ef95faa04cf82a12b8e67d1f`. Therefore there is no new test code to review.
+
+#### Prior Finding Resolution
+
+None — no unresolved proportional test-review finding entered this round. CR-010 was already resolved by IR-006 and passed source review in CRR-008; API-REV-003 supplies the required runtime confirmation.
+
+- New or remaining finding IDs: `None`
+- Material score or classification changes: `N/A — proportional review result is Not Applicable and has no implementation scorecard.`
+- Reviewer evidence: coverage investigation, execution report, API/E2E revision record, API-REV-003 summary, and repository diff all agree that durable coverage changed is false; no implementation/test path differs from HEAD.
+- Recommended recipient: `delivery_engineer`
+- Remaining risks or uncertainty: only the previously accepted aggregate-equivalent provider model, deterministic fake media instead of physical-device variance, higher-scale parsing/worker deferral, and baseline repository typecheck limitations remain. Delivery should refresh/revalidate integrated state before finalization.

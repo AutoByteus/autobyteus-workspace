@@ -1,0 +1,61 @@
+=== Background agent renderer contention repository finalization ===
+User acceptance recorded: 2026-08-10
+User authorization: tested; finalize and release a new version.
+Ticket branch: codex/background-agent-renderer-contention
+Pre-finalization HEAD: 1d6d9f2da40d30b9ef95faa04cf82a12b8e67d1f
+Finalization target: origin/personal at 3cddeec6b93602da172fec2e7b9a80acc7c05117
+Merge base: 3cddeec6b93602da172fec2e7b9a80acc7c05117
+Divergence origin/personal...HEAD: 0	14 (behind ahead)
+Final target refresh: pass; target unchanged and already ancestral to the user-tested candidate.
+Renewed verification: not required; no material candidate change after user acceptance.
+Selected release: 1.4.46 / v1.4.46; tag absent locally and remotely.
++ git diff --check
+Result: pass.
+Recorded: 2026-08-10T09:34:50Z
+
+=== Pre-commit archive and release readiness ===
++ git diff --check
+Result: pass.
++ python3 scripts/check_repository_artifact_hygiene.py
+Repository artifact hygiene check passed.
+Tracked files scanned: 18880
+Path-length threshold: 200
+Longest tracked path: 197 chars: tickets/done/agent-catalog-origin-grouping/validation-artifacts/round3/ui-application-package/applications/research-workspace/agent-teams/literature-review/agents/source-collector/agent-config.json
+Result: pass.
++ release notes non-empty and selected version/tag availability
+Result: release notes present; current versions 1.4.45; v1.4.46 absent locally/remotely.
+
+=== Staged final ticket package validation ===
++ git diff --cached --check
+tickets/done/background-agent-renderer-contention/api-e2e-execution-evidence/api-rev-003/build-guards.log:213: trailing whitespace.
++ WARN
+tickets/done/background-agent-renderer-contention/api-e2e-execution-evidence/api-rev-003/frontend-affected.log:518: new blank line at EOF.
+tickets/done/background-agent-renderer-contention/api-e2e-execution-evidence/api-rev-003/server-focused-real-ws.log:364: new blank line at EOF.
+tickets/done/background-agent-renderer-contention/api-e2e-execution-evidence/api-rev-003/workspace-navigation-matrix.log:199: new blank line at EOF.
+tickets/done/background-agent-renderer-contention/electron-build-macos-arm64-delivery.log:411: trailing whitespace.
++ WARN
+tickets/done/background-agent-renderer-contention/electron-build-macos-arm64-delivery.log:962: trailing whitespace.
++ WARN
+tickets/done/background-agent-renderer-contention/electron-build-macos-arm64-delivery.log:1428: trailing whitespace.
++
+tickets/done/background-agent-renderer-contention/electron-build-macos-arm64-delivery.log:1563: trailing whitespace.
++
+Initial result: whitespace-only artifact diagnostics found; normalized without changing evidence meaning before the final rerun.
++ python3 scripts/check_repository_artifact_hygiene.py (staged archive included)
+Repository artifact hygiene check passed.
+Tracked files scanned: 18928
+Path-length threshold: 200
+Longest tracked path: 197 chars: tickets/done/agent-catalog-origin-grouping/validation-artifacts/round3/ui-application-package/applications/research-workspace/agent-teams/literature-review/agents/source-collector/agent-config.json
+Result: pass.
++ verify no unstaged or untracked repository changes remain
+Result: pass; final ticket package fully staged.
+
+=== Final staged whitespace and artifact-hygiene rerun ===
++ git diff --cached --check
+Result: pass after whitespace-only retained-log normalization.
++ python3 scripts/check_repository_artifact_hygiene.py
+Repository artifact hygiene check passed.
+Tracked files scanned: 18928
+Path-length threshold: 200
+Longest tracked path: 197 chars: tickets/done/agent-catalog-origin-grouping/validation-artifacts/round3/ui-application-package/applications/research-workspace/agent-teams/literature-review/agents/source-collector/agent-config.json
+Result: pass.
