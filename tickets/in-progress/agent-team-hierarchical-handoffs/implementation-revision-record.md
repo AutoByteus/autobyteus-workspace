@@ -477,3 +477,25 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Frontend rendered result: the production bundle and current canonical row probe pass, but no post-merge browser interaction is claimed. The user-held stack was not touched. Fresh safe-target API/E2E owns rendered task Agent/task Team/history/mobile/provider validation.
 - Next recipient or routing: `code_reviewer` for integrated source and proportional review of the two resolved durable conflicts. On Pass, route to `api_e2e_engineer` for fresh coverage investigation/execution; any durable add/update/remove returns through proportional review before delivery.
 - Remaining limitations or risks: `API-REV-019` / `CRR-040` evidence predates this merge; disclosed latest-base durable fixtures need validity maintenance; the operational database incidents/no-rollback remain outside implementation scope; non-blocking Claude follow-up/teardown observations and unrelated whole-suite baselines remain disclosed.
+
+### IR-023 — Restore readable-provider controlled startup failure
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`; `CRR-041` integrated source review.
+- Triggering finding IDs: `CR-F-023`; material premise `CR-PREM-018`. Prior `CR-F-012` through `CR-F-022` remain resolved or preserved as recorded.
+- Classification: `Local Fix`.
+- Prior authoritative result: `CRR-041` Fail — Local Fix (`9.1/10`, `91.1/100`) because IR-022 returned a fulfilled promise for readable-provider and runner failures and weakened the conflict-resolved unit accordingly.
+- Current authoritative result: bounded source/test correction in commit `812fbb05d`; focused unit, production typecheck, `build:full`, and source audit pass. Current package awaits source re-review.
+- Related solution revision IDs: `SR-001` through `SR-015`; latest-base readable-provider `BEH-007`, `REQ-015`, `DS-006`.
+- Related architecture-review revision IDs: `ARCH-REV-001` through `ARCH-REV-009`; latest-base reviewed readable-provider contract.
+- Related code-review revision IDs: `CRR-041` is the triggering result; `CRR-038` and `CRR-040` remain pre-merge historical Pass results.
+- Related API/E2E revision IDs: `API-REV-019` remains the pre-refresh Pass / 97%; fresh post-integration execution remains paused.
+- Related delivery revision IDs: `DR-005`; cumulative `DR-004`.
+- Why this implementation revision is recorded: the status policy itself was correct, but startup completion was not. A recent `RUNNING` readable migration could halt listen while allowing `startConfiguredServer` to fulfill, so `app.ts` would not issue the established nonzero process failure and operators would lose the exact gate marker.
+- Approved behavior or requirement IDs affected: latest-base `BEH-007`, `REQ-015`, `DS-006`, ordinary stale-`RUNNING` retry, retained readable-provider startup E2E, and material premise `CR-PREM-018`; SR-015 canonical exact-success and unrelated best-effort policies remain preserved.
+- Implementation delta: after the unchanged canonical exact-success check, readable `FAILED`, missing, or nonterminal statuses throw `CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:<status>:<logPath>`; the existing migration catch logs the exact error and calls `process.exit(1)`. Runner rejection also exits 1. Readable `SUCCEEDED` / `SUCCEEDED_WITH_WARNINGS`, unrelated best-effort failures, and the single `runPending` call are unchanged.
+- Changed files or areas: `autobyteus-server-ts/src/server-runtime.ts`; `autobyteus-server-ts/tests/unit/server-runtime-app-data-migration-gate.test.ts`; implementation handoff and revision record. The retained startup E2E is unchanged.
+- Local validation and result: startup gate unit passed 8/8; production TypeScript passed; `build:full` plus sanitized bootstrap passed; focused marker/exit/single-call/no-compatibility/size/diff audit passed. Evidence: `/tmp/ir023-readable-provider-startup-gate-unit.log`, `/tmp/ir023-server-production-typecheck.log`, `/tmp/ir023-server-build-full.log`, and `/tmp/ir023-readable-provider-startup-audit.log`.
+- Operational safety: no configured startup, retained E2E, live provider, browser, or operational-database action ran. Vitest used only `autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db`; user-held 60004/31004, protected stash, and backup remain unchanged.
+- Frontend rendered result: `Not Applicable`; IR-023 changes backend startup failure completion only.
+- Next recipient or routing: `code_reviewer` for focused `CR-F-023` re-review. On Pass, API/E2E resumes fresh post-integration safe-target coverage, including the retained real startup lifecycle; any durable edit/removal returns through proportional review.
+- Remaining limitations or risks: the real recent-`RUNNING` process exit/no-listen/stale-retry lifecycle is intentionally not claimed by implementation. IR-022 stale web-fixture maintenance, operational database incident/no-rollback, and other preserved disclosures remain downstream.
