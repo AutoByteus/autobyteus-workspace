@@ -21,18 +21,59 @@ server's centralized encrypted vault:
   focuses exactly one editor at a time. Key inputs remain write-only password
   fields, the visibility control affects only the transient typed value, and a
   successful save clears that input;
+- Qwen uses a dedicated Base URL + API-key form rather than the ordinary
+  built-in key-only editor. Both values are required; the URL must be absolute
+  HTTP(S), and the server probes its `/models` contract before persistence. The
+  key stays write-only and is cleared after a successful committed mutation;
+- Qwen renders the server-owned `DEFAULT` or `CONFIGURED` endpoint source and
+  value-free key status. It never infers configured state by comparing the
+  effective URL with a frontend default. A failed durable URL commit reports
+  that the previous pair was restored; the bounded double-failure result tells
+  the user to save a valid pair again before using Qwen;
 - configured and active state are value-free badges derived from the
   authoritative setup state and remain accurate after a Settings reload; and
 - successful commands refetch the provider-centered Settings read so the UI
   reflects authoritative provider and catalog state.
 
+A successful Qwen mutation is the committed setup result. The client then
+refreshes both provider settings and the model catalog so the saved endpoint and
+the exact Qwen catalog (`qwen3.8-max`, `deepseek-v4-pro`,
+`deepseek-v4-flash-0731`, and `glm-5.2`) converge in the UI. Live catalog rows
+show the friendly names `DeepSeek V4 Pro (Qwen)`,
+`DeepSeek V4 Flash 0731 (Qwen)`, and `GLM-5.2 (Qwen)` across Settings and the
+shared agent, team, application/member, and binding selection paths. Their
+option values remain the collision-safe `qwen:...` model identifiers, and Qwen
+provider requests continue to send the exact unprefixed model values. A stored
+selector missing from the live catalog remains visible by its raw identifier
+for repair instead of receiving a guessed friendly name. If a subordinate
+refresh fails, the UI keeps the committed configured state and shows a warning
+rather than relabeling the save as failed. Global and selected-provider reloads
+likewise await both provider-settings and catalog refresh owners before showing
+success; either refresh failure keeps the operation in its failure path. The
+removed `qwen3.8-max-preview` value must not reappear after save, reload, or
+recovery.
+
 Custom OpenAI-compatible provider drafts still accept an API key for the probe
 and create transaction, but only non-secret provider metadata is persisted in
-the custom-provider JSON file. The credential is stored separately, and deleting
-the custom provider through the provider-entity lifecycle removes both its
+the strict V3 custom-provider JSON file. The server derives an immutable
+readable ID from the normalized name (for example `provider_alibaba_cloud`) and
+atomically rejects invalid names or canonical-name/ID collisions; the browser
+does not submit an ID. The credential is stored separately, and deleting the
+custom provider through the provider-entity lifecycle removes both its
 credential and metadata. AutoByteus gateway models retain their downstream
 display provider while credential configuration remains owned by the
 `AUTOBYTEUS` gateway provider.
+
+An upgrade from legacy UUID providers deliberately resets provider records,
+Base URLs, and credentials after migrating only exact allowlisted selector
+prefixes. The user recreates each desired provider through the same custom
+provider form with name, Base URL, and a new key. Reusing the same canonical
+name regenerates the readable prefix embedded in migrated selectors; a changed
+name or missing model suffix requires manual reselection. During the
+provider-absent interval, saved selectors remain visible as unavailable and
+block launch/resume instead of silently clearing or falling back. In
+particular, application agent launch profiles retain the raw missing value and
+show unavailable guidance until the user selects an advertised model.
 
 See `autobyteus-server-ts/docs/modules/secret_management.md` for encrypted-vault,
 migration, runtime resolution, Claude authentication, and real-E2E operator
@@ -87,6 +128,11 @@ per-team, runtime, provider, or frontend-renderer preference.
 - A successful change affects the next newly opened content window on active
   and future streams without restarting the application or server. A window
   already in flight keeps the interval captured when it opened.
+- The value configures the pipeline's one content scheduler only. The same
+  per-connection pipeline also forwards first/changed `AGENT_STATUS` payloads
+  and suppresses exact repeats by enriched standalone/member/task identity;
+  that status policy is not a user-tunable cadence setting. Reconnect creates a
+  fresh status baseline, and canonical runtime subscribers remain unfiltered.
 - Smaller values display live progress more frequently; larger values reduce
   transport and UI update work. The frontend adds no second cadence timer.
 - Loading, mutation, validation, and unavailable-node failures remain explicit.
@@ -350,10 +396,14 @@ actor/member roster, reference list, or Technical details in the right pane.
 
 The global Workspaces/run-history tree remains the navigation and execution-focus
 surface for workspaces, runs, teams, durable members, and live transient
-execution identities. It may reuse the shared status-dot presentation for
-workspace rows and stable member rows, but transient task executions must remain
-display-row projections rather than ordinary durable `TeamMemberTreeRow` history
-rows. Transient task-team roots with child rows are collapsed by default; their
+execution identities. `runHistoryStore` owns one cached, indexed navigation
+projection that includes completed stable-plus-transient `executionRows` and
+focused-member identity for every team. Components consume those rows rather
+than reading live `AgentTeamContext` or rebuilding rows per workspace. The
+projection may reuse the shared status-dot presentation for workspace rows and
+stable member rows, but transient task executions remain navigation-only rows
+rather than ordinary durable `TeamMemberTreeRow` history rows. Transient
+task-team roots with child rows are collapsed by default; their
 user-controlled disclosure state is keyed by the transient execution row identity
 so simultaneous task-team executions do not accidentally share expansion state.
 Workspaces must not render delegated-task summary blocks, task reference rows,
@@ -493,18 +543,28 @@ stable-identity update may re-enter only once at the newest edge. Per-run
 Activity state is independently capped at 100 with the same completion rules.
 
 `eventMonitorPresentationRevision` describes the final bounded center
-presentation, not transport traffic. Mutation owners capture a lightweight
-ordered witness, apply the mutation and bound, and increment the revision once
-only when the final witness differs. The witness uses shallow rendered and
+presentation, not transport traffic. The shared stream projector receives an
+explicit `NONE`, `PRESENTATION`, or `STRUCTURAL` Event Monitor effect from the
+handler transaction. `NONE` performs no witness or window work;
+`PRESENTATION` compares the final display against the cached baseline; and
+`STRUCTURAL` first enforces the latest-100 window, then compares the final
+display. The coordinator increments the revision once only when the final
+lightweight ordered witness differs. The witness uses shallow rendered and
 retained-interaction values such as content, attachment identity and preview
 inputs, displayed usage text, and tool name/summary/status/error/action state.
 It excludes generic timestamps, raw object identity, tool logs/results that are
 Activity-only, and recursive argument serialization. Equal retained
 member-echo attachment metadata is therefore revision-neutral, while adding,
 refreshing, or removing a rendered executable attachment revises the
-presentation. Conversation replacement resets the revision baseline; an
-already-subscribed live team context preserves both its conversation and
-revision.
+presentation.
+
+The witness baseline is keyed by `AgentContext`. Context/open/hydration owners
+reset it before wholesale replacement or removal and prime it only after both
+conversation and Activity hydration have reached their final state. Active and
+historical open, live recovery, and lazy member hydration each have one final
+prime owner; already-subscribed live contexts preserve their final baseline.
+This prevents a partial hydration witness and removes the former full
+before/after rebuild from every background message.
 
 When pinned, a real presentation change follows the bottom. In latest mode,
 manual return to the bottom clears ordinary unseen state. A frozen browse
@@ -611,6 +671,23 @@ history tree and Focus display even when the member is offline or has no active
 runtime context. Live/hydrated team-context merges must preserve the persisted
 history row's workspace grouping and use this roster focus for selected-row
 highlighting; the shared composer remains active-execution-owned separately.
+
+`runHistoryStore` owns one cached, indexed navigation projection containing
+workspace/run/team rows, completed stable-plus-transient team execution rows,
+ancestry, and focused-member identity. Topology changes rebuild it once while
+retaining equal branches; activity/status/summary/focus changes patch only the
+exact indexed row and containing branches; final-equal updates are no-ops.
+The Workspaces panel delegates its initial catalog load to the same store. When
+the catalog is not yet fetched, the store awaits successful population and then
+refreshes navigation topology exactly once; later calls no-op after
+`workspacesFetched`. This keeps a cache seeded before the asynchronous catalog
+response from preserving a false empty state without introducing a watcher or
+eager global history fetch.
+Task identity/path/kind/order/depth/child changes are `TOPOLOGY`, existing-row
+display-name or visible-status changes are field-tight `PRESENTATION`, and
+right-pane task details are `NONE`. Workspace components and selected-path
+reveal consume the cached rows/indexes rather than live contexts or dynamic
+all-team builders. Time labels use a minute clock, not stream traffic.
 
 ### Workspace Removal From The Sidebar
 
@@ -831,7 +908,28 @@ The service layer bridges the gap between the WebSocket transport and the applic
 - **Responsibilities**:
   1.  Maintains the WebSocket connection (`transport/WebSocketClient`).
   2.  Parses raw JSON messages into typed `ServerMessage` objects (`protocol/messageTypes`).
-  3.  Dispatches messages to the appropriate pure-function handler.
+  3.  Passes generic standalone messages to the shared
+      `dispatchAgentStreamMessage(...)` projector. Team routing resolves exact
+      task/member identity and its required task-navigation mutation first,
+      then uses the same projector for the resolved context.
+
+### Shared Presentation Egress And Projection
+
+Standalone and team sessions use the same server presentation-egress pipeline:
+ordered filters, one content scheduler controlled by the Live response update
+interval, the terminal sink, and non-mutating observers. The default status
+filter forwards first/changed exact-identity status and suppresses exact repeats;
+the content scheduler preserves the configured fixed-window cadence and semantic
+flush ordering. The frontend adds no second content timer.
+
+`agentStreamMessageProjector.ts` is the generic message-to-context boundary.
+Handlers return actual conversation, Event Monitor (`NONE`, `PRESENTATION`, or
+`STRUCTURAL`), and navigation (`NONE`, minute-bucketed `ACTIVITY`, or exact
+`PRESENTATION`) effects. The projector commits those effects once. Duplicate,
+invalid, final-equal, and unrepresented detail traffic does not invalidate
+unrelated UI. Team task topology and tight display/status changes are committed
+through the cached run-history projection before the service returns; member
+resolution cannot create or repair task projection state.
 
 ### Dispatch Logic
 
@@ -840,7 +938,7 @@ Incoming events are routed based on their `type`:
 | Event Type                | Handler Function                                   | Purpose                                                         |
 | :------------------------ | :------------------------------------------------- | :-------------------------------------------------------------- |
 | `SEGMENT_START`           | `segmentHandler.handleSegmentStart`                | Creates or merges a transcript UI segment (Text, Code, Tool) and seeds/hydrates a pending Activity row for eligible displayable tool segments. |
-| `SEGMENT_CONTENT`         | `segmentHandler.handleSegmentContent`              | Appends streaming content (deltas) to an existing segment.      |
+| `SEGMENT_CONTENT`         | `segmentHandler.handleSegmentContent`              | Immediately appends the already server-shaped ordered delta to an existing segment; no frontend cadence queue is added. |
 | `SEGMENT_END`             | `segmentHandler.handleSegmentEnd`                  | Finalizes transcript segment state/metadata, including interrupted/failed terminalization, and hydrates the matching Activity row without inventing execution success. |
 | `TURN_STARTED`            | inline lifecycle handling                          | Marks a new turn boundary in the protocol; current clients treat it as an observable lifecycle checkpoint. |
 | `TURN_COMPLETED`          | `agentStatusHandler.handleTurnCompleted`           | Marks the current AI message complete for that turn without waiting only for idle inference. |
@@ -941,7 +1039,7 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
     - `Calculation details` is the explicit unit-price disclosure. It shows component rows with tokens, server-provided unit price, cost, and the formula `tokens ÷ 1,000,000 × unit price`; mixed, missing, partial-missing, and local/no-bill unit-price states render as labels such as `varies by call`, `unpriced`, `partially missing`, or `Local / no API bill` instead of a frontend price table or blended rate.
     - `Usage reports` in pricing details is `usageReportCount`, usually model calls or model turns. It is not user messages, chat rows, or a raw primary `events` label.
     - Reasoning output appears only inside the Output card and only when the server summary reports positive reasoning output tokens. The copy states that thinking tokens are included in output tokens and estimated output cost; calculation details show the reasoning unit price as the output price / included in output cost so users do not double-count thinking.
-    - Unknown latest-prompt/context-window pressure is intentionally hidden; the latest prompt block renders only when both a numeric pressure percentage and effective context window are present.
+    - The `Latest prompt` block renders when latest-prompt tokens are present. Known context capacity shows percentage/progress; unknown capacity shows the prompt-token count with explicit `contextLimitUnavailable` copy and never fabricates a denominator or percentage.
     - Browser-facing proof should validate clean agent/team headers with no token chip and validate the Token tab against server/GraphQL-backed summaries, including focused member primary selection, the scoped horizontally scrollable grouped Team table at constrained widths, absence of a standalone Cost column, the `Total` grouped metric column remaining reachable and row-associated, normal estimated rows omitting repeated status copy, subordinate final-row team total, price-missing, partial-price, local/no-bill, mixed-currency, cache-positive, unit-price calculation details, reasoning-token included-in-output copy, model/runtime, usage-report, and latest-prompt display where present.
     - Live store coverage must preserve runtime-native summary fields from server events, including Codex-style cache/reasoning tokens/cost, component unit prices, latest runtime/ingestion/model metadata, and latest prompt/context-window fields used by the token meter. Live-event unit prices and hydrated GraphQL summaries should converge to the same display shape.
     - Current durable regression coverage includes GraphQL E2E for cached gross input, provider-specific semantics, local/no-bill, custom missing price, mixed currency, runtime field names, and unit-price hydration across run/team/member/statistics summaries, plus frontend store/component tests for live aggregation, provisional-live team total hydration, live/hydrated unit-price convergence, GraphQL hydration replacement, focused team member primary selection, grouped Team table headers/rows, paired token+cost metric cells, absence of a standalone Cost column, scoped table-scroll hooks, clean header rendering, Token Meter hierarchy, calculation details, cache-aware rows, price-status labels, localization catalog coverage, and latest prompt fields. Latest visual evidence for the cache-aware Token Meter is under `tickets/token-input-prompt-discrepancy-analysis/implementation-evidence/`.

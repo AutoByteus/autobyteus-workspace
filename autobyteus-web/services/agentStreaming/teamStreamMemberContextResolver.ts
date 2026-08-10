@@ -1,10 +1,18 @@
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import type { ServerMessage } from './protocol';
-import { createTeamExecutionAddress, serializeTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
+import {
+  parseTeamExecutionAddress,
+  serializeTeamExecutionAddress,
+  type TeamExecutionAddress,
+} from '~/types/agent/TeamExecutionAddress';
 
-export interface TeamStreamMemberContextResolution { context: AgentContext }
+export interface TeamStreamMemberContextResolution {
+  context: AgentContext;
+  executionAddress: TeamExecutionAddress;
+}
 
+/** Read-only exact lookup after the task projection router has completed any ensure/repair. */
 export const resolveTeamStreamMemberContext = (
   teamContext: AgentTeamContext,
   message: ServerMessage,
@@ -14,10 +22,10 @@ export const resolveTeamStreamMemberContext = (
     : null;
   if (!payload?.execution_address) return null;
   try {
-    const address = createTeamExecutionAddress(payload.execution_address as never);
-    if (address.rootTeamRunId !== teamContext.teamRunId) return null;
-    const context = teamContext.agentExecutionsByKey.get(serializeTeamExecutionAddress(address)) ?? null;
-    return context ? { context } : null;
+    const executionAddress = parseTeamExecutionAddress(payload.execution_address);
+    if (executionAddress.rootTeamRunId !== teamContext.teamRunId) return null;
+    const context = teamContext.agentExecutionsByKey.get(serializeTeamExecutionAddress(executionAddress)) ?? null;
+    return context ? { context, executionAddress } : null;
   } catch {
     return null;
   }

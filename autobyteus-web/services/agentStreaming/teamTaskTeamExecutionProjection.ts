@@ -11,13 +11,22 @@ import {
 } from '~/types/agent/TeamExecutionAddress';
 import {
   applyTaskDelegationProjectionDetails,
+  captureTaskExecutionNavigationSnapshot,
+  deriveTaskExecutionProjectionMutation,
   extractTaskDelegationProjectionDetails,
+  isTerminalTaskExecutionProjectionStatus,
+  mergeTaskExecutionProjectionMutations,
+  type TaskExecutionProjectionMutation,
 } from './teamTaskExecutionProjection';
 import {
   findTeamExecutionNode,
   materializeTaskTeamProjectionRoot,
   removeTaskExecutionProjection,
 } from './teamTaskExecutionTree';
+import {
+  primeRecentEventMonitorBaseline,
+  resetRecentEventMonitorBaseline,
+} from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
 
 const object = (value: unknown): Record<string, unknown> | null =>
   value && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : null;
@@ -88,13 +97,15 @@ const ensureContextForNode = (team: AgentTeamContext, node: TeamMemberNode): voi
   const context = new AgentContext({ ...base.config, isLocked: true }, new AgentRunState(key, conversation));
   context.isSubscribed = true;
   team.agentExecutionsByKey = new Map(team.agentExecutionsByKey).set(key, context);
+  primeRecentEventMonitorBaseline(context);
 };
 
 export const ensureTaskTeamMemberExecutionContext = (
   team: AgentTeamContext,
   address: TeamExecutionAddress,
   runtimeAgentRunId?: string | null,
-): AgentContext | null => {
+): { context: AgentContext; mutation: TaskExecutionProjectionMutation } | null => {
+  const before = captureTaskExecutionNavigationSnapshot(team);
   const node = findTeamExecutionNode(team, address);
   if (!node || node.kind !== 'agent' || !node.isTaskExecution || address.taskAgentRunId) return null;
   ensureContextForNode(team, node);
@@ -107,29 +118,63 @@ export const ensureTaskTeamMemberExecutionContext = (
     node.agentRunId = runId;
     context.state.runId = runId;
   }
-  return context;
+  return context ? {
+    context,
+    mutation: deriveTaskExecutionProjectionMutation(before, team, 'ensure task-team member execution'),
+  } : null;
 };
 
 export const ensureTaskTeamExecutionProjection = (
   team: AgentTeamContext,
   identity: TaskTeamExecutionProjectionIdentity,
-): SubTeamMemberNode | null => {
+): { node: SubTeamMemberNode; mutation: TaskExecutionProjectionMutation } | null => {
+  const before = captureTaskExecutionNavigationSnapshot(team);
   const node = materializeTaskTeamProjectionRoot(team, identity.executionAddress);
   if (!node) return null;
   ensureContextForNode(team, node);
-  return node;
+  return {
+    node,
+    mutation: deriveTaskExecutionProjectionMutation(before, team, 'ensure task-team execution'),
+  };
 };
 
-export const updateTaskTeamExecutionProjectionFromEvent = (team: AgentTeamContext, message: ServerMessage) => {
+export const updateTaskTeamExecutionProjectionFromEvent = (
+  team: AgentTeamContext,
+  message: ServerMessage,
+): { node: SubTeamMemberNode; identity: TaskTeamExecutionProjectionIdentity; cleanupExecutionAddress: TeamExecutionAddress | null; mutation: TaskExecutionProjectionMutation } | null => {
+  const before = captureTaskExecutionNavigationSnapshot(team);
   const identity = extractTaskTeamIdentity(message);
-  const node = identity ? ensureTaskTeamExecutionProjection(team, identity) : null;
-  if (!identity || !node) return null;
+  const ensured = identity ? ensureTaskTeamExecutionProjection(team, identity) : null;
+  if (!identity || !ensured) return null;
   const details = extractTaskDelegationProjectionDetails(message);
-  applyTaskDelegationProjectionDetails(node, details);
-  return { node, identity, details };
+  applyTaskDelegationProjectionDetails(ensured.node, details);
+  return {
+    node: ensured.node,
+    identity,
+    cleanupExecutionAddress: details && isTerminalTaskExecutionProjectionStatus(details.taskExecutionStatus)
+      ? identity.executionAddress
+      : null,
+    mutation: mergeTaskExecutionProjectionMutations(
+      ensured.mutation,
+      deriveTaskExecutionProjectionMutation(before, team, 'update task-team execution'),
+    ),
+  };
 };
 
 export const removeTaskTeamExecutionProjection = (
   team: AgentTeamContext,
   address: TeamExecutionAddress,
-): void => removeTaskExecutionProjection(team, address);
+): TaskExecutionProjectionMutation => {
+  const before = captureTaskExecutionNavigationSnapshot(team);
+  for (const [key, context] of team.agentExecutionsByKey) {
+    try {
+      const candidate = parseTeamExecutionAddress(JSON.parse(key));
+      const samePrefix = candidate.rootTeamRunId === address.rootTeamRunId
+        && candidate.taskTeamRunIds.length >= address.taskTeamRunIds.length
+        && address.taskTeamRunIds.every((id, index) => candidate.taskTeamRunIds[index] === id);
+      if (samePrefix) resetRecentEventMonitorBaseline(context);
+    } catch { /* only exact execution keys participate */ }
+  }
+  removeTaskExecutionProjection(team, address);
+  return deriveTaskExecutionProjectionMutation(before, team, 'remove task-team execution');
+};

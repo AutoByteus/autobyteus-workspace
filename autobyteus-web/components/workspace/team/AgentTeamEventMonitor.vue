@@ -58,6 +58,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
+import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useTeamMemberPresentation } from '~/composables/useTeamMemberPresentation';
 import AgentEventMonitor from '~/components/workspace/agent/AgentEventMonitor.vue';
 import { shouldShowMemberConversation } from '~/utils/teamActiveExecutionMembers';
@@ -66,6 +67,7 @@ import { findTeamExecutionNode, executionAddressForTeamNode } from '~/services/a
 import type { TeamMemberNode } from '~/types/agent/AgentTeamContext';
 
 const teamContextsStore = useAgentTeamContextsStore();
+const runHistoryStore = useRunHistoryStore();
 const { getInterAgentSenderNameById, getMemberAvatarUrl, getMemberDisplayName } = useTeamMemberPresentation();
 
 defineProps<{
@@ -124,6 +126,9 @@ const executionForNode = (node: TeamMemberNode) => executionAddressForTeamNode(a
 const focusMember = (child: TeamMemberNode) => {
   const team = activeTeam.value;
   if (!team || focusedMemberNode.value?.kind !== 'agent_team' || !focusedMemberNode.value.children.includes(child)) return;
-  teamContextsStore.setFocusedExecutionAddress(executionAddressForTeamNode(team, child));
+  void runHistoryStore.focusTeamMemberAndEnsureHydrated(
+    team.teamRunId,
+    executionAddressForTeamNode(team, child),
+  );
 };
 </script>

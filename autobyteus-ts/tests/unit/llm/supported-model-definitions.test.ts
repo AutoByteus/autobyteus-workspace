@@ -18,6 +18,7 @@ describe('supportedModelDefinitions', () => {
         'gemini-3.1-pro-preview',
         'minimax-m3',
         'deepseek-v4-pro',
+        'DeepSeek V4 Flash 0731 (Qwen)',
         'claude-opus-5',
         'claude-fable-5',
         'claude-opus-4.8',
@@ -305,6 +306,73 @@ describe('supportedModelDefinitions', () => {
       },
       missing_reason: 'pricing_config_absent',
     });
+  });
+
+  it('defines the exact Qwen-served target values with unique cross-provider identifiers', () => {
+    const qwenDefinitions = supportedModelDefinitions.filter(
+      (definition) => definition.provider === LLMProvider.QWEN,
+    );
+    const byValue = new Map(qwenDefinitions.map((definition) => [definition.value, definition]));
+
+    expect(byValue.get('qwen3.8-max')).toMatchObject({
+      name: 'qwen3.8-max',
+      value: 'qwen3.8-max',
+      canonicalName: 'qwen3.8-max',
+      staticMetadata: {
+        maxContextTokens: 1_000_000,
+        maxInputTokens: null,
+        maxOutputTokens: null,
+      },
+    });
+    expect(byValue.get('deepseek-v4-pro')).toMatchObject({
+      value: 'deepseek-v4-pro',
+      modelIdentifierOverride: 'qwen:deepseek-v4-pro',
+      staticMetadata: { maxContextTokens: 1_000_000 },
+    });
+    expect(byValue.get('deepseek-v4-flash-0731')).toMatchObject({
+      name: 'DeepSeek V4 Flash 0731 (Qwen)',
+      value: 'deepseek-v4-flash-0731',
+      provider: LLMProvider.QWEN,
+      llmClass: expect.any(Function),
+      canonicalName: 'deepseek-v4-flash-0731',
+      modelIdentifierOverride: 'qwen:deepseek-v4-flash-0731',
+      staticMetadata: {
+        maxContextTokens: 1_000_000,
+        maxInputTokens: null,
+        maxOutputTokens: null,
+        provenance: {
+          sourceUrl: 'https://www.alibabacloud.com/help/en/model-studio/text-generation-model',
+          verifiedAt: '2026-08-06',
+        },
+      },
+    });
+    expect(byValue.get('glm-5.2')).toMatchObject({
+      value: 'glm-5.2',
+      modelIdentifierOverride: 'qwen:glm-5.2',
+      staticMetadata: { maxContextTokens: 198_000 },
+    });
+    expect(qwenDefinitions.some((definition) => definition.value === 'qwen3.8-max-preview'))
+      .toBe(false);
+
+    const qwenDeepSeek = new LLMModel(byValue.get('deepseek-v4-pro')!);
+    const qwenDeepSeekFlash = new LLMModel(byValue.get('deepseek-v4-flash-0731')!);
+    const directDeepSeek = new LLMModel(supportedModelDefinitions.find(
+      (definition) => definition.provider === LLMProvider.DEEPSEEK
+        && definition.value === 'deepseek-v4-pro',
+    )!);
+    const qwenGlm = new LLMModel(byValue.get('glm-5.2')!);
+    const directGlm = new LLMModel(supportedModelDefinitions.find(
+      (definition) => definition.provider === LLMProvider.GLM
+        && definition.value === 'glm-5.2',
+    )!);
+
+    expect(qwenDeepSeek.value).toBe(directDeepSeek.value);
+    expect(qwenDeepSeek.modelIdentifier).not.toBe(directDeepSeek.modelIdentifier);
+    expect(qwenDeepSeekFlash.modelIdentifier).toBe('qwen:deepseek-v4-flash-0731');
+    expect(qwenDeepSeekFlash.value).toBe('deepseek-v4-flash-0731');
+    expect(qwenDeepSeekFlash.modelIdentifier).not.toBe('deepseek-v4-flash');
+    expect(qwenGlm.value).toBe(directGlm.value);
+    expect(qwenGlm.modelIdentifier).not.toBe(directGlm.modelIdentifier);
   });
 
   it('removes MiniMax M2.7 and keeps built-in capability metadata on definitions', () => {

@@ -15,6 +15,7 @@ import {
 } from '~/services/runStatus/agentRuntimeStatusState';
 import { flattenTeamRunAgentMetadata } from '~/stores/runHistoryMetadata';
 import { createTeamExecutionAddress, memberAddressBasename, serializeTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
+import { resetRecentEventMonitorBaseline } from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
 
 export const fetchTeamMemberProjections = async (params: {
   client: any;
@@ -169,6 +170,7 @@ export const applyProjectionToTeamMemberContext = (params: {
     return;
   }
 
+  resetRecentEventMonitorBaseline(params.memberContext);
   const agentRunId = params.member.agentRunId || normalizedMemberAddress;
   const conversation = buildTeamMemberConversation({
     teamRunId: params.teamRunId,

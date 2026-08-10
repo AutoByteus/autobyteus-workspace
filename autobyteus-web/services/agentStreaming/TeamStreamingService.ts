@@ -29,8 +29,8 @@ import {
 } from './teamTaskAgentContextProjection';
 import { resolveTeamStreamMemberContext } from './teamStreamMemberContextResolver';
 import { handleTaskExecutionProjectionMessage } from './teamTaskExecutionEventRouter';
-import { removeTaskExecutionProjection } from './teamTaskExecutionTree';
-import { dispatchGenericTeamMemberMessage } from './teamStreamGenericMessageDispatcher';
+import { removeTaskTeamExecutionProjection } from './teamTaskTeamExecutionProjection';
+import { dispatchAgentStreamMessage } from './agentStreamMessageProjector';
 import { getActiveRemoteAccessCredential } from '~/utils/remoteAccess/authorizedTransport';
 import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAuth';
 import { getApolloClient } from '~/utils/apolloClient';
@@ -42,6 +42,12 @@ import {
   tryAdmitInterruptCommand,
 } from './interruptCommandAdmission';
 import { TeamToolApprovalTracker } from './TeamToolApprovalTracker';
+import { useRunHistoryStore } from '~/stores/runHistoryStore';
+import {
+  mergeTaskExecutionProjectionMutations,
+  NO_TASK_EXECUTION_PROJECTION_MUTATION,
+  type TaskExecutionProjectionMutation,
+} from './teamTaskExecutionProjection';
 
 const shouldLogStreaming = (): boolean => {
   if (typeof window === 'undefined') return false;
@@ -309,9 +315,22 @@ export class TeamStreamingService {
     }
   }
 
-  private scheduleTaskExecutionCleanup(teamContext: AgentTeamContext, executionAddress?: TeamExecutionAddress | null): void {
+  private scheduleTaskExecutionCleanup(
+    teamContext: AgentTeamContext,
+    executionAddress?: TeamExecutionAddress | null,
+  ): void {
     if (!executionAddress) return;
-    const cleanup = () => removeTaskExecutionProjection(teamContext, executionAddress);
+    const cleanup = () => {
+      const mutation = executionAddress.taskAgentRunId
+        ? removeTaskAgentContext(teamContext, {
+            executionAddress,
+            taskAgentRunId: executionAddress.taskAgentRunId,
+          })
+        : removeTaskTeamExecutionProjection(teamContext, executionAddress);
+      if (mutation.kind !== 'NONE') {
+        useRunHistoryStore().commitTaskProjectionNavigationMutation(teamContext.teamRunId, mutation);
+      }
+    };
     if (typeof setTimeout === 'function') {
       setTimeout(cleanup, 0);
       return;
@@ -342,46 +361,67 @@ export class TeamStreamingService {
     teamContext: AgentTeamContext,
   ): void {
     this.refreshTaskDelegationRecords(message, teamContext);
+    const runHistoryStore = useRunHistoryStore();
     if (message.type === 'TEAM_RUN_LIFECYCLE') {
-      handleTeamRunLifecycle(message.payload, teamContext);
-      return;
-    }
-
-    if (message.type === 'TEAM_COMMUNICATION_MESSAGE') {
-      const projectionResult = handleTaskExecutionProjectionMessage(teamContext, message);
-      if (projectionResult.outcome === 'drop') {
-        console.warn(projectionResult.reason);
-        return;
+      if (handleTeamRunLifecycle(message.payload, teamContext)) {
+        runHistoryStore.applyRunNavigationEffect({
+          kind: 'team_run',
+          teamRunId: teamContext.teamRunId,
+          isActive: teamContext.isActive,
+        }, { kind: 'PRESENTATION' });
       }
-      handleTeamCommunicationMessage(message.payload);
       return;
     }
 
     const projectionResult = handleTaskExecutionProjectionMessage(teamContext, message);
+    let taskMutation: TaskExecutionProjectionMutation = projectionResult.mutation;
+    const commitTaskMutation = (): void => {
+      if (taskMutation.kind === 'NONE') return;
+      runHistoryStore.commitTaskProjectionNavigationMutation(teamContext.teamRunId, taskMutation);
+      taskMutation = NO_TASK_EXECUTION_PROJECTION_MUTATION;
+    };
     if (projectionResult.outcome === 'drop') {
+      commitTaskMutation();
       console.warn(projectionResult.reason);
       return;
     }
+    if (message.type === 'TEAM_COMMUNICATION_MESSAGE') {
+      commitTaskMutation();
+      handleTeamCommunicationMessage(message.payload);
+      return;
+    }
     if (projectionResult.outcome === 'handled') {
+      commitTaskMutation();
       this.scheduleTaskExecutionCleanup(teamContext, projectionResult.cleanupExecutionAddress);
       return;
     }
 
     const taskAgentIdentity = projectionResult.taskAgentIdentity ?? extractTaskAgentIdentity(message);
     const removeTaskAgentAfterMessage = shouldRemoveTaskAgentAfterMessage(message, taskAgentIdentity);
+    if (taskMutation.kind === 'TOPOLOGY' && !removeTaskAgentAfterMessage) commitTaskMutation();
     const memberResolution = projectionResult.outcome === 'memberContext'
-      ? { context: projectionResult.context }
+      ? { context: projectionResult.context, executionAddress: projectionResult.executionAddress }
       : resolveTeamStreamMemberContext(teamContext, message);
 
     if (!memberResolution) {
+      commitTaskMutation();
       console.warn('No member context found for message, skipping');
       return;
     }
 
-    dispatchGenericTeamMemberMessage(message, memberResolution.context);
+    dispatchAgentStreamMessage(message, {
+      kind: 'team_member',
+      context: memberResolution.context,
+      teamRunId: teamContext.teamRunId,
+      executionAddress: memberResolution.executionAddress,
+    });
 
     if (removeTaskAgentAfterMessage && taskAgentIdentity) {
-      removeTaskAgentContext(teamContext, taskAgentIdentity);
+      taskMutation = mergeTaskExecutionProjectionMutations(
+        taskMutation,
+        removeTaskAgentContext(teamContext, taskAgentIdentity),
+      );
     }
+    commitTaskMutation();
   }
 }

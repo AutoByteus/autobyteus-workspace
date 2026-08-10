@@ -18,6 +18,7 @@ import {
 } from './segmentIdentity';
 import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
 import { isProjectableToolSegment, upsertActivityFromToolSegment } from './toolActivityProjection';
+import type { RecentEventMonitorEffect } from '../agentStreamMutationEffects';
 
 function extractToolCallArgumentsFromMetadata(metadata?: Record<string, any>): Record<string, any> {
   const parseArgumentsCandidate = (value: unknown): Record<string, any> => {
@@ -59,18 +60,18 @@ function extractToolCallArgumentsFromMetadata(metadata?: Record<string, any>): R
 export function handleSegmentStart(
   payload: SegmentStartPayload,
   context: AgentContext
-) {
+): RecentEventMonitorEffect {
   if (typeof payload.id !== 'string' || payload.id.trim().length === 0) {
     console.warn('[SegmentHandler] Dropping SEGMENT_START with invalid id', payload);
-    return;
+    return 'NONE';
   }
   const existingSegment = findSegmentById(context, payload.id, payload.segment_type);
   if (existingSegment) {
-    mergeSegmentStartMetadata(existingSegment, payload);
+    const changed = mergeSegmentStartMetadata(existingSegment, payload);
     if (isProjectableToolSegment(existingSegment)) {
       upsertActivityFromToolSegment(context, payload.id, existingSegment);
     }
-    return;
+    return changed ? 'PRESENTATION' : 'NONE';
   }
   const aiMessage = findOrCreateAIMessage(context);
   const segment = createSegmentFromPayload(payload);
@@ -82,15 +83,17 @@ export function handleSegmentStart(
   if (isProjectableToolSegment(segment)) {
     upsertActivityFromToolSegment(context, payload.id, segment);
   }
+  return 'STRUCTURAL';
 }
 
 function mergeSegmentStartMetadata(
   segment: AIResponseSegment,
   payload: SegmentStartPayload,
-): void {
+): boolean {
+  const before = JSON.stringify(segment);
   const metadata = payload.metadata;
   if (!metadata) {
-    return;
+    return false;
   }
 
   if (
@@ -115,7 +118,7 @@ function mergeSegmentStartMetadata(
         command: metadata.command,
       };
     }
-    return;
+    return JSON.stringify(segment) !== before;
   }
 
   if (segment.type === 'write_file') {
@@ -129,7 +132,7 @@ function mergeSegmentStartMetadata(
         path: metadata.path,
       };
     }
-    return;
+    return JSON.stringify(segment) !== before;
   }
 
   if (segment.type === 'edit_file') {
@@ -155,7 +158,7 @@ function mergeSegmentStartMetadata(
       ...(typeof metadata.path === 'string' ? { path: metadata.path } : {}),
       ...(patchValue ? { patch: patchValue } : {}),
     };
-    return;
+    return JSON.stringify(segment) !== before;
   }
 
   if (segment.type === 'tool_call') {
@@ -168,6 +171,7 @@ function mergeSegmentStartMetadata(
       };
     }
   }
+  return JSON.stringify(segment) !== before;
 }
 
 /**
@@ -176,14 +180,14 @@ function mergeSegmentStartMetadata(
 export function handleSegmentContent(
   payload: SegmentContentPayload,
   context: AgentContext
-): boolean {
+): RecentEventMonitorEffect {
   if (typeof payload.id !== 'string' || payload.id.trim().length === 0) {
     console.warn('[SegmentHandler] Dropping SEGMENT_CONTENT with invalid id', payload);
-    return false;
+    return 'NONE';
   }
   const delta = typeof payload.delta === 'string' ? payload.delta : '';
   if (!delta) {
-    return false;
+    return 'NONE';
   }
   let segment = findSegmentById(context, payload.id, payload.segment_type);
   let segmentCreated = false;
@@ -192,7 +196,9 @@ export function handleSegmentContent(
     segmentCreated = true;
   }
 
-  return appendContentToSegment(segment, delta) || segmentCreated;
+  const changed = appendContentToSegment(segment, delta) || segmentCreated;
+  if (!changed) return 'NONE';
+  return segmentCreated ? 'STRUCTURAL' : 'PRESENTATION';
 }
 
 /**
@@ -201,24 +207,25 @@ export function handleSegmentContent(
 export function handleSegmentEnd(
   payload: SegmentEndPayload,
   context: AgentContext
-) {
+): RecentEventMonitorEffect {
   if (typeof payload.id !== 'string' || payload.id.trim().length === 0) {
     console.warn('[SegmentHandler] Dropping SEGMENT_END with invalid id', payload);
-    return;
+    return 'NONE';
   }
   const segment = findSegmentById(context, payload.id);
   if (!segment) {
     console.warn(`Segment not found for end event: ${payload.id}`);
-    return;
+    return 'NONE';
   }
 
+  const before = JSON.stringify(segment);
   markStreamSegmentPresentationComplete(segment);
 
   if (segment.type === 'think') {
     const thinkSegment = segment as ThinkSegment;
     if (!thinkSegment.content.trim()) {
       removeSegmentById(context, payload.id);
-      return;
+      return 'STRUCTURAL';
     }
   }
 
@@ -231,6 +238,7 @@ export function handleSegmentEnd(
   if (isProjectableToolSegment(segment)) {
     upsertActivityFromToolSegment(context, payload.id, segment);
   }
+  return JSON.stringify(segment) !== before ? 'STRUCTURAL' : 'NONE';
 }
 
 /**

@@ -15,8 +15,6 @@ import { useContextFileUploadStore } from '~/stores/contextFileUploadStore';
 import {
   ConnectionState,
   TeamStreamingService,
-  type InterruptGenerationCommandAckPayload,
-  type InterruptCommandTransportFailure,
 } from '~/services/agentStreaming';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import type { ContextAttachment } from '~/types/conversation';
@@ -40,59 +38,30 @@ import {
   beginLocalUserSubmission,
   failLocalSubmission,
   finalizeLocalSubmissionAttachments,
+  retargetLocalUserSubmission,
   type LocalUserSubmissionHandle,
 } from '~/services/runSubmission/localUserSubmission';
 import {
   reconcileTeamContextAgentRunIdsFromBackend,
 } from '~/services/runHydration/teamRunMemberIdentityReconciler';
 import {
-  beginRecentEventMonitorMutation,
-  commitRecentEventMonitorMutation,
-} from '~/services/eventMonitor/recentEventMonitorMutationCommit';
-import { useToasts } from '~/composables/useToasts';
-import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
-import {
   createTeamExecutionAddress,
   serializeTeamExecutionAddress,
   type TeamExecutionAddress,
 } from '~/types/agent/TeamExecutionAddress';
 import { findTeamExecutionNode } from '~/services/agentStreaming/teamTaskExecutionTree';
+import {
+  buildClientInterruptCommandId,
+  buildClientMessageId,
+  showInterruptCommandResult,
+  showInterruptTransportFailure,
+} from '~/services/agentStreaming/teamRunCommandPresentation';
 
 type CurrentTeamMemberConfigInput = Omit<TeamMemberConfigInput, 'memberName' | 'memberAddress'> & {
   memberAddress: string;
 };
 
 const teamStreamingServices = new Map<string, TeamStreamingService>();
-
-const buildClientMessageId = (): string => {
-  const randomId = globalThis.crypto?.randomUUID?.();
-  if (randomId) {
-    return `client_${randomId}`;
-  }
-  return `client_${Date.now()}_${Math.random().toString(36).slice(2)}`;
-};
-
-const buildClientInterruptCommandId = (): string =>
-  buildClientMessageId().replace(/^client_/, 'client_interrupt_');
-
-const showInterruptCommandResult = (ack: InterruptGenerationCommandAckPayload): void => {
-  if (ack.state === 'accepted') return;
-  useToasts().addToast(localizationRuntime.translate('agents.store.interrupt.failed', {
-    target: ack.target.target_kind === 'team_member'
-      ? ack.target.execution_address?.memberAddress ?? ack.target.team_run_id
-      : ack.target.run_id,
-    detail: ack.message,
-  }), 'error');
-};
-
-const showInterruptTransportFailure = (failure: InterruptCommandTransportFailure): void => {
-  useToasts().addToast(localizationRuntime.translate('agents.store.interrupt.transportFailed', {
-    target: failure.target.target_kind === 'team_member'
-      ? failure.target.execution_address?.memberAddress ?? failure.target.team_run_id
-      : failure.target.run_id,
-    detail: failure.reason.message,
-  }), 'error');
-};
 
 const buildConversationTargetInputDedupeKey = (
   teamRunId: string,
@@ -377,6 +346,11 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
           localSubmission = beginLocalUserSubmission(focusedMember, {
             text,
             attachments: contextAttachments,
+            navigationTarget: {
+              kind: 'team_member',
+              teamRunId: activeTeam.teamRunId,
+              executionAddress: initialExecutionAddress,
+            },
           });
         }
 
@@ -456,6 +430,13 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
           throw new Error(`Team context '${finalTeamRunId}' not found after creation.`);
         }
         finalTeamContext.isActive = true;
+        if (localSubmission) {
+          retargetLocalUserSubmission(localSubmission, {
+            kind: 'team_member',
+            teamRunId: finalTeamRunId,
+            executionAddress: targetExecutionAddress,
+          });
+        }
         const finalizedAttachments = await contextFileUploadStore.finalizeDraftAttachments({
           draftOwner,
           finalOwner: buildTeamMemberFinalContextFileOwner(finalTeamRunId, targetUploadKey),
@@ -475,17 +456,17 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
           localSubmission.message.dedupeKey = dedupeKey;
           finalizeLocalSubmissionAttachments(localSubmission, submissionPlan.retainedMessageAttachments);
         } else if (finalFocusedMember) {
-          const presentationBaseline = beginRecentEventMonitorMutation(finalFocusedMember);
-          finalFocusedMember.state.conversation.messages.push({
-            type: 'user',
+          localSubmission = beginLocalUserSubmission(finalFocusedMember, {
             text,
-            timestamp: new Date(),
-            contextFilePaths: submissionPlan.retainedMessageAttachments,
-            messageId,
-            dedupeKey,
+            attachments: submissionPlan.retainedMessageAttachments,
+            navigationTarget: {
+              kind: 'team_member',
+              teamRunId: finalTeamRunId,
+              executionAddress: targetExecutionAddress,
+            },
           });
-          commitRecentEventMonitorMutation(finalFocusedMember, presentationBaseline);
-          finalFocusedMember.state.conversation.updatedAt = new Date().toISOString();
+          localSubmission.message.messageId = messageId;
+          localSubmission.message.dedupeKey = dedupeKey;
         }
 
         const service = await this.ensureTeamStreamConnected(finalTeamRunId);

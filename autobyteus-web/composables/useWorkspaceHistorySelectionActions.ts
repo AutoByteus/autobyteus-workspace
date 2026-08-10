@@ -24,8 +24,7 @@ export const useWorkspaceHistorySelectionActions = (params: {
   expandTeamMemberAncestors?: (
     workspaceId: string,
     teamRunId: string,
-    memberAddress: string,
-    memberTree: readonly TeamMemberTreeRow[],
+    executionAddress: TeamMemberFocusTarget['executionAddress'],
   ) => boolean;
   emitRunSelected: (payload: { type: 'agent' | 'team'; runId: string }) => void;
   emitRunCreated: (payload: { type: 'agent'; definitionId: string }) => void;
@@ -57,9 +56,6 @@ export const useWorkspaceHistorySelectionActions = (params: {
     }
   };
 
-  const rootTeamMembers = (team: TeamTreeNode): readonly TeamMemberTreeRow[] =>
-    team.rootTeam.children.length > 0 ? team.rootTeam.children : team.members;
-
   const onSelectTeam = async (team: TeamTreeNode, workspaceId = ''): Promise<void> => {
     const isAlreadySelectedTeam =
       params.selectionStore.selectedType === 'team'
@@ -79,21 +75,17 @@ export const useWorkspaceHistorySelectionActions = (params: {
       return;
     }
 
-    params.expandTeamMemberAncestors?.(
-      workspaceId,
-      team.teamRunId,
-      targetMember.memberAddress,
-      rootTeamMembers(team),
-    );
+    const targetAddress = createTeamExecutionAddress({
+      rootTeamRunId: targetMember.teamRunId,
+      memberAddress: targetMember.memberAddress,
+    });
+    params.expandTeamMemberAncestors?.(workspaceId, team.teamRunId, targetAddress);
 
     try {
       await params.runHistoryStore.selectTreeRun({
         teamRunId: targetMember.teamRunId,
         memberAddress: targetMember.memberAddress,
-        executionAddress: createTeamExecutionAddress({
-          rootTeamRunId: targetMember.teamRunId,
-          memberAddress: targetMember.memberAddress,
-        }),
+        executionAddress: targetAddress,
       });
       params.selectionStore.selectRun(team.teamRunId, 'team');
       params.emitRunSelected({ type: 'team', runId: team.teamRunId });
@@ -105,16 +97,10 @@ export const useWorkspaceHistorySelectionActions = (params: {
   const onSelectTeamMember = async (
     member: TeamMemberFocusTarget,
     workspaceId = '',
-    memberTree: readonly TeamMemberTreeRow[] = [],
   ): Promise<void> => {
     try {
       params.setTeamExpanded(member.teamRunId, true);
-      params.expandTeamMemberAncestors?.(
-        workspaceId,
-        member.teamRunId,
-        member.memberAddress,
-        memberTree,
-      );
+      params.expandTeamMemberAncestors?.(workspaceId, member.teamRunId, member.executionAddress);
       await params.runHistoryStore.selectTreeRun(member);
       params.emitRunSelected({ type: 'team', runId: member.teamRunId });
     } catch (error) {

@@ -10,7 +10,11 @@ import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import { openTeamRun } from '~/services/runOpen/teamRunOpenCoordinator';
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
-import { createTeamExecutionAddress, serializeTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
+import {
+  createTeamExecutionAddress,
+  serializeTeamExecutionAddress,
+  type TeamExecutionAddress,
+} from '~/types/agent/TeamExecutionAddress';
 import { findTeamExecutionNode } from '~/services/agentStreaming/teamTaskExecutionTree';
 
 type RunHistorySelectionMode = 'desktop' | 'mobile';
@@ -26,16 +30,17 @@ interface RunHistorySelectionStoreLike {
   selectedTeamRunId: string | null;
   selectedTeamMemberAddress: string | null;
   teamResumeConfigByTeamRunId: Record<string, TeamRunResumeConfigPayload>;
-  openTeamMemberRun(teamRunId: string, memberAddress: string, options?: RunHistoryOpenOptions): Promise<void>;
+  openTeamMemberRun(teamRunId: string, executionAddress: TeamExecutionAddress, options?: RunHistoryOpenOptions): Promise<void>;
   openRun(runId: string, options?: RunHistoryOpenOptions): Promise<void>;
   ensureWorkspaceByRootPath(rootPath: string): Promise<string | null>;
   resolveWorkspaceMetadataByRootPath(rootPath: string): Promise<WorkspaceMetadata | null>;
+  focusTeamMemberAndEnsureHydrated(teamRunId: string, executionAddress: TeamExecutionAddress): Promise<boolean>;
 }
 
 export const openTeamMemberRunFromHistory = async (
   store: RunHistorySelectionStoreLike,
   teamRunId: string,
-  memberAddress: string,
+  executionAddress: TeamExecutionAddress,
   options: RunHistoryOpenOptions = {},
 ): Promise<void> => {
   store.openingRun = true;
@@ -43,7 +48,8 @@ export const openTeamMemberRunFromHistory = async (
   try {
     const result = await openTeamRun({
       teamRunId,
-      memberAddress,
+      memberAddress: executionAddress.memberAddress,
+      executionAddress,
       resolveWorkspaceMetadataByRootPath: (path: string) =>
         store.resolveWorkspaceMetadataByRootPath(path),
       ensureWorkspaceByRootPath: (path: string) => store.ensureWorkspaceByRootPath(path),
@@ -98,11 +104,7 @@ export const selectTreeRunFromHistory = async (
 
       try {
         selectionStore.selectRun(row.teamRunId, 'team');
-        if (executionAddress.taskTeamRunIds.length > 0 || executionAddress.taskAgentRunId) {
-          teamContextsStore.setFocusedExecutionAddress(executionAddress);
-        } else {
-          await teamContextsStore.focusMemberAndEnsureHydrated?.(row.teamRunId, localTargetMemberAddress);
-        }
+        await store.focusTeamMemberAndEnsureHydrated(row.teamRunId, executionAddress);
         store.selectedTeamRunId = row.teamRunId;
         store.selectedTeamMemberAddress = localTargetMemberAddress;
         store.selectedRunId = null;
@@ -120,7 +122,7 @@ export const selectTreeRunFromHistory = async (
       }
       return;
     }
-    await store.openTeamMemberRun(row.teamRunId, row.memberAddress);
+    await store.openTeamMemberRun(row.teamRunId, executionAddress);
     return;
   }
 

@@ -1,0 +1,43 @@
+
+> autobyteus@1.4.46 dev /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web
+> nuxt dev --host 0.0.0.0 --port 3138
+
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+ 
+              █▀▀▀▀▀▀▀█▀▀▀▀█▀██▀█▀▀▀▀▀▀▀█
+              █ █▀▀▀█ ██▀█ ▄  ███ █▀▀▀█ █
+              █ █   █ ███  ▀▄▄▄▄█ █   █ █
+              █ ▀▀▀▀▀ █▀▄▀▄▀█ █ █ ▀▀▀▀▀ █
+              █▀▀█▀▀█▀█▄ ██ ▄█ ██▀█████▀█
+              ███▄███▀▄▄▀▄█▀▄▀ ▄ ▀▀  ▄▄▀█
+              █ ▀█ █▄▀▀▄▀▀█▀█▀▄▀ ▀█▄▄▄▄ █
+              █   █▀█▀▀▄▄▄█▄██ ▀▀█▄▄▀▀ ▀█
+              █ █▀ ▀▄▀▀▄█▄▄▀▀ █ ▀▀▀ █ ▀▄█
+              █▀▀▀▀▀▀▀█▄▄ ▀ █ ▄ █▀█ ▀█▄▀█
+              █ █▀▀▀█ █▀▄ ▀▄▄█▀ ▀▀▀ ▀████
+              █ █   █ █▄▄▀ ▄█▀███▄▄▀▄▀  █
+              █ ▀▀▀▀▀ █ ▀█▀▄█  ▀▄ ▄▄▀▄▄ █
+              ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+ 
+  ➜ Local:    http://0.0.0.0:3138/
+  ➜ Network:  http://192.168.2.158:3138/ [QR code]
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+ℹ Re-optimizing dependencies because vite config has changed
+✔ Vite client built in 124ms
+✔ Vite server built in 213ms
+
+ WARN  Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+[nitro] ✔ Nuxt Nitro server built in 2402ms
+ℹ Vite client warmed up in 1ms
+ℹ ✨ new dependencies optimized: @iconify/vue, chart.js, qrcode, crypto-js/sha256
+ℹ ✨ optimized dependencies changed. reloading
+ℹ hmr update /@id/virtual:nuxt:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Fcustom-provider-model-context-metadata%2Fautobyteus-web%2F.nuxt%2Froutes.mjs
+ℹ hmr update /@id/virtual:nuxt:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Fcustom-provider-model-context-metadata%2Fautobyteus-web%2F.nuxt%2Froutes.mjs (x2)
+ℹ hmr update /pages/__api_rev_010_qwen_binding_probe.vue?macro=true, /pages/__api_rev_010_qwen_binding_probe.vue

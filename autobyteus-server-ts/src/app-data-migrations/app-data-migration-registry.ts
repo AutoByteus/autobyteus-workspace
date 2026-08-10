@@ -16,6 +16,7 @@ import { RemoveExternalRuntimeWorkingContextSnapshotsMigration } from "./migrati
 import { MigrateNativeWorkingContextSnapshotsV5Migration } from "./migrations/migrate-native-working-context-snapshots-v5-migration.js";
 import { TeamCanonicalIdentityMigration } from "./migrations/team-canonical-identity-migration.js";
 import { TokenUsageLegacyRouteColumnDropMigration } from "./migrations/token-usage-legacy-route-column-drop-migration.js";
+import { CustomProviderReadableIdAppDataMigration } from "./migrations/custom-provider-readable-id-app-data-migration.js";
 
 export class AppDataMigrationRegistry {
   private readonly definitions: AppDataMigrationDefinition[];
@@ -49,6 +50,7 @@ export class AppDataMigrationRegistry {
       new RemoveSelfEvolutionRunMetadataMigration(appConfigProvider.config.getMemoryDir()),
       new TeamRunHistoryIndexV2AppDataMigration(appConfigProvider.config.getMemoryDir()),
       new RunHistoryIndexV2AppDataMigration(appConfigProvider.config.getMemoryDir()),
+      new CustomProviderReadableIdAppDataMigration(),
     ];
   }
 

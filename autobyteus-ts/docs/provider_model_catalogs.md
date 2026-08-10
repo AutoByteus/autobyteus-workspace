@@ -9,7 +9,7 @@ or changing provider-specific request-shaping behavior.
 | Surface | Catalog / Metadata Source | Runtime / Request-Shape Owner | Notes |
 | --- | --- | --- | --- |
 | LLM API models | `src/llm/supported-model-definitions.ts` | Provider adapters under `src/llm/api/` | Each definition owns static numeric limits, multimodal capabilities, and provenance; `LLMFactory` explicitly maps resolved runtime fields. |
-| LLM static metadata | `staticMetadata` on each supported definition, with helpers in `src/llm/supported-model-static-metadata.ts` | `src/llm/metadata/model-metadata-resolver.ts` | Live numeric provider values override static values field-by-field; static definition values then unknown. `activeContextTokens` remains dynamic and is not resolved here. |
+| LLM static metadata | `staticMetadata` on each supported definition, with helpers in `src/llm/supported-model-static-metadata.ts` | `src/llm/metadata/model-metadata-resolver.ts` and `src/llm/metadata/openai-compatible-endpoint-model-metadata.ts` | Built-ins resolve live values over static definitions field-by-field. Custom endpoints resolve advertised live values, exact built-in-value inference, then unknown. `activeContextTokens` remains dynamic and is not resolved here. |
 | LLM media capability/recovery | `src/llm/multimodal-capabilities.ts`, `src/llm/utils/media-input-sanitizer.ts` | `LLMRequestAssembler`, `LlmPhase`, and `MemoryManager` | Capability filtering and empty-media validation happen on a provider-facing message copy; failed request preparation/streaming rolls back without automatic retry. |
 | Gemini LLM runtime names | `src/utils/gemini-model-mapping.ts` | `GeminiLLM` | Add API-key and Vertex mappings when Gemini LLM provider values differ or need explicit identity coverage. |
 | Audio / TTS models | `src/multimedia/audio/audio-client-factory.ts` | `src/multimedia/audio/api/*` | Built-in TTS models are registered by the audio factory. |
@@ -19,6 +19,29 @@ or changing provider-specific request-shaping behavior.
 | Video models | `src/multimedia/video/video-client-factory.ts` | `src/multimedia/video/api/*` | Built-in video models are registered by the video factory. |
 | Gemini video runtime names | `src/utils/gemini-model-mapping.ts` | `GeminiVideoClient` | Gemini Omni video IDs map through the video modality before Interactions API request dispatch. |
 | OpenAI image request shape | `src/multimedia/image/api/openai-image-client.ts` | `OpenAIImageClient` | Keep GPT Image vs. non-GPT image edit payload differences provider-owned. |
+
+## Custom OpenAI-Compatible Model Metadata
+
+Saved custom OpenAI-compatible providers use the `/models` discovery response
+as a bounded, secret-free model catalog. The discovery owner accepts the usual
+`data` or `models` arrays, extracts a model ID from `id`, `name`, or `model`,
+and recognizes only positive integer aliases for context, input, and output
+limits. Duplicate model rows merge missing recognized fields; raw response
+objects and API keys are never persisted or projected into `ModelInfo`.
+
+Each numeric field resolves independently using this precedence:
+
+1. endpoint-advertised metadata (`live`);
+2. an exact `SupportedModelDefinition.value` match as an explicitly inferred
+   fallback (`inferred_builtin`); and
+3. `unknown` with a null value.
+
+The resolver receives no endpoint URL and applies no endpoint/region/plan
+profile or provider-wire alias. No suffix stripping, family/substring matching,
+display-name matching, case folding, or nearest-model inference is allowed.
+The server exposes only numeric limits and the coarse GraphQL provenance values
+`LIVE`, `CURATED_FALLBACK`, or `CURATED_ONLY`; it does not expose raw payloads
+or credentials.
 
 ## Latest Catalog Additions
 
@@ -36,6 +59,10 @@ or changing provider-specific request-shaping behavior.
 | LLM | `claude-opus-4.7` | `claude-opus-4-7` | Anthropic | 2026-04-25 | Uses adaptive-thinking schema; see request-shape notes below. |
 | LLM | `deepseek-v4-flash` | `deepseek-v4-flash` | DeepSeek | 2026-04-25 | Uses the existing OpenAI-compatible DeepSeek adapter with a flat V4 thinking schema and adapter-owned provider request mapping. |
 | LLM | `deepseek-v4-pro` | `deepseek-v4-pro` | DeepSeek | 2026-04-25 | Uses the existing OpenAI-compatible DeepSeek adapter with a flat V4 thinking schema and adapter-owned provider request mapping. |
+| LLM | `qwen3.8-max` | `qwen3.8-max` | Qwen / Alibaba | 2026-08-06 | Native Qwen offering with source-dated 1M context metadata; input/output limits remain unknown. |
+| LLM | `DeepSeek V4 Pro (Qwen)` | `deepseek-v4-pro` | Qwen / Alibaba | 2026-08-06 | Friendly live-catalog label with collision-safe identifier `qwen:deepseek-v4-pro`, exact unprefixed provider value, and 1M context metadata; no alias or producer field. |
+| LLM | `DeepSeek V4 Flash 0731 (Qwen)` | `deepseek-v4-flash-0731` | Qwen / Alibaba | 2026-08-06 | Friendly live-catalog label with collision-safe identifier `qwen:deepseek-v4-flash-0731`, exact unprefixed provider value, and 1M context metadata; no alias or producer field. |
+| LLM | `GLM-5.2 (Qwen)` | `glm-5.2` | Qwen / Alibaba | 2026-08-06 | Friendly live-catalog label with collision-safe identifier `qwen:glm-5.2`, exact unprefixed provider value, and conservative 198k context metadata; no alias or producer field. |
 | LLM | `gemini-3.5-flash` | `gemini-3.5-flash` | Gemini | 2026-05-20 | Uses the existing Gemini LLM adapter, shared Gemini thinking schema, explicit API-key/Vertex identity mapping, and docs-backed token-limit metadata. |
 | LLM | `kimi-k2.6` | `kimi-k2.6` | Moonshot / Kimi | 2026-06-16 | General-purpose Kimi model; keeps K2.6-specific tool-workflow normalization. |
 | LLM | `kimi-k2.7-code` | `kimi-k2.7-code` | Moonshot / Kimi | 2026-06-16 | Standard K2.7 Code serving route; always-on thinking and fixed sampling constraints are shared through the Kimi K2.7 policy and enforced in `KimiLLM`. |

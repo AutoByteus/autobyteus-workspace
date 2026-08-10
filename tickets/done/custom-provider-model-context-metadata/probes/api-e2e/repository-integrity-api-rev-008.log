@@ -1,0 +1,121 @@
+API-REV-008 repository integrity / cleanup evidence
+utc=2026-08-09T18:40:37Z
+head=ea8dbfd2d4f78312806bee7a41f38daa6a0e9a06
+head_subject=Merge remote-tracking branch 'origin/personal' into codex/custom-provider-model-context-metadata
+parents=7ea8a728420d584218aaf141af754145fa7a5329 3cddeec6b93602da172fec2e7b9a80acc7c05117
+divergence_vs_recorded_origin_personal=13/0
+
+== git diff --check ==
+PASS
+
+== unmerged paths ==
+PASS none
+
+== exact IR-012 ordering ==
+{
+  open: 1246,
+  chmod: 1290,
+  write: 1327,
+  fsync: 1397,
+  rename: 1480,
+  result: 'PASS'
+}
+
+== restrictive umask durable regression ==
+403:  it("preserves the exact env file mode under a restrictive process umask", async () => {
+409:    await fsPromises.chmod(configFile, 0o660);
+412:    const previousUmask = process.umask(0o077);
+417:      expect((await fsPromises.stat(configFile)).mode & 0o777).toBe(0o660);
+
+== fresh Qwen request process loads persisted runtime state (no child QWEN override) ==
+{
+  persistedAppConfigInitialization: true,
+  qwenChildOverride: false,
+  sanitizedChildEnvironment: true,
+  result: 'PASS'
+}
+
+== profile-free exact native source ==
+14:    value: 'qwen3.7-max',
+24:    value: 'qwen3.8-max',
+38:    value: 'deepseek-v4-pro',
+49:    value: 'deepseek-v4-flash-0731',
+60:    value: 'glm-5.2',
+71:    value: 'qwen3-max',
+PASS exact definitions; no endpoint_profile/native preview
+
+== execution summaries ==
+-- app-config-api-rev-008.log
+ Test Files  1 passed (1)
+      Tests  27 passed (27)
+-- core-focused-api-rev-008.log
+ Test Files  5 passed | 1 skipped (6)
+      Tests  24 passed | 4 skipped (28)
+-- server-focused-api-rev-008.log
+ Test Files  12 passed (12)
+      Tests  91 passed | 1 skipped (92)
+-- server-e2e-api-rev-008.log
+ Test Files  4 passed (4)
+      Tests  12 passed (12)
+-- web-focused-api-rev-008.log
+ Test Files  6 passed (6)
+      Tests  33 passed (33)
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.
+[nitro] ℹ Prerendered 15 routes in 0.636 seconds
+└  ✨ Build complete!
+
+== retained evidence secret scan ==
+PASS no generated credential in API-REV-008 retained evidence
+
+== browser evidence and screenshots ==
+{
+  result: 'PASS',
+  assertions: {
+    defaultStatus: true,
+    maskedApiKey: true,
+    realProviderProbe: true,
+    browserSaveConfiguredPair: true,
+    graphqlConfiguredStatus: true,
+    runtimeEnvironmentPersistedBaseUrl: true,
+    apiKeyAbsentFromEnvironment: true,
+    restrictiveChildUmaskPreservedExistingMode0660: true,
+    exactNativeValuesAndIdentifiers: true,
+    previewAliasAbsent: true,
+    plaintextKeyCleared: true,
+    narrowViewportNoHorizontalOverflow: true
+  },
+  mode: '660',
+  exactNativeValues: [
+    'deepseek-v4-flash-0731',
+    'deepseek-v4-pro',
+    'glm-5.2',
+    'qwen3-max',
+    'qwen3.7-max',
+    'qwen3.8-max'
+  ],
+  exactNativeIdentifiers: [
+    'qwen3-max',
+    'qwen3.7-max',
+    'qwen3.8-max',
+    'qwen:deepseek-v4-flash-0731',
+    'qwen:deepseek-v4-pro',
+    'qwen:glm-5.2'
+  ]
+}
+tickets/in-progress/custom-provider-model-context-metadata/probes/api-e2e/qwen-settings-api-rev-008-desktop.png 119753 bytes
+tickets/in-progress/custom-provider-model-context-metadata/probes/api-e2e/qwen-settings-api-rev-008-narrow.png 48979 bytes
+
+== owned cleanup ==
+PASS browser harness removed; owned processes/runtime/database absent
+
+== final API-REV-008 artifact hygiene ==
+utc=2026-08-09T18:44:32Z
+browser JSON parse PASS
+api-e2e-coverage-investigation.md present
+api-e2e-execution-coverage-report.md present
+api-e2e-revision-record.md present
+final artifact/diff status PASS

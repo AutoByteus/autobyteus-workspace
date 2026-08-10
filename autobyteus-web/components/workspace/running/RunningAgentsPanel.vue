@@ -45,6 +45,7 @@
 import { computed, onMounted } from 'vue';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
+import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
@@ -66,6 +67,7 @@ const emit = defineEmits<{
 
 const agentContextsStore = useAgentContextsStore();
 const teamContextsStore = useAgentTeamContextsStore();
+const runHistoryStore = useRunHistoryStore();
 const agentDefinitionStore = useAgentDefinitionStore();
 const teamDefinitionStore = useAgentTeamDefinitionStore();
 const agentRunConfigStore = useAgentRunConfigStore();
@@ -213,7 +215,7 @@ const selectTeamRun = (runId: string) => {
 
 const selectTeamMember = (teamRunId: string, executionAddress: TeamExecutionAddress) => {
   selectionStore.selectRun(teamRunId, 'team');
-  teamContextsStore.setFocusedExecutionAddress(executionAddress);
+  void runHistoryStore.focusTeamMemberAndEnsureHydrated(teamRunId, executionAddress);
   emit('run-selected', { type: 'team', runId: teamRunId });
 };
 

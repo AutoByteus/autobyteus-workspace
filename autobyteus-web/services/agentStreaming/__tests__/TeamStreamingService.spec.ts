@@ -4,6 +4,7 @@ import type { ServerMessage } from '../protocol';
 import { AgentContext } from '~/types/agent/AgentContext';
 import { AgentRunState } from '~/types/agent/AgentRunState';
 import { AgentStatus } from '~/types/agent/AgentStatus';
+import { useRunHistoryStore } from '~/stores/runHistoryStore';
 
 const { handleBrowserToolExecutionSucceededMock, upsertTeamCommunicationMessageMock } = vi.hoisted(() => ({
   handleBrowserToolExecutionSucceededMock: vi.fn(),
@@ -531,6 +532,10 @@ describe('TeamStreamingService', () => {
         ],
       ]),
     } as any;
+    const runHistoryStore = useRunHistoryStore();
+    const topologySpy = vi.spyOn(runHistoryStore, 'refreshRunNavigationTopology');
+    const exactPatchSpy = vi.spyOn(runHistoryStore, 'applyRunNavigationEffect').mockReturnValue(true);
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
 
     service.connect('team-1', withEventMonitorPresentationState(teamContext));
     callbacks.get('onConnect')?.();
@@ -539,13 +544,36 @@ describe('TeamStreamingService', () => {
 
     callbacks.get('onMessage')?.(JSON.stringify({
       type: 'TEAM_RUN_LIFECYCLE',
+      payload: { team_run_id: 'team-1', is_active: false },
+    }));
+    expect(topologySpy).not.toHaveBeenCalled();
+    expect(exactPatchSpy).not.toHaveBeenCalled();
+
+    callbacks.get('onMessage')?.(JSON.stringify({
+      type: 'TEAM_RUN_LIFECYCLE',
       payload: { team_run_id: 'team-1', is_active: true },
     }));
     expect(teamContext.isActive).toBe(true);
+    expect(exactPatchSpy).toHaveBeenCalledTimes(1);
+    expect(exactPatchSpy).toHaveBeenCalledWith({
+      kind: 'team_run', teamRunId: 'team-1', isActive: true,
+    }, { kind: 'PRESENTATION' });
+    expect(topologySpy).not.toHaveBeenCalled();
+
+    callbacks.get('onMessage')?.(JSON.stringify({
+      type: 'TEAM_RUN_LIFECYCLE',
+      payload: { team_run_id: 'other-team', is_active: false },
+    }));
+    expect(teamContext.isActive).toBe(true);
+    expect(exactPatchSpy).toHaveBeenCalledTimes(1);
+    expect(warnSpy).toHaveBeenCalledWith("Ignoring lifecycle for team 'other-team' on 'team-1'.");
 
     callbacks.get('onDisconnect')?.('closed');
     expect(teamContext.isSubscribed).toBe(false);
     expect(teamContext.isActive).toBe(true);
+    exactPatchSpy.mockRestore();
+    topologySpy.mockRestore();
+    warnSpy.mockRestore();
   });
 
   it('projects each server-shaped team content message immediately', () => {
@@ -1415,6 +1443,9 @@ describe('TeamStreamingService', () => {
     const { callbacks, service } = createWsHarness();
     const teamContext = createTeamContextWithWorker();
     const workerContext = teamContext.leafAgentContextsByRouteKey.get('worker');
+    const runHistoryStore = useRunHistoryStore();
+    const topologyCommitSpy = vi.spyOn(runHistoryStore, 'commitTaskProjectionNavigationMutation');
+    const exactPatchSpy = vi.spyOn(runHistoryStore, 'applyRunNavigationEffect');
 
     service.connect('team-1', withEventMonitorPresentationState(teamContext));
     callbacks.get('onMessage')?.(
@@ -1450,6 +1481,12 @@ describe('TeamStreamingService', () => {
     });
     expect(teamContext.memberTree.map((node: any) => node.memberRouteKey)).toContain('task-agent-run-1');
     expect(workerContext.state.runId).toBe('worker-run-1');
+    expect(topologyCommitSpy).toHaveBeenCalledTimes(1);
+    expect(topologyCommitSpy.mock.calls[0]?.[1]).toMatchObject({ kind: 'TOPOLOGY' });
+    expect(exactPatchSpy).toHaveBeenCalledTimes(1);
+    expect(exactPatchSpy.mock.calls[0]?.[1]).toMatchObject({ kind: 'PRESENTATION' });
+    topologyCommitSpy.mockClear();
+    exactPatchSpy.mockClear();
 
     callbacks.get('onMessage')?.(
       JSON.stringify({
@@ -1472,6 +1509,11 @@ describe('TeamStreamingService', () => {
     );
     expect(taskContext.conversation.messages).toHaveLength(1);
     expect(taskContext.conversation.messages[0].segments[0].content).toBe('Nested task-agent output');
+    expect(topologyCommitSpy).not.toHaveBeenCalled();
+    expect(exactPatchSpy).toHaveBeenCalledTimes(1);
+    expect(exactPatchSpy.mock.calls[0]?.[1]).toMatchObject({ kind: 'ACTIVITY' });
+    topologyCommitSpy.mockClear();
+    exactPatchSpy.mockClear();
 
     callbacks.get('onMessage')?.(
       JSON.stringify({
@@ -1498,6 +1540,10 @@ describe('TeamStreamingService', () => {
       messageId: 'work-packet-1',
     });
     expect(workerContext.conversation.messages).toHaveLength(0);
+    expect(topologyCommitSpy).not.toHaveBeenCalled();
+    expect(exactPatchSpy).toHaveBeenCalledTimes(1);
+    topologyCommitSpy.mockClear();
+    exactPatchSpy.mockClear();
 
     teamContext.focusedMemberRouteKey = 'task-agent-run-1';
     callbacks.get('onMessage')?.(
@@ -1522,6 +1568,12 @@ describe('TeamStreamingService', () => {
     expect(teamContext.memberNodesByRouteKey.has('task-agent-run-1')).toBe(false);
     expect(teamContext.memberTree.map((node: any) => node.memberRouteKey)).not.toContain('task-agent-run-1');
     expect(teamContext.focusedMemberRouteKey).toBe('coordinator');
+    expect(topologyCommitSpy).toHaveBeenCalledTimes(1);
+    expect(topologyCommitSpy.mock.calls[0]?.[1]).toMatchObject({ kind: 'TOPOLOGY' });
+    expect(exactPatchSpy).toHaveBeenCalledTimes(1);
+    expect(exactPatchSpy.mock.calls[0]?.[1]).toMatchObject({ kind: 'PRESENTATION' });
+    topologyCommitSpy.mockRestore();
+    exactPatchSpy.mockRestore();
   });
 
   it('does not let identity-less mismatched status poison the logical member context before projection exists', () => {
@@ -1578,6 +1630,42 @@ describe('TeamStreamingService', () => {
       expect(workerContext.state.currentStatus).toBe(AgentStatus.Offline);
     } finally {
       warnSpy.mockRestore();
+    }
+  });
+
+  it('defers a first task-agent offline create/remove journey to one final topology build', () => {
+    const { callbacks, service } = createWsHarness();
+    const teamContext = createTeamContextWithWorker();
+    const runHistoryStore = useRunHistoryStore();
+    const topologyCommitSpy = vi.spyOn(runHistoryStore, 'commitTaskProjectionNavigationMutation');
+    const exactPatchSpy = vi.spyOn(runHistoryStore, 'applyRunNavigationEffect');
+
+    try {
+      service.connect('team-1', withEventMonitorPresentationState(teamContext));
+      callbacks.get('onMessage')?.(JSON.stringify({
+        type: 'AGENT_STATUS',
+        payload: {
+          status: 'offline',
+          agent_id: 'first-offline-task-agent',
+          agent_name: 'worker',
+          member_route_key: 'worker',
+          member_path: ['worker'],
+          source_route_key: 'worker',
+          source_path: ['worker'],
+          task_agent_instance_id: 'first-offline-instance',
+          task_agent_run_id: 'first-offline-task-agent',
+          task_id: 'task-first-offline',
+        },
+      }));
+
+      expect(teamContext.leafAgentContextsByRouteKey.has('first-offline-task-agent')).toBe(false);
+      expect(teamContext.memberNodesByRouteKey.has('first-offline-task-agent')).toBe(false);
+      expect(topologyCommitSpy).toHaveBeenCalledTimes(1);
+      expect(topologyCommitSpy.mock.calls[0]?.[1]).toMatchObject({ kind: 'TOPOLOGY' });
+      expect(exactPatchSpy).not.toHaveBeenCalled();
+    } finally {
+      topologyCommitSpy.mockRestore();
+      exactPatchSpy.mockRestore();
     }
   });
 

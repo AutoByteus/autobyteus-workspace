@@ -1,0 +1,208 @@
+# Implementation Revision Record — Background Agent Renderer Contention
+
+The current code and `implementation-handoff.md` are authoritative. This record indexes implementation rounds without replacing those current-state sources.
+
+## Revision Index
+
+| Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
+| --- | --- | --- | --- | --- | --- |
+| IR-001 | `architecture_reviewer` / `design-review-report.md` / ARCH-REV-004 handoff | N/A | `Initial Baseline` | `SR-004`, `ARCH-REV-004`; `CRR N/A`, `API-REV N/A`, `DR N/A` | Shared egress, explicit projection effects, Event Monitor lifecycle, and indexed navigation implementation complete; ready for source review |
+| IR-002 | `code_reviewer` / `code-review-report.md` / CRR-001 | `CR-001–CR-006` | `Local Fix` | `SR-004`, `ARCH-REV-004`, `CRR-001`; `API-REV N/A`, `DR N/A` | Six bounded source/test findings corrected and locally validated; ready for complete source re-review |
+| IR-003 | `code_reviewer` / `code-review-report.md` / CRR-002 | `CR-007–CR-009` | `Local Fix` | `SR-004`, `ARCH-REV-004`, `CRR-002`; `API-REV N/A`, `DR N/A` | Three caller/lifecycle ordering defects corrected and locally validated; ready for complete source re-review |
+| IR-004 | `code_reviewer` / `code-review-report.md` / CRR-003 | `CR-006` (reopened) | `Local Fix` | `SR-004`, `ARCH-REV-004`, `CRR-003`; `API-REV N/A`, `DR N/A` | Nested Event Monitor prime ownership removed and real open/recovery composition locally validated; ready for complete source re-review |
+| IR-005 | `code_reviewer` / `code-review-report.md` / CRR-004 | `CR-006` (partially resolved / open) | `Local Fix` | `SR-004`, `ARCH-REV-004`, `CRR-004`; `API-REV N/A`, `DR N/A` | Complete team-hydration prime inventory centralized at outer/lazy lifecycle owners and real loader/builder paths validated; ready for complete source re-review |
+| IR-006 | `code_reviewer` / `code-review-report.md` / CRR-007 failure-origin review | `CR-010`; `API-F-001 / WORKSPACE-BOOT-001` | `Local Fix` | `SR-004`, `ARCH-REV-004`, `CRR-007`, `API-REV-002`, `DR-002` | Initial async workspace catalog now publishes exactly one cached-navigation topology refresh; ready for complete source re-review |
+
+## Revision Entries
+
+### IR-001 — Bounded Presentation Egress And Indexed Frontend Projection
+
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/design-review-report.md`; passing `ARCH-REV-004` implementation handoff.
+- Triggering finding IDs: `N/A`.
+- Classification: `Initial Baseline`.
+- Prior authoritative result: `N/A`.
+- Current authoritative result: SR-004 is implemented and locally validated at implementation scope; the cumulative package is ready for initial source review.
+- Related solution revision IDs: `SR-004`.
+- Related architecture-review revision IDs: `ARCH-REV-004`.
+- Related code-review revision IDs: `N/A`.
+- Related API/E2E revision IDs: `N/A`.
+- Related delivery revision IDs: `N/A`.
+- Why this baseline or implementation revision is recorded: Establishes the first authoritative implementation handoff for the reviewed background-renderer contention correction.
+- Approved behavior or requirement IDs affected: `BEH-001–BEH-009`; `FR-001–FR-007`; `AC-001–AC-010`.
+- Implementation delta:
+  - composed one per-connection server presentation-egress pipeline with exact identity-aware status filtering, one cadence scheduler, observers, and terminal sink;
+  - replaced duplicate frontend generic dispatch with handler-reported actual effects and one projector;
+  - replaced before/after Event Monitor scans with reset/prime/effect-commit ownership across mapped lifecycle callers;
+  - moved stable/transient execution rows and focus behind an indexed run-history navigation projection;
+  - made every identity-bearing task-agent ensure/repair mutation-bearing in the router, committed it before every service outcome, and made member resolution observational;
+  - removed obsolete policy/dispatcher/Event Monitor/component-builder paths without compatibility wrappers.
+- Changed files or areas: Server WebSocket egress and focused tests; frontend streaming handlers/services/task projections; Event Monitor coordinator and lifecycle callers; run-history navigation/types/actions/stores; workspace history/running/mobile consumers and focused unit fixtures/tests. See `implementation-handoff.md` for the grouped file map.
+- Local validation and result:
+  - server egress unit: **1 file / 31 tests pass**;
+  - server generated production TypeScript build check: **pass**;
+  - frontend focused set: **34 files / 374 tests pass**;
+  - web/localization guards and reviewed static scans: **pass**;
+  - manual real-component desktop/mobile rendered inspection: **pass**, including transient hierarchy/focus/disclosure, activity transitions, collapse/re-expand, stop recovery, and mobile overflow;
+  - repository-wide frontend typecheck remains red on 220 diagnostics, with zero diagnostics in changed files; repository-wide server typecheck remains limited by existing TS6059 test/rootDir configuration.
+- Development source commit: `d1c48db5a59ecf42a8a1d528763196c815b0c11a`.
+- Next recipient or routing: `code_reviewer` for initial complete source/architecture review before any API/E2E investigation or execution.
+- Remaining limitations or risks: Realistic aggregate performance, retained WebSocket integration/canonical-subscriber behavior, collapsed/unfocused nested correctness, latest-100 executable coverage, paste/fake-media responsiveness, and final Electron voice/file smoke remain downstream API/E2E work. Delivery-owned branch refresh and documentation synchronization remain intentionally deferred.
+
+### IR-002 — Immutable Controls And Exact Projection Rework
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/code-review-report.md`; `CRR-001` initial implementation review.
+- Triggering finding IDs: `CR-001–CR-006`.
+- Classification: `Local Fix`.
+- Prior authoritative result: `CRR-001 — Fail / Local Fix`; API/E2E must not begin.
+- Current authoritative result: All six implementation-owned findings are corrected at source and focused-unit scope; the cumulative package is ready for complete source re-review.
+- Related solution revision IDs: `SR-004`.
+- Related architecture-review revision IDs: `ARCH-REV-004`.
+- Related code-review revision IDs: `CRR-001`.
+- Related API/E2E revision IDs: `N/A`.
+- Related delivery revision IDs: `N/A`.
+- Why this implementation revision is recorded: Closes the review-identified gaps in control immutability, combined navigation effects, local submission projection, root lifecycle patching, workspace-bucket identity, and final Event Monitor priming without changing the reviewed design or protocol.
+- Approved behavior or requirement IDs affected: `BEH-004–BEH-006`, `BEH-009`; `FR-002`, `FR-003`, `FR-005`, `FR-007`; `AC-002`, `AC-003`, `AC-007`, `AC-010`; `UC-007`.
+- Implementation delta:
+  - `CR-001`: deep-clones and recursively freezes observer/filter control messages while preserving the original semantic message for the sole scheduler/sink; nested mutation attempts cannot alter delivery.
+  - `CR-002`: combines presentation plus activity into one navigation effect and exact branch patch, preserving terminal status, completion, timestamp, and activity without a topology build.
+  - `CR-003`: gives local submission a retargetable standalone/team navigation identity and applies exact first-user summary/activity effects for begin, real attachment replacement, and failure; equal attachments no-op.
+  - `CR-004`: makes root team lifecycle return actual mutation and use an exact `team_run` presentation patch; equal or mismatched snapshots do not rebuild or patch.
+  - `CR-005`: retains equal top-level collections and unchanged per-workspace team bucket arrays across topology builds.
+  - `CR-006`: removes the intermediate team-member prime and performs one final baseline prime only after activity hydration, without re-priming preserved subscribed members.
+- Changed files or areas: server egress control contracts/sink/identity/filter and unit coverage; frontend mutation effects/projector coverage; team lifecycle handler/service; local submission and standalone/team callers; run-history exact patches and reference reconciliation; team-open coordinator and focused lifecycle coverage.
+- Local validation and result:
+  - server egress unit: **1 file / 32 tests pass**;
+  - server production build-config TypeScript check: **pass**;
+  - frontend broad affected set during rework: **37 files / 401 tests pass**;
+  - final post-edit frontend focused set: **9 files / 192 tests pass**;
+  - web/localization boundary guards and reviewed negative/static scans: **pass**;
+  - frontend repository typecheck remains at the recorded baseline **220 diagnostics**, with **zero diagnostics on changed frontend paths**;
+  - current IR-002 and full task-range `git diff --check`: **pass**;
+  - every changed production implementation file is `<= 500` effective non-empty lines.
+- Development source commit: `21c85e91e355c71d643cab61fa8d24acf9dc78dd`.
+- Next recipient or routing: `code_reviewer` for complete source re-review before API/E2E resumes.
+- Remaining limitations or risks: No new implementation limitation was introduced. Realistic aggregate performance, retained WebSocket/API/browser/Electron coverage, and delivery-owned branch refresh/docs synchronization remain with their downstream owners after source review passes.
+
+### IR-003 — Failure, Activation, And Reuse Ordering
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/code-review-report.md`; `CRR-002` full source re-review of IR-002.
+- Triggering finding IDs: `CR-007–CR-009` (`CR-001–CR-006` remain resolved).
+- Classification: `Local Fix`.
+- Prior authoritative result: `CRR-002 — Fail / Local Fix — 9.17/10 (91.7/100)`; API/E2E must remain paused.
+- Current authoritative result: All three CRR-002 implementation-owned lifecycle-order findings are corrected at source and caller-focused-unit scope; the cumulative package is ready for complete source re-review.
+- Related solution revision IDs: `SR-004`.
+- Related architecture-review revision IDs: `ARCH-REV-004`.
+- Related code-review revision IDs: `CRR-002`.
+- Related API/E2E revision IDs: `N/A`.
+- Related delivery revision IDs: `N/A`.
+- Why this implementation revision is recorded: Closes the remaining ordering gaps between authoritative runtime state, cached navigation publication, and final Event Monitor baseline establishment without adding another owner or changing protocol/persistence.
+- Approved behavior or requirement IDs affected: `BEH-004–BEH-006`; `FR-002`, `FR-003`; `AC-002`, `AC-003`, `AC-007`; `DS-006`.
+- Implementation delta:
+  - `CR-007`: both standalone and team failure callers now apply terminal Error cleanup before `failLocalSubmission`, so its exact failure navigation patch reads the authoritative Error status while preserving first-user summary and failure activity.
+  - `CR-008`: `sendMessageToFocusedMember` resolves the final team context and sets `isActive=true` before `markTeamAsActive` rebuilds cached navigation; new/restored caller tests verify active publication and the later equal active lifecycle snapshot no-ops.
+  - `CR-009`: team-open separates activity-hydration membership from final-baseline membership, hydrates only new/replaced live members, then primes every final context once; preserved subscribed contexts are primed idempotently without reset.
+- Changed files or areas: `agentRunStore.ts`, `agentTeamRunStore.ts`, `teamRunOpenCoordinator.ts`, their caller/lifecycle unit suites, and the retained CRR-002 review artifacts.
+- Local validation and result:
+  - CRR-002 affected frontend matrix: **8 files / 161 tests pass**;
+  - direct three-file caller/open subset: **3 files / 45 tests pass**;
+  - web/localization boundary guards and lifecycle-order/static scans: **pass**;
+  - frontend repository typecheck remains at the recorded baseline **220 diagnostics**, with **zero diagnostics on changed frontend paths**;
+  - current IR-003 and full task-range `git diff --check`: **pass**;
+  - every changed production implementation file is `<= 500` effective non-empty lines.
+- Development source commit: `145f7de4dc3cfca138cc022b0a7f4370077b891a`.
+- Next recipient or routing: `code_reviewer` for complete source re-review before API/E2E resumes.
+- Remaining limitations or risks: No new implementation limitation was introduced. Realistic aggregate performance and WebSocket/API/browser/Electron coverage remain downstream after source review passes; delivery still owns base refresh and durable docs synchronization.
+
+### IR-004 — Single Final-Prime Ownership Across Team Open And Recovery
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/code-review-report.md`; `CRR-003` full source re-review of IR-003.
+- Triggering finding IDs: `CR-006` (reopened after the review traced the real nested hydration helper).
+- Classification: `Local Fix`.
+- Prior authoritative result: `CRR-003 — Fail / Local Fix — 9.31/10 (93.1/100)`; API/E2E remains paused.
+- Current authoritative result: The activity-hydration helper no longer captures a hidden baseline; active open and live recovery each own exactly one final prime per final context. The cumulative package is ready for complete source re-review.
+- Related solution revision IDs: `SR-004`.
+- Related architecture-review revision IDs: `ARCH-REV-004`.
+- Related code-review revision IDs: `CRR-003`.
+- Related API/E2E revision IDs: `N/A`.
+- Related delivery revision IDs: `N/A`.
+- Why this implementation revision is recorded: Corrects the production helper-plus-caller double-prime seam that mocked coordinator tests previously hid, without adding another owner or changing activity, projection, protocol, persistence, or presentation behavior.
+- Approved behavior or requirement IDs affected: `BEH-005`; `FR-002`; `AC-003`, `AC-007`; `DS-006`.
+- Implementation delta:
+  - makes `hydrateTeamMemberActivitiesFromProjection` activity-only by removing its hidden `primeRecentEventMonitorBaseline` side effect and its unnecessary forwarding export;
+  - preserves active open and live recovery as the unambiguous final-prime owners after activity hydration;
+  - exercises the real helper/caller composition for active open and live recovery, including projection-present and projection-absent cases;
+  - preserves one reset-before-hydration/final-prime sequence for replaced members and one no-reset idempotent final prime for preserved subscribed members.
+- Changed files or areas: `teamRunMemberStatusHydration.ts`, `teamRunContextHydrationService.ts`, `teamRunOpenCoordinator.ts`, active-open coverage, new live-recovery composition coverage, and the retained CRR-003 review artifacts.
+- Local validation and result:
+  - direct real-composition subset: **2 files / 9 tests pass**;
+  - affected frontend matrix: **9 files / 164 tests pass**;
+  - web/localization boundary guards and final-prime ownership/static scans: **pass**;
+  - frontend repository typecheck remains at the recorded baseline **220 diagnostics**, with **zero diagnostics on the changed production paths**;
+  - current IR-004 and full task-range `git diff --check`: **pass**;
+  - changed production implementation files remain `<= 500` effective non-empty lines.
+- Development source commit: `85c3cf9032c48f14e2b996cf7ce2419041d8de9c`.
+- Next recipient or routing: `code_reviewer` for complete source re-review before API/E2E resumes.
+- Remaining limitations or risks: No new implementation limitation was introduced. Realistic aggregate performance and WebSocket/API/browser/Electron coverage remain downstream after source review passes; delivery still owns base refresh and durable docs synchronization.
+
+### IR-005 — Complete Team-Hydration Final-Prime Ownership
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/code-review-report.md`; `CRR-004` full source re-review of IR-004.
+- Triggering finding IDs: `CR-006` (partially resolved / open after nested historical projection and projection-absent builder primes were traced).
+- Classification: `Local Fix`.
+- Prior authoritative result: `CRR-004 — Fail / Local Fix — 9.25/10 (92.5/100)`; API/E2E remains paused.
+- Current authoritative result: The complete team construction/projection/open/recovery/lazy inventory now has exactly one final prime per context after its last conversation/activity writer. The cumulative package is ready for complete source re-review.
+- Related solution revision IDs: `SR-004`.
+- Related architecture-review revision IDs: `ARCH-REV-004`.
+- Related code-review revision IDs: `CRR-004`.
+- Related API/E2E revision IDs: `N/A`.
+- Related delivery revision IDs: `N/A`.
+- Why this implementation revision is recorded: Completes the final-prime ownership audit beyond IR-004's activity-helper correction and replaces mocked post-builder tests with real outer loader/builder compositions.
+- Approved behavior or requirement IDs affected: `BEH-005`; `FR-002`; `AC-003`, `AC-007`; `DS-006`.
+- Implementation delta:
+  - removes final-prime side effects from both `applyProjectionToTeamMemberContext` and projection-absent context construction, leaving those lower boundaries as conversation/activity writers only;
+  - preserves active/historical open and live recovery as the one final-prime owner after all outer merging/status/activity work;
+  - adds the one explicit final prime to lazy historical member hydration immediately after projection conversation/activity application;
+  - replaces the mocked live-recovery builder seam and adds a real open loader/builder suite covering historical projection-present, active projection-present, active projection-absent, existing replacement, preserved subscribed, and lazy historical transactions.
+- Changed files or areas: `runHistoryTeamMemberProjectionHydrator.ts`, `teamRunContextHydrationService.ts`, real live-recovery coverage, new real open/lazy ownership coverage, and the retained CRR-004 artifacts.
+- Local validation and result:
+  - direct real-composition subset: **4 files / 16 tests pass**;
+  - affected frontend matrix: **11 files / 171 tests pass**;
+  - web/localization boundary guards and full team-prime ownership/caller/static scans: **pass**;
+  - frontend repository typecheck remains at the recorded baseline **220 diagnostics**, with **zero diagnostics on all changed production and test paths**;
+  - current IR-005 and full task-range `git diff --check`: **pass**;
+  - changed production implementation files remain `<= 500` effective non-empty lines.
+- Development source commit: `81a8e8b64aad0fd2253081fe9a94f88e3a9ffa46`.
+- Next recipient or routing: `code_reviewer` for complete source re-review before API/E2E resumes.
+- Remaining limitations or risks: No new implementation limitation was introduced. Realistic aggregate performance and WebSocket/API/browser/Electron coverage remain downstream after source review passes; delivery still owns base refresh and durable docs synchronization.
+
+### IR-006 — Initial Workspace Catalog Navigation Publication
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/code-review-report.md`; `CRR-007` failure-origin review of `API-REV-002`.
+- Triggering finding IDs: `CR-010`; failure `API-F-001 / WORKSPACE-BOOT-001`.
+- Classification: `Local Fix`.
+- Prior authoritative result: `CRR-007 — Fail / Local Fix`; `API-REV-002 — Fail / 77.1%`; delivery remains paused at `DR-002`.
+- Current authoritative result: The supported fresh-workspace startup now connects successful initial catalog population to exactly one cached-navigation topology refresh, without restoring eager history loading, per-read rebuilding, or a watcher. The cumulative package is ready for complete source re-review.
+- Related solution revision IDs: `SR-004`.
+- Related architecture-review revision IDs: `ARCH-REV-004`.
+- Related code-review revision IDs: `CRR-007` (with `CRR-005` implementation-source Pass and `CRR-006` proportional test-code Pass retained as history).
+- Related API/E2E revision IDs: `API-REV-002`.
+- Related delivery revision IDs: `DR-002`.
+- Why this implementation revision is recorded: IR-005 correctly introduced cached navigation but omitted the supported empty workspace catalog -> populated catalog invalidation edge. CRR-007 independently traced the first missing boundary and classified it as an implementation-owned omission under unchanged SR-004 / ARCH-REV-004.
+- Approved behavior or requirement IDs affected: `BEH-006`; `FR-003`; `AC-007`, `AC-009`; `Directly Usable — No Migration`.
+- Implementation delta:
+  - adds `runHistoryStore.loadWorkspaceCatalogForNavigation` as the explicit startup transaction: no-op after the catalog is already fetched; otherwise await the initial workspace fetch and perform one topology refresh only after successful population;
+  - makes `WorkspaceAgentRunsTreePanel` delegate its mount-time catalog load to that run-history/navigation owner while preserving parallel definition catalog loads and avoiding global history fetches;
+  - adds a real run-history/navigation composition test starting from an empty workspace store and an already-lazily-seeded empty cache, then resolving the async catalog load and asserting one new topology revision plus the persisted workspace row;
+  - preserves all API/E2E and delivery-owned uncommitted artifacts unchanged.
+- Changed files or areas: `autobyteus-web/stores/runHistoryStore.ts`, `autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue`, their focused test suites, and the retained CRR-007 artifacts.
+- Local validation and result:
+  - direct startup/cache subset: **2 files / 109 tests pass**;
+  - affected workspace-navigation matrix: **5 files / 126 tests pass**;
+  - web-boundary and localization guard/audit: **pass**;
+  - static owner/caller/no-history/no-watcher scans: **pass**;
+  - delivery-integrated repository typecheck completes with 8 GB heap at **5,401 existing diagnostics**, with **zero diagnostics on all five IR-006 changed frontend paths**;
+  - source commit `26b9b3c..f0aa5270` `git diff --check`: **pass**;
+  - changed production implementation files remain `<= 500` effective non-empty lines and the production delta is 10 lines.
+- Development source commit: `f0aa52702c96dafc1d24cef5b9292a05ffb914a9`.
+- Next recipient or routing: `code_reviewer` for complete source re-review before API/E2E resumes.
+- Remaining limitations or risks: Implementation did not rerun the API/E2E-owned real-data/browser environment. After source review passes, API/E2E must rerun `WORKSPACE-BOOT-001` first against a fresh real-data boundary, then resume the remaining matrix. Delivery must remain paused until downstream review and execution pass.

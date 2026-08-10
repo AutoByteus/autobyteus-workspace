@@ -1,0 +1,2 @@
+$ git diff --check 3cddeec6..HEAD -- IR-006 source/test paths
+result=PASS

@@ -1,0 +1,12 @@
+{
+  "scenarioId": "WORKSPACE-BOOT-002-RELOAD",
+  "result": "PASS",
+  "timestamp": "2026-08-10T08:54:40.439Z",
+  "url": "http://127.0.0.1:63933/workspace?api_rev_003_reload=1",
+  "workspaceRowCount": 26,
+  "visibleWorkspaceRowCount": 26,
+  "firstWorkspace": "2026-05-25-roma-fuqi-church",
+  "lastWorkspace": "Temp Workspace",
+  "visibleNoHistory": false,
+  "observation": "A second full navigation/reload against the active Electron backend again populated all 26 workspace rows."
+}

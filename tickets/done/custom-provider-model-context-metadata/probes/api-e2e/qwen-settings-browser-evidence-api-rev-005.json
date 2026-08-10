@@ -1,0 +1,178 @@
+{
+  "result": "PASS",
+  "revision": "API-REV-005",
+  "integratedHead": "9817d3b1fdcbfec4c5249eb782ae2d9acfb25688",
+  "mode": "headless Google Chrome through Nuxt browser-development path",
+  "frontendUrl": "http://127.0.0.1:56464",
+  "backendUrl": "http://127.0.0.1:56461",
+  "qwenProviderBaseUrl": "http://127.0.0.1:56460/compatible-mode/v1",
+  "assertions": {
+    "integratedMergeHead": true,
+    "defaultStatus": true,
+    "absoluteUrlValidation": true,
+    "maskedShowHide": true,
+    "realProviderProbe": true,
+    "committedMutationSurvivesRefreshFailure": true,
+    "providerSettingsClearedOnRejectedRefresh": true,
+    "globalReloadMutationThenCatalogAndSettings": true,
+    "globalSuccessWaitedForSettings": true,
+    "selectedProviderReloadMutationThenCatalogAndSettings": true,
+    "selectedSuccessWaitedForCatalog": true,
+    "recoveredProviderRowAndExactModels": true,
+    "previewAliasAbsent": true,
+    "narrowViewportNoHorizontalOverflow": true,
+    "generatedSecretsAbsentFromOwnedLogsAndEnvironment": true
+  },
+  "injectedProviderSettingsFailureCount": 1,
+  "graphqlEvents": [
+    {
+      "operationName": "GetProviderSettings",
+      "phase": "startup",
+      "method": "POST"
+    },
+    {
+      "operationName": "GetGeminiSetupConfig",
+      "phase": "startup",
+      "method": "POST"
+    },
+    {
+      "operationName": "GetQwenSetupStatus",
+      "phase": "startup",
+      "method": "POST"
+    },
+    {
+      "operationName": "GetQwenSetupStatus",
+      "phase": "startup",
+      "method": "POST"
+    },
+    {
+      "operationName": "SaveQwenConfiguration",
+      "phase": "save",
+      "method": "POST"
+    },
+    {
+      "operationName": "GetProviderSettings",
+      "phase": "save",
+      "method": "POST"
+    },
+    {
+      "operationName": "GetAvailableLLMProvidersWithModels",
+      "phase": "save",
+      "method": "POST"
+    },
+    {
+      "operationName": "ReloadLLMModels",
+      "phase": "global-reload",
+      "method": "POST"
+    },
+    {
+      "operationName": "GetAvailableLLMProvidersWithModels",
+      "phase": "global-reload",
+      "method": "POST"
+    },
+    {
+      "operationName": "GetProviderSettings",
+      "phase": "global-reload",
+      "method": "POST"
+    },
+    {
+      "operationName": "ReloadLLMProviderModels",
+      "phase": "selected-reload",
+      "method": "POST"
+    },
+    {
+      "operationName": "GetAvailableLLMProvidersWithModels",
+      "phase": "selected-reload",
+      "method": "POST"
+    },
+    {
+      "operationName": "GetProviderSettings",
+      "phase": "selected-reload",
+      "method": "POST"
+    }
+  ],
+  "providerEvents": [
+    {
+      "method": "GET",
+      "path": "/compatible-mode/v1/models",
+      "authorizationPresent": true
+    }
+  ],
+  "responsive": {
+    "viewportWidth": 390,
+    "documentClientWidth": 390,
+    "documentScrollWidth": 390,
+    "bodyScrollWidth": 390,
+    "formRect": {
+      "left": 45,
+      "right": 345,
+      "width": 300
+    }
+  },
+  "consoleEvents": [
+    {
+      "type": "debug",
+      "text": "[vite] connecting...",
+      "expected": false
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connected.",
+      "expected": false
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connecting...",
+      "expected": false
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connected.",
+      "expected": false
+    },
+    {
+      "type": "log",
+      "text": "serverStore: Initializing server config",
+      "expected": false
+    },
+    {
+      "type": "log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization.",
+      "expected": false
+    },
+    {
+      "type": "info",
+      "text": "<Suspense> is an experimental feature and its API will likely change.",
+      "expected": false
+    },
+    {
+      "type": "log",
+      "text": "ServerLoading: Component mounted with status: running",
+      "expected": false
+    },
+    {
+      "type": "verbose",
+      "text": "[DOM] Password forms should have (optionally hidden) username fields for accessibility: (More info: https://goo.gl/9p2vKq) %o",
+      "expected": false
+    },
+    {
+      "type": "error",
+      "text": "Qwen configuration saved, but provider data refresh failed: ApolloError: forced provider settings refresh rejection\n    at new ApolloError (http://127.0.0.1:56464/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/errors/index.js?v=1d7f4453:59:28)\n    at http://127.0.0.1:56464/_nuxt/@f",
+      "expected": true
+    },
+    {
+      "type": "verbose",
+      "text": "[DOM] Password forms should have (optionally hidden) username fields for accessibility: (More info: https://goo.gl/9p2vKq) %o",
+      "expected": false
+    },
+    {
+      "type": "verbose",
+      "text": "[DOM] Password forms should have (optionally hidden) username fields for accessibility: (More info: https://goo.gl/9p2vKq) %o",
+      "expected": false
+    }
+  ],
+  "screenshots": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/probes/api-e2e/qwen-settings-recovery-api-rev-005-desktop.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/probes/api-e2e/qwen-settings-recovery-api-rev-005-narrow.png"
+  ]
+}

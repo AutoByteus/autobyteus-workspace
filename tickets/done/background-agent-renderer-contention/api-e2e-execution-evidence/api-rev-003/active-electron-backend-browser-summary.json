@@ -1,0 +1,27 @@
+{
+  "scenarioId": "WORKSPACE-BOOT-002",
+  "result": "PASS",
+  "timestamp": "2026-08-10T08:50:34.100Z",
+  "frontendUrl": "http://127.0.0.1:63933/workspace",
+  "backendUrl": "http://127.0.0.1:29695",
+  "backendOwner": "/Applications/AutoByteus.app",
+  "backendDataDir": "/Users/normy/.autobyteus/server-data",
+  "api": {
+    "workspaceCount": 26,
+    "historyGroupCount": 28,
+    "agentRunCount": 79,
+    "teamRunCount": 184,
+    "errors": []
+  },
+  "ui": {
+    "workspaceRowCount": 26,
+    "visibleWorkspaceRowCount": 26,
+    "visibleUniqueWorkspaceNameCount": 26,
+    "visibleNoHistory": false,
+    "selectedPaneText": "No agent or team run selected — Choose an agent or team, or open run history to continue."
+  },
+  "expected": "all existing workspaces visible immediately after a fresh renderer load against the active Electron backend",
+  "observed": "all 26 workspace rows rendered; stale No run history yet state absent",
+  "userRuntimeEffect": "read-only backend access; the user-owned Electron process and data were not stopped or modified",
+  "screenshot": "active-electron-backend-workspaces-pass.png"
+}

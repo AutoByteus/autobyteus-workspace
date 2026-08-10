@@ -5,12 +5,13 @@ import { AgentRunState } from '~/types/agent/AgentRunState';
 import type { AIMessage, Conversation, UserMessage } from '~/types/conversation';
 import type { AIResponseSegment, AIResponseTextSegment } from '~/types/segments';
 import { AgentStreamingService } from '../AgentStreamingService';
-import { dispatchGenericTeamMemberMessage } from '../teamStreamGenericMessageDispatcher';
+import { dispatchAgentStreamMessage } from '../agentStreamMessageProjector';
 import type { ServerMessage } from '../protocol';
 import { getStreamSegmentIdentity, setStreamSegmentIdentity } from '../handlers/segmentIdentity';
 import { buildRecentEventMonitorPresentation } from '~/services/eventMonitor/recentEventMonitorWindow';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { hydrateContextAttachment } from '~/utils/contextFiles/contextAttachmentModel';
+import { primeRecentEventMonitorBaseline } from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
 
 vi.mock('../transport', () => ({
   WebSocketClient: vi.fn().mockImplementation(() => ({
@@ -125,7 +126,9 @@ const standaloneDispatcher = () => {
 };
 
 const teamMemberDispatcher = (message: ServerMessage, context: AgentContext) =>
-  dispatchGenericTeamMemberMessage(message, context);
+  dispatchAgentStreamMessage(message, {
+    kind: 'team_member', context, teamRunId: 'team-1', memberRouteKey: 'worker', memberRunId: context.state.runId,
+  });
 
 describe('recent Event Monitor production dispatch coverage', () => {
   beforeEach(() => setActivePinia(createPinia()));
@@ -225,10 +228,11 @@ describe('recent Event Monitor production dispatch coverage', () => {
       dedupeKey: 'member-input:attachment-1',
       contextFilePaths: [unsupported],
     });
+    primeRecentEventMonitorBaseline(context);
     const attachmentMessage = () => context.conversation.messages[0] as UserMessage;
 
     const dispatchEcho = (paths: Array<{ path: string; type: string }>) => {
-      dispatchGenericTeamMemberMessage({
+      teamMemberDispatcher({
         type: 'MEMBER_INPUT_MESSAGE',
         payload: {
           content: 'inspect the attachment',
@@ -263,10 +267,11 @@ describe('recent Event Monitor production dispatch coverage', () => {
 
   it.each([
     ['standalone', standaloneDispatcher()],
-    ['team member', dispatchGenericTeamMemberMessage],
+    ['team member', teamMemberDispatcher],
   ])('does not revise the %s MP-CR-001 transient append production path', (_label, dispatch) => {
     const context = buildContext(`mp-cr-001-${_label}`);
     const originalMessage = fillWithMutablePresentation(context);
+    primeRecentEventMonitorBaseline(context);
 
     dispatch({
       type: 'SYSTEM_TASK_NOTIFICATION',
@@ -280,7 +285,7 @@ describe('recent Event Monitor production dispatch coverage', () => {
 
   it.each([
     ['standalone', standaloneDispatcher()],
-    ['team member', dispatchGenericTeamMemberMessage],
+    ['team member', teamMemberDispatcher],
   ])('keeps %s MP-AR-003 logs/results revision-neutral but revises a real tool summary', (_label, dispatch) => {
     const context = buildContext(`mp-ar-003-${_label}`);
     const tool: any = {
@@ -290,6 +295,7 @@ describe('recent Event Monitor production dispatch coverage', () => {
     context.conversation.messages.push({
       type: 'ai', text: '', timestamp: new Date(0), isComplete: false, segments: [tool],
     });
+    primeRecentEventMonitorBaseline(context);
 
     dispatch({
       type: 'TOOL_LOG',

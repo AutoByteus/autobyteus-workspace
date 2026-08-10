@@ -12,8 +12,18 @@ import {
   serializeTeamExecutionAddress,
   type TeamExecutionAddress,
 } from '~/types/agent/TeamExecutionAddress';
-import { applyTaskDelegationProjectionDetails, type TaskDelegationProjectionDetails } from './teamTaskExecutionProjection';
+import {
+  applyTaskDelegationProjectionDetails,
+  captureTaskExecutionNavigationSnapshot,
+  deriveTaskExecutionProjectionMutation,
+  type TaskDelegationProjectionDetails,
+  type TaskExecutionProjectionMutation,
+} from './teamTaskExecutionProjection';
 import { findTeamExecutionNode, materializeTaskAgentProjectionNode, removeTaskExecutionProjection } from './teamTaskExecutionTree';
+import {
+  primeRecentEventMonitorBaseline,
+  resetRecentEventMonitorBaseline,
+} from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
 
 export interface TaskAgentStreamIdentity {
   executionAddress: TeamExecutionAddress;
@@ -44,7 +54,7 @@ const logicalContext = (team: AgentTeamContext, address: TeamExecutionAddress): 
     try {
       const candidate = JSON.parse(key) as TeamExecutionAddress;
       if (!candidate.taskAgentRunId && candidate.memberAddress === address.memberAddress) return context;
-    } catch { /* current map keys are exact serialized addresses */ }
+    } catch { /* exact serialized execution-address keys only */ }
   }
   return null;
 };
@@ -72,39 +82,53 @@ export const ensureTaskAgentContext = (team: AgentTeamContext, identity: TaskAge
   context.isSubscribed = true;
   identityByContext.set(context, cloneIdentity(identity));
   team.agentExecutionsByKey = new Map(team.agentExecutionsByKey).set(key, context);
+  primeRecentEventMonitorBaseline(context);
   return context;
 };
 export const ensureTaskAgentProjection = (
   team: AgentTeamContext,
   identity: TaskAgentStreamIdentity,
   details: TaskDelegationProjectionDetails | null = null,
-): AgentTeamMemberNode | null => {
+): { node: AgentTeamMemberNode; context: AgentContext; mutation: TaskExecutionProjectionMutation } | null => {
+  const before = captureTaskExecutionNavigationSnapshot(team);
   const node = materializeTaskAgentProjectionNode(team, identity.executionAddress);
   if (!node) return null;
-  ensureTaskAgentContext(team, identity);
+  const context = ensureTaskAgentContext(team, identity);
   applyTaskDelegationProjectionDetails(node, details);
-  return node;
+  return {
+    node,
+    context,
+    mutation: deriveTaskExecutionProjectionMutation(before, team, 'ensure task-agent execution'),
+  };
 };
 export const applyTaskAgentDelegationDetails = (
   team: AgentTeamContext,
   taskAgentRunId: string,
   details: TaskDelegationProjectionDetails | null,
-): AgentTeamMemberNode | null => {
+): { node: AgentTeamMemberNode; mutation: TaskExecutionProjectionMutation } | null => {
+  const before = captureTaskExecutionNavigationSnapshot(team);
   const context = getTaskAgentContextByRunId(team, taskAgentRunId);
   const identity = context ? getTaskAgentIdentityFromContext(context) : null;
   const node = identity ? findTeamExecutionNode(team, identity.executionAddress) : null;
   if (!node || node.kind !== 'agent') return null;
-  applyTaskDelegationProjectionDetails(node, details); return node;
+  applyTaskDelegationProjectionDetails(node, details);
+  return { node, mutation: deriveTaskExecutionProjectionMutation(before, team, 'update task-agent execution') };
 };
-export const restoreTaskAgentContextProjections = (_team: AgentTeamContext, _nodes: readonly AgentTeamMemberNode[] = []): void => undefined;
 export const getTaskAgentContextByRunId = (team: AgentTeamContext, agentRunId: string): AgentContext | null => {
   for (const context of team.agentExecutionsByKey.values()) {
     if (getTaskAgentIdentityFromContext(context)?.taskAgentRunId === agentRunId) return context;
   }
   return null;
 };
-export const removeTaskAgentContext = (team: AgentTeamContext, identity: TaskAgentStreamIdentity): void => {
+export const removeTaskAgentContext = (
+  team: AgentTeamContext,
+  identity: TaskAgentStreamIdentity,
+): TaskExecutionProjectionMutation => {
+  const before = captureTaskExecutionNavigationSnapshot(team);
+  const context = team.agentExecutionsByKey.get(serializeTeamExecutionAddress(identity.executionAddress));
+  if (context) resetRecentEventMonitorBaseline(context);
   removeTaskExecutionProjection(team, identity.executionAddress);
+  return deriveTaskExecutionProjectionMutation(before, team, 'remove task-agent execution');
 };
 export const shouldRemoveTaskAgentAfterMessage = (message: ServerMessage, identity: TaskAgentStreamIdentity | null): boolean =>
   Boolean(identity && message.type === 'AGENT_STATUS' && message.payload.status === AgentStatus.Offline);

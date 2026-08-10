@@ -1,0 +1,34 @@
+{
+  "scenarioId": "WORKSPACE-BOOT-001",
+  "result": "FAIL",
+  "frontendUrl": "http://127.0.0.1:63902/workspace",
+  "backendUrl": "http://127.0.0.1:63911",
+  "dataSource": "owned SQLite snapshot and minimal history/workspace catalog copy from /Users/normy/.autobyteus/server-data",
+  "secretImport": {
+    "command": "pnpm secrets:import -- --source /Users/normy/.autobyteus/server-data/.env --database-url file:/tmp/autobyteus-api-rev-002-home-20260810T0956/.autobyteus/server-data/db/production.db --overwrite",
+    "configured": 0,
+    "replaced": 9,
+    "result": "PASS"
+  },
+  "agentPackage": {
+    "path": "/Users/normy/autobyteus_org/autobyteus-agents",
+    "state": "already imported",
+    "sharedAgentCount": 7,
+    "teamLocalAgentCount": 54,
+    "agentTeamCount": 13,
+    "classroomTeamPresent": true
+  },
+  "api": {
+    "workspaceCount": 26,
+    "historyGroupCount": 18,
+    "errors": []
+  },
+  "ui": {
+    "visibleWorkspaceNames": [],
+    "visibleNoHistory": true,
+    "bodyText": "Workspaces\\nNo run history yet."
+  },
+  "expected": "26 existing workspaces visible immediately after fresh renderer load",
+  "observed": "zero workspace rows; No run history yet",
+  "screenshot": "isolated-real-data-no-workspaces.png"
+}

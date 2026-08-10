@@ -4,6 +4,17 @@ import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { defineComponent, h } from 'vue'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import {
+  RELOAD_LLM_MODELS,
+  SAVE_QWEN_CONFIGURATION,
+} from '~/graphql/mutations/llm_provider_mutations'
+import {
+  GET_AVAILABLE_LLM_PROVIDERS_WITH_MODELS,
+  GET_GEMINI_SETUP_CONFIG,
+  GET_PROVIDER_SETTINGS,
+  GET_QWEN_SETUP_STATUS,
+} from '~/graphql/queries/llm_provider_queries'
+import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
 import { getApolloClient } from '~/utils/apolloClient'
 import { useProviderApiKeySectionRuntime } from '../useProviderApiKeySectionRuntime'
 
@@ -18,7 +29,7 @@ vi.mock('~/composables/useLocalization', () => ({
 const provider = (id: string, configured: boolean) => ({
   __typename: 'LlmProviderObject',
   id,
-  name: id === 'OPENAI' ? 'OpenAI' : 'Anthropic',
+  name: id === 'OPENAI' ? 'OpenAI' : id === 'ANTHROPIC' ? 'Anthropic' : id,
   providerType: id,
   isCustom: false,
   baseUrl: null,
@@ -52,6 +63,15 @@ describe('provider-centric Settings Apollo contract', () => {
               vertexProject: null,
             },
           }
+        : operation.operationName === 'GetQwenSetupStatus'
+          ? {
+              qwenSetupStatus: {
+                __typename: 'QwenSetupStatusObject',
+                effectiveBaseUrl: 'https://default.example/v1',
+                endpointSource: 'DEFAULT',
+                apiKeyConfigured: false,
+              },
+            }
         : {
             providerSettings: [
               {
@@ -103,5 +123,149 @@ describe('provider-centric Settings Apollo contract', () => {
       apiKeyConfigured: true,
     }))
     expect(JSON.stringify(extracted)).not.toContain('credentialStatus')
+  })
+
+  it('keeps committed Qwen status authoritative when the later view refresh rejects', async () => {
+    const status = {
+      effectiveBaseUrl: 'https://regional.example/v1',
+      endpointSource: 'CONFIGURED' as const,
+      apiKeyConfigured: true,
+    }
+    const refreshError = new Error('provider settings network failure')
+    const client = {
+      mutate: vi.fn().mockResolvedValue({ data: { saveQwenConfiguration: status } }),
+      query: vi.fn()
+        .mockRejectedValueOnce(refreshError)
+        .mockResolvedValueOnce({
+          data: {
+            availableLlmProvidersWithModels: [],
+            availableAudioProvidersWithModels: [],
+            availableImageProvidersWithModels: [],
+            availableVideoProvidersWithModels: [],
+          },
+        }),
+    }
+    vi.mocked(getApolloClient).mockReturnValue(client as any)
+    const pinia = createPinia()
+    setActivePinia(pinia)
+    const store = useLLMProviderConfigStore()
+
+    await expect(store.saveQwenConfiguration({
+      baseUrl: status.effectiveBaseUrl,
+      apiKey: 'synthetic-key',
+    })).resolves.toEqual(status)
+    expect(store.qwenSetup).toEqual(status)
+    expect(client.query).not.toHaveBeenCalled()
+
+    await expect(store.refreshProviderDataAfterQwenSave()).rejects.toBe(refreshError)
+    expect(store.qwenSetup).toEqual(status)
+  })
+
+  it('recovers provider settings and catalog through Reload Models after post-save refresh rejection', async () => {
+    const initialGroup = {
+      __typename: 'ProviderSettingsGroup',
+      provider: provider('QWEN', false),
+      llmModels: [model('qwen3.8-max', 'QWEN')],
+      audioModels: [], imageModels: [], videoModels: [],
+    }
+    const recoveredGroup = {
+      ...initialGroup,
+      provider: provider('QWEN', true),
+    }
+    const status = {
+      __typename: 'QwenSetupStatusObject',
+      effectiveBaseUrl: 'https://regional.example/v1',
+      endpointSource: 'CONFIGURED' as const,
+      apiKeyConfigured: true,
+    }
+    const catalog = {
+      availableLlmProvidersWithModels: [{
+        provider: {
+          id: 'QWEN', name: 'Qwen', providerType: 'QWEN', isCustom: false,
+          baseUrl: null, status: 'NOT_APPLICABLE', statusMessage: null,
+        },
+        models: [{
+          modelIdentifier: 'qwen3.8-max', name: 'qwen3.8-max', value: 'qwen3.8-max',
+          canonicalName: 'qwen3.8-max', providerId: 'QWEN', providerName: 'Qwen',
+          providerType: 'QWEN', runtime: 'autobyteus',
+        }],
+      }],
+      availableAudioProvidersWithModels: [],
+      availableImageProvidersWithModels: [],
+      availableVideoProvidersWithModels: [],
+    }
+    let providerSettingsRequests = 0
+    let catalogRequests = 0
+    const query = vi.fn().mockImplementation(({ query: document }) => {
+      if (document === GET_PROVIDER_SETTINGS) {
+        providerSettingsRequests += 1
+        if (providerSettingsRequests === 2) {
+          return Promise.reject(new Error('provider settings network failure'))
+        }
+        return Promise.resolve({
+          data: { providerSettings: providerSettingsRequests === 1 ? [initialGroup] : [recoveredGroup] },
+        })
+      }
+      if (document === GET_AVAILABLE_LLM_PROVIDERS_WITH_MODELS) {
+        catalogRequests += 1
+        return Promise.resolve({ data: catalog })
+      }
+      if (document === GET_GEMINI_SETUP_CONFIG) {
+        return Promise.resolve({
+          data: {
+            getGeminiSetupConfig: {
+              activeMode: null, aiStudioConfigured: false,
+              vertexExpressConfigured: false, vertexProject: null,
+            },
+          },
+        })
+      }
+      if (document === GET_QWEN_SETUP_STATUS) {
+        return Promise.resolve({ data: { qwenSetupStatus: status } })
+      }
+      throw new Error('Unexpected query')
+    })
+    const mutate = vi.fn().mockImplementation(({ mutation }) => {
+      if (mutation === SAVE_QWEN_CONFIGURATION) {
+        return Promise.resolve({ data: { saveQwenConfiguration: status } })
+      }
+      if (mutation === RELOAD_LLM_MODELS) {
+        return Promise.resolve({ data: { reloadLlmModels: 'LLM models reloaded successfully' } })
+      }
+      throw new Error('Unexpected mutation')
+    })
+    vi.mocked(getApolloClient).mockReturnValue({ query, mutate } as any)
+    const pinia = createPinia()
+    setActivePinia(pinia)
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+    const wrapper = mount(defineComponent({
+      setup() {
+        const runtime = useProviderApiKeySectionRuntime()
+        return { runtime }
+      },
+      render: () => h('div'),
+    }), { global: { plugins: [pinia] } })
+    const runtime = (wrapper.vm as any).runtime
+    const store = useLLMProviderConfigStore()
+
+    await runtime.initialize()
+    await expect(runtime.saveQwenConfiguration({
+      baseUrl: status.effectiveBaseUrl,
+      apiKey: 'synthetic-key',
+    })).resolves.toBe(true)
+    expect(store.providerSettingsGroups).toEqual([])
+    expect(store.hasFetchedProviderSettings).toBe(false)
+
+    await runtime.reloadAllModels()
+
+    expect(providerSettingsRequests).toBe(3)
+    expect(catalogRequests).toBe(2)
+    expect(store.providerSettingsGroups).toEqual([recoveredGroup])
+    expect(store.providersWithModels[0]?.models[0]?.modelIdentifier).toBe('qwen3.8-max')
+    expect(runtime.allProvidersWithModels.value.find(({ id }: { id: string }) => id === 'QWEN'))
+      .toEqual(expect.objectContaining({ apiKeyConfigured: true }))
+    expect(runtime.selectedProviderLlmModels.value[0]?.modelIdentifier).toBe('qwen3.8-max')
+    expect(runtime.notification.value.message).toContain('models_reloaded_successfully')
+    consoleError.mockRestore()
   })
 })

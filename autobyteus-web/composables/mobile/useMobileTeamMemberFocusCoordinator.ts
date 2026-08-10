@@ -1,6 +1,7 @@
 import { computed, ref, type Ref } from 'vue'
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore'
+import { useRunHistoryStore } from '~/stores/runHistoryStore'
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
 import { useMobileWorkStore } from '~/stores/mobileWorkStore'
 import type { AgentTeamMemberNode, TeamMemberNode } from '~/types/agent/AgentTeamContext'
@@ -9,6 +10,7 @@ import {
   buildTeamMemberTreeFromDefinition,
   flattenLeafAgentMemberNodes,
 } from '~/utils/teamDefinitionMembers'
+import { createTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress'
 
 export interface MobileTeamMemberFocusRow {
   memberAddress: string
@@ -32,6 +34,7 @@ export function useMobileTeamMemberFocusCoordinator(contextRef: Ref<MobileWorkCo
   const agentDefinitionStore = useAgentDefinitionStore()
   const teamDefinitionStore = useAgentTeamDefinitionStore()
   const teamContextsStore = useAgentTeamContextsStore()
+  const runHistoryStore = useRunHistoryStore()
   const mobileWorkStore = useMobileWorkStore()
   const isUpdating = ref(false)
   const error = ref<string | null>(null)
@@ -98,7 +101,11 @@ export function useMobileTeamMemberFocusCoordinator(contextRef: Ref<MobileWorkCo
 
     isUpdating.value = true
     try {
-      await teamContextsStore.focusMemberAndEnsureHydrated(context.teamRunId, normalizedMemberAddress)
+      const requestedAddress = createTeamExecutionAddress({
+        rootTeamRunId: context.teamRunId,
+        memberAddress: normalizedMemberAddress,
+      })
+      await runHistoryStore.focusTeamMemberAndEnsureHydrated(context.teamRunId, requestedAddress)
       const focused = teamContextsStore.getTeamContextById(context.teamRunId)?.focusedExecutionAddress
       if (!focused) throw new Error('Focused Team execution is unavailable.')
       mobileWorkStore.updateFocusedTeamMember(context.teamRunId, focused)

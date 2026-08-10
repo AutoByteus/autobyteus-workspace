@@ -24,6 +24,7 @@ describe('teamTaskExecutionEventRouter current task-Agent projections', () => {
       outcome: 'handled',
       taskAgentIdentity: { taskAgentRunId: 'task-agent-run-1', executionAddress: address },
       cleanupExecutionAddress: null,
+      mutation: expect.objectContaining({ kind: 'TOPOLOGY' }),
     });
     expect(node).toMatchObject({
       kind: 'agent',
@@ -98,7 +99,76 @@ describe('teamTaskExecutionEventRouter current task-Agent projections', () => {
     expect(handleTaskExecutionProjectionMessage(team, malformed)).toEqual({
       outcome: 'drop',
       reason: 'Team event contains an invalid execution_address.',
+      mutation: { kind: 'NONE' },
     });
     expect(deriveDelegatedTaskEntries(team)).toEqual([]);
+  });
+
+  it.each(['AGENT_STATUS', 'SEGMENT_CONTENT'])(
+    'creates the exact task-Agent projection before routing a first ordinary %s message',
+    (type) => {
+      const team = buildCurrentTaskExecutionTeam();
+      const address = taskAgentAddress();
+      const result = handleTaskExecutionProjectionMessage(team, {
+        type,
+        payload: {
+          execution_address: address,
+          agent_id: address.taskAgentRunId,
+          ...(type === 'AGENT_STATUS'
+            ? { status: 'running' }
+            : { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text', delta: 'Hello' }),
+        },
+      } as any);
+
+      expect(result).toMatchObject({
+        outcome: 'memberContext',
+        executionAddress: address,
+        mutation: { kind: 'TOPOLOGY' },
+      });
+      expect(findTeamExecutionNode(team, address)).toMatchObject({
+        isTaskExecution: true,
+        agentRunId: address.taskAgentRunId,
+      });
+      expect(team.agentExecutionsByKey.has(serializeTeamExecutionAddress(address))).toBe(true);
+    },
+  );
+
+  it('returns NONE for an exact repeated ensure and TOPOLOGY when the same identity repairs a missing node', () => {
+    const team = buildCurrentTaskExecutionTeam();
+    const address = taskAgentAddress();
+    const message = {
+      type: 'AGENT_STATUS',
+      payload: { execution_address: address, agent_id: address.taskAgentRunId, status: 'running' },
+    } as any;
+
+    expect(handleTaskExecutionProjectionMessage(team, message).mutation.kind).toBe('TOPOLOGY');
+    expect(handleTaskExecutionProjectionMessage(team, message).mutation).toEqual({ kind: 'NONE' });
+
+    team.rootTeam.children = team.rootTeam.children.filter((node) =>
+      serializeTeamExecutionAddress(node.executionAddress ?? {
+        rootTeamRunId: team.teamRunId,
+        taskTeamRunIds: [],
+        memberAddress: node.address,
+        taskAgentRunId: null,
+      }) !== serializeTeamExecutionAddress(address));
+
+    expect(handleTaskExecutionProjectionMessage(team, message).mutation.kind).toBe('TOPOLOGY');
+    expect(findTeamExecutionNode(team, address)).not.toBeNull();
+  });
+
+  it('keeps right-pane-only delegation detail updates out of navigation mutations', () => {
+    const team = buildCurrentTaskExecutionTeam();
+    const address = taskAgentAddress();
+    expect(handleTaskExecutionProjectionMessage(
+      team,
+      taskAgentEvent({ address, description: 'First detail' }) as any,
+    ).mutation.kind).toBe('TOPOLOGY');
+
+    const detailOnly = handleTaskExecutionProjectionMessage(
+      team,
+      taskAgentEvent({ address, description: 'Updated detail' }) as any,
+    );
+    expect(detailOnly.mutation).toEqual({ kind: 'NONE' });
+    expect(findTeamExecutionNode(team, address)).toMatchObject({ taskDescription: 'Updated detail' });
   });
 });

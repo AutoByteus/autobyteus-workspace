@@ -159,6 +159,7 @@ const applicationMessages = {
   'applications.components.applications.ApplicationLaunchSetupPanel.saveOrResetChangesBeforeEntry': 'Save or reset launch setup changes before entering the application.',
   'applications.components.applications.ApplicationLaunchSetupPanel.requiredResourceBeforeEntry': 'Select and save a execution resource for {{slot}} before entering the application.',
   'applications.components.applications.ApplicationLaunchSetupPanel.requiredModelBeforeEntry': 'Select and save a default model for {{slot}} before entering the application.',
+  'applications.components.applications.ApplicationLaunchSetupPanel.unavailableModelBeforeEntry': 'The saved model “{{model}}” is unavailable. Recreate its provider with the same name or select another model before entering the application.',
   'applications.components.applications.ApplicationLaunchSetupPanel.noAdditionalDefaults': 'This slot only saves the selected execution resource. No extra host-managed launch defaults are declared.',
   'applications.components.applications.ApplicationLaunchSetupPanel.save': 'Save setup',
   'applications.components.applications.ApplicationLaunchSetupPanel.saving': 'Saving setup…',

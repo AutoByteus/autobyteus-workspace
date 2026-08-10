@@ -49,8 +49,8 @@ export const restoreTaskExecutionProjections = (
       continue;
     }
     if (record.receiverTargetKind === 'agent_team' && !address.taskAgentRunId && address.taskTeamRunIds.length) {
-      const node = ensureTaskTeamExecutionProjection(team, { executionAddress: address });
-      if (node) applyTaskDelegationProjectionDetails(node, details);
+      const ensured = ensureTaskTeamExecutionProjection(team, { executionAddress: address });
+      if (ensured) applyTaskDelegationProjectionDetails(ensured.node, details);
     }
   }
 };

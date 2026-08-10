@@ -19,6 +19,7 @@ import { SERVER_ROUTE_PARAM_MAX_LENGTH } from "./api/fastify-runtime-config.js";
 import { runMigrations } from "./startup/migrations.js";
 import { getAppDataMigrationRunner } from "./app-data-migrations/app-data-migration-runner.js";
 import { TEAM_CANONICAL_IDENTITY_MIGRATION_ID } from "./app-data-migrations/migrations/team-canonical-identity-migration.js";
+import { CUSTOM_PROVIDER_READABLE_ID_APP_DATA_MIGRATION_ID } from "./app-data-migrations/migrations/custom-provider-readable-id-app-data-migration.js";
 import { scheduleBackgroundTasks } from "./startup/background-runner.js";
 import { bootstrapBuiltInAgents } from "./built-in-agents/built-in-agent-bootstrapper.js";
 import { registerRestRoutes } from "./api/rest/index.js";
@@ -203,6 +204,26 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
           failedCount: canonicalStatus?.summary?.failedCount ?? null,
           errorMessage: canonicalStatus?.errorMessage ?? null,
           logPath: canonicalStatus?.logPath ?? null,
+        })}`,
+      );
+      return;
+    }
+    const readableProviderStatus = statuses.find(
+      (status) => status.migrationId === CUSTOM_PROVIDER_READABLE_ID_APP_DATA_MIGRATION_ID,
+    );
+    if (
+      readableProviderStatus?.status !== "SUCCEEDED"
+      && readableProviderStatus?.status !== "SUCCEEDED_WITH_WARNINGS"
+    ) {
+      logger.error(
+        `Readable provider identity migration did not complete successfully; startup halted: ${JSON.stringify({
+          migrationId: CUSTOM_PROVIDER_READABLE_ID_APP_DATA_MIGRATION_ID,
+          displayName: readableProviderStatus?.displayName ?? null,
+          status: readableProviderStatus?.status ?? "MISSING",
+          attempts: readableProviderStatus?.attempts ?? null,
+          failedCount: readableProviderStatus?.summary?.failedCount ?? null,
+          errorMessage: readableProviderStatus?.errorMessage ?? null,
+          logPath: readableProviderStatus?.logPath ?? null,
         })}`,
       );
       return;

@@ -24,6 +24,11 @@ import {
   type TeamExecutionAddress,
 } from '~/types/agent/TeamExecutionAddress';
 import { findTeamExecutionNode } from '~/services/agentStreaming/teamTaskExecutionTree';
+import {
+  primeRecentEventMonitorBaseline,
+  resetRecentEventMonitorBaseline,
+} from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
+import { useRunHistoryStore } from '~/stores/runHistoryStore';
 
 interface AgentTeamContextsState { teams: Map<string, AgentTeamContext> }
 const executionForMember = (teamRunId: string, memberAddress: string): TeamExecutionAddress =>
@@ -98,7 +103,9 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
           id: serializeTeamExecutionAddress(executionAddress), messages: [], createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(), agentDefinitionId: member.agentDefinitionId, agentName: name,
         };
-        agentExecutionsByKey.set(conversation.id, new AgentContext(config, new AgentRunState(conversation.id, conversation)));
+        const memberContext = new AgentContext(config, new AgentRunState(conversation.id, conversation));
+        primeRecentEventMonitorBaseline(memberContext);
+        agentExecutionsByKey.set(conversation.id, memberContext);
       }
       const focusedExecutionAddress = executionForMember(teamRunId, resolveInitialFocusedMemberAddress(rootTeam));
       const context: AgentTeamContext = {
@@ -107,6 +114,7 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
         historicalHydration: null, focusedExecutionAddress, isActive: false, isSubscribed: false,
       };
       this.teams.set(teamRunId, context);
+      useRunHistoryStore().refreshRunNavigationTopology('team-draft-create');
       options.selectionMode === 'mobile'
         ? selection.selectRunWithoutShellNavigation(teamRunId, 'team')
         : selection.selectRun(teamRunId, 'team');
@@ -118,6 +126,7 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
     },
     promoteTemporaryTeamRunId(temporaryId: string, permanentId: string) {
       const context = this.teams.get(temporaryId); if (!context) return;
+      context.agentExecutionsByKey.forEach(resetRecentEventMonitorBaseline);
       const nextExecutions = new Map<string, AgentContext>();
       for (const [key, agent] of context.agentExecutionsByKey) {
         const previous = JSON.parse(key) as TeamExecutionAddress;
@@ -129,32 +138,37 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
       context.rootTeam.teamRunId = permanentId;
       context.agentExecutionsByKey = nextExecutions;
       context.focusedExecutionAddress = createTeamExecutionAddress({ ...context.focusedExecutionAddress, rootTeamRunId: permanentId });
+      context.agentExecutionsByKey.forEach(primeRecentEventMonitorBaseline);
       this.teams.delete(temporaryId); this.teams.set(permanentId, context);
+      useRunHistoryStore().refreshRunNavigationTopology('team-identity-promotion');
       const selection = useAgentSelectionStore();
       if (selection.selectedType === 'team' && selection.selectedRunId === temporaryId) selection.selectRunWithoutShellNavigation(permanentId, 'team');
     },
-    addTeamContext(context: AgentTeamContext) { this.teams.set(context.teamRunId, context); },
+    addTeamContext(context: AgentTeamContext) {
+      this.teams.set(context.teamRunId, context);
+      useRunHistoryStore().refreshRunNavigationTopology('team-context-add');
+    },
     removeTeamContext(teamRunId: string) {
       const context = this.teams.get(teamRunId); if (!context) return;
-      context.unsubscribe?.(); this.teams.delete(teamRunId);
+      context.unsubscribe?.();
+      context.agentExecutionsByKey.forEach(resetRecentEventMonitorBaseline);
+      this.teams.delete(teamRunId);
+      useRunHistoryStore().refreshRunNavigationTopology('team-context-remove');
       const selection = useAgentSelectionStore();
       if (selection.selectedType === 'team' && selection.selectedRunId === teamRunId) {
         const next = this.teams.keys().next().value as string | undefined;
         next ? selection.selectRun(next, 'team') : selection.clearSelection();
       }
     },
-    setFocusedExecutionAddress(address: TeamExecutionAddress) {
-      const team = this.activeTeamContext;
-      if (!team || address.rootTeamRunId !== team.teamRunId || !findTeamExecutionNode(team, address)) return;
-      team.focusedExecutionAddress = createTeamExecutionAddress(address);
-    },
-    async focusMemberAndEnsureHydrated(teamRunId: string, memberAddress: string): Promise<void> {
-      const team = this.teams.get(teamRunId); if (!team) return;
-      const node = team.memberNodesByAddress.get(memberAddress); if (!node) return;
-      const address = executionForMember(teamRunId, memberAddress);
+    async focusMemberAndEnsureHydrated(teamRunId: string, executionAddress: TeamExecutionAddress): Promise<void> {
+      const team = this.teams.get(teamRunId);
+      if (!team || executionAddress.rootTeamRunId !== teamRunId) return;
+      const address = createTeamExecutionAddress(executionAddress);
+      const node = findTeamExecutionNode(team, address);
+      if (!node) return;
       team.focusedExecutionAddress = address;
       if (node.kind === 'agent' && !address.taskAgentRunId && address.taskTeamRunIds.length === 0) {
-        await ensureHistoricalTeamMemberHydrated({ teamContext: team, memberAddress });
+        await ensureHistoricalTeamMemberHydrated({ teamContext: team, memberAddress: address.memberAddress });
       }
     },
   },

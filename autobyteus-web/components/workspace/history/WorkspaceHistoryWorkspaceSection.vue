@@ -158,7 +158,7 @@
                 <Icon icon="heroicons:trash-20-solid" class="h-3.5 w-3.5" />
               </button>
               <span class="text-xs text-gray-400">
-                {{ state.formatRelativeTime(run.lastActivityAt) }}
+                {{ formatRelativeTime(run.lastActivityAt) }}
               </span>
             </div>
           </button>
@@ -284,7 +284,7 @@
                     <Icon icon="heroicons:trash-20-solid" class="h-3.5 w-3.5" />
                   </button>
                   <span class="text-xs text-gray-400">
-                    {{ state.formatRelativeTime(team.lastActivityAt) }}
+                    {{ formatRelativeTime(team.lastActivityAt) }}
                   </span>
                 </div>
               </div>
@@ -292,10 +292,10 @@
               <div v-if="state.isTeamExpanded(team.teamRunId)" class="ml-3 space-y-0.5">
                 <template
                   v-for="displayRow in visibleTeamExecutionRows(team)"
-                  :key="`${displayRow.row.rowKind}:${JSON.stringify(displayRow.row.executionAddress)}`"
+                  :key="`${displayRow.row.kind}:${serializeTeamExecutionAddress(displayRow.row.executionAddress)}`"
                 >
                   <div
-                    v-if="displayRow.row.rowKind === 'stable_member'"
+                    v-if="displayRow.row.kind === 'stable_member'"
                     class="flex w-full cursor-pointer items-center rounded-md text-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
                     :class="sameTeamExecutionAddress(displayRow.row.executionAddress, focusedTeamExecutionAddress(team)) ? 'bg-indigo-50 text-indigo-900' : 'text-gray-600 hover:bg-gray-50'"
                     :style="teamExecutionRowStyle(displayRow.row)"
@@ -313,7 +313,7 @@
                       class="ml-2 mr-1 inline-flex h-3.5 w-3.5 flex-shrink-0 items-center justify-center rounded text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
                       data-test="workspace-team-member-disclosure"
                       :data-team-run-id="team.teamRunId"
-                      :data-member-route-key="displayRow.row.memberAddress"
+                      :data-member-address="displayRow.row.memberAddress"
                       :aria-expanded="state.isTeamMemberExpanded(workspaceNode.workspaceId, team.teamRunId, displayRow.row.memberAddress)"
                       @click.stop="state.toggleTeamMember(workspaceNode.workspaceId, team.teamRunId, displayRow.row.memberAddress)"
                       @keydown.enter.stop
@@ -380,7 +380,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { Icon } from '@iconify/vue';
 import StatusDot from '~/components/workspace/common/StatusDot.vue';
 import TeamActivityDot from '~/components/workspace/common/TeamActivityDot.vue';
@@ -399,15 +399,10 @@ import {
   formatTeamRunLabel,
 } from '~/components/workspace/history/workspaceHistoryRunLabels';
 import type {
-  TeamMemberTreeRow,
+  RunHistoryTeamExecutionRow,
   TeamRunHistoryDefinitionGroup,
   TeamTreeNode,
 } from '~/stores/runHistoryTypes';
-import {
-  buildWorkspaceTeamExecutionDisplayRows,
-  type WorkspaceStableMemberDisplayRow,
-  type WorkspaceTeamExecutionDisplayRow,
-} from '~/utils/workspaceTeamExecutionDisplayRows';
 import type { RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
 import { sameTeamExecutionAddress, serializeTeamExecutionAddress, type TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
@@ -427,66 +422,47 @@ const groupedTeamDefinitions = computed<WorkspaceHistoryTeamDefinitionDisplayGro
   ),
 );
 
-interface VisibleTeamExecutionRow { row: WorkspaceTeamExecutionDisplayRow; hasChildren: boolean }
+const relativeTimeTick = ref(0);
+let relativeTimeTimer: ReturnType<typeof setInterval> | null = null;
+const formatRelativeTime = (isoTime: string): string => {
+  void relativeTimeTick.value;
+  return props.state.formatRelativeTime(isoTime);
+};
+onMounted(() => {
+  relativeTimeTimer = setInterval(() => { relativeTimeTick.value += 1; }, 60_000);
+});
+onBeforeUnmount(() => {
+  if (relativeTimeTimer !== null) clearInterval(relativeTimeTimer);
+});
 
-const rootTeamMembers = (team: TeamTreeNode): readonly TeamMemberTreeRow[] => team.rootTeam.children.length > 0 ? team.rootTeam.children : team.members;
-
-const teamExecutionRowsByTeamRunId = computed(() => new Map(
-  props.workspaceTeams.map((team) => [
-    team.teamRunId,
-    buildWorkspaceTeamExecutionDisplayRows({
-      team,
-      teamContext: props.state.getLiveTeamContext(team.teamRunId),
-    }),
-  ]),
-));
-
-const stableRowHasChildren = (
-  row: WorkspaceTeamExecutionDisplayRow,
-): row is WorkspaceStableMemberDisplayRow => (
-  row.rowKind === 'stable_member'
-  && row.row.kind === 'agent_team'
-  && row.row.children.length > 0
-);
-
-const transientRowHasChildren = (
-  row: WorkspaceTeamExecutionDisplayRow,
-  index: number,
-  rows: readonly WorkspaceTeamExecutionDisplayRow[],
-): boolean => row.rowKind === 'transient_execution'
-  && row.transientKind === 'task_team'
-  && (rows[index + 1]?.depth ?? -1) > row.depth;
-
-const teamDisplayRowHasChildren = (
-  row: WorkspaceTeamExecutionDisplayRow,
-  index: number,
-  rows: readonly WorkspaceTeamExecutionDisplayRow[],
-): boolean => stableRowHasChildren(row) || transientRowHasChildren(row, index, rows);
-
+interface VisibleTeamExecutionRow {
+  row: RunHistoryTeamExecutionRow;
+  hasChildren: boolean;
+}
 const isTeamDisplayRowExpanded = (
   team: TeamTreeNode,
-  row: WorkspaceTeamExecutionDisplayRow,
+  row: RunHistoryTeamExecutionRow,
 ): boolean => props.state.isTeamMemberExpanded(
   props.workspaceNode.workspaceId,
   team.teamRunId,
-  row.rowKind === 'transient_execution' ? serializeTeamExecutionAddress(row.executionAddress) : row.memberAddress,
+  row.kind === 'transient_execution' ? serializeTeamExecutionAddress(row.executionAddress) : row.memberAddress,
 );
 
 const toggleTeamDisplayRow = (
   team: TeamTreeNode,
-  row: WorkspaceTeamExecutionDisplayRow,
+  row: RunHistoryTeamExecutionRow,
 ): void => props.state.toggleTeamMember(
   props.workspaceNode.workspaceId,
   team.teamRunId,
-  row.rowKind === 'transient_execution' ? serializeTeamExecutionAddress(row.executionAddress) : row.memberAddress,
+  row.kind === 'transient_execution' ? serializeTeamExecutionAddress(row.executionAddress) : row.memberAddress,
 );
 
 const visibleTeamExecutionRows = (team: TeamTreeNode): VisibleTeamExecutionRow[] => {
   const visibleRows: VisibleTeamExecutionRow[] = [];
-  const rows = teamExecutionRowsByTeamRunId.value.get(team.teamRunId) ?? [];
+  const rows = team.executionRows;
   let collapsedDepth: number | null = null;
 
-  for (const [index, row] of rows.entries()) {
+  for (const row of rows) {
     if (collapsedDepth !== null) {
       if (row.depth > collapsedDepth) {
         continue;
@@ -494,7 +470,7 @@ const visibleTeamExecutionRows = (team: TeamTreeNode): VisibleTeamExecutionRow[]
       collapsedDepth = null;
     }
 
-    const hasChildren = teamDisplayRowHasChildren(row, index, rows);
+    const hasChildren = row.hasChildren;
     visibleRows.push({ row, hasChildren });
 
     if (hasChildren && !isTeamDisplayRowExpanded(team, row)) {
@@ -506,23 +482,21 @@ const visibleTeamExecutionRows = (team: TeamTreeNode): VisibleTeamExecutionRow[]
 };
 
 const focusedTeamExecutionAddress = (team: TeamTreeNode): TeamExecutionAddress =>
-  props.state.getLiveTeamContext(team.teamRunId)?.focusedExecutionAddress
-  ?? team.focusedExecutionAddress;
+  team.focusedExecutionAddress;
 
-const teamExecutionRowStyle = (row: WorkspaceTeamExecutionDisplayRow): Record<string, string> => ({ marginLeft: `${row.depth * 12}px` });
+const teamExecutionRowStyle = (row: RunHistoryTeamExecutionRow): Record<string, string> => ({ marginLeft: `${row.depth * 12}px` });
 
 const selectTeamDisplayRow = (
   team: TeamTreeNode,
-  row: WorkspaceTeamExecutionDisplayRow,
+  row: RunHistoryTeamExecutionRow,
 ): Promise<void> | void => props.actions.onSelectTeamMember(
   row,
   props.workspaceNode.workspaceId,
-  rootTeamMembers(team),
 );
 
 const activateTeamDisplayRow = (
   team: TeamTreeNode,
-  row: WorkspaceTeamExecutionDisplayRow,
+  row: RunHistoryTeamExecutionRow,
   hasChildren: boolean,
 ): Promise<void> | void => {
   if (hasChildren) toggleTeamDisplayRow(team, row);

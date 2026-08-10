@@ -11,15 +11,18 @@
           <section v-if="hasCurrentPrompt(primarySummary)" class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
             <div class="flex flex-wrap items-baseline justify-between gap-3">
               <h3 class="text-sm font-semibold text-slate-900" :title="t('shell.tokenUsage.latestPromptTooltip')">{{ $t('shell.tokenUsage.latestPrompt') }}</h3>
-              <span class="text-sm font-semibold tabular-nums text-slate-900">{{ formatPercent(primarySummary.contextWindowUsagePercent) }}</span>
+              <span v-if="hasKnownContextCapacity(primarySummary)" class="text-sm font-semibold tabular-nums text-slate-900">{{ formatPercent(primarySummary.contextWindowUsagePercent ?? 0) }}</span>
             </div>
-            <div class="mt-3 h-2 overflow-hidden rounded-full bg-slate-100">
-              <div class="h-full rounded-full bg-blue-500" :style="{ width: formatProgressWidth(primarySummary.contextWindowUsagePercent) }" />
+            <div v-if="hasKnownContextCapacity(primarySummary)" class="mt-3 h-2 overflow-hidden rounded-full bg-slate-100">
+              <div class="h-full rounded-full bg-blue-500" :style="{ width: formatProgressWidth(primarySummary.contextWindowUsagePercent ?? 0) }" />
             </div>
-            <p class="mt-2 text-xs text-slate-500">
-              {{ formatInteger(primarySummary.latestPromptTokens || 0) }} /
-              {{ formatInteger(primarySummary.effectiveContextWindowTokens || 0) }}
+            <p v-if="hasKnownContextCapacity(primarySummary)" class="mt-2 text-xs text-slate-500">
+              {{ formatInteger(primarySummary.latestPromptTokens ?? 0) }} /
+              {{ formatInteger(primarySummary.effectiveContextWindowTokens ?? 0) }}
               {{ $t('shell.tokenUsage.contextTokens') }}
+            </p>
+            <p v-else class="mt-2 text-sm text-slate-600" data-test="context-limit-unavailable">
+              {{ formatInteger(primarySummary.latestPromptTokens ?? 0) }} · {{ $t('shell.tokenUsage.contextLimitUnavailable') }}
             </p>
           </section>
 
@@ -223,7 +226,13 @@ const calculationDetailsExpanded = ref(false);
 const calculationDetailsPanelId = 'token-usage-calculation-details';
 
 const hasCurrentPrompt = (summary: TokenUsageRunSummary): boolean => (
-  Boolean(summary.effectiveContextWindowTokens) && summary.latestPromptTokens !== null && summary.contextWindowUsagePercent !== null
+  summary.latestPromptTokens !== null
+);
+
+const hasKnownContextCapacity = (summary: TokenUsageRunSummary): boolean => (
+  summary.effectiveContextWindowTokens !== null
+  && summary.effectiveContextWindowTokens > 0
+  && summary.contextWindowUsagePercent !== null
 );
 
 const inputBreakdownRows = computed(() => {

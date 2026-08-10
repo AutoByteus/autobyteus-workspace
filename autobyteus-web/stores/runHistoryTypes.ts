@@ -174,8 +174,30 @@ export interface TeamMemberTreeRow {
 export interface TeamMemberFocusTarget {
   teamRunId: string;
   memberAddress: string;
-  executionAddress?: TeamExecutionAddress;
+  executionAddress: TeamExecutionAddress;
 }
+
+export interface RunHistoryTeamExecutionRowBase extends TeamMemberFocusTarget {
+  memberKind: TeamMemberTreeRow['kind'];
+  displayName: string;
+  depth: number;
+  hasChildren: boolean;
+}
+
+export interface RunHistoryStableExecutionRow extends RunHistoryTeamExecutionRowBase {
+  kind: 'stable_member';
+  row: TeamMemberTreeRow;
+}
+
+export interface RunHistoryTransientExecutionRow extends RunHistoryTeamExecutionRowBase {
+  kind: 'transient_execution';
+  transientKind: 'task_agent' | 'task_team' | 'task_team_child';
+  currentStatus: AgentStatus | string | null;
+}
+
+export type RunHistoryTeamExecutionRow =
+  | RunHistoryStableExecutionRow
+  | RunHistoryTransientExecutionRow;
 
 export interface TeamTreeNode {
   teamRunId: string;
@@ -189,6 +211,7 @@ export interface TeamTreeNode {
   focusedExecutionAddress: TeamExecutionAddress;
   rootTeam: TeamMemberTreeRow;
   members: TeamMemberTreeRow[];
+  executionRows: RunHistoryTeamExecutionRow[];
 }
 
 export interface ListWorkspaceRunHistoryQueryData {

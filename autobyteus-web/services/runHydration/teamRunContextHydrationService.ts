@@ -21,11 +21,15 @@ import { fetchAndHydrateTaskDelegationRecordsForTeam } from './taskDelegationHyd
 import { indexTeamMemberNodesByAddress } from '~/utils/teamDefinitionMembers';
 import { teamRootNodeFromMetadata } from '~/utils/teamMemberMetadataNodes';
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
-import { applyLiveTeamMemberStatusSnapshot } from './teamRunMemberStatusHydration';
+import {
+  applyLiveTeamMemberStatusSnapshot,
+  hydrateTeamMemberActivitiesFromProjection,
+} from './teamRunMemberStatusHydration';
 import type { TeamMemberLiveSnapshot } from './teamRunMemberStatusHydration';
 import { createTeamExecutionAddress, serializeTeamExecutionAddress, type TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 import { useTaskDelegationStore } from '~/stores/taskDelegationStore';
 import { restoreTaskExecutionProjections } from '~/services/agentStreaming/teamTaskExecutionRestore';
+import { primeRecentEventMonitorBaseline } from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
 
 export { applyLiveTeamMemberStatusSnapshot, hydrateTeamMemberActivitiesFromProjection } from './teamRunMemberStatusHydration';
 export type { TeamMemberStatusSnapshotSet, TeamMemberLiveSnapshot } from './teamRunMemberStatusHydration';
@@ -255,6 +259,11 @@ export const hydrateLiveTeamRunContext = async (
     memberStatuses: input.memberStatuses ?? [],
     historicalHydration: payload.historicalHydration,
   });
+  hydrateTeamMemberActivitiesFromProjection({
+    members: hydratedContext.agentExecutionsByKey,
+    projectionByMemberAddress: payload.projectionByMemberAddress,
+  });
+  hydratedContext.agentExecutionsByKey.forEach(primeRecentEventMonitorBaseline);
   return { ...payload, hydratedContext };
 };
 
@@ -294,6 +303,7 @@ export const ensureHistoricalTeamMemberHydrated = async (params: {
       memberContext,
       isActive: false,
     });
+    primeRecentEventMonitorBaseline(memberContext);
     state.memberProjectionLoadStateByAddress[memberAddress] = 'loaded';
   })();
   historicalMemberHydrationRequests.set(requestKey, request);

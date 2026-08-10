@@ -1,0 +1,32 @@
+DR-004 post-integration executable check
+Timestamp: 2026-08-08T18:34:58Z
+HEAD: 894f01ac43b8ace816ca6f78da180507647cc59d
+origin/personal: 9ce41640960fc3e2a7b85b85608a4f081fe52df2
+Command: corepack pnpm -C autobyteus-ts exec vitest run tests/unit/llm/qwen-provider-config.test.ts tests/unit/llm/supported-model-definitions.test.ts tests/unit/llm/metadata/openai-compatible-endpoint-model-metadata.test.ts tests/unit/llm/openai-compatible-endpoint-provider.test.ts --no-watch
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts
+
+ ✓ tests/unit/llm/qwen-provider-config.test.ts (3 tests) 2ms
+ ✓ tests/unit/llm/metadata/openai-compatible-endpoint-model-metadata.test.ts (4 tests) 3ms
+ ✓ tests/unit/llm/supported-model-definitions.test.ts (12 tests) 12ms
+stdout | tests/unit/llm/openai-compatible-endpoint-provider.test.ts > LLMFactory custom provider sync > registers discovered models and instantiates with separately supplied authentication
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stderr | tests/unit/llm/openai-compatible-endpoint-provider.test.ts > LLMFactory custom provider sync > registers discovered models and instantiates with separately supplied authentication
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+
+stdout | tests/unit/llm/openai-compatible-endpoint-provider.test.ts > LLMFactory custom provider sync > registers discovered models and instantiates with separately supplied authentication
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stdout | tests/unit/llm/openai-compatible-endpoint-provider.test.ts > LLMFactory custom provider sync > registers discovered models and instantiates with separately supplied authentication
+Finished LM Studio discovery. Total models registered: 14
+
+ ✓ tests/unit/llm/openai-compatible-endpoint-provider.test.ts (6 tests) 40ms
+
+ Test Files  4 passed (4)
+      Tests  25 passed (25)
+   Start at  20:34:59
+   Duration  1.80s (transform 1.53s, setup 85ms, import 5.05s, tests 57ms, environment 0ms)
+
+Exit: 0
+Completed: 2026-08-08T18:35:01Z

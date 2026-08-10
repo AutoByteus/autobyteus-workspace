@@ -1,0 +1,78 @@
+$ git diff --check
+$ exact TR-004 assertion source
+79:const READABLE_SECRET_ID = `provider.openai-compatible.${READABLE_ID}.api-key`;
+611:    expect(listSecretIds(target.database.databasePath)).not.toContain(READABLE_SECRET_ID);
+$ assertion ordering
+   600	    await expect(executeGraphql<{ createCustomProvider: string }>(server.serverUrl, `
+   601	      mutation BadCreate($input: CustomProviderInputObject!) {
+   602	        createCustomProvider(input: $input)
+   603	      }
+   604	    `, {
+   605	      input: {
+   606	        name: PROVIDER_NAME,
+   607	        baseUrl: discovery.baseUrl,
+   608	        apiKey: 'wrong-secret',
+   609	      },
+   610	    })).rejects.toThrow('TEST_GRAPHQL_REQUEST_FAILED');
+   611	    expect(listSecretIds(target.database.databasePath)).not.toContain(READABLE_SECRET_ID);
+   612	    expect((await providerSettings(server.serverUrl)).providerSettings.some(
+   613	      ({ provider }) => provider.id === READABLE_ID,
+   614	    )).toBe(false);
+   615	
+   616	    const created = await executeGraphql<{ createCustomProvider: string }>(server.serverUrl, `
+   617	      mutation Recreate($input: CustomProviderInputObject!) {
+   618	        createCustomProvider(input: $input)
+   619	      }
+   620	    `, {
+   621	      input: {
+   622	        name: PROVIDER_NAME,
+$ authoritative combined result
+ Test Files  4 passed (4)
+      Tests  12 passed (12)
+$ owned runtime leftovers
+none
+$ generated secret markers in current evidence
+none
+$ git diff --check
+$ current API revision artifact references
+tickets/in-progress/custom-provider-model-context-metadata/api-e2e-execution-coverage-report.md:14:- API/E2E Test Review Report: `api-e2e-test-review-report.md` (`TR-004`; proportional re-review pending)
+tickets/in-progress/custom-provider-model-context-metadata/api-e2e-execution-coverage-report.md:18:- Current API/E2E Revision ID: `API-REV-007`
+tickets/in-progress/custom-provider-model-context-metadata/api-e2e-execution-coverage-report.md:20:- Trigger: `code_reviewer` CRR-013 `TR-004` required direct proof that the rejected readable-provider create leaves no orphan consumer secret.
+tickets/in-progress/custom-provider-model-context-metadata/api-e2e-execution-coverage-report.md:22:- Latest Authoritative Round: `API-REV-007 — Pass / 96.4%`, pending proportional re-review.
+tickets/in-progress/custom-provider-model-context-metadata/api-e2e-execution-coverage-report.md:35:| `TR-004` / `RID-E2E-002` | CRR-013 `Fail — Local Fix`; orphan readable secret was unobservable | Added exact absence assertion for `provider.openai-compatible.provider_alibaba_cloud_token_plan.api-key` using the existing real-database `listSecretIds()` helper immediately after rejection and before valid create | `server-e2e-api-rev-007.log` passes 4 files / 12 tests; `repository-integrity-api-rev-007.log` records exact ordering and cleanup |
+tickets/in-progress/custom-provider-model-context-metadata/api-e2e-execution-coverage-report.md:70:| 8 | `git diff --check`, exact TR-004 assertion-order, secret-marker, and owned-runtime scans | worktree root | Pass | `repository-integrity-api-rev-007.log` |
+tickets/in-progress/custom-provider-model-context-metadata/api-e2e-execution-coverage-report.md:95:- API-REV-007 decision: `Not Required`. Only durable test proof changed; no production/browser source or fixture contract changed.
+tickets/in-progress/custom-provider-model-context-metadata/api-e2e-execution-coverage-report.md:138:| `autobyteus-server-ts/tests/e2e/secret-management/custom-provider-readable-id-startup-migration.e2e.test.ts` | Added as replacement; corrected in API-REV-007 | `RID-E2E-001`–`004` | Pass — 4/4 in authoritative combined rerun | Adds exact real-vault absence after rejected public create, before valid recreation |
+tickets/in-progress/custom-provider-model-context-metadata/api-e2e-execution-coverage-report.md:167:| `repository-integrity-api-rev-007.log` | Diff/TR-004 assertion ordering/secret-marker/cleanup scans |
+tickets/in-progress/custom-provider-model-context-metadata/api-e2e-execution-coverage-report.md:198:| Corrective E2E app-data/SQLite/root-key fixtures | API-REV-007 | Test `afterEach` and owned-runtime cleanup | Removed; current scan found none |
+tickets/in-progress/custom-provider-model-context-metadata/api-e2e-execution-coverage-report.md:203:- `TR-004` is resolved in API/E2E evidence and awaits reviewer closure; no unresolved API/E2E execution failure exists.
+tickets/in-progress/custom-provider-model-context-metadata/api-e2e-execution-coverage-report.md:210:`code_reviewer` for proportional re-review of the bounded TR-004 correction. Do not route to delivery until that review passes.
+tickets/in-progress/custom-provider-model-context-metadata/api-e2e-execution-coverage-report.md:218:- Broader validation: `Not Required for API-REV-007`; API-REV-006 real browser result remains applicable
+tickets/in-progress/custom-provider-model-context-metadata/api-e2e-coverage-investigation.md:19:- Current API/E2E Revision ID: `API-REV-007` corrective execution completed `Pass / 96.4%`; proportional re-review is pending. API-REV-006 execution also passed, but CRR-013 rejected its incomplete secret postcondition.
+tickets/in-progress/custom-provider-model-context-metadata/api-e2e-coverage-investigation.md:23:- Latest Authoritative Investigation: `This file — API-REV-007 baseline was written before the TR-004 edit/rerun and is now refreshed with the completed corrective evidence.`
+tickets/in-progress/custom-provider-model-context-metadata/api-e2e-coverage-investigation.md:33:## CRR-013 / TR-004 Corrective Coverage Decision
+tickets/in-progress/custom-provider-model-context-metadata/api-e2e-coverage-investigation.md:35:This subsection is the mandatory API-REV-007 investigation update and was persisted before editing durable coverage or rerunning tests.
+tickets/in-progress/custom-provider-model-context-metadata/api-e2e-coverage-investigation.md:41:- Broader validation: `Not Required` for API-REV-007. API-REV-006's real Chrome/Nuxt/built-backend result remains applicable because no production or browser code changes; this correction strengthens only the repository-resident vault postcondition.
+tickets/in-progress/custom-provider-model-context-metadata/api-e2e-coverage-investigation.md:43:- Corrective result: the exact readable secret ID is asserted absent immediately after the rejected mutation and before the valid create. The authoritative serial selection passed 4 files / 12 tests; diff/assertion-order/secret-marker/owned-runtime checks passed. `TR-004` is resolved in API/E2E evidence and awaits reviewer closure.
+tickets/in-progress/custom-provider-model-context-metadata/api-e2e-coverage-investigation.md:164:| 5 | Four critical E2E files in one serial Vitest run; API-REV-007 corrective rerun | `autobyteus-server-ts`; isolated owned roots/databases | Real readable startup including rejected-create provider **and real-vault secret** absence, exact metadata, Qwen restart/routing, provenance | `Pass` — 4 files / 12 tests | `probes/api-e2e/server-e2e-api-rev-007.log` |
+tickets/in-progress/custom-provider-model-context-metadata/api-e2e-coverage-investigation.md:166:| 7 | `git diff --check`, exact TR-004 assertion ordering, secret-marker and cleanup scans | worktree root | Corrective repository integrity | `Pass` | `probes/api-e2e/repository-integrity-api-rev-007.log` |
+tickets/in-progress/custom-provider-model-context-metadata/api-e2e-coverage-investigation.md:230:- Proceed To API/E2E Execution: `Completed — API-REV-007 corrective rerun passed`
+tickets/in-progress/custom-provider-model-context-metadata/api-e2e-coverage-investigation.md:233:- Broader validation decision: `Not Required for API-REV-007`; API-REV-006 browser execution remains applicable to unchanged source.
+tickets/in-progress/custom-provider-model-context-metadata/api-e2e-coverage-investigation.md:235:- Notes: API/E2E considers `TR-004` resolved by direct real-vault absence proof and a 12/12 rerun. CRR-013 remains the current review result until `code_reviewer` performs proportional re-review; delivery remains blocked.
+tickets/in-progress/custom-provider-model-context-metadata/api-e2e-revision-record.md:13:| API-REV-007 | `code_reviewer` CRR-013 `TR-004`; corrective round `7` | `API-REV-006`, `CRR-013`, `SR-016`, `AC-019` | Execution `Pass / 96.4%`; proportional review `Fail` | `Pass / 96.4%`, pending proportional re-review |
+tickets/in-progress/custom-provider-model-context-metadata/api-e2e-revision-record.md:191:### API-REV-007 — Close TR-004 with direct rejected-create vault absence
+tickets/in-progress/custom-provider-model-context-metadata/api-e2e-revision-record.md:194:- Triggering finding or scenario IDs: `TR-004`; `RID-E2E-002`; `AC-019` rejected-create provider/secret postcondition.
+tickets/in-progress/custom-provider-model-context-metadata/api-e2e-revision-record.md:205:| `TR-004` / `RID-E2E-002` | CRR-013 `Fail — Local Fix` | `Resolved in API/E2E evidence; reviewer closure pending` | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/probes/api-e2e/server-e2e-api-rev-007.log`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/probes/api-e2e/repository-integrity-api-rev-007.log` |
+tickets/in-progress/custom-provider-model-context-metadata/api-e2e-revision-record.md:211:- Prior result and confidence: API-REV-006 execution `Pass / 96.4%`; CRR-013 proportional review `Fail` on `TR-004`.
+tickets/in-progress/custom-provider-model-context-metadata/api-e2e-revision-record.md:212:- Current result and confidence: API-REV-007 `Pass / 96.4%`; numeric confidence is unchanged, while the AC-019 secret postcondition now has direct durable proof.
+tickets/in-progress/custom-provider-model-context-metadata/api-e2e-revision-record.md:213:- New or remaining API/E2E failure IDs: `None`; `TR-004` awaits proportional reviewer closure.
+$ authoritative execution result
+ Test Files  4 passed (4)
+      Tests  12 passed (12)
+$ exact assertion
+79:const READABLE_SECRET_ID = `provider.openai-compatible.${READABLE_ID}.api-key`;
+611:    expect(listSecretIds(target.database.databasePath)).not.toContain(READABLE_SECRET_ID);
+$ pending stale execution text
+none
+$ owned runtime leftovers
+none

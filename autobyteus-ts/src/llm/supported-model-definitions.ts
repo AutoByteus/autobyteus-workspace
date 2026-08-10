@@ -16,10 +16,10 @@ import { DeepSeekLLM } from './api/deepseek-llm.js';
 import { GeminiLLM } from './api/gemini-llm.js';
 import { KimiLLM } from './api/kimi-llm.js';
 import { createKimiK27CodeDefaultConfig } from './api/kimi-k2-7-code-policy.js';
-import { QwenLLM } from './api/qwen-llm.js';
 import { GlmLLM } from './api/glm-llm.js';
 import { MinimaxLLM } from './api/minimax-llm.js';
 import { LLMProvider } from './providers.js';
+import { qwenSupportedModelDefinitions } from './qwen-supported-model-definitions.js';
 
 const pricing = (input: number, output: number, options: Omit<TokenPricingConfigInput, 'inputTokenPricing' | 'outputTokenPricing'> = {}) =>
   new TokenPricingConfig({
@@ -446,20 +446,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
       pricing(1.90, 8.0, { cachedInputReadTokenPricing: 0.38 }),
     )
   },
-  {
-    name: 'qwen3.7-max',
-    value: 'qwen3.7-max',
-    provider: LLMProvider.QWEN,
-    llmClass: QwenLLM,
-    canonicalName: 'qwen3.7-max', staticMetadata: createStaticModelMetadata(262144, 258048, 65536, 'https://www.alibabacloud.com/help/en/model-studio/models', '2026-06-24'),
-  },
-  {
-    name: 'qwen3-max',
-    value: 'qwen3-max',
-    provider: LLMProvider.QWEN,
-    llmClass: QwenLLM,
-    canonicalName: 'qwen3-max', staticMetadata: createStaticModelMetadata(262144, 258048, 65536, 'https://www.alibabacloud.com/help/en/model-studio/models', '2026-04-09'),
-  },
+  ...qwenSupportedModelDefinitions,
   {
     name: 'glm-5.2',
     value: 'glm-5.2',

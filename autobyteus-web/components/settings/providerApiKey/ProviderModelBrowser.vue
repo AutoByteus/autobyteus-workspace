@@ -1,6 +1,6 @@
 <template>
-  <div class="flex gap-6 items-stretch flex-1">
-    <div class="w-64 flex-shrink-0 bg-gray-50/50 rounded-xl overflow-hidden border border-gray-200 flex flex-col">
+  <div class="flex flex-1 flex-col items-stretch gap-4 lg:flex-row lg:gap-6">
+    <div class="flex max-h-72 w-full flex-shrink-0 flex-col overflow-hidden rounded-xl border border-gray-200 bg-gray-50/50 lg:max-h-none lg:w-64">
       <div class="px-4 py-3 border-b border-gray-200/60 bg-gray-50">
         <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">
           {{ $t('settings.components.settings.ProviderAPIKeyManager.providers') }}
@@ -39,9 +39,9 @@
       </div>
     </div>
 
-    <div class="flex-1 bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm flex flex-col">
-      <div class="px-5 py-4 border-b flex items-center justify-between bg-white">
-        <div class="flex items-center gap-3">
+    <div class="flex min-w-0 flex-1 flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b bg-white px-5 py-4">
+        <div class="flex min-w-0 flex-wrap items-center gap-3">
           <span class="text-lg font-semibold text-gray-900">{{ selectedProviderLabelText }}</span>
           <span
             class="text-xs px-2.5 py-1 rounded-full border font-medium flex items-center gap-1.5"

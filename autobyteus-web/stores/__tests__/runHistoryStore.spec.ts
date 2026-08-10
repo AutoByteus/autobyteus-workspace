@@ -180,17 +180,20 @@ const {
           existing.state.runId = options.runId;
           existing.state.conversation = options.conversation;
           existing.state.currentStatus = options.status ?? 'offline';
-          return;
+          return existing;
         }
-        runs.set(options.runId, {
+        const context = {
           config: { ...options.config },
           state: {
+            runId: options.runId,
             agentRunId: options.runId,
             conversation: options.conversation,
             currentStatus: options.status ?? 'offline',
           },
           isSubscribed: false,
-        });
+        };
+        runs.set(options.runId, context);
+        return context;
       }),
       patchConfigOnly: vi.fn((runId: string, patch: any) => {
         const context = runs.get(runId);
@@ -231,6 +234,7 @@ const {
         const teamContext = teams.get(teamRunId);
         if (teamContext?.members?.has(memberName)) {
           teamContext.focusedMemberName = memberName;
+          teamContext.focusedMemberRouteKey = memberName;
         }
         if (teamContext?.memberNodesByRouteKey?.has(memberName)) {
           teamContext.focusedMemberRouteKey = memberName;
@@ -471,6 +475,57 @@ describe('runHistoryStore', () => {
       projectionByMemberRouteKey: new Map(),
     }));
     mutateMock.mockReset();
+  });
+
+  it('publishes the asynchronously loaded initial workspace catalog with exactly one topology refresh', async () => {
+    workspaceStoreMock.workspacesFetched = false;
+    workspaceStoreMock.allWorkspaces = [];
+    workspaceStoreMock.workspaces = {};
+    let resolveCatalogLoad!: () => void;
+    workspaceStoreMock.fetchAllWorkspaces.mockImplementation(() => new Promise<void>((resolve) => {
+      resolveCatalogLoad = () => {
+        const workspace = {
+          workspaceId: 'ws-boot',
+          absolutePath: '/persisted/workspace',
+          workspaceRootPath: '/persisted/workspace',
+          name: 'Persisted Workspace',
+          displayName: 'Persisted Workspace',
+          kind: 'filesystem',
+          isTemp: false,
+          workspaceConfig: { root_path: '/persisted/workspace' },
+        };
+        workspaceStoreMock.allWorkspaces = [workspace];
+        workspaceStoreMock.workspaces = { 'ws-boot': workspace };
+        workspaceStoreMock.workspacesFetched = true;
+        resolve();
+      };
+    }));
+
+    const store = useRunHistoryStore();
+    const fetchTreeSpy = vi.spyOn(store, 'fetchTree');
+    expect(store.navigationProjection).toBeNull();
+    expect(store.getTreeNodes()).toEqual([]);
+    expect(store.navigationTopologyRevision).toBe(1);
+
+    const catalogLoad = store.loadWorkspaceCatalogForNavigation();
+    await Promise.resolve();
+    expect(store.getTreeNodes()).toEqual([]);
+    resolveCatalogLoad();
+    await catalogLoad;
+
+    expect(store.navigationTopologyRevision).toBe(2);
+    expect(store.getTreeNodes()).toEqual([
+      expect.objectContaining({
+        workspaceId: 'ws-boot',
+        workspaceRootPath: '/persisted/workspace',
+        workspaceName: 'Persisted Workspace',
+      }),
+    ]);
+    expect(fetchTreeSpy).not.toHaveBeenCalled();
+
+    await store.loadWorkspaceCatalogForNavigation();
+    expect(workspaceStoreMock.fetchAllWorkspaces).toHaveBeenCalledTimes(1);
+    expect(store.navigationTopologyRevision).toBe(2);
   });
 
   it('fetches run history tree from GraphQL', async () => {
@@ -818,6 +873,7 @@ describe('runHistoryStore', () => {
         teamRuns: [],
       }),
     ];
+    store.refreshRunNavigationTopology('test-history-reconciliation');
 
     rows = store.getTreeNodes()[0]?.agents[0]?.runs ?? [];
     expect(rows).toHaveLength(1);

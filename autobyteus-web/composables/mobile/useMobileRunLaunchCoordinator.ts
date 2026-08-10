@@ -3,6 +3,7 @@ import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
+import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useAgentTeamDefinitionStore, type AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore';
 import { useMobileWorkStore } from '~/stores/mobileWorkStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
@@ -50,6 +51,7 @@ export function useMobileRunLaunchCoordinator() {
   const agentRunConfigStore = useAgentRunConfigStore();
   const selectionStore = useAgentSelectionStore();
   const teamContextsStore = useAgentTeamContextsStore();
+  const runHistoryStore = useRunHistoryStore();
   const teamDefinitionStore = useAgentTeamDefinitionStore();
   const teamRunConfigStore = useTeamRunConfigStore();
   const mobileWorkStore = useMobileWorkStore();
@@ -149,7 +151,7 @@ export function useMobileRunLaunchCoordinator() {
     }
 
     const fallback = parseTeamExecutionAddress(JSON.parse(fallbackKey));
-    await teamContextsStore.focusMemberAndEnsureHydrated(teamRunId, fallback.memberAddress);
+    await runHistoryStore.focusTeamMemberAndEnsureHydrated(teamRunId, fallback);
     const focused = teamContextsStore.getTeamContextById(teamRunId)?.focusedExecutionAddress ?? fallback;
     mobileWorkStore.rememberFocusedTeamMember(teamRunId, focused);
     return focused;

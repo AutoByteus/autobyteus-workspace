@@ -156,6 +156,32 @@ describe("AppDataMigrationRunner", () => {
     expect(result.attempts).toBe(2);
   });
 
+  it("keeps ordinary recent persisted RUNNING records protected by the timestamp guard", async () => {
+    const execute = vi.fn(async () => ({ status: "SUCCEEDED" as const, summary }));
+    const repository = new InMemoryMigrationRepository();
+    repository.records.set("m1", {
+      migrationId: "m1",
+      displayName: "Migration m1",
+      status: "RUNNING",
+      attempts: 1,
+      startedAt: new Date(),
+      completedAt: null,
+      summaryJson: null,
+      errorMessage: null,
+      logPath: null,
+    });
+    const runner = new AppDataMigrationRunner(
+      new AppDataMigrationRegistry([createDefinition("m1", execute)]),
+      repository,
+      { logsDir: tempDir },
+    );
+
+    await expect(runner.runMigration("m1"))
+      .rejects.toBeInstanceOf(AppDataMigrationDuplicateRunError);
+    expect(execute).not.toHaveBeenCalled();
+    expect((await repository.getRecord("m1"))?.attempts).toBe(1);
+  });
+
   it("lists registered migrations that do not have DB records", async () => {
     const runner = new AppDataMigrationRunner(
       new AppDataMigrationRegistry([

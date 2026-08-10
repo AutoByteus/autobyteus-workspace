@@ -1,0 +1,12 @@
+cleanup_at=2026-08-10T08:55:58Z
+owned_browser_tabs=closed (48482f, 93354a)
+owned_frontends=stopped (63932, 63933)
+owned_backend=stopped (63931)
+owned_data_removed=/tmp/autobyteus-api-rev-003-home-20260810T1010
+owned_port_63931=free
+owned_port_63932=free
+owned_port_63933=free
+user_port_29695=still_listening
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 19542 normy   26u  IPv4 0x6420039e3d08d95f      0t0  TCP *:29695 (LISTEN)
+accidental_owned_path=removed

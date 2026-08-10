@@ -1,0 +1,199 @@
+{
+  "startedAt": "2026-08-09T10:55:43.931Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "webDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/tests/e2e/fixtures/background-agent-renderer-contention.page.vue",
+  "installedPagePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/pages/api-e2e-background-agent-renderer-contention.vue",
+  "routePath": "/api-e2e-background-agent-renderer-contention",
+  "scenarios": {
+    "BG-BROWSER-000": {
+      "description": "Production fixture seeds the approved 26-workspace/38-team topology",
+      "result": "Pass",
+      "startedAt": "2026-08-09T10:55:58.512Z",
+      "details": {
+        "topologyText": " workspaces=26 teams=38 topology=2 patches=0"
+      }
+    },
+    "BG-BROWSER-001A": {
+      "description": "Warmed foreground Files/Teams latency at idle",
+      "result": "Fail",
+      "startedAt": "2026-08-09T10:55:58.515Z",
+      "failure": {
+        "id": "BG-BROWSER-001A",
+        "description": "Warmed foreground Files/Teams latency at idle",
+        "message": "Idle scenario rebuilt navigation topology",
+        "details": {
+          "mode": "idle",
+          "elapsedMs": 6501.799999952316,
+          "windows": 0,
+          "dispatches": 0,
+          "topologyDelta": 1,
+          "patchDelta": 0,
+          "presentationRevisionDelta": 0,
+          "contentCharacterDelta": 0,
+          "statusValues": [
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running"
+          ],
+          "longTasks": [],
+          "actionLatencies": [
+            14,
+            6.5,
+            6.800000190734863,
+            7.6000001430511475,
+            6.400000095367432,
+            6.699999809265137,
+            6.699999809265137,
+            6.900000095367432,
+            6.900000095367432,
+            7.1000001430511475,
+            6.900000095367432,
+            6.799999952316284,
+            7,
+            7.200000047683716,
+            6.699999809265137,
+            6.599999904632568,
+            5.700000047683716,
+            6.900000095367432,
+            4.8999998569488525,
+            5.5,
+            7.1000001430511475,
+            7,
+            6.799999952316284,
+            7.5,
+            6.900000095367432,
+            7.099999904632568,
+            7,
+            7
+          ]
+        },
+        "stack": "Error: Idle scenario rebuilt navigation topology\n    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/tests/e2e/background-agent-renderer-contention-probe.mjs:43:35)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/tests/e2e/background-agent-renderer-contention-probe.mjs:200:5\n    at async runScenario (file:///Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/tests/e2e/background-agent-renderer-contention-probe.mjs:95:21)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/tests/e2e/background-agent-renderer-contention-probe.mjs:196:16"
+      }
+    }
+  },
+  "browserEvents": [
+    {
+      "type": "console:log",
+      "text": "serverStore: Checking server health at /rest/health"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22agentDefinitions%22%2C%22%7B%7D%22%5D%7D"
+    }
+  ],
+  "failures": [
+    {
+      "id": "BG-BROWSER-001A",
+      "description": "Warmed foreground Files/Teams latency at idle",
+      "message": "Idle scenario rebuilt navigation topology",
+      "details": {
+        "mode": "idle",
+        "elapsedMs": 6501.799999952316,
+        "windows": 0,
+        "dispatches": 0,
+        "topologyDelta": 1,
+        "patchDelta": 0,
+        "presentationRevisionDelta": 0,
+        "contentCharacterDelta": 0,
+        "statusValues": [
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running"
+        ],
+        "longTasks": [],
+        "actionLatencies": [
+          14,
+          6.5,
+          6.800000190734863,
+          7.6000001430511475,
+          6.400000095367432,
+          6.699999809265137,
+          6.699999809265137,
+          6.900000095367432,
+          6.900000095367432,
+          7.1000001430511475,
+          6.900000095367432,
+          6.799999952316284,
+          7,
+          7.200000047683716,
+          6.699999809265137,
+          6.599999904632568,
+          5.700000047683716,
+          6.900000095367432,
+          4.8999998569488525,
+          5.5,
+          7.1000001430511475,
+          7,
+          6.799999952316284,
+          7.5,
+          6.900000095367432,
+          7.099999904632568,
+          7,
+          7
+        ]
+      },
+      "stack": "Error: Idle scenario rebuilt navigation topology\n    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/tests/e2e/background-agent-renderer-contention-probe.mjs:43:35)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/tests/e2e/background-agent-renderer-contention-probe.mjs:200:5\n    at async runScenario (file:///Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/tests/e2e/background-agent-renderer-contention-probe.mjs:95:21)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/tests/e2e/background-agent-renderer-contention-probe.mjs:196:16"
+    }
+  ],
+  "cleanup": {
+    "browserContext": "closed",
+    "browser": "closed",
+    "nuxt": {
+      "status": "terminated",
+      "pid": 71054,
+      "exitCode": null,
+      "signalCode": null,
+      "finalExitCode": null,
+      "finalSignalCode": "SIGTERM"
+    },
+    "nuxtLog": "closed",
+    "installedFixture": "removed"
+  },
+  "port": 62387,
+  "baseUrl": "http://127.0.0.1:62387",
+  "result": "Fail",
+  "finishedAt": "2026-08-09T10:56:05.160Z",
+  "artifacts": {
+    "evidencePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/api-e2e-execution-evidence/background-contention-browser-pass/evidence.json",
+    "nuxtLogPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/api-e2e-execution-evidence/background-contention-browser-pass/nuxt.log",
+    "desktopScreenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/api-e2e-execution-evidence/background-contention-browser-pass/desktop-hierarchy.png",
+    "mobileScreenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/api-e2e-execution-evidence/background-contention-browser-pass/mobile-composer.png"
+  }
+}

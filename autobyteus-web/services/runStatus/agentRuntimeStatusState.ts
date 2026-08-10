@@ -25,9 +25,12 @@ export const preserveCanonicalAgentStatus = (status: unknown): AgentStatus =>
 export const applyLiveAgentStatusEvent = (
   context: AgentContext,
   payload: AgentStatusPayload,
-): void => {
-  context.state.currentStatus = normalizeAgentRuntimeStatus(payload.status);
+): boolean => {
+  const nextStatus = normalizeAgentRuntimeStatus(payload.status);
+  const changed = context.state.currentStatus !== nextStatus || context.submissionPending;
+  context.state.currentStatus = nextStatus;
   context.submissionPending = false;
+  return changed;
 };
 
 export const applyActiveRuntimePlaceholder = (

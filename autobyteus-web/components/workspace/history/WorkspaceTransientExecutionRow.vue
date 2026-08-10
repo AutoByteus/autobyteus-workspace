@@ -7,7 +7,7 @@
     data-row-kind="transient_execution"
     :data-transient-kind="row.transientKind"
     :data-team-run-id="row.teamRunId"
-    :data-member-route-key="row.memberAddress"
+    :data-member-address="row.memberAddress"
     :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.temporary_execution_title')"
     :aria-label="ariaLabel"
     role="button"
@@ -22,7 +22,7 @@
       class="ml-2 mr-1 inline-flex h-3.5 w-3.5 flex-shrink-0 items-center justify-center rounded text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
       data-test="workspace-team-transient-disclosure"
       :data-team-run-id="row.teamRunId"
-      :data-member-route-key="row.memberAddress"
+      :data-member-address="row.memberAddress"
       :aria-expanded="expanded"
       @click.stop="$emit('toggle', row)"
       @keydown.enter.stop
@@ -58,10 +58,10 @@
 import { computed } from 'vue';
 import { Icon } from '@iconify/vue';
 import StatusDot from '~/components/workspace/common/StatusDot.vue';
-import type { WorkspaceTransientExecutionDisplayRow } from '~/utils/workspaceTeamExecutionDisplayRows';
+import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes';
 
 const props = withDefaults(defineProps<{
-  row: WorkspaceTransientExecutionDisplayRow;
+  row: RunHistoryTransientExecutionRow;
   focused?: boolean;
   hasChildren?: boolean;
   expanded?: boolean;
@@ -72,8 +72,8 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-  (e: 'select', row: WorkspaceTransientExecutionDisplayRow): void;
-  (e: 'toggle', row: WorkspaceTransientExecutionDisplayRow): void;
+  (e: 'select', row: RunHistoryTransientExecutionRow): void;
+  (e: 'toggle', row: RunHistoryTransientExecutionRow): void;
 }>();
 
 const rowStyle = computed(() => ({

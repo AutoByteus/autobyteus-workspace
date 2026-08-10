@@ -126,6 +126,7 @@ export const buildTeamNodes = (params: {
       focusedExecutionAddress: createTeamExecutionAddress({ rootTeamRunId: team.teamRunId, memberAddress }),
       rootTeam,
       members,
+      executionRows: [],
     });
   }
   for (const teamContext of params.teamContexts) {
@@ -157,6 +158,7 @@ export const buildTeamNodes = (params: {
       focusedExecutionAddress: teamContext.focusedExecutionAddress,
       rootTeam,
       members,
+      executionRows: [],
     });
   }
   const allNodes = Array.from(nodesByTeamRunId.values());

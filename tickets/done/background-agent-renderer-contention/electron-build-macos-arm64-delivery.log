@@ -1,0 +1,1712 @@
+# README-Directed Electron Build Evidence
+
+Ticket: background-agent-renderer-contention
+Source worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention
+Source branch: codex/background-agent-renderer-contention
+Source committed HEAD: 26b9b3cb87c222611a03614d5608cf5af72e8952
+Tracked base: 3cddeec6b93602da172fec2e7b9a80acc7c05117
+Source divergence (origin/personal...HEAD): 0	12
+Package version: 1.4.45
+Host: Darwin arm64
+Node: v22.23.1
+pnpm: 10.28.2
+README method: autobyteus-web/README.md -> macOS Build With Logs (No Notarization)
+Requested build command: NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac
+Started: 2026-08-09T12:07:41Z
+
+## Dependency synchronization
+Command: pnpm install --frozen-lockfile
+Scope: all 11 workspace projects
+Lockfile is up to date, resolution step is skipped
+Already up to date
+
+autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+autobyteus-ts postinstall: [node-pty-fix] ok: /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+autobyteus-ts postinstall: Done
+Done in 1.8s using pnpm v10.28.2
+Dependency synchronization exit: 0
+Dependency synchronization completed: 2026-08-09T12:07:43Z
+
+## Electron build
+Working directory: autobyteus-web
+Command: NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac
+Build started: 2026-08-09T12:07:43Z
+
+> autobyteus@1.4.45 build:electron:mac /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web
+> cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --mac
+
+
+> autobyteus@1.4.45 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+
+> autobyteus@1.4.45 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+
+> autobyteus@1.4.45 audit:localization-literals /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web
+> node ./scripts/audit-localization-literals.mjs
+
+[audit:localization-literals] Passed with zero unresolved findings.
+(node:28848) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/localization/audit/migrationScopes.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+> autobyteus@1.4.45 prepare-server /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web
+> node ./scripts/prepare-server-dispatch.mjs
+
+[0;32m=======================================[0m
+[0;32m   Preparing AutoByteus Server Files   [0m
+[0;32m=======================================[0m
+[0;32m✓[0m Created target directory: /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/resources/server
+
+[0;33mBuilding server and dependencies...[0m
+Scope: all 11 workspace projects
+
+../autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+../autobyteus-ts postinstall: [node-pty-fix] ok: /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+../autobyteus-ts postinstall: Done
+Done in 1.3s using pnpm v10.28.1
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 115ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Help us improve the Prisma ORM for everyone. Share your feedback in a short 2-min survey: https://pris.ly/orm/survey/release-5-22
+
+
+> autobyteus-server-ts@0.1.1 prebuild /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 11 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 127ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Interested in query caching in just a few lines of code? Try Accelerate today! https://pris.ly/tip-3-accelerate
+
+
+> autobyteus-server-ts@0.1.1 build /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-server-ts
+> pnpm run build:full
+
+
+> autobyteus-server-ts@0.1.1 build:full /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-managed-messaging-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+(node:29526) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+
+[0;33mBuilding mobile web assets...[0m
+
+> autobyteus@1.4.45 build:mobile-web /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web
+> node ./scripts/build-mobile-web.mjs
+
+
+> autobyteus@1.4.45 generate /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web
+> nuxt generate
+
+┌  Building Nuxt for production...
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+[nuxt] modules:before: 0.078ms
+isElectronBuild false
+[nuxt] kit:compatibility: 0.022ms
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+ℹ Module electron took 0.23ms to setup.
+[nuxt] kit:compatibility: 0.016ms
+[nuxt] kit:compatibility: 0.08ms
+[nuxt] kit:compatibility : 0.369ms
+ℹ Module pinia took 2.18ms to setup.
+ℹ Module devhandler-compat took 0.03ms to setup.
+[nuxt] pages:routerOptions: 0.025ms
+ℹ Module nuxt:pages took 9.64ms to setup.
+ℹ Module nuxt:meta took 3.05ms to setup.
+[nuxt] kit:compatibility: 0.312ms
+ℹ Module nuxt:components took 5.03ms to setup.
+ℹ Module nuxt:imports took 0.96ms to setup.
+ℹ Module nuxt:nuxt-config-schema took 0.3ms to setup.
+ℹ Module @nuxt/telemetry took 0.07ms to setup.
+[nuxt] imports:dirs: 0.126ms
+[nuxt] imports:sources: 0.065ms
+[nuxt] imports:context: 0.132ms
+[nuxt] imports:extend: 0.034ms
+[nuxt] builder:generateApp: 0.007ms
+[nuxt] schema:extend: 0.006ms
+[nuxt] schema:resolved: 0.004ms
+[nuxt] modules:done: 126.17ms
+[nuxt] nitro:config: 62.833ms
+[nuxt] nitro:init: 0.557ms
+[nuxt] ready: 0.01ms
+│
+●  Nitro preset: static
+[nitro] types:extend: 0.014ms
+[nuxt] prepare:types: 56.072ms
+[nuxt] components:dirs: 0.009ms
+[nuxt] app:resolve: 0.779ms
+[nuxt] pages:extend: 0.092ms
+[nuxt] pages:resolved: 0.141ms
+[nuxt] components:extend: 0.483ms
+[nuxt] app:templates: 42.893ms
+[nuxt] ℹ Compiled app-component.mjs in 10.32ms
+[nuxt] ℹ Compiled types/app.config.d.ts in 10.35ms
+[nuxt] ℹ Compiled app.config.mjs in 10.39ms
+[nuxt] ℹ Compiled types/app-defaults.d.ts in 10.44ms
+[nuxt] ℹ Compiled types/build.d.ts in 10.51ms
+[nuxt] ℹ Compiled nitro.client.mjs in 10.27ms
+[nuxt] ℹ Compiled css.mjs in 10.32ms
+[nuxt] ℹ Compiled fetch.mjs in 10.36ms
+[nuxt] ℹ Compiled error-component.mjs in 10.41ms
+[nuxt] ℹ Compiled global-polyfills.mjs in 10.57ms
+[nuxt] ℹ Compiled layouts.mjs in 10.65ms
+[nuxt] ℹ Compiled middleware.mjs in 10.4ms
+[nuxt] ℹ Compiled nuxt.config.mjs in 10.27ms
+[nuxt] ℹ Compiled paths.mjs in 10.04ms
+[nuxt] ℹ Compiled root-component.mjs in 10.07ms
+[nuxt] ℹ Compiled test-component-wrapper.mjs in 9.89ms
+[nuxt] ℹ Compiled types/vue-shim.d.ts in 9.95ms
+[nuxt] ℹ Compiled types/nitro-layouts.d.ts in 10.01ms
+[nuxt] ℹ Compiled types/builder-env.d.ts in 10.07ms
+[nuxt] ℹ Compiled routes.mjs in 10.14ms
+[nuxt] ℹ Compiled pages.mjs in 8.9ms
+[nuxt] ℹ Compiled types/middleware.d.ts in 8.83ms
+[nuxt] ℹ Compiled types/nitro-middleware.d.ts in 8.86ms
+[nuxt] ℹ Compiled types/layouts.d.ts in 9ms
+[nuxt] ℹ Compiled unhead-options.mjs in 9.05ms
+[nuxt] ℹ Compiled unhead.config.mjs in 9.11ms
+[nuxt] ℹ Compiled components.d.ts in 9.17ms
+[nuxt] ℹ Compiled types/components.d.ts in 7.09ms
+[nuxt] ℹ Compiled components.plugin.mjs in 4.2ms
+[nuxt] ℹ Compiled component-names.mjs in 4.19ms
+[nuxt] ℹ Compiled components.islands.mjs in 4.17ms
+[nuxt] ℹ Compiled component-chunk.mjs in 4.09ms
+[nuxt] ℹ Compiled route-rules.mjs in 13.11ms
+[nuxt] nitro:prepare:types: 13.558ms
+[nuxt] ℹ Compiled imports.mjs in 13.81ms
+[nuxt] ℹ Compiled imports.d.ts in 13.86ms
+[nuxt] ℹ Compiled types/nitro-nuxt.d.ts in 14.59ms
+[nuxt] ℹ Compiled types/schema.d.ts in 22.69ms
+[nuxt] ℹ Compiled types/imports.d.ts in 19.74ms
+[nuxt] pages:routerOptions: 0.012ms
+[nuxt] ℹ Compiled router.options.mjs in 26.88ms
+[nuxt] ℹ Compiled plugins.server.mjs in 7.81ms
+[nuxt] ℹ Compiled plugins.client.mjs in 10.92ms
+[nuxt] ℹ Compiled types/plugins.d.ts in 15.75ms
+[nuxt] imports:extend: 0.021ms
+[nuxt] builder:generateApp: 0.015ms
+[nuxt] app:templatesGenerated: 88.441ms
+[nuxt] build:before: 1.025ms
+
+ WARN  Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+[nuxt] vite:extend: 3.03ms
+[nuxt] vite:extendConfig: 0.403ms
+[nuxt] vite:configResolved: 0.007ms
+ℹ Building client...
+ℹ vite v7.3.1 building client environment for production...
+ℹ transforming...
+ℹ ✓ 3596 modules transformed.
+ℹ rendering chunks...
+ℹ computing gzip size...
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size3-Regular.CTq5MqoE.woff              4.42 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size4-Regular.Dl5lxZxV.woff2             4.93 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size2-Regular.Dy4dx90m.woff2             5.21 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size1-Regular.mCD8mA8B.woff2             5.47 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size4-Regular.BF-4gkZK.woff              5.98 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size2-Regular.oD1tc_U0.woff              6.19 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size1-Regular.C195tn64.woff              6.50 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Regular.Di6jR-x-.woff2       6.91 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Bold.Dq_IR9rO.woff2          6.91 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size3-Regular.DgpXs0kz.ttf               7.59 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Regular.CTRA-rTL.woff        7.66 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Bold.BEiXGLvX.woff           7.72 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Script-Regular.D3wIWfF6.woff2            9.64 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Regular.DDBCnlJ7.woff2        10.34 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size4-Regular.DWFBv043.ttf              10.36 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Script-Regular.D5yQViql.woff            10.59 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Regular.CTYiF6lA.woff2          11.32 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Bold.CL6g_b3V.woff2             11.35 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size2-Regular.B7gKUWhC.ttf              11.51 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Italic.C3H0VqGB.woff2         12.03 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Bold.D1sUS0GD.woff2           12.22 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size1-Regular.Dbsnue_I.ttf              12.23 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Regular.CS6fqUqJ.woff         12.32 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Regular.wX97UBjC.ttf        12.34 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Bold.ATXxdsX0.ttf           12.37 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Regular.Dxdc4cR9.woff           13.21 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Bold.BsDP51OF.woff              13.30 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Typewriter-Regular.CO6r4hn1.woff2       13.57 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Italic.DN2j7dab.woff          14.11 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Bold.DbIhKOiC.woff            14.41 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Typewriter-Regular.C0xS9mPB.woff        16.03 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-BoldItalic.CZnvNsCZ.woff2          16.40 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-Italic.t53AETM-.woff2              16.44 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Script-Regular.C5JkGWo-.ttf             16.65 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-BoldItalic.DxDJ3AOS.woff2          16.78 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Italic.NWA7e6Wa.woff2              16.99 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-BoldItalic.iY-2wyZ7.woff           18.67 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-Italic.DA0__PXp.woff               18.75 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-BoldItalic.SpSLRI95.woff           19.41 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Regular.BNo7hRIc.ttf          19.44 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Regular.CB_wures.ttf            19.57 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Bold.BdnERNNW.ttf               19.58 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Italic.BMLOBm91.woff               19.68 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Italic.YYjJ1zSn.ttf           22.36 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Bold.CFMepnvq.ttf             24.50 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Bold.Cx986IdX.woff2                25.32 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Regular.B22Nviop.woff2             26.27 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Typewriter-Regular.D3Ib7_Hf.ttf         27.56 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_AMS-Regular.BQhdFMY1.woff2              28.08 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Bold.Jm3AIy58.woff                 29.91 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Regular.Dr94JaBh.woff              30.77 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-BoldItalic.B3XSjfu4.ttf            31.20 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-Italic.flOr_0UB.ttf                31.31 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-BoldItalic.DzxPMmG6.ttf            32.97 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_AMS-Regular.DMm9YOAa.woff               33.52 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Italic.3WenGoN9.ttf                33.58 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Bold.waoOVXN0.ttf                  51.34 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Regular.ypZvNtVU.ttf               53.58 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_AMS-Regular.DRggAlZN.ttf                63.63 kB
+ℹ .nuxt/dist/client/manifest.json                                       65.48 kB │ gzip:     6.14 kB
+ℹ .nuxt/dist/client/_nuxt/ConfirmationModal.CJV_gWfn.css                 0.20 kB │ gzip:     0.12 kB
+ℹ .nuxt/dist/client/_nuxt/media.yjOJmL4q.css                             0.23 kB │ gzip:     0.13 kB
+ℹ .nuxt/dist/client/_nuxt/AgentDefinitionForm.B4uhkLvJ.css               0.28 kB │ gzip:     0.15 kB
+ℹ .nuxt/dist/client/_nuxt/FullScreenImageModal.aod6xn15.css              0.35 kB │ gzip:     0.17 kB
+ℹ .nuxt/dist/client/_nuxt/default.DkOS1umL.css                           0.86 kB │ gzip:     0.35 kB
+ℹ .nuxt/dist/client/_nuxt/settings.Rq5VaJW6.css                          1.58 kB │ gzip:     0.66 kB
+ℹ .nuxt/dist/client/_nuxt/FileExplorerTabs.BrK5oVEn.css                  3.20 kB │ gzip:     1.02 kB
+ℹ .nuxt/dist/client/_nuxt/useTeamRunRuntimeCatalogSync.B5h_eHhX.css      3.51 kB │ gzip:     1.19 kB
+ℹ .nuxt/dist/client/_nuxt/workspace.DrBQ9tPi.css                         9.99 kB │ gzip:     2.52 kB
+ℹ .nuxt/dist/client/_nuxt/skills.hZg4z6X7.css                           14.02 kB │ gzip:     3.04 kB
+ℹ .nuxt/dist/client/_nuxt/useWorkspaceFileExplorer.Kr8OOoy4.css         50.71 kB │ gzip:    13.07 kB
+ℹ .nuxt/dist/client/_nuxt/entry.BEYdvW6g.css                           118.65 kB │ gzip:    18.64 kB
+ℹ .nuxt/dist/client/_nuxt/C7Hx0dWB.js                                    0.09 kB │ gzip:     0.10 kB
+ℹ .nuxt/dist/client/_nuxt/BMAZkNsb.js                                    0.10 kB │ gzip:     0.11 kB
+ℹ .nuxt/dist/client/_nuxt/Gi6I4Gst.js                                    0.15 kB │ gzip:     0.13 kB
+ℹ .nuxt/dist/client/_nuxt/Cm4JEbqK.js                                    0.18 kB │ gzip:     0.15 kB
+ℹ .nuxt/dist/client/_nuxt/JM-GLapw.js                                    0.21 kB │ gzip:     0.16 kB
+ℹ .nuxt/dist/client/_nuxt/BkOeRoFp.js                                    0.22 kB │ gzip:     0.20 kB
+ℹ .nuxt/dist/client/_nuxt/b0dH-aeN.js                                    0.23 kB │ gzip:     0.20 kB
+ℹ .nuxt/dist/client/_nuxt/CduyGSmh.js                                    0.26 kB │ gzip:     0.21 kB
+ℹ .nuxt/dist/client/_nuxt/DJ65BWlP.js                                    0.35 kB │ gzip:     0.26 kB
+ℹ .nuxt/dist/client/_nuxt/BkrjDfvb.js                                    0.41 kB │ gzip:     0.27 kB
+ℹ .nuxt/dist/client/_nuxt/BRfR98gG.js                                    0.43 kB │ gzip:     0.28 kB
+ℹ .nuxt/dist/client/_nuxt/DrWrM19J.js                                    0.43 kB │ gzip:     0.28 kB
+ℹ .nuxt/dist/client/_nuxt/BaBP-2iO.js                                    0.49 kB │ gzip:     0.35 kB
+ℹ .nuxt/dist/client/_nuxt/zKhWe771.js                                    0.71 kB │ gzip:     0.45 kB
+ℹ .nuxt/dist/client/_nuxt/CE1G-McA.js                                    0.76 kB │ gzip:     0.40 kB
+ℹ .nuxt/dist/client/_nuxt/BJusQvZr.js                                    0.80 kB │ gzip:     0.41 kB
+ℹ .nuxt/dist/client/_nuxt/Ce35VpLO.js                                    0.90 kB │ gzip:     0.55 kB
+ℹ .nuxt/dist/client/_nuxt/CN-5KoOi.js                                    0.94 kB │ gzip:     0.45 kB
+ℹ .nuxt/dist/client/_nuxt/BAvv9ykd.js                                    1.04 kB │ gzip:     0.57 kB
+ℹ .nuxt/dist/client/_nuxt/CmKTTxBW.js                                    1.18 kB │ gzip:     0.57 kB
+ℹ .nuxt/dist/client/_nuxt/BaT5hDxW.js                                    1.42 kB │ gzip:     0.63 kB
+ℹ .nuxt/dist/client/_nuxt/ISd2u543.js                                    1.82 kB │ gzip:     0.83 kB
+ℹ .nuxt/dist/client/_nuxt/Cx9PAHto.js                                    2.03 kB │ gzip:     0.96 kB
+ℹ .nuxt/dist/client/_nuxt/Bv4L8bhO.js                                    2.39 kB │ gzip:     1.01 kB
+ℹ .nuxt/dist/client/_nuxt/D94HgWQM.js                                    2.56 kB │ gzip:     1.27 kB
+ℹ .nuxt/dist/client/_nuxt/CuC6gZbe.js                                    3.43 kB │ gzip:     1.47 kB
+ℹ .nuxt/dist/client/_nuxt/B0zyb9e3.js                                    3.48 kB │ gzip:     1.40 kB
+ℹ .nuxt/dist/client/_nuxt/BEZHqT4E.js                                    3.57 kB │ gzip:     1.29 kB
+ℹ .nuxt/dist/client/_nuxt/uQ3RwX9D.js                                    3.83 kB │ gzip:     1.50 kB
+ℹ .nuxt/dist/client/_nuxt/Vv6WKdPl.js                                    4.31 kB │ gzip:     1.86 kB
+ℹ .nuxt/dist/client/_nuxt/DX6XiGOO.js                                    4.69 kB │ gzip:     2.18 kB
+ℹ .nuxt/dist/client/_nuxt/Bxi0l9oz.js                                    4.71 kB │ gzip:     1.84 kB
+ℹ .nuxt/dist/client/_nuxt/Cswi31J0.js                                    4.74 kB │ gzip:     1.88 kB
+ℹ .nuxt/dist/client/_nuxt/Ctfh6dNp.js                                    4.85 kB │ gzip:     1.46 kB
+ℹ .nuxt/dist/client/_nuxt/JT9zfYsN.js                                    4.95 kB │ gzip:     2.03 kB
+ℹ .nuxt/dist/client/_nuxt/CJ0u63a9.js                                    4.98 kB │ gzip:     1.87 kB
+ℹ .nuxt/dist/client/_nuxt/KDqzNlZC.js                                    5.23 kB │ gzip:     2.29 kB
+ℹ .nuxt/dist/client/_nuxt/ztLp8x_c.js                                    5.27 kB │ gzip:     2.11 kB
+ℹ .nuxt/dist/client/_nuxt/xYBn5Q9t.js                                    5.63 kB │ gzip:     2.31 kB
+ℹ .nuxt/dist/client/_nuxt/DUIFZMiN.js                                    5.63 kB │ gzip:     2.29 kB
+ℹ .nuxt/dist/client/_nuxt/ZTRlnGoz.js                                    5.84 kB │ gzip:     2.33 kB
+ℹ .nuxt/dist/client/_nuxt/lwIEdtwd.js                                    5.90 kB │ gzip:     1.85 kB
+ℹ .nuxt/dist/client/_nuxt/Sd2MAPPu.js                                    5.91 kB │ gzip:     2.47 kB
+ℹ .nuxt/dist/client/_nuxt/DqJix7dW.js                                    7.72 kB │ gzip:     1.93 kB
+ℹ .nuxt/dist/client/_nuxt/DRcKBGup.js                                    8.63 kB │ gzip:     1.79 kB
+ℹ .nuxt/dist/client/_nuxt/BdR-kJsk.js                                    9.24 kB │ gzip:     1.90 kB
+ℹ .nuxt/dist/client/_nuxt/D5PK7tM2.js                                   10.37 kB │ gzip:     3.60 kB
+ℹ .nuxt/dist/client/_nuxt/Dv_zL3ug.js                                   11.03 kB │ gzip:     4.10 kB
+ℹ .nuxt/dist/client/_nuxt/CjWRGwif.js                                   11.88 kB │ gzip:     4.64 kB
+ℹ .nuxt/dist/client/_nuxt/C0-A_RkL.js                                   13.22 kB │ gzip:     4.45 kB
+ℹ .nuxt/dist/client/_nuxt/Cf_q-zwL.js                                   14.16 kB │ gzip:     4.43 kB
+ℹ .nuxt/dist/client/_nuxt/CKeRHbe_.js                                   15.83 kB │ gzip:     5.62 kB
+ℹ .nuxt/dist/client/_nuxt/6N_5d-D_.js                                   17.65 kB │ gzip:     5.17 kB
+ℹ .nuxt/dist/client/_nuxt/n5LYLhdU.js                                   18.47 kB │ gzip:     7.21 kB
+ℹ .nuxt/dist/client/_nuxt/C-A0Kqvs.js                                   20.07 kB │ gzip:     6.90 kB
+ℹ .nuxt/dist/client/_nuxt/o0vyeoad.js                                   20.25 kB │ gzip:     7.18 kB
+ℹ .nuxt/dist/client/_nuxt/BXNy7eDI.js                                   22.17 kB │ gzip:     8.14 kB
+ℹ .nuxt/dist/client/_nuxt/Cv36wx1v.js                                   23.26 kB │ gzip:     6.78 kB
+ℹ .nuxt/dist/client/_nuxt/CQMMYJ5D.js                                   23.57 kB │ gzip:     8.32 kB
+ℹ .nuxt/dist/client/_nuxt/BECCZ77L.js                                   23.65 kB │ gzip:     8.25 kB
+ℹ .nuxt/dist/client/_nuxt/Bmg3aZXI.js                                   24.12 kB │ gzip:     7.40 kB
+ℹ .nuxt/dist/client/_nuxt/uD-2fpTr.js                                   25.26 kB │ gzip:     8.82 kB
+ℹ .nuxt/dist/client/_nuxt/DgsB4xDJ.js                                   25.61 kB │ gzip:    10.06 kB
+ℹ .nuxt/dist/client/_nuxt/DynoAXGM.js                                   27.35 kB │ gzip:     9.70 kB
+ℹ .nuxt/dist/client/_nuxt/B15iQoh4.js                                   28.17 kB │ gzip:     8.20 kB
+ℹ .nuxt/dist/client/_nuxt/BU1CzONi.js                                   30.12 kB │ gzip:     9.42 kB
+ℹ .nuxt/dist/client/_nuxt/BaKBBpi-.js                                   32.10 kB │ gzip:    10.09 kB
+ℹ .nuxt/dist/client/_nuxt/COZCTXiI.js                                   33.88 kB │ gzip:     9.94 kB
+ℹ .nuxt/dist/client/_nuxt/CgTFKdeN.js                                   36.30 kB │ gzip:    11.79 kB
+ℹ .nuxt/dist/client/_nuxt/BAX2AIOA.js                                   36.41 kB │ gzip:     9.18 kB
+ℹ .nuxt/dist/client/_nuxt/Cv9Q30gt.js                                   40.21 kB │ gzip:    11.34 kB
+ℹ .nuxt/dist/client/_nuxt/8wGwwV5F.js                                   45.25 kB │ gzip:    14.64 kB
+ℹ .nuxt/dist/client/_nuxt/EgNALjBS.js                                   46.40 kB │ gzip:    10.15 kB
+ℹ .nuxt/dist/client/_nuxt/5QdBJHGq.js                                   50.51 kB │ gzip:    13.44 kB
+ℹ .nuxt/dist/client/_nuxt/C82f2UW9.js                                   58.74 kB │ gzip:    15.03 kB
+ℹ .nuxt/dist/client/_nuxt/-yWm0P2R.js                                   60.46 kB │ gzip:    19.40 kB
+ℹ .nuxt/dist/client/_nuxt/DVk-JDct.js                                   67.24 kB │ gzip:    15.74 kB
+ℹ .nuxt/dist/client/_nuxt/D5Gd7Ln8.js                                   68.35 kB │ gzip:    23.15 kB
+ℹ .nuxt/dist/client/_nuxt/CQB_dNke.js                                   70.18 kB │ gzip:    19.69 kB
+ℹ .nuxt/dist/client/_nuxt/DgervPn-.js                                   71.80 kB │ gzip:    20.49 kB
+ℹ .nuxt/dist/client/_nuxt/DlTg4qS9.js                                   74.03 kB │ gzip:    17.01 kB
+ℹ .nuxt/dist/client/_nuxt/BTGDgai6.js                                   74.80 kB │ gzip:    17.32 kB
+ℹ .nuxt/dist/client/_nuxt/CTl8oypi.js                                   81.75 kB │ gzip:    22.49 kB
+ℹ .nuxt/dist/client/_nuxt/C8MS7_DF.js                                   86.73 kB │ gzip:    25.32 kB
+ℹ .nuxt/dist/client/_nuxt/BT52mYSa.js                                   97.84 kB │ gzip:    26.85 kB
+ℹ .nuxt/dist/client/_nuxt/BjPNoMlr.js                                  109.53 kB │ gzip:    29.52 kB
+ℹ .nuxt/dist/client/_nuxt/VBZKKftv.js                                  148.62 kB │ gzip:    42.01 kB
+ℹ .nuxt/dist/client/_nuxt/BAFI1XQw.js                                  334.47 kB │ gzip:    85.98 kB
+ℹ .nuxt/dist/client/_nuxt/5J0xJHOV.js                                  441.64 kB │ gzip:   141.47 kB
+ℹ .nuxt/dist/client/_nuxt/CUyBEbHi.js                                  452.84 kB │ gzip:   107.02 kB
+ℹ .nuxt/dist/client/_nuxt/BVhP2_YG.js                                  495.72 kB │ gzip:   130.23 kB
+ℹ .nuxt/dist/client/_nuxt/BGREInQw.js                                  657.31 kB │ gzip:   177.21 kB
+ℹ .nuxt/dist/client/_nuxt/DfQEkGPq.js                                  972.05 kB │ gzip:   266.92 kB
+ℹ .nuxt/dist/client/_nuxt/D7MfrUw2.js                                3,764.27 kB │ gzip: 1,211.54 kB
+
+ WARN
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+
+ℹ ✓ built in 19.43s
+[nuxt] vite:compiled: 0.017ms
+✔ Client built in 19442ms
+[nuxt] vite:extendConfig: 0.602ms
+[nuxt] vite:configResolved: 0.007ms
+ℹ Building server...
+ℹ vite v7.3.1 building ssr environment for production...
+ℹ transforming...
+ℹ ✓ 1 modules transformed.
+ℹ rendering chunks...
+ℹ .nuxt/dist/server/styles.mjs  0.07 kB
+ℹ .nuxt/dist/server/server.mjs  0.10 kB │ map: 0.37 kB
+ℹ ✓ built in 12ms
+[nuxt] build:manifest: 0.768ms
+[nuxt] vite:compiled: 0.018ms
+✔ Server built in 114ms
+[nuxt] schema:beforeWrite: 0.006ms
+[nuxt] schema:written: 0.012ms
+[nuxt] nitro:build:before: 0.404ms
+[nuxt] prerender:routes: 0.007ms
+[nitro] prerender:routes: 0.207ms
+[nitro] ℹ Initializing prerenderer
+[nitro] prerender:config: 0.006ms
+[nitro] prerender:init: 0.016ms
+[nitro] build:before: 0.007ms
+[nitro] rollup:before: 0.026ms
+[nitro] types:extend: 0.013ms
+[nitro] compiled: 0.014ms
+⚙ > Load chunks/nitro/nitro (3ms)
+[nitro] ℹ Prerendering 15 initial routes with crawler
+[nitro-runtime] request: 0.724ms
+[nitro-runtime] request : 0.636ms
+[nitro-runtime] request  : 0.637ms
+[nitro-runtime] request   : 0.649ms
+[nitro-runtime] request    : 0.575ms
+[nitro-runtime] request     : 0.565ms
+[nitro-runtime] request      : 0.568ms
+[nitro-runtime] request       : 0.573ms
+[nitro-runtime] request        : 0.507ms
+[nitro-runtime] request         : 0.49ms
+[nitro-runtime] request          : 0.501ms
+[nitro-runtime] request           : 0.516ms
+[nitro-runtime] request            : 0.534ms
+[nitro-runtime] request             : 0.55ms
+[nitro-runtime] request              : 0.568ms
+[nitro-runtime] render:before: 0.075ms
+[nitro-runtime] render:before : 0.184ms
+[nitro-runtime] render:before  : 0.226ms
+[nitro-runtime] render:before   : 0.262ms
+[nitro-runtime] render:before    : 0.298ms
+[nitro-runtime] render:before     : 0.333ms
+[nitro-runtime] render:before      : 0.369ms
+[nitro-runtime] render:before       : 0.407ms
+[nitro-runtime] render:before        : 0.459ms
+[nitro-runtime] render:before         : 0.497ms
+[nitro-runtime] render:before          : 0.53ms
+[nitro-runtime] render:before           : 0.565ms
+[nitro-runtime] render:before            : 0.603ms
+[nitro-runtime] render:before             : 0.641ms
+[nitro-runtime] render:before              : 0.683ms
+⚙ > Load chunks/build/client.precomputed (3ms)
+[nitro-runtime] render:html: 0.119ms
+[nitro-runtime] render:html : 0.23ms
+[nitro-runtime] render:html  : 0.27ms
+[nitro-runtime] render:html   : 0.297ms
+[nitro-runtime] render:html    : 0.324ms
+[nitro-runtime] render:html     : 0.353ms
+[nitro-runtime] render:html      : 0.381ms
+[nitro-runtime] render:html       : 0.412ms
+[nitro-runtime] render:html        : 0.441ms
+[nitro-runtime] render:html         : 0.471ms
+[nitro-runtime] render:html          : 0.501ms
+[nitro-runtime] render:html           : 0.533ms
+[nitro-runtime] render:html            : 0.563ms
+[nitro-runtime] render:html             : 0.595ms
+[nitro-runtime] render:html              : 0.626ms
+[nitro-runtime] render:response: 0.054ms
+[nitro-runtime] render:response : 0.089ms
+[nitro-runtime] render:response  : 0.129ms
+[nitro-runtime] render:response   : 0.166ms
+[nitro-runtime] render:response    : 0.2ms
+[nitro-runtime] render:response     : 0.234ms
+[nitro-runtime] render:response      : 0.268ms
+[nitro-runtime] render:response       : 0.301ms
+[nitro-runtime] render:response        : 0.338ms
+[nitro-runtime] render:response         : 0.373ms
+[nitro-runtime] render:response          : 0.407ms
+[nitro-runtime] render:response           : 0.445ms
+[nitro-runtime] render:response            : 0.483ms
+[nitro-runtime] render:response             : 0.531ms
+[nitro-runtime] render:response              : 0.57ms
+[nitro-runtime] beforeResponse: 0.068ms
+[nitro-runtime] beforeResponse : 0.152ms
+[nitro-runtime] beforeResponse  : 0.197ms
+[nitro-runtime] beforeResponse   : 0.234ms
+[nitro-runtime] beforeResponse    : 0.342ms
+[nitro-runtime] beforeResponse     : 0.401ms
+[nitro-runtime] beforeResponse      : 0.443ms
+[nitro-runtime] beforeResponse       : 0.481ms
+[nitro-runtime] beforeResponse        : 0.518ms
+[nitro-runtime] beforeResponse         : 0.555ms
+[nitro-runtime] beforeResponse          : 0.592ms
+[nitro-runtime] beforeResponse           : 0.63ms
+[nitro-runtime] beforeResponse            : 0.67ms
+[nitro-runtime] beforeResponse             : 0.708ms
+[nitro-runtime] beforeResponse              : 0.745ms
+[nitro-runtime] afterResponse: 0.014ms
+[nitro] prerender:generate: 0.011ms
+[nitro-runtime] afterResponse: 0.006ms
+[nitro] prerender:generate: 0.007ms
+[nitro-runtime] afterResponse: 0.005ms
+[nitro] prerender:generate: 0.005ms
+[nitro-runtime] afterResponse: 0.009ms
+[nitro] prerender:generate: 0.004ms
+[nitro-runtime] afterResponse: 0.005ms
+[nitro] prerender:generate: 0.013ms
+[nitro-runtime] afterResponse: 0.007ms
+[nitro] prerender:generate: 0.008ms
+[nitro-runtime] afterResponse: 0.011ms
+[nitro] prerender:generate: 0.006ms
+[nitro-runtime] afterResponse: 0.005ms
+[nitro] prerender:generate: 0.005ms
+[nitro-runtime] afterResponse: 0.004ms
+[nitro] prerender:generate: 0.006ms
+[nitro-runtime] afterResponse: 0.005ms
+[nitro] prerender:generate: 0.005ms
+[nitro-runtime] afterResponse: 0.005ms
+[nitro] prerender:generate: 0.004ms
+[nitro-runtime] afterResponse: 0.004ms
+[nitro] prerender:generate: 0.004ms
+[nitro-runtime] afterResponse: 0.004ms
+[nitro] prerender:generate: 0.003ms
+[nitro-runtime] afterResponse: 0.004ms
+[nitro] prerender:generate: 0.005ms
+[nitro-runtime] afterResponse: 0.004ms
+[nitro] prerender:generate: 0.004ms
+[nitro] prerender:route: 0.012ms
+[nitro]   ├─ /nodes (47ms)
+[nitro] prerender:route: 0.006ms
+[nitro]   ├─ /media (46ms)
+[nitro] prerender:route: 0.007ms
+[nitro]   ├─ /agents (48ms)
+[nitro] prerender:route: 0.005ms
+[nitro]   ├─ /tools (47ms)
+[nitro] prerender:route: 0.004ms
+[nitro]   ├─ /skills (49ms)
+[nitro] prerender:route: 0.004ms
+[nitro]   ├─ /settings (50ms)
+[nitro] prerender:route: 0.004ms
+[nitro]   ├─ /workspace (51ms)
+[nitro] prerender:route: 0.004ms
+[nitro]   ├─ /applications (50ms)
+[nitro] prerender:route: 0.004ms
+[nitro]   ├─ /memory (48ms)
+[nitro] prerender:route: 0.004ms
+[nitro]   ├─ /agent-teams (50ms)
+[nitro] prerender:route: 0.008ms
+[nitro]   ├─ / (46ms)
+[nitro] prerender:route: 0.005ms
+[nitro]   ├─ /mobile (49ms)
+[nitro]   ├─ /index.html (51ms)
+[nitro] prerender:route: 0.005ms
+[nitro] prerender:route: 0.008ms
+[nitro]   ├─ /200.html (50ms)
+[nitro] prerender:route: 0.012ms
+[nitro]   ├─ /404.html (50ms)
+[nitro-runtime] close: 0.007ms
+[nitro] prerender:done: 0.004ms
+[nitro] ℹ Prerendered 15 routes in 0.971 seconds
+[nitro] build:before: 0.074ms
+[nitro] ✔ Generated public dist/public
+[nuxt] nitro:build:public-assets: 0.013ms
+[nitro] rollup:before: 88.265ms
+[nitro] types:extend: 0.014ms
+[nitro] compiled: 0.009ms
+[nitro] ✔ You can preview this build using npx serve dist/public
+[nuxt] build:done: 1.197s
+[nitro] close: 0.102ms
+[nuxt] close: 0.275ms
+│
+▲  HTML content not prerendered because ssr: false was set.
+│
+●  You can read more in https://nuxt.com/docs/getting-started/deployment#static-hosting.
+│
+└  ✨ You can now deploy dist/public to any static hosting!
+Mobile web assets written to /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/dist-mobile/public
+
+[0;33mDeploying server package into Electron resources...[0m
+ WARN  Shared workspace lockfile detected but configuration forces legacy deploy implementation.
+Packages are cloned from the content-addressable store to the virtual store.
+  Content-addressable store is at: /Users/normy/Library/pnpm/store/v10
+  Virtual store is at:             autobyteus-web/resources/server/node_modules/.pnpm
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Progress: resolved 524, reused 0, downloaded 0, added 0
+Progress: resolved 1841, reused 0, downloaded 0, added 0
+Progress: resolved 1868, reused 1, downloaded 0, added 0
+ WARN  22 deprecated subdependencies found: @babel/plugin-proposal-class-properties@7.18.6, @babel/plugin-proposal-object-rest-spread@7.20.7, @graphql-tools/prisma-loader@8.0.17, @npmcli/move-file@2.0.1, are-we-there-yet@3.0.1, gauge@4.0.4, glob@10.5.0, glob@7.2.3, glob@8.1.0, har-validator@5.1.5, inflight@1.0.6, lodash.get@4.4.2, lodash.isequal@4.5.0, mkdirp@0.5.1, node-domexception@1.0.0, npmlog@6.0.2, phin@3.7.1, request@2.88.2, rimraf@3.0.2, tar@6.2.1, uuid@3.4.0, whatwg-encoding@3.1.1
+Progress: resolved 1883, reused 1, downloaded 0, added 0, done
+ WARN  Issues with peer dependencies found
+autobyteus-web
+└─┬ nuxt 3.21.1
+  └─┬ @nuxt/cli 3.33.1
+    ├── ✕ unmet peer @nuxt/schema@^4.3.0: found 3.21.1
+    └─┬ @bomb.sh/tab 0.0.12
+      └── ✕ unmet peer citty@^0.1.6: found 0.2.1
+.                                        | +416 ++++++++++++++++++++++++++++++++
+╭ Warning ─────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│   Ignored build scripts: autobyteus-ts@file:autobyteus-ts.                   │
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+[0;33mCleaning workspace symlinks in deployment...[0m
+Removed 1 external symlinks from /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/resources/server/node_modules/.pnpm/node_modules
+
+[0;33mRemoving non-runtime test fixtures from deployed dependencies...[0m
+
+[0;33mGenerating Prisma client (ensures engines are bundled)...[0m
+Environment variables loaded from .env
+Prisma schema loaded from resources/server/prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 141ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Help us improve the Prisma ORM for everyone. Share your feedback in a short 2-min survey: https://pris.ly/orm/survey/release-5-22
+
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 7.9.1                       │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+
+[0;33mPruning native prebuilds for host platform...[0m
+
+[0;33mRebuilding native modules for Electron...[0m
+Searching dependency tree
+Building modules: node-pty, node-pty
+✔ Rebuild Complete
+
+[0;33mNormalizing node-pty spawn-helper execute bits...[0m
+[0;32m✓[0m Normalized execute bits on 3 node-pty spawn-helper file(s)
+
+[0;33mRemoving symlinks that point outside the bundle...[0m
+Removed 0 external symlinks from /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/resources/server
+
+[0;32m=======================================[0m
+[0;32m   Server files prepared successfully!   [0m
+[0;32m=======================================[0m
+Target directory: [0;33m/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/resources/server[0m
+You can now build the Electron app with the server included
+
+> autobyteus@1.4.45 generate:electron /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web
+> cross-env NODE_ENV=production BUILD_TARGET=electron nuxt generate
+
+┌  Building Nuxt for production...
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+[nuxt] modules:before: 0.085ms
+isElectronBuild true
+[nuxt] kit:compatibility: 0.045ms
+[nuxt] kit:compatibility: 0.089ms
+[nuxt] kit:compatibility : 0.181ms
+ℹ Module pinia took 2.52ms to setup.
+ℹ Module devhandler-compat took 0.03ms to setup.
+[nuxt] kit:compatibility: 0.144ms
+[Electron Module] Initializing electron module
+⚙ [Electron Module] Electron options: { buildEntries: [ 'electron/main.ts', 'electron/preload.ts' ],
+  rendererConfig: false,
+  disableDefaultOptions: undefined }
+[Electron Module] Applying default Electron configurations
+⚙ [Electron Module] SSR disabled
+[Electron Module] Configuring for Electron build target
+⚙ [Electron Module] Electron build config applied: { baseURL: './', buildAssetsDir: '_nuxt/', hashMode: true }
+[Electron Module] Configuring production settings
+⚙ [Electron Module] Production config applied: { baseURL: './' }
+[Electron Module] Electron module initialization completed
+ℹ Module electron took 1.76ms to setup.
+[nuxt] pages:routerOptions: 0.024ms
+ℹ Module nuxt:pages took 10.46ms to setup.
+ℹ Module nuxt:meta took 2.36ms to setup.
+[nuxt] kit:compatibility: 0.377ms
+ℹ Module nuxt:components took 5.39ms to setup.
+ℹ Module nuxt:imports took 1.2ms to setup.
+ℹ Module nuxt:nuxt-config-schema took 0.3ms to setup.
+ℹ Module @nuxt/telemetry took 0.08ms to setup.
+[nuxt] imports:dirs: 0.108ms
+[nuxt] imports:sources: 0.062ms
+[nuxt] imports:context: 0.127ms
+[nuxt] imports:extend: 0.049ms
+[nuxt] builder:generateApp: 0.007ms
+[nuxt] schema:extend: 0.011ms
+[nuxt] schema:resolved: 0.006ms
+[nuxt] modules:done: 126.183ms
+[nuxt] nitro:config: 65.019ms
+[nuxt] nitro:init: 0.513ms
+[nuxt] ready: 0.01ms
+│
+●  Nitro preset: static
+[nitro] types:extend: 0.013ms
+[nuxt] prepare:types: 56.698ms
+[nuxt] components:dirs: 0.009ms
+[nuxt] app:resolve: 1.06ms
+[nuxt] pages:extend: 0.092ms
+[nuxt] pages:resolved: 0.133ms
+[nuxt] components:extend: 0.521ms
+[nuxt] app:templates: 47.401ms
+[nuxt] ℹ Compiled app-component.mjs in 10.03ms
+[nuxt] ℹ Compiled types/app.config.d.ts in 10.05ms
+[nuxt] ℹ Compiled app.config.mjs in 10.1ms
+[nuxt] ℹ Compiled types/app-defaults.d.ts in 10.14ms
+[nuxt] ℹ Compiled types/build.d.ts in 10.2ms
+[nuxt] ℹ Compiled nitro.client.mjs in 9.97ms
+[nuxt] ℹ Compiled css.mjs in 10.01ms
+[nuxt] ℹ Compiled fetch.mjs in 10.05ms
+[nuxt] ℹ Compiled error-component.mjs in 10.1ms
+[nuxt] ℹ Compiled global-polyfills.mjs in 10.27ms
+[nuxt] ℹ Compiled layouts.mjs in 10.34ms
+[nuxt] ℹ Compiled middleware.mjs in 10.11ms
+[nuxt] ℹ Compiled nuxt.config.mjs in 9.98ms
+[nuxt] ℹ Compiled paths.mjs in 9.74ms
+[nuxt] ℹ Compiled root-component.mjs in 9.76ms
+[nuxt] ℹ Compiled test-component-wrapper.mjs in 9.58ms
+[nuxt] ℹ Compiled types/vue-shim.d.ts in 9.64ms
+[nuxt] ℹ Compiled types/nitro-layouts.d.ts in 9.7ms
+[nuxt] ℹ Compiled types/builder-env.d.ts in 9.75ms
+[nuxt] ℹ Compiled routes.mjs in 9.82ms
+[nuxt] ℹ Compiled pages.mjs in 8.83ms
+[nuxt] ℹ Compiled types/middleware.d.ts in 8.73ms
+[nuxt] ℹ Compiled types/nitro-middleware.d.ts in 8.78ms
+[nuxt] ℹ Compiled types/layouts.d.ts in 8.83ms
+[nuxt] ℹ Compiled unhead-options.mjs in 8.85ms
+[nuxt] ℹ Compiled unhead.config.mjs in 8.9ms
+[nuxt] ℹ Compiled components.d.ts in 8.95ms
+[nuxt] ℹ Compiled types/components.d.ts in 5.72ms
+[nuxt] ℹ Compiled components.plugin.mjs in 3.77ms
+[nuxt] ℹ Compiled component-names.mjs in 3.76ms
+[nuxt] ℹ Compiled components.islands.mjs in 3.78ms
+[nuxt] ℹ Compiled component-chunk.mjs in 3.74ms
+[nuxt] ℹ Compiled route-rules.mjs in 15.32ms
+[nuxt] nitro:prepare:types: 15.764ms
+[nuxt] ℹ Compiled imports.mjs in 15.99ms
+[nuxt] ℹ Compiled imports.d.ts in 16.02ms
+[nuxt] ℹ Compiled types/nitro-nuxt.d.ts in 16.66ms
+[nuxt] ℹ Compiled types/schema.d.ts in 24.5ms
+[nuxt] ℹ Compiled types/imports.d.ts in 22.02ms
+[nuxt] pages:routerOptions: 0.014ms
+[nuxt] ℹ Compiled router.options.mjs in 29.41ms
+[nuxt] ℹ Compiled plugins.server.mjs in 10.07ms
+[nuxt] ℹ Compiled plugins.client.mjs in 17.1ms
+[nuxt] ℹ Compiled types/plugins.d.ts in 19.64ms
+[nuxt] imports:extend: 0.025ms
+[nuxt] builder:generateApp: 0.006ms
+[nuxt] app:templatesGenerated: 93.672ms
+[nuxt] build:before: 1.085ms
+
+ WARN  Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+[nuxt] vite:extend: 2.616ms
+[Electron Module] Extending Vite config
+[nuxt] vite:extendConfig: 0.483ms
+[nuxt] vite:configResolved: 0.007ms
+ℹ Building client...
+[Electron Module] Vite config resolved: { mode: 'production', base: './', buildTarget: 'electron' }
+ℹ vite v7.3.1 building client environment for production...
+ℹ transforming...
+ℹ ✓ 3596 modules transformed.
+ℹ rendering chunks...
+ℹ computing gzip size...
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size3-Regular.CTq5MqoE.woff                4.42 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size4-Regular.Dl5lxZxV.woff2               4.93 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size2-Regular.Dy4dx90m.woff2               5.21 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size1-Regular.mCD8mA8B.woff2               5.47 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size4-Regular.BF-4gkZK.woff                5.98 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size2-Regular.oD1tc_U0.woff                6.19 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size1-Regular.C195tn64.woff                6.50 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Regular.Di6jR-x-.woff2         6.91 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Bold.Dq_IR9rO.woff2            6.91 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size3-Regular.DgpXs0kz.ttf                 7.59 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Regular.CTRA-rTL.woff          7.66 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Bold.BEiXGLvX.woff             7.72 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Script-Regular.D3wIWfF6.woff2              9.64 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Regular.DDBCnlJ7.woff2          10.34 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size4-Regular.DWFBv043.ttf                10.36 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Script-Regular.D5yQViql.woff              10.59 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Regular.CTYiF6lA.woff2            11.32 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Bold.CL6g_b3V.woff2               11.35 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size2-Regular.B7gKUWhC.ttf                11.51 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Italic.C3H0VqGB.woff2           12.03 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Bold.D1sUS0GD.woff2             12.22 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size1-Regular.Dbsnue_I.ttf                12.23 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Regular.CS6fqUqJ.woff           12.32 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Regular.wX97UBjC.ttf          12.34 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Bold.ATXxdsX0.ttf             12.37 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Regular.Dxdc4cR9.woff             13.21 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Bold.BsDP51OF.woff                13.30 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Typewriter-Regular.CO6r4hn1.woff2         13.57 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Italic.DN2j7dab.woff            14.11 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Bold.DbIhKOiC.woff              14.41 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Typewriter-Regular.C0xS9mPB.woff          16.03 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-BoldItalic.CZnvNsCZ.woff2            16.40 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-Italic.t53AETM-.woff2                16.44 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Script-Regular.C5JkGWo-.ttf               16.65 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-BoldItalic.DxDJ3AOS.woff2            16.78 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Italic.NWA7e6Wa.woff2                16.99 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-BoldItalic.iY-2wyZ7.woff             18.67 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-Italic.DA0__PXp.woff                 18.75 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-BoldItalic.SpSLRI95.woff             19.41 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Regular.BNo7hRIc.ttf            19.44 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Regular.CB_wures.ttf              19.57 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Bold.BdnERNNW.ttf                 19.58 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Italic.BMLOBm91.woff                 19.68 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Italic.YYjJ1zSn.ttf             22.36 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Bold.CFMepnvq.ttf               24.50 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Bold.Cx986IdX.woff2                  25.32 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Regular.B22Nviop.woff2               26.27 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Typewriter-Regular.D3Ib7_Hf.ttf           27.56 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_AMS-Regular.BQhdFMY1.woff2                28.08 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Bold.Jm3AIy58.woff                   29.91 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Regular.Dr94JaBh.woff                30.77 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-BoldItalic.B3XSjfu4.ttf              31.20 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-Italic.flOr_0UB.ttf                  31.31 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-BoldItalic.DzxPMmG6.ttf              32.97 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_AMS-Regular.DMm9YOAa.woff                 33.52 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Italic.3WenGoN9.ttf                  33.58 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Bold.waoOVXN0.ttf                    51.34 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Regular.ypZvNtVU.ttf                 53.58 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_AMS-Regular.DRggAlZN.ttf                  63.63 kB
+ℹ .nuxt/dist/client/manifest.json                                         74.77 kB │ gzip:     6.51 kB
+ℹ .nuxt/dist/client/_nuxt/ConfirmationModal.CJV_gWfn.css                   0.20 kB │ gzip:     0.12 kB
+ℹ .nuxt/dist/client/_nuxt/media.yjOJmL4q.css                               0.23 kB │ gzip:     0.13 kB
+ℹ .nuxt/dist/client/_nuxt/AgentDefinitionForm.B4uhkLvJ.css                 0.28 kB │ gzip:     0.15 kB
+ℹ .nuxt/dist/client/_nuxt/FullScreenImageModal.aod6xn15.css                0.35 kB │ gzip:     0.17 kB
+ℹ .nuxt/dist/client/_nuxt/default.DkOS1umL.css                             0.86 kB │ gzip:     0.35 kB
+ℹ .nuxt/dist/client/_nuxt/settings.Rq5VaJW6.css                            1.58 kB │ gzip:     0.66 kB
+ℹ .nuxt/dist/client/_nuxt/FileExplorerTabs.BrK5oVEn.css                    3.20 kB │ gzip:     1.02 kB
+ℹ .nuxt/dist/client/_nuxt/useTeamRunRuntimeCatalogSync.B5h_eHhX.css        3.51 kB │ gzip:     1.19 kB
+ℹ .nuxt/dist/client/_nuxt/workspace.DrBQ9tPi.css                           9.99 kB │ gzip:     2.52 kB
+ℹ .nuxt/dist/client/_nuxt/skills.hZg4z6X7.css                             14.02 kB │ gzip:     3.04 kB
+ℹ .nuxt/dist/client/_nuxt/useWorkspaceFileExplorer.Kr8OOoy4.css           50.71 kB │ gzip:    13.07 kB
+ℹ .nuxt/dist/client/_nuxt/entry.BEYdvW6g.css                             118.65 kB │ gzip:    18.64 kB
+ℹ .nuxt/dist/client/_nuxt/clone.DnAx0VCX.js                                0.10 kB │ gzip:     0.11 kB
+ℹ .nuxt/dist/client/_nuxt/channel.D9X7gHJW.js                              0.13 kB │ gzip:     0.14 kB
+ℹ .nuxt/dist/client/_nuxt/init.Gi6I4Gst.js                                 0.15 kB │ gzip:     0.13 kB
+ℹ .nuxt/dist/client/_nuxt/chunk-QZHKN3VN.D5zBEX1d.js                       0.21 kB │ gzip:     0.17 kB
+ℹ .nuxt/dist/client/_nuxt/settings.b0dH-aeN.js                             0.23 kB │ gzip:     0.20 kB
+ℹ .nuxt/dist/client/_nuxt/chunk-4BX2VUAB.D8t3qXAT.js                       0.24 kB │ gzip:     0.18 kB
+ℹ .nuxt/dist/client/_nuxt/chunk-55IACEB6.Y4vLMztR.js                       0.25 kB │ gzip:     0.22 kB
+ℹ .nuxt/dist/client/_nuxt/tools.W2L8kmq4.js                                0.31 kB │ gzip:     0.24 kB
+ℹ .nuxt/dist/client/_nuxt/chunk-FMBD7UC4.BI_668O6.js                       0.38 kB │ gzip:     0.28 kB
+ℹ .nuxt/dist/client/_nuxt/chunk-QN33PNHL.Cy5cIyRw.js                       0.52 kB │ gzip:     0.37 kB
+ℹ .nuxt/dist/client/_nuxt/stateDiagram-v2-4FDKWEC3.BGBaVTlo.js             0.53 kB │ gzip:     0.36 kB
+ℹ .nuxt/dist/client/_nuxt/classDiagram-2ON5EDUG.CWVgJnWX.js                0.57 kB │ gzip:     0.38 kB
+ℹ .nuxt/dist/client/_nuxt/classDiagram-v2-WZHVMYZB.CWVgJnWX.js             0.57 kB │ gzip:     0.38 kB
+ℹ .nuxt/dist/client/_nuxt/_commonjsHelpers.CE1G-McA.js                     0.76 kB │ gzip:     0.40 kB
+ℹ .nuxt/dist/client/_nuxt/useNativeFolderDialog.BJusQvZr.js                0.80 kB │ gzip:     0.41 kB
+ℹ .nuxt/dist/client/_nuxt/infoDiagram-HS3SLOUP.JxsjbeGe.js                 0.83 kB │ gzip:     0.53 kB
+ℹ .nuxt/dist/client/_nuxt/api.CN-5KoOi.js                                  0.94 kB │ gzip:     0.45 kB
+ℹ .nuxt/dist/client/_nuxt/index.B6nDLmrR.js                                1.16 kB │ gzip:     0.72 kB
+ℹ .nuxt/dist/client/_nuxt/ordinal.BYWQX77i.js                              1.19 kB │ gzip:     0.57 kB
+ℹ .nuxt/dist/client/_nuxt/mobile.BVO8Zp6g.js                               1.31 kB │ gzip:     0.73 kB
+ℹ .nuxt/dist/client/_nuxt/chunk-TZMSLE5B.oEn0-8nq.js                       1.45 kB │ gzip:     0.65 kB
+ℹ .nuxt/dist/client/_nuxt/applicationAssetUrl.ISd2u543.js                  1.82 kB │ gzip:     0.83 kB
+ℹ .nuxt/dist/client/_nuxt/ConfirmationModal.Cx9PAHto.js                    2.03 kB │ gzip:     0.96 kB
+ℹ .nuxt/dist/client/_nuxt/featuredCatalogItems.Bv4L8bhO.js                 2.39 kB │ gzip:     1.01 kB
+ℹ .nuxt/dist/client/_nuxt/_basePickBy.D4yzcwvL.js                          2.60 kB │ gzip:     1.30 kB
+ℹ .nuxt/dist/client/_nuxt/arc.CGhfzkTF.js                                  3.45 kB │ gzip:     1.50 kB
+ℹ .nuxt/dist/client/_nuxt/mobileWorkStore.BEZHqT4E.js                      3.57 kB │ gzip:     1.29 kB
+ℹ .nuxt/dist/client/_nuxt/useEventMonitorFilePreview.8oyKUvj4.js           3.68 kB │ gzip:     1.46 kB
+ℹ .nuxt/dist/client/_nuxt/applicationStore.uQ3RwX9D.js                     3.83 kB │ gzip:     1.50 kB
+ℹ .nuxt/dist/client/_nuxt/diagram-S2PKOQOG.C_ypLoXy.js                     4.45 kB │ gzip:     1.97 kB
+ℹ .nuxt/dist/client/_nuxt/defaultLocale.DX6XiGOO.js                        4.69 kB │ gzip:     2.18 kB
+ℹ .nuxt/dist/client/_nuxt/index.g8DzMDSZ.js                                4.78 kB │ gzip:     1.89 kB
+ℹ .nuxt/dist/client/_nuxt/RuntimeModelConfigFields.vue.puVTN0a7.js         4.79 kB │ gzip:     1.88 kB
+ℹ .nuxt/dist/client/_nuxt/skillImprovementCapabilityStore.Ctfh6dNp.js      4.85 kB │ gzip:     1.46 kB
+ℹ .nuxt/dist/client/_nuxt/FullScreenImageModal.CUGjzfzj.js                 4.96 kB │ gzip:     2.03 kB
+ℹ .nuxt/dist/client/_nuxt/useRightPanel.CJ0u63a9.js                        4.98 kB │ gzip:     1.87 kB
+ℹ .nuxt/dist/client/_nuxt/useShellPrimaryNavigation.BENXDpey.js            5.28 kB │ gzip:     2.12 kB
+ℹ .nuxt/dist/client/_nuxt/pieDiagram-ADFJNKIX.Dlv_dryI.js                  5.38 kB │ gzip:     2.40 kB
+ℹ .nuxt/dist/client/_nuxt/SearchableGroupedSelect.vue.xYBn5Q9t.js          5.63 kB │ gzip:     2.31 kB
+ℹ .nuxt/dist/client/_nuxt/linear.C3uLbFlm.js                               5.67 kB │ gzip:     2.32 kB
+ℹ .nuxt/dist/client/_nuxt/SearchableSelect.vue.ZTRlnGoz.js                 5.84 kB │ gzip:     2.33 kB
+ℹ .nuxt/dist/client/_nuxt/graph.CrzU6Cui.js                                5.93 kB │ gzip:     1.88 kB
+ℹ .nuxt/dist/client/_nuxt/diagram-QEK2KX5R.BVOZmtTM.js                     6.05 kB │ gzip:     2.57 kB
+ℹ .nuxt/dist/client/_nuxt/serverSettings.DqJix7dW.js                       7.72 kB │ gzip:     1.93 kB
+ℹ .nuxt/dist/client/_nuxt/skillStore.DRcKBGup.js                           8.63 kB │ gzip:     1.79 kB
+ℹ .nuxt/dist/client/_nuxt/toolManagementStore.BdR-kJsk.js                  9.24 kB │ gzip:     1.90 kB
+ℹ .nuxt/dist/client/_nuxt/stateDiagram-FKZM4ZOC.yfDM3C7b.js               10.53 kB │ gzip:     3.72 kB
+ℹ .nuxt/dist/client/_nuxt/dagre-6UL2VRFP.Belqb5xW.js                      11.14 kB │ gzip:     4.18 kB
+ℹ .nuxt/dist/client/_nuxt/_baseUniq.BZtyE-PL.js                           11.90 kB │ gzip:     4.66 kB
+ℹ .nuxt/dist/client/_nuxt/media.BgvgczX3.js                               13.27 kB │ gzip:     4.48 kB
+ℹ .nuxt/dist/client/_nuxt/ModelConfigSection.vue.DBjCWonO.js              14.19 kB │ gzip:     4.45 kB
+ℹ .nuxt/dist/client/_nuxt/diagram-PSM6KHXK.DPCHaaru.js                    16.01 kB │ gzip:     5.75 kB
+ℹ .nuxt/dist/client/_nuxt/skills.BQPIMFdt.js                              17.77 kB │ gzip:     5.25 kB
+ℹ .nuxt/dist/client/_nuxt/iconify.n5LYLhdU.js                             18.47 kB │ gzip:     7.21 kB
+ℹ .nuxt/dist/client/_nuxt/mindmap-definition-VGOIOE7T.CArA-n1Y.js         20.18 kB │ gzip:     6.99 kB
+ℹ .nuxt/dist/client/_nuxt/kanban-definition-3W4ZIXB7.fZkQTnJu.js          20.34 kB │ gzip:     7.25 kB
+ℹ .nuxt/dist/client/_nuxt/sankeyDiagram-TZEHDZUN.B-L4P4Uh.js              22.26 kB │ gzip:     8.21 kB
+ℹ .nuxt/dist/client/_nuxt/voiceInputStore.DGr_5xPm.js                     23.28 kB │ gzip:     6.79 kB
+ℹ .nuxt/dist/client/_nuxt/journeyDiagram-XKPGCS4Q.BGq1nq6L.js             23.68 kB │ gzip:     8.41 kB
+ℹ .nuxt/dist/client/_nuxt/timeline-definition-IT6M3QCI.Dp12y-Hw.js        23.73 kB │ gzip:     8.31 kB
+ℹ .nuxt/dist/client/_nuxt/gitGraphDiagram-V2S2FVAM.7D7O6Qbj.js            24.27 kB │ gzip:     7.51 kB
+ℹ .nuxt/dist/client/_nuxt/erDiagram-Q2GNP2WA.SWNhaDxc.js                  25.38 kB │ gzip:     8.91 kB
+ℹ .nuxt/dist/client/_nuxt/qrCodeDataUrlService.BInqJ4D7.js                25.63 kB │ gzip:    10.07 kB
+ℹ .nuxt/dist/client/_nuxt/layout.DvSYYOTb.js                              27.40 kB │ gzip:     9.73 kB
+ℹ .nuxt/dist/client/_nuxt/agents.BrlA89fL.js                              28.39 kB │ gzip:     8.33 kB
+ℹ .nuxt/dist/client/_nuxt/requirementDiagram-UZGBJVZJ.DFZ_NEmS.js         30.22 kB │ gzip:     9.50 kB
+ℹ .nuxt/dist/client/_nuxt/FileExplorerTabs.vue.Dh8GhrHZ.js                32.16 kB │ gzip:    10.12 kB
+ℹ .nuxt/dist/client/_nuxt/quadrantDiagram-AYHSOK5B.CMmQ-K_b.js            33.98 kB │ gzip:    10.02 kB
+ℹ .nuxt/dist/client/_nuxt/chunk-DI55MBZ5.DAIXwSDx.js                      36.36 kB │ gzip:    11.84 kB
+ℹ .nuxt/dist/client/_nuxt/AgentDefinitionForm.vue.City2bZf.js             36.51 kB │ gzip:     9.23 kB
+ℹ .nuxt/dist/client/_nuxt/xychartDiagram-PRI3JC2R.BAmAjHZo.js             40.32 kB │ gzip:    11.43 kB
+ℹ .nuxt/dist/client/_nuxt/chunk-B4BG7PRW.CK4RMb_j.js                      45.32 kB │ gzip:    14.69 kB
+ℹ .nuxt/dist/client/_nuxt/memory.EgNALjBS.js                              46.40 kB │ gzip:    10.15 kB
+ℹ .nuxt/dist/client/_nuxt/ToolsManagementWorkspace.vue.DCV3mMvx.js        50.53 kB │ gzip:    13.45 kB
+ℹ .nuxt/dist/client/_nuxt/default.kGBtYmUT.js                             58.87 kB │ gzip:    15.12 kB
+ℹ .nuxt/dist/client/_nuxt/flowDiagram-NV44I4VS.gFDzhhRY.js                60.59 kB │ gzip:    19.50 kB
+ℹ .nuxt/dist/client/_nuxt/agent-teams.NVto8gaF.js                         67.46 kB │ gzip:    15.87 kB
+ℹ .nuxt/dist/client/_nuxt/ganttDiagram-JELNMOA3.B9HYGUuL.js               68.45 kB │ gzip:    23.23 kB
+ℹ .nuxt/dist/client/_nuxt/c4Diagram-YG6GDRKO.Bu_nDA3L.js                  70.27 kB │ gzip:    19.76 kB
+ℹ .nuxt/dist/client/_nuxt/blockDiagram-VD42YOAC.Byw6e6I_.js               71.92 kB │ gzip:    20.58 kB
+ℹ .nuxt/dist/client/_nuxt/_id_.Y4sQHs-g.js                                74.19 kB │ gzip:    17.08 kB
+ℹ .nuxt/dist/client/_nuxt/nodes.DemNifLF.js                               74.85 kB │ gzip:    17.35 kB
+ℹ .nuxt/dist/client/_nuxt/cose-bilkent-S5V4N54A.DjOURQGW.js               81.84 kB │ gzip:    22.56 kB
+ℹ .nuxt/dist/client/_nuxt/useTeamRunRuntimeCatalogSync.BRHZ-9ra.js        86.98 kB │ gzip:    25.40 kB
+ℹ .nuxt/dist/client/_nuxt/sequenceDiagram-WL72ISMW.M_YIih3T.js            97.94 kB │ gzip:    26.94 kB
+ℹ .nuxt/dist/client/_nuxt/MobileRemoteAccessShell.vue.DP1LDfwO.js        109.67 kB │ gzip:    29.61 kB
+ℹ .nuxt/dist/client/_nuxt/architectureDiagram-VXUJARFQ.CmJhxT3B.js       148.77 kB │ gzip:    42.14 kB
+ℹ .nuxt/dist/client/_nuxt/agentTeamContextsStore.C8clPeRf.js             334.49 kB │ gzip:    86.00 kB
+ℹ .nuxt/dist/client/_nuxt/cytoscape.esm.5J0xJHOV.js                      441.64 kB │ gzip:   141.47 kB
+ℹ .nuxt/dist/client/_nuxt/treemap-GDKQZRPO.BqrIoc8d.js                   452.91 kB │ gzip:   107.07 kB
+ℹ .nuxt/dist/client/_nuxt/settings.BwcyRty-.js                           496.00 kB │ gzip:   130.42 kB
+ℹ .nuxt/dist/client/_nuxt/workspace.CjFre7nc.js                          657.69 kB │ gzip:   177.39 kB
+ℹ .nuxt/dist/client/_nuxt/entry.D-tZyuL-.js                              972.84 kB │ gzip:   267.25 kB
+ℹ .nuxt/dist/client/_nuxt/useWorkspaceFileExplorer.D34om-QX.js         3,765.89 kB │ gzip: 1,212.55 kB
+
+ WARN
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+
+ℹ ✓ built in 20.97s
+[nuxt] vite:compiled: 0.017ms
+✔ Client built in 20988ms
+[Electron Module] Extending Vite config
+[nuxt] vite:extendConfig: 1.276ms
+[nuxt] vite:configResolved: 0.011ms
+ℹ Building server...
+[Electron Module] Vite config resolved: { mode: 'production', base: '/', buildTarget: 'electron' }
+ℹ vite v7.3.1 building ssr environment for production...
+ℹ transforming...
+ℹ ✓ 1 modules transformed.
+ℹ rendering chunks...
+ℹ .nuxt/dist/server/styles.mjs  0.07 kB
+ℹ .nuxt/dist/server/server.mjs  0.10 kB │ map: 0.37 kB
+ℹ ✓ built in 16ms
+[Electron Module] Processing build manifest
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_AMS-Regular.ttf
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_AMS-Regular.woff
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_AMS-Regular.woff2
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Caligraphic-Bold.ttf
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Caligraphic-Bold.woff
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Caligraphic-Bold.woff2
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Caligraphic-Regular.ttf
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Caligraphic-Regular.woff
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Caligraphic-Regular.woff2
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Fraktur-Bold.ttf
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Fraktur-Bold.woff
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Fraktur-Bold.woff2
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Fraktur-Regular.ttf
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Fraktur-Regular.woff
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Fraktur-Regular.woff2
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Main-Bold.ttf
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Main-Bold.woff
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Main-Bold.woff2
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Main-BoldItalic.ttf
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Main-BoldItalic.woff
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Main-BoldItalic.woff2
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Main-Italic.ttf
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Main-Italic.woff
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Main-Italic.woff2
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Main-Regular.ttf
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Main-Regular.woff
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Main-Regular.woff2
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Math-BoldItalic.ttf
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Math-BoldItalic.woff
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Math-BoldItalic.woff2
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Math-Italic.ttf
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Math-Italic.woff
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Math-Italic.woff2
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_SansSerif-Bold.ttf
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_SansSerif-Bold.woff
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_SansSerif-Bold.woff2
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_SansSerif-Italic.ttf
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_SansSerif-Italic.woff
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_SansSerif-Italic.woff2
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_SansSerif-Regular.ttf
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_SansSerif-Regular.woff
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_SansSerif-Regular.woff2
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Script-Regular.ttf
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Script-Regular.woff
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Script-Regular.woff2
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Size1-Regular.ttf
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Size1-Regular.woff
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Size1-Regular.woff2
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Size2-Regular.ttf
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Size2-Regular.woff
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Size2-Regular.woff2
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Size3-Regular.ttf
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Size3-Regular.woff
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Size4-Regular.ttf
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Size4-Regular.woff
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Size4-Regular.woff2
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Typewriter-Regular.ttf
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Typewriter-Regular.woff
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/katex@0.16.28/node_modules/katex/dist/fonts/KaTeX_Typewriter-Regular.woff2
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/mermaid@11.12.3/node_modules/mermaid/dist/chunks/mermaid.core/architectureDiagram-VXUJARFQ.mjs
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/mermaid@11.12.3/node_modules/mermaid/dist/chunks/mermaid.core/blockDiagram-VD42YOAC.mjs
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/mermaid@11.12.3/node_modules/mermaid/dist/chunks/mermaid.core/c4Diagram-YG6GDRKO.mjs
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/mermaid@11.12.3/node_modules/mermaid/dist/chunks/mermaid.core/classDiagram-2ON5EDUG.mjs
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/mermaid@11.12.3/node_modules/mermaid/dist/chunks/mermaid.core/classDiagram-v2-WZHVMYZB.mjs
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/mermaid@11.12.3/node_modules/mermaid/dist/chunks/mermaid.core/cose-bilkent-S5V4N54A.mjs
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/mermaid@11.12.3/node_modules/mermaid/dist/chunks/mermaid.core/dagre-6UL2VRFP.mjs
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/mermaid@11.12.3/node_modules/mermaid/dist/chunks/mermaid.core/diagram-PSM6KHXK.mjs
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/mermaid@11.12.3/node_modules/mermaid/dist/chunks/mermaid.core/diagram-QEK2KX5R.mjs
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/mermaid@11.12.3/node_modules/mermaid/dist/chunks/mermaid.core/diagram-S2PKOQOG.mjs
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/mermaid@11.12.3/node_modules/mermaid/dist/chunks/mermaid.core/erDiagram-Q2GNP2WA.mjs
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/mermaid@11.12.3/node_modules/mermaid/dist/chunks/mermaid.core/flowDiagram-NV44I4VS.mjs
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/mermaid@11.12.3/node_modules/mermaid/dist/chunks/mermaid.core/ganttDiagram-JELNMOA3.mjs
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/mermaid@11.12.3/node_modules/mermaid/dist/chunks/mermaid.core/gitGraphDiagram-V2S2FVAM.mjs
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/mermaid@11.12.3/node_modules/mermaid/dist/chunks/mermaid.core/infoDiagram-HS3SLOUP.mjs
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/mermaid@11.12.3/node_modules/mermaid/dist/chunks/mermaid.core/journeyDiagram-XKPGCS4Q.mjs
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/mermaid@11.12.3/node_modules/mermaid/dist/chunks/mermaid.core/kanban-definition-3W4ZIXB7.mjs
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/mermaid@11.12.3/node_modules/mermaid/dist/chunks/mermaid.core/mindmap-definition-VGOIOE7T.mjs
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/mermaid@11.12.3/node_modules/mermaid/dist/chunks/mermaid.core/pieDiagram-ADFJNKIX.mjs
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/mermaid@11.12.3/node_modules/mermaid/dist/chunks/mermaid.core/quadrantDiagram-AYHSOK5B.mjs
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/mermaid@11.12.3/node_modules/mermaid/dist/chunks/mermaid.core/requirementDiagram-UZGBJVZJ.mjs
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/mermaid@11.12.3/node_modules/mermaid/dist/chunks/mermaid.core/sankeyDiagram-TZEHDZUN.mjs
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/mermaid@11.12.3/node_modules/mermaid/dist/chunks/mermaid.core/sequenceDiagram-WL72ISMW.mjs
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/mermaid@11.12.3/node_modules/mermaid/dist/chunks/mermaid.core/stateDiagram-FKZM4ZOC.mjs
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/mermaid@11.12.3/node_modules/mermaid/dist/chunks/mermaid.core/stateDiagram-v2-4FDKWEC3.mjs
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/mermaid@11.12.3/node_modules/mermaid/dist/chunks/mermaid.core/timeline-definition-IT6M3QCI.mjs
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/mermaid@11.12.3/node_modules/mermaid/dist/chunks/mermaid.core/xychartDiagram-PRI3JC2R.mjs
+⚙ [Electron Module] Processing manifest entry: ../node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/entry.js
+⚙ [Electron Module] Processing manifest entry: entry.BEYdvW6g.css
+⚙ [Electron Module] Processing manifest entry: _AgentDefinitionForm.B4uhkLvJ.css
+⚙ [Electron Module] Processing manifest entry: _AgentDefinitionForm.vue.City2bZf.js
+⚙ [Electron Module] Processing manifest entry: AgentDefinitionForm.B4uhkLvJ.css
+⚙ [Electron Module] Processing manifest entry: _ConfirmationModal.CJV_gWfn.css
+⚙ [Electron Module] Processing manifest entry: _ConfirmationModal.Cx9PAHto.js
+⚙ [Electron Module] Processing manifest entry: ConfirmationModal.CJV_gWfn.css
+⚙ [Electron Module] Processing manifest entry: _FileExplorerTabs.BrK5oVEn.css
+⚙ [Electron Module] Processing manifest entry: _FileExplorerTabs.vue.Dh8GhrHZ.js
+⚙ [Electron Module] Processing manifest entry: FileExplorerTabs.BrK5oVEn.css
+⚙ [Electron Module] Processing manifest entry: _FullScreenImageModal.CUGjzfzj.js
+⚙ [Electron Module] Processing manifest entry: FullScreenImageModal.aod6xn15.css
+⚙ [Electron Module] Processing manifest entry: _FullScreenImageModal.aod6xn15.css
+⚙ [Electron Module] Processing manifest entry: _MobileRemoteAccessShell.vue.DP1LDfwO.js
+⚙ [Electron Module] Processing manifest entry: _ModelConfigSection.vue.DBjCWonO.js
+⚙ [Electron Module] Processing manifest entry: _RuntimeModelConfigFields.vue.puVTN0a7.js
+⚙ [Electron Module] Processing manifest entry: _SearchableGroupedSelect.vue.xYBn5Q9t.js
+⚙ [Electron Module] Processing manifest entry: _SearchableSelect.vue.ZTRlnGoz.js
+⚙ [Electron Module] Processing manifest entry: _ToolsManagementWorkspace.vue.DCV3mMvx.js
+⚙ [Electron Module] Processing manifest entry: __basePickBy.D4yzcwvL.js
+⚙ [Electron Module] Processing manifest entry: __baseUniq.BZtyE-PL.js
+⚙ [Electron Module] Processing manifest entry: __commonjsHelpers.CE1G-McA.js
+⚙ [Electron Module] Processing manifest entry: _agentTeamContextsStore.C8clPeRf.js
+⚙ [Electron Module] Processing manifest entry: _api.CN-5KoOi.js
+⚙ [Electron Module] Processing manifest entry: _applicationAssetUrl.ISd2u543.js
+⚙ [Electron Module] Processing manifest entry: _applicationStore.uQ3RwX9D.js
+⚙ [Electron Module] Processing manifest entry: _arc.CGhfzkTF.js
+⚙ [Electron Module] Processing manifest entry: _channel.D9X7gHJW.js
+⚙ [Electron Module] Processing manifest entry: _chunk-4BX2VUAB.D8t3qXAT.js
+⚙ [Electron Module] Processing manifest entry: _chunk-55IACEB6.Y4vLMztR.js
+⚙ [Electron Module] Processing manifest entry: _chunk-B4BG7PRW.CK4RMb_j.js
+⚙ [Electron Module] Processing manifest entry: _chunk-DI55MBZ5.DAIXwSDx.js
+⚙ [Electron Module] Processing manifest entry: _chunk-FMBD7UC4.BI_668O6.js
+⚙ [Electron Module] Processing manifest entry: _chunk-QN33PNHL.Cy5cIyRw.js
+⚙ [Electron Module] Processing manifest entry: _chunk-QZHKN3VN.D5zBEX1d.js
+⚙ [Electron Module] Processing manifest entry: _chunk-TZMSLE5B.oEn0-8nq.js
+⚙ [Electron Module] Processing manifest entry: _clone.DnAx0VCX.js
+⚙ [Electron Module] Processing manifest entry: _cytoscape.esm.5J0xJHOV.js
+⚙ [Electron Module] Processing manifest entry: _defaultLocale.DX6XiGOO.js
+⚙ [Electron Module] Processing manifest entry: _featuredCatalogItems.Bv4L8bhO.js
+⚙ [Electron Module] Processing manifest entry: _graph.CrzU6Cui.js
+⚙ [Electron Module] Processing manifest entry: _iconify.n5LYLhdU.js
+⚙ [Electron Module] Processing manifest entry: _init.Gi6I4Gst.js
+⚙ [Electron Module] Processing manifest entry: _layout.DvSYYOTb.js
+⚙ [Electron Module] Processing manifest entry: _linear.C3uLbFlm.js
+⚙ [Electron Module] Processing manifest entry: _mobileWorkStore.BEZHqT4E.js
+⚙ [Electron Module] Processing manifest entry: _ordinal.BYWQX77i.js
+⚙ [Electron Module] Processing manifest entry: _qrCodeDataUrlService.BInqJ4D7.js
+⚙ [Electron Module] Processing manifest entry: _serverSettings.DqJix7dW.js
+⚙ [Electron Module] Processing manifest entry: _skillImprovementCapabilityStore.Ctfh6dNp.js
+⚙ [Electron Module] Processing manifest entry: _skillStore.DRcKBGup.js
+⚙ [Electron Module] Processing manifest entry: _toolManagementStore.BdR-kJsk.js
+⚙ [Electron Module] Processing manifest entry: _treemap-GDKQZRPO.BqrIoc8d.js
+⚙ [Electron Module] Processing manifest entry: _useNativeFolderDialog.BJusQvZr.js
+⚙ [Electron Module] Processing manifest entry: _useRightPanel.CJ0u63a9.js
+⚙ [Electron Module] Processing manifest entry: _useShellPrimaryNavigation.BENXDpey.js
+⚙ [Electron Module] Processing manifest entry: _useTeamRunRuntimeCatalogSync.B5h_eHhX.css
+⚙ [Electron Module] Processing manifest entry: _useTeamRunRuntimeCatalogSync.BRHZ-9ra.js
+⚙ [Electron Module] Processing manifest entry: useTeamRunRuntimeCatalogSync.B5h_eHhX.css
+⚙ [Electron Module] Processing manifest entry: _useWorkspaceFileExplorer.D34om-QX.js
+⚙ [Electron Module] Processing manifest entry: useWorkspaceFileExplorer.Kr8OOoy4.css
+⚙ [Electron Module] Processing manifest entry: KaTeX_AMS-Regular.BQhdFMY1.woff2
+⚙ [Electron Module] Processing manifest entry: KaTeX_AMS-Regular.DMm9YOAa.woff
+⚙ [Electron Module] Processing manifest entry: KaTeX_AMS-Regular.DRggAlZN.ttf
+⚙ [Electron Module] Processing manifest entry: KaTeX_Caligraphic-Bold.Dq_IR9rO.woff2
+⚙ [Electron Module] Processing manifest entry: KaTeX_Caligraphic-Bold.BEiXGLvX.woff
+⚙ [Electron Module] Processing manifest entry: KaTeX_Caligraphic-Bold.ATXxdsX0.ttf
+⚙ [Electron Module] Processing manifest entry: KaTeX_Caligraphic-Regular.Di6jR-x-.woff2
+⚙ [Electron Module] Processing manifest entry: KaTeX_Caligraphic-Regular.CTRA-rTL.woff
+⚙ [Electron Module] Processing manifest entry: KaTeX_Caligraphic-Regular.wX97UBjC.ttf
+⚙ [Electron Module] Processing manifest entry: KaTeX_Fraktur-Bold.CL6g_b3V.woff2
+⚙ [Electron Module] Processing manifest entry: KaTeX_Fraktur-Bold.BsDP51OF.woff
+⚙ [Electron Module] Processing manifest entry: KaTeX_Fraktur-Bold.BdnERNNW.ttf
+⚙ [Electron Module] Processing manifest entry: KaTeX_Fraktur-Regular.CTYiF6lA.woff2
+⚙ [Electron Module] Processing manifest entry: KaTeX_Fraktur-Regular.Dxdc4cR9.woff
+⚙ [Electron Module] Processing manifest entry: KaTeX_Fraktur-Regular.CB_wures.ttf
+⚙ [Electron Module] Processing manifest entry: KaTeX_Main-Bold.Cx986IdX.woff2
+⚙ [Electron Module] Processing manifest entry: KaTeX_Main-Bold.Jm3AIy58.woff
+⚙ [Electron Module] Processing manifest entry: KaTeX_Main-Bold.waoOVXN0.ttf
+⚙ [Electron Module] Processing manifest entry: KaTeX_Main-BoldItalic.DxDJ3AOS.woff2
+⚙ [Electron Module] Processing manifest entry: KaTeX_Main-BoldItalic.SpSLRI95.woff
+⚙ [Electron Module] Processing manifest entry: KaTeX_Main-BoldItalic.DzxPMmG6.ttf
+⚙ [Electron Module] Processing manifest entry: KaTeX_Main-Italic.NWA7e6Wa.woff2
+⚙ [Electron Module] Processing manifest entry: KaTeX_Main-Italic.BMLOBm91.woff
+⚙ [Electron Module] Processing manifest entry: KaTeX_Main-Italic.3WenGoN9.ttf
+⚙ [Electron Module] Processing manifest entry: KaTeX_Main-Regular.B22Nviop.woff2
+⚙ [Electron Module] Processing manifest entry: KaTeX_Main-Regular.Dr94JaBh.woff
+⚙ [Electron Module] Processing manifest entry: KaTeX_Main-Regular.ypZvNtVU.ttf
+⚙ [Electron Module] Processing manifest entry: KaTeX_Math-BoldItalic.CZnvNsCZ.woff2
+⚙ [Electron Module] Processing manifest entry: KaTeX_Math-BoldItalic.iY-2wyZ7.woff
+⚙ [Electron Module] Processing manifest entry: KaTeX_Math-BoldItalic.B3XSjfu4.ttf
+⚙ [Electron Module] Processing manifest entry: KaTeX_Math-Italic.t53AETM-.woff2
+⚙ [Electron Module] Processing manifest entry: KaTeX_Math-Italic.DA0__PXp.woff
+⚙ [Electron Module] Processing manifest entry: KaTeX_Math-Italic.flOr_0UB.ttf
+⚙ [Electron Module] Processing manifest entry: KaTeX_SansSerif-Bold.D1sUS0GD.woff2
+⚙ [Electron Module] Processing manifest entry: KaTeX_SansSerif-Bold.DbIhKOiC.woff
+⚙ [Electron Module] Processing manifest entry: KaTeX_SansSerif-Bold.CFMepnvq.ttf
+⚙ [Electron Module] Processing manifest entry: KaTeX_SansSerif-Italic.C3H0VqGB.woff2
+⚙ [Electron Module] Processing manifest entry: KaTeX_SansSerif-Italic.DN2j7dab.woff
+⚙ [Electron Module] Processing manifest entry: KaTeX_SansSerif-Italic.YYjJ1zSn.ttf
+⚙ [Electron Module] Processing manifest entry: KaTeX_SansSerif-Regular.DDBCnlJ7.woff2
+⚙ [Electron Module] Processing manifest entry: KaTeX_SansSerif-Regular.CS6fqUqJ.woff
+⚙ [Electron Module] Processing manifest entry: KaTeX_SansSerif-Regular.BNo7hRIc.ttf
+⚙ [Electron Module] Processing manifest entry: KaTeX_Script-Regular.D3wIWfF6.woff2
+⚙ [Electron Module] Processing manifest entry: KaTeX_Script-Regular.D5yQViql.woff
+⚙ [Electron Module] Processing manifest entry: KaTeX_Script-Regular.C5JkGWo-.ttf
+⚙ [Electron Module] Processing manifest entry: KaTeX_Size1-Regular.mCD8mA8B.woff2
+⚙ [Electron Module] Processing manifest entry: KaTeX_Size1-Regular.C195tn64.woff
+⚙ [Electron Module] Processing manifest entry: KaTeX_Size1-Regular.Dbsnue_I.ttf
+⚙ [Electron Module] Processing manifest entry: KaTeX_Size2-Regular.Dy4dx90m.woff2
+⚙ [Electron Module] Processing manifest entry: KaTeX_Size2-Regular.oD1tc_U0.woff
+⚙ [Electron Module] Processing manifest entry: KaTeX_Size2-Regular.B7gKUWhC.ttf
+⚙ [Electron Module] Processing manifest entry: KaTeX_Size3-Regular.CTq5MqoE.woff
+⚙ [Electron Module] Processing manifest entry: KaTeX_Size3-Regular.DgpXs0kz.ttf
+⚙ [Electron Module] Processing manifest entry: KaTeX_Size4-Regular.Dl5lxZxV.woff2
+⚙ [Electron Module] Processing manifest entry: KaTeX_Size4-Regular.BF-4gkZK.woff
+⚙ [Electron Module] Processing manifest entry: KaTeX_Size4-Regular.DWFBv043.ttf
+⚙ [Electron Module] Processing manifest entry: KaTeX_Typewriter-Regular.CO6r4hn1.woff2
+⚙ [Electron Module] Processing manifest entry: KaTeX_Typewriter-Regular.C0xS9mPB.woff
+⚙ [Electron Module] Processing manifest entry: KaTeX_Typewriter-Regular.D3Ib7_Hf.ttf
+⚙ [Electron Module] Processing manifest entry: _useWorkspaceFileExplorer.Kr8OOoy4.css
+⚙ [Electron Module] Processing manifest entry: _voiceInputStore.DGr_5xPm.js
+⚙ [Electron Module] Processing manifest entry: composables/useEventMonitorFilePreview.ts
+⚙ [Electron Module] Processing manifest entry: layouts/default.vue
+⚙ [Electron Module] Processing manifest entry: default.DkOS1umL.css
+⚙ [Electron Module] Processing manifest entry: layouts/settings.vue
+⚙ [Electron Module] Processing manifest entry: pages/agent-teams.vue
+⚙ [Electron Module] Processing manifest entry: pages/agents.vue
+⚙ [Electron Module] Processing manifest entry: pages/applications/[id].vue
+⚙ [Electron Module] Processing manifest entry: pages/applications/index.vue
+⚙ [Electron Module] Processing manifest entry: pages/index.vue
+⚙ [Electron Module] Processing manifest entry: pages/media.vue
+⚙ [Electron Module] Processing manifest entry: media.yjOJmL4q.css
+⚙ [Electron Module] Processing manifest entry: pages/memory.vue
+⚙ [Electron Module] Processing manifest entry: pages/mobile.vue
+⚙ [Electron Module] Processing manifest entry: pages/nodes.vue
+⚙ [Electron Module] Processing manifest entry: pages/settings.vue
+⚙ [Electron Module] Processing manifest entry: settings.Rq5VaJW6.css
+⚙ [Electron Module] Processing manifest entry: pages/skills.vue
+⚙ [Electron Module] Processing manifest entry: skills.hZg4z6X7.css
+⚙ [Electron Module] Processing manifest entry: pages/tools.vue
+⚙ [Electron Module] Processing manifest entry: pages/workspace.vue
+⚙ [Electron Module] Processing manifest entry: workspace.DrBQ9tPi.css
+[nuxt] build:manifest: 40.391ms
+[nuxt] vite:compiled: 0.019ms
+✔ Server built in 118ms
+[Electron Module] Build process completed
+[Electron Module] Running production build steps
+[Electron Module] Building entry: electron/main.ts
+⚙ [Electron Module] Build config: { entry: 'electron/main.ts', mode: 'production', outDir: 'dist/electron' }
+vite v7.3.1 building client environment for production...
+transforming...
+✓ 414 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/electron/main.js  806.79 kB │ gzip: 212.49 kB
+✓ built in 1.67s
+[Electron Module] Building entry: electron/preload.ts
+⚙ [Electron Module] Build config: { entry: 'electron/preload.ts', mode: 'production', outDir: 'dist/electron' }
+vite v7.3.1 building client environment for production...
+transforming...
+✓ 1 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/electron/preload.js  3.46 kB │ gzip: 0.96 kB
+✓ built in 8ms
+[Electron Module] Production build completed successfully
+[nuxt] schema:beforeWrite: 0.013ms
+[nuxt] schema:written: 0.01ms
+[nuxt] nitro:build:before: 0.199ms
+[nuxt] prerender:routes: 0.009ms
+[nitro] prerender:routes: 0.219ms
+[nitro] ℹ Initializing prerenderer
+[nitro] prerender:config: 0.038ms
+[nitro] prerender:init: 0.017ms
+[nitro] build:before: 0.006ms
+[nitro] rollup:before: 0.025ms
+[nitro] types:extend: 0.013ms
+[nitro] compiled: 0.023ms
+⚙ > Load chunks/nitro/nitro (6ms)
+[nitro] ℹ Prerendering 3 initial routes with crawler
+[nitro-runtime] request: 0.223ms
+[nitro-runtime] request : 0.15ms
+[nitro-runtime] request  : 0.142ms
+[nitro-runtime] render:before: 0.028ms
+[nitro-runtime] render:before : 0.546ms
+[nitro-runtime] render:before  : 0.666ms
+⚙ > Load chunks/build/client.precomputed (3ms)
+[nitro-runtime] render:html: 0.037ms
+[nitro-runtime] render:html : 0.162ms
+[nitro-runtime] render:html  : 0.197ms
+[nitro-runtime] render:response: 0.012ms
+[nitro-runtime] render:response : 0.046ms
+[nitro-runtime] render:response  : 0.079ms
+[nitro-runtime] beforeResponse: 0.014ms
+[nitro-runtime] beforeResponse : 0.045ms
+[nitro-runtime] beforeResponse  : 0.075ms
+[nitro-runtime] afterResponse: 0.005ms
+[nitro] prerender:generate: 0.01ms
+[nitro-runtime] afterResponse: 0.005ms
+[nitro] prerender:generate: 0.006ms
+[nitro-runtime] afterResponse: 0.006ms
+[nitro] prerender:generate: 0.005ms
+[nitro] prerender:route: 0.018ms
+[nitro]   ├─ /index.html (37ms)
+[nitro] prerender:route: 0.007ms
+[nitro]   ├─ /200.html (36ms)
+[nitro] prerender:route: 0.005ms
+[nitro]   ├─ /404.html (37ms)
+[nitro-runtime] close: 0.005ms
+[nitro] prerender:done: 0.004ms
+[nitro] ℹ Prerendered 3 routes in 0.774 seconds
+[nitro] build:before: 0.065ms
+[nitro] ✔ Generated public dist/renderer
+[nuxt] nitro:build:public-assets: 0.014ms
+[nitro] rollup:before: 112.456ms
+[nitro] types:extend: 0.013ms
+[nitro] compiled: 0.013ms
+[nitro] ✔ You can preview this build using npx serve dist/renderer
+[nuxt] build:done: 2.680s
+[nitro] close: 0.12ms
+[nuxt] close: 0.355ms
+│
+▲  HTML content not prerendered because ssr: false was set.
+│
+●  You can read more in https://nuxt.com/docs/getting-started/deployment#static-hosting.
+│
+└  ✨ You can now deploy dist/renderer to any static hosting!
+
+> autobyteus@1.4.45 transpile-electron /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web
+> tsc -p electron/tsconfig.json
+
+Building with environment: production
+Using environment file: .env.production
+Resolved build flavor: enterprise
+Artifact base name: AutoByteus_enterprise
+Requested architecture: AUTO
+Updater publish config: [{"provider":"github","owner":"AutoByteus","repo":"autobyteus-workspace"}]
+Generating application icons...
+Generating 16x16 PNG icon...
+Generating 32x32 PNG icon...
+Generating 48x48 PNG icon...
+Generating 64x64 PNG icon...
+Generating 128x128 PNG icon...
+Generating 256x256 PNG icon...
+Generating 512x512 PNG icon...
+Generating 1024x1024 PNG icon...
+Generating Windows ICO icon...
+Generating macOS ICNS icon...
+Icon generation completed successfully
+Starting electron-builder...
+  • electron-builder  version=25.1.8 os=25.5.0
+  • @electron/rebuild already used by electron-builder, please consider to remove excess dependency from devDependencies
+
+To ensure your native dependencies are always matched electron version, simply add script `"postinstall": "electron-builder install-app-deps" to your `package.json`
+  • unresolved deps  unresolved=@mdit/helper@mdit/plugin-texkatex
+                     nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/node_modules/.pnpm/@mdit+plugin-katex@0.23.2_markdown-it@14.1.1/node_modules
+                     round=0
+  • unresolved deps  unresolved=builder-util-runtimefs-extrajs-yamllazy-vallodash.escaperegexplodash.isequalsemvertiny-typed-emitter
+                     nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/node_modules/.pnpm/electron-updater@6.8.3/node_modules
+                     round=0
+  • unresolved deps  unresolved=katex nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/node_modules/.pnpm/markdown-it-katex@2.0.3/node_modules round=0
+  • unresolved deps  unresolved=@braintree/sanitize-url@iconify/utils@mermaid-js/parsercytoscapecytoscape-cose-bilkentcytoscape-fcosed3d3-sankeydagre-d3-esdayjsdompurifykatexkhromalodash-esmarkedroughjsstylists-dedentuuid
+                     nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/node_modules/.pnpm/mermaid@11.12.3/node_modules
+                     round=0
+  • unresolved deps  unresolved=acornpathepkg-typesufo
+                     nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/node_modules/.pnpm/mlly@1.8.0/node_modules
+                     round=0
+  • unresolved deps  unresolved=chevrotainchevrotain-allstarvscode-languageservervscode-languageserver-textdocumentvscode-uri
+                     nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/node_modules/.pnpm/langium@4.2.1/node_modules
+                     round=0
+  • unresolved deps  unresolved=d3-arrayd3-axisd3-brushd3-chordd3-colord3-contourd3-delaunayd3-dispatchd3-dragd3-dsvd3-eased3-fetchd3-forced3-formatd3-geod3-hierarchyd3-interpolated3-pathd3-polygond3-quadtreed3-randomd3-scaled3-scale-chromaticd3-selectiond3-shaped3-timed3-time-formatd3-timerd3-transitiond3-zoom
+                     nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/node_modules/.pnpm/d3@7.9.0/node_modules
+                     round=0
+  • unresolved deps  unresolved=d3-dsv nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/node_modules/.pnpm/d3-fetch@3.0.1/node_modules round=0
+  • unresolved deps  unresolved=@vue/devtools-apivue-demi
+                     nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules
+                     round=0
+  • unresolved deps  unresolved=@napi-rs/canvas-android-arm64@napi-rs/canvas-darwin-x64@napi-rs/canvas-linux-arm-gnueabihf@napi-rs/canvas-linux-arm64-gnu@napi-rs/canvas-linux-arm64-musl@napi-rs/canvas-linux-riscv64-gnu@napi-rs/canvas-linux-x64-gnu@napi-rs/canvas-linux-x64-musl@napi-rs/canvas-win32-arm64-msvc@napi-rs/canvas-win32-x64-msvc
+                     nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/node_modules/.pnpm/node_modules
+                     round=0
+  • unresolved deps  unresolved=@napi-rs/canvas-android-arm64@napi-rs/canvas-darwin-x64@napi-rs/canvas-linux-arm-gnueabihf@napi-rs/canvas-linux-arm64-gnu@napi-rs/canvas-linux-arm64-musl@napi-rs/canvas-linux-riscv64-gnu@napi-rs/canvas-linux-x64-gnu@napi-rs/canvas-linux-x64-musl@napi-rs/canvas-win32-arm64-msvc@napi-rs/canvas-win32-x64-msvc
+                     nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/node_modules
+                     round=1
+  • unresolved deps  unresolved=@napi-rs/canvas-android-arm64@napi-rs/canvas-darwin-x64@napi-rs/canvas-linux-arm-gnueabihf@napi-rs/canvas-linux-arm64-gnu@napi-rs/canvas-linux-arm64-musl@napi-rs/canvas-linux-riscv64-gnu@napi-rs/canvas-linux-x64-gnu@napi-rs/canvas-linux-x64-musl@napi-rs/canvas-win32-arm64-msvc@napi-rs/canvas-win32-x64-msvc
+                     nodeModuleDir=/Users/normy/autobyteus_org/node_modules
+                     round=2
+  • unresolved deps  unresolved=adler-32cfbcodepagecrc-32ssfwmfword
+                     nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/node_modules/.pnpm/xlsx@0.18.5/node_modules
+                     round=0
+  • unresolved deps  unresolved=adler-32crc-32 nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/node_modules/.pnpm/cfb@1.2.2/node_modules round=0
+  • executing @electron/rebuild  electronVersion=42.4.1 arch=arm64 buildFromSource=false appDir=./
+  • installing native dependencies  arch=arm64
+  • completed installing native dependencies
+  • packaging       platform=darwin arch=arm64 electron=42.4.1 appOutDir=electron-dist/mac-arm64
+  • map async       taskCount=2
+  • map async       taskCount=1
+  • map async       taskCount=585
+  • unresolved deps  unresolved=@mdit/helper@mdit/plugin-texkatex
+                     nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/node_modules/.pnpm/@mdit+plugin-katex@0.23.2_markdown-it@14.1.1/node_modules
+                     round=0
+  • unresolved deps  unresolved=builder-util-runtimefs-extrajs-yamllazy-vallodash.escaperegexplodash.isequalsemvertiny-typed-emitter
+                     nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/node_modules/.pnpm/electron-updater@6.8.3/node_modules
+                     round=0
+  • unresolved deps  unresolved=katex nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/node_modules/.pnpm/markdown-it-katex@2.0.3/node_modules round=0
+  • unresolved deps  unresolved=@braintree/sanitize-url@iconify/utils@mermaid-js/parsercytoscapecytoscape-cose-bilkentcytoscape-fcosed3d3-sankeydagre-d3-esdayjsdompurifykatexkhromalodash-esmarkedroughjsstylists-dedentuuid
+                     nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/node_modules/.pnpm/mermaid@11.12.3/node_modules
+                     round=0
+  • unresolved deps  unresolved=acornpathepkg-typesufo
+                     nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/node_modules/.pnpm/mlly@1.8.0/node_modules
+                     round=0
+  • unresolved deps  unresolved=chevrotainchevrotain-allstarvscode-languageservervscode-languageserver-textdocumentvscode-uri
+                     nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/node_modules/.pnpm/langium@4.2.1/node_modules
+                     round=0
+  • unresolved deps  unresolved=d3-arrayd3-axisd3-brushd3-chordd3-colord3-contourd3-delaunayd3-dispatchd3-dragd3-dsvd3-eased3-fetchd3-forced3-formatd3-geod3-hierarchyd3-interpolated3-pathd3-polygond3-quadtreed3-randomd3-scaled3-scale-chromaticd3-selectiond3-shaped3-timed3-time-formatd3-timerd3-transitiond3-zoom
+                     nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/node_modules/.pnpm/d3@7.9.0/node_modules
+                     round=0
+  • unresolved deps  unresolved=d3-dsv nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/node_modules/.pnpm/d3-fetch@3.0.1/node_modules round=0
+  • unresolved deps  unresolved=@vue/devtools-apivue-demi
+                     nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules
+                     round=0
+  • unresolved deps  unresolved=@napi-rs/canvas-android-arm64@napi-rs/canvas-darwin-x64@napi-rs/canvas-linux-arm-gnueabihf@napi-rs/canvas-linux-arm64-gnu@napi-rs/canvas-linux-arm64-musl@napi-rs/canvas-linux-riscv64-gnu@napi-rs/canvas-linux-x64-gnu@napi-rs/canvas-linux-x64-musl@napi-rs/canvas-win32-arm64-msvc@napi-rs/canvas-win32-x64-msvc
+                     nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/node_modules/.pnpm/node_modules
+                     round=0
+  • unresolved deps  unresolved=@napi-rs/canvas-android-arm64@napi-rs/canvas-darwin-x64@napi-rs/canvas-linux-arm-gnueabihf@napi-rs/canvas-linux-arm64-gnu@napi-rs/canvas-linux-arm64-musl@napi-rs/canvas-linux-riscv64-gnu@napi-rs/canvas-linux-x64-gnu@napi-rs/canvas-linux-x64-musl@napi-rs/canvas-win32-arm64-msvc@napi-rs/canvas-win32-x64-msvc
+                     nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/node_modules
+                     round=1
+  • unresolved deps  unresolved=@napi-rs/canvas-android-arm64@napi-rs/canvas-darwin-x64@napi-rs/canvas-linux-arm-gnueabihf@napi-rs/canvas-linux-arm64-gnu@napi-rs/canvas-linux-arm64-musl@napi-rs/canvas-linux-riscv64-gnu@napi-rs/canvas-linux-x64-gnu@napi-rs/canvas-linux-x64-musl@napi-rs/canvas-win32-arm64-msvc@napi-rs/canvas-win32-x64-msvc
+                     nodeModuleDir=/Users/normy/autobyteus_org/node_modules
+                     round=2
+  • unresolved deps  unresolved=adler-32cfbcodepagecrc-32ssfwmfword
+                     nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/node_modules/.pnpm/xlsx@0.18.5/node_modules
+                     round=0
+  • unresolved deps  unresolved=adler-32crc-32 nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/node_modules/.pnpm/cfb@1.2.2/node_modules round=0
+  • map async       taskCount=8
+  • path doesn't exist  path=/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/build/build/icons/icon.icns
+  • path resolved   path=/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/build/icons/icon.icns outputFormat=icns
+  • map async       taskCount=5
+
+Normalizing packaged terminal native resources...
+  Normalized execute bits on 3 node-pty spawn-helper file(s)
+  • skipped macOS code signing  reason=identity explicitly is set to null
+  • building        target=DMG arch=arm64 file=electron-dist/AutoByteus_enterprise_macos-arm64-1.4.45.dmg
+  • building        target=macOS zip arch=arm64 file=electron-dist/AutoByteus_enterprise_macos-arm64-1.4.45.zip
+  • Detected arm64 process, HFS+ is unavailable. Creating dmg with APFS - supports Mac OSX 10.12+
+  • copy files      from=/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/build/icons/icon.icns
+                    to=/Volumes/AutoByteus 1.4.45-arm64/.VolumeIcon.icns
+                    isUseHardLinks=false
+  • copy files      from=/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/node_modules/.pnpm/dmg-builder@25.1.8_electron-builder-squirrel-windows@25.1.8/node_modules/dmg-builder/templates/background.tiff
+                    to=/Volumes/AutoByteus 1.4.45-arm64/.background/background.tiff
+                    isUseHardLinks=false
+  • execute command  command=sips -g pixelHeight -g pixelWidth /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/node_modules/.pnpm/dmg-builder@25.1.8_electron-builder-squirrel-windows@25.1.8/node_modules/dmg-builder/templates/background.tiff
+                     workingDirectory=
+  • command executed  executable=sips
+                      out=/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/node_modules/.pnpm/dmg-builder@25.1.8_electron-builder-squirrel-windows@25.1.8/node_modules/dmg-builder/templates/background.tiff
+      pixelHeight: 380
+      pixelWidth: 540
+
+  • building block map  blockMapFile=electron-dist/AutoByteus_enterprise_macos-arm64-1.4.45.dmg.blockmap
+  • building block map  blockMapFile=electron-dist/AutoByteus_enterprise_macos-arm64-1.4.45.zip.blockmap
+Build completed: [
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.45.dmg.blockmap',
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.45.dmg',
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.45.zip.blockmap',
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.45.zip'
+]
+Electron build exit: 0
+Build completed: 2026-08-09T12:12:48Z
+
+=== Delivery package verification ===
+Verification started: 2026-08-09T12:15:26Z
++ file electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
++ plutil -p electron-dist/mac-arm64/AutoByteus.app/Contents/Info.plist (selected keys)
+1.4.45
+1.4.45
+com.autobyteus.app
++ staged terminal runtime validation
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
++ packaged terminal runtime validation with spawn probe
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+Terminal and metadata verification completed: 2026-08-09T12:15:33Z
++ packaged server startup/migration/health/clean-shutdown validation on an isolated ephemeral port and data directory
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-packaged-server-2G9964
+AppConfig instance created.
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-packaged-server-2G9964/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-packaged-server-2G9964/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-packaged-server-2G9964/.env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:50783
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:50783
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-packaged-server-2G9964
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-packaged-server-2G9964/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-packaged-server-2G9964/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-packaged-server-2G9964/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-packaged-server-2G9964/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-packaged-server-2G9964/db/production.db"
+
+SQLite database production.db created at file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-packaged-server-2G9964/db/production.db
+
+19 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+
+All migrations have been successfully applied.
+Database migrations completed successfully.
+prisma:info Starting a sqlite pool with 21 connections.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 20 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+AgentRunManager initialized.
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+[2026-08-09T12:15:42.927Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+{"level":30,"time":1786277743004,"pid":64737,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:50783"}
+[2026-08-09T12:15:43.005Z] [INFO] [server.runtime] Server listening on 127.0.0.1:50783
+[2026-08-09T12:15:43.010Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:50783
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-packaged-server-2G9964/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-packaged-server-2G9964/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-packaged-server-2G9964/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+CachedVideoModelProvider initialized.
+VideoModelService initialized.
+Registering agent customization processors...
+System prompt processor definition 'AvailableSkillsProcessor' (class: 'AvailableSkillsProcessor') registered successfully.
+Registered system prompt processors: AvailableSkillsProcessor
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Background task 'Memory Sync Worker' completed successfully.
+Pre-loaded 49 agent definitions into cache.
+[2026-08-09T12:15:43.046Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Successfully registered tool definition: 'send_message_to'
+Loaded tool group: Agent Communication Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+[2026-08-09T12:15:43.074Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 30 items.
+Pre-loaded 30 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Populating LLM models cache for the first time...
+Fetching list of available LLM models from LLMFactory...
+AUTOBYTEUS_LLM_DISCOVERY_FAILED
+Discovering Ollama models from host: http://127.0.0.1:11434
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+Discovering LM Studio models from host: http://127.0.0.1:1234
+Finished LM Studio discovery. Total models registered: 14
+Successfully fetched 41 models from LLMFactory.
+LLM models cache populated with 41 items.
+Pre-loaded 41 LLM models into cache.
+Populating Image models cache for the first time...
+Fetching list of available Image models from ImageClientFactory...
+AUTOBYTEUS_IMAGE_DISCOVERY_FAILED
+Successfully fetched 7 image models from ImageClientFactory.
+Image models by provider: OPENAI=2, GEMINI=5
+Image models by runtime: api=7
+Image models cache populated with 7 items.
+Pre-loaded 7 image models into cache.
+Populating Audio models cache for the first time...
+Fetching list of available Audio models from AudioClientFactory...
+AUTOBYTEUS_AUDIO_DISCOVERY_FAILED
+Successfully fetched 4 audio models from AudioClientFactory.
+Audio models by provider: OPENAI=1, GEMINI=3
+Audio models by runtime: api=4
+Audio models cache populated with 4 items.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Packaged server startup validation passed for /Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-08-09T12:15:43.128Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-08-09T12:15:43.276Z] [INFO] [server.runtime] Server closed cleanly.
+Packaged server verification completed: 2026-08-09T12:15:43Z
++ hdiutil verify DMG
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $19129992
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $BEA6FC85
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $5A7D8B79
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $23DFC87B
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $5A7D8B79
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $F9E280EE
+Die überprüfte CRC32-Prüfsumme ist $232157FB
+hdiutil: verify: checksum of "electron-dist/AutoByteus_enterprise_macos-arm64-1.4.45.dmg" is VALID
++ unzip archive integrity test
+No errors detected in compressed data of electron-dist/AutoByteus_enterprise_macos-arm64-1.4.45.zip.
++ SHA-256 checksums
+befa35eac2f3ff93c76ddc59ec9a31abcbee55aad2cf917a8408e16f5c66437f  electron-dist/AutoByteus_enterprise_macos-arm64-1.4.45.dmg
+7b014bf1342f98c9e394db807992e779eb09a48e2701dcfde27afa57da0d3db2  electron-dist/AutoByteus_enterprise_macos-arm64-1.4.45.zip
+Artifact integrity verification completed: 2026-08-09T12:16:10Z
+
+=== Build-source freshness ===
+Ticket HEAD: 26b9b3cb87c222611a03614d5608cf5af72e8952
+origin/personal: 3cddeec6b93602da172fec2e7b9a80acc7c05117
+Divergence (origin/personal...HEAD): 0	12
+Merge base: 3cddeec6b93602da172fec2e7b9a80acc7c05117
+Recorded: 2026-08-09T12:16:21Z

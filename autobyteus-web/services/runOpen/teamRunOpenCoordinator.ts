@@ -7,7 +7,6 @@ import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import {
   hydrateLiveTeamRunContext,
-  hydrateTeamMemberActivitiesFromProjection,
 } from '~/services/runHydration/teamRunContextHydrationService';
 import {
   applyMemberOrHistoryStatusSnapshot,
@@ -16,9 +15,14 @@ import {
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
 import {
   createTeamExecutionAddress,
+  serializeTeamExecutionAddress,
   type TeamExecutionAddress,
 } from '~/types/agent/TeamExecutionAddress';
 import { findTeamExecutionNode } from '~/services/agentStreaming/teamTaskExecutionTree';
+import {
+  primeRecentEventMonitorBaseline,
+  resetRecentEventMonitorBaseline,
+} from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
 
 export type TeamRunOpenSelectionMode = 'desktop' | 'mobile';
 
@@ -52,6 +56,7 @@ const mergeHydratedExecutions = (
     }
     currentContext.config = hydratedContext.config;
     if (!preserveLiveRuntimeState) {
+      resetRecentEventMonitorBaseline(currentContext);
       currentContext.state.runId = hydratedContext.state.runId;
       currentContext.state.conversation = hydratedContext.state.conversation;
       currentContext.state.hasEarlierActiveTraceEvents = hydratedContext.state.hasEarlierActiveTraceEvents;
@@ -112,19 +117,14 @@ export const openTeamRun = async (
     const requested = preferredFocus;
     existing.focusedExecutionAddress = requested && (
       Boolean(findTeamExecutionNode(existing, requested)) ||
-      existing.agentExecutionsByKey.has(JSON.stringify(requested))
+      existing.agentExecutionsByKey.has(serializeTeamExecutionAddress(requested))
     ) ? requested : hydration.focusedExecutionAddress;
     current = existing;
   } else {
     teamContextsStore.addTeamContext(hydrated);
   }
 
-  if (hydrated.isActive) {
-    hydrateTeamMemberActivitiesFromProjection({
-      members: current.agentExecutionsByKey,
-      projectionByMemberAddress: hydration.projectionByMemberAddress,
-    });
-  }
+  current.agentExecutionsByKey.forEach(primeRecentEventMonitorBaseline);
 
   if (input.selectRun !== false) {
     const selection = useAgentSelectionStore();

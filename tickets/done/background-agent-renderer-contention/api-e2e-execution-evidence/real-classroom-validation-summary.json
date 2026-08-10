@@ -1,0 +1,87 @@
+{
+  "result": "Pass",
+  "completedAt": "2026-08-09T11:34:30.552Z",
+  "scenario": "REAL-CLASSROOM-001",
+  "environment": {
+    "secretImportCommand": "pnpm secrets:import -- --source /Users/normy/.autobyteus/server-data/.env --database-url <isolated SQLite URL>",
+    "secretValuesPrinted": false,
+    "agentPackage": "/Users/normy/autobyteus_org/autobyteus-agents",
+    "teamDefinition": "Classroom Simulation Team",
+    "provider": "deepseek-v4-flash",
+    "backendPort": 63362,
+    "frontendPort": 63712,
+    "isolatedDataRemovedAfterRun": true
+  },
+  "run": {
+    "teamRunId": "classroom_simulation_team_9ab47cde901a4b7a845b5d4106964c8b",
+    "marker": "CLASSROOM_REAL_E2E_1786274798615",
+    "sendToRunningVisibleMs": 520.8967080000002,
+    "sendToCompletedExchangeMs": 14271.824375,
+    "liveFilesTeamNavigation": {
+      "count": 20,
+      "min": 29.33362500000112,
+      "p95": 39.68591699999888,
+      "max": 40.18779100000029
+    },
+    "receivedFrameCount": 298,
+    "receivedTypeCounts": {
+      "CONNECTED": 2,
+      "AGENT_STATUS": 10,
+      "TEAM_RUN_LIFECYCLE": 2,
+      "MEMBER_INPUT_MESSAGE": 3,
+      "TURN_STARTED": 3,
+      "SEGMENT_START": 24,
+      "SEGMENT_CONTENT": 166,
+      "SEGMENT_END": 24,
+      "TOKEN_USAGE_UPDATED": 11,
+      "TOOL_EXECUTION_STARTED": 9,
+      "TOOL_LOG": 27,
+      "TOOL_EXECUTION_SUCCEEDED": 9,
+      "TEAM_COMMUNICATION_MESSAGE": 2,
+      "ASSISTANT_COMPLETE": 3,
+      "TURN_COMPLETED": 3
+    },
+    "agents": [
+      "professor",
+      "student"
+    ],
+    "coreAssertions": {
+      "packageImported": true,
+      "uiTeamRunCreated": true,
+      "teamSocketObserved": true,
+      "professorContentObserved": true,
+      "studentContentObserved": true,
+      "successfulSendMessageHandoffs": 2,
+      "markerVisible": true,
+      "professorIdleObserved": true,
+      "navigationP95UnderOneSecond": true
+    }
+  },
+  "historyReselection": {
+    "historyLoadedAfterExplicitOpen": true,
+    "summaryPresent": true,
+    "professorPresent": true,
+    "studentPresent": true,
+    "markerHydratedAfterHistorySelection": true,
+    "toolHistoryHydrated": true,
+    "thinkingHydrated": true,
+    "fileBackedAnswerHydrated": true
+  },
+  "nonGreenDiagnostic": {
+    "attempt": "A direct reload of an unregistered temporary workspace showed no history.",
+    "classification": "The extra assertion bypassed the supported desktop history flow, which lists registered filesystem workspaces.",
+    "resolution": "The follow-up used Open runs/history, registered the isolated workspace through the UI, expanded it to issue the normal scoped history query, reselected professor, and directly observed the exact marker, Thinking, run_bash, send_message_to, and answer file.",
+    "rawEvidence": "real-classroom-ui-evidence.json",
+    "followupEvidence": "real-classroom-ui-history-followup.json"
+  },
+  "evidence": [
+    "real-classroom-secret-import-success.log",
+    "real-classroom-agent-package-import.json",
+    "real-classroom-ui-evidence.json",
+    "real-classroom-ui-final.png",
+    "real-classroom-ui-history-followup.json",
+    "real-classroom-ui-history-selected.png",
+    "owned-team-run-termination.json",
+    "cleanup.log"
+  ]
+}

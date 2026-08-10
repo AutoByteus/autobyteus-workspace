@@ -1,9 +1,103 @@
-import type { TeamMemberNode } from '~/types/agent/AgentTeamContext';
+import type { AgentTeamContext, TeamMemberNode } from '~/types/agent/AgentTeamContext';
+import type { AgentStatus } from '~/types/agent/AgentStatus';
 import type { TeamReferenceFile } from '~/types/teamReferenceFile';
 import { normalizeTeamReferenceFiles } from '~/utils/teamReferences/teamReferenceFileModel';
+import { serializeTeamExecutionAddress, type TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 import type { ServerMessage } from './protocol';
 
 export type TaskExecutionProjectionStatus = 'starting' | 'active' | 'awaiting_review' | 'revision_requested' | 'accepted' | 'settling' | 'settled' | 'failed';
+export type TaskExecutionProjectionMutation =
+  | { kind: 'NONE' }
+  | {
+      kind: 'PRESENTATION';
+      executionAddress: TeamExecutionAddress;
+      changes: Array<
+        | { field: 'DISPLAY_NAME'; value: string }
+        | { field: 'CURRENT_STATUS'; value: AgentStatus | string | null }
+      >;
+    }
+  | { kind: 'TOPOLOGY'; reason: string };
+
+export const NO_TASK_EXECUTION_PROJECTION_MUTATION: TaskExecutionProjectionMutation = Object.freeze({ kind: 'NONE' });
+
+export const mergeTaskExecutionProjectionMutations = (
+  left: TaskExecutionProjectionMutation,
+  right: TaskExecutionProjectionMutation,
+): TaskExecutionProjectionMutation => {
+  if (left.kind === 'TOPOLOGY') return left;
+  if (right.kind === 'TOPOLOGY') return right;
+  if (left.kind === 'NONE') return right;
+  if (right.kind === 'NONE') return left;
+  if (serializeTeamExecutionAddress(left.executionAddress) !== serializeTeamExecutionAddress(right.executionAddress)) {
+    return { kind: 'TOPOLOGY', reason: 'multiple task execution rows changed' };
+  }
+  const byField = new Map(left.changes.map((change) => [change.field, change]));
+  right.changes.forEach((change) => byField.set(change.field, change));
+  return { kind: 'PRESENTATION', executionAddress: left.executionAddress, changes: [...byField.values()] };
+};
+
+interface TaskExecutionNavigationRowSnapshot {
+  executionAddress: TeamExecutionAddress;
+  structural: string;
+  displayName: string;
+  currentStatus: AgentStatus | string | null;
+}
+export type TaskExecutionNavigationSnapshot = Map<string, TaskExecutionNavigationRowSnapshot>;
+
+export const captureTaskExecutionNavigationSnapshot = (
+  teamContext: AgentTeamContext,
+): TaskExecutionNavigationSnapshot => {
+  const rows: TaskExecutionNavigationSnapshot = new Map();
+  const visit = (nodes: readonly TeamMemberNode[], parentKey: string | null, depth: number): void => {
+    nodes.forEach((node, order) => {
+      if (node.isTaskExecution && node.executionAddress) {
+        const key = serializeTeamExecutionAddress(node.executionAddress);
+        rows.set(key, {
+          executionAddress: node.executionAddress,
+          structural: JSON.stringify({
+            parentKey,
+            order,
+            depth,
+            kind: node.kind,
+            address: node.address,
+            hasChildren: node.kind === 'agent_team' && node.children.length > 0,
+          }),
+          displayName: node.displayName,
+          currentStatus: node.kind === 'agent'
+            ? teamContext.agentExecutionsByKey.get(key)?.state.currentStatus ?? node.currentStatus ?? null
+            : null,
+        });
+      }
+      if (node.kind === 'agent_team') {
+        visit(node.children, node.executionAddress ? serializeTeamExecutionAddress(node.executionAddress) : node.address, depth + 1);
+      }
+    });
+  };
+  visit(teamContext.rootTeam.children, null, 0);
+  return rows;
+};
+
+export const deriveTaskExecutionProjectionMutation = (
+  before: TaskExecutionNavigationSnapshot,
+  teamContext: AgentTeamContext,
+  reason: string,
+): TaskExecutionProjectionMutation => {
+  const after = captureTaskExecutionNavigationSnapshot(teamContext);
+  if (before.size !== after.size) return { kind: 'TOPOLOGY', reason };
+  const presentation: Array<Extract<TaskExecutionProjectionMutation, { kind: 'PRESENTATION' }>> = [];
+  for (const [key, current] of after.entries()) {
+    const prior = before.get(key);
+    if (!prior || prior.structural !== current.structural) return { kind: 'TOPOLOGY', reason };
+    const changes: Extract<TaskExecutionProjectionMutation, { kind: 'PRESENTATION' }>['changes'] = [];
+    if (prior.displayName !== current.displayName) changes.push({ field: 'DISPLAY_NAME', value: current.displayName });
+    if (prior.currentStatus !== current.currentStatus) changes.push({ field: 'CURRENT_STATUS', value: current.currentStatus });
+    if (changes.length) presentation.push({ kind: 'PRESENTATION', executionAddress: current.executionAddress, changes });
+  }
+  if (!presentation.length) return NO_TASK_EXECUTION_PROJECTION_MUTATION;
+  if (presentation.length === 1) return presentation[0]!;
+  return { kind: 'TOPOLOGY', reason: `${reason}: multiple represented rows changed` };
+};
+
 export interface TaskExecutionTimelineEntry { id: string; eventType: string; status: TaskExecutionProjectionStatus; label: string; createdAt: string; message?: string | null }
 export interface TaskDelegationProjectionDetails {
   taskId: string | null; taskLabel: string | null; taskDescription: string | null;
@@ -14,12 +108,14 @@ export interface TaskDelegationProjectionDetails {
 const record = (value: unknown): Record<string, unknown> => value && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : {};
 const text = (value: unknown): string | null => typeof value === 'string' && value.trim() ? value.trim() : null;
 export const normalizeTaskExecutionStatusFromPayload = (eventType: string | null | undefined, rawStatus: unknown, decision: unknown = null): TaskExecutionProjectionStatus => {
-  const status = text(rawStatus)?.toLowerCase();
-  if (status === 'awaiting_review') return 'awaiting_review';
+  const status = text(rawStatus)?.toLowerCase().replace(/[-\s]+/g, '_');
+  if (status === 'starting' || status === 'initializing') return 'starting';
+  if (status === 'awaiting_review' || status === 'pending_review') return 'awaiting_review';
   if (status === 'accepted' || decision === 'accept') return 'accepted';
-  if (status === 'settled' || status === 'completed') return 'settled';
+  if (status === 'settling') return 'settling';
+  if (status === 'settled' || status === 'completed' || status === 'terminal' || status === 'offline') return 'settled';
   if (status === 'failed' || status === 'error') return 'failed';
-  if (status === 'revision_requested' || decision === 'request_revision') return 'revision_requested';
+  if (status === 'revision_requested' || status === 'revision' || decision === 'request_revision') return 'revision_requested';
   return eventType === 'TASK_DELEGATION_TERMINAL_STATUS' ? 'settled' : 'active';
 };
 export const extractTaskDelegationProjectionDetails = (message: ServerMessage): TaskDelegationProjectionDetails | null => {
@@ -27,7 +123,7 @@ export const extractTaskDelegationProjectionDetails = (message: ServerMessage): 
   const payload = record(message.payload);
   const target = record(payload.target);
   const task = Array.isArray(payload.tasks) ? record(payload.tasks[0]) : {};
-  const eventType = text(payload.event_type) ?? 'TASK_DELEGATION_STATUS_UPDATED';
+  const eventType = text(payload.event_type) ?? text(payload.eventType) ?? 'TASK_DELEGATION_STATUS_UPDATED';
   const now = text(payload.updatedAt) ?? text(payload.updated_at)
     ?? text(payload.activatedAt) ?? text(payload.createdAt) ?? text(payload.created_at)
     ?? new Date().toISOString();

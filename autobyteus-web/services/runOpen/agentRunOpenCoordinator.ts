@@ -13,6 +13,7 @@ import {
   mergeHydratedRunFileChanges,
 } from '~/services/runHydration/runFileChangeHydrationService';
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
+import { primeRecentEventMonitorBaseline } from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
 
 export type RunOpenSelectionMode = 'desktop' | 'mobile';
 
@@ -54,14 +55,16 @@ export const openAgentRun = async (
       isLocked: true,
     });
     mergeHydratedRunFileChanges(input.runId, fileChanges);
+    if (existingContext) primeRecentEventMonitorBaseline(existingContext);
   } else {
-    agentContextsStore.upsertProjectionContext({
+    const context = agentContextsStore.upsertProjectionContext({
       runId: input.runId,
       config,
       conversation,
       status: liveStatus,
     });
     hydrateActivitiesFromProjection(input.runId, activities);
+    primeRecentEventMonitorBaseline(context);
     hydrateRunFileChanges(input.runId, fileChanges);
   }
 
