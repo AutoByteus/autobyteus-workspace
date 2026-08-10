@@ -7,15 +7,16 @@ correction, and `DR-004` provided the corrected README-guided macOS ARM64
 Electron package. The user has now tested that package and authorized repository
 finalization plus a new stable release. `DR-006` records the completed archived
 ticket publication, focused-verified main-repository merge, and target-branch
-publication. The ordered `v1.4.46` release remains pending.
+publication. `DR-007` records the completed stable `v1.4.46` publication,
+five-workflow rollout, bounded iOS recovery, output verification, and cleanup.
 
 ## Handoff Summary
 
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/background-agent-renderer-contention/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/background-agent-renderer-contention/delivery-revision-record.md`
-- Current delivery revision ID: `DR-006`
-- Notes: User verification received; ticket committed/pushed and merged/focused-verified on `personal`; target published; stable `v1.4.46` release pending.
+- Current delivery revision ID: `DR-007`
+- Notes: User verified; repository finalized; stable `v1.4.46` published and verified; task-owned worktree/branches cleaned.
 
 ## Initial Delivery Integration Refresh
 
@@ -42,7 +43,7 @@ publication. The ordered `v1.4.46` release remains pending.
 - Integration result: `Not needed` — the refreshed base is already the merge base and ancestor of reviewed HEAD; divergence is `0 behind / 14 ahead`.
 - Additional post-base rerun: `Not required` because the base did not advance. `API-REV-003` already ran the exact fresh real-data correction and retained WebSocket/frontend/browser/performance matrix on reviewed HEAD; DR-004 then rebuilt and package-verified Electron.
 - Fresh-workspace result: Pass — 26 API workspaces / 26 visible UI rows, no false empty state; active Electron backend and second full reload also 26/26.
-- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/done/background-agent-renderer-contention/delivery-integration-evidence.log` and `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/done/background-agent-renderer-contention/api-e2e-execution-evidence/api-rev-003/api-rev-003-summary.json`.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/background-agent-renderer-contention/delivery-integration-evidence.log` and `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/background-agent-renderer-contention/api-e2e-execution-evidence/api-rev-003/api-rev-003-summary.json`.
 
 ## User Verification
 
@@ -68,22 +69,23 @@ publication. The ordered `v1.4.46` release remains pending.
 
 - Prior stable version/tag: `1.4.45` / `v1.4.45`.
 - Selected next stable patch: `1.4.46` / `v1.4.46`.
-- Availability check: `v1.4.46` is absent locally and remotely.
-- Current pre-release package versions: web `1.4.45`; messaging gateway `1.4.45`.
-- Planned method: documented release helper after repository finalization; it will synchronize both package versions, curated notes, and the managed messaging manifest, then commit, tag, and push branch plus tag.
+- Availability check before publication: `v1.4.46` was absent locally and remotely.
+- Released package versions: web `1.4.46`; messaging gateway `1.4.46`.
+- Released managed manifest: `releaseTag=v1.4.46`, `artifactVersion=1.4.46`, server compatibility `0.1.1`.
+- Release commit: `37660dd61347b630889a698769af5641566357bb`.
+- Annotated tag object: `3795887d2505a54daea801bdc7836575d44b212c`, peeled to the release commit locally and remotely.
+- Method result: documented release helper completed exactly once and pushed branch plus tag.
 
-## Current Local Electron Test Package (`DR-004`)
+## Accepted Local Electron Test Package (`DR-004`, subsequently cleaned)
 
 - README command: `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac`
 - Build result: Pass, exit 0; enterprise macOS ARM64, Electron `42.4.1`, app version `1.4.45`.
-- App: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
-- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.45.dmg`
-- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.45.zip`
+- Historical app/DMG/ZIP paths were under the former dedicated ticket worktree; they were removed after user acceptance, stable rollout verification, and a zero-reference process/open-file audit.
 - DMG SHA-256: `df11e1c8fbdf76d2c18fc7276780b8376dddce60cc577b24a52fa42d1de14faf`
 - ZIP SHA-256: `67dc6af84bb087b6ab90b562cd0d0358358ad07cca4218e47623be5a0d3d6e0f`
 - Package verification: Mach-O ARM64; staged/final terminal helper checks passed; real packaged `node-pty` spawn passed; isolated packaged server migration/health/clean shutdown passed; `hdiutil verify` passed; ZIP integrity passed.
 - Signing/notarization: Intentionally skipped for local testing (`identity explicitly is set to null`).
-- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/done/background-agent-renderer-contention/electron-build-macos-arm64-ir-006-delivery.log`.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/background-agent-renderer-contention/electron-build-macos-arm64-ir-006-delivery.log`.
 - Build-source freshness: Post-build fetch left `origin/personal` at `3cddeec6b93602da172fec2e7b9a80acc7c05117`; reviewed ticket HEAD `1d6d9f2da40d30b9ef95faa04cf82a12b8e67d1f` remains `0 behind / 14 ahead`.
 - Superseded package: DR-002 output is preserved under `/Users/normy/autobyteus_org/autobyteus-build-archives/background-agent-renderer-contention/dr-002-electron-dist-20260809/` for historical evidence only and must not be used for current verification.
 
@@ -102,44 +104,53 @@ publication. The ordered `v1.4.46` release remains pending.
 - Merge into target result: `Completed` — merge commit `a33989c82a7a3f021a086fe467b0f2ab399722cd`, no conflicts.
 - Post-merge checks: `Passed` — server 1 file / 7 tests; focused frontend 3 files / 113 tests; artifact hygiene 18,928 tracked files; corrected working-tree diff check pass after whitespace-only retained-evidence normalization.
 - Push target branch result: `Completed` — `origin/personal` at `a33989c82a7a3f021a086fe467b0f2ab399722cd`; ticket and merge commits confirmed ancestral.
-- Repository finalization status: `Completed`; delivery evidence/report commit pending before release helper.
+- Delivery evidence commit: `bc3ffd32e6a747508d94eecb8782744f9e5ef90d`, pushed before release.
+- Repository finalization status: `Completed`.
 - Blocker (if applicable): None.
 
 ## Release / Publication / Deployment
 
-- Applicable: `Yes` in `DR-005`.
+- Applicable: `Yes`, authorized in `DR-005` and completed in `DR-007`.
 - Method: `Release Script`.
-- Method reference / command: `pnpm release 1.4.46 -- --release-notes tickets/done/background-agent-renderer-contention/release-notes.md` after clean repository finalization to `personal`.
-- Release/publication/deployment result: `In progress`.
-- Release notes handoff result: `Prepared`.
-- Blocker (if applicable): None; remote rollout must be monitored after the single fresh tag-push trigger.
+- Method reference / command: `pnpm release 1.4.46 -- --release-notes tickets/done/background-agent-renderer-contention/release-notes.md`, executed exactly once from clean `personal`.
+- Release/publication/deployment result: `Completed`.
+- GitHub Release: `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.46`; stable, non-draft, non-prerelease; 21 uploaded assets.
+- Desktop: Success — Windows x64, macOS ARM64/x64, Linux x64/ARM64, blockmaps/updater metadata published; packaged-runtime/signing policy checks passed in the workflow.
+- Android: Success — release APK and checksum published.
+- Messaging gateway: Success — runtime archive, checksum, metadata, and release manifest published.
+- Server Docker: Success — `autobyteus/autobyteus-server:1.4.46` and `:latest` published for Linux AMD64/ARM64 at digest `sha256:84ab800a4292744bfd2238cee25fe337a7812c64a226d7592d073ae95f77c780`.
+- iOS: Success on immutable-run attempt 2 — simulator checks, secret gate, signed IPA archive, and App Store Connect/TestFlight upload passed for `1.4.46 (108)`, delivery UUID `1e668c6e-f912-41ae-8292-d256be46ada2`. Attempt 1's simulator-local fake-node marker failure was recovered by rerunning failed jobs only; no tag rewrite or manual dispatch.
+- Release notes handoff result: `Completed` — archived, tagged curated file, and published release body match exactly.
+- Blocker (if applicable): None. The iOS workflow uploads to TestFlight but intentionally does not submit for public App Store review/release.
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention`
-- Worktree cleanup result: `Deferred` until stable rollout verification and a process audit confirms no user-owned runtime depends on its package/path.
-- Worktree prune result: `Deferred` with worktree cleanup.
-- Local ticket branch cleanup result: `Deferred` with worktree cleanup.
-- Remote branch cleanup result: `Deferred` — ticket branch is published and safely ancestral to `origin/personal`.
-- Blocker (if applicable): No product blocker; cleanup is ordered after release verification and process audit.
+- Worktree cleanup result: `Completed` — zero process and open-file references; dedicated worktree removed with task-owned DR-004 output.
+- Worktree prune result: `Completed`.
+- Local ticket branch cleanup result: `Completed` after ancestry confirmation.
+- Remote branch cleanup result: `Completed` — `origin/codex/background-agent-renderer-contention` deleted after ancestry confirmation.
+- Historical archive result: DR-002 external archive retained unchanged.
+- Blocker (if applicable): None.
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 
 - Classification: N/A.
 - Recommended recipient: N/A.
-- Why final handoff could not complete: N/A; repository finalization passed and stable release execution/verification is the remaining authorized stage.
+- Why final handoff could not complete: N/A; final handoff is complete.
 
 ## Release Notes Summary
 
 - Release notes artifact created before verification / acceptance: `No — release scope was added by the user's acceptance message; notes were created immediately afterward and before repository/release commits.`
-- Archived release notes artifact used for release/publication: `Pending`.
-- Release notes status: `Prepared` — `tickets/done/background-agent-renderer-contention/release-notes.md`.
+- Archived release notes artifact used for release/publication: `Completed` — `tickets/done/background-agent-renderer-contention/release-notes.md`.
+- Release notes status: `Published`; archived/tagged/published content match.
 
 ## Deployment Steps
 
-The single `v1.4.46` tag push will start the documented desktop, Android, iOS,
-messaging-gateway, and server-Docker workflows. Do not run the manual-dispatch
-recovery path immediately after the fresh release helper.
+The single `v1.4.46` tag push started the documented desktop, Android, iOS,
+messaging-gateway, and server-Docker workflows. All five are successful. The
+only recovery was a failed-job rerun of the immutable iOS run; no manual dispatch
+or tag rewrite occurred.
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -180,18 +191,28 @@ recovery path immediately after the fresh release helper.
 - Main-repository merge workspace/run-history frontend rerun: Pass — 3 files / 113 tests.
 - Main-repository artifact hygiene: Pass — 18,928 tracked files.
 - Main-repository publication: Pass — ticket `ff3edb2d...` and merge `a33989c8...` are ancestors of `origin/personal` at `a33989c8...`.
+- Release helper: Pass — release commit/tag created and pushed exactly once.
+- Stable GitHub Release: Pass — 21 uploaded assets; release body matches curated notes.
+- Release workflows: Pass — messaging, Android, Docker, desktop, and iOS successful for exact release commit; iOS successful on attempt 2 after a simulator-local failed-job rerun.
+- iOS upload: Pass — App Store Connect/TestFlight accepted `1.4.46 (108)` with no upload errors.
+- Docker verification: Pass — versioned/latest multi-arch tags share expected digest and AMD64/ARM64 manifests.
+- Post-finalization cleanup: Pass — worktree and local/remote ticket branches removed after zero-reference and ancestry checks.
 - Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/background-agent-renderer-contention/delivery-integration-evidence.log`, `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/background-agent-renderer-contention/api-e2e-execution-evidence/api-rev-003/api-rev-003-summary.json`, `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/background-agent-renderer-contention/electron-build-macos-arm64-ir-006-delivery.log`, and `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/background-agent-renderer-contention/repository-finalization-evidence.log`.
+- Release evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/background-agent-renderer-contention/release-v1.4.46-command.log`, `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/background-agent-renderer-contention/release-v1.4.46-workflow-monitor.log`, `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/background-agent-renderer-contention/release-v1.4.46-ios-recovery.log`, `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/background-agent-renderer-contention/release-v1.4.46-verification.log`, and `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/background-agent-renderer-contention/post-finalization-cleanup.log`.
 
 ## Rollback Criteria
 
-- Repository finalization is published on `personal`; if a pre-release rollback
+- Repository finalization is published on `personal`; if a repository rollback
   becomes necessary, revert merge `a33989c82a7a3f021a086fe467b0f2ab399722cd`
   rather than rewriting shared history.
 - If a later finalized target regresses status delivery, focused input latency,
   Event Monitor retention, hierarchy/focus, progressive rich rendering, or
-  stream ordering, revert the eventual target merge or deliver a focused
+  stream ordering, revert merge `a33989c82a7a3f021a086fe467b0f2ab399722cd`
+  or deliver a focused
   follow-up. No data-migration rollback is applicable.
+- Do not rewrite stable tag `v1.4.46`. If a published artifact defect is found,
+  issue a new patch release rather than mutating the immutable release.
 
 ## Final Status
 
-`User verified — repository finalized to origin/personal; stable v1.4.46 release pending.`
+`Complete — user verified; repository finalized; stable v1.4.46 published and verified; cleanup complete.`

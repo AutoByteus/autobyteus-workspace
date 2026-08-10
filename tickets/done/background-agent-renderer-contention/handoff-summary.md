@@ -2,30 +2,31 @@
 
 ## Current Status
 
-`User verified; repository finalized to origin/personal; stable v1.4.46 release is pending.`
+`Complete — user verified; repository finalized; stable v1.4.46 published and rollout-verified.`
 
 The corrected reviewed candidate was refreshed against the latest tracked
 `origin/personal`, which remained unchanged and already integrated. The exact
 fresh real-data workspace boundary, retained WebSocket/frontend/browser matrix,
 durable docs, and a newly rebuilt local Electron package are current. The ticket
 was archived, committed, pushed, merged, focused-verified on main-repository
-`personal`, and published to `origin/personal`. The version bump, tag, release,
-deployment verification, and worktree cleanup remain pending.
+`personal`, and published. The documented helper created and pushed stable
+`v1.4.46`; all five release workflows are successful, outputs are verified, and
+the task-owned worktree and branches are removed.
 
 The user confirmed the corrected DR-004 package after testing and explicitly
 requested finalization plus a new version. The post-verification fetch found
 `origin/personal` unchanged and already integrated, so the accepted state did
 not materially change and renewed verification is not required.
 
-## Current Local Electron Test Build (`DR-004`)
+## Accepted Local Electron Test Build (`DR-004`, cleaned after release)
 
 Delivery followed the repository README's local macOS build guidance and built
 corrected reviewed HEAD `1d6d9f2da40d30b9ef95faa04cf82a12b8e67d1f`
 as an enterprise macOS ARM64 package at version `1.4.45` with Electron `42.4.1`.
 
-- App: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
-- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.45.dmg`
-- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.45.zip`
+- Historical app path: `autobyteus-web/electron-dist/mac-arm64/AutoByteus.app` in the former ticket worktree.
+- Historical DMG: `AutoByteus_enterprise_macos-arm64-1.4.45.dmg` in the former ticket worktree.
+- Historical ZIP: `AutoByteus_enterprise_macos-arm64-1.4.45.zip` in the former ticket worktree.
 - DMG SHA-256: `df11e1c8fbdf76d2c18fc7276780b8376dddce60cc577b24a52fa42d1de14faf`
 - ZIP SHA-256: `67dc6af84bb087b6ab90b562cd0d0358358ad07cca4218e47623be5a0d3d6e0f`
 
@@ -37,15 +38,18 @@ unsigned and unnotarized for local testing; macOS may require the user to approv
 opening it through Privacy & Security. A post-build fetch confirmed the ticket
 remains `0 behind / 14 ahead` of unchanged `origin/personal`.
 
-This DR-004 package supersedes the DR-002 package for testing. The historical
-DR-002 output was preserved under
+The user accepted this DR-004 package. The task-owned ticket worktree and its
+DR-004 output were removed only after stable rollout verification and a zero-
+reference process/open-file audit. The signed current macOS ARM64 release is
+available from the `v1.4.46` GitHub Release. The historical DR-002 output remains
+preserved under
 `/Users/normy/autobyteus_org/autobyteus-build-archives/background-agent-renderer-contention/dr-002-electron-dist-20260809/`
 and must not be used to verify the corrected workspace startup behavior.
 
 ## Integrated Candidate
 
 - Ticket branch: `codex/background-agent-renderer-contention`
-- Dedicated worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention`
+- Dedicated worktree: removed after verified release and zero-reference audit.
 - Bootstrap base: `7f0fc49965950d9689726a048371f2e2b78eef31` (`origin/personal`, `v1.4.45`)
 - Initial reviewed implementation HEAD: `242b466d8497be1a00f65594df4503d40092a73c`
 - Delivery safety checkpoint: `512d59bec7cfb3fe74a810cee5191fc7ac8d45fc`
@@ -58,6 +62,8 @@ and must not be used to verify the corrected workspace startup behavior.
 - Final ticket commit: `ff3edb2ddb2ec34aa9cb7330f91113fa37342a9f`
 - Main-repository merge: `a33989c82a7a3f021a086fe467b0f2ab399722cd`
 - Published target: `origin/personal` at `a33989c82a7a3f021a086fe467b0f2ab399722cd`
+- Release commit/tag: `37660dd61347b630889a698769af5641566357bb` / annotated `v1.4.46`.
+- Ticket branch: removed locally and remotely after ancestry confirmation.
 - Merge conflicts: None.
 
 The 20 newer base commits were integrated before any delivery-owned docs edits.
@@ -175,10 +181,10 @@ Canonical report:
 - No stored schema, GraphQL schema, wire envelope, setting shape, raw trace,
   attachment format, or durable history data requires migration or backfill.
 
-## Suggested User Verification
+## User Verification (Completed)
 
-Use an integrated Electron or normal desktop/web session and verify the user-
-visible boundary that motivated the ticket:
+The user tested and accepted the corrected DR-004 Electron package. The manual
+boundary exercised was:
 
 1. Launch fresh, open Workspaces, and confirm the existing workspace catalog is
    visible rather than an empty-history state; reload once and confirm it remains
@@ -192,9 +198,8 @@ visible boundary that motivated the ticket:
 7. Confirm the selected conversation still renders progressive rich Markdown
    and Thinking normally.
 
-API/E2E already validated these boundaries in Chrome and an isolated actual
-Electron runtime. The fresh packaged Electron artifact listed above is now ready
-for this manual verification.
+API/E2E also validated these boundaries in Chrome and an isolated actual
+Electron runtime. No further acceptance hold remains.
 
 ## Accepted Residual Limits
 
@@ -210,7 +215,7 @@ for this manual verification.
 These limits are non-blocking and leave no critical acceptance criterion
 unproven.
 
-## User Acceptance And Release Plan
+## User Acceptance And Release Result
 
 - Acceptance: Received on `2026-08-10` — “i have tested. lets finalize and
   release a new version.”
@@ -222,13 +227,17 @@ unproven.
 - Selected stable patch: `1.4.46` / `v1.4.46`, absent locally and remotely.
 - Curated notes: `release-notes.md`; the documented release helper will copy
   these into the tagged repository release-notes path.
-- Release method: after repository finalization, run
+- Release method executed exactly once:
   `pnpm release 1.4.46 -- --release-notes tickets/done/background-agent-renderer-contention/release-notes.md`
-  exactly once from clean `personal`. The pushed tag starts the desktop,
-  Android, iOS, messaging-gateway, and server-Docker workflows.
+  from clean `personal`.
+- Release commit: `37660dd61347b630889a698769af5641566357bb`.
+- Annotated tag object: `3795887d2505a54daea801bdc7836575d44b212c`.
+- GitHub Release: `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.46`; stable, non-draft, non-prerelease, 21 uploaded assets.
+- Workflow result: desktop, Android, messaging gateway, server Docker, and iOS all successful for the exact tag commit. iOS attempt 1 hit a runner/simulator-local smoke flake; failed-job rerun attempt 2 passed and uploaded `1.4.46 (108)` to App Store Connect/TestFlight without rewriting the tag or using manual dispatch.
+- Docker result: `autobyteus/autobyteus-server:1.4.46` and `:latest` share multi-arch digest `sha256:84ab800a4292744bfd2238cee25fe337a7812c64a226d7592d073ae95f77c780`.
+- Cleanup: ticket worktree, local branch, and remote branch removed after ancestry/process/open-file checks; historical DR-002 archive retained.
+- Evidence: `release-v1.4.46-command.log`, `release-v1.4.46-workflow-monitor.log`, `release-v1.4.46-ios-recovery.log`, `release-v1.4.46-verification.log`, and `post-finalization-cleanup.log`.
 
-Repository implementation finalization is complete on `origin/personal` at
-`a33989c82a7a3f021a086fe467b0f2ab399722cd`; the delivery-evidence commit and
-stable release remain pending. The stable tag must not be created manually or
-rewritten, and the manual-dispatch recovery path must not be run immediately
-after the fresh release helper.
+Finalization, release, rollout verification, and task cleanup are complete.
+The immutable stable tag must not be rewritten. Later independent `personal`
+advancement and `v1.4.47` activity are outside this ticket.
