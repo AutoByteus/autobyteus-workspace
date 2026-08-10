@@ -2,14 +2,15 @@
 
 ## Current Status
 
-`User verified; repository finalization and stable v1.4.46 release are authorized and in progress.`
+`User verified; repository finalized to origin/personal; stable v1.4.46 release is pending.`
 
 The corrected reviewed candidate was refreshed against the latest tracked
 `origin/personal`, which remained unchanged and already integrated. The exact
 fresh real-data workspace boundary, retained WebSocket/frontend/browser matrix,
 durable docs, and a newly rebuilt local Electron package are current. The ticket
-is archived for its final branch commit; no branch push, target merge, version
-bump, release, deployment, or worktree cleanup has occurred yet.
+was archived, committed, pushed, merged, focused-verified on main-repository
+`personal`, and published to `origin/personal`. The version bump, tag, release,
+deployment verification, and worktree cleanup remain pending.
 
 The user confirmed the corrected DR-004 package after testing and explicitly
 requested finalization plus a new version. The post-verification fetch found
@@ -54,6 +55,9 @@ and must not be used to verify the corrected workspace startup behavior.
 - Corrective implementation: `IR-006`, source commit `f0aa52702c96dafc1d24cef5b9292a05ffb914a9`
 - Current reviewed candidate HEAD: `1d6d9f2da40d30b9ef95faa04cf82a12b8e67d1f`
 - Current divergence after the `2026-08-10` refresh: `0 behind / 14 ahead` of unchanged `origin/personal`
+- Final ticket commit: `ff3edb2ddb2ec34aa9cb7330f91113fa37342a9f`
+- Main-repository merge: `a33989c82a7a3f021a086fe467b0f2ab399722cd`
+- Published target: `origin/personal` at `a33989c82a7a3f021a086fe467b0f2ab399722cd`
 - Merge conflicts: None.
 
 The 20 newer base commits were integrated before any delivery-owned docs edits.
@@ -136,13 +140,20 @@ delivery fetch found no newer base commit requiring another merge or rerun.
 5. The DR-004 README-guided package build and package verification passed,
    including guards, ARM64/native terminal spawn, packaged-server
    migration/health/shutdown, DMG verification, and ZIP integrity.
+6. After merging the archived ticket into main-repository `personal`, delivery
+   reran the real WebSocket integration — Pass, 1 file / 7 tests — and the
+   focused run-history/workspace frontend set — Pass, 3 files / 113 tests.
+   Repository artifact hygiene passed across 18,928 tracked files. Six retained
+   evidence files were whitespace-normalized without semantic changes, after
+   which the working-tree comparison passed `git diff --check origin/personal --`.
 
 Evidence:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/done/background-agent-renderer-contention/delivery-integration-evidence.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/done/background-agent-renderer-contention/delivery-integration-browser-evidence-20260809/evidence.json`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/done/background-agent-renderer-contention/api-e2e-execution-evidence/api-rev-003/api-rev-003-summary.json`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/done/background-agent-renderer-contention/electron-build-macos-arm64-ir-006-delivery.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/background-agent-renderer-contention/delivery-integration-evidence.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/background-agent-renderer-contention/delivery-integration-browser-evidence-20260809/evidence.json`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/background-agent-renderer-contention/api-e2e-execution-evidence/api-rev-003/api-rev-003-summary.json`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/background-agent-renderer-contention/electron-build-macos-arm64-ir-006-delivery.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/background-agent-renderer-contention/repository-finalization-evidence.log`
 
 ## Documentation Result
 
@@ -154,7 +165,7 @@ Evidence:
 - `autobyteus-web/docs/content_rendering.md`
 
 Canonical report:
-`/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/done/background-agent-renderer-contention/docs-sync-report.md`
+`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/background-agent-renderer-contention/docs-sync-report.md`
 
 ## Persisted Data / Upgrade Result
 
@@ -216,6 +227,8 @@ unproven.
   exactly once from clean `personal`. The pushed tag starts the desktop,
   Android, iOS, messaging-gateway, and server-Docker workflows.
 
-Repository finalization and release are currently in progress. The stable tag
-must not be created manually or rewritten, and the manual-dispatch recovery path
-must not be run immediately after the fresh release helper.
+Repository implementation finalization is complete on `origin/personal` at
+`a33989c82a7a3f021a086fe467b0f2ab399722cd`; the delivery-evidence commit and
+stable release remain pending. The stable tag must not be created manually or
+rewritten, and the manual-dispatch recovery path must not be run immediately
+after the fresh release helper.

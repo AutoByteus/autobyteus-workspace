@@ -207,7 +207,7 @@ AssertionError: expected [ Array(8) ] to deeply equal [ Array(8) ]
 
  ❯ tests/integration/agent/agent-status-websocket.integration.test.ts:275:71
     273|         expect(liveTrace.filter((message) => message.type !== "AGENT_S…
-    274| 
+    274|
     275|         expect(canonicalEvents.map((runEvent) => runEvent.eventType)).…
        |                                                                       ^
     276|           AgentRunEventType.AGENT_STATUS,

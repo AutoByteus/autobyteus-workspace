@@ -5,17 +5,17 @@
 `DR-003` re-established the delivery gate after the IR-006 fresh-workspace
 correction, and `DR-004` provided the corrected README-guided macOS ARM64
 Electron package. The user has now tested that package and authorized repository
-finalization plus a new stable release. `DR-005` records the unchanged
-post-verification target and begins the ordered `v1.4.46` finalization/release
-flow.
+finalization plus a new stable release. `DR-006` records the completed archived
+ticket publication, focused-verified main-repository merge, and target-branch
+publication. The ordered `v1.4.46` release remains pending.
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/done/background-agent-renderer-contention/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/background-agent-renderer-contention/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/done/background-agent-renderer-contention/delivery-revision-record.md`
-- Current delivery revision ID: `DR-005`
-- Notes: User verification received; target unchanged; repository finalization and stable `v1.4.46` release are authorized and in progress.
+- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/background-agent-renderer-contention/delivery-revision-record.md`
+- Current delivery revision ID: `DR-006`
+- Notes: User verification received; ticket committed/pushed and merged/focused-verified on `personal`; target published; stable `v1.4.46` release pending.
 
 ## Initial Delivery Integration Refresh
 
@@ -54,7 +54,7 @@ flow.
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/done/background-agent-renderer-contention/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/background-agent-renderer-contention/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated: `autobyteus-server-ts/docs/modules/agent_streaming.md`; `autobyteus-web/docs/agent_execution_architecture.md`; `autobyteus-web/docs/settings.md`; `autobyteus-web/docs/content_rendering.md`.
 - No-impact rationale (if applicable): N/A.
@@ -62,7 +62,7 @@ flow.
 ## Ticket State Transition
 
 - Ticket moved to `tickets/done/<ticket-name>`: `Yes`
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/done/background-agent-renderer-contention` on the ticket branch; after target merge the canonical main-repository path will be `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/background-agent-renderer-contention`.
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/background-agent-renderer-contention`.
 
 ## Version / Tag / Release Commit
 
@@ -89,19 +89,20 @@ flow.
 
 ## Repository Finalization
 
-- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/done/background-agent-renderer-contention/investigation-notes.md`
+- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/background-agent-renderer-contention/investigation-notes.md`
 - Ticket branch: `codex/background-agent-renderer-contention`
-- Ticket branch commit result: `Held` — the allowed reviewed-state safety checkpoint/base merge and reviewed IR-006 source commits exist locally; current API/E2E/review/delivery reports and docs remain uncommitted pending user verification.
-- Ticket branch push result: `Held`
+- Ticket branch commit result: `Completed` — `ff3edb2ddb2ec34aa9cb7330f91113fa37342a9f` (`docs(delivery): finalize background renderer contention`).
+- Ticket branch push result: `Completed` — `origin/codex/background-agent-renderer-contention` at `ff3edb2ddb2ec34aa9cb7330f91113fa37342a9f`.
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after verification / acceptance: N/A — verification has not occurred.
-- Delivery-owned edits protected before re-integration: `Not needed` at this stage; protect them if the target advances at finalization time.
-- Re-integration before final merge result: `Not needed` at this stage.
-- Target branch update result: `Held`
-- Merge into target result: `Held`
-- Push target branch result: `Held`
-- Repository finalization status: `Authorized / in progress`.
+- Target advanced after verification / acceptance: `No` — final fetch retained `origin/personal` at `3cddeec6b93602da172fec2e7b9a80acc7c05117`, already ancestral to the accepted candidate.
+- Delivery-owned edits protected before re-integration: `Completed` in the archived ticket commit.
+- Re-integration before final merge result: `Not needed` — target unchanged/already integrated.
+- Target branch update result: `Completed` — main checkout matched `origin/personal` before merge.
+- Merge into target result: `Completed` — merge commit `a33989c82a7a3f021a086fe467b0f2ab399722cd`, no conflicts.
+- Post-merge checks: `Passed` — server 1 file / 7 tests; focused frontend 3 files / 113 tests; artifact hygiene 18,928 tracked files; corrected working-tree diff check pass after whitespace-only retained-evidence normalization.
+- Push target branch result: `Completed` — `origin/personal` at `a33989c82a7a3f021a086fe467b0f2ab399722cd`; ticket and merge commits confirmed ancestral.
+- Repository finalization status: `Completed`; delivery evidence/report commit pending before release helper.
 - Blocker (if applicable): None.
 
 ## Release / Publication / Deployment
@@ -116,23 +117,23 @@ flow.
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention`
-- Worktree cleanup result: `Blocked` by the user-verification/finalization hold.
-- Worktree prune result: `Blocked` by the user-verification/finalization hold.
-- Local ticket branch cleanup result: `Blocked` by the user-verification/finalization hold.
-- Remote branch cleanup result: `Not required` — no ticket branch has been pushed in this delivery stage.
-- Blocker (if applicable): Cleanup must follow successful target finalization and ancestry confirmation.
+- Worktree cleanup result: `Deferred` until stable rollout verification and a process audit confirms no user-owned runtime depends on its package/path.
+- Worktree prune result: `Deferred` with worktree cleanup.
+- Local ticket branch cleanup result: `Deferred` with worktree cleanup.
+- Remote branch cleanup result: `Deferred` — ticket branch is published and safely ancestral to `origin/personal`.
+- Blocker (if applicable): No product blocker; cleanup is ordered after release verification and process audit.
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 
 - Classification: N/A.
 - Recommended recipient: N/A.
-- Why final handoff could not complete: N/A; handoff preparation passed and only the mandatory user hold remains.
+- Why final handoff could not complete: N/A; repository finalization passed and stable release execution/verification is the remaining authorized stage.
 
 ## Release Notes Summary
 
 - Release notes artifact created before verification / acceptance: `No — release scope was added by the user's acceptance message; notes were created immediately afterward and before repository/release commits.`
 - Archived release notes artifact used for release/publication: `Pending`.
-- Release notes status: `Prepared` — `tickets/in-progress/background-agent-renderer-contention/release-notes.md`, to be archived before the final ticket commit.
+- Release notes status: `Prepared` — `tickets/done/background-agent-renderer-contention/release-notes.md`.
 
 ## Deployment Steps
 
@@ -175,13 +176,17 @@ recovery path immediately after the fresh release helper.
 - Packaged terminal native runtime and real spawn probe: Pass.
 - Packaged server migration, isolated health, and clean shutdown: Pass.
 - DMG checksum verification and ZIP integrity: Pass.
-- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/done/background-agent-renderer-contention/delivery-integration-evidence.log`, `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/done/background-agent-renderer-contention/api-e2e-execution-evidence/api-rev-003/api-rev-003-summary.json`, and `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/done/background-agent-renderer-contention/electron-build-macos-arm64-ir-006-delivery.log`.
+- Main-repository merge WebSocket rerun: Pass — 1 file / 7 tests.
+- Main-repository merge workspace/run-history frontend rerun: Pass — 3 files / 113 tests.
+- Main-repository artifact hygiene: Pass — 18,928 tracked files.
+- Main-repository publication: Pass — ticket `ff3edb2d...` and merge `a33989c8...` are ancestors of `origin/personal` at `a33989c8...`.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/background-agent-renderer-contention/delivery-integration-evidence.log`, `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/background-agent-renderer-contention/api-e2e-execution-evidence/api-rev-003/api-rev-003-summary.json`, `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/background-agent-renderer-contention/electron-build-macos-arm64-ir-006-delivery.log`, and `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/background-agent-renderer-contention/repository-finalization-evidence.log`.
 
 ## Rollback Criteria
 
-- Before repository finalization, no rollback on `personal` is needed because no
-  target merge/push has occurred. The ticket worktree/branch preserves the
-  integrated candidate and delivery artifacts.
+- Repository finalization is published on `personal`; if a pre-release rollback
+  becomes necessary, revert merge `a33989c82a7a3f021a086fe467b0f2ab399722cd`
+  rather than rewriting shared history.
 - If a later finalized target regresses status delivery, focused input latency,
   Event Monitor retention, hierarchy/focus, progressive rich rendering, or
   stream ordering, revert the eventual target merge or deliver a focused
@@ -189,4 +194,4 @@ recovery path immediately after the fresh release helper.
 
 ## Final Status
 
-`User verified — repository finalization and stable v1.4.46 release are authorized and in progress.`
+`User verified — repository finalized to origin/personal; stable v1.4.46 release pending.`

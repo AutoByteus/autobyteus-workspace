@@ -102,7 +102,7 @@ migrations/
     └─ migration.sql
   └─ 20260730090000_add_token_usage_provider_name/
     └─ migration.sql
-      
+
 All migrations have been successfully applied.
 Database migrations completed successfully.
 (node:50365) ExperimentalWarning: SQLite is an experimental feature and might change at any time

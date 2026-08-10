@@ -4,7 +4,7 @@ index 935022ab2..5909062a5 100644
 +++ b/autobyteus-server-ts/tests/integration/agent/agent-status-websocket.integration.test.ts
 @@ -221,10 +221,12 @@ describe("Agent status WebSocket contract integration", () => {
    ] as const;
- 
+
    it.each(runtimeCases)(
 -    "pairs every %s activity/terminal event with status-only lifecycle over a real standalone socket",
 +    "projects only %s status transitions to a real standalone socket while preserving canonical companions",
@@ -15,11 +15,11 @@ index 935022ab2..5909062a5 100644
 +      const unsubscribe = run.subscribeToEvents((runEvent) => canonicalEvents.push(runEvent));
        const harness = await openAgentApp(run);
        const connection = await openSocket(`${harness.baseUrl}/ws/agent/${run.runId}`);
- 
+
 @@ -255,25 +257,35 @@ describe("Agent status WebSocket contract integration", () => {
            event(run.runId, AgentRunEventType.TURN_COMPLETED, { turn_id: "turn-a" }),
          ]);
- 
+
 -        await waitForMessageCount(connection.messages, 9);
 +        await waitForMessageCount(connection.messages, 7);
          const liveTrace = connection.messages.slice(2);
@@ -42,7 +42,7 @@ index 935022ab2..5909062a5 100644
 +        expect(liveTrace[2]?.payload.delta).toBe("onetwo");
 +        expect(liveTrace.filter((message) => message.type === "AGENT_STATUS")).toHaveLength(2);
          expect(liveTrace.filter((message) => message.type !== "AGENT_STATUS")).toHaveLength(3);
- 
+
 +        expect(canonicalEvents.map((runEvent) => runEvent.eventType)).toEqual([
 +          AgentRunEventType.AGENT_STATUS,
 +          AgentRunEventType.TURN_STARTED,
@@ -71,7 +71,7 @@ index 935022ab2..5909062a5 100644
 @@ -442,20 +455,17 @@ describe("Agent status WebSocket contract integration", () => {
          }),
        ]);
- 
+
 -      await waitForMessageCount(primary.messages, 14);
 +      await waitForMessageCount(primary.messages, 11);
        const trace = primary.messages.slice(2);
@@ -102,7 +102,7 @@ index 935022ab2..5909062a5 100644
 @@ -520,23 +530,21 @@ describe("Agent status WebSocket contract integration", () => {
          }),
        ]);
- 
+
 -      await waitForMessageCount(connection.messages, 8);
 +      await waitForMessageCount(connection.messages, 7);
        const trace = connection.messages.slice(2);
@@ -118,7 +118,7 @@ index 935022ab2..5909062a5 100644
 -      expectStatusOnlyPayload(trace[5]!, "error");
 +      expectStatusOnlyPayload(trace[4]!, "error");
        expect(run.getStatusSnapshot().status).toBe("error");
- 
+
        await run.terminate();
 -      await waitForMessageCount(connection.messages, 9);
 -      expectStatusOnlyPayload(connection.messages[8]!, "offline");

@@ -59,3 +59,469 @@ Tracked files scanned: 18928
 Path-length threshold: 200
 Longest tracked path: 197 chars: tickets/done/agent-catalog-origin-grouping/validation-artifacts/round3/ui-application-package/applications/research-workspace/agent-teams/literature-review/agents/source-collector/agent-config.json
 Result: pass.
+
+=== Post-merge focused server verification on personal ===
+Recorded: 2026-08-10T09:40:47Z
+Main personal HEAD: a33989c82a7a3f021a086fe467b0f2ab399722cd
++ cd autobyteus-server-ts && pnpm exec vitest run tests/integration/agent/agent-status-websocket.integration.test.ts --no-watch
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:16419) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > projects only autobyteus status transitions to a real standalone socket while preserving canonical companions
+Agent websocket attached for run run-autobyteus
+Created agent session f991b401-b0ac-4644-a679-db52fcc862ca for run run-autobyteus
+Agent WebSocket connected: session=f991b401-b0ac-4644-a679-db52fcc862ca, run=run-autobyteus
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > projects only autobyteus status transitions to a real standalone socket while preserving canonical companions
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > projects only autobyteus status transitions to a real standalone socket while preserving canonical companions
+Agent websocket attached for run run-autobyteus
+Created agent session cf6b1257-8951-4aae-8572-41712ecaca75 for run run-autobyteus
+Agent WebSocket connected: session=cf6b1257-8951-4aae-8572-41712ecaca75, run=run-autobyteus
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > projects only autobyteus status transitions to a real standalone socket while preserving canonical companions
+Closed agent session cf6b1257-8951-4aae-8572-41712ecaca75
+Agent WebSocket disconnected: cf6b1257-8951-4aae-8572-41712ecaca75
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > projects only codex_app_server status transitions to a real standalone socket while preserving canonical companions
+Closed agent session f991b401-b0ac-4644-a679-db52fcc862ca
+Agent WebSocket disconnected: f991b401-b0ac-4644-a679-db52fcc862ca
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > projects only codex_app_server status transitions to a real standalone socket while preserving canonical companions
+Agent websocket attached for run run-codex_app_server
+Created agent session 027bb0c6-00fe-4f4e-b561-161581af2a13 for run run-codex_app_server
+Agent WebSocket connected: session=027bb0c6-00fe-4f4e-b561-161581af2a13, run=run-codex_app_server
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > projects only codex_app_server status transitions to a real standalone socket while preserving canonical companions
+Agent websocket attached for run run-codex_app_server
+Created agent session aec33598-56cf-4faf-82ba-3088d9388737 for run run-codex_app_server
+Agent WebSocket connected: session=aec33598-56cf-4faf-82ba-3088d9388737, run=run-codex_app_server
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > projects only codex_app_server status transitions to a real standalone socket while preserving canonical companions
+Closed agent session aec33598-56cf-4faf-82ba-3088d9388737
+Agent WebSocket disconnected: aec33598-56cf-4faf-82ba-3088d9388737
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > projects only claude_agent_sdk status transitions to a real standalone socket while preserving canonical companions
+Closed agent session 027bb0c6-00fe-4f4e-b561-161581af2a13
+Agent WebSocket disconnected: 027bb0c6-00fe-4f4e-b561-161581af2a13
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > projects only claude_agent_sdk status transitions to a real standalone socket while preserving canonical companions
+Agent websocket attached for run run-claude_agent_sdk
+Created agent session ad01d747-41c2-469e-adf0-e3ec22efd514 for run run-claude_agent_sdk
+Agent WebSocket connected: session=ad01d747-41c2-469e-adf0-e3ec22efd514, run=run-claude_agent_sdk
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > projects only claude_agent_sdk status transitions to a real standalone socket while preserving canonical companions
+Agent websocket attached for run run-claude_agent_sdk
+Created agent session d96ce8b0-1589-4f63-a2ce-b1bd6ce44814 for run run-claude_agent_sdk
+Agent WebSocket connected: session=d96ce8b0-1589-4f63-a2ce-b1bd6ce44814, run=run-claude_agent_sdk
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > projects only claude_agent_sdk status transitions to a real standalone socket while preserving canonical companions
+Closed agent session d96ce8b0-1589-4f63-a2ce-b1bd6ce44814
+Agent WebSocket disconnected: d96ce8b0-1589-4f63-a2ce-b1bd6ce44814
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > coalesces a representative fine-grained canonical stream into one default-window content frame
+Closed agent session ad01d747-41c2-469e-adf0-e3ec22efd514
+Agent WebSocket disconnected: ad01d747-41c2-469e-adf0-e3ec22efd514
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > coalesces a representative fine-grained canonical stream into one default-window content frame
+Agent websocket attached for run run-default-window-rate
+Created agent session 86128c5d-b5b5-4b40-969a-bd24faf3e47c for run run-default-window-rate
+Agent WebSocket connected: session=86128c5d-b5b5-4b40-969a-bd24faf3e47c, run=run-default-window-rate
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > uses a changed interval only for the active socket's next newly opened window
+Closed agent session 86128c5d-b5b5-4b40-969a-bd24faf3e47c
+Agent WebSocket disconnected: 86128c5d-b5b5-4b40-969a-bd24faf3e47c
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > uses a changed interval only for the active socket's next newly opened window
+Agent websocket attached for run run-live-interval-change
+Created agent session 40f9cb4d-02c5-43fc-b56b-bee60c128a99 for run run-live-interval-change
+Agent WebSocket connected: session=40f9cb4d-02c5-43fc-b56b-bee60c128a99, run=run-live-interval-change
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > keeps late A observable and preserves B across delayed A activity/terminal events and reconnect
+Closed agent session 40f9cb4d-02c5-43fc-b56b-bee60c128a99
+Agent WebSocket disconnected: 40f9cb4d-02c5-43fc-b56b-bee60c128a99
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > keeps late A observable and preserves B across delayed A activity/terminal events and reconnect
+Agent websocket attached for run run-retired-turn-ordering
+Created agent session 0601e855-2207-4bca-ae0b-b3967c225316 for run run-retired-turn-ordering
+Agent WebSocket connected: session=0601e855-2207-4bca-ae0b-b3967c225316, run=run-retired-turn-ordering
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > keeps late A observable and preserves B across delayed A activity/terminal events and reconnect
+Agent websocket attached for run run-retired-turn-ordering
+Created agent session 8d1c0707-22f6-4991-a254-3163bdb9a937 for run run-retired-turn-ordering
+Agent WebSocket connected: session=8d1c0707-22f6-4991-a254-3163bdb9a937, run=run-retired-turn-ordering
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > keeps late A observable and preserves B across delayed A activity/terminal events and reconnect
+Closed agent session 8d1c0707-22f6-4991-a254-3163bdb9a937
+Agent WebSocket disconnected: 8d1c0707-22f6-4991-a254-3163bdb9a937
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > keeps late A observable and preserves B across delayed A activity/terminal events and reconnect
+Agent websocket attached for run run-retired-turn-ordering
+Created agent session c77feff2-8d1e-4dea-aa67-82c1bca8a9c2 for run run-retired-turn-ordering
+Agent WebSocket connected: session=c77feff2-8d1e-4dea-aa67-82c1bca8a9c2, run=run-retired-turn-ordering
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > keeps late A observable and preserves B across delayed A activity/terminal events and reconnect
+Closed agent session c77feff2-8d1e-4dea-aa67-82c1bca8a9c2
+Agent WebSocket disconnected: c77feff2-8d1e-4dea-aa67-82c1bca8a9c2
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > keeps diagnostic errors running, terminalizes the current turn to error, then publishes offline on termination
+Closed agent session 0601e855-2207-4bca-ae0b-b3967c225316
+Agent WebSocket disconnected: 0601e855-2207-4bca-ae0b-b3967c225316
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > keeps diagnostic errors running, terminalizes the current turn to error, then publishes offline on termination
+Agent websocket attached for run run-error-contract
+Created agent session 4dba0d67-df70-4a65-a149-93ac0e7d626a for run run-error-contract
+Agent WebSocket connected: session=4dba0d67-df70-4a65-a149-93ac0e7d626a, run=run-error-contract
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts
+Closed agent session 4dba0d67-df70-4a65-a149-93ac0e7d626a
+Agent WebSocket disconnected: 4dba0d67-df70-4a65-a149-93ac0e7d626a
+
+ ✓ tests/integration/agent/agent-status-websocket.integration.test.ts (7 tests) 2926ms
+     ✓ coalesces a representative fine-grained canonical stream into one default-window content frame  657ms
+     ✓ uses a changed interval only for the active socket's next newly opened window  1818ms
+     ✓ keeps late A observable and preserves B across delayed A activity/terminal events and reconnect  340ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  11:40:48
+   Duration  8.50s (transform 3.32s, setup 10ms, import 5.04s, tests 2.93s, environment 0ms)
+
+Exit code: 0
+
+=== Post-merge focused frontend verification on personal ===
+Recorded: 2026-08-10T09:41:11Z
++ cd autobyteus-web && pnpm test:nuxt stores/__tests__/runHistoryStore.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts --run
+
+> autobyteus@1.4.45 test:nuxt /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/runHistoryStore.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/runHistoryStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > openTeamMemberRun hydrates only the focused historical member and keeps siblings as shells
+[runHistoryStore] Failed to fetch task delegation records for team 'team-1' Error: [vitest] No "GetTaskDelegationRecords" export is defined on the "~/graphql/queries/runHistoryQueries" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+    at VitestMocker.createError (file:///Users/normy/autobyteus_org/autobyteus-workspace-superrepo/node_modules/.pnpm/vitest@3.2.4_@types+debug@4.1.12_@types+node@22.19.11_happy-dom@15.11.7_jiti@1.21.7_jsd_c4aeceb0540f1b53322b8b3ed72ae625/node_modules/vitest/dist/chunks/execute.B7h3T_Hc.js:284:17)
+    at Object.get (file:///Users/normy/autobyteus_org/autobyteus-workspace-superrepo/node_modules/.pnpm/vitest@3.2.4_@types+debug@4.1.12_@types+node@22.19.11_happy-dom@15.11.7_jiti@1.21.7_jsd_c4aeceb0540f1b53322b8b3ed72ae625/node_modules/vitest/dist/chunks/execute.B7h3T_Hc.js:330:16)
+    at fetchAndHydrateTaskDelegationRecordsForTeam (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/services/runHydration/taskDelegationHydrationService.ts:29:14)
+    at loadHistoricalTeamRunContextHydrationPayload (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/services/runHydration/teamRunContextHydrationService.ts:331:9)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at openTeamRun (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts:132:7)
+    at openTeamMemberRunFromHistory (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/stores/runHistorySelectionActions.ts:43:20)
+    at Proxy.openTeamMemberRun (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/stores/runHistoryStore.ts:527:7)
+    at /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/stores/__tests__/runHistoryStore.spec.ts:3115:5
+    at file:///Users/normy/autobyteus_org/autobyteus-workspace-superrepo/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20 {
+  codeFrame: 'vi.mock(import("~/graphql/queries/runHistoryQueries"), async (importOriginal) => {\n' +
+    '  const actual = await importOriginal()\n' +
+    '  return {\n' +
+    '    ...actual,\n' +
+    '    // your mocked methods\n' +
+    '  }\n' +
+    '})'
+}
+
+stderr | stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > openTeamMemberRun uses non-running member placeholders and connects stream for active teams
+[runHistoryStore] Failed to fetch task delegation records for team 'team-1' Error: [vitest] No "GetTaskDelegationRecords" export is defined on the "~/graphql/queries/runHistoryQueries" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+    at VitestMocker.createError (file:///Users/normy/autobyteus_org/autobyteus-workspace-superrepo/node_modules/.pnpm/vitest@3.2.4_@types+debug@4.1.12_@types+node@22.19.11_happy-dom@15.11.7_jiti@1.21.7_jsd_c4aeceb0540f1b53322b8b3ed72ae625/node_modules/vitest/dist/chunks/execute.B7h3T_Hc.js:284:17)
+    at Object.get (file:///Users/normy/autobyteus_org/autobyteus-workspace-superrepo/node_modules/.pnpm/vitest@3.2.4_@types+debug@4.1.12_@types+node@22.19.11_happy-dom@15.11.7_jiti@1.21.7_jsd_c4aeceb0540f1b53322b8b3ed72ae625/node_modules/vitest/dist/chunks/execute.B7h3T_Hc.js:330:16)
+    at fetchAndHydrateTaskDelegationRecordsForTeam (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/services/runHydration/taskDelegationHydrationService.ts:29:14)
+    at loadLiveTeamRunContextHydrationPayload (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/services/runHydration/teamRunContextHydrationService.ts:234:9)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at openTeamRun (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts:132:7)
+    at openTeamMemberRunFromHistory (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/stores/runHistorySelectionActions.ts:43:20)
+    at Proxy.openTeamMemberRun (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/stores/runHistoryStore.ts:527:7)
+    at /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/stores/__tests__/runHistoryStore.spec.ts:3207:5
+    at file:///Users/normy/autobyteus_org/autobyteus-workspace-superrepo/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20 {
+  codeFrame: 'vi.mock(import("~/graphql/queries/runHistoryQueries"), async (importOriginal) => {\n' +
+    '  const actual = await importOriginal()\n' +
+    '  return {\n' +
+    '    ...actual,\n' +
+    '    // your mocked methods\n' +
+    '  }\n' +
+    '})'
+}
+
+stderr | stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > openTeamMemberRun normalizes task-agent-only logical parent focus to the coordinator without promoting task-agent history
+[runHistoryStore] Failed to fetch task delegation records for team 'team-stale-route-1' Error: [vitest] No "GetTaskDelegationRecords" export is defined on the "~/graphql/queries/runHistoryQueries" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+    at VitestMocker.createError (file:///Users/normy/autobyteus_org/autobyteus-workspace-superrepo/node_modules/.pnpm/vitest@3.2.4_@types+debug@4.1.12_@types+node@22.19.11_happy-dom@15.11.7_jiti@1.21.7_jsd_c4aeceb0540f1b53322b8b3ed72ae625/node_modules/vitest/dist/chunks/execute.B7h3T_Hc.js:284:17)
+    at Object.get (file:///Users/normy/autobyteus_org/autobyteus-workspace-superrepo/node_modules/.pnpm/vitest@3.2.4_@types+debug@4.1.12_@types+node@22.19.11_happy-dom@15.11.7_jiti@1.21.7_jsd_c4aeceb0540f1b53322b8b3ed72ae625/node_modules/vitest/dist/chunks/execute.B7h3T_Hc.js:330:16)
+    at fetchAndHydrateTaskDelegationRecordsForTeam (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/services/runHydration/taskDelegationHydrationService.ts:29:14)
+    at loadLiveTeamRunContextHydrationPayload (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/services/runHydration/teamRunContextHydrationService.ts:234:9)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at openTeamRun (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts:132:7)
+    at openTeamMemberRunFromHistory (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/stores/runHistorySelectionActions.ts:43:20)
+    at Proxy.openTeamMemberRun (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/stores/runHistoryStore.ts:527:7)
+    at /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/stores/__tests__/runHistoryStore.spec.ts:3289:5
+    at file:///Users/normy/autobyteus_org/autobyteus-workspace-superrepo/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20 {
+  codeFrame: 'vi.mock(import("~/graphql/queries/runHistoryQueries"), async (importOriginal) => {\n' +
+    '  const actual = await importOriginal()\n' +
+    '  return {\n' +
+    '    ...actual,\n' +
+    '    // your mocked methods\n' +
+    '  }\n' +
+    '})'
+}
+
+stderr | stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > openTeamMemberRun normalizes task-agent-only logical parent focus for an existing unsubscribed active context
+[runHistoryStore] Failed to fetch task delegation records for team 'team-stale-route-2' Error: [vitest] No "GetTaskDelegationRecords" export is defined on the "~/graphql/queries/runHistoryQueries" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+    at VitestMocker.createError (file:///Users/normy/autobyteus_org/autobyteus-workspace-superrepo/node_modules/.pnpm/vitest@3.2.4_@types+debug@4.1.12_@types+node@22.19.11_happy-dom@15.11.7_jiti@1.21.7_jsd_c4aeceb0540f1b53322b8b3ed72ae625/node_modules/vitest/dist/chunks/execute.B7h3T_Hc.js:284:17)
+    at Object.get (file:///Users/normy/autobyteus_org/autobyteus-workspace-superrepo/node_modules/.pnpm/vitest@3.2.4_@types+debug@4.1.12_@types+node@22.19.11_happy-dom@15.11.7_jiti@1.21.7_jsd_c4aeceb0540f1b53322b8b3ed72ae625/node_modules/vitest/dist/chunks/execute.B7h3T_Hc.js:330:16)
+    at fetchAndHydrateTaskDelegationRecordsForTeam (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/services/runHydration/taskDelegationHydrationService.ts:29:14)
+    at loadLiveTeamRunContextHydrationPayload (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/services/runHydration/teamRunContextHydrationService.ts:234:9)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at openTeamRun (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts:132:7)
+    at openTeamMemberRunFromHistory (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/stores/runHistorySelectionActions.ts:43:20)
+    at Proxy.openTeamMemberRun (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/stores/runHistoryStore.ts:527:7)
+    at /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/stores/__tests__/runHistoryStore.spec.ts:3382:5
+    at file:///Users/normy/autobyteus_org/autobyteus-workspace-superrepo/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20 {
+  codeFrame: 'vi.mock(import("~/graphql/queries/runHistoryQueries"), async (importOriginal) => {\n' +
+    '  const actual = await importOriginal()\n' +
+    '  return {\n' +
+    '    ...actual,\n' +
+    '    // your mocked methods\n' +
+    '  }\n' +
+    '})'
+}
+
+stderr | stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > openTeamMemberRun trusts history active state and reconnects a team stream
+[runHistoryStore] Failed to fetch task delegation records for team 'team-stale-1' Error: [vitest] No "GetTaskDelegationRecords" export is defined on the "~/graphql/queries/runHistoryQueries" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+    at VitestMocker.createError (file:///Users/normy/autobyteus_org/autobyteus-workspace-superrepo/node_modules/.pnpm/vitest@3.2.4_@types+debug@4.1.12_@types+node@22.19.11_happy-dom@15.11.7_jiti@1.21.7_jsd_c4aeceb0540f1b53322b8b3ed72ae625/node_modules/vitest/dist/chunks/execute.B7h3T_Hc.js:284:17)
+    at Object.get (file:///Users/normy/autobyteus_org/autobyteus-workspace-superrepo/node_modules/.pnpm/vitest@3.2.4_@types+debug@4.1.12_@types+node@22.19.11_happy-dom@15.11.7_jiti@1.21.7_jsd_c4aeceb0540f1b53322b8b3ed72ae625/node_modules/vitest/dist/chunks/execute.B7h3T_Hc.js:330:16)
+    at fetchAndHydrateTaskDelegationRecordsForTeam (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/services/runHydration/taskDelegationHydrationService.ts:29:14)
+    at loadLiveTeamRunContextHydrationPayload (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/services/runHydration/teamRunContextHydrationService.ts:234:9)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at openTeamRun (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts:132:7)
+    at openTeamMemberRunFromHistory (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/stores/runHistorySelectionActions.ts:43:20)
+    at Proxy.openTeamMemberRun (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/stores/runHistoryStore.ts:527:7)
+    at /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/stores/__tests__/runHistoryStore.spec.ts:3448:5
+    at file:///Users/normy/autobyteus_org/autobyteus-workspace-superrepo/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20 {
+  codeFrame: 'vi.mock(import("~/graphql/queries/runHistoryQueries"), async (importOriginal) => {\n' +
+    '  const actual = await importOriginal()\n' +
+    '  return {\n' +
+    '    ...actual,\n' +
+    '    // your mocked methods\n' +
+    '  }\n' +
+    '})'
+}
+
+stderr | stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > openTeamMemberRun refreshes an existing team context in place
+[runHistoryStore] Failed to fetch task delegation records for team 'team-1' Error: [vitest] No "GetTaskDelegationRecords" export is defined on the "~/graphql/queries/runHistoryQueries" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+    at VitestMocker.createError (file:///Users/normy/autobyteus_org/autobyteus-workspace-superrepo/node_modules/.pnpm/vitest@3.2.4_@types+debug@4.1.12_@types+node@22.19.11_happy-dom@15.11.7_jiti@1.21.7_jsd_c4aeceb0540f1b53322b8b3ed72ae625/node_modules/vitest/dist/chunks/execute.B7h3T_Hc.js:284:17)
+    at Object.get (file:///Users/normy/autobyteus_org/autobyteus-workspace-superrepo/node_modules/.pnpm/vitest@3.2.4_@types+debug@4.1.12_@types+node@22.19.11_happy-dom@15.11.7_jiti@1.21.7_jsd_c4aeceb0540f1b53322b8b3ed72ae625/node_modules/vitest/dist/chunks/execute.B7h3T_Hc.js:330:16)
+    at fetchAndHydrateTaskDelegationRecordsForTeam (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/services/runHydration/taskDelegationHydrationService.ts:29:14)
+    at loadHistoricalTeamRunContextHydrationPayload (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/services/runHydration/teamRunContextHydrationService.ts:331:9)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at openTeamRun (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts:132:7)
+    at openTeamMemberRunFromHistory (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/stores/runHistorySelectionActions.ts:43:20)
+    at Proxy.openTeamMemberRun (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/stores/runHistoryStore.ts:527:7)
+    at /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/stores/__tests__/runHistoryStore.spec.ts:3598:5
+    at file:///Users/normy/autobyteus_org/autobyteus-workspace-superrepo/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20 {
+  codeFrame: 'vi.mock(import("~/graphql/queries/runHistoryQueries"), async (importOriginal) => {\n' +
+    '  const actual = await importOriginal()\n' +
+    '  return {\n' +
+    '    ...actual,\n' +
+    '    // your mocked methods\n' +
+    '  }\n' +
+    '})'
+}
+
+ ✓ stores/__tests__/runHistoryStore.spec.ts (59 tests) 73ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts (4 tests) 85ms
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > shows an error toast when terminate fails
+Failed to terminate run 'run-1'.
+
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts (50 tests) 583ms
+
+ Test Files  3 passed (3)
+      Tests  113 passed (113)
+   Start at  11:41:14
+   Duration  7.04s (transform 3.55s, setup 16.24s, collect 921ms, tests 741ms, environment 757ms, prepare 478ms)
+
+Exit code: 0
+
+=== Post-merge repository integrity checks on personal ===
+Recorded: 2026-08-10T09:41:36Z
++ git diff --check origin/personal...HEAD
+tickets/done/background-agent-renderer-contention/api-e2e-execution-evidence/durable-coverage.patch:7: trailing whitespace.
++
+tickets/done/background-agent-renderer-contention/api-e2e-execution-evidence/durable-coverage.patch:18: trailing whitespace.
++
+tickets/done/background-agent-renderer-contention/api-e2e-execution-evidence/durable-coverage.patch:22: trailing whitespace.
++
+tickets/done/background-agent-renderer-contention/api-e2e-execution-evidence/durable-coverage.patch:45: trailing whitespace.
++
+tickets/done/background-agent-renderer-contention/api-e2e-execution-evidence/durable-coverage.patch:74: trailing whitespace.
++
+tickets/done/background-agent-renderer-contention/api-e2e-execution-evidence/durable-coverage.patch:105: trailing whitespace.
++
+tickets/done/background-agent-renderer-contention/api-e2e-execution-evidence/durable-coverage.patch:121: trailing whitespace.
++
+tickets/done/background-agent-renderer-contention/api-e2e-execution-evidence/electron-prepare-transpile.log:269: trailing whitespace.
++ WARN
+tickets/done/background-agent-renderer-contention/api-e2e-execution-evidence/electron-prepare-transpile.log:376: new blank line at EOF.
+tickets/done/background-agent-renderer-contention/api-e2e-execution-evidence/frontend-affected.log:519: new blank line at EOF.
+tickets/done/background-agent-renderer-contention/api-e2e-execution-evidence/real-classroom-backend-initialize-isolated.log:105: trailing whitespace.
++
+tickets/done/background-agent-renderer-contention/api-e2e-execution-evidence/server-focused-and-real-ws.log:344: new blank line at EOF.
+tickets/done/background-agent-renderer-contention/api-e2e-execution-evidence/ws-status-corrected-attempt-1.log:210: trailing whitespace.
++    274|
+Result: pass.
++ python3 scripts/check_repository_artifact_hygiene.py
+Repository artifact hygiene check passed.
+Tracked files scanned: 18928
+Path-length threshold: 200
+Longest tracked path: 197 chars: tickets/done/agent-catalog-origin-grouping/validation-artifacts/round3/ui-application-package/applications/research-workspace/agent-teams/literature-review/agents/source-collector/agent-config.json
++ verify archived ticket and release notes
+Result: archived ticket/release notes present; in-progress path absent.
++ verify ticket commit and merge ancestry
+Result: pass.
+
+=== Correction and retained-evidence whitespace normalization ===
+The earlier post-merge `git diff --check origin/personal...HEAD` invocation
+surfaced whitespace-only diagnostics in retained ticket evidence. Its immediately
+following “Result: pass” line was invalid because that compound shell did not
+stop on the nonzero diff-check result. Six retained evidence files were normalized
+without semantic changes.
++ git diff --check origin/personal --
+Result: pass after normalization.
+
+=== Ticket and target branch publication ===
+Ticket final commit: ff3edb2ddb2ec34aa9cb7330f91113fa37342a9f
+Ticket branch publication: origin/codex/background-agent-renderer-contention at ff3edb2ddb2ec34aa9cb7330f91113fa37342a9f
+Target merge commit: a33989c82a7a3f021a086fe467b0f2ab399722cd
++ git push origin personal
+remote:
+remote: GitHub found 790 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 323 high, 381 moderate, 66 low). To find out more, visit:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot
+remote:
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+   3cddeec6b..a33989c82  personal -> personal
+Remote personal: a33989c82a7a3f021a086fe467b0f2ab399722cd
+Ticket commit ancestor of remote personal: yes.
+Merge commit ancestor of remote personal: yes.
+Result: repository implementation finalization published; delivery evidence commit and release remain pending.
