@@ -215,7 +215,7 @@ export const createTeamExecutionState = (input: CreateTeamExecutionStateInput): 
   const attachCorrelatedTaskTeamAgent = (
     executionAddress: TeamExecutionAddress,
     agentRunId: string,
-  ): Readonly<{ context: AgentContext; created: boolean }> | null => {
+  ): Readonly<{ context: AgentContext; changed: boolean }> | null => {
     if (executionAddress.rootTeamRunId !== input.rootTeamRunId
       || executionAddress.taskTeamRunIds.length === 0
       || executionAddress.taskAgentRunId
@@ -229,20 +229,53 @@ export const createTeamExecutionState = (input: CreateTeamExecutionStateInput): 
       || !memberBelongsToTeam(executionAddress.memberAddress, containingTeam.executionAddress.memberAddress)) return null;
     const key = keyOf(executionAddress);
     const existing = executions.get(key);
-    if (existing) {
-      return existing.kind === 'task_team_agent' && existing.agentContext.state.runId === agentRunId
-        ? { context: existing.agentContext, created: false }
-        : null;
+    if (existing && (existing.kind !== 'task_team_agent' || existing.agentContext.state.runId !== agentRunId)) return null;
+    const candidateExecutions = new Map(executions);
+    const candidateParents = new Map(executionParents);
+    let context = existing?.kind === 'task_team_agent' ? existing.agentContext : null;
+    let changed = false;
+    if (!context) {
+      context = buildTaskAgentContext(executionAddress, agentRunId);
+      const source = sourceAgentExecution(executionAddress);
+      if (!context || !source) return null;
+      candidateExecutions.set(key, Object.freeze({
+        kind: 'task_team_agent', executionAddress: cloneAddress(executionAddress), platformAgentRunId: null,
+        applicationExecutionContext: rebindApplicationExecutionContext(source.applicationExecutionContext, executionAddress), agentContext: context,
+      }));
+      candidateParents.set(key, keyOf(containingTeam.executionAddress));
+      changed = true;
     }
-    const context = buildTaskAgentContext(executionAddress, agentRunId);
-    const source = sourceAgentExecution(executionAddress);
-    if (!context || !source) return null;
-    executions.set(key, Object.freeze({
-      kind: 'task_team_agent', executionAddress: cloneAddress(executionAddress), platformAgentRunId: null,
-      applicationExecutionContext: rebindApplicationExecutionContext(source.applicationExecutionContext, executionAddress), agentContext: context,
-    }));
-    executionParents.set(key, keyOf(containingTeam.executionAddress));
-    return { context, created: true };
+    try {
+      const pendingTasks = [...tasks.values()].filter((task) => task.status !== 'accepted'
+        && task.executionAddress.taskAgentRunId
+        && sameTeamExecutionAddress(createTeamExecutionAddress({
+          rootTeamRunId: task.executionAddress.rootTeamRunId,
+          taskTeamRunIds: task.executionAddress.taskTeamRunIds,
+          memberAddress: task.executionAddress.memberAddress,
+          taskAgentRunId: null,
+        }), executionAddress))
+        .sort((left, right) => left.createdAt.localeCompare(right.createdAt) || left.taskId.localeCompare(right.taskId));
+      for (const task of pendingTasks) {
+        changed = materializeTeamTaskExecution({
+          rootTeamRunId: input.rootTeamRunId,
+          topology: input.topology,
+          executions: candidateExecutions,
+          parents: candidateParents,
+          task,
+          sourceAgentExecution,
+          buildTaskAgentContext,
+        }) || changed;
+      }
+    } catch {
+      return null;
+    }
+    if (changed) {
+      executions.clear();
+      candidateExecutions.forEach((execution, executionKey) => executions.set(executionKey, execution));
+      executionParents.clear();
+      candidateParents.forEach((parent, executionKey) => executionParents.set(executionKey, parent));
+    }
+    return { context, changed };
   };
 
   const applyTaskActivation = (
@@ -333,13 +366,13 @@ export const createTeamExecutionState = (input: CreateTeamExecutionStateInput): 
     }
 
     let context: AgentContext | null = null;
-    let created = false;
+    let changed = false;
     if ('agent_execution' in payload && payload.agent_execution) {
       const binding = payload.agent_execution;
       if (binding.kind === 'task_team_agent') {
         const materialized = attachCorrelatedTaskTeamAgent(executionAddress, binding.agent_run_id);
         context = materialized?.context ?? null;
-        created = materialized?.created ?? false;
+        changed = materialized?.changed ?? false;
       } else {
         const execution = executions.get(keyOf(executionAddress));
         const expectedKind = binding.kind === 'persistent_agent' ? 'persistent_agent' : 'task_agent';
@@ -360,12 +393,12 @@ export const createTeamExecutionState = (input: CreateTeamExecutionStateInput): 
       const { agent_execution: ignored, ...details } = message.payload;
       void ignored;
       return {
-        disposition: created ? 'applied' : 'unchanged',
+        disposition: changed ? 'applied' : 'unchanged',
         effects: [{ kind: 'record_team_token_usage', executionAddress, details }],
       };
     }
     return {
-      disposition: created ? 'applied' : 'unchanged',
+      disposition: changed ? 'applied' : 'unchanged',
       effects: [{ kind: 'dispatch_agent', executionAddress, message }],
     };
   };

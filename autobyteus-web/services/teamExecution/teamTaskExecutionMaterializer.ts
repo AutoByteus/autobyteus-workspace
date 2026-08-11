@@ -11,6 +11,29 @@ import {
 import type { TeamTaskProjection } from './teamExecutionModels';
 import type { TeamTopologySnapshot } from './teamTopologySnapshot';
 
+export const canDeferTaskAgentUntilExactTaskTeamAgentBinding = (input: {
+  topology: TeamTopologySnapshot;
+  executions: ReadonlyMap<string, TeamConcreteExecution>;
+  task: TeamTaskProjection;
+}): boolean => {
+  const address = input.task.executionAddress;
+  if (!address.taskAgentRunId || address.taskTeamRunIds.length === 0
+    || input.executions.has(executionAddressKey(address))) return false;
+  const sourceAddress = createTeamExecutionAddress({
+    rootTeamRunId: address.rootTeamRunId,
+    taskTeamRunIds: address.taskTeamRunIds,
+    memberAddress: address.memberAddress,
+    taskAgentRunId: null,
+  });
+  if (input.executions.has(executionAddressKey(sourceAddress))) return false;
+  const target = input.topology.getNode(address.memberAddress);
+  if (!target || target.kind !== 'agent') return false;
+  const containingTeams = [...input.executions.values()].filter((execution) => execution.kind === 'task_team'
+    && sameTaskTeamChain(execution.executionAddress.taskTeamRunIds, address.taskTeamRunIds));
+  return containingTeams.length === 1
+    && logicalMemberBelongsToTeam(address.memberAddress, containingTeams[0].executionAddress.memberAddress);
+};
+
 export const materializeTeamTaskExecution = (input: {
   rootTeamRunId: string;
   topology: TeamTopologySnapshot;

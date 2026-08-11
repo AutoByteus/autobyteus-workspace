@@ -7,7 +7,10 @@ import {
   type TeamConcreteExecution,
 } from './teamConcreteExecution';
 import type { TeamTaskProjection, TeamTaskProjectionSnapshot } from './teamExecutionModels';
-import { materializeTeamTaskExecution } from './teamTaskExecutionMaterializer';
+import {
+  canDeferTaskAgentUntilExactTaskTeamAgentBinding,
+  materializeTeamTaskExecution,
+} from './teamTaskExecutionMaterializer';
 import {
   assertTeamTaskProjectionIntegrity,
   cloneTeamTaskProjection,
@@ -38,6 +41,17 @@ const isDescendant = (parents: ReadonlyMap<string, string | null>, candidateKey:
   }
   return false;
 };
+
+const taskProjectionBelongsToTaskTeam = (candidate: TeamTaskProjection, root: TeamTaskProjection): boolean =>
+  candidate.taskId !== root.taskId
+  && root.executionAddress.taskAgentRunId === null
+  && root.executionAddress.taskTeamRunIds.length > 0
+  && candidate.executionAddress.rootTeamRunId === root.executionAddress.rootTeamRunId
+  && candidate.executionAddress.taskTeamRunIds.length >= root.executionAddress.taskTeamRunIds.length
+  && root.executionAddress.taskTeamRunIds.every((id, index) => candidate.executionAddress.taskTeamRunIds[index] === id)
+  && (root.executionAddress.memberAddress === '/'
+    ? candidate.executionAddress.memberAddress !== '/'
+    : candidate.executionAddress.memberAddress.startsWith(`${root.executionAddress.memberAddress}/`));
 
 export const reconcileTeamTaskSnapshot = (input: {
   snapshot: TeamTaskProjectionSnapshot;
@@ -110,6 +124,11 @@ export const reconcileTeamTaskSnapshot = (input: {
       || left.createdAt.localeCompare(right.createdAt)
       || left.taskId.localeCompare(right.taskId));
     for (const task of activeTasks) {
+      if (canDeferTaskAgentUntilExactTaskTeamAgentBinding({
+        topology: input.topology,
+        executions: candidateExecutions,
+        task,
+      })) continue;
       changed = materializeTeamTaskExecution({
         rootTeamRunId: input.rootTeamRunId,
         topology: input.topology,
@@ -133,6 +152,11 @@ export const reconcileTeamTaskSnapshot = (input: {
         if (!sameResponseCandidate || sameResponseCandidate.status !== 'accepted') {
           throw new Error(`Terminal task '${task.taskId}' has an absent, stale, or nonterminal descendant candidate.`);
         }
+      }
+      const nonterminalProjectedDescendant = [...candidateTasks.values()].find((candidate) =>
+        candidate.status !== 'accepted' && taskProjectionBelongsToTaskTeam(candidate, task));
+      if (nonterminalProjectedDescendant) {
+        throw new Error(`Terminal task '${task.taskId}' has an absent, stale, or nonterminal descendant candidate.`);
       }
     }
     for (const task of acceptedRoots) {
