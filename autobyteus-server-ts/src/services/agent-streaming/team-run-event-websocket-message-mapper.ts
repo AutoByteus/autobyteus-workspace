@@ -45,8 +45,10 @@ export const convertTeamRunEventToServerMessage = (
       buildTeamCommunicationMessagePayload(event.data as TeamRunCommunicationEventPayload));
   }
   if (event.eventSourceType === TeamRunEventSourceType.MEMBER_INPUT) {
-    return new ServerMessage(ServerMessageType.MEMBER_INPUT_MESSAGE,
-      buildTeamMemberInputMessagePayload(event.data as TeamRunMemberInputEventPayload));
+    return new ServerMessage(ServerMessageType.MEMBER_INPUT_MESSAGE, {
+      ...buildTeamMemberInputMessagePayload(event.data as TeamRunMemberInputEventPayload),
+      execution_address: event.executionAddress,
+    });
   }
   return createErrorMessage("UNKNOWN_TEAM_EVENT", "Unmapped team event");
 };

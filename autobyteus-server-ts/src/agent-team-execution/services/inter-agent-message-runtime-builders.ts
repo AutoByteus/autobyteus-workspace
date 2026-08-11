@@ -1,8 +1,7 @@
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
-import { AgentRunEventType, type AgentRunEvent } from "../../agent-execution/domain/agent-run-event.js";
 import type { ResolvedInterAgentMessageDeliveryRequest } from "../domain/inter-agent-message-delivery.js";
-import { buildTeamCommunicationMessageId, buildTeamCommunicationReferenceId } from "../../services/team-communication/team-communication-identity.js";
+import { buildTeamCommunicationReferenceId } from "../../services/team-communication/team-communication-identity.js";
 import { inferTeamCommunicationReferenceFileType } from "../../services/team-communication/team-communication-normalizer.js";
 import { buildTeamMemberInputDedupeKey, buildTeamMemberInputMessageId } from "./team-member-input-event-builder.js";
 
@@ -64,48 +63,4 @@ export const buildInterAgentDeliveryInputMessage = (
     ...(request.parentCommunicationMessageId ? { parent_communication_message_id: request.parentCommunicationMessageId } : {}),
     reference_files: files,
   });
-};
-
-export const buildInterAgentMessageAgentRunEvent = (input: {
-  recipientRunId: string;
-  request: ResolvedInterAgentMessageDeliveryRequest;
-  createdAt?: string | null;
-}): AgentRunEvent => {
-  const createdAt = input.createdAt?.trim() || new Date().toISOString();
-  const type = messageType(input.request.messageType);
-  const messageId = buildTeamCommunicationMessageId({
-    teamRunId: input.request.rootTeamRunId,
-    senderAddress: input.request.senderAddress,
-    receiverAddress: input.request.receiverAddress,
-    messageType: type,
-    content: input.request.content,
-    createdAt,
-  });
-  const files = references(input.request.referenceFiles);
-  return {
-    eventType: AgentRunEventType.INTER_AGENT_MESSAGE,
-    runId: input.recipientRunId,
-    payload: {
-      message_id: messageId,
-      team_run_id: input.request.rootTeamRunId,
-      sender_agent_id: input.request.sender.participant.agentRunId,
-      sender_agent_name: input.request.sender.participant.displayName,
-      sender_address: input.request.senderAddress,
-      receiver_run_id: input.recipientRunId,
-      receiver_agent_name: input.request.recipient.participant.displayName,
-      receiver_address: input.request.receiverAddress,
-      recipient_role_name: input.request.recipient.participant.displayName,
-      content: input.request.content,
-      message_type: type,
-      reference_files: files,
-      reference_file_entries: buildInterAgentMessageReferenceFileEntries({
-        teamRunId: input.request.rootTeamRunId,
-        messageId,
-        referenceFiles: files,
-        timestamp: createdAt,
-      }),
-      created_at: createdAt,
-    },
-    statusHint: null,
-  };
 };
