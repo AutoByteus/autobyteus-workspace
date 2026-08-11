@@ -166,9 +166,15 @@ export class TeamStreamingService {
     const rootTeamRunId = context.executions.getRootTeamRunId();
     scheduleTaskDelegationRecordsRefresh({
       client: getApolloClient(), teamRunId: rootTeamRunId,
-      onHydrated: (records) => context.executions.reconcileTaskSnapshot(mapCompleteTeamTaskProjectionSnapshot({
-        expectedRootTeamRunId: rootTeamRunId, topology: context.topology, records,
-      })),
+      admitRecords: (records) => {
+        const result = context.executions.reconcileTaskSnapshot(mapCompleteTeamTaskProjectionSnapshot({
+          expectedRootTeamRunId: rootTeamRunId, topology: context.topology, records,
+        }));
+        if (result.disposition === 'rejected') {
+          throw new Error(`Rejected refreshed Team task snapshot (${result.code}): ${result.message}`);
+        }
+      },
+      onRejected: (error) => console.warn(`Rejected Team task refresh for '${rootTeamRunId}'`, error),
     });
   }
 

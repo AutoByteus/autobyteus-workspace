@@ -1,5 +1,4 @@
-import { ref, shallowReactive } from 'vue';
-import type { ApplicationExecutionContext } from '@autobyteus/application-sdk-contracts';
+import { isReactive, reactive, ref, shallowReactive } from 'vue';
 import { AgentContext } from '~/types/agent/AgentContext';
 import { AgentRunState } from '~/types/agent/AgentRunState';
 import { AgentStatus } from '~/types/agent/AgentStatus';
@@ -7,7 +6,6 @@ import {
   createTeamExecutionAddress,
   fromTeamExecutionAddressDto,
   sameTeamExecutionAddress,
-  serializeTeamExecutionAddress,
   type TeamExecutionAddress,
 } from '~/types/agent/TeamExecutionAddress';
 import type { TeamRunMetadataMember, TeamRunMetadataPayload } from '~/stores/runHistoryTypes';
@@ -24,27 +22,25 @@ import type {
 import type { TeamTopologySnapshot } from './teamTopologySnapshot';
 import { parseApplicationExecutionContext, rebindApplicationExecutionContext } from './applicationExecutionContextMapper';
 import { projectTeamExecutionNavigationRows } from './teamExecutionNavigationProjector';
+import {
+  cloneExecutionAddress,
+  executionAddressKey,
+  logicalMemberBelongsToTeam,
+  sameTaskTeamChain,
+  taskExecutionContains,
+  type PersistentAgentExecution,
+  type TeamConcreteExecution,
+} from './teamConcreteExecution';
+import { materializeTeamTaskExecution } from './teamTaskExecutionMaterializer';
+import {
+  assertTeamTaskProjectionIntegrity,
+  equivalentTeamTaskProjection,
+} from './teamTaskProjectionInvariant';
+import { reconcileTeamTaskSnapshot } from './teamTaskSnapshotReconciler';
 
 type TeamExecutionMutationResult =
   | Readonly<{ disposition: 'applied' | 'unchanged' }>
   | Readonly<{ disposition: 'rejected'; code: string; message: string }>;
-
-interface PersistentTeamExecution {
-  readonly kind: 'persistent_team';
-  readonly executionAddress: TeamExecutionAddress;
-  readonly childTeamRunId: string | null;
-}
-interface AgentExecutionBase {
-  readonly executionAddress: TeamExecutionAddress;
-  readonly platformAgentRunId: string | null;
-  readonly applicationExecutionContext: ApplicationExecutionContext | null;
-  readonly agentContext: AgentContext;
-}
-interface PersistentAgentExecution extends AgentExecutionBase { readonly kind: 'persistent_agent' }
-interface TaskAgentExecution extends AgentExecutionBase { readonly kind: 'task_agent'; readonly taskId: string }
-interface TaskTeamExecution { readonly kind: 'task_team'; readonly executionAddress: TeamExecutionAddress; readonly taskId: string }
-interface TaskTeamAgentExecution extends AgentExecutionBase { readonly kind: 'task_team_agent' }
-type TeamConcreteExecution = PersistentTeamExecution | PersistentAgentExecution | TaskAgentExecution | TaskTeamExecution | TaskTeamAgentExecution;
 
 export interface TeamExecutionState {
   getRootTeamRunId(): string;
@@ -61,8 +57,6 @@ export interface TeamExecutionState {
   listTaskHistoryRows(): readonly TeamTaskHistoryRow[];
   focus(address: TeamExecutionAddress): TeamExecutionMutationResult;
   reconcileTaskSnapshot(snapshot: TeamTaskProjectionSnapshot): TeamExecutionMutationResult;
-  ensureTaskTeamAgent(input: Readonly<{ executionAddress: TeamExecutionAddress; agentRunId: string }>): AgentContext | null;
-  removeExecutionSubtree(address: TeamExecutionAddress): TeamExecutionMutationResult;
   applyExecutionMessage(message: TeamExecutionProjectionMessage): TeamExecutionApplyResult;
 }
 
@@ -75,39 +69,16 @@ interface CreateTeamExecutionStateInput {
   persistentAgentContexts: readonly TeamAgentContextEntry[];
 }
 
-const cloneAddress = (address: TeamExecutionAddress): TeamExecutionAddress => createTeamExecutionAddress(address);
-const keyOf = (address: TeamExecutionAddress): string => serializeTeamExecutionAddress(address);
-const taskPrefixContains = (root: TeamExecutionAddress, candidate: TeamExecutionAddress): boolean =>
-  root.rootTeamRunId === candidate.rootTeamRunId
-  && candidate.taskTeamRunIds.length >= root.taskTeamRunIds.length
-  && root.taskTeamRunIds.every((id, index) => candidate.taskTeamRunIds[index] === id)
-  && (!root.taskAgentRunId || root.taskAgentRunId === candidate.taskAgentRunId);
-
-const memberBelongsToTeam = (memberAddress: string, teamAddress: string): boolean =>
-  teamAddress === '/'
-    ? memberAddress !== '/'
-    : memberAddress.startsWith(`${teamAddress}/`);
+const cloneAddress = cloneExecutionAddress;
+const keyOf = executionAddressKey;
+const taskPrefixContains = taskExecutionContains;
+const memberBelongsToTeam = logicalMemberBelongsToTeam;
+const sameChain = sameTaskTeamChain;
 
 const deriveTaskLabel = (task: TeamTaskProjection): string => {
   const summary = task.content.trim().replace(/\s+/g, ' ');
   return summary.length > 56 ? `${summary.slice(0, 53)}…` : summary || task.taskId;
 };
-
-const equivalentTask = (left: TeamTaskProjection, right: TeamTaskProjection): boolean =>
-  JSON.stringify(left) === JSON.stringify(right);
-
-const cloneTaskProjection = (task: TeamTaskProjection): TeamTaskProjection => Object.freeze({
-  ...task,
-  executionAddress: cloneAddress(task.executionAddress),
-  senderAddress: cloneAddress(task.senderAddress),
-  referenceFiles: Object.freeze(task.referenceFiles.map((reference) => Object.freeze({ ...reference }))),
-  updates: Object.freeze(task.updates.map((update) => Object.freeze({
-    ...update,
-    senderAddress: cloneAddress(update.senderAddress),
-    receiverAddress: cloneAddress(update.receiverAddress),
-    referenceFiles: Object.freeze(update.referenceFiles.map((reference) => Object.freeze({ ...reference }))),
-  }))),
-});
 
 const referenceType = (value: string): TeamTaskProjection['referenceFiles'][number]['type'] => {
   if (value === 'file' || value === 'image' || value === 'audio' || value === 'video'
@@ -119,31 +90,42 @@ export const createTeamExecutionState = (input: CreateTeamExecutionStateInput): 
   if (!input.rootTeamRunId.trim()) throw new Error('A real root TeamRun ID is required.');
   if (input.initialFocusedAddress.rootTeamRunId !== input.rootTeamRunId) throw new Error('Initial focus belongs to another TeamRun.');
   const executions = shallowReactive(new Map<string, TeamConcreteExecution>());
+  const executionParents = shallowReactive(new Map<string, string | null>());
   const tasks = shallowReactive(new Map<string, TeamTaskProjection>());
   const focusedAddress = ref(cloneAddress(input.initialFocusedAddress));
   const rootActive = ref(input.rootActive);
-  const contextsByMember = new Map(input.persistentAgentContexts.map((entry) => [entry.executionAddress.memberAddress, entry.agentContext] as const));
+  const associateAgentContext = (context: AgentContext): AgentContext => {
+    if (!isReactive(context.state)) context.state = reactive(context.state) as AgentRunState;
+    return context;
+  };
+  const contextsByMember = new Map(input.persistentAgentContexts.map((entry) => [
+    entry.executionAddress.memberAddress,
+    associateAgentContext(entry.agentContext),
+  ] as const));
 
-  const addPersistent = (member: TeamRunMetadataMember): void => {
+  const addPersistent = (member: TeamRunMetadataMember, parentKey: string | null = null): void => {
     const address = createTeamExecutionAddress({ rootTeamRunId: input.rootTeamRunId, memberAddress: member.address });
+    const executionKey = keyOf(address);
     if (member.kind === 'agent_team') {
-      executions.set(keyOf(address), Object.freeze({
+      executions.set(executionKey, Object.freeze({
         kind: 'persistent_team', executionAddress: address,
         childTeamRunId: member.address === '/' ? null : member.teamRunId,
       }));
-      member.children.forEach(addPersistent);
+      executionParents.set(executionKey, parentKey);
+      member.children.forEach((child) => addPersistent(child, executionKey));
       return;
     }
     const agentContext = contextsByMember.get(member.address);
     if (!agentContext || agentContext.state.runId !== member.agentRunId) {
       throw new Error(`Persistent Agent seed mismatch at '${member.address}'.`);
     }
-    executions.set(keyOf(address), Object.freeze({
+    executions.set(executionKey, Object.freeze({
       kind: 'persistent_agent', executionAddress: address,
       platformAgentRunId: member.platformAgentRunId ?? null,
       applicationExecutionContext: parseApplicationExecutionContext(member.applicationExecutionContext, address),
       agentContext,
     }));
+    executionParents.set(executionKey, parentKey);
   };
   addPersistent(input.metadata.rootTeam);
   if (contextsByMember.size !== input.persistentAgentContexts.length) throw new Error('Duplicate persistent Agent seed address.');
@@ -182,22 +164,10 @@ export const createTeamExecutionState = (input: CreateTeamExecutionStateInput): 
       agentName: source.agentContext.config.agentDefinitionName,
       llmModelIdentifier: source.agentContext.config.llmModelIdentifier,
     };
-    return new AgentContext(
+    return associateAgentContext(new AgentContext(
       { ...source.agentContext.config, isLocked: true },
       new AgentRunState(runId, conversation),
-    );
-  };
-
-  const removeSubtreeFrom = (
-    source: Map<string, TeamConcreteExecution>,
-    address: TeamExecutionAddress,
-  ): boolean => {
-    const keys = [...source.entries()]
-      .filter(([, execution]) => execution.kind !== 'persistent_agent' && execution.kind !== 'persistent_team'
-        && taskPrefixContains(address, execution.executionAddress))
-      .map(([key]) => key);
-    keys.forEach((key) => source.delete(key));
-    return keys.length > 0;
+    ));
   };
 
   const repairFocusAfterRemoval = (address: TeamExecutionAddress): void => {
@@ -210,93 +180,29 @@ export const createTeamExecutionState = (input: CreateTeamExecutionStateInput): 
     }
   };
 
-  const materializeTaskInto = (
-    targetExecutions: Map<string, TeamConcreteExecution>,
-    task: TeamTaskProjection,
-  ): boolean => {
-    const address = task.executionAddress;
-    const key = keyOf(address);
-    const existing = targetExecutions.get(key);
-    if (address.taskAgentRunId) {
-      if (existing) {
-        if (existing.kind !== 'task_agent' || existing.taskId !== task.taskId) {
-          throw new Error(`Task Agent '${task.taskId}' collides with another concrete execution.`);
-        }
-        return false;
-      }
-      const agentContext = buildTaskAgentContext(address, address.taskAgentRunId);
-      if (!agentContext) throw new Error(`Task Agent '${task.taskId}' cannot be materialized.`);
-      const source = sourceAgentExecution(address)!;
-      targetExecutions.set(key, Object.freeze({
-        kind: 'task_agent', executionAddress: cloneAddress(address), taskId: task.taskId,
-        platformAgentRunId: null,
-        applicationExecutionContext: rebindApplicationExecutionContext(source.applicationExecutionContext, address),
-        agentContext,
-      }));
-      return true;
-    }
-    if (address.taskTeamRunIds.length === 0) throw new Error(`Task '${task.taskId}' has no concrete task identity.`);
-    const topologyNode = input.topology.getNode(address.memberAddress);
-    if (!topologyNode || topologyNode.kind !== 'agent_team') throw new Error(`Task Team '${task.taskId}' has no matching topology.`);
-    if (existing) {
-      if (existing.kind !== 'task_team' || existing.taskId !== task.taskId) {
-        throw new Error(`Task AgentTeam '${task.taskId}' collides with another concrete execution.`);
-      }
-      return false;
-    }
-    targetExecutions.set(key, Object.freeze({ kind: 'task_team', executionAddress: cloneAddress(address), taskId: task.taskId }));
-    return true;
-  };
-
   const reconcileTaskSnapshot = (snapshot: TeamTaskProjectionSnapshot): TeamExecutionMutationResult => {
-    if (snapshot.kind !== 'complete_root_task_snapshot') return { disposition: 'rejected', code: 'TEAM_EXECUTION_TRANSITION_INVALID', message: 'Complete root task snapshot required.' };
-    const candidate = new Map(tasks);
-    const candidateExecutions = new Map(executions);
-    const ids = new Set<string>();
-    const addresses = new Set<string>();
-    try {
-      for (const task of snapshot.tasks) {
-        if (task.executionAddress.rootTeamRunId !== input.rootTeamRunId || ids.has(task.taskId) || addresses.has(keyOf(task.executionAddress))) {
-          throw new Error(`Task snapshot identity is invalid for '${task.taskId}'.`);
-        }
-        ids.add(task.taskId); addresses.add(keyOf(task.executionAddress));
-        const previous = candidate.get(task.taskId);
-        if (previous) {
-          if (!sameTeamExecutionAddress(previous.executionAddress, task.executionAddress)
-            || previous.createdAt !== task.createdAt || previous.startedAt !== task.startedAt) {
-            throw new Error(`Task '${task.taskId}' changed immutable identity.`);
-          }
-          if (task.updatedAt < previous.updatedAt) continue;
-          if (task.updatedAt === previous.updatedAt && !equivalentTask(previous, task)) throw new Error(`Task '${task.taskId}' conflicts at the same update time.`);
-        }
-        candidate.set(task.taskId, cloneTaskProjection(task));
-      }
-      for (const task of candidate.values()) materializeTaskInto(candidateExecutions, task);
-      let cleaned = false;
-      for (const task of snapshot.tasks) {
-        if (task.status !== 'accepted') continue;
-        const descendants = [...candidateExecutions.values()].filter((execution) =>
-          execution.kind !== 'persistent_agent' && execution.kind !== 'persistent_team'
-          && taskPrefixContains(task.executionAddress, execution.executionAddress));
-        const unsafe = descendants.some((execution) => {
-          if (execution.kind !== 'task_agent' && execution.kind !== 'task_team') return false;
-          const child = candidate.get(execution.taskId);
-          return !child || child.status !== 'accepted';
-        });
-        if (unsafe) throw new Error(`Terminal task '${task.taskId}' has a nonterminal materialized descendant.`);
-        cleaned = removeSubtreeFrom(candidateExecutions, task.executionAddress) || cleaned;
-      }
-      executions.clear();
-      candidateExecutions.forEach((execution, key) => executions.set(key, execution));
-      tasks.clear();
-      candidate.forEach((task, id) => tasks.set(id, task));
-      for (const task of snapshot.tasks) {
-        if (task.status === 'accepted') repairFocusAfterRemoval(task.executionAddress);
-      }
-      return { disposition: snapshot.tasks.length || cleaned ? 'applied' : 'unchanged' };
-    } catch (error) {
-      return { disposition: 'rejected', code: 'TEAM_EXECUTION_IDENTITY_MISMATCH', message: error instanceof Error ? error.message : String(error) };
+    const result = reconcileTeamTaskSnapshot({
+      snapshot,
+      rootTeamRunId: input.rootTeamRunId,
+      topology: input.topology,
+      currentExecutions: executions,
+      currentParents: executionParents,
+      currentTasks: tasks,
+      sourceAgentExecution,
+      buildTaskAgentContext,
+    });
+    if (result.disposition === 'rejected') {
+      return { disposition: 'rejected', code: 'TEAM_EXECUTION_IDENTITY_MISMATCH', message: result.message };
     }
+    if (result.disposition === 'unchanged') return result;
+    executions.clear();
+    result.executions.forEach((execution, key) => executions.set(key, execution));
+    executionParents.clear();
+    result.parents.forEach((parent, key) => executionParents.set(key, parent));
+    tasks.clear();
+    result.tasks.forEach((task, id) => tasks.set(id, task));
+    result.removedRoots.forEach(repairFocusAfterRemoval);
+    return { disposition: 'applied' };
   };
 
   const listNavigationRows = (): readonly TeamExecutionNavigationRow[] =>
@@ -306,7 +212,7 @@ export const createTeamExecutionState = (input: CreateTeamExecutionStateInput): 
       executions: [...executions.values()].map(summaryOf),
     });
 
-  const ensureTaskTeamAgentContext = (
+  const attachCorrelatedTaskTeamAgent = (
     executionAddress: TeamExecutionAddress,
     agentRunId: string,
   ): Readonly<{ context: AgentContext; created: boolean }> | null => {
@@ -314,9 +220,10 @@ export const createTeamExecutionState = (input: CreateTeamExecutionStateInput): 
       || executionAddress.taskTeamRunIds.length === 0
       || executionAddress.taskAgentRunId
       || !agentRunId.trim()) return null;
-    const containingTeam = [...executions.values()].find((execution) => execution.kind === 'task_team'
+    const containingTeams = [...executions.values()].filter((execution) => execution.kind === 'task_team'
       && execution.executionAddress.taskTeamRunIds.length === executionAddress.taskTeamRunIds.length
       && executionAddress.taskTeamRunIds.every((id, index) => execution.executionAddress.taskTeamRunIds[index] === id));
+    const containingTeam = containingTeams.length === 1 ? containingTeams[0] : null;
     const topologyNode = input.topology.getNode(executionAddress.memberAddress);
     if (!containingTeam || !topologyNode || topologyNode.kind !== 'agent'
       || !memberBelongsToTeam(executionAddress.memberAddress, containingTeam.executionAddress.memberAddress)) return null;
@@ -334,6 +241,7 @@ export const createTeamExecutionState = (input: CreateTeamExecutionStateInput): 
       kind: 'task_team_agent', executionAddress: cloneAddress(executionAddress), platformAgentRunId: null,
       applicationExecutionContext: rebindApplicationExecutionContext(source.applicationExecutionContext, executionAddress), agentContext: context,
     }));
+    executionParents.set(key, keyOf(containingTeam.executionAddress));
     return { context, created: true };
   };
 
@@ -379,14 +287,26 @@ export const createTeamExecutionState = (input: CreateTeamExecutionStateInput): 
         throw new Error('Task sender is not an exact materialized Agent execution.');
       }
       if (existing) {
-        return equivalentTask(existing, task)
+        return equivalentTeamTaskProjection(existing, task)
           ? { disposition: 'unchanged', effects: [] }
           : { disposition: 'rejected', code: 'TEAM_EXECUTION_IDENTITY_MISMATCH', message: `Task '${payload.task_id}' activation conflicts with current state.`, effects: [] };
       }
       const candidateExecutions = new Map(executions);
-      materializeTaskInto(candidateExecutions, task);
+      const candidateParents = new Map(executionParents);
+      assertTeamTaskProjectionIntegrity({ task, rootTeamRunId: input.rootTeamRunId, topology: input.topology });
+      materializeTeamTaskExecution({
+          rootTeamRunId: input.rootTeamRunId,
+          topology: input.topology,
+          executions: candidateExecutions,
+          parents: candidateParents,
+          task,
+          sourceAgentExecution,
+          buildTaskAgentContext,
+        });
       executions.clear();
       candidateExecutions.forEach((execution, key) => executions.set(key, execution));
+      executionParents.clear();
+      candidateParents.forEach((parent, key) => executionParents.set(key, parent));
       tasks.set(task.taskId, task);
       return { disposition: 'applied', effects: [] };
     } catch (error) {
@@ -417,7 +337,7 @@ export const createTeamExecutionState = (input: CreateTeamExecutionStateInput): 
     if ('agent_execution' in payload && payload.agent_execution) {
       const binding = payload.agent_execution;
       if (binding.kind === 'task_team_agent') {
-        const materialized = ensureTaskTeamAgentContext(executionAddress, binding.agent_run_id);
+        const materialized = attachCorrelatedTaskTeamAgent(executionAddress, binding.agent_run_id);
         context = materialized?.context ?? null;
         created = materialized?.created ?? false;
       } else {
@@ -499,14 +419,6 @@ export const createTeamExecutionState = (input: CreateTeamExecutionStateInput): 
       focusedAddress.value = cloneAddress(address); return { disposition: 'applied' };
     },
     reconcileTaskSnapshot,
-    ensureTaskTeamAgent: ({ executionAddress, agentRunId }: Readonly<{ executionAddress: TeamExecutionAddress; agentRunId: string }>) => {
-      return ensureTaskTeamAgentContext(executionAddress, agentRunId)?.context ?? null;
-    },
-    removeExecutionSubtree: (address: TeamExecutionAddress) => {
-      const removed = removeSubtreeFrom(executions, address);
-      if (removed) repairFocusAfterRemoval(address);
-      return { disposition: removed ? 'applied' : 'unchanged' };
-    },
     applyExecutionMessage,
   };
   return Object.freeze(state);

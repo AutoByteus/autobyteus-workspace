@@ -18,7 +18,11 @@ import {
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import { reconstructTeamRunConfigFromMetadata } from '~/utils/teamRunConfigUtils';
 import { fetchAndHydrateTeamCommunicationForTeam } from './teamCommunicationHydrationService';
-import { fetchAndHydrateTaskDelegationRecordsForTeam } from './taskDelegationHydrationService';
+import {
+  fetchTaskDelegationRecordsForTeam,
+  hydrateTaskDelegationRecords,
+} from './taskDelegationHydrationService';
+import type { TaskDelegationRecord } from '~/stores/taskDelegationTypes';
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
 import {
   applyLiveTeamMemberStatusSnapshot,
@@ -26,7 +30,6 @@ import {
 } from './teamRunMemberStatusHydration';
 import type { TeamMemberLiveSnapshot } from './teamRunMemberStatusHydration';
 import { createTeamExecutionAddress, serializeTeamExecutionAddress, type TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
-import { useTaskDelegationStore } from '~/stores/taskDelegationStore';
 import { mapCompleteTeamTaskProjectionSnapshot } from '~/services/teamExecution/teamTaskProjectionMapper';
 import { buildTeamRunFrontendProjection } from '~/services/teamExecution/teamRunFrontendProjectionBuilder';
 import { primeRecentEventMonitorBaseline } from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
@@ -64,6 +67,7 @@ interface LoadedTeamRunContextHydrationPayload extends Omit<TeamRunContextHydrat
   primaryWorkspaceMetadata: WorkspaceMetadata | null;
   metadata: TeamRunMetadataPayload;
   historicalHydration: HistoricalTeamHydrationState | null;
+  taskDelegationRecords: readonly TaskDelegationRecord[];
 }
 
 const historicalMemberHydrationRequests = new Map<string, Promise<void>>();
@@ -134,6 +138,7 @@ const buildHydratedTeamContext = (params: {
   primaryWorkspaceMetadata: WorkspaceMetadata | null;
   memberStatuses: TeamMemberLiveSnapshot[];
   historicalHydration: HistoricalTeamHydrationState | null;
+  taskDelegationRecords: readonly TaskDelegationRecord[];
 }): AgentTeamContext => {
   const teamRunId = params.metadata.rootTeam.teamRunId;
   const configuration = reconstructTeamRunConfigFromMetadata({
@@ -153,22 +158,26 @@ const buildHydratedTeamContext = (params: {
     })),
   });
   applyLiveTeamMemberStatusSnapshot(context, { memberStatuses: params.memberStatuses });
-  context.executions.reconcileTaskSnapshot(mapCompleteTeamTaskProjectionSnapshot({
+  const taskReconciliation = context.executions.reconcileTaskSnapshot(mapCompleteTeamTaskProjectionSnapshot({
     expectedRootTeamRunId: teamRunId,
     topology: context.topology,
-    records: useTaskDelegationStore().getRecordsForTeam(teamRunId),
+    records: params.taskDelegationRecords,
   }));
+  if (taskReconciliation.disposition === 'rejected') {
+    throw new Error(`Rejected hydrated Team task snapshot (${taskReconciliation.code}): ${taskReconciliation.message}`);
+  }
   if (params.historicalHydration) historicalHydrationByRootTeamRunId.set(teamRunId, params.historicalHydration);
   else historicalHydrationByRootTeamRunId.delete(teamRunId);
   return context;
 };
 
-const hydrateTeamOwnedRecords = async (teamRunId: string): Promise<void> => {
+const fetchTeamOwnedRecords = async (teamRunId: string): Promise<readonly TaskDelegationRecord[]> => {
   const client = getApolloClient();
-  await Promise.all([
+  const [, taskDelegationRecords] = await Promise.all([
     fetchAndHydrateTeamCommunicationForTeam({ client, teamRunId }),
-    fetchAndHydrateTaskDelegationRecordsForTeam({ client, teamRunId }),
+    fetchTaskDelegationRecordsForTeam({ client, teamRunId }),
   ]);
+  return taskDelegationRecords;
 };
 
 const loadRuntimePayload = async (input: {
@@ -188,7 +197,7 @@ const loadRuntimePayload = async (input: {
     const projection = await fetchTeamMemberProjection({ client, getTeamMemberRunProjectionQuery: GetTeamMemberRunProjection, teamRunId, memberAddress: focusedMemberAddress });
     projectionByMemberAddress.set(focusedMemberAddress, projection);
   }
-  await hydrateTeamOwnedRecords(teamRunId);
+  const taskDelegationRecords = await fetchTeamOwnedRecords(teamRunId);
 
   const contexts = input.resumeConfig.isActive
     ? await buildLiveTeamMemberContexts({
@@ -246,6 +255,7 @@ const loadRuntimePayload = async (input: {
     ),
     metadata: input.metadata,
     historicalHydration,
+    taskDelegationRecords,
     projectionByMemberAddress,
   };
 };
@@ -291,13 +301,21 @@ export const hydrateLiveTeamRunContext = async (
     primaryWorkspaceMetadata: payload.primaryWorkspaceMetadata,
     memberStatuses: input.memberStatuses ?? [],
     historicalHydration: payload.historicalHydration,
+    taskDelegationRecords: payload.taskDelegationRecords,
   });
   hydrateTeamMemberActivitiesFromProjection({
     members: hydratedContext.executions.listAgentContextEntries(),
     projectionByMemberAddress: payload.projectionByMemberAddress,
   });
   hydratedContext.executions.listAgentContextEntries().forEach(({ agentContext }) => primeRecentEventMonitorBaseline(agentContext));
-  return { ...payload, hydratedContext };
+  hydrateTaskDelegationRecords(payload.teamRunId, payload.taskDelegationRecords);
+  return {
+    teamRunId: payload.teamRunId,
+    focusedExecutionAddress: payload.focusedExecutionAddress,
+    resumeConfig: payload.resumeConfig,
+    projectionByMemberAddress: payload.projectionByMemberAddress,
+    hydratedContext,
+  };
 };
 
 export const ensureHistoricalTeamMemberHydrated = async (params: {

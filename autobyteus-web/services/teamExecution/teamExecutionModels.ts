@@ -31,16 +31,27 @@ export interface TeamExecutionNavigationRow extends TeamExecutionSummary {
 
 export type TeamTaskProjectionStatus = 'active' | 'awaiting_review' | 'accepted';
 
-export interface TeamTaskUpdateProjection {
-  readonly kind: 'submission' | 'review';
-  readonly id: string;
-  readonly senderAddress: TeamExecutionAddress;
-  readonly receiverAddress: TeamExecutionAddress;
-  readonly content: string | null;
-  readonly createdAt: string;
-  readonly decision: 'accept' | 'request_revision' | null;
-  readonly referenceFiles: readonly TeamReferenceFile[];
-}
+export type TeamTaskUpdateProjection =
+  | Readonly<{
+      kind: 'submission';
+      submissionId: string;
+      senderAddress: TeamExecutionAddress;
+      receiverAddress: TeamExecutionAddress;
+      content: string;
+      createdAt: string;
+      referenceFiles: readonly TeamReferenceFile[];
+    }>
+  | Readonly<{
+      kind: 'review';
+      reviewId: string;
+      senderAddress: TeamExecutionAddress;
+      receiverAddress: TeamExecutionAddress;
+      reviewedSubmissionId: string;
+      decision: 'accept' | 'request_revision';
+      content: string | null;
+      createdAt: string;
+      referenceFiles: readonly TeamReferenceFile[];
+    }>;
 
 export interface TeamTaskProjection {
   readonly taskId: string;
