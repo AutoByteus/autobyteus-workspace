@@ -237,10 +237,15 @@ parent-boundary recipients such as `program_manager`.
 
 Team member focus has three related, intentionally separate meanings. Roster or
 history visual focus is the route key currently selected for display in the
-history tree and focus pane; it is resolved from the recursive `memberTree` plus
-task-execution projections and can point at inactive or all-offline logical
-members so users can inspect their saved member history. User-message target
-focus is the typed `ConversationTargetAddress` selected by
+history tree and focus pane within one owning team run; it is resolved from the
+recursive `memberTree` plus task-execution projections and can point at
+inactive or all-offline logical members so users can inspect their saved member
+history. A history row is selected/current only when its `teamRunId` is the
+authoritative selected team run and its route key matches that run's focused
+member route. This team-run scope prevents identical route keys in separate
+historical runs from appearing selected at once, and the current row carries
+the single `aria-current="true"` navigation state. User-message target focus
+is the typed `ConversationTargetAddress` selected by
 `resolveTeamConversationTargetAddressResult(...)` for the shared composer and
 text send path. It first preserves the valid roster-focused structural leaf or
 subteam target, so the first message in a new/all-offline team can go directly
