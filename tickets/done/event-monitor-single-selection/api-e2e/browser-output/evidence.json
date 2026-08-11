@@ -1,0 +1,133 @@
+{
+  "result": "Pass",
+  "routePath": "/api-e2e-event-monitor-single-selection",
+  "webDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/autobyteus-web",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/api-e2e/event-monitor-single-selection.page.vue",
+  "installedPagePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/autobyteus-web/pages/api-e2e-event-monitor-single-selection.vue",
+  "outputDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/api-e2e/browser-output",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "scenarios": {
+    "BR-001": {
+      "description": "Duplicate focused route keys produce one current stable row",
+      "result": "Pass",
+      "details": {
+        "currentCount": 1,
+        "current": "workspace-team-member-team-run-a-reviewer"
+      }
+    },
+    "BR-002": {
+      "description": "Committed selection transfer and clear remove stale current state",
+      "result": "Pass",
+      "details": {
+        "afterTransfer": "task-b",
+        "afterClearCount": 0,
+        "afterReselect": "workspace-team-member-team-run-a-reviewer"
+      }
+    },
+    "BR-003": {
+      "description": "Current and non-current transient rows retain distinguishable ghost semantics",
+      "result": "Pass",
+      "details": {
+        "nonCurrent": "flex w-full cursor-pointer items-center rounded-md bg-indigo-50/40 text-sm transition-colors hover:bg-indigo-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-indigo-300 text-gray-600",
+        "current": "flex w-full cursor-pointer items-center rounded-md bg-indigo-50/40 text-sm transition-colors hover:bg-indigo-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-indigo-300 text-indigo-900 ring-1 ring-indigo-200"
+      }
+    },
+    "BR-004": {
+      "description": "Focus and hover on a non-current stable row do not create a second current row",
+      "result": "Pass",
+      "details": {
+        "activeElement": "workspace-team-member-team-run-b-reviewer",
+        "currentCount": 1
+      }
+    }
+  },
+  "browserEvents": [
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22applicationsCapability%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22workspaces%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22agentDefinitions%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22agentTeamDefinitions%22%2C%22%7B%7D%22%5D%7D"
+    }
+  ],
+  "cleanup": {
+    "browserContext": "closed",
+    "browser": "closed",
+    "nuxt": {
+      "status": "terminated",
+      "pid": 13761,
+      "exitCode": null,
+      "signalCode": null,
+      "finalExitCode": null,
+      "finalSignalCode": "SIGTERM"
+    },
+    "nuxtLog": "closed",
+    "installedFixture": "removed"
+  },
+  "failures": [],
+  "baseUrl": "http://127.0.0.1:60287",
+  "port": 60287,
+  "environmentWarnings": {
+    "backendFixtureWarnings": [
+      {
+        "type": "console:error",
+        "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22applicationsCapability%22%2C%22%7B%7D%22%5D%7D"
+      },
+      {
+        "type": "console:error",
+        "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22workspaces%22%2C%22%7B%7D%22%5D%7D"
+      },
+      {
+        "type": "console:error",
+        "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22agentDefinitions%22%2C%22%7B%7D%22%5D%7D"
+      },
+      {
+        "type": "console:error",
+        "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22agentTeamDefinitions%22%2C%22%7B%7D%22%5D%7D"
+      }
+    ],
+    "unexpectedConsoleErrors": [],
+    "note": "Apollo invariant warnings are expected because the probe intentionally returns an empty GraphQL fixture response; they are unrelated to the rendered history assertions."
+  },
+  "finishedAt": "2026-08-11T04:46:49.386Z",
+  "artifacts": {
+    "evidencePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/api-e2e/browser-output/evidence.json",
+    "nuxtLogPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/api-e2e/browser-output/nuxt.log",
+    "stableScreenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/api-e2e/browser-output/stable-current.png",
+    "clearedScreenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/api-e2e/browser-output/selection-cleared.png",
+    "transientScreenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/api-e2e/browser-output/transient-current-vs-ghost.png"
+  }
+}

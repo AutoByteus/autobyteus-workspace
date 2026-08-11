@@ -475,6 +475,7 @@ const expandedTeams = reactive(new Set<string>());
 const expandedMembers = reactive(new Set<string>());
 const historyState: WorkspaceHistorySectionState = {
   selectedRunId: null,
+  isTeamRunSelected: () => false,
   isRunTerminating: () => false, isTeamTerminating: () => false,
   isRunDeleting: () => false, isTeamDeleting: () => false,
   isRunArchiving: () => false, isTeamArchiving: () => false,
