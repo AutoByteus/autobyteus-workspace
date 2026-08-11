@@ -45,7 +45,7 @@
 
     <MobileTeamReferenceViewer
       v-if="selectedReferenceContext && activeTeamContext"
-      :team-run-id="activeTeamContext.teamRunId"
+      :team-run-id="activeTeamContext.executions.getRootTeamRunId()"
       :message-id="selectedReferenceContext.message.messageId"
       :reference="selectedReferenceContext.reference"
       :refresh-signal="referenceRefreshSignal"
