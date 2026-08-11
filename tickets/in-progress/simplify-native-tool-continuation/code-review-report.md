@@ -2,177 +2,154 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review — IR-002 Rework`
+- Review Entry Point: `Implementation Review — IR-003 Requirement Re-entry`
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/requirements.md`
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/design-spec.md`
 - Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/surviving-native-loop-responsibility-inventory.md`
 - Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-001`
+- Relevant Solution Revision IDs: `SR-001`, `SR-002`
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/design-review-report.md`
 - Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/architecture-review-revision-record.md`
-- Relevant Architecture Review Revision IDs: `ARCH-REV-001`
+- Relevant Architecture Review Revision IDs: `ARCH-REV-001`, `ARCH-REV-002`
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/implementation-revision-record.md`
-- Relevant Implementation Revision IDs: `IR-001`, `IR-002`
+- Relevant Implementation Revision IDs: `IR-001`, `IR-002`, `IR-003`
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-004`
-- Current Review Round: `3`
-- Trigger: `implementation_engineer` handoff of `IR-002` / commit `0891e42f0ebdd2db5f0d1b2bd746abdb1e115668` resolving `CR-001` after `CRR-003`.
-- Prior Review Round Reviewed: `CRR-003` failure-origin review (`Fail`, `CR-001`) plus the earlier `CRR-001` and `CRR-002` results
-- Latest Authoritative Round: `3`
-- Coverage Investigation Reviewed (failure-origin entry point): `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/api-e2e-coverage-investigation.md`
-- Execution Coverage Report Reviewed (failure-origin entry point): `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/api-e2e-execution-coverage-report.md`
+- Current Code Review Revision ID: `CRR-007`
+- Current Review Round: `4`
+- Trigger: `implementation_engineer` handoff of `IR-003`; worktree inspection resolved the reviewed commit as `7aa4bc6d7f3216db8dfc703eaf5ebfbc67da3804`, based on delivery-integrated parent `012257323d5b7303184ca7c5f385602c6a6914f3`.
+- Prior Review Round Reviewed: `CRR-004` source-review Pass, followed by `CRR-005` proportional-test Pass and `CRR-006` no-durable-delta result; all earlier findings remain resolved.
+- Latest Authoritative Round: `4`
+- Coverage Investigation Reviewed (failure-origin entry point): Prior cumulative context at `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/api-e2e-coverage-investigation.md`
+- Execution Coverage Report Reviewed (failure-origin entry point): Prior cumulative context at `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/api-e2e-execution-coverage-report.md`
 - API/E2E Revision Record Reviewed (failure-origin entry point): `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/api-e2e-revision-record.md`
-- Relevant API/E2E Revision IDs: `API-REV-001`, `API-REV-002`
-- Delivery Revision Record Reviewed (delivery re-entry only): `N/A`
-- Relevant Delivery Revision IDs: `N/A`
-- Failing Scenario IDs: Prior `API-E2E-004` / `API-E2E-F-001` rechecked and resolved in source; formal API/E2E rerun remains downstream
-- Exact Failing Commands / Execution Mode: Prior failure commands were re-executed against IR-002: `pnpm -C autobyteus-ts exec vitest run --no-watch tests/unit/legacy-tool-calling-public-surfaces-removed.test.ts`; `pnpm -C autobyteus-ts build`; compiled `dist/index.js` five-symbol canonical-identity probe
-- Failure Evidence Paths: Prior round 2 failure logs remain at `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/validation-logs/round2/`; IR-002 implementation evidence is recorded in `implementation-handoff.md`, and independent re-review execution is recorded below.
+- Relevant API/E2E Revision IDs: `API-REV-001`–`API-REV-004` as completed-cycle context; AC-016 coverage remains downstream.
+- Delivery Revision Record Reviewed (delivery re-entry only): `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/delivery-revision-record.md`
+- Relevant Delivery Revision IDs: `DR-001`–`DR-004`
+- Failing Scenario IDs: `N/A`
+- Exact Failing Commands / Execution Mode: `N/A`
+- Failure Evidence Paths: `N/A`
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: IR-002's one-line production delta resolving `CR-001`, plus the complete package-root path and the prior finding's corrected durable assertion.
-- Files / areas reviewed: commit `0891e42f0`; `autobyteus-ts/package.json`; `src/index.ts`; `src/tools/index.ts`; `src/tools/usage/providers/tool-schema-provider.ts`; `legacy-tool-calling-public-surfaces-removed.test.ts`; IR-002 handoff/revision evidence; prior API/E2E failure logs.
-- Explicit exclusions: already-passed native runtime, continuation, compaction, provider, media, admission, and persistence paths were not reopened because IR-002 changes only package index composition. Formal API/E2E evidence refresh and proportional test review remain downstream; documentation synchronization remains delivery-owned.
+- Changed implementation and behavior reviewed: IR-003's bounded BEH-011 / REQ-013 / AC-016 change from the runner's omitted-option `120_000` ms fallback to exactly `300_000` ms, while preserving explicit overrides and the existing collector, failure, interruption, unsubscription, and child-termination lifecycles.
+- Files / areas reviewed: the IR-003 commit and parent diff; `server-compaction-agent-runner.ts`; `compaction-run-output-collector.ts`; ordinary `AutoByteusAgentRunBackendFactory` construction; `LLMRequestAssembler` / `PendingCompactionExecutor` production reachability; existing runner/collector coverage; round 5 implementation evidence; the complete SR-002 / ARCH-REV-002 artifact chain.
+- Explicit exclusions: No source beyond the one runner fallback was changed by IR-003. Collector behavior, factory wiring, configuration, API/UI, stored data, migrations, provider contracts, compaction strategy, and prior native-loop source were inspected only far enough to verify unchanged boundaries. Durable AC-016 test maintenance and broader execution remain `api_e2e_engineer`-owned; documentation synchronization remains delivery-owned.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: `Yes`; UC-001 through UC-010 and AC-001 through AC-015 were used as the behavior authority.
-- Design-spec behavior map verified against the implementation: `Yes`; DS-001 through DS-013 were traced through current production callers and retained governing owners.
-- Design review report and round confirmed: `Pass`, `ARCH-REV-001` / architecture review round 1.
+- Approved requirements basis understood: `Yes`; BEH-011, UC-011, REQ-013, and AC-016 are the direct authority, with REQ-008 / AC-008 preservation constraints.
+- Design-spec behavior map verified against the implementation: `Yes`; DS-014 was traced from ordinary pending compaction through request assembly, strategy resolution, the server backend factory, the runner/collector boundary, and the return/failure path.
+- Design review report and round confirmed: `Pass`, `ARCH-REV-002`; no architecture finding IDs.
 - Behavior-basis status: `Confirmed`
-- Changed or newly discovered behavior, if any: None. IR-002 completes the already-approved external TypeScript package-root contract in BEH-009 / AC-012.
+- Changed or newly discovered behavior, if any: None. IR-003 implements only the approved new default policy.
 - Remaining material ambiguity, if any: None.
+
+The independently supported initiating event is an ordinary parent request reaching a pending working-context compaction. Normal production executes `LLMRequestAssembler -> PendingCompactionExecutor -> structured compaction strategy / AgentCompactionSummarizer -> AutoByteusAgentRunBackendFactory`, whose ordinary factory constructs `ServerCompactionAgentRunner` without `timeoutMs`. The runner therefore owns the omitted-option policy, passes the resolved duration to `CompactionRunOutputCollector.waitForFinalOutput`, and returns compacted output or the existing typed failure after cleanup. This establishes the product path independently of the diff and deterministic probe; the probe only verifies IR-003 on that established path.
 
 | Behavior ID | Current Status (`Confirmed`/`Contradicted`/`Unclear`/`Newly Discovered`) | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence (Only When Applicable) |
 | --- | --- | --- | --- |
-| `BEH-001` | Confirmed | `AgentTurnRunner -> AgentInputPipeline`; external legs still produce a non-null `LLMUserMessage`, all configured processors run once, and `MemoryIngestInputProcessor` still persists external input while its validated TOOL branch is side-effect free. | N/A |
-| `BEH-002` | Confirmed | `LlmPhase` resolves tools, directly constructs `ToolSchemaProvider` output and one `LlmStreamingResponseHandler`; the handler retains indexed delta accumulation, final argument parsing, native context, callbacks, and file projections. | N/A |
-| `BEH-003` | Confirmed | `AgentTurnRunner` processes the ordered `ToolPhase` array through `ToolResultPipeline`, emits status/terminal lifecycle, closes active-batch admission, calls `MemoryManager.ingestToolResults(processedResults, turnId, ...)` once, then builds continuation input. | N/A |
-| `BEH-004` | Confirmed | `AgentInputPipelineResult.llmUserMessage` is required nullable; a processed text-only TOOL continuation yields `null`, drives `ToolContinuationReadyEvent`, and reaches the single `LLMRequestAssembler.prepareRequest(null, ...)` path. | N/A |
-| `BEH-005` | Confirmed | `ToolContinuationInputBuilder` retains ContextFile/serialized-shape extraction; carrier presence is evaluated after all configured input processors and the assembler appends the resulting user/media message once. | N/A |
-| `BEH-006` | Confirmed | Empty resolved tools produce no `tools` kwarg and construct the unified handler with `toolCallsEnabled=false`; the guard precedes all native delta state while ordinary text remains live. | N/A |
-| `BEH-007` | Confirmed | `ToolInvocationBatch` retains private immutable turn/expected-ID identity, order-copy access, and `accepts`; `AgentTurn` and `TurnToolInputPort` retain active-batch admission and stale/duplicate/no-waiter settlement ownership. | N/A |
-| `BEH-008` | Confirmed | Existing abort fences and recovery paths remain in `AgentTurnRunner`/`LlmPhase`; the unified handler retains interrupted/failed segment closure and invocation suppression; request snapshot restore/commit ordering is preserved. | N/A |
-| `BEH-009` | Confirmed | `src/tools/index.ts` now canonically exports `ToolSchemaProvider` from its defining module; `src/index.ts` re-exports the tools index and the compiled root exposes the same class identity alongside the handler, segment, processor base, and registry. Removed symbols remain absent without aliases. | N/A |
-| `BEH-010` | Confirmed | TOOL input performs no raw-trace write; `MemoryManager.ingestToolContinuationBoundary` is deleted; production search finds no new continuation marker while `tool_call`/`tool_result` ingestion and ephemeral status remain. | N/A |
+| `BEH-001` | Confirmed | The previously reviewed `AgentTurnRunner -> AgentInputPipeline` external and same-turn input lifecycle is unchanged by this server-only delta. | N/A |
+| `BEH-002` | Confirmed | The previously reviewed direct schema construction and single guarded `LlmStreamingResponseHandler` path is unchanged. | N/A |
+| `BEH-003` | Confirmed | Runner-owned ordered post-processor batch commit through `MemoryManager.ingestToolResults` is unchanged. | N/A |
+| `BEH-004` | Confirmed | Nullable no-additional-message continuation and one request-assembler transaction are unchanged. | N/A |
+| `BEH-005` | Confirmed | Post-processor context-carrier projection and media sanitation/rendering are unchanged. | N/A |
+| `BEH-006` | Confirmed | No-tool schema omission and native-delta gating are unchanged. | N/A |
+| `BEH-007` | Confirmed | Active invocation identity/order/admission remains unchanged. | N/A |
+| `BEH-008` | Confirmed | Existing turn abort race, request recovery, compaction failure projection, collector earlier settlement, and runner `finally` cleanup are unchanged; IR-003 alters only the maximum omitted-option completion wait. | N/A |
+| `BEH-009` | Confirmed | The IR-002 package-root contract fix and clean removal surface remain unchanged. | N/A |
+| `BEH-010` | Confirmed | No new continuation trace writer or replacement marker is introduced. | N/A |
+| `BEH-011` | Confirmed | `ServerCompactionAgentRunner` defines module-local `DEFAULT_COMPACTION_AGENT_COMPLETION_TIMEOUT_MS = 300_000`; its constructor retains `options.timeoutMs ?? constant`; ordinary backend construction omits `timeoutMs`; `runCompactionTask` passes `this.timeoutMs` to the unchanged collector and retains typed wrapping, unsubscription, and child termination. | N/A |
 
 ## Structural / Design Checks
 
 | Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | The approved contraction removes single-value modes, coordination traces, duplicate owners, and empty stream layers without merging distinct lifecycle owners. | None. |
-| Implementation matches approved behavior-defining supplemental artifacts | Pass | IR-002 preserves every removal/ownership classification and completes the retained schema export required by BEH-009 / AC-012. | None. |
-| Data-flow spine inventory clarity and preservation under shared principles | Pass | DS-011 now reaches the root consumer through the canonical defining module -> tools index -> root index path; all other previously reviewed spines are unchanged. | None. |
-| Ownership boundary preservation and clarity | Pass | Runner owns outer sequencing/commit; MemoryManager owns persistence; LlmPhase owns one provider call; pipeline owns processors/carrier; handler owns stream-local projection. | None. |
-| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Schema formatting, media sanitation, compaction, renderers, notifiers, and file projectors remain with their existing owners. | None. |
-| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | The change directly reuses `ToolSchemaProvider`, `MemoryManager.ingestToolResults`, provider renderers, media sanitation, and pipeline ordering. | None. |
-| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | Context projection remains in the pure builder; request transaction and native stream state each have one owner. | None. |
-| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | Nullable `llmUserMessage` replaces the mode/result vocabulary; the empty abstract handler base and result wrapper are removed. | None. |
-| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | Normal final result persistence occurs once in the runner through the authoritative MemoryManager batch API. | None. |
-| Empty indirection check (no pass-through-only boundary) | Pass | Stream factory/result wrapper/base/pass-through and old-name wrappers are deleted; `LlmPhase` performs the bounded one-use setup directly. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | The pure builder does not own runtime/memory; the runner does not parse chunks or access stores; the assembler does not infer modes. | None. |
-| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | Dependencies flow runner/phase/pipeline -> public owned boundaries; no new reverse dependency or store shortcut was introduced. | None. |
-| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | The runner uses `MemoryManager`, not raw/snapshot stores; callers use pipeline/assembler/handler boundaries without also reaching into their internals. | None. |
-| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | The renamed builder is under `agent/loop`, the unified handler under streaming handlers, and memory contraction stays in `memory-manager.ts`. | None. |
-| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | Six obsolete files disappear and no replacement setup/mode manager is introduced. | None. |
-| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | Runtime interfaces remain clear, and the package root now exposes the required canonical provider identity through the existing tools index without a wrapper or parallel path. | None. |
-| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | `LlmStreamingResponseHandler`, `ToolContinuationInputBuilder`, `additionalUserMessage`, and `toolCallsEnabled` match current responsibility. | None. |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | Duplicate assembler methods, streaming implementations, memory deferral/commit ownership, and one-value mode shapes are removed. | None. |
-| Patch-on-patch complexity control | Pass | The implementation is a net contraction and contains no compatibility branch, alias, replacement marker, or generic manager. | None. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | Production and clean-dist scans find no retired mode, metadata, builder, processor, handler hierarchy, continuation writer, or batch settlement symbol/path. | None. |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | `TR-001` is corrected: the test now compares all five minimum retained contracts through `publicApi` and retains the negative alias/path matrix. Its single failure accurately exposes the source defect. | Keep the assertion unchanged through the source fix. |
-| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | No implementation-owned durable test edit introduced fixture duplication; the stale structural surface is explicitly isolated for downstream coverage maintenance. | API/E2E owns proportional fixture/test updates. |
-| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | No durable test was changed in IR-001, as required by role ownership; known tests importing removed architecture are explicitly queued rather than masked by compatibility source. | API/E2E must remove/update them before delivery. |
-| API/E2E readiness for the next workflow stage | Pass | Independent re-review execution passes the corrected 35-case root test, production build, and compiled five-symbol identity probe. The source fix is bounded to the exact failed contract. | Route IR-002 to `api_e2e_engineer` for the required focused evidence refresh. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | SR-002 identifies a bounded owner-local policy correction, not a new refactor/configuration need; IR-003 follows that posture exactly. | None. |
+| Implementation matches approved behavior-defining supplemental artifacts | Pass | The exact DS-014 interface example and change sequence are implemented: one named constant and one fallback replacement. The SR-001 responsibility inventory remains unaffected. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | DS-014 spans parent request assembly through the server child and back to compacted output/typed failure; the single changed node remains the runner owner. | None. |
+| Ownership boundary preservation and clarity | Pass | Runner chooses the omitted-option policy; collector consumes an explicit duration; ordinary factory omits an override. No owner is duplicated or bypassed. | None. |
+| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Resolver, event subscription, failure observer, config-backed workspace path, and activity recording remain unchanged off-spine concerns serving the runner lifecycle. | None. |
+| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | IR-003 reuses the current runner option and collector call rather than adding config plumbing, a timeout service, or another factory policy. | None. |
+| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | The policy is expressed once as a module-local constant; no repeated duration structure is introduced. | None. |
+| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | No data model or shared base changes; the existing optional scalar remains the sole override shape. | None. |
+| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | `ServerCompactionAgentRunner` remains the single ordinary default owner; neither factory nor collector gains a duplicate fallback. | None. |
+| Empty indirection check (no pass-through-only boundary) | Pass | No wrapper, provider, configuration adapter, or forwarding layer is added. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | The runner continues to own child lifecycle policy while the collector owns event settlement/timer mechanics; the three-line insertion does not broaden either responsibility. | None. |
+| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | Existing dependency direction from factory/strategy into the runner interface and from runner into collector/service remains unchanged. | None. |
+| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | Ordinary construction depends on `ServerCompactionAgentRunner`; it does not separately set collector timers. The runner alone calls the collector. | None. |
+| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | The default is placed in `agent-execution/compaction/server-compaction-agent-runner.ts`, the established owner of the server child completion lifecycle. | None. |
+| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | A module-local constant is proportionate; a new configuration/policy file would be artificial fragmentation for one owner-local value. | None. |
+| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | `ServerCompactionAgentRunnerOptions.timeoutMs?: number` retains clear override semantics; no new public setting or alternate request path is introduced. | None. |
+| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | `DEFAULT_COMPACTION_AGENT_COMPLETION_TIMEOUT_MS` names subject, policy role, and unit precisely. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | One constant feeds the existing one assignment and one collector call. | None. |
+| Patch-on-patch complexity control | Pass | The production delta is 3 insertions / 1 deletion with no conditional branch, fallback stack, compatibility shim, or unrelated timeout edit. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | The obsolete literal is removed from the runner; repository search confirms the new value appears only at the intended source owner. | None. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Existing tests continue to cover success, explicit short timeout, failure metadata, activity, and termination. The exact omitted/default assertion is correctly identified as downstream AC-016 work rather than hidden by an implementation-owned test edit. | API/E2E must add/update deterministic direct proof without a real five-minute wait. |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | The existing fake run/service/resolver fixture supports both omitted and override cases; the implementation probe demonstrates a non-waiting collector spy approach suitable for durable coverage. | Reuse the existing harness in downstream coverage. |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | IR-003 changed no durable tests and added no compatibility coverage. | API/E2E must investigate the current runner test and update only what AC-016 requires. |
+| API/E2E readiness for the next workflow stage | Pass | Source, caller path, focused 5/5 tests, full server build/bootstrap smoke, exact compiled default/override probe, size scan, and diff check are clean. | Route to `api_e2e_engineer` for AC-016 investigation/execution. |
 
 ## Source File Size And Structure Audit (If Applicable)
 
 | Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
 | --- | ---: | --- | --- | --- | --- | --- | --- |
-| `agent/factory/agent-factory.ts` | 222 | Pass | Pass (`0+ / 9-`) | Pass; only obsolete default-processor registration was removed. | Pass | Coherent retained factory | None. |
-| `agent/input-processor/memory-ingest-input-processor.ts` | 39 | Pass | Pass (`0+ / 9-`) | Pass; external memory ingestion only. | Pass | Tight | None. |
-| `agent/llm-request-assembler.ts` | 112 | Pass | Pass (`14+ / 44-`) | Pass; one request transaction. | Pass | Contracted | None. |
-| `agent/loop/agent-turn-runner.ts` | 230 | Pass | Pass (`10+ / 6-`) | Pass; added one outer-loop commit step without absorbing memory internals. | Pass | Cohesive lifecycle owner | None. |
-| `agent/loop/index.ts` | 5 | Pass | Pass (`1+ / 1-`) | Pass; current loop export only. | Pass | Tight index | None. |
-| `agent/loop/llm-phase.ts` | 377 | Pass | Pass (`17+ / 19-`) | Pass; direct one-call setup is local to its governing owner. | Pass | Cohesive provider-call owner | None. |
-| `agent/loop/tool-continuation-input-builder.ts` | 73 | Pass | Pass (`6+ / 42-`, rename-aware) | Pass; pure semantic/context projection. | Pass | Tight | None. |
-| `agent/pipelines/agent-input-pipeline.ts` | 143 | Pass | Pass (`5+ / 14-`) | Pass; processor execution and nullable carrier projection only. | Pass | Cohesive | None. |
-| `agent/streaming/handlers/index.ts` | 1 | Pass | Pass (`1+ / 4-`) | Pass; one concrete handler export. | Pass | Tight index | None. |
-| `agent/streaming/handlers/llm-streaming-response-handler.ts` | 417 | Pass | Pass (`14+ / 10-`, rename-aware) | Pass; bounded indexed text/tool/file stream state remains cohesive. | Pass | Cohesive bounded stream owner | None. |
-| `agent/streaming/index.ts` | 5 | Pass | Pass (`1+ / 4-`) | Pass; current stream/segment exports only. | Pass | Tight index | None. |
-| `agent/tool-execution-result-processor/index.ts` | 6 | Pass | Pass (`0+ / 1-`) | Pass; retains only custom extension contracts. | Pass | Tight index | None. |
-| `agent/tool-invocation-batch.ts` | 29 | Pass | Pass (`3+ / 42-`) | Pass; immutable active identity/order/admission only. | Pass | Tight | None. |
-| `memory/memory-manager.ts` | 494 | Pass | Pass (`0+ / 13-`) | Pass; existing broad authoritative memory boundary is contracted, not expanded. | Pass | Coherent existing subsystem owner | None. |
-| `tools/index.ts` | 21 | Pass | Pass (`1+ / 0-` in IR-002) | Pass; projects the canonical retained schema provider through the existing package boundary. | Pass | Tight index | None. |
-| Six fully deleted obsolete source files | 0 | Pass | Pass (deletion-only) | Pass; mode metadata, wrappers/hierarchy, and built-in memory processor have no retained responsibility. | N/A | Required cleanup | None. |
+| `autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts` | 169 | Pass | Pass (`3+ / 1-`) | Pass; one child-lifecycle owner retains one local default policy and unchanged cleanup. | Pass | Cohesive existing owner | None. |
 
-No changed implementation source exceeds 500 effective lines, and no rename-aware changed-line delta exceeds 220. The 417-line unified handler and 494-line existing MemoryManager remain coherent single-owner files; this patch contracts both surrounding architectures rather than adding unrelated responsibilities.
+Previously reviewed IR-001/IR-002 implementation files are unchanged by IR-003; their CRR-004 source-size and ownership audit remains valid. The current changed implementation file is well below both thresholds.
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | No aliases, deprecated wrappers, dual methods, old export shims, or mode fallback. |
-| No legacy old-behavior retention in changed scope | Pass | Retired handler/processor/mode/trace-writing behavior is absent from current production and clean dist. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | Removal scans and caller searches are clean. |
-| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Generic current raw-trace reading remains unchanged; historical records are directly usable and inert. |
-| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | New runs use one request path and write no continuation coordination marker. |
-| Approved transition mechanics match the reviewed design, including migration safety only when required | Pass | `Directly Usable — No Migration` is implemented without rewriting stored data. |
+| No backward-compatibility mechanisms in changed scope | Pass | No old/new timeout branch, alias, setting fallback, or version-specific behavior is added. |
+| No legacy old-behavior retention in changed scope | Pass | The obsolete runner-local `120_000` fallback is removed rather than retained behind selection logic. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Only the approved old literal is retired; unrelated 120-second policies remain intentionally untouched. |
+| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | SR-002 is `Not Affected`; the in-memory default writes no data/configuration and creates no migration need. |
+| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | No persistence or request shape changes. |
+| Approved transition mechanics match the reviewed design, including migration safety only when required | Pass | No migration/configuration machinery was added. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal (Mandatory If Any Exist)
 
-None. All items required for removal by the approved design are absent from production source and clean build output.
+None.
 
 ## Docs-Impact Verdict
 
 - Docs impact: `Yes`
-- Why: current project documentation still describes the retired handler selection, continuation mode/metadata, result collection ownership, and/or coordination trace behavior. The approved public contraction also needs release-facing documentation.
-- Files or areas likely affected: `autobyteus-ts/docs/api_tool_call_streaming_design.md`, `autobyteus-ts/docs/turn_terminology.md`, `autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md`, `autobyteus-ts/docs/lifecycle_event_sourced_engine_design.md`, plus applicable release notes/public API documentation.
+- Why: The effective ordinary server compaction completion policy changes from two minutes to five minutes and REQ-011 keeps durable documentation/release handoff downstream-owned. This does not justify an application-setting document because no new selectable configuration exists.
+- Files or areas likely affected: Current compaction/runtime operational description where the ordinary timeout is documented, ticket release notes/handoff summary, and delivery verification records. No settings UI/API/schema documentation is applicable.
 
 ## Material Premise Validation (Only When Needed)
 
 ### Upstream Design-Review Material-Premise Decisions
 
-None. The architecture review recorded no premise IDs requiring reclassification.
+None were assigned IDs. ARCH-REV-002 confirmed BEH-011 from the approved system event and ordinary factory path. The implementation review independently traced that path as recorded above.
 
-### MP-CR-001 — Retained root schema contract is product-reachable
-
-- Origin: `New` failure-origin confirmation record
-- Related approved requirement or established contract: REQ-010 / AC-012
-- Relevant behavior ID(s): BEH-009; DS-011; UC-009
-- Initiating basis kind: `Contract`
-- Independent product-supported initiating trigger or applicable governing contract: An external TypeScript consumer imports the explicitly retained schema contract from the documented `autobyteus-ts` package root. AC-012 governs that supported import surface, independently of the failing test.
-- Support evidence: `package.json` exposes `.` through `dist/index.js`/`dist/index.d.ts`; requirements and DS-011 require the package root to export the retained native stream/schema/segment and custom processor contracts.
-- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: consumer import -> package `.` export -> compiled `dist/index.js` generated from `src/index.ts` -> wildcard tools export from `src/tools/index.ts` -> canonical `ToolSchemaProvider` export -> named root property/import resolves to the defining-module identity.
-- Lifecycle preconditions and material consequence at the claimed point: After a normal successful package build, a supported consumer can import the handler, schema provider, segment, processor base, and registry from the same root contract.
-- Reachability: `Reachable`
-- Review consequence / proportionate response: The governing contract made the prior `API-E2E-F-001` source defect material; IR-002's one canonical export is the complete proportionate resolution. No design change, compatibility alias, provider rerun, or broader runtime redesign is justified.
+No new or reclassified material premise is needed. IR-003 introduces no fallback/recovery mechanism beyond the approved BEH-011 policy, and no finding or score deduction depends on a scenario outside the confirmed behavior basis. Prior `MP-CR-001` concerned the resolved root package contract and is unaffected by this server-only revision.
 
 ## Review Scorecard (Mandatory)
 
 - Overall score (`/10`): `9.7`
-- Overall score (`/100`): `96.8`
-- Score calculation note: arithmetic mean of the ten category scores; the clean-pass decision also requires every category to remain at or above 9.0 and no blocking finding.
+- Overall score (`/100`): `97.2`
+- Score calculation note: arithmetic mean of the ten categories. Every category is at least 9.4, and no source/design finding remains.
 
 | Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 9.8 | Every runtime and contract UC now maps to a direct production spine; DS-011 reaches the root through the existing tools index with no parallel export path. | Formal API/E2E evidence still reflects the pre-fix failure until its focused rerun. | Refresh the downstream contract evidence without broadening the source change. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.7 | Runner, phase, memory, pipeline, assembler, handler, and builder responsibilities are explicit and non-overlapping. | `MemoryManager` remains a broad existing subsystem boundary at 494 effective lines. | Keep future memory additions behind focused owned collaborators; no ticket fix is required. |
-| `3` | `API / Interface / Query / Command Clarity` | 9.7 | Nullable message, explicit turn ID, explicit tool gate, and the retained root identities are clear and canonical. | The approved clean contraction still carries unavoidable unknown-consumer release-documentation risk. | Document current and removed contracts during delivery; do not add aliases. |
-| `4` | `Separation of Concerns and File Placement` | 9.5 | Pure projection, request transaction, stream projection, and persistence remain separately owned and correctly placed. | The cohesive stream handler is 417 effective lines because it retains text, indexed tools, and file projectors. | Split only if a future independent responsibility emerges; no speculative extraction is warranted now. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.7 | One nullable field and one concrete handler replace parallel result/mode/base structures. | Context projection intentionally retains a small dedicated builder. | Preserve it as a pure owned transformation rather than recreating a continuation framework. |
-| `6` | `Naming Quality and Local Readability` | 9.7 | Current names describe current responsibility and stale transport/mode vocabulary is absent. | `native_api_ordered_batch` remains as factual provenance, which can look mode-like out of context. | Keep it documented as provenance only; no source change is required. |
-| `7` | `API/E2E Readiness` | 9.4 | Round 1 runtime evidence remains strong, the corrected durable assertion is unchanged, and independent source re-review passes the exact focused contract surfaces. | API-REV-002 remains the formal downstream result until API/E2E reruns the focused scenario. | Refresh API/E2E evidence and then complete proportional test review. |
-| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.7 | Source tracing plus round 1 unit, integration, real DeepSeek/OpenAI, compaction, context, admission, and recovery evidence supports the agent runtime; IR-002 also restores the static consumer contract. | Live model/provider breadth remains bounded as previously documented. | Preserve the existing runtime evidence and rerun only the affected package scenario. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.8 | Old paths, aliases, modes, marker writers, and wrappers are cleanly absent; historical data needs no fallback. | Historical continuation cards remain visible in old data by approved direct-use design. | Explain that behavior in docs rather than adding migration or filtering machinery. |
-| `10` | `Cleanup Completeness` | 9.8 | The patch is a 416-line net production contraction with clean production/dist removal scans and no replacement abstraction. | Durable tests are now current; documentation remains delivery-owned. | Complete documentation synchronization after the blocking export fix passes. |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.8 | DS-014 exposes the supported trigger, parent orchestration, server child boundary, collector, cleanup, and return/failure consequence; IR-003 changes only the designated node. | The path crosses core and server packages, so end-to-end understanding still requires multiple files. | Preserve DS-014 as the reference when future compaction policy changes are proposed. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.8 | Runner owns the default, collector owns timer/event settlement, and factory omits policy selection. | Parent interruption races the request promise while underlying child cleanup remains an existing asynchronous lifecycle. | Do not duplicate policy in factory/collector; address cancellation only through a separately approved design if needed. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.7 | The existing optional millisecond override remains explicit and exact; omission has one named default. | The unit (`Ms`) is encoded in names rather than a branded duration type, which is proportionate for the existing API. | Preserve the explicit suffix and avoid a generic or configurable timeout surface without a real use case. |
+| `4` | `Separation of Concerns and File Placement` | 9.6 | IR-003 lands in the established 169-line runner owner without touching collector/config/factory responsibilities. | The cumulative source still includes previously accepted 417-line handler and 494-line MemoryManager owners, though this revision does not expand them. | Split only when a future independent responsibility emerges; no current ticket action is warranted. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.7 | One scalar option and one module-local constant avoid parallel policy/data shapes. | A local constant is intentionally not reusable outside its owner. | Keep it local unless a separately approved multi-owner policy genuinely emerges. |
+| `6` | `Naming Quality and Local Readability` | 9.8 | The named constant precisely states compaction-agent completion, timeout, and milliseconds, replacing an unexplained literal. | The broader runner still has several lifecycle dependencies, all pre-existing and cohesive. | Maintain current direct assignment/call readability. |
+| `7` | `API/E2E Readiness` | 9.4 | Deterministic implementation evidence proves `[300000, 17]`, existing tests pass 5/5, and full server build/bootstrap passes. | Repository-resident AC-016 coverage does not yet directly assert the omitted value; this is intentionally downstream-owned. | API/E2E should add/update the focused deterministic assertion, execute it, and return any durable delta for proportional review. |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.8 | Exact nullish override precedence, unchanged collector call, typed error projection, one unsubscribe, and child termination are source-traced and probe-verified. | A genuinely stalled child can consume resources for up to three minutes longer, an explicit approved tradeoff. | Preserve earlier terminal/failure settlement and observe the accepted operational risk; do not add speculative machinery. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.8 | The old default is replaced cleanly without dual behavior or configuration fallback. | Unrelated 120-second policies remain, correctly, and require contextual review to distinguish. | Keep future searches scoped to the specific owner rather than broad replacement. |
+| `10` | `Cleanup Completeness` | 9.8 | The source delta removes the old literal and introduces no unused abstraction, setting, migration, test hook, or compatibility path. | Documentation and durable coverage remain downstream workflow steps. | Complete those steps without broadening production source. |
 
 ## Findings
 
-None. `CR-001` is resolved by IR-002; its verified resolution is recorded in `CRR-004`.
+None. All earlier findings remain resolved, and IR-003 introduces no new source or architecture finding.
 
 ## Classification
 
@@ -184,30 +161,27 @@ None. `CR-001` is resolved by IR-002; its verified resolution is recorded in `CR
 
 ## Residual Risks
 
-- Formal downstream evidence still reports `API-REV-002` Fail until API/E2E reruns the focused root scenario against IR-002; the corrected durable assertion must not be weakened.
-- Round 1 provider-specific history, context media, compaction, approval/external result, interruption/failure, and real AgentRun evidence remains valid and need not be repeated solely for this static one-line fix.
-- Unknown external consumers of intentionally removed root/subpath symbols may break; this is approved release-documentation impact, not a reason for a compatibility alias.
-- Historical stored `tool_continuation` cards remain visible by approved no-migration design; only new writes are retired.
+- A genuinely stalled compactor child can remain allocated for up to three minutes longer before the unchanged timeout/finally cleanup path; SR-002 and ARCH-REV-002 explicitly accept this tradeoff.
+- Managed model compaction can stochastically return invalid JSON. API-REV-004 exposed rather than suppressed this condition, and IR-003 does not change parsing, failure classification, or retry behavior.
+- Exact durable AC-016 coverage is not yet repository-resident. The implementation probe is evidence for source review, not a substitute for the required API/E2E coverage investigation.
+- Prior provider breadth, unknown external package-consumer enumeration, and approved historical continuation-card retention remain unchanged and non-blocking.
 
 ## Independent Review Validation
 
-- `pnpm --dir autobyteus-ts build` — Pass, including TypeScript production compilation and runtime-dependency verification.
-- `pnpm -C autobyteus-ts exec vitest run --no-watch tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts` — Pass, 4/4.
-- IR-002 production diff — Pass: one direct export line in `src/tools/index.ts`; no alias, wrapper, compatibility module, test edit, or unrelated redesign.
-- Corrected focused root-contract test — Pass, 35/35 under independent source re-review.
-- `pnpm -C autobyteus-ts build` — Pass, including `[verify:runtime-deps] OK` under independent source re-review.
-- Compiled `dist/index.js` five-symbol identity probe — Pass: handler, `ToolSchemaProvider`, segment, processor base, and processor registry all equal their canonical subpath identities.
-- Temporary `autobyteus-ts/node_modules` dependency link used for re-review execution — Removed and independently confirmed absent.
-- Continuation projection/post-processor carrier probe — Pass for text-only null, post-processor-added media carrier, explicit turn metadata, and supported array/serialized ContextFile hydration.
-- Optional-message assembler lifecycle probe — Pass for exact no-message/message ordering and post-snapshot render-failure restore.
-- Production removal/unrelated-facility scans, source size audit, `git diff --check`, dependency-link cleanup, and clean worktree checks — Pass.
+- Actual IR-003 worktree commit resolved and reviewed: `7aa4bc6d7f3216db8dfc703eaf5ebfbc67da3804`; parent `012257323d5b7303184ca7c5f385602c6a6914f3`.
+- Production diff: exactly one implementation file, `3` insertions / `1` deletion; module-local `300_000` constant and one fallback replacement only.
+- Product path: ordinary `AutoByteusAgentRunBackendFactory` construction omits `timeoutMs`; `ServerCompactionAgentRunner` retains `options.timeoutMs ?? constant`; `CompactionRunOutputCollector.waitForFinalOutput(this.timeoutMs)` is unchanged.
+- Independent focused execution: `pnpm -C autobyteus-server-ts exec vitest run --no-watch tests/unit/agent-execution/compaction/server-compaction-agent-runner.test.ts` — Pass, 5/5.
+- Implementation full build evidence: `pnpm -C autobyteus-server-ts run build:full` — Pass, including built-in agent bootstrap and sanitized bootstrap smoke.
+- Compiled deterministic implementation probe — Pass: observed timeouts `[300000, 17]`; both cases retained typed metadata, one unsubscription, and child termination without a real wait.
+- Source audit: 169 effective lines; `git diff --check` Pass; relevant source search shows no unrelated timeout/configuration edit.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Review Entry Point: `Implementation Review — IR-002 Rework`
+- Review Entry Point: `Implementation Review — IR-003 Requirement Re-entry`
 - Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass`
-- Score Summary: `9.7/10` (`96.8/100`); every mandatory category is at least `9.4` and no implementation finding remains.
-- Failure Origin (when applicable): Prior `CR-001` implementation defect resolved by IR-002; the earlier review gap remains documented in CRR-003.
+- Score Summary: `9.7/10` (`97.2/100`); every mandatory category is at least `9.4` and no implementation finding remains.
+- Failure Origin (when applicable): `N/A`
 - Recommended Recipient (when applicable): `api_e2e_engineer`
-- Notes: Commit `0891e42f0` supplies the exact canonical export and independently passes the corrected test, package build, and compiled identity probe. API/E2E must refresh the focused contract evidence before the updated durable coverage returns for proportional review.
+- Notes: IR-003 implements BEH-011 / REQ-013 exactly at the existing policy owner and preserves the approved DS-014 lifecycle. API/E2E must now investigate and execute deterministic AC-016 coverage; any durable coverage delta must return for proportional review before delivery resumes.

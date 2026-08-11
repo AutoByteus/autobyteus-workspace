@@ -1,0 +1,159 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/autobyteus-ts
+
+······stdout | tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts > structured strategy tool-safe lifecycle > waits for the terminal result, compacts through the current strategy, and renders the complete native tool group
+Successfully registered tool definition: 'read_file'
+AgentConfig created for name='agent', role='role'.
+AgentRuntimeState initialized for agent_id 'tool-lifecycle-agent'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'tool-lifecycle-agent'. Config and State linked.
+
+stdout | tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts > structured strategy tool-safe lifecycle > waits for the terminal result, compacts through the current strategy, and renders the complete native tool group
+LlmStreamingResponseHandler finalized 1 tool invocations.
+compaction_budget_evaluated {
+  agent_id: 'tool-lifecycle-agent',
+  prompt_tokens: 200,
+  effective_total_context_tokens: null,
+  context_derived_input_cap_tokens: null,
+  provider_input_cap_tokens: 1000,
+  effective_input_cap_tokens: 1000,
+  reserved_output_tokens: 64,
+  safety_margin_tokens: 0,
+  input_budget_tokens: 1000,
+  compaction_ratio: 0.1,
+  trigger_threshold_tokens: 100,
+  override_active: false,
+  compaction_required: true
+}
+compaction_requested {
+  agent_id: 'tool-lifecycle-agent',
+  phase: 'requested',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mso3vlkf_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: null,
+  selected_block_count: null,
+  compacted_block_count: null,
+  raw_trace_count: null,
+  semantic_fact_count: null
+}
+
+stdout | tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts > structured strategy tool-safe lifecycle > waits for the terminal result, compacts through the current strategy, and renders the complete native tool group
+compaction_started {
+  agent_id: 'tool-lifecycle-agent',
+  phase: 'started',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mso3vlkf_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0004',
+  compaction_strategy_id: 'structured-json',
+  compaction_strategy_name: 'Structured JSON',
+  selected_block_count: null,
+  compacted_block_count: null
+}
+compaction_execution_context {
+  agent_id: 'tool-lifecycle-agent',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mso3vlkf_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0004',
+  pending_compaction: true,
+  selected_unit_count: 3,
+  protected_suffix_unit_count: 1,
+  retained_unit_count: 5,
+  working_context_message_count: 9,
+  raw_trace_count: 1
+}
+
+stdout | tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts > structured strategy tool-safe lifecycle > waits for the terminal result, compacts through the current strategy, and renders the complete native tool group
+compaction_result_summary {
+  agent_id: 'tool-lifecycle-agent',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mso3vlkf_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  compacted_block_count: 3,
+  raw_trace_count: 1,
+  episode_summary_length: 224,
+  semantic_fact_count: 25,
+  compaction_agent_definition_id: 'memory-compactor',
+  compaction_agent_name: 'Memory Compactor',
+  compaction_runtime_kind: 'autobyteus',
+  compaction_model_identifier: 'tool-lifecycle-model',
+  compaction_run_id: 'tool-lifecycle-compaction-run',
+  compaction_task_id: 'compaction_task_af3ba19da058460b8af65f60cc1b8f90'
+}
+
+stdout | tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts > structured strategy tool-safe lifecycle > waits for the terminal result, compacts through the current strategy, and renders the complete native tool group
+compaction_completed {
+  agent_id: 'tool-lifecycle-agent',
+  phase: 'completed',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mso3vlkf_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0004',
+  compaction_strategy_id: 'structured-json',
+  compaction_strategy_name: 'Structured JSON',
+  selected_block_count: 3,
+  compacted_block_count: 3,
+  raw_trace_count: 1,
+  semantic_fact_count: 25,
+  compaction_agent_definition_id: 'memory-compactor',
+  compaction_agent_name: 'Memory Compactor',
+  compaction_runtime_kind: 'autobyteus',
+  compaction_model_identifier: 'tool-lifecycle-model',
+  compaction_run_id: 'tool-lifecycle-compaction-run',
+  compaction_task_id: 'compaction_task_af3ba19da058460b8af65f60cc1b8f90'
+}
+
+stdout | tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts > structured strategy tool-safe lifecycle > waits for the terminal result, compacts through the current strategy, and renders the complete native tool group
+compaction_budget_evaluated {
+  agent_id: 'tool-lifecycle-agent',
+  prompt_tokens: 10,
+  effective_total_context_tokens: null,
+  context_derived_input_cap_tokens: null,
+  provider_input_cap_tokens: 1000,
+  effective_input_cap_tokens: 1000,
+  reserved_output_tokens: 64,
+  safety_margin_tokens: 0,
+  input_budget_tokens: 1000,
+  compaction_ratio: 0.1,
+  trigger_threshold_tokens: 100,
+  override_active: false,
+  compaction_required: false
+}
+
+·stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > uses the injected compaction agent runner to compact memory before the next LLM leg
+Registered AgentContext for agent_id 'runtimecompactionagent_tester_5924'. Total registered contexts: 1
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > uses the injected compaction agent runner to compact memory before the next LLM leg
+Unregistered AgentContext for agent_id 'runtimecompactionagent_tester_5924'.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > keeps compaction pending and blocks the next provider dispatch when compaction agent output is invalid
+Registered AgentContext for agent_id 'runtimecompactionagent_tester_9653'. Total registered contexts: 1
+
+·stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > keeps compaction pending and blocks the next provider dispatch when compaction agent output is invalid
+Unregistered AgentContext for agent_id 'runtimecompactionagent_tester_9653'.
+
+·
+
+ Test Files  3 passed (3)
+      Tests  9 passed (9)
+   Start at  05:33:36
+   Duration  1.44s (transform 1.04s, setup 84ms, import 1.59s, tests 364ms, environment 0ms)
+

@@ -4,15 +4,17 @@
 
 - Ticket: `simplify-native-tool-continuation`
 - Trigger: reviewed implementation `IR-002`, source review `CRR-004`, API/E2E
-  result `API-REV-003`, and proportional durable-test review `CRR-005` all Pass.
+  result `API-REV-004` Pass, prior proportional durable-test review `CRR-005`
+  Pass, and evidence-only proportional checkpoint `CRR-006` Not Applicable.
 - Bootstrap base reference: `origin/personal` at
   `3cddeec6b93602da172fec2e7b9a80acc7c05117`
-- Integrated base reference used for docs sync: refreshed `origin/personal` at
-  `3cddeec6b93602da172fec2e7b9a80acc7c05117`; ticket checkpoint
-  `c06db9a2bda018941e7b432fadc98475f355cb08`
+- Integrated base reference used for docs sync: latest refreshed
+  `origin/personal` at `d0bcd0dab2263fa284cf07de8d98214e5d19af73`;
+  integrated ticket HEAD `012257323d5b7303184ca7c5f385602c6a6914f3`
 - Post-integration verification reference:
-  `delivery-integration-evidence.log`; no executable rerun was required because
-  the tracked remote base had zero new commits.
+  `delivery-integration-evidence.log` and
+  `validation-logs/delivery-refresh/desktop-build-verification-latest-base.log`.
+  The advanced base was merged and the full local Electron package rebuilt.
 
 ## Why Docs Were Updated
 
@@ -83,5 +85,12 @@
 - Next delivery action: Present the integrated, documentation-synchronized
   candidate for explicit user verification. On acceptance, refresh
   `origin/personal` again before repository finalization.
-- Notes: Current-doc obsolete-identifier scan and `git diff --check` pass. The
-  ticket remains in progress and no finalization/release action has run.
+- Notes: The latest-base merge introduced no conflict or change in the ticket's
+  core continuation paths. Updated base documentation for providers and wider
+  runtime behavior remains compatible with these ticket-owned docs; the
+  current-doc obsolete-identifier scan passes. Supplemental `API-REV-004`
+  verified the configured 5% compaction thresholds and real post-compaction
+  behavior on the same integrated HEAD without changing source or durable
+  coverage. That evidence confirms the existing compaction/runtime descriptions
+  and creates no additional long-lived documentation impact. The ticket remains
+  in progress and no finalization/release action has run.

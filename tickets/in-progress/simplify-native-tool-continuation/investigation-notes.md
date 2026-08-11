@@ -3,11 +3,11 @@
 ## Investigation Status
 
 - Bootstrap Status: Complete
-- Current Status: Current-state investigation complete; requirements explicitly approved; design complete and pending architecture review
-- Investigation Goal: Determine how much the surviving provider-native tool loop and tool-result continuation architecture can contract without losing supported lifecycle behavior.
+- Current Status: Original refactor implemented/reviewed/validated; SR-002 timeout requirement re-entry investigated and design revision complete, pending architecture re-review
+- Investigation Goal: Determine how much the surviving provider-native tool loop and tool-result continuation architecture can contract without losing supported lifecycle behavior, then assess the post-implementation request to raise the server compaction-agent completion default without expanding or breaking adjacent lifecycle behavior.
 - Scope Classification: `Medium`
-- Scope Classification Rationale: The recommended refactor is limited to `autobyteus-ts` but crosses the outer turn loop, input/result processors, memory ingestion, continuation carrier, request assembly, stream construction, transient batch state, root exports, documentation, and durable coverage.
-- Scope Summary: Fresh follow-up refactor ticket. Remove post-contraction coordination that no longer represents multiple behaviors; retain real native lifecycle boundaries. Do not reopen or expand `remove-xml-tool-calling`.
+- Scope Classification Rationale: The main refactor crosses `autobyteus-ts` loop, processor, memory, request, stream, transient-state, export, documentation, and coverage boundaries. The requirement re-entry adds one bounded `autobyteus-server-ts` compaction-runner default and direct contract coverage.
+- Scope Summary: Fresh follow-up refactor ticket plus a user-requested post-implementation compactor-timeout correction. Remove post-contraction coordination that no longer represents multiple behaviors; retain real native lifecycle boundaries. Do not reopen `remove-xml-tool-calling` or redesign server configuration.
 - Primary Questions Resolved:
   - Which continuation abstractions remain justified with one tool transport? Same-turn TOOL identity, lifecycle event, context carrier, provider renderers, and active batch remain; mode metadata/request-mode strings do not.
   - Who should own exactly-once ordered result ingestion? `AgentTurnRunner`, after all configured result processors complete, because it owns the batch lifecycle and is the only production `ToolResultPipeline` caller.
@@ -15,12 +15,15 @@
   - Can stream setup contract? Yes. The native handler already implements the no-tool text lifecycle. One guarded concrete handler removes factory/base/pass-through selection while `LlmPhase` remains the request setup owner.
   - Which suspected abstractions are not legacy? `ToolContinuationReadyEvent`, `SenderType.TOOL`, custom processor pipelines, provider renderers, bounded stream delta state/file projectors, approval/external result paths, memory protocol safety, compaction, and recovery remain necessary.
   - Is the raw-trace `Native API tool continuation` item a required memory fact? No. It is an internal loop-transition marker written after the meaningful tool call/results, has no semantic production reader, and should stop being persisted. The runtime status event remains ephemeral.
+  - Should the compactor timeout become configurable? No for this bounded request. Ordinary production construction needs a five-minute default; the existing constructor override already serves tests/custom factories. A new application setting would add unrelated configuration surface without an approved selection need.
 
 ## Request Context
 
 The user asked whether the agent loop can feel more natural now that API tool calls flow directly and no runtime is aware of XML, JSON-text, sentinel-text, manifests, or a tool protocol selector. After the previous ticket was finalized on `origin/personal`, `code_reviewer` requested a separate follow-up ticket rather than reopening the completed removal. During requirements review, the user supplied a raw-trace screenshot showing a `tool_continuation` item whose content is `Native API tool continuation` and identified it as a possible original design problem.
 
 The follow-up objective supplied candidate areas as questions, not prescriptions: continuation building, request modes, result-memory deferral, native continuation metadata, handler setup, and context-file carriers. It explicitly requires supported product paths to be traced before deletion and preserves provider-native schemas/invocations, approval/execution, active-batch identity, ordered exactly-once results, provider histories, context media, no-tool streams, and all mixed/failure lifecycles.
+
+After API-REV-004 validated compaction and continuation on the integrated delivery candidate, the user requested a distinct production behavior correction: slow local models and very large contexts can require more than four minutes, while the ordinary server compaction runner stops waiting after two. `api_e2e_engineer` routed this as a new requirements/design-impact re-entry rather than an API-REV-004 failure.
 
 ## Environment Discovery / Bootstrap Context
 
@@ -35,8 +38,10 @@ The follow-up objective supplied candidate areas as questions, not prescriptions
 - Expected Base Branch: `origin/personal`
 - Expected Finalization Target: `personal`
 - Bootstrap Blockers: None.
-- Notes For Downstream Agents: The shared `personal` checkout has unrelated untracked `.article-work/`; the dedicated worktree is clean and authoritative. The archived completed ticket is context only.
+- Notes For Downstream Agents: The dedicated worktree remains authoritative. It now contains expected uncommitted downstream delivery/API-E2E artifact updates and round-4 logs; preserve them. The shared `personal` checkout's unrelated state and the archived completed ticket remain outside this task.
 - Requirements Approval: Explicit user approval received 2026-08-09 after adding removal of the coordination-only raw-trace boundary. The user requires design-principles compliance and a use-case-to-data-flow-spine mapping.
+- Integrated Re-entry State: HEAD `012257323d5b7303184ca7c5f385602c6a6914f3` after delivery refresh/merge. The original architecture report remains authoritative for SR-001 only; SR-002 requires a new architecture-review round.
+- Re-entry Requirement Authority: User request conveyed by `api_e2e_engineer` on 2026-08-11: increase ordinary compaction-agent completion timeout from two minutes to at least five while preserving cancellation/interruption and explicit test timeouts.
 
 ## Supplemental Task Artifact Inventory
 
@@ -65,6 +70,12 @@ The follow-up objective supplied candidate areas as questions, not prescriptions
 | 2026-08-09 | User evidence | `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_c130df2562304840ad82547b9c67cee7/solution_designer_10159b3e88354918ae7a2ac37e89fd48/context_files/ctx_9bc14cd6ea5f__image.png` | Determine whether the displayed raw-trace continuation card represents required history | Screenshot shows `trace_type=tool_continuation` with content `Native API tool continuation`; user identifies it as strange coordination noise | Include removal in requirements/design |
 | 2026-08-09 | Code/search | `MemoryIngestInputProcessor`, `MemoryManager.ingestToolContinuationBoundary`, and repository-wide `rg -n 'tool_continuation|ingestToolContinuationBoundary'` excluding tickets/dependencies/build output | Trace the screenshot item from writer to any consumers | Exactly one production writer path creates the record; no production semantic reader branches on `tool_continuation`. Generic raw-trace presentation exposes any stored record. Unit tests assert the writer but do not prove product need. | Remove writer/method and update stale coverage downstream |
 | 2026-08-09 | Design authority/examples | `.codex/skills/solution-designer/design-principles.md` and `references/design-examples.md` (agent runtime loop and no-migration contraction examples) | Apply the user's explicit design-principles/data-flow-spine requirement | Design must be behavior-first, spine-complete, owner-led, clean-cut, and explicit about directly usable historical data | Reflected in `design-spec.md` and SR-001 |
+| 2026-08-11 | Team/user requirement | `api_e2e_engineer` re-entry message referencing API-REV-004 and user-observed slow local/large-context compaction | Establish approved new behavior and constraints | At least five minutes is required; prompt cancellation/interruption and explicitly injected test timeouts must remain; no real five-minute test | Refine requirements/design and reroute architecture review |
+| 2026-08-11 | Code | `autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts` at integrated HEAD `012257323...` | Identify the production default and owner | `options.timeoutMs ?? 120_000`; passes directly to collector; existing `finally` unsubscribes and terminates the child run | Change only the owner-local default |
+| 2026-08-11 | Code | `autobyteus-server-ts/src/agent-execution/compaction/compaction-run-output-collector.ts` | Verify timeout consequence and terminal behavior | `waitForFinalOutput(timeoutMs)` sets the timer, rejects with the exact value, clears timers on earlier terminal/failure output | Preserve unchanged |
+| 2026-08-11 | Code/search | `autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts`; repository `rg` for `ServerCompactionAgentRunner`, `timeoutMs`, and compaction config | Trace ordinary construction and possible configuration ownership | Default factory omits `timeoutMs`; unit/integration callers inject short values; no production compaction-timeout setting exists | Choose bounded default, not config expansion |
+| 2026-08-11 | Code | `autobyteus-server-ts/src/config/{app-config.ts,config-value-parsers.ts,streaming-content-flush-interval-setting.ts}` | Evaluate option 2 proportionately | Numeric setting infrastructure exists, but a new key/getter/validation/docs/factory plumbing would create a new product contract not required to meet five minutes | Reject option 2 for this re-entry |
+| 2026-08-11 | Test/log | `autobyteus-server-ts/tests/unit/agent-execution/compaction/{server-compaction-agent-runner.test.ts,compaction-run-output-collector.test.ts}`; `validation-logs/round4/real-lmstudio-compaction-e2e.log` | Verify override coverage and latency premise | Tests already inject 10/1000 ms; LM Studio end-to-end test duration was 143.45 s (indirect corroboration, not direct server-timeout execution) | Add deterministic default-argument proof downstream; retain explicit short tests |
 
 ## Relevant Existing Behavior And Production Paths
 
@@ -80,6 +91,7 @@ The follow-up objective supplied candidate areas as questions, not prescriptions
 | BEH-008 | System | Turn is interrupted or LLM/tool processing fails | `executionScope fences -> handler finalizeInterrupted/finalizeFailed -> runner interruption/recovery -> MemoryManager repair/recovery` | Active segments close, incomplete invocations do not execute/continue normally, completed facts survive exactly once, turn settles truthfully | Runner/LlmPhase/handler/recovery tests |
 | BEH-009 | Contract | Package root/streaming/processor surface is imported | `src/index.ts -> streaming/handlers and processor indices` | Factory/base/pass-through/result-wrapper/memory-result-processor are currently importable despite no repo production consumer | Export indices and repository-wide search |
 | BEH-010 | User/Operational | Internal TOOL continuation passes the input-memory processor | `ToolContinuationInputBuilder/current builder -> AgentInputPipeline -> MemoryIngestInputProcessor -> MemoryManager.ingestToolContinuationBoundary -> raw trace viewer` | Current code writes a `tool_continuation` coordination marker, including `Native API tool continuation`, after actual tool facts; no semantic production reader consumes it | User screenshot; input processor/MemoryManager source; repository-wide consumer search |
+| BEH-011 | System/Operational | Ordinary AutoByteus server backend creates a compaction runner, and the compactor needs longer than two minutes | `AutoByteusAgentRunBackendFactory default compaction runner -> ServerCompactionAgentRunner(no timeout override) -> visible compactor AgentRun -> CompactionRunOutputCollector.waitForFinalOutput(120_000) -> timeout error -> runner finally terminates run` | Current ordinary path fails at two minutes; explicit construction can use another timeout; terminal output/failure settles earlier and cleanup always runs | Integrated runner/collector/factory source; constructor searches; unit tests; user report |
 
 ## Design Health Assessment Evidence
 
@@ -97,6 +109,7 @@ The follow-up objective supplied candidate areas as questions, not prescriptions
 | Handler source/tests | Native handler and pass-through both implement text/interruption/failure; factory has one caller | One transport no longer justifies hierarchy/selection | Use guarded one-handler setup |
 | Input processor source and raw-trace screenshot | General user ingestion remains active for external input, but the internal TOOL branch writes a coordination-only `tool_continuation` item with no semantic reader | Not all input-memory structure is legacy, but continuation persistence is responsibility drift | Retain external user ingestion; make TOOL branch side-effect free after validation |
 | Tool/result/interrupt paths | Approval, external results, compaction, recovery, context carriers remain reachable | Aggressive merge into one giant loop would damage ownership | Preserve named lifecycle owners |
+| Integrated server compaction runner/factory | Ordinary construction reaches the literal 120-second default; the runner already owns the policy and an override | Local policy defect, not a missing abstraction or boundary | Raise owner-local default; do not create a setting layer |
 
 ## Relevant Files / Components
 
@@ -117,6 +130,9 @@ The follow-up objective supplied candidate areas as questions, not prescriptions
 | `src/memory/memory-manager.ts` | Canonical call/result validation, raw traces, working context, and continuation-boundary writer | `ingestToolResults` is required; `ingestToolContinuationBoundary` has one writer caller and no semantic reader | Retain memory authority and batch ingestion; delete the boundary method |
 | `src/agent/message/tool-continuation-metadata.ts` | Single-value ephemeral mode | No distinct outcome remains | Delete |
 | Root/streaming/processor indices | Package exports | Expose obsolete layers | Remove obsolete exports without aliases |
+| `autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts` | Owns one visible compactor run, output wait policy, error metadata, and cleanup | Default is 120 seconds; existing option is the singular override | Use a named module-local 300,000 ms default; otherwise unchanged |
+| `autobyteus-server-ts/src/agent-execution/compaction/compaction-run-output-collector.ts` | Collects canonical final output/failure and owns waiter timers | Correctly accepts timeout as an input and settles earlier on terminal events | Retain unchanged; do not move default policy into collector |
+| `autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts` | Ordinary production construction of server compaction runner | Omits timeout and therefore exercises the runner default | Retain unchanged for bounded option; default remains runner-owned |
 
 ## Runtime / Probe Findings
 
@@ -127,21 +143,23 @@ The follow-up objective supplied candidate areas as questions, not prescriptions
 | 2026-08-09 | Static trace | `rg` searches for batch settlement methods | `settleResult`, `hasSettled`, `isComplete`, `getOrderedSettledResults`, and `getSettledInvocationIds` have no production caller | Safe candidate removal; durable unit coverage is stale relative to production use |
 | 2026-08-09 | Static trace | Repository-wide non-test search for factory/result/metadata/processor symbols | Factory and builder have one production caller; mode consumers are internal; no cross-package production consumer of obsolete exported symbols | Clean internal contraction is feasible; external package consumers remain unenumerable |
 | 2026-08-09 | User trace + static trace | Inspected supplied raw-trace screenshot, then searched production source for `tool_continuation` and `ingestToolContinuationBoundary` | The shown card maps to `MemoryIngestInputProcessor -> MemoryManager`; no production semantic reader consumes this trace type | Treat the marker as persistence of coordination, not product/audit history; stop future writes without rewriting old stores |
+| 2026-08-11 | Integrated source trace | `rg`/direct read across server backend factory, compaction runner, collector, config, and focused tests at HEAD `012257323...` | The ordinary production path deterministically selects 120,000 ms; explicit test/custom overrides remain isolated; collector and cleanup need no change | A one-constant default correction is sufficient and preserves lifecycle semantics |
+| 2026-08-11 | Existing live evidence | Round-4 LM Studio log completed in 143.45 s total; DeepSeek rerun completed in 29.05 s | Local-model latency can exceed two minutes in a realistic compaction scenario, though the LM Studio test is not direct execution of the server-runner timer | Supports user-reported reachability without treating it as direct proof of the exact server timeout failure |
 
 ## External / Public Source Findings
 
 - Public API / spec / issue / upstream source: No external web/upstream source was required. The task concerns internal architecture and current package contracts.
-- Version / tag / commit / freshness: Local repository at refreshed `origin/personal` commit `3cddeec6b93602da172fec2e7b9a80acc7c05117`, 2026-08-09.
+- Version / tag / commit / freshness: Original investigation base `3cddeec6b93602da172fec2e7b9a80acc7c05117` on 2026-08-09; timeout re-entry traced on delivery-integrated HEAD `012257323d5b7303184ca7c5f385602c6a6914f3` on 2026-08-11.
 - Relevant contract, behavior, or constraint learned: Provider-specific native schemas/history must remain because current provider APIs differ. No inference is made that every external model supports native tools.
 - Why it matters: The refactor removes internal selection/coordination, not provider adaptation.
 
 ## Reproduction / Environment Setup
 
-- Required services, mocks, emulators, or fixtures: Focused deterministic Vitest tests only; no external service.
+- Required services, mocks, emulators, or fixtures: Original focused deterministic Vitest tests only; no new service or execution was needed for timeout investigation. Existing round-4 live logs were read as evidence.
 - Required config, feature flags, env vars, or accounts: None.
 - External repos, samples, or artifacts cloned/downloaded for investigation: None.
 - Setup commands that materially affected the investigation: Dedicated worktree creation; temporary dependency symlink for the focused test probe.
-- Cleanup notes for temporary investigation-only setup: Dependency symlink removed; `git status` contains only the new ticket artifacts.
+- Cleanup notes for temporary investigation-only setup: Original dependency symlink was removed. Current worktree modifications are expected cumulative downstream artifact/log state and were not altered or cleaned during re-entry investigation.
 
 ## Findings From Code / Docs / Data / Logs
 
@@ -158,6 +176,9 @@ The follow-up objective supplied candidate areas as questions, not prescriptions
 11. **Assembler consolidation is timing-sensitive but straightforward.** Both current methods perform the same safety -> pending compaction -> recovery snapshot -> pre-render safety -> sanitation/render sequence. An optional append inside one method preserves the order.
 12. **Current docs already identify the outcomes to preserve but use obsolete vocabulary.** Documentation must state “additional carrier present/absent” and “configured tools present/absent,” not “native mode” or “tool history mode.”
 13. **The raw-trace continuation card is an original ownership problem, not a native API requirement.** `ToolContinuationReadyEvent` is useful transient loop/status coordination, but persisting `Native API tool continuation` adds no tool identity, result, provider context, media, or user intent beyond the adjacent `tool_call`/`tool_result` facts. No production reader uses the marker. The clean target deletes the persistence method instead of renaming the card or inventing another continuation trace.
+14. **The two-minute compactor limit is a reachable owner-local policy defect.** Ordinary backend construction omits `timeoutMs`, so every ordinary server compactor uses 120 seconds. The user reports runs beyond four minutes, and a real local-model compaction E2E took more than two minutes overall. The exact server failure path is deterministic from source: collector rejection is wrapped with execution metadata and the child run is terminated in `finally`.
+15. **Five minutes should be a bounded default, not a new selectable setting.** Exactly 300,000 ms satisfies the approved minimum. Existing dependency injection preserves short deterministic tests and custom factories. A new `AppConfig`/environment/UI contract would be additional product scope with validation and documentation obligations but no current approved selection use case.
+16. **Longer waiting must not mean slower cancellation.** The design changes only the default passed into the collector timer. Earlier terminal output/failure, surrounding interruption/cancellation behavior, unsubscribe, error metadata, and child-run termination stay on their existing paths and must not be conditioned on the five-minute value.
 
 ## Persisted Data Transition Evidence (When Applicable)
 
@@ -182,6 +203,9 @@ The follow-up objective supplied candidate areas as questions, not prescriptions
 - Raw trace is durable memory/history; internal loop-transition events should remain ephemeral unless they carry independent user/system facts. `tool_continuation` does not.
 - Unknown external package consumers of root/subpath exports cannot be enumerated locally. Clean removal should be release-noted rather than hidden behind aliases.
 - Durable tests may be deleted/updated only after the API/E2E coverage investigation and must return through code review if repository-resident coverage changes.
+- `ServerCompactionAgentRunner` is the authoritative owner of the completion timeout. `CompactionRunOutputCollector` consumes a supplied value and must not acquire its own default.
+- Explicit `timeoutMs` injection is already used by unit/integration tests and custom factories; it must remain higher precedence than the default.
+- Unrelated timeout literals and external cancellation/interruption behavior are outside this correction and must not be changed by numeric search/replace.
 
 ## Open Unknowns / Risks
 
@@ -191,6 +215,7 @@ The follow-up objective supplied candidate areas as questions, not prescriptions
 - `LlmPhase` is already a substantial file; direct setup should replace factory calls with a few local lines, not absorb schema formatter or handler internals.
 - Exact durable test removals/updates remain downstream-owned.
 - Old raw-trace files may continue to show historical continuation cards because no data rewrite is in scope; this is an explicit no-migration tradeoff, not a remaining runtime writer.
+- A genuinely stalled compactor now retains resources for up to five minutes instead of two before existing timeout cleanup. This is accepted; adding adaptive/model-specific timing or a user setting is not justified by the current request.
 
 ## Notes For Architecture Reviewer
 
@@ -202,3 +227,4 @@ The follow-up objective supplied candidate areas as questions, not prescriptions
 - Confirm the design removes `MemoryManager.ingestToolContinuationBoundary` and keeps `ToolContinuationReadyEvent` runtime-only; do not approve a renamed/replacement raw-trace marker.
 - Reject a replacement `ContinuationManager`, setup manager, compatibility alias, or boolean “native mode.” Use current owners and structural data presence.
 - Requirements were explicitly approved on 2026-08-09. Review the design against the user's explicit requirement that every approved use case map to one or more sufficient data-flow spines.
+- For SR-002, confirm DS-014 spans ordinary backend construction through child-run output/timeout cleanup, the runner remains the policy owner, the default is exactly 300,000 ms, explicit short overrides remain, and neither `AppConfig` nor unrelated 120-second limits change.

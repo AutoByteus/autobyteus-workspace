@@ -8,6 +8,8 @@
 
 Simplify the surviving AutoByteus agent loop now that provider-native API tool calling is the only supported model-to-tool transport. Remove single-value “mode” vocabulary, non-semantic continuation trace markers, duplicate memory coordination, request-assembly duplication, unused batch settlement state, and handler-selection layers that no longer represent distinct behaviors. Preserve the supported native tool loop, context-file/media continuation, custom processor extension points, no-tool streaming, compaction/recovery, and all turn, approval, interruption, failure, and finalization invariants.
 
+As a post-implementation requirement re-entry, prevent the server's compaction-agent completion wait from failing slow local-model or very-large-context runs after only two minutes. Raise that one production default to five minutes without changing explicit injected timeouts, cancellation/interruption behavior, child-run cleanup, or unrelated timeout policies.
+
 This is a fresh follow-up refactor. It does not reopen or extend the finalized `remove-xml-tool-calling` ticket.
 
 ## Current And Desired Behavior (Mandatory)
@@ -24,6 +26,7 @@ This is a fresh follow-up refactor. It does not reopen or extend the finalized `
 | BEH-008 | Interruption and failure fences can close mixed text/reasoning/tool segments, record completed facts, terminalize incomplete calls, restore or commit request snapshots, and recover the turn. | Preserve these paths exactly while changing only their setup/continuation inputs. | Mixed events, segment order, partial response retention, exactly-once facts, protocol repair, diagnostics, and turn outcomes remain unchanged. | REQ-008; AC-008, AC-010 |
 | BEH-009 | Several now-redundant classes are exported from the `autobyteus-ts` root/streaming/processor indices even though repository production has no external consumer. | Remove obsolete exports and files without aliases or no-op wrappers; retain current native schemas, concrete stream handler, segments, custom processor bases/registries, and provider renderers. | Unrelated supported public APIs and provider contracts remain unchanged. | REQ-009, REQ-010; AC-012, AC-013 |
 | BEH-010 | Every internal TOOL continuation passes through `MemoryIngestInputProcessor`, which writes a `tool_continuation` raw trace such as `Native API tool continuation`. This record repeats a loop transition after the meaningful `tool_call` and `tool_result` records; repository production has no semantic reader for it. | Stop persisting the internal continuation transition. Delete `MemoryManager.ingestToolContinuationBoundary`; the TOOL branch of `MemoryIngestInputProcessor` returns the processed message after existing validation without a memory write. Keep `ToolContinuationReadyEvent` as an ephemeral runtime lifecycle/status event only. | Actual `tool_call` and `tool_result` traces, canonical history, turn identity, context carriers, continuation execution, and all lifecycle/status behavior remain unchanged. Existing historical `tool_continuation` records remain readable but inert. | REQ-001, REQ-005, REQ-008, REQ-012; AC-001, AC-005, AC-006, AC-008, AC-015 |
+| BEH-011 | Ordinary server construction creates `ServerCompactionAgentRunner` without `timeoutMs`, so the runner defaults to `120_000` ms and passes that value to `CompactionRunOutputCollector.waitForFinalOutput`; on timeout the run fails and is terminated in the runner's existing `finally` cleanup. Explicit tests/custom construction can inject a shorter timeout. | Change only the runner's ordinary/default completion timeout to exactly `300_000` ms. Keep `ServerCompactionAgentRunnerOptions.timeoutMs` as the explicit override; do not add an application setting/configuration surface in this bounded change. | Successful/failure output collection, canonical failure handling, timeout error/metadata, explicit injected timeouts, prompt cancellation/interruption behavior, subscription cleanup, and child-run termination remain unchanged. Unrelated 120-second test/process/server-start timeouts remain untouched. | REQ-008, REQ-013; AC-008, AC-016 |
 
 ## Investigation Findings
 
@@ -36,6 +39,8 @@ This is a fresh follow-up refactor. It does not reopen or extend the finalized `
 - Active `ToolInvocationBatch` identity remains necessary for turn-scoped approval/external results. Its result-settlement map is dead production code and must not be confused with that valid identity boundary.
 - Current-base focused execution passed 8 test files / 45 tests, including five provider-native continuation renderers and the read-media context carrier.
 - The user-visible `Native API tool continuation` card is written only by `MemoryIngestInputProcessor -> MemoryManager.ingestToolContinuationBoundary`. Repository production search found no semantic reader of `tool_continuation`; the generic raw-trace viewer merely exposes the stored record. The meaningful persisted facts are the existing `tool_call` and `tool_result` records.
+- Integrated production source at `012257323d5b7303184ca7c5f385602c6a6914f3` gives the server compaction runner a `120_000` ms default, and ordinary backend construction does not override it. The collector uses that exact value for its final-output timer, and the runner terminates the visible compactor run during existing `finally` cleanup after timeout.
+- A bounded `300_000` ms default is proportionate to the user request. The existing constructor option already supports explicit tests/custom factories; adding an `AppConfig`/environment setting would expand configuration, validation, documentation, and support behavior without an approved need for runtime/user selection.
 
 ## Relevant Supplemental Task Artifacts
 
@@ -49,8 +54,8 @@ This is a fresh follow-up refactor. It does not reopen or extend the finalized `
 - Initial design issue signal: `Yes`
 - Root cause classification: `Legacy Or Compatibility Pressure`, `Duplicated Policy Or Coordination`, and `Boundary Or Ownership Issue`
 - Refactor posture: `Likely Needed`
-- Evidence basis: Single-value mode metadata still drives four layers; a raw-trace marker persists an internal coordination transition with no semantic reader; a mandatory result processor exists mainly to defer to a later owner; duplicated request methods differ only by user-message append; duplicate streaming handlers and a one-caller factory survive despite one transport; unused batch settlement APIs have no production caller.
-- Requirement or scope impact: Refactoring is in scope because the objective is architectural contraction. The change must not erase lifecycle identities that remain real: external versus same-turn input, tools configured versus absent, context carrier present versus absent, and active tool-batch identity.
+- Evidence basis: Single-value mode metadata still drives four layers; a raw-trace marker persists an internal coordination transition with no semantic reader; a mandatory result processor exists mainly to defer to a later owner; duplicated request methods differ only by user-message append; duplicate streaming handlers and a one-caller factory survive despite one transport; unused batch settlement APIs have no production caller. The re-entry additionally exposes a local policy defect: the server compactor's otherwise valid runner/collector boundary uses a default too short for a reachable slow-model workload.
+- Requirement or scope impact: Refactoring is in scope because the objective is architectural contraction. The change must not erase lifecycle identities that remain real: external versus same-turn input, tools configured versus absent, context carrier present versus absent, and active tool-batch identity. The timeout re-entry is a bounded behavior correction at the existing server compaction owner, not a reason to redesign the agent loop or introduce a configuration subsystem.
 
 ## Recommendations
 
@@ -62,12 +67,13 @@ This is a fresh follow-up refactor. It does not reopen or extend the finalized `
 6. Retain `ToolInvocationBatch` for active identity/order but remove unused settlement state/methods.
 7. Retain `MemoryIngestInputProcessor` for external user-memory ingestion, but make its internal TOOL branch side-effect free and delete `MemoryManager.ingestToolContinuationBoundary`; do not persist `ToolContinuationReadyEvent` or a replacement coordination marker.
 8. Preserve `SenderType.TOOL`, the ephemeral `ToolContinuationReadyEvent`, provider renderers/schema formatters, stream-local native delta state, file projectors, and interruption/recovery boundaries because they still own supported behavior.
+9. Replace the server compaction runner's `120_000` ms literal default with a named module-local `300_000` ms completion-timeout constant. Retain explicit `timeoutMs` injection and existing collector/cleanup flow; do not add an `AppConfig` or UI setting.
 
 ## Scope Classification
 
 `Medium`
 
-The production contraction is localized to `autobyteus-ts`, but it changes the main loop, request assembly, memory coordination, raw-trace emission, stream construction, root exports, documentation, and durable coverage. No server/web product surface or persisted schema migration is expected.
+The main production contraction is localized to `autobyteus-ts` and changes the loop, request assembly, memory coordination, raw-trace emission, stream construction, root exports, documentation, and durable coverage. The re-entry adds one bounded `autobyteus-server-ts` compaction-runner default change and direct coverage. No web surface or persisted schema migration is expected.
 
 ## In-Scope Use Cases
 
@@ -81,6 +87,7 @@ The production contraction is localized to `autobyteus-ts`, but it changes the m
 - UC-008: Pending compaction executes before a same-turn continuation while preserving the native assistant tool-call/result suffix.
 - UC-009: An external library consumer builds against the intentionally contracted current package surface.
 - UC-010: A native tool batch continues to the model without adding a coordination-only `tool_continuation` item to raw trace/run history.
+- UC-011: An ordinarily constructed server compaction agent needs more than two minutes but no more than five minutes to return final output, so it is allowed to complete instead of being prematurely timed out; explicit short test/custom timeouts still take effect.
 
 ## Out of Scope
 
@@ -93,6 +100,8 @@ The production contraction is localized to `autobyteus-ts`, but it changes the m
 - Bulk rewriting, deleting, or hiding historical `tool_continuation` records already present in stored raw traces.
 - Changing unrelated XML/JSON facilities, JSON Schema generation, queue sentinels, or lifecycle/tool log strings.
 - Adding compatibility aliases, deprecated wrappers, or a new generic “continuation manager”/“stream setup manager.”
+- Adding an application, environment, API, or UI setting for the server compaction-agent completion timeout.
+- Changing unrelated 120-second E2E/process/server-start limits, provider-client timeouts, or general agent-idle/callback timeouts.
 
 ## Functional Requirements
 
@@ -108,6 +117,7 @@ The production contraction is localized to `autobyteus-ts`, but it changes the m
 - **REQ-010:** The refactor must not remove or rename unrelated XML/JSON/schema/sentinel facilities and must retain supported custom processor bases/registries, `SegmentEvent`, the concrete native stream handler, `ToolSchemaProvider`, and provider renderers.
 - **REQ-011:** Durable coverage and documentation must be updated downstream to describe data-shape/lifecycle distinctions rather than tool transport modes, following the team ownership workflow.
 - **REQ-012:** New runs must not write a `tool_continuation` raw trace or replacement persistence marker for the internal same-turn transition. `MemoryManager.ingestToolContinuationBoundary` must be removed, while actual `tool_call`/`tool_result` persistence and the ephemeral `ToolContinuationReadyEvent` lifecycle remain intact.
+- **REQ-013:** `ServerCompactionAgentRunner` must use exactly `300_000` ms as its completion timeout when `timeoutMs` is omitted. A supplied `ServerCompactionAgentRunnerOptions.timeoutMs` must continue to override the default, and no new production setting layer may be introduced.
 
 ## Acceptance Criteria
 
@@ -126,10 +136,11 @@ The production contraction is localized to `autobyteus-ts`, but it changes the m
 - **AC-013:** Repository-wide source review confirms unrelated XML context files, provider JSON Schema formatting, ordinary JSON parsing, queue sentinel objects, provider renderers, and custom processor registries remain present and functional.
 - **AC-014:** The API/E2E coverage investigation classifies factory/pass-through/memory-processor/mode tests as stale or updateable and retains/expands provider-native continuation, media carrier, no-tool, compaction, recovery, approval/external result, and interruption evidence.
 - **AC-015:** After a native tool batch, raw trace/run history contains the same ordered `tool_call` and `tool_result` facts but no newly written `tool_continuation` record or `Native API tool continuation` card; the next LLM leg and its ephemeral lifecycle/status transition still occur exactly once.
+- **AC-016:** Direct deterministic coverage proves that an ordinary/default runner passes `300_000` ms to `CompactionRunOutputCollector.waitForFinalOutput`, an explicitly injected short timeout is still honored, and timeout failure still reaches the existing error metadata and child-run termination path. The proof must not sleep for five real minutes.
 
 ## Constraints / Dependencies
 
-- Authoritative implementation base: refreshed `origin/personal` commit `3cddeec6b93602da172fec2e7b9a80acc7c05117`.
+- Original refactor base: refreshed `origin/personal` commit `3cddeec6b93602da172fec2e7b9a80acc7c05117`. Authoritative re-entry source state: delivery-integrated ticket HEAD `012257323d5b7303184ca7c5f385602c6a6914f3`.
 - Completed `remove-xml-tool-calling` artifacts are upstream context only; the current source and this ticket are authoritative.
 - `MemoryManager.ingestToolResults` enforces provider call/result identity and idempotency; the new direct runner call must preserve its batch validation.
 - Tool execution is currently sequential, so `ToolPhase` returns results in invocation order. The design must not assume parallel execution was requested.
@@ -138,6 +149,7 @@ The production contraction is localized to `autobyteus-ts`, but it changes the m
 - The internal continuation boundary is runtime coordination, not a durable memory fact; its status event must not be replaced with another raw-trace record.
 - Public exported symbol removal is intentional but may affect unknown external consumers; release documentation must identify it.
 - Durable repository test edits belong to `api_e2e_engineer` after initial implementation code review.
+- `ServerCompactionAgentRunner` already owns the completion timeout and exposes an injected `timeoutMs` option; ordinary production construction omits it. The bounded default change must stay in this owner and must not alter `CompactionRunOutputCollector`'s terminal/failure semantics.
 
 ## Persisted Data Outcome (When Applicable)
 
@@ -155,6 +167,7 @@ The production contraction is localized to `autobyteus-ts`, but it changes the m
 - Root-exported obsolete handler/processor symbols may be removed cleanly if the user approves this requirements basis.
 - No downstream consumer relies semantically on the exact diagnostic string `native_api_ordered_batch`; existing stored values remain readable.
 - One native-capable stream handler with tool processing disabled for an empty tool set can preserve the current pass-through observable contract.
+- Five minutes is the approved minimum/default for ordinary server compactor completion. Per-user/per-model runtime selection is not required in this change.
 
 ## Risks / Open Questions
 
@@ -164,6 +177,7 @@ The production contraction is localized to `autobyteus-ts`, but it changes the m
 - Moving core result ingestion into the runner makes ownership clearer but requires interruption fences to avoid publishing normal continuation after an accepted interrupt.
 - Existing documentation currently describes `tool_history_only` and `native_api` metadata as intentional; it must be rewritten rather than left stale.
 - Historical raw traces can still display old `tool_continuation` cards because this refactor intentionally avoids rewriting stored files; only new writes disappear.
+- A stalled server compactor will now occupy its child-run resources for up to three additional minutes before the same timeout cleanup runs. This is the intentional tradeoff for avoiding premature failure; explicit cancellation/interruption and terminal failure still settle earlier through existing paths.
 
 ## Requirement-To-Use-Case Coverage
 
@@ -181,6 +195,7 @@ The production contraction is localized to `autobyteus-ts`, but it changes the m
 | REQ-010 | UC-001 through UC-009 |
 | REQ-011 | UC-001 through UC-010 |
 | REQ-012 | UC-002, UC-004, UC-005, UC-007, UC-010 |
+| REQ-013 | UC-011 |
 
 ## Acceptance-Criteria-To-Scenario Intent
 
@@ -201,7 +216,10 @@ The production contraction is localized to `autobyteus-ts`, but it changes the m
 | AC-013 | Protection against unrelated XML/JSON/sentinel/schema deletion. |
 | AC-014 | Downstream durable coverage classification and execution intent. |
 | AC-015 | Removal of coordination-only continuation persistence without changing the actual next LLM leg. |
+| AC-016 | Five-minute server compaction-agent default and explicit-override/cleanup contract without a real-duration test. |
 
 ## Approval Status
 
-Explicitly approved by the user on 2026-08-09. Approval covers the clean removal of single-value continuation modes and the coordination-only raw-trace boundary, direct runner-owned batch ingestion, one optional-message request path, one concrete stream handler, contraction of unused batch state, and deletion of obsolete root exports without compatibility wrappers. Existing historical `tool_continuation` records remain untouched while new runs stop writing them. The user additionally requires the design to follow the shared design principles and map every approved use case to an explicit data-flow spine so architectural improvement does not weaken preserved behavior.
+The original refactor basis was explicitly approved by the user on 2026-08-09. Approval covers the clean removal of single-value continuation modes and the coordination-only raw-trace boundary, direct runner-owned batch ingestion, one optional-message request path, one concrete stream handler, contraction of unused batch state, and deletion of obsolete root exports without compatibility wrappers. Existing historical `tool_continuation` records remain untouched while new runs stop writing them. The user additionally requires the design to follow the shared design principles and map every approved use case to an explicit data-flow spine so architectural improvement does not weaken preserved behavior.
+
+Requirement re-entry approved/requested by the user and conveyed through `api_e2e_engineer` on 2026-08-11: increase the ordinary server compaction-agent completion timeout from two minutes to at least five minutes for slow local models and very large contexts while preserving cancellation and explicit test timeouts. The selected requirements interpretation is the bounded option: exactly `300_000` ms by default with the existing injected override, not a new configurable production setting.

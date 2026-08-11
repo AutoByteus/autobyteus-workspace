@@ -78,11 +78,23 @@ interruption/failure fences, and final assistant output remain supported.
 
 - Source review: `CRR-004` Pass, reviewed implementation
   `0891e42f0ebdd2db5f0d1b2bd746abdb1e115668`, score 9.7/10.
-- API/E2E: `API-REV-003` Pass at 97.5% confidence.
-- Durable coverage review: `CRR-005` Pass; focused root contract 35/35,
-  production package build Pass, and all five compiled root identities exact.
-- Delivery refresh: `origin/personal` remained at
-  `3cddeec6b93602da172fec2e7b9a80acc7c05117`; no integration delta.
+- API/E2E: `API-REV-004` Pass at 98.2% confidence. Supplemental evidence proved
+  exact configured 5% thresholds: LM Studio `13043` from effective input budget
+  `260864`, and DeepSeek `49936` from effective input budget `998720` (clean run
+  crossed at `56152`). Both real paths completed compaction and continued with
+  correct tool/memory/history behavior.
+- Supplemental proportional review: `CRR-006` Not Applicable because round 4
+  changed no repository-resident source, test, fixture, or harness. Durable
+  coverage review `CRR-005` remains the authoritative Pass; focused root
+  contract 35/35, production package build Pass, and all five compiled root
+  identities exact.
+- One first-attempt DeepSeek compactor response was invalid JSON and remains
+  recorded as a failed execution. Deterministic failure fencing, an unchanged
+  clean DeepSeek rerun, and independent LM Studio execution passed; stochastic
+  provider-model output remains a disclosed non-blocking risk.
+- Delivery refresh: 41 newer `origin/personal` commits were merged through
+  `d0bcd0dab2263fa284cf07de8d98214e5d19af73`; the integrated macOS ARM64
+  Electron `1.4.47` package build and packaged-source checks pass.
 
 These notes document the change only. No package version, tag, publication, or
 deployment has been created during the pre-verification delivery stage.

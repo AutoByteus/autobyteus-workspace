@@ -14,7 +14,7 @@ verification.
 - Handoff summary status: `Updated`
 - Delivery revision record:
   `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/delivery-revision-record.md`
-- Current delivery revision ID: `DR-002`
+- Current delivery revision ID: `DR-004`
 - Notes: Candidate is ready for explicit user verification; finalization is held.
 
 ## Initial Delivery Integration Refresh
@@ -38,14 +38,64 @@ verification.
 - Handoff state current with latest tracked remote base: `Yes`
 - Blocker: None.
 
+## Later Pre-Verification Base Refresh
+
+- Trigger: User reported that `origin/personal` had advanced and requested a
+  rebuild from the latest base.
+- Refreshed target: `d0bcd0dab2263fa284cf07de8d98214e5d19af73`
+- New commits since prior integrated base: `41`
+- Delivery-owned edits protected: `Completed` — local checkpoint
+  `4531ac7cf2667be5d3524a96bd288beaeb593282`
+- Integration method: `Merge`
+- Integration result: `Completed`, no conflicts — merge commit
+  `012257323d5b7303184ca7c5f385602c6a6914f3`
+- Integrated relation: behind `0`, ahead `5`; refreshed target is an ancestor.
+- Material ticket-boundary change from base: `No`; the advanced base did not
+  modify the ticket's core loop/input/assembler/stream/memory/schema/index paths.
+- Wider integrated change: `Yes`; provider/server/web changes and package
+  version `1.4.47` required a complete desktop rebuild.
+- Post-integration executable result: README-path Electron build Pass.
+- Post-build remote recheck: `origin/personal` remained at the same commit.
+- Renewed user verification required: `Yes`; the test artifact changed from the
+  prior `1.4.45` build to the latest integrated `1.4.47` build.
+
 ## User Verification
 
 - Initial explicit user completion/verification received: `No`
 - Initial verification / acceptance reference: Pending user verification of this
   `simplify-native-tool-continuation` candidate.
-- Renewed verification required after later re-integration: `No`
-- Renewed verification received: `Not needed`
-- Renewed verification / acceptance reference: N/A.
+- Renewed verification required after later re-integration: `Yes`
+- Renewed verification received: `No`
+- Renewed verification / acceptance reference: Pending user verification of the
+  integrated `1.4.47` Electron candidate.
+
+## Supplemental Integrated-State Verification
+
+- Trigger: user-requested exact compaction-percentage and post-compaction
+  behavior proof after `DR-003`.
+- Executed state: integrated HEAD
+  `012257323d5b7303184ca7c5f385602c6a6914f3`.
+- API/E2E result: `API-REV-004` Pass at `98.2%` final confidence; no remaining
+  failure IDs.
+- Proportional review: `CRR-006` Not Applicable because round 4 changed zero
+  repository-resident source, test, fixture, or harness paths. `CRR-005` remains
+  the authoritative durable-test Pass.
+- Exact configured threshold proof: LM Studio effective input budget `260864`
+  yielded `floor(5%) = 13043`; DeepSeek effective input budget `998720` yielded
+  `floor(5%) = 49936`, with the clean run crossing at `56152`.
+- Real continuation result: both real paths completed compaction and continued
+  correctly. LM Studio retained exact facts and completed a later tool;
+  DeepSeek's clean rerun completed three tools, retained the required memory and
+  artifact, preserved trace order, and emitted no continuation marker.
+- Disclosed failure: the first DeepSeek attempt remains failed due one invalid
+  JSON compactor response. Deterministic fencing, unchanged rerun, and
+  independent LM Studio evidence passed; provider-model stochasticity remains a
+  non-blocking residual risk.
+- Integration/build decision: no refresh or rebuild was repeated because the
+  supplemental round ran on the existing integrated HEAD and changed no source,
+  test, fixture, harness, dependency, or packaging input. The Electron `1.4.47`
+  artifact remains the verification candidate.
+- Verification hold: unchanged and still required.
 
 ## Docs Sync Result
 
@@ -67,21 +117,25 @@ verification.
 None. No version bump, tag, or release commit is proposed during the
 pre-verification stage.
 
-The existing package version `1.4.45` was used unchanged for the local test
-build; this does not create a release.
+The integrated base's existing package version `1.4.47` was used unchanged for
+the refreshed local test build; this ticket did not create a release or version
+bump.
 
 ## Repository Finalization
 
 - Bootstrap context source: `implementation-handoff.md`; finalization target
   `origin/personal`.
 - Ticket branch: `codex/simplify-native-tool-continuation`
-- Ticket branch commit result: `Not started — user-verification hold`
+- Ticket branch commit result: `Local safety checkpoint completed`; final ticket
+  commit remains pending user verification.
 - Ticket branch push result: `Not started — user-verification hold`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after verification / acceptance: `N/A — no verification yet`
-- Delivery-owned edits protected before re-integration: `Not needed`
-- Re-integration before final merge result: `Not needed`
+- Target advanced after verification / acceptance: `N/A — advancement occurred
+  before initial verification`
+- Delivery-owned edits protected before re-integration: `Completed`
+- Re-integration before final merge result: `Completed for current verification
+  candidate`; target must still be refreshed again after acceptance.
 - Target branch update result: `Not started — user-verification hold`
 - Merge into target result: `Not started — user-verification hold`
 - Push target branch result: `Not started — user-verification hold`
@@ -124,13 +178,13 @@ unnotarized macOS ARM64 Electron test package was built using the README path:
 1. `pnpm install` from the repository root — Pass.
 2. `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac` from `autobyteus-web` — Pass.
 3. Verified the application executable as Mach-O ARM64, bundle identifier
-   `com.autobyteus.app`, version `1.4.45`.
+   `com.autobyteus.app`, version `1.4.47`.
 
 Application path:
 `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
 
 Build evidence:
-`/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/validation-logs/delivery/desktop-build-verification.log`
+`/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/validation-logs/delivery-refresh/desktop-build-verification-latest-base.log`
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -138,7 +192,7 @@ Build evidence:
 - Delivery action required: `None`
 - Result and evidence: Existing generic historical continuation traces remain
   readable/inert; new coordination-marker writes are absent. Covered by
-  `API-REV-003` and documented in `release-notes.md`.
+  `API-REV-004` and documented in `release-notes.md`.
 - Migration completion, validation, recovery, and rollout evidence, only when
   `Migration Required`: N/A.
 
@@ -146,14 +200,21 @@ Build evidence:
 
 - Delivery base refresh/integrated-state check: Pass.
 - Source review `CRR-004`: Pass.
-- API/E2E `API-REV-003`: Pass at 97.5% confidence.
-- Proportional durable test review `CRR-005`: Pass.
+- API/E2E `API-REV-004`: Pass at 98.2% confidence.
+- Proportional checkpoint `CRR-006`: Not Applicable; zero durable test-code
+  delta. Prior durable test review `CRR-005` remains Pass and authoritative.
+- Exact configured 5% compaction threshold and real post-compaction
+  continuation: Pass on LM Studio and the clean unchanged DeepSeek rerun.
 - Current-doc obsolete identifier scan: Pass.
 - Delivery diff integrity (`git diff --check`): Pass.
 - Workspace dependency install: Pass.
 - Local macOS ARM64 Electron build: Pass; integrated server preparation, native
   module rebuild, Electron generation/transpilation, application packaging,
   DMG/ZIP creation, and blockmaps completed.
+- Packaged-source verification: Pass; current ticket modules and a latest-base
+  provider module are present, while retired continuation modules are absent.
+- Post-build remote recheck: Pass; built HEAD remains based on the latest fetched
+  `origin/personal`.
 
 ## Rollback Criteria
 
@@ -166,5 +227,6 @@ rollback is expected.
 
 ## Final Status
 
-`Local Electron candidate built and ready for explicit user verification;
-repository finalization intentionally held.`
+`Supplemental compaction verification passed on the delivery-integrated HEAD;
+latest-base Electron 1.4.47 candidate remains ready for renewed explicit user
+verification, and repository finalization is intentionally held.`

@@ -13,14 +13,50 @@
 - Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/implementation-revision-record.md`
 - Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/code-review-report.md`
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/code-review-revision-record.md`
-- Delivery Revision Record (delivery re-entry only): N/A
-- Relevant Delivery Revision IDs: N/A
+- Delivery Revision Record (delivery re-entry only): `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/delivery-revision-record.md`
+- Relevant Delivery Revision IDs: `DR-003`, `DR-004`
 - API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-003`
-- Current Investigation Round: `3`
-- Trigger: `CRR-004` passed source re-review for `IR-002` commit `0891e42f0ebdd2db5f0d1b2bd746abdb1e115668`, resolving production finding `CR-001` exposed by `API-REV-002`.
-- Prior Investigation Reviewed: Round 2 / `API-REV-002` Fail at 94.8%.
+- Current API/E2E Revision ID: `API-REV-005`
+- Current Investigation Round: `5`
+- Trigger: `CRR-007` Pass for IR-003 commit `7aa4bc6d7f3216db8dfc703eaf5ebfbc67da3804`, implementing BEH-011 / REQ-013 / AC-016.
+- Prior Investigation Reviewed: Round 4 / `API-REV-004` Pass at 98.2%, delivery `DR-004`, and the cumulative reviewed implementation package.
 - Latest Authoritative Investigation: This file.
+
+
+## Round 5 Re-entry Decision — IR-003 Five-Minute Compaction Completion Default
+
+- Reviewed implementation/source authority: `CRR-007` Pass, no findings, for IR-003 commit `7aa4bc6d7f3216db8dfc703eaf5ebfbc67da3804` over delivery-integrated parent `012257323d5b7303184ca7c5f385602c6a6914f3`.
+- Changed boundary: the sole production delta is the runner-local named `DEFAULT_COMPACTION_AGENT_COMPLETION_TIMEOUT_MS = 300_000` and existing `options.timeoutMs ?? constant` fallback. Ordinary backend construction omits an override; the unchanged collector consumes the resolved value. No config/API/UI/persisted-data or unrelated timeout surface changed.
+- Existing coverage decision and completed maintenance:
+  - `server-compaction-agent-runner.test.ts` was correctly classified `Needs Update`. Its five cases remained valid; two deterministic cases now directly observe omitted/default `300_000` and explicit `17` ms propagation, immediate typed failure metadata, exactly one unsubscription, empty listener set, and exactly one child termination.
+  - `compaction-run-output-collector.test.ts` remained `Still Valid` and passed unchanged. Its actual short-timer mechanism plus the retained runner 10 ms case prove genuine timeout behavior without a five-minute sleep.
+  - `compaction-agent-parent-fallback.integration.test.ts` initially failed before compaction because the integrated base had replaced `subscribeToEvents` / `getStatusSnapshot` with batch/lifecycle APIs. Investigation was updated before a bounded fixture correction. The corrected test observes `subscribeToSourceEventBatches` / `getLifecycleSnapshot().phase`; all original parent-trigger, fallback, exact context and continuation assertions remain unchanged and passed.
+- Completed execution:
+  - Focused runner: Pass, 7/7 in 19 ms.
+  - Unchanged collector plus corrected parent-fallback integration: initial 11 pass / 1 stale-fixture failure; rerun Pass, 2 files / 12 tests.
+  - Broader server compaction unit matrix: Pass, 4 files / 26 tests.
+  - Full server/shared production build and sanitized built-in bootstrap: Pass.
+  - Source/diff contract scan: Pass; reviewed production delta remains one file / 3 insertions / 1 deletion, ordinary factory omits `timeoutMs`, API/E2E changed no production source, and changed durable tests contain no 300,000 ms timer sleep.
+  - Cleanup: Pass; no owned test process or temporary compaction workspace remains.
+- Durable coverage delta: two updated repository paths—direct AC-016 runner proof and the relevant parent-fallback fixture's current backend observation API. No durable file was added or removed; no test-support or production path was edited by API/E2E.
+- Broader validation decision: `Not Required`. Deterministic tests directly observe the only changed argument/lifecycle boundary, the current parent-triggered server path passes, build/bootstrap passes, and round 4's real LM Studio/DeepSeek compaction behavior remains valid because IR-003 changes no provider, prompt, request, strategy, context or continuation behavior.
+- Completed revision: `API-REV-005` Pass at 98.8% final confidence. Successful durable coverage changes require proportional `code_reviewer` review before delivery resumes.
+
+## Round 4 Re-entry Decision — Compaction Percentage And Post-Compaction Behavior
+
+- User clarification: use the existing `autobyteus-ts` compaction E2E rather than inventing a duplicate harness, and establish both exact configured-percentage arithmetic and real post-compaction continuation.
+- Existing durable coverage remains valid and was used unchanged:
+  - `autobyteus-ts/tests/unit/agent/token-budget.test.ts` proves `triggerThresholdTokens = floor(compactionRatio * inputBudget)` across context/output/safety-margin caps and ratio precedence.
+  - `autobyteus-ts/tests/integration/agent/runtime/agent-runtime-compaction.test.ts` and `memory-compaction-strategy-tool-lifecycle.test.ts` prove deterministic trigger, failure fence, lifecycle, and continuation behavior.
+  - `autobyteus-ts/tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts` is the existing env-gated real local-model E2E; its explicit LM Studio prerequisites were READY and it passed unchanged.
+  - The canonical managed-provider product E2E `deepseek.compaction-agent-flow` runs through the built server and actual AgentRun using the previously authorized imported vault. It checks the configured 5% ratio, prompt usage below and at/above the computed threshold, completed compaction, continued tools, compacted-memory/current-user projection, exact retained output, ordered traces, and no obsolete continuation marker.
+- Execution result on delivery-integrated HEAD `012257323d5b7303184ca7c5f385602c6a6914f3`:
+  - Exact-math and deterministic lifecycle matrix passed, 3 files / 9 tests.
+  - Real LM Studio `qwen/qwen3.6-35b-a3b` compaction E2E passed, 1/1. Its 5% threshold was exactly `floor((262144 - 1024 - 256) * 0.05) = 13043`; prompt usage crossed from `5105` to `14418`, lifecycle completed, post-compaction usage fell to `10883`, and subsequent tool/turn continuation returned the exact retained nine-field JSON.
+  - Managed DeepSeek preflight was READY using credentials previously imported by audited `pnpm secrets:import` from `/Users/normy/.autobyteus/server-data/.env`. The first live attempt observed one invalid-JSON compactor response and was strictly rejected despite a later completion; the unchanged rerun passed 2/2. Its threshold was exactly `floor((1000000 - 1024 - 256) * 0.05) = 49936`; usage crossed at `56152`, compaction completed, three tools succeeded, ordered traces/no marker passed, projected memory/current user passed, and the exact retained artifact passed.
+- Coverage decision: no repository-resident durable coverage was added, updated, or removed in round 4. Value-safe arithmetic audits, including an executable parser/assertion over both real logs, are temporary execution evidence, not product coverage.
+- Broader validation decision: `Required — Live API plus real local model`; completed. The managed-provider invalid-JSON observation remains a disclosed provider stochasticity risk rather than a hidden pass or a ticket source finding.
+- Completed revision: `API-REV-004`.
 
 ## Round 3 Re-entry Decision — IR-002 / CR-001 Resolution
 
@@ -45,6 +81,8 @@ The supported runtime remains one provider-native tool loop. The refactor change
 
 The explicitly changed observable behavior is that new native continuations persist ordered `tool_call` and `tool_result` facts but no `tool_continuation` trace, `Native API tool continuation` card, or replacement marker. Historical generic records remain directly readable without migration. Factory/result-wrapper/base/pass-through/old-handler selection, continuation mode metadata/request strings, built-in memory result processing/deferral, builder-owned persistence, duplicate assembler entrypoints, settlement state, and old exports are intentionally absent without compatibility aliases. This investigation treats old tests as evidence to classify, never as authority that could justify restoring removed source.
 
+For BEH-011 / REQ-013 / AC-016, an ordinarily constructed server compaction runner now passes exactly `300_000` ms to its unchanged output collector, while an explicit `timeoutMs` retains precedence and timeout failure retains typed metadata, unsubscription, and child termination. This is a bounded in-memory default correction with no configuration or migration surface.
+
 ## Changed Behavior Summary
 
 | Behavior ID / Boundary | Change Type | Upstream Evidence | Coverage Consequence |
@@ -57,6 +95,7 @@ The explicitly changed observable behavior is that new native continuations pers
 | BEH-008 / DS-007/008/009/010 recovery | Preserved | REQ-008; AC-008/010 | Retain focused LlmPhase/runtime/handler recovery tests and execute after structural updates. |
 | BEH-009 / DS-011 package contract | Removed/preserved split | REQ-009/010; AC-012/013 | Update root/subpath tests for the new handler and clean failure of all newly retired symbols while retaining unrelated facilities. |
 | BEH-010 / DS-004/005/012 trace history | Removed write / preserved direct read | REQ-001/005/008/012; AC-001/005/006/008/015 | Replace positive continuation-trace tests with zero-new-marker and historical-inert-read coverage; extend the real compaction AgentRun to inspect raw trace corpus. |
+| BEH-011 / DS-014 server compaction completion timeout | Bounded default correction / preserved lifecycle | REQ-008/013; AC-008/016 | Add deterministic direct runner coverage of exact `300_000` omission, explicit override precedence, typed timeout metadata, unsubscription and child termination without a real-duration wait. |
 
 ## Changed Surface And Boundary Classification
 
@@ -78,7 +117,7 @@ The explicitly changed observable behavior is that new native continuations pers
 
 - Assigned task worktree / workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation`
 - Project type and runtime stack: pnpm TypeScript monorepo; Node.js 22; Vitest; Fastify/GraphQL server; SQLite/Prisma secret vault; provider SDKs; built real-E2E runner.
-- Conflicting, missing, or unclear project instructions: Dependencies are intentionally absent in this worktree. Temporary package links/materialized dependency trees must resolve workspace packages to this worktree and be verified before authoritative execution. No instruction ambiguity affects scope.
+- Conflicting, missing, or unclear project instructions: None. Delivery had already materialized the root/core/server/shared-package dependency directories on the integrated worktree; round 4 verified them as pre-existing, used them in place, and did not take cleanup ownership.
 - Required environment variables or secrets available: `Yes`, by the user's explicit authorization to import `/Users/normy/.autobyteus/server-data/.env` through the project importer into this worktree's isolated test database. Secret values must never be sourced, printed, or copied into artifacts.
 
 | Instruction / Configuration Path | Authority / Purpose | Commands, Setup, Or Constraints Learned |
@@ -92,8 +131,8 @@ The explicitly changed observable behavior is that new native continuations pers
 
 | Component / Dependency | Working Directory | Start / Setup Command | Runtime / Resource Notes | Readiness Check | Stop / Cleanup Method |
 | --- | --- | --- | --- | --- | --- |
-| Core tests/build | Worktree root | Temporary verified `autobyteus-ts/node_modules` link; `pnpm -C autobyteus-ts ...` | Link must target installed dependency tree only; source remains this worktree | Package import/build output | Remove link |
-| Server/import/real E2E | Worktree root | Materialize server dependency tree plus root/shared-package links, verify `autobyteus-ts` resolves to this worktree, then run canonical scripts | Test DB: `autobyteus-server-ts/db/test.db`; built server chooses owned loopback port | Harness preflight and built-server health | Harness stops owned server; remove temporary dependencies |
+| Core tests/build | Worktree root | Existing delivery-materialized dependencies; `pnpm -C autobyteus-ts ...` | Source and workspace packages resolve inside this integrated worktree | Package import/build output | Retain pre-existing dependencies for delivery ownership |
+| Server/import/real E2E | Worktree root | Use existing delivery-materialized dependency tree, verify current worktree HEAD, then run canonical scripts | Test DB: `autobyteus-server-ts/db/test.db`; built server chooses owned loopback port | Harness preflight and built-server health | Harness stops owned server; retain pre-existing dependencies |
 | Provider APIs | Harness-owned product runtime | `pnpm test:e2e:real -- --scenarios=...` | Secrets resolve only from imported encrypted test vault | `test:e2e:real:preflight` reports READY/MISSING without values | Provider clients/runtime cleaned by harness |
 
 | Data / Fixture / Identity Need | Existing Project Mechanism Or Creation Method | Environment / Data-Safety Notes | Cleanup / Retention |
@@ -138,6 +177,8 @@ The explicitly changed observable behavior is that new native continuations pers
 | LlmPhase recovery, incomplete-call, provider renderer/history, file projector tests | Recovery, protocol repair, native history, indexed/file projection | AC-002/007/008/010/013 | Still Valid except old handler imports | Behavior is explicitly preserved | Update only renamed imports/options; execute targeted and broader suites. |
 | Planner tests with unrelated `isComplete` fields | Message/compaction planning data | AC-011 exclusion | Out Of Scope | Fields are unrelated to ToolInvocationBatch settlement | Do not change. |
 | `test-support/live-e2e/live-e2e-harness.ts` and provider-capability E2E | Real product AgentRun tools/compaction/continuation and no-tool | AC-002/003/005/006/010 | Needs Update | Already exercises the real boundary but does not report AC-015 raw-trace absence | Add value-safe corpus assertions/result fields for ordered tool facts and zero continuation marker. |
+| `autobyteus-server-ts/tests/unit/agent-execution/compaction/server-compaction-agent-runner.test.ts` | Runner creation, output/failure wrapping, injected short timeout, activity and termination | AC-008/016; DS-014 | Needs Update | Existing cases are valid but omitted/default propagation and explicit unsubscription count are absent | Add one deterministic omitted/default + explicit override matrix; preserve existing 10 ms mechanism case. |
+| `autobyteus-server-ts/tests/unit/agent-execution/compaction/compaction-run-output-collector.test.ts` | Early success/failure/no-output mechanism behavior for caller-supplied timeouts | AC-008/016; DS-014 | Still Valid | Collector is unchanged and intentionally owns no default | Execute unchanged; do not duplicate default policy here. |
 
 ## Stale Or Obsolete Coverage Decisions
 
@@ -170,6 +211,7 @@ The explicitly changed observable behavior is that new native continuations pers
 | API-E2E-008 | Provider-native continuation/history tests | Remove built-in processor/card; assert ordered once/no user aggregate/no marker | AC-002/005/006/015 | Preserve all provider renderers. |
 | API-E2E-009 | Compaction/reasoning/request callers | One `prepareRequest` with null/carrier | AC-006/007/010 | Preserve protocol safety and recovery order. |
 | API-E2E-010 | Input memory/batch/exports | Side-effect-free TOOL, identity-only batch, current contract | AC-001/004/009/011/012/015 | No compatibility aliases. |
+| API-E2E-011 | Server compaction runner default/override/failure cleanup | Observe exact `300_000` omitted value and explicit short override; assert typed metadata, unsubscribe and terminate with immediate mocked timeout | AC-008/016; DS-014 | No real five-minute wait; no production source edit. |
 
 ## Durable Coverage To Remove
 
@@ -203,6 +245,17 @@ Diagnostic exclusions are explicit: the full unit suite's three remaining failur
 | 4 | `git diff --check` and production-source working-tree check | Coverage edit integrity and API/E2E ownership boundary | Pass; no API/E2E-owned `autobyteus-ts/src` edit | `validation-logs/round2/diff-integrity.log` |
 
 The requested durable assertion correction is implemented and behaves as intended: it exposed an approved retained root export that is missing from the built package. API/E2E will not mask this failure by weakening the assertion or editing production source.
+
+
+### Round 5 AC-016 Repository Execution
+
+| Order | Command / Execution | Boundary Proven | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| 1 | Focused updated `server-compaction-agent-runner.test.ts` | Exact omitted `300_000`, explicit `17`, typed metadata, unsubscribe and terminate without real wait | Pass: 7/7; 19 ms test time | `validation-logs/round5/api-server-compaction-agent-runner-focused.log` |
+| 2 | Unchanged collector + parent-fallback integration | Collector early settlement and ordinary parent-triggered compaction/fallback | Initial 11 pass / 1 stale fixture failure; corrected rerun Pass 12/12 | `api-compaction-collector-and-parent-fallback.log`, `api-compaction-collector-and-parent-fallback-rerun.log` |
+| 3 | Full server compaction unit matrix | Runner, collector, launch resolver and lineage scope regression | Pass: 4 files / 26 tests | `api-server-compaction-unit-matrix.log` |
+| 4 | `pnpm -C autobyteus-server-ts build` | Shared packages, server production build and sanitized built-in bootstrap | Pass | `api-server-build-full.log` |
+| 5 | Source/durable diff contract scan, cleanup and artifact consistency | Bounded IR-003 source, ordinary omission, no real five-minute wait, no owned residue, exact hashes and canonical revision consistency | Pass | `api-source-and-diff-contract-scan.log`, `api-cleanup-and-final-state.log`, `api-artifact-consistency.log` |
 
 ## Post-Repository Confidence Scorecard
 
@@ -278,6 +331,44 @@ The requested durable assertion correction is implemented and behaves as intende
 - Round 3 broader validation decision: `Not Required`; the reviewed one-line export cannot affect the previously proven provider/tool-loop runtime, and the direct package surfaces pass.
 - Required next step: proportional re-review of the corrected durable test before delivery.
 
+
+## Round 4 Compaction Verification Results And Confidence
+
+| Confidence Category | Current Score | Round 4 Evidence / Limitation |
+| --- | ---: | --- |
+| Requirement and acceptance-criteria proof | 99% | Exact ratio arithmetic, deterministic trigger/failure behavior, two real-model compaction lifecycles, and post-compaction continuation are direct. |
+| Changed-boundary execution directness | 99% | Existing core compaction tests and the real AgentRuntime/AgentRun paths ran unchanged on integrated HEAD. |
+| Cross-boundary integration realism and mock gap | 98% | Both actual LM Studio inference and managed DeepSeek network/provider execution crossed stream, tool, memory, compaction and continuation boundaries. Other live providers were not repeated. |
+| Environment, configuration, identity, and fixture fidelity | 99% | LM Studio model readiness was verified; DeepSeek was READY through the audited encrypted-vault resolver populated from the explicitly authorized source. |
+| Failure, edge-case, lifecycle, and recovery evidence | 96% | Deterministic invalid-output fencing passed; the first managed run disclosed stochastic invalid JSON and the strict harness rejected it; unchanged rerun and LM Studio passed. |
+| User-surface, browser, and desktop-shell confidence | N/A | No user/browser/shell behavior is part of this supplemental compaction proof. |
+| Durable regression coverage quality and relevance | 98% | Existing exact-math, deterministic lifecycle and two live compaction scenarios cover the requested behavior without duplicate durable tests. |
+
+- Overall current confidence: `98.2%` (simple average of six applicable categories).
+- Every critical acceptance criterion directly proven: `Yes`.
+- Default 95% clean target met: `Yes`; no applicable category is below 90%.
+- Round 4 broader validation decision: `Required — Live API plus real local model; completed`.
+- Residual risk: a managed compactor can occasionally return invalid JSON. The runtime exposes failure and the strict E2E rejects such a run; this was observed and retained. It does not alter the exact percentage calculation, and both a real local model run and unchanged managed-provider rerun completed correctly.
+
+
+## Round 5 AC-016 Confidence
+
+| Confidence Category | Final Score | Round 5 Evidence / Limitation |
+| --- | ---: | --- |
+| Requirement and acceptance-criteria proof | 99% | AC-016's exact default, explicit override, typed timeout metadata, unsubscribe, termination, and no-real-wait constraints are all direct. |
+| Changed-boundary execution directness | 99% | Prototype observation captures the exact duration received by the unchanged collector; current parent-triggered server compaction integration passes. |
+| Cross-boundary integration realism and mock gap | 98% | The product parent/factory/runner path passes deterministically; prior real model compaction remains valid. A real five-minute stall is deliberately not executed. |
+| Environment, configuration, identity, and fixture fidelity | 99% | No setting/identity change exists; ordinary factory omission and explicit constructor override are both exercised. |
+| Failure, edge-case, lifecycle, and recovery evidence | 99% | Immediate simulated default/override failures retain typed metadata, exact cleanup and termination; actual short-timer failure and early collector settlement remain covered. |
+| User-surface, browser, and desktop-shell confidence | N/A | No UI/browser/shell surface changed. |
+| Durable regression coverage quality and relevance | 99% | Direct two-case AC-016 matrix plus corrected parent integration and broader compaction unit matrix are deterministic and bounded. |
+
+- Overall final confidence: `98.8%` (simple average of six applicable categories, rounded to one decimal place).
+- Every critical acceptance criterion directly proven: `Yes`.
+- Applicable category below 90%: `No`.
+- Default 95% target met: `Yes`.
+- Residual risks: a genuinely stalled child can now remain allocated three minutes longer before existing cleanup; live compactor invalid-JSON stochasticity from round 4 remains exposed and unrelated; no real test waits five minutes by explicit requirement.
+
 ## Desktop Application Validation Decision
 
 - Desktop framework / shell: Electron wrapper exists elsewhere, but this ticket changes only core TypeScript agent runtime.
@@ -299,12 +390,14 @@ The requested durable assertion correction is implemented and behaves as intende
 - `LIVE-NATIVE-001`: first DeepSeek attempt was correctly rejected after the live compactor returned invalid JSON and produced a failed lifecycle phase; unchanged rerun passed, 2/2, with three successful tools, one completed compaction, exact artifact and context projection, paired ordered trace IDs, and zero continuation marker.
 - Evidence: `secrets-import-dry-run.log`, `secrets-import-actual.log`, `real-preflight.log`, `real-openai-agent-flow.log`, `real-deepseek-compaction-agent-flow.log`, and `real-deepseek-compaction-agent-flow-rerun.log`.
 - Cleanup: harness-owned processes/workspaces/runtime root and temporary dependency setup removed. Explicitly authorized encrypted test DB/key retained and gitignored for future authorized real tests.
+- Round 4 supplemental outcome: real LM Studio 1/1 and managed DeepSeek unchanged rerun 2/2 passed with exact 5% threshold arithmetic and post-compaction continuation; first DeepSeek attempt invalid-JSON failure retained as provider stochasticity evidence. See `validation-logs/round4/`.
 
 ## Temporary Executable Validation Plan
 
 | Scenario ID | Probe / Harness / Runtime Setup | Behavior Proven | Why This Should Not Remain As Durable Coverage |
 | --- | --- | --- | --- |
 | CONTRACT-SCAN-001 | Static/compiled import and removed-path scan | Supported and removed current surfaces | Generated command evidence is sufficient; durable root contract test owns regression. |
+| COMPACTION-PCT-AUDIT-001 | Value-safe arithmetic audit over emitted LM Studio and managed DeepSeek budget evidence | Threshold equals floor of configured ratio times effective input budget after output reserve and safety margin | Derived execution evidence is run-specific; durable `token-budget.test.ts` owns formula regression. |
 
 ## Not Tested / Infeasible / Deferred
 
@@ -322,12 +415,11 @@ The requested durable assertion correction is implemented and behaves as intende
 
 ## Investigation Decision
 
-- Proceed To API/E2E Execution: `Yes — round 3 completed`.
-- Repository-Resident Durable Coverage Added / Updated / Removed: `Yes` — 2 added, 27 updated, 5 removed/replaced.
-- Current confidence: `97.5%`.
-- Round 1 broader validation: `Required — Live API; completed and still valid`.
-- Rounds 2–3 broader validation: `Not Required — focused package-contract surfaces are authoritative`.
-- Latest result: `Pass`; `API-E2E-F-001` / `CR-001` resolved.
+- Proceed To API/E2E Execution: `Yes — round 5 completed`.
+- Repository-Resident Durable Coverage Added / Updated / Removed: round 5 updated 2 paths, added 0, removed 0. Historical cumulative delta remains recorded in `durable-coverage-diff.txt`.
+- Current result/confidence: `API-REV-005 Pass / 98.8%`.
+- Round 5 broader validation: `Not Required`; direct deterministic server timer/lifecycle evidence plus current parent-triggered integration/build is authoritative, and round 4 real compaction remains valid.
+- Latest result: `Pass`; exact five-minute omitted default, override precedence, typed failure metadata, unsubscription, child termination, and no-real-wait contract are directly proven.
 - Reroute Required: `No`.
-- Required next recipient: `code_reviewer` for proportional durable test-code re-review.
-- Notes: The corrected assertion was preserved unchanged and now passes against the canonical IR-002 export. Real provider evidence from round 1 remains valid because the reviewed source delta is one static re-export with no runtime tool-loop impact.
+- Required next recipient: `code_reviewer` for proportional review of the two changed durable test paths before delivery resumes.
+- Notes: The initial parent-fallback failure was a stale integrated-base test API, not an IR-003 source failure; investigation was revised before the bounded fixture correction, and the rerun passed 12/12. Production source remained untouched by API/E2E.

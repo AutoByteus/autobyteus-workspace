@@ -1,0 +1,21 @@
+ROUND 4 MANAGED DEEPSEEK FIVE-PERCENT TOKEN-BUDGET AUDIT
+Source execution: validation-logs/round4/real-deepseek-compaction-e2e-rerun.log
+Credential provenance: previously imported through audited pnpm secrets:import from /Users/normy/.autobyteus/server-data/.env; preflight reports provider.deepseek.api-key READY without value output.
+Configured ratio: 0.05 (5%)
+Effective total context: 1000000
+Configured reserved output: 1024
+Context-derived/effective input capacity: 1000000 - 1024 = 998976
+Configured safety margin: 256
+Compaction input budget: 998976 - 256 = 998720
+Raw five percent: 998720 * 0.05 = 49936
+Production threshold rule: floor(raw ratio product)
+Expected trigger threshold: floor(49936) = 49936
+Observed trigger threshold: 49936
+Observed below threshold: 1141, 14434, 14606, 43616, 43890
+Observed crossing: 56152 >= 49936
+Observed lifecycle on successful unchanged rerun: requested -> started -> completed (one completed compaction)
+Observed post-compaction behavior: three successful tools, ordered tool trace pairs, no continuation trace marker, projected memory/current user verified, exact retained artifact verified.
+First attempt disclosure: one compactor response was invalid JSON; lifecycle recorded failed then recovered to a later completed compaction, and the strict test failed because any failed phase is disallowed. Unchanged rerun passed 2/2.
+Arithmetic result: PASS
+Successful-run lifecycle/continuation result: PASS
+Provider stochasticity observation: RETAINED AS RESIDUAL RISK (not hidden)

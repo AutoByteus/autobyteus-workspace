@@ -4,7 +4,7 @@ Reviewed implementation commit: 0891e42f0ebdd2db5f0d1b2bd746abdb1e115668 (`IR-00
 Original API/E2E coverage baseline implementation: b688c9759460d8f0e82e4e6d98b8180137200d93.
 Recorded base branch commit: 3cddeec6b93602da172fec2e7b9a80acc7c05117.
 Scope: repository-resident tests and test-support only.
-Latest update: the TR-001 positive root-package assertion added in round 2 was rerun unchanged against IR-002 in round 3 and passed 35/35. No additional durable test edit occurred in round 3.
+Latest update: API/E2E round 5 added direct deterministic AC-016 proof to the server compaction runner test and corrected the affected parent-fallback integration fixture to the delivery-integrated backend observation API. Both paths and their hashes are recorded in the round 5 section below; no production or test-support path was edited by API/E2E.
 
 ## Tracked changes
 
@@ -90,3 +90,33 @@ e804ad0a67a3ff6e596d7c04b638e41d72f8ba774bd1ac5fb76f4413491b3465  autobyteus-ts/
 ## Integrity check
 
 `git diff --check` passed after API/E2E round 3. No uncommitted production source path was edited by API/E2E; the reviewed IR-002 production delta is exactly one insertion in `autobyteus-ts/src/tools/index.ts`.
+
+## API/E2E Round 5 Delta — AC-016 / IR-003
+
+Reviewed implementation commit: 7aa4bc6d7f3216db8dfc703eaf5ebfbc67da3804 (IR-003).
+Delivery-integrated parent: 012257323d5b7303184ca7c5f385602c6a6914f3.
+Round 5 decision: update direct deterministic AC-016 runner coverage and correct the relevant parent-fallback integration fixture to the current backend batch/lifecycle API exposed by the integrated base. No production source or test-support path was edited by API/E2E.
+
+### Updated durable coverage paths
+
+M	autobyteus-server-ts/tests/unit/agent-execution/compaction/server-compaction-agent-runner.test.ts
+M	autobyteus-server-ts/tests/integration/agent-execution/compaction/compaction-agent-parent-fallback.integration.test.ts
+
+### Round 5 SHA-256
+
+d306c1d49ab4352fb813c0f6a761e90a81b402b756eccb781b2a6360434cf6ee  autobyteus-server-ts/tests/unit/agent-execution/compaction/server-compaction-agent-runner.test.ts
+6aa2667f44cec109a8ed0fd40ceabdfabfcd47ef9306a726225e7240b86db178  autobyteus-server-ts/tests/integration/agent-execution/compaction/compaction-agent-parent-fallback.integration.test.ts
+
+### Round 5 evidence
+
+Canonical diff: /Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/validation-logs/round5/api-durable-coverage-round5.diff
+Focused runner: tickets/in-progress/simplify-native-tool-continuation/validation-logs/round5/api-server-compaction-agent-runner-focused.log
+Collector + parent-fallback rerun: tickets/in-progress/simplify-native-tool-continuation/validation-logs/round5/api-compaction-collector-and-parent-fallback-rerun.log
+Compaction unit matrix: tickets/in-progress/simplify-native-tool-continuation/validation-logs/round5/api-server-compaction-unit-matrix.log
+Server build: tickets/in-progress/simplify-native-tool-continuation/validation-logs/round5/api-server-build-full.log
+Source/diff scan: tickets/in-progress/simplify-native-tool-continuation/validation-logs/round5/api-source-and-diff-contract-scan.log
+Artifact consistency: tickets/in-progress/simplify-native-tool-continuation/validation-logs/round5/api-artifact-consistency.log
+
+### Round 5 integrity
+
+`git diff --check` passed. The direct default/override cases complete immediately through a mocked collector rejection and make no 300,000 ms timer sleep. The first parent-fallback execution exposed stale backend observation methods before compaction; the bounded fixture correction rerun passed with all 12 combined collector/integration tests.

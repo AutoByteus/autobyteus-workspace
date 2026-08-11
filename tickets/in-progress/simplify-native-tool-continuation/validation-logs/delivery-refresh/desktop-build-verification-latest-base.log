@@ -1,0 +1,78 @@
+DESKTOP BUILD VERIFICATION — LATEST BASE REFRESH
+Ticket: simplify-native-tool-continuation
+Date: 2026-08-10
+Host: Darwin arm64
+Node: v22.23.1
+pnpm: 10.28.2
+
+BASE REFRESH
+Prior integrated base: 3cddeec6b93602da172fec2e7b9a80acc7c05117
+Refreshed origin/personal: d0bcd0dab2263fa284cf07de8d98214e5d19af73
+New base commits: 41
+Delivery-artifact checkpoint: 4531ac7cf2667be5d3524a96bd288beaeb593282
+Integration method: Merge
+Integrated ticket HEAD: 012257323d5b7303184ca7c5f385602c6a6914f3
+Merge result: Pass, no conflicts
+Post-build remote recheck: origin/personal remained d0bcd0dab2263fa284cf07de8d98214e5d19af73
+Relationship: origin/personal is an ancestor of integrated HEAD; behind 0, ahead 5
+
+INTEGRATION IMPACT
+The 41 base commits did not modify the ticket's core loop, input pipeline,
+request assembler, stream handler, memory manager, schema provider, or package
+index paths. They did advance wider server/web/provider behavior and the desktop
+package version, so a complete Electron rebuild was required and performed.
+
+DEPENDENCY REFRESH
+Command: pnpm install
+Working directory: /Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation
+Result: Pass, exit 0; lockfile current and workspace already up to date
+Evidence: pnpm-install-latest-base.log
+
+ELECTRON REBUILD
+Prior generated electron-dist output was removed before the build.
+Command: NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac
+Working directory: /Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/autobyteus-web
+Result: Pass, exit 0
+Package version: 1.4.47
+Electron: 42.4.1
+Architecture: arm64
+Signing/notarization: intentionally skipped for local test build
+Evidence: electron-macos-build-latest-base.log
+
+APPLICATION
+Path: /Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+Executable: Contents/MacOS/AutoByteus
+Executable format: Mach-O 64-bit executable arm64
+Bundle identifier: com.autobyteus.app
+Bundle version: 1.4.47
+App size: 1.2G
+
+PACKAGED-SOURCE PROVENANCE
+Present in packaged server:
+- dist/agent/streaming/handlers/llm-streaming-response-handler.js
+- dist/agent/loop/tool-continuation-input-builder.js
+- dist/tools/usage/providers/tool-schema-provider.js
+- dist/llm/qwen-provider-config.js (latest-base provider evidence)
+
+Absent from packaged server:
+- streaming-handler-factory.js
+- pass-through-streaming-response-handler.js
+- tool-result-continuation-builder.js
+- memory-ingest-tool-result-processor.js
+
+INSTALLER ARTIFACTS
+DMG: /Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.47.dmg
+DMG SHA-256: a77642c302f40431c6603dc4405256c9217347743e863bf914495fcbdd83e1a7
+ZIP: /Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.47.zip
+ZIP SHA-256: 19085c856bf7562369504fdd5689463225b328530377cbc5fe3ba90d75dde8ae
+
+WARNINGS
+- Nuxt reported stale Browserslist data and large chunks.
+- pnpm deploy/electron-builder reported existing dependency/peer-resolution warnings.
+- None failed preparation, native module rebuild, Electron generation,
+  packaging, DMG, ZIP, or blockmap creation.
+
+RESULT
+Pass. The branch is based on the latest confirmed origin/personal state, and the
+local unsigned/unnotarized macOS ARM64 application built from that integrated
+state is ready for user verification.

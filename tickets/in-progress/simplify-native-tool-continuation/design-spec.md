@@ -10,8 +10,9 @@ The current `autobyteus-ts` agent runtime is already one provider-native tool lo
 - `MemoryIngestInputProcessor` persists that internal loop transition as a `tool_continuation` raw trace with content such as `Native API tool continuation`, although the actual call/result facts are already persisted and no production semantic reader consumes the marker.
 - `LlmPhase` asks a one-caller factory to select between a native-tool handler and a pass-through handler. The native handler already owns ordinary text, interruption, failure, and finalization behavior, while the abstract base provides no shared implementation.
 - `ToolInvocationBatch` still owns required active invocation identity/order, but also contains result-settlement state and APIs with no production caller.
+- On the integrated server path, `AutoByteusAgentRunBackendFactory` constructs `ServerCompactionAgentRunner` without a timeout override. The runner therefore passes its literal `120_000` millisecond default to `CompactionRunOutputCollector.waitForFinalOutput`; if no terminal compactor output arrives first, the collector rejects and the runner's existing `finally` block unsubscribes and terminates the child run.
 
-The current source, investigation evidence, and focused 8-file/45-test baseline are recorded in `investigation-notes.md`, especially BEH-001 through BEH-010. The target must preserve provider schemas/renderers, normalized indexed native calls, approval/external-result admission, custom processor execution, ordered exactly-once result ingestion, context-file carriers, no-tool behavior, compaction/recovery order, and mixed interruption/failure/finalization semantics.
+The current source, investigation evidence, focused 8-file/45-test baseline, and post-implementation server timeout investigation are recorded in `investigation-notes.md`, especially BEH-001 through BEH-011. The target must preserve provider schemas/renderers, normalized indexed native calls, approval/external-result admission, custom processor execution, ordered exactly-once result ingestion, context-file carriers, no-tool behavior, compaction/recovery order, and mixed interruption/failure/finalization semantics.
 
 ## Intended Change
 
@@ -26,8 +27,9 @@ Contract the surviving runtime around its real owners and data facts:
 7. `ToolInvocationBatch` retains only active batch identity/order and admission behavior.
 8. Obsolete files, exports, auto-registration, wrappers, duplicated branches, and dead state are deleted cleanly.
 9. Downstream documentation and durable coverage are reclassified against the data-flow spine matrix rather than preserved merely because they assert old structure (REQ-011, AC-014).
+10. In `autobyteus-server-ts`, replace only the ordinary compaction-agent completion default with a module-local named constant of exactly `300_000` milliseconds. Keep `ServerCompactionAgentRunnerOptions.timeoutMs` as the explicit override, keep the collector as a value consumer rather than a policy owner, and do not introduce an application setting or alter unrelated 120-second limits.
 
-This is a behavior-preserving architectural refactor except for the explicitly approved observable cleanup: new raw traces no longer contain the coordination-only `tool_continuation` item.
+This is a behavior-preserving architectural refactor except for two explicitly approved observable changes: new raw traces no longer contain the coordination-only `tool_continuation` item, and an ordinary server compaction child may wait five minutes rather than two minutes for final output before the existing timeout failure/cleanup path runs.
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
@@ -43,6 +45,7 @@ This is a behavior-preserving architectural refactor except for the explicitly a
 | BEH-008 | System | REQ-008; AC-008, AC-010 | Abort or failure at supported awaited seams | Investigation BEH-008; runner/phase/handler/recovery coverage | Preserve closure, partial facts, snapshot commit/restore, protocol repair, and truthful outcome while changing setup inputs only | Abort/error -> handler terminalization -> LlmPhase snapshot decision -> runner repair/recovery -> outcome/events; DS-007, DS-008, DS-009 |
 | BEH-009 | Contract | REQ-009, REQ-010; AC-012, AC-013 | TypeScript consumer imports package surfaces | Investigation BEH-009; index/export search | Export the supported concrete handler/schema/segment and custom processor contracts; remove obsolete symbols without aliases | Consumer import -> package root/index -> canonical current exports; DS-011 |
 | BEH-010 | Operational/User | REQ-001, REQ-005, REQ-008, REQ-012; AC-001, AC-005, AC-006, AC-008, AC-015 | Internal TOOL continuation reaches configured input processors | Investigation BEH-010; user screenshot, writer/reader search | Delete continuation-boundary writer/method; preserve actual tool facts and runtime status, with no replacement trace | Tool results -> MemoryManager call/result facts -> TOOL processors (no memory write) -> runtime continuation; DS-004, DS-005, DS-012 |
+| BEH-011 | System/Operational | REQ-008, REQ-013; AC-008, AC-016 | Ordinary server-created compaction run is still awaiting final output after two minutes | Investigation BEH-011; runner, backend factory, collector, focused tests, and real-model evidence | Change only the omitted-option default from 120,000 to exactly 300,000 ms; preserve explicit overrides, earlier terminal/failure settlement, error wrapping, unsubscription, child termination, and surrounding interruption behavior | Parent request -> pending compaction executor -> backend factory -> server compaction runner -> collector final-output wait -> result or existing failure/cleanup return; DS-014 |
 
 ## Relevant Supplemental Task Artifacts
 
@@ -52,14 +55,14 @@ This is a behavior-preserving architectural refactor except for the explicitly a
 
 ## Task Design Health Assessment (Mandatory)
 
-- Change posture: `Refactor` / `Cleanup`
+- Change posture: `Refactor` / `Cleanup`, plus one bounded operational behavior correction in the integrated server compaction path.
 - Current design issue found: `Yes`
-- Root cause classification: `Legacy Or Compatibility Pressure`, `Duplicated Policy Or Coordination`, `Boundary Or Ownership Issue`, and `File Placement Or Responsibility Drift`
+- Root cause classification: `Legacy Or Compatibility Pressure`, `Duplicated Policy Or Coordination`, `Boundary Or Ownership Issue`, `File Placement Or Responsibility Drift`, and a local default-policy defect for BEH-011.
 - Refactor needed now: `Yes`
-- Evidence: A one-value mode crosses four runtime layers; the result processor's normal action is to defer to a later writer; the builder combines persistence with carrier projection; the request assembler duplicates an entire lifecycle for one missing append; a raw trace persists internal coordination with no reader; one factory selects between handlers that duplicate text behavior; batch settlement APIs have no production caller.
-- Design response: Recenter orchestration in the existing runner and LLM phase, keep persistence behind `MemoryManager`, keep request lifecycle in the assembler, keep stream-local state in one concrete handler, and retain the pure context-carrier transformation as a small off-spine concern.
+- Evidence: A one-value mode crosses four runtime layers; the result processor's normal action is to defer to a later writer; the builder combines persistence with carrier projection; the request assembler duplicates an entire lifecycle for one missing append; a raw trace persists internal coordination with no reader; one factory selects between handlers that duplicate text behavior; batch settlement APIs have no production caller. Separately, the ordinary server backend omits `timeoutMs`, so a runner-local 120-second default governs every normal compaction child even though supported slow local-model execution can legitimately exceed four minutes.
+- Design response: Recenter orchestration in the existing runner and LLM phase, keep persistence behind `MemoryManager`, keep request lifecycle in the assembler, keep stream-local state in one concrete handler, and retain the pure context-carrier transformation as a small off-spine concern. Correct the server timeout at its existing policy owner with one named default constant; do not convert a local default correction into a new cross-application configuration architecture.
 - Refactor rationale: These changes reduce competing owners and parallel representations while preserving every approved path. The runner does not absorb provider streaming, tool execution, memory internals, or context extraction; simplification strengthens separation of concerns rather than creating a coordinator blob.
-- Intentional deferrals and residual risk: No historical raw-trace rewrite is performed, so old `tool_continuation` cards remain visible in old data. Tool execution remains sequential. Provider-specific renderers and bounded indexed delta/file-projector state remain because they serve current contracts. Exact durable-test edits remain owned by `api_e2e_engineer`.
+- Intentional deferrals and residual risk: No historical raw-trace rewrite is performed, so old `tool_continuation` cards remain visible in old data. Tool execution remains sequential. Provider-specific renderers and bounded indexed delta/file-projector state remain because they serve current contracts. The five-minute default may retain a genuinely stalled child for up to three minutes longer, but preserves the existing earlier terminal/failure and explicit-override paths. A runtime/user-configurable timeout is intentionally not added without an approved selection use case. Exact durable-test edits remain owned by `api_e2e_engineer`.
 
 ## Terminology
 
@@ -68,6 +71,7 @@ This is a behavior-preserving architectural refactor except for the explicitly a
 - **Tool calls enabled:** A construction fact derived from whether the resolved tool-name list is non-empty. It gates schema sending and native tool-delta acceptance; it is not a selectable transport mode.
 - **Core result commit:** The one ordered `MemoryManager.ingestToolResults` call made by the runner after custom result processors finish.
 - **Continuation-ready event:** The ephemeral `ToolContinuationReadyEvent` used for same-turn runtime status when no additional message exists. It is not persisted.
+- **Compaction-agent completion timeout:** The maximum wait passed by `ServerCompactionAgentRunner` to `CompactionRunOutputCollector.waitForFinalOutput` when an ordinary caller omits `timeoutMs`. It does not mean parent-request cancellation latency, provider client timeout, server startup timeout, or a general test/process timeout.
 
 ## Legacy Removal Policy (Mandatory)
 
@@ -86,6 +90,7 @@ This is a behavior-preserving architectural refactor except for the explicitly a
 - Decision: `Directly Usable — No Migration`
 - Decision rationale: Current version-agnostic readers already tolerate historical records, and no invariant requires removing old bytes. Stopping future writes achieves the approved behavior without a maintenance window, dual reader, or migration framework.
 - Acceptance criteria or design constraints supported by this decision: AC-005, AC-006, AC-007, AC-008, AC-010, AC-015; no new trace marker, no old-data rewrite, and unchanged canonical call/result rendering.
+- BEH-011 state impact: `Not Affected`. Changing a runtime wait default writes no new schema, does not reinterpret stored context, and adds no configuration record; therefore it creates no migration requirement.
 
 ### Migration Plan
 
@@ -108,6 +113,7 @@ N/A — the approved decision is `Directly Usable — No Migration`.
 | DS-011 | Primary End-to-End | BEH-009 | External TypeScript import | Resolved supported package contract | `autobyteus-ts` package export boundary | Makes intentional public contraction reviewable rather than accidental |
 | DS-012 | Return-Event | BEH-003, BEH-004, BEH-005, BEH-010 | Normalized tool invocation/result facts | Raw trace + working context used by next provider rendering | `MemoryManager` | Shows what is actually durable and why no continuation trace is needed |
 | DS-013 | Bounded Local | BEH-005 | Final processed result values | Internal TOOL input with semantic text/context files | `ToolContinuationInputBuilder` | Keeps recursive context extraction out of the runner without restoring a framework |
+| DS-014 | Primary End-to-End | BEH-011 | Parent agent request reaches an already-requested pending compaction on the ordinary server backend | Parent request resumes from final compacted output, or receives the existing typed timeout/failure outcome after child cleanup | `ServerCompactionAgentRunner` for the child completion lifecycle, invoked from the parent request-assembly spine | Proves the five-minute policy correction at the real production owner without altering earlier terminal/failure settlement, explicit overrides, or surrounding interruption and cleanup semantics |
 
 ### Use-Case-To-Spine Coverage
 
@@ -123,6 +129,7 @@ N/A — the approved decision is `Directly Usable — No Migration`.
 | UC-008 Pending compaction | DS-004 or DS-005 plus DS-008 | Covers native suffix preservation for both continuation shapes under one assembler |
 | UC-009 Contracted package import | DS-011 | Covers supported exports and clean failure of removed symbols |
 | UC-010 No continuation raw-trace card | DS-004, DS-005, DS-012 | Covers actual durable facts, side-effect-free TOOL processing, and continued runtime transition |
+| UC-011 Slow server compaction completion | DS-014 | Covers ordinary construction, exact five-minute default propagation, earlier success/failure, typed timeout, unsubscription/termination, and return to the parent request lifecycle |
 
 ## Primary Execution Spine(s)
 
@@ -146,6 +153,10 @@ N/A — the approved decision is `Directly Usable — No Migration`.
 
 `External TypeScript import -> autobyteus-ts package root -> agent streaming/processor indices -> retained LlmStreamingResponseHandler / schema / segment / custom processor contracts -> consumer build`
 
+### DS-014 — Ordinary Server Compaction Completion
+
+`Parent AgentTurnRunner / LlmPhase request assembly -> LLMRequestAssembler detects pending compaction -> PendingCompactionExecutor -> structured compaction strategy/summarizer -> AutoByteusAgentRunBackendFactory ordinary construction -> ServerCompactionAgentRunner(default 300_000 ms) -> visible child AgentRun -> CompactionRunOutputCollector -> final JSON or existing timeout/failure -> runner unsubscribe + terminate child -> compacted output or typed error returns through parent request assembly`
+
 ## Spine Narratives (Mandatory)
 
 | Spine ID | Short Narrative | Main Domain Subject Nodes | Governing Owner | Key Off-Spine Concerns |
@@ -163,6 +174,7 @@ N/A — the approved decision is `Directly Usable — No Migration`.
 | DS-011 | Package indices expose only current contracts; removed concrete/framework symbols fail resolution rather than forwarding. | Package export boundary | Package export boundary | release documentation |
 | DS-012 | Assistant calls and processed results enter raw trace/working context through MemoryManager and feed provider-native renderers; no coordination-only trace participates. | MemoryManager, RawTraceStore, WorkingContext, Renderer | MemoryManager | tool protocol safety, compaction |
 | DS-013 | A small pure builder recursively recognizes ContextFile values/shapes and emits the semantic TOOL input used by processors. | ToolContinuationInputBuilder | ToolContinuationInputBuilder | display-text formatter, ContextFile hydrator |
+| DS-014 | An ordinary server compaction child is created without an override; the runner supplies its five-minute default to the collector, while terminal output or failure can settle earlier and the runner always performs its existing cleanup before the parent request proceeds or fails. | Parent request assembler, PendingCompactionExecutor, backend factory, ServerCompactionAgentRunner, child AgentRun, output collector | ServerCompactionAgentRunner | structured summarizer, agent manager/event subscription, error wrapper |
 
 ## Spine Actors / Main-Line Nodes
 
@@ -178,6 +190,8 @@ N/A — the approved decision is `Directly Usable — No Migration`.
 | `MemoryManager` | Authoritative canonical/raw memory mutation, protocol safety, compaction state, and request snapshots |
 | `LLMRequestAssembler` | Owns one request-preparation transaction from canonical memory to rendered payload |
 | `ToolContinuationInputBuilder` | Purely projects processed results into the internal semantic/context carrier |
+| `ServerCompactionAgentRunner` | Owns one server compaction child lifecycle, including the omitted-option completion-wait policy, event subscription, typed failure projection, and terminal cleanup |
+| `CompactionRunOutputCollector` | Settles one child run from final/failure events or the explicit timeout value supplied by the runner; it does not choose the default |
 
 ## Ownership Map
 
@@ -190,6 +204,9 @@ N/A — the approved decision is `Directly Usable — No Migration`.
 - `AgentInputPipeline` owns input identity validation, processor ordering, and construction of the nullable additional LLM user message. It does not persist coordination state or choose request methods.
 - `LLMRequestAssembler` owns the transactional safety/compaction/append/sanitize/render sequence. It receives the structural optional message instead of interpreting modes.
 - `ToolContinuationInputBuilder` owns only display summary, context-file extraction/hydration, and factual `turn_id`/`tool_result_count` message metadata. It accepts a turn ID value but has no `AgentContext`, `AgentTurn`, memory, status, or transport dependency.
+- `ServerCompactionAgentRunner` owns the server-specific child-run lifecycle and the default completion-wait policy. Omitted `timeoutMs` resolves to exactly `300_000`; an explicitly supplied value always wins. Its existing catch/finally behavior continues to wrap failures, unsubscribe, and terminate the child.
+- `CompactionRunOutputCollector` owns event-to-promise settlement for the value it receives. It clears its timer when a final or failure event settles and must not acquire a default or application-config dependency.
+- `AutoByteusAgentRunBackendFactory` remains a thin ordinary constructor and intentionally supplies no timeout override; this makes the runner's named default the sole ordinary production policy.
 
 ## Thin Entry Facades / Public Wrappers (If Applicable)
 
@@ -223,6 +240,7 @@ N/A — the approved decision is `Directly Usable — No Migration`.
 - **DS-005 context return:** `processed results -> batch commit -> ToolContinuationInputBuilder extracts files -> AgentInputPipeline/custom processors -> LLMUserMessage carrier -> LLMUserMessageReadyEvent -> assembler optional append -> media sanitizer -> provider renderer/request`.
 - **DS-007 failure return:** `abort/error -> handler finalizeInterrupted/finalizeFailed -> LlmPhase commit/restore snapshot -> runner completed-fact projection/protocol repair -> status/notifier -> interrupted/recovered/failed TurnOutcome`.
 - **DS-012 memory return:** `normalized assistant tool calls -> MemoryManager tool_call facts -> processed result batch -> MemoryManager tool_result facts + canonical tool messages -> provider renderer on next request`. There is deliberately no `tool_continuation` persistence node.
+- **DS-014 compaction return:** `collector final event -> parsed compacted JSON -> runner returns output -> pending executor applies it -> parent request assembly resumes`; or `collector failure/300_000 ms timeout -> typed runner error -> runner finally unsubscribes and terminates the child -> existing parent failure path`. Parent cancellation/interruption behavior remains the existing surrounding behavior and is not delayed by replacing unrelated cancellation seams.
 
 ## Bounded Local / Internal Spines (If Applicable)
 
@@ -237,7 +255,8 @@ N/A — the approved decision is `Directly Usable — No Migration`.
 | --- | --- | --- | --- | --- | --- |
 | `ToolSchemaProvider` | DS-002, DS-006 | LlmPhase | Provider-specific native schema mapping | Provider contracts differ | A schema factory would again appear to own stream mode selection |
 | Provider prompt renderers | DS-001, DS-002, DS-004, DS-005 | LLMRequestAssembler | Render canonical history to each provider API | Native history formats differ | Generic continuation rendering would recreate protocol modes |
-| Pending compaction executor | DS-008 | LLMRequestAssembler | Execute requested compaction before stable request snapshot | Existing memory constraint | Moving it into runner would overload outer sequencing and alter timing |
+| Pending compaction executor | DS-008, DS-014 | LLMRequestAssembler | Execute requested compaction before stable request snapshot | Existing memory constraint | Moving it into the agent runner would overload outer sequencing and alter timing |
+| Server compaction runner default constant | DS-014 | ServerCompactionAgentRunner | Define the ordinary child completion-wait policy as exactly `300_000` ms while retaining explicit injection | Slow local-model compaction can exceed the current two-minute wait | AppConfig/global placement would create a new selection surface and spread one owner-local policy |
 | Media sanitizer | DS-005, DS-008 | LLMRequestAssembler | Project supported outbound media without mutating canonical history | Provider multimodal capability differences | Builder or runner would absorb provider request policy |
 | Context-file/display helpers | DS-005, DS-013 | ToolContinuationInputBuilder | Recognize files and create semantic carrier text | Tool results may contain file values/shapes | Inlining would bloat runner and obscure the return spine |
 | File content projectors | DS-009 | LlmStreamingResponseHandler | Incrementally project write/edit deltas | Native args arrive chunked | Removing them as “parsing” would break file segment behavior |
@@ -253,6 +272,7 @@ N/A — the approved decision is `Directly Usable — No Migration`.
 5. `AgentInputPipeline` is the authoritative input-processing boundary. The runner must not run processors directly or infer context-file presence before processor transformations finish.
 6. `LLMRequestAssembler` is the authoritative request transaction boundary. `LlmPhase` passes an optional message and identity; it must not separately append memory or duplicate compaction/recovery sequencing.
 7. `LlmStreamingResponseHandler` encapsulates stream-local maps and file projectors. `LlmPhase` consumes only emitted events/invocations and lifecycle methods.
+8. `ServerCompactionAgentRunner` is the authoritative server child-lifecycle boundary for DS-014. The backend factory constructs it; the runner chooses the omitted-option default and passes an explicit duration to the collector. Neither the factory nor collector independently selects a timeout policy.
 
 ## Boundary Encapsulation Map
 
@@ -263,6 +283,7 @@ N/A — the approved decision is `Directly Usable — No Migration`.
 | `ToolPhase.run` | preprocess, approval, in-process/external execution, ordered collection | AgentTurnRunner | Runner -> TurnToolInputPort/tool executor directly | Add explicit ToolPhase callback/option |
 | `AgentInputPipeline.processToolContinuation` | same-turn validation, processor order, carrier decision | AgentTurnRunner | Runner -> individual input processors/buildLLMUserMessage | Extend pipeline result with a semantically singular field |
 | `LlmStreamingResponseHandler` | text/tool/file segment state and invocation normalization | LlmPhase | LlmPhase -> activeTools/file projectors | Add a handler method/options fact, not expose internal maps |
+| `ServerCompactionAgentRunner.runCompaction` | server child creation, output wait policy, error projection, subscription cleanup, child termination | Pending compaction executor through `CompactionAgentRunner` / backend factory | Caller -> output collector or child AgentRun internals | Extend the runner option or lifecycle implementation, not its callers |
 
 ## Dependency Rules
 
@@ -271,12 +292,15 @@ N/A — the approved decision is `Directly Usable — No Migration`.
 - Allowed: `LLMRequestAssembler -> MemoryManager`, compaction executor, sanitizer, renderer.
 - Allowed: `ToolContinuationInputBuilder -> ToolResultEvent`, `ContextFile`, display formatter, `AgentInputUserMessage`.
 - Allowed: `MemoryIngestInputProcessor -> MemoryManager.ingestUserMessage` for external inputs only.
+- Allowed: parent pending-compaction execution -> `CompactionAgentRunner` -> ordinary backend factory -> `ServerCompactionAgentRunner` -> `CompactionRunOutputCollector.waitForFinalOutput(explicitDuration)`.
 - Forbidden: result processors or continuation builder acting as the core normal batch-memory owner.
 - Forbidden: input pipeline, metadata parser, or LlmPhase selecting among continuation transport/request modes.
 - Forbidden: `AgentTurnRunner` or `LlmPhase` reaching into raw trace/snapshot stores behind `MemoryManager`.
 - Forbidden: stream handler resolving tool configurations, building schemas, calling providers, or executing tools.
 - Forbidden: factory/base/pass-through compatibility layers or forwarding exports.
 - Forbidden: persisting `ToolContinuationReadyEvent`, `SenderType.TOOL` transition, or any renamed replacement continuation marker.
+- Forbidden: moving the compaction-agent default into `CompactionRunOutputCollector`, adding `AppConfig`/environment/UI plumbing for this bounded correction, or globally replacing unrelated `120_000` literals and test/process/server-start timeouts.
+- Forbidden: implementing the longer default with a real five-minute sleep in deterministic coverage, or weakening explicit injected short timeouts and prompt earlier event settlement.
 
 ## Interface Boundary Mapping
 
@@ -290,6 +314,8 @@ N/A — the approved decision is `Directly Usable — No Migration`.
 | `LLMRequestAssembler.prepareRequest(additionalUserMessage, identity, systemPrompt)` | One provider request transaction | Prepare current memory plus optional append | nullable message + `{turnId, requestId}` | Replaces two entrypoints |
 | `LlmStreamingResponseHandler` constructor | One normalized provider stream projection | Configure callbacks, turn identity, tool-delta gate | `{turnId, segmentIdPrefix?, toolCallsEnabled, callbacks?}` | Gate is resolved data fact, not mode |
 | `ToolInvocationBatch.accepts(invocationId, turnId?)` | Active batch admission | Validate invocation/optional turn identity | invocation ID + optional turn ID | Retain; settlement APIs removed |
+| `ServerCompactionAgentRunnerOptions.timeoutMs` | One server compaction child completion wait | Allow an explicit caller/test override while defining omission at the owner | Optional positive duration in milliseconds; omission selects `300_000` | Existing option contract retained; no new configuration surface |
+| `CompactionRunOutputCollector.waitForFinalOutput(timeoutMs)` | One child output settlement | Await terminal output/failure or reject after the caller-supplied duration | Required explicit duration in milliseconds | Remains a mechanism consumer with no default-policy knowledge |
 
 ## Interface Boundary Check
 
@@ -302,6 +328,8 @@ N/A — the approved decision is `Directly Usable — No Migration`.
 | Assembler `prepareRequest` | Yes | Yes | Low | Use nullable message; delete duplicate method |
 | Stream handler constructor | Yes | Yes | Low | Require explicit turn and tool-call gate |
 | Batch `accepts` | Yes | Yes | Low | Make stored identities readonly/private |
+| Server compaction runner timeout option | Yes | Yes | Low | Replace the runner's literal fallback with a named `300_000` constant; retain `??` precedence |
+| Collector final-output wait | Yes | Yes | Low | Keep the duration required and explicit; do not add a second default |
 
 ## Main Domain Subject Naming Check
 
@@ -313,6 +341,7 @@ N/A — the approved decision is `Directly Usable — No Migration`.
 | Continuation carrier projection | `ToolResultContinuationBuilder` -> `ToolContinuationInputBuilder` | Yes (target) | High in current name because it also writes memory | Rename after removing memory ownership |
 | Optional message | `llmRequestMode` -> `llmUserMessage` nullable | Yes (target) | High in current mode name | Use the data itself |
 | Active identity | `ToolInvocationBatch` | Yes | Low | Retain and contract |
+| Server runner default | `DEFAULT_COMPACTION_AGENT_COMPLETION_TIMEOUT_MS` | Yes | Low | Name the owner, subject, and unit; avoid generic `TIMEOUT_MS` or transport/mode vocabulary |
 
 ## Existing Capability / Subsystem Reuse Check
 
@@ -324,6 +353,7 @@ N/A — the approved decision is `Directly Usable — No Migration`.
 | Context-file extraction | Existing continuation/display/context message area | Contract | Real cohesive local transformation remains; explicit turn ID supports factual processor metadata without runtime ownership | N/A |
 | Custom input/result transformations | Existing processor pipelines/registries | Reuse | Approved extension points | N/A |
 | Continuation setup manager | None | Do not create | Existing runner/pipeline/assembler owners are sufficient | A new generic owner would only relocate coordination |
+| Server compaction timeout policy | Existing `ServerCompactionAgentRunnerOptions.timeoutMs` and runner fallback | Reuse/adjust locally | The runner already owns the child lifecycle and explicit override; only the omitted default is wrong | N/A; reject a new AppConfig/environment/UI setting because no runtime selection use case is approved |
 
 ## Subsystem / Capability-Area Allocation
 
@@ -336,6 +366,7 @@ N/A — the approved decision is `Directly Usable — No Migration`.
 | Tool execution | Approval/execution/external wait | DS-002, DS-003, DS-010 | ToolPhase | Reuse | No redesign |
 | Memory | Canonical/raw facts, protocol safety, compaction, recovery | DS-001, DS-002, DS-007, DS-008, DS-012 | MemoryManager | Contract | Delete only continuation boundary writer |
 | Package exports | Current supported API surface | DS-011 | Package index | Contract | No aliases |
+| Server compaction execution | Child creation, final-output wait policy, typed error projection, cleanup | DS-014 | ServerCompactionAgentRunner | Local policy correction | Collector and ordinary factory retain their current contracts |
 
 ## Draft File Responsibility Mapping
 
@@ -350,6 +381,7 @@ N/A — the approved decision is `Directly Usable — No Migration`.
 | `memory-manager.ts` | Memory | MemoryManager | Retain canonical APIs; remove continuation writer | Existing authority | Reuses RawTraceItem/store internally |
 | `memory-ingest-input-processor.ts` | Input processing/memory adapter | MemoryIngestInputProcessor | External user ingestion; TOOL pass-through | One processor concern | Reuses MemoryManager user API |
 | `tool-invocation-batch.ts` | Agent turn state | ToolInvocationBatch | Immutable active ID/order and admission | Tight subject | Reuses ToolInvocation IDs |
+| `server-compaction-agent-runner.ts` | Server compaction execution | ServerCompactionAgentRunner | Ordinary completion-wait default plus existing child lifecycle | Existing authoritative owner | Reuses existing options, collector, AgentManager, and error type |
 
 ## Reusable Owned Structures Check
 
@@ -359,6 +391,7 @@ N/A — the approved decision is `Directly Usable — No Migration`.
 | Request assembly lifecycle | Existing `llm-request-assembler.ts` | Request assembly | Both paths are identical apart from append | Yes — one method | Yes — no parallel request entrypoints | Generic workflow engine |
 | Stream handler contract | No abstract shared file; one concrete class | LLM streaming | Only one implementation remains | Yes — factory/result wrapper removed | Yes — no pass-through/native variants | Kitchen-sink provider client |
 | Context file extraction | `tool-continuation-input-builder.ts` | Input/message projection | Used only for continuation carrier construction | Yes — remove context/turn/mode dependencies | Yes — one carrier representation | General continuation manager |
+| Compaction completion default | No shared file; module-local constant in `server-compaction-agent-runner.ts` | Server compaction execution | Only the runner owns omission policy | N/A | No — the explicit option and resolved duration are one contract | Global timeout/config registry |
 
 ## Shared Structure / Data Model Tightness Check
 
@@ -369,6 +402,7 @@ N/A — the approved decision is `Directly Usable — No Migration`.
 | `RequestPackage` | Yes | N/A | Low | Retain unchanged |
 | `AgentInputUserMessage` TOOL carrier | Yes after mode removal | Yes (`tool_continuation_mode`) | Low | Sender type identifies lifecycle; context files identify carrier; `turn_id`/`tool_result_count` remain factual processor context only |
 | Raw trace tool lifecycle | Yes | Future coordination marker removed | Low | Persist calls/results only; tolerate historical extras generically |
+| `ServerCompactionAgentRunnerOptions.timeoutMs` | Yes | N/A | Low | Preserve the one optional override; omission resolves once to the runner-local `300_000` default |
 
 ## Final File Responsibility Mapping
 
@@ -385,6 +419,7 @@ N/A — the approved decision is `Directly Usable — No Migration`.
 | `src/agent/factory/agent-factory.ts` | Agent construction | AgentFactory | Stop auto-registering removed core memory result processor | Construction only | Yes |
 | `src/memory/memory-manager.ts` | Memory | MemoryManager | Retain canonical memory APIs; remove continuation-boundary method | Authoritative memory surface | Yes |
 | Streaming/result processor/package index files | Package exports | Export boundary | Export only supported current symbols | Current contract projection | Yes |
+| `autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts` | Server compaction execution | ServerCompactionAgentRunner | Define the named `300_000` ms omitted-option default and retain existing wait/error/cleanup lifecycle | One owner-local policy correction in the existing lifecycle file | Yes |
 
 ## Applied Patterns (If Any)
 
@@ -393,6 +428,7 @@ N/A — the approved decision is `Directly Usable — No Migration`.
 - **Transactional request assembly:** one stable-base snapshot encloses optional append, sanitation, render, and rollback.
 - **Bounded local stream state:** indexed native deltas/file projections remain inside one handler and do not define the top-level architecture.
 - **Current-schema direct use:** historical generic raw-trace records remain readable without migration branches.
+- **Owner-local default policy:** the server runner resolves an omitted timeout beside the lifecycle it governs; mechanisms below receive an explicit value and callers above do not duplicate the policy.
 
 ## Target Subsystem / Folder / File Mapping
 
@@ -409,6 +445,7 @@ N/A — the approved decision is `Directly Usable — No Migration`.
 | `autobyteus-ts/src/memory/memory-manager.ts` | File | MemoryManager | Canonical memory authority | Existing persistence boundary | Continuation-only marker method |
 | `autobyteus-ts/src/agent/streaming/{index.ts,handlers/index.ts}` | File | Package export boundary | Export current handler/segments as applicable | Existing module discovery | Legacy aliases/factory/pass-through |
 | `autobyteus-ts/src/agent/tool-execution-result-processor/index.ts` | File | Package export boundary | Export base/definition/registry only | Existing extension surface | Removed built-in memory processor |
+| `autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts` | File | ServerCompactionAgentRunner | Resolve omitted `timeoutMs` to named `300_000` ms default; preserve child wait/error/cleanup | Existing server compaction lifecycle boundary | AppConfig/env/UI setting, adaptive timeout logic, collector-default duplication, unrelated timeout edits |
 
 Deleted paths are listed in the removal plan. The existing layout remains deliberately compact because the codebase already separates loop, pipelines, input processors, streaming handlers, tool-result processors, and memory. Creating new folders/modules would add structural depth that the contracted responsibilities do not need.
 
@@ -422,6 +459,7 @@ Deleted paths are listed in the removal plan. The existing layout remains delibe
 | `src/agent/streaming/handlers` | Bounded Local | Yes | Low after contraction | One stream-state owner; delete hierarchy/factory variants |
 | `src/agent/tool-execution-result-processor` | Off-Spine Concern | Yes | Low | Custom extension contracts only after built-in memory owner is removed |
 | `src/memory` | Persistence-Provider | Yes | Medium but justified existing subsystem | MemoryManager encapsulates stores/protocol/compaction; this ticket removes drift rather than reorganizing the subsystem |
+| `autobyteus-server-ts/src/agent-execution/compaction` | Main-Line Server Execution Boundary | Yes | Low | Runner owns lifecycle/default; collector owns event settlement for the supplied duration; no new folder or layer is justified |
 
 ## Concrete Examples / Shape Guidance (Mandatory When Needed)
 
@@ -433,6 +471,7 @@ Deleted paths are listed in the removal plan. The existing layout remains delibe
 | No-tool stream | `new LlmStreamingResponseHandler({toolCallsEnabled:false})` and no `tools` kwarg | Select `PassThrough` from a handler factory | Same stream contract, explicit safety fact, no implementation selection |
 | Durable history | `tool_call + tool_result`; continuation status remains in memory only as runtime state | Persist `Native API tool continuation` or rename it | Internal control flow is not a semantic conversation fact |
 | Runner decomposition | Runner sequences `LlmPhase`, `ToolPhase`, pipelines, memory boundary, pure builder | Merge all parsing, execution, persistence, media, and recovery into runner | Simplification must clarify ownership, not create a god object |
+| Compaction timeout default | `const DEFAULT_COMPACTION_AGENT_COMPLETION_TIMEOUT_MS = 300_000; this.timeoutMs = options.timeoutMs ?? DEFAULT_...` | Add a general app setting, replace every `120_000`, move the fallback into the collector, or wait five real minutes in a test | Expresses one approved owner-local policy, preserves explicit injection, and avoids unrelated behavior/configuration expansion |
 
 ## Backward-Compatibility Rejection Log (Mandatory)
 
@@ -471,6 +510,8 @@ This layering is explanatory only. Dependency rules and authoritative boundaries
 9. Contract `ToolInvocationBatch` to readonly identity/order/admission state; remove unused settlement APIs and imports.
 10. Remove all mode symbols, duplicate branches, obsolete exports/tests references, and stale documentation vocabulary. Confirm repository-wide absence of deleted production symbols and raw-trace writer.
 11. Run implementation-scoped type/build checks; after code review, let `api_e2e_engineer` investigate/update durable coverage and execute the approved use-case/spine matrix.
+12. For SR-002, add the module-local `DEFAULT_COMPACTION_AGENT_COMPLETION_TIMEOUT_MS = 300_000` in `server-compaction-agent-runner.ts` and replace only the existing `options.timeoutMs ?? 120_000` fallback. Do not alter the option type, backend factory construction, collector, cancellation seams, or unrelated timeout literals.
+13. Run focused server implementation checks. After code review, let `api_e2e_engineer` add or update deterministic direct coverage of the omission/override contract using spies or fake timers; no check should spend five minutes waiting.
 
 No temporary compatibility seam may remain at the end of any implementation commit. If sequencing requires a transient compile break locally, complete each conceptual step before handoff.
 
@@ -481,6 +522,7 @@ No temporary compatibility seam may remain at the end of any implementation comm
 - A pure continuation input builder remains instead of merging everything into the runner. The small class is justified by recursive context-file hydration and semantic carrier formatting; it is not a mode framework.
 - Renaming the sole handler improves domain naming but intentionally breaks unknown imports. The requirements approve clean public contraction and reject aliases.
 - Historical continuation cards remain in old raw traces. Avoiding a migration is safer and does not affect runtime correctness; new traces become clean immediately.
+- A five-minute ordinary compaction wait reduces premature failures for slow local inference at the cost of holding a genuinely stalled child up to three minutes longer. The explicit option remains available for bounded tests/custom constructors, while a product configuration surface is rejected until a real selection use case exists.
 
 ## Risks
 
@@ -492,6 +534,9 @@ No temporary compatibility seam may remain at the end of any implementation comm
 - Renamed/deleted root exports may break unknown consumers. Do not mask this with aliases; record the contraction in release documentation.
 - Old durable tests assert removed architecture (factory selection, deferral, continuation trace). Downstream coverage investigation must distinguish stale structural assertions from behavior evidence.
 - `LlmPhase` separately emits reasoning segments while the handler owns text/tool/file segments. This existing split must remain coherent during handler contraction; it is not in scope to redesign reasoning ownership.
+- A broad search-and-replace of `120_000` could silently change server startup, process, provider, or test budgets. Scope implementation and review to the runner's omitted-option fallback.
+- If the five-minute default were placed in the collector or duplicated in the backend factory, policy ownership would fragment. The collector must continue receiving an explicit duration and the ordinary factory must continue omitting the override.
+- Longer waiting must not be mistaken for slower cancellation or delayed earlier failure. Preserve timer clearing on terminal/failure settlement and the runner's existing `finally` cleanup; do not add sleeps or swallow events.
 
 ## Guidance For Implementation
 
@@ -508,4 +553,8 @@ No temporary compatibility seam may remain at the end of any implementation comm
 - Contract `ToolInvocationBatch` fields to private/readonly where practical and expose copies through existing identity getters; do not remove `accepts`, `expectsInvocation`, or expected-ID ordering.
 - Remove old files/exports rather than leaving forwarding shims. Repository-wide searches for all removal-plan symbols are part of implementation completion evidence.
 - Do not modify unrelated XML context utilities, JSON parsing/schema formatting, provider renderers, queue sentinel objects, custom processor registries, compaction, protocol repair, or external tool result transport.
+- In the SR-002 server delta, change exactly the runner-local omitted-option fallback to a named constant with value `300_000`. Keep `options.timeoutMs ?? constant` so explicit values such as the existing 10 ms and 1,000 ms test injections remain authoritative.
+- Do not add `AppConfig`, environment variables, settings UI/schema/docs, adaptive context-size calculations, or a second timeout default in `CompactionRunOutputCollector` or the backend factory. Those would be new unapproved product/architecture surfaces rather than this bounded correction.
+- Preserve DS-014: earlier final output and failure events settle immediately, timeout still produces the existing typed/wrapped failure, and the runner still unsubscribes and terminates the child in `finally`. Do not change surrounding parent interruption/cancellation behavior.
+- Direct coverage must prove the ordinary omitted-option value is `300_000` and the explicit override still wins without a real five-minute wait. A spy on `CompactionRunOutputCollector.prototype.waitForFinalOutput`, constructor observation, or fake timers is appropriate; exact durable coverage edits remain `api_e2e_engineer`-owned.
 - Implementation-scoped checks should cover type/build viability and focused changed-source tests where possible. Durable repository coverage changes and broader execution remain downstream team responsibilities.
