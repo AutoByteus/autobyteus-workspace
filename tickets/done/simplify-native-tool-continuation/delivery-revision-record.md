@@ -162,3 +162,94 @@
   `DR-003` remains active.
 - Current result: `Pass — supplemental verification incorporated; latest-base
   desktop candidate remains ready for explicit user verification`
+
+## DR-005 — Five-minute compactor wait integrated on latest base
+
+- Date: 2026-08-11
+- Trigger: `code_reviewer` returned `SR-002` / `IR-003` after source review
+  `CRR-007`, API/E2E `API-REV-005`, and proportional durable-test review
+  `CRR-008` all passed.
+- Reviewed implementation:
+  `7aa4bc6d7f3216db8dfc703eaf5ebfbc67da3804`.
+- Behavioral delta: ordinary `ServerCompactionAgentRunner` construction now
+  uses exactly `300_000` ms for final-output completion; explicit `timeoutMs`
+  overrides, typed errors, unsubscription, child termination, and unrelated
+  timeout policies remain unchanged.
+- Durable coverage: two reviewed test files updated. The exact omitted/default
+  versus explicit-override matrix and cleanup contract pass without a real
+  five-minute wait; the parent-fallback fixture uses the current integrated
+  backend observation APIs while preserving its product assertions.
+- Delivery protection: reviewed tests and the cumulative ticket/evidence
+  package committed to local safety checkpoint
+  `aed99b8f33c8ede393eb5edacffbf489ebcfec33` before integration.
+- Remote refresh: `git fetch origin personal` — Pass. The target advanced by six
+  commits from `d0bcd0dab2263fa284cf07de8d98214e5d19af73` to
+  `c6080a4fbee5541c48c898dc1346ac67fcf9c2d6`.
+- Integration: merged `origin/personal` without conflicts; integrated HEAD
+  `2d5f64d65a58e5fd3394f6a8aa5f143e4c732864` is behind 0/ahead 8 and contains
+  the refreshed target as an ancestor.
+- Impact audit: the six base commits changed workspace-history surfaces,
+  release metadata, and package version `1.4.48`; none overlapped the compaction
+  runner/collector/factory or the two reviewed durable test paths.
+- Post-integration executable check: focused runner, collector, and
+  parent-fallback matrix Pass, 3 files / 19 tests.
+- Docs sync: `autobyteus-server-ts/docs/modules/agent_memory.md` now records the
+  runner-owned five-minute omitted-option default, explicit override, unchanged
+  cleanup, and unrelated-timeout exclusion. The eight prior SR-001 long-lived
+  doc updates remain authoritative.
+- Dependency refresh: root `pnpm install` Pass.
+- Electron rebuild: documented local macOS no-notarization
+  `pnpm build:electron:mac` path Pass from a cleared generated output directory.
+- Application:
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- Artifact identity: version `1.4.48`, `com.autobyteus.app`, Mach-O ARM64,
+  unsigned/unnotarized local build.
+- Packaged-source proof: the bundled server runner contains the exact `300_000`
+  default and forwards `this.timeoutMs` to `waitForFinalOutput`.
+- Installer artifacts: `1.4.48` macOS ARM64 DMG/ZIP and blockmaps created.
+- Post-build remote recheck: Pass; `origin/personal` remained at
+  `c6080a4fbee5541c48c898dc1346ac67fcf9c2d6` and is still an ancestor of HEAD.
+- Evidence:
+  - `delivery-integration-evidence.log`
+  - `validation-logs/round5/`
+  - `validation-logs/delivery-refresh-round5/post-integration-compaction-focused.log`
+  - `validation-logs/delivery-refresh-round5/pnpm-install-latest-base.log`
+  - `validation-logs/delivery-refresh-round5/electron-macos-build-latest-base.log`
+  - `validation-logs/delivery-refresh-round5/desktop-build-verification-latest-base.log`
+  - `validation-logs/delivery-refresh-round5/delivery-artifact-verification.log`
+- Release/deployment: none. The base-provided `1.4.48` version was not changed;
+  no tag, publication, or deployment was created by this ticket.
+- Residual risks: a genuinely stalled compactor child may remain allocated up
+  to three minutes longer; managed compactor output remains stochastic; live
+  provider breadth, unknown external consumers, unrelated test debt, and
+  approved historical continuation-card retention remain non-blocking.
+- Verification state: renewed explicit user verification is required because
+  both the server behavior and desktop candidate changed after `DR-004`.
+- Current result: `Pass — latest-base Electron 1.4.48 candidate ready for renewed
+  explicit user verification`
+
+## DR-006 — User verification accepted and finalization authorized
+
+- Date: 2026-08-11
+- Trigger: The user stated, “i have tested. lets finalize and release a new
+  version.”
+- Verification result: the user explicitly accepted the `DR-005` Electron
+  `1.4.48` candidate built from integrated HEAD
+  `2d5f64d65a58e5fd3394f6a8aa5f143e4c732864`.
+- Required post-acceptance refresh: `git fetch origin personal` Pass.
+  `origin/personal` remained
+  `c6080a4fbee5541c48c898dc1346ac67fcf9c2d6`, with zero commits added since
+  the verified base; the ticket remained behind 0 / ahead 8 and the target
+  remained an ancestor of HEAD.
+- Verification impact: the target did not advance, so the verified product tree
+  and Electron artifact remain current. No renewed verification cycle is
+  required.
+- Ticket transition: moved from the active ticket queue to the archived path
+  `tickets/done/simplify-native-tool-continuation`.
+- Release decision: the next stable version is `1.4.49`; curated release notes
+  are prepared for the documented root release helper.
+- Repository finalization: authorized and in progress. Exact ticket/target
+  commits, pushes, tag, rollout status, and cleanup results will be recorded in
+  the next delivery revision after execution.
+- Current result: `Pass — explicit verification complete; finalization and
+  v1.4.49 release authorized`

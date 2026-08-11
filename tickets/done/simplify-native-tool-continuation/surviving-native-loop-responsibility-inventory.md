@@ -2,7 +2,7 @@
 
 ## Status And Purpose
 
-- Canonical path: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/surviving-native-loop-responsibility-inventory.md`
+- Canonical path: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/surviving-native-loop-responsibility-inventory.md`
 - Type: Evidence and design-context supplement.
 - Purpose: Classify suspected post-removal abstractions by real production reachability and current lifecycle responsibility so implementation does not delete necessary native behavior merely because a name sounds historical.
 - Supported core artifacts: `investigation-notes.md`, `requirements.md`, and the later `design-spec.md`.

@@ -17,9 +17,9 @@
 
 ### CRR-001 — Initial native-loop simplification implementation review
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round `1`
-- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/implementation-handoff.md`; UC-001–UC-010 / DS-001–DS-013; no finding IDs
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/implementation-handoff.md`; UC-001–UC-010 / DS-001–DS-013; no finding IDs
 - Relevant solution revision IDs: `SR-001`
 - Relevant architecture-review revision IDs: `ARCH-REV-001`
 - Relevant implementation revision IDs: `IR-001`
@@ -40,9 +40,9 @@ None.
 
 ### CRR-002 — Initial proportional review of API/E2E durable coverage
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/api-e2e-test-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/api-e2e-test-review-report.md`
 - Review entry point and round: `Successful API/E2E Test-Code Review`, round `1`
-- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/api-e2e-execution-coverage-report.md`; `API-E2E-001`–`API-E2E-010`, `LIVE-NATIVE-001`, `LIVE-NOTOOL-001`, `SECRET-IMPORT-001`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/api-e2e-execution-coverage-report.md`; `API-E2E-001`–`API-E2E-010`, `LIVE-NATIVE-001`, `LIVE-NOTOOL-001`, `SECRET-IMPORT-001`
 - Relevant solution revision IDs: `SR-001`
 - Relevant architecture-review revision IDs: `ARCH-REV-001`
 - Relevant implementation revision IDs: `IR-001`
@@ -63,9 +63,9 @@ None; this is the initial proportional test-review result.
 
 ### CRR-003 — Missing retained root schema export confirmed as implementation defect
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/code-review-report.md`
 - Review entry point and round: `API/E2E Failure-Origin Review`, round `2`
-- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/api-e2e-execution-coverage-report.md`; `API-REV-002`, `API-E2E-004`, `API-E2E-F-001`, AC-012
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/api-e2e-execution-coverage-report.md`; `API-REV-002`, `API-E2E-004`, `API-E2E-F-001`, AC-012
 - Relevant solution revision IDs: `SR-001`
 - Relevant architecture-review revision IDs: `ARCH-REV-001`
 - Relevant implementation revision IDs: `IR-001`
@@ -89,9 +89,9 @@ None; this is the initial proportional test-review result.
 
 ### CRR-004 — IR-002 restores the retained root schema contract
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/code-review-report.md`
 - Review entry point and round: `Implementation Review`, rework round `3`
-- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/implementation-handoff.md`; `IR-002`, `CR-001`, prior `API-E2E-F-001`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/implementation-handoff.md`; `IR-002`, `CR-001`, prior `API-E2E-F-001`
 - Relevant solution revision IDs: `SR-001`
 - Relevant architecture-review revision IDs: `ARCH-REV-001`
 - Relevant implementation revision IDs: `IR-001`, `IR-002`
@@ -115,9 +115,9 @@ None; this is the initial proportional test-review result.
 
 ### CRR-005 — Corrected retained-root contract coverage passes proportional re-review
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/api-e2e-test-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/api-e2e-test-review-report.md`
 - Review entry point and round: `Successful API/E2E Test-Code Review`, proportional re-review round `2`
-- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/api-e2e-execution-coverage-report.md`; `API-REV-003`, resolved `API-E2E-F-001`, `TR-001`, `CR-001`, AC-012
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/api-e2e-execution-coverage-report.md`; `API-REV-003`, resolved `API-E2E-F-001`, `TR-001`, `CR-001`, AC-012
 - Relevant solution revision IDs: `SR-001`
 - Relevant architecture-review revision IDs: `ARCH-REV-001`
 - Relevant implementation revision IDs: `IR-001`, `IR-002`
@@ -141,9 +141,9 @@ None; this is the initial proportional test-review result.
 
 ### CRR-006 — Supplemental compaction verification has no durable test delta
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/api-e2e-test-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/api-e2e-test-review-report.md`
 - Review entry point and round: `Successful API/E2E Test-Code Review`, proportional round `3`
-- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/api-e2e-execution-coverage-report.md`; `API-REV-004`, supplemental `LIVE-COMPACTION-PCT-001`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/api-e2e-execution-coverage-report.md`; `API-REV-004`, supplemental `LIVE-COMPACTION-PCT-001`
 - Relevant solution revision IDs: `SR-001`
 - Relevant architecture-review revision IDs: `ARCH-REV-001`
 - Relevant implementation revision IDs: `IR-001`, `IR-002`
@@ -165,9 +165,9 @@ None. All prior findings were already resolved; API-REV-004 introduced no new fa
 
 ### CRR-007 — IR-003 implements the five-minute ordinary server compaction completion default
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round `4`
-- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/implementation-handoff.md`; `IR-003`, BEH-011 / REQ-013 / AC-016; no finding IDs
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/implementation-handoff.md`; `IR-003`, BEH-011 / REQ-013 / AC-016; no finding IDs
 - Relevant solution revision IDs: `SR-001`, `SR-002`
 - Relevant architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`
 - Relevant implementation revision IDs: `IR-001`, `IR-002`, `IR-003`
@@ -189,9 +189,9 @@ None. `TR-001` and `CR-001` were already resolved; IR-003 does not affect their 
 
 ### CRR-008 — AC-016 durable timeout and current parent-integration coverage pass review
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/api-e2e-test-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/api-e2e-test-review-report.md`
 - Review entry point and round: `Successful API/E2E Test-Code Review`, proportional round `4`
-- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/api-e2e-execution-coverage-report.md`; `API-REV-005`, BEH-011 / AC-016; no failure ID
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/api-e2e-execution-coverage-report.md`; `API-REV-005`, BEH-011 / AC-016; no failure ID
 - Relevant solution revision IDs: `SR-001`, `SR-002`
 - Relevant architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`
 - Relevant implementation revision IDs: `IR-001`–`IR-003`

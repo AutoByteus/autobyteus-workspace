@@ -46,7 +46,7 @@ This is a fresh follow-up refactor. It does not reopen or extend the finalized `
 
 | Artifact Path | Type / Purpose | Related Requirement IDs | Related Acceptance-Criteria IDs | Status / Approval | Relationship To Requirements |
 | --- | --- | --- | --- | --- | --- |
-| `tickets/in-progress/simplify-native-tool-continuation/surviving-native-loop-responsibility-inventory.md` | Evidence/context classification of each suspected layer | REQ-001 through REQ-012 | AC-001 through AC-015 | Complete / Approval `N/A` | Supports the removal/retention boundary; intended behavior remains in this requirements doc. |
+| `tickets/done/simplify-native-tool-continuation/surviving-native-loop-responsibility-inventory.md` | Evidence/context classification of each suspected layer | REQ-001 through REQ-012 | AC-001 through AC-015 | Complete / Approval `N/A` | Supports the removal/retention boundary; intended behavior remains in this requirements doc. |
 
 ## Design Health Assessment (Mandatory)
 

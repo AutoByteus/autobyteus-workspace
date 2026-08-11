@@ -29,7 +29,7 @@ After API-REV-004 validated compaction and continuation on the integrated delive
 
 - Project Type: `Git`
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation`
 - Current Branch: `codex/simplify-native-tool-continuation`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation`
 - Bootstrap Base Branch: refreshed `origin/personal`
@@ -47,7 +47,7 @@ After API-REV-004 validated compaction and continuation on the integrated delive
 
 | Artifact Path | Purpose And Scope | Evidence, Context, Or Decision Captured | Core Artifact(s) Supported | Related Requirement / Acceptance-Criteria IDs | Status | Approval Applicability / State | Follow-Up Needed |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/surviving-native-loop-responsibility-inventory.md` | Classifies each candidate layer as remove, contract, or retain | Production callers, current responsibility, public surface, candidate target posture, deletion and coverage surface | Requirements, investigation, later design | REQ-001–REQ-012; AC-001–AC-015 | Complete | `N/A` — evidence/context only | Keep aligned with approved design |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/surviving-native-loop-responsibility-inventory.md` | Classifies each candidate layer as remove, contract, or retain | Production callers, current responsibility, public surface, candidate target posture, deletion and coverage surface | Requirements, investigation, later design | REQ-001–REQ-012; AC-001–AC-015 | Complete | `N/A` — evidence/context only | Keep aligned with approved design |
 
 ## Source Log
 

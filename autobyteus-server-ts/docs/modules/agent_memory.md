@@ -164,6 +164,15 @@ Settings -> Server Settings -> Basics uses these reads for a registry-backed Com
 
 The `structured-json` strategy always invokes the built-in `autobyteus-memory-compactor`; blank launch fields inherit the parent run's runtime/model. `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` is no longer a predefined setting or runtime selection path. A stale custom value is inert, and a missing/invalid built-in definition fails without arbitrary-agent fallback.
 
+`ServerCompactionAgentRunner` allows an ordinarily constructed compactor child
+up to 300,000 ms (five minutes) to return its final output. This is a
+runner-owned omitted-option default, not an application setting:
+`ServerCompactionAgentRunnerOptions.timeoutMs` remains the authoritative
+explicit override for tests or custom construction. On timeout or another
+failure, the existing typed error projection, event unsubscription, and child
+run termination still apply; unrelated process, server-start, and test timeout
+policies are not derived from this value.
+
 Compaction status metadata includes stable `compaction_strategy_id` and `compaction_strategy_name` in addition to operation/turn and current runner diagnostics. A resolver, strategy, validation, or replacement failure preserves the pending request and does not emit a false completed state.
 
 Codex and Claude runs are recorded by the server as **raw-trace-only** local memory:

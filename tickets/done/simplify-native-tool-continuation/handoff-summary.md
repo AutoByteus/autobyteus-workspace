@@ -2,27 +2,30 @@
 
 ## Delivery State
 
-- Status: `Ready for explicit user verification`
+- Status: `User verified — repository finalization and v1.4.49 release authorized`
 - Ticket branch: `codex/simplify-native-tool-continuation`
 - Finalization target: `origin/personal`
-- Reviewed implementation: `0891e42f0ebdd2db5f0d1b2bd746abdb1e115668`
+- Reviewed implementation: `7aa4bc6d7f3216db8dfc703eaf5ebfbc67da3804`
 - Delivery safety checkpoint: `c06db9a2bda018941e7b432fadc98475f355cb08`
 - Delivery-artifact checkpoint: `4531ac7cf2667be5d3524a96bd288beaeb593282`
-- Latest-base merge commit: `012257323d5b7303184ca7c5f385602c6a6914f3`
-- Current delivery revision: `DR-004`
+- SR-002 delivery checkpoint: `aed99b8f33c8ede393eb5edacffbf489ebcfec33`
+- Latest-base merge commit: `2d5f64d65a58e5fd3394f6a8aa5f143e4c732864`
+- Current delivery revision: `DR-006`
 
 ## Integrated-State Refresh
 
 - Bootstrap base: `origin/personal`
   `3cddeec6b93602da172fec2e7b9a80acc7c05117`.
 - Latest refresh command: `git fetch origin personal` — exit 0.
-- Latest refreshed base: `d0bcd0dab2263fa284cf07de8d98214e5d19af73`.
-- New base commits since bootstrap: `41`.
+- Latest refreshed base: `c6080a4fbee5541c48c898dc1346ac67fcf9c2d6`.
+- Latest base advance: `6` commits since the prior refreshed base; `47` total
+  since bootstrap.
 - Integration method: merge after local delivery-artifact checkpoint.
 - Integration result: Pass, no conflicts.
-- Ticket relation to target: behind `0`, ahead `5`; refreshed base is an
+- Ticket relation to target: behind `0`, ahead `8`; refreshed base is an
   ancestor of integrated HEAD.
-- Post-integration executable check: full README-path macOS Electron rebuild
+- Post-integration executable check: runner/collector/parent-fallback matrix
+  passed 3 files / 19 tests; the full README-path macOS Electron rebuild also
   passed. A second fetch after the build confirmed the remote had not advanced.
 - Evidence: `delivery-integration-evidence.log`.
 
@@ -40,12 +43,17 @@
   preserved and directly readable.
 - Retired names/subpaths are removed without aliases or wrappers; the five
   required root exports resolve to canonical identities.
+- Ordinary server compactor children now have a runner-owned five-minute
+  completion wait. Explicit `timeoutMs` injection still overrides it, and
+  failure cleanup still unsubscribes and terminates the child.
 
 ## Documentation Synchronized
 
-Eight long-lived `autobyteus-ts` architecture documents now describe the
-integrated implementation. Public contraction and persisted-data guidance are
-in `release-notes.md`. Details are in `docs-sync-report.md`.
+Eight long-lived `autobyteus-ts` architecture documents describe the native-loop
+contraction. `autobyteus-server-ts/docs/modules/agent_memory.md` now also records
+the five-minute compactor completion policy. Public contraction, persisted-data,
+and operational guidance are in `release-notes.md`; details are in
+`docs-sync-report.md`.
 
 ## Desktop Test Build
 
@@ -55,26 +63,29 @@ in `release-notes.md`. Details are in `docs-sync-report.md`.
 - Application:
   `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
 - DMG:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.47.dmg`
-- Build identity: version `1.4.47`, macOS ARM64, bundle
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.48.dmg`
+- Build identity: version `1.4.48`, macOS ARM64, bundle
   `com.autobyteus.app`.
 - Signing/notarization: intentionally skipped for this local test build.
 - Packaged-source verification: current unified handler, pure continuation
   builder, schema provider, and latest-base Qwen provider are present; retired
   continuation modules are absent.
-- Evidence: `validation-logs/delivery-refresh/pnpm-install-latest-base.log`,
-  `validation-logs/delivery-refresh/electron-macos-build-latest-base.log`, and
-  `validation-logs/delivery-refresh/desktop-build-verification-latest-base.log`.
+- Packaged timeout verification: the bundled server runner contains the exact
+  `300_000` default and forwards `this.timeoutMs` to its output collector.
+- Evidence:
+  `validation-logs/delivery-refresh-round5/pnpm-install-latest-base.log`,
+  `validation-logs/delivery-refresh-round5/electron-macos-build-latest-base.log`,
+  and
+  `validation-logs/delivery-refresh-round5/desktop-build-verification-latest-base.log`.
 
 ## Authoritative Verification
 
-- Source review: `CRR-004` Pass, 9.7/10.
-- API/E2E: `API-REV-004` Pass, 98.2% confidence, no remaining failure
+- Source review: `CRR-007` Pass, 9.7/10, reviewed IR-003 commit
+  `7aa4bc6d7f3216db8dfc703eaf5ebfbc67da3804`.
+- API/E2E: `API-REV-005` Pass, 98.8% confidence, no remaining failure
   IDs.
-- Supplemental proportional review: `CRR-006` Not Applicable because round 4
-  changed zero repository-resident source, test, fixture, or harness paths.
-- Prior proportional durable-test review: `CRR-005` Pass remains authoritative,
-  with no findings.
+- Proportional durable-test review: `CRR-008` Pass, no findings across the two
+  updated compaction test paths.
 - Corrected root contract: 35/35 Pass.
 - Package build and compiled five-symbol exact-identity probe: Pass.
 - Real managed-provider evidence retained from round 1: OpenAI no-tool Pass;
@@ -83,8 +94,9 @@ in `release-notes.md`. Details are in `docs-sync-report.md`.
   `git diff --check` Pass.
 - Local macOS ARM64 Electron package build: Pass; application, DMG, ZIP, and
   blockmaps produced.
-- Latest-base integration: Pass; 41 newer base commits merged without conflict,
-  Electron `1.4.47` rebuilt, and post-build remote recheck remained current.
+- Latest-base integration: Pass; six newer base commits merged without conflict,
+  the focused integrated-state matrix passed 19/19, Electron `1.4.48` rebuilt,
+  and post-build remote recheck remained current.
 
 ## Supplemental Compaction Verification
 
@@ -105,8 +117,22 @@ in `release-notes.md`. Details are in `docs-sync-report.md`.
   unchanged DeepSeek rerun, and independent LM Studio execution passed. This is
   a disclosed stochastic provider-model risk, not an open source/test failure.
 - Because the supplemental round was evidence-only on the same integrated
-  commit, the `DR-003` Electron `1.4.47` build remains the current desktop
-  verification candidate; no duplicate rebuild was needed.
+  commit, it remained valid evidence for the later SR-002 package. The desktop
+  artifact itself was rebuilt after SR-002 and the latest-base refresh.
+
+## Compaction Completion Wait
+
+- Ordinary `ServerCompactionAgentRunner` construction now passes exactly
+  `300_000` ms to `CompactionRunOutputCollector.waitForFinalOutput(...)`.
+- An explicit injected timeout remains authoritative; deterministic coverage
+  observed default `300_000` and override `17` without waiting five minutes.
+- Timeout-shaped failure retains typed execution metadata, exactly one
+  unsubscription, an empty listener set, and exactly one child termination.
+- The corrected current-backend collector/parent-fallback integration passes
+  12/12; the broader compaction unit matrix passes 26/26.
+- Delivery-integrated focused rerun after the latest-base merge passes 3 files /
+  19 tests, and the rebuilt Electron bundle contains the exact default and
+  collector forwarding.
 
 ## Suggested User Verification
 
@@ -116,6 +142,21 @@ in `release-notes.md`. Details are in `docs-sync-report.md`.
    completion.
 3. If relevant to your workflow, exercise one context/media-producing tool and
    confirm the next response receives the media carrier.
+4. Exercise a slow or large-context compaction workload and confirm it may run
+   beyond two minutes without the old completion timeout terminating it.
+
+## User Verification
+
+- Received: `2026-08-11`.
+- Acceptance reference: user stated, “i have tested. lets finalize and release
+  a new version.”
+- Verified candidate: `DR-005`, integrated HEAD
+  `2d5f64d65a58e5fd3394f6a8aa5f143e4c732864`, Electron `1.4.48`.
+- Required post-acceptance refresh: Pass. `origin/personal` remained
+  `c6080a4fbee5541c48c898dc1346ac67fcf9c2d6`, with zero commits added since
+  the verified base; renewed verification is not required.
+- Authorized action: repository finalization followed by the documented stable
+  release flow for version `1.4.49`.
 
 ## Residual Non-Blocking Risks
 
@@ -127,11 +168,15 @@ in `release-notes.md`. Details are in `docs-sync-report.md`.
   enumerated and must update imports.
 - Historical continuation cards remain visible/readable in existing data by the
   approved no-migration design.
+- A genuinely stalled compactor child can remain allocated for up to three
+  minutes longer before the unchanged timeout/finally cleanup terminates it.
 
 No critical acceptance criterion remains unproven.
 
-## Verification Hold
+## Finalization Authorization
 
-The ticket remains under `tickets/in-progress`. No ticket-branch push,
-finalization-target merge/push, archive move, version/tag/release/deployment, or
-worktree/branch cleanup will run until explicit user verification is received.
+The required explicit verification has been received and the ticket is archived
+under `tickets/done/simplify-native-tool-continuation`. Repository finalization,
+the documented `v1.4.49` release, rollout verification, and safe ticket
+worktree/branch cleanup are authorized and in progress. This artifact will be
+updated with exact commits, tag, and rollout results after execution.

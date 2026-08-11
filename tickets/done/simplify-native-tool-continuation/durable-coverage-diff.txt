@@ -109,13 +109,13 @@ d306c1d49ab4352fb813c0f6a761e90a81b402b756eccb781b2a6360434cf6ee  autobyteus-ser
 
 ### Round 5 evidence
 
-Canonical diff: /Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/validation-logs/round5/api-durable-coverage-round5.diff
-Focused runner: tickets/in-progress/simplify-native-tool-continuation/validation-logs/round5/api-server-compaction-agent-runner-focused.log
-Collector + parent-fallback rerun: tickets/in-progress/simplify-native-tool-continuation/validation-logs/round5/api-compaction-collector-and-parent-fallback-rerun.log
-Compaction unit matrix: tickets/in-progress/simplify-native-tool-continuation/validation-logs/round5/api-server-compaction-unit-matrix.log
-Server build: tickets/in-progress/simplify-native-tool-continuation/validation-logs/round5/api-server-build-full.log
-Source/diff scan: tickets/in-progress/simplify-native-tool-continuation/validation-logs/round5/api-source-and-diff-contract-scan.log
-Artifact consistency: tickets/in-progress/simplify-native-tool-continuation/validation-logs/round5/api-artifact-consistency.log
+Canonical diff: /Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/validation-logs/round5/api-durable-coverage-round5.diff
+Focused runner: tickets/done/simplify-native-tool-continuation/validation-logs/round5/api-server-compaction-agent-runner-focused.log
+Collector + parent-fallback rerun: tickets/done/simplify-native-tool-continuation/validation-logs/round5/api-compaction-collector-and-parent-fallback-rerun.log
+Compaction unit matrix: tickets/done/simplify-native-tool-continuation/validation-logs/round5/api-server-compaction-unit-matrix.log
+Server build: tickets/done/simplify-native-tool-continuation/validation-logs/round5/api-server-build-full.log
+Source/diff scan: tickets/done/simplify-native-tool-continuation/validation-logs/round5/api-source-and-diff-contract-scan.log
+Artifact consistency: tickets/done/simplify-native-tool-continuation/validation-logs/round5/api-artifact-consistency.log
 
 ### Round 5 integrity
 

@@ -3,18 +3,21 @@
 ## Scope
 
 - Ticket: `simplify-native-tool-continuation`
-- Trigger: reviewed implementation `IR-002`, source review `CRR-004`, API/E2E
-  result `API-REV-004` Pass, prior proportional durable-test review `CRR-005`
-  Pass, and evidence-only proportional checkpoint `CRR-006` Not Applicable.
+- Trigger: cumulative solution revisions `SR-001`–`SR-002`, reviewed
+  implementation `IR-003`, source review `CRR-007`, API/E2E result
+  `API-REV-005` Pass, and proportional durable-test review `CRR-008` Pass.
 - Bootstrap base reference: `origin/personal` at
   `3cddeec6b93602da172fec2e7b9a80acc7c05117`
 - Integrated base reference used for docs sync: latest refreshed
-  `origin/personal` at `d0bcd0dab2263fa284cf07de8d98214e5d19af73`;
-  integrated ticket HEAD `012257323d5b7303184ca7c5f385602c6a6914f3`
+  `origin/personal` at `c6080a4fbee5541c48c898dc1346ac67fcf9c2d6`;
+  integrated ticket HEAD `2d5f64d65a58e5fd3394f6a8aa5f143e4c732864`
 - Post-integration verification reference:
   `delivery-integration-evidence.log` and
-  `validation-logs/delivery-refresh/desktop-build-verification-latest-base.log`.
-  The advanced base was merged and the full local Electron package rebuilt.
+  `validation-logs/delivery-refresh-round5/post-integration-compaction-focused.log`
+  and
+  `validation-logs/delivery-refresh-round5/desktop-build-verification-latest-base.log`.
+  The advanced base was merged, the affected compaction matrix passed 19/19,
+  and the full local Electron package was rebuilt.
 
 ## Why Docs Were Updated
 
@@ -26,6 +29,10 @@
   streaming, result persistence, same-turn continuation, and package consumers.
   Leaving the old names and ownership rules would encourage deleted APIs and
   duplicate control flow.
+- SR-002 docs impact: The server compaction runner's ordinary five-minute
+  completion wait is a durable runtime ownership/policy fact. It belongs in the
+  canonical server agent-memory module documentation rather than only in ticket
+  or release artifacts.
 
 ## Long-Lived Docs Reviewed
 
@@ -43,6 +50,7 @@
 | `autobyteus-ts/docs/llm_module_design_nodejs.md` | Node request/history rendering context | No change | Its structural provider-history description remains accurate. |
 | `autobyteus-ts/docs/provider_model_catalogs.md` | Checked generic “native tool continuation” wording | No change | The phrase describes supported behavior, not a removed mode or component. |
 | `autobyteus-server-ts/docs/modules/agent_execution.md` | Checked downstream “streaming handlers” wording | No change | It refers to frontend/server projection and is not the removed core handler hierarchy. |
+| `autobyteus-server-ts/docs/modules/agent_memory.md` | Canonical server-native compaction ownership and operational policy | Updated | Recorded the runner-owned omitted-option 300,000 ms completion wait, explicit override precedence, unchanged cleanup, and exclusion of unrelated timeout policies. |
 
 ## Docs Updated
 
@@ -56,6 +64,7 @@
 | `autobyteus-ts/docs/event_driven_core_design.md` | Ownership/extension correction | Current collaborators and responsibility-specific extension points | Aligns the event-driven overview with implemented control flow. |
 | `autobyteus-ts/docs/lifecycle_event_sourced_engine_design.md` | Implemented flow correction | Current tool/continuation owners and emitted state | Keeps the appendix executable-state accurate. |
 | `autobyteus-ts/docs/tool_schema_and_configuration.md` | Schema-boundary correction | Direct conditional provider schema creation | Matches `LlmPhase`. |
+| `autobyteus-server-ts/docs/modules/agent_memory.md` | Runtime-policy synchronization | Ordinary `ServerCompactionAgentRunner` completion wait is five minutes; explicit `timeoutMs` remains authoritative; failure cleanup is unchanged | Keeps durable server compaction ownership and operational expectations aligned with BEH-011/AC-016. |
 
 ## Durable Design / Runtime Knowledge Promoted
 
@@ -67,6 +76,7 @@
 | Structural continuation | `ToolContinuationInputBuilder` is pure; `AgentInputPipeline` returns null without media and an `LLMUserMessage` with media; both use `prepareRequest(...)`. | `requirements.md`, `design-spec.md` | `api_tool_call_streaming_design.md`, `turn_terminology.md`, `event_driven_core_design.md` |
 | Persisted-data outcome | New coordination-only marker writes stop; historical generic records stay readable/inert with no migration. | `requirements.md`, `api-e2e-execution-coverage-report.md` | `api_tool_call_streaming_design.md` |
 | Public package boundary | Five canonical root identities remain; old handler/factory/mode/processor names and subpaths are absent without aliases. | `requirements.md`, `api-e2e-test-review-report.md` | `api_tool_call_streaming_design.md`, `release-notes.md` |
+| Compactor completion policy | Ordinary server compactor children have a runner-owned 300,000 ms completion wait; explicit construction overrides it, and timeout cleanup still unsubscribes and terminates the child. | `requirements.md`, `design-spec.md`, `implementation-handoff.md`, `api-e2e-execution-coverage-report.md` | `autobyteus-server-ts/docs/modules/agent_memory.md` |
 
 ## Removed / Replaced Components Recorded
 
@@ -82,15 +92,13 @@
 ## Delivery Continuation
 
 - Result: `Pass`
-- Next delivery action: Present the integrated, documentation-synchronized
-  candidate for explicit user verification. On acceptance, refresh
-  `origin/personal` again before repository finalization.
-- Notes: The latest-base merge introduced no conflict or change in the ticket's
-  core continuation paths. Updated base documentation for providers and wider
-  runtime behavior remains compatible with these ticket-owned docs; the
-  current-doc obsolete-identifier scan passes. Supplemental `API-REV-004`
-  verified the configured 5% compaction thresholds and real post-compaction
-  behavior on the same integrated HEAD without changing source or durable
-  coverage. That evidence confirms the existing compaction/runtime descriptions
-  and creates no additional long-lived documentation impact. The ticket remains
-  in progress and no finalization/release action has run.
+- Next delivery action: Finalize the user-verified candidate into `personal`,
+  then run the documented stable release flow for `v1.4.49`.
+- Notes: The latest-base merge introduced no conflict and did not overlap the
+  SR-002 compaction runner or its reviewed durable coverage. The current-doc
+  obsolete-identifier scan remains applicable to the unchanged SR-001 docs.
+  `agent_memory.md` now records SR-002's exact five-minute owner/default and
+  cleanup boundary. Explicit user verification was received on 2026-08-11;
+  the post-acceptance base refresh found zero new target commits, and the ticket
+  is archived under `tickets/done/simplify-native-tool-continuation` for
+  finalization and release.

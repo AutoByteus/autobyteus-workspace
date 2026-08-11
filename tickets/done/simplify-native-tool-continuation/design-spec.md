@@ -51,7 +51,7 @@ This is a behavior-preserving architectural refactor except for two explicitly a
 
 | Artifact Path | Purpose | Related Requirement / Acceptance-Criteria IDs (When Applicable) | Relationship To This Design | Status / Approval Applicability |
 | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/surviving-native-loop-responsibility-inventory.md` | Classifies every suspected layer as remove, contract, or retain using production reachability | REQ-001–REQ-012; AC-001–AC-015 | Supplies the evidence boundary for the removal plan and prevents deletion of still-valid lifecycle owners | Complete / Approval N/A (evidence/context) |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/surviving-native-loop-responsibility-inventory.md` | Classifies every suspected layer as remove, contract, or retain using production reachability | REQ-001–REQ-012; AC-001–AC-015 | Supplies the evidence boundary for the removal plan and prevents deletion of still-valid lifecycle owners | Complete / Approval N/A (evidence/context) |
 
 ## Task Design Health Assessment (Mandatory)
 
