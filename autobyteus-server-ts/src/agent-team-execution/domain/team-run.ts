@@ -10,11 +10,12 @@ import type { TeamRunConfig } from "./team-run-config.js";
 import type { TeamRunBackend } from "../backends/team-run-backend.js";
 import type { RuntimeTeamRunContext, TeamRunContext } from "./team-run-context.js";
 import type { TeamRunEvent, TeamRunEventListener, TeamRunEventUnsubscribe } from "./team-run-event.js";
-import type { StartTaskAgentInstanceRequest } from "./task-agent-instance.js";
-import type { StartTaskTeamInstanceRequest } from "./task-team-instance.js";
+import type { StartTaskAgentExecutionRequest } from "./task-agent-execution.js";
+import type { StartTaskTeamExecutionRequest } from "./task-team-execution.js";
 import type { MemberLogicalAddressContext } from "./member-logical-address-context.js";
 import { createTeamExecutionAddress, type TeamExecutionAddress } from "./team-execution-address.js";
 import type { TeamMemberExecutionCommand } from "./team-member-execution-command.js";
+import type { TaskActivationEventLease } from "../services/task-activation-event-barrier.js";
 
 export class TeamRun {
   readonly context: TeamRunContext<RuntimeTeamRunContext>;
@@ -105,22 +106,43 @@ export class TeamRun {
   settleMember(address: string, targetAgentRunId: string | null = null, reason: string | null = null) {
     return this.backend.settleMember(assertAgentTeamAddress(address), targetAgentRunId, reason);
   }
-  startTaskAgentInstance(request: StartTaskAgentInstanceRequest) {
-    return this.backend.startTaskAgentInstance(request);
+  startTaskAgentExecution(request: StartTaskAgentExecutionRequest) {
+    return this.backend.startTaskAgentExecution(request);
   }
-  settleTaskAgentInstance(address: string, taskAgentRunId: string, reason: string | null = null) {
-    return this.backend.settleTaskAgentInstance(assertAgentTeamAddress(address), taskAgentRunId, reason);
+  releaseTaskAgentExecutionWork(address: string, taskAgentRunId: string): void {
+    this.backend.releaseTaskAgentExecutionWork(assertAgentTeamAddress(address), taskAgentRunId);
   }
-  startTaskTeamInstance(request: StartTaskTeamInstanceRequest) {
-    return this.backend.startTaskTeamInstance(request);
+  settleTaskAgentExecution(address: string, taskAgentRunId: string, reason: string | null = null) {
+    return this.backend.settleTaskAgentExecution(assertAgentTeamAddress(address), taskAgentRunId, reason);
   }
-  postMessageToTaskTeamInstance(address: string, taskTeamRunId: string, message: AgentInputUserMessage) {
-    return this.backend.postMessageToTaskTeamInstance(assertAgentTeamAddress(address), taskTeamRunId, message);
+  startTaskTeamExecution(request: StartTaskTeamExecutionRequest) {
+    return this.backend.startTaskTeamExecution(request);
   }
-  settleTaskTeamInstance(address: string, taskTeamRunId: string, reason: string | null = null) {
-    return this.backend.settleTaskTeamInstance(assertAgentTeamAddress(address), taskTeamRunId, reason);
+  markTaskTeamExecutionActive(taskTeamRunId: string): void {
+    this.backend.markTaskTeamExecutionActive(taskTeamRunId);
+  }
+  releaseTaskTeamExecutionWork(address: string, taskTeamRunId: string): void {
+    this.backend.releaseTaskTeamExecutionWork(assertAgentTeamAddress(address), taskTeamRunId);
+  }
+  postMessageToTaskTeamExecution(address: string, taskTeamRunId: string, message: AgentInputUserMessage) {
+    return this.backend.postMessageToTaskTeamExecution(assertAgentTeamAddress(address), taskTeamRunId, message);
+  }
+  settleTaskTeamExecution(address: string, taskTeamRunId: string, reason: string | null = null) {
+    return this.backend.settleTaskTeamExecution(assertAgentTeamAddress(address), taskTeamRunId, reason);
   }
   publishEvent(event: TeamRunEvent): void { this.backend.publishEvent(event); }
+  openTaskActivationEventLease(executionAddress: TeamExecutionAddress): TaskActivationEventLease {
+    return this.backend.openTaskActivationEventLease(createTeamExecutionAddress(executionAddress));
+  }
+  assertTaskActivationEventLeaseWithinBudget(lease: TaskActivationEventLease): void {
+    this.backend.assertTaskActivationEventLeaseWithinBudget(lease);
+  }
+  commitTaskActivationEventLease(lease: TaskActivationEventLease, activationEvent: TeamRunEvent): void {
+    this.backend.commitTaskActivationEventLease(lease, activationEvent);
+  }
+  abortTaskActivationEventLease(lease: TaskActivationEventLease): void {
+    this.backend.abortTaskActivationEventLease(lease);
+  }
   terminate(): Promise<AgentOperationResult> { return this.backend.terminate(); }
 }
 

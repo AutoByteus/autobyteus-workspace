@@ -1,5 +1,4 @@
 import {
-  EMPTY_TEAM_COMMUNICATION_PROJECTION,
   type TeamCommunicationMessage,
   type TeamCommunicationProjection,
   type TeamCommunicationReferenceFile,
@@ -109,7 +108,13 @@ export const normalizeTeamCommunicationProjection = (
   projection: { teamRunId?: unknown; messages?: unknown } | null | undefined,
   options: { teamRunId?: string | null } = {},
 ): TeamCommunicationProjection => {
-  const teamRunId = text(projection?.teamRunId) ?? text(options.teamRunId) ?? EMPTY_TEAM_COMMUNICATION_PROJECTION.teamRunId;
+  const expectedTeamRunId = text(options.teamRunId);
+  const storedTeamRunId = text(projection?.teamRunId);
+  if (expectedTeamRunId && storedTeamRunId && expectedTeamRunId !== storedTeamRunId) {
+    throw new Error(`Team communication projection '${storedTeamRunId}' does not match '${expectedTeamRunId}'.`);
+  }
+  const teamRunId = expectedTeamRunId ?? storedTeamRunId;
+  if (!teamRunId) throw new Error("Team communication projection requires a TeamRun ID.");
   const byId = new Map<string, TeamCommunicationMessage>();
   for (const value of Array.isArray(projection?.messages) ? projection.messages : []) {
     const record = asRecord(value);

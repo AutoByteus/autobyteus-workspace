@@ -4,7 +4,8 @@ import type { AgentOperationResult } from "../../../../agent-execution/domain/ag
 import type { TeamRun } from "../../../domain/team-run.js";
 import type { TeamRunContext } from "../../../domain/team-run-context.js";
 import type { InterAgentMessageDeliveryHandler, ResolvedInterAgentMessageDeliveryRequest } from "../../../domain/inter-agent-message-delivery.js";
-import type { StartTaskTeamInstanceRequest } from "../../../domain/task-team-instance.js";
+import type { StartTaskTeamExecutionRequest } from "../../../domain/task-team-execution.js";
+import { createActiveTaskExecutionBinding } from "../../../task-delegation/active-task-execution-binding.js";
 import type { MixedSubTeamRunFactory } from "../mixed-sub-team-run-factory.js";
 import { MixedSubTeamMemberContext, type MixedTeamRunContext } from "../mixed-team-run-context.js";
 import type { TaskTeamActiveRunDirectory } from "../../../task-delegation/task-team-active-run-directory.js";
@@ -17,7 +18,7 @@ export class MixedTaskTeamMemberHandle implements MixedTeamMemberHandle {
 
   constructor(private readonly options: {
     parentContext: TeamRunContext<MixedTeamRunContext>;
-    request: StartTaskTeamInstanceRequest;
+    request: StartTaskTeamExecutionRequest;
     subTeamRunFactory: MixedSubTeamRunFactory;
     taskTeamActiveRunDirectory: TaskTeamActiveRunDirectory;
     publish: MixedTeamEventPublish;
@@ -26,7 +27,7 @@ export class MixedTaskTeamMemberHandle implements MixedTeamMemberHandle {
     this.context = new MixedSubTeamMemberContext({
       address: options.request.teamNode.address,
       teamDefinitionId: options.request.teamNode.teamDefinitionId,
-      teamRunId: options.request.identity.taskTeamRunId,
+      teamRunId: options.request.teamNode.teamRunId,
     });
   }
 
@@ -34,7 +35,7 @@ export class MixedTaskTeamMemberHandle implements MixedTeamMemberHandle {
   getLeafAgentStatusSnapshots() { return this.childRun?.getLeafAgentStatusSnapshots() ?? []; }
   hasOpenExecutionWork() { return this.childRun?.hasOpenExecutionWork() ?? false; }
 
-  async start() { return this.postMessage(this.options.request.message); }
+  async prepare() { await this.ensureReady(); }
   async postMessage(message: AgentInputUserMessage) {
     return (await this.ensureReady()).postMessage(message, this.options.request.teamNode.coordinatorAddress);
   }
@@ -60,7 +61,7 @@ export class MixedTaskTeamMemberHandle implements MixedTeamMemberHandle {
   dispose(): void {
     this.unsubscribe?.(); this.unsubscribe = null; this.childRun = null;
     this.context.childRuntimeContext = null;
-    this.options.taskTeamActiveRunDirectory.unbind(this.options.request.identity.taskTeamRunId);
+    this.options.taskTeamActiveRunDirectory.unbind(this.options.request.teamNode.teamRunId);
   }
 
   private async ensureReady(): Promise<TeamRun> {
@@ -75,11 +76,18 @@ export class MixedTaskTeamMemberHandle implements MixedTeamMemberHandle {
         parentTeamAddress: this.options.parentContext.teamAddress,
         deliverInterAgentMessage: this.options.deliverInterAgentMessage,
       },
-      taskTeamInstance: this.options.request.identity,
+      taskId: this.options.request.taskId,
       taskTeamRunIds: this.options.request.receiver.taskTeamRunIds,
     });
     this.context.childRuntimeContext = this.childRun.getRuntimeContext() as MixedTeamRunContext;
-    this.options.taskTeamActiveRunDirectory.bindActiveRun(this.options.request.identity, this.childRun);
+    this.options.taskTeamActiveRunDirectory.bindStartingRun(createActiveTaskExecutionBinding({
+      kind: "task_team",
+      taskId: this.options.request.taskId,
+      executionAddress: {
+        ...this.options.request.receiver,
+        memberAddress: this.options.request.teamNode.address,
+      },
+    }), this.childRun);
     this.unsubscribe = this.childRun.subscribeToEvents(this.options.publish);
     return this.childRun;
   }

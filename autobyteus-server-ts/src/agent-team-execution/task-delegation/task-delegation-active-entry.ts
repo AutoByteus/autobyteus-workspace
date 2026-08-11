@@ -1,5 +1,5 @@
 import type { TeamExecutionAddress } from "../domain/team-execution-address.js";
-import type { TaskExecutionInstance } from "./task-execution-instance.js";
+import type { ActiveTaskExecutionBinding } from "./active-task-execution-binding.js";
 import type { TaskDelegationPersistenceScope } from "./task-delegation-persistence-scope.js";
 import type { TaskDelegationDelegatorIdentity, TaskDelegationRecord, TaskReferenceFile } from "./task-delegation-record.js";
 import type { TaskDelegationTarget } from "./task-delegation-target.js";
@@ -15,7 +15,7 @@ export type ActiveTaskDelegationStartingEntry = {
   receiverTargetKind: "agent" | "agent_team";
   content: string;
   referenceFiles: TaskReferenceFile[];
-  boundExecution: TaskExecutionInstance | null;
+  boundExecution: ActiveTaskExecutionBinding | null;
   delegatorReplyRecipientAddress: string | null;
   delegatorReplyTargetAgentRunId: string | null;
   createdAt: string;
@@ -27,7 +27,7 @@ export type ActiveTaskDelegationRecordEntry = {
   record: TaskDelegationRecord;
   target: TaskDelegationTarget;
   reviewOwner: TaskDelegationDelegatorIdentity;
-  taskRunExecution: TaskExecutionInstance;
+  activeExecution: ActiveTaskExecutionBinding;
   delegatorReplyRecipientAddress: string | null;
   delegatorReplyTargetAgentRunId: string | null;
 };

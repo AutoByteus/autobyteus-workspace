@@ -262,15 +262,8 @@ export const useAgentRunStore = defineStore('agentRun', {
       const existingService = streamingServices.get(runId);
       if (existingService) {
         existingService.attachContext(agent);
-        agent.unsubscribe = () => {
-          existingService.disconnect();
-          streamingServices.delete(runId);
-        };
         if (existingService.connectionState === ConnectionState.DISCONNECTED) {
           existingService.connect(runId, agent);
-          agent.isSubscribed = true;
-        } else {
-          agent.isSubscribed = true;
         }
         return existingService;
       }
@@ -285,14 +278,12 @@ export const useAgentRunStore = defineStore('agentRun', {
       });
       streamingServices.set(runId, service);
 
-      agent.isSubscribed = true;
-      agent.unsubscribe = () => {
-        service.disconnect();
-        streamingServices.delete(runId);
-      };
-
       service.connect(runId, agent);
       return service;
+    },
+
+    isAgentStreamReady(runId: string): boolean {
+      return streamingServices.get(runId)?.connectionState === ConnectionState.CONNECTED;
     },
 
     async ensureAgentStreamConnected(runId: string): Promise<AgentStreamingService> {
@@ -328,10 +319,6 @@ export const useAgentRunStore = defineStore('agentRun', {
       service.disconnect();
       streamingServices.delete(runId);
 
-      if (agent) {
-        agent.isSubscribed = false;
-        agent.unsubscribe = undefined;
-      }
     },
 
     /**
@@ -386,7 +373,7 @@ export const useAgentRunStore = defineStore('agentRun', {
       const context = agentContextsStore.getRun(runId);
 
       const teardownLocalRuntime = () => {
-        if (context?.isSubscribed || streamingServices.has(runId)) {
+        if (streamingServices.has(runId)) {
           this.disconnectAgentStream(runId);
         }
 

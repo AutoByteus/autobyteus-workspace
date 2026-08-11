@@ -3,13 +3,14 @@ import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
+import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useAgentTeamDefinitionStore, type AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore';
 import { useMobileWorkStore } from '~/stores/mobileWorkStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import { useWorkspaceStore } from '~/stores/workspace';
 import type { MobileWorkContext } from '~/types/mobileWork';
-import { parseTeamExecutionAddress, serializeTeamExecutionAddress, type TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
+import type { TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
 export type MobileRunCreationDraft =
   | {
@@ -51,6 +52,7 @@ export function useMobileRunLaunchCoordinator() {
   const agentRunConfigStore = useAgentRunConfigStore();
   const selectionStore = useAgentSelectionStore();
   const teamContextsStore = useAgentTeamContextsStore();
+  const teamRunStore = useAgentTeamRunStore();
   const runHistoryStore = useRunHistoryStore();
   const teamDefinitionStore = useAgentTeamDefinitionStore();
   const teamRunConfigStore = useTeamRunConfigStore();
@@ -139,20 +141,18 @@ export function useMobileRunLaunchCoordinator() {
       throw new Error('Created team run is not available.');
     }
 
-    const currentFocus = team.focusedExecutionAddress;
-    if (team.agentExecutionsByKey.has(serializeTeamExecutionAddress(currentFocus))) {
+    const currentFocus = team.executions.getFocusedAddress();
+    if (team.executions.getAgentContext(currentFocus)) {
       mobileWorkStore.rememberFocusedTeamMember(teamRunId, currentFocus);
       return currentFocus;
     }
 
-    const fallbackKey = Array.from(team.agentExecutionsByKey.keys())[0] || '';
-    if (!fallbackKey) {
+    const fallback = team.executions.listAgentContextEntries()[0]?.executionAddress;
+    if (!fallback) {
       throw new Error('This team has no focusable member for mobile Chat.');
     }
-
-    const fallback = parseTeamExecutionAddress(JSON.parse(fallbackKey));
     await runHistoryStore.focusTeamMemberAndEnsureHydrated(teamRunId, fallback);
-    const focused = teamContextsStore.getTeamContextById(teamRunId)?.focusedExecutionAddress ?? fallback;
+    const focused = teamContextsStore.getTeamContextById(teamRunId)?.executions.getFocusedAddress() ?? fallback;
     mobileWorkStore.rememberFocusedTeamMember(teamRunId, focused);
     return focused;
   }
@@ -202,10 +202,13 @@ export function useMobileRunLaunchCoordinator() {
     const definition = ensureTeamDraftConfig(draft);
     agentRunConfigStore.clearConfig();
 
-    const temporaryTeamRunId = teamContextsStore.createRunFromTemplate({ selectionMode: 'mobile' });
-    const teamRunId = selectionStore.selectedType === 'team' && selectionStore.selectedRunId
-      ? selectionStore.selectedRunId
-      : temporaryTeamRunId;
+    const launchDraft = teamRunConfigStore.selectedDraft;
+    if (!launchDraft) throw new Error('Team launch draft is unavailable.');
+    const launched = await teamRunStore.launchDraft(launchDraft);
+    const teamRunId = launched.rootTeamRunId;
+    teamContextsStore.addTeamContext(launched.context);
+    selectionStore.selectRunWithoutShellNavigation(teamRunId, 'team');
+    teamRunConfigStore.removeDraft(launchDraft.draftId);
     const focusedExecutionAddress = await ensureValidLeafTeamFocus(teamRunId);
     mobileWorkStore.moveDraftAttachmentsToPendingTeamRun(teamRunId);
     teamRunConfigStore.clearConfig();

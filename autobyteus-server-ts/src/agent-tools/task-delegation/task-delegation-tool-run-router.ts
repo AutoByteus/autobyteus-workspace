@@ -1,5 +1,4 @@
 import type { TeamRun } from "../../agent-team-execution/domain/team-run.js";
-import type { TaskTeamInstanceIdentity } from "../../agent-team-execution/domain/task-team-instance.js";
 import { TaskDelegationError } from "../../agent-team-execution/task-delegation/task-delegation-record.js";
 import type { TaskDelegationService } from "../../agent-team-execution/task-delegation/task-delegation-service.js";
 import {
@@ -30,7 +29,7 @@ export type TaskDelegationSubmitRoute =
       kind: "task_team_ingress_parent";
       service: TaskDelegationService;
       context: TaskDelegationToolContext;
-      taskTeamInstance: TaskTeamInstanceIdentity;
+      taskId: string;
     };
 
 export type TaskDelegationDelegateRoute = {
@@ -64,15 +63,18 @@ export class TaskDelegationToolRunRouter {
   async resolveServiceForSubmit(
     context: TaskDelegationToolContext,
   ): Promise<TaskDelegationSubmitRoute> {
-    const taskAgentRunId = context.caller.taskAgentInstance?.taskAgentRunId ?? null;
-    const taskTeamInstance = context.caller.taskTeamInstance ?? null;
-    if (taskTeamInstance && !taskAgentRunId) {
-      const parentRun = await this.resolveActiveTeamRun(taskTeamInstance.parentTeamRunId);
+    const executionAddress = context.caller.executionAddress;
+    const taskId = context.caller.taskId?.trim() || null;
+    if (taskId && executionAddress.taskAgentRunId === null && executionAddress.taskTeamRunIds.length > 0) {
+      const parentRunId = executionAddress.taskTeamRunIds.length === 1
+        ? executionAddress.rootTeamRunId
+        : executionAddress.taskTeamRunIds.at(-2)!;
+      const parentRun = await this.resolveActiveTeamRun(parentRunId);
       return {
         kind: "task_team_ingress_parent",
         service: this.getService(parentRun),
         context,
-        taskTeamInstance,
+        taskId,
       };
     }
 

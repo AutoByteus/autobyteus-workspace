@@ -1,5 +1,4 @@
 import { TeamRun } from "../../domain/team-run.js";
-import type { TaskTeamInstanceIdentity } from "../../domain/task-team-instance.js";
 import type { TeamRunAgentTeamNode, TeamRunConfig } from "../../domain/team-run-config.js";
 import type { TeamRunContext } from "../../domain/team-run-context.js";
 import type { TeamManager } from "../team-manager.js";
@@ -16,7 +15,7 @@ export type MixedSubTeamRunFactoryOptions = {
     teamAddress: TeamRunAgentTeamNode["address"];
     restoreRuntimeContext?: MixedTeamRunContext | null;
     parentBoundary?: MixedParentBoundaryContext | null;
-    taskTeamInstance?: TaskTeamInstanceIdentity | null;
+    taskId?: string | null;
     taskTeamRunIds?: readonly string[] | null;
   }) => TeamRunContext<MixedTeamRunContext>;
   createTeamManager: (context: TeamRunContext<MixedTeamRunContext>) => TeamManager;
@@ -30,7 +29,7 @@ export class MixedSubTeamRunFactory {
     teamNode: TeamRunAgentTeamNode;
     restoreRuntimeContext?: MixedTeamRunContext | null;
     parentBoundary?: MixedParentBoundaryContext | null;
-    taskTeamInstance?: TaskTeamInstanceIdentity | null;
+    taskId?: string | null;
     taskTeamRunIds?: readonly string[] | null;
   }): Promise<TeamRun> {
     const context = this.options.buildContext({
@@ -39,7 +38,7 @@ export class MixedSubTeamRunFactory {
       teamAddress: input.teamNode.address,
       restoreRuntimeContext: input.restoreRuntimeContext ?? null,
       parentBoundary: input.parentBoundary ?? null,
-      taskTeamInstance: input.taskTeamInstance ?? null,
+      taskId: input.taskId ?? null,
       taskTeamRunIds: input.taskTeamRunIds ?? null,
     });
     const backend = new MixedTeamRunBackend(context, this.options.createTeamManager(context));

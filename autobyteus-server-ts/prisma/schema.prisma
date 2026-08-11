@@ -18,13 +18,9 @@ model TokenUsageLedgerEvent {
   turnId                               String?   @map("turn_id")
   llmCallId                            String?   @map("llm_call_id")
   callSequence                         Int?      @map("call_sequence")
-  rootTeamRunId                        String?   @map("root_team_run_id")
   executionAddressJson                 String?   @map("execution_address_json")
-  memberAgentRunId                     String?   @map("member_agent_run_id")
   agentDefinitionId                    String?   @map("agent_definition_id")
   workspaceId                          String?   @map("workspace_id")
-  taskAgentInstanceId                  String?   @map("task_agent_instance_id")
-  taskAgentRunId                       String?   @map("task_agent_run_id")
   taskId                               String?   @map("task_id")
   teamName                             String?   @map("team_name")
   agentName                            String?   @map("agent_name")
@@ -90,7 +86,6 @@ model TokenUsageLedgerEvent {
   contextWindowUsagePercent            Float?    @map("context_window_usage_percent")
 
   @@index([runId, observedAt])
-  @@index([rootTeamRunId, observedAt])
   @@index([snapshotSeriesKey, runId, observedAt])
   @@map("token_usage_ledger_events")
 }

@@ -162,14 +162,8 @@ export class TokenUsageRunSummaryGraphql extends TokenUsageCostSummaryAggregateG
   @Field(() => String)
   runId!: string;
 
-  @Field(() => String, { nullable: true })
-  rootTeamRunId?: string | null;
-
   @Field(() => GraphQLJSON, { nullable: true })
   executionAddress?: unknown | null;
-
-  @Field(() => String, { nullable: true })
-  memberAgentRunId?: string | null;
 
   @Field(() => String, { nullable: true })
   agentDefinitionId?: string | null;
@@ -206,21 +200,6 @@ export class TokenUsageTaskStatisticsRowGraphql {
 
   @Field(() => String, { nullable: true })
   runId?: string | null;
-
-  @Field(() => String, { nullable: true })
-  rootTeamRunId?: string | null;
-
-  @Field(() => String, { nullable: true })
-  memberAddress?: string | null;
-
-  @Field(() => String, { nullable: true })
-  memberAgentRunId?: string | null;
-
-  @Field(() => String, { nullable: true })
-  taskAgentRunId?: string | null;
-
-  @Field(() => String, { nullable: true })
-  taskTeamRunId?: string | null;
 
   @Field(() => String, { nullable: true })
   taskId?: string | null;
@@ -434,9 +413,7 @@ const summaryAggregate = (summary: TokenUsageRunSummaryPayload): TokenUsageCostS
 const toTokenUsageRunSummaryGraphql = (summary: TokenUsageRunSummaryPayload): TokenUsageRunSummaryGraphql => ({
   ...toTokenUsageCostSummaryAggregateGraphql(summaryAggregate(summary)),
   runId: summary.run_id,
-  rootTeamRunId: summary.root_team_run_id,
   executionAddress: summary.execution_address,
-  memberAgentRunId: summary.member_agent_run_id,
   agentDefinitionId: summary.agent_definition_id,
   workspaceId: summary.workspace_id,
   latestPromptTokens: summary.latest_prompt_tokens,
@@ -451,11 +428,6 @@ const toTaskRow = (row: TokenUsageTaskStatisticsRow): TokenUsageTaskStatisticsRo
   rowId: row.rowId,
   rowKind: row.rowKind,
   runId: row.runId,
-  rootTeamRunId: row.rootTeamRunId,
-  memberAddress: row.memberAddress,
-  memberAgentRunId: row.memberAgentRunId,
-  taskAgentRunId: row.taskAgentRunId,
-  taskTeamRunId: row.taskTeamRunId,
   taskId: row.taskId,
   executionAddress: row.executionAddress,
   displayName: row.displayName,

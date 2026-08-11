@@ -27,14 +27,12 @@ import {
 import type { ObservedRunLifecycleEvent } from "../../runtime-management/domain/observed-run-lifecycle-event.js";
 import {
   TeamRunEventSourceType,
-  type TeamRunAgentEventPayload,
 } from "../domain/team-run-event.js";
 import { TeamRunMetadataMapper } from "./team-run-metadata-mapper.js";
 import { TeamDefinitionTopologyPlanner } from "./team-definition-topology-planner.js";
 import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
 import { generateTeamRunIdForDefinitionName } from "../domain/team-run-id.js";
 import { AgentRunIdentityAllocator } from "../../agent-execution/services/agent-run-identity-allocator.js";
-import { AgentRunCanonicalFailureObserver } from "../../agent-execution/events/agent-run-canonical-failure-observer.js";
 
 export interface TeamRunPresetInput {
   workspaceRootPath: string;
@@ -140,7 +138,6 @@ export class TeamRunService {
     });
 
     let terminalPhase: ObservedRunLifecycleEvent["phase"] | null = null;
-    const agentFailureObserver = new AgentRunCanonicalFailureObserver();
     const observeLifecycle = (isActive: boolean): void => {
       if (terminalPhase || isActive) {
         return;
@@ -163,16 +160,14 @@ export class TeamRunService {
       }
 
       if (event.eventSourceType === TeamRunEventSourceType.AGENT) {
-        const agentEvent = (event.data as TeamRunAgentEventPayload).agentEvent;
-        const failure = agentFailureObserver.observe(agentEvent);
-        if (!failure) return;
+        if (event.payload.eventType !== "ERROR") return;
         terminalPhase = "FAILED";
         listener({
           runtimeSubject: "TEAM_RUN",
           runId: run.teamRunId,
           phase: "FAILED",
           occurredAt: new Date().toISOString(),
-          errorMessage: failure.message,
+          errorMessage: event.payload.details.message,
         });
       }
     });

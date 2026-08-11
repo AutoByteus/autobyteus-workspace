@@ -12,8 +12,6 @@ type ExecutionNode = {
   key: string;
   rowKind: Exclude<TokenUsageTaskStatisticsRowKind, "TEAM_RUN" | "AGENT_RUN">;
   address: TokenUsageExecutionAddress;
-  taskTeamRunId: string | null;
-  taskAgentRunId: string | null;
   events: TokenUsageUpdatedPayload[];
   children: Map<string, ExecutionNode>;
 };
@@ -39,19 +37,19 @@ const displayFields = (events: TokenUsageUpdatedPayload[], context: TokenUsageMo
   const entries = buildTokenUsageModelDisplayEntries(events, context);
   return { models: entries.map((entry) => entry.modelIdentifier), modelDisplayNames: entries.map((entry) => entry.modelDisplayName) };
 };
-const node = (rowKind: ExecutionNode["rowKind"], address: TokenUsageExecutionAddress, taskTeamRunId: string | null, taskAgentRunId: string | null): ExecutionNode => ({
-  key: hashedTokenUsageExecutionAddressKey(address), rowKind, address, taskTeamRunId, taskAgentRunId, events: [], children: new Map(),
+const node = (rowKind: ExecutionNode["rowKind"], address: TokenUsageExecutionAddress): ExecutionNode => ({
+  key: hashedTokenUsageExecutionAddressKey(address), rowKind, address, events: [], children: new Map(),
 });
 const hierarchy = (address: TokenUsageExecutionAddress): ExecutionNode[] => {
   const output = [node("MEMBER_RUN", createTeamExecutionAddress({
     rootTeamRunId: address.rootTeamRunId, memberAddress: address.memberAddress,
-  }), null, null)];
-  address.taskTeamRunIds.forEach((taskTeamRunId, index) => output.push(node("TASK_TEAM_RUN", createTeamExecutionAddress({
+  }))];
+  address.taskTeamRunIds.forEach((_taskTeamRunId, index) => output.push(node("TASK_TEAM_RUN", createTeamExecutionAddress({
     rootTeamRunId: address.rootTeamRunId,
     taskTeamRunIds: address.taskTeamRunIds.slice(0, index + 1),
     memberAddress: address.memberAddress,
-  }), taskTeamRunId, null)));
-  if (address.taskAgentRunId) output.push(node("TASK_AGENT_RUN", address, null, address.taskAgentRunId));
+  }))));
+  if (address.taskAgentRunId) output.push(node("TASK_AGENT_RUN", address));
   return output;
 };
 
@@ -59,7 +57,9 @@ export class TokenUsageTaskStatisticsTreeBuilder {
   buildRows(records: TokenUsageUpdatedPayload[], context: TokenUsageModelDisplayContext = EMPTY_TOKEN_USAGE_MODEL_DISPLAY_CONTEXT): TokenUsageTaskStatisticsRow[] {
     const teams: EventGroups = new Map();
     const agents: EventGroups = new Map();
-    records.forEach((record) => record.root_team_run_id ? push(teams, record.root_team_run_id, record) : push(agents, record.run_id, record));
+    records.forEach((record) => record.execution_address
+      ? push(teams, record.execution_address.rootTeamRunId, record)
+      : push(agents, record.run_id, record));
     return sortRows([
       ...[...teams].map(([runId, events]) => this.teamRow(runId, events, context)),
       ...[...agents].map(([runId, events]) => this.agentRow(runId, events, context)),
@@ -68,8 +68,7 @@ export class TokenUsageTaskStatisticsTreeBuilder {
 
   private agentRow(runId: string, events: TokenUsageUpdatedPayload[], context: TokenUsageModelDisplayContext): TokenUsageTaskStatisticsRow {
     return {
-      rowId: `agent:${runId}`, rowKind: "AGENT_RUN", runId, rootTeamRunId: null, memberAddress: null,
-      memberAgentRunId: null, taskAgentRunId: null, taskTeamRunId: null, taskId: null, executionAddress: null,
+      rowId: `agent:${runId}`, rowKind: "AGENT_RUN", runId, taskId: null, executionAddress: null,
       displayName: first(events, (event) => event.agent_name) ?? latest(events)?.agent_definition_id ?? UNKNOWN_AGENT_LABEL,
       summary: first(events, (event) => event.run_summary), ...created(events), ...displayFields(events, context),
       runtimeKinds: buildTokenUsageCostSummaryAggregate(events).observed_runtime_kinds,
@@ -91,9 +90,8 @@ export class TokenUsageTaskStatisticsTreeBuilder {
     }
     const aggregate = buildTokenUsageCostSummaryAggregate(events);
     return {
-      rowId: `team:${teamRunId}`, rowKind: "TEAM_RUN", runId: null, rootTeamRunId: teamRunId,
-      memberAddress: null, memberAgentRunId: null, taskAgentRunId: null, taskTeamRunId: null,
-      taskId: null, executionAddress: null,
+      rowId: `team:${teamRunId}`, rowKind: "TEAM_RUN", runId: null,
+      taskId: null, executionAddress: createTeamExecutionAddress({ rootTeamRunId: teamRunId, memberAddress: "/" }),
       displayName: first(events, (event) => event.team_name) ?? UNKNOWN_TEAM_LABEL,
       summary: first(events, (event) => event.run_summary), ...created(events), ...displayFields(events, context),
       runtimeKinds: aggregate.observed_runtime_kinds, aggregate,
@@ -103,13 +101,9 @@ export class TokenUsageTaskStatisticsTreeBuilder {
 
   private executionRow(teamRunId: string, current: ExecutionNode, context: TokenUsageModelDisplayContext): TokenUsageTaskStatisticsRow {
     const aggregate = buildTokenUsageCostSummaryAggregate(current.events);
-    const recent = latest(current.events);
     return {
       rowId: `team:${teamRunId}:address:${current.key}`, rowKind: current.rowKind,
-      runId: current.taskAgentRunId ?? current.taskTeamRunId ?? recent?.member_agent_run_id ?? recent?.run_id ?? null,
-      rootTeamRunId: teamRunId, memberAddress: current.address.memberAddress,
-      memberAgentRunId: current.rowKind === "MEMBER_RUN" ? recent?.member_agent_run_id ?? null : null,
-      taskAgentRunId: current.taskAgentRunId, taskTeamRunId: current.taskTeamRunId,
+      runId: null,
       taskId: first(current.events, (event) => event.task_id), executionAddress: current.address,
       displayName: first(current.events, (event) => event.member_display_name) ??
         getAgentTeamAddressBasename(current.address.memberAddress) ?? "Unknown member",

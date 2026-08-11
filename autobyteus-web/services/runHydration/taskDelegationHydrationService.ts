@@ -54,6 +54,7 @@ export const scheduleTaskDelegationRecordsRefresh = (params: {
   client: TaskDelegationHydrationClient;
   teamRunId: string;
   delayMs?: number;
+  onHydrated?: (records: readonly TaskDelegationRecord[]) => void;
 }): void => {
   const existing = refreshTimers.get(params.teamRunId);
   if (existing) clearTimeout(existing);
@@ -62,7 +63,7 @@ export const scheduleTaskDelegationRecordsRefresh = (params: {
     void fetchAndHydrateTaskDelegationRecordsForTeam({
       client: params.client,
       teamRunId: params.teamRunId,
-    });
+    }).then(() => params.onHydrated?.(useTaskDelegationStore().getRecordsForTeam(params.teamRunId)));
   }, params.delayMs ?? 250);
   refreshTimers.set(params.teamRunId, timer);
 };

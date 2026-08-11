@@ -4,6 +4,7 @@ import type { RunProjectionConversationEntry } from '~/services/runHydration/run
 import type { RunProjectionActivityEntry } from '~/services/runHydration/runProjectionActivityHydration';
 import type { TeamCommunicationMessage } from '~/stores/teamCommunicationTypes';
 import type { TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
+import type { ApplicationExecutionContext } from '@autobyteus/application-sdk-contracts';
 
 export type RunKnownStatus = 'ACTIVE' | 'IDLE' | 'ERROR' | 'TERMINATED';
 
@@ -123,7 +124,7 @@ export interface TeamRunMetadataAgentMember extends TeamRunMetadataMemberBase {
   skillAccessMode?: SkillAccessMode | null;
   llmConfig: Record<string, unknown> | null;
   workspaceRootPath: string | null;
-  applicationExecutionContext: Record<string, unknown> | null;
+  applicationExecutionContext: ApplicationExecutionContext | null;
 }
 
 export interface TeamRunMetadataSubTeamMember extends TeamRunMetadataMemberBase {

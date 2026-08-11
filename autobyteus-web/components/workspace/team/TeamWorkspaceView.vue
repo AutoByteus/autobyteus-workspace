@@ -87,8 +87,6 @@ import SkillImprovementComposerCta from '~/components/workspace/skill-improvemen
 import type { SkillImprovementComposerCtaTarget } from '~/components/workspace/skill-improvement/skillImprovementComposerCtaTarget';
 import WorkspaceHeaderActions from '~/components/workspace/common/WorkspaceHeaderActions.vue';
 import { buildEditableTeamRunSeed } from '~/composables/useDefinitionLaunchDefaults';
-import { serializeTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
-import { findTeamExecutionNode } from '~/services/agentStreaming/teamTaskExecutionTree';
 
 const teamContextsStore = useAgentTeamContextsStore();
 const teamRunStore = useAgentTeamRunStore();
@@ -104,15 +102,16 @@ const { getMemberAvatarUrl, getMemberDisplayName, getMemberInitials } = useTeamM
 const RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID = 'autobyteus-retrospective-skill-improver';
 
 const activeTeamContext = computed(() => teamContextsStore.activeTeamContext);
-const focusedExecutionAddress = computed(() => activeTeamContext.value?.focusedExecutionAddress ?? null);
+const focusedExecutionAddress = computed(() => activeTeamContext.value?.executions.getFocusedAddress() ?? null);
 const focusedMemberContext = computed(() => {
   const team = activeTeamContext.value;
   const address = focusedExecutionAddress.value;
-  return team && address ? team.agentExecutionsByKey.get(serializeTeamExecutionAddress(address)) ?? null : null;
+  return team && address ? team.executions.getAgentContext(address) : null;
 });
 const focusedMemberNode = computed(() => {
   const team = activeTeamContext.value;
-  return team ? findTeamExecutionNode(team, team.focusedExecutionAddress) : null;
+  const address = focusedExecutionAddress.value;
+  return team && address ? team.topology.getNode(address.memberAddress) : null;
 });
 const rosterFocusedMemberContext = focusedMemberContext;
 const rosterFocusedMemberNode = focusedMemberNode;
@@ -120,10 +119,7 @@ const rosterFocusedMemberNode = focusedMemberNode;
 const showSharedComposer = computed(() => focusedMemberNode.value?.kind === 'agent_team');
 
 const headerStatus = computed(() => {
-  return rosterFocusedMemberContext.value?.state.currentStatus
-    ?? (rosterFocusedMemberNode.value?.kind === 'agent'
-      ? rosterFocusedMemberNode.value.currentStatus
-      : null);
+  return rosterFocusedMemberContext.value?.state.currentStatus ?? null;
 });
 
 const headerTitle = computed(() => {
@@ -134,12 +130,12 @@ const headerTitle = computed(() => {
 
   const focusedMemberAddress = focusedExecutionAddress.value?.memberAddress ?? '';
   if (!focusedMemberAddress) {
-    return team.config.teamDefinitionName || 'Team';
+    return team.topology.teamDefinitionName || 'Team';
   }
 
   return rosterFocusedMemberNode.value?.displayName
     || getMemberDisplayName(focusedMemberAddress, rosterFocusedMemberContext.value)
-    || team.config.teamDefinitionName
+    || team.topology.teamDefinitionName
     || 'Team';
 });
 
@@ -152,7 +148,7 @@ const composerTargetTitle = computed(() => {
 
   return target.displayName
     || getMemberDisplayName(target.address, focusedMemberContext.value)
-    || team.config.teamDefinitionName
+    || team.topology.teamDefinitionName
     || 'Team';
 });
 
@@ -164,7 +160,7 @@ const teamMemberSkillImprovementTarget = computed<SkillImprovementComposerCtaTar
   }
   return {
     kind: 'team-member',
-    teamRunId: team.teamRunId,
+    teamRunId: team.executions.getRootTeamRunId(),
     agentRunId: member.state.runId,
     isHelperRun:
       member.config.agentDefinitionId === RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID ||
@@ -206,7 +202,7 @@ const sendSubteamMessage = async () => {
 const createNewTeamRun = () => {
   if (!activeTeamContext.value) return;
 
-  teamRunConfigStore.setConfig(buildEditableTeamRunSeed(activeTeamContext.value.config));
+  teamRunConfigStore.setConfig(buildEditableTeamRunSeed(activeTeamContext.value.topology.getConfigurationView()));
   agentRunConfigStore.clearConfig();
   selectionStore.clearSelection();
 };

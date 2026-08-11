@@ -11,7 +11,7 @@ const entryTaskId = (entry: ActiveTaskDelegationWorkEntry): string => (
 
 const entryExecutionKind = (entry: ActiveTaskDelegationWorkEntry): "task_agent" | "task_team" | null => (
   entry.phase === "record"
-    ? entry.taskRunExecution.kind
+    ? entry.activeExecution.kind
     : entry.boundExecution?.kind ?? null
 );
 

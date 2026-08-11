@@ -10,11 +10,7 @@ import type {
 
 export const APPLICATION_EXECUTION_CONTEXT_KEY = "application_execution_context" as const;
 
-export type ApplicationExecutionContext = {
-  applicationId: string;
-  bindingId: string;
-  producer: ApplicationExecutionProducer;
-};
+export type { ApplicationExecutionContext } from "@autobyteus/application-sdk-contracts";
 
 export type ApplicationExecutionEventPayload =
   { reason?: string | null; errorMessage?: string | null };

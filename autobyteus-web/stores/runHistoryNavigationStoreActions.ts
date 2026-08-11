@@ -5,7 +5,6 @@ import type { AgentStatus } from '~/types/agent/AgentStatus';
 import { sameTeamExecutionAddress, type TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 import type { RunHistoryWorkspaceGroup } from './runHistoryTypes';
 import type { RunNavigationEffect } from '~/services/agentStreaming/agentStreamMutationEffects';
-import type { TaskExecutionProjectionMutation } from '~/services/agentStreaming/teamTaskExecutionProjection';
 import {
   buildRunHistoryNavigationProjection,
   type RunHistoryNavigationProjectionState,
@@ -13,7 +12,6 @@ import {
 import {
   applyRunNavigationEffectToProjection,
   applyRunNavigationTeamFocusToProjection,
-  applyTaskExecutionRowPresentationToProjection,
   type RunNavigationTarget,
 } from './runHistoryNavigationPatches';
 
@@ -58,28 +56,6 @@ export const applyRunNavigationEffectForStore = (
   return true;
 };
 
-export const commitTaskProjectionNavigationMutationForStore = (
-  store: RunHistoryNavigationStoreState,
-  teamRunId: string,
-  mutation: TaskExecutionProjectionMutation,
-): boolean => {
-  if (mutation.kind === 'NONE') return false;
-  if (mutation.kind === 'TOPOLOGY') {
-    refreshRunNavigationTopologyForStore(store, `task:${mutation.reason}`);
-    return true;
-  }
-  const result = applyTaskExecutionRowPresentationToProjection(
-    ensureProjection(store),
-    teamRunId,
-    mutation.executionAddress,
-    mutation.changes,
-  );
-  if (!result.changed) return false;
-  store.navigationProjection = result.state;
-  store.navigationPatchRevision += 1;
-  return true;
-};
-
 export const applyRunNavigationTeamFocusForStore = (
   store: RunHistoryNavigationStoreState,
   teamRunId: string,
@@ -103,7 +79,7 @@ export const focusTeamMemberAndEnsureHydratedForStore = async (
   const context = teamStore.getTeamContextById(teamRunId);
   if (!context || executionAddress.rootTeamRunId !== teamRunId) return false;
   await teamStore.focusMemberAndEnsureHydrated(teamRunId, executionAddress);
-  if (!sameTeamExecutionAddress(context.focusedExecutionAddress, executionAddress)) return false;
+  if (!sameTeamExecutionAddress(context.executions.getFocusedAddress(), executionAddress)) return false;
   return applyRunNavigationTeamFocusForStore(store, teamRunId, executionAddress);
 };
 

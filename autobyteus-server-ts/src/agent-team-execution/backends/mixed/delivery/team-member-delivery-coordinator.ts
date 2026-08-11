@@ -50,9 +50,7 @@ export class TeamMemberDeliveryCoordinator {
     const traced = this.trace(request, payload);
     const result = await recipient.deliver(traced, () => this.options.publish({
       eventSourceType: TeamRunEventSourceType.COMMUNICATION,
-      teamRunId: intent.rootTeamRunId,
-      executionAddress: traced.senderAddress,
-      data: payload,
+      payload,
     }));
     return { ...result, agentRunId: recipient.targetAgentRunId, displayName: recipient.endpoint.participant.displayName };
   }
@@ -102,7 +100,6 @@ export class TeamMemberDeliveryCoordinator {
     });
     return {
       messageId,
-      teamRunId: request.rootTeamRunId,
       senderAddress: request.senderAddress,
       receiverAddress: request.receiverAddress,
       content: request.content,

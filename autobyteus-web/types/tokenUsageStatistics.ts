@@ -45,11 +45,6 @@ export interface TokenUsageTaskStatisticsRow {
   rowId: string;
   rowKind: TokenUsageTaskRowKind;
   runId: string | null;
-  rootTeamRunId: string | null;
-  memberAddress: string | null;
-  memberAgentRunId: string | null;
-  taskAgentRunId: string | null;
-  taskTeamRunId: string | null;
   taskId: string | null;
   executionAddress: TeamExecutionAddress | null;
   displayName: string;

@@ -41,7 +41,7 @@
 
       <TeamCommunicationPanel
         v-show="messagesExpanded"
-        :team-run-id="activeTeamContext?.teamRunId || ''"
+        :team-run-id="activeTeamContext?.executions.getRootTeamRunId() || ''"
         :focused-address="focusedCommunicationAddress"
         class="min-h-0 flex-1"
       />
@@ -67,7 +67,6 @@
 import { computed, ref, watch } from 'vue';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useTeamCommunicationStore } from '~/stores/teamCommunicationStore';
-import { useTaskDelegationStore } from '~/stores/taskDelegationStore';
 import TeamCommunicationPanel from '~/components/workspace/team/TeamCommunicationPanel.vue';
 import TeamDelegatedTasksSection from '~/components/workspace/team/TeamDelegatedTasksSection.vue';
 import { deriveDelegatedTaskEntries } from '~/utils/teamDelegatedTaskEntries';
@@ -76,9 +75,8 @@ type TeamOverviewSection = 'messages' | 'delegatedTasks';
 
 const teamContextsStore = useAgentTeamContextsStore();
 const teamCommunicationStore = useTeamCommunicationStore();
-const taskDelegationStore = useTaskDelegationStore();
 const activeTeamContext = computed(() => teamContextsStore.activeTeamContext);
-const activeTeamRunId = computed(() => activeTeamContext.value?.teamRunId || '');
+const activeTeamRunId = computed(() => activeTeamContext.value?.executions.getRootTeamRunId() || '');
 const expandedSection = ref<TeamOverviewSection | null>('messages');
 const lastAutoOpenedDelegatedTaskSignatureKey = ref('');
 const messagesExpanded = computed(() => expandedSection.value === 'messages');
@@ -86,14 +84,13 @@ const delegatedTasksExpanded = computed(() => expandedSection.value === 'delegat
 const focusedCommunicationAddress = computed(() => {
   const teamContext = activeTeamContext.value;
   if (!teamContext) return null;
-  return teamContext.focusedExecutionAddress;
+  return teamContext.executions.getFocusedAddress();
 });
 const delegatedTaskEntries = computed(() => {
   const teamContext = activeTeamContext.value;
   return teamContext
     ? deriveDelegatedTaskEntries(
       teamContext,
-      taskDelegationStore.getRecordsForTeam(teamContext.teamRunId),
       focusedCommunicationAddress.value,
     )
     : [];

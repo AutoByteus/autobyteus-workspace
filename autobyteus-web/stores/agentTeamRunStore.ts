@@ -1,551 +1,219 @@
 import { defineStore } from 'pinia';
-import { getApolloClient } from '~/utils/apolloClient'
-import {
-  CreateAgentTeamRun,
-  RestoreAgentTeamRun,
-  TerminateAgentTeamRun,
-} from '~/graphql/mutations/agentTeamRunMutations';
-import type {
-  TeamMemberConfigInput,
-} from '~/generated/graphql';
+import { getApolloClient } from '~/utils/apolloClient';
+import { CreateAgentTeamRun, RestoreAgentTeamRun, TerminateAgentTeamRun } from '~/graphql/mutations/agentTeamRunMutations';
+import type { TeamMemberConfigInput } from '~/generated/graphql';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useContextFileUploadStore } from '~/stores/contextFileUploadStore';
-import {
-  ConnectionState,
-  TeamStreamingService,
-} from '~/services/agentStreaming';
+import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
+import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
+import { ConnectionState, TeamStreamingService } from '~/services/agentStreaming';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import type { ContextAttachment } from '~/types/conversation';
-import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { ToolApprovalTarget } from '~/types/segments';
 import { planContextAttachmentSubmission } from '~/utils/contextFiles/contextAttachmentSend';
-import {
-  buildTeamMemberDraftContextFileOwner,
-  buildTeamMemberFinalContextFileOwner,
-} from '~/utils/contextFiles/contextFileOwner';
-import { loadRuntimeProviderGroupsForSelection } from '~/composables/useRuntimeScopedModelSelection';
-import { flattenLeafAgentMemberNodes } from '~/utils/teamDefinitionMembers';
+import { buildTeamMemberDraftContextFileOwner, buildTeamMemberFinalContextFileOwner } from '~/utils/contextFiles/contextFileOwner';
+import { resolveLeafTeamMembers } from '~/utils/teamDefinitionMembers';
 import { buildTeamRunMemberConfigRecords } from '~/utils/teamRunMemberConfigBuilder';
 import { evaluateTeamRunLaunchReadiness } from '~/utils/teamRunLaunchReadiness';
-import { resolveEffectiveMemberRuntimeKind } from '~/utils/teamRunConfigUtils';
-import {
-  applyOfflineOrTerminalCleanup,
-} from '~/services/runStatus/agentRuntimeStatusState';
+import { applyOfflineOrTerminalCleanup } from '~/services/runStatus/agentRuntimeStatusState';
 import {
   beginLocalUserSubmission,
   failLocalSubmission,
   finalizeLocalSubmissionAttachments,
-  retargetLocalUserSubmission,
   type LocalUserSubmissionHandle,
 } from '~/services/runSubmission/localUserSubmission';
-import {
-  reconcileTeamContextAgentRunIdsFromBackend,
-} from '~/services/runHydration/teamRunMemberIdentityReconciler';
-import {
-  createTeamExecutionAddress,
-  serializeTeamExecutionAddress,
-  type TeamExecutionAddress,
-} from '~/types/agent/TeamExecutionAddress';
-import { findTeamExecutionNode } from '~/services/agentStreaming/teamTaskExecutionTree';
-import {
-  buildClientInterruptCommandId,
-  buildClientMessageId,
-  showInterruptCommandResult,
-  showInterruptTransportFailure,
-} from '~/services/agentStreaming/teamRunCommandPresentation';
-
-type CurrentTeamMemberConfigInput = Omit<TeamMemberConfigInput, 'memberName' | 'memberAddress'> & {
-  memberAddress: string;
-};
+import { createTeamExecutionAddress, serializeTeamExecutionAddress, type TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
+import { buildClientInterruptCommandId, buildClientMessageId, showInterruptCommandResult, showInterruptTransportFailure } from '~/services/agentStreaming/teamRunCommandPresentation';
+import { hydrateLiveTeamRunContext } from '~/services/runHydration/teamRunContextHydrationService';
+import { ensureRunHistoryWorkspaceByRootPath, resolveRunHistoryWorkspaceMetadataByRootPath } from '~/stores/runHistoryLoadActions';
+import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
+import type { TeamRunConfig } from '~/types/agent/TeamRunConfig';
+import type { TeamLaunchDraft } from '~/types/agent/TeamLaunchDraft';
 
 const teamStreamingServices = new Map<string, TeamStreamingService>();
+const inputDedupeKey = (rootTeamRunId: string, executionKey: string, messageId: string) =>
+  `member_input:${rootTeamRunId}:${executionKey}:${messageId}`;
+const mutableConfig = (config: Readonly<TeamRunConfig>): TeamRunConfig => ({
+  ...config,
+  workspaceMetadata: config.workspaceMetadata ? { ...config.workspaceMetadata } : null,
+  memberOverrides: Object.fromEntries(Object.entries(config.memberOverrides).map(([address, override]) => [address, { ...override }])),
+});
 
-const buildConversationTargetInputDedupeKey = (
-  teamRunId: string,
-  conversationTargetKey: string,
-  messageId: string,
-): string => `member_input:${teamRunId}:${conversationTargetKey}:${messageId}`;
-
-interface CreateAgentTeamRunMutationPayload {
-  createAgentTeamRun?: {
-    success?: boolean;
-    message?: string;
-    teamRunId?: string | null;
-  } | null;
-}
-
-interface RestoreAgentTeamRunMutationPayload {
-  restoreAgentTeamRun?: {
-    success?: boolean;
-    message?: string;
-    teamRunId?: string | null;
-  } | null;
-}
-
-interface TerminateAgentTeamRunMutationPayload {
-  terminateAgentTeamRun?: {
-    success?: boolean;
-    message?: string;
-  } | null;
-}
-
-export interface FocusedTeamMemberInterruptTarget {
-  teamRunId: string;
-  executionAddress: TeamExecutionAddress;
-}
+type CreatePayload = { createAgentTeamRun?: { success?: boolean; message?: string; teamRunId?: string | null } | null };
+type RestorePayload = { restoreAgentTeamRun?: { success?: boolean; message?: string; teamRunId?: string | null } | null };
+type TerminatePayload = { terminateAgentTeamRun?: { success?: boolean; message?: string } | null };
+export interface FocusedTeamMemberInterruptTarget { teamRunId: string; executionAddress: TeamExecutionAddress }
 
 export const useAgentTeamRunStore = defineStore('agentTeamRun', {
-  state: () => ({
-    isLaunching: false,
-    stopPendingTeamIds: {} as Record<string, boolean>,
-  }),
-
+  state: () => ({ isLaunching: false, stopPendingTeamIds: {} as Record<string, boolean> }),
   actions: {
-    connectToTeamStream(teamRunId: string): TeamStreamingService | null {
-      const teamContextsStore = useAgentTeamContextsStore();
-      const teamContext = teamContextsStore.getTeamContextById(teamRunId);
-
-      if (!teamContext) {
-        console.warn(`Could not find team context for ID ${teamRunId} to connect stream.`);
-        return null;
+    connectToTeamStream(rootTeamRunId: string): TeamStreamingService | null {
+      const context = useAgentTeamContextsStore().getTeamContextById(rootTeamRunId);
+      if (!context || context.executions.getRootTeamRunId() !== rootTeamRunId) return null;
+      const existing = teamStreamingServices.get(rootTeamRunId);
+      if (existing) {
+        existing.attachContext(context);
+        if (existing.connectionState === ConnectionState.DISCONNECTED) existing.connect(rootTeamRunId, context);
+        return existing;
       }
-
-      const existingService = teamStreamingServices.get(teamRunId);
-      if (existingService) {
-        existingService.attachContext(teamContext);
-        teamContext.unsubscribe = () => {
-          existingService.disconnect();
-          teamStreamingServices.delete(teamRunId);
-        };
-        if (existingService.connectionState === ConnectionState.DISCONNECTED) {
-          existingService.connect(teamRunId, teamContext);
-        }
-        teamContext.isSubscribed = existingService.connectionState === ConnectionState.CONNECTED;
-        return existingService;
-      }
-
-      const windowNodeContextStore = useWindowNodeContextStore();
-      const wsEndpoint = windowNodeContextStore.getBoundEndpoints().teamWs;
-
+      const wsEndpoint = useWindowNodeContextStore().getBoundEndpoints().teamWs;
       const service = new TeamStreamingService(wsEndpoint, {
         onInterruptCommandResult: showInterruptCommandResult,
         onInterruptCommandTransportFailure: showInterruptTransportFailure,
       });
-      teamStreamingServices.set(teamRunId, service);
-
-      teamContext.unsubscribe = () => {
-        service.disconnect();
-        teamStreamingServices.delete(teamRunId);
-      };
-
-      service.connect(teamRunId, teamContext);
-      teamContext.isSubscribed = service.connectionState === ConnectionState.CONNECTED;
+      teamStreamingServices.set(rootTeamRunId, service);
+      service.connect(rootTeamRunId, context);
       return service;
     },
-
-    async ensureTeamStreamConnected(teamRunId: string): Promise<TeamStreamingService> {
-      const service = this.connectToTeamStream(teamRunId);
-      if (!service) {
-        throw new Error(`Unable to connect team stream for run '${teamRunId}'.`);
-      }
-      const isConnected = () => service.connectionState === ConnectionState.CONNECTED;
-      if (isConnected()) {
-        return service;
-      }
-
-      const timeoutAt = Date.now() + 10000;
+    isTeamStreamReady(rootTeamRunId: string): boolean { return teamStreamingServices.get(rootTeamRunId)?.isReady ?? false; },
+    async ensureTeamStreamConnected(rootTeamRunId: string): Promise<TeamStreamingService> {
+      const service = this.connectToTeamStream(rootTeamRunId);
+      if (!service) throw new Error(`Unable to connect Team stream for '${rootTeamRunId}'.`);
+      const timeoutAt = Date.now() + 10_000;
       while (Date.now() < timeoutAt) {
-        if (isConnected()) {
-          return service;
-        }
+        if (service.connectionState === ConnectionState.CONNECTED && service.isReady) return service;
         await new Promise((resolve) => setTimeout(resolve, 50));
       }
-
-      throw new Error(`Timed out waiting for team stream connection for run '${teamRunId}'.`);
+      throw new Error(`Timed out waiting for Team stream handshake for '${rootTeamRunId}'.`);
     },
-
-    disconnectTeamStream(teamRunId: string): void {
-      const service = teamStreamingServices.get(teamRunId);
-      if (!service) {
-        return;
-      }
-
-      const teamContextsStore = useAgentTeamContextsStore();
-      const teamContext = teamContextsStore.getTeamContextById(teamRunId);
-
-      service.disconnect();
-      teamStreamingServices.delete(teamRunId);
-
-      if (teamContext) {
-        teamContext.isSubscribed = false;
-        teamContext.unsubscribe = undefined;
-      }
+    disconnectTeamStream(rootTeamRunId: string): void {
+      const service = teamStreamingServices.get(rootTeamRunId);
+      if (!service) return;
+      service.disconnect(); teamStreamingServices.delete(rootTeamRunId);
     },
-
-    async terminateTeamRun(teamRunId: string): Promise<boolean> {
-      const teamContextsStore = useAgentTeamContextsStore();
-      const runHistoryStore = useRunHistoryStore();
-      const teamContext = teamContextsStore.getTeamContextById(teamRunId);
-      if (
-        teamRunId.startsWith('temp-') ||
-        this.stopPendingTeamIds[teamRunId] ||
-        (teamContext && !teamContext.isActive)
-      ) {
-        return false;
-      }
-      this.stopPendingTeamIds = {
-        ...this.stopPendingTeamIds,
-        [teamRunId]: true,
-      };
-
-      const teardownLocalRuntime = () => {
-        if (teamContext?.isSubscribed || teamStreamingServices.has(teamRunId)) {
-          this.disconnectTeamStream(teamRunId);
-        }
-
-        if (teamContext) {
-          teamContext.isSubscribed = false;
-          teamContext.isActive = false;
-          teamContext.agentExecutionsByKey.forEach((member) => {
-            applyOfflineOrTerminalCleanup(member);
-            useAgentActivityStore().clearActivities(member.state.runId);
-          });
-        }
-      };
-
+    async terminateTeamRun(rootTeamRunId: string): Promise<boolean> {
+      const team = useAgentTeamContextsStore().getTeamContextById(rootTeamRunId);
+      if (!rootTeamRunId.trim() || this.stopPendingTeamIds[rootTeamRunId] || (team && !team.executions.isRootTeamActive())) return false;
+      this.stopPendingTeamIds = { ...this.stopPendingTeamIds, [rootTeamRunId]: true };
       try {
-        const client = getApolloClient()
-        const { data, errors } = await client.mutate<TerminateAgentTeamRunMutationPayload>({
-          mutation: TerminateAgentTeamRun,
-          variables: { teamRunId },
+        const { data, errors } = await getApolloClient().mutate<TerminatePayload>({ mutation: TerminateAgentTeamRun, variables: { teamRunId: rootTeamRunId } });
+        if (errors?.length) throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '));
+        if (!data?.terminateAgentTeamRun?.success) throw new Error(data?.terminateAgentTeamRun?.message || 'Team termination failed.');
+        this.disconnectTeamStream(rootTeamRunId);
+        team?.executions.setRootTeamActive(false);
+        team?.executions.listAgentContextEntries().forEach(({ agentContext }) => {
+          applyOfflineOrTerminalCleanup(agentContext); useAgentActivityStore().clearActivities(agentContext.state.runId);
         });
-
-        if (errors && errors.length > 0) {
-          throw new Error(errors.map((e: { message: string }) => e.message).join(', '));
-        }
-
-        const result = data?.terminateAgentTeamRun;
-        if (!result?.success) {
-          throw new Error(result?.message || `Failed to terminate team run '${teamRunId}'.`);
-        }
-
-        teardownLocalRuntime();
-        runHistoryStore.markTeamAsInactive(teamRunId);
-        void runHistoryStore.refreshTreeQuietly();
+        useRunHistoryStore().markTeamAsInactive(rootTeamRunId);
+        void useRunHistoryStore().refreshTreeQuietly();
         return true;
-      } catch (error) {
-        console.error(`Error terminating team ${teamRunId} on backend:`, error);
-        return false;
-      } finally {
-        const next = { ...this.stopPendingTeamIds };
-        delete next[teamRunId];
-        this.stopPendingTeamIds = next;
-      }
+      } catch (error) { console.error(`Error terminating Team '${rootTeamRunId}':`, error); return false; }
+      finally { const next = { ...this.stopPendingTeamIds }; delete next[rootTeamRunId]; this.stopPendingTeamIds = next; }
     },
-
     async terminateActiveTeam() {
-      const activeTeam = useAgentTeamContextsStore().activeTeamContext;
-      if (activeTeam) {
-        await this.terminateTeamRun(activeTeam.teamRunId);
-      }
+      const team = useAgentTeamContextsStore().activeTeamContext;
+      if (team) await this.terminateTeamRun(team.executions.getRootTeamRunId());
     },
-
-    discardDraftTeamRun(teamRunId: string): boolean {
-      const normalizedTeamRunId = teamRunId.trim();
-      if (!normalizedTeamRunId || !normalizedTeamRunId.startsWith('temp-')) {
-        return false;
-      }
-
-      const teamContextsStore = useAgentTeamContextsStore();
-      const teamContext = teamContextsStore.getTeamContextById(normalizedTeamRunId);
-      if (!teamContext) {
-        return false;
-      }
-
-      if (teamContext.isSubscribed || teamStreamingServices.has(normalizedTeamRunId)) {
-        this.disconnectTeamStream(normalizedTeamRunId);
-      }
-
-      teamContext.isSubscribed = false;
-      teamContext.isActive = false;
-      teamContext.agentExecutionsByKey.forEach((member) => {
-        applyOfflineOrTerminalCleanup(member);
-        useAgentActivityStore().clearActivities(member.state.runId);
-      });
-
-      teamContextsStore.removeTeamContext(normalizedTeamRunId);
-      return true;
-    },
-
     async sendMessageToFocusedMember(text: string, contextAttachments: ContextAttachment[]) {
-      const teamContextsStore = useAgentTeamContextsStore();
-      const runHistoryStore = useRunHistoryStore();
-      const contextFileUploadStore = useContextFileUploadStore();
-      const activeTeam = teamContextsStore.activeTeamContext;
-      if (!activeTeam) {
-        throw new Error('No active team context.');
-      }
-
-      const initialExecutionAddress = createTeamExecutionAddress(activeTeam.focusedExecutionAddress);
-      const initialExecutionKey = serializeTeamExecutionAddress(initialExecutionAddress);
-      const focusedMember = activeTeam.agentExecutionsByKey.get(initialExecutionKey) ?? null;
-      const focusedNode = findTeamExecutionNode(activeTeam, initialExecutionAddress);
-      if (!focusedNode) throw new Error(`Focused Team execution '${initialExecutionAddress.memberAddress}' is not present.`);
-      const isTemporary = activeTeam.teamRunId.startsWith('temp-');
-      let finalTeamRunId = activeTeam.teamRunId;
-      let targetExecutionAddress = initialExecutionAddress;
-      let conversationTargetKey = initialExecutionKey;
-      const targetUploadKey = initialExecutionAddress.memberAddress;
-      const teamResumeConfig = !isTemporary
-        ? runHistoryStore.teamResumeConfigByTeamRunId[finalTeamRunId] || null
-        : null;
-      const draftOwner = buildTeamMemberDraftContextFileOwner(activeTeam.teamRunId, targetUploadKey);
+      const contexts = useAgentTeamContextsStore();
+      const drafts = useTeamRunConfigStore();
+      const selection = useAgentSelectionStore();
+      let team = contexts.activeTeamContext;
+      const draft = selection.selectedType === 'team_draft' ? drafts.selectedDraft : null;
+      if (!team && !draft) throw new Error('No Team run or launch draft is selected.');
+      if (draft) drafts.setPendingInput(draft.focusedMemberAddress, { text, attachments: contextAttachments });
+      let rootTeamRunId: string | null = team?.executions.getRootTeamRunId() ?? null;
+      let target = team?.executions.getFocusedAddress() ?? null;
       let localSubmission: LocalUserSubmissionHandle | null = null;
-
+      let draftOwnerId = draft?.draftId ?? rootTeamRunId;
+      this.isLaunching = Boolean(draft);
       try {
-        let memberConfigs: CurrentTeamMemberConfigInput[] | null = null;
-        if (isTemporary) {
-          this.isLaunching = true;
-
-          const leafMembers = flattenLeafAgentMemberNodes(activeTeam.rootTeam.children);
-
-          const runtimeKinds = new Set<string>();
-          runtimeKinds.add(activeTeam.config.runtimeKind || DEFAULT_AGENT_RUNTIME_KIND);
-          Object.values(activeTeam.config.memberOverrides || {}).forEach((override) => {
-            runtimeKinds.add(resolveEffectiveMemberRuntimeKind(override, activeTeam.config.runtimeKind));
-          });
-
-          const runtimeModelCatalogs: Record<string, string[]> = {};
-          await Promise.all(
-            Array.from(runtimeKinds).map(async (runtimeKind) => {
-              const rows = await loadRuntimeProviderGroupsForSelection(runtimeKind);
-              runtimeModelCatalogs[runtimeKind] = rows.flatMap((row) =>
-                row.models.map((model) => model.modelIdentifier),
-              );
-            }),
-          );
-
-          const readiness = evaluateTeamRunLaunchReadiness(activeTeam.config, runtimeModelCatalogs);
-          if (!readiness.canLaunch) {
-            throw new Error(readiness.blockingIssues[0]?.message || 'Team configuration is not launch-ready.');
-          }
-
-          memberConfigs = buildTeamRunMemberConfigRecords({
-            config: activeTeam.config,
-            leafMembers,
-          }).map(({ workspaceMetadata: _workspaceMetadata, displayName: _displayName, ...memberConfig }) => ({
-            ...memberConfig,
-            skillAccessMode: memberConfig.skillAccessMode as TeamMemberConfigInput['skillAccessMode'],
-          }));
+        if (draft) {
+          const launched = await this.launchDraft(draft);
+          rootTeamRunId = launched.rootTeamRunId;
+          target = launched.executionAddress;
+          team = launched.context;
+          draftOwnerId = draft.draftId;
+          contexts.addTeamContext(team);
+          selection.selectRunWithoutShellNavigation(launched.rootTeamRunId, 'team');
+          drafts.removeDraft(draft.draftId);
+        } else if (team && rootTeamRunId && !team.executions.isRootTeamActive()) {
+          const { data, errors } = await getApolloClient().mutate<RestorePayload>({ mutation: RestoreAgentTeamRun, variables: { teamRunId: rootTeamRunId } });
+          if (errors?.length) throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '));
+          if (!data?.restoreAgentTeamRun?.success) throw new Error(data?.restoreAgentTeamRun?.message || 'Team restore failed.');
+          const hydrated = await this.hydrateRun(rootTeamRunId, target?.memberAddress ?? null);
+          contexts.addTeamContext(hydrated);
+          team = hydrated; target = hydrated.executions.getFocusedAddress();
         }
-
-        if (focusedMember) {
-          localSubmission = beginLocalUserSubmission(focusedMember, {
-            text,
-            attachments: contextAttachments,
-            navigationTarget: {
-              kind: 'team_member',
-              teamRunId: activeTeam.teamRunId,
-              executionAddress: initialExecutionAddress,
-            },
-          });
-        }
-
-        if (isTemporary) {
-          const client = getApolloClient()
-          const { data, errors } = await client.mutate<CreateAgentTeamRunMutationPayload>({
-            mutation: CreateAgentTeamRun,
-            variables: {
-              input: {
-                teamDefinitionId: activeTeam.config.teamDefinitionId,
-                memberConfigs: memberConfigs ?? [],
-              }
-            }
-          });
-
-          if (errors && errors.length > 0) {
-            throw new Error(errors.map((e: { message: string }) => e.message).join(', '));
-          }
-
-          const result = data?.createAgentTeamRun;
-          if (!result) {
-            throw new Error('Failed to create team run: No response returned.');
-          }
-
-          if (!result.success) {
-            throw new Error(result.message || 'Failed to create team run.');
-          }
-
-          const permanentTeamRunId = result.teamRunId;
-          if (!permanentTeamRunId) {
-            throw new Error('Failed to create team run: No teamRunId returned on success.');
-          }
-
-          finalTeamRunId = permanentTeamRunId;
-          teamContextsStore.promoteTemporaryTeamRunId(activeTeam.teamRunId, permanentTeamRunId);
-          targetExecutionAddress = createTeamExecutionAddress({
-            ...initialExecutionAddress,
-            rootTeamRunId: permanentTeamRunId,
-          });
-          conversationTargetKey = serializeTeamExecutionAddress(targetExecutionAddress);
-          const promotedTeamContext = teamContextsStore.getTeamContextById(permanentTeamRunId);
-          if (!promotedTeamContext) {
-            throw new Error(`Team context '${permanentTeamRunId}' not found after creation.`);
-          }
-          await reconcileTeamContextAgentRunIdsFromBackend({
-            teamContext: promotedTeamContext,
-            teamRunId: permanentTeamRunId,
-          });
-        } else if (teamResumeConfig && !teamResumeConfig.isActive) {
-          const client = getApolloClient();
-          const { data, errors } = await client.mutate<RestoreAgentTeamRunMutationPayload>({
-            mutation: RestoreAgentTeamRun,
-            variables: { teamRunId: finalTeamRunId },
-          });
-
-          if (errors && errors.length > 0) {
-            throw new Error(errors.map((e: { message: string }) => e.message).join(', '));
-          }
-
-          const result = data?.restoreAgentTeamRun;
-          if (!result) {
-            throw new Error('Failed to restore team run: No response returned.');
-          }
-          if (!result.success) {
-            throw new Error(result.message || 'Failed to restore team run.');
-          }
-
-          finalTeamRunId = result.teamRunId || finalTeamRunId;
-        }
-
-        teamContextsStore.lockConfig(finalTeamRunId);
-        runHistoryStore.markTeamAsActive(finalTeamRunId);
-        void runHistoryStore.refreshTreeQuietly();
-
-        const finalTeamContext = teamContextsStore.getTeamContextById(finalTeamRunId);
-        if (!finalTeamContext) {
-          throw new Error(`Team context '${finalTeamRunId}' not found after creation.`);
-        }
-        finalTeamContext.isActive = true;
-        if (localSubmission) {
-          retargetLocalUserSubmission(localSubmission, {
-            kind: 'team_member',
-            teamRunId: finalTeamRunId,
-            executionAddress: targetExecutionAddress,
-          });
-        }
-        const finalizedAttachments = await contextFileUploadStore.finalizeDraftAttachments({
+        if (!team || !target || !rootTeamRunId || !draftOwnerId) throw new Error('Canonical Team execution was not created.');
+        team.executions.setRootTeamActive(true);
+        const member = team.executions.getAgentContext(target);
+        if (!member) throw new Error(`Focused Team execution '${target.memberAddress}' is not an Agent.`);
+        const executionKey = serializeTeamExecutionAddress(target);
+        localSubmission = beginLocalUserSubmission(member, {
+          text, attachments: contextAttachments,
+          navigationTarget: { kind: 'team_member', teamRunId: rootTeamRunId, executionAddress: target },
+        });
+        const draftOwner = buildTeamMemberDraftContextFileOwner(draftOwnerId, target.memberAddress);
+        const finalized = await useContextFileUploadStore().finalizeDraftAttachments({
           draftOwner,
-          finalOwner: buildTeamMemberFinalContextFileOwner(finalTeamRunId, targetUploadKey),
+          finalOwner: buildTeamMemberFinalContextFileOwner(rootTeamRunId, target.memberAddress),
           attachments: contextAttachments,
         });
-
-        const finalFocusedMember = finalTeamContext.agentExecutionsByKey.get(conversationTargetKey) || null;
-        if (focusedNode.kind === 'agent' && !finalFocusedMember) {
-          throw new Error(`Focused member '${conversationTargetKey}' not found after team creation.`);
-        }
-
+        const plan = planContextAttachmentSubmission(finalized);
         const messageId = buildClientMessageId();
-        const dedupeKey = buildConversationTargetInputDedupeKey(finalTeamRunId, conversationTargetKey, messageId);
-        const submissionPlan = planContextAttachmentSubmission(finalizedAttachments);
-        if (localSubmission) {
-          localSubmission.message.messageId = messageId;
-          localSubmission.message.dedupeKey = dedupeKey;
-          finalizeLocalSubmissionAttachments(localSubmission, submissionPlan.retainedMessageAttachments);
-        } else if (finalFocusedMember) {
-          localSubmission = beginLocalUserSubmission(finalFocusedMember, {
-            text,
-            attachments: submissionPlan.retainedMessageAttachments,
-            navigationTarget: {
-              kind: 'team_member',
-              teamRunId: finalTeamRunId,
-              executionAddress: targetExecutionAddress,
-            },
-          });
-          localSubmission.message.messageId = messageId;
-          localSubmission.message.dedupeKey = dedupeKey;
-        }
-
-        const service = await this.ensureTeamStreamConnected(finalTeamRunId);
-        service.sendMessage(
-          text,
-          targetExecutionAddress,
-          submissionPlan.executable.contextFilePaths,
-          submissionPlan.executable.imageUrls,
-          { messageId, dedupeKey },
-        );
-      } catch (error: any) {
-        console.error(`Failed to send message to conversation target ${conversationTargetKey}:`, error);
-        if (localSubmission) {
-          failLocalSubmission(localSubmission, error);
-          applyOfflineOrTerminalCleanup(localSubmission.context, AgentStatus.Error);
-          return;
-        }
-        if (focusedMember) {
-          focusedMember.submissionPending = false;
-        }
-        throw new Error(`Failed to send message: ${error.message}`);
-      } finally {
-        if (isTemporary) {
-          this.isLaunching = false;
-        }
-      }
+        const dedupeKey = inputDedupeKey(rootTeamRunId, executionKey, messageId);
+        localSubmission.message.messageId = messageId;
+        localSubmission.message.dedupeKey = dedupeKey;
+        finalizeLocalSubmissionAttachments(localSubmission, plan.retainedMessageAttachments);
+        useRunHistoryStore().markTeamAsActive(rootTeamRunId);
+        void useRunHistoryStore().refreshTreeQuietly();
+        const service = await this.ensureTeamStreamConnected(rootTeamRunId);
+        service.sendMessage(text, target, plan.executable.contextFilePaths, plan.executable.imageUrls, { messageId, dedupeKey });
+      } catch (error) {
+        if (localSubmission) { failLocalSubmission(localSubmission, error); applyOfflineOrTerminalCleanup(localSubmission.context, AgentStatus.Error); return; }
+        throw error;
+      } finally { this.isLaunching = false; }
     },
-
-    /**
-     * Sends tool approval/denial to the active team stream.
-     */
-    async postToolExecutionApproval(
-      invocationId: string,
-      isApproved: boolean,
-      reason: string | null = null,
-      approvalTarget: ToolApprovalTarget | null = null,
-    ) {
-      const teamContextsStore = useAgentTeamContextsStore();
-      const activeTeam = teamContextsStore.activeTeamContext;
-
-      if (!activeTeam) {
-        console.warn('No active team for tool approval.');
-        return;
-      }
-
-      const service = teamStreamingServices.get(activeTeam.teamRunId);
-
-      if (service) {
-        if (isApproved) {
-          service.approveTool(invocationId, approvalTarget, reason || undefined);
-        } else {
-          service.denyTool(invocationId, approvalTarget, reason || undefined);
-        }
-      }
-
+    async postToolExecutionApproval(invocationId: string, isApproved: boolean, reason: string | null = null, target: ToolApprovalTarget | null = null) {
+      const team = useAgentTeamContextsStore().activeTeamContext;
+      if (!team) return;
+      const service = teamStreamingServices.get(team.executions.getRootTeamRunId());
+      if (!service) return;
+      isApproved ? service.approveTool(invocationId, target, reason || undefined) : service.denyTool(invocationId, target, reason || undefined);
     },
-
     interruptFocusedMemberGeneration(target: FocusedTeamMemberInterruptTarget): boolean {
-      const teamRunId = target.teamRunId.trim();
-      const executionAddress = createTeamExecutionAddress(target.executionAddress);
-
-      if (!teamRunId) {
-        console.warn('Cannot interrupt generation: team run ID is required.');
-        return false;
-      }
-      if (executionAddress.rootTeamRunId !== teamRunId) {
-        console.warn('Cannot interrupt generation: execution address does not belong to the Team run.');
-        return false;
-      }
-
-      const service = teamStreamingServices.get(teamRunId);
-      if (!service) {
-        console.warn(`Cannot interrupt generation: no streaming service for team '${teamRunId}'.`);
-        return false;
-      }
-
-      return service.interruptGeneration(buildClientInterruptCommandId(), {
-        executionAddress,
+      const address = createTeamExecutionAddress(target.executionAddress);
+      if (address.rootTeamRunId !== target.teamRunId.trim()) return false;
+      return teamStreamingServices.get(target.teamRunId)?.interruptGeneration(buildClientInterruptCommandId(), { executionAddress: address }) ?? false;
+    },
+    async hydrateRun(rootTeamRunId: string, memberAddress: string | null) {
+      const payload = await hydrateLiveTeamRunContext({
+        teamRunId: rootTeamRunId,
+        memberAddress,
+        resolveWorkspaceMetadataByRootPath: resolveRunHistoryWorkspaceMetadataByRootPath,
+        ensureWorkspaceByRootPath: ensureRunHistoryWorkspaceByRootPath,
       });
+      return payload.hydratedContext;
+    },
+    async launchDraft(draft: TeamLaunchDraft) {
+      const definitions = useAgentTeamDefinitionStore();
+      const definition = definitions.getAgentTeamDefinitionById(draft.config.teamDefinitionId);
+      if (!definition) throw new Error(`Team definition '${draft.config.teamDefinitionId}' was not found.`);
+      const leafMembers = resolveLeafTeamMembers(definition, { getTeamDefinitionById: (id) => definitions.getAgentTeamDefinitionById(id) });
+      if (!leafMembers.some((member) => member.address === draft.focusedMemberAddress)) throw new Error(`Draft focus '${draft.focusedMemberAddress}' is stale.`);
+      const readiness = evaluateTeamRunLaunchReadiness(draft.config, useTeamRunConfigStore().runtimeModelCatalogs);
+      if (!readiness.canLaunch) throw new Error(readiness.blockingIssues[0]?.message || 'Team configuration is not launch-ready.');
+      const memberConfigs = buildTeamRunMemberConfigRecords({ config: mutableConfig(draft.config), leafMembers })
+        .map(({ workspaceMetadata: _workspaceMetadata, displayName: _displayName, ...config }) => ({
+          ...config,
+          skillAccessMode: config.skillAccessMode as TeamMemberConfigInput['skillAccessMode'],
+        }));
+      const { data, errors } = await getApolloClient().mutate<CreatePayload>({
+        mutation: CreateAgentTeamRun,
+        variables: { input: { teamDefinitionId: draft.config.teamDefinitionId, memberConfigs } },
+      });
+      if (errors?.length) throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '));
+      const result = data?.createAgentTeamRun;
+      if (!result?.success || !result.teamRunId) throw new Error(result?.message || 'Team launch failed without a real TeamRun ID.');
+      const context = await this.hydrateRun(result.teamRunId, draft.focusedMemberAddress);
+      const executionAddress = createTeamExecutionAddress({ rootTeamRunId: result.teamRunId, memberAddress: draft.focusedMemberAddress });
+      if (!context.executions.hasExecution(executionAddress)) throw new Error(`Launched Team is missing '${draft.focusedMemberAddress}'.`);
+      context.executions.focus(executionAddress);
+      return { rootTeamRunId: result.teamRunId, executionAddress, context };
     },
   },
 });

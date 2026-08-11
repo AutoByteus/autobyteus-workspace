@@ -1,10 +1,21 @@
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
-import type { AgentStatusPayload } from "../../agent-execution/domain/agent-status-payload.js";
+import type { AgentApiStatus } from "../../agent-execution/domain/agent-status-payload.js";
+import type { TeamExecutionAddress } from "../../agent-team-execution/domain/team-execution-address.js";
+import type {
+  TeamRunAgentNode,
+  TeamRunAgentTeamNode,
+} from "../../agent-team-execution/domain/team-run-config.js";
 
 export interface TeamRunListLiveProjection {
   isActive: boolean;
-  memberStatusSnapshots: AgentStatusPayload[];
+  memberStatusSnapshots: TeamRunMemberStatusProjection[];
 }
+
+export type TeamRunMemberStatusProjection = Readonly<{
+  executionAddress: TeamExecutionAddress;
+  agentRunId: string;
+  status: AgentApiStatus;
+}>;
 
 export class TeamRunLiveProjectionService {
   constructor(
@@ -35,7 +46,35 @@ export class TeamRunLiveProjectionService {
       isActive: true,
       memberStatusSnapshots: activeTeamRun
         .getLeafAgentStatusSnapshots()
-        .map((snapshot) => snapshot.payload),
+        .flatMap((snapshot): TeamRunMemberStatusProjection[] => {
+          const agentRunId = snapshot.execution.kind === "task_team_agent"
+            ? snapshot.execution.agentRunId
+            : snapshot.execution.executionAddress.taskAgentRunId ??
+              findAgentByAddress(
+                activeTeamRun.config.rootTeam,
+                snapshot.execution.executionAddress.memberAddress,
+              )?.agentRunId;
+          if (!agentRunId) return [];
+          return [{
+            status: snapshot.details.status,
+            agentRunId,
+            executionAddress: snapshot.execution.executionAddress,
+          }];
+        }),
     };
   }
 }
+
+const findAgentByAddress = (
+  team: TeamRunAgentTeamNode,
+  address: string,
+): TeamRunAgentNode | null => {
+  for (const child of team.children) {
+    if (child.kind === "agent" && child.address === address) return child;
+    if (child.kind === "agent_team") {
+      const nested = findAgentByAddress(child, address);
+      if (nested) return nested;
+    }
+  }
+  return null;
+};

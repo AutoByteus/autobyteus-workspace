@@ -3,6 +3,7 @@ import type {
   InterruptCommandTransportFailure,
   PendingInterruptCommand,
 } from './protocol/agentCommandTypes';
+import { sameTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
 type FailureCallback = (failure: InterruptCommandTransportFailure) => void;
 
@@ -85,7 +86,9 @@ export const interruptCommandTargetsEqual = (
   }
   if (left.target_kind === 'team_member' && right.target_kind === 'team_member') {
     return left.team_run_id === right.team_run_id
-      && JSON.stringify(left.execution_address) === JSON.stringify(right.execution_address);
+      && !!left.execution_address
+      && !!right.execution_address
+      && sameTeamExecutionAddress(left.execution_address, right.execution_address);
   }
   return false;
 };

@@ -1,13 +1,12 @@
 import type { TeamRun } from "../domain/team-run.js";
 import type { TeamRunEventUnsubscribe } from "../domain/team-run-event.js";
-import type { TaskTeamInstanceIdentity } from "../domain/task-team-instance.js";
-import { cloneTaskTeamInstanceIdentity } from "../domain/task-team-instance.js";
+import type { ActiveTaskExecutionBinding } from "./active-task-execution-binding.js";
 import { getTaskAgentDirectory } from "./task-agent-directory.js";
 import type { TaskTeamActiveRunDirectory } from "./task-team-active-run-directory.js";
 import type { TaskDelegationRunRegistry } from "./task-delegation-run-registry.js";
 
 type PendingTeamSettlement = {
-  taskTeamInstance: TaskTeamInstanceIdentity;
+  binding: ActiveTaskExecutionBinding;
   requestedAt: string;
   status: "settlement_requested" | "settling" | "settled";
 };
@@ -22,12 +21,12 @@ export class TaskTeamSettlementCoordinator {
     runRegistry: TaskDelegationRunRegistry;
   }) {}
 
-  requestSettlement(taskTeamInstance: TaskTeamInstanceIdentity | null): boolean {
-    if (!taskTeamInstance) return false;
-    const taskTeamRunId = taskTeamInstance.taskTeamRunId.trim();
+  requestSettlement(binding: ActiveTaskExecutionBinding | null): boolean {
+    if (!binding || binding.kind !== "task_team") return false;
+    const taskTeamRunId = binding.executionAddress.taskTeamRunIds.at(-1)?.trim() ?? "";
     if (!taskTeamRunId) return false;
     this.pendingByTaskTeamRunId.set(taskTeamRunId, {
-      taskTeamInstance: cloneTaskTeamInstanceIdentity(taskTeamInstance),
+      binding,
       requestedAt: new Date().toISOString(),
       status: this.pendingByTaskTeamRunId.get(taskTeamRunId)?.status ?? "settlement_requested",
     });
@@ -53,9 +52,9 @@ export class TaskTeamSettlementCoordinator {
 
     pending.status = "settling";
     try {
-      const result = await this.dependencies.parentTeamRun.settleTaskTeamInstance(
-        entry.memberAddress,
-        pending.taskTeamInstance.taskTeamRunId,
+      const result = await this.dependencies.parentTeamRun.settleTaskTeamExecution(
+        pending.binding.executionAddress.memberAddress,
+        taskTeamRunId,
         `task_team_delegation_safe_after_${pending.requestedAt}`,
       );
       if (result.accepted) {

@@ -366,7 +366,6 @@ const handleRun = async () => {
           return
         }
         teamContextsStore.createRunFromTemplate()
-        teamRunConfigStore.clearConfig()
       } else if (effectiveAgentConfig.value) {
         if (!effectiveAgentConfig.value.workspaceId) {
           runConfigStore.setWorkspaceError('Workspace is required to run an agent.')

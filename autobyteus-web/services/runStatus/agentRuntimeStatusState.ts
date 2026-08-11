@@ -35,9 +35,9 @@ export const applyLiveAgentStatusEvent = (
 
 export const applyActiveRuntimePlaceholder = (
   context: AgentContext,
-  options: { preserveExistingLive?: boolean } = {},
+  options: { preserveExistingLive?: boolean; streamConnected?: boolean } = {},
 ): void => {
-  if (options.preserveExistingLive === true && context.isSubscribed) {
+  if (options.preserveExistingLive === true && options.streamConnected === true) {
     return;
   }
   context.state.currentStatus = AgentStatus.Initializing;

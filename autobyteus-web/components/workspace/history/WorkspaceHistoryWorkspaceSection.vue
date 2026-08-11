@@ -244,17 +244,7 @@
 
                 <div class="ml-2 flex flex-shrink-0 items-center gap-1">
                   <button
-                    v-if="team.teamRunId.startsWith('temp-')"
-                    type="button"
-                    class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
-                    :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.remove_draft_team')"
-                    :disabled="state.isTeamDeleting(team.teamRunId)"
-                    @click.stop="actions.onDeleteTeam(team)"
-                  >
-                    <Icon icon="heroicons:trash-20-solid" class="h-3.5 w-3.5" />
-                  </button>
-                  <button
-                    v-else-if="state.canTerminateTeam(team.isActive)"
+                    v-if="state.canTerminateTeam(team.isActive)"
                     type="button"
                     class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
                     :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.terminate_team')"
@@ -274,7 +264,7 @@
                     <Icon icon="heroicons:archive-box-20-solid" class="h-3.5 w-3.5" />
                   </button>
                   <button
-                    v-if="!team.teamRunId.startsWith('temp-') && !state.canTerminateTeam(team.isActive) && team.deleteLifecycle === 'READY'"
+                    v-if="!state.canTerminateTeam(team.isActive) && team.deleteLifecycle === 'READY'"
                     type="button"
                     class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
                     :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.delete_team_history_permanently')"

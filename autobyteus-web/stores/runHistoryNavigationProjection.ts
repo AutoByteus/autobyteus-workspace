@@ -110,12 +110,12 @@ export const buildRunHistoryNavigationProjection = (
     teamContexts: input.teamContexts,
     workspacesById: input.workspacesById,
   });
-  const teamContextById = new Map(input.teamContexts.map((context) => [context.teamRunId, context]));
+  const teamContextById = new Map(input.teamContexts.map((context) => [context.executions.getRootTeamRunId(), context]));
   const completedTeamNodes = builtTeamNodes.map((team) => {
     const context = teamContextById.get(team.teamRunId) ?? null;
     const focused = {
       ...team,
-      focusedExecutionAddress: context?.focusedExecutionAddress ?? team.focusedExecutionAddress,
+      focusedExecutionAddress: context?.executions.getFocusedAddress() ?? team.focusedExecutionAddress,
     };
     return { ...focused, executionRows: buildRunHistoryTeamExecutionRows(focused, context) };
   });

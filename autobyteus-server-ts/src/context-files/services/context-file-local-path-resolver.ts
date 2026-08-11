@@ -62,7 +62,7 @@ export class ContextFileLocalPathResolver {
       return this.resolveExistingDraftPath(
         parseDraftContextFileOwnerDescriptor({
           kind: "team_member_draft",
-          draftTeamRunId: decodePathSegment(teamDraftMatch[1]),
+          teamDraftId: decodePathSegment(teamDraftMatch[1]),
           memberAddress: decodePathSegment(teamDraftMatch[2]),
         }),
         decodePathSegment(teamDraftMatch[3]),

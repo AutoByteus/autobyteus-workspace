@@ -11,7 +11,7 @@
       </div>
       <button
         @click="promptTerminateTeam"
-        :disabled="!activeTeam?.isActive || isStopPending"
+        :disabled="!activeTeam?.executions.isRootTeamActive() || isStopPending"
         class="px-4 py-2 bg-red-100 text-red-700 font-semibold text-sm rounded-md border border-red-200 shadow-sm hover:bg-red-600 hover:text-white hover:border-red-600 hover:shadow transform transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
         :title="$t('workspace.components.workspace.team.TeamMembersPanel.terminate_team')"
       >
@@ -24,11 +24,11 @@
       <div v-if="teamMembers.length === 0" class="text-center text-sm text-gray-500 pt-8">{{ $t('workspace.components.workspace.team.TeamMembersPanel.no_active_team_members') }}</div>
       <div
         v-for="member in teamMembers"
-        :key="serializeTeamExecutionAddress(executionForNode(member.node))"
-        @click="selectMember(member.node)"
+        :key="serializeTeamExecutionAddress(member.executionAddress)"
+        @click="selectMember(member.executionAddress)"
         class="p-3 rounded-lg cursor-pointer transition-colors duration-150 border"
         :style="{ marginLeft: `${member.depth * 16}px` }"
-        :class="focusedExecutionAddress && sameTeamExecutionAddress(focusedExecutionAddress, executionForNode(member.node))
+        :class="focusedExecutionAddress && sameTeamExecutionAddress(focusedExecutionAddress, member.executionAddress)
           ? 'bg-indigo-100 border-indigo-300 shadow-sm'
           : 'bg-white border-gray-200 hover:bg-gray-100 hover:border-gray-300'"
       >
@@ -43,8 +43,8 @@
             Coord
           </span>
         </div>
-        <div v-if="member.node.kind === 'agent' && (member.context || member.node.currentStatus)" class="mt-2">
-          <AgentStatusDisplay :status="member.context?.state.currentStatus ?? member.node.currentStatus ?? 'offline'" />
+        <div v-if="member.node.kind === 'agent'" class="mt-2">
+          <AgentStatusDisplay :status="member.context?.state.currentStatus ?? 'offline'" />
         </div>
       </div>
     </div>
@@ -69,10 +69,7 @@ import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import AgentStatusDisplay from '~/components/workspace/agent/AgentStatusDisplay.vue';
 import AgentDeleteConfirmDialog from '~/components/agents/AgentDeleteConfirmDialog.vue';
-import { flattenTeamMemberNodesForDisplay } from '~/utils/teamDefinitionMembers';
-import { createTeamExecutionAddress, sameTeamExecutionAddress, serializeTeamExecutionAddress, type TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
-import type { TeamMemberNode } from '~/types/agent/AgentTeamContext';
-import { contextForTeamNode } from '~/utils/teamActiveExecutionMembers';
+import { sameTeamExecutionAddress, serializeTeamExecutionAddress, type TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
 const teamContextsStore = useAgentTeamContextsStore();
 const runHistoryStore = useRunHistoryStore();
@@ -85,22 +82,18 @@ const teamMembers = computed(() => {
   if (!team) {
     return [];
   }
-  return flattenTeamMemberNodesForDisplay(team.rootTeam.children).map((entry) => ({
-    ...entry,
-    context: contextForTeamNode(team, entry.node),
-  }));
+  return team.executions.listNavigationRows().flatMap((row) => {
+    const node = team.topology.getNode(row.executionAddress.memberAddress);
+    return node ? [{ node, depth: row.depth, executionAddress: row.executionAddress, context: team.executions.getAgentContext(row.executionAddress) }] : [];
+  });
 });
-const focusedExecutionAddress = computed(() => teamContextsStore.activeTeamContext?.focusedExecutionAddress ?? null);
+const focusedExecutionAddress = computed(() => teamContextsStore.activeTeamContext?.executions.getFocusedAddress() ?? null);
 const activeTeam = computed(() => teamContextsStore.activeTeamContext);
-const teamName = computed(() => activeTeam.value?.config.teamDefinitionName || 'this team');
-const coordinatorName = computed(() => {
-  const teamDefId = activeTeam.value?.config.teamDefinitionId;
-  if (!teamDefId) return null;
-  return teamContextsStore.activeTeamContext?.rootTeam.coordinatorAddress || null;
-});
+const teamName = computed(() => activeTeam.value?.topology.teamDefinitionName || 'this team');
+const coordinatorName = computed(() => activeTeam.value?.topology.rootTeam.coordinatorAddress || null);
 
 const isStopPending = computed(() => {
-  const teamRunId = activeTeam.value?.teamRunId;
+  const teamRunId = activeTeam.value?.executions.getRootTeamRunId();
   return teamRunId ? Boolean(teamRunStore.stopPendingTeamIds[teamRunId]) : false;
 });
 
@@ -108,11 +101,9 @@ const isCoordinator = (memberAddress: string) => {
   return memberAddress === coordinatorName.value;
 };
 
-const executionForNode = (node: TeamMemberNode): TeamExecutionAddress => node.executionAddress ?? createTeamExecutionAddress({ rootTeamRunId: activeTeam.value!.teamRunId, memberAddress: node.address });
-
-const selectMember = (node: TeamMemberNode) => {
-  const teamRunId = activeTeam.value?.teamRunId;
-  if (teamRunId) void runHistoryStore.focusTeamMemberAndEnsureHydrated(teamRunId, executionForNode(node));
+const selectMember = (executionAddress: TeamExecutionAddress) => {
+  const teamRunId = activeTeam.value?.executions.getRootTeamRunId();
+  if (teamRunId) void runHistoryStore.focusTeamMemberAndEnsureHydrated(teamRunId, executionAddress);
 };
 
 const promptTerminateTeam = () => {

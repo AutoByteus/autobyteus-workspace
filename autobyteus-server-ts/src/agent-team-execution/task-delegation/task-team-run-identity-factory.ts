@@ -2,7 +2,6 @@ import { randomUUID } from "node:crypto";
 import type { AgentRunIdentityAllocator } from "../../agent-execution/services/agent-run-identity-allocator.js";
 import { AgentRunIdentityAllocator as DefaultAgentRunIdentityAllocator } from "../../agent-execution/services/agent-run-identity-allocator.js";
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
-import type { TaskTeamInstanceIdentity } from "../domain/task-team-instance.js";
 import type { TeamRun } from "../domain/team-run.js";
 import {
   TeamRunConfig,
@@ -12,7 +11,6 @@ import {
 import { generateTeamRunIdForDefinitionName } from "../domain/team-run-id.js";
 
 export type TaskTeamMaterialization = Readonly<{
-  identity: TaskTeamInstanceIdentity;
   config: TeamRunConfig;
   teamNode: TeamRunAgentTeamNode;
 }>;
@@ -36,16 +34,8 @@ export class TaskTeamRunIdentityFactory {
       rootTeam: this.replaceNode(input.teamRun.config.rootTeam, teamNode) as TeamRunAgentTeamNode,
       handoffs: input.teamRun.config.handoffs,
     });
-    const taskId = input.taskId.trim();
-    if (!taskId) throw new Error("taskId is required.");
+    if (!input.taskId.trim()) throw new Error("taskId is required.");
     return Object.freeze({
-      identity: Object.freeze({
-        taskTeamInstanceId: `task_team_${taskId}`,
-        taskTeamRunId: teamNode.teamRunId,
-        parentTeamRunId: input.teamRun.teamRunId,
-        taskId,
-        createdAt: new Date().toISOString(),
-      }),
       config,
       teamNode,
     });

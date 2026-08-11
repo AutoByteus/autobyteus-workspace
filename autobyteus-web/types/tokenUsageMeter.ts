@@ -1,3 +1,4 @@
+import type { TeamStreamServerMessage } from '@autobyteus/team-stream-contracts';
 import type { TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
 export type TokenUsageApiCostStatus = 'estimated' | 'price_missing' | 'partial_price_missing' | 'mixed' | 'local_no_api_bill';
@@ -26,9 +27,7 @@ export interface TokenUsageUpdatedPayload {
   run_id: string;
   turn_id?: string | null;
   llm_call_id?: string | null;
-  root_team_run_id?: string | null;
   execution_address?: TokenUsageExecutionAddress | null;
-  member_agent_run_id?: string | null;
   agent_definition_id?: string | null;
   workspace_id?: string | null;
   runtime_kind?: string | null;
@@ -76,10 +75,8 @@ export interface TokenUsageUpdatedPayload {
 }
 
 export interface TokenUsageRunSummary {
-  runId: string;
-  rootTeamRunId: string | null;
+  runId: string | null;
   executionAddress: TokenUsageExecutionAddress | null;
-  memberAgentRunId: string | null;
   agentDefinitionId: string | null;
   workspaceId: string | null;
   grossInputTokens: number;
@@ -123,3 +120,6 @@ export interface TokenUsageRunSummary {
 }
 
 export type TokenUsageExecutionAddress = TeamExecutionAddress;
+
+type TeamTokenUsageMessage = Extract<TeamStreamServerMessage, { type: 'TOKEN_USAGE_UPDATED' }>;
+export type TeamTokenUsageDetails = Omit<TeamTokenUsageMessage['payload'], 'agent_execution'>;

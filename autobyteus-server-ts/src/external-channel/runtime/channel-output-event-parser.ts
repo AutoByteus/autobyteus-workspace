@@ -53,37 +53,45 @@ export const parseTeamChannelOutputEvent = (
   if (!isTeamAgentEvent(event)) {
     return null;
   }
-  const parsedAgentEvent = parseDirectChannelOutputEvent(event.data.agentEvent);
-  if (!parsedAgentEvent) {
-    return null;
-  }
+  const payload = event.payload;
+  const address = event.execution.executionAddress;
+  const text = payload.eventType === "SEGMENT_CONTENT"
+    ? { text: payload.details.delta, kind: "STREAM_FRAGMENT" as const }
+    : payload.eventType === "ASSISTANT_COMPLETE"
+      ? { text: payload.details.content, kind: "FINAL_TEXT" as const }
+      : { text: null, kind: null };
+  const turnId = "turnId" in payload.details ? payload.details.turnId : null;
   return {
-    ...parsedAgentEvent,
-    agentRunId: asNonEmptyString(event.data.agentEvent.runId) ?? parsedAgentEvent.agentRunId,
-    teamRunId: asNonEmptyString(event.teamRunId),
-    executionAddress: event.data.executionAddress,
+    eventType: payload.eventType as AgentRunEventType,
+    statusHint: payload.statusHint,
+    errorEvidence: null,
+    agentRunId: event.execution.kind === "task_team_agent"
+      ? event.execution.agentRunId
+      : address.taskAgentRunId ?? address.memberAddress,
+    teamRunId: address.rootTeamRunId,
+    executionAddress: address,
+    turnId,
+    text: text.text,
+    textKind: text.kind,
   };
 };
 
 const isTeamAgentEvent = (
   event: unknown,
-): event is TeamRunEvent & {
-  data: {
-    executionAddress: TeamExecutionAddress;
-    agentEvent: AgentRunEvent;
-  };
-} => {
+): event is Extract<TeamRunEvent, { eventSourceType: TeamRunEventSourceType.AGENT }> => {
   if (!event || typeof event !== "object") {
     return false;
   }
   const candidate = event as {
     eventSourceType?: unknown;
-    data?: unknown;
+    execution?: unknown;
+    payload?: unknown;
   };
   if (candidate.eventSourceType !== TeamRunEventSourceType.AGENT) {
     return false;
   }
-  return !!candidate.data && typeof candidate.data === "object";
+  return !!candidate.execution && typeof candidate.execution === "object" &&
+    !!candidate.payload && typeof candidate.payload === "object";
 };
 
 const resolveTurnIdFromPayload = (

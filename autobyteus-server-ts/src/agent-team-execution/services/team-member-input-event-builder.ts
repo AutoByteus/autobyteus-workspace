@@ -1,7 +1,6 @@
 import { createHash } from "node:crypto";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { MixedAgentMemberContext } from "../backends/mixed/mixed-team-run-context.js";
-import type { TaskAgentInstanceIdentity } from "../domain/task-agent-instance.js";
 import { createTeamExecutionAddress, serializeTeamExecutionAddress, type TeamExecutionAddress } from "../domain/team-execution-address.js";
 import type { TeamRunMemberInputContextFile, TeamRunMemberInputEventPayload, TeamRunMemberInputOrigin } from "../domain/team-run-event.js";
 
@@ -37,7 +36,7 @@ const readMetadata = (message: AgentInputUserMessage): Record<string, unknown> =
 };
 
 const contextFile = (value: unknown): TeamRunMemberInputContextFile | null => {
-  if (typeof value === "string" && value.trim()) return { path: value.trim() };
+  if (typeof value === "string" && value.trim()) return { path: value.trim(), type: null };
   if (!value || typeof value !== "object" || Array.isArray(value)) return null;
   const record = value as Record<string, unknown>;
   const path = text(record.uri) ?? text(record.path) ?? text(record.locator) ?? text(record.file_path);
@@ -71,32 +70,28 @@ export const buildTeamMemberInputEventPayload = (input: {
   executionAddress: TeamExecutionAddress;
   message: AgentInputUserMessage;
   receivedAt?: string | null;
-  taskAgentInstance?: TaskAgentInstanceIdentity | null;
 }): TeamRunMemberInputEventPayload => {
   const receivedAt = text(input.receivedAt) ?? new Date().toISOString();
   const metadata = readMetadata(input.message);
   const contentValue = (input.message as unknown as { content?: unknown }).content;
   const content = typeof contentValue === "string" ? contentValue : "";
   const parentCommunicationMessageId = text(metadata.parent_communication_message_id);
-  const recipientAddress = createTeamExecutionAddress(input.executionAddress);
+  const executionAddress = createTeamExecutionAddress(input.executionAddress);
   const messageId = text(metadata.message_id) ?? text(metadata.recipient_input_message_id) ?? buildTeamMemberInputMessageId({
     teamRunId: input.teamRunId,
-    executionAddress: recipientAddress,
+    executionAddress,
     content,
     receivedAt,
     parentCommunicationMessageId,
   });
   return {
     messageId,
-    dedupeKey: text(metadata.dedupe_key) ?? buildTeamMemberInputDedupeKey({ teamRunId: input.teamRunId, executionAddress: recipientAddress, messageId }),
-    teamRunId: input.teamRunId,
-    recipientAddress,
+    dedupeKey: text(metadata.dedupe_key) ?? buildTeamMemberInputDedupeKey({ teamRunId: input.teamRunId, executionAddress, messageId }),
     content,
     inputOrigin: origin(input.message, metadata),
     receivedAt,
     contextFilePaths: readContextFiles(input.message),
     senderAddress: readExecutionAddress(metadata.sender_execution_address),
     parentCommunicationMessageId,
-    ...(input.taskAgentInstance ? { taskAgentInstance: input.taskAgentInstance } : {}),
   };
 };

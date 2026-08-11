@@ -46,7 +46,7 @@ export function useMobileFileContextCoordinator() {
       return selectionStore.selectedType === 'team'
         && selectionStore.selectedRunId === context.teamRunId
         && Boolean(team)
-        && Boolean(team && sameTeamExecutionAddress(team.focusedExecutionAddress, context.focusedExecutionAddress))
+        && Boolean(team && sameTeamExecutionAddress(team.executions.getFocusedAddress(), context.focusedExecutionAddress))
         && Boolean(activeContextStore.activeAgentContext);
     }
     return false;

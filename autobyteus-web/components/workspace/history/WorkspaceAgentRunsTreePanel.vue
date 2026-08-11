@@ -226,7 +226,6 @@ const {
     await agentRunStore.closeAgent(runId, { terminate: false });
     return true;
   },
-  removeDraftTeam: async (teamRunId: string) => teamRunStore.discardDraftTeamRun(teamRunId),
   deleteRun: (runId: string) => runHistoryStore.deleteRun(runId),
   deleteTeamRun: (teamRunId: string) => runHistoryStore.deleteTeamRun(teamRunId),
   archiveRun: (runId: string) => runHistoryStore.archiveRun(runId),

@@ -9,17 +9,21 @@ import { getAgentToolMcpSessionService } from "../../../../agent-tools/mcp/agent
 import { RuntimeKind } from "../../../../runtime-management/runtime-kind-enum.js";
 import { buildFilesystemWorkspaceId } from "../../../../workspaces/workspace-registry-store.js";
 import { getAgentMemoryLocationService } from "../../../../agent-memory/services/agent-memory-location-service.js";
+import {
+  assertPersistentApplicationExecutionContext,
+  rebindApplicationExecutionContext,
+} from "../../../../application-orchestration/domain/application-execution-context.js";
 import type { TeamRunContext } from "../../../domain/team-run-context.js";
 import type { InterAgentMessageDeliveryIntent, ResolvedInterAgentMessageDeliveryRequest } from "../../../domain/inter-agent-message-delivery.js";
 import type { TeamRunAgentNode } from "../../../domain/team-run-config.js";
-import type { TaskAgentInstanceIdentity } from "../../../domain/task-agent-instance.js";
-import { TeamRunEventSourceType, type TeamRunAgentEventPayload, type TeamRunMemberInputEventPayload } from "../../../domain/team-run-event.js";
-import { buildTeamLeafAgentStatusSnapshot, type TeamLeafAgentStatusPayload } from "../../../domain/team-leaf-agent-status-snapshot.js";
+import { createTeamAgentExecutionBinding, type TeamAgentExecutionBinding } from "../../../domain/team-agent-execution-binding.js";
+import { TeamRunEventSourceType, type TeamRunMemberInputEventPayload } from "../../../domain/team-run-event.js";
 import { getMemberTeamContextBuilder, type MemberTeamContextBuilder } from "../../../services/member-team-context-builder.js";
 import { getInterAgentMessageRouter, type InterAgentMessageRouter } from "../../../services/inter-agent-message-router.js";
 import { buildInterAgentDeliveryInputMessage } from "../../../services/inter-agent-message-runtime-builders.js";
 import { buildTeamMemberInputEventPayload } from "../../../services/team-member-input-event-builder.js";
 import { MemberCommandStatusOverlayStore } from "../../../services/member-command-status-overlay-store.js";
+import { TeamAgentEventAdapter } from "../../../services/team-agent-event-adapter.js";
 import { buildTaskDelegationSystemTaskNotificationEvent, isTaskDelegationSystemTaskNotificationMessage } from "../../../task-delegation/task-delegation-system-message-visibility.js";
 import type { MixedAgentMemberContext, MixedTeamRunContext } from "../mixed-team-run-context.js";
 import type { MixedTeamEventPublish, MixedTeamMemberHandle } from "./mixed-team-member-handle.js";
@@ -42,45 +46,29 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
     interAgentMessageRouter?: InterAgentMessageRouter;
     publish: MixedTeamEventPublish;
     deliverInterAgentMessage: (request: InterAgentMessageDeliveryIntent) => Promise<AgentOperationResult>;
-    taskAgentInstance?: TaskAgentInstanceIdentity | null;
+    taskId?: string | null;
   }) {
     this.context = options.context;
     this.overlay = new MemberCommandStatusOverlayStore({
-      getTeamRunId: () => this.options.teamContext.config.rootTeam.teamRunId,
       publishEvent: options.publish,
     });
   }
 
   isActive(): boolean { return this.agentRun?.isActive() ?? false; }
 
-  private statusPayload(): TeamLeafAgentStatusPayload {
-    const snapshot = this.overlay.getMemberStatusSnapshot({
-      memberContext: this.statusIdentity(),
+  private statusSnapshot() {
+    return this.overlay.getMemberStatusSnapshot({
+      binding: this.executionBinding(),
       fallback: () => this.agentRun?.getStatusSnapshot() ?? { status: "offline" },
     });
-    return {
-      ...snapshot,
-      agent_id: this.context.agentRunId,
-      agent_name: displayNameFor(this.context),
-      execution_address: this.executionAddress(),
-      ...(this.options.taskAgentInstance ? {
-        task_agent_instance_id: this.options.taskAgentInstance.taskAgentInstanceId,
-        task_agent_run_id: this.options.taskAgentInstance.taskAgentRunId,
-        task_id: this.options.taskAgentInstance.taskId,
-      } : {}),
-    };
   }
 
   getLeafAgentStatusSnapshots() {
-    return [buildTeamLeafAgentStatusSnapshot({
-      teamRunId: this.options.teamContext.config.rootTeam.teamRunId,
-      executionAddress: this.executionAddress(),
-      payload: this.statusPayload(),
-    })];
+    return [this.statusSnapshot()];
   }
 
   hasOpenExecutionWork(): boolean {
-    return ["initializing", "running", "error"].includes(this.statusPayload().status);
+    return ["initializing", "running", "error"].includes(this.statusSnapshot().details.status);
   }
 
   async postMessage(message: AgentInputUserMessage): Promise<AgentOperationResult> {
@@ -117,7 +105,7 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
     const targetsTaskAgent = request.resolvedTargetKind === "task_agent_run";
     if (
       targetsTaskAgent &&
-      (!this.options.taskAgentInstance || request.receiverAddress.taskAgentRunId !== this.context.agentRunId)
+      (!this.options.taskId || request.receiverAddress.taskAgentRunId !== this.context.agentRunId)
     ) return {
       accepted: false,
       code: "TASK_AGENT_IDENTITY_MISMATCH",
@@ -125,7 +113,7 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
     };
     if (
       !targetsTaskAgent &&
-      (this.options.taskAgentInstance || request.receiverAddress.taskAgentRunId !== null)
+      (this.options.taskId || request.receiverAddress.taskAgentRunId !== null)
     ) return {
       accepted: false,
       code: "TARGET_AGENT_RUN_MISMATCH",
@@ -210,8 +198,7 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
       teamContext: this.options.teamContext,
       agentNode: node,
       deliverInterAgentMessage: this.options.deliverInterAgentMessage,
-      taskAgentInstance: this.options.taskAgentInstance ?? null,
-      taskTeamInstance: this.options.teamContext.runtimeContext.taskTeamInstance,
+      taskId: this.options.taskId ?? this.options.teamContext.runtimeContext.taskId,
     });
     const rootTeamRunId = this.options.teamContext.config.rootTeam.teamRunId;
     const memoryDir = getAgentMemoryLocationService().getTeamAgentRunLocation({
@@ -219,6 +206,12 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
       ancestorTeamRunIds: this.ancestorTeamRunIds(),
       agentRunId: this.context.agentRunId,
     }).memoryDir;
+    const executionAddress = this.executionAddress();
+    const applicationExecutionContext = node.applicationExecutionContext
+      ? executionAddress.taskAgentRunId !== null || executionAddress.taskTeamRunIds.length > 0
+        ? rebindApplicationExecutionContext(node.applicationExecutionContext, executionAddress)
+        : assertPersistentApplicationExecutionContext(node.applicationExecutionContext, executionAddress)
+      : null;
     return new AgentRunConfig({
       agentDefinitionId: node.agentDefinitionId,
       llmModelIdentifier: node.llmModelIdentifier,
@@ -229,7 +222,7 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
       skillAccessMode: node.skillAccessMode,
       runtimeKind: node.runtimeKind,
       memberTeamContext,
-      applicationExecutionContext: node.applicationExecutionContext,
+      applicationExecutionContext,
     });
   }
 
@@ -245,12 +238,20 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
     return ids;
   }
 
-  private executionAddress() { return this.options.teamContext.runtimeContext.teamExecutionAddress.memberAddress === this.context.address && this.options.taskAgentInstance
-    ? { ...this.options.teamContext.runtimeContext.teamExecutionAddress, taskAgentRunId: this.options.taskAgentInstance.taskAgentRunId }
-    : { ...this.options.teamContext.runtimeContext.teamExecutionAddress, memberAddress: this.context.address, taskAgentRunId: this.options.taskAgentInstance?.taskAgentRunId ?? null };
+  private executionAddress() {
+    return {
+      ...this.options.teamContext.runtimeContext.teamExecutionAddress,
+      memberAddress: this.context.address,
+      taskAgentRunId: this.options.taskId ? this.context.agentRunId : null,
+    };
   }
 
-  private statusIdentity() { return { executionAddress: this.executionAddress(), displayName: displayNameFor(this.context), agentRunId: this.context.agentRunId }; }
+  private executionBinding(): TeamAgentExecutionBinding {
+    return createTeamAgentExecutionBinding({
+      executionAddress: this.executionAddress(),
+      agentRunId: this.context.agentRunId,
+    });
+  }
 
   private publishMemberInput(message: AgentInputUserMessage): void {
     const payload = buildTeamMemberInputEventPayload({
@@ -258,13 +259,11 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
       memberContext: this.context,
       executionAddress: this.executionAddress(),
       message,
-      taskAgentInstance: this.options.taskAgentInstance ?? null,
     }) satisfies TeamRunMemberInputEventPayload;
     this.options.publish({
       eventSourceType: TeamRunEventSourceType.MEMBER_INPUT,
-      teamRunId: this.options.teamContext.config.rootTeam.teamRunId,
       executionAddress: this.executionAddress(),
-      data: payload,
+      payload,
     });
   }
 
@@ -273,32 +272,39 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
     this.unsubscribe = run.subscribeToEvents((event: unknown) => {
       if (!isAgentRunEvent(event)) return;
       this.context.platformAgentRunId = run.getPlatformAgentRunId() ?? this.context.platformAgentRunId;
-      const teamEvent = {
-        eventSourceType: TeamRunEventSourceType.AGENT,
-        teamRunId: this.options.teamContext.config.rootTeam.teamRunId,
-        executionAddress: this.executionAddress(),
-        data: {
-          runtimeKind: this.context.runtimeKind,
-          executionAddress: this.executionAddress(),
-          displayName: displayNameFor(this.context),
-          agentEvent: event,
-          taskAgentInstance: this.options.taskAgentInstance ?? null,
-        } satisfies TeamRunAgentEventPayload,
+      if (event.runId !== this.context.agentRunId) {
+        throw new Error(`AgentRun event '${event.runId}' does not match Team Agent binding '${this.context.agentRunId}'.`);
+      }
+      const execution = this.executionBinding();
+      const result = new TeamAgentEventAdapter((agentRunId) => this.resolveExecutionAddressByAgentRunId(agentRunId)).adapt(event);
+      if (result.kind === "filtered_collaboration_duplicate") return;
+      const payload = result.kind === "publish" ? result.event : {
+        eventType: "ERROR" as const,
+        details: Object.freeze({ code: result.code, message: result.message }),
+        statusHint: "ERROR" as const,
       };
-      this.overlay.recordReplacementEvents([teamEvent]);
-      this.options.publish(teamEvent);
+      this.options.publish({ eventSourceType: TeamRunEventSourceType.AGENT, execution, payload });
+      if (payload.eventType === "AGENT_STATUS") this.overlay.clearAcceptedLiveStatus(execution);
     });
+  }
+
+  private resolveExecutionAddressByAgentRunId(agentRunId: string) {
+    if (agentRunId === this.context.agentRunId) return this.executionAddress();
+    const node = this.options.teamContext.index.listNodes().find((candidate) =>
+      candidate.kind === "agent" && candidate.agentRunId === agentRunId,
+    );
+    return node?.kind === "agent"
+      ? { ...this.options.teamContext.runtimeContext.teamExecutionAddress, memberAddress: node.address, taskAgentRunId: null }
+      : null;
   }
 
   private publishCommandStatus(status: "initializing" | "error", errorMessage: string | null = null): void {
     if (this.agentRun) return;
     this.overlay.publishMemberCommandStatus({
-      runtimeKind: this.context.runtimeKind,
-      memberContext: this.statusIdentity(),
-      taskAgentInstance: this.options.taskAgentInstance ?? null,
+      binding: this.executionBinding(),
       status,
       errorMessage,
-      currentStatus: () => this.statusPayload().status,
+      currentStatus: () => this.statusSnapshot().details.status,
     });
   }
 }

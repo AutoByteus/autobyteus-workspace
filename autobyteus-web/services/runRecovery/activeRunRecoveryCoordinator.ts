@@ -46,9 +46,8 @@ const listActiveTeamRuns = (workspaceGroups: RunHistoryWorkspaceGroup[]): TeamRu
 const applyTeamHistoryStatusToExistingContext = (
   existingTeamContext: AgentTeamContext,
   teamRun: TeamRunHistoryItem,
+  preserveCurrentMemberStatuses: boolean,
 ): void => {
-  const preserveCurrentMemberStatuses =
-    existingTeamContext.isSubscribed;
   const statusByKey = new Map(
     teamRun.members
       .map((member) => [member.memberAddress.trim(), member.status] as const)
@@ -60,11 +59,11 @@ const applyTeamHistoryStatusToExistingContext = (
       .filter(([agentRunId]) => Boolean(agentRunId)),
   );
 
-  existingTeamContext.isActive = teamRun.isActive;
-  existingTeamContext.agentExecutionsByKey.forEach((memberContext, memberAddress) => {
+  existingTeamContext.executions.setRootTeamActive(teamRun.isActive);
+  existingTeamContext.executions.listAgentContextEntries().forEach(({ executionAddress, agentContext: memberContext }) => {
     memberContext.config.isLocked = true;
     const matchedStatus =
-      statusByKey.get(memberAddress) ||
+      statusByKey.get(executionAddress.memberAddress) ||
       statusByRunId.get(memberContext.state.runId);
     applyMemberOrHistoryStatusSnapshot(
       memberContext,
@@ -88,9 +87,10 @@ export const recoverActiveRunsFromHistory = async (
     const existingContext = agentContextsStore.getRun(runId);
     if (existingContext) {
       existingContext.config.isLocked = true;
-      applyActiveRuntimePlaceholder(existingContext, { preserveExistingLive: true });
+      const streamConnected = agentRunStore.isAgentStreamReady(runId);
+      applyActiveRuntimePlaceholder(existingContext, { preserveExistingLive: true, streamConnected });
 
-      if (!existingContext.isSubscribed) {
+      if (!streamConnected) {
         agentRunStore.connectToAgentStream(runId);
       }
       continue;
@@ -114,10 +114,10 @@ export const recoverActiveRunsFromHistory = async (
     const teamRunId = teamRun.teamRunId;
     const existingTeamContext = teamContextsStore.getTeamContextById(teamRunId);
     if (existingTeamContext) {
-      existingTeamContext.config.isLocked = true;
-      applyTeamHistoryStatusToExistingContext(existingTeamContext, teamRun);
+      const streamConnected = agentTeamRunStore.isTeamStreamReady(teamRunId);
+      applyTeamHistoryStatusToExistingContext(existingTeamContext, teamRun, streamConnected);
 
-      if (!existingTeamContext.isSubscribed) {
+      if (!streamConnected) {
         agentTeamRunStore.connectToTeamStream(teamRunId);
       }
       continue;

@@ -1,6 +1,6 @@
-import { useAgentSelectionStore, type SelectionType } from '~/stores/agentSelectionStore';
+import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 
-export function selectMobileRun(runId: string, type: SelectionType = 'agent'): void {
+export function selectMobileRun(runId: string, type: 'agent' | 'team' = 'agent'): void {
   useAgentSelectionStore().selectRunWithoutShellNavigation(runId, type);
 }
 

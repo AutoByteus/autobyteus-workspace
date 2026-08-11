@@ -221,7 +221,8 @@ const resolveDraftOwnerForContext = (targetContext: AgentContext | null) => {
     return null;
   }
 
-  return buildTeamMemberDraftContextFileOwner(activeTeam.teamRunId, activeTeam.focusedExecutionAddress.memberAddress);
+  const focused = activeTeam.executions.getFocusedAddress();
+  return buildTeamMemberDraftContextFileOwner(activeTeam.executions.getRootTeamRunId(), focused.memberAddress);
 };
 
 const getTargetForContext = (targetContext: AgentContext | null) => {

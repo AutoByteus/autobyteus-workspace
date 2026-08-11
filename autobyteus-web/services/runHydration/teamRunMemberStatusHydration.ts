@@ -15,7 +15,7 @@ export interface TeamMemberStatusSnapshotSet {
 }
 
 const applyMemberStatuses = (
-  members: Map<string, any>,
+  members: readonly { executionAddress: { memberAddress: string }; agentContext: any }[],
   snapshots: TeamMemberLiveSnapshot[],
   options: { preserveCurrentStatus?: boolean } = {},
 ): void => {
@@ -33,14 +33,9 @@ const applyMemberStatuses = (
     }
   });
 
-  members.forEach((memberContext, executionKey) => {
+  members.forEach(({ agentContext: memberContext, executionAddress }) => {
     memberContext.config.isLocked = true;
-    let memberAddress = '';
-    try {
-      memberAddress = JSON.parse(executionKey).memberAddress || '';
-    } catch {
-      return;
-    }
+    const memberAddress = executionAddress.memberAddress;
     const matched =
       statusByKey.get(memberAddress) ||
       statusByRunId.get(memberContext.state.runId);
@@ -53,20 +48,22 @@ const applyMemberStatuses = (
 };
 
 export const hydrateTeamMemberActivitiesFromProjection = (params: {
-  members: Map<string, any>;
+  members: readonly {
+    executionAddress: { memberAddress: string };
+    agentContext: any;
+  }[];
   projectionByMemberAddress: Map<string, TeamMemberRunProjectionPayload | null>;
   memberAddresses?: string[];
 }): void => {
   const requested = params.memberAddresses ? new Set(params.memberAddresses) : null;
-  params.members.forEach((memberContext, executionKey) => {
-    let normalizedMemberAddress = '';
-    try { normalizedMemberAddress = JSON.parse(executionKey).memberAddress || ''; } catch { return; }
-    if (requested && !requested.has(normalizedMemberAddress)) return;
-    const projection = params.projectionByMemberAddress.get(normalizedMemberAddress) || null;
-    if (!memberContext || !projection) {
+  params.members.forEach(({ executionAddress, agentContext }) => {
+    const memberAddress = executionAddress.memberAddress;
+    if (requested && !requested.has(memberAddress)) return;
+    const projection = params.projectionByMemberAddress.get(memberAddress) || null;
+    if (!agentContext || !projection) {
       return;
     }
-    hydrateActivitiesFromProjection(memberContext.state.runId, projection.activities || []);
+    hydrateActivitiesFromProjection(agentContext.state.runId, projection.activities || []);
   });
 };
 
@@ -75,5 +72,5 @@ export const applyLiveTeamMemberStatusSnapshot = (
   snapshot: TeamMemberStatusSnapshotSet,
   options: { preserveCurrentStatus?: boolean } = {},
 ): void => {
-  applyMemberStatuses(context.agentExecutionsByKey, snapshot.memberStatuses || [], options);
+  applyMemberStatuses(context.executions.listAgentContextEntries(), snapshot.memberStatuses || [], options);
 };

@@ -58,7 +58,7 @@ const sameDraftOwner = (
     return left.draftRunId === right.draftRunId;
   }
   if (left.kind === 'team_member_draft' && right.kind === 'team_member_draft') {
-    return left.draftTeamRunId === right.draftTeamRunId
+    return left.teamDraftId === right.teamDraftId
       && left.memberAddress === right.memberAddress;
   }
   return false;

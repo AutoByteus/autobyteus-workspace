@@ -1,21 +1,6 @@
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
-import { findTeamExecutionNode } from '~/services/agentStreaming/teamTaskExecutionTree';
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
-import {
-  parseTeamExecutionAddress,
-  serializeTeamExecutionAddress,
-  type TeamExecutionAddress,
-} from '~/types/agent/TeamExecutionAddress';
-
-const parseExecutionKey = (executionKey: string): TeamExecutionAddress | null => {
-  try {
-    const address = parseTeamExecutionAddress(JSON.parse(executionKey));
-    return serializeTeamExecutionAddress(address) === executionKey ? address : null;
-  } catch {
-    return null;
-  }
-};
 
 export function useTeamMemberPresentation() {
   const agentDefinitionStore = useAgentDefinitionStore();
@@ -88,24 +73,13 @@ export function useTeamMemberPresentation() {
     }
 
     const mapping: Record<string, string> = {};
-    team.agentExecutionsByKey.forEach((memberContext, executionKey) => {
-      const executionAddress = parseExecutionKey(executionKey);
-      if (!executionAddress || executionAddress.rootTeamRunId !== team.teamRunId) {
-        return;
-      }
-      const executionNode = findTeamExecutionNode(team, executionAddress);
-      if (!executionNode || executionNode.kind !== 'agent') {
-        return;
-      }
-      const agentRunId = String(memberContext.state.runId || '').trim();
-      if (!agentRunId || executionNode.agentRunId !== agentRunId
-        || (executionAddress.taskAgentRunId !== null && executionAddress.taskAgentRunId !== agentRunId)
-        || mapping[agentRunId]) {
-        return;
-      }
-      const memberNode = team.memberNodesByAddress.get(executionAddress.memberAddress) || null;
+    team.executions.listAgentContextEntries().forEach(({ executionAddress, agentContext: memberContext }) => {
+      if (executionAddress.rootTeamRunId !== team.executions.getRootTeamRunId()) return;
+      const executionNode = team.topology.getNode(executionAddress.memberAddress);
+      if (!executionNode || executionNode.kind !== 'agent') return;
+      const agentRunId = memberContext.state.runId?.trim();
+      if (!agentRunId || (executionAddress.taskAgentRunId !== null && executionAddress.taskAgentRunId !== agentRunId) || mapping[agentRunId]) return;
       mapping[agentRunId] = executionNode.displayName
-        || memberNode?.displayName
         || getMemberDisplayName(executionAddress.memberAddress, memberContext);
     });
 

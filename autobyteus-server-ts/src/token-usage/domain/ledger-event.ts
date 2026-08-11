@@ -6,6 +6,5 @@ export type TokenUsageLedgerEvent = TokenUsageUpdatedPayload & {
 
 export type TokenUsageLedgerSummary = {
   runId?: string | null;
-  rootTeamRunId?: string | null;
   events: TokenUsageLedgerEvent[];
 };

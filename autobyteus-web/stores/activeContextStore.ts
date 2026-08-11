@@ -213,13 +213,13 @@ export const useActiveContextStore = defineStore('activeContext', () => {
       if (!activeTeam) {
         throw new Error('Cannot interrupt generation: No active team context.');
       }
-      const executionAddress = activeTeam.focusedExecutionAddress;
+      const executionAddress = activeTeam.executions.getFocusedAddress();
       const focusedMember = agentTeamContextsStore.activeExecutionFocusedMemberContext;
       if (!focusedMember || focusedMember !== context) {
         throw new Error('Cannot interrupt generation: Focused team member target is stale.');
       }
       return agentTeamRunStore.interruptFocusedMemberGeneration({
-        teamRunId: activeTeam.teamRunId,
+        teamRunId: activeTeam.executions.getRootTeamRunId(),
         executionAddress,
       });
     }

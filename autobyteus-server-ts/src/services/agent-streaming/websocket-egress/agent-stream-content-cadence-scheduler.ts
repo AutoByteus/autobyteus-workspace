@@ -1,7 +1,8 @@
-import { ServerMessageType, type ServerMessage } from "../models.js";
+import { ServerMessageType } from "../models.js";
 import type {
   AgentStreamEgressForward,
   AgentStreamEgressScheduler,
+  StreamEgressMessage,
 } from "./agent-stream-egress-control.js";
 import {
   appendStreamContent,
@@ -18,9 +19,9 @@ const SAFE_COMPANION_TYPES = new Set<ServerMessageType>([
   ServerMessageType.TOKEN_USAGE_UPDATED,
 ]);
 
-const classifyMessage = (message: ServerMessage): CadenceAction => {
+const classifyMessage = (message: StreamEgressMessage): CadenceAction => {
   if (isCoalescibleStreamContent(message)) return "COALESCE";
-  if (SAFE_COMPANION_TYPES.has(message.type)) return "FORWARD_WITHOUT_FLUSH";
+  if (SAFE_COMPANION_TYPES.has(message.type as ServerMessageType)) return "FORWARD_WITHOUT_FLUSH";
   if (message.type === ServerMessageType.AGENT_STATUS) {
     return message.payload.status === "initializing" || message.payload.status === "running"
       ? "FORWARD_WITHOUT_FLUSH"
@@ -34,14 +35,16 @@ export type AgentStreamContentCadenceSchedulerOptions = {
   onScheduledError: (error: unknown) => void;
 };
 
-export class AgentStreamContentCadenceScheduler implements AgentStreamEgressScheduler {
-  private pendingContent: ServerMessage[] = [];
+export class AgentStreamContentCadenceScheduler<
+  M extends StreamEgressMessage = StreamEgressMessage,
+> implements AgentStreamEgressScheduler<M> {
+  private pendingContent: M[] = [];
   private flushTimer: ReturnType<typeof setTimeout> | null = null;
   private disposed = false;
 
   constructor(private readonly options: AgentStreamContentCadenceSchedulerOptions) {}
 
-  accept(message: ServerMessage, forward: AgentStreamEgressForward): void {
+  accept(message: M, forward: AgentStreamEgressForward<M>): void {
     if (this.disposed) return;
     const action = classifyMessage(message);
     if (action === "COALESCE") {
@@ -54,7 +57,7 @@ export class AgentStreamContentCadenceScheduler implements AgentStreamEgressSche
     forward(message);
   }
 
-  flush(forward: AgentStreamEgressForward): void {
+  flush(forward: AgentStreamEgressForward<M>): void {
     this.cancelTimer();
     const snapshot = this.pendingContent;
     this.pendingContent = [];
@@ -68,10 +71,10 @@ export class AgentStreamContentCadenceScheduler implements AgentStreamEgressSche
     this.pendingContent = [];
   }
 
-  private enqueueContent(message: ServerMessage, forward: AgentStreamEgressForward): void {
+  private enqueueContent(message: M, forward: AgentStreamEgressForward<M>): void {
     const tail = this.pendingContent[this.pendingContent.length - 1];
     if (tail && canAppendStreamContent(tail, message)) {
-      appendStreamContent(tail, message);
+      this.pendingContent[this.pendingContent.length - 1] = appendStreamContent(tail, message);
     } else {
       this.pendingContent.push(cloneStreamContentMessage(message));
     }

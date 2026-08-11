@@ -2,15 +2,9 @@ import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.
 import { TeamRun } from "../../agent-team-execution/domain/team-run.js";
 import {
   TeamRunEventSourceType,
-  type TeamRunAgentEventPayload,
   type TeamRunCommunicationEventPayload,
   type TeamRunEvent,
 } from "../../agent-team-execution/domain/team-run-event.js";
-import {
-  AgentRunEventType,
-  isAgentRunEvent,
-  type AgentRunEvent,
-} from "../../agent-execution/domain/agent-run-event.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import {
   cloneTeamCommunicationProjection,
@@ -69,17 +63,7 @@ export class TeamCommunicationService {
   }
 
   private isTeamCommunicationMessageTeamEvent(event: TeamRunEvent): boolean {
-    if (event.eventSourceType === TeamRunEventSourceType.COMMUNICATION) {
-      return true;
-    }
-    if (event.eventSourceType !== TeamRunEventSourceType.AGENT) {
-      return false;
-    }
-    const payload = event.data as TeamRunAgentEventPayload;
-    return (
-      isAgentRunEvent(payload.agentEvent) &&
-      payload.agentEvent.eventType === AgentRunEventType.TEAM_COMMUNICATION_MESSAGE
-    );
+    return event.eventSourceType === TeamRunEventSourceType.COMMUNICATION;
   }
 
   private enqueueTeamEvent(teamRun: TeamRun, event: TeamRunEvent): Promise<void> {
@@ -113,13 +97,10 @@ export class TeamCommunicationService {
     if (event.eventSourceType === TeamRunEventSourceType.COMMUNICATION) {
       await this.handleCanonicalTeamCommunicationEvent(
         teamRunId,
-        event.data as TeamRunCommunicationEventPayload,
+        event.payload,
       );
       return;
     }
-
-    const payload = event.data as TeamRunAgentEventPayload;
-    await this.handleTeamCommunicationMessageEvent(teamRunId, payload.agentEvent);
   }
 
   private async handleCanonicalTeamCommunicationEvent(
@@ -142,23 +123,6 @@ export class TeamCommunicationService {
     if (!message) {
       logger.warn(
         `${LOG_PREFIX} skipped COMMUNICATION teamRunId=${teamRunId} messageId=${payload.messageId} reason=missing_required_metadata`,
-      );
-      return;
-    }
-
-    await this.persistMessage(teamRunId, message);
-  }
-
-  private async handleTeamCommunicationMessageEvent(
-    teamRunId: string,
-    event: AgentRunEvent,
-  ): Promise<void> {
-    const message = normalizeTeamCommunicationMessage(event.payload, {
-      teamRunId,
-    });
-    if (!message) {
-      logger.warn(
-        `${LOG_PREFIX} skipped TEAM_COMMUNICATION_MESSAGE teamRunId=${teamRunId} runId=${event.runId} reason=missing_required_metadata`,
       );
       return;
     }

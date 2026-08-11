@@ -9,7 +9,6 @@ import { normalizeAgentRuntimeStatus } from '~/services/runHydration/runtimeStat
 import {
   createTeamExecutionAddress,
   memberAddressBasename,
-  serializeTeamExecutionAddress,
 } from '~/types/agent/TeamExecutionAddress';
 
 const isTeamMemberRunActive = (status: AgentStatus): boolean => (
@@ -96,49 +95,30 @@ export const buildTeamRowsFromContext = (
   fallbackLastActivityAt: string,
   resolveWorkspaceRootPath: (workspaceId: string | null) => string,
 ): TeamMemberTreeRow[] => {
-  const visit = (nodes: readonly TeamMemberNode[]): TeamMemberTreeRow[] =>
-    nodes.filter((node) => !node.isTaskExecution).map((node): TeamMemberTreeRow => {
-      if (node.kind === 'agent_team') {
-        return {
-          isActive: false,
-          teamRunId: teamContext.teamRunId,
-          kind: 'agent_team',
-          memberAddress: node.address,
-          displayName: node.displayName,
-          teamDefinitionId: node.teamDefinitionId,
-          teamRunIdForNode: node.teamRunId,
-          coordinatorAddress: node.coordinatorAddress,
-          workspaceRootPath: null,
-          summary,
-          lastActivityAt: fallbackLastActivityAt,
-          currentStatus: null,
-          deleteLifecycle: 'READY',
-          children: visit(node.children),
-        };
-      }
-      const executionKey = serializeTeamExecutionAddress(createTeamExecutionAddress({
-        rootTeamRunId: teamContext.teamRunId,
-        memberAddress: node.address,
-      }));
-      const memberContext = teamContext.agentExecutionsByKey.get(executionKey);
-      const currentStatus = normalizeAgentRuntimeStatus(memberContext?.state.currentStatus ?? AgentStatus.Offline);
+  const rootTeamRunId = teamContext.executions.getRootTeamRunId();
+  const visit = (nodes: readonly TeamMemberNode[]): TeamMemberTreeRow[] => nodes.map((node): TeamMemberTreeRow => {
+    if (node.kind === 'agent_team') {
       return {
-        isActive: isTeamMemberRunActive(currentStatus),
-        teamRunId: teamContext.teamRunId,
-        kind: 'agent',
-        memberAddress: node.address,
-        displayName: node.displayName,
-        agentRunId: memberContext?.state.runId ?? node.agentRunId,
-        workspaceRootPath: memberContext?.config.workspaceMetadata?.workspaceRootPath
-          || resolveWorkspaceRootPath(memberContext?.config.workspaceId ?? null),
-        summary,
-        currentStatus,
-        lastActivityAt: memberContext?.state.conversation.updatedAt
-          || memberContext?.state.conversation.createdAt
-          || fallbackLastActivityAt,
-        deleteLifecycle: 'READY',
-        children: [],
+        isActive: false, teamRunId: rootTeamRunId, kind: 'agent_team',
+        memberAddress: node.address, displayName: node.displayName, teamDefinitionId: node.teamDefinitionId,
+        teamRunIdForNode: null, coordinatorAddress: node.coordinatorAddress, workspaceRootPath: null,
+        summary, lastActivityAt: fallbackLastActivityAt, currentStatus: null, deleteLifecycle: 'READY',
+        children: visit(node.children),
       };
-    });
-  return visit(teamContext.rootTeam.children);
+    }
+    const address = createTeamExecutionAddress({ rootTeamRunId, memberAddress: node.address });
+    const memberContext = teamContext.executions.getAgentContext(address);
+    if (!memberContext) throw new Error(`Missing persistent Agent execution for '${node.address}'.`);
+    const currentStatus = normalizeAgentRuntimeStatus(memberContext.state.currentStatus);
+    return {
+      isActive: isTeamMemberRunActive(currentStatus), teamRunId: rootTeamRunId, kind: 'agent',
+      memberAddress: node.address, displayName: node.displayName, agentRunId: memberContext.state.runId,
+      workspaceRootPath: memberContext.config.workspaceMetadata?.workspaceRootPath
+        || resolveWorkspaceRootPath(memberContext.config.workspaceId ?? null),
+      summary, currentStatus,
+      lastActivityAt: memberContext.state.conversation.updatedAt || memberContext.state.conversation.createdAt || fallbackLastActivityAt,
+      deleteLifecycle: 'READY', children: [],
+    };
+  });
+  return visit(teamContext.topology.rootTeam.children);
 };

@@ -143,13 +143,6 @@ const buildMemberStatusSnapshotsFromHistory = (
     currentStatus: member.status,
   }));
 
-const getAgentExecutionsByKey = (teamContext: any): Map<string, any> => {
-  if (teamContext?.agentExecutionsByKey instanceof Map) {
-    return teamContext.agentExecutionsByKey;
-  }
-  return teamContext?.members instanceof Map ? teamContext.members : new Map();
-};
-
 export const reconcileDiscoveredActiveRuns = async (
   store: RunHistoryFetchStoreLike,
 ): Promise<void> => {
@@ -174,7 +167,7 @@ export const reconcileDiscoveredActiveRuns = async (
       continue;
     }
 
-    if (context.isSubscribed) {
+    if (agentRunStore.isAgentStreamReady(runId)) {
       agentRunStore.disconnectAgentStream(runId);
     }
     if (context.state.currentStatus !== AgentStatus.Error) {
@@ -189,8 +182,9 @@ export const reconcileDiscoveredActiveRuns = async (
     const existingContext = agentContextsStore.getRun(runId);
     if (existingContext) {
       existingContext.config.isLocked = true;
-      applyActiveRuntimePlaceholder(existingContext, { preserveExistingLive: true });
-      if (!existingContext.isSubscribed) {
+      const streamConnected = agentRunStore.isAgentStreamReady(runId);
+      applyActiveRuntimePlaceholder(existingContext, { preserveExistingLive: true, streamConnected });
+      if (!streamConnected) {
         agentRunStore.connectToAgentStream(runId);
       }
       continue;
@@ -212,19 +206,20 @@ export const reconcileDiscoveredActiveRuns = async (
   }
 
   for (const teamContext of teamContextsStore.allTeamRuns) {
-    if (teamContext.teamRunId.startsWith('temp-') || activeTeamRunIds.has(teamContext.teamRunId)) {
+    const rootTeamRunId = teamContext.executions.getRootTeamRunId();
+    if (activeTeamRunIds.has(rootTeamRunId)) {
       continue;
     }
 
-    if (teamContext.isSubscribed) {
-      agentTeamRunStore.disconnectTeamStream(teamContext.teamRunId);
+    if (agentTeamRunStore.isTeamStreamReady(rootTeamRunId)) {
+      agentTeamRunStore.disconnectTeamStream(rootTeamRunId);
     }
-    teamContext.isActive = false;
-    getAgentExecutionsByKey(teamContext).forEach((memberContext) => {
-      if (memberContext.state.currentStatus !== AgentStatus.Error) {
-        applyOfflineOrTerminalCleanup(memberContext);
+    teamContext.executions.setRootTeamActive(false);
+    teamContext.executions.listAgentContextEntries().forEach(({ agentContext }) => {
+      if (agentContext.state.currentStatus !== AgentStatus.Error) {
+        applyOfflineOrTerminalCleanup(agentContext);
       } else {
-        applyOfflineOrTerminalCleanup(memberContext, AgentStatus.Error);
+        applyOfflineOrTerminalCleanup(agentContext, AgentStatus.Error);
       }
     });
   }
@@ -233,17 +228,17 @@ export const reconcileDiscoveredActiveRuns = async (
     const memberStatuses = buildMemberStatusSnapshotsFromHistory(activeTeamRun);
     const existingTeamContext = teamContextsStore.getTeamContextById(teamRunId);
     if (existingTeamContext) {
-      existingTeamContext.config.isLocked = true;
-      existingTeamContext.isActive = true;
+      existingTeamContext.executions.setRootTeamActive(true);
+      const streamConnected = agentTeamRunStore.isTeamStreamReady(teamRunId);
       applyLiveTeamMemberStatusSnapshot(existingTeamContext, {
         memberStatuses,
       }, {
-        preserveCurrentStatus: existingTeamContext.isSubscribed,
+        preserveCurrentStatus: streamConnected,
       });
-      getAgentExecutionsByKey(existingTeamContext).forEach((memberContext) => {
-        memberContext.config.isLocked = true;
+      existingTeamContext.executions.listAgentContextEntries().forEach(({ agentContext }) => {
+        agentContext.config.isLocked = true;
       });
-      if (!existingTeamContext.isSubscribed) {
+      if (!streamConnected) {
         agentTeamRunStore.connectToTeamStream(teamRunId);
       }
       continue;
@@ -260,7 +255,7 @@ export const reconcileDiscoveredActiveRuns = async (
       });
       teamContextsStore.addTeamContext(result.hydratedContext);
       hydrateTeamMemberActivitiesFromProjection({
-        members: result.hydratedContext.agentExecutionsByKey,
+        members: result.hydratedContext.executions.listAgentContextEntries(),
         projectionByMemberAddress: result.projectionByMemberAddress,
       });
       agentTeamRunStore.connectToTeamStream(teamRunId);

@@ -92,7 +92,10 @@ const activeTeamContext = computed(() => {
 const messages = computed(() => {
   const team = activeTeamContext.value;
   if (!team) return [];
-  return teamCommunicationStore.getPerspectiveForAddress(team.teamRunId, team.focusedExecutionAddress).messages;
+  return teamCommunicationStore.getPerspectiveForAddress(
+    team.executions.getRootTeamRunId(),
+    team.executions.getFocusedAddress(),
+  ).messages;
 });
 
 function openReference(

@@ -1,7 +1,8 @@
 import type { AgentRun } from "../../agent-execution/domain/agent-run.js";
 import type { TeamRun } from "../../agent-team-execution/domain/team-run.js";
 import type { TeamRunAgentNode, TeamRunAgentTeamNode } from "../../agent-team-execution/domain/team-run-config.js";
-import { TeamRunEventSourceType, type TeamRunAgentEventPayload } from "../../agent-team-execution/domain/team-run-event.js";
+import { TeamRunEventSourceType } from "../../agent-team-execution/domain/team-run-event.js";
+import type { TeamAgentExecutionBinding } from "../../agent-team-execution/domain/team-agent-execution-binding.js";
 import type { TeamExecutionAddress } from "../../agent-team-execution/domain/team-execution-address.js";
 import type { AgentMemoryScope } from "../../agent-memory/domain/agent-memory-location.js";
 import { AgentMemoryLocationService, getAgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
@@ -56,11 +57,24 @@ export class RunFileChangeService {
     const runIds = new Set<string>();
     const unsubscribe = teamRun.subscribeToEvents((event) => {
       if (event.eventSourceType !== TeamRunEventSourceType.AGENT) return;
-      const payload = event.data as TeamRunAgentEventPayload;
-      if (!isAgentRunEvent(payload.agentEvent) || payload.agentEvent.eventType !== AgentRunEventType.FILE_CHANGE) return;
-      const context = this.fromTeamEvent(teamRun, payload);
+      if (event.payload.eventType !== "FILE_CHANGE") return;
+      const context = this.fromTeamEvent(teamRun, event.execution);
       runIds.add(context.runId);
-      void this.enqueue(context, payload.agentEvent);
+      void this.enqueue(context, {
+        eventType: AgentRunEventType.FILE_CHANGE,
+        runId: context.runId,
+        statusHint: event.payload.statusHint,
+        payload: {
+          path: event.payload.details.path,
+          type: event.payload.details.fileType,
+          status: event.payload.details.status,
+          sourceTool: event.payload.details.sourceTool,
+          sourceInvocationId: event.payload.details.sourceInvocationId,
+          content: event.payload.details.content,
+          createdAt: event.payload.details.createdAt,
+          updatedAt: event.payload.details.updatedAt,
+        },
+      });
     });
     return () => { unsubscribe(); runIds.forEach((runId) => this.clear(runId)); };
   }
@@ -129,8 +143,13 @@ export class RunFileChangeService {
     return { runId: run.runId, memoryDir: run.config.memoryDir, workspaceRootPath: resolveRunFileChangeWorkspaceRootPath(run, this.workspaceManager) };
   }
 
-  private fromTeamEvent(teamRun: TeamRun, payload: TeamRunAgentEventPayload): ProjectionContext {
-    return this.contextForAddress(teamRun, payload.executionAddress, payload.agentEvent.runId);
+  private fromTeamEvent(teamRun: TeamRun, execution: TeamAgentExecutionBinding): ProjectionContext {
+    const address = execution.executionAddress;
+    const configured = this.findAgent(teamRun.config.rootTeam, (node) => node.address === address.memberAddress);
+    const runId = execution.kind === "task_team_agent"
+      ? execution.agentRunId
+      : address.taskAgentRunId ?? configured?.node.agentRunId ?? "unresolved-team-agent";
+    return this.contextForAddress(teamRun, address, runId);
   }
 
   private contextForAddress(teamRun: TeamRun, address: TeamExecutionAddress, runId: string): ProjectionContext {

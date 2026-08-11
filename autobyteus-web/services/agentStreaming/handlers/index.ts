@@ -45,7 +45,6 @@ export {
 export {
   handleInterAgentMessage,
   handleTeamCommunicationMessage,
-  handleTeamRunLifecycle,
 } from './teamHandler';
 
 

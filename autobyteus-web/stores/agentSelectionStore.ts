@@ -1,72 +1,50 @@
 import { defineStore } from 'pinia';
 import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore';
+import type { TeamLaunchDraftId } from '~/types/agent/TeamLaunchDraft';
 
-export type SelectionType = 'agent' | 'team';
+export type SelectionType = 'agent' | 'team' | 'team_draft';
+export type RunSelectionSubject =
+  | Readonly<{ kind: 'agent_run'; runId: string }>
+  | Readonly<{ kind: 'team_run'; rootTeamRunId: string }>
+  | Readonly<{ kind: 'team_draft'; draftId: TeamLaunchDraftId }>;
 
-interface AgentSelectionState {
-  /** Currently selected run ID */
-  selectedRunId: string | null;
+interface AgentSelectionState { subject: RunSelectionSubject | null }
 
-  /** Type of the selected run */
-  selectedType: SelectionType | null;
-}
-
-/**
- * Store for tracking which agent or team run is currently selected.
- */
 export const useAgentSelectionStore = defineStore('agentSelection', {
-  state: (): AgentSelectionState => ({
-    selectedRunId: null,
-    selectedType: null,
-  }),
-
+  state: (): AgentSelectionState => ({ subject: null }),
   getters: {
-    isAgentSelected(): boolean {
-      return this.selectedType === 'agent';
+    selectedType(state): SelectionType | null {
+      return state.subject?.kind === 'agent_run' ? 'agent'
+        : state.subject?.kind === 'team_run' ? 'team'
+          : state.subject?.kind === 'team_draft' ? 'team_draft' : null;
     },
-
-    isTeamSelected(): boolean {
-      return this.selectedType === 'team';
+    selectedRunId(state): string | null {
+      return state.subject?.kind === 'agent_run' ? state.subject.runId
+        : state.subject?.kind === 'team_run' ? state.subject.rootTeamRunId : null;
     },
+    selectedDraftId(state): TeamLaunchDraftId | null {
+      return state.subject?.kind === 'team_draft' ? state.subject.draftId : null;
+    },
+    isAgentSelected(): boolean { return this.selectedType === 'agent'; },
+    isTeamSelected(): boolean { return this.selectedType === 'team' || this.selectedType === 'team_draft'; },
   },
-
   actions: {
-    setRunSelection(runId: string, type: SelectionType = 'agent') {
-      this.selectedRunId = runId;
-      this.selectedType = type;
+    setRunSelection(runId: string, type: Exclude<SelectionType, 'team_draft'> = 'agent') {
+      const normalized = runId.trim();
+      if (!normalized) throw new Error('Run selection requires a real run ID.');
+      this.subject = type === 'agent'
+        ? Object.freeze({ kind: 'agent_run', runId: normalized })
+        : Object.freeze({ kind: 'team_run', rootTeamRunId: normalized });
     },
-
-    clearRunSelection() {
-      this.selectedRunId = null;
-      this.selectedType = null;
+    setTeamDraftSelection(draftId: TeamLaunchDraftId) {
+      this.subject = Object.freeze({ kind: 'team_draft', draftId });
     },
-
-    /**
-     * Select a run without invoking a shell navigation side effect.
-     * Mobile and other non-desktop shells use this pure domain selection path.
-     */
-    selectRunWithoutShellNavigation(runId: string, type: SelectionType = 'agent') {
-      this.setRunSelection(runId, type);
-    },
-
-    clearSelectionWithoutShellNavigation() {
-      this.clearRunSelection();
-    },
-
-    /**
-     * Select a run (agent or team) for the desktop workspace shell.
-     */
-    selectRun(runId: string, type: SelectionType = 'agent') {
-      this.setRunSelection(runId, type);
-      useWorkspaceCenterViewStore().showChat();
-    },
-
-    /**
-     * Clear the current desktop workspace selection.
-     */
-    clearSelection() {
-      this.clearRunSelection();
-      useWorkspaceCenterViewStore().showChat();
-    },
+    clearRunSelection() { this.subject = null; },
+    selectRunWithoutShellNavigation(runId: string, type: Exclude<SelectionType, 'team_draft'> = 'agent') { this.setRunSelection(runId, type); },
+    selectTeamDraftWithoutShellNavigation(draftId: TeamLaunchDraftId) { this.setTeamDraftSelection(draftId); },
+    clearSelectionWithoutShellNavigation() { this.clearRunSelection(); },
+    selectRun(runId: string, type: Exclude<SelectionType, 'team_draft'> = 'agent') { this.setRunSelection(runId, type); useWorkspaceCenterViewStore().showChat(); },
+    selectTeamDraft(draftId: TeamLaunchDraftId) { this.setTeamDraftSelection(draftId); useWorkspaceCenterViewStore().showChat(); },
+    clearSelection() { this.clearRunSelection(); useWorkspaceCenterViewStore().showChat(); },
   },
 });

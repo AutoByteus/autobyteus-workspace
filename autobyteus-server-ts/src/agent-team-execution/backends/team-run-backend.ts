@@ -8,20 +8,21 @@ import type {
 import type { RuntimeTeamRunContext } from "../domain/team-run-context.js";
 import type { TeamRunEvent, TeamRunEventListener, TeamRunEventUnsubscribe } from "../domain/team-run-event.js";
 import type { TeamBackendKind } from "../domain/team-backend-kind.js";
-import type { TeamLeafAgentStatusSnapshot } from "../domain/team-leaf-agent-status-snapshot.js";
-import type { StartTaskAgentInstanceRequest } from "../domain/task-agent-instance.js";
-import type { StartTaskTeamInstanceRequest } from "../domain/task-team-instance.js";
+import type { TeamAgentStatusSnapshot } from "../domain/team-agent-status.js";
+import type { StartTaskAgentExecutionRequest } from "../domain/task-agent-execution.js";
+import type { StartTaskTeamExecutionRequest } from "../domain/task-team-execution.js";
 import type { MemberLogicalAddressContext } from "../domain/member-logical-address-context.js";
 import type { ResolvedTeamRecipient } from "../services/resolved-team-recipient.js";
 import type { TeamExecutionAddress } from "../domain/team-execution-address.js";
 import type { TeamMemberExecutionCommand } from "../domain/team-member-execution-command.js";
+import type { TaskActivationEventLease } from "../services/task-activation-event-barrier.js";
 
 export interface TeamRunBackend {
   readonly teamRunId: string;
   readonly teamBackendKind: TeamBackendKind;
   getRuntimeContext(): RuntimeTeamRunContext | null;
   isActive(): boolean;
-  getLeafAgentStatusSnapshots(): TeamLeafAgentStatusSnapshot[];
+  getLeafAgentStatusSnapshots(): TeamAgentStatusSnapshot[];
   hasOpenExecutionWork(): boolean;
   subscribeToEvents(listener: TeamRunEventListener): TeamRunEventUnsubscribe;
   postMessage(message: AgentInputUserMessage, target: AgentTeamAddress | null, targetAgentRunId?: string | null): Promise<AgentOperationResult>;
@@ -32,11 +33,18 @@ export interface TeamRunBackend {
   approveToolInvocation(target: AgentTeamAddress, invocationId: string, approved: boolean, reason?: string | null, targetAgentRunId?: string | null, taskTeamRunId?: string | null): Promise<AgentOperationResult>;
   interruptMember(target: AgentTeamAddress, targetAgentRunId?: string | null): Promise<AgentOperationResult>;
   settleMember(target: AgentTeamAddress, targetAgentRunId?: string | null, reason?: string | null): Promise<AgentOperationResult>;
-  startTaskAgentInstance(request: StartTaskAgentInstanceRequest): Promise<AgentOperationResult>;
-  settleTaskAgentInstance(target: AgentTeamAddress, taskAgentRunId: string, reason?: string | null): Promise<AgentOperationResult>;
-  startTaskTeamInstance(request: StartTaskTeamInstanceRequest): Promise<AgentOperationResult>;
-  postMessageToTaskTeamInstance(target: AgentTeamAddress, taskTeamRunId: string, message: AgentInputUserMessage): Promise<AgentOperationResult>;
-  settleTaskTeamInstance(target: AgentTeamAddress, taskTeamRunId: string, reason?: string | null): Promise<AgentOperationResult>;
+  startTaskAgentExecution(request: StartTaskAgentExecutionRequest): Promise<AgentOperationResult>;
+  releaseTaskAgentExecutionWork(target: AgentTeamAddress, taskAgentRunId: string): void;
+  settleTaskAgentExecution(target: AgentTeamAddress, taskAgentRunId: string, reason?: string | null): Promise<AgentOperationResult>;
+  startTaskTeamExecution(request: StartTaskTeamExecutionRequest): Promise<AgentOperationResult>;
+  markTaskTeamExecutionActive(taskTeamRunId: string): void;
+  releaseTaskTeamExecutionWork(target: AgentTeamAddress, taskTeamRunId: string): void;
+  postMessageToTaskTeamExecution(target: AgentTeamAddress, taskTeamRunId: string, message: AgentInputUserMessage): Promise<AgentOperationResult>;
+  settleTaskTeamExecution(target: AgentTeamAddress, taskTeamRunId: string, reason?: string | null): Promise<AgentOperationResult>;
   terminate(): Promise<AgentOperationResult>;
   publishEvent(event: TeamRunEvent): void;
+  openTaskActivationEventLease(executionAddress: TeamExecutionAddress): TaskActivationEventLease;
+  assertTaskActivationEventLeaseWithinBudget(lease: TaskActivationEventLease): void;
+  commitTaskActivationEventLease(lease: TaskActivationEventLease, activationEvent: TeamRunEvent): void;
+  abortTaskActivationEventLease(lease: TaskActivationEventLease): void;
 }

@@ -3,6 +3,7 @@ import {
   type TokenUsageLedgerEvent as PrismaTokenUsageLedgerEvent,
 } from "@prisma/client";
 import { BaseRepository } from "repository_prisma";
+import { getPrismaClient } from "repository_prisma";
 import type { TokenUsageUpdatedPayload } from "../../../agent-execution/domain/agent-run-token-usage.js";
 import { normalizeTokenUsageExecutionAddress } from "../../domain/execution-address.js";
 import { isCacheState, isInputTokenSemantic } from "../../domain/token-usage-component-basis.js";
@@ -44,13 +45,9 @@ const toCreateInput = (payload: TokenUsageUpdatedPayload): Prisma.TokenUsageLedg
   turnId: payload.turn_id,
   llmCallId: payload.llm_call_id,
   callSequence: payload.call_sequence,
-  rootTeamRunId: payload.root_team_run_id,
   executionAddressJson: toJsonString(payload.execution_address),
-  memberAgentRunId: payload.member_agent_run_id,
   agentDefinitionId: payload.agent_definition_id,
   workspaceId: payload.workspace_id,
-  taskAgentInstanceId: payload.task_agent_instance_id,
-  taskAgentRunId: payload.task_agent_run_id,
   taskId: payload.task_id,
   teamName: payload.team_name,
   agentName: payload.agent_name,
@@ -146,13 +143,9 @@ export const toDomainPayload = (record: PrismaTokenUsageLedgerEvent): TokenUsage
     turn_id: record.turnId,
     llm_call_id: record.llmCallId,
     call_sequence: record.callSequence,
-    root_team_run_id: record.rootTeamRunId,
     execution_address: normalizeTokenUsageExecutionAddress(parseJson(record.executionAddressJson)),
-    member_agent_run_id: record.memberAgentRunId,
     agent_definition_id: record.agentDefinitionId,
     workspace_id: record.workspaceId,
-    task_agent_instance_id: record.taskAgentInstanceId,
-    task_agent_run_id: record.taskAgentRunId,
     task_id: record.taskId,
     team_name: record.teamName,
     agent_name: record.agentName,
@@ -289,8 +282,15 @@ export class SqlTokenUsageLedgerRepository extends BaseRepository.forModel(
   }
 
   async listEventsByTeamRunId(rootTeamRunId: string): Promise<TokenUsageUpdatedPayload[]> {
+    const normalized = rootTeamRunId.trim();
+    if (!normalized) return [];
+    const ids = await getPrismaClient().$queryRaw<{ id: number | bigint }[]>`
+      SELECT "id"
+      FROM "token_usage_ledger_events"
+      WHERE json_extract("execution_address_json", '$.rootTeamRunId') = ${normalized}
+      ORDER BY "observed_at" ASC, "id" ASC`;
     const records = await this.findMany({
-      where: { rootTeamRunId },
+      where: { id: { in: ids.map((row) => Number(row.id)) } },
       orderBy: [{ observedAt: "asc" }, { id: "asc" }],
     });
     return records.map(toDomainPayload);

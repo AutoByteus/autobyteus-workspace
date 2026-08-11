@@ -62,8 +62,7 @@ import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useTeamMemberPresentation } from '~/composables/useTeamMemberPresentation';
 import AgentEventMonitor from '~/components/workspace/agent/AgentEventMonitor.vue';
 import { shouldShowMemberConversation } from '~/utils/teamActiveExecutionMembers';
-import { serializeTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
-import { findTeamExecutionNode, executionAddressForTeamNode } from '~/services/agentStreaming/teamTaskExecutionTree';
+import { createTeamExecutionAddress, serializeTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 import type { TeamMemberNode } from '~/types/agent/AgentTeamContext';
 
 const teamContextsStore = useAgentTeamContextsStore();
@@ -75,17 +74,16 @@ defineProps<{
 }>();
 
 const activeTeam = computed(() => teamContextsStore.activeTeamContext);
-const focusedExecutionAddress = computed(() => activeTeam.value?.focusedExecutionAddress ?? null);
+const focusedExecutionAddress = computed(() => activeTeam.value?.executions.getFocusedAddress() ?? null);
 const focusedMember = computed(() => {
   const team = activeTeam.value;
   const address = focusedExecutionAddress.value;
-  return team && address
-    ? team.agentExecutionsByKey.get(serializeTeamExecutionAddress(address)) ?? null
-    : null;
+  return team && address ? team.executions.getAgentContext(address) : null;
 });
 const focusedMemberNode = computed(() => {
   const team = activeTeam.value;
-  return team ? findTeamExecutionNode(team, team.focusedExecutionAddress) : null;
+  const address = focusedExecutionAddress.value;
+  return team && address ? team.topology.getNode(address.memberAddress) : null;
 });
 const conversationOfFocusedMember = computed(() => (
   shouldShowMemberConversation(focusedMemberNode.value, focusedMember.value)
@@ -116,19 +114,23 @@ const interAgentSenderNameById = computed<Record<string, string>>(() => {
 
 const focusedBrowseSubject = computed(() => ({
   kind: 'teamMember' as const,
-  teamRunId: activeTeam.value?.teamRunId || '',
+  teamRunId: activeTeam.value?.executions.getRootTeamRunId() || '',
   memberAddress: focusedExecutionAddress.value?.memberAddress ?? '',
   agentRunId: focusedMember.value?.state.runId || '',
 }));
 
-const executionForNode = (node: TeamMemberNode) => executionAddressForTeamNode(activeTeam.value!, node);
+const executionForNode = (node: TeamMemberNode) => createTeamExecutionAddress({
+  rootTeamRunId: activeTeam.value!.executions.getRootTeamRunId(),
+  memberAddress: node.kind === 'agent_team' ? node.coordinatorAddress : node.address,
+});
 
 const focusMember = (child: TeamMemberNode) => {
   const team = activeTeam.value;
   if (!team || focusedMemberNode.value?.kind !== 'agent_team' || !focusedMemberNode.value.children.includes(child)) return;
+  const target = executionForNode(child);
   void runHistoryStore.focusTeamMemberAndEnsureHydrated(
-    team.teamRunId,
-    executionAddressForTeamNode(team, child),
+    team.executions.getRootTeamRunId(),
+    target,
   );
 };
 </script>

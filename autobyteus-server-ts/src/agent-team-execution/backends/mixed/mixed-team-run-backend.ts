@@ -10,11 +10,12 @@ import { TeamBackendKind } from "../../domain/team-backend-kind.js";
 import type { TeamRunBackend } from "../team-run-backend.js";
 import type { TeamManager } from "../team-manager.js";
 import type { MixedTeamRunContextEnvelope } from "./mixed-team-run-context.js";
-import type { StartTaskAgentInstanceRequest } from "../../domain/task-agent-instance.js";
-import type { StartTaskTeamInstanceRequest } from "../../domain/task-team-instance.js";
+import type { StartTaskAgentExecutionRequest } from "../../domain/task-agent-execution.js";
+import type { StartTaskTeamExecutionRequest } from "../../domain/task-team-execution.js";
 import type { MemberLogicalAddressContext } from "../../domain/member-logical-address-context.js";
 import type { TeamExecutionAddress } from "../../domain/team-execution-address.js";
 import type { TeamMemberExecutionCommand } from "../../domain/team-member-execution-command.js";
+import type { TaskActivationEventLease } from "../../services/task-activation-event-barrier.js";
 
 const buildRunNotFoundResult = (runId: string): AgentOperationResult => ({
   accepted: false,
@@ -197,20 +198,25 @@ export class MixedTeamRunBackend implements TeamRunBackend {
     }
   }
 
-  async startTaskAgentInstance(
-    request: StartTaskAgentInstanceRequest,
+  async startTaskAgentExecution(
+    request: StartTaskAgentExecutionRequest,
   ): Promise<AgentOperationResult> {
     if (!this.isActive()) {
       return buildRunNotFoundResult(this.teamRunId);
     }
     try {
-      return await this.teamManager.startTaskAgentInstance(request);
+      return await this.teamManager.startTaskAgentExecution(request);
     } catch (error) {
       return buildCommandFailure("start task-agent instance", error);
     }
   }
 
-  async settleTaskAgentInstance(
+  releaseTaskAgentExecutionWork(target: AgentTeamAddress, taskAgentRunId: string): void {
+    if (!this.isActive()) throw new Error(`TeamRun '${this.teamRunId}' is not active.`);
+    this.teamManager.releaseTaskAgentExecutionWork(target, taskAgentRunId);
+  }
+
+  async settleTaskAgentExecution(
     target: AgentTeamAddress,
     taskAgentRunId: string,
     reason: string | null = null,
@@ -219,7 +225,7 @@ export class MixedTeamRunBackend implements TeamRunBackend {
       return buildRunNotFoundResult(this.teamRunId);
     }
     try {
-      return await this.teamManager.settleTaskAgentInstance(
+      return await this.teamManager.settleTaskAgentExecution(
         target,
         taskAgentRunId,
         reason,
@@ -230,20 +236,30 @@ export class MixedTeamRunBackend implements TeamRunBackend {
   }
 
 
-  async startTaskTeamInstance(
-    request: StartTaskTeamInstanceRequest,
+  async startTaskTeamExecution(
+    request: StartTaskTeamExecutionRequest,
   ): Promise<AgentOperationResult> {
     if (!this.isActive()) {
       return buildRunNotFoundResult(this.teamRunId);
     }
     try {
-      return await this.teamManager.startTaskTeamInstance(request);
+      return await this.teamManager.startTaskTeamExecution(request);
     } catch (error) {
       return buildCommandFailure("start task-team instance", error);
     }
   }
 
-  async postMessageToTaskTeamInstance(
+  markTaskTeamExecutionActive(taskTeamRunId: string): void {
+    if (!this.isActive()) throw new Error(`TeamRun '${this.teamRunId}' is not active.`);
+    this.teamManager.markTaskTeamExecutionActive(taskTeamRunId);
+  }
+
+  releaseTaskTeamExecutionWork(target: AgentTeamAddress, taskTeamRunId: string): void {
+    if (!this.isActive()) throw new Error(`TeamRun '${this.teamRunId}' is not active.`);
+    this.teamManager.releaseTaskTeamExecutionWork(target, taskTeamRunId);
+  }
+
+  async postMessageToTaskTeamExecution(
     target: AgentTeamAddress,
     taskTeamRunId: string,
     message: AgentInputUserMessage,
@@ -252,7 +268,7 @@ export class MixedTeamRunBackend implements TeamRunBackend {
       return buildRunNotFoundResult(this.teamRunId);
     }
     try {
-      return await this.teamManager.postMessageToTaskTeamInstance(
+      return await this.teamManager.postMessageToTaskTeamExecution(
         target,
         taskTeamRunId,
         message,
@@ -262,7 +278,7 @@ export class MixedTeamRunBackend implements TeamRunBackend {
     }
   }
 
-  async settleTaskTeamInstance(
+  async settleTaskTeamExecution(
     target: AgentTeamAddress,
     taskTeamRunId: string,
     reason: string | null = null,
@@ -271,7 +287,7 @@ export class MixedTeamRunBackend implements TeamRunBackend {
       return buildRunNotFoundResult(this.teamRunId);
     }
     try {
-      return await this.teamManager.settleTaskTeamInstance(
+      return await this.teamManager.settleTaskTeamExecution(
         target,
         taskTeamRunId,
         reason,
@@ -291,5 +307,17 @@ export class MixedTeamRunBackend implements TeamRunBackend {
 
   publishEvent(event: import("../../domain/team-run-event.js").TeamRunEvent): void {
     this.teamManager.publishEvent(event);
+  }
+  openTaskActivationEventLease(executionAddress: TeamExecutionAddress): TaskActivationEventLease {
+    return this.teamManager.openTaskActivationEventLease(executionAddress);
+  }
+  assertTaskActivationEventLeaseWithinBudget(lease: TaskActivationEventLease): void {
+    this.teamManager.assertTaskActivationEventLeaseWithinBudget(lease);
+  }
+  commitTaskActivationEventLease(lease: TaskActivationEventLease, activationEvent: import("../../domain/team-run-event.js").TeamRunEvent): void {
+    this.teamManager.commitTaskActivationEventLease(lease, activationEvent);
+  }
+  abortTaskActivationEventLease(lease: TaskActivationEventLease): void {
+    this.teamManager.abortTaskActivationEventLease(lease);
   }
 }

@@ -49,6 +49,9 @@ export const serializeTeamExecutionAddress = (address: TeamExecutionAddress): st
     taskAgentRunId: address.taskAgentRunId,
   });
 
+export const cloneTeamExecutionAddress = (address: TeamExecutionAddress): TeamExecutionAddress =>
+  createTeamExecutionAddress(address);
+
 export const parseTeamExecutionAddress = (value: string): TeamExecutionAddress => {
   let parsed: unknown;
   try { parsed = JSON.parse(value); } catch { throw new Error("TeamExecutionAddress is not valid JSON."); }

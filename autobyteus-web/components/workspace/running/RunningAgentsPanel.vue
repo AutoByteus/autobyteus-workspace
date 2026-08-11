@@ -57,6 +57,7 @@ import { buildEditableAgentRunSeed, buildEditableTeamRunSeed } from '~/composabl
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import type { TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
+import { getHistoricalTeamHydrationUpdatedAt } from '~/services/runHydration/teamRunContextHydrationService';
 import RunningAgentGroup from './RunningAgentGroup.vue';
 import RunningTeamGroup from './RunningTeamGroup.vue';
 
@@ -92,13 +93,13 @@ const agentGroups = computed(() => {
 const teamGroups = computed(() => {
   const grouped = new Map<string, AgentTeamContext[]>();
   for (const team of teamContextsStore.allTeamRuns) {
-    const defId = team.config.teamDefinitionId;
+    const defId = team.topology.rootTeam.teamDefinitionId;
     if (!grouped.has(defId)) grouped.set(defId, []);
     grouped.get(defId)!.push(team);
   }
   return Array.from(grouped.entries()).map(([definitionId, runs]) => ({
     definitionId,
-    definitionName: runs[0]?.config.teamDefinitionName || 'Team',
+    definitionName: runs[0]?.topology.teamDefinitionName || 'Team',
     runs,
   }));
 });
@@ -148,16 +149,17 @@ const getSelectedTeamSourceForDefinition = (definitionId: string): AgentTeamCont
   }
 
   const selectedTeam = teamContextsStore.getTeamContextById(selectionStore.selectedRunId);
-  return selectedTeam?.config.teamDefinitionId === definitionId ? selectedTeam : null;
+  return selectedTeam?.topology.rootTeam.teamDefinitionId === definitionId ? selectedTeam : null;
 };
 
 const getTeamUpdatedAt = (team: AgentTeamContext): string | null | undefined => {
-  if (team.historicalHydration?.updatedAt) {
-    return team.historicalHydration.updatedAt;
+  const historicalUpdatedAt = getHistoricalTeamHydrationUpdatedAt(team.executions.getRootTeamRunId());
+  if (historicalUpdatedAt) {
+    return historicalUpdatedAt;
   }
 
-  return Array.from(team.agentExecutionsByKey.values())
-    .map((member) => member.state.conversation?.updatedAt)
+  return team.executions.listAgentContextEntries()
+    .map(({ agentContext }) => agentContext.state.conversation?.updatedAt)
     .sort((left, right) => toTimestamp(right) - toTimestamp(left))[0] ?? null;
 };
 
@@ -193,7 +195,7 @@ const createTeamRun = (definitionId: string) => {
       : null);
 
   if (sourceTeam) {
-    teamRunConfigStore.setConfig(buildEditableTeamRunSeed(sourceTeam.config));
+    teamRunConfigStore.setConfig(buildEditableTeamRunSeed(sourceTeam.topology.getConfigurationView()));
   } else {
     teamRunConfigStore.setTemplate(definition);
   }
@@ -220,7 +222,7 @@ const selectTeamMember = (teamRunId: string, executionAddress: TeamExecutionAddr
 };
 
 const getCoordinatorAddress = (team: AgentTeamContext | null): string | undefined => {
-  return team?.rootTeam.coordinatorAddress || undefined;
+  return team?.topology.rootTeam.coordinatorAddress || undefined;
 };
 
 const deleteAgentRun = async (runId: string) => {

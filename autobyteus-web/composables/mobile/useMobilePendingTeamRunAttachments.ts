@@ -2,7 +2,7 @@ import { computed, ref, watch, type Ref } from 'vue';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useMobileWorkStore } from '~/stores/mobileWorkStore';
 import type { MobileWorkContext } from '~/types/mobileWork';
-import { serializeTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
+import { createTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
 export function useMobilePendingTeamRunAttachments(contextRef: Ref<MobileWorkContext | null>) {
   const teamContextsStore = useAgentTeamContextsStore();
@@ -39,11 +39,12 @@ export function useMobilePendingTeamRunAttachments(contextRef: Ref<MobileWorkCon
       throw new Error(error.value);
     }
 
-    const focusedNode = teamContext.memberNodesByAddress.get(normalizedMemberAddress) || null;
-    const focusedMember = teamContext.agentExecutionsByKey.get(serializeTeamExecutionAddress({
-      ...teamContext.focusedExecutionAddress,
+    const focusedNode = teamContext.topology.getNode(normalizedMemberAddress);
+    const focusedAddress = createTeamExecutionAddress({
+      ...teamContext.executions.getFocusedAddress(),
       memberAddress: normalizedMemberAddress,
-    })) || null;
+    });
+    const focusedMember = teamContext.executions.getAgentContext(focusedAddress);
     if (!focusedNode || focusedNode.kind !== 'agent' || !focusedMember) {
       error.value = 'Choose a team member before sending with pending context files.';
       throw new Error(error.value);
@@ -66,7 +67,7 @@ export function useMobilePendingTeamRunAttachments(contextRef: Ref<MobileWorkCon
     }
 
     const teamContext = teamContextsStore.getTeamContextById(context.teamRunId);
-    const focusedMemberAddress = teamContext?.focusedExecutionAddress.memberAddress || context.focusedExecutionAddress.memberAddress;
+    const focusedMemberAddress = teamContext?.executions.getFocusedAddress().memberAddress || context.focusedExecutionAddress.memberAddress;
     await flushPendingTeamRunAttachmentsToFocusedMember(context.teamRunId, focusedMemberAddress);
   }
 

@@ -1,4 +1,6 @@
 import type { SkillAccessMode } from '~/types/agent/AgentRunConfig';
+import { parseApplicationExecutionContext } from '~/services/teamExecution/applicationExecutionContextMapper';
+import { createTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 import type {
   TeamRunMetadataAgentMember,
   TeamRunMetadataMember,
@@ -6,11 +8,14 @@ import type {
   TeamRunMetadataSubTeamMember,
 } from '~/stores/runHistoryTypes';
 
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  value !== null && typeof value === 'object' && !Array.isArray(value);
+
 const record = (value: unknown, subject: string): Record<string, unknown> => {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+  if (!isRecord(value)) {
     throw new Error(`Invalid ${subject}: object required.`);
   }
-  return value as Record<string, unknown>;
+  return value;
 };
 
 const exactKeys = (value: Record<string, unknown>, expected: readonly string[], subject: string): void => {
@@ -44,7 +49,11 @@ const canonicalAddress = (value: unknown, field: string): string => {
   return address;
 };
 
-const parseMemberMetadata = (value: unknown, isRoot = false): TeamRunMetadataMember => {
+const parseMemberMetadata = (
+  value: unknown,
+  isRoot = false,
+  rootTeamRunId: string | null = null,
+): TeamRunMetadataMember => {
   const member = record(value, 'TeamRun member');
   const address = canonicalAddress(member.address, 'member.address');
   if (isRoot && address !== '/') throw new Error("Invalid TeamRun metadata: rootTeam must use address '/'.");
@@ -59,17 +68,21 @@ const parseMemberMetadata = (value: unknown, isRoot = false): TeamRunMetadataMem
       : ['kind', 'address', 'teamDefinitionId', 'teamRunId', 'coordinatorAddress', 'role', 'description', 'children'],
     'TeamRun AgentTeam member');
     if (!Array.isArray(member.children)) throw new Error(`Invalid TeamRun metadata: ${address}.children must be an array.`);
+    const teamRunId = requiredString(member.teamRunId, `${address}.teamRunId`);
+    const aggregateRootTeamRunId = isRoot ? teamRunId : rootTeamRunId;
+    if (!aggregateRootTeamRunId) throw new Error(`Invalid TeamRun metadata: ${address} has no rooted TeamRun identity.`);
     return {
       kind: 'agent_team',
       ...common,
       teamDefinitionId: requiredString(member.teamDefinitionId, `${address}.teamDefinitionId`),
-      teamRunId: requiredString(member.teamRunId, `${address}.teamRunId`),
+      teamRunId,
       coordinatorAddress: canonicalAddress(member.coordinatorAddress, `${address}.coordinatorAddress`),
-      children: member.children.map((child) => parseMemberMetadata(child)),
+      children: member.children.map((child) => parseMemberMetadata(child, false, aggregateRootTeamRunId)),
     } satisfies TeamRunMetadataSubTeamMember;
   }
   if (member.kind !== 'agent') throw new Error(`Invalid TeamRun metadata: unsupported member kind at '${address}'.`);
   if (isRoot) throw new Error("Invalid TeamRun metadata: rootTeam must be an AgentTeam.");
+  if (!rootTeamRunId) throw new Error(`Invalid TeamRun metadata: ${address} has no rooted TeamRun identity.`);
   exactKeys(member, [
     'kind', 'address', 'agentDefinitionId', 'agentRunId', 'platformAgentRunId',
     'role', 'description', 'runtimeKind', 'llmModelIdentifier', 'llmConfig',
@@ -91,9 +104,10 @@ const parseMemberMetadata = (value: unknown, isRoot = false): TeamRunMetadataMem
       ? member.llmConfig as Record<string, unknown>
       : null,
     workspaceRootPath: nullableString(member.workspaceRootPath, `${address}.workspaceRootPath`),
-    applicationExecutionContext: member.applicationExecutionContext && typeof member.applicationExecutionContext === 'object' && !Array.isArray(member.applicationExecutionContext)
-      ? member.applicationExecutionContext as Record<string, unknown>
-      : null,
+    applicationExecutionContext: parseApplicationExecutionContext(
+      member.applicationExecutionContext,
+      createTeamExecutionAddress({ rootTeamRunId, memberAddress: address }),
+    ),
   } satisfies TeamRunMetadataAgentMember;
 };
 

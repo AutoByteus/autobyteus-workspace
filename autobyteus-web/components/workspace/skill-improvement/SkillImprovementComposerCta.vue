@@ -62,13 +62,7 @@ const buttonAriaLabel = computed(() => (
 
 const isTemporaryTarget = computed(() => {
   const target = props.target;
-  if (!target) {
-    return true;
-  }
-  const ids = target.kind === 'agent'
-    ? [target.runId]
-    : [target.teamRunId, target.agentRunId];
-  return ids.some((id) => id.startsWith('temp-') || id.startsWith('temp-team-'));
+  return !target || (target.kind === 'agent' && target.runId.startsWith('temp-'));
 });
 
 const canResolveEligibility = computed(() => Boolean(

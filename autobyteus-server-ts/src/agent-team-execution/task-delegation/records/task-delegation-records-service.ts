@@ -68,6 +68,13 @@ export class TaskDelegationRecordsService {
     });
   }
 
+  async persistActivationRecord(
+    scope: TaskDelegationPersistenceScope,
+    record: TaskDelegationRecord,
+  ): Promise<void> {
+    await this.persistRecord(scope, record);
+  }
+
   async getTaskDelegationRecords(rootTeamRunId: string): Promise<TaskDelegationRecord[]> {
     const recordsFile = await this.readRootRecordsFile(rootTeamRunId);
     return recordsFile.records.map(cloneTaskDelegationRecord);

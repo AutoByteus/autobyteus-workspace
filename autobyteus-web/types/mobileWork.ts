@@ -1,3 +1,8 @@
+import {
+  serializeTeamExecutionAddress,
+  type TeamExecutionAddress,
+} from '~/types/agent/TeamExecutionAddress';
+
 export type MobileTaskTab = 'chat' | 'runs' | 'files' | 'artifacts' | 'activity';
 
 export type MobileFilePreviewRequest = {
@@ -104,7 +109,7 @@ export function mobileWorkContextKey(context: MobileWorkContext): string {
     case 'agent-run':
       return `agent-run:${context.runId}`;
     case 'team-run':
-      return `team-run:${context.teamRunId}:${JSON.stringify(context.focusedExecutionAddress)}`;
+      return `team-run:${context.teamRunId}:${serializeTeamExecutionAddress(context.focusedExecutionAddress)}`;
     case 'agent-definition':
       return `agent-definition:${context.agentDefinitionId}`;
     case 'team-definition':
@@ -151,4 +156,3 @@ export function preferredTabForMobileContext(context: MobileWorkContext): Mobile
       return 'chat';
   }
 }
-import type { TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';

@@ -97,7 +97,7 @@ export class MixedSubTeamMemberHandle implements MixedTeamMemberHandle {
         parentTeamAddress: this.options.parentContext.teamAddress,
         deliverInterAgentMessage: this.options.deliverInterAgentMessage,
       },
-      taskTeamInstance: this.options.parentContext.runtimeContext.taskTeamInstance,
+      taskId: this.options.parentContext.runtimeContext.taskId,
       taskTeamRunIds: this.options.parentContext.taskTeamRunIds,
     });
     this.context.childRuntimeContext = this.childRun.getRuntimeContext() as MixedTeamRunContext;

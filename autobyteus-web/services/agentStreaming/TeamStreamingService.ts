@@ -1,70 +1,42 @@
-/**
- * TeamStreamingService - Facade for agent team WebSocket streaming.
- *
- * Connects to team endpoint and routes events to appropriate team members
- * by exact canonical execution address.
- */
-
+import {
+  parseTeamStreamServerMessage,
+  serializeTeamStreamClientMessage,
+  type TeamStreamServerMessage,
+} from '@autobyteus/team-stream-contracts';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import type { ToolApprovalTarget } from '~/types/segments';
 import { WebSocketClient, ConnectionState, type IWebSocketClient } from './transport';
-import {
-  parseServerMessage,
-  serializeClientMessage,
-  type ServerMessage,
-  type TeamClientMessage,
-  type InterruptGenerationPayload,
-  type InterruptGenerationCommandAckPayload,
-  type InterruptCommandTransportFailure,
-  type PendingInterruptCommand,
+import type {
+  InterruptGenerationCommandAckPayload,
+  InterruptCommandTransportFailure,
+  PendingInterruptCommand,
 } from './protocol';
-import {
-  handleTeamCommunicationMessage,
-  handleTeamRunLifecycle,
-} from './handlers';
-import {
-  extractTaskAgentIdentity,
-  removeTaskAgentContext,
-  shouldRemoveTaskAgentAfterMessage,
-} from './teamTaskAgentContextProjection';
-import { resolveTeamStreamMemberContext } from './teamStreamMemberContextResolver';
-import { handleTaskExecutionProjectionMessage } from './teamTaskExecutionEventRouter';
-import { removeTaskTeamExecutionProjection } from './teamTaskTeamExecutionProjection';
 import { dispatchAgentStreamMessage } from './agentStreamMessageProjector';
+import { handleTeamCommunicationMessage } from './handlers';
 import { getActiveRemoteAccessCredential } from '~/utils/remoteAccess/authorizedTransport';
 import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAuth';
 import { getApolloClient } from '~/utils/apolloClient';
 import { scheduleTaskDelegationRecordsRefresh } from '~/services/runHydration/taskDelegationHydrationService';
-import { createTeamExecutionAddress, type TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
+import { mapCompleteTeamTaskProjectionSnapshot } from '~/services/teamExecution/teamTaskProjectionMapper';
 import {
-  drainPendingInterruptTransportFailures,
-  interruptCommandTargetsEqual,
-  tryAdmitInterruptCommand,
-} from './interruptCommandAdmission';
-import { TeamToolApprovalTracker } from './TeamToolApprovalTracker';
+  createTeamExecutionAddress,
+  sameTeamExecutionAddress,
+  type TeamExecutionAddress,
+} from '~/types/agent/TeamExecutionAddress';
+import { drainPendingInterruptTransportFailures, tryAdmitInterruptCommand } from './interruptCommandAdmission';
+import { TeamToolApprovalTargetTracker } from './TeamToolApprovalTargetTracker';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
+import { useTokenUsageMeterStore } from '~/stores/tokenUsageMeterStore';
 import {
-  mergeTaskExecutionProjectionMutations,
-  NO_TASK_EXECUTION_PROJECTION_MUTATION,
-  type TaskExecutionProjectionMutation,
-} from './teamTaskExecutionProjection';
-
-const shouldLogStreaming = (): boolean => {
-  if (typeof window === 'undefined') return false;
-  const w = window as any;
-  if (w.__AUTOBYTEUS_DEBUG_STREAMING__ === true) return true;
-  try {
-    return w.localStorage?.getItem('autobyteus.debug.streaming') === 'true';
-  } catch {
-    return false;
-  }
-};
-
-const summarizeDelta = (delta: string, maxLen = 120): string => {
-  if (!delta) return '';
-  const clean = delta.replace(/\n/g, '\\n');
-  return clean.length > maxLen ? `${clean.slice(0, maxLen)}…` : clean;
-};
+  createTeamInterruptMessage,
+  createTeamSendMessage,
+  createTeamToolDecisionMessage,
+} from './teamClientMessageFactory';
+import {
+  fromTeamExecutionAddressDto,
+  toAgentProjectionMessage,
+  toTeamCommunicationProjectionPayload,
+} from './teamStreamDtoAdapters';
 
 export interface TeamStreamingServiceOptions {
   wsClient?: IWebSocketClient;
@@ -72,58 +44,43 @@ export interface TeamStreamingServiceOptions {
   onInterruptCommandTransportFailure?: (failure: InterruptCommandTransportFailure) => void;
 }
 
-export interface TeamInterruptGenerationTarget {
-  executionAddress: TeamExecutionAddress;
-}
+export interface TeamInterruptGenerationTarget { executionAddress: TeamExecutionAddress }
 
 export class TeamStreamingService {
-  private wsClient: IWebSocketClient;
-  private teamContext: AgentTeamContext | null = null;
-  private wsEndpoint: string;
-  private teamRunId: string | null = null;
+  private readonly wsClient: IWebSocketClient;
+  private readonly wsEndpoint: string;
   private readonly pendingInterruptCommands = new Map<string, PendingInterruptCommand>();
   private readonly onInterruptCommandResult: (ack: InterruptGenerationCommandAckPayload) => void;
   private readonly onInterruptCommandTransportFailure: (failure: InterruptCommandTransportFailure) => void;
-  private readonly approvalTracker = new TeamToolApprovalTracker();
+  private readonly approvalTracker = new TeamToolApprovalTargetTracker();
+  private teamContext: AgentTeamContext | null = null;
+  private teamRunId: string | null = null;
+  private applicationReady = false;
 
-  /**
-   * Create a TeamStreamingService.
-   *
-   * @param wsEndpoint - WebSocket endpoint from runtime config (e.g., 'ws://localhost:8000/ws/agent-team')
-   * @param options - Optional configuration for testing
-   */
   constructor(wsEndpoint: string, options: TeamStreamingServiceOptions = {}) {
     this.wsClient = options.wsClient || new WebSocketClient();
     this.wsEndpoint = wsEndpoint;
     this.onInterruptCommandResult = options.onInterruptCommandResult ?? (() => undefined);
-    this.onInterruptCommandTransportFailure = options.onInterruptCommandTransportFailure
-      ?? (() => undefined);
+    this.onInterruptCommandTransportFailure = options.onInterruptCommandTransportFailure ?? (() => undefined);
   }
 
-  get connectionState(): ConnectionState {
-    return this.wsClient.state;
-  }
+  get connectionState(): ConnectionState { return this.wsClient.state; }
+  get isReady(): boolean { return this.applicationReady; }
+  attachContext(teamContext: AgentTeamContext): void { this.teamContext = teamContext; }
 
-  attachContext(teamContext: AgentTeamContext): void {
-    this.teamContext = teamContext;
-  }
-
-  /**
-   * Connect to a team's WebSocket stream.
-   */
   connect(teamRunId: string, teamContext: AgentTeamContext): void {
+    const normalized = teamRunId.trim();
+    if (!normalized || normalized !== teamContext.executions.getRootTeamRunId()) throw new Error('Team stream root identity mismatch.');
     this.attachContext(teamContext);
-    this.teamRunId = teamRunId.trim();
-
+    this.teamRunId = normalized;
+    this.applicationReady = false;
     this.wsClient.on('onMessage', this.handleMessage);
     this.wsClient.on('onConnect', this.handleConnect);
     this.wsClient.on('onDisconnect', this.handleDisconnect);
     this.wsClient.on('onError', this.handleError);
-
-    const baseUrl = `${this.wsEndpoint}/${teamRunId}`;
+    const baseUrl = `${this.wsEndpoint}/${normalized}`;
     const credential = getActiveRemoteAccessCredential();
-    const url = credential ? buildAuthenticatedWebSocketUrl(baseUrl, credential) : baseUrl;
-    this.wsClient.connect(url);
+    this.wsClient.connect(credential ? buildAuthenticatedWebSocketUrl(baseUrl, credential) : baseUrl);
   }
 
   disconnect(): void {
@@ -132,63 +89,31 @@ export class TeamStreamingService {
     this.wsClient.off('onConnect', this.handleConnect);
     this.wsClient.off('onDisconnect', this.handleDisconnect);
     this.wsClient.off('onError', this.handleError);
-
     this.wsClient.disconnect();
     this.teamContext = null;
     this.teamRunId = null;
+    this.applicationReady = false;
     this.approvalTracker.clear();
   }
 
-  sendMessage(
-    content: string,
-    executionAddress: TeamExecutionAddress,
-    contextFilePaths?: string[],
-    imageUrls?: string[],
-    identity?: { messageId?: string; dedupeKey?: string },
-  ): void {
-    const message: TeamClientMessage = {
-      type: 'SEND_MESSAGE',
-      payload: {
-        content,
-        context_file_paths: contextFilePaths,
-        image_urls: imageUrls,
-        execution_address: createTeamExecutionAddress(executionAddress),
-        message_id: identity?.messageId,
-        dedupe_key: identity?.dedupeKey,
-      },
-    };
-    this.wsClient.send(serializeClientMessage(message));
+  sendMessage(content: string, executionAddress: TeamExecutionAddress, contextFilePaths: string[] = [], imageUrls: string[] = [], identity: { messageId?: string; dedupeKey?: string } = {}): void {
+    const messageId = identity.messageId?.trim() || crypto.randomUUID();
+    const dedupeKey = identity.dedupeKey?.trim() || messageId;
+    this.wsClient.send(serializeTeamStreamClientMessage(createTeamSendMessage({ content, executionAddress, contextFilePaths, imageUrls, messageId, dedupeKey })));
   }
 
   approveTool(invocationId: string, target?: ToolApprovalTarget | null, reason?: string): void {
-    const approvalToken = this.approvalTracker.getToken(invocationId);
-    const approvalTarget = this.approvalTracker.resolveTarget(invocationId, target);
-    const message: TeamClientMessage = {
-      type: 'APPROVE_TOOL',
-      payload: {
-        invocation_id: invocationId,
-        ...this.approvalTracker.toSelectorPayload(approvalTarget),
-        reason,
-        approval_token: approvalToken as any,
-      },
-    };
-    this.wsClient.send(serializeClientMessage(message));
-    this.approvalTracker.complete(invocationId);
+    this.sendToolDecision('APPROVE_TOOL', invocationId, target, reason);
   }
 
   denyTool(invocationId: string, target?: ToolApprovalTarget | null, reason?: string): void {
-    const approvalToken = this.approvalTracker.getToken(invocationId);
-    const approvalTarget = this.approvalTracker.resolveTarget(invocationId, target);
-    const message: TeamClientMessage = {
-      type: 'DENY_TOOL',
-      payload: {
-        invocation_id: invocationId,
-        ...this.approvalTracker.toSelectorPayload(approvalTarget),
-        reason,
-        approval_token: approvalToken as any,
-      },
-    };
-    this.wsClient.send(serializeClientMessage(message));
+    this.sendToolDecision('DENY_TOOL', invocationId, target, reason);
+  }
+
+  private sendToolDecision(decision: 'APPROVE_TOOL' | 'DENY_TOOL', invocationId: string, target?: ToolApprovalTarget | null, reason?: string): void {
+    const resolved = this.approvalTracker.resolveTarget(invocationId, target);
+    if (!resolved) throw new Error(`No exact Team execution target is registered for tool invocation '${invocationId}'.`);
+    this.wsClient.send(serializeTeamStreamClientMessage(createTeamToolDecisionMessage({ decision, invocationId, executionAddress: resolved.executionAddress, reason })));
     this.approvalTracker.complete(invocationId);
   }
 
@@ -197,231 +122,106 @@ export class TeamStreamingService {
     const executionAddress = createTeamExecutionAddress(target.executionAddress);
     const entry: PendingInterruptCommand = {
       commandId: normalizedCommandId,
-      target: {
-        target_kind: 'team_member',
-        team_run_id: this.teamRunId ?? '',
-        execution_address: executionAddress,
-      },
-    };
-    const payload: InterruptGenerationPayload = {
-      command_id: normalizedCommandId,
-      execution_address: executionAddress,
-    };
-
-    const message: TeamClientMessage = {
-      type: 'INTERRUPT_GENERATION',
-      payload,
+      target: { target_kind: 'team_member', team_run_id: executionAddress.rootTeamRunId, execution_address: executionAddress },
     };
     return tryAdmitInterruptCommand({
       pending: this.pendingInterruptCommands,
       entry,
       getConnectionState: () => this.wsClient.state,
-      send: () => this.wsClient.send(serializeClientMessage(message)),
+      send: () => this.wsClient.send(serializeTeamStreamClientMessage(createTeamInterruptMessage({ commandId: normalizedCommandId, executionAddress }))),
       onTransportFailure: this.onInterruptCommandTransportFailure,
     });
   }
 
   private handleMessage = (raw: string): void => {
-    if (!this.teamContext) return;
-
+    if (!this.teamContext || !this.teamRunId) return;
     try {
-      const message = parseServerMessage(raw);
-      if (
-        message.type === 'AGENT_COMMAND_ACK'
-        && message.payload.command_type === 'INTERRUPT_GENERATION'
-      ) {
-        this.handleInterruptCommandAck(message.payload);
+      const message = parseTeamStreamServerMessage(raw);
+      this.dispatchMessage(message, this.teamContext);
+    } catch (error) {
+      console.error('Rejected invalid Team WebSocket message:', error);
+    }
+  };
+
+  private handleConnect = (): void => { console.log('Team WebSocket transport connected'); };
+  private handleDisconnect = (reason?: string): void => {
+    this.applicationReady = false;
+    this.drainPendingInterruptCommands(reason || 'Interrupt result was lost because the stream disconnected.');
+  };
+  private handleError = (error: Error): void => { console.error('Team WebSocket error:', error); };
+
+  private handleInterruptAck(message: Extract<TeamStreamServerMessage, { type: 'AGENT_COMMAND_ACK' }>): void {
+    const pending = this.pendingInterruptCommands.get(message.payload.command_id);
+    if (!pending || pending.target.target_kind !== 'team_member') return;
+    const executionAddress = fromTeamExecutionAddressDto(message.payload.execution_address);
+    if (!pending.target.execution_address || !sameTeamExecutionAddress(pending.target.execution_address, executionAddress)) return;
+    this.pendingInterruptCommands.delete(message.payload.command_id);
+    const target = pending.target;
+    this.onInterruptCommandResult(message.payload.state === 'accepted'
+      ? { command_type: 'INTERRUPT_GENERATION', command_id: message.payload.command_id, state: 'accepted', target }
+      : { command_type: 'INTERRUPT_GENERATION', command_id: message.payload.command_id, state: message.payload.state, code: message.payload.code, message: message.payload.message, target });
+  }
+
+  private refreshTasks(context: AgentTeamContext): void {
+    const rootTeamRunId = context.executions.getRootTeamRunId();
+    scheduleTaskDelegationRecordsRefresh({
+      client: getApolloClient(), teamRunId: rootTeamRunId,
+      onHydrated: (records) => context.executions.reconcileTaskSnapshot(mapCompleteTeamTaskProjectionSnapshot({
+        expectedRootTeamRunId: rootTeamRunId, topology: context.topology, records,
+      })),
+    });
+  }
+
+  private dispatchMessage(message: TeamStreamServerMessage, context: AgentTeamContext): void {
+    switch (message.type) {
+      case 'CONNECTED': this.applicationReady = true; return;
+      case 'TEAM_RUN_LIFECYCLE': {
+        const result = context.executions.setRootTeamActive(message.payload.is_active);
+        if (result.disposition === 'applied') useRunHistoryStore().applyRunNavigationEffect({
+          kind: 'team_run', teamRunId: context.executions.getRootTeamRunId(), isActive: message.payload.is_active,
+        }, { kind: 'PRESENTATION' });
         return;
       }
-      this.approvalTracker.track(message);
-      this.logMessage(message);
-      this.dispatchMessage(message, this.teamContext);
-    } catch (e) {
-      console.error('Failed to parse WebSocket message:', e);
+      case 'AGENT_COMMAND_ACK': this.handleInterruptAck(message); return;
+      case 'TEAM_COMMUNICATION_MESSAGE': handleTeamCommunicationMessage(toTeamCommunicationProjectionPayload(message.payload)); return;
+      case 'ERROR':
+        if (message.payload.agent_execution === null) {
+          console.error(`Team stream protocol error (${message.payload.code}): ${message.payload.message}`);
+          return;
+        }
+        break;
+      default: break;
     }
-  };
 
-  private handleConnect = (): void => {
-    console.log('Team WebSocket connected');
-    if (this.teamContext) {
-      this.teamContext.isSubscribed = true;
-    }
-  };
-
-  private handleDisconnect = (reason?: string): void => {
-    console.log('Team WebSocket disconnected:', reason);
-    this.drainPendingInterruptCommands(
-      reason || 'Interrupt result was lost because the stream disconnected.',
-    );
-    if (this.teamContext) {
-      this.teamContext.isSubscribed = false;
-    }
-  };
-
-  private handleError = (error: Error): void => {
-    console.error('Team WebSocket error:', error);
-  };
-
-  private handleInterruptCommandAck(ack: InterruptGenerationCommandAckPayload): void {
-    const pending = this.pendingInterruptCommands.get(ack.command_id);
-    if (!pending || !interruptCommandTargetsEqual(pending.target, ack.target)) {
-      console.warn('Ignoring unmatched team interrupt command acknowledgement.', ack);
+    const result = context.executions.applyExecutionMessage(message);
+    if (result.disposition === 'rejected') {
+      console.warn(`Rejected Team execution message (${result.code}): ${result.message}`);
       return;
     }
-    this.pendingInterruptCommands.delete(ack.command_id);
-    this.onInterruptCommandResult(ack);
+    for (const effect of result.effects) {
+      if (effect.kind === 'refresh_task_records') {
+        this.refreshTasks(context);
+        continue;
+      }
+      if (effect.kind === 'record_team_token_usage') {
+        useTokenUsageMeterStore().applyTeamTokenUsage(effect.executionAddress, effect.details);
+        continue;
+      }
+      const agentContext = context.executions.getAgentContext(effect.executionAddress);
+      if (!agentContext) continue;
+      this.approvalTracker.track(effect.message);
+      dispatchAgentStreamMessage(toAgentProjectionMessage(effect.message, agentContext.state.runId), {
+        kind: 'team_member', context: agentContext,
+        teamRunId: context.executions.getRootTeamRunId(), executionAddress: effect.executionAddress,
+      });
+    }
   }
 
   private drainPendingInterruptCommands(message: string): void {
     drainPendingInterruptTransportFailures({
       pending: this.pendingInterruptCommands,
-      reason: {
-        code: 'INTERRUPT_TRANSPORT_DISCONNECTED',
-        connectionState: this.wsClient.state,
-        message,
-      },
+      reason: { code: 'INTERRUPT_TRANSPORT_DISCONNECTED', connectionState: this.wsClient.state, message },
       onTransportFailure: this.onInterruptCommandTransportFailure,
     });
-  }
-
-  private logMessage(message: ServerMessage): void {
-    if (!shouldLogStreaming()) return;
-
-    switch (message.type) {
-      case 'SEGMENT_START': {
-        const { id, turn_id, segment_type, metadata } = message.payload;
-        console.log('[stream][team][segment:start]', { id, turn_id, segment_type, metadata, payload: message.payload });
-        break;
-      }
-      case 'SEGMENT_CONTENT': {
-        const { id, turn_id, delta } = message.payload;
-        console.log('[stream][team][segment:content]', {
-          id,
-          turn_id,
-          deltaLen: delta?.length ?? 0,
-          deltaSample: summarizeDelta(delta || ''),
-          payload: message.payload,
-        });
-        break;
-      }
-      case 'SEGMENT_END': {
-        const { id, turn_id, metadata } = message.payload;
-        console.log('[stream][team][segment:end]', { id, turn_id, metadata, payload: message.payload });
-        break;
-      }
-      default:
-        console.log('[stream][team][message]', { type: message.type, payload: message.payload });
-        break;
-    }
-  }
-
-  private scheduleTaskExecutionCleanup(
-    teamContext: AgentTeamContext,
-    executionAddress?: TeamExecutionAddress | null,
-  ): void {
-    if (!executionAddress) return;
-    const cleanup = () => {
-      const mutation = executionAddress.taskAgentRunId
-        ? removeTaskAgentContext(teamContext, {
-            executionAddress,
-            taskAgentRunId: executionAddress.taskAgentRunId,
-          })
-        : removeTaskTeamExecutionProjection(teamContext, executionAddress);
-      if (mutation.kind !== 'NONE') {
-        useRunHistoryStore().commitTaskProjectionNavigationMutation(teamContext.teamRunId, mutation);
-      }
-    };
-    if (typeof setTimeout === 'function') {
-      setTimeout(cleanup, 0);
-      return;
-    }
-    Promise.resolve().then(cleanup);
-  }
-
-  private refreshTaskDelegationRecords(message: ServerMessage, teamContext: AgentTeamContext): void {
-    if (message.type !== 'TASK_DELEGATION_EVENT') return;
-    const payload = message.payload as Record<string, unknown>;
-    const rootTeamRunId = (
-      typeof payload.root_team_run_id === 'string' ? payload.root_team_run_id.trim() : ''
-    ) || (
-      typeof payload.rootTeamRunId === 'string' ? payload.rootTeamRunId.trim() : ''
-    ) || (
-      typeof payload.team_run_id === 'string' ? payload.team_run_id.trim() : ''
-    ) || (
-      typeof payload.teamRunId === 'string' ? payload.teamRunId.trim() : ''
-    ) || teamContext.teamRunId;
-    scheduleTaskDelegationRecordsRefresh({
-      client: getApolloClient(),
-      teamRunId: rootTeamRunId,
-    });
-  }
-
-  private dispatchMessage(
-    message: ServerMessage,
-    teamContext: AgentTeamContext,
-  ): void {
-    this.refreshTaskDelegationRecords(message, teamContext);
-    const runHistoryStore = useRunHistoryStore();
-    if (message.type === 'TEAM_RUN_LIFECYCLE') {
-      if (handleTeamRunLifecycle(message.payload, teamContext)) {
-        runHistoryStore.applyRunNavigationEffect({
-          kind: 'team_run',
-          teamRunId: teamContext.teamRunId,
-          isActive: teamContext.isActive,
-        }, { kind: 'PRESENTATION' });
-      }
-      return;
-    }
-
-    const projectionResult = handleTaskExecutionProjectionMessage(teamContext, message);
-    let taskMutation: TaskExecutionProjectionMutation = projectionResult.mutation;
-    const commitTaskMutation = (): void => {
-      if (taskMutation.kind === 'NONE') return;
-      runHistoryStore.commitTaskProjectionNavigationMutation(teamContext.teamRunId, taskMutation);
-      taskMutation = NO_TASK_EXECUTION_PROJECTION_MUTATION;
-    };
-    if (projectionResult.outcome === 'drop') {
-      commitTaskMutation();
-      console.warn(projectionResult.reason);
-      return;
-    }
-    if (message.type === 'TEAM_COMMUNICATION_MESSAGE') {
-      commitTaskMutation();
-      handleTeamCommunicationMessage(message.payload);
-      return;
-    }
-    if (projectionResult.outcome === 'handled') {
-      commitTaskMutation();
-      this.scheduleTaskExecutionCleanup(teamContext, projectionResult.cleanupExecutionAddress);
-      return;
-    }
-
-    const taskAgentIdentity = projectionResult.taskAgentIdentity ?? extractTaskAgentIdentity(message);
-    const removeTaskAgentAfterMessage = shouldRemoveTaskAgentAfterMessage(message, taskAgentIdentity);
-    if (taskMutation.kind === 'TOPOLOGY' && !removeTaskAgentAfterMessage) commitTaskMutation();
-    const memberResolution = projectionResult.outcome === 'memberContext'
-      ? { context: projectionResult.context, executionAddress: projectionResult.executionAddress }
-      : resolveTeamStreamMemberContext(teamContext, message);
-
-    if (!memberResolution) {
-      commitTaskMutation();
-      console.warn('No member context found for message, skipping');
-      return;
-    }
-
-    dispatchAgentStreamMessage(message, {
-      kind: 'team_member',
-      context: memberResolution.context,
-      teamRunId: teamContext.teamRunId,
-      executionAddress: memberResolution.executionAddress,
-    });
-
-    if (removeTaskAgentAfterMessage && taskAgentIdentity) {
-      taskMutation = mergeTaskExecutionProjectionMutations(
-        taskMutation,
-        removeTaskAgentContext(teamContext, taskAgentIdentity),
-      );
-    }
-    commitTaskMutation();
   }
 }

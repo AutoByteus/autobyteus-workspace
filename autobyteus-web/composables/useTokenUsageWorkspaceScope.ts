@@ -3,19 +3,20 @@ import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useActiveContextStore } from '~/stores/activeContextStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useTokenUsageMeterStore } from '~/stores/tokenUsageMeterStore';
-import { useTeamMemberPresentation } from '~/composables/useTeamMemberPresentation';
 import {
   buildTokenUsageTeamMemberIdentities,
-  resolveFocusedLeafMemberAddress,
+  resolveFocusedTeamExecutionAddress,
   type TokenUsageTeamMemberIdentity,
 } from '~/composables/tokenUsageTeamMemberRows';
 import type { TokenUsageRunSummary } from '~/types/tokenUsageMeter';
-import { createTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
+import {
+  serializeTeamExecutionAddress,
+  type TeamExecutionAddress,
+} from '~/types/agent/TeamExecutionAddress';
 
 export interface TokenUsageTeamMemberRow {
-  memberAddress: string;
+  executionAddress: TeamExecutionAddress;
   displayName: string;
-  runId: string | null;
   isFocused: boolean;
   summary: TokenUsageRunSummary | null;
   loading: boolean;
@@ -26,16 +27,13 @@ const fetchErrorMessage = (error: unknown): string => (
   error instanceof Error ? error.message : String(error || 'Unknown token usage loading error')
 );
 
-const memberFetchKey = (teamRunId: string | null, memberAddress: string): string => (
-  `${teamRunId || '<no-team>'}::${memberAddress}`
-);
+const memberFetchKey = (executionAddress: TeamExecutionAddress): string => serializeTeamExecutionAddress(executionAddress);
 
 export function useTokenUsageWorkspaceScope() {
   const selectionStore = useAgentSelectionStore();
   const activeContextStore = useActiveContextStore();
   const teamContextsStore = useAgentTeamContextsStore();
   const meterStore = useTokenUsageMeterStore();
-  const { getMemberDisplayName } = useTeamMemberPresentation();
 
   const runLoadingById = reactive<Record<string, boolean>>({});
   const runErrorById = reactive<Record<string, string | null>>({});
@@ -47,37 +45,35 @@ export function useTokenUsageWorkspaceScope() {
 
   const isTeamContext = computed(() => selectionStore.selectedType === 'team');
   const activeTeamContext = computed(() => isTeamContext.value ? teamContextsStore.activeTeamContext : null);
-  const activeTeamRunId = computed(() => activeTeamContext.value?.teamRunId ?? null);
+  const activeTeamRunId = computed(() => activeTeamContext.value?.executions.getRootTeamRunId() ?? null);
   const activeRunId = computed(() => activeContextStore.activeAgentContext?.state.runId ?? null);
   const selectedAgentRunId = computed(() => (
     selectionStore.selectedType === 'agent' ? activeRunId.value : null
   ));
 
-  const focusedLeafMemberAddress = computed(() => resolveFocusedLeafMemberAddress(activeTeamContext.value));
+  const focusedExecutionAddress = computed(() => resolveFocusedTeamExecutionAddress(activeTeamContext.value));
 
   const teamMemberIdentities = computed<TokenUsageTeamMemberIdentity[]>(() => buildTokenUsageTeamMemberIdentities({
     team: activeTeamContext.value,
-    focusedMemberAddress: focusedLeafMemberAddress.value,
-    getMemberDisplayName,
+    focusedExecutionAddress: focusedExecutionAddress.value,
   }));
 
   const teamMemberIdentityKey = computed(() => teamMemberIdentities.value
     .map((identity) => [
       activeTeamRunId.value || '',
-      identity.memberAddress,
-      identity.runId || '',
+      serializeTeamExecutionAddress(identity.executionAddress),
       identity.isFocused ? 'focused' : '',
     ].join(':'))
     .join('|'));
 
   const getMemberSummary = (identity: TokenUsageTeamMemberIdentity): TokenUsageRunSummary | null => {
-    const runSummary = identity.runId ? meterStore.getRunSummary(identity.runId) : null;
-    if (runSummary) return runSummary;
-    return memberSummaryByKey[memberFetchKey(activeTeamRunId.value, identity.memberAddress)] ?? null;
+    return meterStore.getTeamExecutionSummary(identity.executionAddress)
+      ?? memberSummaryByKey[memberFetchKey(identity.executionAddress)]
+      ?? null;
   };
 
   const teamRows = computed<TokenUsageTeamMemberRow[]>(() => teamMemberIdentities.value.map((identity) => {
-    const key = memberFetchKey(activeTeamRunId.value, identity.memberAddress);
+    const key = memberFetchKey(identity.executionAddress);
     return {
       ...identity,
       summary: getMemberSummary(identity),
@@ -155,7 +151,7 @@ export function useTokenUsageWorkspaceScope() {
 
   const hydrateTeamMemberSummary = async (identity: TokenUsageTeamMemberIdentity): Promise<void> => {
     const teamRunId = activeTeamRunId.value;
-    const key = memberFetchKey(teamRunId, identity.memberAddress);
+    const key = memberFetchKey(identity.executionAddress);
     if (memberLoadingByKey[key] || getMemberSummary(identity)) {
       return;
     }
@@ -165,21 +161,11 @@ export function useTokenUsageWorkspaceScope() {
     let finalError: unknown = null;
     try {
       let summary: TokenUsageRunSummary | null = null;
-      if (identity.runId) {
-        try {
-          summary = await meterStore.fetchAgentRunSummary(identity.runId);
-        } catch (error) {
-          finalError = error;
-        }
-      }
-      if (!summary && teamRunId) {
+      if (teamRunId) {
         try {
           summary = await meterStore.fetchTeamMemberSummary({
             teamRunId,
-            executionAddress: createTeamExecutionAddress({
-              rootTeamRunId: teamRunId,
-              memberAddress: identity.memberAddress,
-            }),
+            executionAddress: identity.executionAddress,
           });
         } catch (error) {
           finalError = error;

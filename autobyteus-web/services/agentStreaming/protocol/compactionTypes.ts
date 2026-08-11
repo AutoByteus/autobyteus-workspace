@@ -1,6 +1,5 @@
-import type { TeamStreamIdentityPayload } from './teamStreamIdentityTypes';
 
-export interface CompactionStatusPayload extends TeamStreamIdentityPayload {
+export interface CompactionStatusPayload {
   phase?: 'requested' | 'started' | 'completed' | 'failed' | null;
   kind?: string | null;
   status?: string | null;

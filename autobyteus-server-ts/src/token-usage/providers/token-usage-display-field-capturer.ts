@@ -35,9 +35,7 @@ const findMember = (metadata: TeamRunMetadata | null, payload: TokenUsageUpdated
   if (!metadata) return null;
   const members = collectTeamRunAgentNodes(metadata.rootTeam);
   const address = payload.execution_address?.memberAddress ?? null;
-  return members.find((member) => Boolean(address && member.address === address)) ??
-    members.find((member) => Boolean(payload.member_agent_run_id && member.agentRunId === payload.member_agent_run_id)) ??
-    null;
+  return members.find((member) => Boolean(address && member.address === address)) ?? null;
 };
 
 export class TokenUsageDisplayFieldCapturer {
@@ -49,8 +47,8 @@ export class TokenUsageDisplayFieldCapturer {
   } = {}) {}
 
   async capture(payload: TokenUsageUpdatedPayload): Promise<TokenUsageUpdatedPayload> {
-    return payload.root_team_run_id
-      ? this.captureTeamUsage(payload, payload.root_team_run_id)
+    return payload.execution_address
+      ? this.captureTeamUsage(payload, payload.execution_address.rootTeamRunId)
       : this.captureStandaloneUsage(payload);
   }
 

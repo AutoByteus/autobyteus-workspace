@@ -37,12 +37,12 @@
 
           <tr
             v-for="row in rows"
-            :key="row.memberAddress"
+            :key="serializeTeamExecutionAddress(row.executionAddress)"
             class="team-token-row"
             :class="{ 'team-token-row-focused': row.isFocused }"
             data-test="team-token-row"
             :data-focused="row.isFocused ? 'true' : 'false'"
-            :data-member-route-key="row.memberAddress"
+            :data-member-address="row.executionAddress.memberAddress"
           >
             <th scope="row" class="team-token-member-cell">
               <span class="team-token-member-primary">
@@ -53,7 +53,7 @@
                   {{ $t('shell.tokenUsage.focusedBadge') }}
                 </span>
               </span>
-              <span v-if="row.memberAddress !== row.displayName" class="team-token-route" :title="row.memberAddress">{{ row.memberAddress }}</span>
+              <span v-if="row.executionAddress.memberAddress !== row.displayName" class="team-token-route" :title="row.executionAddress.memberAddress">{{ row.executionAddress.memberAddress }}</span>
             </th>
 
             <template v-if="row.summary">
@@ -139,6 +139,7 @@
 </template>
 
 <script setup lang="ts">
+import { serializeTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 import { createTokenUsageFormatter } from '~/components/workspace/usage/tokenUsageFormatting';
 import type { TokenUsageTeamMemberRow } from '~/composables/useTokenUsageWorkspaceScope';
 import type { TokenUsageRunSummary } from '~/types/tokenUsageMeter';

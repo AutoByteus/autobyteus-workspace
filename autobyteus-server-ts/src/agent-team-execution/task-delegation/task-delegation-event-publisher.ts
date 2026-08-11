@@ -1,214 +1,81 @@
 import type { TeamRun } from "../domain/team-run.js";
 import {
   TeamRunEventSourceType,
-  type TeamRunTaskDelegationEventPayload,
+  type TeamRunTaskDelegationEvent,
 } from "../domain/team-run-event.js";
 import type { ActiveTaskDelegationRecordEntry } from "./task-delegation-active-entry.js";
-import {
-  isTaskDelegationTerminalStatus,
-  type TaskDelegationActivationPayload,
-  type TaskDelegationRecord,
-  type TaskDelegationResultReviewedPayload,
-  type TaskDelegationResultSubmittedPayload,
-  type TaskDelegationStatus,
-  type TaskDelegationStatusUpdatePayload,
-  type TaskResultReview,
-  type TaskResultSubmission,
-} from "./task-delegation-record.js";
-import {
-  derivePendingSubmissionId,
-  deriveTaskLabel,
-  getTaskRecordUpdatedAt,
-  latestAcceptanceReview,
-  latestTaskReview,
-  latestTaskSubmission,
-} from "./task-delegation-record-derived.js";
-import { getTaskExecutionKind, getTaskExecutionRunId } from "./task-execution-instance.js";
-import {
-  buildTaskDelegationArguments,
-  buildTaskDelegationReferenceFiles,
-} from "./task-delegation-reference-file.js";
+import type { TaskResultReview, TaskResultSubmission } from "./task-delegation-record.js";
 import { cloneTaskExecutionAddress } from "./task-delegation-record-snapshot.js";
+import type { TeamRunEvent } from "../domain/team-run-event.js";
 
-const taskArgumentsForEntry = (entry: ActiveTaskDelegationRecordEntry) =>
-  buildTaskDelegationArguments({
-    target: entry.target,
-    content: entry.record.content,
-    referenceFiles: entry.record.referenceFiles,
-  });
+const taskExecutionAddress = (entry: ActiveTaskDelegationRecordEntry) => {
+  const address = entry.record.taskRun?.address;
+  if (!address) throw new Error(`Task '${entry.record.taskId}' has no durable execution address.`);
+  return cloneTaskExecutionAddress(address);
+};
 
 export class TaskDelegationEventPublisher {
-  publishActivated(input: {
-    teamRun: TeamRun;
-    teamRunId: string;
-    entry: ActiveTaskDelegationRecordEntry;
-  }): void {
-    const executionKind = getTaskExecutionKind(input.entry.taskRunExecution)!;
-    const payload: TaskDelegationActivationPayload = {
-      teamRunId: input.teamRunId,
-      rootTeamRunId: input.entry.persistenceScope.rootTeamRunId,
-      senderAddress: cloneTaskExecutionAddress(input.entry.record.senderAddress),
-      target: input.entry.target,
-      execution: input.entry.taskRunExecution,
-      taskIds: [input.entry.record.taskId],
-      tasks: [input.entry].map((entry) => ({
-        taskId: entry.record.taskId,
-        taskLabel: deriveTaskLabel(entry.record.content, entry.record.taskId),
-        description: entry.record.content,
-        status: entry.record.status,
-        referenceFiles: buildTaskDelegationReferenceFiles(entry.record),
-        taskArguments: taskArgumentsForEntry(entry),
-        executionKind,
-        executionRunId: getTaskExecutionRunId(entry.taskRunExecution),
-      })),
-      activatedAt: new Date().toISOString(),
-    };
-    this.publish({
-      teamRun: input.teamRun,
-      teamRunId: input.teamRunId,
-      executionAddress: input.entry.record.receiverAddress,
-      eventType: "TASK_DELEGATION_ACTIVATED",
-      target: input.entry.target,
-      payload,
-    });
-  }
-
-  publishStatusUpdated(input: {
-    teamRun: TeamRun;
-    teamRunId: string;
-    previousStatus: TaskDelegationStatus;
-    entry: ActiveTaskDelegationRecordEntry;
-  }): void {
-    const record = input.entry.record;
-    const latestSubmission = latestTaskSubmission(record);
-    const latestReview = latestTaskReview(record);
-    const acceptedReview = latestAcceptanceReview(record);
-    const payload: TaskDelegationStatusUpdatePayload = {
-      teamRunId: input.teamRunId,
-      rootTeamRunId: input.entry.persistenceScope.rootTeamRunId,
-      senderAddress: cloneTaskExecutionAddress(record.senderAddress),
-      taskId: record.taskId,
-      taskLabel: deriveTaskLabel(record.content, record.taskId),
-      description: record.content,
-      target: input.entry.target,
-      delegator: input.entry.reviewOwner,
-      referenceFiles: buildTaskDelegationReferenceFiles(record),
-      taskArguments: taskArgumentsForEntry(input.entry),
-      execution: input.entry.taskRunExecution,
-      previousStatus: input.previousStatus,
-      status: record.status,
-      pendingSubmissionId: derivePendingSubmissionId(record),
-      latestSubmissionId: latestSubmission?.submissionId ?? null,
-      latestReviewId: latestReview?.reviewId ?? null,
-      reviewedSubmissionId: latestReview?.reviewedSubmissionId ?? null,
-      acceptanceComment: acceptedReview?.content ?? null,
-      acceptedAt: acceptedReview?.createdAt ?? null,
-      updatedAt: getTaskRecordUpdatedAt(record),
-      terminal: isTaskDelegationTerminalStatus(record.status),
-    };
-    this.publish({
-      teamRun: input.teamRun,
-      teamRunId: input.teamRunId,
-      executionAddress: input.entry.record.receiverAddress,
-      eventType: "TASK_DELEGATION_STATUS_UPDATED",
-      target: input.entry.target,
-      payload,
+  createActivatedEvent(entry: ActiveTaskDelegationRecordEntry): TeamRunEvent {
+    const taskRun = entry.record.taskRun;
+    if (!taskRun) throw new Error(`Task '${entry.record.taskId}' has no durable task run.`);
+    return Object.freeze({
+      eventSourceType: TeamRunEventSourceType.TASK_DELEGATION,
+      executionAddress: taskExecutionAddress(entry),
+      payload: Object.freeze({
+        eventType: "TASK_DELEGATION_ACTIVATED",
+        details: Object.freeze({
+          taskId: entry.record.taskId,
+          senderAddress: cloneTaskExecutionAddress(entry.record.senderAddress),
+          content: entry.record.content,
+          referenceFiles: Object.freeze(entry.record.referenceFiles.map((reference) => Object.freeze({ ...reference }))),
+          createdAt: entry.record.createdAt,
+          startedAt: taskRun.startedAt,
+        }),
+      }),
     });
   }
 
   publishResultSubmitted(input: {
     teamRun: TeamRun;
-    teamRunId: string;
-    previousStatus: TaskDelegationStatus;
     entry: ActiveTaskDelegationRecordEntry;
     submission: TaskResultSubmission;
   }): void {
-    const record = input.entry.record;
-    const payload: TaskDelegationResultSubmittedPayload = {
-      teamRunId: input.teamRunId,
-      rootTeamRunId: input.entry.persistenceScope.rootTeamRunId,
-      senderAddress: cloneTaskExecutionAddress(record.senderAddress),
-      taskId: record.taskId,
-      taskLabel: deriveTaskLabel(record.content, record.taskId),
-      description: record.content,
-      target: input.entry.target,
-      delegator: input.entry.reviewOwner,
-      referenceFiles: buildTaskDelegationReferenceFiles(record),
-      taskArguments: taskArgumentsForEntry(input.entry),
-      execution: input.entry.taskRunExecution,
-      previousStatus: input.previousStatus,
-      status: record.status,
-      submissionId: input.submission.submissionId,
-      pendingSubmissionId: derivePendingSubmissionId(record),
-      submittedAt: input.submission.createdAt,
-      updatedAt: getTaskRecordUpdatedAt(record),
-    };
-    this.publish({
-      teamRun: input.teamRun,
-      teamRunId: input.teamRunId,
-      executionAddress: input.entry.record.receiverAddress,
+    this.publish(input.teamRun, taskExecutionAddress(input.entry), {
       eventType: "TASK_DELEGATION_RESULT_SUBMITTED",
-      target: input.entry.target,
-      payload,
+      details: Object.freeze({
+        taskId: input.entry.record.taskId,
+        submissionId: input.submission.submissionId,
+        submittedAt: input.submission.createdAt,
+      }),
     });
   }
 
   publishResultReviewed(input: {
     teamRun: TeamRun;
-    teamRunId: string;
-    previousStatus: TaskDelegationStatus;
     entry: ActiveTaskDelegationRecordEntry;
     review: TaskResultReview;
   }): void {
-    const record = input.entry.record;
-    const payload: TaskDelegationResultReviewedPayload = {
-      teamRunId: input.teamRunId,
-      rootTeamRunId: input.entry.persistenceScope.rootTeamRunId,
-      senderAddress: cloneTaskExecutionAddress(record.senderAddress),
-      taskId: record.taskId,
-      taskLabel: deriveTaskLabel(record.content, record.taskId),
-      description: record.content,
-      target: input.entry.target,
-      delegator: input.entry.reviewOwner,
-      referenceFiles: buildTaskDelegationReferenceFiles(record),
-      taskArguments: taskArgumentsForEntry(input.entry),
-      execution: input.entry.taskRunExecution,
-      previousStatus: input.previousStatus,
-      status: record.status,
-      reviewId: input.review.reviewId,
-      reviewedSubmissionId: input.review.reviewedSubmissionId,
-      decision: input.review.decision,
-      comment: input.review.content,
-      reviewedAt: input.review.createdAt,
-      updatedAt: getTaskRecordUpdatedAt(record),
-      terminal: isTaskDelegationTerminalStatus(record.status),
-    };
-    this.publish({
-      teamRun: input.teamRun,
-      teamRunId: input.teamRunId,
-      executionAddress: input.entry.record.receiverAddress,
+    this.publish(input.teamRun, taskExecutionAddress(input.entry), {
       eventType: "TASK_DELEGATION_RESULT_REVIEWED",
-      target: input.entry.target,
-      payload,
+      details: Object.freeze({
+        taskId: input.entry.record.taskId,
+        reviewId: input.review.reviewId,
+        reviewedSubmissionId: input.review.reviewedSubmissionId,
+        decision: input.review.decision,
+        reviewedAt: input.review.createdAt,
+      }),
     });
   }
 
-  private publish(input: {
-    teamRun: TeamRun;
-    teamRunId: string;
-    executionAddress: ActiveTaskDelegationRecordEntry["record"]["receiverAddress"];
-    eventType: TeamRunTaskDelegationEventPayload["eventType"];
-    target: ActiveTaskDelegationRecordEntry["target"];
-    payload: unknown;
-  }): void {
-    input.teamRun.publishEvent({
+  private publish(
+    teamRun: TeamRun,
+    executionAddress: ActiveTaskDelegationRecordEntry["record"]["senderAddress"],
+    payload: TeamRunTaskDelegationEvent,
+  ): void {
+    teamRun.publishEvent({
       eventSourceType: TeamRunEventSourceType.TASK_DELEGATION,
-      teamRunId: input.teamRunId,
-      executionAddress: input.executionAddress,
-      data: {
-        eventType: input.eventType,
-        payload: input.payload,
-      },
+      executionAddress,
+      payload,
     });
   }
 }

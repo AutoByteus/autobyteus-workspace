@@ -3,10 +3,9 @@ import type { InterAgentMessageDeliveryHandler } from "../domain/inter-agent-mes
 import { MemberCollaborationContext } from "../domain/member-collaboration-context.js";
 import { createMemberLogicalAddressContext } from "../domain/member-logical-address-context.js";
 import { MemberTeamContext } from "../domain/member-team-context.js";
-import type { TaskAgentInstanceIdentity } from "../domain/task-agent-instance.js";
-import type { TaskTeamInstanceIdentity } from "../domain/task-team-instance.js";
 import type { TeamRunAgentNode } from "../domain/team-run-config.js";
 import type { TeamRunContext } from "../domain/team-run-context.js";
+import type { TeamExecutionAddress } from "../domain/team-execution-address.js";
 
 export class MemberTeamContextBuilder {
   private readonly summaryCache = new Map<string, Promise<{ name: string; instruction: string | null }>>();
@@ -19,8 +18,7 @@ export class MemberTeamContextBuilder {
     teamContext: TeamRunContext<unknown>;
     agentNode: TeamRunAgentNode;
     deliverInterAgentMessage?: InterAgentMessageDeliveryHandler | null;
-    taskAgentInstance?: TaskAgentInstanceIdentity | null;
-    taskTeamInstance?: TaskTeamInstanceIdentity | null;
+    taskId?: string | null;
   }): Promise<MemberTeamContext> {
     const team = input.teamContext.index.getTeam(input.teamContext.teamAddress);
     if (!team) throw new Error(`Missing Team node '${input.teamContext.teamAddress}'.`);
@@ -62,10 +60,12 @@ export class MemberTeamContextBuilder {
       executionAddress: {
         ...teamExecutionAddress,
         memberAddress: input.agentNode.address,
-        taskAgentRunId: input.taskAgentInstance?.taskAgentRunId ?? null,
+        taskAgentRunId: input.teamContext.runtimeContext && typeof input.teamContext.runtimeContext === "object" &&
+          "teamExecutionAddress" in input.teamContext.runtimeContext
+          ? (input.teamContext.runtimeContext as { teamExecutionAddress: TeamExecutionAddress }).teamExecutionAddress.taskAgentRunId
+          : null,
       },
-      taskAgentInstance: input.taskAgentInstance ?? null,
-      taskTeamInstance: input.taskTeamInstance ?? null,
+      taskId: input.taskId ?? null,
     });
   }
 

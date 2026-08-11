@@ -5,27 +5,11 @@ import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
-import {
-  hydrateLiveTeamRunContext,
-} from '~/services/runHydration/teamRunContextHydrationService';
-import {
-  applyMemberOrHistoryStatusSnapshot,
-  preserveCanonicalAgentStatus,
-} from '~/services/runStatus/agentRuntimeStatusState';
+import { hydrateLiveTeamRunContext } from '~/services/runHydration/teamRunContextHydrationService';
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
-import {
-  createTeamExecutionAddress,
-  serializeTeamExecutionAddress,
-  type TeamExecutionAddress,
-} from '~/types/agent/TeamExecutionAddress';
-import { findTeamExecutionNode } from '~/services/agentStreaming/teamTaskExecutionTree';
-import {
-  primeRecentEventMonitorBaseline,
-  resetRecentEventMonitorBaseline,
-} from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
+import { createTeamExecutionAddress, type TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
 export type TeamRunOpenSelectionMode = 'desktop' | 'mobile';
-
 export interface OpenTeamRunWithCoordinatorInput {
   teamRunId: string;
   memberAddress?: string | null;
@@ -35,114 +19,43 @@ export interface OpenTeamRunWithCoordinatorInput {
   selectRun?: boolean;
   selectionMode?: TeamRunOpenSelectionMode;
 }
-
 export interface OpenTeamRunWithCoordinatorResult {
   teamRunId: string;
   focusedExecutionAddress: TeamExecutionAddress;
   resumeConfig: TeamRunResumeConfigPayload;
 }
 
-const mergeHydratedExecutions = (
-  current: Map<string, any>,
-  hydrated: Map<string, any>,
-  preserveLiveRuntimeState: boolean,
-): Map<string, any> => {
-  const next = new Map(current);
-  hydrated.forEach((hydratedContext, executionKey) => {
-    const currentContext = current.get(executionKey);
-    if (!currentContext) {
-      next.set(executionKey, hydratedContext);
-      return;
-    }
-    currentContext.config = hydratedContext.config;
-    if (!preserveLiveRuntimeState) {
-      resetRecentEventMonitorBaseline(currentContext);
-      currentContext.state.runId = hydratedContext.state.runId;
-      currentContext.state.conversation = hydratedContext.state.conversation;
-      currentContext.state.hasEarlierActiveTraceEvents = hydratedContext.state.hasEarlierActiveTraceEvents;
-      currentContext.state.resetEventMonitorPresentationRevision();
-      applyMemberOrHistoryStatusSnapshot(
-        currentContext,
-        hydratedContext.state.currentStatus,
-        { preserveCurrentStatus: false },
-      );
-    } else {
-      applyMemberOrHistoryStatusSnapshot(
-        currentContext,
-        preserveCanonicalAgentStatus(currentContext.state.currentStatus),
-        { preserveCurrentStatus: false },
-      );
-    }
-    next.set(executionKey, currentContext);
-  });
-  return next;
-};
-
 const requestedFocus = (input: OpenTeamRunWithCoordinatorInput, existing?: AgentTeamContext): TeamExecutionAddress | null => {
   if (input.executionAddress?.rootTeamRunId === input.teamRunId) return createTeamExecutionAddress(input.executionAddress);
   if (input.memberAddress) return createTeamExecutionAddress({ rootTeamRunId: input.teamRunId, memberAddress: input.memberAddress });
-  return existing?.focusedExecutionAddress ?? null;
+  return existing?.executions.getFocusedAddress() ?? null;
 };
 
-export const openTeamRun = async (
-  input: OpenTeamRunWithCoordinatorInput,
-): Promise<OpenTeamRunWithCoordinatorResult> => {
-  const teamContextsStore = useAgentTeamContextsStore();
-  const existing = teamContextsStore.getTeamContextById(input.teamRunId);
-  const preferredFocus = requestedFocus(input, existing);
-  const hydration = await hydrateLiveTeamRunContext({
+export const openTeamRun = async (input: OpenTeamRunWithCoordinatorInput): Promise<OpenTeamRunWithCoordinatorResult> => {
+  const contexts = useAgentTeamContextsStore();
+  const current = contexts.getTeamContextById(input.teamRunId);
+  const preferred = requestedFocus(input, current);
+  const runStore = useAgentTeamRunStore();
+  const hydrated = await hydrateLiveTeamRunContext({
     ...input,
-    memberAddress: preferredFocus?.memberAddress ?? input.memberAddress,
+    memberAddress: preferred?.memberAddress ?? input.memberAddress,
   });
-  const hydrated = hydration.hydratedContext;
-  const preserveLiveRuntime = hydrated.isActive && existing?.isSubscribed === true;
-  let current = hydrated;
+  const context = hydrated.hydratedContext;
+  const resumeConfig = hydrated.resumeConfig;
+  contexts.addTeamContext(context);
 
-  if (existing) {
-    if (!preserveLiveRuntime) existing.unsubscribe?.();
-    existing.config = hydrated.config;
-    existing.historicalHydration = hydrated.historicalHydration;
-    existing.isActive = hydrated.isActive;
-    existing.agentExecutionsByKey = mergeHydratedExecutions(
-      preserveLiveRuntime ? existing.agentExecutionsByKey : new Map(),
-      hydrated.agentExecutionsByKey,
-      preserveLiveRuntime,
-    );
-    if (!preserveLiveRuntime) {
-      existing.rootTeam = hydrated.rootTeam;
-      existing.memberNodesByAddress = hydrated.memberNodesByAddress;
-      existing.isSubscribed = false;
-      existing.unsubscribe = undefined;
-    }
-    const requested = preferredFocus;
-    existing.focusedExecutionAddress = requested && (
-      Boolean(findTeamExecutionNode(existing, requested)) ||
-      existing.agentExecutionsByKey.has(serializeTeamExecutionAddress(requested))
-    ) ? requested : hydration.focusedExecutionAddress;
-    current = existing;
-  } else {
-    teamContextsStore.addTeamContext(hydrated);
-  }
-
-  current.agentExecutionsByKey.forEach(primeRecentEventMonitorBaseline);
+  if (preferred && context.executions.hasExecution(preferred)) context.executions.focus(preferred);
+  const focusedExecutionAddress = context.executions.getFocusedAddress();
 
   if (input.selectRun !== false) {
     const selection = useAgentSelectionStore();
     input.selectionMode === 'mobile'
       ? selection.selectRunWithoutShellNavigation(input.teamRunId, 'team')
       : selection.selectRun(input.teamRunId, 'team');
-    useTeamRunConfigStore().clearConfig();
+    useTeamRunConfigStore().selectDraft(null);
     useAgentRunConfigStore().clearConfig();
   }
-  if (hydrated.isActive) {
-    useAgentTeamRunStore().connectToTeamStream(input.teamRunId);
-  } else {
-    current.unsubscribe?.();
-    current.isSubscribed = false;
-  }
-  return {
-    teamRunId: input.teamRunId,
-    focusedExecutionAddress: current.focusedExecutionAddress,
-    resumeConfig: hydration.resumeConfig,
-  };
+  if (context.executions.isRootTeamActive()) runStore.connectToTeamStream(input.teamRunId);
+  else runStore.disconnectTeamStream(input.teamRunId);
+  return { teamRunId: input.teamRunId, focusedExecutionAddress, resumeConfig };
 };

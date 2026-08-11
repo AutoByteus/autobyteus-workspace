@@ -1,23 +1,16 @@
-import {
-  AgentRunEventType,
-  type AgentRunEvent,
-} from "../../agent-execution/domain/agent-run-event.js";
-import { normalizeAgentApiStatus } from "../../agent-execution/domain/agent-status-payload.js";
 import type { TeamRun } from "../domain/team-run.js";
 import {
   TeamRunEventSourceType,
-  type TeamRunAgentEventPayload,
   type TeamRunEvent,
   type TeamRunEventUnsubscribe,
 } from "../domain/team-run-event.js";
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { TaskDelegationLedger } from "./task-delegation-ledger.js";
-import type { TaskAgentInstanceIdentity } from "../domain/task-agent-instance.js";
-import { cloneTaskAgentInstanceIdentity } from "../domain/task-agent-instance.js";
 import type { TaskAgentDirectory } from "./task-agent-directory.js";
+import type { ActiveTaskExecutionBinding } from "./active-task-execution-binding.js";
 
 type PendingSettlement = {
-  taskAgentInstance: TaskAgentInstanceIdentity;
+  taskAgentRunId: string;
   requestedAt: string;
 };
 
@@ -25,22 +18,13 @@ const eventTaskAgentRunId = (event: TeamRunEvent): string | null => {
   if (event.eventSourceType !== TeamRunEventSourceType.AGENT) {
     return null;
   }
-  const payload = event.data as TeamRunAgentEventPayload;
-  const taskAgentRunId = payload.taskAgentInstance?.taskAgentRunId?.trim();
-  if (taskAgentRunId) {
-    return taskAgentRunId;
-  }
-  const executionRunId = payload.executionAddress.taskAgentRunId?.trim();
-  if (executionRunId) return executionRunId;
-  const eventRunId = payload.agentEvent.runId?.trim();
-  return eventRunId || null;
+  return event.execution.executionAddress.taskAgentRunId?.trim() || null;
 };
 
-const isIdleAgentEvent = (event: AgentRunEvent): boolean => {
-  if (event.eventType !== AgentRunEventType.AGENT_STATUS) return false;
-  const status = normalizeAgentApiStatus(event.payload.status);
-  return status === "idle" || status === "offline";
-};
+const isIdleAgentEvent = (event: TeamRunEvent): boolean =>
+  event.eventSourceType === TeamRunEventSourceType.AGENT &&
+  event.payload.eventType === "AGENT_STATUS" &&
+  (event.payload.details.status === "idle" || event.payload.details.status === "offline");
 
 export class TaskDelegationSettlementCoordinator {
   private readonly pendingByTaskAgentRunId = new Map<string, PendingSettlement>();
@@ -73,11 +57,11 @@ export class TaskDelegationSettlementCoordinator {
     this.idleTaskAgentRunIds.clear();
   }
 
-  requestSettlement(taskAgentInstance: TaskAgentInstanceIdentity | null): boolean {
-    if (!taskAgentInstance) {
+  requestSettlement(binding: ActiveTaskExecutionBinding | null): boolean {
+    if (!binding || binding.kind !== "task_agent") {
       return false;
     }
-    const taskAgentRunId = taskAgentInstance.taskAgentRunId.trim();
+    const taskAgentRunId = binding.executionAddress.taskAgentRunId?.trim() ?? "";
     const directoryEntry = this.taskAgentDirectory.resolveTaskAgentRunId(taskAgentRunId);
     if (!directoryEntry || this.isProtectedMember(directoryEntry.memberAddress)) {
       return false;
@@ -87,7 +71,7 @@ export class TaskDelegationSettlementCoordinator {
       return false;
     }
     this.pendingByTaskAgentRunId.set(taskAgentRunId, {
-      taskAgentInstance: cloneTaskAgentInstanceIdentity(taskAgentInstance),
+      taskAgentRunId,
       requestedAt: new Date().toISOString(),
     });
     if (this.idleTaskAgentRunIds.has(taskAgentRunId)) {
@@ -102,8 +86,7 @@ export class TaskDelegationSettlementCoordinator {
     if (!taskAgentRunId) {
       return;
     }
-    const payload = event.data as TeamRunAgentEventPayload;
-    if (!isIdleAgentEvent(payload.agentEvent)) {
+    if (!isIdleAgentEvent(event)) {
       this.idleTaskAgentRunIds.delete(taskAgentRunId);
       return;
     }
@@ -122,9 +105,9 @@ export class TaskDelegationSettlementCoordinator {
     const directoryEntry = this.taskAgentDirectory.resolveTaskAgentRunId(taskAgentRunId);
     if (!directoryEntry) return;
     this.pendingByTaskAgentRunId.delete(taskAgentRunId);
-    const result = await this.teamRun.settleTaskAgentInstance(
+    const result = await this.teamRun.settleTaskAgentExecution(
       directoryEntry.memberAddress,
-      pending.taskAgentInstance.taskAgentRunId,
+      pending.taskAgentRunId,
       `task_delegation_idle_after_${pending.requestedAt}`,
     );
     if (!result.accepted) {

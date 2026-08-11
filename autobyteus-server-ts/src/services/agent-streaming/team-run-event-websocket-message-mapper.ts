@@ -1,54 +1,95 @@
 import {
+  parseTeamStreamServerMessage,
+  type TeamStreamServerMessage,
+} from "@autobyteus/team-stream-contracts";
+import {
   TeamRunEventSourceType,
   type TeamRunEvent,
-  type TeamRunAgentEventPayload,
-  type TeamRunCommunicationEventPayload,
-  type TeamRunMemberInputEventPayload,
-  type TeamRunTaskDelegationEventPayload,
 } from "../../agent-team-execution/domain/team-run-event.js";
-import type { AgentRunEventMessageMapper } from "./agent-run-event-message-mapper.js";
-import { createErrorMessage, ServerMessage, ServerMessageType } from "./models.js";
-import { serializePayload } from "./payload-serialization.js";
-import { buildTeamCommunicationMessagePayload } from "./team-communication-message-payload.js";
-import { buildTeamMemberInputMessagePayload } from "./team-member-input-message-payload.js";
+import {
+  projectTeamAgentEventMessage,
+  projectTeamExecutionAddressDto,
+} from "./team-agent-event-websocket-projector.js";
+
+const assertNever = (value: never): never => {
+  throw new Error(`Unmapped TeamRun event '${String(value)}'.`);
+};
 
 export const convertTeamRunEventToServerMessage = (
   event: TeamRunEvent,
-  agentRunEventMessageMapper: AgentRunEventMessageMapper,
-): ServerMessage => {
-  if (event.eventSourceType === TeamRunEventSourceType.AGENT) {
-    const payload = event.data as TeamRunAgentEventPayload;
-    const message = agentRunEventMessageMapper.map(payload.agentEvent);
-    const basePayload = message.payload && typeof message.payload === "object" ? message.payload : {};
-    return new ServerMessage(message.type, {
-      ...basePayload,
-      agent_name: payload.displayName,
-      execution_address: payload.executionAddress,
-      runtime_kind: payload.runtimeKind,
-      ...(payload.taskAgentInstance ? {
-        task_agent_instance_id: payload.taskAgentInstance.taskAgentInstanceId,
-        task_agent_run_id: payload.taskAgentInstance.taskAgentRunId,
-        task_id: payload.taskAgentInstance.taskId,
-      } : {}),
-    });
+): TeamStreamServerMessage => {
+  switch (event.eventSourceType) {
+    case TeamRunEventSourceType.AGENT:
+      return projectTeamAgentEventMessage(event.execution, event.payload);
+    case TeamRunEventSourceType.TASK_DELEGATION: {
+      const execution_address = projectTeamExecutionAddressDto(event.executionAddress);
+      switch (event.payload.eventType) {
+        case "TASK_DELEGATION_ACTIVATED":
+          return parseTeamStreamServerMessage({ type: "TASK_DELEGATION_EVENT", payload: {
+            event_type: event.payload.eventType,
+            execution_address,
+            task_id: event.payload.details.taskId,
+            sender_address: projectTeamExecutionAddressDto(event.payload.details.senderAddress),
+            content: event.payload.details.content,
+            reference_files: event.payload.details.referenceFiles.map((reference) => ({
+              reference_id: reference.referenceId,
+              path: reference.path,
+              type: reference.type,
+              created_at: reference.createdAt,
+              updated_at: reference.updatedAt,
+            })),
+            created_at: event.payload.details.createdAt,
+            started_at: event.payload.details.startedAt,
+          } });
+        case "TASK_DELEGATION_RESULT_SUBMITTED":
+          return parseTeamStreamServerMessage({ type: "TASK_DELEGATION_EVENT", payload: {
+            event_type: event.payload.eventType,
+            execution_address,
+            task_id: event.payload.details.taskId,
+            submission_id: event.payload.details.submissionId,
+            submitted_at: event.payload.details.submittedAt,
+          } });
+        case "TASK_DELEGATION_RESULT_REVIEWED":
+          return parseTeamStreamServerMessage({ type: "TASK_DELEGATION_EVENT", payload: {
+            event_type: event.payload.eventType,
+            execution_address,
+            task_id: event.payload.details.taskId,
+            review_id: event.payload.details.reviewId,
+            reviewed_submission_id: event.payload.details.reviewedSubmissionId,
+            decision: event.payload.details.decision,
+            reviewed_at: event.payload.details.reviewedAt,
+          } });
+      }
+    }
+    case TeamRunEventSourceType.COMMUNICATION:
+      return parseTeamStreamServerMessage({ type: "TEAM_COMMUNICATION_MESSAGE", payload: {
+        message_id: event.payload.messageId,
+        sender_address: projectTeamExecutionAddressDto(event.payload.senderAddress),
+        receiver_address: projectTeamExecutionAddressDto(event.payload.receiverAddress),
+        content: event.payload.content,
+        message_type: event.payload.messageType,
+        reference_files: event.payload.referenceFiles.map((reference) => ({
+          reference_id: reference.referenceId,
+          path: reference.path,
+          type: reference.type,
+          created_at: reference.createdAt,
+          updated_at: reference.updatedAt,
+        })),
+        created_at: event.payload.createdAt,
+      } });
+    case TeamRunEventSourceType.MEMBER_INPUT:
+      return parseTeamStreamServerMessage({ type: "MEMBER_INPUT_MESSAGE", payload: {
+        execution_address: projectTeamExecutionAddressDto(event.executionAddress),
+        message_id: event.payload.messageId,
+        dedupe_key: event.payload.dedupeKey,
+        content: event.payload.content,
+        input_origin: event.payload.inputOrigin,
+        received_at: event.payload.receivedAt,
+        context_file_paths: event.payload.contextFilePaths.map((file) => ({ path: file.path, type: file.type })),
+        sender_address: event.payload.senderAddress ? projectTeamExecutionAddressDto(event.payload.senderAddress) : null,
+        parent_communication_message_id: event.payload.parentCommunicationMessageId,
+      } });
+    default:
+      return assertNever(event);
   }
-  if (event.eventSourceType === TeamRunEventSourceType.TASK_DELEGATION) {
-    const payload = event.data as TeamRunTaskDelegationEventPayload;
-    return new ServerMessage(ServerMessageType.TASK_DELEGATION_EVENT, {
-      event_type: payload.eventType,
-      execution_address: event.executionAddress,
-      ...serializePayload(payload.payload),
-    });
-  }
-  if (event.eventSourceType === TeamRunEventSourceType.COMMUNICATION) {
-    return new ServerMessage(ServerMessageType.TEAM_COMMUNICATION_MESSAGE,
-      buildTeamCommunicationMessagePayload(event.data as TeamRunCommunicationEventPayload));
-  }
-  if (event.eventSourceType === TeamRunEventSourceType.MEMBER_INPUT) {
-    return new ServerMessage(ServerMessageType.MEMBER_INPUT_MESSAGE, {
-      ...buildTeamMemberInputMessagePayload(event.data as TeamRunMemberInputEventPayload),
-      execution_address: event.executionAddress,
-    });
-  }
-  return createErrorMessage("UNKNOWN_TEAM_EVENT", "Unmapped team event");
 };

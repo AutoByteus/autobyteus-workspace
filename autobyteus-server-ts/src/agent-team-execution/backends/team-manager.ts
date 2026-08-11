@@ -6,17 +6,18 @@ import type {
 } from "../domain/inter-agent-message-delivery.js";
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { TeamRunEventListener, TeamRunEventUnsubscribe } from "../domain/team-run-event.js";
-import type { TeamLeafAgentStatusSnapshot } from "../domain/team-leaf-agent-status-snapshot.js";
-import type { StartTaskAgentInstanceRequest } from "../domain/task-agent-instance.js";
-import type { StartTaskTeamInstanceRequest } from "../domain/task-team-instance.js";
+import type { TeamAgentStatusSnapshot } from "../domain/team-agent-status.js";
+import type { StartTaskAgentExecutionRequest } from "../domain/task-agent-execution.js";
+import type { StartTaskTeamExecutionRequest } from "../domain/task-team-execution.js";
 import type { MemberLogicalAddressContext } from "../domain/member-logical-address-context.js";
 import type { ResolvedTeamRecipient } from "../services/resolved-team-recipient.js";
 import type { TeamExecutionAddress } from "../domain/team-execution-address.js";
 import type { TeamMemberExecutionCommand } from "../domain/team-member-execution-command.js";
+import type { TaskActivationEventLease } from "../services/task-activation-event-barrier.js";
 
 export interface TeamManager {
   hasActiveMembers(): boolean;
-  getLeafAgentStatusSnapshots(): TeamLeafAgentStatusSnapshot[];
+  getLeafAgentStatusSnapshots(): TeamAgentStatusSnapshot[];
   hasOpenExecutionWork(): boolean;
   postMessage(
     message: AgentInputUserMessage,
@@ -55,28 +56,35 @@ export interface TeamManager {
     targetAgentRunId?: string | null,
     reason?: string | null,
   ): Promise<AgentOperationResult>;
-  startTaskAgentInstance(
-    request: StartTaskAgentInstanceRequest,
+  startTaskAgentExecution(
+    request: StartTaskAgentExecutionRequest,
   ): Promise<AgentOperationResult>;
-  settleTaskAgentInstance(
+  releaseTaskAgentExecutionWork(target: AgentTeamAddress, taskAgentRunId: string): void;
+  settleTaskAgentExecution(
     target: AgentTeamAddress,
     taskAgentRunId: string,
     reason?: string | null,
   ): Promise<AgentOperationResult>;
-  startTaskTeamInstance(
-    request: StartTaskTeamInstanceRequest,
+  startTaskTeamExecution(
+    request: StartTaskTeamExecutionRequest,
   ): Promise<AgentOperationResult>;
-  postMessageToTaskTeamInstance(
+  markTaskTeamExecutionActive(taskTeamRunId: string): void;
+  releaseTaskTeamExecutionWork(target: AgentTeamAddress, taskTeamRunId: string): void;
+  postMessageToTaskTeamExecution(
     target: AgentTeamAddress,
     taskTeamRunId: string,
     message: AgentInputUserMessage,
   ): Promise<AgentOperationResult>;
-  settleTaskTeamInstance(
+  settleTaskTeamExecution(
     target: AgentTeamAddress,
     taskTeamRunId: string,
     reason?: string | null,
   ): Promise<AgentOperationResult>;
   terminate(): Promise<AgentOperationResult>;
   publishEvent(event: import("../domain/team-run-event.js").TeamRunEvent): void;
+  openTaskActivationEventLease(executionAddress: TeamExecutionAddress): TaskActivationEventLease;
+  assertTaskActivationEventLeaseWithinBudget(lease: TaskActivationEventLease): void;
+  commitTaskActivationEventLease(lease: TaskActivationEventLease, activationEvent: import("../domain/team-run-event.js").TeamRunEvent): void;
+  abortTaskActivationEventLease(lease: TaskActivationEventLease): void;
   subscribeToEvents(listener: TeamRunEventListener): TeamRunEventUnsubscribe;
 }

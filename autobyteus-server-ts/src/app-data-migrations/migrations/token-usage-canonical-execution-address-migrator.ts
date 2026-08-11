@@ -2,12 +2,12 @@ import { serializeTeamExecutionAddress } from "../../agent-team-execution/domain
 import type { AppDataMigrationItemDetail } from "../domain/app-data-migration-types.js";
 import {
   planTokenUsageExecutionAddressBackfillRow,
-} from "./token-usage-execution-address-backfill-planner.js";
+} from "./token-usage-canonical-execution-address-planner.js";
 import {
-  PrismaTokenUsageCanonicalExecutionAddressMigrationStore,
-  type TokenUsageCanonicalExecutionAddressMigrationStore,
-  type TokenUsageCanonicalExecutionAddressUpdate,
-} from "./token-usage-canonical-execution-address-migration-store.js";
+  PrismaTokenUsageCanonicalIdentityMigrationStore,
+  type TokenUsageCanonicalIdentityMigrationStore,
+  type TokenUsageCanonicalIdentityUpdate,
+} from "./token-usage-canonical-identity-migration-store.js";
 import { buildTokenUsageTaskTeamRunIndex } from "./token-usage-task-team-run-index.js";
 
 const MAX_FAILED_BATCH_ROW_IDS = 20;
@@ -22,7 +22,7 @@ const failedDetail = (itemId: string, message: string): AppDataMigrationItemDeta
 });
 
 const describeBatchRows = (
-  updates: readonly TokenUsageCanonicalExecutionAddressUpdate[],
+  updates: readonly TokenUsageCanonicalIdentityUpdate[],
 ): string => {
   const visible = updates.slice(0, MAX_FAILED_BATCH_ROW_IDS).map((update) => update.id);
   const hiddenCount = updates.length - visible.length;
@@ -37,17 +37,17 @@ export interface TokenUsageCanonicalExecutionAddressMigratorLike {
 
 export class TokenUsageCanonicalExecutionAddressMigrator
 implements TokenUsageCanonicalExecutionAddressMigratorLike {
-  private store: TokenUsageCanonicalExecutionAddressMigrationStore | null;
+  private store: TokenUsageCanonicalIdentityMigrationStore | null;
 
   constructor(
     private readonly memoryDir: string,
-    store?: TokenUsageCanonicalExecutionAddressMigrationStore,
+    store?: TokenUsageCanonicalIdentityMigrationStore,
   ) {
     this.store = store ?? null;
   }
 
-  private get migrationStore(): TokenUsageCanonicalExecutionAddressMigrationStore {
-    return this.store ??= new PrismaTokenUsageCanonicalExecutionAddressMigrationStore();
+  private get migrationStore(): TokenUsageCanonicalIdentityMigrationStore {
+    return this.store ??= new PrismaTokenUsageCanonicalIdentityMigrationStore();
   }
 
   async migrate(): Promise<readonly AppDataMigrationItemDetail[]> {
@@ -81,24 +81,21 @@ implements TokenUsageCanonicalExecutionAddressMigratorLike {
         .map((plan) => plan.detail);
       if (planFailures.length > 0) return planFailures;
 
-      const updates: readonly TokenUsageCanonicalExecutionAddressUpdate[] = Object.freeze(
+      const updates: readonly TokenUsageCanonicalIdentityUpdate[] = Object.freeze(
         plans.flatMap((plan, index) => plan.kind === "migrate"
           ? [Object.freeze({
             id: rows[index]!.id,
-            rootTeamRunId: plan.address.rootTeamRunId,
             executionAddressJson: serializeTeamExecutionAddress(plan.address),
           })]
           : []),
       );
-      if (updates.length > 0) {
-        try {
-          await this.migrationStore.applyCanonicalExecutionAddressBatch(updates);
-        } catch (error) {
-          return [failedDetail(
-            "token-usage:canonical-address-batch",
-            `Canonical token transaction rolled back ${updates.length} update(s) for row IDs [${describeBatchRows(updates)}]: ${errorMessage(error)}`,
-          )];
-        }
+      try {
+        await this.migrationStore.applyCanonicalTeamIdentityTransaction(updates);
+      } catch (error) {
+        return [failedDetail(
+          "token-usage:canonical-address-batch",
+          `Canonical token transaction rolled back ${updates.length} update(s) for row IDs [${describeBatchRows(updates)}]: ${errorMessage(error)}`,
+        )];
       }
 
       return plans.map((plan) => plan.detail);

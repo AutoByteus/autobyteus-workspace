@@ -12,7 +12,7 @@ const filename = (value: string): string => {
 };
 
 export type StandaloneDraftContextFileOwner = { kind: "agent_draft"; draftRunId: string };
-export type TeamMemberDraftContextFileOwner = { kind: "team_member_draft"; draftTeamRunId: string; memberAddress: AgentTeamAddress };
+export type TeamMemberDraftContextFileOwner = { kind: "team_member_draft"; teamDraftId: string; memberAddress: AgentTeamAddress };
 export type StandaloneFinalContextFileOwner = { kind: "agent_final"; runId: string };
 export type TeamMemberFinalContextFileOwner = { kind: "team_member_final"; teamRunId: string; memberAddress: AgentTeamAddress };
 export type ResolvedTeamMemberFinalContextFileOwner = TeamMemberFinalContextFileOwner & {
@@ -34,7 +34,7 @@ export const parseDraftContextFileOwnerDescriptor = (value: unknown): ContextFil
   if (input.kind === "agent_draft") return { kind: "agent_draft", draftRunId: required(String(input.draftRunId ?? ""), "draftRunId") };
   if (input.kind === "team_member_draft") return {
     kind: "team_member_draft",
-    draftTeamRunId: required(String(input.draftTeamRunId ?? ""), "draftTeamRunId"),
+    teamDraftId: required(String(input.teamDraftId ?? ""), "teamDraftId"),
     memberAddress: assertAgentTeamAddress(String(input.memberAddress ?? "")),
   };
   throw new Error(`Unsupported draft owner kind '${String(input.kind)}'.`);
@@ -52,7 +52,7 @@ export const parseFinalContextFileOwnerDescriptor = (value: unknown): ContextFil
 export const buildDraftContextFileLocator = (owner: ContextFileDraftOwnerDescriptor, storedFilename: string): string =>
   owner.kind === "agent_draft"
     ? `/rest/drafts/agent-runs/${encodeURIComponent(owner.draftRunId)}/context-files/${encodeURIComponent(filename(storedFilename))}`
-    : `/rest/drafts/team-runs/${encodeURIComponent(owner.draftTeamRunId)}/members/${encodeURIComponent(owner.memberAddress)}/context-files/${encodeURIComponent(filename(storedFilename))}`;
+    : `/rest/drafts/team-runs/${encodeURIComponent(owner.teamDraftId)}/members/${encodeURIComponent(owner.memberAddress)}/context-files/${encodeURIComponent(filename(storedFilename))}`;
 export const buildFinalContextFileLocator = (owner: ContextFileFinalOwnerDescriptor, storedFilename: string): string =>
   owner.kind === "agent_final"
     ? `/rest/runs/${encodeURIComponent(owner.runId)}/context-files/${encodeURIComponent(filename(storedFilename))}`

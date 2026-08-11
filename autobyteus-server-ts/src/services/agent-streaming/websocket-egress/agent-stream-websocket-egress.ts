@@ -3,29 +3,35 @@ import type {
   AgentStreamEgressControlComposition,
   AgentStreamEgressControlExtensions,
   AgentStreamEgressObservation,
+  StreamEgressMessage,
 } from "./agent-stream-egress-control.js";
 import { createAgentStreamEgressControlMessage } from "./agent-stream-egress-control.js";
 import { createDefaultAgentStreamEgressControlComposition } from "./agent-stream-egress-control-composition.js";
 
-export interface AgentStreamServerMessageSink {
-  send(message: ServerMessage): void;
+export interface AgentStreamServerMessageSink<
+  M extends StreamEgressMessage = ServerMessage,
+> {
+  send(message: M): void;
 }
 
-export type AgentStreamWebSocketEgressOptions = {
+export type AgentStreamWebSocketEgressOptions<M extends StreamEgressMessage = ServerMessage> = {
   sendRaw: (payload: string) => void;
+  serialize?: (message: M) => string;
   readIntervalMs?: () => number;
   onSendError?: (error: unknown) => void;
   onObserverError?: (error: unknown) => void;
   controlExtensions?: AgentStreamEgressControlExtensions;
 };
 
-export class AgentStreamWebSocketEgress implements AgentStreamServerMessageSink {
+export class AgentStreamWebSocketEgress<
+  M extends StreamEgressMessage = ServerMessage,
+> implements AgentStreamServerMessageSink<M> {
   private disposed = false;
-  private readonly controls: AgentStreamEgressControlComposition;
+  private readonly controls: AgentStreamEgressControlComposition<M>;
   private readonly onObserverError: (error: unknown) => void;
 
-  constructor(private readonly options: AgentStreamWebSocketEgressOptions) {
-    this.controls = createDefaultAgentStreamEgressControlComposition({
+  constructor(private readonly options: AgentStreamWebSocketEgressOptions<M>) {
+    this.controls = createDefaultAgentStreamEgressControlComposition<M>({
       readIntervalMs: options.readIntervalMs,
       onScheduledError: options.onSendError,
       extensions: options.controlExtensions,
@@ -33,7 +39,7 @@ export class AgentStreamWebSocketEgress implements AgentStreamServerMessageSink 
     this.onObserverError = options.onObserverError ?? (() => undefined);
   }
 
-  send(message: ServerMessage): void {
+  send(message: M): void {
     if (this.disposed) {
       return;
     }
@@ -77,8 +83,11 @@ export class AgentStreamWebSocketEgress implements AgentStreamServerMessageSink 
     });
   }
 
-  private readonly forward = (message: ServerMessage): void => {
-    this.options.sendRaw(message.toJson());
+  private readonly forward = (message: M): void => {
+    const serialized = this.options.serialize
+      ? this.options.serialize(message)
+      : (message as unknown as ServerMessage).toJson();
+    this.options.sendRaw(serialized);
     this.observe({
       type: "MESSAGE_FORWARDED",
       message: createAgentStreamEgressControlMessage(message),

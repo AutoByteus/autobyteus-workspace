@@ -9,13 +9,12 @@ import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import { openTeamRun } from '~/services/runOpen/teamRunOpenCoordinator';
+import { getHistoricalTeamMemberProjectionLoadState } from '~/services/runHydration/teamRunContextHydrationService';
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
 import {
   createTeamExecutionAddress,
-  serializeTeamExecutionAddress,
   type TeamExecutionAddress,
 } from '~/types/agent/TeamExecutionAddress';
-import { findTeamExecutionNode } from '~/services/agentStreaming/teamTaskExecutionTree';
 
 type RunHistorySelectionMode = 'desktop' | 'mobile';
 
@@ -80,20 +79,17 @@ export const selectTreeRunFromHistory = async (
       rootTeamRunId: row.teamRunId,
       memberAddress: row.memberAddress,
     });
-    const memberNodesByAddress = localTeamContext?.memberNodesByAddress ?? null;
     const shouldReuseLocalTeamContext = Boolean(
-      localTeamContext && (
-        Boolean(findTeamExecutionNode(localTeamContext, executionAddress))
-        || localTeamContext.agentExecutionsByKey.has(serializeTeamExecutionAddress(executionAddress))
-      ),
+      localTeamContext?.executions.hasExecution(executionAddress),
     );
     const localTargetMemberAddress = row.memberAddress;
-    const localMemberProjectionLoadState =
-      localTeamContext?.historicalHydration?.memberProjectionLoadStateByAddress[localTargetMemberAddress]
-      ?? null;
-    const memberNode = memberNodesByAddress?.get(localTargetMemberAddress);
+    const localMemberProjectionLoadState = getHistoricalTeamMemberProjectionLoadState(
+      row.teamRunId,
+      localTargetMemberAddress,
+    );
+    const memberNode = localTeamContext?.topology.getNode(localTargetMemberAddress);
     const isLeafAgent = memberNode?.kind === 'agent';
-    const shouldShowOpeningIndicator = Boolean(localTeamContext?.historicalHydration && isLeafAgent)
+    const shouldShowOpeningIndicator = Boolean(localMemberProjectionLoadState && isLeafAgent)
       && localMemberProjectionLoadState !== 'loaded';
 
     if (shouldReuseLocalTeamContext) {

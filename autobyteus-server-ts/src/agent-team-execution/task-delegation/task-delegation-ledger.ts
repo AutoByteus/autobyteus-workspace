@@ -1,8 +1,8 @@
-import type { TaskAgentInstanceIdentity } from "../domain/task-agent-instance.js";
-import { cloneTaskTeamInstanceIdentity } from "../domain/task-team-instance.js";
-import type { TaskTeamInstanceIdentity } from "../domain/task-team-instance.js";
-import { cloneTaskAgentInstanceIdentity } from "../domain/task-agent-instance.js";
-import { cloneTaskExecutionInstance } from "./task-execution-instance.js";
+import {
+  cloneActiveTaskExecutionBinding,
+  createActiveTaskExecutionBinding,
+  type ActiveTaskExecutionBinding,
+} from "./active-task-execution-binding.js";
 import { cloneTaskDelegationTarget } from "./task-delegation-target.js";
 import type { TaskDelegationPersistenceScope } from "./task-delegation-persistence-scope.js";
 import {
@@ -71,12 +71,7 @@ const cloneDelegatorIdentity = (
 ): TaskDelegationDelegatorIdentity => ({
   executionAddress: cloneTaskExecutionAddress(identity.executionAddress),
   agentRunId: identity.agentRunId,
-  taskAgentInstance: identity.taskAgentInstance
-    ? cloneTaskAgentInstanceIdentity(identity.taskAgentInstance)
-    : null,
-  taskTeamInstance: identity.taskTeamInstance
-    ? cloneTaskTeamInstanceIdentity(identity.taskTeamInstance)
-    : null,
+  taskId: identity.taskId?.trim() || null,
 });
 
 const cloneStartingEntry = (
@@ -92,7 +87,7 @@ const cloneStartingEntry = (
   receiverTargetKind: entry.receiverTargetKind,
   content: entry.content,
   referenceFiles: cloneTaskReferenceFiles(entry.referenceFiles),
-  boundExecution: entry.boundExecution ? cloneTaskExecutionInstance(entry.boundExecution) : null,
+  boundExecution: entry.boundExecution ? cloneActiveTaskExecutionBinding(entry.boundExecution) : null,
   delegatorReplyRecipientAddress: entry.delegatorReplyRecipientAddress,
   delegatorReplyTargetAgentRunId: entry.delegatorReplyTargetAgentRunId,
   createdAt: entry.createdAt,
@@ -106,7 +101,7 @@ const cloneRecordEntry = (
   record: cloneTaskDelegationRecord(entry.record),
   target: cloneTaskDelegationTarget(entry.target),
   reviewOwner: cloneDelegatorIdentity(entry.reviewOwner),
-  taskRunExecution: cloneTaskExecutionInstance(entry.taskRunExecution),
+  activeExecution: cloneActiveTaskExecutionBinding(entry.activeExecution),
   delegatorReplyRecipientAddress: entry.delegatorReplyRecipientAddress,
   delegatorReplyTargetAgentRunId: entry.delegatorReplyTargetAgentRunId,
 });
@@ -182,44 +177,28 @@ export class TaskDelegationLedger {
     return [...this.entriesById.values()]
       .filter((entry): entry is ActiveTaskDelegationRecordEntry =>
         entry.phase === "record" &&
-        entry.taskRunExecution.kind === "task_agent" &&
-        entry.taskRunExecution.taskAgentInstance.taskAgentRunId === normalizedRunId)
+        entry.activeExecution.kind === "task_agent" &&
+        entry.activeExecution.executionAddress.taskAgentRunId === normalizedRunId)
       .map((entry) => cloneTaskDelegationRecord(entry.record));
   }
 
-  bindTaskAgent(input: {
+  bindTaskExecution(input: {
     taskId: string;
-    taskAgentInstance: TaskAgentInstanceIdentity;
+    execution: ActiveTaskExecutionBinding;
     delegatorReplyRecipientAddress?: string | null;
     delegatorReplyTargetAgentRunId?: string | null;
   }): ActiveTaskDelegationStartingEntry {
     const entry = this.requireStarting(input.taskId);
-    entry.boundExecution = {
-      kind: "task_agent",
-      taskAgentInstance: cloneTaskAgentInstanceIdentity(input.taskAgentInstance),
-    };
+    if (input.execution.taskId !== entry.taskId) {
+      throw new TaskDelegationError("TASK_EXECUTION_ID_MISMATCH", "Task execution binding does not match its starting task.");
+    }
+    entry.boundExecution = createActiveTaskExecutionBinding(input.execution);
     entry.delegatorReplyRecipientAddress = input.delegatorReplyRecipientAddress?.trim() || null;
     entry.delegatorReplyTargetAgentRunId = input.delegatorReplyTargetAgentRunId?.trim() || null;
     return cloneStartingEntry(entry);
   }
 
-  bindTaskTeam(input: {
-    taskId: string;
-    taskTeamInstance: TaskTeamInstanceIdentity;
-    delegatorReplyRecipientAddress?: string | null;
-    delegatorReplyTargetAgentRunId?: string | null;
-  }): ActiveTaskDelegationStartingEntry {
-    const entry = this.requireStarting(input.taskId);
-    entry.boundExecution = {
-      kind: "task_team",
-      taskTeamInstance: cloneTaskTeamInstanceIdentity(input.taskTeamInstance),
-    };
-    entry.delegatorReplyRecipientAddress = input.delegatorReplyRecipientAddress?.trim() || null;
-    entry.delegatorReplyTargetAgentRunId = input.delegatorReplyTargetAgentRunId?.trim() || null;
-    return cloneStartingEntry(entry);
-  }
-
-  activateStartingEntry(input: {
+  stageStartingEntry(input: {
     taskId: string;
     taskRun: TaskRunReference;
     receiverAddress?: TeamExecutionAddress | null;
@@ -240,18 +219,26 @@ export class TaskDelegationLedger {
       updates: [],
       createdAt: starting.createdAt,
     };
-    const entry: ActiveTaskDelegationRecordEntry = {
+    return cloneRecordEntry({
       phase: "record",
       persistenceScope: cloneScope(starting.persistenceScope),
       record,
       target: cloneTaskDelegationTarget(starting.target),
       reviewOwner: cloneDelegatorIdentity(starting.reviewOwner),
-      taskRunExecution: cloneTaskExecutionInstance(starting.boundExecution),
+      activeExecution: cloneActiveTaskExecutionBinding(starting.boundExecution),
       delegatorReplyRecipientAddress: starting.delegatorReplyRecipientAddress,
       delegatorReplyTargetAgentRunId: starting.delegatorReplyTargetAgentRunId,
-    };
-    this.entriesById.set(input.taskId, entry);
-    return cloneRecordEntry(entry);
+    });
+  }
+
+  commitStartingEntry(taskId: string, staged: ActiveTaskDelegationRecordEntry): ActiveTaskDelegationRecordEntry {
+    const current = this.requireStarting(taskId);
+    if (staged.record.taskId !== current.taskId || staged.activeExecution.taskId !== current.taskId) {
+      throw new TaskDelegationError("TASK_EXECUTION_ID_MISMATCH", "Staged task record does not match its starting task.");
+    }
+    const committed = cloneRecordEntry(staged);
+    this.entriesById.set(taskId, committed);
+    return cloneRecordEntry(committed);
   }
 
   discardStartingEntry(taskId: string): ActiveTaskDelegationStartingEntry | null {
@@ -268,7 +255,7 @@ export class TaskDelegationLedger {
     referenceFiles: TaskReferenceFile[];
   }): TaskResultSubmissionTransition {
     const entry = this.requireActiveRecord(input.taskId);
-    if (entry.taskRunExecution.kind !== "task_agent" || entry.taskRunExecution.taskAgentInstance.taskAgentRunId !== input.taskAgentRunId.trim()) {
+    if (entry.activeExecution.kind !== "task_agent" || entry.activeExecution.executionAddress.taskAgentRunId !== input.taskAgentRunId.trim()) {
       throw new TaskDelegationError("TASK_AGENT_NOT_AUTHORIZED", `Task-agent run '${input.taskAgentRunId}' is not assigned to delegated task '${input.taskId}'.`);
     }
     return this.commitSubmission(entry, input.message, input.referenceFiles);
@@ -281,7 +268,7 @@ export class TaskDelegationLedger {
     referenceFiles: TaskReferenceFile[];
   }): TaskResultSubmissionTransition {
     const entry = this.requireActiveRecord(input.taskId);
-    if (entry.taskRunExecution.kind !== "task_team" || entry.taskRunExecution.taskTeamInstance.taskTeamRunId !== input.taskTeamRunId.trim()) {
+    if (entry.activeExecution.kind !== "task_team" || entry.activeExecution.executionAddress.taskTeamRunIds.at(-1) !== input.taskTeamRunId.trim()) {
       throw new TaskDelegationError("TASK_TEAM_NOT_AUTHORIZED", `Task-team run '${input.taskTeamRunId}' is not assigned to delegated task '${input.taskId}'.`);
     }
     return this.commitSubmission(entry, input.message, input.referenceFiles);
@@ -343,19 +330,15 @@ export class TaskDelegationLedger {
     });
   }
 
-  hasCurrentWorkForTaskAgentInstance(taskAgentRunId: string): boolean {
-    return this.hasOpenWorkBlockingTaskAgentSettlement(taskAgentRunId);
-  }
-
   hasOpenWorkBlockingTaskAgentSettlement(taskAgentRunId: string): boolean {
     const normalizedRunId = taskAgentRunId.trim();
     if (!normalizedRunId) return false;
     return [...this.entriesById.values()].some((entry) => {
       if (entry.phase === "record" && isTaskDelegationTerminalStatus(entry.record.status)) return false;
       const executionBlocks = entry.phase === "record" &&
-        entry.taskRunExecution.kind === "task_agent" &&
-        entry.taskRunExecution.taskAgentInstance.taskAgentRunId === normalizedRunId;
-      return executionBlocks || entry.reviewOwner.taskAgentInstance?.taskAgentRunId === normalizedRunId;
+        entry.activeExecution.kind === "task_agent" &&
+        entry.activeExecution.executionAddress.taskAgentRunId === normalizedRunId;
+      return executionBlocks || entry.reviewOwner.executionAddress.taskAgentRunId === normalizedRunId;
     });
   }
 
@@ -410,7 +393,7 @@ export class TaskDelegationLedger {
       ...submissionUpdate,
       message: submissionUpdate.content,
       submittedAt: submissionUpdate.createdAt,
-      execution: cloneTaskExecutionInstance(entry.taskRunExecution),
+      execution: cloneActiveTaskExecutionBinding(entry.activeExecution),
     };
     const clonedEntry = cloneRecordEntry(entry);
     return {

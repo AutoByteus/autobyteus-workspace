@@ -1,7 +1,6 @@
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import type {
   AgentApiStatus,
-  AgentStatusPayload,
 } from "../../agent-execution/domain/agent-status-payload.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import type { TeamRunHistoryItem } from "../domain/team-run-history-index-types.js";
@@ -19,7 +18,10 @@ import {
   TeamRunHistoryCatalogService,
   getTeamRunHistoryCatalogService,
 } from "./team-run-history-catalog-service.js";
-import { TeamRunLiveProjectionService } from "./team-run-live-projection-service.js";
+import {
+  TeamRunLiveProjectionService,
+  type TeamRunMemberStatusProjection,
+} from "./team-run-live-projection-service.js";
 import {
   getTeamRunLeafAgentMetadata,
   resolveTeamWorkspaceRootPath,
@@ -136,7 +138,7 @@ export class TeamRunHistoryService {
     metadata: TeamRunMetadata,
     projection: {
       isActive: boolean;
-      memberStatusSnapshots: AgentStatusPayload[];
+      memberStatusSnapshots: TeamRunMemberStatusProjection[];
     },
   ): TeamRunHistoryItem {
     return {
@@ -173,11 +175,11 @@ export class TeamRunHistoryService {
 
   private resolveMemberHistoryStatus(
     member: TeamRunAgentMemberMetadata,
-    statusSnapshots: AgentStatusPayload[],
+    statusSnapshots: TeamRunMemberStatusProjection[],
   ): AgentApiStatus {
     const snapshot = statusSnapshots.find((candidate) =>
-      candidate.agent_id === member.agentRunId ||
-      candidate.agent_id === member.platformAgentRunId,
+      candidate.agentRunId === member.agentRunId ||
+      candidate.agentRunId === member.platformAgentRunId,
     );
     return snapshot?.status ?? "offline";
   }

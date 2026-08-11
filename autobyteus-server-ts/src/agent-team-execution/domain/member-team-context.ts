@@ -1,6 +1,4 @@
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
-import type { TaskAgentInstanceIdentity } from "./task-agent-instance.js";
-import type { TaskTeamInstanceIdentity } from "./task-team-instance.js";
 import type { TeamExecutionAddress } from "./team-execution-address.js";
 import { createTeamExecutionAddress } from "./team-execution-address.js";
 import { MemberCollaborationContext } from "./member-collaboration-context.js";
@@ -21,8 +19,7 @@ export class MemberTeamContext {
   readonly teamInstruction: string | null;
   readonly collaboration: MemberCollaborationContext;
   readonly executionAddress: TeamExecutionAddress;
-  readonly taskAgentInstance: TaskAgentInstanceIdentity | null;
-  readonly taskTeamInstance: TaskTeamInstanceIdentity | null;
+  readonly taskId: string | null;
 
   constructor(input: {
     teamRunId: string;
@@ -37,8 +34,7 @@ export class MemberTeamContext {
     teamInstruction?: string | null;
     collaboration: MemberCollaborationContext;
     executionAddress: TeamExecutionAddress;
-    taskAgentInstance?: TaskAgentInstanceIdentity | null;
-    taskTeamInstance?: TaskTeamInstanceIdentity | null;
+    taskId?: string | null;
   }) {
     this.teamRunId = input.teamRunId;
     this.teamDefinitionId = input.teamDefinitionId;
@@ -52,8 +48,7 @@ export class MemberTeamContext {
     this.teamInstruction = input.teamInstruction ?? null;
     this.collaboration = new MemberCollaborationContext(input.collaboration);
     this.executionAddress = createTeamExecutionAddress(input.executionAddress);
-    this.taskAgentInstance = input.taskAgentInstance ?? null;
-    this.taskTeamInstance = input.taskTeamInstance ?? null;
+    this.taskId = input.taskId?.trim() || null;
     Object.freeze(this);
   }
 }

@@ -162,7 +162,7 @@ export const deleteTeamRunFromHistoryStore = async (
   teamRunId: string,
 ): Promise<boolean> => {
   const normalizedTeamRunId = teamRunId.trim();
-  if (!normalizedTeamRunId || normalizedTeamRunId.startsWith('temp-')) {
+  if (!normalizedTeamRunId) {
     return false;
   }
 
@@ -196,7 +196,7 @@ export const archiveTeamRunInHistoryStore = async (
   teamRunId: string,
 ): Promise<boolean> => {
   const normalizedTeamRunId = teamRunId.trim();
-  if (!normalizedTeamRunId || normalizedTeamRunId.startsWith('temp-')) {
+  if (!normalizedTeamRunId) {
     return false;
   }
 

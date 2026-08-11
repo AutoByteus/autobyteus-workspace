@@ -93,7 +93,10 @@ const hasTeamContext = computed(() => Boolean(activeTeamContext.value || props.c
 const teamMessages = computed(() => {
   const team = activeTeamContext.value;
   if (!team) return [];
-  return teamCommunicationStore.getPerspectiveForAddress(team.teamRunId, team.focusedExecutionAddress).messages;
+  return teamCommunicationStore.getPerspectiveForAddress(
+    team.executions.getRootTeamRunId(),
+    team.executions.getFocusedAddress(),
+  ).messages;
 });
 const runActivities = computed(() => focusedRunId.value ? activityStore.getActivities(focusedRunId.value) : []);
 const filters = computed(() => [

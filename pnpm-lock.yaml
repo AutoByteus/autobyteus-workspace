@@ -133,6 +133,9 @@ importers:
       '@autobyteus/application-sdk-contracts':
         specifier: workspace:*
         version: link:../autobyteus-application-sdk-contracts
+      '@autobyteus/team-stream-contracts':
+        specifier: workspace:*
+        version: link:../autobyteus-team-stream-contracts
       '@fastify/cors':
         specifier: ^9.0.1
         version: 9.0.1
@@ -216,6 +219,19 @@ importers:
         specifier: ^8.18.1
         version: 8.19.0
 
+  autobyteus-team-stream-contracts:
+    dependencies:
+      zod:
+        specifier: ^4.3.6
+        version: 4.3.6
+    devDependencies:
+      '@types/node':
+        specifier: ^25.0.10
+        version: 25.3.0
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
   autobyteus-ts:
     dependencies:
       '@anthropic-ai/sdk':
@@ -280,6 +296,9 @@ importers:
 
   autobyteus-web:
     dependencies:
+      '@autobyteus/team-stream-contracts':
+        specifier: workspace:*
+        version: link:../autobyteus-team-stream-contracts
       '@fortawesome/fontawesome-svg-core':
         specifier: ^6.7.2
         version: 6.7.2

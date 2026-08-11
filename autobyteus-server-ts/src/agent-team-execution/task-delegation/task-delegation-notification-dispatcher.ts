@@ -69,7 +69,7 @@ export class TaskDelegationNotificationDispatcher {
         task_id: input.entry.record.taskId,
         review_id: input.review.reviewId,
         reviewed_submission_id: input.review.reviewedSubmissionId,
-        execution_kind: input.entry.taskRunExecution.kind,
+        execution_kind: input.entry.activeExecution.kind,
         message_type: "task_revision_requested",
       },
     });
@@ -99,7 +99,7 @@ export class TaskDelegationNotificationDispatcher {
 
     try {
       const result = input.target.kind === "task_team"
-        ? await input.teamRun.postMessageToTaskTeamInstance(
+        ? await input.teamRun.postMessageToTaskTeamExecution(
             input.target.memberAddress,
             input.target.taskTeamRunId,
             message,
@@ -122,7 +122,7 @@ export class TaskDelegationNotificationDispatcher {
   }
 
   private resolveDelegatorTarget(entry: ActiveTaskDelegationRecordEntry): NotificationTarget {
-    const taskAgentRunId = entry.reviewOwner.taskAgentInstance?.taskAgentRunId ?? null;
+    const taskAgentRunId = entry.reviewOwner.executionAddress.taskAgentRunId;
     return {
       kind: "agent",
       memberAddress: entry.reviewOwner.executionAddress.memberAddress,
@@ -131,17 +131,17 @@ export class TaskDelegationNotificationDispatcher {
   }
 
   private resolveExecutionTarget(entry: ActiveTaskDelegationRecordEntry): NotificationTarget {
-    if (entry.taskRunExecution.kind === "task_agent") {
+    if (entry.activeExecution.kind === "task_agent") {
       return {
         kind: "agent",
-        memberAddress: entry.record.receiverAddress.memberAddress,
-        taskAgentRunId: entry.taskRunExecution.taskAgentInstance.taskAgentRunId,
+        memberAddress: entry.activeExecution.executionAddress.memberAddress,
+        taskAgentRunId: entry.activeExecution.executionAddress.taskAgentRunId,
       };
     }
     return {
       kind: "task_team",
-      memberAddress: entry.record.receiverAddress.memberAddress,
-      taskTeamRunId: entry.taskRunExecution.taskTeamInstance.taskTeamRunId,
+      memberAddress: entry.activeExecution.executionAddress.memberAddress,
+      taskTeamRunId: entry.activeExecution.executionAddress.taskTeamRunIds.at(-1)!,
     };
   }
 

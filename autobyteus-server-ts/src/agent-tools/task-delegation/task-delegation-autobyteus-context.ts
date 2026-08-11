@@ -1,5 +1,3 @@
-import { cloneTaskAgentInstanceIdentity, type TaskAgentInstanceIdentity } from "../../agent-team-execution/domain/task-agent-instance.js";
-import { cloneTaskTeamInstanceIdentity, type TaskTeamInstanceIdentity } from "../../agent-team-execution/domain/task-team-instance.js";
 import {
   createMemberLogicalAddressContext,
   type MemberLogicalAddressContext,
@@ -18,8 +16,7 @@ type NativeTeamContext = {
   coordinatorAddress?: unknown;
   executionAddress?: TeamExecutionAddress | null;
   addressing?: unknown;
-  taskAgentInstance?: TaskAgentInstanceIdentity | null;
-  taskTeamInstance?: TaskTeamInstanceIdentity | null;
+  taskId?: unknown;
 };
 export type NativeTaskDelegationToolExecutionContext = {
   customData?: { teamContext?: NativeTeamContext };
@@ -64,8 +61,7 @@ export const buildTaskDelegationToolContextFromNativeContext = (
     caller: {
       executionAddress: createTeamExecutionAddress(team.executionAddress),
       agentRunId: required(team.agentRunId, "agentRunId"),
-      taskAgentInstance: team.taskAgentInstance ? cloneTaskAgentInstanceIdentity(team.taskAgentInstance) : null,
-      taskTeamInstance: team.taskTeamInstance ? cloneTaskTeamInstanceIdentity(team.taskTeamInstance) : null,
+      taskId: optional(team.taskId),
     },
     coordinatorAddress: optional(team.coordinatorAddress) ? assertAgentTeamAddress(optional(team.coordinatorAddress)!) : null,
     addressing,

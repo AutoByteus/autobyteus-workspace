@@ -25,7 +25,7 @@ export class TaskDelegationTargetMapper {
       );
     }
     const callerNode = currentTeam.index.getAgent(callerAddressing.memberAddress);
-    const taskAgentRunId = caller.taskAgentInstance?.taskAgentRunId ?? null;
+    const taskAgentRunId = caller.executionAddress.taskAgentRunId;
     const executionAddressMatches =
       callerAddressing.rootTeamRunId === currentTeam.config.rootTeam.teamRunId &&
       caller.executionAddress.rootTeamRunId === currentTeam.config.rootTeam.teamRunId &&

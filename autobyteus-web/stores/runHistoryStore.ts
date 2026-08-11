@@ -37,18 +37,16 @@ import {
   type RunHistoryTeamNavigationAncestry,
 } from './runHistoryNavigationProjection';
 import type { RunNavigationEffect } from '~/services/agentStreaming/agentStreamMutationEffects';
-import type { TaskExecutionProjectionMutation } from '~/services/agentStreaming/teamTaskExecutionProjection';
 import type { RunNavigationTarget } from './runHistoryNavigationPatches';
 import {
   applyRunNavigationEffectForStore,
   applyRunNavigationTeamFocusForStore,
-  commitTaskProjectionNavigationMutationForStore,
   focusTeamMemberAndEnsureHydratedForStore,
   refreshRunNavigationTopologyForStore,
 } from './runHistoryNavigationStoreActions';
 import { createDraftRunForHistoryStore } from './runHistoryDraftActions';
 import {
-  parseTeamExecutionAddress,
+  parseSerializedTeamExecutionAddress,
   type TeamExecutionAddress,
 } from '~/types/agent/TeamExecutionAddress';
 
@@ -405,7 +403,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
       const keys = this.navigationProjection?.memberAncestorExecutionKeysByIdentity[
         runHistoryMemberIndexKey(teamRunId, executionAddress)
       ] ?? [];
-      return keys.map((key) => parseTeamExecutionAddress(JSON.parse(key)).memberAddress);
+      return keys.map((key) => parseSerializedTeamExecutionAddress(key).memberAddress);
     },
 
     refreshRunNavigationTopology(reason: string): void {
@@ -414,13 +412,6 @@ export const useRunHistoryStore = defineStore('runHistory', {
 
     applyRunNavigationEffect(target: RunNavigationTarget, effect: RunNavigationEffect): boolean {
       return applyRunNavigationEffectForStore(this, target, effect);
-    },
-
-    commitTaskProjectionNavigationMutation(
-      teamRunId: string,
-      mutation: TaskExecutionProjectionMutation,
-    ): boolean {
-      return commitTaskProjectionNavigationMutationForStore(this, teamRunId, mutation);
     },
 
     applyRunNavigationTeamFocus(teamRunId: string, executionAddress: TeamExecutionAddress): boolean {

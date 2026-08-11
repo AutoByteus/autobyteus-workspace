@@ -1,6 +1,5 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { ApplicationPlatformStateStore } from "../../application-storage/stores/application-platform-state-store.js";
 import { normalizeTaskDelegationRecordsFile } from "../../agent-team-execution/task-delegation/records/task-delegation-records-normalizer.js";
 import type {
   AppDataMigrationDefinition,
@@ -8,7 +7,6 @@ import type {
   AppDataMigrationItemDetail,
   AppDataMigrationSummary,
 } from "../domain/app-data-migration-types.js";
-import { migrateCanonicalApplicationDatabase } from "./team-canonical-application-db-migrator.js";
 import { convertLegacyTeamRunMetadata } from "./team-canonical-metadata-converter.js";
 import { convertExternalChannelBindings, convertTaskDelegationFile } from "./team-canonical-structured-file-converter.js";
 import {
@@ -39,13 +37,12 @@ const summary = (details: AppDataMigrationItemDetail[]): AppDataMigrationSummary
 export class TeamCanonicalIdentityMigration implements AppDataMigrationDefinition {
   readonly id = MIGRATION_ID;
   readonly displayName = "AgentTeam canonical identity migration";
-  readonly description = "Converts required TeamRun, task, token, channel, and application platform state to canonical schema v3 identity.";
+  readonly description = "Converts released TeamRun, task, token, and external-channel state to canonical schema v3 identity.";
   readonly requiredOnStartup = true;
 
   constructor(
     private readonly memoryDir: string,
     private readonly appDataDir: string,
-    private readonly platformStateStore = new ApplicationPlatformStateStore(),
     private readonly suppliedTokenMigrator?: TokenUsageCanonicalExecutionAddressMigratorLike,
   ) {}
 
@@ -76,7 +73,6 @@ export class TeamCanonicalIdentityMigration implements AppDataMigrationDefinitio
       details.push(...await tokenMigrator.migrate());
     }
     await this.migrateBindings(details);
-    this.migrateApplicationDatabases(details);
     const resultSummary = summary(details);
     return {
       status: resultSummary.failedCount ? "FAILED" : "SUCCEEDED",
@@ -120,20 +116,6 @@ export class TeamCanonicalIdentityMigration implements AppDataMigrationDefinitio
       convert: convertExternalChannelBindings,
       details,
     });
-  }
-
-  private migrateApplicationDatabases(details: AppDataMigrationItemDetail[]): void {
-    for (const databasePath of this.platformStateStore.listExistingPlatformDatabasePaths()) {
-      const itemId = `application-db:${databasePath}`;
-      try {
-        const applicationId = this.platformStateStore.resolveApplicationIdForPlatformDatabasePath(databasePath);
-        if (!applicationId) throw new Error(`Cannot recover application identity from physical platform database '${databasePath}'.`);
-        const outcome = migrateCanonicalApplicationDatabase(databasePath, applicationId);
-        details.push({ itemId, filePath: databasePath, backupPath: outcome.backupPath, status: "MIGRATED", message: `Migrated application '${applicationId}' in a blocking transaction.` });
-      } catch (error) {
-        details.push({ itemId, filePath: databasePath, status: "FAILED", message: message(error) });
-      }
-    }
   }
 
   private async migrateJsonFile(input: {

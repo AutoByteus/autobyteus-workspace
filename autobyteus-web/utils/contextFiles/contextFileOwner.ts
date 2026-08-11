@@ -1,6 +1,6 @@
 export type DraftContextFileOwnerDescriptor =
   | { kind: 'agent_draft'; draftRunId: string }
-  | { kind: 'team_member_draft'; draftTeamRunId: string; memberAddress: string };
+  | { kind: 'team_member_draft'; teamDraftId: string; memberAddress: string };
 
 export type FinalContextFileOwnerDescriptor =
   | { kind: 'agent_final'; runId: string }
@@ -20,11 +20,11 @@ export const buildAgentDraftContextFileOwner = (draftRunId: string): DraftContex
 });
 
 export const buildTeamMemberDraftContextFileOwner = (
-  draftTeamRunId: string,
+  teamDraftId: string,
   memberAddress: string,
 ): DraftContextFileOwnerDescriptor => ({
   kind: 'team_member_draft',
-  draftTeamRunId: normalizeRequiredString(draftTeamRunId, 'draftTeamRunId'),
+  teamDraftId: normalizeRequiredString(teamDraftId, 'teamDraftId'),
   memberAddress: normalizeRequiredString(memberAddress, 'memberAddress'),
 });
 
@@ -50,5 +50,5 @@ export const buildDraftContextFileEndpoint = (
   if (owner.kind === 'agent_draft') {
     return `/drafts/agent-runs/${encodeURIComponent(owner.draftRunId)}/context-files/${encodedStoredFilename}`;
   }
-  return `/drafts/team-runs/${encodeURIComponent(owner.draftTeamRunId)}/members/${encodeURIComponent(owner.memberAddress)}/context-files/${encodedStoredFilename}`;
+  return `/drafts/team-runs/${encodeURIComponent(owner.teamDraftId)}/members/${encodeURIComponent(owner.memberAddress)}/context-files/${encodedStoredFilename}`;
 };

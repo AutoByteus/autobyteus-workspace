@@ -9,13 +9,11 @@ import { RemoveSelfEvolutionRunMetadataMigration } from "./migrations/remove-sel
 import { TeamCommunicationProjectionAddressMigration } from "./migrations/team-communication-projection-address-migration.js";
 import { TokenUsageCustomProviderModelValueBackfillMigration } from "./migrations/token-usage-custom-provider-model-value-backfill-migration.js";
 import { TokenUsageProviderNameSnapshotBackfillMigration } from "./migrations/token-usage-provider-name-snapshot-backfill-migration.js";
-import { TokenUsageLegacyPathColumnsDropMigration } from "./migrations/token-usage-legacy-path-columns-drop-migration.js";
 import { RemoveGlobalSkillDiscoveryModeMigration } from "./migrations/remove-global-skill-discovery-mode-migration.js";
 import { CustomProviderV1AppDataMigration } from "./migrations/custom-provider-v1-app-data-migration.js";
 import { RemoveExternalRuntimeWorkingContextSnapshotsMigration } from "./migrations/remove-external-runtime-working-context-snapshots-migration.js";
 import { MigrateNativeWorkingContextSnapshotsV5Migration } from "./migrations/migrate-native-working-context-snapshots-v5-migration.js";
 import { TeamCanonicalIdentityMigration } from "./migrations/team-canonical-identity-migration.js";
-import { TokenUsageLegacyRouteColumnDropMigration } from "./migrations/token-usage-legacy-route-column-drop-migration.js";
 import { CustomProviderReadableIdAppDataMigration } from "./migrations/custom-provider-readable-id-app-data-migration.js";
 
 export class AppDataMigrationRegistry {
@@ -45,8 +43,6 @@ export class AppDataMigrationRegistry {
       new TeamCommunicationProjectionAddressMigration(appConfigProvider.config.getMemoryDir()),
       new TokenUsageCustomProviderModelValueBackfillMigration(),
       new TokenUsageProviderNameSnapshotBackfillMigration(),
-      new TokenUsageLegacyPathColumnsDropMigration(),
-      new TokenUsageLegacyRouteColumnDropMigration(),
       new RemoveSelfEvolutionRunMetadataMigration(appConfigProvider.config.getMemoryDir()),
       new TeamRunHistoryIndexV2AppDataMigration(appConfigProvider.config.getMemoryDir()),
       new RunHistoryIndexV2AppDataMigration(appConfigProvider.config.getMemoryDir()),

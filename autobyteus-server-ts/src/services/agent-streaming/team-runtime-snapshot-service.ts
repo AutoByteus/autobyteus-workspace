@@ -1,22 +1,25 @@
 import type { TeamRunLifecycleSnapshot } from "../../agent-team-execution/domain/team-run-lifecycle.js";
 import type { TeamRun } from "../../agent-team-execution/domain/team-run.js";
-import { ServerMessage, ServerMessageType } from "./models.js";
-import { mapTeamLeafAgentStatusSnapshot } from "./team-stream-agent-identity-payload.js";
+import {
+  parseTeamStreamServerMessage,
+  type TeamStreamServerMessage,
+} from "@autobyteus/team-stream-contracts";
+import { projectTeamAgentStatusMessage } from "./team-agent-event-websocket-projector.js";
 
 export class TeamRuntimeSnapshotService {
   getInitialMessages(
     teamRun: TeamRun,
     lifecycleSnapshot: TeamRunLifecycleSnapshot,
-  ): ServerMessage[] {
+  ): TeamStreamServerMessage[] {
     const memberMessages = teamRun.getLeafAgentStatusSnapshots().map(
-      mapTeamLeafAgentStatusSnapshot,
+      projectTeamAgentStatusMessage,
     );
 
     return [
       ...memberMessages,
-      new ServerMessage(ServerMessageType.TEAM_RUN_LIFECYCLE, {
-        team_run_id: lifecycleSnapshot.teamRunId,
-        is_active: lifecycleSnapshot.isActive,
+      parseTeamStreamServerMessage({
+        type: "TEAM_RUN_LIFECYCLE",
+        payload: { is_active: lifecycleSnapshot.isActive },
       }),
     ];
   }

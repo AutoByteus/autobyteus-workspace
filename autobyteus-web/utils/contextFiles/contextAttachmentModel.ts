@@ -106,7 +106,7 @@ const parseUploadedLocator = (
       phase: 'draft',
       draftOwner: {
         kind: 'team_member_draft',
-        draftTeamRunId: decodePathSegment(draftTeamMatch[1]),
+        teamDraftId: decodePathSegment(draftTeamMatch[1]),
         memberAddress: decodePathSegment(draftTeamMatch[2]),
       },
     };

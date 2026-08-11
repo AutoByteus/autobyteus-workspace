@@ -1,5 +1,3 @@
-import type { ServerMessage } from "../models.js";
-
 export type AgentStreamEgressControlValue =
   | string
   | number
@@ -10,8 +8,13 @@ export type AgentStreamEgressControlValue =
   | readonly AgentStreamEgressControlValue[];
 
 export type AgentStreamEgressControlMessage = Readonly<{
-  type: ServerMessage["type"];
+  type: string;
   payload: Readonly<Record<string, AgentStreamEgressControlValue>>;
+}>;
+
+export type StreamEgressMessage = Readonly<{
+  type: string;
+  payload: Readonly<Record<string, unknown>>;
 }>;
 
 const cloneAndFreezeControlValue = (value: unknown): AgentStreamEgressControlValue => {
@@ -27,7 +30,7 @@ const cloneAndFreezeControlValue = (value: unknown): AgentStreamEgressControlVal
 };
 
 export const createAgentStreamEgressControlMessage = (
-  message: Pick<ServerMessage, "type" | "payload">,
+  message: StreamEgressMessage,
 ): AgentStreamEgressControlMessage => Object.freeze({
   type: message.type,
   payload: cloneAndFreezeControlValue(message.payload),
@@ -42,11 +45,13 @@ export interface AgentStreamEgressFilter {
   dispose?(): void;
 }
 
-export type AgentStreamEgressForward = (message: ServerMessage) => void;
+export type AgentStreamEgressForward<M extends StreamEgressMessage = StreamEgressMessage> = (
+  message: M,
+) => void;
 
-export interface AgentStreamEgressScheduler {
-  accept(message: ServerMessage, forward: AgentStreamEgressForward): void;
-  flush(forward: AgentStreamEgressForward): void;
+export interface AgentStreamEgressScheduler<M extends StreamEgressMessage = StreamEgressMessage> {
+  accept(message: M, forward: AgentStreamEgressForward<M>): void;
+  flush(forward: AgentStreamEgressForward<M>): void;
   dispose(): void;
 }
 
@@ -70,8 +75,10 @@ export type AgentStreamEgressControlExtensions = {
   observerFactories?: readonly AgentStreamEgressControlFactory<AgentStreamEgressObserver>[];
 };
 
-export type AgentStreamEgressControlComposition = {
+export type AgentStreamEgressControlComposition<
+  M extends StreamEgressMessage = StreamEgressMessage,
+> = {
   filters: AgentStreamEgressFilter[];
-  scheduler: AgentStreamEgressScheduler;
+  scheduler: AgentStreamEgressScheduler<M>;
   observers: AgentStreamEgressObserver[];
 };

@@ -128,7 +128,7 @@ export const parseToolApprovalRequestedPayload = (
   return {
     ...base,
     arguments: normalizeArguments(payload.arguments),
-    approvalTarget: parseToolApprovalTarget(payload),
+    approvalTarget: null,
   };
 };
 

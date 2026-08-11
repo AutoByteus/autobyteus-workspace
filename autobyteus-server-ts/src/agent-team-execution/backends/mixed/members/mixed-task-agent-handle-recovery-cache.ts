@@ -1,23 +1,38 @@
-import { cloneTaskAgentInstanceIdentity, type TaskAgentInstanceIdentity } from "../../../domain/task-agent-instance.js";
 import type { MixedAgentMemberHandle } from "./mixed-agent-member-handle.js";
 
-export type RecoverableTaskAgentHandle = { identity: TaskAgentInstanceIdentity; handle: MixedAgentMemberHandle };
+export type RecoverableTaskAgentHandle = Readonly<{
+  rootTeamRunId: string;
+  taskId: string;
+  taskAgentRunId: string;
+  handle: MixedAgentMemberHandle;
+}>;
 
 export class MixedTaskAgentHandleRecoveryCache {
   private readonly records = new Map<string, RecoverableTaskAgentHandle>();
-  remember(identity: TaskAgentInstanceIdentity, handle: MixedAgentMemberHandle): void {
-    this.records.set(this.key(identity.owningTeamRunId, identity.taskAgentRunId), { identity: cloneTaskAgentInstanceIdentity(identity), handle });
+  remember(identity: Omit<RecoverableTaskAgentHandle, "handle">, handle: MixedAgentMemberHandle): void {
+    const record = Object.freeze({ ...identity, handle });
+    this.records.set(this.key(record.rootTeamRunId, record.taskAgentRunId), record);
   }
-  get(teamRunId: string, taskAgentRunId: string) { return this.records.get(this.key(teamRunId, taskAgentRunId)) ?? null; }
-  has(teamRunId: string, taskAgentRunId: string) { return Boolean(this.get(teamRunId, taskAgentRunId)); }
-  forget(teamRunId: string, taskAgentRunId: string): void { this.records.delete(this.key(teamRunId, taskAgentRunId)); }
-  forgetTeam(teamRunId: string): void {
-    const normalized = teamRunId.trim();
-    for (const [key, record] of this.records) if (record.identity.owningTeamRunId === normalized || key.startsWith(`${normalized}::`)) this.records.delete(key);
+  get(rootTeamRunId: string, taskAgentRunId: string) {
+    return this.records.get(this.key(rootTeamRunId, taskAgentRunId)) ?? null;
   }
-  listForTeam(teamRunId: string) { return [...this.records.values()].filter((record) => record.identity.owningTeamRunId === teamRunId.trim()); }
-  private key(teamRunId: string, taskAgentRunId: string) { return `${teamRunId.trim()}::${taskAgentRunId.trim()}`; }
+  has(rootTeamRunId: string, taskAgentRunId: string) { return Boolean(this.get(rootTeamRunId, taskAgentRunId)); }
+  forget(rootTeamRunId: string, taskAgentRunId: string): void {
+    this.records.delete(this.key(rootTeamRunId, taskAgentRunId));
+  }
+  forgetTeam(rootTeamRunId: string): void {
+    const normalized = rootTeamRunId.trim();
+    for (const [key, record] of this.records) {
+      if (record.rootTeamRunId === normalized || key.startsWith(`${normalized}::`)) this.records.delete(key);
+    }
+  }
+  listForTeam(rootTeamRunId: string) {
+    return [...this.records.values()].filter((record) => record.rootTeamRunId === rootTeamRunId.trim());
+  }
+  private key(rootTeamRunId: string, taskAgentRunId: string) {
+    return `${rootTeamRunId.trim()}::${taskAgentRunId.trim()}`;
+  }
 }
 
 const cache = new MixedTaskAgentHandleRecoveryCache();
-export const getMixedTaskAgentHandleRecoveryCache = () => cache;
+export const getMixedTaskAgentHandleRecoveryCache = (): MixedTaskAgentHandleRecoveryCache => cache;

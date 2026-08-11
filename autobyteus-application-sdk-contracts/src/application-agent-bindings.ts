@@ -79,3 +79,9 @@ export type ApplicationExecutionProducer = {
   displayName: string | null;
   runtimeKind: ApplicationExecutionProducerRuntimeKind;
 };
+
+export type ApplicationExecutionContext = Readonly<{
+  applicationId: string;
+  bindingId: string;
+  producer: ApplicationExecutionProducer;
+}>;

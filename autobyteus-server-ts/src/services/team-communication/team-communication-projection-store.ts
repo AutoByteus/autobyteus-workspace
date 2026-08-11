@@ -1,7 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import {
-  EMPTY_TEAM_COMMUNICATION_PROJECTION,
   type TeamCommunicationProjection,
 } from "./team-communication-types.js";
 
@@ -12,10 +11,12 @@ const logger = {
 export const getTeamCommunicationProjectionPath = (teamMemoryDir: string): string =>
   path.join(path.resolve(teamMemoryDir), "team_communication_messages.json");
 
-const emptyProjection = (): TeamCommunicationProjection => ({
-  ...EMPTY_TEAM_COMMUNICATION_PROJECTION,
-  messages: [],
-});
+type StoredTeamCommunicationProjection = Readonly<{
+  teamRunId?: unknown;
+  messages?: unknown;
+}>;
+
+const emptyProjection = (): StoredTeamCommunicationProjection => ({ messages: [] });
 
 const isMissingFileError = (error: unknown): boolean =>
   typeof error === "object"
@@ -24,12 +25,12 @@ const isMissingFileError = (error: unknown): boolean =>
   && (error as { code?: unknown }).code === "ENOENT";
 
 export class TeamCommunicationProjectionStore {
-  async readProjection(teamMemoryDir: string): Promise<TeamCommunicationProjection> {
+  async readProjection(teamMemoryDir: string): Promise<StoredTeamCommunicationProjection> {
     const projectionPath = getTeamCommunicationProjectionPath(teamMemoryDir);
     try {
-      const parsed = JSON.parse(await fs.readFile(projectionPath, "utf-8")) as TeamCommunicationProjection;
+      const parsed = JSON.parse(await fs.readFile(projectionPath, "utf-8")) as StoredTeamCommunicationProjection;
       return {
-        teamRunId: typeof parsed?.teamRunId === "string" ? parsed.teamRunId : "",
+        ...(typeof parsed?.teamRunId === "string" ? { teamRunId: parsed.teamRunId } : {}),
         messages: Array.isArray(parsed?.messages) ? parsed.messages : [],
       };
     } catch (error) {

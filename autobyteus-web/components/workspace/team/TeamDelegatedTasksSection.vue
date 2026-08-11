@@ -87,7 +87,6 @@ import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import type { TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 import { useHorizontalSplitResize } from '~/composables/useHorizontalSplitResize';
 import { deriveDelegatedTaskEntries, type DelegatedTaskEntry } from '~/utils/teamDelegatedTaskEntries';
-import { useTaskDelegationStore } from '~/stores/taskDelegationStore';
 import TeamDelegatedTaskDetailPane from '~/components/workspace/team/TeamDelegatedTaskDetailPane.vue';
 import TeamDelegatedTaskNavigator from '~/components/workspace/team/TeamDelegatedTaskNavigator.vue';
 
@@ -113,10 +112,9 @@ const { paneWidth: leftPaneWidth, startResize } = useHorizontalSplitResize({
   maxWidth: 360,
 });
 
-const taskDelegationStore = useTaskDelegationStore();
+const rootTeamRunId = computed(() => props.teamContext.executions.getRootTeamRunId());
 const delegatedTaskEntries = computed<DelegatedTaskEntry[]>(() => deriveDelegatedTaskEntries(
   props.teamContext,
-  taskDelegationStore.getRecordsForTeam(props.teamContext.teamRunId),
   props.focusedAddress,
 ));
 const selectedEntry = computed(() => (
@@ -129,14 +127,14 @@ const delegatedTaskSelectionSignature = computed(() => delegatedTaskEntries.valu
   .map((entry) => `${entry.entryKey}:${entry.taskReferenceFiles.map((reference) => reference.referenceId).join(',')}`)
   .join('\n'));
 
-watch(() => props.teamContext.teamRunId, () => {
+watch(rootTeamRunId, () => {
   selectedEntryKey.value = null;
   selectedReferenceId.value = null;
   referenceRefreshSignal.value = 0;
 });
 
 watch(
-  () => [props.teamContext.teamRunId, delegatedTaskSelectionSignature.value],
+  () => [rootTeamRunId.value, delegatedTaskSelectionSignature.value],
   () => {
     if (!delegatedTaskEntries.value.length) {
       selectedEntryKey.value = null;

@@ -32,8 +32,3 @@ export interface TeamCommunicationProjection {
   teamRunId: string;
   messages: TeamCommunicationMessage[];
 }
-
-export const EMPTY_TEAM_COMMUNICATION_PROJECTION: TeamCommunicationProjection = {
-  teamRunId: "",
-  messages: [],
-};

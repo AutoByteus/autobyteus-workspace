@@ -5,7 +5,7 @@ import type { ContextFilePath, Conversation, AIMessage } from '~/types/conversat
 /**
  * A container class that holds the complete context for a single agent run.
  * It encapsulates both the static configuration and the dynamic runtime state,
- * as well as UI-specific session state like user input and subscription status.
+ * as well as UI-specific composer state such as pending user input.
  */
 export class AgentContext {
   public config: AgentRunConfig;
@@ -15,8 +15,6 @@ export class AgentContext {
   public requirement: string;
   public contextFilePaths: ContextFilePath[];
   public submissionPending: boolean;
-  public isSubscribed: boolean;
-  public unsubscribe?: () => void;
 
   constructor(config: AgentRunConfig, state: AgentRunState) {
     this.config = config;
@@ -26,8 +24,6 @@ export class AgentContext {
     this.requirement = '';
     this.contextFilePaths = [];
     this.submissionPending = false;
-    this.isSubscribed = false;
-    this.unsubscribe = undefined;
   }
   
   // --- Start: New helper getters (Facade) ---

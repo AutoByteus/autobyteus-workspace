@@ -1,7 +1,7 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../../../agent-execution/domain/agent-operation-result.js";
 import type { AgentTeamAddress } from "../../../../agent-collaboration/domain/agent-team-address.js";
-import type { TeamLeafAgentStatusSnapshot } from "../../../domain/team-leaf-agent-status-snapshot.js";
+import type { TeamAgentStatusSnapshot } from "../../../domain/team-agent-status.js";
 import type { ResolvedInterAgentMessageDeliveryRequest } from "../../../domain/inter-agent-message-delivery.js";
 import type { TeamRunEvent, TeamRunEventUnsubscribe } from "../../../domain/team-run-event.js";
 import type { MixedTeamMemberContext } from "../mixed-team-run-context.js";
@@ -9,7 +9,7 @@ import type { MixedTeamMemberContext } from "../mixed-team-run-context.js";
 export interface MixedTeamMemberHandle {
   readonly context: MixedTeamMemberContext;
   isActive(): boolean;
-  getLeafAgentStatusSnapshots(): TeamLeafAgentStatusSnapshot[];
+  getLeafAgentStatusSnapshots(): TeamAgentStatusSnapshot[];
   hasOpenExecutionWork(): boolean;
   postMessage(message: AgentInputUserMessage): Promise<AgentOperationResult>;
   postMessageToAddress(

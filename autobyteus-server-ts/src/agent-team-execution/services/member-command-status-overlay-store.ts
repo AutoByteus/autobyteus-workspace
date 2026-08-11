@@ -1,68 +1,72 @@
-import { AgentRunEventType } from "../../agent-execution/domain/agent-run-event.js";
 import { normalizeAgentApiStatus, type AgentStatusPayload } from "../../agent-execution/domain/agent-status-payload.js";
-import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
-import type { TeamExecutionAddress } from "../domain/team-execution-address.js";
+import type { TeamAgentExecutionBinding } from "../domain/team-agent-execution-binding.js";
+import {
+  createTeamAgentStatusDetails,
+  createTeamAgentStatusEvent,
+  createTeamAgentStatusSnapshot,
+  type TeamAgentStatusDetails,
+  type TeamAgentStatusSnapshot,
+} from "../domain/team-agent-status.js";
 import { serializeTeamExecutionAddress } from "../domain/team-execution-address.js";
-import { TeamRunEventSourceType, type TeamRunAgentEventPayload, type TeamRunEvent } from "../domain/team-run-event.js";
-import type { TaskAgentInstanceIdentity } from "../domain/task-agent-instance.js";
-import { buildAgentMemberCommandStartStatusEvent, buildAgentMemberCommandStatusPayload } from "./team-member-command-start-status-events.js";
-
-export type MemberCommandStatusIdentity = {
-  executionAddress: TeamExecutionAddress;
-  displayName: string;
-  agentRunId: string;
-};
+import type { TeamRunEvent } from "../domain/team-run-event.js";
 
 export class MemberCommandStatusOverlayStore {
-  private readonly statuses = new Map<string, AgentStatusPayload>();
-  constructor(private readonly options: { getTeamRunId: () => string | null; publishEvent: (event: TeamRunEvent) => void }) {}
+  private readonly statuses = new Map<string, TeamAgentStatusDetails>();
+
+  constructor(private readonly options: { publishEvent: (event: TeamRunEvent) => void }) {}
 
   publishMemberCommandStatus(input: {
-    runtimeKind: RuntimeKind;
-    memberContext: MemberCommandStatusIdentity;
-    taskAgentInstance?: TaskAgentInstanceIdentity | null;
+    binding: TeamAgentExecutionBinding;
     currentStatus: () => unknown;
     status: "initializing" | "error";
     errorMessage?: string | null;
   }): boolean {
     const current = normalizeAgentApiStatus(input.currentStatus());
     if (input.status === "initializing" && current !== "offline" && current !== "idle") return false;
-    const teamRunId = this.options.getTeamRunId();
-    if (!teamRunId) return false;
-    const eventInput = {
-      teamRunId,
-      runtimeKind: input.runtimeKind,
-      executionAddress: input.memberContext.executionAddress,
-      displayName: input.memberContext.displayName,
-      agentRunId: input.memberContext.agentRunId,
-      taskAgentInstance: input.taskAgentInstance ?? null,
+    const details = createTeamAgentStatusDetails({
       status: input.status,
+      trigger: "member_command",
       errorMessage: input.errorMessage ?? null,
-    };
-    this.statuses.set(serializeTeamExecutionAddress(input.memberContext.executionAddress), buildAgentMemberCommandStatusPayload(eventInput));
-    this.options.publishEvent(buildAgentMemberCommandStartStatusEvent(eventInput));
+    });
+    const snapshot = createTeamAgentStatusSnapshot({ execution: input.binding, details });
+    const key = serializeTeamExecutionAddress(input.binding.executionAddress);
+    this.statuses.set(key, details);
+    try {
+      this.options.publishEvent(createTeamAgentStatusEvent(snapshot));
+    } catch (error) {
+      if (this.statuses.get(key) === details) this.statuses.delete(key);
+      throw error;
+    }
     return true;
   }
 
-  getMemberStatusSnapshot(input: { memberContext: MemberCommandStatusIdentity; fallback: () => AgentStatusPayload }): AgentStatusPayload {
-    return this.statuses.get(serializeTeamExecutionAddress(input.memberContext.executionAddress)) ?? input.fallback();
+  getMemberStatusSnapshot(input: {
+    binding: TeamAgentExecutionBinding;
+    fallback: () => AgentStatusPayload;
+  }): TeamAgentStatusSnapshot {
+    const overlay = this.statuses.get(serializeTeamExecutionAddress(input.binding.executionAddress));
+    if (overlay) return createTeamAgentStatusSnapshot({ execution: input.binding, details: overlay });
+    const fallback = input.fallback();
+    return createTeamAgentStatusSnapshot({
+      execution: input.binding,
+      details: createTeamAgentStatusDetails({
+        status: fallback.status,
+      }),
+    });
   }
 
-  applyMemberStatusOverlays(snapshots: AgentStatusPayload[]): AgentStatusPayload[] {
-    return snapshots.map((snapshot) => snapshot.execution_address
-      ? this.statuses.get(serializeTeamExecutionAddress(snapshot.execution_address)) ?? snapshot
-      : snapshot);
+  clearAcceptedLiveStatus(binding: TeamAgentExecutionBinding): boolean {
+    const key = serializeTeamExecutionAddress(binding.executionAddress);
+    return this.statuses.delete(key);
   }
 
-  recordReplacementEvents(events: readonly TeamRunEvent[]): boolean {
-    let changed = false;
-    for (const event of events) {
-      if (event.eventSourceType !== TeamRunEventSourceType.AGENT) continue;
-      const payload = event.data as TeamRunAgentEventPayload;
-      if (payload.agentEvent.eventType !== AgentRunEventType.AGENT_STATUS) continue;
-      changed = this.statuses.delete(serializeTeamExecutionAddress(event.executionAddress)) || changed;
-    }
-    return changed;
+  applyMemberStatusOverlays(snapshots: readonly TeamAgentStatusSnapshot[]): TeamAgentStatusSnapshot[] {
+    return snapshots.map((snapshot) => {
+      const overlay = this.statuses.get(serializeTeamExecutionAddress(snapshot.execution.executionAddress));
+      return overlay
+        ? createTeamAgentStatusSnapshot({ execution: snapshot.execution, details: overlay })
+        : snapshot;
+    });
   }
 
   clear(): void { this.statuses.clear(); }

@@ -19,7 +19,7 @@ const buildSenderParticipant = (
   displayName: getAgentTeamAddressBasename(context.memberAddress) ?? context.agentRunId,
   runtimeKind: context.runtimeKind,
   platformAgentRunId: null,
-  taskId: context.taskAgentInstance?.taskId ?? context.taskTeamInstance?.taskId ?? null,
+  taskId: context.taskId,
 });
 
 export const buildInterAgentMessageDeliveryIntent = (input: {

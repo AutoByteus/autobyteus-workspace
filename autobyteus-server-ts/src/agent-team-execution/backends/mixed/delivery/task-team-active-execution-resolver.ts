@@ -9,7 +9,6 @@ import type { MemberLogicalAddressContext } from "../../../domain/member-logical
 import type { TeamExecutionAddress } from "../../../domain/team-execution-address.js";
 import type { TeamRun } from "../../../domain/team-run.js";
 import type { TeamRunContext } from "../../../domain/team-run-context.js";
-import type { TaskTeamInstanceIdentity } from "../../../domain/task-team-instance.js";
 import type {
   TaskAgentDirectory,
   TaskAgentDirectoryEntry,
@@ -94,9 +93,9 @@ export class TaskTeamActiveExecutionResolver {
     const leaf = entries.at(-1)!;
     return Object.freeze({
       activeRun: leaf.activeRun,
-      taskId: leaf.taskId,
+      taskId: leaf.binding.taskId,
       taskTeamRunIds: Object.freeze([...chain]),
-      teamAddress: leaf.memberAddress,
+      teamAddress: leaf.binding.executionAddress.memberAddress,
     });
   }
 
@@ -108,35 +107,28 @@ export class TaskTeamActiveExecutionResolver {
     const taskTeamRunId = expectedChain.at(-1)!;
     const run = entry.activeRun;
     const runtime = run.getRuntimeContext() as MixedTeamRunContext | null;
-    const teamNode = run.context.index.getTeam(entry.memberAddress);
-    const parentAddress = getParentAgentTeamAddress(entry.memberAddress);
-    const expectedParentAddress = parent?.memberAddress ?? parentAddress;
-    const persistentParent = parentAddress
-      ? this.options.rootContext.index.getTeam(parentAddress)
-      : null;
-    const expectedParentTeamRunId = parent?.taskTeamRunId ?? persistentParent?.teamRunId ?? null;
+    const binding = entry.binding;
+    const teamAddress = binding.executionAddress.memberAddress;
+    const teamNode = (parent?.activeRun.context.index ?? this.options.rootContext.index).getTeam(teamAddress);
     const rootTeamRunId = this.rootTeamRunId();
     if (
       taskTeamRunId !== taskTeamRunId.trim() ||
-      entry.taskTeamRunId !== taskTeamRunId ||
-      entry.identity.taskTeamRunId !== taskTeamRunId ||
-      entry.parentTeamRunId !== expectedParentTeamRunId ||
-      entry.identity.parentTeamRunId !== expectedParentTeamRunId ||
-      entry.taskId !== entry.identity.taskId ||
+      binding.kind !== "task_team" ||
+      binding.executionAddress.taskTeamRunIds.at(-1) !== taskTeamRunId ||
+      !this.sameChain(binding.executionAddress.taskTeamRunIds, expectedChain) ||
       run.teamRunId !== taskTeamRunId ||
       run.context.teamRunId !== taskTeamRunId ||
-      run.context.teamAddress !== entry.memberAddress ||
+      run.context.teamAddress !== teamAddress ||
       run.context.config.rootTeam.teamRunId !== rootTeamRunId ||
-      parentAddress !== expectedParentAddress ||
       !teamNode ||
       teamNode.teamRunId !== taskTeamRunId ||
       !runtime ||
       !this.sameChain(run.context.taskTeamRunIds, expectedChain) ||
       !this.sameChain(runtime.teamExecutionAddress.taskTeamRunIds, expectedChain) ||
       runtime.teamExecutionAddress.rootTeamRunId !== rootTeamRunId ||
-      runtime.teamExecutionAddress.memberAddress !== entry.memberAddress ||
+      runtime.teamExecutionAddress.memberAddress !== teamAddress ||
       runtime.teamExecutionAddress.taskAgentRunId !== null ||
-      !this.sameIdentity(runtime.taskTeamInstance, entry.identity)
+      runtime.taskId !== binding.taskId
     ) this.reject(`task TeamRun '${taskTeamRunId}' has a foreign, reordered, truncated, wrong-parent, or wrong-Team binding`);
   }
 
@@ -181,11 +173,10 @@ export class TaskTeamActiveExecutionResolver {
     if (
       !taskAgent ||
       !owningTeam ||
-      taskAgent.teamRunId !== this.rootTeamRunId() ||
-      taskAgent.taskId !== taskAgent.taskAgentInstance.taskId ||
+      taskAgent.executionAddress.rootTeamRunId !== this.rootTeamRunId() ||
       taskAgent.memberAddress !== address.memberAddress ||
-      taskAgent.taskAgentInstance.taskAgentRunId !== taskAgentRunId ||
-      taskAgent.taskAgentInstance.owningTeamRunId !== owningTeam.teamRunId ||
+      taskAgent.executionAddress.taskAgentRunId !== taskAgentRunId ||
+      !this.sameChain(taskAgent.executionAddress.taskTeamRunIds, address.taskTeamRunIds) ||
       taskAgent.delegator.executionAddress.rootTeamRunId !== this.rootTeamRunId() ||
       !this.sameChain(
         taskAgent.delegator.executionAddress.taskTeamRunIds,
@@ -198,18 +189,6 @@ export class TaskTeamActiveExecutionResolver {
   private sameChain(actual: readonly string[], expected: readonly string[]): boolean {
     return actual.length === expected.length &&
       actual.every((taskTeamRunId, index) => taskTeamRunId === expected[index]);
-  }
-
-  private sameIdentity(
-    actual: TaskTeamInstanceIdentity | null,
-    expected: TaskTeamInstanceIdentity,
-  ): boolean {
-    return Boolean(actual) &&
-      actual!.taskTeamInstanceId === expected.taskTeamInstanceId &&
-      actual!.taskTeamRunId === expected.taskTeamRunId &&
-      actual!.parentTeamRunId === expected.parentTeamRunId &&
-      actual!.taskId === expected.taskId &&
-      actual!.createdAt === expected.createdAt;
   }
 
   private rootTeamRunId(): string {

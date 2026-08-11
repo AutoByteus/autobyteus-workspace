@@ -1,7 +1,6 @@
 import type { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 import type { AgentMemoryScope } from "../../../agent-memory/domain/agent-memory-location.js";
 import type { InterAgentMessageDeliveryHandler } from "../../domain/inter-agent-message-delivery.js";
-import type { TaskTeamInstanceIdentity } from "../../domain/task-team-instance.js";
 import type { TeamExecutionAddress } from "../../domain/team-execution-address.js";
 import type {
   TeamAgentMemberRuntimeContext,
@@ -65,18 +64,18 @@ export type MixedParentBoundaryContext = Readonly<{
 export class MixedTeamRunContext {
   readonly memberContexts: MixedTeamMemberContext[];
   readonly parentBoundary: MixedParentBoundaryContext | null;
-  readonly taskTeamInstance: TaskTeamInstanceIdentity | null;
+  readonly taskId: string | null;
   readonly teamExecutionAddress: TeamExecutionAddress;
 
   constructor(input: {
     memberContexts: MixedTeamMemberContext[];
     parentBoundary?: MixedParentBoundaryContext | null;
-    taskTeamInstance?: TaskTeamInstanceIdentity | null;
+    taskId?: string | null;
     teamExecutionAddress: TeamExecutionAddress;
   }) {
     this.memberContexts = [...input.memberContexts];
     this.parentBoundary = input.parentBoundary ?? null;
-    this.taskTeamInstance = input.taskTeamInstance ?? null;
+    this.taskId = input.taskId?.trim() || null;
     this.teamExecutionAddress = input.teamExecutionAddress;
   }
 }

@@ -29,8 +29,7 @@ export const cloneTaskDelegationDelegatorIdentity = (
 ): TaskDelegationDelegatorIdentity => ({
   executionAddress: createTeamExecutionAddress(identity.executionAddress),
   agentRunId: identity.agentRunId,
-  taskAgentInstance: identity.taskAgentInstance ?? null,
-  taskTeamInstance: identity.taskTeamInstance ?? null,
+  taskId: identity.taskId?.trim() || null,
 });
 
 const referenceFilesValidationMessage = (

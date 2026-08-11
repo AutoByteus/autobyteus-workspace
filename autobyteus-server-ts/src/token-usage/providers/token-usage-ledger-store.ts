@@ -9,7 +9,7 @@ import type { TeamExecutionAddress } from "../../agent-team-execution/domain/tea
 import { serializeTeamExecutionAddress } from "../../agent-team-execution/domain/team-execution-address.js";
 
 const hasMissingDisplayField = (event: TokenUsageUpdatedPayload): boolean => (
-  event.root_team_run_id
+  event.execution_address
     ? !event.team_name ||
       !event.run_created_at ||
       Boolean(event.execution_address && !event.member_display_name)
@@ -55,7 +55,6 @@ export class TokenUsageLedgerStore {
     return buildTokenUsageRunSummary({
       runId: events[0]?.run_id ?? rootTeamRunId,
       events,
-      rootTeamRunIdOverride: rootTeamRunId,
     });
   }
 
@@ -70,7 +69,6 @@ export class TokenUsageLedgerStore {
     return buildTokenUsageRunSummary({
       runId: events[0]?.run_id ?? input.rootTeamRunId,
       events,
-      rootTeamRunIdOverride: input.rootTeamRunId,
     });
   }
 

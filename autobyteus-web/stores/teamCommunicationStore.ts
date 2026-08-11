@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia';
-import type { TeamCommunicationMessagePayload } from '~/services/agentStreaming/protocol/messageTypes';
 import {
   parseTeamExecutionAddress,
   serializeTeamExecutionAddress,
@@ -16,6 +15,16 @@ import type {
 } from './teamCommunicationTypes';
 
 interface TeamCommunicationState { messagesByTeam: Map<string, TeamCommunicationMessage[]> }
+export interface TeamCommunicationProjectionPayload {
+  messageId: string;
+  teamRunId: string;
+  senderAddress: TeamExecutionAddress;
+  receiverAddress: TeamExecutionAddress;
+  content: string;
+  messageType: string;
+  createdAt: string;
+  referenceFiles: Array<{ referenceId: string; path: string; type: TeamCommunicationReferenceFileType; createdAt: string; updatedAt: string }>;
+}
 const record = (value: unknown): Record<string, unknown> | null =>
   value && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : null;
 const text = (value: unknown): string | null => typeof value === 'string' && value.trim() ? value.trim() : null;
@@ -118,7 +127,7 @@ export const useTeamCommunicationStore = defineStore('teamCommunication', {
       this.messagesByTeam.set(teamRunId, messages);
       return parsed;
     },
-    upsertFromBackendPayload(payload: TeamCommunicationMessagePayload) {
+    upsertFromBackendPayload(payload: TeamCommunicationProjectionPayload) {
       const teamRunId = text(payload.teamRunId);
       return teamRunId ? this.upsertMessage(teamRunId, payload) : null;
     },

@@ -18,8 +18,7 @@ export const buildTaskDelegationToolContextFromMemberTeamContext = (
   const caller: TaskDelegationCallerIdentity = {
     executionAddress: memberTeamContext.executionAddress,
     agentRunId: memberTeamContext.agentRunId,
-    taskAgentInstance: memberTeamContext.taskAgentInstance,
-    taskTeamInstance: memberTeamContext.taskTeamInstance ?? null,
+    taskId: memberTeamContext.taskId,
   };
   return {
     teamRunId: memberTeamContext.teamRunId,
@@ -55,7 +54,7 @@ export class TaskDelegationToolService {
   ): Promise<SubmitTaskResultResult> {
     const route = await this.runRouter.resolveServiceForSubmit(context);
     return route.kind === "task_team_ingress_parent"
-      ? route.service.submitTaskTeamIngressResult(route.context, input, route.taskTeamInstance)
+      ? route.service.submitTaskTeamIngressResult(route.context, input, route.taskId)
       : route.service.submitTaskAgentResult(route.context, input);
   }
 

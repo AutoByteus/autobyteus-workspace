@@ -26,9 +26,7 @@ export type TokenUsageApiCostStatus =
 
 export interface TokenUsageRunSummaryPayload {
   run_id: string;
-  root_team_run_id: string | null;
   execution_address: TokenUsageExecutionAddress | null;
-  member_agent_run_id: string | null;
   agent_definition_id: string | null;
   workspace_id: string | null;
   gross_input_tokens: number;
@@ -79,13 +77,9 @@ export interface TokenUsageUpdatedPayload {
   turn_id: string | null;
   llm_call_id: string | null;
   call_sequence: number | null;
-  root_team_run_id: string | null;
   execution_address: TokenUsageExecutionAddress | null;
-  member_agent_run_id: string | null;
   agent_definition_id: string | null;
   workspace_id: string | null;
-  task_agent_instance_id: string | null;
-  task_agent_run_id: string | null;
   task_id: string | null;
   team_name: string | null;
   agent_name: string | null;
@@ -293,13 +287,9 @@ export const createTokenUsageUpdatedPayload = (input: {
     turn_id: asString(source.turn_id),
     llm_call_id: asString(source.llm_call_id),
     call_sequence: asNonNegativeInt(source.call_sequence),
-    root_team_run_id: asString(source.root_team_run_id),
     execution_address: executionAddress,
-    member_agent_run_id: asString(source.member_agent_run_id),
     agent_definition_id: asString(source.agent_definition_id),
     workspace_id: asString(source.workspace_id),
-    task_agent_instance_id: asString(source.task_agent_instance_id),
-    task_agent_run_id: asString(source.task_agent_run_id),
     task_id: asString(source.task_id),
     team_name: asString(source.team_name),
     agent_name: asString(source.agent_name),

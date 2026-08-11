@@ -4,7 +4,7 @@ import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
 import { useMobileWorkStore } from '~/stores/mobileWorkStore'
-import type { AgentTeamMemberNode, TeamMemberNode } from '~/types/agent/AgentTeamContext'
+import type { TeamDefinitionMemberNode } from '~/utils/teamDefinitionMembers'
 import type { MobileWorkContext } from '~/types/mobileWork'
 import {
   buildTeamMemberTreeFromDefinition,
@@ -19,7 +19,7 @@ export interface MobileTeamMemberFocusRow {
 }
 
 export const buildMobileTeamMemberFocusRows = (
-  leafMembers: readonly AgentTeamMemberNode[],
+  leafMembers: readonly { address: string; displayName: string; agentDefinitionId: string }[],
   getAgentDefinitionName: (agentDefinitionId: string) => string | null,
 ): MobileTeamMemberFocusRow[] => leafMembers.map((member) => {
   const agentName = getAgentDefinitionName(member.agentDefinitionId)
@@ -47,7 +47,7 @@ export function useMobileTeamMemberFocusCoordinator(contextRef: Ref<MobileWorkCo
     return teamContextsStore.getTeamContextById(context.teamRunId) || null
   })
 
-  const definitionMemberTree = computed<TeamMemberNode[]>(() => {
+  const definitionMemberTree = computed<readonly TeamDefinitionMemberNode[]>(() => {
     const context = contextRef.value
     if (context?.kind !== 'team-run') {
       return []
@@ -67,8 +67,12 @@ export function useMobileTeamMemberFocusCoordinator(contextRef: Ref<MobileWorkCo
     }
   })
 
-  const memberTree = computed(() => teamContext.value?.rootTeam.children || definitionMemberTree.value)
-  const leafMembers = computed(() => flattenLeafAgentMemberNodes(memberTree.value))
+  const leafMembers = computed(() => {
+    if (teamContext.value) {
+      return teamContext.value.topology.listNodes().filter((node) => node.kind === 'agent')
+    }
+    return flattenLeafAgentMemberNodes(definitionMemberTree.value)
+  })
   const memberRows = computed(() => buildMobileTeamMemberFocusRows(
     leafMembers.value,
     (agentDefinitionId) => agentDefinitionStore.getAgentDefinitionById(agentDefinitionId)?.name || null,
@@ -78,7 +82,7 @@ export function useMobileTeamMemberFocusCoordinator(contextRef: Ref<MobileWorkCo
     if (context?.kind !== 'team-run') {
       return ''
     }
-    return teamContext.value?.focusedExecutionAddress.memberAddress || context.focusedExecutionAddress.memberAddress || ''
+    return teamContext.value?.executions.getFocusedAddress().memberAddress || context.focusedExecutionAddress.memberAddress || ''
   })
   const focusedMemberLabel = computed(() => (
     memberRows.value.find((row) => row.memberAddress === focusedMemberAddress.value)?.label
@@ -106,7 +110,7 @@ export function useMobileTeamMemberFocusCoordinator(contextRef: Ref<MobileWorkCo
         memberAddress: normalizedMemberAddress,
       })
       await runHistoryStore.focusTeamMemberAndEnsureHydrated(context.teamRunId, requestedAddress)
-      const focused = teamContextsStore.getTeamContextById(context.teamRunId)?.focusedExecutionAddress
+      const focused = teamContextsStore.getTeamContextById(context.teamRunId)?.executions.getFocusedAddress()
       if (!focused) throw new Error('Focused Team execution is unavailable.')
       mobileWorkStore.updateFocusedTeamMember(context.teamRunId, focused)
       mobileWorkStore.rememberFocusedTeamMember(context.teamRunId, focused)

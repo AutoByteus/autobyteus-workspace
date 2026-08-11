@@ -6,13 +6,9 @@
  */
 
 import type { AgentContext } from '~/types/agent/AgentContext';
-import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import type { InterAgentMessageSegment } from '~/types/segments';
-import type { 
-  InterAgentMessagePayload, 
-  TeamCommunicationMessagePayload,
-  TeamRunLifecyclePayload,
-} from '../protocol/messageTypes';
+import type { InterAgentMessagePayload } from '../protocol/messageTypes';
+import type { TeamCommunicationProjectionPayload } from '~/stores/teamCommunicationStore';
 import { findOrCreateAIMessage } from './segmentHandler';
 import { useTeamCommunicationStore } from '~/stores/teamCommunicationStore';
 
@@ -63,22 +59,7 @@ export function handleInterAgentMessage(
  * Handle TEAM_COMMUNICATION_MESSAGE event.
  */
 export function handleTeamCommunicationMessage(
-  payload: TeamCommunicationMessagePayload,
+  payload: TeamCommunicationProjectionPayload,
 ): void {
   useTeamCommunicationStore().upsertFromBackendPayload(payload);
-}
-
-export function handleTeamRunLifecycle(
-  payload: TeamRunLifecyclePayload,
-  context: AgentTeamContext,
-): boolean {
-  if (payload.team_run_id !== context.teamRunId) {
-    console.warn(
-      `Ignoring lifecycle for team '${payload.team_run_id}' on '${context.teamRunId}'.`,
-    );
-    return false;
-  }
-  if (context.isActive === payload.is_active) return false;
-  context.isActive = payload.is_active;
-  return true;
 }

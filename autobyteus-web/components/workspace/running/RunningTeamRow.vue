@@ -18,21 +18,21 @@
         </span>
 
         <TeamActivityDot
-          :is-active="teamRun.isActive"
-          :label="$t(teamRun.isActive
+          :is-active="teamRun.executions.isRootTeamActive()"
+          :label="$t(teamRun.executions.isRootTeamActive()
             ? 'workspace.components.workspace.running.RunningTeamRow.active_team_run'
             : 'workspace.components.workspace.running.RunningTeamRow.inactive_team_run')"
         />
 
         <!-- ID -->
         <span class="text-sm text-gray-700 truncate">
-          {{ formatId(teamRun.teamRunId) }}
+          {{ formatId(teamRun.executions.getRootTeamRunId()) }}
         </span>
       </div>
 
       <!-- Delete Button -->
       <button
-        @click.stop="$emit('delete', teamRun.teamRunId)"
+        @click.stop="$emit('delete', teamRun.executions.getRootTeamRunId())"
         class="delete-btn inline-flex h-6 w-6 items-center justify-center rounded-md text-gray-500 hover:text-red-600 hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-200 transition-colors"
         :title="$t('workspace.components.workspace.running.RunningTeamRow.stop_and_remove_team')"
         :aria-label="$t('workspace.components.workspace.running.RunningTeamRow.close_team_run')"
@@ -45,15 +45,15 @@
     <div v-if="expanded" class="ml-5 mt-0.5">
       <TeamMemberRow
         v-for="member in displayMembers"
-        :key="serializeTeamExecutionAddress(executionForNode(member.node))"
+        :key="serializeTeamExecutionAddress(member.executionAddress)"
         :member-name="member.node.displayName"
         :member-address="member.node.address"
         :member-context="member.context"
-        :member-status="member.node.kind === 'agent' ? member.node.currentStatus : null"
+        :member-status="member.context?.state.currentStatus ?? null"
         :style="{ marginLeft: `${member.depth * 12}px` }"
-        :is-focused="sameTeamExecutionAddress(activeExecutionFocusedMemberAddress, executionForNode(member.node))"
+        :is-focused="sameTeamExecutionAddress(activeExecutionFocusedMemberAddress, member.executionAddress)"
         :is-coordinator="member.node.address === coordinatorAddress"
-        @select="() => handleMemberSelect(member.node)"
+        @select="() => handleMemberSelect(member.executionAddress)"
       />
       <div v-if="displayMembers.length === 0" class="text-xs text-gray-400 py-1 px-2">{{ $t('workspace.components.workspace.running.RunningTeamRow.no_members_yet') }}</div>
     </div>
@@ -63,8 +63,8 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import TeamActivityDot from '~/components/workspace/common/TeamActivityDot.vue';
-import type { AgentTeamContext, TeamMemberNode } from '~/types/agent/AgentTeamContext';
-import { createTeamExecutionAddress, sameTeamExecutionAddress, serializeTeamExecutionAddress, type TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
+import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
+import { sameTeamExecutionAddress, serializeTeamExecutionAddress, type TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 import TeamMemberRow from './TeamMemberRow.vue';
 import {
   flattenActiveExecutionMemberNodesForDisplay,
@@ -90,16 +90,15 @@ watch(() => props.isSelected, (selected) => {
   if (selected) {
     expanded.value = true;
     // Auto-focus coordinator if no member is focused
-    if (!props.teamRun.focusedExecutionAddress && props.coordinatorAddress) {
-      emit('select-member', props.teamRun.teamRunId, createTeamExecutionAddress({ rootTeamRunId: props.teamRun.teamRunId, memberAddress: props.coordinatorAddress }));
-    }
+    const focused = props.teamRun.executions.getFocusedAddress();
+    if (!props.teamRun.executions.getAgentContext(focused) && props.coordinatorAddress) emit('select-member', props.teamRun.executions.getRootTeamRunId(), focused);
   }
 }, { immediate: true });
 
 const displayMembers = computed(() =>
   flattenActiveExecutionMemberNodesForDisplay(props.teamRun).map((entry) => ({
     ...entry,
-    context: props.teamRun.agentExecutionsByKey.get(serializeTeamExecutionAddress(executionForNode(entry.node))) || null,
+    context: props.teamRun.executions.getAgentContext(entry.executionAddress),
   })),
 );
 
@@ -111,17 +110,14 @@ const handleTeamClick = () => {
   // Toggle expand/collapse
   expanded.value = !expanded.value;
   // Also select the team
-  emit('select', props.teamRun.teamRunId);
+  emit('select', props.teamRun.executions.getRootTeamRunId());
 };
 
-const executionForNode = (node: TeamMemberNode): TeamExecutionAddress => node.executionAddress ?? createTeamExecutionAddress({ rootTeamRunId: props.teamRun.teamRunId, memberAddress: node.address });
-
-const handleMemberSelect = (node: TeamMemberNode) => {
-  emit('select-member', props.teamRun.teamRunId, executionForNode(node));
+const handleMemberSelect = (executionAddress: TeamExecutionAddress) => {
+  emit('select-member', props.teamRun.executions.getRootTeamRunId(), executionAddress);
 };
 
 const formatId = (id: string) => {
-  if (id.startsWith('temp-')) return id;
   return id.substring(0, 8); 
 };
 

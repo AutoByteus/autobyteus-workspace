@@ -1,6 +1,7 @@
 import type { ApplicationAgentStreamEvent } from "@autobyteus/application-sdk-contracts";
 import { AgentRunEventType, type AgentRunEvent } from "../../agent-execution/domain/agent-run-event.js";
 import { APPLICATION_AGENT_EVENT_TEXT_LIMIT } from "../domain/application-agent-streaming-models.js";
+import type { TeamAgentEvent } from "../../agent-team-execution/domain/team-agent-event.js";
 
 export class ApplicationAgentStreamProjectionError extends Error {}
 
@@ -19,6 +20,19 @@ export class ApplicationAgentStreamEventProjector {
         return { type: "ERROR", message: "The agent response failed." };
       default:
         return null;
+    }
+  }
+
+  projectTeam(event: TeamAgentEvent): ApplicationAgentStreamEvent | null {
+    switch (event.eventType) {
+      case "TURN_STARTED": return { type: "TURN_STARTED" };
+      case "SEGMENT_CONTENT": return event.details.segmentType === "text"
+        ? this.projectTextDelta({ delta: event.details.delta, segment_type: "text" })
+        : null;
+      case "TURN_COMPLETED": return { type: "TURN_COMPLETED" };
+      case "TURN_INTERRUPTED": return { type: "TURN_INTERRUPTED" };
+      case "ERROR": return { type: "ERROR", message: "The agent response failed." };
+      default: return null;
     }
   }
 

@@ -1,4 +1,3 @@
-import type { TaskTeamInstanceIdentity } from "../../domain/task-team-instance.js";
 import type { TeamRunConfig, TeamRunNode } from "../../domain/team-run-config.js";
 import { TeamRunContext } from "../../domain/team-run-context.js";
 import { TeamBackendKind } from "../../domain/team-backend-kind.js";
@@ -63,7 +62,7 @@ export class MixedTeamRunBackendFactory implements TeamRunBackendFactory {
     teamAddress: AgentTeamAddress;
     restoreRuntimeContext?: MixedTeamRunContext | null;
     parentBoundary?: MixedParentBoundaryContext | null;
-    taskTeamInstance?: TaskTeamInstanceIdentity | null;
+    taskId?: string | null;
     taskTeamRunIds?: readonly string[] | null;
   }): TeamRunContext<MixedTeamRunContext> {
     const index = new TeamRunTreeIndex(input.config.rootTeam);
@@ -77,7 +76,7 @@ export class MixedTeamRunBackendFactory implements TeamRunBackendFactory {
         this.buildRuntimeMemberContext(node, input.restoreRuntimeContext ?? null),
       ),
       parentBoundary: input.parentBoundary ?? null,
-      taskTeamInstance: input.taskTeamInstance ?? null,
+      taskId: input.taskId ?? null,
       teamExecutionAddress: createTeamExecutionAddress({
         rootTeamRunId,
         taskTeamRunIds: input.taskTeamRunIds,

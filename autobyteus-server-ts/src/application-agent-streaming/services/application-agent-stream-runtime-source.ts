@@ -2,7 +2,8 @@ import type { ApplicationExecutionProducer } from "@autobyteus/application-sdk-c
 import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import { isAgentRunEvent } from "../../agent-execution/domain/agent-run-event.js";
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
-import { TeamRunEventSourceType, type TeamRunAgentEventPayload } from "../../agent-team-execution/domain/team-run-event.js";
+import { TeamRunEventSourceType } from "../../agent-team-execution/domain/team-run-event.js";
+import type { TeamAgentExecutionBinding } from "../../agent-team-execution/domain/team-agent-execution-binding.js";
 import type { AuthorizedApplicationAgentTargetDescriptor } from "../../application-orchestration/services/application-agent-target-authorization-service.js";
 import type { ApplicationAgentStreamSourceEvent } from "../domain/application-agent-streaming-models.js";
 import { ApplicationAgentStreamingEstablishmentError } from "../domain/application-agent-streaming-models.js";
@@ -41,11 +42,10 @@ export class ApplicationAgentStreamRuntimeSource {
       try {
         if (selectedAddress) {
           if (event.eventSourceType !== TeamRunEventSourceType.AGENT) return;
-          const payload = event.data as TeamRunAgentEventPayload;
-          if (payload.executionAddress.memberAddress !== selectedAddress) return;
+          if (event.execution.executionAddress.memberAddress !== selectedAddress) return;
         }
         const producer = event.eventSourceType === TeamRunEventSourceType.AGENT
-          ? resolveTeamAgentProducer(descriptor, event.data as TeamRunAgentEventPayload)
+          ? resolveTeamAgentProducer(descriptor, event.execution)
           : null;
         if (event.eventSourceType === TeamRunEventSourceType.AGENT && !producer) return;
         listener({ source: "AGENT_TEAM", event, producer });
@@ -56,17 +56,19 @@ export class ApplicationAgentStreamRuntimeSource {
 
 const resolveTeamAgentProducer = (
   descriptor: AuthorizedApplicationAgentTargetDescriptor,
-  payload: TeamRunAgentEventPayload,
+  execution: TeamAgentExecutionBinding,
 ): ApplicationExecutionProducer | null => {
-  const task = payload.taskAgentInstance ?? null;
-  if (task) {
+  if (execution.kind !== "persistent_agent") {
+    const base = descriptor.producers.find((producer) =>
+      producer.executionAddress.memberAddress === execution.executionAddress.memberAddress,
+    );
     return {
-      executionAddress: payload.executionAddress,
-      displayName: payload.displayName,
+      executionAddress: execution.executionAddress,
+      displayName: base?.displayName ?? null,
       runtimeKind: "AGENT_TEAM_MEMBER",
     };
   }
   return descriptor.producers.find((producer) =>
-    producer.executionAddress.memberAddress === payload.executionAddress.memberAddress,
+    producer.executionAddress.memberAddress === execution.executionAddress.memberAddress,
   ) ?? null;
 };

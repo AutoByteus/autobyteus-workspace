@@ -40,7 +40,7 @@ export class ContextFileLayout {
     return resolveSafeChildPath(
       this.draftRootDir,
       "team-runs",
-      owner.draftTeamRunId,
+      owner.teamDraftId,
       "members",
       owner.memberAddress,
       "context_files",
