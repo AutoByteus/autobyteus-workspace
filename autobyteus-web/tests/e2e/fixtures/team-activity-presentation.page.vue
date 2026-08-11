@@ -207,6 +207,7 @@ const workspaceNode: RunTreeWorkspaceNode = {
 
 const historyState: WorkspaceHistorySectionState = {
   selectedRunId: null,
+  isTeamRunSelected: () => false,
   isRunTerminating: () => false,
   isTeamTerminating: () => stopPending.value,
   isRunDeleting: () => false,

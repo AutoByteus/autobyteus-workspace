@@ -3,6 +3,7 @@ import type { RunTreeRow, RunTreeWorkspaceNode } from '~/utils/runTreeProjection
 
 export interface WorkspaceHistorySectionState {
   selectedRunId: string | null;
+  isTeamRunSelected: (teamRunId: string) => boolean;
   isRunTerminating: (runId: string) => boolean;
   isTeamTerminating: (teamRunId: string) => boolean;
   isRunDeleting: (runId: string) => boolean;

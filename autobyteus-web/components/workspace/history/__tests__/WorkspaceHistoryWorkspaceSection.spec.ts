@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 import { describe, expect, it, vi } from 'vitest';
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
 import WorkspaceHistoryWorkspaceSection from '../WorkspaceHistoryWorkspaceSection.vue';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { buildRunHistoryTeamExecutionRows } from '~/stores/runHistoryTeamExecutionRows';
@@ -30,6 +30,8 @@ const mountSubject = (options: {
   workspaceTeams?: any[];
   workspaceTeamHistoryGroups?: any[];
   teamExpanded?: boolean;
+  selectedTeamRunId?: string | null;
+  selectedType?: 'agent' | 'team' | null;
   canTerminateTeam?: (isActive: boolean) => boolean;
 } = {}) => {
   const worker = stableMember('worker');
@@ -99,10 +101,14 @@ const mountSubject = (options: {
     onSelectTeamMember: vi.fn(),
   };
   const expandedTeamMembers = reactive<Record<string, boolean>>({});
+  const selectedTeamRunId = ref<string | null>(options.selectedTeamRunId ?? 'team-run-1');
+  const selectedType = ref<'agent' | 'team' | null>(options.selectedType ?? 'team');
   const expansionKey = (workspaceId: string, teamRunId: string, memberRouteKey: string) =>
     `${workspaceId}::${teamRunId}::${memberRouteKey}`;
   const state = {
     selectedRunId: null,
+    isTeamRunSelected: (teamRunId: string) =>
+      selectedType.value === 'team' && selectedTeamRunId.value === teamRunId,
     isRunTerminating: () => false,
     isTeamTerminating: () => false,
     isRunDeleting: () => false,
@@ -174,7 +180,16 @@ const mountSubject = (options: {
     },
   });
 
-  return { wrapper, actions, state, liveContext, worker, team: projectedTeam };
+  return {
+    wrapper,
+    actions,
+    state,
+    liveContext,
+    worker,
+    team: projectedTeam,
+    selectedTeamRunId,
+    selectedType,
+  };
 };
 
 describe('WorkspaceHistoryWorkspaceSection', () => {
@@ -238,7 +253,7 @@ describe('WorkspaceHistoryWorkspaceSection', () => {
     expect(wrapper.get('[data-test="workspace-team-row-team-run-active"] [data-test="team-activity-dot"]').attributes('data-active')).toBe('false');
   });
 
-  it('renders transient execution rows inline with ghost/dashed semantics and focus identity', async () => {
+  it('renders transient execution rows inline with ghost semantics and current identity', async () => {
     const { wrapper, actions, state } = mountSubject();
 
     const stableRow = wrapper.get('[data-test="workspace-team-member-team-run-1-worker"]');
@@ -267,6 +282,7 @@ describe('WorkspaceHistoryWorkspaceSection', () => {
     expect(transientRow.attributes('data-row-kind')).toBe('transient_execution');
     expect(transientRow.attributes('data-transient-kind')).toBe('task_agent');
     expect(transientRow.attributes('data-member-route-key')).toBe('task-agent-run-1');
+    expect(transientRow.attributes('aria-current')).toBe('true');
     expect(transientRow.attributes('style')).toContain('margin-left: 12px');
     expect(transientRow.classes()).toContain('bg-indigo-50/40');
     expect(transientRow.classes()).toContain('ring-indigo-200');
@@ -295,6 +311,91 @@ describe('WorkspaceHistoryWorkspaceSection', () => {
       }),
       'workspace:/ws/a',
     );
+  });
+
+  it('marks only the selected team run current when focused member routes repeat', async () => {
+    const teamBMember = stableMember('worker', {
+      teamRunId: 'team-run-2',
+      workspaceRootPath: '/ws/a',
+      memberRunId: 'worker-run-2',
+    });
+    const teamB = {
+      teamRunId: 'team-run-2',
+      teamDefinitionId: 'team-def-1',
+      teamDefinitionName: 'Team Alpha',
+      workspaceRootPath: '/ws/a',
+      summary: 'Second team task summary',
+      lastActivityAt: '2026-06-30T00:00:00.000Z',
+      lastKnownStatus: 'ACTIVE',
+      isActive: true,
+      deleteLifecycle: 'READY',
+      focusedMemberRouteKey: 'worker',
+      members: [teamBMember],
+      memberTree: [teamBMember],
+      executionRows: [{
+        kind: 'stable_member',
+        teamRunId: 'team-run-2',
+        memberKind: 'agent',
+        memberRouteKey: 'worker',
+        memberPath: ['worker'],
+        displayName: 'worker',
+        depth: 0,
+        hasChildren: false,
+        row: teamBMember,
+      }],
+    } as any;
+    const teamAMember = stableMember('worker');
+    const teamA = {
+      teamRunId: 'team-run-1',
+      teamDefinitionId: 'team-def-1',
+      teamDefinitionName: 'Team Alpha',
+      workspaceRootPath: '/ws/a',
+      summary: 'First team task summary',
+      lastActivityAt: '2026-06-30T00:00:00.000Z',
+      lastKnownStatus: 'ACTIVE',
+      isActive: true,
+      deleteLifecycle: 'READY',
+      focusedMemberRouteKey: 'worker',
+      members: [teamAMember],
+      memberTree: [teamAMember],
+      executionRows: [{
+        kind: 'stable_member',
+        teamRunId: 'team-run-1',
+        memberKind: 'agent',
+        memberRouteKey: 'worker',
+        memberPath: ['worker'],
+        displayName: 'worker',
+        depth: 0,
+        hasChildren: false,
+        row: teamAMember,
+      }],
+    } as any;
+    const { wrapper, selectedTeamRunId, selectedType } = mountSubject({
+      workspaceTeams: [teamA, teamB],
+      selectedTeamRunId: 'team-run-2',
+      liveContextOverride: { focusedMemberRouteKey: 'worker' },
+    });
+
+    let firstRow = wrapper.get('[data-test="workspace-team-member-team-run-1-worker"]');
+    let secondRow = wrapper.get('[data-test="workspace-team-member-team-run-2-worker"]');
+    expect(firstRow.classes()).not.toContain('bg-indigo-50');
+    expect(firstRow.attributes('aria-current')).toBeUndefined();
+    expect(secondRow.classes()).toContain('bg-indigo-50');
+    expect(secondRow.attributes('aria-current')).toBe('true');
+    expect(wrapper.findAll('[aria-current="true"]')).toHaveLength(1);
+
+    selectedTeamRunId.value = null;
+    await wrapper.vm.$nextTick();
+    expect(wrapper.findAll('[aria-current="true"]')).toHaveLength(0);
+
+    selectedTeamRunId.value = 'team-run-1';
+    selectedType.value = 'agent';
+    await wrapper.vm.$nextTick();
+    firstRow = wrapper.get('[data-test="workspace-team-member-team-run-1-worker"]');
+    secondRow = wrapper.get('[data-test="workspace-team-member-team-run-2-worker"]');
+    expect(firstRow.attributes('aria-current')).toBeUndefined();
+    expect(secondRow.attributes('aria-current')).toBeUndefined();
+    expect(wrapper.findAll('[aria-current="true"]')).toHaveLength(0);
   });
 
   it('toggles transient task-team children from the row body and keeps disclosure toggle-only', async () => {
