@@ -3,19 +3,19 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/requirements.md`
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/design-spec.md`
-- Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/ui-ux-spec.md`
-- Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/solution-revision-record.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/requirements.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/design-spec.md`
+- Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/ui-ux-spec.md`
+- Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/solution-revision-record.md`
 - Relevant Solution Revision IDs: `SR-002`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/design-review-report.md`
-- Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/architecture-review-revision-record.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/design-review-report.md`
+- Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/architecture-review-revision-record.md`
 - Relevant Architecture Review Revision IDs: `ARCH-REV-001`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/implementation-handoff.md`
-- Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/implementation-revision-record.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/implementation-handoff.md`
+- Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/implementation-revision-record.md`
 - Relevant Implementation Revision IDs: `IR-001`
-- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/code-review-revision-record.md`
+- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/code-review-revision-record.md`
 - Current Code Review Revision ID: `CRR-001`
 - Current Review Round: `1`
 - Trigger: Initial implementation handoff from `implementation_engineer` at commit `7664e6b47` on 2026-08-11.
@@ -35,12 +35,12 @@
 
 - Changed implementation and behavior reviewed: The history navigation current-row invariant for team-member stable and transient rows. The review verifies that current state is derived from the authoritative selected team run plus that team's focused member route, while selection/open/hydration, center-monitor rendering, expansion, status/activity, hover/focus, transient ghost presentation, route/API behavior, and persisted data remain unchanged.
 - Files / areas reviewed:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/autobyteus-web/components/workspace/history/WorkspaceTransientExecutionRow.vue`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/autobyteus-web/components/workspace/history/workspaceHistorySectionContracts.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts`
-  - Typed section-state fixtures in `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/autobyteus-web/tests/e2e/fixtures/background-agent-renderer-contention.page.vue` and `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/autobyteus-web/tests/e2e/fixtures/team-activity-presentation.page.vue`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/history/WorkspaceTransientExecutionRow.vue`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/history/workspaceHistorySectionContracts.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts`
+  - Typed section-state fixtures in `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/tests/e2e/fixtures/background-agent-renderer-contention.page.vue` and `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/tests/e2e/fixtures/team-activity-presentation.page.vue`
   - Relevant existing selection, focus, projection, route, and center-monitor paths identified by the upstream investigation and design.
 - Explicit exclusions: API/E2E coverage investigation and execution, live browser/backend setup, delivery-branch refresh/docs synchronization, unrelated pre-existing repository-wide type errors, and behavior outside the approved history current-row change.
 

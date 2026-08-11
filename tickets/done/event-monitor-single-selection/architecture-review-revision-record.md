@@ -10,9 +10,9 @@
 
 ### ARCH-REV-001 — Compound event-monitor target design approved
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/design-review-report.md`
 - Review round and trigger: Initial architecture review of the complete solution package handed off by `solution_designer` after explicit user approval on 2026-08-11.
-- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/solution-revision-record.md` (`SR-002`); no finding IDs.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/solution-revision-record.md` (`SR-002`); no finding IDs.
 - Relevant solution revision IDs: `SR-001`, `SR-002`
 - Prior authoritative decision: `N/A`; no prior architecture-review result existed.
 - Current authoritative decision: `Pass`

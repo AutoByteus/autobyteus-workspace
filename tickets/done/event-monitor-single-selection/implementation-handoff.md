@@ -2,19 +2,19 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/design-spec.md`
-- Supplemental task artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/ui-ux-spec.md`
-- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/solution-revision-record.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/design-review-report.md`
-- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence, when applicable: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/implementation-revision-record.md` (`IR-001` initial baseline; no rework trigger)
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/design-spec.md`
+- Supplemental task artifacts: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/ui-ux-spec.md`
+- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/solution-revision-record.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/design-review-report.md`
+- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/architecture-review-revision-record.md`
+- Triggering rework report, revision record, or evidence, when applicable: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/implementation-revision-record.md` (`IR-001` initial baseline; no rework trigger)
 
 ## Current Implementation Summary
 
 - Implementation cycle: `Initial`
-- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/implementation-revision-record.md`
+- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/implementation-revision-record.md`
 - Current implementation revision ID: `IR-001`
 - Related solution revision IDs: `SR-002`
 - Related architecture-review revision IDs: `ARCH-REV-001`
@@ -35,12 +35,12 @@ The approved history presentation now derives current state from the authoritati
 
 ## Key Files Or Areas
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/autobyteus-web/components/workspace/history/workspaceHistorySectionContracts.ts` — adds the narrow read-only `isTeamRunSelected` contract method.
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue` — supplies the query directly from `agentSelectionStore`.
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue` — computes and applies the compound predicate to stable/transient rows.
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/autobyteus-web/components/workspace/history/WorkspaceTransientExecutionRow.vue` — receives `isSelected`, preserves ghost/status/interaction behavior, and exposes conditional current semantics.
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts` — covers duplicate route identity, clear selection, standalone-agent type switch, transient current semantics, and existing row lifecycle.
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/autobyteus-web/tests/e2e/fixtures/team-activity-presentation.page.vue` and `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/autobyteus-web/tests/e2e/fixtures/background-agent-renderer-contention.page.vue` — compile-time contract fixtures updated with non-authoritative no-selection implementations.
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/history/workspaceHistorySectionContracts.ts` — adds the narrow read-only `isTeamRunSelected` contract method.
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue` — supplies the query directly from `agentSelectionStore`.
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue` — computes and applies the compound predicate to stable/transient rows.
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/history/WorkspaceTransientExecutionRow.vue` — receives `isSelected`, preserves ghost/status/interaction behavior, and exposes conditional current semantics.
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts` — covers duplicate route identity, clear selection, standalone-agent type switch, transient current semantics, and existing row lifecycle.
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/tests/e2e/fixtures/team-activity-presentation.page.vue` and `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/tests/e2e/fixtures/background-agent-renderer-contention.page.vue` — compile-time contract fixtures updated with non-authoritative no-selection implementations.
 
 ## Important Assumptions
 
@@ -77,7 +77,7 @@ The approved history presentation now derives current state from the authoritati
 ## Persisted Data Transition Check (When Applicable)
 
 - Approved decision (`Not Affected`/`Directly Usable — No Migration`/`Discard or Rebuild`/`Migration Required`): `Not Affected`
-- Design-spec decision reference: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/design-spec.md` — persisted data/state transition decision.
+- Design-spec decision reference: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/design-spec.md` — persisted data/state transition decision.
 - Implementation follows the approved decision without an unapproved migration or version-specific runtime fallback: `Yes`
 - Direct-use evidence or discard/rebuild result, when applicable: No serialized or persisted subject changed; runtime Pinia selection and transient route query values are untouched.
 - Migration implementation and focused checks, only when `Migration Required`: `N/A`
@@ -101,7 +101,7 @@ The approved history presentation now derives current state from the authoritati
 ## Frontend Rendered-Result Check (When Applicable)
 
 - Affected surfaces / journeys: Workspace history stable team-member rows, transient execution rows, duplicate member routes across team runs, selection transfer/clear, and standalone-agent type switch.
-- Approved UI/UX, interaction, requirement, or design references: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/ui-ux-spec.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/requirements.md`, and `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/design-spec.md`.
+- Approved UI/UX, interaction, requirement, or design references: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/ui-ux-spec.md`, `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/requirements.md`, and `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/design-spec.md`.
 - Existing design system, shared components, and adjacent product surfaces reviewed: Existing history row classes, `WorkspaceTransientExecutionRow`, `StatusDot`, `TeamActivityDot`, and adjacent running-row patterns; no applicable shared `aria-current` row primitive was found.
 - Project development / preview instructions and rendered surface used: Component DOM rendering through Vue Test Utils/Vitest plus the Nuxt production build. A live browser/backend surface was not started in this implementation stage because the realistic browser/API execution is downstream-owned.
 - States, layouts, viewports, and interactions inspected: Component-rendered selected/non-selected stable rows, selected transient row with preserved ghost background, clear-selection and agent-type state, duplicate route identity, row click, disclosure, and existing transient expansion interactions.

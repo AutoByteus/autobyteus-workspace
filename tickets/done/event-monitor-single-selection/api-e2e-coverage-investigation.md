@@ -2,20 +2,20 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/design-spec.md`
-- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/ui-ux-spec.md`
-- Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/solution-revision-record.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/design-review-report.md`
-- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/architecture-review-revision-record.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/implementation-handoff.md`
-- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/implementation-revision-record.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/code-review-report.md`
-- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/code-review-revision-record.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/design-spec.md`
+- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/ui-ux-spec.md`
+- Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/solution-revision-record.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/design-review-report.md`
+- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/architecture-review-revision-record.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/implementation-handoff.md`
+- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/implementation-revision-record.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/code-review-report.md`
+- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/code-review-revision-record.md`
 - Delivery Revision Record (delivery re-entry only): `N/A`
 - Relevant Delivery Revision IDs: `N/A`
-- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/api-e2e-revision-record.md`
+- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/api-e2e-revision-record.md`
 - Current API/E2E Revision ID: `API-REV-001`
 - Current Investigation Round: `Initial coverage baseline completed`
 - Trigger: Review-passed implementation handoff `IR-001` / `CRR-001` for commit `7664e6b47`.
@@ -55,19 +55,19 @@ Critical acceptance criteria are `AC-001` (duplicate route keys across team runs
 
 ## Project Execution Discovery
 
-- Assigned task worktree / workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection`
+- Assigned task worktree / workspace: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Project type and runtime stack: Nuxt/Vue frontend, Pinia state, Vitest + Vue Test Utils, Playwright Core browser probes, Electron wrapper.
 - Conflicting, missing, or unclear project instructions: No material conflict found. The web guide says to use `pnpm test:nuxt ... --run`; browser probes use project scripts and temporary Nuxt fixture routes. `nuxi typecheck` is a known repository dependency-export blocker from upstream review and is not a changed-file gate.
 - Required environment variables or secrets available: `N/A` for repository checks and temporary fixture browser validation. Live backend credentials/data are not required for the selected browser fixture; no secret values are recorded.
 
 | Instruction / Configuration Path | Authority / Purpose | Commands, Setup, Or Constraints Learned |
 | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/autobyteus-web/AGENTS.md` | Web contributor/testing guide | Use `pnpm test:nuxt`; always include `--run`; use browser-responsive probe conventions where applicable. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/autobyteus-web/README.md` | Frontend setup and testing | `pnpm install`; `pnpm test:nuxt <path> --run`; browser probes start Nuxt and use Playwright Core; normal browser dev uses `pnpm dev`. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/autobyteus-web/package.json` | Authoritative scripts/dependencies | `test:nuxt`, `build`, `test:e2e:team-activity` is not a registered script; existing browser probes are direct Node scripts. `playwright-core` and Chrome are available. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/autobyteus-web/vitest.config.mts` | Nuxt Vitest configuration | Run focused tests from `autobyteus-web` through `pnpm exec vitest run ...`. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/autobyteus-web/tests/e2e/team-activity-presentation-probe.mjs` | Existing browser probe pattern | Owns a temporary Nuxt page, starts/stops its own process, captures JSON/log/screenshots, and removes the installed page. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/autobyteus-web/tests/e2e/background-agent-renderer-contention-probe.mjs` | Existing browser probe pattern | Browser is preferred for web-equivalent renderer behavior; fixture updates here only satisfy the new typed contract and are not lifecycle evidence. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/AGENTS.md` | Web contributor/testing guide | Use `pnpm test:nuxt`; always include `--run`; use browser-responsive probe conventions where applicable. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/README.md` | Frontend setup and testing | `pnpm install`; `pnpm test:nuxt <path> --run`; browser probes start Nuxt and use Playwright Core; normal browser dev uses `pnpm dev`. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/package.json` | Authoritative scripts/dependencies | `test:nuxt`, `build`, `test:e2e:team-activity` is not a registered script; existing browser probes are direct Node scripts. `playwright-core` and Chrome are available. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/vitest.config.mts` | Nuxt Vitest configuration | Run focused tests from `autobyteus-web` through `pnpm exec vitest run ...`. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/tests/e2e/team-activity-presentation-probe.mjs` | Existing browser probe pattern | Owns a temporary Nuxt page, starts/stops its own process, captures JSON/log/screenshots, and removes the installed page. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/tests/e2e/background-agent-renderer-contention-probe.mjs` | Existing browser probe pattern | Browser is preferred for web-equivalent renderer behavior; fixture updates here only satisfy the new typed contract and are not lifecycle evidence. |
 
 | Component / Dependency | Working Directory | Start / Setup Command | Runtime / Resource Notes | Readiness Check | Stop / Cleanup Method |
 | --- | --- | --- | --- | --- | --- |
@@ -124,11 +124,11 @@ None.
 
 | Order | Command | Working Directory / Configuration | Boundary Or Scenario Proven | Result (`Planned`/`Pass`/`Fail`/`Blocked`) | Evidence / Output Path |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `pnpm exec vitest run components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts --no-watch` | `autobyteus-web` | Direct stable/transient compound current predicate, duplicate route keys, clear/agent selection, row interaction | Pass | `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/api-e2e/01-history-section-vitest.log` — 1 file / 6 tests passed |
-| 2 | `pnpm exec vitest run components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts --no-watch` | `autobyteus-web` | History selection transfer, expansion, hydration, preserved tree lifecycle | Pass | `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/api-e2e/02-history-tree-vitest.log` — 3 files / 55 tests passed; hydration test emitted a caught missing mocked `GetTaskDelegationRecords` warning |
-| 3 | `pnpm exec vitest run composables/workspace/__tests__/useWorkspaceRouteSelection.spec.ts services/workspace/__tests__/workspaceNavigationService.spec.ts --no-watch` | `autobyteus-web` | Supported workspace execution-link parse/open/strip contract | Pass | `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/api-e2e/03-workspace-link-vitest.log` — 2 files / 6 tests passed |
-| 4 | `git diff --check HEAD -- autobyteus-web/components/workspace/history autobyteus-web/tests/e2e tickets/in-progress/event-monitor-single-selection` | Worktree root | Changed-surface whitespace / patch integrity | Pass | `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/api-e2e/06-diff-check.log` |
-| 5 | `pnpm build` | `autobyteus-web` | Nuxt production bundling of changed renderer | Pass | `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/api-e2e/05-production-build.log` — Nuxt client/server build and prerender completed; existing chunk-size warning only |
+| 1 | `pnpm exec vitest run components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts --no-watch` | `autobyteus-web` | Direct stable/transient compound current predicate, duplicate route keys, clear/agent selection, row interaction | Pass | `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/api-e2e/01-history-section-vitest.log` — 1 file / 6 tests passed |
+| 2 | `pnpm exec vitest run components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts --no-watch` | `autobyteus-web` | History selection transfer, expansion, hydration, preserved tree lifecycle | Pass | `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/api-e2e/02-history-tree-vitest.log` — 3 files / 55 tests passed; hydration test emitted a caught missing mocked `GetTaskDelegationRecords` warning |
+| 3 | `pnpm exec vitest run composables/workspace/__tests__/useWorkspaceRouteSelection.spec.ts services/workspace/__tests__/workspaceNavigationService.spec.ts --no-watch` | `autobyteus-web` | Supported workspace execution-link parse/open/strip contract | Pass | `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/api-e2e/03-workspace-link-vitest.log` — 2 files / 6 tests passed |
+| 4 | `git diff --check HEAD -- autobyteus-web/components/workspace/history autobyteus-web/tests/e2e tickets/in-progress/event-monitor-single-selection` | Worktree root | Changed-surface whitespace / patch integrity | Pass | `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/api-e2e/06-diff-check.log` |
+| 5 | `pnpm build` | `autobyteus-web` | Nuxt production bundling of changed renderer | Pass | `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/api-e2e/05-production-build.log` — Nuxt client/server build and prerender completed; existing chunk-size warning only |
 
 ## Post-Repository Confidence Scorecard (Mandatory)
 
@@ -220,7 +220,7 @@ Initial pre-execution estimates are deliberately provisional; they will be repla
 ## Completed Execution Update — API-REV-001
 
 - Repository result: `Pass` — 6 focused section tests, 55 history/tree/hydration tests, 6 route/navigation tests, production build, and diff check passed. The hydration suite emitted a caught missing mocked `GetTaskDelegationRecords` warning but still passed; no test-code change was made.
-- Browser result: `Pass` — temporary Nuxt/Chrome scenarios `BR-001`–`BR-004` passed. Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/api-e2e/browser-output/evidence.json`.
+- Browser result: `Pass` — temporary Nuxt/Chrome scenarios `BR-001`–`BR-004` passed. Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/api-e2e/browser-output/evidence.json`.
 - Final confidence: `94%` (simple mean of final scores `95, 95, 90, 90, 95, 95, 95`; no applicable category below `90%`; default `95%` target not met).
 - Final confidence rationale: Browser evidence closed the renderer, focus/hover, transfer/clear, and transient ghost distinction gaps. A live backend/authenticated execution-link journey remains `LIVE-001 Not Tested`; route parsing, query cleanup, coordinator dispatch, history selection, and hydration remain directly covered by repository tests.
 - Final broader-validation status: `Required` and completed in Browser mode; no Electron execution because the shell boundary is unaffected.

@@ -23,10 +23,10 @@ Reference screenshot: `/Users/normy/.autobyteus/server-data/memory/agent_teams/s
 ## Environment Discovery / Bootstrap Context
 
 - Project Type (`Git`/`Non-Git`): `Git`
-- Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection`
+- Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection`
 - Current Branch: `codex/event-monitor-single-selection`
-- Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection`
+- Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Bootstrap Base Branch: `origin/personal`
 - Remote Refresh Result: `git fetch origin --prune` succeeded on 2026-08-11
 - Task Branch: `codex/event-monitor-single-selection`
@@ -39,15 +39,15 @@ Reference screenshot: `/Users/normy/.autobyteus/server-data/memory/agent_teams/s
 
 | Artifact Path | Purpose And Scope | Evidence, Context, Or Decision Captured | Core Artifact(s) Supported | Related Requirement / Acceptance-Criteria IDs (When Applicable) | Status | Approval Applicability / State | Follow-Up Needed |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/ui-ux-spec.md` | UI/UX state and interaction specification for singular event-monitor selection | Compound identity, state separation, lifecycle, keyboard, accessibility, and visual-state rules | Requirements doc; design spec | REQ-001..REQ-005 / AC-001..AC-005 | Approved for architecture review | Intended behavior; approved by user on 2026-08-11 | Keep aligned through architecture review and implementation feedback. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/ui-ux-spec.md` | UI/UX state and interaction specification for singular event-monitor selection | Compound identity, state separation, lifecycle, keyboard, accessibility, and visual-state rules | Requirements doc; design spec | REQ-001..REQ-005 / AC-001..AC-005 | Approved for architecture review | Intended behavior; approved by user on 2026-08-11 | Keep aligned through architecture review and implementation feedback. |
 
 ## Source Log
 
 | Date | Source Type (`Code`/`Doc`/`Spec`/`Web`/`Repo`/`Issue`/`Command`/`Trace`/`Log`/`Data`/`Setup`/`Other`) | Exact Source / Query / Command | Why Consulted | Relevant Findings | Follow-Up Needed |
 | --- | --- | --- | --- | --- | --- |
 | 2026-08-11 | Setup | `git fetch origin --prune` | Refresh the tracked base before task isolation | Remote refs refreshed successfully. | No |
-| 2026-08-11 | Setup | `git worktree add -b codex/event-monitor-single-selection /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection origin/personal` | Create isolated authoritative task workspace | Dedicated worktree and task branch created from `origin/personal`. | No |
-| 2026-08-11 | Command | `git -C /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection status --short --branch` | Verify bootstrap state | Branch is clean and tracks `origin/personal` before artifact creation. | No |
+| 2026-08-11 | Setup | `git worktree add -b codex/event-monitor-single-selection /Users/normy/autobyteus_org/autobyteus-workspace-superrepo origin/personal` | Create isolated authoritative task workspace | Dedicated worktree and task branch created from `origin/personal`. | No |
+| 2026-08-11 | Command | `git -C /Users/normy/autobyteus_org/autobyteus-workspace-superrepo status --short --branch` | Verify bootstrap state | Branch is clean and tracks `origin/personal` before artifact creation. | No |
 | 2026-08-11 | Other | `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_e2a8b8e26626426e9384a913a3323bb0/solution_designer_ea81cb0e8eae4269bd15abc559f975a1/context_files/ctx_c01742bcaf99__image.png` | Observe reported UI symptom | One center event monitor and multiple left rows with selected-looking backgrounds; repeated member labels occur in separate groups. | Trace implementation |
 | 2026-08-11 | Code | `autobyteus-web/stores/agentSelectionStore.ts` | Identify viewed-target owner | `selectedRunId` + `selectedType` are single-valued; `selectRun` overwrites prior selection and `clearSelection` clears it. | No |
 | 2026-08-11 | Code | `autobyteus-web/components/layout/WorkspaceAdaptiveLayout.vue:18-20,178-183` | Connect selection to center surface | `selectedType` chooses either `AgentWorkspaceView` or `TeamWorkspaceView`; only one center view is rendered. | No |

@@ -4,13 +4,13 @@
 
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
-| IR-001 | `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/architecture-review-revision-record.md`; initial implementation round | `N/A` | `Initial Baseline` | `SR-002`, `ARCH-REV-001`; `CRR/API-REV/DR: N/A` | Implementation complete; handoff ready for code review |
+| IR-001 | `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/architecture-review-revision-record.md`; initial implementation round | `N/A` | `Initial Baseline` | `SR-002`, `ARCH-REV-001`; `CRR/API-REV/DR: N/A` | Implementation complete; handoff ready for code review |
 
 ## Revision Entries
 
 ### IR-001 — Compound current-row identity implemented
 
-- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/architecture-review-revision-record.md`; initial implementation round after `ARCH-REV-001` passed the reviewed package.
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/architecture-review-revision-record.md`; initial implementation round after `ARCH-REV-001` passed the reviewed package.
 - Triggering finding IDs: `N/A` — this is the initial implementation baseline.
 - Classification: `Initial Baseline`
 - Prior authoritative result: `N/A`

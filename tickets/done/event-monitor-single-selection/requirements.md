@@ -24,7 +24,7 @@ The dedicated worktree is based on refreshed `origin/personal`. The supplied scr
 
 | Artifact Path | Type / Purpose | Related Requirement IDs | Related Acceptance-Criteria IDs | Status / Approval | Relationship To Requirements |
 | --- | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/ui-ux-spec.md` | UI/UX state and interaction specification | REQ-001, REQ-002, REQ-003, REQ-004, REQ-005 | AC-001, AC-002, AC-003, AC-004, AC-005 | Approved for architecture review | Defines the compound selection identity, visual state separation, lifecycle, keyboard, and accessibility expectations. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/ui-ux-spec.md` | UI/UX state and interaction specification | REQ-001, REQ-002, REQ-003, REQ-004, REQ-005 | AC-001, AC-002, AC-003, AC-004, AC-005 | Approved for architecture review | Defines the compound selection identity, visual state separation, lifecycle, keyboard, and accessibility expectations. |
 
 ## Design Health Assessment (Mandatory)
 

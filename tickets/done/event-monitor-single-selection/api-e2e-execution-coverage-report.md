@@ -2,21 +2,21 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/design-spec.md`
-- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/ui-ux-spec.md`
-- Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/solution-revision-record.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/design-review-report.md`
-- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/architecture-review-revision-record.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/implementation-handoff.md`
-- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/implementation-revision-record.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/code-review-report.md`
-- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/code-review-revision-record.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/design-spec.md`
+- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/ui-ux-spec.md`
+- Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/solution-revision-record.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/design-review-report.md`
+- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/architecture-review-revision-record.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/implementation-handoff.md`
+- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/implementation-revision-record.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/code-review-report.md`
+- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/code-review-revision-record.md`
 - Delivery Revision Record (delivery re-entry only): `N/A`
 - Relevant Delivery Revision IDs: `N/A`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/api-e2e-coverage-investigation.md`
-- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/api-e2e-revision-record.md`
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/api-e2e-coverage-investigation.md`
+- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/api-e2e-revision-record.md`
 - Current API/E2E Revision ID: `API-REV-001`
 - Current Execution Round: `1`
 - Trigger: Review-passed implementation commit `7664e6b47` / `IR-001` / `CRR-001`.
@@ -25,7 +25,7 @@
 
 ## Investigation And Execution Basis
 
-- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/api-e2e-coverage-investigation.md`
+- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/api-e2e-coverage-investigation.md`
 - Investigation completed before durable coverage changes or final execution: `Yes`
 - Investigation plan followed: `Yes` — focused history tests, preserved navigation/lifecycle tests, production build, diff check, and a temporary browser probe were executed. No durable repository coverage was changed during this round.
 - Existing coverage decisions revised during execution, with evidence: No. Existing route/history tests remain `Still Valid`; the temporary browser probe confirmed that no durable browser test addition was necessary for this narrow renderer correction.
@@ -45,13 +45,13 @@
 
 | Scenario ID | Behavior / Requirement / Acceptance-Criteria IDs | Changed Boundary | Execution Surface / Mode | Evidence Type (`Durable`/`Temporary`/`Live`/`Browser`/`Desktop`) | Result (`Pass`/`Fail`/`Blocked`/`Not Tested`) | Evidence / Artifact |
 | --- | --- | --- | --- | --- | --- | --- |
-| `REPO-001` | `BEH-001`, `AC-001`, `AC-002`, `AC-005` | Stable/transient history row current predicate | Vitest + Vue Test Utils | Durable | Pass | `WorkspaceHistoryWorkspaceSection.spec.ts`: 6/6; `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/api-e2e/01-history-section-vitest.log` |
-| `REPO-002` | `BEH-002`, `AC-002`, `AC-003`, `AC-004` | Tree selection, history activation, expansion, historical hydration | Vitest component/regression/integration suites | Durable | Pass | 55/55 across three history files; `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/api-e2e/02-history-tree-vitest.log` |
-| `REPO-003` | `BEH-003`, `AC-004` | Workspace execution-link parse, coordinator dispatch contract, query cleanup | Vitest route/service tests with coordinator mocks | Durable | Pass | 6/6 across two route/navigation files; `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/api-e2e/03-workspace-link-vitest.log` |
-| `REPO-004` | All changed source boundaries | Nuxt production bundling and patch integrity | `pnpm build` + `git diff --check` | Durable | Pass | `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/api-e2e/05-production-build.log`; `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/api-e2e/06-diff-check.log` |
-| `BR-001` | `REQ-001`, `AC-001`, `AC-005` | Duplicate route-key stable rows | Temporary Nuxt fixture + headless Chrome | Browser / Temporary | Pass | Exactly one `aria-current="true"`; selected team A stable row only; screenshot `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/api-e2e/browser-output/stable-current.png` |
-| `BR-002` | `REQ-001`, `REQ-003`, `AC-003`, `AC-004` | Committed row transfer, clear, and reselect | Temporary Nuxt fixture + headless Chrome | Browser / Temporary | Pass | Transfer to team B transient, zero current rows after clear, reselect to team A stable; screenshot `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/api-e2e/browser-output/selection-cleared.png` |
-| `BR-003` | `REQ-002`, `REQ-005`, `AC-002`, `AC-005` | Current vs non-current transient ghost rendering | Temporary Nuxt fixture + headless Chrome, class/DOM assertions | Browser / Temporary | Pass | Both retain ghost background; only current transient has selected text/ring/`aria-current`; screenshot `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/api-e2e/browser-output/transient-current-vs-ghost.png` |
+| `REPO-001` | `BEH-001`, `AC-001`, `AC-002`, `AC-005` | Stable/transient history row current predicate | Vitest + Vue Test Utils | Durable | Pass | `WorkspaceHistoryWorkspaceSection.spec.ts`: 6/6; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/api-e2e/01-history-section-vitest.log` |
+| `REPO-002` | `BEH-002`, `AC-002`, `AC-003`, `AC-004` | Tree selection, history activation, expansion, historical hydration | Vitest component/regression/integration suites | Durable | Pass | 55/55 across three history files; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/api-e2e/02-history-tree-vitest.log` |
+| `REPO-003` | `BEH-003`, `AC-004` | Workspace execution-link parse, coordinator dispatch contract, query cleanup | Vitest route/service tests with coordinator mocks | Durable | Pass | 6/6 across two route/navigation files; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/api-e2e/03-workspace-link-vitest.log` |
+| `REPO-004` | All changed source boundaries | Nuxt production bundling and patch integrity | `pnpm build` + `git diff --check` | Durable | Pass | `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/api-e2e/05-production-build.log`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/api-e2e/06-diff-check.log` |
+| `BR-001` | `REQ-001`, `AC-001`, `AC-005` | Duplicate route-key stable rows | Temporary Nuxt fixture + headless Chrome | Browser / Temporary | Pass | Exactly one `aria-current="true"`; selected team A stable row only; screenshot `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/api-e2e/browser-output/stable-current.png` |
+| `BR-002` | `REQ-001`, `REQ-003`, `AC-003`, `AC-004` | Committed row transfer, clear, and reselect | Temporary Nuxt fixture + headless Chrome | Browser / Temporary | Pass | Transfer to team B transient, zero current rows after clear, reselect to team A stable; screenshot `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/api-e2e/browser-output/selection-cleared.png` |
+| `BR-003` | `REQ-002`, `REQ-005`, `AC-002`, `AC-005` | Current vs non-current transient ghost rendering | Temporary Nuxt fixture + headless Chrome, class/DOM assertions | Browser / Temporary | Pass | Both retain ghost background; only current transient has selected text/ring/`aria-current`; screenshot `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/api-e2e/browser-output/transient-current-vs-ghost.png` |
 | `BR-004` | `REQ-002`, `REQ-005`, `AC-005` | Focus/hover separation | Temporary Nuxt fixture + headless Chrome | Browser / Temporary | Pass | Non-current team B stable row received focus and hover while current count remained one; evidence JSON below |
 | `LIVE-001` | `AC-004` | Live backend execution-link coordinator to rendered history state | Not run; no server dependency was safely provisioned | Live | Not Tested | Route parsing/stripping and coordinator dispatch are directly covered by `REPO-003`; live backend data/auth/coordinator integration remains a bounded residual risk. |
 
@@ -149,21 +149,21 @@ None. No durable assertion was removed or disabled.
 
 | Artifact Path | Type / Purpose | Retained Or Temporary | Notes |
 | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/api-e2e/browser-output/evidence.json` | Browser scenario results, environment, warnings, cleanup | Retained | Latest authoritative browser evidence |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/api-e2e/browser-output/nuxt.log` | Temporary Nuxt process log | Retained | Owned process stopped successfully |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/api-e2e/browser-output/*.png` | Supporting rendered screenshots | Retained | Stable current, cleared, and transient comparison states |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/api-e2e/01-history-section-vitest.log` | Focused section test output | Retained | 6/6 passed |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/api-e2e/02-history-tree-vitest.log` | History tree/integration output | Retained | 55/55 passed |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/api-e2e/03-workspace-link-vitest.log` | Route/link output | Retained | 6/6 passed |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/api-e2e/05-production-build.log` | Build output | Retained | Build passed |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/api-e2e/06-diff-check.log` | Diff whitespace check | Retained | Clean |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/api-e2e/browser-output/evidence.json` | Browser scenario results, environment, warnings, cleanup | Retained | Latest authoritative browser evidence |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/api-e2e/browser-output/nuxt.log` | Temporary Nuxt process log | Retained | Owned process stopped successfully |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/api-e2e/browser-output/*.png` | Supporting rendered screenshots | Retained | Stable current, cleared, and transient comparison states |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/api-e2e/01-history-section-vitest.log` | Focused section test output | Retained | 6/6 passed |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/api-e2e/02-history-tree-vitest.log` | History tree/integration output | Retained | 55/55 passed |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/api-e2e/03-workspace-link-vitest.log` | Route/link output | Retained | 6/6 passed |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/api-e2e/05-production-build.log` | Build output | Retained | Build passed |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/api-e2e/06-diff-check.log` | Diff whitespace check | Retained | Clean |
 
 ## Temporary Execution Methods / Scaffolding
 
 | Path / Method | Why Needed | Result / Evidence | Cleanup Result |
 | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/api-e2e/event-monitor-single-selection-browser-probe.mjs` | Existing E2E probes are fixture-based; this task needed rendered duplicate-row/current/transient evidence | 4/4 browser scenarios passed; `browser-output/evidence.json` | Script retained as evidence harness; no product source or test route committed |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/api-e2e/event-monitor-single-selection.page.vue` | Temporary Nuxt page to mount the real `WorkspaceHistoryWorkspaceSection` with deterministic projected rows | Browser scenarios passed | Copied into `autobyteus-web/pages/` only during run and removed in `finally` |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/api-e2e/event-monitor-single-selection-browser-probe.mjs` | Existing E2E probes are fixture-based; this task needed rendered duplicate-row/current/transient evidence | 4/4 browser scenarios passed; `browser-output/evidence.json` | Script retained as evidence harness; no product source or test route committed |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/api-e2e/event-monitor-single-selection.page.vue` | Temporary Nuxt page to mount the real `WorkspaceHistoryWorkspaceSection` with deterministic projected rows | Browser scenarios passed | Copied into `autobyteus-web/pages/` only during run and removed in `finally` |
 | Owned Nuxt process/browser context | Browser execution runtime | Readiness and cleanup recorded in evidence JSON | Nuxt process terminated; browser/context closed |
 
 ## Dependencies Mocked Or Emulated
@@ -200,7 +200,7 @@ None. No durable assertion was removed or disabled.
 
 ## Evidence / Notes
 
-- The final browser evidence is authoritative at `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/api-e2e/browser-output/evidence.json`.
+- The final browser evidence is authoritative at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/api-e2e/browser-output/evidence.json`.
 - Its `environmentWarnings.backendFixtureWarnings` contains only expected Apollo invariant messages caused by the intentionally empty GraphQL fixture response; `unexpectedConsoleErrors` is empty and page errors are absent.
 - The hydration suite's missing `GetTaskDelegationRecords` mock warning was caught by existing test behavior and did not fail the test; no test-code edit was made because this round does not own durable coverage changes.
 - The implementation's known `nuxi typecheck` dependency-export issue was not rerun; upstream source review already recorded it, and production build plus changed-surface tests passed.

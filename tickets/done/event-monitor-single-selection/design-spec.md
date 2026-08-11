@@ -32,7 +32,7 @@ Align left-row current/selected presentation with the existing center-view ident
 
 | Artifact Path | Purpose | Related Requirement / Acceptance-Criteria IDs (When Applicable) | Relationship To This Design | Status / Approval Applicability |
 | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-single-selection/tickets/done/event-monitor-single-selection/ui-ux-spec.md` | Defines user journeys, compound identity, visual state separation, lifecycle, and accessibility behavior. | REQ-001..REQ-005 / AC-001..AC-005 | The design maps its selection predicate, transient behavior, and `aria-current` guidance directly to this supplement. | Approved for architecture review; intended behavior locked by user on 2026-08-11. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-single-selection/ui-ux-spec.md` | Defines user journeys, compound identity, visual state separation, lifecycle, and accessibility behavior. | REQ-001..REQ-005 / AC-001..AC-005 | The design maps its selection predicate, transient behavior, and `aria-current` guidance directly to this supplement. | Approved for architecture review; intended behavior locked by user on 2026-08-11. |
 
 ## Task Design Health Assessment (Mandatory)
 
