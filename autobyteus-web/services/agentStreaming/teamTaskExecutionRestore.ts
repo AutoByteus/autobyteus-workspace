@@ -20,6 +20,7 @@ const detailsFor = (record: TaskDelegationRecord): TaskDelegationProjectionDetai
   },
   taskTargetKind: record.receiverTargetKind,
   taskTargetAddress: record.receiverAddress.memberAddress,
+  taskSenderAddress: record.senderAddress,
   taskExecutionStatus: statusFor(record),
   eventType: 'TASK_DELEGATION_RESTORED',
   occurredAt: record.createdAt,

@@ -60,6 +60,7 @@ const withoutProjectionFields = <T extends TeamMemberNode>(node: T): T => {
   delete copy.taskArguments;
   delete copy.taskTargetKind;
   delete copy.taskTargetAddress;
+  delete copy.taskSenderAddress;
   delete copy.isTaskExecution;
   return copy;
 };

@@ -3,9 +3,13 @@ import type { TeamReferenceFile } from '~/types/teamReferenceFile';
 import type { AgentTeamContext, TeamMemberNode } from '~/types/agent/AgentTeamContext';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
-import { serializeTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
+import {
+  sameTeamExecutionAddress,
+  serializeTeamExecutionAddress,
+} from '~/types/agent/TeamExecutionAddress';
 import type { TaskDelegationRecord } from '~/stores/taskDelegationTypes';
 import { formatTeamCommunicationAddressLabel } from '~/stores/teamCommunicationStore';
+import { findTeamExecutionNode } from '~/services/agentStreaming/teamTaskExecutionTree';
 
 export type DelegatedTaskEntryKind = 'task_agent' | 'task_team';
 export interface DelegatedTaskEntry {
@@ -58,28 +62,74 @@ const hasSameTaskTeamScope = (
   right: readonly string[],
 ): boolean => left.length === right.length && left.every((id, index) => id === right[index]);
 
-const liveTaskBelongsToFocusedPlacement = (
+const taskParentScope = (node: TeamMemberNode, address: TeamExecutionAddress): readonly string[] =>
+  node.kind === 'agent_team' ? address.taskTeamRunIds.slice(0, -1) : address.taskTeamRunIds;
+
+const hasExactTaskExecutionIdentity = (
+  team: AgentTeamContext,
+  node: TeamMemberNode,
+): boolean => {
+  const task = node.executionAddress;
+  if (!node.isTaskExecution || !node.taskId || !task || task.rootTeamRunId !== team.teamRunId
+    || node.address !== task.memberAddress
+    || node.taskTargetKind !== node.kind || node.taskTargetAddress !== node.address
+    || team.memberNodesByAddress.get(task.memberAddress)?.kind !== node.kind) return false;
+
+  if (node.kind === 'agent') {
+    return Boolean(task.taskAgentRunId)
+      && node.agentRunId === task.taskAgentRunId;
+  }
+
+  return task.taskAgentRunId === null
+    && task.taskTeamRunIds.length > 0
+    && node.teamRunId === task.taskTeamRunIds.at(-1);
+};
+
+const exactSenderExecutionExists = (
+  team: AgentTeamContext,
+  sender: TeamExecutionAddress,
+): boolean => {
+  if (sender.rootTeamRunId !== team.teamRunId
+    || team.memberNodesByAddress.get(sender.memberAddress)?.kind !== 'agent') return false;
+  const senderNode = findTeamExecutionNode(team, sender);
+  if (!senderNode || senderNode.kind !== 'agent') return false;
+  if (sender.taskAgentRunId) {
+    return Boolean(senderNode.isTaskExecution) && senderNode.agentRunId === sender.taskAgentRunId;
+  }
+  return sender.taskTeamRunIds.length === 0 || Boolean(senderNode.isTaskExecution);
+};
+
+const liveTaskBelongsToFocusedSender = (
   team: AgentTeamContext,
   node: TeamMemberNode,
   focused: TeamExecutionAddress,
 ): boolean => {
   const task = node.executionAddress;
-  if (!node.isTaskExecution || !node.taskId || !task || focused.taskAgentRunId
-    || focused.rootTeamRunId !== team.teamRunId || task.rootTeamRunId !== team.teamRunId
-    || task.memberAddress !== focused.memberAddress || node.address !== task.memberAddress
-    || team.memberNodesByAddress.get(focused.memberAddress)?.kind !== node.kind) return false;
-
-  if (node.kind === 'agent') {
-    return Boolean(task.taskAgentRunId)
-      && node.agentRunId === task.taskAgentRunId
-      && hasSameTaskTeamScope(task.taskTeamRunIds, focused.taskTeamRunIds);
-  }
-
-  return task.taskAgentRunId === null
-    && task.taskTeamRunIds.length === focused.taskTeamRunIds.length + 1
-    && focused.taskTeamRunIds.every((id, index) => id === task.taskTeamRunIds[index])
-    && node.teamRunId === task.taskTeamRunIds.at(-1);
+  const sender = node.taskSenderAddress;
+  if (!task || !sender || !sameTeamExecutionAddress(sender, focused)
+    || !hasSameTaskTeamScope(sender.taskTeamRunIds, taskParentScope(node, task))) return false;
+  return exactSenderExecutionExists(team, sender);
 };
+
+const liveTaskBelongsToFocusedTarget = (
+  team: AgentTeamContext,
+  node: TeamMemberNode,
+  focused: TeamExecutionAddress,
+): boolean => {
+  const task = node.executionAddress;
+  if (!task || focused.taskAgentRunId || focused.rootTeamRunId !== team.teamRunId
+    || task.memberAddress !== focused.memberAddress
+    || !hasSameTaskTeamScope(taskParentScope(node, task), focused.taskTeamRunIds)) return false;
+  return team.memberNodesByAddress.get(focused.memberAddress)?.kind === node.kind;
+};
+
+const liveTaskBelongsToFocusedExecution = (
+  team: AgentTeamContext,
+  node: TeamMemberNode,
+  focused: TeamExecutionAddress,
+): boolean => hasExactTaskExecutionIdentity(team, node)
+  && (liveTaskBelongsToFocusedSender(team, node, focused)
+    || liveTaskBelongsToFocusedTarget(team, node, focused));
 
 const taskArguments = (record: TaskDelegationRecord): Record<string, unknown> => ({
   target: { kind: record.receiverTargetKind, address: record.receiverAddress },
@@ -154,15 +204,21 @@ export const deriveDelegatedTaskEntries = (
   focusedAddress?: TeamExecutionAddress | null,
 ): DelegatedTaskEntry[] => {
   const liveNodes = collectLiveTaskNodes(team.rootTeam.children);
-  const byTaskId = new Map(liveNodes.flatMap((node) => node.taskId ? [[node.taskId, node] as const] : []));
+  const exactLiveNodeForRecord = (record: TaskDelegationRecord): TeamMemberNode | null => {
+    const taskRunAddress = addressKey(record.taskRun?.address);
+    if (!taskRunAddress) return null;
+    return liveNodes.find((node) => node.taskId === record.taskId
+      && addressKey(node.executionAddress) === taskRunAddress
+      && (record.receiverTargetKind === 'agent_team') === (node.kind === 'agent_team')) ?? null;
+  };
   const persistedTaskIds = new Set(records.map((record) => record.taskId));
   const persisted = records.filter((record) => recordVisible(record, focusedAddress)).map((record) => {
-    const node = byTaskId.get(record.taskId) ?? null;
+    const node = exactLiveNodeForRecord(record);
     return node ? liveEntry(team, node, record) : persistedEntry(team, record);
   });
   const live = liveNodes.filter((node) => !node.taskId || !persistedTaskIds.has(node.taskId)).filter((node) => {
     if (focusedAddress === undefined) return true;
-    return Boolean(focusedAddress && liveTaskBelongsToFocusedPlacement(team, node, focusedAddress));
+    return Boolean(focusedAddress && liveTaskBelongsToFocusedExecution(team, node, focusedAddress));
   }).map((node) => liveEntry(team, node, null));
   return [...persisted, ...live];
 };

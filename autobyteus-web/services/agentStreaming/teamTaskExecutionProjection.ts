@@ -2,7 +2,12 @@ import type { AgentTeamContext, TeamMemberNode } from '~/types/agent/AgentTeamCo
 import type { AgentStatus } from '~/types/agent/AgentStatus';
 import type { TeamReferenceFile } from '~/types/teamReferenceFile';
 import { normalizeTeamReferenceFiles } from '~/utils/teamReferences/teamReferenceFileModel';
-import { serializeTeamExecutionAddress, type TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
+import {
+  createTeamExecutionAddress,
+  parseTeamExecutionAddress,
+  serializeTeamExecutionAddress,
+  type TeamExecutionAddress,
+} from '~/types/agent/TeamExecutionAddress';
 import type { ServerMessage } from './protocol';
 
 export type TaskExecutionProjectionStatus = 'starting' | 'active' | 'awaiting_review' | 'revision_requested' | 'accepted' | 'settling' | 'settled' | 'failed';
@@ -103,6 +108,7 @@ export interface TaskDelegationProjectionDetails {
   taskId: string | null; taskLabel: string | null; taskDescription: string | null;
   taskReferenceFiles: TeamReferenceFile[]; taskArguments: Record<string, unknown> | null;
   taskTargetKind: string | null; taskTargetAddress: string | null; taskExecutionStatus: TaskExecutionProjectionStatus;
+  taskSenderAddress: TeamExecutionAddress | null;
   eventType: string; occurredAt: string; message: string | null;
 }
 const record = (value: unknown): Record<string, unknown> => value && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : {};
@@ -136,6 +142,11 @@ export const extractTaskDelegationProjectionDetails = (message: ServerMessage): 
     ?? task.referenceFiles ?? task.reference_files;
   const taskArguments = payload.taskArguments ?? payload.task_arguments ?? task.taskArguments ?? task.task_arguments;
   const status = payload.status ?? task.status;
+  let taskSenderAddress: TeamExecutionAddress | null = null;
+  if (payload.senderAddress !== undefined) {
+    try { taskSenderAddress = parseTeamExecutionAddress(payload.senderAddress); }
+    catch { return null; }
+  }
   return {
     taskId,
     taskLabel,
@@ -144,6 +155,7 @@ export const extractTaskDelegationProjectionDetails = (message: ServerMessage): 
     taskArguments: Object.keys(record(taskArguments)).length ? record(taskArguments) : null,
     taskTargetKind: text(target.kind),
     taskTargetAddress: text(target.address),
+    taskSenderAddress,
     taskExecutionStatus: normalizeTaskExecutionStatusFromPayload(eventType, status, payload.decision),
     eventType,
     occurredAt: now,
@@ -156,6 +168,9 @@ export const applyTaskDelegationProjectionDetails = (node: TeamMemberNode, detai
   node.taskReferenceFiles = details.taskReferenceFiles.map((entry) => ({ ...entry }));
   node.taskArguments = details.taskArguments; node.taskTargetKind = details.taskTargetKind;
   node.taskTargetAddress = details.taskTargetAddress;
+  node.taskSenderAddress = details.taskSenderAddress
+    ? createTeamExecutionAddress(details.taskSenderAddress)
+    : null;
   node.taskExecutionStatus = details.taskExecutionStatus; node.isTaskExecution = true;
   const id = `${details.taskId ?? 'task'}:${details.eventType}:${details.occurredAt}:${details.taskExecutionStatus}`;
   if (!node.taskTimeline?.some((entry) => entry.id === id)) {

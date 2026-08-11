@@ -183,6 +183,7 @@ export type TaskDelegationActivationResult = {
 export type TaskDelegationActivationPayload = {
   teamRunId: string;
   rootTeamRunId: string;
+  senderAddress: TeamExecutionAddress;
   target: TaskDelegationTarget;
   execution: TaskExecutionInstance;
   taskIds: string[];
@@ -202,6 +203,7 @@ export type TaskDelegationActivationPayload = {
 export type TaskDelegationStatusUpdatePayload = {
   teamRunId: string;
   rootTeamRunId: string;
+  senderAddress: TeamExecutionAddress;
   taskId: string;
   taskLabel: string;
   description: string;
@@ -236,6 +238,7 @@ export type DelegateTaskResult =
 export type TaskDelegationResultSubmittedPayload = {
   teamRunId: string;
   rootTeamRunId: string;
+  senderAddress: TeamExecutionAddress;
   taskId: string;
   taskLabel: string;
   description: string;
@@ -255,6 +258,7 @@ export type TaskDelegationResultSubmittedPayload = {
 export type TaskDelegationResultReviewedPayload = {
   teamRunId: string;
   rootTeamRunId: string;
+  senderAddress: TeamExecutionAddress;
   taskId: string;
   taskLabel: string;
   description: string;

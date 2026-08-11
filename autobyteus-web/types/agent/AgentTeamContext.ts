@@ -23,6 +23,7 @@ export interface TeamRunNodeBase {
   taskArguments?: Record<string, unknown> | null;
   taskTargetKind?: 'agent' | 'agent_team' | string | null;
   taskTargetAddress?: AgentTeamAddress | null;
+  taskSenderAddress?: TeamExecutionAddress | null;
   isTaskExecution?: boolean;
 }
 

@@ -28,6 +28,7 @@ import {
   buildTaskDelegationArguments,
   buildTaskDelegationReferenceFiles,
 } from "./task-delegation-reference-file.js";
+import { cloneTaskExecutionAddress } from "./task-delegation-record-snapshot.js";
 
 const taskArgumentsForEntry = (entry: ActiveTaskDelegationRecordEntry) =>
   buildTaskDelegationArguments({
@@ -46,6 +47,7 @@ export class TaskDelegationEventPublisher {
     const payload: TaskDelegationActivationPayload = {
       teamRunId: input.teamRunId,
       rootTeamRunId: input.entry.persistenceScope.rootTeamRunId,
+      senderAddress: cloneTaskExecutionAddress(input.entry.record.senderAddress),
       target: input.entry.target,
       execution: input.entry.taskRunExecution,
       taskIds: [input.entry.record.taskId],
@@ -84,6 +86,7 @@ export class TaskDelegationEventPublisher {
     const payload: TaskDelegationStatusUpdatePayload = {
       teamRunId: input.teamRunId,
       rootTeamRunId: input.entry.persistenceScope.rootTeamRunId,
+      senderAddress: cloneTaskExecutionAddress(record.senderAddress),
       taskId: record.taskId,
       taskLabel: deriveTaskLabel(record.content, record.taskId),
       description: record.content,
@@ -124,6 +127,7 @@ export class TaskDelegationEventPublisher {
     const payload: TaskDelegationResultSubmittedPayload = {
       teamRunId: input.teamRunId,
       rootTeamRunId: input.entry.persistenceScope.rootTeamRunId,
+      senderAddress: cloneTaskExecutionAddress(record.senderAddress),
       taskId: record.taskId,
       taskLabel: deriveTaskLabel(record.content, record.taskId),
       description: record.content,
@@ -160,6 +164,7 @@ export class TaskDelegationEventPublisher {
     const payload: TaskDelegationResultReviewedPayload = {
       teamRunId: input.teamRunId,
       rootTeamRunId: input.entry.persistenceScope.rootTeamRunId,
+      senderAddress: cloneTaskExecutionAddress(record.senderAddress),
       taskId: record.taskId,
       taskLabel: deriveTaskLabel(record.content, record.taskId),
       description: record.content,

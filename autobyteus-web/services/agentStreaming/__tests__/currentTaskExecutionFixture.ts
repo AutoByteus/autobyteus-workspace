@@ -162,17 +162,24 @@ const eventName = (status: TaskStatus): string => status === 'active'
 export const taskAgentEvent = (input: {
   status?: TaskStatus;
   address?: TeamExecutionAddress;
+  senderAddress?: TeamExecutionAddress;
   taskId?: string;
   description?: string;
 } = {}) => {
   const status = input.status ?? 'active';
   const address = input.address ?? taskAgentAddress();
+  const senderAddress = input.senderAddress ?? createTeamExecutionAddress({
+    rootTeamRunId: ROOT_TEAM_RUN_ID,
+    taskTeamRunIds: address.taskTeamRunIds,
+    memberAddress: '/StudentStudyGroup/student_one',
+  });
   const taskId = input.taskId ?? 'task-agent-0001';
   return {
     type: 'TASK_DELEGATION_EVENT',
     payload: {
       event_type: eventName(status),
       execution_address: address,
+      senderAddress,
       taskId,
       taskLabel: 'Task Agent exercise',
       description: input.description ?? 'Solve the delegated classroom exercise.',
@@ -203,6 +210,7 @@ export const taskTeamEvent = (input: {
   status?: TaskStatus;
   taskId?: string;
   taskTeamRunIds?: string[];
+  senderAddress?: TeamExecutionAddress;
   description?: string;
 } = {}) => {
   const nested = input.nested ?? false;
@@ -211,6 +219,11 @@ export const taskTeamEvent = (input: {
   const targetAddress = nested ? '/StudentStudyGroup/LabGroup' : '/StudentStudyGroup';
   const taskId = input.taskId ?? (nested ? 'task-team-inner-0002' : 'task-team-outer-0001');
   const taskTeamRunId = address.taskTeamRunIds.at(-1)!;
+  const senderAddress = input.senderAddress ?? createTeamExecutionAddress({
+    rootTeamRunId: ROOT_TEAM_RUN_ID,
+    taskTeamRunIds: address.taskTeamRunIds.slice(0, -1),
+    memberAddress: nested ? '/StudentStudyGroup/student_one' : '/Teacher',
+  });
   const description = input.description ?? (nested
     ? 'Coordinate the nested laboratory exercise.'
     : 'Coordinate the study-group exercise.');
@@ -219,6 +232,7 @@ export const taskTeamEvent = (input: {
     payload: {
       event_type: eventName(status),
       execution_address: address,
+      senderAddress,
       taskId,
       taskLabel: nested ? 'Nested lab task' : 'Study-group task',
       description,

@@ -424,8 +424,12 @@ describe("TaskDelegationService", () => {
     expect(activationDisplay).not.toContain("coordinator");
     expectNoInternalNotificationDetails(activationDisplay!);
 
-    const activated = taskDelegationPayloads(backend, "TASK_DELEGATION_ACTIVATED") as Array<{ tasks: Array<{ executionKind: string; executionRunId: string; status: string; description: string; referenceFiles: Array<{ referenceId: string; path: string }>; taskArguments: { reference_files?: string[] } }> }>;
+    const activated = taskDelegationPayloads(backend, "TASK_DELEGATION_ACTIVATED") as Array<{
+      senderAddress: ReturnType<typeof createTeamExecutionAddress>;
+      tasks: Array<{ executionKind: string; executionRunId: string; status: string; description: string; referenceFiles: Array<{ referenceId: string; path: string }>; taskArguments: { reference_files?: string[] } }>
+    }>;
     expect(activated).toHaveLength(2);
+    expect(activated[0]!.senderAddress).toEqual(coordinator.executionAddress);
     expect(activated[0]!.tasks[0]).toMatchObject({
       executionKind: "task_agent",
       executionRunId: "worker_00000000000000000000000000000001",
