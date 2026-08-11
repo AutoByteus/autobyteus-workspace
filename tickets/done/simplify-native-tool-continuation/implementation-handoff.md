@@ -2,27 +2,27 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/design-spec.md`
-- Supplemental task artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/surviving-native-loop-responsibility-inventory.md`
-- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/solution-revision-record.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/design-review-report.md`
-- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/architecture-review-revision-record.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/design-spec.md`
+- Supplemental task artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/surviving-native-loop-responsibility-inventory.md`
+- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/solution-revision-record.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/design-review-report.md`
+- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/architecture-review-revision-record.md`
 - Triggering rework package:
-  - Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/code-review-report.md`
-  - Code review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/code-review-revision-record.md`
-  - API/E2E coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/api-e2e-coverage-investigation.md`
-  - API/E2E execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/api-e2e-execution-coverage-report.md`
-  - API/E2E revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/api-e2e-revision-record.md`
-  - API/E2E test review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/api-e2e-test-review-report.md`
-  - Durable coverage diff: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/durable-coverage-diff.txt`
-  - Delivery integration evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/delivery-integration-evidence.log`
-  - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/delivery-revision-record.md`
-  - Documentation sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/docs-sync-report.md`
-  - Delivery handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/handoff-summary.md`
-  - Release/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/release-deployment-report.md`
-  - Release notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/release-notes.md`
+  - Code review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/code-review-report.md`
+  - Code review revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/code-review-revision-record.md`
+  - API/E2E coverage investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/api-e2e-coverage-investigation.md`
+  - API/E2E execution coverage report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/api-e2e-execution-coverage-report.md`
+  - API/E2E revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/api-e2e-revision-record.md`
+  - API/E2E test review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/api-e2e-test-review-report.md`
+  - Durable coverage diff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/durable-coverage-diff.txt`
+  - Delivery integration evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/delivery-integration-evidence.log`
+  - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/delivery-revision-record.md`
+  - Documentation sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/docs-sync-report.md`
+  - Delivery handoff summary: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/handoff-summary.md`
+  - Release/deployment report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/release-deployment-report.md`
+  - Release notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/release-notes.md`
 
 The completed `remove-xml-tool-calling` artifacts supplied upstream were comparison context only. The fresh ticket package and current source are authoritative.
 
@@ -33,7 +33,7 @@ The native-only agent loop now expresses request shape and stream capability thr
 IR-003 implements the approved SR-002 policy correction at its existing owner: `ServerCompactionAgentRunner` now resolves an omitted `timeoutMs` to the module-local named constant `DEFAULT_COMPACTION_AGENT_COMPLETION_TIMEOUT_MS = 300_000`. The existing nullish-coalescing override precedence, collector call, error metadata, unsubscription, child termination, surrounding cancellation behavior, ordinary factory construction, and unrelated timeout values are unchanged.
 
 - Implementation cycle: `Rework`
-- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/implementation-revision-record.md`
+- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/implementation-revision-record.md`
 - Current implementation revision ID: `IR-003`
 - Related solution revision IDs: `SR-001`, `SR-002`
 - Related architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`
@@ -125,7 +125,7 @@ Removed production paths include `tool-continuation-metadata.ts`, `memory-ingest
 
 ## Environment Or Dependency Notes
 
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation`
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Branch: `codex/simplify-native-tool-continuation`
 - Recorded base: `origin/personal` at `3cddeec6b93602da172fec2e7b9a80acc7c05117`
 - SR-002 implementation baseline: integrated HEAD `012257323d5b7303184ca7c5f385602c6a6914f3`; delivery had refreshed `origin/personal` to `d0bcd0dab2263fa284cf07de8d98214e5d19af73` before that merge.
@@ -161,7 +161,7 @@ IR-003 focused checks after `SR-002` / `ARCH-REV-002`:
 - `pnpm -C autobyteus-server-ts run build:full` — **Pass**; clean server TypeScript build, managed asset copy, built-in agent bootstrap smoke, and sanitized bootstrap smoke completed.
 - Compiled deterministic timeout propagation probe — **Pass** without timer sleep: monkey-patched only `CompactionRunOutputCollector.waitForFinalOutput`, observed `[300000, 17]` for omitted/default and explicit override, and proved typed error metadata, one unsubscription, and child termination for both cases.
 - IR-003 source/diff checks — **Pass**: one production file changed by 3 insertions / 1 deletion; only the old runner-local `120_000` fallback was replaced; the named constant and existing `??` precedence feed the unchanged collector call; ordinary factory construction has no override; runner size is 169 effective lines; `git diff --check` passed.
-- IR-003 validation logs: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/validation-logs/round5/`.
+- IR-003 validation logs: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/validation-logs/round5/`.
 
 IR-003 did not edit repository-resident durable tests, fixtures, or harnesses; exact durable coverage changes remain `api_e2e_engineer`-owned after source review.
 

@@ -13,9 +13,9 @@ The latest `design-review-report.md` remains authoritative. This record is the c
 
 ### ARCH-REV-001 — Native-loop contraction design approved for implementation
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/design-review-report.md`
 - Review round and trigger: Round 1; initial architecture review requested by `solution_designer` after explicit user approval on 2026-08-09.
-- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/solution-revision-record.md`; `SR-001`; no finding IDs.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/solution-revision-record.md`; `SR-001`; no finding IDs.
 - Relevant solution revision IDs: `SR-001`
 - Prior authoritative decision: `N/A`
 - Current authoritative decision: `Pass`
@@ -32,9 +32,9 @@ None.
 
 ### ARCH-REV-002 — Bounded server compaction completion default approved
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/design-review-report.md`
 - Review round and trigger: Round 2; architecture re-review after the approved 2026-08-11 requirement that slow local models and large contexts not be stopped by the ordinary two-minute server compaction-agent completion default.
-- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/solution-revision-record.md`; `SR-002`; no finding IDs.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/solution-revision-record.md`; `SR-002`; no finding IDs.
 - Relevant solution revision IDs: `SR-002` (with `SR-001` retained as cumulative implemented context)
 - Prior authoritative decision: `Pass` (`ARCH-REV-001`)
 - Current authoritative decision: `Pass`

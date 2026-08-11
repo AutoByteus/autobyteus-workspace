@@ -92,8 +92,8 @@
 ## Delivery Continuation
 
 - Result: `Pass`
-- Next delivery action: Finalize the user-verified candidate into `personal`,
-  then run the documented stable release flow for `v1.4.49`.
+- Next delivery action: None. Repository finalization, `v1.4.49` publication,
+  rollout verification, and ticket worktree/branch cleanup are complete.
 - Notes: The latest-base merge introduced no conflict and did not overlap the
   SR-002 compaction runner or its reviewed durable coverage. The current-doc
   obsolete-identifier scan remains applicable to the unchanged SR-001 docs.
@@ -101,4 +101,5 @@
   cleanup boundary. Explicit user verification was received on 2026-08-11;
   the post-acceptance base refresh found zero new target commits, and the ticket
   is archived under `tickets/done/simplify-native-tool-continuation` for
-  finalization and release.
+  finalization and release. The archived notes were published through the
+  documented helper; all five tag-triggered release workflows passed.

@@ -14,11 +14,11 @@
 
 ### API-REV-001 — Native-loop coverage modernization and real managed-provider validation
 
-- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/code-review-report.md`; API/E2E round 1.
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/code-review-report.md`; API/E2E round 1.
 - Triggering finding/scenario IDs: no `CRR-001` findings; downstream scenarios API-E2E-001–010, LIVE-NATIVE-001, LIVE-NOTOOL-001 and SECRET-IMPORT-001.
 - Related revisions: `SOL-REV-001`, `AR-REV-001`, `IMP-REV-001`, `CRR-001`.
 - Why recorded: initial completed API/E2E baseline after classifying and replacing retired-architecture coverage, then executing deterministic repository checks and real product AgentRuns with explicitly imported managed secrets.
-- Durable coverage delta: 2 files added, 27 updated, 5 deleted/replaced. Canonical path-level delta: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/durable-coverage-diff.txt`.
+- Durable coverage delta: 2 files added, 27 updated, 5 deleted/replaced. Canonical path-level delta: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/durable-coverage-diff.txt`.
 - Scenarios added/changed/removed: unified handler gate; runner final-batch ownership; pure builder/null request/media carrier; historical-read/no-new-marker; package contraction; provider-native histories; compaction; approval/external result; real trace corpus. Removed factory/pass-through/built-in memory processor and old class/builder expectations.
 - Command/environment delta: used the audited `pnpm secrets:import` dry-run and TTY-confirmed actual import with `/Users/normy/.autobyteus/server-data/.env` into an isolated encrypted worktree vault; both selected scenarios were READY; real OpenAI no-tool and DeepSeek native/compaction AgentRuns executed.
 
@@ -35,7 +35,7 @@ None. This is the first completed API/E2E result. During the round, the first li
 
 ### API-REV-002 — TR-001 correction exposes missing retained root export
 
-- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/api-e2e-test-review-report.md`; API/E2E round 2.
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/api-e2e-test-review-report.md`; API/E2E round 2.
 - Triggering finding/scenario IDs: `TR-001`, `API-E2E-004` / AC-012.
 - Related revisions: `API-REV-001`, `CRR-002`.
 - Why recorded: the proportional review correctly found that the positive package contract was asserted only via internal subpaths. The requested root-namespace assertion was added and executed.
@@ -58,7 +58,7 @@ None. This is the first completed API/E2E result. During the round, the first li
 
 ### API-REV-003 — IR-002 focused package-contract refresh passes
 
-- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/code-review-report.md` (`CRR-004`); API/E2E round 3.
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/code-review-report.md` (`CRR-004`); API/E2E round 3.
 - Triggering finding/scenario IDs: resolved `CR-001`, prior `API-E2E-F-001`, `API-E2E-004`, AC-012.
 - Related revisions: `API-REV-002`, `IR-002`, `CRR-003`, `CRR-004`.
 - Why recorded: refreshes the formal downstream result after source re-review approved IR-002's one-line canonical root export.
@@ -81,7 +81,7 @@ None. This is the first completed API/E2E result. During the round, the first li
 
 ### API-REV-004 — Exact compaction percentage and real post-compaction verification
 
-- Triggering role, report path, and round: user verification request after delivery `DR-003`; `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/delivery-revision-record.md`; API/E2E round 4.
+- Triggering role, report path, and round: user verification request after delivery `DR-003`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/delivery-revision-record.md`; API/E2E round 4.
 - Triggering finding/scenario IDs: supplemental `LIVE-COMPACTION-PCT-001`; no upstream source/test finding.
 - Related revisions: `API-REV-003`, `CRR-005`, `DR-003`.
 - Why recorded: the user requested current, explicit proof that compaction fires at the configured percentage and that tool/continuation behavior remains correct after compaction, using the existing `autobyteus-ts` E2E.
@@ -107,7 +107,7 @@ No prior API/E2E failure was open. The round 4 first-attempt DeepSeek invalid-JS
 
 ### API-REV-005 — IR-003 exact five-minute completion-timeout validation
 
-- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/code-review-report.md` (`CRR-007`); API/E2E round 5.
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/code-review-report.md` (`CRR-007`); API/E2E round 5.
 - Triggering finding/scenario IDs: BEH-011 / REQ-013 / AC-016 / DS-014; `API-E2E-011`; no `CRR-007` finding IDs.
 - Related revisions: `API-REV-004`, `SR-002`, `ARCH-REV-002`, `IR-003`, `CRR-007`, `DR-004`.
 - Why recorded: refreshes the authoritative downstream result after IR-003 changed the omitted server compaction-agent completion timeout from two minutes to exactly five minutes while preserving the existing explicit override and lifecycle owners.
@@ -115,7 +115,7 @@ No prior API/E2E failure was open. The round 4 first-attempt DeepSeek invalid-JS
   - updated `autobyteus-server-ts/tests/unit/agent-execution/compaction/server-compaction-agent-runner.test.ts` with a deterministic omitted/default and explicit-override matrix;
   - retained `compaction-run-output-collector.test.ts` unchanged;
   - revised the investigation and bounded `compaction-agent-parent-fallback.integration.test.ts` to the integrated base's current batch/lifecycle observation API after its initial pre-compaction stale-fixture failure.
-- Durable coverage delta: 2 updated, 0 added, 0 removed. Canonical evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/durable-coverage-diff.txt` and `validation-logs/round5/api-durable-coverage-round5.diff`.
+- Durable coverage delta: 2 updated, 0 added, 0 removed. Canonical evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/durable-coverage-diff.txt` and `validation-logs/round5/api-durable-coverage-round5.diff`.
 - Execution delta:
   - focused runner passed 7/7 in 19 ms;
   - collector plus corrected parent-fallback integration passed 12/12 on rerun;

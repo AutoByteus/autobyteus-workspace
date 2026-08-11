@@ -1,0 +1,13 @@
+POST-FINALIZATION CLEANUP
+UTC=2026-08-11T08:24:17Z
+ticket_final_commit=df47c540026a39926859d1c8ba37cf25939518a7
+target_merge_commit=2d0484de75eac1c13dbea53f68c8c253d7ae6695
+release_commit=783ed6971cfbdb066a7d2079f4cb314ccee79111
+tag=v1.4.49
+ticket_worktree_exists=no
+local_ticket_branch_count=0
+remote_ticket_branch_count=0
+worktree_registration_count=0
+personal_head=783ed6971cfbdb066a7d2079f4cb314ccee79111
+origin_personal=783ed6971cfbdb066a7d2079f4cb314ccee79111
+tag_commit=783ed6971cfbdb066a7d2079f4cb314ccee79111

@@ -28,10 +28,10 @@ After API-REV-004 validated compaction and continuation on the integrated delive
 ## Environment Discovery / Bootstrap Context
 
 - Project Type: `Git`
-- Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation`
+- Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation`
 - Current Branch: `codex/simplify-native-tool-continuation`
-- Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation`
+- Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Bootstrap Base Branch: refreshed `origin/personal`
 - Remote Refresh Result: `git fetch origin personal` succeeded on 2026-08-09; `origin/personal` resolved to `3cddeec6b93602da172fec2e7b9a80acc7c05117`.
 - Task Branch: `codex/simplify-native-tool-continuation`, created directly from refreshed `origin/personal`.
@@ -47,13 +47,13 @@ After API-REV-004 validated compaction and continuation on the integrated delive
 
 | Artifact Path | Purpose And Scope | Evidence, Context, Or Decision Captured | Core Artifact(s) Supported | Related Requirement / Acceptance-Criteria IDs | Status | Approval Applicability / State | Follow-Up Needed |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/surviving-native-loop-responsibility-inventory.md` | Classifies each candidate layer as remove, contract, or retain | Production callers, current responsibility, public surface, candidate target posture, deletion and coverage surface | Requirements, investigation, later design | REQ-001–REQ-012; AC-001–AC-015 | Complete | `N/A` — evidence/context only | Keep aligned with approved design |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/surviving-native-loop-responsibility-inventory.md` | Classifies each candidate layer as remove, contract, or retain | Production callers, current responsibility, public surface, candidate target posture, deletion and coverage surface | Requirements, investigation, later design | REQ-001–REQ-012; AC-001–AC-015 | Complete | `N/A` — evidence/context only | Keep aligned with approved design |
 
 ## Source Log
 
 | Date | Source Type | Exact Source / Query / Command | Why Consulted | Relevant Findings | Follow-Up Needed |
 | --- | --- | --- | --- | --- | --- |
-| 2026-08-09 | Command | `git fetch origin personal`; `git worktree add -b codex/simplify-native-tool-continuation /Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation origin/personal` | Establish an isolated fresh base | Worktree created at `3cddeec6b93602da172fec2e7b9a80acc7c05117` | No |
+| 2026-08-09 | Command | `git fetch origin personal`; `git worktree add -b codex/simplify-native-tool-continuation /Users/normy/autobyteus_org/autobyteus-workspace-superrepo origin/personal` | Establish an isolated fresh base | Worktree created at `3cddeec6b93602da172fec2e7b9a80acc7c05117` | No |
 | 2026-08-09 | Doc | `tickets/done/remove-xml-tool-calling/{requirements.md,investigation-notes.md,design-spec.md,implementation-handoff.md,code-review-report.md,api-e2e-coverage-investigation.md,api-e2e-execution-coverage-report.md,handoff-summary.md}` | Understand delivered upstream behavior and validation | Confirms native-only transport is finalized; ordered continuation, no-tool, context carrier, and provider histories are supported and validated | No |
 | 2026-08-09 | Code | `autobyteus-ts/src/agent/loop/{agent-turn-runner.ts,llm-phase.ts,tool-phase.ts,tool-result-continuation-builder.ts}` | Trace primary and return spines | Runner owns the loop; builder mixes memory, identity, metadata, display, and carrier concerns | Design after approval |
 | 2026-08-09 | Code | `autobyteus-ts/src/agent/pipelines/{agent-input-pipeline.ts,tool-result-pipeline.ts}` | Trace extension processing and continuation request shape | TOOL continuations still run input processors; result pipeline has one production caller; mode string is propagated only to select append/no-append | Design after approval |
