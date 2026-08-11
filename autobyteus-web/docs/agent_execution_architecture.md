@@ -223,9 +223,14 @@ preserve status color semantics. It must not use the superseded CSS dotted-borde
 or dashed-stroke marker treatments, add a second dotted initials/avatar marker,
 add a trailing marker, or show visible `Temp` / `Temporary` copy in the row body.
 Selecting either a stable or transient Workspaces row uses the existing
-team-member focus path and route-key identity. The right-side Team tab owns
-task detail/content through its Tasks section; it is not the primary execution
-hierarchy or status surface.
+team-member focus path. A team-member row is current only when its owning
+`teamRunId` is the authoritative selected team run and its route key matches
+that team's roster/history focus; a route key alone must not select same-named
+members in another historical team run. Stable and transient current rows
+expose the single `aria-current="true"` navigation state, while focus, hover,
+status, and transient presentation remain separate visual states. The right-
+side Team tab owns task detail/content through its Tasks section; it is not the
+primary execution hierarchy or status surface.
 
 `TeamOverviewPanel` owns the local Messages/Tasks accordion state. Messages
 remains the default for a selected team run with no delegated task entries, but
@@ -550,7 +555,10 @@ member, or selects a nested member row directly,
 needed to keep that nested focus visible.
 
 For team-run member rows, selection state uses roster/history visual focus, not
-active-execution command focus. The Workspace history tree renders recursive
+active-execution command focus. The current-row predicate is scoped to the
+authoritative selected team run plus that run's focused member route; clearing
+the team selection or having no valid target leaves no member row current. The
+Workspace history tree renders recursive
 `memberTree` structure when available, with `team.members` only as the flat
 fallback. Nested `agent_team` member rows appear as subteam rows with a Team
 badge and their own disclosure control; they are collapsed by default, expand
