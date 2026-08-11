@@ -1,6 +1,6 @@
 # Implementation Revision Record
 
-The current code and `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/implementation-handoff.md` remain authoritative. This record preserves the concise implementation history.
+The current code and `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/implementation-handoff.md` remain authoritative. This record preserves the concise implementation history.
 
 ## Revision Index
 
@@ -14,7 +14,7 @@ The current code and `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-
 
 ### IR-001 — Native-Loop Ownership Contraction Baseline
 
-- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/design-review-report.md`; initial implementation after `ARCH-REV-001` Pass.
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/design-review-report.md`; initial implementation after `ARCH-REV-001` Pass.
 - Triggering finding IDs: N/A; architecture review reported no findings.
 - Classification: `Initial Baseline`
 - Prior authoritative result: N/A
@@ -34,7 +34,7 @@ The current code and `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-
 
 ### IR-002 — Canonical Root Schema Export Local Fix
 
-- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/code-review-report.md`; focused failure-origin review round 2 after `API-REV-002`.
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/code-review-report.md`; focused failure-origin review round 2 after `API-REV-002`.
 - Triggering finding IDs: `CR-001`; corrected durable proof finding `TR-001` was already resolved before this implementation rework.
 - Classification: `Local Fix`
 - Prior authoritative result: `CRR-003` Fail because BEH-009 / DS-011 / AC-012 required the retained `ToolSchemaProvider` class at the package root, while `src/tools/index.ts` omitted it.
@@ -54,7 +54,7 @@ The current code and `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-
 
 ### IR-003 — Five-Minute Server Compaction Completion Default
 
-- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/design-review-report.md`; implementation after approved requirement/design re-entry `SR-002` and architecture re-review `ARCH-REV-002`.
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/design-review-report.md`; implementation after approved requirement/design re-entry `SR-002` and architecture re-review `ARCH-REV-002`.
 - Triggering finding IDs: N/A; architecture review passed with no findings. The approved re-entry is identified by `BEH-011`, `REQ-013`, and `AC-016`.
 - Classification: `Design Impact`
 - Prior authoritative result: The cumulative SR-001 implementation had passed source/API-E2E review and reached `DR-004` on integrated HEAD `012257323d5b7303184ca7c5f385602c6a6914f3`; its ordinary server compaction runner still used the pre-existing omitted-option fallback of `120_000` ms.
@@ -67,7 +67,7 @@ The current code and `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-
 - Why this baseline or implementation revision is recorded: A new approved behavior after delivery requires slow local-model and very-large-context compaction children to receive a five-minute ordinary completion wait without creating a configuration surface or weakening explicit short test/custom overrides.
 - Approved behavior or requirement IDs affected: `BEH-011`; `REQ-008`, `REQ-013`; `AC-008`, `AC-016`; `UC-011`; `DS-014`.
 - Implementation delta: Added the module-local `DEFAULT_COMPACTION_AGENT_COMPLETION_TIMEOUT_MS = 300_000` to `server-compaction-agent-runner.ts` and replaced only `options.timeoutMs ?? 120_000` with `options.timeoutMs ?? DEFAULT_COMPACTION_AGENT_COMPLETION_TIMEOUT_MS`. The option type, collector, backend factory, failure/metadata wrapping, unsubscription, child termination, and cancellation surroundings are unchanged.
-- Changed files or areas: Production change is 3 insertions / 1 deletion in `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts`; the canonical implementation handoff and this revision record were updated for IR-003. No durable test, fixture, harness, config, API, UI, stored-data, or unrelated timeout file was edited.
+- Changed files or areas: Production change is 3 insertions / 1 deletion in `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts`; the canonical implementation handoff and this revision record were updated for IR-003. No durable test, fixture, harness, config, API, UI, stored-data, or unrelated timeout file was edited.
 - Local validation and result: Focused existing runner tests passed 5/5; `autobyteus-server-ts` full build and sanitized bootstrap smoke passed; a compiled non-waiting collector spy probe observed exact values `[300000, 17]` and retained typed error metadata, one unsubscription, and child termination for both omitted/default and explicit-override cases; source/diff/size/whitespace checks passed.
 - Next recipient or routing: `code_reviewer`
 - Remaining limitations or risks: API/E2E must investigate and add/update durable deterministic AC-016 coverage after source-review Pass; any durable coverage delta must return through proportional code review. A genuinely stalled child may remain allocated up to three minutes longer, as explicitly accepted by the reviewed design.

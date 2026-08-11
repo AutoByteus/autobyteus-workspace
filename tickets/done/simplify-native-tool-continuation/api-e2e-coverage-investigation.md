@@ -2,20 +2,20 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/design-spec.md`
-- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/surviving-native-loop-responsibility-inventory.md`
-- Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/solution-revision-record.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/design-review-report.md`
-- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/architecture-review-revision-record.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/implementation-handoff.md`
-- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/implementation-revision-record.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/code-review-report.md`
-- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/code-review-revision-record.md`
-- Delivery Revision Record (delivery re-entry only): `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/delivery-revision-record.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/design-spec.md`
+- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/surviving-native-loop-responsibility-inventory.md`
+- Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/solution-revision-record.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/design-review-report.md`
+- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/architecture-review-revision-record.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/implementation-handoff.md`
+- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/implementation-revision-record.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/code-review-report.md`
+- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/code-review-revision-record.md`
+- Delivery Revision Record (delivery re-entry only): `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/delivery-revision-record.md`
 - Relevant Delivery Revision IDs: `DR-003`, `DR-004`
-- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/api-e2e-revision-record.md`
+- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/api-e2e-revision-record.md`
 - Current API/E2E Revision ID: `API-REV-005`
 - Current Investigation Round: `5`
 - Trigger: `CRR-007` Pass for IR-003 commit `7aa4bc6d7f3216db8dfc703eaf5ebfbc67da3804`, implementing BEH-011 / REQ-013 / AC-016.
@@ -115,16 +115,16 @@ For BEH-011 / REQ-013 / AC-016, an ordinarily constructed server compaction runn
 
 ## Project Execution Discovery
 
-- Assigned task worktree / workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation`
+- Assigned task worktree / workspace: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Project type and runtime stack: pnpm TypeScript monorepo; Node.js 22; Vitest; Fastify/GraphQL server; SQLite/Prisma secret vault; provider SDKs; built real-E2E runner.
 - Conflicting, missing, or unclear project instructions: None. Delivery had already materialized the root/core/server/shared-package dependency directories on the integrated worktree; round 4 verified them as pre-existing, used them in place, and did not take cleanup ownership.
 - Required environment variables or secrets available: `Yes`, by the user's explicit authorization to import `/Users/normy/.autobyteus/server-data/.env` through the project importer into this worktree's isolated test database. Secret values must never be sourced, printed, or copied into artifacts.
 
 | Instruction / Configuration Path | Authority / Purpose | Commands, Setup, Or Constraints Learned |
 | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/autobyteus-server-ts/AGENTS.md` | Closest server test instructions | Use `pnpm -C autobyteus-server-ts exec vitest run ... --no-watch`; avoid watch mode. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/README.md` | Workspace execution | `pnpm test:e2e`, `pnpm test:e2e:real:preflight`, and `pnpm test:e2e:real`; real provider scenarios run through test-owned runtime. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/autobyteus-server-ts/README.md` | Secret/data/runtime authority | Import only with explicit absolute `--source` and `--database-url`; dry-run first; importer does not infer target; unavailable capabilities are skips, not passes. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/AGENTS.md` | Closest server test instructions | Use `pnpm -C autobyteus-server-ts exec vitest run ... --no-watch`; avoid watch mode. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/README.md` | Workspace execution | `pnpm test:e2e`, `pnpm test:e2e:real:preflight`, and `pnpm test:e2e:real`; real provider scenarios run through test-owned runtime. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/README.md` | Secret/data/runtime authority | Import only with explicit absolute `--source` and `--database-url`; dry-run first; importer does not infer target; unavailable capabilities are skips, not passes. |
 | `package.json` | Canonical scripts | `secrets:import` builds server then invokes the audited importer; real E2E builds server and launches a captured Vitest process against an isolated built test server. |
 | `autobyteus-ts/vitest.config.ts` | Core test runner | Core unit/integration files can be selected with `pnpm -C autobyteus-ts exec vitest run --no-watch ...`. |
 | `test-support/live-e2e/run-live-e2e.mjs` and `live-e2e-harness.ts` | Real provider harness | Uses sanitized child environment, explicit scenario selection, built server, isolated workspace/memory, product AutoByteus backend/AgentRun, evidence scanner, and owned cleanup. |

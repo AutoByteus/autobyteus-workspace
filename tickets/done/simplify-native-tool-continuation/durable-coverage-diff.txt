@@ -109,7 +109,7 @@ d306c1d49ab4352fb813c0f6a761e90a81b402b756eccb781b2a6360434cf6ee  autobyteus-ser
 
 ### Round 5 evidence
 
-Canonical diff: /Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/validation-logs/round5/api-durable-coverage-round5.diff
+Canonical diff: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/validation-logs/round5/api-durable-coverage-round5.diff
 Focused runner: tickets/done/simplify-native-tool-continuation/validation-logs/round5/api-server-compaction-agent-runner-focused.log
 Collector + parent-fallback rerun: tickets/done/simplify-native-tool-continuation/validation-logs/round5/api-compaction-collector-and-parent-fallback-rerun.log
 Compaction unit matrix: tickets/done/simplify-native-tool-continuation/validation-logs/round5/api-server-compaction-unit-matrix.log

@@ -50,8 +50,8 @@
 - Setup command/result: `pnpm install` from the repository root — Pass, exit 0.
 - Build command/result: documented macOS no-notarization environment plus
   `pnpm build:electron:mac` from `autobyteus-web` — Pass, exit 0.
-- Application:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- Application: generated at `autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+  in the dedicated ticket worktree, which was later removed after release.
 - Artifact identity: `AutoByteus` version `1.4.45`, `com.autobyteus.app`, Mach-O
   ARM64, unsigned/unnotarized local build.
 - Installer artifacts: macOS ARM64 DMG and ZIP plus blockmaps created under
@@ -92,8 +92,8 @@
 - Dependency refresh: root `pnpm install` Pass.
 - Electron rebuild: documented local macOS no-notarization
   `pnpm build:electron:mac` path Pass from a cleared generated output directory.
-- Application:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- Application: generated at `autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+  in the dedicated ticket worktree, which was later removed after release.
 - Artifact identity: version `1.4.47`, `com.autobyteus.app`, Mach-O ARM64,
   unsigned/unnotarized local build.
 - Packaged-source proof: current unified handler, pure continuation builder,
@@ -200,8 +200,8 @@
 - Dependency refresh: root `pnpm install` Pass.
 - Electron rebuild: documented local macOS no-notarization
   `pnpm build:electron:mac` path Pass from a cleared generated output directory.
-- Application:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- Application: generated at `autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+  in the dedicated ticket worktree, which was later removed after release.
 - Artifact identity: version `1.4.48`, `com.autobyteus.app`, Mach-O ARM64,
   unsigned/unnotarized local build.
 - Packaged-source proof: the bundled server runner contains the exact `300_000`
@@ -253,3 +253,42 @@
   the next delivery revision after execution.
 - Current result: `Pass — explicit verification complete; finalization and
   v1.4.49 release authorized`
+
+## DR-007 — Repository finalized and v1.4.49 released
+
+- Date: 2026-08-11
+- Trigger: Execute the repository finalization and new-version release
+  authorized by the user's explicit verification in `DR-006`.
+- Final ticket commit:
+  `df47c540026a39926859d1c8ba37cf25939518a7`; ticket branch push passed.
+- Target refresh: `origin/personal` remained
+  `c6080a4fbee5541c48c898dc1346ac67fcf9c2d6`; no post-acceptance advance and
+  no renewed verification requirement.
+- Target merge: Pass without conflict —
+  `2d0484de75eac1c13dbea53f68c8c253d7ae6695`; the merge tree exactly matched
+  the final ticket commit tree, and the first `personal` push passed.
+- Release method: documented root helper
+  `pnpm release 1.4.49 -- --release-notes tickets/done/simplify-native-tool-continuation/release-notes.md`.
+- Release result: Pass, exit 0. Desktop and managed messaging gateway versions
+  were bumped from `1.4.48` to `1.4.49`; curated notes and the managed gateway
+  release manifest were synchronized.
+- Release commit/tag:
+  `783ed6971cfbdb066a7d2079f4cb314ccee79111` / `v1.4.49`; both `personal` and
+  the tag were pushed successfully.
+- GitHub release:
+  https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.49 —
+  stable, non-draft, non-prerelease, 21 assets.
+- Rollout result: Pass. Desktop run `31470908827`, Android run `31470908849`,
+  iOS App Store Connect run `31470908859`, Messaging Gateway run `31470908843`,
+  and Server Docker run `31470908807` all completed successfully. No manual
+  workflow dispatch was issued.
+- Cleanup result: Pass. The dedicated ticket worktree, local ticket branch,
+  remote ticket branch, and stale worktree registration were removed. Unrelated
+  `.article-work/` content in the main worktree was preserved untouched.
+- Evidence:
+  - `validation-logs/delivery-finalization/release-v1.4.49.log`
+  - `validation-logs/delivery-finalization/rollout-v1.4.49.log`
+  - `validation-logs/delivery-finalization/release-verification-v1.4.49.log`
+  - `validation-logs/delivery-finalization/cleanup-verification.log`
+- Current result: `Pass — repository finalized, v1.4.49 published, all five
+  release workflows passed, and cleanup completed`

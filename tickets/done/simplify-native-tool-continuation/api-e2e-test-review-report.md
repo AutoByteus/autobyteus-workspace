@@ -4,19 +4,19 @@
 
 - Review Round: Post-API/E2E proportional test review round 4
 - Trigger: `API-REV-005` reported `Pass` for IR-003 / AC-016 on reviewed HEAD `7aa4bc6d7f3216db8dfc703eaf5ebfbc67da3804`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/requirements.md` (BEH-011, REQ-013, AC-016, UC-011)
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/design-spec.md` (DS-014 and deterministic-coverage guidance)
-- Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/surviving-native-loop-responsibility-inventory.md` (unaffected SR-001 context)
-- Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/solution-revision-record.md` (`SR-001`, `SR-002`)
-- Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/architecture-review-revision-record.md` (`ARCH-REV-001`, `ARCH-REV-002`)
-- Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/implementation-revision-record.md` (`IR-001`–`IR-003`)
-- Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/code-review-report.md` (`CRR-007` Pass; source scorecard not reopened)
-- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/code-review-revision-record.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/requirements.md` (BEH-011, REQ-013, AC-016, UC-011)
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/design-spec.md` (DS-014 and deterministic-coverage guidance)
+- Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/surviving-native-loop-responsibility-inventory.md` (unaffected SR-001 context)
+- Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/solution-revision-record.md` (`SR-001`, `SR-002`)
+- Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/architecture-review-revision-record.md` (`ARCH-REV-001`, `ARCH-REV-002`)
+- Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/implementation-revision-record.md` (`IR-001`–`IR-003`)
+- Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/code-review-report.md` (`CRR-007` Pass; source scorecard not reopened)
+- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/code-review-revision-record.md`
 - Current Code Review Revision ID: `CRR-008`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/api-e2e-coverage-investigation.md`
-- Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/api-e2e-execution-coverage-report.md`
-- API/E2E Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/api-e2e-revision-record.md` (`API-REV-001`–`API-REV-005`)
-- Delivery Revision Record Reviewed As Context (delivery re-entry only): `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/delivery-revision-record.md` (`DR-001`–`DR-004`)
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/api-e2e-coverage-investigation.md`
+- Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/api-e2e-execution-coverage-report.md`
+- API/E2E Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/api-e2e-revision-record.md` (`API-REV-001`–`API-REV-005`)
+- Delivery Revision Record Reviewed As Context (delivery re-entry only): `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/simplify-native-tool-continuation/delivery-revision-record.md` (`DR-001`–`DR-004`)
 - API/E2E Result: `Pass`
 - Final Validation Confidence: `98.8%`
 - Prior unresolved test-review findings rechecked: None. `TR-001` and `CR-001` remain resolved; API-REV-005 introduced no finding ID.
@@ -27,8 +27,8 @@ Temporary probes and round 5 logs were treated as execution evidence, not durabl
 
 | Durable Test Path | Change (`Added`/`Updated`/`Removed`) | Related Scenario / Requirement | Coherent Test Responsibility | Notes |
 | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/autobyteus-server-ts/tests/unit/agent-execution/compaction/server-compaction-agent-runner.test.ts` | Updated | BEH-011 / REQ-013 / AC-016 / UC-011 / DS-014 | Server compaction child-run construction, collection, error projection, subscription cleanup, and termination | Adds a two-case omitted/default versus explicit-override matrix by observing the existing collector boundary; the mocked rejection avoids a real wait and the fixture now counts subscriptions/unsubscriptions. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/autobyteus-server-ts/tests/integration/agent-execution/compaction/compaction-agent-parent-fallback.integration.test.ts` | Updated | BEH-011 / UC-011 / DS-014; retained parent runtime/model fallback behavior | Parent-triggered compaction through the current AutoByteus backend/factory/runner integration | Replaces retired fixture APIs with current `subscribeToSourceEventBatches` and `getLifecycleSnapshot().phase`, preserving event flattening, parent trigger, fallback, context, and post-compaction assertions. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/unit/agent-execution/compaction/server-compaction-agent-runner.test.ts` | Updated | BEH-011 / REQ-013 / AC-016 / UC-011 / DS-014 | Server compaction child-run construction, collection, error projection, subscription cleanup, and termination | Adds a two-case omitted/default versus explicit-override matrix by observing the existing collector boundary; the mocked rejection avoids a real wait and the fixture now counts subscriptions/unsubscriptions. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/integration/agent-execution/compaction/compaction-agent-parent-fallback.integration.test.ts` | Updated | BEH-011 / UC-011 / DS-014; retained parent runtime/model fallback behavior | Parent-triggered compaction through the current AutoByteus backend/factory/runner integration | Replaces retired fixture APIs with current `subscribeToSourceEventBatches` and `getLifecycleSnapshot().phase`, preserving event flattening, parent trigger, fallback, context, and post-compaction assertions. |
 
 - No durable test file changed: `No`
 - Review result when no durable test file changed: `N/A`
