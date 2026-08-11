@@ -22,16 +22,16 @@
 
 - Implementation cycle: `Local Fix`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/implementation-revision-record.md`
-- Current implementation revision ID: `IR-030`
+- Current implementation revision ID: `IR-031`
 - Related solution revision IDs: cumulative `SR-001`–`SR-018`; current `SR-018`
 - Related architecture-review revision IDs: current `ARCH-REV-011` Pass; `ARCH-REV-010` was the immediately preceding design rework gate
-- Related code-review revision IDs: `CRR-052` focused cumulative Fail — Local Fix; `CRR-051` is the preceding full cumulative review
-- Related API/E2E revision IDs: `API-REV-023` is pre-pause, incomplete, and non-authoritative for this source
+- Related code-review revision IDs: `CRR-054` focused API/E2E failure-origin Fail — Local Fix; `CRR-053` is the preceding cumulative source Pass
+- Related API/E2E revision IDs: `API-REV-024` is paused at its incomplete `57%` checkpoint and is non-authoritative for this source
 - Related delivery revision IDs: `DR-005` and cumulative delivery blocker state
-- Triggering finding: remaining `CR-F-029`; `CR-F-030` is resolved and `CR-F-028` remains preserved
-- Production source commit: `a9a5a74d8fd7f4fbbeac7a63085829fa76ea4973` (`fix(web): defer nested task agent restore`), on top of IR-029 source `e1943de2661521c1e1bc7c8ef9744eb2cc9e5b75`
+- Triggering finding: `CR-F-031` / `API-F-016`; `CR-F-028` through `CR-F-030` remain resolved
+- Production source commit: `6cbb9876741405a9e2015bc18563fffc7186c4c0` (`fix(web): preserve mobile Team reference root`), on top of IR-030 source `a9a5a74d8fd7f4fbbeac7a63085829fa76ea4973`
 
-IR-030 closes the one restore lifecycle left by CRR-052 without weakening the exact-parent rule. A complete root task snapshot may retain a validated active task-Agent projection inside an already materialized task Team while deferring only its concrete execution when the exact target `task_team_agent` binding has not arrived. The first exact correlated task-Team Agent binding stages that real binding and every matching pending task Agent together, validates them through the unchanged strict materializer, and commits atomically; foreign, reordered, missing, colliding, or wrong-placement input changes nothing. Terminal task-Team cleanup also refuses a retained nonterminal projected descendant even when its concrete execution is still deferred. No placeholder, persistent-node substitution, secondary graph, alias, or fallback was added. All IR-029 and cumulative SR-018 behavior remains preserved.
+IR-031 corrects the one stale mobile consumer exposed by CRR-054. `MobileTeamMessages` now obtains the structured-reference viewer's Team-run identity from the authoritative execution aggregate through `activeTeamContext.executions.getRootTeamRunId()`, exactly as the same component already does for message perspective. `AgentTeamContext` remains exactly `{topology, executions}`; no flat `teamRunId`, route/path/name fallback, alias, retry, or compatibility identity was restored. IR-030's exact restore behavior and all cumulative SR-018 boundaries remain unchanged.
 
 ## Reviewed Behavior Implementation Trace
 
@@ -43,6 +43,7 @@ IR-030 closes the one restore lifecycle left by CRR-052 without weakening the ex
 | `BEH-015`, `DS-013A`–`D` | Keep released-data conversion and exact startup gate; make canonical token conversion one atomic row+schema transaction. | canonical migration/migrator/planner/store, Prisma schema, token runtime/repository/projections. | Planning completes before mutation; row updates, read-back verification, obsolete-column contraction, and canonical root index creation share one transaction. Old independent backfill/drop owners are removed. |
 | `BEH-016`, `R-050`, `R-051`, `AC-047`, `DS-015A`–`G` | Separate immutable topology from concrete execution/task lifecycle; admit one complete task snapshot; reconcile monotonically and atomically; keep Agent status single-owned and reactive. | `taskDelegationGraphqlDtoProjection.ts`, `taskDelegationHydrationService.ts`, `teamRunContextHydrationService.ts`, `teamTaskProjectionMapper.ts`, `teamExecutionState.ts`, and aggregate-private concrete/materialization/invariant/reconciliation modules. | One invalid GraphQL row rejects the collection and preserves prior state; nested parent-chain/topology/update invariants fail closed; a supported restored task-Team child projection waits only for its exact real task-Team Agent binding and then materializes atomically; terminal history never rematerializes; cleanup rejects nonterminal descendants; raw `AgentContext.state` changes invalidate aggregate queries. |
 | `BEH-016`, `DS-016A`–`B` | Preserve exact V5 application execution producer binding without application predecessor migration. | application SDK contract, server application execution context, mixed Agent materialization, frontend exact mapper/history parser. | Persistent producer address is asserted; task/task-Team Agent execution rebinds exactly; application predecessor database migration is deleted. |
+| `BEH-016`, mobile Team references | Preserve one canonical root identity for mobile message-owned structured reference routes. | `autobyteus-web/components/mobile/MobileTeamMessages.vue` -> `AgentTeamContext.executions.getRootTeamRunId()` -> `MobileTeamReferenceViewer`. | The viewer receives the exact rooted TeamRun ID without expanding `AgentTeamContext` or accepting a compatibility identity. |
 | `BEH-018` | Preserve the required imported nested-classroom three-runtime validation contract. | No live provider or browser execution in implementation scope. | Still required downstream after cumulative source Pass. |
 | `R-043`, `AC-048` | Clean cut: remove stale route/task/status/raw-key/placeholder/compatibility authorities. | Deleted legacy status/event/task instance/projection/restore/rebase/application migration/token cleanup files; exact six-path legacy scan retained. | Production clean-cut audits pass; dirty durable tests remain downstream-owned for current-contract maintenance. |
 
@@ -56,7 +57,7 @@ IR-030 closes the one restore lifecycle left by CRR-052 without weakening the ex
 - Canonical migration/token transaction: `autobyteus-server-ts/src/app-data-migrations/migrations/`, token domain/repository, and `prisma/schema.prisma`
 - Application producer binding: `autobyteus-application-sdk-contracts/`, server application orchestration/streaming, and mixed Agent materialization
 - Frontend authoritative aggregate: `autobyteus-web/services/teamExecution/`
-- IR-030 restore delta: `teamTaskExecutionMaterializer.ts`, `teamTaskSnapshotReconciler.ts`, and `teamExecutionState.ts`
+- IR-031 mobile reference delta: `autobyteus-web/components/mobile/MobileTeamMessages.vue`
 - Frontend task admission/commit boundary: `autobyteus-web/services/runHydration/taskDelegationGraphqlDtoProjection.ts`, `taskDelegationHydrationService.ts`, `teamRunContextHydrationService.ts`, and `stores/taskDelegationStore.ts`
 - Frontend stream/draft/hydration/open/history/navigation/mobile/presentation consumers: `autobyteus-web/services/agentStreaming/`, `stores/`, `components/`, `composables/`, `types/`, and `utils/`
 
@@ -69,17 +70,17 @@ IR-030 closes the one restore lifecycle left by CRR-052 without weakening the ex
 
 ## Known Risks
 
-- The cumulative SR-018 source remains broad. IR-030 itself is a bounded three-file production correction, but the next review still decides readiness against the cumulative contract.
-- Repository-wide frontend TypeScript remains non-clean on inherited and dirty test/tooling inputs. Direct `.nuxt` TypeScript emitted `823` diagnostics, while the changed-production-path filter found `0`; the production Nuxt build passed.
+- The cumulative SR-018 source remains broad. IR-031 itself is a one-expression production correction, but the next review still decides readiness against the cumulative contract.
+- Repository-wide frontend TypeScript remains non-clean on inherited and dirty test/tooling inputs. Direct TypeScript emitted `597` diagnostics, while the exact changed production component had `0`; the production Nuxt build passed.
 - API/E2E must re-investigate and update/remove stale durable current-Team fixtures after source Pass. Implementation did not edit or stage those dirty coverage files.
-- Real AutoByteus/Codex/Claude nested-classroom and browser validation remains unexecuted for SR-018/IR-030.
+- Real mobile/browser content-route validation and the AutoByteus/Codex/Claude nested-classroom matrix remain downstream work for SR-018/IR-031.
 
 ## Task Design Health Assessment Implementation Check
 
 - Reviewed change posture: cumulative `Comprehensive Refactor`; current round `Local Fix`
 - Reviewed root-cause classification: uncorrelated Team event/wire shapes, mixed mutable frontend topology/execution ownership, stale cleanup authorities, and incomplete status-producer closure
 - Reviewed refactor decision: `Refactor Needed Now`
-- Implementation matched the reviewed assessment: `Yes`; IR-030 keeps the exact projection and concrete-execution graph under the existing aggregate and defers only a concrete child transition until its authoritative binding arrives
+- Implementation matched the reviewed assessment: `Yes`; IR-031 derives mobile reference root identity from the existing authoritative execution aggregate and does not reintroduce the removed flat context identity
 - If challenged, routed as `Design Impact`: `N/A` after `ARCH-REV-011` Pass
 - Evidence / notes: the implementation introduces the reviewed singular boundaries rather than retaining wrappers or compatibility selectors. `TeamExecutionState` and the mixed manager remain below the 500-effective-line guard; changed deltas over 220 lines were assessed as cohesive boundary replacement, generated declarations, or net deletion/contraction.
 
@@ -90,7 +91,7 @@ IR-030 closes the one restore lifecycle left by CRR-052 without weakening the ex
 - Dead/obsolete code and dormant replaced paths removed in scope: `Yes`
 - Shared structures remain tight: `Yes`
 - Canonical shared design guidance reapplied: `Yes`
-- Changed source implementation files within size guardrail: `Yes`; IR-030's largest changed source file is `teamExecutionState.ts` at `437` effective non-empty lines; `teamTaskExecutionMaterializer.ts` is `111` and `teamTaskSnapshotReconciler.ts` is below `180`
+- Changed source implementation files within size guardrail: `Yes`; IR-031 changes only `MobileTeamMessages.vue`, which remains below `500` effective non-empty lines
 - Notes: the historical Team identity scan still returns exactly the six approved migration-local production paths. Current web production has no legacy route/path identity, raw execution/topology maps, synthetic task instances, approval token, duplicate member-input receiver, application predecessor migration owner, `ensureTaskTeamAgent`, `removeExecutionSubtree`, permissive task-record normalizer, or legacy task hydration wrapper.
 
 ## Persisted Data Transition Check
@@ -113,18 +114,18 @@ IR-030 closes the one restore lifecycle left by CRR-052 without weakening the ex
 
 ## Local Implementation Checks Run
 
-- `autobyteus-web`: `pnpm build` — Pass on final IR-030 source, including 15-route static prerender (`/tmp/ir030-web-build-final.log`).
-- `autobyteus-web`: `pnpm exec tsc --noEmit --skipLibCheck` — repository-wide Fail with the same `823` inherited/dirty test/tooling diagnostics; exact IR-030 changed-production-path filter found `0` diagnostics (`/tmp/ir030-web-tsc-final.log`). This is not reported as a passing repository-wide typecheck.
-- Removed-after-use exact restore probe — Pass `1/1` file and `2/2` cases: the complete snapshot retains the outer task Team plus direct child task projection without fabricating a concrete child; the exact task-Team Agent binding then materializes that binding and child task Agent with the exact run ID; a foreign task-Team chain rejects and leaves the child absent (`/tmp/ir030-task-team-restore-probe.log`). The temporary test file was deleted after execution.
-- Static audits — Pass: the source delta is exactly the three aggregate-owned files, no temporary probe remains, `git diff --check` passes, and all changed implementation files remain below `500` effective non-empty lines.
-- IR-029's cumulative frontend aggregate evidence and IR-028's server/shared-contract/application/token evidence remain the reviewed baselines and were not rerun beyond the affected IR-030 boundary.
+- `autobyteus-web`: `pnpm exec vitest run components/mobile/__tests__/MobileTeamMessages.spec.ts` — Pass `1/1` file and `2/2` cases for maintained current-contract structured-reference open/close identity (`/tmp/ir031-mobile-team-reference-focused.log`). The API/E2E-owned dirty test was neither edited nor staged by implementation.
+- `autobyteus-web`: `pnpm build` — Pass on final IR-031 source, including 15-route static prerender (`/tmp/ir031-web-build.log`).
+- `autobyteus-web`: `pnpm exec tsc --noEmit --skipLibCheck` — repository-wide Fail with `597` inherited/dirty test/tooling diagnostics; exact changed production component filter found `0` diagnostics (`/tmp/ir031-web-tsc.log`). This is not reported as a passing repository-wide typecheck.
+- Static audits — Pass: the source commit contains exactly `MobileTeamMessages.vue`, the maintained dirty mobile test remains outside the commit, `git diff --check` passes, and the changed component remains below `500` effective non-empty lines (`/tmp/ir031-final-audit.log`).
+- CRR-053's cumulative source Pass and IR-030 restore evidence remain the reviewed baseline; they were not rerun beyond the affected IR-031 boundary.
 
 ## Frontend Rendered-Result Check
 
-- Affected journeys: Team launch/open/restore, exact member focus, task Agent/task-Team rows, delegated-task overview/history, event monitor, command approval/interrupt, mobile focus, and token presentation.
+- Affected journey: mobile Team Activity -> Messages -> Details -> structured reference open/close; all cumulative Team journeys remain preserved.
 - UI change character: state/identity ownership and interaction correctness; no visual layout, CSS, or copy redesign.
-- Implementation feedback: the final Nuxt production build and deleted-after-use exact restore/state-transition probe passed. No CSS, layout, markup, or copy changed. A separate browser was intentionally not started because the user-held stack is protected and safe isolated browser/provider execution is downstream-owned.
-- Remaining unverified states: real browser render/focus/restore/terminal cleanup across AutoByteus, Codex, and Claude.
+- Implementation feedback: the maintained mobile component selection passed the exact rooted open/close identity, and the final Nuxt production build passed. No CSS, layout, markup, or copy changed. A separate browser was intentionally not started because the user-held stack is protected and safe isolated browser/provider execution is downstream-owned.
+- Remaining unverified states: real phone/browser content retrieval for structured Team-message references and the cumulative three-runtime matrix.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
@@ -136,7 +137,8 @@ IR-030 closes the one restore lifecycle left by CRR-052 without weakening the ex
 6. Prove current application V5 build/admission/launch/producer round trip and ordinary rejection of non-current input, with no application database predecessor migration.
 7. Re-run canonical migration/token startup gates only against a proven disposable target, including rollback, repair/retry, idempotence, exact gate policy, and query-plan/index coverage.
 8. Complete the imported nested-classroom AutoByteus/Codex/Claude browser/provider matrix from the authoritative live-validation contract.
+9. Prove mobile Team Activity -> Messages -> Details opens and closes a structured reference using the exact root identity for current persistent and task-scoped message perspectives, with no blank or compatibility route segment.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Yes. API/E2E remains paused until the focused cumulative IR-030 source re-review passes. Pre-pause API-REV-023 and earlier live/provider evidence do not verify SR-018. Any repository-resident durable coverage add/update/remove after the source Pass must return through proportional code review before delivery.
+Yes. API/E2E remains paused until the focused IR-031 source re-review passes. API-REV-024 remains incomplete at `57%`; its visible `2 added / 44 updated / 5 removed` durable state is neither staged nor claimed by implementation. Earlier live/provider evidence does not verify IR-031. Any repository-resident durable coverage add/update/remove after the source Pass must return through proportional code review before delivery.
