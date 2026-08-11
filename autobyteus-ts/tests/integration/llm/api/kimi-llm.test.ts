@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { KimiLLM } from '../../../../src/llm/api/kimi-llm.js';
-import { ApiToolCallStreamingResponseHandler } from '../../../../src/agent/streaming/handlers/api-tool-call-streaming-response-handler.js';
+import { LlmStreamingResponseHandler } from '../../../../src/agent/streaming/handlers/llm-streaming-response-handler.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
@@ -44,7 +44,7 @@ const runToolCallContinuation = async (llm: KimiLLM): Promise<void> => {
       content: 'Call echo_number with number 42, then wait for tool results.'
     })
   ];
-  const parser = new ApiToolCallStreamingResponseHandler({ turnId: TURN_ID });
+  const parser = new LlmStreamingResponseHandler({ turnId: TURN_ID, toolCallsEnabled: true });
   for await (const chunk of llm.streamMessages(toolPromptMessages, null, {
     tools: [TOOL_SCHEMA],
     tool_choice: 'required'
@@ -94,7 +94,7 @@ const runK2_7CodeToolCallContinuation = async (llm: KimiLLM): Promise<void> => {
       content: 'Use the echo_number tool with number 42. Do not answer until after the tool result is provided.'
     })
   ];
-  const parser = new ApiToolCallStreamingResponseHandler({ turnId: TURN_ID });
+  const parser = new LlmStreamingResponseHandler({ turnId: TURN_ID, toolCallsEnabled: true });
   let streamedReasoning = '';
   let streamedContent = '';
 

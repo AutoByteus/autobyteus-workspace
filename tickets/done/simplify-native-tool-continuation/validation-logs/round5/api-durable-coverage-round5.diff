@@ -1,0 +1,163 @@
+diff --git a/autobyteus-server-ts/tests/integration/agent-execution/compaction/compaction-agent-parent-fallback.integration.test.ts b/autobyteus-server-ts/tests/integration/agent-execution/compaction/compaction-agent-parent-fallback.integration.test.ts
+index f6c7acfad..57016adf6 100644
+--- a/autobyteus-server-ts/tests/integration/agent-execution/compaction/compaction-agent-parent-fallback.integration.test.ts
++++ b/autobyteus-server-ts/tests/integration/agent-execution/compaction/compaction-agent-parent-fallback.integration.test.ts
+@@ -329,7 +329,9 @@ describe("compaction agent parent runtime/model fallback executable validation",
+       "parent-run-1",
+     );
+     const serverEvents: unknown[] = [];
+-    const unsubscribe = backend.subscribeToEvents((event) => serverEvents.push(event));
++    const unsubscribe = backend.subscribeToSourceEventBatches((events) => {
++      serverEvents.push(...events);
++    });
+ 
+     try {
+       for (let turnIndex = 1; turnIndex <= 3; turnIndex += 1) {
+@@ -337,7 +339,7 @@ describe("compaction agent parent runtime/model fallback executable validation",
+         expect(result.accepted).toBe(true);
+         await waitFor(() =>
+           parentLLM.requests.length === turnIndex &&
+-          backend.getStatusSnapshot().status === "idle" &&
++          backend.getLifecycleSnapshot().phase === "idle" &&
+           (backend.getContext().runtimeContext as any)?.state?.activeTurn === null,
+         );
+       }
+@@ -346,7 +348,7 @@ describe("compaction agent parent runtime/model fallback executable validation",
+       await waitFor(() =>
+         parentLLM.requests.length === 4 &&
+         (backend.getContext().runtimeContext as any)?.state?.memoryManager?.compactionRequired === false &&
+-        backend.getStatusSnapshot().status === "idle" &&
++        backend.getLifecycleSnapshot().phase === "idle" &&
+         collectCompactionStatuses(serverEvents).some((event) => event.phase === "completed"),
+       );
+ 
+@@ -354,7 +356,7 @@ describe("compaction agent parent runtime/model fallback executable validation",
+       await waitFor(() =>
+         parentLLM.requests.length === 5 &&
+         (backend.getContext().runtimeContext as any)?.state?.memoryManager?.compactionRequired === false &&
+-        backend.getStatusSnapshot().status === "idle",
++        backend.getLifecycleSnapshot().phase === "idle",
+       );
+ 
+       const requestAfterCompaction = JSON.stringify(parentLLM.requests[4]);
+diff --git a/autobyteus-server-ts/tests/unit/agent-execution/compaction/server-compaction-agent-runner.test.ts b/autobyteus-server-ts/tests/unit/agent-execution/compaction/server-compaction-agent-runner.test.ts
+index 3fd90eba8..3bcf8476a 100644
+--- a/autobyteus-server-ts/tests/unit/agent-execution/compaction/server-compaction-agent-runner.test.ts
++++ b/autobyteus-server-ts/tests/unit/agent-execution/compaction/server-compaction-agent-runner.test.ts
+@@ -1,9 +1,10 @@
+-import { describe, expect, it, vi } from "vitest";
++import { afterEach, describe, expect, it, vi } from "vitest";
+ import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+ import { SenderType } from "autobyteus-ts/agent/sender-type.js";
+ import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+ import { CompactionAgentRunnerError } from "autobyteus-ts/memory/compaction/compaction-agent-runner.js";
+ import { ServerCompactionAgentRunner } from "../../../../src/agent-execution/compaction/server-compaction-agent-runner.js";
++import { CompactionRunOutputCollector } from "../../../../src/agent-execution/compaction/compaction-run-output-collector.js";
+ import {
+   AgentRunEventType,
+   type AgentRunEvent,
+@@ -25,6 +26,8 @@ class FakeRun {
+   readonly runId = "compaction-run-1";
+   readonly emittedEvents: AgentRunEvent[];
+   readonly listeners = new Set<(event: unknown) => void>();
++  subscriptionCount = 0;
++  unsubscriptionCount = 0;
+   postedMessage: AgentInputUserMessage | null = null;
+ 
+   constructor(events: AgentRunEvent[]) {
+@@ -32,8 +35,17 @@ class FakeRun {
+   }
+ 
+   subscribeToEvents(listener: (event: unknown) => void) {
++    this.subscriptionCount += 1;
+     this.listeners.add(listener);
+-    return () => this.listeners.delete(listener);
++    let active = true;
++    return () => {
++      if (!active) {
++        return;
++      }
++      active = false;
++      this.unsubscriptionCount += 1;
++      this.listeners.delete(listener);
++    };
+   }
+ 
+   async postUserMessage(message: AgentInputUserMessage) {
+@@ -78,6 +90,76 @@ const createLaunchResolver = () => ({
+ });
+ 
+ describe("ServerCompactionAgentRunner", () => {
++  afterEach(() => {
++    vi.restoreAllMocks();
++  });
++
++  it.each([
++    {
++      name: "the omitted five-minute default",
++      timeoutMs: undefined,
++      expectedTimeoutMs: 300_000,
++    },
++    {
++      name: "an explicit short override",
++      timeoutMs: 17,
++      expectedTimeoutMs: 17,
++    },
++  ])(
++    "passes $name to output collection and preserves timeout cleanup",
++    async ({ timeoutMs, expectedTimeoutMs }) => {
++      const run = new FakeRun([]);
++      const agentRunService = createService(run);
++      const launchResolver = createLaunchResolver();
++      const waitForFinalOutput = vi.spyOn(
++        CompactionRunOutputCollector.prototype,
++        "waitForFinalOutput",
++      ).mockImplementation(async (observedTimeoutMs: number) => {
++        throw new Error(
++          `Compactor agent run '${run.runId}' timed out after ${observedTimeoutMs}ms before returning final JSON.`,
++        );
++      });
++      const runner = new ServerCompactionAgentRunner({
++        launchResolver: launchResolver as any,
++        agentRunService: agentRunService as any,
++        workspaceRootPath: "/tmp/workspace",
++        parentLaunchFallback,
++        ...(timeoutMs === undefined ? {} : { timeoutMs }),
++      });
++
++      await expect(
++        runner.runCompactionTask({
++          taskId: "task-timeout-contract",
++          prompt: "compact this",
++          blockCount: 1,
++          traceCount: 1,
++        }),
++      ).rejects.toMatchObject({
++        name: "CompactionAgentRunnerError",
++        message: expect.stringMatching(
++          new RegExp(`timed out after ${expectedTimeoutMs}ms`),
++        ),
++        compactionMetadata: {
++          compactionAgentDefinitionId: "autobyteus-memory-compactor",
++          compactionAgentName: "Memory Compactor",
++          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
++          modelIdentifier: "codex:gpt-5",
++          provider: "openai",
++          compactionRunId: "compaction-run-1",
++          taskId: "task-timeout-contract",
++        },
++      });
++
++      expect(waitForFinalOutput).toHaveBeenCalledOnce();
++      expect(waitForFinalOutput).toHaveBeenCalledWith(expectedTimeoutMs);
++      expect(run.subscriptionCount).toBe(1);
++      expect(run.unsubscriptionCount).toBe(1);
++      expect(run.listeners.size).toBe(0);
++      expect(agentRunService.terminateAgentRun).toHaveBeenCalledOnce();
++      expect(agentRunService.terminateAgentRun).toHaveBeenCalledWith(run.runId);
++    },
++  );
++
+   it("creates a normal visible run, posts one task, collects output, and terminates", async () => {
+     const run = new FakeRun([
+       createEvent(AgentRunEventType.SEGMENT_CONTENT, {

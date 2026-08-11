@@ -36,11 +36,10 @@ export class LLMRequestAssembler {
   ) {}
 
   async prepareRequest(
-    processedUserInput: string | LLMUserMessage,
+    additionalUserMessage: LLMUserMessage | null,
     identity: LlmRequestAssemblyIdentity,
     systemPrompt?: string | null,
   ): Promise<RequestPackage> {
-    const userMessage = this.buildUserMessage(processedUserInput);
     this.ensureSystemPrompt(systemPrompt ?? undefined);
     this.memoryManager.ensureWorkingContextToolProtocolSafeForNextLlm({
       recoverySourceEvent: 'LLMRequestAssembler.preCompaction',
@@ -54,7 +53,12 @@ export class LLMRequestAssembler {
 
     const recoverySnapshot = this.captureRecoverySnapshot(identity);
     try {
-      this.memoryManager.appendWorkingContextUserMessage(userMessage, { turnId: identity.turnId });
+      if (additionalUserMessage) {
+        this.memoryManager.appendWorkingContextUserMessage(
+          this.buildUserMessage(additionalUserMessage),
+          { turnId: identity.turnId }
+        );
+      }
       this.memoryManager.ensureWorkingContextToolProtocolSafeForNextLlm({
         recoverySourceEvent: 'LLMRequestAssembler.preRender',
       });
@@ -64,37 +68,6 @@ export class LLMRequestAssembler {
       this.memoryManager.restoreLlmRequestRecoverySnapshot(recoverySnapshot, {
         reason: 'request assembly failed after the stable-base checkpoint',
         sourceEvent: 'LLMRequestAssembler.prepareRequest',
-      });
-      throw error;
-    }
-  }
-
-  async prepareToolContinuationRequest(
-    identity: LlmRequestAssemblyIdentity,
-    systemPrompt?: string | null,
-  ): Promise<RequestPackage> {
-    this.ensureSystemPrompt(systemPrompt ?? undefined);
-    this.memoryManager.ensureWorkingContextToolProtocolSafeForNextLlm({
-      recoverySourceEvent: 'LLMRequestAssembler.preCompaction',
-    });
-
-    const didCompact = this.pendingCompactionExecutor
-      ? await this.pendingCompactionExecutor.executeIfRequired({
-          turnId: identity.turnId,
-        })
-      : false;
-
-    const recoverySnapshot = this.captureRecoverySnapshot(identity);
-    try {
-      this.memoryManager.ensureWorkingContextToolProtocolSafeForNextLlm({
-        recoverySourceEvent: 'LLMRequestAssembler.preRender',
-      });
-      const finalMessages = this.memoryManager.getWorkingContextMessages();
-      return await this.buildRequestPackage(finalMessages, didCompact, recoverySnapshot);
-    } catch (error) {
-      this.memoryManager.restoreLlmRequestRecoverySnapshot(recoverySnapshot, {
-        reason: 'tool-continuation assembly failed after the stable-base checkpoint',
-        sourceEvent: 'LLMRequestAssembler.prepareToolContinuationRequest',
       });
       throw error;
     }
@@ -132,16 +105,13 @@ export class LLMRequestAssembler {
     });
   }
 
-  private buildUserMessage(processedUserInput: string | LLMUserMessage): Message {
-    if (processedUserInput instanceof LLMUserMessage) {
-      return new Message(MessageRole.USER, {
-        content: processedUserInput.content,
-        image_urls: processedUserInput.image_urls,
-        audio_urls: processedUserInput.audio_urls,
-        video_urls: processedUserInput.video_urls
-      });
-    }
-    return new Message(MessageRole.USER, { content: String(processedUserInput) });
+  private buildUserMessage(userMessage: LLMUserMessage): Message {
+    return new Message(MessageRole.USER, {
+      content: userMessage.content,
+      image_urls: userMessage.image_urls,
+      audio_urls: userMessage.audio_urls,
+      video_urls: userMessage.video_urls
+    });
   }
 
   private ensureSystemPrompt(systemPrompt?: string): void {

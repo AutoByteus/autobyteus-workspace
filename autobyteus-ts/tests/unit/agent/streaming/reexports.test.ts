@@ -13,10 +13,8 @@ import {
 } from '../../../../src/agent/streaming/utils/queue-streamer.js';
 import { AgentEventStream as ReexportAgentEventStream } from '../../../../src/agent/streaming/agent-event-stream.js';
 import { AgentEventStream as CoreAgentEventStream } from '../../../../src/agent/streaming/streams/agent-event-stream.js';
-import { ApiToolCallStreamingResponseHandler as ReexportApiToolCallStreamingResponseHandler } from '../../../../src/agent/streaming/api-tool-call-streaming-response-handler.js';
-import { ApiToolCallStreamingResponseHandler as CoreApiToolCallStreamingResponseHandler } from '../../../../src/agent/streaming/handlers/api-tool-call-streaming-response-handler.js';
 
-describe('streaming compatibility re-exports', () => {
+describe('retained streaming re-exports', () => {
   it('re-exports stream event payloads and events', () => {
     expect(ReexportAssistantCompleteResponseData).toBe(CoreAssistantCompleteResponseData);
     expect(ReexportStreamEvent).toBe(CoreStreamEvent);
@@ -27,8 +25,7 @@ describe('streaming compatibility re-exports', () => {
     expect(ReexportSimpleQueue).toBe(CoreSimpleQueue);
   });
 
-  it('re-exports agent event stream and handler', () => {
+  it('re-exports agent event stream', () => {
     expect(ReexportAgentEventStream).toBe(CoreAgentEventStream);
-    expect(ReexportApiToolCallStreamingResponseHandler).toBe(CoreApiToolCallStreamingResponseHandler);
   });
 });

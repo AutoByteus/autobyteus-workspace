@@ -10,7 +10,7 @@ import { AgentRuntimeState } from '../../../src/agent/context/agent-runtime-stat
 import { ToolResultEvent, UserMessageReceivedEvent } from '../../../src/agent/events/agent-events.js';
 import { LlmPhase } from '../../../src/agent/loop/llm-phase.js';
 import { ToolPhase } from '../../../src/agent/loop/tool-phase.js';
-import { ToolResultContinuationBuilder } from '../../../src/agent/loop/tool-result-continuation-builder.js';
+import { ToolContinuationInputBuilder } from '../../../src/agent/loop/tool-continuation-input-builder.js';
 import { AgentInputUserMessage } from '../../../src/agent/message/agent-input-user-message.js';
 import { BaseLLM, type LLMInvocationOptions } from '../../../src/llm/base.js';
 import { LLMModel } from '../../../src/llm/models.js';
@@ -122,11 +122,14 @@ const usage = (inputTokens: number) => buildLlmTokenUsageObservation({
   rawUsage: null,
 });
 
-const makeInput = (turn: AgentTurn, content: string, mode?: 'tool_history_only') => ({
-  llmUserMessage: new LLMUserMessage({ content }),
+const makeInput = (
+  turn: AgentTurn,
+  content: string,
+  llmUserMessage: LLMUserMessage | null = new LLMUserMessage({ content }),
+) => ({
+  llmUserMessage,
   turnId: turn.turnId,
   sourceEvent: new UserMessageReceivedEvent(new AgentInputUserMessage(content)),
-  ...(mode ? { llmRequestMode: mode } : {}),
 });
 
 const seedSettledHistory = (manager: MemoryManager): void => {
@@ -246,14 +249,24 @@ describe('structured strategy tool-safe lifecycle', () => {
         toolInvocationId: invocation.id,
         result: 'runtime status: ready\n',
       });
-      new ToolResultContinuationBuilder().build(toolResults, { context, turn });
+      const activeBatch = turn.activeToolInvocationBatch;
+      expect(activeBatch).not.toBeNull();
+      turn.clearActiveToolInvocationBatch(activeBatch!);
+      manager.ingestToolResults(toolResults, turn.turnId, {
+        source: 'native_api_ordered_batch',
+      });
+      const continuation = new ToolContinuationInputBuilder().build(toolResults, turn.turnId);
 
       expect(manager.getWorkingContextMessages().at(-1)?.tool_payload).toBeInstanceOf(ToolResultPayload);
+      expect(continuation.metadata).toEqual({
+        turn_id: turn.turnId,
+        tool_result_count: 1,
+      });
       expect(runner.tasks).toHaveLength(0);
       expect(manager.compactionRequired).toBe(true);
 
       const finalOutcome = await new LlmPhase().run(
-        makeInput(turn, 'Tool results are ready.', 'tool_history_only'),
+        makeInput(turn, 'Tool results are ready.', null),
         context,
         turn,
         null,
@@ -295,6 +308,8 @@ describe('structured strategy tool-safe lifecycle', () => {
       expect(projected[1]?.content).toContain('Continuation-critical natural fact 25.');
 
       const nextRequest = llm.requests[1]!;
+      expect(nextRequest.some(({ role, content }) =>
+        role === 'user' && content === 'Tool results are ready.')).toBe(false);
       const toolCallIndex = nextRequest.findIndex((message) =>
         message.tool_payload instanceof ToolCallPayload
         && message.tool_payload.toolCalls.some((call) => call.id === 'call-lookup-1'));
@@ -314,6 +329,11 @@ describe('structured strategy tool-safe lifecycle', () => {
         role: 'tool',
         tool_call_id: 'call-lookup-1',
       });
+      const traceCorpus = manager.listRawTraceCorpusOrdered();
+      expect(traceCorpus.filter(({ traceType }) => traceType === 'tool_call')).toHaveLength(1);
+      expect(traceCorpus.filter(({ traceType }) => traceType === 'tool_result')).toHaveLength(1);
+      expect(traceCorpus.some(({ traceType }) => traceType === 'tool_continuation')).toBe(false);
+      expect(traceCorpus.some(({ content }) => content === 'Native API tool continuation')).toBe(false);
     } finally {
       dateNowSpy.mockRestore();
       defaultToolRegistry.restore(registrySnapshot);

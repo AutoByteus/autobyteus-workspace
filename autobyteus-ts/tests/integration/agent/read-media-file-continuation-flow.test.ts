@@ -3,7 +3,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
 import { ReadMediaFile } from '../../../src/tools/multimedia/media-reader-tool.js';
-import { ToolResultContinuationBuilder } from '../../../src/agent/loop/tool-result-continuation-builder.js';
+import { ToolContinuationInputBuilder } from '../../../src/agent/loop/tool-continuation-input-builder.js';
 import { AgentInputPipeline } from '../../../src/agent/pipelines/agent-input-pipeline.js';
 import { AgentTurn } from '../../../src/agent/agent-turn.js';
 import { ToolInvocation } from '../../../src/agent/tool-invocation.js';
@@ -69,18 +69,22 @@ describe('read_media_file continuation flow (integration)', () => {
       assistantContent: 'Reading requested media files.'
     });
 
-    const continuation = new ToolResultContinuationBuilder().build([
+    const results = [
       new ToolResultEvent('read_media_file', audioContextFile, 'inv-audio', undefined, { file_path: 'sample.m4a' }, turn.turnId),
       new ToolResultEvent('read_media_file', videoContextFile, 'inv-video', undefined, { file_path: 'clip.mp4' }, turn.turnId)
-    ], { context, turn });
+    ];
+    memoryManager.ingestToolResults(results, turn.turnId, {
+      source: 'native_api_ordered_batch',
+    });
+    const continuation = new ToolContinuationInputBuilder().build(results, turn.turnId);
 
     expect(continuation.senderType).toBe(SenderType.TOOL);
     expect(continuation.contextFiles?.map((file) => file.uri)).toEqual([audioPath, videoPath]);
 
     const pipelineResult = await new AgentInputPipeline().processToolContinuation(continuation, context, turn);
-    expect(pipelineResult.llmRequestMode).toBe('append_user_message');
-    expect(pipelineResult.llmUserMessage.audio_urls).toEqual([audioPath]);
-    expect(pipelineResult.llmUserMessage.video_urls).toEqual([videoPath]);
+    expect(pipelineResult.llmUserMessage).not.toBeNull();
+    expect(pipelineResult.llmUserMessage?.audio_urls).toEqual([audioPath]);
+    expect(pipelineResult.llmUserMessage?.video_urls).toEqual([videoPath]);
 
     const geminiDefinition = supportedModelDefinitions.find(
       (definition) => definition.name === 'gemini-3.5-flash',
@@ -102,6 +106,9 @@ describe('read_media_file continuation flow (integration)', () => {
       .listRawTracesOrdered()
       .filter((trace) => trace.traceType === 'tool_result');
     expect(toolResultTraces).toHaveLength(2);
+    expect(memoryManager.listRawTracesOrdered().some(
+      ({ traceType }) => traceType === 'tool_continuation',
+    )).toBe(false);
 
     const currentMessage = request.canonicalMessages.at(-1);
     expect(currentMessage?.role).toBe(MessageRole.USER);

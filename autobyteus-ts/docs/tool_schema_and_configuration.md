@@ -232,8 +232,9 @@ const createUser = tool({
 2.  **Decorator**: Registers the schema as a `ToolDefinition`.
 3.  **Registry**: Stores it in `ToolRegistry`.
 4.  **Provider schema path**:
-    - `StreamingResponseHandlerFactory` asks `ToolSchemaProvider` to build
-      schemas only when the current turn has configured tools.
+    - `LlmPhase` asks `ToolSchemaProvider` to build schemas only when the current
+      turn has configured tools, and passes the same condition to
+      `LlmStreamingResponseHandler` as its explicit tool-call gate.
     - `ToolSchemaProvider` resolves the provider-aware native schema formatter:
       Anthropic, Gemini, or the OpenAI-compatible function-tool envelope used by
       the remaining supported provider paths.

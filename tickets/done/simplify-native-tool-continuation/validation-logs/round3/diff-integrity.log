@@ -1,0 +1,7 @@
+## working-tree diff integrity
+PASS: git diff --check
+## API/E2E production working-tree ownership
+PASS: no uncommitted production source diff
+## reviewed IR-002 production delta from prior implementation
+1	0	autobyteus-ts/src/tools/index.ts
+PASS: exactly one production path changed by IR-002

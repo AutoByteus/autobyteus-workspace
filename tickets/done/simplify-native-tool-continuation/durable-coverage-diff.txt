@@ -1,0 +1,122 @@
+# Durable Coverage Working-Tree Delta
+
+Reviewed implementation commit: 0891e42f0ebdd2db5f0d1b2bd746abdb1e115668 (`IR-002`).
+Original API/E2E coverage baseline implementation: b688c9759460d8f0e82e4e6d98b8180137200d93.
+Recorded base branch commit: 3cddeec6b93602da172fec2e7b9a80acc7c05117.
+Scope: repository-resident tests and test-support only.
+Latest update: API/E2E round 5 added direct deterministic AC-016 proof to the server compaction runner test and corrected the affected parent-fallback integration fixture to the delivery-integrated backend observation API. Both paths and their hashes are recorded in the round 5 section below; no production or test-support path was edited by API/E2E.
+
+## Tracked changes
+
+M	autobyteus-server-ts/tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts
+M	autobyteus-ts/tests/integration/agent/gemini-read-media-file-m4a-live.test.ts
+M	autobyteus-ts/tests/integration/agent/handlers/api-tool-call-handler-live.test.ts
+M	autobyteus-ts/tests/integration/agent/handlers/claude-tool-call-handler-live.test.ts
+M	autobyteus-ts/tests/integration/agent/handlers/gemini-tool-call-handler-live.test.ts
+M	autobyteus-ts/tests/integration/agent/handlers/mistral-tool-call-handler-live.test.ts
+M	autobyteus-ts/tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts
+M	autobyteus-ts/tests/integration/agent/memory-tool-call-flow.test.ts
+M	autobyteus-ts/tests/integration/agent/provider-native-tool-continuation-flow.test.ts
+M	autobyteus-ts/tests/integration/agent/read-media-file-continuation-flow.test.ts
+M	autobyteus-ts/tests/integration/agent/streaming/kimi-tool-id-event-stream-boundary.test.ts
+M	autobyteus-ts/tests/integration/agent/tool-approval-flow.test.ts
+M	autobyteus-ts/tests/integration/llm/api/deepseek-llm.test.ts
+M	autobyteus-ts/tests/integration/llm/api/glm-llm.test.ts
+M	autobyteus-ts/tests/integration/llm/api/kimi-llm.test.ts
+M	autobyteus-ts/tests/unit/agent/input-processor/memory-ingest-input-processor.test.ts
+M	autobyteus-ts/tests/unit/agent/llm-request-assembler.test.ts
+M	autobyteus-ts/tests/unit/agent/loop/agent-turn-runner.test.ts
+M	autobyteus-ts/tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts
+D	autobyteus-ts/tests/unit/agent/loop/tool-result-continuation-builder.test.ts
+M	autobyteus-ts/tests/unit/agent/pipelines/agent-input-pipeline.test.ts
+D	autobyteus-ts/tests/unit/agent/streaming/handlers/api-tool-call-streaming-response-handler.test.ts
+D	autobyteus-ts/tests/unit/agent/streaming/handlers/pass-through-streaming-response-handler.test.ts
+D	autobyteus-ts/tests/unit/agent/streaming/handlers/streaming-handler-factory.test.ts
+M	autobyteus-ts/tests/unit/agent/streaming/reexports.test.ts
+D	autobyteus-ts/tests/unit/agent/tool-execution-result-processor/memory-ingest-tool-result-processor.test.ts
+M	autobyteus-ts/tests/unit/agent/tool-invocation.test.ts
+M	autobyteus-ts/tests/unit/legacy-tool-calling-public-surfaces-removed.test.ts
+M	autobyteus-ts/tests/unit/llm/prompt-renderers/provider-native-tool-history-renderers.test.ts
+M	autobyteus-ts/tests/unit/memory/memory-manager.test.ts
+M	autobyteus-ts/tests/unit/memory/memory-tool-continuation-reasoning.test.ts
+M	test-support/live-e2e/live-e2e-harness.ts
+
+## Added untracked durable coverage
+
+A	autobyteus-ts/tests/unit/agent/loop/tool-continuation-input-builder.test.ts
+A	autobyteus-ts/tests/unit/agent/streaming/handlers/llm-streaming-response-handler.test.ts
+
+## SHA-256 for added files
+
+f41793347ea343aabf5634b99445e1822199e31a675fe7e31c7495220fce71cd  autobyteus-ts/tests/unit/agent/loop/tool-continuation-input-builder.test.ts
+e804ad0a67a3ff6e596d7c04b638e41d72f8ba774bd1ac5fb76f4413491b3465  autobyteus-ts/tests/unit/agent/streaming/handlers/llm-streaming-response-handler.test.ts
+
+## Diff stat (tracked paths)
+
+ .../real-e2e-provider-capabilities.e2e.test.ts     |   2 +
+ .../agent/gemini-read-media-file-m4a-live.test.ts  |  16 +-
+ .../handlers/api-tool-call-handler-live.test.ts    |   7 +-
+ .../handlers/claude-tool-call-handler-live.test.ts |   6 +-
+ .../handlers/gemini-tool-call-handler-live.test.ts |   7 +-
+ .../mistral-tool-call-handler-live.test.ts         |   7 +-
+ ...mory-compaction-strategy-tool-lifecycle.test.ts |  32 +-
+ .../agent/memory-tool-call-flow.test.ts            |   4 +-
+ .../provider-native-tool-continuation-flow.test.ts |  14 +-
+ .../read-media-file-continuation-flow.test.ts      |  19 +-
+ .../kimi-tool-id-event-stream-boundary.test.ts     |   5 +-
+ .../integration/agent/tool-approval-flow.test.ts   |  18 +-
+ .../tests/integration/llm/api/deepseek-llm.test.ts |  20 +-
+ .../tests/integration/llm/api/glm-llm.test.ts      |   4 +-
+ .../tests/integration/llm/api/kimi-llm.test.ts     |   6 +-
+ .../memory-ingest-input-processor.test.ts          |  12 +-
+ .../tests/unit/agent/llm-request-assembler.test.ts |  64 ++-
+ .../unit/agent/loop/agent-turn-runner.test.ts      |  65 ++-
+ .../loop/llm-phase-tool-protocol-recovery.test.ts  |  51 ++-
+ .../loop/tool-result-continuation-builder.test.ts  | 115 -----
+ .../agent/pipelines/agent-input-pipeline.test.ts   |  38 +-
+ ...pi-tool-call-streaming-response-handler.test.ts | 472 ---------------------
+ ...pass-through-streaming-response-handler.test.ts |  94 ----
+ .../handlers/streaming-handler-factory.test.ts     |  73 ----
+ .../tests/unit/agent/streaming/reexports.test.ts   |   7 +-
+ .../memory-ingest-tool-result-processor.test.ts    | 123 ------
+ .../tests/unit/agent/tool-invocation.test.ts       |  31 +-
+ ...cy-tool-calling-public-surfaces-removed.test.ts |  51 ++-
+ .../provider-native-tool-history-renderers.test.ts |   4 +-
+ .../tests/unit/memory/memory-manager.test.ts       |  25 +-
+ .../memory-tool-continuation-reasoning.test.ts     |   4 +-
+ test-support/live-e2e/live-e2e-harness.ts          |  30 ++
+ 32 files changed, 405 insertions(+), 1021 deletions(-)
+
+## Integrity check
+
+`git diff --check` passed after API/E2E round 3. No uncommitted production source path was edited by API/E2E; the reviewed IR-002 production delta is exactly one insertion in `autobyteus-ts/src/tools/index.ts`.
+
+## API/E2E Round 5 Delta — AC-016 / IR-003
+
+Reviewed implementation commit: 7aa4bc6d7f3216db8dfc703eaf5ebfbc67da3804 (IR-003).
+Delivery-integrated parent: 012257323d5b7303184ca7c5f385602c6a6914f3.
+Round 5 decision: update direct deterministic AC-016 runner coverage and correct the relevant parent-fallback integration fixture to the current backend batch/lifecycle API exposed by the integrated base. No production source or test-support path was edited by API/E2E.
+
+### Updated durable coverage paths
+
+M	autobyteus-server-ts/tests/unit/agent-execution/compaction/server-compaction-agent-runner.test.ts
+M	autobyteus-server-ts/tests/integration/agent-execution/compaction/compaction-agent-parent-fallback.integration.test.ts
+
+### Round 5 SHA-256
+
+d306c1d49ab4352fb813c0f6a761e90a81b402b756eccb781b2a6360434cf6ee  autobyteus-server-ts/tests/unit/agent-execution/compaction/server-compaction-agent-runner.test.ts
+6aa2667f44cec109a8ed0fd40ceabdfabfcd47ef9306a726225e7240b86db178  autobyteus-server-ts/tests/integration/agent-execution/compaction/compaction-agent-parent-fallback.integration.test.ts
+
+### Round 5 evidence
+
+Canonical diff: /Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/done/simplify-native-tool-continuation/validation-logs/round5/api-durable-coverage-round5.diff
+Focused runner: tickets/done/simplify-native-tool-continuation/validation-logs/round5/api-server-compaction-agent-runner-focused.log
+Collector + parent-fallback rerun: tickets/done/simplify-native-tool-continuation/validation-logs/round5/api-compaction-collector-and-parent-fallback-rerun.log
+Compaction unit matrix: tickets/done/simplify-native-tool-continuation/validation-logs/round5/api-server-compaction-unit-matrix.log
+Server build: tickets/done/simplify-native-tool-continuation/validation-logs/round5/api-server-build-full.log
+Source/diff scan: tickets/done/simplify-native-tool-continuation/validation-logs/round5/api-source-and-diff-contract-scan.log
+Artifact consistency: tickets/done/simplify-native-tool-continuation/validation-logs/round5/api-artifact-consistency.log
+
+### Round 5 integrity
+
+`git diff --check` passed. The direct default/override cases complete immediately through a mocked collector rejection and make no 300,000 ms timer sleep. The first parent-fallback execution exposed stale backend observation methods before compaction; the bounded fixture correction rerun passed with all 12 combined collector/integration tests.

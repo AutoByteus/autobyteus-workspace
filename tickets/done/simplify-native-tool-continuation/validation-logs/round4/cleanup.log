@@ -1,0 +1,46 @@
+ROUND 4 RESOURCE CLEANUP / RESIDUE AUDIT
+Timestamp: 2026-08-11T03:40:20Z
+Harness cleanup evidence:
+tickets/in-progress/simplify-native-tool-continuation/validation-logs/round4/real-lmstudio-compaction-e2e.log:476:AgentWorker 'reallmstudiocompactionagent_incident_response_analyst_2813': Shutdown resource cleanup completed successfully.
+tickets/in-progress/simplify-native-tool-continuation/validation-logs/round4/real-lmstudio-compaction-e2e.log:481:AgentRuntime for 'reallmstudiocompactionagent_incident_response_analyst_2813': Context unregistered.
+tickets/in-progress/simplify-native-tool-continuation/validation-logs/round4/real-deepseek-compaction-e2e-rerun.log:517:AgentWorker 'memory_compactor_8a7216ae031246d394f9600eafbe3264': Shutdown resource cleanup completed successfully.
+tickets/in-progress/simplify-native-tool-continuation/validation-logs/round4/real-deepseek-compaction-e2e-rerun.log:522:AgentRuntime for 'memory_compactor_8a7216ae031246d394f9600eafbe3264': Context unregistered.
+tickets/in-progress/simplify-native-tool-continuation/validation-logs/round4/real-deepseek-compaction-e2e-rerun.log:634:AgentWorker 'live_e2e_compaction_agent_5e329a8f816a44d9a3bdcc4f12b07577': Shutdown resource cleanup completed successfully.
+tickets/in-progress/simplify-native-tool-continuation/validation-logs/round4/real-deepseek-compaction-e2e-rerun.log:639:AgentRuntime for 'live_e2e_compaction_agent_5e329a8f816a44d9a3bdcc4f12b07577': Context unregistered.
+tickets/in-progress/simplify-native-tool-continuation/validation-logs/round4/real-deepseek-compaction-e2e-rerun.log:645:Closing FileSystemWorkspace live-e2e-compaction-agent-workspace
+Live E2E temp runtime entries after completion:
+autobyteus-server-ts/tests/.tmp/live-e2e-runtime/.env
+autobyteus-server-ts/tests/.tmp/live-e2e-runtime/agent-teams
+autobyteus-server-ts/tests/.tmp/live-e2e-runtime/agents
+autobyteus-server-ts/tests/.tmp/live-e2e-runtime/agents/autobyteus-memory-compactor
+autobyteus-server-ts/tests/.tmp/live-e2e-runtime/agents/autobyteus-retrospective-skill-improver
+autobyteus-server-ts/tests/.tmp/live-e2e-runtime/application-packages
+autobyteus-server-ts/tests/.tmp/live-e2e-runtime/application-packages/platform
+autobyteus-server-ts/tests/.tmp/live-e2e-runtime/db
+autobyteus-server-ts/tests/.tmp/live-e2e-runtime/download
+autobyteus-server-ts/tests/.tmp/live-e2e-runtime/extensions
+autobyteus-server-ts/tests/.tmp/live-e2e-runtime/extensions/messaging-gateway
+autobyteus-server-ts/tests/.tmp/live-e2e-runtime/external-channel
+autobyteus-server-ts/tests/.tmp/live-e2e-runtime/external-channel/gateway-callback-outbox.json
+autobyteus-server-ts/tests/.tmp/live-e2e-runtime/llm
+autobyteus-server-ts/tests/.tmp/live-e2e-runtime/logs
+autobyteus-server-ts/tests/.tmp/live-e2e-runtime/logs/app-data-migrations
+autobyteus-server-ts/tests/.tmp/live-e2e-runtime/logs/server.log
+autobyteus-server-ts/tests/.tmp/live-e2e-runtime/memory
+autobyteus-server-ts/tests/.tmp/live-e2e-runtime/memory/agents
+autobyteus-server-ts/tests/.tmp/live-e2e-runtime/memory/run_history_index.json
+autobyteus-server-ts/tests/.tmp/live-e2e-runtime/skills
+autobyteus-server-ts/tests/.tmp/live-e2e-runtime/temp_workspace
+autobyteus-server-ts/tests/.tmp/live-e2e-runtime/workspaces.json
+Owned live-e2e temp roots after completion:
+Relevant test-runner processes after completion:
+9077
+9084
+Authorized encrypted test vault retention:
+autobyteus-server-ts/db/test.db retained (authorized, gitignored)
+autobyteus-server-ts/db/test.db.secret.key retained (authorized, gitignored)
+Dependency materializations were pre-existing and intentionally retained for delivery ownership.
+Qualified process audit (executable basename must be node):
+<none>
+Note: earlier pgrep IDs were the Codex UI client whose serialized conversation text contained the search terms; they were not test runners.
+Cleanup conclusion: PASS; no owned test runner remains. Harness-managed runtime fixture files remain under the repository test .tmp directory and are ignored/recreated by the harness.

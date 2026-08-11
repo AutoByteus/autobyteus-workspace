@@ -14,7 +14,7 @@ import { applyEventAndDeriveStatus } from '../status/status-update-utils.js';
 import { AgentInputPipeline } from '../pipelines/agent-input-pipeline.js';
 import { LLMResponsePipeline } from '../pipelines/llm-response-pipeline.js';
 import { ToolResultPipeline } from '../pipelines/tool-result-pipeline.js';
-import { ToolResultContinuationBuilder } from './tool-result-continuation-builder.js';
+import { ToolContinuationInputBuilder } from './tool-continuation-input-builder.js';
 import { LlmPhase } from './llm-phase.js';
 import { ToolPhase } from './tool-phase.js';
 import { buildToolLifecyclePayloadFromResult } from '../handlers/tool-lifecycle-payload.js';
@@ -33,7 +33,7 @@ export class AgentTurnRunner {
   private readonly toolPhase = new ToolPhase();
   private readonly toolResultPipeline = new ToolResultPipeline();
   private readonly llmResponsePipeline = new LLMResponsePipeline();
-  private readonly continuationBuilder = new ToolResultContinuationBuilder();
+  private readonly continuationInputBuilder = new ToolContinuationInputBuilder();
   private readonly notifier: AgentExternalEventNotifier | null;
 
   constructor(private readonly context: AgentContext, private readonly turn: AgentTurn) {
@@ -105,10 +105,14 @@ export class AgentTurnRunner {
           this.turn.clearActiveToolInvocationBatch(activeBatch);
         }
 
-        const continuationInput = this.continuationBuilder.build(processedResults, {
-          context: this.context,
-          turn: this.turn
+        const memoryManager = this.context.state.memoryManager;
+        if (!memoryManager) {
+          throw new Error(`Agent '${this.context.agentId}' requires a memory manager to ingest tool results.`);
+        }
+        memoryManager.ingestToolResults(processedResults, turnId, {
+          source: 'native_api_ordered_batch'
         });
+        const continuationInput = this.continuationInputBuilder.build(processedResults, turnId);
         nextInput = await this.inputPipeline.processToolContinuation(
           continuationInput,
           this.context,
@@ -190,7 +194,7 @@ export class AgentTurnRunner {
     input: AgentInputPipelineResult,
     turnId: string
   ): LLMUserMessageReadyEvent | ToolContinuationReadyEvent {
-    if (input.llmRequestMode === 'tool_history_only') {
+    if (input.llmUserMessage === null) {
       return new ToolContinuationReadyEvent(turnId);
     }
     return new LLMUserMessageReadyEvent(input.llmUserMessage, turnId);

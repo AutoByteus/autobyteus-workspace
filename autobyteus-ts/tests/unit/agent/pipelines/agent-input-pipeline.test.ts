@@ -9,10 +9,6 @@ import { ContextFileType } from '../../../../src/agent/message/context-file-type
 import { SenderType } from '../../../../src/agent/sender-type.js';
 import { InterAgentMessageReceivedEvent, UserMessageReceivedEvent } from '../../../../src/agent/events/agent-events.js';
 import { InterAgentMessage } from '../../../../src/agent/message/inter-agent-message.js';
-import {
-  NATIVE_API_TOOL_CONTINUATION_MODE,
-  TOOL_CONTINUATION_MODE_METADATA_KEY,
-} from '../../../../src/agent/message/tool-continuation-metadata.js';
 import { SYSTEM_TASK_NOTIFICATION_SUPPRESSION_METADATA_KEY } from '../../../../src/agent/message/system-task-notification-metadata.js';
 import { AgentTurn } from '../../../../src/agent/agent-turn.js';
 import { CompleteResponse } from '../../../../src/llm/utils/response-types.js';
@@ -50,42 +46,41 @@ const countOccurrences = (content: string, needle: string): number =>
   content.split(needle).length - 1;
 
 describe('AgentInputPipeline', () => {
-  it('preserves SenderType.TOOL same-turn continuation through input processors and LLM message building', async () => {
+  it('runs TOOL processors once and decides carrier presence from the processed message', async () => {
     const { context, turn } = makeContextAndTurn();
+    const media = [new ContextFile('/tmp/image.png', ContextFileType.IMAGE)];
     const processor = {
       getName: () => 'append-processor',
       getOrder: () => 10,
       process: vi.fn(async (message: AgentInputUserMessage) =>
-        new AgentInputUserMessage(`${message.content} processed`, message.senderType, message.contextFiles)
+        new AgentInputUserMessage(`${message.content} processed`, message.senderType, media)
       )
     };
     context.config.inputProcessors = [processor as any];
     const pipeline = new AgentInputPipeline();
-    const media = [new ContextFile('/tmp/image.png', ContextFileType.IMAGE)];
-    const toolMessage = new AgentInputUserMessage('tool result', SenderType.TOOL, media);
+    const toolMessage = new AgentInputUserMessage('tool result', SenderType.TOOL);
 
     const result = await pipeline.processToolContinuation(toolMessage, context, turn);
 
     expect(processor.process).toHaveBeenCalledTimes(1);
     expect(result.turnId).toBe('turn-1');
     expect(result.sourceEvent.agentInputUserMessage.senderType).toBe(SenderType.TOOL);
-    expect(String(result.llmUserMessage.content)).toContain('tool result processed');
-    expect(result.llmUserMessage.image_urls).toContain('/tmp/image.png');
+    expect(result.llmUserMessage).not.toBeNull();
+    expect(String(result.llmUserMessage?.content)).toContain('tool result processed');
+    expect(result.llmUserMessage?.image_urls).toContain('/tmp/image.png');
   });
 
-  it('marks canonical native tool continuations as tool-history-only requests', async () => {
+  it('returns a required null additional message for text-only same-turn continuation', async () => {
     const { context, turn } = makeContextAndTurn();
     const pipeline = new AgentInputPipeline();
-    const toolMessage = new AgentInputUserMessage('native tool continuation', SenderType.TOOL, null, {
-      [TOOL_CONTINUATION_MODE_METADATA_KEY]: NATIVE_API_TOOL_CONTINUATION_MODE,
-    });
+    const toolMessage = new AgentInputUserMessage('tool results completed', SenderType.TOOL);
 
     const result = await pipeline.processToolContinuation(toolMessage, context, turn);
 
-    expect(result.llmRequestMode).toBe('tool_history_only');
+    expect(result).toHaveProperty('llmUserMessage', null);
   });
 
-  it('appends canonical tool continuations when they carry media context files', async () => {
+  it('returns exactly one additional message when a TOOL continuation carries media context files', async () => {
     const { context, turn } = makeContextAndTurn();
     const pipeline = new AgentInputPipeline();
     const toolMessage = new AgentInputUserMessage(
@@ -94,17 +89,14 @@ describe('AgentInputPipeline', () => {
       [
         new ContextFile('/tmp/sample.mp3', ContextFileType.AUDIO),
         new ContextFile('/tmp/clip.mp4', ContextFileType.VIDEO)
-      ],
-      {
-        [TOOL_CONTINUATION_MODE_METADATA_KEY]: NATIVE_API_TOOL_CONTINUATION_MODE,
-      }
+      ]
     );
 
     const result = await pipeline.processToolContinuation(toolMessage, context, turn);
 
-    expect(result.llmRequestMode).toBe('append_user_message');
-    expect(result.llmUserMessage.audio_urls).toEqual(['/tmp/sample.mp3']);
-    expect(result.llmUserMessage.video_urls).toEqual(['/tmp/clip.mp4']);
+    expect(result.llmUserMessage).not.toBeNull();
+    expect(result.llmUserMessage?.audio_urls).toEqual(['/tmp/sample.mp3']);
+    expect(result.llmUserMessage?.video_urls).toEqual(['/tmp/clip.mp4']);
   });
 
   it('rejects SenderType.TOOL as a new external turn trigger', async () => {

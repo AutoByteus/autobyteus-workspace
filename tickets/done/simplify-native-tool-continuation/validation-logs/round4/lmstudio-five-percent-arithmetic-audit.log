@@ -1,0 +1,19 @@
+ROUND 4 LM STUDIO FIVE-PERCENT TOKEN-BUDGET AUDIT
+Source execution: validation-logs/round4/real-lmstudio-compaction-e2e.log
+Configured ratio: 0.05 (5%)
+Effective total context: 262144
+Reserved output: 1024
+Context-derived/effective input capacity: 262144 - 1024 = 261120
+Safety margin: 256
+Compaction input budget: 261120 - 256 = 260864
+Raw five percent: 260864 * 0.05 = 13043.2
+Production threshold rule: floor(raw ratio product)
+Expected trigger threshold: floor(13043.2) = 13043
+Observed trigger threshold in every emitted budget event: 13043
+Observed below threshold: 1120, 4943, 5105 -> compaction_required=false
+Observed crossing: 14418 >= 13043 -> compaction_required=true
+Observed lifecycle: requested -> started -> completed (one completed compaction)
+Observed after compaction: 10883, 11012, 11085 < 13043 -> compaction_required=false
+Observed post-compaction behavior: tool invocation finalized, tool execution succeeded, subsequent turns completed, exact retained continuation JSON matched.
+Arithmetic result: PASS
+Lifecycle/continuation result: PASS

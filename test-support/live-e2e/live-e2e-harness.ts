@@ -109,6 +109,8 @@ export type LiveE2eCompactionAgentFlowResult = {
   promptContractVersions: 2[];
   successfulToolCount: number;
   recoverableToolFailureCount: number;
+  orderedToolTracePairsVerified: true;
+  continuationTraceAbsent: true;
   exactRetainedArtifactVerified: true;
   projectedMemoryAndCurrentUserVerified: true;
   qualityEvidence: {
@@ -775,6 +777,32 @@ export class LiveE2eScenarioExecution {
       const memoryStore = new FileMemoryStore(memoryDirectory, runId, {
         agentRootSubdir: '',
       });
+      const rawTraceCorpus = memoryStore.listRawTraceCorpusOrdered();
+      const toolTraceFacts = rawTraceCorpus.filter(({ traceType }) =>
+        traceType === 'tool_call' || traceType === 'tool_result');
+      const expectedToolTraceTypes = [
+        'tool_call', 'tool_result',
+        'tool_call', 'tool_result',
+        'tool_call', 'tool_result',
+      ];
+      const expectedToolTraceNames = [
+        'read_file', 'read_file',
+        'read_file', 'read_file',
+        'write_file', 'write_file',
+      ];
+      if (
+        JSON.stringify(toolTraceFacts.map(({ traceType }) => traceType))
+          !== JSON.stringify(expectedToolTraceTypes)
+        || JSON.stringify(toolTraceFacts.map(({ toolName }) => toolName))
+          !== JSON.stringify(expectedToolTraceNames)
+        || toolTraceFacts.some(({ toolCallId }) => !toolCallId)
+        || toolTraceFacts.some((fact, index) =>
+          index % 2 === 1 && fact.toolCallId !== toolTraceFacts[index - 1]?.toolCallId)
+        || rawTraceCorpus.some(({ traceType }) => traceType === 'tool_continuation')
+        || rawTraceCorpus.some(({ content }) => content.includes('Native API tool continuation'))
+      ) {
+        throw new Error('LIVE_E2E_NATIVE_TRACE_LIFECYCLE_INVALID');
+      }
       const episodes = memoryStore.list(MemoryType.EPISODIC)
         .map((item) => item.toDict());
       const semanticFacts = memoryStore.list(MemoryType.SEMANTIC)
@@ -874,6 +902,8 @@ export class LiveE2eScenarioExecution {
         promptContractVersions: promptContractVersions as 2[],
         successfulToolCount: successfulTools.length,
         recoverableToolFailureCount: failedTools.length,
+        orderedToolTracePairsVerified: true,
+        continuationTraceAbsent: true,
         exactRetainedArtifactVerified: true,
         projectedMemoryAndCurrentUserVerified: true,
         qualityEvidence: {

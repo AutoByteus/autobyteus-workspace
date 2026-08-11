@@ -1,0 +1,8 @@
+HEAD 012257323d5b7303184ca7c5f385602c6a6914f3
+node v22.23.1
+pnpm 10.28.2
+PREEXISTING_DIRECTORY node_modules
+PREEXISTING_DIRECTORY autobyteus-ts/node_modules
+PREEXISTING_DIRECTORY autobyteus-server-ts/node_modules
+PREEXISTING_DIRECTORY autobyteus-application-sdk-contracts/node_modules
+PREEXISTING_DIRECTORY autobyteus-application-backend-sdk/node_modules

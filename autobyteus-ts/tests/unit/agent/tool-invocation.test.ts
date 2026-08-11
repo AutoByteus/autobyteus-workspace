@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { AgentTurn } from '../../../src/agent/agent-turn.js';
-import { ToolExecutionApprovalEvent, ToolResultEvent } from '../../../src/agent/events/agent-events.js';
+import { ToolExecutionApprovalEvent } from '../../../src/agent/events/agent-events.js';
 import { ToolInvocationBatch } from '../../../src/agent/tool-invocation-batch.js';
 import { ToolInvocation } from '../../../src/agent/tool-invocation.js';
 
@@ -19,19 +19,28 @@ describe('ToolInvocation', () => {
 });
 
 describe('ToolInvocationBatch', () => {
-  it('tracks completion based on settled invocation results', () => {
-    const invocation = new ToolInvocation('tool', {}, 'id', 'turn_0001');
-    const batch = new ToolInvocationBatch('turn_0001', [invocation]);
-    expect(batch.isComplete()).toBe(false);
-    expect(batch.settleResult(new ToolResultEvent('tool', 'ok', 'id', undefined, undefined, 'turn_0001'))).toBe(true);
-    expect(batch.isComplete()).toBe(true);
+  it('retains provider invocation order and returns a defensive identity copy', () => {
+    const batch = new ToolInvocationBatch('turn_0001', [
+      new ToolInvocation('tool_a', {}, 'id-a', 'turn_0001'),
+      new ToolInvocation('tool_b', {}, 'id-b', 'turn_0001'),
+    ]);
+
+    const ids = batch.getExpectedInvocationIds();
+    ids.reverse();
+
+    expect(batch.getExpectedInvocationIds()).toEqual(['id-a', 'id-b']);
+    expect(batch.expectsInvocation('id-a')).toBe(true);
+    expect(batch.expectsInvocation('missing')).toBe(false);
   });
 
-  it('rejects results from a different agent turn', () => {
+  it('admits only expected invocation identities from the active turn', () => {
     const invocation = new ToolInvocation('tool', {}, 'id', 'turn_0001');
     const batch = new ToolInvocationBatch('turn_0001', [invocation]);
-    expect(batch.settleResult(new ToolResultEvent('tool', 'ok', 'id', undefined, undefined, 'turn_0002'))).toBe(false);
-    expect(batch.isComplete()).toBe(false);
+
+    expect(batch.accepts('id')).toBe(true);
+    expect(batch.accepts('id', 'turn_0001')).toBe(true);
+    expect(batch.accepts('id', 'turn_0002')).toBe(false);
+    expect(batch.accepts('unknown', 'turn_0001')).toBe(false);
   });
 });
 
@@ -43,7 +52,7 @@ describe('AgentTurn', () => {
     const batch = turn.startToolInvocationBatch([invocation]);
 
     expect(invocation.turnId).toBe('turn_0007');
-    expect(batch.turnId).toBe('turn_0007');
+    expect(batch.accepts('id', 'turn_0007')).toBe(true);
     expect(turn.activeToolInvocationBatch).toBe(batch);
     expect(turn.toolInvocationBatches).toEqual([batch]);
   });

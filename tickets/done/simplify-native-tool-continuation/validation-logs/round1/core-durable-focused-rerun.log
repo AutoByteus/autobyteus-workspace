@@ -1,0 +1,206 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/autobyteus-ts
+
+stdout | tests/unit/agent/streaming/handlers/llm-streaming-response-handler.test.ts > LlmStreamingResponseHandler basics > finalize creates invocations from accumulated args
+LlmStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/unit/agent/streaming/handlers/llm-streaming-response-handler.test.ts > LlmStreamingResponseHandler basics > carries provider-native context from deltas to tool invocations
+LlmStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/unit/agent/streaming/handlers/llm-streaming-response-handler.test.ts > LlmStreamingResponseHandler parallel tool calls > tracks multiple tool calls by index
+LlmStreamingResponseHandler finalized 2 tool invocations.
+
+stdout | tests/unit/agent/streaming/handlers/llm-streaming-response-handler.test.ts > LlmStreamingResponseHandler parallel tool calls > keeps multiple Gemini functionCall parts as distinct invocations
+LlmStreamingResponseHandler finalized 2 tool invocations.
+
+stdout | tests/unit/agent/streaming/handlers/llm-streaming-response-handler.test.ts > LlmStreamingResponseHandler file streaming > decodes escaped content
+LlmStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/unit/agent/streaming/handlers/llm-streaming-response-handler.test.ts > LlmStreamingResponseHandler callbacks > invokes onToolInvocation callback
+LlmStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/unit/agent/streaming/handlers/llm-streaming-response-handler.test.ts > LlmStreamingResponseHandler callbacks > emits the tool segment end before publishing the finalized invocation
+LlmStreamingResponseHandler finalized 1 tool invocations.
+
+··········x············stdout | tests/unit/llm/prompt-renderers/provider-native-tool-history-renderers.test.ts > provider native tool history renderers > reconciles stream-start native metadata with final normalized arguments
+LlmStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/unit/llm/prompt-renderers/provider-native-tool-history-renderers.test.ts > provider native tool history renderers > reconciles stream-start native metadata with final normalized arguments
+LlmStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/unit/llm/prompt-renderers/provider-native-tool-history-renderers.test.ts > provider native tool history renderers > reconciles stream-start native metadata with final normalized arguments
+LlmStreamingResponseHandler finalized 1 tool invocations.
+
+·····stdout | tests/unit/agent/loop/agent-turn-runner.test.ts > AgentTurnRunner interruption fences > does not publish final LLM completion after an interrupt accepted at the post-LLM seam
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+
+stdout | tests/unit/agent/loop/agent-turn-runner.test.ts > AgentTurnRunner interruption fences > commits the final ordered processed batch once before pure continuation construction and emits the ephemeral continuation event
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+
+stdout | tests/unit/agent/loop/agent-turn-runner.test.ts > AgentTurnRunner interruption fences > does not process tool results or publish terminal tool success after an interrupt accepted at the post-tool seam
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+
+··········stdout | tests/unit/agent/input-processor/memory-ingest-input-processor.test.ts > MemoryIngestInputProcessor > ingests user message into the already-active turn
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+MemoryIngestInputProcessor stored processed user input with turnId turn_0001
+
+stdout | tests/unit/agent/input-processor/memory-ingest-input-processor.test.ts > MemoryIngestInputProcessor > keeps TOOL-originated input in the processor lifecycle without a memory write
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/input-processor/memory-ingest-input-processor.test.ts > MemoryIngestInputProcessor > fails when TOOL continuation input reaches memory ingest without an active turn
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+···stdout | tests/unit/agent/pipelines/agent-input-pipeline.test.ts > AgentInputPipeline > runs TOOL processors once and decides carrier presence from the processed message
+AgentConfig created for name='agent', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/pipelines/agent-input-pipeline.test.ts > AgentInputPipeline > returns a required null additional message for text-only same-turn continuation
+AgentConfig created for name='agent', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/pipelines/agent-input-pipeline.test.ts > AgentInputPipeline > returns exactly one additional message when a TOOL continuation carries media context files
+AgentConfig created for name='agent', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/pipelines/agent-input-pipeline.test.ts > AgentInputPipeline > rejects SenderType.TOOL as a new external turn trigger
+AgentConfig created for name='agent', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/pipelines/agent-input-pipeline.test.ts > AgentInputPipeline > publishes system task notifications through the semantic notifier exactly once
+AgentConfig created for name='agent', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/pipelines/agent-input-pipeline.test.ts > AgentInputPipeline > suppresses only the generic system task notifier when explicit metadata requests suppression
+AgentConfig created for name='agent', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/pipelines/agent-input-pipeline.test.ts > AgentInputPipeline > converts inter-agent messages with sender id and strict recipient input shape
+AgentConfig created for name='agent', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/pipelines/agent-input-pipeline.test.ts > AgentInputPipeline > includes explicit reference files once in recipient runtime input and metadata
+AgentConfig created for name='agent', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/pipelines/agent-input-pipeline.test.ts > AgentInputPipeline > keeps strict inter-agent template when sender name cannot be resolved
+AgentConfig created for name='agent', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+············································stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase unified streaming setup > uses the unified handler path without tool schemas when the turn has no tools
+AgentRuntimeState initialized for agent_id 'agent_no_tools'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentConfig created for name='agent', role='role'.
+AgentContext composed for agent_id 'agent_no_tools'. Config and State linked.
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase unified streaming setup > uses the unified handler path without tool schemas when the turn has no tools
+compaction_budget_skipped_no_usage {
+  agent_id: 'agent_no_tools',
+  turn_id: 'turn_no_tools',
+  reason: 'missing_usage'
+}
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase successful retained-outcome recovery settlement > captures once and releases once after real Tool-invocation ingestion without restoring retained context
+Successfully registered tool definition: 'request_recovery_test_tool'
+AgentRuntimeState initialized for agent_id 'agent_tool_recovery'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentConfig created for name='agent', role='role'.
+AgentContext composed for agent_id 'agent_tool_recovery'. Config and State linked.
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase successful retained-outcome recovery settlement > captures once and releases once after real Tool-invocation ingestion without restoring retained context
+LlmStreamingResponseHandler finalized 1 tool invocations.
+compaction_budget_skipped_no_usage {
+  agent_id: 'agent_tool_recovery',
+  turn_id: 'turn_tool_recovery',
+  reason: 'missing_usage'
+}
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase successful retained-outcome recovery settlement > captures once and releases once on retained partial interruption without restoring or settling twice
+AgentRuntimeState initialized for agent_id 'agent_interruption_recovery'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentConfig created for name='agent', role='role'.
+AgentContext composed for agent_id 'agent_interruption_recovery'. Config and State linked.
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase incomplete native tool-call resume recovery > kicks off LLM execution after one additional user prompt with provider-safe rendered history
+AgentRuntimeState initialized for agent_id 'agent_resume_repair'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentConfig created for name='agent', role='role'.
+AgentContext composed for agent_id 'agent_resume_repair'. Config and State linked.
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase incomplete native tool-call resume recovery > kicks off LLM execution after one additional user prompt with provider-safe rendered history
+compaction_budget_skipped_no_usage {
+  agent_id: 'agent_resume_repair',
+  turn_id: 'turn_after_restart',
+  reason: 'missing_usage'
+}
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase unknown-capability provider recovery > rolls back one failed image request and accepts the next text-only turn without retrying
+AgentRuntimeState initialized for agent_id 'agent_provider_recovery'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentConfig created for name='agent', role='role'.
+AgentContext composed for agent_id 'agent_provider_recovery'. Config and State linked.
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase unknown-capability provider recovery > rolls back one failed image request and accepts the next text-only turn without retrying
+compaction_budget_skipped_no_usage {
+  agent_id: 'agent_provider_recovery',
+  turn_id: 'turn_provider_recovery',
+  reason: 'missing_usage'
+}
+
+·····stdout | tests/unit/legacy-tool-calling-public-surfaces-removed.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+··································
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent/streaming/handlers/llm-streaming-response-handler.test.ts > LlmStreamingResponseHandler with tool calls disabled > streams ordinary and tool-looking text while ignoring unexpected native tool deltas
+AssertionError: expected SegmentEvent{ …(5) } to match object { event_type: 'SEGMENT_END', …(1) }
+(3 matching properties omitted from actual)
+
+- Expected
++ Received
+
+- {
++ SegmentEvent {
+    "event_type": "SEGMENT_END",
+-   "segment_type": "text",
++   "segment_type": undefined,
+  }
+
+ ❯ tests/unit/agent/streaming/handlers/llm-streaming-response-handler.test.ts:212:28
+    210|     expect(events[1].payload.delta).toBe(content);
+    211|     expect(finalEvents).toHaveLength(1);
+    212|     expect(finalEvents[0]).toMatchObject({
+       |                            ^
+    213|       event_type: SegmentEventType.END,
+    214|       segment_type: SegmentType.TEXT
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 12 passed (13)
+      Tests  1 failed | 123 passed (124)
+   Start at  13:12:55
+   Duration  2.65s (transform 6.76s, setup 272ms, import 9.41s, tests 243ms, environment 1ms)

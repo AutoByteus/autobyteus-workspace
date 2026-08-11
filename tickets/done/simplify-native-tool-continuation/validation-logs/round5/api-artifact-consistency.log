@@ -1,0 +1,14 @@
+API/E2E round 5 final artifact consistency
+timestamp_utc=2026-08-11T06:45:38Z
+head=7aa4bc6d7f3216db8dfc703eaf5ebfbc67da3804
+PASS head
+PASS canonical revision/result/confidence
+runner_sha256=d306c1d49ab4352fb813c0f6a761e90a81b402b756eccb781b2a6360434cf6ee
+parent_integration_sha256=6aa2667f44cec109a8ed0fd40ceabdfabfcd47ef9306a726225e7240b86db178
+PASS durable hashes
+PASS evidence logs present
+PASS git diff --check
+PASS no uncommitted production source
+PASS exact two round5 durable test paths
+PASS no obvious secret-like values in API round5 evidence
+FINAL PASS

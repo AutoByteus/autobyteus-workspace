@@ -376,7 +376,7 @@ describe('MemoryManager', () => {
     }
   });
 
-  it('persists a tool continuation boundary without duplicating tool results', () => {
+  it('reads historical continuation records as inert generic traces without a current writer API', () => {
     const tempDir = makeTempDir();
     try {
       const store = new FileMemoryStore(tempDir, 'agent_mem_boundary');
@@ -385,11 +385,28 @@ describe('MemoryManager', () => {
 
       manager.ingestToolIntent(new ToolInvocation('search', {}, 'call_1', turnId), turnId);
       manager.ingestToolResult(new ToolResultEvent('search', { ok: true }, 'call_1', undefined, undefined, turnId), turnId);
-      manager.ingestToolContinuationBoundary(turnId, 'ToolContinuationInput');
+      store.add([
+        new RawTraceItem({
+          id: 'rt_historical_tool_continuation',
+          ts: Date.now() / 1000,
+          turnId,
+          seq: 3,
+          traceType: 'tool_continuation',
+          content: 'Native API tool continuation',
+          sourceEvent: 'ToolContinuationInput',
+        }),
+      ]);
 
-      const rawItems = manager.listRawTracesOrdered();
+      const reloadedManager = new MemoryManager({ store });
+      const rawItems = reloadedManager.listRawTracesOrdered();
       expect(rawItems.map((item) => item.traceType)).toEqual(['tool_call', 'tool_result', 'tool_continuation']);
-      expect(rawItems[2]?.content).toBe('Tool continuation');
+      expect(rawItems[2]?.content).toBe('Native API tool continuation');
+      expect(reloadedManager.getToolInteractions(turnId)).toHaveLength(1);
+      expect(reloadedManager.getToolInteractions(turnId)[0]).toMatchObject({
+        status: ToolInteractionStatus.SUCCESS,
+        toolCallId: 'call_1',
+      });
+      expect((reloadedManager as any).ingestToolContinuationBoundary).toBeUndefined();
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }

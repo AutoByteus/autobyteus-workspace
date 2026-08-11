@@ -10,7 +10,8 @@ must display `write_file` content and `edit_file` patches while they stream,
 without allowing an incomplete display projection to become executable
 invocation data.
 
-`ApiToolCallStreamingResponseHandler` therefore has two distinct outputs:
+`LlmStreamingResponseHandler` therefore has two distinct outputs when its
+explicit tool-call gate is enabled:
 
 1. specialized segment events for responsive user-visible file projection; and
 2. one `ToolInvocation` built from the provider's complete accumulated native
@@ -113,7 +114,7 @@ the normalized `ToolInvocation` contract.
 
 ## Key Files
 
-- `src/agent/streaming/handlers/api-tool-call-streaming-response-handler.ts`
+- `src/agent/streaming/handlers/llm-streaming-response-handler.ts`
 - `src/agent/streaming/api-tool-call/file-content-streamer.ts`
 - `src/agent/streaming/api-tool-call/json-string-field-extractor.ts`
 - `src/agent/streaming/segments/segment-events.ts`

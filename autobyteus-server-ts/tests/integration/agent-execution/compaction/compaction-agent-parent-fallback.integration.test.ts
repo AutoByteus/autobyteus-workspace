@@ -329,7 +329,9 @@ describe("compaction agent parent runtime/model fallback executable validation",
       "parent-run-1",
     );
     const serverEvents: unknown[] = [];
-    const unsubscribe = backend.subscribeToEvents((event) => serverEvents.push(event));
+    const unsubscribe = backend.subscribeToSourceEventBatches((events) => {
+      serverEvents.push(...events);
+    });
 
     try {
       for (let turnIndex = 1; turnIndex <= 3; turnIndex += 1) {
@@ -337,7 +339,7 @@ describe("compaction agent parent runtime/model fallback executable validation",
         expect(result.accepted).toBe(true);
         await waitFor(() =>
           parentLLM.requests.length === turnIndex &&
-          backend.getStatusSnapshot().status === "idle" &&
+          backend.getLifecycleSnapshot().phase === "idle" &&
           (backend.getContext().runtimeContext as any)?.state?.activeTurn === null,
         );
       }
@@ -346,7 +348,7 @@ describe("compaction agent parent runtime/model fallback executable validation",
       await waitFor(() =>
         parentLLM.requests.length === 4 &&
         (backend.getContext().runtimeContext as any)?.state?.memoryManager?.compactionRequired === false &&
-        backend.getStatusSnapshot().status === "idle" &&
+        backend.getLifecycleSnapshot().phase === "idle" &&
         collectCompactionStatuses(serverEvents).some((event) => event.phase === "completed"),
       );
 
@@ -354,7 +356,7 @@ describe("compaction agent parent runtime/model fallback executable validation",
       await waitFor(() =>
         parentLLM.requests.length === 5 &&
         (backend.getContext().runtimeContext as any)?.state?.memoryManager?.compactionRequired === false &&
-        backend.getStatusSnapshot().status === "idle",
+        backend.getLifecycleSnapshot().phase === "idle",
       );
 
       const requestAfterCompaction = JSON.stringify(parentLLM.requests[4]);

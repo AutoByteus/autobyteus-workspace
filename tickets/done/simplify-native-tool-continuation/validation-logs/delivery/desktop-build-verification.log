@@ -1,0 +1,49 @@
+DESKTOP BUILD VERIFICATION
+Ticket: simplify-native-tool-continuation
+Date: 2026-08-09
+Host: Darwin arm64
+Node: v22.23.1
+pnpm: 10.28.2
+
+README REFERENCES
+- Repository setup: root README.md -> pnpm install
+- Desktop build: autobyteus-web/README.md -> Desktop Application Build
+- Local macOS no-notarization command: autobyteus-web/README.md -> macOS Build With Logs (No Notarization)
+
+DEPENDENCY INSTALL
+Command: pnpm install
+Working directory: /Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation
+Result: Pass, exit 0
+Evidence: pnpm-install.log
+
+ELECTRON BUILD
+Command: NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac
+Working directory: /Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/autobyteus-web
+Result: Pass, exit 0
+Package version: 1.4.45
+Electron: 42.4.1
+Architecture: arm64
+Signing/notarization: intentionally skipped for local test build
+Evidence: electron-macos-build.log
+
+APPLICATION
+Path: /Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+Executable: Contents/MacOS/AutoByteus
+Executable format: Mach-O 64-bit executable arm64
+Bundle identifier: com.autobyteus.app
+Bundle version: 1.4.45
+App size: 1.2G
+
+INSTALLER ARTIFACTS
+DMG: /Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.45.dmg
+DMG SHA-256: f043fb99ae53c2e517e64349882d6abb846495e6ac7ee044dc1080bcbce4f92b
+ZIP: /Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.45.zip
+ZIP SHA-256: 9492766f65fcbddbe0da4b0e9ae5c0a330e4600867fc356cc9effb2f763b06a1
+
+WARNINGS
+- Nuxt reported stale Browserslist data and large chunks.
+- pnpm deploy/electron-builder reported existing dependency/peer-resolution warnings.
+- None failed preparation, native module rebuild, Electron generation, packaging, DMG, ZIP, or blockmap creation.
+
+RESULT
+Pass. The local unsigned/unnotarized macOS ARM64 application is ready for user verification.

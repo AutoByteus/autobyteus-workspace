@@ -1,0 +1,4 @@
+## round 2 durable diff integrity
+PASS: git diff --check
+## production source unchanged in round 2 working tree
+PASS: no API/E2E-owned production source diff

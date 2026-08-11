@@ -77,7 +77,7 @@ All processors share a common architectural pattern:
 
 - **Role**: Optional post-processing of the `CompleteResponse` received from the LLM.
 - **Tool Note**: Provider adapters normalize structured tool deltas during
-  `LlmPhase` streaming. `ApiToolCallStreamingResponseHandler` creates
+  `LlmPhase` streaming. `LlmStreamingResponseHandler` creates
   invocations from those native deltas. LLM response processors do not parse
   assistant text into tools.
 
@@ -113,8 +113,9 @@ execution. Assistant text is output only and is never an invocation transport.
 `ToolSchemaProvider` converts registered definitions to the provider's native
 request schema. Anthropic and Gemini have dedicated native schema formatters;
 the other supported tool-capable paths use the OpenAI-compatible function-tool
-envelope. `StreamingResponseHandlerFactory` returns those schemas with the
-native handler when tools exist and returns no schemas for a no-tool turn.
+envelope. `LlmPhase` builds these schemas only when tools exist, attaches them
+to the provider request, and configures one `LlmStreamingResponseHandler` with
+the matching explicit tool-call gate. A no-tool turn builds and sends no schema.
 
 The runtime does not inject a tool manifest or usage examples into the system
 prompt. Providers without a normalized native tool channel remain ordinary
@@ -123,7 +124,8 @@ content/media providers rather than receiving a text fallback.
 ### 4.3. Native Streaming and Invocation
 
 Provider adapters normalize native SDK events into `ToolCallDelta` records.
-`ApiToolCallStreamingResponseHandler` tracks parallel calls, emits normalized
+`LlmStreamingResponseHandler` tracks parallel calls when its tool-call gate is
+enabled, emits normalized
 `SegmentEvent`s, and creates each `ToolInvocation` from the final accumulated
 native argument JSON. Assistant text, including XML/JSON/sentinel or
 `[TOOL_CALL]`-looking content, remains a text segment and creates no invocation.
@@ -138,8 +140,9 @@ JSON remains the execution authority.
 2.  **Engine**: Enqueues `UserMessageReceivedEvent`.
 3.  **Input Processor**: Runs (no changes).
 4.  **System Prompt Processor (Bootstrap)**: Non-tool prompt processors run once.
-5.  **LLM Call**: `StreamingResponseHandlerFactory` builds the native schema for
-    `list_directory`; `LlmPhase` supplies it through the provider `tools` field.
+5.  **LLM Call**: `LlmPhase` uses `ToolSchemaProvider` to build the native schema
+    for `list_directory`, supplies it through the provider `tools` field, and
+    enables native deltas on the unified stream handler.
 6.  **LLM Response**: The provider emits a structured native call with
     `list_directory` and `{ "path": "src" }` arguments.
 7.  **Native Handler**: Provider deltas are normalized; the handler closes the
@@ -148,8 +151,14 @@ JSON remains the execution authority.
 8.  **Preprocessor**: Checks if `list_directory` is allowed (e.g., within sandbox).
 9.  **Execution**: Tool runs, returns list of files.
 10. **Result Processor**: Formats the file list.
-11. **Context Update**: Result is added to chat history.
-12. **Loop**: Agent waits for next event or generates a final answer.
+11. **Context Update**: After the processed batch is complete,
+    `AgentTurnRunner` calls `MemoryManager.ingestToolResults(...)` once in native
+    call order.
+12. **Continuation**: `ToolContinuationInputBuilder` builds a semantic/context
+    carrier. `AgentInputPipeline` returns `llmUserMessage: null` when no media
+    carrier is required; otherwise it returns the required user/media message.
+13. **Loop**: `LlmPhase` uses the same `LLMRequestAssembler.prepareRequest(...)`
+    path for either value and generates the final answer or another native call.
 
 ---
 

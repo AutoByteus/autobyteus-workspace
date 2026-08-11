@@ -1,0 +1,6 @@
+OWNED_RESOURCE_CLEANUP
+ABSENT autobyteus-ts/node_modules
+OWNED_SERVER_PROCESS none (no server started in round 3)
+REAL_PROVIDER_STATE unchanged (round 1 evidence preserved; no round 3 provider execution)
+RETAINED_AUTHORIZED_TEST_VAULT autobyteus-server-ts/db/test.db (gitignored)
+RETAINED_AUTHORIZED_TEST_VAULT_KEY autobyteus-server-ts/db/test.db.secret.key (gitignored)

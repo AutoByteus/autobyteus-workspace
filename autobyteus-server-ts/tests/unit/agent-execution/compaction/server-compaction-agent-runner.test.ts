@@ -1,9 +1,10 @@
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { CompactionAgentRunnerError } from "autobyteus-ts/memory/compaction/compaction-agent-runner.js";
 import { ServerCompactionAgentRunner } from "../../../../src/agent-execution/compaction/server-compaction-agent-runner.js";
+import { CompactionRunOutputCollector } from "../../../../src/agent-execution/compaction/compaction-run-output-collector.js";
 import {
   AgentRunEventType,
   type AgentRunEvent,
@@ -25,6 +26,8 @@ class FakeRun {
   readonly runId = "compaction-run-1";
   readonly emittedEvents: AgentRunEvent[];
   readonly listeners = new Set<(event: unknown) => void>();
+  subscriptionCount = 0;
+  unsubscriptionCount = 0;
   postedMessage: AgentInputUserMessage | null = null;
 
   constructor(events: AgentRunEvent[]) {
@@ -32,8 +35,17 @@ class FakeRun {
   }
 
   subscribeToEvents(listener: (event: unknown) => void) {
+    this.subscriptionCount += 1;
     this.listeners.add(listener);
-    return () => this.listeners.delete(listener);
+    let active = true;
+    return () => {
+      if (!active) {
+        return;
+      }
+      active = false;
+      this.unsubscriptionCount += 1;
+      this.listeners.delete(listener);
+    };
   }
 
   async postUserMessage(message: AgentInputUserMessage) {
@@ -78,6 +90,76 @@ const createLaunchResolver = () => ({
 });
 
 describe("ServerCompactionAgentRunner", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it.each([
+    {
+      name: "the omitted five-minute default",
+      timeoutMs: undefined,
+      expectedTimeoutMs: 300_000,
+    },
+    {
+      name: "an explicit short override",
+      timeoutMs: 17,
+      expectedTimeoutMs: 17,
+    },
+  ])(
+    "passes $name to output collection and preserves timeout cleanup",
+    async ({ timeoutMs, expectedTimeoutMs }) => {
+      const run = new FakeRun([]);
+      const agentRunService = createService(run);
+      const launchResolver = createLaunchResolver();
+      const waitForFinalOutput = vi.spyOn(
+        CompactionRunOutputCollector.prototype,
+        "waitForFinalOutput",
+      ).mockImplementation(async (observedTimeoutMs: number) => {
+        throw new Error(
+          `Compactor agent run '${run.runId}' timed out after ${observedTimeoutMs}ms before returning final JSON.`,
+        );
+      });
+      const runner = new ServerCompactionAgentRunner({
+        launchResolver: launchResolver as any,
+        agentRunService: agentRunService as any,
+        workspaceRootPath: "/tmp/workspace",
+        parentLaunchFallback,
+        ...(timeoutMs === undefined ? {} : { timeoutMs }),
+      });
+
+      await expect(
+        runner.runCompactionTask({
+          taskId: "task-timeout-contract",
+          prompt: "compact this",
+          blockCount: 1,
+          traceCount: 1,
+        }),
+      ).rejects.toMatchObject({
+        name: "CompactionAgentRunnerError",
+        message: expect.stringMatching(
+          new RegExp(`timed out after ${expectedTimeoutMs}ms`),
+        ),
+        compactionMetadata: {
+          compactionAgentDefinitionId: "autobyteus-memory-compactor",
+          compactionAgentName: "Memory Compactor",
+          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+          modelIdentifier: "codex:gpt-5",
+          provider: "openai",
+          compactionRunId: "compaction-run-1",
+          taskId: "task-timeout-contract",
+        },
+      });
+
+      expect(waitForFinalOutput).toHaveBeenCalledOnce();
+      expect(waitForFinalOutput).toHaveBeenCalledWith(expectedTimeoutMs);
+      expect(run.subscriptionCount).toBe(1);
+      expect(run.unsubscriptionCount).toBe(1);
+      expect(run.listeners.size).toBe(0);
+      expect(agentRunService.terminateAgentRun).toHaveBeenCalledOnce();
+      expect(agentRunService.terminateAgentRun).toHaveBeenCalledWith(run.runId);
+    },
+  );
+
   it("creates a normal visible run, posts one task, collects output, and terminates", async () => {
     const run = new FakeRun([
       createEvent(AgentRunEventType.SEGMENT_CONTENT, {

@@ -30,6 +30,8 @@ export type ServerCompactionAgentRunnerOptions = {
   parentLaunchFallback?: CompactionParentLaunchFallback | null;
 };
 
+const DEFAULT_COMPACTION_AGENT_COMPLETION_TIMEOUT_MS = 300_000;
+
 const normalizeOptionalString = (value: string | null | undefined): string | null => {
   if (typeof value !== "string") {
     return null;
@@ -48,7 +50,7 @@ export class ServerCompactionAgentRunner implements CompactionAgentRunner {
   constructor(options: ServerCompactionAgentRunnerOptions = {}) {
     this.launchResolver = options.launchResolver ?? null;
     this.agentRunService = options.agentRunService ?? null;
-    this.timeoutMs = options.timeoutMs ?? 120_000;
+    this.timeoutMs = options.timeoutMs ?? DEFAULT_COMPACTION_AGENT_COMPLETION_TIMEOUT_MS;
     this.workspaceRootPath =
       normalizeOptionalString(options.workspaceRootPath) ??
       appConfigProvider.config.getTempWorkspaceDir();

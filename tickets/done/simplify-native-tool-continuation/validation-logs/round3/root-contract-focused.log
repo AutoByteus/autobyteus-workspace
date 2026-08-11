@@ -1,0 +1,24 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/autobyteus-ts
+
+stdout | tests/unit/legacy-tool-calling-public-surfaces-removed.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+···································
+
+ Test Files  1 passed (1)
+      Tests  35 passed (35)
+   Start at  14:08:06
+   Duration  2.66s (transform 1.57s, setup 22ms, import 2.50s, tests 6ms, environment 0ms)
