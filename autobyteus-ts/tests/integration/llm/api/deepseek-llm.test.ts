@@ -6,7 +6,7 @@ import { LLMRequestAssembler } from '../../../../src/agent/llm-request-assembler
 import { ToolResultEvent } from '../../../../src/agent/events/agent-events.js';
 import { ToolInvocation } from '../../../../src/agent/tool-invocation.js';
 import { DeepSeekLLM } from '../../../../src/llm/api/deepseek-llm.js';
-import { ApiToolCallStreamingResponseHandler } from '../../../../src/agent/streaming/handlers/api-tool-call-streaming-response-handler.js';
+import { LlmStreamingResponseHandler } from '../../../../src/agent/streaming/handlers/llm-streaming-response-handler.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMUserMessage } from '../../../../src/llm/user-message.js';
@@ -16,6 +16,7 @@ import { Message, MessageRole, ToolCallPayload, ToolResultPayload } from '../../
 import { MemoryManager } from '../../../../src/memory/memory-manager.js';
 import { FileMemoryStore } from '../../../../src/memory/store/file-store.js';
 import { skipIfProviderAccessError } from '../../helpers/provider-access.js';
+import { providerApiKeyResolver } from '../../../unit/provider-api-key-resolver-test-helpers.js';
 
 const apiKey = process.env.DEEPSEEK_API_KEY;
 const runIntegration = apiKey ? describe : describe.skip;
@@ -78,7 +79,7 @@ const runOptionalToolCallContinuation = async (llm: DeepSeekLLM): Promise<void> 
       content: 'Use echo_number with number 42 if a tool call is needed; otherwise explain why no tool is needed.'
     })
   ];
-  const parser = new ApiToolCallStreamingResponseHandler({ turnId: TURN_ID });
+  const parser = new LlmStreamingResponseHandler({ turnId: TURN_ID, toolCallsEnabled: true });
   let assistantText = '';
   for await (const chunk of llm.streamMessages(toolPromptMessages, null, {
     tools: [TOOL_SCHEMA]
@@ -149,15 +150,16 @@ describe('DeepSeekLLM reasoning continuation payloads', () => {
             reasoning_effort: 'high',
             thinking_type: 'enabled'
           }
-        })
+        }),
+        providerApiKeyResolver('synthetic-deepseek-key')
       );
-      (llm as any).client = {
+      (llm as any).clientPromise = Promise.resolve({
         chat: {
           completions: {
             create: createMock
           }
         }
-      };
+      });
 
       const manager = new MemoryManager({
         store: new FileMemoryStore(tempDir, 'agent_deepseek_reasoning_continuation')
@@ -188,7 +190,10 @@ describe('DeepSeekLLM reasoning continuation payloads', () => {
       );
 
       const assembler = new LLMRequestAssembler(manager, (llm as any)._renderer);
-      const request = await assembler.prepareToolContinuationRequest(turnId);
+      const request = await assembler.prepareRequest(null, {
+        turnId,
+        requestId: 'request_deepseek_reasoning_continuation'
+      });
 
       await llm.sendMessages(request.outboundMessages, request.renderedPayload, {
         tools: [WEATHER_TOOL_SCHEMA]
@@ -198,7 +203,8 @@ describe('DeepSeekLLM reasoning continuation payloads', () => {
       const [params] = createMock.mock.calls[0] ?? [];
       expect(params.model).toBe('deepseek-v4-pro');
       expect(params.reasoning_effort).toBe('high');
-      expect(params.extra_body).toEqual({ thinking: { type: 'enabled' } });
+      expect(params.thinking).toEqual({ type: 'enabled' });
+      expect(params).not.toHaveProperty('extra_body');
       expect(params.tools).toEqual([WEATHER_TOOL_SCHEMA]);
       expect(params).not.toHaveProperty('tool_choice');
       expect(params.messages).toHaveLength(3);

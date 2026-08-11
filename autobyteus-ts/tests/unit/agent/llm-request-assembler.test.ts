@@ -8,6 +8,7 @@ import { MemoryManager } from '../../../src/memory/memory-manager.js';
 import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
 import { OpenAIChatRenderer } from '../../../src/llm/prompt-renderers/openai-chat-renderer.js';
 import { RawTraceItem } from '../../../src/memory/models/raw-trace-item.js';
+import { LLMUserMessage } from '../../../src/llm/user-message.js';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -65,7 +66,7 @@ describe('LLMRequestAssembler', () => {
     const assembler = new LLMRequestAssembler(memoryManager as any, new FakeRenderer());
 
     const request = await assembler.prepareRequest(
-      'hello',
+      new LLMUserMessage({ content: 'hello' }),
       { turnId: 'turn_0001', requestId: 'turn_0001:llm:1' },
       'System prompt',
     );
@@ -97,7 +98,7 @@ describe('LLMRequestAssembler', () => {
 
     const assembler = new LLMRequestAssembler(memoryManager as any, new FakeRenderer(), executor as any);
     const request = await assembler.prepareRequest(
-      'new input',
+      new LLMUserMessage({ content: 'new input' }),
       { turnId: 'turn_0002', requestId: 'turn_0002:llm:1' },
       'System prompt',
     );
@@ -123,6 +124,57 @@ describe('LLMRequestAssembler', () => {
       'System prompt',
       'Earlier progress:\n1. Durable summary',
     ]);
+  });
+
+  it('compacts and renders native tool history without appending a user message when the additional message is null', async () => {
+    const memoryManager = new FakeMemoryManager();
+    const compactedHistory = new WorkingContext([
+      new Message(MessageRole.SYSTEM, { content: 'System prompt' }),
+      new Message(MessageRole.ASSISTANT, {
+        content: 'Checking the workspace.',
+        tool_payload: new ToolCallPayload([
+          { id: 'call_read', name: 'read_file', arguments: { path: '/tmp/a.txt' } },
+        ]),
+      }),
+      new Message(MessageRole.TOOL, {
+        tool_payload: new ToolResultPayload('call_read', 'read_file', 'retained evidence'),
+      }),
+    ]);
+    const executor = {
+      executeIfRequired: vi.fn(async () => {
+        memoryManager.replaceWorkingContext(compactedHistory);
+        return true;
+      }),
+    };
+    const assembler = new LLMRequestAssembler(
+      memoryManager as any,
+      new OpenAIChatRenderer(),
+      executor as any,
+    );
+
+    const request = await assembler.prepareRequest(
+      null,
+      { turnId: 'turn_tool', requestId: 'turn_tool:llm:2' },
+      'System prompt',
+    );
+
+    expect(request.didCompact).toBe(true);
+    expect(request.canonicalMessages).toEqual(compactedHistory.buildMessages());
+    expect(request.canonicalMessages.map(({ role }) => role)).toEqual([
+      MessageRole.SYSTEM,
+      MessageRole.ASSISTANT,
+      MessageRole.TOOL,
+    ]);
+    expect((request.renderedPayload as any[]).map(({ role }) => role)).toEqual([
+      'system',
+      'assistant',
+      'tool',
+    ]);
+    expect(memoryManager.captureLlmRequestRecoverySnapshot).toHaveBeenCalledWith({
+      turnId: 'turn_tool',
+      requestId: 'turn_tool:llm:2',
+    });
+    expect(memoryManager.ensureWorkingContextToolProtocolSafeForNextLlm).toHaveBeenCalledTimes(2);
   });
 
   it('repairs already-poisoned native tool-call history before OpenAI-compatible render', async () => {
@@ -159,7 +211,7 @@ describe('LLMRequestAssembler', () => {
         memoryManager,
         new OpenAIChatRenderer(),
       ).prepareRequest(
-        'please continue there was a shutdown',
+        new LLMUserMessage({ content: 'please continue there was a shutdown' }),
         { turnId: 'turn_new', requestId: 'turn_new:llm:1' },
         'System prompt',
       );
@@ -172,7 +224,7 @@ describe('LLMRequestAssembler', () => {
         tool_call_id: 'call_missing',
       });
       expect(rendered[assistantIndex + 1].content).toContain(
-        'Tool execution was interrupted by runtime shutdown before a result was recorded.'
+        "operation did not complete or was interrupted before a result was recorded"
       );
       expect(rendered[assistantIndex + 2]).toMatchObject({ role: 'user' });
       expect(rendered[assistantIndex + 2].content).toContain('already failed continue attempt');
@@ -196,7 +248,7 @@ describe('LLMRequestAssembler', () => {
     const assembler = new LLMRequestAssembler(memoryManager as any, new FakeRenderer(), executor as any);
 
     await expect(assembler.prepareRequest(
-      'hello',
+      new LLMUserMessage({ content: 'hello' }),
       { turnId: 'turn_0002', requestId: 'turn_0002:llm:1' },
       'System prompt',
     )).rejects.toBeInstanceOf(
@@ -225,7 +277,7 @@ describe('LLMRequestAssembler', () => {
     const assembler = new LLMRequestAssembler(memoryManager as any, renderer, executor as any);
 
     await expect(assembler.prepareRequest(
-      'transient user input',
+      new LLMUserMessage({ content: 'transient user input' }),
       { turnId: 'turn_restore', requestId: 'turn_restore:llm:1' },
       'System prompt',
     )).rejects.toThrow('renderer failed');

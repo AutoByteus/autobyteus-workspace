@@ -109,7 +109,7 @@ External tool results use the same active-turn boundary through
 `AgentRuntime.postToolResultEvent(...)`, `ToolResultInboxEventHandler`, and
 `AgentRuntimeState.postToolResultEventToActiveTurn(...)` before waking
 `TurnToolInputPort.postToolResult(...)`. Same-turn TOOL continuations remain
-inside `AgentTurnRunner`/`ToolPhase`/`ToolResultContinuationBuilder` and must not
+inside `AgentTurnRunner`/`ToolPhase`/`ToolContinuationInputBuilder` and must not
 enter the runtime event inbox as `SenderType.TOOL` user input.
 
 ## Turn Execution Ownership
@@ -123,9 +123,9 @@ uses these collaborators:
   - preserves current-turn context-file media payloads and appends a generated
     `Reference files:` block for context files that resolve to local absolute
     paths;
-  - keeps tool-continuation messages in `append_user_message` mode when they
-    carry context-file media, so the next provider request has a valid media
-    carrier;
+  - represents a tool continuation without context-file media as
+    `llmUserMessage: null`, while a continuation with media produces the user/media
+    carrier required by the next provider request;
   - preserves inter-agent metadata such as `sender_agent_id`,
     `original_message_type`, and `reference_files`;
   - adds exactly one generated `Reference files:` block to recipient-visible
@@ -142,9 +142,10 @@ uses these collaborators:
     canonical memory;
   - passes `{ signal, turnId }` into `BaseLLM.streamMessages(...)`;
   - publishes streamed segment facts through `AgentExternalEventNotifier`;
-  - sends configured tools through provider-native schemas and normalizes only
-    provider-native tool-call deltas through the streaming response handler
-    factory; assistant text is never parsed into invocations;
+  - creates one `LlmStreamingResponseHandler` for tool and no-tool streams,
+    builds `ToolSchemaProvider` schemas only when configured tools exist, and
+    normalizes native tool-call deltas only when the handler's explicit gate is
+    enabled; assistant text is never parsed into invocations;
   - checks the `TurnExecutionScope` before starting or consuming LLM streams
     and again after awaited LLM seams before publishing normal assistant
     completion side effects;
@@ -180,16 +181,17 @@ uses these collaborators:
   - applies configured tool-result processors to the direct results returned by
     `ToolPhase`; direct tool results are not posted back through the runtime
     event inbox.
-- `ToolResultContinuationBuilder`
-  - builds semantic completed-tool continuation text from the processed tool
-    results, for example `The read_media_file tool call completed successfully.`;
-  - ingests the active native result batch in call order and builds the
-    same-turn internal `SenderType.TOOL` continuation carrier;
-  - marks provider-native continuations as `tool_history_only` when no
-    context-file media must be carried, causing `AgentTurnRunner` to emit
-    `ToolContinuationReadyEvent` and `LlmPhase` to call
-    `LLMRequestAssembler.prepareToolContinuationRequest(...)` without appending
-    a synthetic provider-visible user message.
+- `MemoryManager` and `ToolContinuationInputBuilder`
+  - receive one runner-owned, ordered `MemoryManager.ingestToolResults(...)`
+    commit after the processed result batch is complete;
+  - build semantic completed-tool continuation text, for example
+    `The read_media_file tool call completed successfully.`, plus any context-file
+    media in a same-turn internal `SenderType.TOOL` carrier;
+  - keep the builder pure: persistence remains owned by `MemoryManager`, while
+    `AgentInputPipeline` returns either `llmUserMessage: null` for text-only
+    native history or an `LLMUserMessage` when a media carrier is required; and
+  - use the single `LLMRequestAssembler.prepareRequest(...)` method in both
+    cases, without a synthetic provider-visible user message for the null case.
 - `LLMResponsePipeline`
   - applies final response processors and publishes assistant output.
 - `AgentExternalEventNotifier`

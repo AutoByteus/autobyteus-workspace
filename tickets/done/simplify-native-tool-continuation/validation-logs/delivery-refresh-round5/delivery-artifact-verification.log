@@ -1,0 +1,44 @@
+DELIVERY ARTIFACT VERIFICATION — DR-005
+Date: 2026-08-11
+Ticket: simplify-native-tool-continuation
+
+INTEGRATED STATE
+HEAD: 2d5f64d65a58e5fd3394f6a8aa5f143e4c732864
+origin/personal: c6080a4fbee5541c48c898dc1346ac67fcf9c2d6
+Relation: behind 0, ahead 8
+origin/personal ancestor of HEAD: yes
+
+DELIVERY CHECKS
+git diff --check: Pass
+Delivery and long-lived documentation text check: Pass, 7 files
+Credential-shaped value scan: Pass, 12 changed/untracked files
+Post-integration focused compaction execution: Pass, 3 files / 19 tests
+Root pnpm install: Pass
+README-path macOS Electron build: Pass
+Post-build remote recheck: Pass; origin/personal unchanged
+
+DOCUMENTATION
+Long-lived update: autobyteus-server-ts/docs/modules/agent_memory.md
+Result: exact 300,000 ms runner-owned omitted-option completion wait, explicit
+override precedence, unchanged failure cleanup, and unrelated-timeout exclusion
+are documented.
+Delivery artifacts: delivery-integration-evidence.log,
+delivery-revision-record.md, docs-sync-report.md, handoff-summary.md,
+release-deployment-report.md, and release-notes.md updated through DR-005.
+
+DESKTOP CANDIDATE
+Application: /Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+Version: 1.4.48
+Bundle identifier: com.autobyteus.app
+Architecture: macOS ARM64
+Packaged runner default 300_000: present
+Packaged waitForFinalOutput(this.timeoutMs) forwarding: present
+DMG SHA-256: 7b6141338b4bee1c9aa164952633ca90fc35a4e4757029ec92e902be596075db
+ZIP SHA-256: d273adceede3cf36679fd29877213c0f911bfb9b4508484cacb217ceba8f10d7
+
+FINALIZATION HOLD
+The candidate requires renewed explicit user verification. No branch push,
+target merge/push, archive move, version/tag/release/deployment action, or
+cleanup was performed.
+
+RESULT: PASS

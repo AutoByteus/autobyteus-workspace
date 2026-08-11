@@ -1,0 +1,3 @@
+LMSTUDIO_ASSERT PASS {"context": 262144, "reservedOutput": 1024, "safetyMargin": 256, "inputBudget": 260864, "ratio": 0.05, "rawProduct": 13043.2, "floorThreshold": 13043, "prompts": [1120, 4943, 5105, 14418, 10883, 11012, 11085]}
+DEEPSEEK_ASSERT PASS {"context": 1000000, "reservedOutput": 1024, "safetyMargin": 256, "inputBudget": 998720, "ratio": 0.05, "rawProduct": 49936.0, "floorThreshold": 49936, "prompts": [1141, 14434, 14606, 56152, 43616, 43890]}
+CONFIGURED_PERCENTAGE_AND_POST_COMPACTION_ASSERTIONS PASS

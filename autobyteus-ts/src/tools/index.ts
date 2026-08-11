@@ -13,6 +13,7 @@ export { registerTools } from './register-tools.js';
 export { ParameterSchema, ParameterDefinition, ParameterType } from '../utils/parameter-schema.js';
 
 export type { BaseSchemaFormatter } from './usage/formatters/base-formatter.js';
+export { ToolSchemaProvider } from './usage/providers/tool-schema-provider.js';
 
 
 export { Search, type SearchExecutor } from './search-tool.js';

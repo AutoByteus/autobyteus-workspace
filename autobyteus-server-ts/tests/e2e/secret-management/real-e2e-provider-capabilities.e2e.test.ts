@@ -129,6 +129,8 @@ run('value-safe one-database-vault managed-provider capabilities', () => {
           observedBelowThreshold: true,
           observedAtOrAboveThreshold: true,
           successfulToolCount: 3,
+          orderedToolTracePairsVerified: true,
+          continuationTraceAbsent: true,
           exactRetainedArtifactVerified: true,
           projectedMemoryAndCurrentUserVerified: true,
           canonicalCompactorAgentUsed: true,

@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { LLMRequestAssembler } from '../../../src/agent/llm-request-assembler.js';
-import { ApiToolCallStreamingResponseHandler } from '../../../src/agent/streaming/handlers/api-tool-call-streaming-response-handler.js';
+import { LlmStreamingResponseHandler } from '../../../src/agent/streaming/handlers/llm-streaming-response-handler.js';
 import { ToolResultEvent } from '../../../src/agent/events/agent-events.js';
 import { OpenAIChatRenderer } from '../../../src/llm/prompt-renderers/openai-chat-renderer.js';
 import { LLMUserMessage } from '../../../src/llm/user-message.js';
@@ -51,7 +51,7 @@ runIntegration('Memory tool call flow (LM Studio)', () => {
         llm.config.systemMessage,
       );
 
-      const handler = new ApiToolCallStreamingResponseHandler({ turnId: TURN_ID });
+      const handler = new LlmStreamingResponseHandler({ turnId: TURN_ID, toolCallsEnabled: true });
       try {
         for await (const chunk of llm.streamMessages(request.outboundMessages, request.renderedPayload, {
           tools: [toolSchema],

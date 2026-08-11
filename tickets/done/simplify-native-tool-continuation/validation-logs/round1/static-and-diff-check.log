@@ -1,0 +1,6 @@
+## production legacy symbol scan
+PASS: zero legacy production symbol matches
+## production legacy semantic continuation-trace marker scan
+PASS: zero legacy semantic continuation trace marker matches
+## git diff check
+PASS: git diff --check

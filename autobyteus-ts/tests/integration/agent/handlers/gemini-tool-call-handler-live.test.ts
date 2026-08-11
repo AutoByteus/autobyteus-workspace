@@ -3,7 +3,7 @@ import { GeminiLLM } from '../../../../src/llm/api/gemini-llm.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMUserMessage } from '../../../../src/llm/user-message.js';
-import { ApiToolCallStreamingResponseHandler } from '../../../../src/agent/streaming/handlers/api-tool-call-streaming-response-handler.js';
+import { LlmStreamingResponseHandler } from '../../../../src/agent/streaming/handlers/llm-streaming-response-handler.js';
 import { SegmentEventType } from '../../../../src/agent/streaming/segments/segment-events.js';
 import { defaultToolRegistry, ToolRegistry } from '../../../../src/tools/registry/tool-registry.js';
 import { ToolDefinition } from '../../../../src/tools/registry/tool-definition.js';
@@ -30,7 +30,7 @@ const resetRegistry = () => {
   registerWriteFileTool();
 };
 
-runIntegration('ApiToolCallStreamingResponseHandler (Gemini live)', () => {
+runIntegration('LlmStreamingResponseHandler (Gemini live)', () => {
   it('processes tool call stream into invocations', async () => {
     resetRegistry();
     const toolDef = defaultToolRegistry.getToolDefinition('write_file');
@@ -41,8 +41,9 @@ runIntegration('ApiToolCallStreamingResponseHandler (Gemini live)', () => {
 
     const llm = new GeminiLLM(buildGeminiModel());
     const events: any[] = [];
-    const handler = new ApiToolCallStreamingResponseHandler({
+    const handler = new LlmStreamingResponseHandler({
       turnId: TURN_ID,
+      toolCallsEnabled: true,
       onSegmentEvent: (event) => events.push(event)
     });
 

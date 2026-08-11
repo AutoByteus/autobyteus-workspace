@@ -297,10 +297,11 @@
                   <div
                     v-if="displayRow.row.kind === 'stable_member'"
                     class="flex w-full cursor-pointer items-center rounded-md text-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
-                    :class="sameTeamExecutionAddress(displayRow.row.executionAddress, focusedTeamExecutionAddress(team)) ? 'bg-indigo-50 text-indigo-900' : 'text-gray-600 hover:bg-gray-50'"
+                    :class="isSelectedTeamMember(team, displayRow.row) ? 'bg-indigo-50 text-indigo-900' : 'text-gray-600 hover:bg-gray-50'"
                     :style="teamExecutionRowStyle(displayRow.row)"
                     :data-test="`workspace-team-member-${team.teamRunId}-${displayRow.row.memberAddress}`"
                     data-row-kind="stable_member"
+                    :aria-current="isSelectedTeamMember(team, displayRow.row) ? 'true' : undefined"
                     role="button"
                     tabindex="0"
                     @click="activateTeamDisplayRow(team, displayRow.row, displayRow.hasChildren)"
@@ -362,7 +363,7 @@
                   <WorkspaceTransientExecutionRow
                     v-else
                     :row="displayRow.row"
-                    :focused="sameTeamExecutionAddress(displayRow.row.executionAddress, focusedTeamExecutionAddress(team))"
+                    :is-selected="isSelectedTeamMember(team, displayRow.row)"
                     :has-children="displayRow.hasChildren"
                     :expanded="isTeamDisplayRowExpanded(team, displayRow.row)"
                     @select="(row) => selectTeamDisplayRow(team, row)"
@@ -404,7 +405,7 @@ import type {
   TeamTreeNode,
 } from '~/stores/runHistoryTypes';
 import type { RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
-import { sameTeamExecutionAddress, serializeTeamExecutionAddress, type TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
+import { sameTeamExecutionAddress, serializeTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
 const props = defineProps<{
   workspaceNode: RunTreeWorkspaceNode;
@@ -481,8 +482,11 @@ const visibleTeamExecutionRows = (team: TeamTreeNode): VisibleTeamExecutionRow[]
   return visibleRows;
 };
 
-const focusedTeamExecutionAddress = (team: TeamTreeNode): TeamExecutionAddress =>
-  team.focusedExecutionAddress;
+const isSelectedTeamMember = (
+  team: TeamTreeNode,
+  row: RunHistoryTeamExecutionRow,
+): boolean => props.state.isTeamRunSelected(team.teamRunId)
+  && sameTeamExecutionAddress(row.executionAddress, team.focusedExecutionAddress);
 
 const teamExecutionRowStyle = (row: RunHistoryTeamExecutionRow): Record<string, string> => ({ marginLeft: `${row.depth * 12}px` });
 

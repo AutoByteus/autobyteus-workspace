@@ -14,7 +14,6 @@ import { AgentRuntime } from '../../../src/agent/runtime/agent-runtime.js';
 import { AgentStatus } from '../../../src/agent/status/status-enum.js';
 import { MemoryIngestInputProcessor } from '../../../src/agent/input-processor/memory-ingest-input-processor.js';
 import { AgentInputUserMessage } from '../../../src/agent/message/agent-input-user-message.js';
-import { MemoryIngestToolResultProcessor } from '../../../src/agent/tool-execution-result-processor/memory-ingest-tool-result-processor.js';
 import { BaseLLM } from '../../../src/llm/base.js';
 import { LLMModel } from '../../../src/llm/models.js';
 import { LLMProvider } from '../../../src/llm/providers.js';
@@ -390,7 +389,7 @@ describe('provider-native tool continuation integration flow', () => {
           [new MemoryIngestInputProcessor()],
           null,
           [],
-          [new MemoryIngestToolResultProcessor()]
+          []
         );
         const context = new AgentContext(runtimeState.agentId, config, runtimeState);
         runtime = new AgentRuntime(context);
@@ -440,10 +439,15 @@ describe('provider-native tool continuation integration flow', () => {
           'call_b'
         ]);
 
-        const rawToolResults = memoryManager.store
-          .list(MemoryType.RAW_TRACE)
-          .filter((item: any) => item.traceType === 'tool_result');
+        const rawTraceCorpus = memoryManager.store.list(MemoryType.RAW_TRACE);
+        const rawToolCalls = rawTraceCorpus.filter((item: any) => item.traceType === 'tool_call');
+        const rawToolResults = rawTraceCorpus.filter((item: any) => item.traceType === 'tool_result');
+        expect(rawToolCalls.map((item: any) => item.toolCallId)).toEqual(['call_a', 'call_b']);
         expect(rawToolResults.map((item: any) => item.toolCallId)).toEqual(['call_a', 'call_b']);
+        expect(rawTraceCorpus.filter((item: any) => item.traceType === 'tool_continuation')).toEqual([]);
+        expect(rawTraceCorpus.map((item: any) => item.traceType).filter((traceType: string) =>
+          traceType === 'tool_call' || traceType === 'tool_result'
+        )).toEqual(['tool_call', 'tool_call', 'tool_result', 'tool_result']);
 
         assertProviderNativeToolResults(providerCase.name, continuationCapture.renderedPayload);
       } finally {

@@ -1,0 +1,207 @@
+DELIVERY INTEGRATION EVIDENCE
+Ticket: simplify-native-tool-continuation
+Checked at (UTC): 2026-08-09T12:22:16Z
+
+BRANCH
+codex/simplify-native-tool-continuation
+
+RECORDED IMPLEMENTATION BASE
+origin/personal 3cddeec6b93602da172fec2e7b9a80acc7c05117
+
+REVIEWED IMPLEMENTATION
+IR-002 0891e42f0ebdd2db5f0d1b2bd746abdb1e115668
+
+DELIVERY SAFETY CHECKPOINT
+c06db9a2bda018941e7b432fadc98475f355cb08
+test: align coverage with simplified native continuation
+
+REMOTE REFRESH
+Command: git fetch origin personal
+Result: exit 0
+Fetch output: origin personal -> FETCH_HEAD
+Refreshed origin/personal: 3cddeec6b93602da172fec2e7b9a80acc7c05117
+
+INTEGRATED-STATE CHECK
+Recorded base:                    3cddeec6b93602da172fec2e7b9a80acc7c05117
+Refreshed origin/personal:        3cddeec6b93602da172fec2e7b9a80acc7c05117
+New commits since recorded base: 0
+origin/personal...HEAD:            behind 0, ahead 3
+origin/personal is HEAD ancestor: yes
+Integration method:              Already current; no merge or rebase required
+
+POST-INTEGRATION EXECUTABLE CHECK DECISION
+Additional executable rerun: No
+Rationale: the refreshed tracked remote base exactly matched the reviewed
+implementation base, so no new base commit was integrated and effective runtime
+or package behavior did not change. API-REV-003 (Pass, 97.5% confidence) and
+CRR-005 (Pass) therefore remain authoritative. Delivery-stage edits are
+documentation and handoff artifacts only.
+
+FINALIZATION HOLD
+The ticket remains in tickets/in-progress. No ticket-branch push, target-branch
+merge/push, version/tag/release/deployment action, archival, or cleanup was run
+before explicit user verification.
+
+LATEST-BASE REFRESH — 2026-08-10
+User reported that origin/personal had advanced and requested an updated build.
+
+REMOTE REFRESH
+Command: git fetch origin personal
+Result: exit 0
+Prior integrated base:             3cddeec6b93602da172fec2e7b9a80acc7c05117
+Refreshed origin/personal:         d0bcd0dab2263fa284cf07de8d98214e5d19af73
+New commits since prior base:      41
+
+DELIVERY-EDIT PROTECTION
+Checkpoint: 4531ac7cf2667be5d3524a96bd288beaeb593282
+Subject: chore(delivery): checkpoint simplified continuation handoff
+Purpose: preserve reviewed delivery docs and the first Electron evidence before
+integrating the advanced base. This is a local safety checkpoint, not repository
+finalization.
+
+INTEGRATION
+Method: Merge
+Command: git merge --no-ff origin/personal
+Result: Pass, no conflicts
+Integrated HEAD: 012257323d5b7303184ca7c5f385602c6a6914f3
+origin/personal is integrated HEAD ancestor: yes
+origin/personal...HEAD: behind 0, ahead 5
+
+IMPACT CHECK
+The refreshed base changed wider provider, server, web, and release/version
+surfaces, but did not modify the ticket's core continuation/streaming/memory/
+schema/package-index paths. Current long-lived docs contain no retired ticket
+identifiers after the merge.
+
+POST-INTEGRATION EXECUTABLE CHECK
+Command: pnpm install
+Result: Pass
+Command: documented no-notarization pnpm build:electron:mac
+Result: Pass
+Artifact version: 1.4.47, macOS ARM64
+Packaged-source check: current handler/builder/schema provider and latest-base
+Qwen provider present; retired continuation modules absent.
+Evidence: validation-logs/delivery-refresh/
+
+POST-BUILD REMOTE RECHECK
+Command: git fetch origin personal
+Result: exit 0
+origin/personal remained: d0bcd0dab2263fa284cf07de8d98214e5d19af73
+Built HEAD current with remote: yes
+
+CURRENT HOLD
+The refreshed candidate is ready for explicit user verification. No branch
+push, finalization-target update, ticket archival, release, deployment, or
+cleanup was performed.
+
+SUPPLEMENTAL COMPACTION VERIFICATION — 2026-08-11
+API/E2E revision: API-REV-004 Pass, 98.2% final confidence
+Proportional checkpoint: CRR-006 Not Applicable; zero repository-resident
+source, test, fixture, or harness paths changed. CRR-005 remains the
+authoritative durable-coverage Pass.
+Executed HEAD: 012257323d5b7303184ca7c5f385602c6a6914f3
+Source/test integration required: no
+Electron rebuild required: no; no source, test, dependency, or packaging input
+changed, so the DR-003 Electron 1.4.47 artifact remains current.
+Exact threshold proof: LM Studio effective budget 260864 -> floor(5%) 13043;
+DeepSeek effective budget 998720 -> floor(5%) 49936, clean crossing 56152.
+Post-compaction result: both real paths completed compaction and continued
+correctly. The first DeepSeek attempt remains failed due invalid compactor JSON;
+deterministic fencing, unchanged rerun, and independent LM Studio passed.
+Finalization hold: unchanged; renewed explicit user verification remains
+required.
+
+SR-002 / IR-003 DELIVERY REFRESH — 2026-08-11
+Trigger: CRR-008 returned API-REV-005 and the two reviewed durable compaction
+test updates to delivery.
+
+PRE-REFRESH IMPLEMENTATION STATE
+Reviewed implementation HEAD: 7aa4bc6d7f3216db8dfc703eaf5ebfbc67da3804
+Delivery-integrated parent: 012257323d5b7303184ca7c5f385602c6a6914f3
+Prior refreshed base: d0bcd0dab2263fa284cf07de8d98214e5d19af73
+API/E2E: API-REV-005 Pass, 98.8% final confidence
+Source review: CRR-007 Pass, 9.7/10
+Proportional durable-test review: CRR-008 Pass, no findings
+
+REMOTE REFRESH
+Command: git fetch origin personal
+Result: exit 0
+Refreshed origin/personal: c6080a4fbee5541c48c898dc1346ac67fcf9c2d6
+New commits since prior refreshed base: 6
+Pre-integration relation: behind 6, ahead 6
+
+DELIVERY-EDIT AND COVERAGE PROTECTION
+Checkpoint: aed99b8f33c8ede393eb5edacffbf489ebcfec33
+Subject: chore(delivery): checkpoint compaction timeout handoff
+Purpose: preserve the reviewed two-test durable delta and the complete
+cumulative ticket/evidence package before integrating the advanced base. This
+is a local delivery-safety checkpoint, not repository finalization.
+
+INTEGRATION
+Method: Merge
+Command: git merge --no-ff origin/personal
+Result: Pass, no conflicts
+Integrated HEAD: 2d5f64d65a58e5fd3394f6a8aa5f143e4c732864
+origin/personal is integrated HEAD ancestor: yes
+origin/personal...HEAD: behind 0, ahead 8
+
+IMPACT CHECK
+The six base commits changed workspace-history UI/tests/docs, release metadata,
+and the package version to 1.4.48. They did not overlap the server compaction
+runner, collector, factory, or the two reviewed compaction test paths.
+
+POST-INTEGRATION EXECUTABLE CHECK
+Command: pnpm -C autobyteus-server-ts exec vitest run --no-watch
+  tests/unit/agent-execution/compaction/server-compaction-agent-runner.test.ts
+  tests/unit/agent-execution/compaction/compaction-run-output-collector.test.ts
+  tests/integration/agent-execution/compaction/compaction-agent-parent-fallback.integration.test.ts
+  --reporter=dot
+Result: Pass, 3 files / 19 tests
+Evidence: validation-logs/delivery-refresh-round5/post-integration-compaction-focused.log
+
+DEPENDENCY AND ELECTRON REFRESH
+Command: pnpm install
+Result: Pass
+Command: documented no-notarization pnpm build:electron:mac
+Result: Pass
+Artifact version: 1.4.48, macOS ARM64
+Packaged-source proof: server-compaction-agent-runner.js contains the exact
+300_000 default and forwards this.timeoutMs to waitForFinalOutput.
+Evidence: validation-logs/delivery-refresh-round5/
+
+POST-BUILD REMOTE RECHECK
+Command: git fetch origin personal
+Result: exit 0
+origin/personal remained: c6080a4fbee5541c48c898dc1346ac67fcf9c2d6
+Built HEAD current with remote: yes
+
+CURRENT HOLD
+The SR-002/IR-003 integrated Electron 1.4.48 candidate requires renewed explicit
+user verification. No ticket-branch push, finalization-target merge/push,
+archive move, version/tag/release/deployment action, or cleanup was performed.
+
+POST-ACCEPTANCE FINALIZATION REFRESH — 2026-08-11
+User verification: received
+Acceptance reference: user stated, “i have tested. lets finalize and release a
+new version.”
+Verified candidate: DR-005, integrated HEAD
+2d5f64d65a58e5fd3394f6a8aa5f143e4c732864, Electron 1.4.48
+
+REMOTE REFRESH
+Command: git fetch origin personal
+Result: exit 0
+Verified base:                    c6080a4fbee5541c48c898dc1346ac67fcf9c2d6
+Refreshed origin/personal:        c6080a4fbee5541c48c898dc1346ac67fcf9c2d6
+New commits since verified base:  0
+origin/personal...HEAD:            behind 0, ahead 8
+origin/personal is HEAD ancestor: yes
+
+VERIFICATION EFFECT
+The target did not advance after acceptance, so the verified tree and Electron
+candidate remain current. Renewed verification is not required.
+
+FINALIZATION AUTHORIZATION
+Ticket archived at tickets/done/simplify-native-tool-continuation.
+Repository finalization and documented stable release v1.4.49 are authorized
+and in progress. Exact commits, tag, push, rollout, and cleanup results will be
+recorded after execution.

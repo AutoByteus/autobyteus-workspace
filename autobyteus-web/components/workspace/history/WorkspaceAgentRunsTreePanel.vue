@@ -309,6 +309,8 @@ const sectionState: WorkspaceHistorySectionState = {
   get selectedRunId() {
     return treeState.selectedRunId.value;
   },
+  isTeamRunSelected: (teamRunId: string) =>
+    selectionStore.selectedType === 'team' && selectionStore.selectedRunId === teamRunId,
   isRunTerminating: (runId: string) => Boolean(terminatingRunIds.value[runId]),
   isTeamTerminating: (teamRunId: string) => Boolean(stopPendingTeamIds.value[teamRunId]),
   isRunDeleting: (runId: string) => Boolean(deletingRunIds.value[runId]),
