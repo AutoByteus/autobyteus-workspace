@@ -2,512 +2,144 @@
 
 ## Upstream Artifact Package
 
-- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/requirements.md`
-- Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/investigation-notes.md`
-- Design: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/design-spec.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/design-spec.md`
 - Address/handoff contract: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/agent-team-addressing-handoff-contract.md`
-- Exact Team collaboration system-instruction reference: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/agent-team-collaboration-system-instruction.md`
-- Canonical identity contract: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/team-run-canonical-identity-refactor.md`
+- Exact collaboration instruction: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/agent-team-collaboration-system-instruction.md`
+- Canonical identity refactor: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/team-run-canonical-identity-refactor.md`
+- Team stream/execution projection contract: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/team-stream-execution-projection-contract.md`
 - Live validation contract: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/nested-classroom-live-validation-contract.md`
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/solution-revision-record.md`
-- Architecture decision: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/design-review-report.md`
-- Architecture revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/architecture-review-revision-record.md`
-- Downstream lineage: `code-review-report.md`, `code-review-revision-record.md`, `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md`, `api-e2e-test-review-report.md`, `delivery-revision-record.md`, and `delivery-integration-blocker.md` in the same ticket directory. `CRR-047` passed IR-026. API-REV-022 then halted on the recipient transcript path, and `CRR-048` classified `CR-F-026` plus cleanup finding `CR-F-027` as bounded implementation Local Fixes. SR-015 and `ARCH-REV-009` remain current design authority; API/E2E remains paused pending IR-027 source re-review.
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/design-review-report.md`
+- Architecture review record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/architecture-review-revision-record.md`
+- Triggering cumulative source review: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`
+- Code review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-revision-record.md`
+- Paused downstream artifacts: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md`, and `api-e2e-test-review-report.md` in the same ticket directory.
+- Delivery blocker/revision: `delivery-integration-blocker.md` and `delivery-revision-record.md` in the same ticket directory.
 
-## Current Implementation State
+## Current Implementation Summary
 
-- Implementation revision: `IR-027`
-- Implementation cycle: `Local Fix` for `CR-F-026` / `CR-F-027` from `CRR-048`
-- Current solution: `SR-015` (`SR-001` through `SR-015` cumulative), including the exact-copy `SR-014` Team collaboration instruction
-- Architecture approval: `ARCH-REV-009` Pass (`ARCH-REV-008` remains the complete structural baseline)
-- Triggering findings: the authoritative Team `MEMBER_INPUT_MESSAGE` WebSocket branch mapped the input payload but omitted the exact `TeamRunEvent.executionAddress`. The strict frontend resolver therefore returned `null` and dropped the recipient transcript even though delivery and the separate communication projection succeeded. A Team-only synthetic `buildInterAgentMessageAgentRunEvent` and its unit-only test remained dead because the mixed runtime publishes `COMMUNICATION` plus `MEMBER_INPUT`, not Team `INTER_AGENT_MESSAGE`. `CRR-048` confirmed the product path, current strict resolver, and requirements/design remain valid.
-- Integrated baseline: merge `af9286bc47c1a06946d3773b9bfc8a339f075e2f`, with exact parents `7c6e6e6e1996522f4151407ca9064c28f2acdd4a` and `d0bcd0dab2263fa284cf07de8d98214e5d19af73`; IR-026 source/artifacts are `0dff80aa2` / `d21fdeb27` and passed source review in `CRR-047`.
-- Current source: `70db719065ec92de24cc110184a269bec673f6b1` (`fix(team): stream exact member input identity`). The Team event mapper now carries the unchanged exact event execution address as required `execution_address` on `MEMBER_INPUT_MESSAGE`; the frontend protocol marks that field required while its strict resolver remains unchanged. The dead Team-only AgentRun event builder and unit-only assertion are removed; genuine global Agent `INTER_AGENT_MESSAGE` support remains separate.
-- Durable coverage boundary: API-REV-022's incomplete `1 added / 42 updated / 0 removed` durable delta was not edited or staged. Implementation added one narrow server mapper unit because the source boundary is newly authoritative, used a removed-after-use frontend projection probe for persistent/nonempty task-Team scopes and no-fallback behavior, and left API/E2E's dirty browser/streaming fixtures untouched.
-- Current review state: IR-027 awaits focused code re-review. API/E2E remains paused and, after source Pass, must resume API-REV-022 expectation correction, fixture adjudication, builds, and safe isolated AutoByteus/Codex/Claude browser/provider validation.
-- Operational safety: IR-027 ran implementation-scoped units/probe, production builds, and source/safety audits only. No configured startup, retained E2E, migration scenario, live provider, browser, operational-database, or user-held-stack action ran. Server Vitest reset only `autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db`.
-- Protected delivery state: stash `92fe82e95eb123bdfa259c74eeb1c534b26d909b` and backup `/tmp/agent-team-hierarchical-handoffs-dr004-preintegrate.EJ9Oli/delivery-protected.tar` (SHA-256 `da300460f02c1d95965118fbe2ed8f68d549836d9f18d36bf23cdc418103a8d6`) remain intact and unapplied.
+- Implementation cycle: `Approved Design Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/implementation-revision-record.md`
+- Current implementation revision ID: `IR-028`
+- Related solution revision IDs: cumulative `SR-001`–`SR-018`; current `SR-018`
+- Related architecture-review revision IDs: current `ARCH-REV-011` Pass; `ARCH-REV-010` was the immediately preceding design rework gate
+- Related code-review revision IDs: `CRR-050` full cumulative Design Impact trigger; earlier bounded reviews remain lineage only
+- Related API/E2E revision IDs: `API-REV-023` is pre-pause, incomplete, and non-authoritative for this source
+- Related delivery revision IDs: `DR-005` and cumulative delivery blocker state
+- Triggering findings: `CR-F-028`, `CR-F-029`, `CR-F-030`; architecture findings `DR-005`, `DR-006`
+- Production source commit: `57ab99fcc410f75b535e3c07ad54182455547683` (`refactor(team): close execution projection boundaries`)
 
-## Implementation Summary
+IR-028 implements the complete SR-018 cut rather than another bounded field correction. One strict shared Team stream package, one correlated TeamRun event model, one domain Team Agent execution binding/status model, and one frontend `TeamExecutionState` now own the supported event, status, task, restore, focus, history, and cleanup paths. The implementation also completes the reviewed task activation ordering, token transaction contraction, current V5 application producer boundary, draft/run separation, and exact clean-removal inventory.
 
-IR-005 replaces the remaining route/path/name identity system with the SR-012 canonical model across the server, GraphQL/REST/WebSocket boundaries, application SDKs and bundled applications, and the production web client.
+## Reviewed Behavior Implementation Trace
 
-The TeamRun snapshot is now an immutable schema-v3 rooted `agent_team` aggregate at `/`. Each node has one canonical `AgentTeamAddress`, node-local kind-specific run IDs, Agent-local launch facts or AgentTeam-local coordinator/children facts, and compiled handoffs. Runtime indexes derive topology and lookups from that root tree. Persistent children select absolute nodes from the shared snapshot; task AgentTeams allocate distinct runtime identities without inventing local address forms.
+| Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
+| --- | --- | --- | --- |
+| `BEH-001`–`BEH-013` | Preserve rooted TeamRun v3, canonical logical/concrete identity, shared recipient resolution, intrinsic collaboration, providers, handoffs, and direct-current-Team task semantics. | Existing canonical domain/services plus updated mixed/task callers. | Preserved; no route/name/path fallback or alternate selector was added. |
+| `BEH-014`, `DS-007`, `DS-014A`–`J` | Close Team domain/event/status/WebSocket identity, including live, initial/restore, and pre-run statuses. | `team-agent-execution-binding.ts`, `team-agent-status.ts`, `team-agent-event.ts`, `team-agent-event-adapter.ts`, `team-runtime-snapshot-service.ts`, `member-command-status-overlay-store.ts`, `team-agent-event-websocket-projector.ts`, and `@autobyteus/team-stream-contracts`. | One immutable binding/status model and one strict projector/serializer path. Initial status is non-event state; pre-run status is a real correlated event. |
+| `BEH-014`, activation ordering | Publish durable task activation before child output/work and fail closed before active exposure. | `task-activation-event-barrier.ts`, task activation coordinator/service, task directories, mixed execution registries, and TeamRun publication lease. | Prepared executions are start-gated; activation persistence/commit precedes event release/work opening; overflow/start/persist failure aborts the prepared execution and held events. |
+| `BEH-015`, `DS-013A`–`D` | Keep released-data conversion and exact startup gate; make canonical token conversion one atomic row+schema transaction. | canonical migration/migrator/planner/store, Prisma schema, token runtime/repository/projections. | Planning completes before mutation; row updates, read-back verification, obsolete-column contraction, and canonical root index creation share one transaction. Old independent backfill/drop owners are removed. |
+| `BEH-016`, `DS-015A`–`G` | Separate immutable topology from concrete execution/task lifecycle and remove raw map/key consumers. | `autobyteus-web/services/teamExecution/`, `AgentTeamContext`, launch draft/selection stores, stream/hydration/open/history/navigation/mobile/presentation consumers. | `AgentTeamContext` is only `{topology,executions}`; execution graph/task index are private; typed queries/effects drive focus, active/history rows, reconciliation, and terminal cleanup. |
+| `BEH-016`, `DS-016A`–`B` | Preserve exact V5 application execution producer binding without application predecessor migration. | application SDK contract, server application execution context, mixed Agent materialization, frontend exact mapper/history parser. | Persistent producer address is asserted; task/task-Team Agent execution rebinds exactly; application predecessor database migration is deleted. |
+| `BEH-018` | Preserve the required imported nested-classroom three-runtime validation contract. | No live provider or browser execution in implementation scope. | Still required downstream after cumulative source Pass. |
+| `R-043`, `AC-048` | Clean cut: remove stale route/task/status/raw-key/placeholder/compatibility authorities. | Deleted legacy status/event/task instance/projection/restore/rebase/application migration/token cleanup files; exact six-path legacy scan retained. | Production clean-cut audits pass; dirty durable tests remain downstream-owned for current-contract maintenance. |
 
-Concrete runtime attribution uses exact `TeamExecutionAddress {rootTeamRunId,taskTeamRunIds,memberAddress,taskAgentRunId}` values. Message/task selectors are atomically renamed to `recipient_address`; the exact live `target_agent_run_id` route and its operation envelope remain separate. `get_handoff_rules` is intrinsic for Team-bound Agents and projects only ordered `{when,recipient_address}` entries, while provider-neutral instructions require handoff lookup before completion or blocked termination.
+## Key Files Or Areas
 
-Blocking migration converts framework-owned TeamRun metadata, communication/task structured files, token usage, external bindings, and application platform databases before service startup. One migration-only flat decoder preserves historical display `memberName` separately from structural route/path. When pending, stable `20260517_team_run_metadata_member_tree` alone writes the validated predecessor `memberTree`; separately pending `20260801_team_canonical_identity` alone writes final schema v3 and may compose the same decoder in memory for residual flat input after a terminal stable record. Current readers are strict target-only readers. Project-owned application backend-definition/frontend-SDK contracts advance atomically to V5, while application manifest V4, backend bundle V1, and iframe V4 envelopes remain unchanged. V4 SDK bundles are rejected before executable behavior with application/path identity, observed and required versions, and rebuild/reinstall guidance. Database discovery is independent of bundle catalog admission.
+- Shared contract: `autobyteus-team-stream-contracts/`
+- Server domain/status/event: `autobyteus-server-ts/src/agent-team-execution/domain/` and `services/`
+- Mixed persistent/task execution: `autobyteus-server-ts/src/agent-team-execution/backends/mixed/`
+- Task lifecycle: `autobyteus-server-ts/src/agent-team-execution/task-delegation/`
+- Team WebSocket boundary: `autobyteus-server-ts/src/services/agent-streaming/`
+- Canonical migration/token transaction: `autobyteus-server-ts/src/app-data-migrations/migrations/`, token domain/repository, and `prisma/schema.prisma`
+- Application producer binding: `autobyteus-application-sdk-contracts/`, server application orchestration/streaming, and mixed Agent materialization
+- Frontend authoritative aggregate: `autobyteus-web/services/teamExecution/`
+- Frontend stream/draft/hydration/open/history/navigation/mobile/presentation consumers: `autobyteus-web/services/agentStreaming/`, `stores/`, `components/`, `composables/`, `types/`, and `utils/`
 
-The frontend now consumes the recursive `rootTeam`, derives canonical address indexes, and keys persistent/task state using canonical execution addresses. No production compatibility map, scoped route, path/route alias, or V4 adapter was introduced.
+## Important Assumptions
 
-### IR-006 Local Fix Summary
+- Current framework-owned released TeamRun/history/communication/task/token/external data remains supported migration input; application predecessor database state is explicitly unsupported discard/rebuild input.
+- `TeamExecutionAddress` remains the only concrete Team execution locator. Persistent and direct task-Agent binding identity derives from it; a task-Team Agent retains its genuine allocated AgentRun ID once because that ID is not encoded by the address.
+- Transport subscribers are observation boundaries; they do not own domain mutation or compatibility recovery.
+- The protected API/E2E dirty tests/artifacts describe an incomplete pre-SR-018 checkpoint and were not used as current acceptance proof.
 
-- `CR-F-003`: every non-root `MixedTeamManager` now forwards an inter-Agent intent through its existing `parentBoundary` before recipient resolution or runtime materialization. The chain terminates at the root manager, which alone validates the intent's root TeamRun ID and uses the root registry/coordinator. Persistent, restored, nested, and task-child contexts all carry this placement boundary. A foreign-root intent therefore reaches the root and is rejected there; no retry, fallback, or alternate address form was added.
-- `CR-F-004`: `publish-artifacts-tool.ts` now derives publication and notification Agent identity only from the current artifact `runId`/tool `agentId`. Both `customData.member_run_id` reads were removed, and the expanded current-production audit finds no occurrence of that obsolete key.
-- Change posture: bounded bug fix and clean-cut legacy removal. Root-cause classification: one incorrect ownership/placement branch plus one stale compatibility fallback. No design refactor or persisted-data change is needed.
+## Known Risks
 
-### IR-007 Local Fix Summary
+- The source delta is intentionally broad (`286` committed paths) because SR-018 replaces two shared authoritative boundaries. Full cumulative source review is required, not a bounded delta review.
+- Repository-wide frontend TypeScript remains non-clean on inherited and dirty test/tooling inputs. Direct `.nuxt` TypeScript emitted `823` diagnostics, while the changed-production-path filter found `0`; the production Nuxt build passed.
+- API/E2E must re-investigate and update/remove stale durable current-Team fixtures after source Pass. Implementation did not edit or stage those dirty coverage files.
+- Real AutoByteus/Codex/Claude nested-classroom and browser validation remains unexecuted for SR-018.
 
-- `CR-F-005` / `API-F-001`: after strict expression normalization, `TeamRecipientResolver` now walks each canonical address prefix before its existing exact final-node lookup. A present Agent prefix yields `COLLABORATION_TRAVERSAL_INVALID`; a missing prefix or final node remains `COLLABORATION_TARGET_NOT_FOUND`.
-- The traversal constructs prefixes only through the canonical `AgentTeamAddress` domain and reads the existing rooted `TeamRunTreeIndex`. It adds no alternate selector, route, retry, fallback, or compatibility representation, and message/task callers continue to share the same resolver.
-- Change posture: bounded bug fix. Root-cause classification: local implementation defect in error classification; the current resolver/index ownership remains correct and no design or persisted-data change is required.
+## Task Design Health Assessment Implementation Check
 
-### IR-008 Local Fix Summary
-
-- `CR-F-006` / `API-F-002` producer: `AutoByteusManagedTeamContext` now carries `addressing`, built as an independently frozen exact clone of `context.collaboration.addressing`. The existing backend factory therefore injects the canonical two-field caller binding into native `customData.teamContext` for every Team-bound AutoByteus Agent.
-- Consumer: `buildTaskDelegationToolContextFromNativeContext` validates the raw `addressing` value is a non-array object with exactly `memberAddress` and `rootTeamRunId` before constructing its independently frozen domain value. Removed fields such as `memberPath` are rejected rather than selected away.
-- No addressing is derived from top-level member/execution/name/path/route fields. Existing `TeamExecutionAddress`, Agent/task identities, and the single consumer shared by `delegate_task`, `submit_task_result`, and `review_task_result` remain unchanged.
-- Change posture: bounded producer/consumer contract correction. Root-cause classification: local implementation defect at one native boundary; no design, routing, or persisted-data change is required.
-
-### IR-009 Local Fix Summary
-
-- `CR-F-007` / `API-F-004`: `TaskDelegationService` now resolves an active task caller through the root-scoped `TaskAgentDirectory` before target mapping and passes the exact authorized task AgentRun ID to the mapper. The directory branch requires one exact task-instance object and matches AgentRun, task AgentRun, task ID, logical/execution member address, root/current owning TeamRun, and task-TeamRun chain; missing, starting, settled, foreign, extra-field, or inconsistent identities fail closed before task-ID reservation or ledger mutation.
-- `TaskDelegationTargetMapper` retains persistent-caller authorization against the immutable current-Team Agent node. It uses the task-scoped branch only when the service supplied the directory-authorized run ID, still requires the rooted logical/execution coordinates and current physical caller node, and preserves self-target, direct-current-Team, exact kind, and child-Team ingress validation.
-- No retry, alternate address, persistent-node substitution, compatibility shape, or fallback identity was added. Active task Agents can therefore chain direct work while forged contexts cannot opt themselves into the task branch.
-- Change posture: bounded caller-authorization correction. Root-cause classification: local implementation defect in the SR-012 mapper rewrite; no design, persistence, or public contract change is required.
-
-### IR-010 Local Fix Summary
-
-- `CR-F-008` / `API-F-005`: `startConfiguredServer` now calls the required app-data migration runner exactly once and inspects its complete returned status set at the authoritative startup sequencing boundary.
-- Every returned required status must be exactly `SUCCEEDED`. `FAILED`, `SUCCEEDED_WITH_WARNINGS`, `RUNNING`, `NOT_RUN`, or any other non-success state logs structured migration identity/status/attempt/failure/error/log-path evidence and returns before built-in bootstrap, Fastify construction, listen, channel/gateway startup, workspace/application recovery, or background tasks. A runner exception logs explicit `RUNNER_EXCEPTION` evidence and halts at the same boundary.
-- A status explicitly marked non-required remains outside this blocking policy. No migration runner behavior, explicit retry API, lazy conversion, current-schema compatibility, or best-effort fallback was added.
-- Change posture: bounded startup-gate correction. Root-cause classification: IR-005 registered the strict required migration without replacing the inherited best-effort runtime boundary; no design or persisted-schema change is required.
-
-### IR-011 Local Fix Summary
-
-- `CR-F-009`: `startConfiguredServer` now finds the one `TEAM_CANONICAL_IDENTITY_MIGRATION_ID` status returned by its single `runPending` call and requires that status alone to be exactly `SUCCEEDED`. Missing or non-success canonical status retains IR-010's structured evidence and pre-bootstrap return.
-- Unrelated statuses no longer participate in the blocking predicate. Their existing runner/GraphQL/UI policy therefore remains intact, including persisted `SUCCEEDED_WITH_WARNINGS` and manual retry, while a runner rejection still prevents canonical completion from being established and remains blocking.
-- The migration identity is imported from the migration owner's existing exported constant; no string alias, retry, fallback, lazy conversion, compatibility read, or alternate startup path was introduced.
-- Change posture: bounded policy-scope correction. Root-cause classification: IR-010 generalized section 12.2's canonical-only blocking rule to the pre-existing best-effort migration set; no upstream design change is required.
-
-### IR-012 Local Fix Summary
-
-- `CR-F-010` / `API-F-006`: the stable `20260517_team_run_metadata_member_tree` prerequisite again reads each TeamRun metadata file and converts flat `memberMetadata` only when every entry is a safe direct Agent. Non-Agent entries, nested-Team fields, nested or contradictory route/path/name identity, ambiguous simultaneous `memberTree`, invalid target fields, and downstream canonical invariants fail before any file mutation.
-- The migration emits the recursive member-tree staging shape, preserves genuine Agent run/platform/definition/runtime/model/tool/skill/config/workspace/application/role/description facts, validates that output through the next ordered canonical converter, then creates a backup and atomically replaces the source via same-directory temporary-file rename. Unsafe files remain byte-stable and unbacked-up.
-- Existing valid `memberTree` metadata is validated and skipped idempotently, including schema-v3 input. Per-item details and aggregate `SUCCEEDED`, `SUCCEEDED_WITH_WARNINGS`, or `FAILED` results again reflect mixed and all-failure sets accurately. Registry order remains prerequisite then canonical migration.
-- Historical flat-shape knowledge is confined to the migration helper. No current reader, canonical-converter flat branch, lazy conversion, retry, dual read, compatibility fallback, or alternate startup route was added.
-- Change posture: bounded restoration of the reviewed migration prerequisite. Root-cause classification: IR-005 replaced the existing converter with a skip-only checkpoint even though SR-012 retained it as an ordered prerequisite; no upstream design change is required.
-
-### IR-013 Approved Migration Rework Summary
-
-- `CR-F-010` / `CR-F-011`: `team-run-member-tree-prerequisite-converter.ts` now owns one pure flat-v1 decoder and no canonical identity. It requires direct Agent routes, optional agreeing direct paths, unique structural placement, an exact direct coordinator, non-empty display names, and valid genuine Agent fields. It preserves `Program Manager` / `QA Specialist` exactly while emitting structural `program_manager` / `qa_specialist` route/path values, with no name-derived route fallback.
-- Stable `20260517_team_run_metadata_member_tree` uses that decoder only when its record is pending, canonical-prevalidates the complete staged predecessor, and then alone owns predecessor backup plus same-directory atomic replacement. Existing predecessor/v3 data is validated and skipped; the stable ID and runner terminal-record behavior remain unchanged.
-- Separately pending `20260801_team_canonical_identity` accepts schema v3, recursive predecessor `memberTree`, or residual safe flat v1. The residual-flat path composes the exact shared decoder in memory and writes only final v3. The predecessor path validates historical `memberName` only as display input and derives addresses exclusively from agreeing normalized `memberRouteKey` / `memberPath`.
-- Parent/direct-child shape, duplicate placement, direct-Agent coordinator, generic/Team run-ID agreement, Agent facts, handoffs, complete v3 validation, unsafe no-mutation, canonical exact-success startup gating, and unrelated migration warning policy remain fail-closed and unchanged. No third migration ID, terminal-record reset, current runtime old-shape reader, lazy conversion, alias, retry, or post-listen recovery dependency was added.
-- Change posture: approved SR-013 persisted-transition rework. Root-cause classification: historical display/structural semantics and terminal migration-record ownership were incomplete in SR-012; SR-013 now provides one decoder and two non-overlapping write owners.
-
-### IR-014 Local Fix Summary
-
-- `CR-F-012` / `API-F-007`: token attribution migration again builds a migration-only index from strict current `task_delegation_records.json` files. Every task TeamRun ID maps to one exact root TeamRun, ordered task-Team chain, logical Team address, source file, and task record. Missing ancestors, unreadable/invalid files, duplicate mappings, and conflicting root/chain/address mappings produce actionable blocking details before token mutation.
-- Historical token rows use the task record mapping when their row-local root is an immediate task TeamRun or their legacy segment address names a task TeamRun. The planner validates any stored chain/logical Team prefix, appends only the final member suffix and optional task-Agent run ID, then persists one exact `TeamExecutionAddress` and correct root column. Direct members, direct task Agents, and already-current exact addresses preserve their existing behavior and idempotence.
-- Identity planning is completed before writes; any unresolved/conflicting row blocks the batch without partially applying otherwise valid plans. Historical segments remain confined to the migration planner. No current-runtime legacy reader, retry, fallback, alternate identity, compatibility shape, or task-record mutation was added.
-- Change posture: bounded migration bug fix. Root-cause classification: local implementation defect introduced when IR-005 removed the prior task TeamRun index; the approved migration/current-record ownership remains correct.
-
-### IR-015 Approved Token-Owner / Atomicity Rework And Exact Instruction
-
-- `CR-F-013`: current registry authority under historical `20260703_token_usage_execution_address_backfill` is removed entirely. Its durable record is neither queried nor reset. Independently pending and already exact-gated `20260801_team_canonical_identity` now composes token conversion after every TeamRun/task item is current and owns the aggregate token result.
-- `CR-F-014`: the preserved IR-014 task-Team index and row planner now feed one frozen canonical update batch. `PrismaTokenUsageCanonicalExecutionAddressMigrationStore` applies updates in stable row-ID order inside one Prisma/SQLite transaction, requires exactly one affected row each, verifies every exact root/address value before commit, and rolls the full batch back on any update/read-back failure. No `MIGRATED` token detail is emitted before commit; plan/index/scan/batch failure returns zero migrated token rows and invokes no partial persistence.
-- Both pending token legacy cleanup definitions require exact `20260801...` `SUCCEEDED` and remain after that owner in registry order. The single pre-listen canonical gate is unchanged, so token failure keeps bootstrap/listen closed while unrelated warning migrations remain non-blocking. Exact-current and crash-after-commit retry perform no new batch.
-- `SR-014`: `member-collaboration-instruction-renderer.ts` is the single exact-copy renderer and substitutes only the bound caller `memberAddress`. The same block flows through the existing AutoByteus system prompt, Codex developer-instruction, and Claude system/runtime-instruction seams for every Team-bound context; standalone Agents remain unchanged. Intrinsic `get_handoff_rules` / `send_message_to` exposure remains tied to Team binding.
-- Change posture: approved SR-015 persisted-transition rework plus exact SR-014 text consumption. No runtime legacy reader, migration-record reset, retry fallback, extra migration ID/gate, provider paraphrase, roster injection, or durable coverage edit was added.
-
-### IR-016 Claude Dead-Control Cleanup
-
-- `CR-F-015`: `buildClaudeTurnInput` no longer declares the unused `getHandoffRulesEnabled` option, and `ClaudeSession.executeTurn` no longer derives or passes `configuredToolExposure.getHandoffRulesConfigured` to that builder.
-- Team instruction authority remains exclusively the existing `memberTeamContext` path. The shared configured-tool exposure still owns genuine MCP tool enablement; no replacement flag, derivation, compatibility selector, or fallback was added.
-- Change posture: bounded dead-code cleanup. Root-cause classification: local implementation defect left by the SR-014 authority move; the current provider/context boundary remains correct and no refactor or persisted-data change is needed.
-
-### IR-017 Nested Team Routing Local Fix
-
-- `CR-F-016` / `API-F-008`: the already-resolved collaboration delivery request now crosses each persistent child TeamRun through one explicit resolved-delivery boundary instead of being reconstructed as a raw `postMessage` with a nonempty AgentRun selector. The full immutable request preserves `resolvedTargetKind`, receiver execution address, exact persistent coordinator AgentRun ID, tracing IDs, and the single pre-publish event callback. Each child manager traverses only its direct persistent member tree; the final persistent or task handle validates exact execution kind, member address, task identity, and AgentRun ownership before one delivery.
-- `CR-F-017` / `API-F-009`: task-Team activation now resolves the source Team only at `request.teamNode.address`, proves its exact configured coordinator, and validates the receiver's canonical root, exact coordinator address, null task-Agent ID, parent TeamRun, task TeamRun ID, and ordered task-Team chain before constructing or starting a handle. The coordinator Agent address is never used as a Team lookup key.
-- No persistent/task registry retry, basename/alternate-address lookup, fallback selector, or weakened identity check was added. Activity/tool-result presentation is intentionally unchanged because the live failure was a contract rejection returned by a successfully completed tool invocation, not an execution error.
-- Change posture: bounded routing correction. Root-cause classification: IR-005 lost an existing persistent-versus-task execution discriminant at the child boundary and used the receiver Agent address for a Team lookup. The explicit internal resolved-delivery boundary and exact activation checks repair those seams without changing public contracts or persisted data.
-
-### IR-018 Active Task-Team Peer Routing Local Fix
-
-- `CR-F-018` / `API-F-010`: root message routing now validates every nonempty sender task-TeamRun chain against the existing root-scoped `TaskTeamActiveRunDirectory`, including exact ordered prefix, active TeamRun/context/runtime identity, persistent or nested parent TeamRun, logical Team placement, and task identity. Persistent task-Team members additionally prove their task-scoped AgentRun; task Agents prove the active root `TaskAgentDirectory` entry and exact owning physical TeamRun.
-- When the canonical target is inside the validated leaf task Team, the root manager materializes the recipient from that exact active TeamRun and sends the resolved request through the active run with the full ordered `taskTeamRunIds`, exact task-scoped peer AgentRun, and task ID. A target outside that leaf placement retains the ordinary persistent/root route, but only after the sender's full task execution scope has validated.
-- Missing, inactive, foreign, truncated, reordered, wrong-parent, wrong-Team, or mismatched sender identity fails before trace publication or member input. No persistent fallback, retry, localization, basename lookup authority, compatibility selector, or Activity presentation branch was added. The explicit coordinator route preserves the existing persistent path from IR-017 while allowing the separately proven active task-Team execution path.
-- Change posture: bounded routing correction. Root-cause classification: IR-005 retained the sender's concrete task chain but root recipient materialization always used the root manager's empty chain and persistent AgentRun. A focused task-execution resolver and explicit resolved-delivery route repair that ownership seam without changing public or persisted contracts.
-
-### IR-019 Latest-Base Integration Local Fix
-
-- `DR-004`: the reviewed complete SR-015/API checkpoint is merged with latest `origin/personal` in merge commit `77688d8f3aadaea0edcda4f4030cc5d845577b73`; both parents are retained, latest base is an ancestor, and no merge markers or merge metadata remain.
-- Memory lineage follows the latest-base ownership contraction: deleted `agent-memory-origin-service.ts` remains deleted, and production/tests contain no reference to that obsolete service. No compatibility wrapper was recreated.
-- Team WebSocket production keeps SR-015's strict exact `execution_address` parsing and root validation for send, interrupt, and approval while adopting latest-base `AgentStreamWebSocketEgress` for server-owned content cadence/coalescing. The web service retains canonical `TeamExecutionAddress` emission and respects removal of the client presentation scheduler. Deprecated route/path/run selector fields remain absent from the five resolved production paths.
-- The live harness combines API-REV-015's explicit `AUTOBYTEUS_TEST_DATABASE_URL` contract with latest-base normalized-path equality and rejects any resolved mismatch before vault/server setup. The cross-runtime memory test conflict was mechanically preserved, but implementation execution exposed one latest-base test block that constructs the removed flat `TeamRunConfig` shape. Its validity/fixture correction is API/E2E-owned and was not weakened or silently patched by implementation.
-- Change posture: bounded integration fix. No canonical TeamRun, recipient, provider-instruction, migration/token, nested delivery, active task-Team routing, public API, or durable storage authority was redesigned.
-
-### IR-020 Exact Team Execution Command Selection Local Fix
-
-- `CR-F-019`: `TeamMemberExecutionCommand` is one operation union for `post_message`, `approve_tool`, and `interrupt`; `TeamRun.executeMemberCommand` carries it with the complete immutable `TeamExecutionAddress` through the backend and manager rather than projecting task IDs into operation-specific legacy selectors.
-- `TaskTeamActiveExecutionResolver` replaces the message-only owner and validates both message senders and command targets. Command selection requires the exact root, full ordered active task-Team chain, active run/context/config/parent/Team identity, canonical member, and—when present—active root directory task-Agent identity, owning TeamRun, and same-chain delegator binding.
-- Only the collaboration-root manager may route a nonlocal task chain. It forwards the unchanged command/address to the exact active leaf TeamRun, which revalidates its local chain and dispatches to the exact persistent or task-Agent handle. Nested persistent Team boundaries route through their existing TeamRun handle rather than bypassing ownership.
-- Missing/inactive/foreign/truncated/reordered/wrong-parent/wrong-Team/mismatched task-Agent selection returns `TEAM_EXECUTION_ADDRESS_INVALID` before post, approval, interrupt, run creation, status trace, or fallback. Existing collaboration message routing uses the same active-chain resolver and remains behaviorally preserved.
-- Change posture: bounded contextual routing correction. No public wire shape, retry, alternate selector, localized address, compatibility alias, persisted identity, provider instruction, migration/token, Activity presentation, or API/E2E durable coverage change was added.
-
-### IR-021 Delegated-Task DTO And Visible Execution Projection Local Fix
-
-- `CR-F-020` / `API-F-011`: `taskDelegationGraphqlDtoProjection` is the explicit Apollo transport boundary for task records. It admits either the exact domain object or the exact GraphQL object with its one expected `__typename`, strips only that transport discriminator, and sends the resulting four-key address through the unchanged strict `parseTeamExecutionAddress`. The same projection covers record sender/receiver, `taskRun.address`, and every submission/review sender/receiver address; unknown metadata, aliases, or surplus fields reject.
-- `CR-F-021` / `API-F-012`: task delegation events and hydrated non-terminal task records now materialize distinct task Agent or task AgentTeam nodes instead of returning the persistent node. `teamTaskExecutionTree` owns recursive exact-address lookup, sibling/subtree projection, ordered task-Team-chain cloning, task-scoped Agent contexts, and exact subtree cleanup without mutating `memberNodesByAddress` or substituting persistent nodes.
-- Event detail/status/timeline state is applied to the task root; task-Team children retain the full execution chain and independent contexts. Focus/open/history/send/display paths select by exact serialized execution address. Accepted/settled/failed events remove only the matching transient root/subtree and return focus to a canonical persistent member; refresh/restore recreates only non-terminal task executions from their exact persisted `taskRun.address`.
-- Change posture: bounded frontend boundary and projection correction. The strict domain parser, canonical four-field identity, server contracts, provider/runtime behavior, Activity presentation, and durable API/E2E coverage remain unchanged. No route/path identity, alias, retry, fallback, persistent-node mutation, or compatibility selector was added.
-
-### IR-022 Latest-Base Integration Local Fix
-
-- `DR-005`: the reviewed SR-015/API-REV-019 checkpoint and exact latest base now coexist in one two-parent merge. Migration startup keeps one `runPending` boundary, exact canonical Team success, readable-provider admission, runner-exception blocking, and unrelated best-effort policy. No deprecated token migration owner, identity alias, or second startup path was restored.
-- The frontend preserves strict Apollo DTO projection and exact rooted execution addresses while adopting the latest-base cached history/navigation renderer, activity patches, mobile navigation behavior, and workspace row ownership. Persistent nodes and transient task Agent/task Team trees remain distinct; ordered task-Team chains survive projection, restore, focus, open, send, approval, interrupt, cleanup, and history display.
-- `runHistoryTeamExecutionRows.ts` remains the one current display-row owner. `workspaceTeamExecutionDisplayRows.ts` stays deleted, `teamTaskTeamChildProjection.ts` stays deleted, and the current projection owners absorb the required behavior without compatibility imports. `runHistoryStore.ts` draft actions and `agentTeamRunStore.ts` command presentation were split into narrow helpers so all 29 conflict-resolved implementation files remain at or below 500 effective non-empty lines.
-- The two durable conflicts were reconciled rather than side-selected: seven startup-gate cases cover both blocking identities and unrelated best-effort outcomes; seven event-router cases preserve exact current projection and latest navigation mutation effects. Broader latest-base navigation/projection specs still construct retired route/path or pre-`rootTeam` fixtures and are explicitly routed to fresh API/E2E coverage maintenance, not weakened or satisfied through runtime fallbacks.
-- Change posture: integrated-state conflict resolution only. No public wire shape, canonical identity, migration/token ownership, provider instruction, application V5 contract, persistent/task execution behavior, Activity presentation, retry, alias, fallback, or operational-database action was added.
-
-### IR-023 Readable-Provider Startup Completion Local Fix
-
-- `CR-F-023`: the integrated startup boundary now restores latest-base controlled failure semantics only where required. After the unchanged canonical exact-success check, a nonterminal/missing readable-provider status throws the exact `CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:<status>:<logPath>` marker into the existing migration failure boundary, which logs it and exits 1. Runner infrastructure rejection exits through the same controlled boundary.
-- Canonical failure remains governed by the SR-015 exact-success pre-bootstrap return, while readable `SUCCEEDED` / `SUCCEEDED_WITH_WARNINGS` and unrelated best-effort failures preserve IR-022 continuation. There is still exactly one `runPending` call and no retry, alternate startup route, fallback, alias, legacy reader, or compatibility owner.
-- The startup unit restores the operational contract for runner exception plus readable `FAILED`, missing (`NOT_RUN:NO_LOG`), and recent `RUNNING` with exact log path; canonical failed/missing, unrelated best-effort, and all-success cases remain preserved. The retained real startup E2E remains unchanged for downstream execution.
-- Change posture: bounded startup completion and conflict-test correction only. All canonical Team execution, frontend projection/history, provider/application, migration/token, and safety integrations from IR-022 remain unchanged.
-
-### IR-024 Live Delegated-Task Overview Visibility Local Fix
-
-- `CR-F-024` / `API-F-013`: the shared delegated-task entry owner no longer treats a stable focused placement and its distinct live task execution as the same concrete execution. A live task Agent is related only when root, complete parent task-Team chain, canonical member address, source kind, and `taskAgentRunId == agentRunId` agree. A live task AgentTeam is related only when the focus is its same logical Team in the exact ordered parent scope and the candidate adds exactly one self-consistent `taskTeamRunId == teamRunId`.
-- Exact full `TeamExecutionAddress` equality remains unchanged for persisted record sender/receiver visibility. Any persisted record with the live node's task ID suppresses provisional live fallback even when that record is outside the current exact perspective, so live projection cannot bypass durable visibility authority.
-- The live node remains a distinct task execution; no persistent node, focus, rooted index, record, or execution address is mutated or substituted. Foreign root, wrong/reordered/truncated scope, wrong member/kind, task-Agent focus, or inconsistent typed run identity fails closed.
-- Both `TeamOverviewPanel` count/signature/auto-open and `TeamDelegatedTasksSection` details continue to consume the same `deriveDelegatedTaskEntries` owner. No route/path field, alias, parser relaxation, compatibility map, retry, or alternate identity was added.
-- Change posture: bounded frontend relationship-predicate correction. Root cause is a local implementation defect exposed when IR-021 made provisional task projections normally visible; no refactor, persisted-data change, or public contract change is required.
-
-### IR-025 Exact Delegator-Focus Continuity Local Fix
-
-- `CRR-044`: task delegation events now carry one exact cloned `senderAddress` from the authoritative task record. Activation, status, submission, and review payloads use the same current four-field `TeamExecutionAddress`; the WebSocket mapper serializes that field without a parallel selector.
-- The frontend strictly parses the supplied sender address and stores an independent exact clone as `taskSenderAddress` on the task projection root. Invalid surplus fields reject the event details. Projection cloning explicitly strips this task-only relationship fact from persistent sources and task-Team children; persisted restore obtains it only from the current record's canonical sender address.
-- For an unpaired live task, the shared entry owner first proves the task root, target kind/address, complete ordered parent task-Team scope, rooted node kind, and task-Agent/task-Team typed run identity. It then admits the entry when focus is either the supported target placement or the exact sender execution. Sender validation requires the current root, exact parent chain, an Agent placement, and an existing exact persistent, task-Team-member, or task-Agent execution; task-Agent sender identity must equal the node's task AgentRun ID.
-- Persisted hydration keeps exact sender/receiver perspective authority and pairs a live node only when task ID, receiver kind, and exact `taskRun.address` agree. The production `/Teacher` -> `/StudentStudyGroup` task-Team path therefore stays at one entry across the pre-refresh event and coordinator-ingress record, preserving count, details, selection key, and auto-open without substituting the persistent Team.
-- No route/path field, alias, relaxed address parser, compatibility map, retry, inferred sender, alternate selector, persistent-node substitution, or duplicate task owner was added. This remains a bounded event/projection relationship correction under the existing architecture.
-
-### IR-026 Inter-Agent Sender Presentation Local Fix
-
-- `CR-F-025`: `useTeamMemberPresentation` now treats every `agentExecutionsByKey` key as an exact serialized `TeamExecutionAddress`, never as a member address. It rejects JSON decode failures, wrong or surplus fields, noncanonical serialization, a foreign root, a missing/non-Agent execution node, AgentRun disagreement, and task-Agent run disagreement before adding a sender mapping.
-- Valid persistent, direct task-Agent, and task-Team member contexts resolve through `findTeamExecutionNode` using the complete execution identity. Presentation prefers the exact current execution node and only then the canonical logical member node/address; the exact AgentRun ID remains the mapping key.
-- Invalid execution keys contribute no visible fallback label. No route/path/name selector, compatibility map, alias, relaxed domain parser, alternate identity, retry, or persistent substitution was added.
-- Change posture: bounded frontend bug fix. Root-cause classification: `Local Implementation Defect`; the current exact execution-map, tree, and presentation owners remain correct and no refactor or persisted-data change is required.
-
-### IR-027 Canonical Recipient Member-Input Stream Identity Local Fix
-
-- `CR-F-026` / `API-F-015`: the authoritative Team event-to-WebSocket mapper now adds `execution_address: event.executionAddress` to every `MEMBER_INPUT_MESSAGE` without cloning, reducing, or deriving that identity. `recipient_address` remains the semantic input recipient from the member-input payload, while the unchanged strict frontend resolver selects the exact persistent or task-scoped execution only from `execution_address`.
-- The frontend member-input protocol now requires the exact current `TeamExecutionAddress`. A removed-after-use production-path probe proves one user/input transcript row for a persistent recipient and for a member in a nonempty ordered task-Team scope, and proves that a missing execution address is rejected rather than inferred from `recipient_address`.
-- `CR-F-027`: the unused Team-specific `buildInterAgentMessageAgentRunEvent` and its unit-only coverage are removed. The mixed Team runtime remains exactly one separate `COMMUNICATION` projection plus one recipient `MEMBER_INPUT` transcript. Genuine global Agent `INTER_AGENT_MESSAGE` construction and WebSocket mapping remain untouched.
-- No communication-record inference, synthetic Team `INTER_AGENT_MESSAGE`, recipient/name/route/path fallback, relaxed execution parser, retry, alternate selector, or compatibility shape was added. Change posture: bounded boundary correction plus dead-code removal; no persisted data, provider, routing, or public identity redesign is required.
-
-## Reviewed Behavior Trace
-
-| Behavior | Implementation result |
-| --- | --- |
-| BEH-001 | Definition handoffs remain validated and compile into immutable rooted snapshots; rejected updates still validate detached candidates before persistence. |
-| BEH-002–BEH-003 | `send_message_to.recipient_address` uses the strict expression parser and one rooted resolver; non-root managers forward through their placement boundary before the root manager alone resolves/materializes root, upward, cross-branch, and Team-coordinator delivery. A resolved nested request preserves persistent-versus-task execution kind and exact AgentRun identity across child TeamRuns. An active task-Team sender targeting a peer inside its exact leaf task placement is routed through that proven active TeamRun with the full ordered task chain; outside targets retain ordinary persistent/root routing. |
-| BEH-004 | Schema-v3 `rootTeam` replaces localized route-bearing trees; persistent children select absolute nodes and task TeamRuns allocate fresh typed run IDs. |
-| BEH-005–BEH-006 | Intrinsic handoff lookup returns only `{handoffs:[{when,recipient_address}]}`. One exact SR-014 renderer substitutes only the caller address and carries the approved filesystem-like completion/blocked protocol without a roster or embedded rule set. |
-| BEH-007 | Exact `target_agent_run_id` routing, codes, and send result envelope remain separate and unchanged. |
-| BEH-008 | Strict restore consumes the self-contained schema-v3 snapshot and its compiled handoffs after blocking conversion. |
-| BEH-009 | AutoByteus, Codex, and Claude use the same exact rendered Team collaboration block through their established system/developer-instruction seams, while retaining intrinsic Team tools and operation-specific transport/result mapping. |
-| BEH-010 | Default Team entry still targets the root Team coordinator. |
-| BEH-011–BEH-012 | `delegate_task.recipient_address` shares recipient resolution and its exact topology error codes with messaging, then applies the direct-current-Team policy and existing task lifecycle. Persistent callers match the rooted node AgentRun; active task callers match the exact root-directory task identity and local ownership before mapping/reservation. Task-Team activation resolves the Team at its canonical Team address and proves exact configured coordinator plus ordered task execution chain before start. AutoByteus native task tools receive an exact cloned collaboration caller binding, and canonical address remains the only shared logical placement authority. |
-| BEH-013 | TeamRun is one immutable rooted Agent/AgentTeam union with kind-local facts and derived indexes, not parallel topology/profile/binding projections. |
-| BEH-014 | Conversation, task, event, WebSocket, token, and frontend concrete identity use strict `TeamExecutionAddress` values. WebSocket send/approval/interrupt retain the complete address through one command boundary and select the exact persistent/task execution. Apollo task DTOs are projected explicitly before the strict parser, while visible transient task Agent/task Team nodes and their children retain the exact ordered execution chain. Recipient `MEMBER_INPUT_MESSAGE` carries the unchanged event execution address, so the strict resolver projects one exact persistent/task-scoped input transcript; communication remains a separate projection and Team runtime does not synthesize `INTER_AGENT_MESSAGE`. Inter-Agent sender labels decode the canonical execution-map key and prove exact root/node/run identity before presenting the current execution node. A provisional live task carries its exact sender and relates to stable overview focus only through a proven exact sender execution or supported target placement after current root, ordered parent scope, canonical placement/kind, and typed run identity all agree; persisted visibility retains full sender/receiver equality. Live task-Team peer routing and the canonical token batch remain preserved. |
-| BEH-015 | Store-owned backup/transaction conversion runs before strict readers. Pending `20260517...` owns predecessor writes; pending `20260801...` is the sole final TeamRun/task/token canonical aggregate even when old token records are terminal. Token index/plan failure mutates zero rows; update/read-back failure rolls back the entire stable-order batch. Both token cleanups require exact canonical success, and the existing targeted startup gate preserves unrelated-warning policy. |
-| BEH-016 | GraphQL/REST/WebSocket/SDK/application/frontend boundaries use canonical address/execution shapes. The GraphQL/Apollo task-record boundary strips only its exact transport discriminator and rejects every other surplus or alias before domain normalization. Team WebSocket commands retain the exact four-field address, and exact application SDK V5 remains built while V4 is rejected. |
-| BEH-017 | Storage-private lineage is `ancestorTeamRunIds`; existing memory/context physical locations are derived without moving files. |
-| BEH-018 | Production seams required by the imported nested-classroom scenario are implemented, including nested root-bound forwarding, exact persistent coordinator delivery, task-Team activation/peer delivery, full-address user commands, distinct frontend task Agent/task Team execution projections with exact focus/restore/cleanup, immediate pre-refresh overview count/details/auto-open for a task related to stable logical focus, exact human-readable persistent/task sender labels without serialized-key leakage, and exact recipient input transcript selection from the authoritative member-input execution address. The pre-latest-base three-runtime matrix passed in API-REV-014; fresh post-integration provider/UI validation remains mandatory after source Pass. |
-
-## Key Areas
-
-- Canonical logical identity: `autobyteus-server-ts/src/agent-collaboration/domain/agent-team-address.ts`, `recipient-address-expression.ts`.
-- Root snapshot/index/recipient resolution: `src/agent-team-execution/domain/team-run-config.ts`, `services/team-run-tree-index.ts`, `services/team-recipient-resolver.ts`, `services/resolved-team-recipient.ts`.
-- Nested resolved delivery, task-Team activation, and exact active peer routing: `src/agent-team-execution/backends/{team-manager.ts,team-run-backend.ts}`, `domain/team-run.ts`, `task-delegation/task-team-active-run-directory.ts`, and `backends/mixed/{mixed-team-run-backend.ts,mixed-team-manager.ts,delivery/team-member-delivery-coordinator.ts,delivery/task-team-active-execution-resolver.ts,members/mixed-sub-team-member-handle.ts,members/mixed-agent-member-handle.ts,members/mixed-task-team-instance-registry.ts}`.
-- Concrete execution identity: `src/agent-team-execution/domain/team-execution-address.ts` and task/message/event/token consumers.
-- Strict persistence and startup migration: `src/app-data-migrations/migrations/team-run-metadata-member-tree-migration.ts`, `team-run-member-tree-prerequisite-converter.ts`, `team-canonical-*.ts`, `token-usage-canonical-execution-address-migrator.ts`, its transaction-owning migration store, preserved planner/task-Team index, both token cleanup definitions, Prisma migration, and store normalizers.
-- API/streaming: AgentTeam GraphQL schema/resolvers, REST/context boundaries, `src/services/agent-streaming/team-execution-address-command-parser.ts`, `team-run-event-websocket-message-mapper.ts`, the three streaming handlers, `domain/team-member-execution-command.ts`, `backends/mixed/delivery/task-team-active-execution-resolver.ts`, and the web strict `teamStreamMemberContextResolver` plus required `MemberInputMessagePayload.execution_address` protocol field.
-- Intrinsic collaboration protocol: the exact shared member collaboration renderer/composer plus AutoByteus/Codex/Claude system/developer-instruction and intrinsic-tool seams.
-- Application contract: `autobyteus-application-sdk-contracts`, backend/frontend SDK packages, devkit, project applications, generated/vendor/importable artifacts, application admission/loader/migration paths.
-- Frontend: generated GraphQL types; strict execution-key sender presentation in `composables/useTeamMemberPresentation.ts`; explicit task-record Apollo DTO projection; AgentTeam stable tree/index plus exact transient task-execution tree/restore owners; `utils/teamDelegatedTaskEntries.ts` as the shared persisted/provisional overview-entry owner; exact execution selectors; communication/task/history/token/memory/application projections; desktop/mobile views.
-
-## Persisted Data Transition
-
-- Team definitions: `Directly Usable — No Migration`; authored definition handoffs remain the source contract.
-- TeamRun metadata, Team communication, task delegation records, token usage, external bindings, and application platform databases: `Migration Required`; conversion is ordered and blocking. `20260801...` now owns TeamRun/task readiness plus token semantic conversion, stages all token plans, and commits/verifies required row updates in one rollback-safe Prisma/SQLite transaction. The old token record is historical only and never reset.
-- Application bundles: exact backend-definition/frontend-SDK V5 is required. V4 is rejected/quarantined; there is no V4 adapter or mixed-version runtime.
-- Physical Agent memory and final context files: locations remain unchanged. The storage layer derives the same concrete run-ID path segments through `ancestorTeamRunIds`.
-- Deviation from reviewed transition decision: `None`.
+- Reviewed change posture: `Comprehensive Refactor`
+- Reviewed root-cause classification: uncorrelated Team event/wire shapes, mixed mutable frontend topology/execution ownership, stale cleanup authorities, and incomplete status-producer closure
+- Reviewed refactor decision: `Refactor Needed Now`
+- Implementation matched the reviewed assessment: `Yes`
+- If challenged, routed as `Design Impact`: `N/A` after `ARCH-REV-011` Pass
+- Evidence / notes: the implementation introduces the reviewed singular boundaries rather than retaining wrappers or compatibility selectors. `TeamExecutionState` and the mixed manager remain below the 500-effective-line guard; changed deltas over 220 lines were assessed as cohesive boundary replacement, generated declarations, or net deletion/contraction.
 
 ## Legacy / Compatibility Removal Check
 
-- Backward-compatibility mechanisms introduced: `None`.
-- Current runtime dual-read/write or fallback: `None`; legacy handling is isolated to migration/incompatibility input boundaries.
-- Removed current authorities include route/path/name recipient aliases, conversation target/scoped-route types, persistent-child topology localization, generic member-run identity, duplicate token/task execution scopes, the registered historical `20260703...` token definition/per-row mutation API, and V4 application SDK exports/artifacts.
-- The current publish-artifacts runtime contains no `member_run_id` read or writer and does not accept that retired generic identity as a fallback.
-- Production identity audits found no stale current route/name/path identity in the server runtime, web production code, or project application source/built/vendor/importable artifacts outside explicit migration/incompatibility boundaries.
-- Current SDK `dist`, application vendor copies, application build products, and importable packages were regenerated rather than selectively patched.
-- Claude turn-input production source has zero `getHandoffRulesEnabled` references; genuine `getHandoffRulesConfigured` exposure remains only at its shared configured-tool/MCP owners.
-- IR-017 adds no receiver-as-Team lookup, basename/alternate selector, retry/fallback, or Activity/tool-result presentation branch. The resolved request's existing kind and exact execution coordinates remain authoritative across child TeamRuns.
-- IR-018 adds no persistent fallback, retry, alias, localization, legacy route/path selector, or Activity/tool-result presentation branch. The only new basename read is a display-name projection after exact canonical resolution; it has no lookup authority.
-- IR-021 keeps the strict domain address parser unchanged and adds no arbitrary-extra acceptance, alias, route/path identity, retry, alternate projection selector, or persistent-node substitution. Only the exact GraphQL `__typename` discriminator is removed at the owned transport boundary.
-- IR-027 removes the dead Team-only `buildInterAgentMessageAgentRunEvent` authority and its unit-only coverage. It adds no synthetic Team `INTER_AGENT_MESSAGE`, communication-record inference, recipient/name/route/path fallback, relaxed execution parser, retry, alternate selector, or compatibility identity; genuine global Agent `INTER_AGENT_MESSAGE` support remains.
-- IR-026 strictly parses and canonical-serialization verifies execution-map keys, then resolves only through the exact current execution node. It adds no route/path/name fallback, relaxed parser, alias, compatibility map, retry, or alternate identity.
-- IR-025 keeps that parser exact, rejects a supplied sender address with any removed/surplus field, and derives no sender from target, focus, name, route, or path. It adds one canonical event fact and no selector fallback, retry, compatibility map, persistent substitution, or duplicate projection owner.
-- IR-024 adds no route/path identity, alias, relaxed parser, compatibility map, persistent-node substitution, retry, or alternate selector. The entry owner uses only the exact four-field current execution address, rooted member index, task ID, and kind-specific run ID.
-- IR-023 adds no retry, fallback, alias, legacy reader, alternate startup route, or compatibility owner; it restores only the latest-base nonzero completion and exact readable-provider marker at the existing migration boundary.
-- IR-022 retains zero production `memberRouteKey`, `memberPath`, or `memberRunId` references across web components/composables/services/stores/types/utils, keeps the base-deleted display-row owner absent, and introduces no compatibility import or duplicate projection owner.
-- IR-022 conflict-resolved production files satisfy the implementation size guard: 29 audited files are 29–481 effective non-empty lines. `agentTeamRunStore.ts` is 481, `WorkspaceHistoryWorkspaceSection.vue` is 479, and every other audited owner is lower.
-- Changed production files satisfy the implementation size guard. IR-021's new owners are 53–167 effective non-empty lines; all changed execution owners are 53–499 lines. The touched history component is exactly 500 effective non-empty lines, not above the hard limit. Earlier changed-file size results remain as recorded below.
+- Backward-compatibility mechanisms introduced: `None`
+- Legacy old-behavior retained in scope: `No`
+- Dead/obsolete code and dormant replaced paths removed in scope: `Yes`
+- Shared structures remain tight: `Yes`
+- Canonical shared design guidance reapplied: `Yes`
+- Changed source implementation files within size guardrail: `Yes`; `196` changed production files checked, `0` above 500 effective non-empty lines
+- Notes: the historical Team identity scan returns exactly the six approved migration-local production paths. Current web production has no legacy route/path identity, raw execution/topology maps, synthetic task instances, approval token, duplicate member-input receiver, or application predecessor migration owner.
 
-## Implementation-Scoped Checks
+## Persisted Data Transition Check
 
-### IR-027 Delta
+- Approved decision: `Migration Required` for released framework-owned Team/task/token/external data; `Discard or Rebuild` for project application databases
+- Design reference: `BEH-015`, `UC-019`, `DS-009`, `DS-013A`–`D`, SR-017/SR-018 supplements
+- Implementation follows the approved decision: `Yes`
+- Migration implementation: the existing canonical migration ID remains the sole blocking target. Token address planning and physical identity-column contraction use one verified transaction. Application database enumeration/conversion is removed.
+- Focused evidence: `/tmp/ir028-token-store-probe-final-2.log` proves later-row rollback, stable successful commit, exact values, legacy-column removal, and canonical expression index on `/tmp/ir028-token-store-probe.sqlite` only.
+- Deviation: `None`
 
-- Focused server selection passed 2/2 files and 6/6 tests against only `autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db`. It proves unchanged object identity for persistent and nested task-Team `TeamRunEvent.executionAddress` at the `MEMBER_INPUT_MESSAGE` boundary and preserves the recipient content/input metadata builders. Evidence: `/tmp/ir027-server-focused-tests.log` (SHA-256 `dbb1af845fe7edd7c50d7f5fa14705c1404948549bce32e1b0bf77c1e57fa8bb`).
-- Removed-after-use frontend production-path probe passed 1/1 file and 3/3 tests: persistent input resolves to the persistent transcript; a nonempty task-Team scope resolves only to its exact task member and not the persistent peer; omission of `execution_address` does not fall back to `recipient_address`. Evidence: `/tmp/ir027-web-member-input-projection.log` (SHA-256 `dbbfadff780608be738dd8806763c22ce9dcdca8fa9ca2719dee2e11a52e59b3`).
-- Server production build typecheck passed: `/tmp/ir027-server-production-typecheck.log` (empty success log; SHA-256 `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`). Server `build:full` passed TypeScript/assets plus sanitized built-in bootstrap smoke without `DATABASE_URL`: `/tmp/ir027-server-build-full.log` (SHA-256 `bbb62049683b0ca8610f21e5c5df02fbd37ff40d3fe76342092b1c0c4e1f7019`).
-- Nuxt production build passed client/server compilation and 15-route static prerender with only the known Browserslist-age and large-chunk warnings. Evidence: `/tmp/ir027-web-build.log` (SHA-256 `4d819ed5d81b1da01d45ed5c74e3c644f712381433f65eb24dcacacc23682ee4`).
-- Exact mapper/dead-builder/global-support/no-fallback/source-size/focused-diff/safety audit passed. The changed production owners are 10–62 effective non-empty lines; the temporary probe is absent; the delivery stash/backup hashes remain exact. Evidence: `/tmp/ir027-member-input-source-audit.log` (SHA-256 `9ccaac8376b6ab10f6c11d4c2c9869fcc6e1cebd418a970f9093a5c2781bffb5`). Source commit: `70db719065ec92de24cc110184a269bec673f6b1`.
-- One initial command used the package test script with an extra `--`, which expanded beyond the intended two-file selection and was interrupted after unrelated broader-suite failures. It is not claimed as evidence. The authoritative direct `vitest run` selection above was then executed and passed; neither command targeted the operational database.
-- IR-027 adds one narrow server mapper unit and removes only the dead Team-builder unit. It does not edit or stage API-REV-022's dirty durable frontend/API/E2E coverage. No configured startup, retained E2E, migration scenario, live provider, browser, operational database, or user-held-stack action ran.
+## Environment Or Dependency Notes
 
-### IR-026 Delta
+- New workspace package: `@autobyteus/team-stream-contracts` with Zod-backed exact shared Team server/client DTOs and generated `dist` output.
+- Workspace/server/web manifests and lockfile include the new package.
+- No migration-capable server startup, provider runtime, browser stack, or retained E2E environment was started.
+- Never accessed or modified `/Users/normy/.autobyteus/server-data/db/production.db`.
+- User-held `127.0.0.1:60004` / `127.0.0.1:31004` stack was not repointed, stopped, or cleaned.
+- Protected delivery state remains exact: stash commit `92fe82e95eb123bdfa259c74eeb1c534b26d909b`; backup `/tmp/agent-team-hierarchical-handoffs-dr004-preintegrate.EJ9Oli/delivery-protected.tar`, SHA-256 `da300460f02c1d95965118fbe2ed8f68d549836d9f18d36bf23cdc418103a8d6`.
 
-- Focused frontend selection passed 2/2 files and 7/7 tests: API/E2E-owned current `AgentTeamEventMonitor` coverage now receives `{member_a111: "Professor", member_b222: "Student"}`, and a removed-after-use probe proves persistent, direct task-Agent, active task-Team peer, invalid/surplus, noncanonical, foreign-root, and run-mismatched key behavior. Evidence: `/tmp/ir026-team-member-presentation-focused.log` (SHA-256 `647d13e5ae620d17cdb1ce4199b11afbede6b80dcdf820687aa22212e2b66f73`).
-- Nuxt production build passed client/server compilation and 15-route static prerender with only the known Browserslist-age and large-chunk warnings. Evidence: `/tmp/ir026-web-build.log` (SHA-256 `c0950ed8a911fda2b998abddb94c4eb2cfaa96e20699eae54bc4f91dbc9df895`).
-- Focused exact-key/no-compatibility/source-size/diff/safety audit passed. The changed production owner is 106 effective non-empty lines; the old serialized-key-as-member-address iteration is absent; the temporary probe is removed; API/E2E's dirty event-monitor spec remains unstaged; protected stash/backup and user-held listeners remain exact. Evidence: `/tmp/ir026-team-member-presentation-source-audit.log` (SHA-256 `18a0b5f323e34e5aa2386a8ca66330c743e2c4d5ec0c6a7e8efbcae82765e571`). Source commit: `0dff80aa2`.
-- No repository-resident durable coverage was added, changed, removed, or staged by IR-026. No configured server startup, migration, live provider, browser, operational database, or user-held-stack action ran.
+## Local Implementation Checks Run
 
-### IR-025 Delta
+- `autobyteus-server-ts`: `pnpm exec tsc -p tsconfig.build.json --noEmit --pretty false` — Pass (`/tmp/ir028-server-production-typecheck-final-7.log`).
+- `autobyteus-server-ts`: `pnpm build:full` — Pass, including sanitized built-in bootstrap without `DATABASE_URL` (`/tmp/ir028-server-build-full-final-5.log`).
+- `autobyteus-web`: `pnpm build` — Pass, including 15-route static prerender (`/tmp/ir028-web-build-final-5.log`).
+- `autobyteus-web`: direct `.nuxt` TypeScript — repository-wide Fail with `823` inherited/dirty-test diagnostics; changed production diagnostics `0` (`/tmp/ir028-web-tsc-final-6.log`, `/tmp/ir028-web-tsc-changed-production-final-4.log`).
+- `@autobyteus/application-sdk-contracts`: `pnpm build` — Pass (`/tmp/ir028-application-sdk-contracts-build-final-3.log`).
+- `@autobyteus/team-stream-contracts`: build/test command — build Pass; no repository-resident tests exist yet (`/tmp/ir028-team-stream-contracts-test-final.log`).
+- Removed-after-use frontend aggregate probe — Pass `1/1`, covering persistent/direct-task/task-Team/nested-task identity, invalid/no-mutation, navigation, cleanup/focus repair, and deep freeze (`/tmp/ir028-team-execution-probe.log`).
+- Built server domain probe — Pass for all three binding kinds, status projector parity, strict surplus rejection, exact overlay replacement, activation-first FIFO, unrelated bypass, and overflow abort (`/tmp/ir028-team-stream-domain-probe-final-2.log`).
+- Disposable real Prisma/SQLite token transaction probe — Pass (`/tmp/ir028-token-store-probe-final-2.log`).
+- Structural audits — Pass: exact six legacy paths, required removals, no current application predecessor/V4 execution authority, no raw maps/aliases/placeholders, staged/production diff hygiene, and `0` changed production files above 500 effective lines (`/tmp/ir028-legacy-identity-paths-final-2.log`, `/tmp/ir028-required-removals-final-3.log`, `/tmp/ir028-application-current-contract-audit-final-2.log`, `/tmp/ir028-clean-cut-production-audit-final.log`, `/tmp/ir028-production-size-audit-final-4.log`, `/tmp/ir028-production-diff-check-final-3.log`).
 
-- Server task lifecycle unit passed 1/1 file and 17/17 tests against the explicit test-owned SQLite target `autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db`; activation proof includes the exact persistent delegator address. Evidence: `/tmp/ir025-server-task-event-focused.log` (SHA-256 `008c544d2635438189a22c7ce2b8b4ec43423d9f39d6a304e805b0116aabc359`).
-- Focused current frontend selection passed 7/7 files and 28/28 tests. It proves distinct `/Teacher` sender and `/StudentStudyGroup` target visibility before refresh; exact coordinator-ingress record continuity with one entry; target-placement visibility; exact task-Agent sender chaining; nested/foreign/scope/run fail-closed behavior; surplus-field rejection; component count/details/auto-open; and shared-fixture routing/projection regressions. Evidence: `/tmp/ir025-delegator-focus-expanded-tests.log` (SHA-256 `2a7c875ccf8b1d80682065f24f0795e49556673c4c34afdec26ba8994e547134`). A separate shared-fixture regression selection also passed 2/2 files and 4/4 tests: `/tmp/ir025-shared-fixture-regression-tests.log` (SHA-256 `f3f9cdc85d5d2b3b8f786cca4084fa6352a7f0d2a32ca21e4d4eafcbbf193c5e`).
-- Server production build typecheck (`tsc -p tsconfig.build.json --noEmit`) passed. Evidence: `/tmp/ir025-server-production-build-typecheck.log` (empty success log; SHA-256 `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`). Server `build:full` passed clean TypeScript/assets and sanitized built-in bootstrap smoke without `DATABASE_URL`: `/tmp/ir025-server-build-full.log` (SHA-256 `b6a487c142bfffec97c68a72c32448ca624d6f256d392ee2ddf4a6c754e2df2a`).
-- Nuxt production build passed client/server compilation and 15-route static prerender with only the known Browserslist-age and large-chunk warnings. Evidence: `/tmp/ir025-web-build.log` (SHA-256 `10bb4cf412bf519dcde9e287fba4d6b8851e123d93b2c24171aae02b767c1638`).
-- Focused sender/identity/source-size/diff/safety audit passed. No prohibited current identity field was added; all changed production owners are 54–386 effective non-empty lines; protected stash and backup hash remain exact. Evidence: `/tmp/ir025-delegator-focus-source-audit.log` (SHA-256 `63bada30e7297d40a11dfc47f5e1e25ea395173629e114e93ca7b949c92f3bf0`). Source commit: `51db105d9`.
-- Two broad typecheck entrypoints are not reported as project Passes. `pnpm typecheck` reaches the latest-base `tsconfig.json` `rootDir=src` / `include=tests` conflict and emits only inherited TS6059 test-root diagnostics; production build TypeScript passes. Evidence: `/tmp/ir025-server-production-typecheck.log` (SHA-256 `fae4630813bd3b79ff22b3a6180e0248ed532d2d1c3d606a549933debd677f8b`). `nuxi typecheck` again cannot reach source diagnostics because `npx` resolves an incompatible `vue-tsc`/TypeScript combination and fails with `ERR_PACKAGE_PATH_NOT_EXPORTED`; production Nuxt build and TypeScript-transformed Vitest pass. Evidence: `/tmp/ir025-web-nuxi-typecheck.log` (SHA-256 `a391d34441827fc0971fd83472c95e2f010bc32b417528e2c28e8750854ffa5c`).
-- No configured server startup, migration scenario, live provider, browser, operational database, or user-held-stack action ran. API-REV-020's other dirty durable files and evidence remain preserved and uncommitted.
+## Frontend Rendered-Result Check
 
-### IR-024 Delta
+- Affected journeys: Team launch/open/restore, exact member focus, task Agent/task-Team rows, delegated-task overview/history, event monitor, command approval/interrupt, mobile focus, and token presentation.
+- UI change character: state/identity ownership and interaction correctness; no visual layout, CSS, or copy redesign.
+- Implementation feedback: Nuxt production build and the removed-after-use aggregate probe passed. A separate browser was intentionally not started because the user-held stack is protected and safe isolated browser/provider execution is downstream-owned.
+- Remaining unverified states: real browser render/focus/restore/terminal cleanup across AutoByteus, Codex, and Claude.
 
-- Focused current-contract selection passed 6/6 files and 29/29 tests. It covers strict persisted sender/receiver perspective, provisional task Agent and task AgentTeam visibility, nested exact parent-chain matching, foreign root/scope/member/run rejection, shared count/details ownership, and initial/dynamic auto-open. API-REV-020's converted `TeamOverviewPanel` and `teamDelegatedTaskEntries` cases are included without implementation modification. Evidence: `/tmp/ir024-live-task-overview-expanded-tests.log` (SHA-256 `87862a6debd5d3edc49e6ecb591cf5eb24f676594de351a72cd738e6e845371c`).
-- Nuxt production build passed client/server compilation and 15-route static prerender. Expected Browserslist age and large-chunk warnings remain. Evidence: `/tmp/ir024-web-build.log` (SHA-256 `2dea02aa3047aaf4ccb17aaab37867df1363fb93373a30de08513711e7f9abf0`).
-- Nuxt typecheck was attempted but could not establish a project result: this checkout has no local `vue-tsc`, so `nuxi` invoked `npx`; that resolved incompatible TypeScript 7.0.2 and failed inside `vue-tsc` with `ERR_PACKAGE_PATH_NOT_EXPORTED` before source diagnostics. This is not claimed as a source Pass or Fail; production build and focused TypeScript-transformed Vitest pass. Evidence: `/tmp/ir024-web-nuxi-typecheck.log` (SHA-256 `41d3fa5d9a76d8f8052e8db67d524268eb49f8ba4d04121a9c9d01b81a086263`).
-- Source audit passed: only current root/scope/member/task identities participate; forbidden route/path/run aliases are absent; both overview consumers retain the same owner; source is 158 effective non-empty lines; focused diff hygiene passes. Evidence: `/tmp/ir024-live-task-overview-source-audit.log` (SHA-256 `92d490a55b7c3e4e2d374518cadab3efee3fecdabe1b24ded07838cc520c106e`). Source commit: `e3d796783`.
-- No backend, server startup, migration, live-provider, browser, database, or user-held-stack action was run. API-REV-020's other dirty durable files and artifacts remain preserved and uncommitted.
+## Downstream Coverage Hints / Suggested Scenarios
 
-### IR-023 Delta
+1. Re-investigate all current Team API/E2E fixtures against the strict shared contract; stale route/path aliases, approval tokens, duplicate receiver fields, raw execution maps, and synthetic task instance shapes must be updated or removed rather than adapted.
+2. Prove persistent, direct task-Agent, one-level task-Team Agent, and nested task-Team Agent live/initial/pre-run status messages use the same exact binding/status projection; malformed/mismatched bindings mutate nothing.
+3. Prove activation is observed before every task subtree event/work packet, including synchronous pre-run status, and that start/persist/overflow rejection exposes no active execution or held event.
+4. Prove complete task GraphQL reconciliation, live-before-refresh behavior, exact focus/open/history continuity, terminal subtree cleanup, and no duplicate or disappeared task row.
+5. Prove strict Team WebSocket client/server rejection of missing/surplus/aliased fields with no command effect; preserve persistent/task execution selection for send, approval, and interrupt.
+6. Prove current application V5 build/admission/launch/producer round trip and ordinary rejection of non-current input, with no application database predecessor migration.
+7. Re-run canonical migration/token startup gates only against a proven disposable target, including rollback, repair/retry, idempotence, exact gate policy, and query-plan/index coverage.
+8. Complete the imported nested-classroom AutoByteus/Codex/Claude browser/provider matrix from the authoritative live-validation contract.
 
-- Focused startup gate unit passed 1/1 file and 8/8 tests against the explicit test-owned SQLite target. It proves canonical failed/missing blocks; runner rejection exits 1; readable failed/missing/recent-`RUNNING` exits 1 with exact status/log marker; canonical+readable terminal state tolerates an unrelated failure; and all-success starts exactly once. Evidence: `/tmp/ir023-readable-provider-startup-gate-unit.log` (SHA-256 `bc7434fd57e4c90ecc7ade8bb485e84dc463ff2d4205a48108ec31a4b0bc5372`).
-- Server production typecheck passed. Evidence: `/tmp/ir023-server-production-typecheck.log` (empty success log; SHA-256 `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`).
-- Server `pnpm build:full` passed TypeScript/assets plus sanitized built-in bootstrap smoke without `DATABASE_URL`. Evidence: `/tmp/ir023-server-build-full.log` (SHA-256 `fb3b5d1fc6799e04787bc5507f63c8c806f122510a1ed63e8669a944f1d4788c`).
-- Focused audit passed: exactly one production `runPending` call; one readable marker owner; controlled exit in the migration catch; exact failed/missing/running unit assertions; no retry/fallback/alias/legacy branch; source size 272 effective non-empty lines; focused diff clean. Evidence: `/tmp/ir023-readable-provider-startup-audit.log` (SHA-256 `420172dadd2eb7d058897eac09b96cf57d383ec3ead1ead72039b59f031fe08d`).
-- The retained startup E2E was neither edited nor executed. API/E2E remains responsible for the real recent-`RUNNING` exit-marker/no-listen/stale-retry lifecycle after source Pass.
+## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-### IR-022 Integrated Delta
-
-- Merge completion — `af9286bc47c1a06946d3773b9bfc8a339f075e2f` has exact parents `7c6e6e6e1996522f4151407ca9064c28f2acdd4a` and `d0bcd0dab2263fa284cf07de8d98214e5d19af73`; `git ls-files -u` is empty and all 31 conflict paths are resolved.
-- Server production typecheck — `pnpm exec tsc -p tsconfig.build.json --noEmit` passed. Evidence: `/tmp/ir022-server-production-typecheck.log` (empty success log; SHA-256 `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`).
-- Server `pnpm build:full` passed clean TypeScript/assets plus sanitized built-in bootstrap smoke without `DATABASE_URL`. Evidence: `/tmp/ir022-server-build-full.log` (SHA-256 `590ee066df0428a87aed731605db327a2131fc59e892c8fc6c3883e09b0c33e7`).
-- Integrated server selection passed 3/3 files and 46/46 tests: seven canonical/readable startup-gate cases, 32 WebSocket egress/cadence cases, and seven real-socket status/cadence cases. The test log proves the only Prisma target was `autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db`. Evidence: `/tmp/ir022-server-integrated-focused-tests.log` (SHA-256 `eabdeffd4d051acae7f517a5ee5b7160aebba85be2fd47924a5473203772a024`).
-- Disposable live-harness guard passed 17/17, including target mismatch rejection and sanitized child-environment behavior, against the same test-owned database. Evidence: `/tmp/ir022-disposable-harness-guard-test.log` (SHA-256 `3d409ce7ba8bd134a805cbae44c12c60a0a8ecba9d4c77a5d45ed16f1dfc7777`).
-- Isolated Nuxt production build passed client/server build and 15-route static prerender from `/tmp/ir022-web-build-final.b3pV2c`, outside both the worktree output and user-held stack. Expected Browserslist/chunk-size warnings remain. Evidence: `/tmp/ir022-web-build-final.log` (SHA-256 `e81a66375a11bdb0dcf313d7f0b2b7e14c038b803fe342e4c9c38b1c780ef6e5`).
-- Current canonical web selection passed 3/3 files and 29/29 tests: task-execution event routing 7/7, exact Team streaming serialization/acknowledgement 16/16, and exact local submission targeting 6/6. Evidence: `/tmp/ir022-web-green-focused-tests-final.log` (SHA-256 `31ab80aeb92cf54ffed446ad43d61c3325e5aee8afbb8e15575388b9c2e935df`).
-- A temporary current-contract probe passed 1/1: the latest display-row owner projected a direct task Agent, outer task Team, nested task Team, and task-scoped children with exact ordered chains and no retired keys. The probe was removed. Evidence: `/tmp/ir022-current-navigation-probe.log` (SHA-256 `610b2f1ab6cd143220f00688aee9ff3d2cf0b8a7353d454ae7fb0164da3b31c3`).
-- Contract/size/diff/safety audits passed: no production retired route/path/run identity, no removed display-owner import, no conflict markers, all 29 conflict-resolved implementation files at 29–481 effective lines, focused staged paths clean, protected stash/backup intact, and user listeners unchanged. Evidence: `/tmp/ir022-integrated-contract-audit.log`, `/tmp/ir022-conflict-source-size-audit.log`, `/tmp/ir022-focused-diff-check.log`, and `/tmp/ir022-safety-state-audit.log`.
-- Full merge-level `git diff --check` is not reported as clean: it emits 94 diagnostics across 39 incoming latest-base ticket evidence/log files under `tickets/done/custom-provider-model-context-metadata`; the production-source diagnostic intersection is zero and every conflict-resolution path passes the focused check. These inherited evidence-file diagnostics were not rewritten during this ticket integration. Evidence: `/tmp/ir022-full-merge-diff-check.log` (SHA-256 `a86005773112d5c86127547db17390bcbdc88b5796a46451692d063f013a0780`).
-- Broader latest-base web selections are not reported as passing: 3/5 files and 31/32 tests passed in one projection selection; 1/5 files and 9/23 tests passed in the navigation selection. Failures are confined to durable fixtures/specs that import the deleted row owner or construct pre-canonical `memberRouteKey`/`memberPath`/missing-`rootTeam` shapes. Evidence: `/tmp/ir022-web-focused-tests.log` and `/tmp/ir022-web-navigation-tests.log`. Fresh API/E2E must adjudicate and maintain those durable tests; production adds no old-shape fallback.
-- Whole-project frontend typecheck remains non-clean on the already disclosed dependency/generated and stale durable-fixture baseline and is not reported as passing. The isolated production build is the integrated production compile result.
-
-### IR-021 Delta
-
-- Focused temporary current-contract Vitest probe passed 1/1 file and 4/4 cases: all three captured Apollo-decorated task records projected; direct task Agent event identity produced an exact task node without stable-node mutation; task Team root and task-scoped children were distinct and focusable; mismatched task Agent owner and task Team parent rejected before projection. The temporary test file was removed after execution. Evidence: `/tmp/ir021-current-contract-probe.log` (SHA-256 `a27056cadb12e58a2b31bfbeaec4766878885d847b8a615e076e948ebda0be9a`).
-- Isolated Nuxt production build passed client build, server build, and 15-route static prerender. It ran from `/tmp/ir021-web-build.MUjNl5`, not the working source output or user-running stack. Expected Browserslist and chunk-size warnings remain. Evidence: `/tmp/ir021-web-build.log` (SHA-256 `74e02d9841c3f6cdf2b33ab3391b2bd960ed9bc853146deebfabad71cce0f36e`).
-- `pnpm guard:web-boundary`, `pnpm guard:localization-boundary`, and `pnpm audit:localization-literals` passed; the localization audit reported zero unresolved findings and its existing module-type warning. Evidence: `/tmp/ir021-web-boundary.log`, `/tmp/ir021-localization-boundary.log`, and `/tmp/ir021-localization-literals.log`.
-- Focused source/diff/identity/size audit passed: no retired route/path/name/run selectors in the new DTO/tree/restore/event owners, no compatibility/fallback markers in the new owners, no temporary probes left in source, and `git diff --check` clean. Changed execution owners are 53–499 effective non-empty lines. Evidence: `/tmp/ir021-source-audit.log` (SHA-256 `abd1ac014cc0744f405d5b914d34d047be01a38118d84953af88dbd61c9b842c`).
-- Whole-project frontend typecheck remains non-clean on the previously disclosed dependency/generated Vue import baseline and is not reported as passing. The isolated production build is the current compile evidence.
-- No API/E2E-owned durable file was edited. No server, migration, provider, browser, operational-database, or manual-stack action was run.
-
-### IR-020 Delta
-
-- Server production typecheck — `pnpm exec tsc -p tsconfig.build.json --noEmit --pretty false` passed. Evidence: `/tmp/ir020-production-typecheck.log`.
-- Server `pnpm run build:full` passed, including clean TypeScript build/assets and sanitized built-in bootstrap smoke without `DATABASE_URL`. Evidence: `/tmp/ir020-build-full.log`.
-- Exact execution command built proof passed 12 successful combinations: send, approval, and interrupt for persistent, direct task-Agent, outer task-Team, and two-level nested task-Team targets. Every operation reached only the exact run; neither task-Team peer started its persistent counterpart. Missing, foreign, truncated, reordered, and mismatched task-Agent chains rejected with `TEAM_EXECUTION_ADDRESS_INVALID` before run creation or any effect. Evidence: `/tmp/ir020-team-execution-command-probe.mjs` and `/tmp/ir020-team-execution-command-probe.log`.
-- Streaming boundary built proof passed: send/approval/interrupt each delivered the unchanged complete root/ordered-chain/member/task-Agent address to `executeMemberCommand`; route/run legacy selectors were rejected before effect. Evidence: `/tmp/ir020-stream-command-boundary-probe.mjs` and `/tmp/ir020-stream-command-boundary-probe.log`.
-- Preserved IR-018 message-routing proof passed exact outer/nested task-Team peers, task-Agent sender, outside-Team persistent routing, and all invalid-chain rejection with zero persistent peer fallback. Evidence: `/tmp/ir020-preserved-task-team-message-routing.log`.
-- Guarded cadence/harness selection passed 2/2 files and 43/43 tests (`AgentStreamWebSocketEgress` 26/26; live harness 17/17) using only the exact test-owned SQLite path. Evidence: `/tmp/ir020-cadence-harness-tests.log` and `/tmp/ir020-disposable-database-guard.log`.
-- Source audit passed: one TeamRun/backend/manager command spine; no streaming `.at(-1)` task-chain reduction; exact active Team/task-Agent/root ownership checks; old message-only resolver removed; no compatibility/fallback selectors; production diff/whitespace clean; changed production files are 15–464 effective non-empty lines, with the manager at 453 and resolver at 211. Evidence: `/tmp/ir020-command-selection-audit.log`.
-- No API/E2E-owned durable file was edited. No startup, app-data migration, live provider, browser scenario, or operational database action was run.
-
-### IR-019 Integrated Delta
-
-- Shared dependency build: `autobyteus-server-ts` `pnpm prepare:shared` — passed. Evidence: `/tmp/ir019-integrated-shared-build.log`.
-- Server production typecheck: `pnpm exec tsc -p tsconfig.build.json --noEmit --pretty false` — passed after the shared package build refreshed its linked `dist`. Evidence: `/tmp/ir019-integrated-server-typecheck.log`. The initial stale-linked-dist attempt is retained separately at `/tmp/ir019-integrated-server-typecheck-initial.log` and is not reported as a source failure.
-- Server `pnpm run build:full` — passed, including clean TypeScript build/assets and sanitized built-in bootstrap smoke without `DATABASE_URL`. Evidence: `/tmp/ir019-integrated-server-build-full.log`.
-- Web `pnpm run build` — passed. Expected Browserslist/chunk-size warnings remain. Evidence: `/tmp/ir019-integrated-web-build.log`.
-- Exact streaming command built-JavaScript probe — passed: canonical interrupt and approval preserved member/task-Agent/leaf task-Team identity; legacy route/run selectors and a foreign root were rejected before runtime calls; acknowledgements/errors used the current server-message sink. Evidence: `/tmp/ir019-integrated-stream-command-probe.mjs` and `/tmp/ir019-integrated-stream-command-probe.log`.
-- Focused safe selection, guarded to test-owned SQLite — `agent-stream-websocket-egress` passed 26/26 and `live-e2e-harness` passed 17/17. The merged cross-runtime memory integration passed 15/16 and exposed one latest-base block still constructing the removed flat `TeamRunConfig` fields (`coordinatorMemberRouteKey`, `memberConfigs`) instead of schema-v3 `rootTeam`; this is recorded as post-integration API/E2E coverage maintenance, not as a production-source Pass or a test weakening opportunity. Evidence: `/tmp/ir019-disposable-database-guard.log` and `/tmp/ir019-integrated-focused-tests.log`.
-- Resolution audit — passed for merge identity/parents, latest-base ancestry, cleared merge metadata, seven resolved path dispositions, zero conflict markers, deleted memory-service references, canonical streaming identity, absence of deprecated selector/path fields, server egress/client scheduler ownership, harness database guard, resolved-path diff hygiene against both parents, and production source sizes of 465/68/54/350 effective non-empty lines. Evidence: `/tmp/ir019-integrated-conflict-audit.log`.
-- Operational safety — no IR-019 startup, migration, live provider, or browser scenario was run. The test guard accepted only `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db` and explicitly rejected `/Users/normy/.autobyteus/server-data/db/production.db`. The protected stash and backup hash remain unchanged.
-
-### IR-018 Delta
-
-- Production `pnpm exec tsc -p tsconfig.build.json --noEmit --pretty false` — passed. Evidence: `/tmp/ir018-production-typecheck.log` (empty success log; SHA-256 `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`).
-- `pnpm run build:full` — passed, including clean production build and sanitized built-in Agent bootstrap smoke. Evidence: `/tmp/ir018-build-full.log` (SHA-256 `b065d24fb2e6c3b436cc41e0f08dbf0910971a98bd944a48013cd0fd0e0ea851`).
-- Built-JavaScript active-task-Team proof — passed exact outer peer delivery with the task-scoped AgentRun and one-element chain; exact nested peer delivery with the two-element ordered chain; exact task-Agent-to-task-Team-peer delivery; and outside-team `/Teacher` persistent routing with an empty receiver chain. Missing/inactive/foreign/wrong-parent/wrong-Team/truncated/reordered variants rejected before event or input, and neither persistent peer fallback started. Evidence: `/tmp/ir018-task-team-peer-routing-probe.mjs` (SHA-256 `0191e4f6d0a6c285246e8c42efb8204b115580c4803358f491706e020e365a0f`) and `/tmp/ir018-task-team-peer-routing-probe.log` (SHA-256 `76d48f882ca906713300db362eeff1d705105d1b0a58c2fd68a2080d1a587cc7`).
-- Three maintained API/E2E-owned routing units were executed without implementation edits and passed 3/3 files and 11/11 tests: mixed root manager, persistent child handle, and delivery coordinator. This preserves both API-REV-013 fixture corrections plus IR-017 delivery behavior; it is implementation-scoped evidence, not downstream sign-off. Evidence: `/tmp/ir018-routing-units.log` (SHA-256 `3a95bf9b19b278e67a71857e679d9fddef6a47485c3557d75ce6d846f1caa161`).
-- Focused source/diff/whitespace/no-fallback/size audit — passed for exactly three production files. It confirms directory-backed exact execution seams, no fallback/retry/alias/localization/legacy selector/Activity branch, display-only basename use, and effective sizes of 158/111/335 lines. Evidence: `/tmp/ir018-routing-audit.log` (SHA-256 `34bb43d4420b9c26bc7f1ad47a509ce6789f85e0065fc6718a84c9897d35bb33`). Source commit: `035fba611e6895187f7f6d4644993e22efd8c38c`. No API/E2E-owned durable file was edited.
-
-### IR-017 Delta
-
-- Production `pnpm exec tsc -p tsconfig.build.json --noEmit --pretty false` — passed. Evidence: `/tmp/ir017-production-typecheck.log` (empty success log; SHA-256 `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`).
-- `pnpm run build:full` — passed, including clean production build and sanitized built-in Agent bootstrap smoke. Evidence: `/tmp/ir017-build-full.log` (SHA-256 `b86a85640e6ff270736d7b128dc640f54e72df0a979fc7ec6b729159e505812f`).
-- Built-JavaScript nested-routing proof — passed: one logical-member request reached the exact persistent nested coordinator once; persistent-ID mismatch rejected before delivery; exact task-kind delivery reached the task Agent; task kind with a persistent ID did not fall back; exact task-Team coordinator activation started once; invalid coordinator and invalid ordered chain started zero handles. Evidence: `/tmp/ir017-nested-routing-probe.mjs` (SHA-256 `c4df7fa757230b92f8bc1f86c9398925b5ad0c4b4643cb92896322c2f7792dfe`) and `/tmp/ir017-nested-routing-probe.log` (SHA-256 `613fc5a5b970982c468b0078e7527a87bb0a720f59b24df052fd0b381569eef3`).
-- Maintained task-delegation service unit — passed 1/1 file and 17/17 tests, preserving the activation coordinator's canonical Team receiver construction and established task lifecycle. Evidence: `/tmp/ir017-task-delegation-unit.log` (SHA-256 `56dad6c2774d3c1e6fdb83912e33b2d99844adb30a80308bc2b3548a5101aafa`). The file is part of API/E2E's existing dirty durable delta and was executed without implementation edits.
-- Focused source/diff/whitespace/size/no-fallback audit — passed for exactly eight production files; no receiver-as-Team, basename, retry/fallback, or Activity/tool-result presentation addition was found, and every changed file is below 500 effective non-empty lines. Evidence: `/tmp/ir017-routing-audit.log` (SHA-256 `b202c105067b46cb62df493a2e76c185a13c11766906ca37998c95ececd9fa92`). Source commit: `b877d343b30fe01bd2f39546c0e8279adbd00dff`. No API/E2E-owned durable file was edited.
-
-### IR-016 Delta
-
-- Production `pnpm exec tsc -p tsconfig.build.json --noEmit --pretty false` — passed. Evidence: `/tmp/ir016-production-typecheck.log` (empty success log; SHA-256 `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`).
-- `pnpm run build:full` — passed, including clean production build and sanitized built-in Agent bootstrap smoke. Evidence: `/tmp/ir016-build-full.log` (SHA-256 `305aac208d8d3aa972d21d5efb0d313abe3caca3f157bdc921ded47ceeeeb316`).
-- Production zero-reference audit — passed: `getHandoffRulesEnabled` has zero references under `autobyteus-server-ts/src`; the retained three `getHandoffRulesConfigured` references are the genuine shared exposure/MCP owners and no Claude turn-input call remains. Evidence: `/tmp/ir016-zero-reference-audit.log` (SHA-256 `9977fcef98e5607594a345697a058e9eb9f5f63c4b5ba450834fd3bfbae56670`).
-- Focused diff/whitespace/size audit — passed: exactly two production lines were deleted, with no additions; `claude-turn-input-builder.ts` and `claude-session.ts` are 53 and 495 effective non-empty lines. Source commit: `110b9007615741fa0f5a96974b95ad7bc2be595c`. No API/E2E-owned durable file was edited.
-
-### IR-015 Delta
-
-- Production `pnpm exec tsc -p tsconfig.build.json --noEmit` — passed. Evidence: `/tmp/ir015-production-typecheck.log`.
-- `pnpm run build:full` — passed, including clean production build and sanitized built-in Agent bootstrap smoke. Evidence: `/tmp/ir015-build-full.log` (SHA-256 `190e8793648de3348ab4a58c73db7c21f4eae10d071fbfc68aaafc0ae9780a32`).
-- Built token owner/planner proof — passed: canonical registry ownership and cleanup order, exact nested task-Team/task-Agent reconstruction, exact-current no-batch retry, invalid-row no-mutation, duplicate/unreadable index failure before row scan, zero pre-commit migrated details, and TeamRun/task dependency failure before token invocation. Evidence: `/tmp/ir015-token-migrator-probe.mjs` and `/tmp/ir015-token-migrator-probe.log`.
-- Real Prisma/SQLite proof on a newly migrated disposable database — passed: a missing later row rolled back the earlier update; a forced later read-back corruption rolled back both rows; repair committed exact values in stable row-ID order; empty batch succeeded without mutation. Evidence: `/tmp/ir015-atomic-probe.mjs`, `/tmp/ir015-token-atomic-batch.log` (SHA-256 `e9d90bb871e989feb60d11ee92bba5bf93686b302104a409de16d38ec43a3a45`), and `/tmp/ir015-prisma-migrate.log`.
-- Terminal historical-record proof — passed for both old `SUCCEEDED` and `SUCCEEDED_WITH_WARNINGS`: status/attempts/details remained unchanged while pending canonical executed token composition exactly once and succeeded. Evidence: `/tmp/ir015-terminal-historical-record.log`.
-- Cleanup and startup checks — exact canonical success opens both cleanup definitions; canonical warning blocks them; the existing canonical startup-gate unit passes 1/1 file and 4/4 tests for failure/rejection blocking and exact-success/unrelated-warning startup. Evidence: `/tmp/ir015-cleanup-prerequisite.log` and `/tmp/ir015-startup-gate-unit.log`.
-- Preserved two-ID TeamRun built proof — passed fresh flat, terminal-warning residual flat, terminal predecessor, unsafe/contradictory no-mutation, and current retry using an injected no-op token seam. Evidence: `/tmp/ir015-teamrun-two-id-probe.mjs` and `/tmp/ir015-teamrun-two-id-probe.log`.
-- SR-014 provider-parity proof — exact artifact text matched the shared renderer byte-for-byte after only `/nested/worker` substitution; AutoByteus, Codex, and Claude each contained the block once in their required system/developer seam; standalone AutoByteus/Claude omitted it. Evidence: `/tmp/ir015-sr014-provider-parity.log` (SHA-256 `09b421b85a00463b9d7b011df0e677866cc7763a49ea55abfe9b1001a82e0d07`). Source audit confirms Team binding still intrinsically adds both named tools for native AutoByteus and MCP providers.
-- The current pre-SR-015 combined TeamRun history integration was attempted without edits: its prerequisite unit passed 4/4, while its four integration cases remained non-passing because they construct the expanded canonical aggregate without injecting an isolated token store and assert pre-token aggregate counts. This is recorded as downstream durable-coverage maintenance, not as a Pass or source-failure adjudication. Evidence: `/tmp/ir015-teamrun-canonical-prerequisite.log`.
-- Source/diff/legacy/size audits passed: no production historical definition ID/import/export, old migration class, or per-row update API remains; both cleanup definitions use the canonical owner; all provider seams share the exact renderer; superseded prose is absent; `git diff --cached --check` passed. Source commit: `24597cf194306848a06fdfe667ba932459c15c33`. No API/E2E-owned durable file was edited.
-
-### IR-014 Delta
-
-- Maintained token execution-address migration unit — passed 1/1 file and 4/4 tests. It proves direct/task-Agent conversion, task-Team root/chain/logical-prefix reconstruction, legacy segment conversion, exact-current second-run idempotence, unresolved-row no-mutation, physical-column preservation, and canonical JSON output. Evidence: `/tmp/ir014-token-migration-focused.log` (SHA-256 `bd9f8d438cd5c56ba031baba28a9a86b42c0267d743e7fccf1d04b33ae4ab63f`).
-- Temporary built-JavaScript proof — passed nested ordered-chain plus task-Agent reconstruction and second-run idempotence; explicit missing mapping, duplicate mapping, conflicting mapping, and unreadable current task-record file each returned `FAILED` with actionable detail and zero database updates. Evidence: `/tmp/ir014-token-migration-probe.mjs` (SHA-256 `c40d7f6b2af7b412faf61a162d2d1cb54ba8a852867e53fc69518f4ca17419ca`) and `/tmp/ir014-token-migration-probe.log` (SHA-256 `6190ffb82ef6f1ccdc22e36fb1cdce90c9f6548697f07b86e2f492c45b4ee892`).
-- `autobyteus-server-ts`: production `pnpm exec tsc -p tsconfig.build.json --noEmit --pretty false` — passed. Evidence: `/tmp/ir014-production-typecheck.log`.
-- `autobyteus-server-ts`: `pnpm run build:full` — passed, including clean build and built-in Agent bootstrap smoke. Evidence: `/tmp/ir014-build-full.log` (SHA-256 `b7e4b06ab57e135e6bcefa7899fd5f2c4189184f2cd7901c028d7e6674461563`).
-- An adjacent legacy-column-drop selection was attempted and finished 8/9; its sole non-passing assertion still expects the removed `{segments:[...]}` payload instead of the current exact `TeamExecutionAddress`. That API/E2E-owned durable file was not edited and this result is not claimed as Pass or as failure-origin adjudication.
-- Migration-boundary/no-fallback/diff/whitespace/size audit passed. The changed orchestrator/planner/index are 159/290/191 effective non-empty lines, all below 500; the split keeps filesystem indexing, row planning, and persistence orchestration separate. Source commit: `4dd8ff543d1c7ebbc8b1c6ffca6923487aa3eda5`. No API/E2E-owned fixture or durable test was edited.
-
-### IR-013 Delta
-
-- Maintained prerequisite plus generic migration-runner suites — passed 2/2 files and 10/10 tests. This preserves safe conversion/backup, valid predecessor skip, warning/failure aggregation, unsafe nested rejection, and the existing rule that terminal `SUCCEEDED` / `SUCCEEDED_WITH_WARNINGS` records do not rerun.
-- Temporary built-JavaScript migration proof — passed six SR-013 outcomes: fresh safe flat reached display-preserving predecessor then v3; terminal-warning stable record was skipped while residual flat reached v3 directly; an already-produced display-divergent predecessor reached v3; unsafe residual flat and contradictory predecessor both failed byte-stably with no backup; current-v3 retry skipped without a new backup. Evidence: `/tmp/ir013-migration-probe.mjs` and `/tmp/ir013-migration-probe.log`.
-- `autobyteus-server-ts`: production `pnpm exec tsc -p tsconfig.build.json --noEmit --pretty false` — passed. Evidence: `/tmp/ir013-production-typecheck.log`.
-- `autobyteus-server-ts`: `pnpm run build:full` — passed, including clean build and built-in Agent bootstrap smoke. Evidence: `/tmp/ir013-build-full.log`.
-- Registry/ID/ownership/legacy/diff/cleanup/size audit — passed: stable then canonical registry order remains; each ID is defined once by its owner; exactly one flat decoder serves both definitions; no display-name structural comparison remains; current readers were not changed; no repository proof file remains; `git diff --check` passed. Evidence: `/tmp/ir013-source-audit.log`.
-- Changed implementation files are 152/89/152 effective non-empty lines, all below 500. The decoder helper's gross 246-line diff is a deliberate responsibility contraction (142 deletions remove canonical validation/circular ownership; 104 additions implement strict flat semantics), not file growth; it shrank from 187 to 152 effective lines. No API/E2E-owned fixture or durable test was edited.
-
-### IR-012 Delta
-
-- Unchanged maintained prerequisite suite — passed 1/1 file and 4/4 tests: safe flat conversion creates one backup; valid memberTree skips idempotently; mixed safe/invalid files report `SUCCEEDED_WITH_WARNINGS`; nested flat topology reports `FAILED`.
-- Built-JavaScript ordered migration/no-mutation proof — passed: safe flat metadata reached prerequisite `SUCCEEDED` then canonical `SUCCEEDED`/schema v3 with Agent platform/config/presentation facts preserved; the prerequisite created one backup. Unsafe nested topology returned `FAILED`, created no backup, and remained byte-for-byte unchanged.
-- `autobyteus-server-ts`: production `pnpm exec tsc -p tsconfig.build.json --noEmit --pretty false` — passed.
-- `autobyteus-server-ts`: `pnpm run build:full` — passed, including clean build and built-in Agent bootstrap smoke.
-- Ordering/mutation-boundary/diff/whitespace/size audit — passed: the registry still places the stable prerequisite directly before canonical conversion; output is canonical-prevalidated before backup/write; replacement uses copy plus same-directory temp rename; the maintained test is untouched and no repository temp proof remains. The orchestrator/helper are 87/187 effective non-empty lines; each changed-file delta remains below 220 lines.
-- No API/E2E-owned fixture or durable test was edited by implementation.
-
-### IR-011 Delta
-
-- `autobyteus-server-ts`: production `pnpm exec tsc -p tsconfig.build.json --noEmit --pretty false` — passed.
-- `autobyteus-server-ts`: `pnpm run build:full` — passed, including clean build and built-in Agent bootstrap smoke.
-- Temporary non-repository policy proof using the maintained startup harness plus existing runner/run-history units — passed 3/3 files and 13/13 tests: canonical `FAILED` blocks; runner rejection blocks; canonical `SUCCEEDED` plus unrelated `SUCCEEDED_WITH_WARNINGS` starts exactly once; all-success starts exactly once; existing warning persistence/manual retry behavior remains intact. The temporary proof file was deleted after execution.
-- Sequencing/identity/no-fallback/diff/whitespace/size audit — passed: one `runPending` call; one owner-exported canonical migration ID; no unrelated-status filter; blocking branches remain before bootstrap/build/listen. `server-runtime.ts` is 264 effective non-empty lines with a 30-line rework delta.
-- No API/E2E-owned fixture or durable test was edited by implementation.
-
-### IR-010 Delta
-
-- `autobyteus-server-ts`: production `pnpm exec tsc -p tsconfig.build.json --noEmit --pretty false` — passed.
-- `autobyteus-server-ts`: `pnpm run build:full` — passed, including clean build and built-in Agent bootstrap smoke.
-- Corrected startup-gate unit — passed 1/1 file and 3/3 tests: a returned required `FAILED` status and a runner exception both cause zero bootstrap/Fastify/listen/background work, while exact required success bootstraps/builds/listens exactly once.
-- Startup gate plus existing runner selection — passed 2/2 files and 9/9 tests, preserving runner status/explicit-retry behavior while the startup boundary alone enforces exact required success.
-- Sequencing/status/diff/whitespace/size audit — passed: one `runPending` call precedes bootstrap and `buildApp`; only exact required `SUCCEEDED` advances; explicit non-required status is excluded; every failure branch returns; no retry/lazy/compatibility branch was introduced. `server-runtime.ts` is 266 effective non-empty lines with a 31-line delta.
-- No API/E2E-owned fixture or durable test was edited by implementation.
-
-### IR-009 Delta
-
-- `autobyteus-server-ts`: production `pnpm exec tsc -p tsconfig.build.json --noEmit --pretty false` — passed.
-- `autobyteus-server-ts`: `pnpm run build:full` — passed, including clean build and built-in Agent bootstrap smoke.
-- Triggering three-file local unit selection — passed 3/3 files and 32/32 tests. This includes active task-Agent child delegation through submit/review/settlement, settled task-Agent rejection, persistent direct/self eligibility, and native AutoByteus task-context projection. It is implementation-scoped evidence, not API/E2E sign-off.
-- Built-JavaScript authorization proof — passed: one active directory-owned task caller was accepted; eight AgentRun/task-instance/task/owner/member/task-TeamRun/extra-field mismatches, a missing entry, unauthenticated mapper task use, and a settled entry were rejected with the stable task authorization/state codes.
-- Ordering/diff/whitespace/size audit — passed: active-directory and mapper authorization remain before `reserveTaskId` and ledger mutation; no fallback/retry/alternate identity was added; changed source files are 447 and 70 effective non-empty lines with a 70-line total delta.
-- No API/E2E-owned fixture or durable test was edited by implementation.
-
-### IR-008 Delta
-
-- `autobyteus-server-ts`: production `pnpm exec tsc -p tsconfig.build.json --noEmit --pretty false` — passed.
-- `autobyteus-server-ts`: `pnpm run build:full` — passed, including clean build and built-in Agent bootstrap smoke.
-- Built-JavaScript native-context proof (`/tmp/sr012-crf006-built-probe.mjs`) — passed: producer and consumer make distinct frozen exact two-field clones; task/execution identity is preserved; an added `memberPath` is rejected; missing `addressing` is rejected despite other top-level/execution fields. Probe SHA-256: `d0d596013ce2eab9002147f26e5b078234a0a2ce57751eaca76dc79104415264`.
-- Focused diff/whitespace/fallback audit and file-size checks — passed; changed source files are 35 and 70 effective non-empty lines.
-- No API/E2E-owned fixture or durable test was edited or executed by implementation.
-
-### IR-007 Delta
-
-- `autobyteus-server-ts`: production `pnpm exec tsc -p tsconfig.build.json --noEmit --pretty false` — passed.
-- `autobyteus-server-ts`: `pnpm run build:full` — passed, including clean build and built-in Agent bootstrap smoke.
-- Built-JavaScript resolver proof (`/tmp/sr012-crf005-built-probe.mjs`) — passed: `/product_manager/child` returned `COLLABORATION_TRAVERSAL_INVALID`; `/missing/child` and `/missing` returned `COLLABORATION_TARGET_NOT_FOUND`; a valid nested Agent still resolved. Probe SHA-256: `326dceadffef9f8722c82a071875b86b700decc8d00506758b0e40818c8740f4`.
-- Focused diff/whitespace/alternate-identity and file-size checks — passed; `team-recipient-resolver.ts` is 73 effective non-empty lines.
-- No API/E2E-owned fixture or durable test was edited or executed by implementation.
-
-### IR-006 Delta
-
-- `autobyteus-server-ts`: production `pnpm exec tsc -p tsconfig.build.json --noEmit --pretty false` — passed.
-- `autobyteus-server-ts`: `pnpm run build:full` — passed, including clean build and built-in Agent bootstrap smoke.
-- Built-JavaScript normal-path proof (`/tmp/sr012-crf003-built-probe.mjs`) — passed for persistent-child root-bound delivery, task-child root-bound delivery, and foreign-root rejection at the root manager. Three parent-boundary calls were observed across the three cases; no local/root retry was used.
-- Expanded `member_run_id` audit across current runtime source and built output — zero occurrences; no normal-runtime allowlist is needed.
-- Focused diff, whitespace, staged-path, and file-size checks — passed; the two changed source files are 203 and 179 effective non-empty lines.
-
-### IR-005 Baseline
-
-- `autobyteus-server-ts`: `pnpm exec tsc -p tsconfig.build.json --noEmit` — passed.
-- `autobyteus-server-ts`: `pnpm run build:full` — passed, including clean build, assets, and built-in Agent bootstrap smoke.
-- Application SDK contracts, backend SDK, frontend SDK, and application devkit builds — passed.
-- Brief Studio and Socratic Math Teacher: backend typecheck plus full application build — passed for both; source, backend, UI vendor, dist, and importable outputs regenerated.
-- Web GraphQL generation from the built server schema — passed.
-- Web `guard:web-boundary`, `guard:localization-boundary`, and `audit:localization-literals` — passed.
-- Web production Nuxt build — passed.
-- Strict built-JavaScript probe — passed for schema-v3 exact root/nested shapes and immutability; stale metadata rejection; relative recipient resolution; exact `TeamExecutionAddress` round trip/extra-key rejection; V5 manifest acceptance; and actionable V4 manifest/backend/definition rejection.
-- Synthetic temporary SQLite migration probe — passed: backup created, run identity split, binding/producer identity converted, Brief columns renamed, legacy JSON/columns absent.
-- Production forbidden-identity audits — passed for server current runtime (migration excluded), web, and application source/built/importable artifacts.
-- V5 artifact parity — exact SDK-to-application vendor comparisons passed; unchanged envelope versions were confirmed.
-- `git diff --cached --check` before source commit — passed.
-
-## Frontend Rendered Result
-
-IR-027 changes no CSS, layout, component structure, or copy. It restores the existing recipient user/input transcript projection by supplying the exact execution identity already owned by the Team event. The removed-after-use frontend probe exercises the real Team streaming dispatcher and proves that persistent and nonempty task-Team inputs land in only the exact recipient context; missing identity is dropped with no fallback. A separate browser session was not started because the protected user-held stack on ports 60004/31004 cannot be touched and no isolated provider/browser state was brought up at implementation scope. Visual styling risk is unchanged; real browser/provider proof remains downstream.
-
-IR-026's human-readable inter-Agent sender-label correction remains preserved. IR-025's direct Vue task count/detail/auto-open proof remains preserved. IR-023 is backend startup-completion only. IR-022's latest-base workspace history/navigation rendering, activity projection, and mobile behavior remain unchanged. IR-021 introduced the distinct visible task execution tree and remains preserved.
-
-The cumulative IR-005 frontend result remains:
-
-- Nuxt production output was served and `/agent-teams` was inspected at 1440x1000 and 390x844.
-- Search input, Reload action, Create affordance, responsive layout, and absence of horizontal overflow were verified. Evidence: `/tmp/sr012-agent-teams.png` and `/tmp/sr012-agent-teams-mobile.png`.
-- The local backend was unavailable, so only the truthful error/empty state was exercisable; no live Team hierarchy/task/history workflow is claimed from that early check.
-- Full Nuxt typecheck is not newly claimed; the production build and focused TypeScript-transformed tests pass, while the previously recorded incompatible `npx`-resolved `vue-tsc`/TypeScript baseline remains.
-
-## Known Risks And Downstream Work
-
-- `CR-F-026` / `API-F-015` and cleanup `CR-F-027` are corrected locally in IR-027 but not yet reviewer-accepted. After source Pass, API/E2E must resume API-REV-022's incomplete `1 added / 42 updated / 0 removed` durable delta, replace the stale synthetic-inline expectation with exact member-input transcript plus separate communication projection, finish fixture adjudication/builds, and run safe isolated AutoByteus/Codex/Claude browser/provider rows.
-- `CR-F-025` is accepted by `CRR-047`; `CR-F-024` / `API-F-013` remains resolved downstream. IR-027 does not change task activation, overview visibility, startup, migration, canonical Team identity, routing, provider, application, token, settlement, or Activity behavior.
-- The mandatory operational disclosures remain: API-REV-014 and API-REV-018 acted on `/Users/normy/.autobyteus/server-data/db/production.db` before containment; no automatic rollback or repair occurred. IR-027 did not inspect, repair, copy, delete, migrate, or otherwise act on that database.
-- IR-027 did not start, stop, repoint, terminate, or clean the protected 60004/31004 stack. The non-blocking Claude follow-up observation, bounded teardown-only MCP 404, inherited latest-base evidence whitespace, frontend typecheck toolchain limitation, and unrelated non-clean whole-suite baselines remain disclosed. Protected delivery artifacts/stash/backup remain intact.
-
-## Task Design Health Check
-
-- Reviewed change posture: bounded `Local Fix` for `CR-F-026` / `CR-F-027` after `CRR-048` focused API-REV-022 failure-origin review.
-- Root cause classification: `Local Implementation Defect` plus dead code. The authoritative event wrapper already owned the exact execution address, but the member-input WebSocket branch failed to carry it; the unused Team-only AgentRun event builder no longer represented the production path.
-- Refactor decision: `No Refactor`. The existing event mapper is the correct identity boundary and the existing strict frontend resolver remains correct. Removing the unused alternate builder contracts ownership rather than creating another projection path.
-- Implementation matched the reviewed assessment: `Yes`; the unchanged exact event address reaches the member-input boundary, persistent and task-Team selection remain strict, no fallback is introduced, and genuine global Agent inter-Agent event support remains independent.
-- New Design Impact or Requirement Gap found during implementation: `No`.
-
-## Routing
-
-Route this cumulative SR-015 / IR-027 package to `code_reviewer` for focused `CR-F-026` / `CR-F-027` source re-review while preserving IR-026/CRR-047, API-REV-022's incomplete durable delta, operational-database disclosures, protected stash/backup, and protected user stack. On Pass, route to `api_e2e_engineer` to resume API-REV-022 expectation/fixture adjudication, builds, and fresh safe-target browser/provider validation; any durable add/update/remove must return through proportional code review before delivery re-enters.
+Yes. API/E2E remains paused until a **full cumulative source review** passes. Pre-pause API-REV-023 and earlier live/provider evidence do not verify SR-018. Any repository-resident durable coverage add/update/remove after the source Pass must return through proportional code review before delivery.
