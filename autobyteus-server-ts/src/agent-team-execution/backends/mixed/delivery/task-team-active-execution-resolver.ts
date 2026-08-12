@@ -109,19 +109,47 @@ export class TaskTeamActiveExecutionResolver {
     const runtime = run.getRuntimeContext() as MixedTeamRunContext | null;
     const binding = entry.binding;
     const teamAddress = binding.executionAddress.memberAddress;
-    const teamNode = (parent?.activeRun.context.index ?? this.options.rootContext.index).getTeam(teamAddress);
+    const logicalParentContext = parent?.activeRun.context ?? this.options.rootContext;
+    const logicalParentAddress = getParentAgentTeamAddress(teamAddress);
+    const logicalParentTeamNode = logicalParentAddress
+      ? logicalParentContext.index.getTeam(logicalParentAddress)
+      : null;
+    const logicalTeamNode = logicalParentContext.index.getTeam(teamAddress);
+    const materializedTeamNode = run.context.index.getTeam(teamAddress);
+    const runtimeParentBoundary = runtime?.parentBoundary ?? null;
+    const expectedParentTeamRunId = parent?.activeRun.context.teamRunId
+      ?? logicalParentTeamNode?.teamRunId
+      ?? null;
     const rootTeamRunId = this.rootTeamRunId();
     if (
       taskTeamRunId !== taskTeamRunId.trim() ||
+      !binding.taskId ||
+      binding.taskId !== binding.taskId.trim() ||
       binding.kind !== "task_team" ||
+      binding.executionAddress.rootTeamRunId !== rootTeamRunId ||
+      binding.executionAddress.taskAgentRunId !== null ||
       binding.executionAddress.taskTeamRunIds.at(-1) !== taskTeamRunId ||
       !this.sameChain(binding.executionAddress.taskTeamRunIds, expectedChain) ||
       run.teamRunId !== taskTeamRunId ||
       run.context.teamRunId !== taskTeamRunId ||
       run.context.teamAddress !== teamAddress ||
       run.context.config.rootTeam.teamRunId !== rootTeamRunId ||
-      !teamNode ||
-      teamNode.teamRunId !== taskTeamRunId ||
+      !logicalParentAddress ||
+      !logicalParentTeamNode ||
+      (parent !== null && (
+        logicalParentAddress !== parent.activeRun.context.teamAddress ||
+        logicalParentTeamNode.teamRunId !== parent.activeRun.context.teamRunId
+      )) ||
+      !logicalTeamNode ||
+      !materializedTeamNode ||
+      materializedTeamNode.teamRunId !== taskTeamRunId ||
+      materializedTeamNode.teamDefinitionId !== logicalTeamNode.teamDefinitionId ||
+      materializedTeamNode.coordinatorAddress !== logicalTeamNode.coordinatorAddress ||
+      (runtimeParentBoundary !== null && (
+        runtimeParentBoundary.rootTeamRunId !== rootTeamRunId ||
+        runtimeParentBoundary.parentTeamAddress !== logicalParentAddress ||
+        runtimeParentBoundary.parentTeamRunId !== expectedParentTeamRunId
+      )) ||
       !runtime ||
       !this.sameChain(run.context.taskTeamRunIds, expectedChain) ||
       !this.sameChain(runtime.teamExecutionAddress.taskTeamRunIds, expectedChain) ||
