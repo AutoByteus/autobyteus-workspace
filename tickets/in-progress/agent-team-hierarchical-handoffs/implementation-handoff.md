@@ -22,16 +22,16 @@
 
 - Implementation cycle: `Local Fix`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/implementation-revision-record.md`
-- Current implementation revision ID: `IR-035`
+- Current implementation revision ID: `IR-036`
 - Related solution revision IDs: cumulative `SR-001`–`SR-018`; current `SR-018`
 - Related architecture-review revision IDs: current `ARCH-REV-011` Pass; no requirement or design reroute applies
-- Related code-review revision IDs: `CRR-062` triggering API/E2E failure-origin Fail — implementation Local Fix; `CRR-061` preceding API/E2E Local Fix; historical source-readiness `CRR-060` Pass, `9.3/10` (`92.8/100`)
-- Related API/E2E revision IDs: `API-REV-028` is paused at its incomplete `88%` checkpoint; the real Codex task-Team invocation is failure evidence, not acceptance evidence
+- Related code-review revision IDs: `CRR-064` triggering API/E2E failure-origin Fail — implementation Local Fix; `CRR-063` historical source-readiness Pass, `9.4/10` (`94.2/100`), superseded while `CR-F-038` is open
+- Related API/E2E revision IDs: `API-REV-029` is paused at its incomplete `90%` checkpoint; the real standalone first-send failure is origin evidence, not post-fix acceptance evidence
 - Related delivery revision IDs: `DR-005` and cumulative delivery blocker state
-- Triggering finding: `CR-F-037` / `API-F-020` / `API-LIVE-028-CODEX-TASK-PEER-BOUND-001`; `CR-F-028` through `CR-F-035` remain resolved and `CR-F-036` is resolved as an evaluation finding
-- Production source commit: `c2da87da0781fda4e58b269a0dd4d83aad3f60d8` (`fix(server): separate task Team placement from execution`), on top of IR-034 docs HEAD `649e244418fd6a4a21626ea4be5f7b0bab859412`
+- Triggering finding: `CR-F-038` / `API-F-021` / `API-LIVE-029-STANDALONE-FIRST-SEND-001`; `CR-F-037` is resolved downstream and `CR-F-028` through `CR-F-036` remain resolved
+- Production source commit: `1af1ce098ace0051a291a266622a695a3929367c` (`fix(server): preserve stream egress serialization`), on top of IR-035 docs HEAD `41d31e695`
 
-IR-035 corrects the task-Team execution admission defect exposed by CRR-062. `TaskTeamActiveExecutionResolver` now treats the containing persistent/current Team index as logical placement authority and the active child TeamRun's own materialized index as fresh concrete execution authority. It proves the exact direct logical parent, logical Team definition/coordinator, complete active run chain, root/task identity, optional runtime parent boundary when present, and fresh leaf TeamRun ID without requiring the persistent logical node's TeamRun ID to equal the freshly allocated task TeamRun ID. No persistent-root mutation, fallback delivery, retry, alternate selector, compatibility address, or relaxed AgentRun check was added.
+IR-036 corrects the standalone buffered-content serialization defect exposed by CRR-064. The shared cadence/coalescing owner now buffers the truthful structural `StreamEgressMessage` contract instead of claiming that cloned structural objects preserve an arbitrary message subtype. Default standalone egress serializes the exact `{type,payload}` wire shape directly, while Team egress explicitly re-parses every scheduled structural message through `parseTeamStreamServerMessage` before the strict Team serializer. Timer/boundary flushing, A/B/A grouping, companion ordering, disposal, and bounded error propagation remain shared. No alternate serializer fallback, compatibility path, relaxed Team parser, or second cadence owner was added.
 
 ## Reviewed Behavior Implementation Trace
 
@@ -46,6 +46,7 @@ IR-035 corrects the task-Team execution admission defect exposed by CRR-062. `Ta
 | `BEH-016`, `DS-016A`–`B` | Preserve exact V5 application execution producer binding without application predecessor migration. | application SDK contract, server application execution context, mixed Agent materialization, frontend exact mapper/history parser. | Persistent producer address is asserted; task/task-Team Agent execution rebinds exactly; application predecessor database migration is deleted. |
 | `BEH-016`, mobile Team references | Preserve one canonical root identity for mobile message-owned structured reference routes. | `autobyteus-web/components/mobile/MobileTeamMessages.vue` -> `AgentTeamContext.executions.getRootTeamRunId()` -> `MobileTeamReferenceViewer`. | The viewer receives the exact rooted TeamRun ID without expanding `AgentTeamContext` or accepting a compatibility identity. |
 | `BEH-016`, `R-039`, `R-051`, `R-052`, `AC-036`, `AC-042`, `AC-047`, `DS-015A`, Team launch/configuration | Keep one immutable Team launch draft, promote it only through one canonical server-success boundary, and query selected-run configuration from immutable topology. | `TeamLaunchDraft.ts`, `teamRunConfigStore.ts`, `agentTeamRunStore.ts`, `TeamTopologySnapshot.getConfigurationView()`, `TeamRunConfigForm.vue`, `RunConfigPanel.vue`, and mobile launch/setup composables. | Reactive DTO ingress, typed edits, and canonical launch promotion remain exact. Selected-run configuration is now read-only topology state; `AgentTeamContext` remains exactly `{topology, executions}`. |
+| `BEH-016`, `R-043`, `R-051`, standalone live stream | Preserve New standalone Agent first-send live projection while sharing cadence with strict Team streaming. | `AgentStreamWebSocketEgress` -> structural `AgentStreamContentCadenceScheduler`/coalescer -> default standalone JSON wire serializer; `AgentTeamStreamHandler` -> exact Team parse/serialize adapter. | Buffered standalone `ServerMessage` input no longer loses serialization; Team DTOs remain exact-contract validated at egress. |
 | `BEH-018` | Preserve the required imported nested-classroom three-runtime validation contract. | No live provider or browser execution in implementation scope. | Still required downstream after cumulative source Pass. |
 | `R-043`, `AC-048` | Clean cut: remove stale route/task/status/raw-key/placeholder/compatibility authorities. | Deleted legacy status/event/task instance/projection/restore/rebase/application migration/token cleanup files; exact six-path legacy scan retained. | Production clean-cut audits pass; dirty durable tests remain downstream-owned for current-contract maintenance. |
 
@@ -64,6 +65,7 @@ IR-035 corrects the task-Team execution admission defect exposed by CRR-062. `Ta
 - IR-033 canonical Team draft promotion delta: `autobyteus-web/stores/agentTeamRunStore.ts`, `components/workspace/config/RunConfigPanel.vue`, and `composables/mobile/useMobileRunLaunchCoordinator.ts`
 - IR-034 selected Team configuration query delta: `autobyteus-web/components/workspace/config/RunConfigPanel.vue`
 - IR-035 task-Team logical/fresh execution correction: `autobyteus-server-ts/src/agent-team-execution/backends/mixed/delivery/task-team-active-execution-resolver.ts`
+- IR-036 truthful shared stream egress correction: `autobyteus-server-ts/src/services/agent-streaming/websocket-egress/stream-content-coalescing.ts`, `agent-stream-content-cadence-scheduler.ts`, `agent-stream-egress-control-composition.ts`, `agent-stream-websocket-egress.ts`, and `agent-team-stream-handler.ts`
 - Frontend task admission/commit boundary: `autobyteus-web/services/runHydration/taskDelegationGraphqlDtoProjection.ts`, `taskDelegationHydrationService.ts`, `teamRunContextHydrationService.ts`, and `stores/taskDelegationStore.ts`
 - Frontend stream/draft/hydration/open/history/navigation/mobile/presentation consumers: `autobyteus-web/services/agentStreaming/`, `stores/`, `components/`, `composables/`, `types/`, and `utils/`
 
@@ -76,17 +78,18 @@ IR-035 corrects the task-Team execution admission defect exposed by CRR-062. `Ta
 
 ## Known Risks
 
-- The cumulative SR-018 source remains broad. IR-035 is a bounded one-file resolver invariant correction, but the next review still decides source readiness against the cumulative contract.
-- API/E2E must resume its incomplete current-Team coverage and safe live matrix after source Pass. Implementation did not edit or stage its visible `2 added / 82 updated / 6 removed` 90-path durable package.
-- The package-level server `pnpm typecheck` remains non-clean because current `tsconfig.json` declares `rootDir=src` while including tests; it emitted `606` inherited TS6059 diagnostics and none referenced the changed source file. Production `build:full` TypeScript and sanitized bootstrap passed.
-- The real Codex task-Team peer request/reply, lifecycle-faithful API fixture correction, Claude/standalone/config/mobile rows, and the cumulative three-runtime matrix remain downstream work for SR-018/IR-035.
+- The cumulative SR-018 source remains broad. IR-036 is a bounded five-file egress contract correction, but the next review still decides source readiness against the cumulative contract.
+- API/E2E must resume its incomplete safe live matrix after source Pass. Implementation did not edit or stage its visible `2 added / 82 updated / 6 removed` 90-path durable package or the current `agent-stream-websocket-egress.test.ts`.
+- The exact egress suite now passes all `31` assertions outside one separately classified incomplete-status-identity expectation. That remaining expectation is not changed or claimed by implementation and remains API/E2E adjudication work under SR-018.
+- The package-level server `pnpm typecheck` remains non-clean because current `tsconfig.json` declares `rootDir=src` while including tests; it emitted `606` inherited TS6059 diagnostics and no production-source diagnostic. Production `build:full` TypeScript and sanitized bootstrap passed.
+- Fresh standalone first-send/restore across the required runtimes, selected-Team configuration, mobile reference content, and the cumulative three-runtime matrix remain downstream work for SR-018/IR-036.
 
 ## Task Design Health Assessment Implementation Check
 
 - Reviewed change posture: cumulative `Comprehensive Refactor`; current round `Local Fix`
 - Reviewed root-cause classification: uncorrelated Team event/wire shapes, mixed mutable frontend topology/execution ownership, stale cleanup authorities, and incomplete status-producer closure
 - Reviewed refactor decision: `Refactor Needed Now`
-- Implementation matched the reviewed assessment: `Yes`; IR-035 keeps logical Team placement and fresh task execution as separate authorities inside the existing resolver owner, without changing the active-directory or routing boundaries
+- Implementation matched the reviewed assessment: `Yes`; IR-036 makes the shared cadence buffer structural and assigns exact wire validation/serialization to the standalone or Team boundary, without adding a second cadence owner
 - If challenged, routed as `Design Impact`: `N/A` after `ARCH-REV-011` Pass
 - Evidence / notes: the implementation introduces the reviewed singular boundaries rather than retaining wrappers or compatibility selectors. `TeamExecutionState` and the mixed manager remain below the 500-effective-line guard; changed deltas over 220 lines were assessed as cohesive boundary replacement, generated declarations, or net deletion/contraction.
 
@@ -97,7 +100,7 @@ IR-035 corrects the task-Team execution admission defect exposed by CRR-062. `Ta
 - Dead/obsolete code and dormant replaced paths removed in scope: `Yes`
 - Shared structures remain tight: `Yes`
 - Canonical shared design guidance reapplied: `Yes`
-- Changed source implementation files within size guardrail: `Yes`; the one IR-035 production file remains below `500` effective non-empty lines (`task-team-active-execution-resolver.ts`, `219`) and the changed-line delta is below the `220` split signal
+- Changed source implementation files within size guardrail: `Yes`; all five IR-036 production files remain below `500` lines (`336`, `107`, `97`, `38`, and `27`), and each changed-line delta is below the `220` split signal
 - Notes: the historical Team identity scan still returns exactly the six approved migration-local production paths. Current web production has no legacy route/path identity, raw execution/topology maps, synthetic task instances, approval token, duplicate member-input receiver, application predecessor migration owner, `ensureTaskTeamAgent`, `removeExecutionSubtree`, permissive task-record normalizer, or legacy task hydration wrapper.
 
 ## Persisted Data Transition Check
@@ -120,17 +123,18 @@ IR-035 corrects the task-Team execution admission defect exposed by CRR-062. `Ta
 
 ## Local Implementation Checks Run
 
-- Deleted-after-use lifecycle-faithful first-level probe — Pass `1/1`: the parent manager retained the persistent root config while the active child used the fresh task config; same-task-Team peer delivery reached the fresh AgentRun and did not call the persistent member registry (`/tmp/ir035-first-level-lifecycle-final.log`). The temporary copied test was removed.
-- Deleted-after-use resolver proof — Pass `6/6`: exact nested request and reply identities plus command target resolved through a persistent parent and two fresh child executions; foreign-root, reordered, truncated, wrong-parent, wrong-Team, missing/inactive, and mismatched AgentRun cases rejected with `COLLABORATION_CONTEXT_REQUIRED` (`/tmp/ir035-task-team-resolver-proof-final.log`). The temporary test was removed.
-- Current focused maintained selection — Pass `2/2` files, `25/25` cases: `mixed-team-manager.test.ts` and `task-delegation-service.test.ts` (`/tmp/ir035-server-focused-final.log`). The dirty API/E2E-owned test file was executed unchanged and was not staged.
-- `autobyteus-server-ts`: `pnpm build:full` — Pass: production TypeScript, asset copy, built-in agent bootstrap smoke, and sanitized no-`DATABASE_URL` built-module/bootstrap smoke (`/tmp/ir035-server-build-final.log`).
-- `autobyteus-server-ts`: `pnpm typecheck` — repository configuration Fail with `606` inherited TS6059 `rootDir=src` / included-test diagnostics and `0` references to the changed source path (`/tmp/ir035-server-typecheck-initial.log`). This is not reported as a passing repository-wide typecheck; the production build TypeScript passed.
-- Static/safety audits — Pass: source commit contains exactly the resolver; `git diff --check` passes; the file is `219` effective non-empty lines; temporary probes are absent; the protected delivery stash and backup SHA remain exact. No API/E2E durable coverage was edited or staged (`/tmp/ir035-final-audit.log`).
-- Shared design principles were reread for this implementation round (`/tmp/ir035-design-principles-read.log`).
+- Existing exact egress suite — `31/32` Pass with the former `25` content/cadence serialization failures resolved; the sole remaining failure is the separately classified incomplete-status-identity expectation and is not counted as CR-F-038 acceptance (`/tmp/ir036-egress-existing.log`). The API/E2E-owned test was executed unchanged and not staged.
+- CR-F-038 egress selection — Pass `26/26` with `6` unrelated cases skipped: fixed/non-sliding timer flush, immutable A/B/A grouping, running/companion ordering, every dependent boundary, invalid delta preservation, next-window settings, disposal, and scheduled error propagation all pass using standalone default serialization (`/tmp/ir036-egress-crf038-focused.log`).
+- Deleted-after-use strict Team serialization proof — Pass `2/2`: a nonempty task-Team execution message coalesced and round-tripped through the exact shared Team contract; an extra payload key failed at the scheduled strict serializer and reached the bounded error callback (`/tmp/ir036-team-explicit-serialization.log`). The temporary test was removed.
+- Standalone and Team handler selection — Pass `2/2` files and `35/35` cases: established standalone and strict Team connection/event/command behavior remains intact (`/tmp/ir036-stream-handler-focused.log`).
+- `autobyteus-server-ts`: `pnpm build:full` — Pass: production TypeScript, asset copy, built-in agent bootstrap smoke, and sanitized no-`DATABASE_URL` built-module/bootstrap smoke (`/tmp/ir036-server-build.log`).
+- `autobyteus-server-ts`: `pnpm typecheck` — repository configuration Fail with `606` inherited TS6059 `rootDir=src` / included-test diagnostics and no production-source diagnostic (`/tmp/ir036-server-typecheck.log`). This is not reported as a passing repository-wide typecheck; production build TypeScript passed.
+- Static/safety audits — Pass: source commit contains exactly five production paths; no false generic preservation cast or default `.toJson()` call remains; Team explicitly parses before serialization; `git diff --check` passes; temporary proof is absent; the API/E2E-owned durable test is untouched; protected delivery stash and backup SHA remain exact (`/tmp/ir036-source-audit.log`, `/tmp/ir036-protected-state-audit.log`).
+- The implementation-engineer workflow and shared design principles were reread for this round (`/tmp/ir036-implementation-skill-read.log`, `/tmp/ir036-design-principles-read.log`).
 
 ## Frontend Rendered-Result Check
 
-- `Not Applicable` for IR-035. The correction is backend-only task-Team execution validation and delivery selection; no frontend markup, style, copy, or interaction code changed.
+- `Not Applicable` for IR-036. The correction is backend-only shared WebSocket egress buffering/serialization; no frontend markup, style, copy, or interaction code changed.
 - No browser or user-held stack was started or touched. Fresh safe-target browser/provider proof remains downstream-owned after source Pass.
 
 ## Downstream Coverage Hints / Suggested Scenarios
@@ -148,7 +152,8 @@ IR-035 corrects the task-Team execution admission defect exposed by CRR-062. `Ta
 11. Replace the API/E2E-owned `RunConfigPanel` fake `createRunFromTemplate` seam with current real Pinia/store-boundary coverage; rerun the real Team catalog/detail Run -> Run Team path for each supported runtime and confirm no provisional context identity exists.
 12. Replace the same dirty fixture's fabricated `activeTeamContext.config` with an exact `{topology, executions}` context; prove selected-Team Edit config renders the identical immutable topology configuration as read-only and never mutates or copies it.
 13. Correct the lifecycle-masking task-Team fixture so the parent retains persistent topology while the child owns fresh materialized run IDs; prove first-level and nested same-task-Team request/reply for all supported runtimes, exact public records, foreign/reordered/truncated/wrong-parent/wrong-Team rejection, and zero persistent fallback.
+14. Currentize/adjudicate the separate incomplete-status-identity expectation without weakening SR-018, retain the shared egress cadence selection, and rerun real standalone first-send/live/restore for AutoByteus, Codex, and Claude with exact persisted/live content correlation.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Yes. API/E2E remains paused until the focused IR-035 source re-review passes. API-REV-028 remains incomplete at `88%`; its visible `2 added / 82 updated / 6 removed` 90-path durable state is neither edited, staged, nor claimed by implementation. The real Codex rejection is valid failure-origin evidence but does not verify the corrected source. After Pass, API/E2E must correct its lifecycle-masking fixture/probe, rerun exact task-Team request/reply on the checked disposable target, and finish the remaining matrix. Any repository-resident durable coverage add/update/remove must return through proportional code review before delivery.
+Yes. API/E2E remains paused until the focused IR-036 source re-review passes. API-REV-029 remains incomplete at `90%`; its visible `2 added / 82 updated / 6 removed` 90-path durable state is neither edited, staged, nor claimed by implementation. The real standalone first-send failure is valid origin evidence but does not verify the corrected source. After Pass, API/E2E must adjudicate the separately stale status expectation, retain the exact content/cadence coverage, rerun safe-target standalone live first-send/restore across the required runtimes, and finish selected-Team configuration, mobile reference, and remaining matrix rows. Any repository-resident durable coverage add/update/remove must return through proportional code review before delivery.
