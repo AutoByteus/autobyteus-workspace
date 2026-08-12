@@ -1,0 +1,59 @@
+{
+  "scenario": "claude-mobile-run",
+  "runtime": "claude_agent_sdk",
+  "model": "sonnet",
+  "token": "API33_CLAUDE_MOBILE_OK",
+  "rootTeamRunId": "nested_classroom_test_team_f73ecf571f804628bbe0ffba04a8abea",
+  "configured": {
+    "draftId": "team-draft-5402353b-a4c2-4675-a00e-a98eb8e5b73e",
+    "runtimeKind": "claude_agent_sdk",
+    "model": "sonnet",
+    "workspaceId": "temp_ws_default",
+    "frozenDraft": true,
+    "frozenConfig": true
+  },
+  "allocationRequests": 1,
+  "exact": {
+    "draftRemoved": true,
+    "inFlightReleased": true,
+    "selection": {
+      "kind": "team_run",
+      "rootTeamRunId": "nested_classroom_test_team_f73ecf571f804628bbe0ffba04a8abea"
+    },
+    "mobileContext": {
+      "kind": "team-run",
+      "teamRunId": "nested_classroom_test_team_f73ecf571f804628bbe0ffba04a8abea",
+      "teamDefinitionId": "nested-classroom-test",
+      "title": "Nested Classroom Test Team",
+      "summary": "New team run",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-033-live-20260812-1/temp_workspace",
+      "focusedExecutionAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_f73ecf571f804628bbe0ffba04a8abea",
+        "taskTeamRunIds": [],
+        "memberAddress": "/Teacher",
+        "taskAgentRunId": null
+      },
+      "isActive": true,
+      "lastActivityAt": "2026-08-12T17:20:42.044Z",
+      "statusLabel": "Ready"
+    }
+  },
+  "rawProviderEvidence": {
+    "exactAssistant": true,
+    "rawTracePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-033-live-20260812-1/memory/agent_teams/nested_classroom_test_team_f73ecf571f804628bbe0ffba04a8abea/test_teacher_70e0d1796ecb46fa97018eb6ec3e59d6/raw_traces_active.jsonl"
+  },
+  "conditions": {
+    "configuredExactFrozenDraft": true,
+    "configuredClaude": true,
+    "allocationExactlyOnce": true,
+    "canonicalSelection": true,
+    "canonicalMobileContext": true,
+    "draftRemovedAndUnlocked": true,
+    "providerResponseExactInCurrentRawTrace": true
+  },
+  "passed": true,
+  "termination": {
+    "success": true,
+    "message": "Agent team run terminated successfully."
+  }
+}

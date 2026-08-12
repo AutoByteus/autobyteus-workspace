@@ -95,6 +95,7 @@ const { agentRunState, teamRunState, agentContextState, teamContextState, teamRu
   },
   teamRunOwnerState: {
     launchDraft: vi.fn(),
+    isDraftLaunchPending: vi.fn(),
   },
 }))
 const { workspaceCenterViewStoreMock, workspaceStoreMock } = vi.hoisted(() => ({
@@ -196,6 +197,8 @@ describe('RunConfigPanel', () => {
     teamContextState.activeTeamContext = null
     teamRunOwnerState.launchDraft.mockReset()
     teamRunOwnerState.launchDraft.mockResolvedValue('team-run-1')
+    teamRunOwnerState.isDraftLaunchPending.mockReset()
+    teamRunOwnerState.isDraftLaunchPending.mockReturnValue(false)
     workspaceStoreMock.createWorkspace.mockReset()
     workspaceStoreMock.createWorkspace.mockImplementation(async ({ root_path }: { root_path: string }) => {
       workspaceStoreMock.workspaces['ws-created'] = {
@@ -283,6 +286,43 @@ describe('RunConfigPanel', () => {
     expect(teamRunOwnerState.launchDraft).toHaveBeenCalledTimes(1)
     expect(teamRunOwnerState.launchDraft).toHaveBeenCalledWith(teamStore.selectedDraft)
     expect(teamStore.clearConfig).not.toHaveBeenCalled()
+  })
+
+  it('renders the selected draft read-only and rejects duplicate launch/edit/workspace actions while its owner reports pending', async () => {
+    const { useTeamRunConfigStore } = await import('~/stores/teamRunConfigStore')
+    const teamStore = useTeamRunConfigStore() as any
+    teamStore.config = { teamDefinitionId: 'team-def-1', workspaceId: 'ws-1' } as any
+    teamStore.selectedDraft = Object.freeze({
+      draftId: 'team-draft-pending',
+      config: Object.freeze({ ...teamStore.config }),
+      focusedMemberAddress: '/coordinator',
+      pendingInputsByMemberAddress: Object.freeze({}),
+    }) as any
+    teamStore.launchReadiness = { canLaunch: true, blockingIssues: [], unresolvedMembers: [] } as any
+    teamRunOwnerState.isDraftLaunchPending.mockImplementation(
+      (draftId: string | null) => draftId === 'team-draft-pending',
+    )
+
+    const wrapper = mount(RunConfigPanel, {
+      global: {
+        stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true },
+      },
+    })
+    const form = wrapper.findComponent(TeamRunConfigForm)
+
+    expect(teamRunOwnerState.isDraftLaunchPending).toHaveBeenCalledWith('team-draft-pending')
+    expect(form.props('readOnly')).toBe(true)
+    expect(wrapper.find('.run-btn').attributes('disabled')).toBeDefined()
+    await wrapper.find('.run-btn').trigger('click')
+    form.vm.$emit('select-existing', 'ws-other')
+    form.vm.$emit('workspace-input-change', { mode: 'new', pendingPath: '/tmp/other' })
+    form.vm.$emit('edit-config', { kind: 'set_model', llmModelIdentifier: 'other-model' })
+    await wrapper.vm.$nextTick()
+
+    expect(teamRunOwnerState.launchDraft).not.toHaveBeenCalled()
+    expect(teamStore.applyConfigEdit).not.toHaveBeenCalled()
+    expect(teamStore.config.workspaceId).toBe('ws-1')
+    expect(teamStore.config.llmModelIdentifier).toBeUndefined()
   })
 
   it('loads a pending New workspace path before creating an agent run', async () => {

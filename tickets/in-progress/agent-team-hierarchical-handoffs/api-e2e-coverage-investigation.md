@@ -16,11 +16,11 @@
 - Delivery Revision Record (lineage context only): `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/delivery-revision-record.md`
 - Relevant Delivery Revision IDs: `DR-003`, `DR-004`; `DR-004` was resolved by `SR-012` / `ARCH-REV-007` / `IR-005` and is not a current API/E2E blocker.
 - API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-028` (`Fail`; API-F-019 capability is resolved, while a real Codex bound task-Team tool call exposes API-F-020).
-- Current Investigation Round: `28` (CRR-061 capability-focused Local Fix, current repository/build revalidation, and checked safe-target real provider execution).
-- Trigger: `CRR-061` reclassifies API-F-019 provider call omission as nonblocking model behavior and requires a deterministic actual-bound capability probe plus completion of current safe provider/browser coverage; CRR-060 remains the source Pass.
+- Current API/E2E Revision ID: `API-REV-033` (`Pass / 98%`; IR-038 exact Team launch admission and terminal ownership pass downstream).
+- Current Investigation Round: `33` (CRR-071 post-source-review durable maintenance, repository/build validation, and checked safe-target real browser/provider execution).
+- Trigger: `CRR-071` passes IR-038 source and requires the two stale launch-owner durable seams to be currentized plus fresh desktop, mobile, first-send, failure/unlock, pending-lock, duplicate-launch, and three-runtime real-system proof.
 - Prior Investigation Reviewed: round 4 / `API-REV-004`, which proves `SR-006` only. It is historical context, not SR-012 evidence.
-- Latest Authoritative Investigation: this file. API-REV-028 is the latest completed Fail result; API-REV-027 and earlier rounds are historical evidence only.
+- Latest Authoritative Investigation: this file. API-REV-033 is the latest completed result; API-REV-032 and earlier rounds are historical evidence for unchanged boundaries only.
 - User execution clarification (2026-08-09): real provider testing is mandatory. Use the repository `pnpm secrets:import` flow to import `/Users/normy/.autobyteus/server-data/.env` into an absolute disposable test environment before the live matrix; never print secret values or mutate the user's operational environment.
 - User real-browser clarification (2026-08-09): do not limit validation to repository/API probes. Through the real frontend, create standalone Agents and AgentTeams, launch and interact with them, and verify the Agent/Team hierarchy, runtime selection, execution, messaging/task/history-visible behavior, and absence of material browser errors for AutoByteus, Codex App Server, and Claude Agent SDK. This is additive to the imported nested-classroom three-runtime contract, not a replacement for it.
 
@@ -1739,3 +1739,80 @@ Broader validation was **Not Required** and was not repeated. API-REV-031's real
 Both historical incident disclosures, the protected `60004/31004` stack, delivery stash, backup, and no-rollback state remain preserved.
 
 API-REV-032 result: **Pass / 98%**. `TR-F-004` and `TR-F-005` are resolved in the durable package. Return the complete `92`-path package to `code_reviewer` for proportional re-review; delivery remains blocked until that review passes.
+
+## API-REV-033 IR-038 Team Launch Admission Investigation (Pre-execution)
+
+This section currentizes the coverage plan before any IR-038 durable-test update, final repository execution, or disposable environment setup. API-REV-031/API-REV-032 remain historical proof for unaffected product boundaries; neither proves the changed launch-admission lifecycle.
+
+### Trigger and authoritative state
+
+- Current HEAD: `8475924fd28c4091824308b24a716d80f672fb5c`; production source commit `9e05920d226c19259f404de18acc057a0ed747f2`.
+- Trigger: `CRR-071 Pass / 93.9%`; IR-038 resolves `CR-F-040` in source and satisfies reachable `CR-PREM-036` through exact synchronous selected-draft admission, mutation/selection locking, one terminal owner, and one success-only canonical promotion.
+- Governing behavior: `BEH-016`, `R-039`, `AC-036`, `AC-042`, `R-043`, and `AC-048`. A pre-launch Team draft has no provisional execution identity; one canonical owner allocates/hydrates/registers/selects/transfers/removes on success and preserves/unlocks the unchanged draft on pre-success failure.
+- Baseline durable package: `92` paths (`3 added / 83 updated / 6 removed`; `38 server / 54 web`) from API-REV-032. It remains the cumulative starting package, not proof of IR-038.
+- Delivery's aborted 21-conflict latest-base merge remains paused and must not resume during this stage.
+
+### Current coverage validity and maintenance decisions
+
+| Coverage / boundary | Decision | API-REV-033 action |
+| --- | --- | --- |
+| `autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts` manually constructed launch draft | `Needs Update` | Replace the unregistered draft with the real selected-draft creation/admission seam. Preserve exact config/focus/input/workspace transfer assertions and add/retain direct owner proof for duplicate launch rejection before allocation, pending mutation/selection rejection, one promotion, failure preservation, and terminal unlock. |
+| `autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts` partial fake Team-run owner | `Needs Update` | Stop fabricating an owner without `isDraftLaunchPending`. Use the current real owner seam or a complete current owner boundary for rendering/action tests; explicitly prove pending read-only/inert desktop behavior without weakening production admission. |
+| Desktop pending Team configuration | `Still Valid but prior probe is temporary` | Convert the material pending edit/config/focus/input/selection and duplicate-launch expectations into durable real-store/component coverage, then execute the exact real browser launch path. |
+| Mobile setup/launch coverage | `Needs Fresh Execution` | Rerun current durable mobile selections and execute a responsive/mobile browser launch through the same owner. While allocation is pending, setup/config/launch must be inert; one canonical success must promote exactly once. |
+| First-send Team launch | `Needs Fresh Execution` | Execute a real draft first-send entry into the same `launchDraft()` owner. Require one allocation and one canonical promotion; reject duplicate launch before allocation; require input transfer exactly once. |
+| Failure preservation/unlock | `Add or Currentize Durable Coverage` | At the real store boundary, reject allocation or pre-success hydration, require the exact immutable draft/config/focus/input/workspace to remain selected and unchanged, and require mutations plus a later launch to unlock after the terminal failure decision. Browser/provider failure injection is unnecessary if the real owner/store seam proves this deterministically. |
+| Existing-Team launch and provider-neutral canonical promotion | `Fresh Browser Proof Required` | Use one checked disposable target and imported test Team. Execute desktop, responsive/mobile, and first-send launch surfaces against the actual server allocation/hydration path. Provider output is not required merely to prove allocation/promotion, but a fresh AutoByteus first-send response will be used where the user journey sends input. |
+| AutoByteus/Codex/Claude matrix outside changed launch boundary | `Still Valid / Targeted Recheck` | IR-038 is provider-neutral launch ownership, not adapter/tool routing. Retain API-REV-029–031 exact provider behavior, and run the changed launch surface across each configured runtime only where the imported Team matrix can do so without duplicating unrelated task/message assertions. Missing credentials remain Blocked/Fail rather than a skip. |
+| Production builds | `Required` | Run the affected web selection, current maintained web selection proportionately, and Nuxt production build. Preserve the disclosed `nuxi typecheck` toolchain failure unless it becomes independently clean; do not claim it as a Pass without execution. |
+| Checked target and operational-data safety | `Fail-Closed` | Sanitize ambient database selectors; use only `test-support/live-e2e/test-runtime-bootstrap.mjs` or the checked launcher; configuration-preflight an absent disposable absolute SQLite target; verify PID `lsof`; import secrets only into that disposable vault; never inspect or act on the operational database; leave protected `60004/31004`, delivery stash, and backup untouched. |
+
+### Planned execution and stop rules
+
+1. Reproduce the reviewer-reported stale seams, then currentize only the two named durable files against real current launch admission. Add no production compatibility behavior.
+2. Run narrow store/component/mobile/first-send selections, then the proportionate current web selection and Nuxt production build. A current product failure halts for classification.
+3. Materialize one new checked absent disposable target and prove environment/database isolation before initialization. Import the requested source secrets only into the disposable vault.
+4. Use real Chrome to execute desktop, responsive/mobile, and first-send Team launches. Correlate allocation, exact root selection, pending-state guards, one promotion, input transfer, and restore with server/browser evidence. Use deterministic real-store coverage for failure injection rather than corrupting live state.
+5. Stop/remove only owned resources and verify protected-state non-action.
+6. Publish API-REV-033. Any overall Pass with repository-resident durable changes returns the complete cumulative package for proportional review; any exact product failure routes to focused origin review.
+
+Starting confidence: **90%**. Source and reviewer probes directly support the owner design, but both named durable seams are stale and the changed real desktop/mobile/first-send boundary remains unproven downstream. Pass requires overall `>=95%`, no applicable category below `90%`, no critical failing/missing scenario, and exact safe-target evidence.
+
+## API-REV-033 Completion Update — exact launch admission, failure recovery, and three-runtime promotion pass
+
+### Durable coverage adjudication
+
+- `autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts`: `Needs Update` is complete. The former manually constructed unregistered draft was replaced with the real selected-draft admission seam. Current coverage proves one exact frozen admission snapshot, synchronous mutation/selection locking, duplicate rejection before a second allocation, one canonical success promotion, and allocation-failure preservation/unlock/retry.
+- `autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts`: `Needs Update` is complete. The fake now exposes the current `isDraftLaunchPending` owner and proves read-only/disabled pending UI plus no duplicate launch, config, or workspace mutation.
+- No durable path was added or removed in this round. API-REV-033 updated exactly two paths. The cumulative package remains exactly `92` paths: `3 added / 83 updated / 6 removed`, split `38 server / 54 web`.
+- The current inventory and patch have exact path/status equality, reverse-apply cleanly, contain `86` active paths with zero missing files, zero missing relative imports, and zero active `.skip`, `.only`, or `.todo` calls.
+
+### Repository and build evidence
+
+- The two currentized seams pass `2 files / 30 tests`.
+- The IR-038 desktop/mobile/config/selection affected selection passes `7 files / 83 tests`.
+- The complete active cumulative web selection passes `49 files / 349 tests`.
+- Nuxt production build passes and prerenders fifteen routes.
+- Server `build:full` passes production TypeScript compilation plus the sanitized built-agent bootstrap without `DATABASE_URL`.
+- `pnpm exec nuxi typecheck` is not claimed as a Pass: it still stops before project diagnostics with the inherited `vue-tsc` / TypeScript `ERR_PACKAGE_PATH_NOT_EXPORTED` toolchain failure already disclosed by IR-038/CRR-071. The exact changed production-path diagnostic evidence from source review remains clean, and the production Nuxt build is green.
+
+### Checked safe-target real execution
+
+- A new absent disposable SQLite target and runtime were created at the API-REV-033 worktree paths. Configuration-only preflight proved the exact target without creating it, removed ambient `DATABASE_URL` and `DATABASE_URL_TEST`, and rejected any operational-target match.
+- The repository migration path ran only against that disposable target. Interactive `pnpm secrets:import` read `/Users/normy/.autobyteus/server-data/.env` and configured nine identifiers only in the disposable vault; no secret values were recorded.
+- The built server started only through `test-runtime-bootstrap.mjs` on `127.0.0.1:60233`; PID `lsof` proved the exact disposable database. The browser frontend bound only to that server on `127.0.0.1:31233`.
+- The private Nested Classroom fixture was copied to a disposable staging directory before import. Before/staged/final hashes prove the source fixture remained byte-identical.
+
+### Real browser/provider results
+
+1. **AutoByteus / `gpt-5.6-luna` / real first-send**: an injected first allocation failure rejected exactly, created no server run, and preserved the same draft, pending input, and selection while releasing the owner. A retry held the actual allocation pending and proved the exact admitted snapshot; visible Run/runtime controls were disabled; config, focus, input, workspace, remove, clear, selection, and duplicate launch all rejected; the duplicate failed before another allocation. The one real retry promoted exactly once, registered/selects the canonical TeamRun, removed/unlocked the draft, and produced the exact live provider response.
+2. **Codex App Server / `gpt-5.6-luna` / `medium` / desktop Run**: exact frozen draft and reasoning effort, one allocation, one canonical TeamRun/context selection, draft removal/unlock, exact live provider response, and clean termination all pass.
+3. **Claude Agent SDK / `sonnet` / paired mobile Run**: exact frozen mobile draft/config/workspace, one allocation, exact canonical mobile Team context and focus, draft removal/unlock, exact live provider response, and clean termination all pass.
+
+All three final rows are fresh, use distinct canonical root TeamRun IDs, and have copied raw-provider evidence in this round. Temporary probe/locator authoring corrections were excluded from the final rows and did not require production changes.
+
+### Cleanup, confidence, and outcome
+
+Owned server/frontend processes stopped and `60233/31233` closed. Provider traces were copied into the evidence package, then the disposable runtime/database/vault and temporary mobile credential were removed. The operational database was not inspected, opened, targeted, copied, migrated, repaired, rolled back, or deleted. The protected `60004/31004` stack, delivery stash, and backup were not acted on. Both historical operational-database incident disclosures remain preserved.
+
+Final confidence: **98%**. Every applicable category is at least `97%`; each critical IR-038 lifecycle behavior is directly proven at the real owner or browser/network boundary; all three required runtimes pass; and no material API/E2E failure remains. API-REV-033 result: **Pass**. Return the complete `92`-path package to `code_reviewer` for proportional test-code review before delivery.

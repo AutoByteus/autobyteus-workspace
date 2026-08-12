@@ -3,134 +3,145 @@
 ## Execution Round Meta
 
 - Requirements / design authority: `SR-018` / `ARCH-REV-011`
-- Implementation / source review: `IR-037` / `CRR-067`
-- Triggering durable-test review: `CRR-068 Fail — Local Fix`
-- Current HEAD: `66cfe11e9057b0276c95cb5e9a01784d74b07499`
-- Current revision: `API-REV-032`
-- Prior completed result: `API-REV-031 Pass / 98%`
+- Implementation / source review: `IR-038` / `CRR-071`
+- Current HEAD: `8475924fd28c4091824308b24a716d80f672fb5c`
+- Production source commit: `9e05920d226c19259f404de18acc057a0ed747f2`
+- Current revision: `API-REV-033`
+- Prior completed result: `API-REV-032 Pass / 98%` (durable-test-only correction); API-REV-031 is the preceding real-system Pass.
 - Current result: **Pass / 98%**
-- Resolved in this round: `TR-F-004`, `TR-F-005`
-- Product/runtime disposition: API-REV-031 remains authoritative and unchanged; `API-F-022` / `CR-F-039` remains resolved downstream.
-- Broader-validation decision: **Not Required**. This round changes only three durable server test fixtures, and CRR-068 explicitly requires focused repository execution rather than repeated browser/provider work.
+- Resolved downstream in this round: `CR-F-040` / reachable premise `CR-PREM-036`
+- Broader-validation decision: **Required and completed**. IR-038 changes the web-equivalent desktop/mobile Team launch lifecycle, and repository-only evidence could not prove real allocation, canonical promotion, provider response, or responsive UI state.
 
 ## Coverage Investigation And Durable Decisions
 
-The canonical investigation was currentized before any API-REV-032 durable edit. The bounded decisions were:
+The canonical investigation was currentized before API-REV-033 durable edits or final execution. It classified two exact stale seams:
 
-1. update `autobyteus-agent-run-backend-factory.test.ts` to remove the deleted `TaskAgentInstanceIdentity` boundary and represent only the actual task Agent run ID plus root-scoped task ID;
-2. update `mixed-team-manager.test.ts` to remove the deleted `TaskTeamInstanceIdentity` boundary and represent only the actual task TeamRun ID plus task ID;
-3. remove the stale generic standalone-egress case that manufactured retired route keys and task instance IDs;
-4. retain the supported adjacent standalone status dedupe assertion and the unchanged strict Team handler assertion using `agent_execution` plus exact `TeamExecutionAddress` as replacement evidence.
+1. `autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts` manually constructed an unregistered draft and therefore bypassed the selected-draft admission owner;
+2. `autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts` faked a Team-run owner without the current `isDraftLaunchPending` contract.
 
-API-REV-032 repository-resident delta:
+API-REV-033 repository-resident delta:
 
-- Updated: `autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts`
-- Updated: `autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts`
-- Updated: `autobyteus-server-ts/tests/unit/services/agent-streaming/agent-stream-websocket-egress.test.ts`
+- Updated: `autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts`
+- Updated: `autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts`
 - Added: none
-- Removed paths: none; one stale test case was removed within the updated egress file.
+- Removed: none
+
+The store coverage now uses a real selected immutable draft and proves exact synchronous admission, mutation/selection rejection while pending, duplicate launch rejection before another allocation, one canonical promotion, allocation-failure preservation/unlock, and successful retry. The component coverage supplies the current pending owner and proves read-only/disabled pending presentation plus inert launch/config/workspace actions.
 
 Cumulative durable package:
 
-- `92` paths: `3 added / 83 updated / 6 removed`
-- `38 server / 54 web`
-- Inventory: `api-e2e-evidence-sr018/api-rev-032/investigation/cumulative-durable-coverage-inventory.tsv`
-- Full patch: `api-e2e-evidence-sr018/api-rev-032/investigation/cumulative-durable-diff.patch`
-- Audit: `api-e2e-evidence-sr018/api-rev-032/investigation/cumulative-durable-inventory-audit.log`
-- Reverse-apply proof: `api-e2e-evidence-sr018/api-rev-032/investigation/cumulative-durable-patch-integrity.log`
+- `92` unique paths: `3 added / 83 updated / 6 removed`
+- `38 server / 54 web`; `86` active paths
+- Inventory: `api-e2e-evidence-sr018/api-rev-033/investigation/cumulative-durable-coverage-inventory.tsv`
+- Full patch: `api-e2e-evidence-sr018/api-rev-033/investigation/cumulative-durable-diff.patch`
+- API-REV-033 two-file delta: `api-e2e-evidence-sr018/api-rev-033/investigation/api-rev-033-durable-delta.patch`
+- Patch integrity: `api-e2e-evidence-sr018/api-rev-033/investigation/cumulative-durable-patch-integrity.log`
+- Static audit: `api-e2e-evidence-sr018/api-rev-033/investigation/cumulative-durable-static-audit.log`
 
-The cumulative package still requires a successful proportional test-code review before delivery.
+The package remains pending proportional test-code review before delivery.
 
-## Focused Repository Execution
+## Repository Execution
 
-Working directory:
+All commands ran in the assigned worktree.
 
-`/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts`
+| Selection / command | Result | Evidence |
+| --- | --- | --- |
+| `pnpm test:nuxt --run stores/__tests__/agentTeamRunStore.spec.ts components/workspace/config/__tests__/RunConfigPanel.spec.ts` | **Pass — 2 files / 30 tests** | `repository/launch-owner-and-panel-focused-final.log` |
+| IR-038 seven-file store/config/selection/mobile selection | **Pass — 7 files / 83 tests** | `repository/ir038-affected-seven-final.log` |
+| Complete active cumulative web selection | **Pass — 49 files / 349 tests** | `repository/web-current-final.log`; `repository/web-current.selection.txt` |
+| `pnpm run build` in `autobyteus-web` | **Pass — Nuxt production build; 15 routes prerendered** | `repository/web-production-build.log` |
+| `pnpm run build:full` in `autobyteus-server-ts` | **Pass — production TypeScript, build assets, built-in agent and sanitized no-DB bootstrap** | `repository/server-build-full.log` |
+| `pnpm exec nuxi typecheck` | **Tooling failure before project diagnostics; not claimed as Pass** — inherited `vue-tsc`/TypeScript `ERR_PACKAGE_PATH_NOT_EXPORTED` | `repository/web-nuxi-typecheck.log` |
+| Focused/cumulative static and diff audit | **Pass** — no production delta in API-REV-033, zero missing active files/imports, zero active skip/only/todo, clean focused diff | `repository/api-rev-033-diff-hygiene.log`; `investigation/cumulative-durable-static-audit.log` |
 
-Command:
+The first focused edit run captured one API/E2E-authored expectation mismatch. It was corrected before final execution; the authoritative final focused and broader selections are green. No implementation/source change was made during API-REV-033.
 
-```bash
-pnpm exec vitest run \
-  tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts \
-  tests/unit/agent-team-execution/mixed-team-manager.test.ts \
-  tests/unit/services/agent-streaming/agent-stream-websocket-egress.test.ts \
-  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts
-```
+## Checked Disposable Environment
 
-Result: **Pass — 4 files / 65 tests**.
+The live boundary was prepared with the checked repository launcher and fail-closed target validation:
 
-Evidence: `api-e2e-evidence-sr018/api-rev-032/repository/crr068-focused-final.log`.
+- server/frontend: `127.0.0.1:60233` / `127.0.0.1:31233`;
+- disposable database: `autobyteus-server-ts/db/api-rev-033-live-20260812-1.db`;
+- disposable runtime/vault: `autobyteus-server-ts/tests/.tmp/api-rev-033-live-20260812-1`;
+- ambient `DATABASE_URL` and `DATABASE_URL_TEST` excluded from the child;
+- materialized `.env` named the exact absolute disposable SQLite target;
+- configuration-only preflight resolved that exact target while the database remained absent;
+- Prisma migration ran only on the disposable target;
+- interactive `pnpm secrets:import` read `/Users/normy/.autobyteus/server-data/.env` and configured nine identifiers only in the disposable vault, with no secret values logged;
+- built server started only through `startBuiltTestServer`; PID `lsof` proved the exact disposable database after listen;
+- the frontend's HTTP and WebSocket boundary was bound only to the owned server;
+- the private Nested Classroom fixture was imported from a disposable staging copy and remained byte-identical at source.
 
-The unchanged Team handler selection directly retains persistent, direct task Agent, outer task Team, nested task Team, exact event projection, invalid/stale-address rejection, and no-fallback behavior. The generic standalone egress selection retains exact duplicate suppression, payload-transition forwarding, cadence, disposal, and incomplete-identity fail-open behavior without manufacturing Team compatibility payloads.
+Evidence: `environment/safe-target-preflight.log`, `environment/prisma-migrate-deploy.log`, `environment/secrets-import-interactive-summary.log`, `environment/safe-server-ready.json`, `environment/server-pid-lsof.log`, `environment/frontend-backend-binding.log`, and `live/source-fixture-final-integrity.log`.
 
-## Static And Package Integrity Evidence
+## Real Browser And Provider Execution
 
-`api-e2e-evidence-sr018/api-rev-032/repository/crr068-static-audit.log` proves:
+Google Chrome exercised the web-equivalent desktop and paired-mobile surfaces. The final authoritative matrix is `live/browser/ir038-browser-matrix-summary.json` and passes all rows.
 
-- zero `TaskAgentInstanceIdentity`, `TaskTeamInstanceIdentity`, `taskAgentInstanceId`, `taskTeamInstanceId`, or synthetic task instance wrapper occurrences in the two corrected identity fixtures;
-- zero `member_route_key`, `source_route_key`, `team_route_key`, `task_team_relative_member_route_key`, `task_agent_instance_id`, or `task_team_instance_id` occurrences in generic standalone egress coverage;
-- strict Team replacement coverage still asserts `agent_execution.kind = task_team_agent` with exact `execution_address`;
-- all `86` active cumulative durable paths have resolvable relative imports;
-- focused `git diff --check` passes.
+### AutoByteus — `gpt-5.6-luna` — real first-send, failure, pending, success
 
-The cumulative inventory audit proves:
+- exact selected draft/config/focus/input/workspace were frozen;
+- an injected first allocation response failure rejected exactly, allocated no server run, retained the same selected draft and pending input, released launch ownership, and restored edit/retry capability;
+- the retry held the real allocation mutation pending and proved the exact admitted snapshot;
+- the visible Run control and runtime selector were disabled;
+- config, focus, input, workspace, remove, clear, selection replacement, and duplicate launch attempts all rejected;
+- the duplicate rejected before another allocation request;
+- the one real retry produced one canonical TeamRun promotion, registered/selects the exact root, transferred input, removed the draft, released ownership, and returned the exact provider response in the current raw trace;
+- clean termination passed.
 
-- `92` inventory rows and unique paths;
-- status counts exactly `A:3`, `M:83`, `D:6`;
-- scope counts exactly `server:38`, `web:54`;
-- exact inventory/patch path equality;
-- zero status mismatches against the worktree;
-- `92` unique patch path headers;
-- reverse application and cumulative diff hygiene pass.
+Evidence: `live/browser/autobyteus-first-send.json`, three `autobyteus-first-send-*.png` screenshots, and `live/provider-traces/autobyteus-first-send.raw-traces.jsonl`.
 
-## Retained API-REV-031 Product And Real-System Evidence
+### Codex App Server — `gpt-5.6-luna`, reasoning `medium` — desktop Run
 
-No production or environment boundary changed in API-REV-032. The following API-REV-031 evidence remains authoritative rather than being needlessly repeated:
+Exact frozen configuration, one allocation, one canonical promotion/context selection, draft removal/unlock, exact live provider response, and clean termination pass.
 
-- actual Team communication hydration service seam: `2/2`;
-- service/store/mobile selection: `11/11`;
-- current web selection: `49 files / 345 tests`;
-- current retained server selection: `76 files / 573 tests`, with twenty declared capability skips excluded from real-provider claims;
-- server production TypeScript and `build:full` including sanitized bootstrap;
-- Nuxt production build and fifteen prerendered routes;
-- checked disposable-target setup, exact PID database-path proof, interactive vault import only into the disposable target, and exact cleanup;
-- real active and persisted desktop/mobile Team communication/reference path on AutoByteus;
-- retained current AutoByteus/Codex/Claude standalone and imported-Team provider matrix.
+Evidence: `live/browser/codex-desktop.json`, `live/browser/codex-desktop-complete.png`, and `live/provider-traces/codex-desktop.raw-traces.jsonl`.
 
-No product finding, environment finding, or browser/provider uncertainty was reopened by CRR-068.
+### Claude Agent SDK — `sonnet` — paired mobile Run
+
+Exact frozen configuration/workspace, one allocation, exact canonical mobile Team context/focus, draft removal/unlock, exact live provider response, and clean termination pass.
+
+Evidence: `live/browser/claude-mobile.json`, two `claude-mobile-*.png` screenshots, and `live/provider-traces/claude-mobile.raw-traces.jsonl`.
+
+All three roots are distinct current canonical TeamRun IDs. Temporary live-probe locator/predicate authoring corrections are not counted as product failures; final rows were rerun fresh and pass without production edits.
 
 ## Environment, Database, And Cleanup
 
-API-REV-032 started no server, frontend, browser, provider runtime, checked launcher, vault import, or live migration. The focused Vitest setup reset only the repository-owned test SQLite database:
+- Owned server and frontend processes stopped; ports `60233/31233` are closed.
+- Final provider traces were copied into the evidence package before cleanup.
+- The disposable runtime/database/vault, key material, and temporary mobile credential were removed.
+- The source fixture remained unchanged.
+- The operational database `/Users/normy/.autobyteus/server-data/db/production.db` was **not inspected, opened, targeted, copied, migrated, repaired, rolled back, or deleted**.
+- The protected `127.0.0.1:60004/31004` stack was not stopped, repointed, or mutated. Its listener state was not asserted after the user's power-off; the recorded action is `NONE`.
+- Delivery stash and backup remain untouched.
 
-`/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db`
+Evidence: `environment/final-cleanup-verification.log` and `live/provider-traces.sha256`.
 
-It did not target, inspect, open, copy, migrate, repair, roll back, or delete the operational database. Protected `127.0.0.1:60004/31004`, the delivery stash, and backup were untouched. Both historical incident disclosures remain preserved:
+Both historical operational-database incident disclosures remain mandatory and preserved:
 
 - `api-e2e-evidence-sr015/api-rev-014/live/server-environment-collision-analysis.md`
 - `api-e2e-evidence-sr015/api-rev-018/live/operational-production-db-targeting-incident.md`
-
-No API-REV-032 process or disposable live resource required cleanup.
 
 ## Confidence Scorecard
 
 | Category | Score | Evidence and residual uncertainty |
 | --- | ---: | --- |
-| Requirement and acceptance-criteria proof | 98% | API-REV-031 real product evidence is unchanged; the bounded stale fixtures now match the current SR-018 identity contract. |
-| Changed-boundary execution directness | 100% | Both corrected identity fixtures and the supported standalone/strict Team egress boundaries executed directly. |
-| Cross-boundary integration realism and mock gap | 99% | API-REV-031 real browser/GraphQL/WebSocket/provider evidence remains authoritative; no production boundary changed here. |
-| Environment, configuration, identity, and fixture fidelity | 99% | Current run-ID/task-ID facts replace deleted instance wrappers; active relative imports are clean; only the repository test DB was used. |
-| Failure, edge-case, lifecycle, and recovery evidence | 98% | Current task lifecycle/no-fallback and strict invalid/stale execution-address coverage pass; API-REV-031 recovery evidence remains intact. |
-| User-surface, browser, and desktop-shell confidence | 96% | Real desktop/mobile browser proof remains current. Electron-shell-specific behavior is unchanged and outside this test-only round. |
-| Durable regression coverage quality and relevance | 96% | TR-F-004/005 are removed without compatibility restoration; exact current replacement boundaries pass. Proportional re-review remains required. |
+| Requirement and acceptance-criteria proof | 99% | Exact IR-038 admission, pending lock, duplicate rejection, failure preservation/unlock, promotion, and three-runtime rows are directly proven. |
+| Changed-boundary execution directness | 99% | Real store owner, mounted component, real GraphQL allocation, browser controls, canonical selection, and provider traces cover the changed boundary. |
+| Cross-boundary integration realism and mock gap | 98% | Real Chrome, HTTP/WebSocket, GraphQL, built server, SQLite, vault, and providers were used; failure injection is deliberately at the allocation response seam. |
+| Environment, configuration, identity, and fixture fidelity | 99% | Exact absent disposable target, sanitized environment, PID open-file proof, staged fixture integrity, and canonical TeamRun IDs pass. |
+| Failure, edge-case, lifecycle, and recovery evidence | 99% | Failure preservation/retry, every pending mutation class, duplicate-before-allocation, one success promotion, and cleanup are direct. |
+| User-surface, browser, and desktop-shell confidence | 97% | Real desktop-equivalent and paired-mobile browser journeys pass. Electron-shell-specific behavior is unchanged and remains the only negligible uncertainty. |
+| Durable regression coverage quality and relevance | 97% | Both stale seams now exercise current owners and the complete 92-path package is internally consistent; proportional review is still required. |
 
-Overall confidence: **98%** (`686 / 7 = 98.0%`). No category is below `90%`; no critical current behavior is missing or failing.
+Overall confidence: **98%** (`688 / 7 = 98.3%`, rounded). No category is below `90%`; no critical behavior is missing or failing.
 
 ## Outcome And Routing
 
-- Authoritative outcome: **Pass / 98%**.
-- `TR-F-004`: **resolved**.
-- `TR-F-005`: **resolved**.
-- API-REV-031 product/runtime Pass and `API-F-022` resolution: **retained unchanged**.
-- Required recipient: `code_reviewer` for proportional re-review of the complete `92`-path durable package.
-- Delivery remains blocked until that proportional review passes.
+- Authoritative result: **Pass / 98%**.
+- `CR-F-040` / `CR-PREM-036`: **resolved downstream**.
+- Current live matrix: **AutoByteus, Codex App Server, and Claude Agent SDK all Pass**.
+- Durable delta this round: **0 added / 2 updated / 0 removed**.
+- Cumulative durable package: **3 added / 83 updated / 6 removed = 92 paths**.
+- Required recipient: `code_reviewer` for proportional review of the complete cumulative durable package.
+- Delivery remains blocked until proportional test-code review passes.

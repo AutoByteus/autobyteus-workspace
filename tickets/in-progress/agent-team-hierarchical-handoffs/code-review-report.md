@@ -14,101 +14,104 @@
 - Relevant Architecture Review Revision IDs: current `ARCH-REV-011`; cumulative `ARCH-REV-001` through `ARCH-REV-011`
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/implementation-revision-record.md`
-- Relevant Implementation Revision IDs: current `IR-037`; cumulative `IR-001` through `IR-037`
+- Relevant Implementation Revision IDs: current `IR-038`; cumulative `IR-028` through `IR-038`; earlier lineage where still relevant
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-067`
-- Current Review Round: `50`
-- Trigger: `IR-037` correction of `CR-F-039` / `API-F-022` after `CRR-066 Fail — implementation Local Fix`
-- Prior Review Round Reviewed: `CRR-066`; historical source score `CRR-065 9.4/10 (94.3/100)`
-- Latest Authoritative Round: `CRR-067`
-- Coverage Investigation Reviewed: paused `api-e2e-coverage-investigation.md` as downstream context
-- Execution Coverage Report Reviewed: paused `api-e2e-execution-coverage-report.md` / `API-REV-030 Fail / 93%`
-- API/E2E Revision Record Reviewed: `api-e2e-revision-record.md`
-- Relevant API/E2E Revision IDs: paused `API-REV-030`; prior `API-REV-029`
-- Delivery Revision Record Reviewed: `delivery-revision-record.md` as lineage/safety context
-- Relevant Delivery Revision IDs: `DR-001` through `DR-005`
-- Failing Scenario IDs: source re-review of `CR-F-039` / `API-F-022` / `API-MOBILE-REFERENCE-030-001`; premise `CR-PREM-035`
-- Current Implementation HEAD: `66cfe11e9057b0276c95cb5e9a01784d74b07499`
-- Production Source Commit: `c13eb75b34e9bee60dfa556c067572f8715c6e00`
-- Reviewer Evidence: `/tmp/crr067-ir037-source-audit.log`; `/tmp/crr067-ir037-communication-hydration-probe.log`; `/tmp/crr067-ir037-retained-communication-tests.log`; implementation Nuxt build `/tmp/ir037-web-build.log`
+- Current Code Review Revision ID: `CRR-071`
+- Current Review Round: `54`
+- Trigger: `IR-038` focused cumulative source re-review of `CR-F-040` exact Team launch admission and terminal promotion ownership
+- Prior Review Round Reviewed: `CRR-070 Fail — Local Fix`, `9.1/10` (`90.5/100`)
+- Latest Authoritative Round: `CRR-071`
+- Relevant API/E2E Revision IDs: authoritative pre-IR-038 `API-REV-031` and `API-REV-032 Pass / 98%`; both remain historical evidence for unaffected paths
+- Relevant Delivery Revision IDs: paused pre-integration `DR-006`; its pre-pause merge attempt was aborted after 21 conflicts
+- Finding Under Re-review: `CR-F-040`; material premise `CR-PREM-036`
+- Current Ticket HEAD: `8475924fd28c4091824308b24a716d80f672fb5c`
+- Current Production Source Commit: `9e05920d226c19259f404de18acc057a0ed747f2`
+- Reviewer Evidence: `/tmp/crr071-ir038-source-audit.log`; `/tmp/crr071-launch-admission-probe.log`; `/tmp/crr071-web-current.log`; implementation evidence `/tmp/ir038-team-launch-owner-probe.log`, `/tmp/ir038-run-config-panel-render-probe.log`, `/tmp/ir038-web-focused-final.log`, `/tmp/ir038-web-retained-final.log`, `/tmp/ir038-web-build-final.log`
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: IR-037's exact Team communication GraphQL DTO projection, generated query typing, complete-collection admission, removal of the false manual transport-as-domain type, and preservation of strict canonical address/store ownership.
-- Files / areas reviewed: the three production paths in source commit `c13eb75b3`; the direct mobile restore/hydration production spine; generated GraphQL DTOs; strict address/store boundaries; adjacent task DTO projector; implementation evidence; retained dirty communication/mobile coverage executed unchanged.
-- Explicit exclusions: no proportional review of API/E2E's incomplete `91`-path durable package; no live server/provider/mobile rerun; no operational-database action; no modification of API/E2E-owned tests.
+- Changed implementation and behavior reviewed: IR-038's exact selected-draft admission before allocation; immutable draft/config/focus/input/workspace and run-selection locking; duplicate launch rejection; one success-only hydrate/register/select/input-transfer/removal sequence; failure release/preservation; desktop, mobile, and first-send presentation/caller behavior; removal of the abandoned post-allocation mismatch and dormant flag.
+- Files / areas reviewed: all seven IR-038 production paths plus the canonical launch callers and directly governing stores: `teamRunConfigStore.ts`, `agentTeamRunStore.ts`, `agentSelectionStore.ts`, `RunConfigPanel.vue`, `MobileRunSetup.vue`, `useMobileRunSetupController.ts`, and `useMobileRunLaunchCoordinator.ts`.
+- Explicit exclusions: no second full audit of unaffected SR-018 source; no proportional review of the pre-IR-038 92-path durable package; no live server/browser/provider/database execution; no latest-base integration. Unchanged structural conclusions from CRR-070 were retained only after confirming IR-038 does not disturb them.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: `BEH-016`, `UC-021`, `R-038`, `R-039`, and `R-043` require supported desktop/mobile Team hydration and presentation to retain communication/reference content using current canonical identity without fallback.
-- Design-spec behavior map verified against the implementation: IR-037 implements the already-approved transport-to-domain adapter boundary. Apollo DTO metadata terminates inside run hydration; the strict four-key `TeamExecutionAddress` and communication store remain domain owners.
-- Design review report and round confirmed: `ARCH-REV-011` remains adequate. No design or requirement reroute is needed.
+- Approved requirements basis understood: identity-free immutable Team launch drafts; no provisional execution identity; one canonical launch owner; server-allocated identity only; success-only canonical context construction/input transfer; exact failure preservation; strict current-contract behavior.
+- Design-spec behavior map verified against the implementation: IR-038 now enforces the previously missing in-flight segment of the approved `TeamLaunchDraft -> launch owner -> canonical TeamRun context` spine.
+- Design review report and round confirmed: `ARCH-REV-011` remains adequate. No requirement, addressing, topology, or broader design change is needed.
 - Behavior-basis status: `Confirmed`
-- Changed or newly discovered behavior, if any: none.
+- Changed or newly discovered behavior, if any: none. IR-038 corrects already-approved Team launch behavior.
 - Remaining material ambiguity, if any: none.
 
 | Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence |
 | --- | --- | --- | --- |
-| `BEH-016` / `UC-021` | `Confirmed` | Paired mobile Team open -> `teamRunContextHydrationService.fetchTeamOwnedRecords()` -> `fetchAndHydrateTeamCommunicationForTeam()` -> generated Apollo response -> `projectTeamCommunicationMessageDtos()` -> canonical store -> mobile perspective/reference UI. Reviewer service-seam proof passes persistent and ordered task-Team messages with structured references. | None. |
-| `R-038` / `R-039` / `R-043` | `Confirmed` | The hydration-owned projector validates exact transport fields/expected optional discriminators and explicitly constructs the four-key domain address through the unchanged strict parser before one store admission. | None. |
+| `BEH-016`, `R-039`, `AC-036`, `AC-042` | `Confirmed` | Exact selected immutable draft -> synchronous `admitDraftLaunch()` -> validation/allocation/hydration -> exact focus/input transfer -> context registration -> owner-only selection promotion -> draft completion -> admission release. Duplicate launch and draft/selection mutations reject before changing the admitted snapshot. | None. |
+| `BEH-016` desktop/mobile/first-send launch | `Confirmed` | Desktop pre-admission workspace preparation uses local presentation state, then derives pending/read-only state from the owner; mobile combines request preparation with exact owner state and makes the form inert; first-send calls the same `launchDraft()` owner with no second launch flag. | None. |
+| `R-043`, `AC-048` clean cut | `Confirmed` | The old global `isLaunching` and post-allocation draft-mismatch branch are absent. No provisional identity, fallback, alias, retry policy, relaxed parser, or compatibility path was added. | None. |
 
 ## Structural / Design Checks
 
 | Check | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | `Pass` | Bug fix; root cause is a local transport/domain conversion omission. The existing run-hydration owner and communication store remain correct; no refactor beyond the bounded projector is needed. | None. |
-| Implementation matches approved behavior-defining supplemental artifacts | `Pass` | Exact current identity is preserved and Apollo metadata does not enter the domain model. | None. |
-| Data-flow spine inventory clarity and preservation under shared principles | `Pass` | Mobile UI -> Team open/hydration -> GraphQL query -> exact projector -> canonical store -> perspective/reference UI is direct and complete. | None. |
-| Ownership boundary preservation and clarity | `Pass` | `teamCommunicationHydrationService` owns query/orchestration; its projector owns transport validation/translation; store owns canonical projection/perspective. | None. |
-| Off-spine concern clarity | `Pass` | The DTO projector is a narrow adapter serving the hydration spine and owns no routing, UI, or store policy. | None. |
-| Existing capability/subsystem reuse check | `Pass` | The fix extends established `services/runHydration` and follows the adjacent task DTO projector pattern instead of introducing a new subsystem. | None. |
-| Reusable owned structures check | `Pass` | The generated query type and canonical address parser are reused; no parallel address/message model is added. | None. |
-| Shared-structure/data-model tightness check | `Pass` | Transport row type derives from `GetTeamCommunicationMessagesQuery`; output is the existing `TeamCommunicationMessage`. | None. |
-| Repeated coordination ownership check | `Pass` | Complete-collection projection occurs once before store admission. No caller repeats metadata handling. | None. |
-| Empty indirection check | `Pass` | The new file performs exact shape/discriminator/reference/address validation and translation; it is not pass-through. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | `Pass` | Querying, projection, canonical storage, and mobile rendering remain distinct. | None. |
-| Ownership-driven dependency check | `Pass` | Hydration depends inward on generated transport types, projector, and public store action; the store does not depend on Apollo. | None. |
-| Authoritative Boundary Rule check | `Pass` | Callers do not bypass hydration to mutate projector/store internals; the projector does not access UI or store state. | None. |
-| File placement check | `Pass` | `teamCommunicationGraphqlDtoProjection.ts` sits beside the hydration service it serves. | None. |
-| Flat-vs-over-split layout judgment | `Pass` | One 100-effective-line adapter separates a real process-boundary concern without artificial module depth. | None. |
-| Interface/API/query/command/service-method boundary clarity | `Pass` | Projector input derives from the exact generated query result and output is the exact domain message collection. | None. |
-| Naming quality and naming-to-responsibility alignment check | `Pass` | File/functions explicitly name Team communication, GraphQL DTO, and projection responsibilities. | None. |
-| No unjustified duplication of code / repeated structures in changed scope | `Pass` | Small shape-validation primitives remain local to a subject-specific projector; extracting a generic metadata stripper would weaken rather than clarify ownership. | None. |
-| Patch-on-patch complexity control | `Pass` | The fix removes the false type and adds one boundary adapter; it does not patch the strict parser or store. | None. |
-| Dead/obsolete code cleanup completeness in changed scope | `Pass` | `GetTeamCommunicationMessagesQueryData` and its obsolete import are removed with zero references. | None. |
-| Relevant test scenarios and assertions are clear and requirement-aligned | `Pass` | Independent proof covers canonical persistent/task-Team projection with references and complete rejection of an extra-field row. | API/E2E must retain a durable version after resume. |
-| Test fixtures/helpers are reasonably reusable and test structure remains coherent | `Pass` | Existing store/mobile coverage remains unchanged and passes; no implementation test fixture was committed into the paused package. | None. |
-| No stale, duplicated, or compatibility-only tests are retained in changed scope | `Pass` | IR-037 changes no repository-resident test; temporary proof was removed. | None. |
-| API/E2E readiness for the next workflow stage | `Pass` | Reviewer probe `2/2`, retained selection `9/9`, production Nuxt build/prerender, exact diff/source audits pass. Typecheck tooling failure is disclosed before source diagnostics. | Resume API-REV-030 with durable service-seam coverage and real paired-mobile proof. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | `Pass` | IR-038 responds to CRR-070's `Duplicated Policy Or Coordination` plus `Missing Invariant` classification with one bounded owner refactor. | None. |
+| Implementation matches approved behavior-defining supplemental artifacts | `Pass` | The launch contract now preserves an exact draft through failure and replaces it only after canonical success. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | `Pass` | The launch spine has one explicit admission before the first await and one synchronous terminal commit/release sequence. | None. |
+| Ownership boundary preservation and clarity | `Pass` | Draft state owns the exact admission lease, the Team-run store owns orchestration/promotion, and selection exposes one guarded owner-only promotion seam. | None. |
+| Off-spine concern clarity | `Pass` | Desktop/mobile request-preparation state is presentation-only and hands off to the same canonical owner before allocation. | None. |
+| Existing capability/subsystem reuse check | `Pass` | Existing draft, selection, context, hydration, and Team-run stores are strengthened rather than duplicated. | None. |
+| Reusable owned structures check | `Pass` | The same immutable `TeamLaunchDraft` object is referenced as the admission token; no copied launch identity or parallel config is introduced. | None. |
+| Shared-structure/data-model tightness check | `Pass` | `inFlightDrafts` holds the exact admitted draft reference and no run/execution identity. | None. |
+| Repeated coordination ownership check | `Pass` | Desktop, mobile, and first-send all enter `agentTeamRunStore.launchDraft()`; duplicate admission is rejected before allocation. | None. |
+| Empty indirection check | `Pass` | Derived pending queries expose the owner state required by UI callers; lifecycle methods validate/admit/commit/release rather than merely forwarding. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | `Pass` | Draft mutation guards remain in the draft owner, promotion sequencing in the run owner, and rendering/inertness in surface components/controllers. | None. |
+| Ownership-driven dependency check | `Pass` | Selection consults the draft admission boundary and only the run owner invokes the special promotion seam. No forbidden lower-level bypass was found. | None. |
+| Authoritative Boundary Rule check | `Pass` | All allocation paths use `launchDraft()` and cannot independently register/select/remove the draft. The removed mobile `clearConfig()` eliminates the former post-owner bypass. | None. |
+| File placement check | `Pass` | All seven changes remain within their existing owning frontend capabilities. | None. |
+| Flat-vs-over-split layout judgment | `Pass` | The bounded seven-file change follows real store/surface responsibilities without creating a new module hierarchy. | None. |
+| Interface/API/query/command/service-method boundary clarity | `Pass` | Admission, exact per-draft status, promotion, completion, and release have singular subjects and explicit draft/root IDs. | None. |
+| Naming quality and naming-to-responsibility alignment check | `Pass` | `isRunPreparationPending`, `isDraftLaunchPending`, `admitDraftLaunch`, `promoteTeamDraftLaunch`, `completeDraftLaunch`, and `releaseDraftLaunch` distinguish presentation, admission, and terminal ownership. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | `Pass` | One owner state replaces desktop/mobile/first-send launch-policy duplication. | None. |
+| Patch-on-patch complexity control | `Pass` | IR-038 removes the late mismatch patch and consolidates the lifecycle instead of adding another caller-specific guard. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | `Pass` | The dormant global flag, obsolete mismatch text, and duplicate mobile clear are absent; temporary probes were removed. | None. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | `Pass` | Actual-owner and mounted-component probes cover pending mutation/selection/input, duplicate rejection, one allocation/promotion, read-only rendering, failure preservation, and unlock. Reviewer store-boundary probe independently passes `2/2`. | API/E2E must currentize repository-resident durable coverage. |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | `Pass` | Implementation probes use the real Pinia/store/component seams; no source-only fake owner was used for the claimed invariant. | Preserve this seam in durable coverage. |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | `Pass` for implementation source; downstream maintenance required | The pre-IR-038 durable package has two expected stale seams: a manually unregistered launch draft and a RunConfigPanel fake without the new owner query. They are test maintenance, not production-source contradictions. | API/E2E must update these exact fixtures without weakening admission. |
+| API/E2E readiness for the next workflow stage | `Pass` | Source/build and owner/component probes are green; the known current-test failures are precisely attributable to pre-change fixtures. | Resume fresh coverage investigation/execution for desktop/mobile/first-send launch. |
 
 ## Source File Size And Structure Audit
 
+All seven IR-038 production files remain below `500` effective non-empty/non-comment lines. No IR-038 source delta exceeds `220` changed lines.
+
 | Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
 | --- | ---: | --- | --- | --- | --- | --- | --- |
-| `autobyteus-web/services/runHydration/teamCommunicationGraphqlDtoProjection.ts` | `100` | `Pass` | `Pass` | One exact transport-to-domain projection concern | `Pass` | `Pass` | None. |
-| `autobyteus-web/services/runHydration/teamCommunicationHydrationService.ts` | `45` | `Pass` | `Pass` | Query/orchestration only | `Pass` | `Pass` | None. |
-| `autobyteus-web/stores/runHistoryTypes.ts` | `241` | `Pass` | `Pass with existing-size review` | Existing run-history transport type collection; IR-037 only removes five obsolete lines and reduces pressure | `Pass` | `Pass` | No split required for this subtractive delta. |
+| `autobyteus-web/stores/teamRunConfigStore.ts` | `318` | `Pass` | `71`, Pass | One immutable draft/admission/mutation owner | `Pass` | `Pass` | None. |
+| `autobyteus-web/stores/agentTeamRunStore.ts` | `266` | `Pass` | `89`, Pass | One Team-run orchestration/promotion owner | `Pass` | `Pass` | None. |
+| `autobyteus-web/stores/agentSelectionStore.ts` | `65` | `Pass` | `21`, Pass | One discriminated selection plus guarded promotion concern | `Pass` | `Pass` | None. |
+| `autobyteus-web/components/workspace/config/RunConfigPanel.vue` | `373` | `Pass` | `22`, Pass | Desktop configuration rendering/preparation only | `Pass` | `Pass` | None. |
+| `autobyteus-web/composables/mobile/useMobileRunSetupController.ts` | `371` | `Pass` | `29`, Pass | Mobile setup/presentation state only | `Pass` | `Pass` | None. |
+| `autobyteus-web/composables/mobile/useMobileRunLaunchCoordinator.ts` | `217` | `Pass` | `1`, Pass | Mobile calls the canonical owner without duplicate cleanup | `Pass` | `Pass` | None. |
+| `autobyteus-web/components/mobile/MobileRunSetup.vue` | `163` | `Pass` | `2`, Pass | Mobile form presentation/inertness only | `Pass` | `Pass` | None. |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | `Pass` | Only the exact current generated GraphQL shape, with its expected optional Apollo discriminator, is admitted. |
-| No legacy old-behavior retention in changed scope | `Pass` | The false manual query-as-domain type is removed. |
-| Dead/obsolete code cleanup completeness in changed scope | `Pass` | No reference to `GetTeamCommunicationMessagesQueryData` remains. |
-| Approved persisted-data transition decision is followed without unnecessary migration work | `Pass` | Existing persisted communication rows are unchanged; this is a frontend transport projection correction. |
-| No version-specific dual reads/writes or request-time old-shape fallback exists | `Pass` | No route/path/name identity or legacy DTO branch exists. |
-| Approved transition mechanics match the reviewed design | `Pass` | Strict current transport validation projects to strict current domain identity. |
+| No backward-compatibility mechanisms in changed scope | `Pass` | No fallback, retry-as-policy, alternate selector, alias, relaxed parser, or compatibility branch. |
+| No legacy old-behavior retention in changed scope | `Pass` | Late draft mismatch and duplicate mobile cleanup are removed. |
+| Dead/obsolete code cleanup completeness in changed scope | `Pass` | Obsolete global flag and temporary reviewer/implementation probes are absent. |
+| Approved persisted-data transition decision is followed without unnecessary migration work | `Pass` | IR-038 changes only ephemeral frontend launch ownership. |
+| No version-specific dual reads/writes or request-time old-shape fallback exists | `Pass` | No persistence or wire-shape change. |
+| Approved transition mechanics match the reviewed design | `Pass` | Identity-free draft remains exact until one canonical server-ID promotion. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal
 
-None.
+None in IR-038 production source.
 
 ## Docs-Impact Verdict
 
-- Docs impact: `No`
-- Why: internal frontend hydration correction; no user-visible behavior, configuration, API, or operator workflow changes.
-- Files or areas likely affected: none beyond existing ticket/revision artifacts.
+- Docs impact: `Yes — retained cumulative ticket impact`
+- Why: maintained web documentation still describes removed temporary Team promotion behavior. IR-038 does not add a new user-facing contract, but documentation must describe the final canonical launch owner after integrated source is authoritative.
+- Files or areas likely affected: `autobyteus-web/docs/agent_teams.md`, `autobyteus-web/docs/agent_execution_architecture.md`, `autobyteus-web/docs/settings.md`; delivery remains the owner after source/API/integration gates.
 
 ## Material Premise Validation
 
@@ -116,43 +119,50 @@ None.
 
 No upstream premise is reclassified.
 
-### `CR-PREM-035` — supported paired-mobile Team restore reaches persisted communication hydration and reference presentation
+### `CR-PREM-036` — a desktop user can replace the selected Team draft while its real TeamRun allocation/hydration is pending
 
-- Origin: retained from `CRR-066`
-- Related approved requirement or established contract: `BEH-016`; `UC-021`; `R-038`; `R-039`; `R-043`
-- Relevant behavior ID(s): `BEH-016`, `UC-021`
+- Origin: retained from `CRR-070`
+- Related approved requirement or established contract: `BEH-016`; `R-039`; `AC-036`; `AC-042`; identity-free draft and success-only promotion contract
+- Relevant behavior ID(s): `BEH-016`
 - Initiating basis kind: `User`
-- Independent product-supported initiating trigger or applicable governing contract: a user pairs mobile, opens Work, selects an existing Team/focused member, and opens Activity/Team messages and a structured reference.
-- Support evidence: production mobile components and API-REV-030's exact real browser journey.
-- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: mobile selection -> Team open/hydration -> generated GraphQL response -> IR-037 exact projector -> canonical store/perspective -> mobile message/reference presentation.
-- Lifecycle preconditions and material consequence at the claimed point: exact root/focus and persisted communication/reference records exist. IR-037 now admits canonical projections instead of dropping expected Apollo metadata.
-- Reachability: `Reachable`
-- Review consequence / proportionate response: premise is satisfied in source. Fresh API/E2E remains required for live acceptance.
+- Independent product-supported initiating trigger or applicable governing contract: the desktop Team configuration surface permits Run and ordinary configuration edits.
+- Support evidence: CRR-070 established this path; IR-038 mounted-component evidence confirms the surface now becomes read-only while owner admission is pending.
+- Forward current production caller/event path: Run button -> pre-admission workspace preparation -> `launchDraft()` synchronously admits exact selected draft -> every draft/selection mutation boundary rejects -> server allocation/hydration -> synchronous registration/promotion/completion -> release.
+- Lifecycle preconditions and material consequence at the claimed point: an exact launch-ready selected draft and pending server request. The prior material consequence is eliminated: the admitted immutable object cannot be replaced and the late post-allocation mismatch branch no longer exists.
+- Reachability: `Reachable`, now satisfied by the implementation
+- Review consequence / proportionate response: `CR-F-040` is resolved in source. Downstream durable and real affected-surface validation remains required.
 
 ## Review Scorecard
 
 - Overall score (`/10`): `9.4`
-- Overall score (`/100`): `94.4`
-- Score calculation note: simple average of the ten category scores; pass still depends on findings and mandatory checks.
+- Overall score (`/100`): `93.9`
+- Score calculation note: simple average of the ten categories. Every category is at least the clean-pass target of `9.0`.
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | `9.5` | The real mobile-to-hydration-to-store-to-UI spine is explicit and the new boundary is single-purpose. | Broader ticket surface remains large. | Preserve this direct boundary during durable coverage maintenance. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | `9.5` | Hydration owns transport admission; store/domain parser stay transport-free. | None in IR-037. | Keep metadata validation out of store/UI. |
-| `3` | `API / Interface / Query / Command Clarity` | `9.4` | Generated query type replaces the false manual domain type; exact input/output subjects are named. | The local hydration-client interface is still a minimal Apollo abstraction rather than generated-client plumbing. | No change required now; avoid casts in future callers. |
-| `4` | `Separation of Concerns and File Placement` | `9.5` | Exact DTO mapping is isolated beside its owning hydration service. | Small local validation primitives resemble the adjacent task projector. | Keep them subject-specific unless a truly strict shared boundary emerges. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | `9.4` | Generated DTO and existing canonical domain models are reused without parallel identity. | Generated query type is large/external codegen output. | Continue deriving narrow aliases at the boundary. |
-| `6` | `Naming Quality and Local Readability` | `9.4` | Names state exact transport/domain responsibilities and validation labels are actionable. | Repeated key arrays add some local ceremony. | Preserve clarity over generic abstraction. |
-| `7` | `API/E2E Readiness` | `9.0` | Focused and retained tests plus production build pass; source fix directly covers the failure origin. | Frontend typecheck tooling does not reach project diagnostics; durable service-seam and live paired-mobile proof remain downstream. | API/E2E must add durable exact DTO coverage and rerun the real mobile journey. |
-| `8` | `Runtime Correctness And Behavioral Fidelity` | `9.4` | Independent service-seam proof passes exact persistent/task-Team references and all-or-nothing rejection. | No post-fix live browser result yet. | Confirm active/persisted mobile count/reference/open-close on a disposable target. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | `9.7` | No relaxed parser, fallback, alias, or generic metadata stripping; obsolete false type is deleted. | None. | Maintain the clean current-contract boundary. |
-| `10` | `Cleanup Completeness` | `9.6` | Obsolete type/import and temporary proof are removed; production commit is exactly three paths. | API/E2E dirty package remains intentionally pending. | Complete downstream coverage review only after overall Pass. |
+| `1` | `Data-Flow Spine Inventory and Clarity` | `9.5` | Launch now has explicit pre-await admission and one terminal commit/release sequence. | Downstream live evidence predates IR-038. | Re-execute affected launch spines. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | `9.4` | Draft, run, selection, and surface responsibilities are explicit and mutually guarded. | The coordination necessarily crosses three Pinia stores. | Keep the special lifecycle seams owner-only. |
+| `3` | `API / Interface / Query / Command Clarity` | `9.3` | Admission/pending/promotion/completion/release APIs have exact subjects and identity. | Durable fakes do not yet implement the new query seam. | Currentize tests, not production API. |
+| `4` | `Separation of Concerns and File Placement` | `9.2` | Policy is in stores; desktop/mobile retain presentation/preparation concerns. | RunConfigPanel and mobile controller remain moderately large. | Avoid adding unrelated policy to either file. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | `9.5` | One exact immutable draft reference is both state and admission token; no parallel identity/config. | None material. | Preserve the exact-reference invariant. |
+| `6` | `Naming Quality and Local Readability` | `9.4` | Names clearly distinguish preparation, owner pending state, promotion, completion, and release. | Cross-store terminal order still requires careful reading. | Keep ordering covered by owner-bound tests. |
+| `7` | `API/E2E Readiness` | `9.0` | Actual-owner/component probes and production build pass. | Pre-IR-038 durable fixtures fail at exactly two changed seams and live evidence is not post-fix. | Refresh coverage and run affected safe-target journeys. |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | `9.3` | Mutation/selection/duplicate guards and one success/failure lifecycle are independently verified. | No post-IR-038 real browser/provider result yet. | Validate desktop/mobile/first-send interleavings. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | `9.8` | Clean-cut constraints remain intact. | None. | Do not weaken admission for stale fixtures. |
+| `10` | `Cleanup Completeness` | `9.5` | Dormant flag, late mismatch, duplicate mobile cleanup, and temporary probes are removed. | Maintained docs remain delivery-pending. | Delivery currentizes docs after integration. |
 
 ## Findings
 
 No open implementation-source findings.
 
-`CR-F-039` / `API-F-022` is resolved in source. IR-037 validates the complete expected Apollo message/address/reference shape, explicitly reconstructs canonical addresses through the unchanged strict parser, projects the full collection before store admission, removes the false manual type, and adds no compatibility path. Reviewer proof passes `2/2`; retained communication/mobile coverage passes `9/9`; the production Nuxt build passes.
+`CR-F-040` is resolved in source. IR-038 admits the exact selected immutable draft before allocation, blocks every owner-governed mutation and duplicate launch, performs one success-only canonical promotion, preserves the exact draft on failure, removes the abandoned post-allocation mismatch and dormant flag, and makes desktop/mobile/first-send use the same owner.
+
+The reviewer current durable selection produced `66 passed / 13 failed` across seven files. The failures are bounded stale pre-IR-038 test seams, not product-source defects:
+
+1. `agentTeamRunStore.spec.ts` manually constructs an unregistered draft, which the new exact selected-snapshot contract correctly rejects before allocation.
+2. `RunConfigPanel.spec.ts` provides a fake Team-run store without `isDraftLaunchPending`, so render fails before testing current production behavior.
+
+These belong to API/E2E coverage investigation/currentization. They must not be fixed by weakening source admission or adding compatibility behavior.
 
 ## Classification
 
@@ -161,21 +171,21 @@ No open implementation-source findings.
 ## Recommended Recipient
 
 - `api_e2e_engineer`
-- Resume API-REV-030 from the preserved `91`-path package, add/currentize durable service-boundary coverage, rerun the exact checked-disposable paired-mobile active/persisted Team communication/reference journey, complete remaining matrix work, and return every durable change through proportional review only after overall Pass.
+- Refresh the coverage investigation for IR-038, currentize the exact stale launch fixtures, and execute affected desktop/mobile/first-send pending-edit/selection/duplicate/success/failure journeys on the checked safe target. Return any durable test add/update/remove package for proportional review before delivery.
 
 ## Residual Risks
 
-- IR-037 has source-level and build proof, not post-fix real browser acceptance.
-- `pnpm exec nuxi typecheck` remains blocked before project diagnostics by the downloaded vue-tsc/TypeScript export mismatch; the narrow standalone `tsc` attempt also lacks direct declarations for codegen-emitted Apollo imports. Neither is represented as a Pass.
-- API-REV-030's incomplete unreviewed `91`-path state (`2 added / 83 updated / 6 removed`) remains preserved.
-- Preserve the checked disposable-target controls, both historical operational-database incident disclosures, delivery stash/backup, and no-rollback state.
+- API-REV-031/API-REV-032 remain valid only for unaffected behavior; their 92-path durable package predates IR-038.
+- Frontend `nuxi typecheck` remains non-operational before project diagnostics because the downloaded `vue-tsc` imports a non-exported TypeScript subpath; no typecheck Pass is claimed. Nuxt production build and 15-route prerender pass.
+- The current result applies to pre-integration ticket source. Delivery's latest-base merge remains aborted after 21 conflicts and must not resume until source/API gates are complete.
+- Preserve both historical operational-database incident disclosures, the protected `60004/31004` constraint, delivery stashes/backup, and no-rollback state.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
 - Review Entry Point: `Implementation Review`
-- Material-Premise Gate: `Pass`
-- Score Summary: `9.4/10` (`94.4/100`); every category is at least `9.0`
-- Failure Origin: `N/A`; `CR-F-039` / `API-F-022` resolved in source
+- Material-Premise Gate: `Pass` (`CR-PREM-036` is reachable and satisfied)
+- Score Summary: `9.4/10` (`93.9/100`); every category is `>=9.0`
+- Failure Origin: `N/A`; `CR-F-040` resolved in source
 - Recommended Recipient: `api_e2e_engineer`
-- Notes: API/E2E resumes only from the preserved safe-target package; no live acceptance or proportional durable-test approval is inferred. Reviewer evidence hashes: source audit `edfc62a122d181250434095ece7a01947642fd179027396abb27f9c63a8f59f3`; hydration probe `4c1602f809143cdfecaf2dd538336902216f46935e9eb4920eff29d448d121cf`; retained tests `70d03e90ab1966aa772085d119d822cbcce71981f7a6dd0fecdbbadc75588496`; Nuxt build `f42b11ffe0046930b60af25ec1867b4e9e974a99fd9732ae7c4b5b9a6c4a531b`.
+- Notes: reviewer admission probe passes `2/2`; implementation actual-owner probe passes `2/2`; mounted desktop probe passes `17/17`; IR-038 focused/retained selections pass `49/49` and `30/30`; Nuxt production build passes. Reviewer evidence hashes: source audit `be4da1820cc207fc69d60671bca7887b77a1b34fbbf800f879a582cc1a47dabd`; admission probe `6b62b0ea985c7f5faf058e3a23c61ce6726328b68c40cc1cb48cd63fb342f517`; current durable selection `bb340ee04189386dde285d63fcf1e713981bc4f0d64205e9a60805ce95fb0176`; actual-owner probe `1e7e0f50c412cd9c92299866adad7104c8fbba1ffb50f1aee90fc93c2941f1be`; mounted probe `1ebdee90d6ed87ddff061b672a7df6ef9058908d18bd86653ea621d2df909432`; production build `d0b3831c6df5fd4ca446f33ff607013c92e26add84339f70a3ba5861bf0d2a2c`.

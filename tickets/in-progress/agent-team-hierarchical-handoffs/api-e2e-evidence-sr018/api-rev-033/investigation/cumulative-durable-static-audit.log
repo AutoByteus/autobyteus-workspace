@@ -1,0 +1,7 @@
+inventory_rows=92
+active_paths=86
+status_counts=A:3,M:83,D:6
+scope_counts=server:38,web:54
+missing_active_path_count=0
+missing_relative_import_count=0
+active_skip_only_todo_count=0

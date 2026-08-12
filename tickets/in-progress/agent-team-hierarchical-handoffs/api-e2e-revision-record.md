@@ -774,3 +774,18 @@ None. API-REV-016 had no unresolved failure. Its backend/runtime and three-provi
 - Prior result/confidence: `Pass / 98%` (`API-REV-031`).
 - Current result/confidence: **Pass / 98%**.
 - Recommended recipient: `code_reviewer` for proportional re-review of the corrected complete durable package before delivery.
+
+### API-REV-033 — IR-038 exact Team launch admission and canonical promotion
+
+- Triggering role/report/round: `code_reviewer`; canonical `code-review-report.md`; round 33 after `CRR-071 Pass / 93.9%`.
+- Triggering source/premise: `IR-038`; resolved source finding `CR-F-040`; reachable premise `CR-PREM-036`.
+- Related revision IDs: `SR-018`; `ARCH-REV-011`; `IR-038`; `CRR-071`.
+- Why recorded: API-REV-033 independently proves the changed synchronous Team-draft admission/terminal-owner lifecycle, currentizes the two named stale durable seams, and exercises real desktop, first-send, responsive mobile, allocation failure/retry, pending locking, duplicate rejection, one canonical promotion, and all three configured providers on a checked disposable target.
+- Durable paths changed this round: updated `autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts` and `autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts`; no added or removed path. The cumulative package remains exactly `92` paths (`3 added / 83 updated / 6 removed`; `38 server / 54 web`).
+- Repository results: currentized seams `30/30`; affected desktop/mobile/config selection `83/83`; current web `349/349`; Nuxt production build with fifteen prerendered routes; server `build:full` with production TypeScript and sanitized no-database bootstrap. `nuxi typecheck` remains the disclosed pre-diagnostic `vue-tsc`/TypeScript tooling failure and is not claimed as a Pass.
+- Safe environment: configuration-only preflight proved a new absent disposable database; ambient database selectors were excluded; migrations and actual interactive `pnpm secrets:import` targeted only the disposable vault; checked built-server startup and PID `lsof` proved the exact path. The operational database was not inspected or acted on.
+- Real browser/provider results: AutoByteus `gpt-5.6-luna` real first-send passes exact injected allocation failure preservation/unlock, all pending mutation/selection guards, duplicate-before-allocation, one retry promotion, exact output, and termination; Codex App Server `gpt-5.6-luna` medium desktop Run passes; Claude Agent SDK `sonnet` paired-mobile Run passes. Each row has a distinct canonical root and copied raw provider evidence.
+- Cleanup: owned ports closed; provider traces copied; disposable runtime/database/vault/key and temporary mobile credential removed; private source fixture byte-integrity passed. Protected `60004/31004`, delivery stash, and backup were untouched. Both historical database-incident disclosures remain preserved.
+- Prior result/confidence: `Pass / 98%` (`API-REV-032`; test-only correction retaining API-REV-031 real-system proof).
+- Current result/confidence: **Pass / 98%**.
+- Recommended recipient: `code_reviewer` for proportional review of the corrected/currentized complete `92`-path durable package before delivery.

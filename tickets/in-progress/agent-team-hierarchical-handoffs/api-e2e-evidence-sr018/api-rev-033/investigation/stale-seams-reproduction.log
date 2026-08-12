@@ -1,0 +1,246 @@
+
+> autobyteus@1.4.49 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run stores/__tests__/agentTeamRunStore.spec.ts components/workspace/config/__tests__/RunConfigPanel.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentTeamRunStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/agentTeamRunStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > does not mutate local lifecycle when backend termination rejects
+Error terminating Team 'team-terminate-reject': Error: not found
+    at Proxy.terminateTeamRun (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/stores/agentTeamRunStore.ts:127:58)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts:244:12
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+ ❯ stores/__tests__/agentTeamRunStore.spec.ts (10 tests | 1 failed) 19ms
+   ✓ agentTeamRunStore current rooted execution contract > connects the exact Team context to the bound Team WebSocket endpoint 4ms
+   ✓ agentTeamRunStore current rooted execution contract > reattaches an existing service to the latest context with the same root identity 1ms
+   ✓ agentTeamRunStore current rooted execution contract > terminates once, disconnects, and preserves an offline context for history restore 2ms
+   ✓ agentTeamRunStore current rooted execution contract > does not mutate local lifecycle when backend termination rejects 3ms
+   ✓ agentTeamRunStore current rooted execution contract > deduplicates concurrent Stop requests while the first mutation is pending 0ms
+   ✓ agentTeamRunStore current rooted execution contract > sends to the exact focused persistent execution and records the local submission 2ms
+   ✓ agentTeamRunStore current rooted execution contract > restores an inactive Team and sends to the unchanged exact execution address 1ms
+   × agentTeamRunStore current rooted execution contract > launches a nested mixed-runtime draft with exact rooted memberAddress inputs and focus 2ms
+     → Team launch draft 'team-draft-nested' is not the exact selected snapshot.
+   ✓ agentTeamRunStore current rooted execution contract > preserves an explicit approval target and never synthesizes a default target 1ms
+   ✓ agentTeamRunStore current rooted execution contract > interrupts only an exact same-root execution address 1ms
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > renders Agent Form when Agent Template set
+[Vue warn]: Unhandled error during execution of render function 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of component update 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > triggers team run on button click when launch readiness passes
+[Vue warn]: Unhandled error during execution of render function 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of component update 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > loads a pending New workspace path before creating a team run
+[Vue warn]: Unhandled error during execution of render function 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of component update 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ ❯ components/workspace/config/__tests__/RunConfigPanel.spec.ts (16 tests | 12 failed) 57ms
+   ✓ RunConfigPanel > renders placeholder when nothing selected 6ms
+   × RunConfigPanel > renders Agent Form when Agent Template set 7ms
+     → teamRunStore.isDraftLaunchPending is not a function
+   × RunConfigPanel > renders Team Form when Team Template set 6ms
+     → teamRunStore.isDraftLaunchPending is not a function
+   × RunConfigPanel > triggers team run on button click when launch readiness passes 2ms
+     → teamRunStore.isDraftLaunchPending is not a function
+   × RunConfigPanel > loads a pending New workspace path before creating an agent run 3ms
+     → teamRunStore.isDraftLaunchPending is not a function
+   × RunConfigPanel > blocks agent run creation when pending New workspace loading fails 3ms
+     → teamRunStore.isDraftLaunchPending is not a function
+   × RunConfigPanel > allows Run Agent with a non-empty pending New path even before it is preloaded 2ms
+     → teamRunStore.isDraftLaunchPending is not a function
+   × RunConfigPanel > loads a pending New workspace path before creating a team run 2ms
+     → teamRunStore.isDraftLaunchPending is not a function
+   × RunConfigPanel > disables team run and shows the blocking message when mixed-runtime readiness fails 3ms
+     → teamRunStore.isDraftLaunchPending is not a function
+   × RunConfigPanel > disables team run when workspace is missing 5ms
+     → teamRunStore.isDraftLaunchPending is not a function
+   × RunConfigPanel > disables agent run when workspace is missing 3ms
+     → teamRunStore.isDraftLaunchPending is not a function
+   × RunConfigPanel > keeps draft agent configuration editable for workspace selection events 2ms
+     → teamRunStore.isDraftLaunchPending is not a function
+   × RunConfigPanel > keeps draft team configuration editable for workspace selection events 4ms
+     → teamRunStore.isDraftLaunchPending is not a function
+   ✓ RunConfigPanel > returns to event view from selection-mode config header action 4ms
+   ✓ RunConfigPanel > passes read-only mode to selected existing run configuration and ignores workspace edit events 2ms
+   ✓ RunConfigPanel > passes read-only mode to selected existing team configuration and ignores workspace edit events 3ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 13 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > launches a nested mixed-runtime draft with exact rooted memberAddress inputs and focus
+Error: Team launch draft 'team-draft-nested' is not the exact selected snapshot.
+ ❯ Proxy.admitDraftLaunch stores/teamRunConfigStore.ts:280:15
+    278|       const selectedDraft = this.selectedDraft
+    279|       if (!selectedDraft || selectedDraft !== draft || this.selectedDr…
+    280|         throw new Error(`Team launch draft '${draft.draftId}' is not t…
+       |               ^
+    281|       }
+    282|       assertNoInFlightDraft(this.inFlightDrafts, 'start another launch…
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ Proxy.launchDraft stores/agentTeamRunStore.ts:230:14
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ stores/__tests__/agentTeamRunStore.spec.ts:391:49
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/13]⎯
+
+ FAIL  components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > renders Agent Form when Agent Template set
+ FAIL  components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > loads a pending New workspace path before creating an agent run
+ FAIL  components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > blocks agent run creation when pending New workspace loading fails
+ FAIL  components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > allows Run Agent with a non-empty pending New path even before it is preloaded
+ FAIL  components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > disables agent run when workspace is missing
+ FAIL  components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > keeps draft agent configuration editable for workspace selection events
+TypeError: teamRunStore.isDraftLaunchPending is not a function
+ ❯ ComputedRefImpl.fn components/workspace/config/RunConfigPanel.vue:114:57
+    112| const isRunPreparationPending = ref(false)
+    113| const isSelectionMode = computed(() => !!selectionStore.selectedRunId)
+    114| const isTeamLaunchPending = computed(() => teamRunStore.isDraftLaunchP…
+       |                                                         ^
+    115| 
+    116| const effectiveAgentConfig = computed((): AgentRunConfig | null => {
+ ❯ refreshComputed ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:397:28
+ ❯ ComputedRefImpl.get value [as value] ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1711:5
+ ❯ ComputedRefImpl.fn components/workspace/config/RunConfigPanel.vue:346:60
+ ❯ refreshComputed ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:397:28
+ ❯ ComputedRefImpl.get value [as value] ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1711:5
+ ❯ unref ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1536:45
+ ❯ Object.get ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1542:64
+ ❯ Proxy._sfc_render components/workspace/config/RunConfigPanel.vue:57:20
+ ❯ renderComponentRoot ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:4499:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/13]⎯
+
+ FAIL  components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > renders Team Form when Team Template set
+ FAIL  components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > triggers team run on button click when launch readiness passes
+ FAIL  components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > loads a pending New workspace path before creating a team run
+ FAIL  components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > disables team run and shows the blocking message when mixed-runtime readiness fails
+ FAIL  components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > disables team run when workspace is missing
+ FAIL  components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > keeps draft team configuration editable for workspace selection events
+TypeError: teamRunStore.isDraftLaunchPending is not a function
+ ❯ ComputedRefImpl.fn components/workspace/config/RunConfigPanel.vue:114:57
+    112| const isRunPreparationPending = ref(false)
+    113| const isSelectionMode = computed(() => !!selectionStore.selectedRunId)
+    114| const isTeamLaunchPending = computed(() => teamRunStore.isDraftLaunchP…
+       |                                                         ^
+    115| 
+    116| const effectiveAgentConfig = computed((): AgentRunConfig | null => {
+ ❯ refreshComputed ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:397:28
+ ❯ ComputedRefImpl.get value [as value] ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1711:5
+ ❯ unref ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1536:45
+ ❯ Object.get ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1542:64
+ ❯ Proxy._sfc_render components/workspace/config/RunConfigPanel.vue:45:67
+ ❯ renderComponentRoot ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:4499:16
+ ❯ ReactiveEffect.componentUpdateFn [as fn] ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:6007:46
+ ❯ ReactiveEffect.run ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:243:19
+ ❯ setupRenderEffect ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:6142:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/13]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 3 unhandled errors during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: teamRunStore.isDraftLaunchPending is not a function
+ ❯ ComputedRefImpl.fn components/workspace/config/RunConfigPanel.vue:114:57
+    112| const isRunPreparationPending = ref(false)
+    113| const isSelectionMode = computed(() => !!selectionStore.selectedRunId)
+    114| const isTeamLaunchPending = computed(() => teamRunStore.isDraftLaunchP…
+       |                                                         ^
+    115| 
+    116| const effectiveAgentConfig = computed((): AgentRunConfig | null => {
+ ❯ refreshComputed ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:397:28
+ ❯ ComputedRefImpl.get value [as value] ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1711:5
+ ❯ ComputedRefImpl.fn components/workspace/config/RunConfigPanel.vue:346:60
+ ❯ refreshComputed ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:397:28
+ ❯ ComputedRefImpl.get value [as value] ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1711:5
+ ❯ unref ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1536:45
+ ❯ Object.get ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1542:64
+ ❯ Proxy._sfc_render components/workspace/config/RunConfigPanel.vue:57:20
+ ❯ renderComponentRoot ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:4499:16
+
+This error originated in "components/workspace/config/__tests__/RunConfigPanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: teamRunStore.isDraftLaunchPending is not a function
+ ❯ ComputedRefImpl.fn components/workspace/config/RunConfigPanel.vue:114:57
+    112| const isRunPreparationPending = ref(false)
+    113| const isSelectionMode = computed(() => !!selectionStore.selectedRunId)
+    114| const isTeamLaunchPending = computed(() => teamRunStore.isDraftLaunchP…
+       |                                                         ^
+    115| 
+    116| const effectiveAgentConfig = computed((): AgentRunConfig | null => {
+ ❯ refreshComputed ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:397:28
+ ❯ ComputedRefImpl.get value [as value] ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1711:5
+ ❯ ComputedRefImpl.fn components/workspace/config/RunConfigPanel.vue:346:60
+ ❯ refreshComputed ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:397:28
+ ❯ ComputedRefImpl.get value [as value] ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1711:5
+ ❯ unref ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1536:45
+ ❯ Object.get ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1542:64
+ ❯ Proxy._sfc_render components/workspace/config/RunConfigPanel.vue:57:20
+ ❯ renderComponentRoot ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:4499:16
+
+This error originated in "components/workspace/config/__tests__/RunConfigPanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: teamRunStore.isDraftLaunchPending is not a function
+ ❯ ComputedRefImpl.fn components/workspace/config/RunConfigPanel.vue:114:57
+    112| const isRunPreparationPending = ref(false)
+    113| const isSelectionMode = computed(() => !!selectionStore.selectedRunId)
+    114| const isTeamLaunchPending = computed(() => teamRunStore.isDraftLaunchP…
+       |                                                         ^
+    115| 
+    116| const effectiveAgentConfig = computed((): AgentRunConfig | null => {
+ ❯ refreshComputed ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:397:28
+ ❯ ComputedRefImpl.get value [as value] ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1711:5
+ ❯ ComputedRefImpl.fn components/workspace/config/RunConfigPanel.vue:346:60
+ ❯ refreshComputed ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:397:28
+ ❯ ComputedRefImpl.get value [as value] ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1711:5
+ ❯ unref ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1536:45
+ ❯ Object.get ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1542:64
+ ❯ Proxy._sfc_render components/workspace/config/RunConfigPanel.vue:57:20
+ ❯ renderComponentRoot ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:4499:16
+
+This error originated in "components/workspace/config/__tests__/RunConfigPanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  2 failed (2)
+      Tests  13 failed | 13 passed (26)
+     Errors  3 errors
+   Start at  18:44:39
+   Duration  5.43s (transform 2.82s, setup 9.13s, collect 367ms, tests 75ms, environment 393ms, prepare 275ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

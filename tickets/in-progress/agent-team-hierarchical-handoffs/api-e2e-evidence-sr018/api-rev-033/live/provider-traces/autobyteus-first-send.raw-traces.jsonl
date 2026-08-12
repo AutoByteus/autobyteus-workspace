@@ -1,0 +1,2 @@
+{"id":"rt_1786555112069","ts":1786555112.069,"turn_id":"turn_0001","seq":1,"trace_type":"user","content":"**[User Requirement]**\nReply with exactly API33_AUTOBYTEUS_FIRST_SEND_OK and nothing else.","source_event":"LLMUserMessageReadyEvent","media":{"images":[],"audio":[],"video":[]}}
+{"id":"rt_1786555113690_3dedd717-fa47-4729-8155-46793e040ec2","ts":1786555113.69,"turn_id":"turn_0001","seq":2,"trace_type":"assistant","content":"API33_AUTOBYTEUS_FIRST_SEND_OK","source_event":"LlmPhase"}
