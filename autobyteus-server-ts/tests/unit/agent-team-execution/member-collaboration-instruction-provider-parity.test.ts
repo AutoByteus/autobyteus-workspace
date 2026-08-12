@@ -1,34 +1,23 @@
-import { describe, expect, it } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
-import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
-import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
-import { composeAutoByteusMemberSystemPrompt } from "../../../src/agent-execution/backends/autobyteus/autobyteus-member-system-prompt-composer.js";
-import { TeamMemberCodexThreadBootstrapStrategy } from "../../../src/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.js";
-import { buildClaudeTurnInput } from "../../../src/agent-execution/backends/claude/session/claude-turn-input-builder.js";
-import { buildConfiguredAgentToolExposure } from "../../../src/agent-execution/shared/configured-agent-tool-exposure.js";
+import { describe, expect, it, vi } from "vitest";
+import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
+import { composeCarpenterPrompt } from "../../../src/agent-execution/prompt/carpenter-prompt-composer.js";
+import { resolveRuntimeAgentToolExposure } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { renderMemberCollaborationInstruction } from "../../../src/agent-team-execution/services/member-collaboration-instruction-renderer.js";
-import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { testMemberTeamContext } from "../../fixtures/current-team-run-fixtures.js";
 
 const occurrences = (value: string, fragment: string): number =>
   value.split(fragment).length - 1;
 
-const buildCodexRunContext = (memberTeamContext: ReturnType<typeof testMemberTeamContext> | null) =>
-  new AgentRunContext({
-    runId: "run-student-one",
-    config: new AgentRunConfig({
-      agentDefinitionId: "agent-student-one",
-      llmModelIdentifier: "gpt-5.6-luna",
-      autoExecuteTools: false,
-      skillAccessMode: SkillAccessMode.NONE,
-      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-      memberTeamContext,
-    }),
-    runtimeContext: null,
-  });
+const agentDefinition = new AgentDefinition({
+  id: "agent-student-one",
+  name: "Student One",
+  description: "Complete the classroom exercise.",
+  instructions: "Work carefully with the other Team members.",
+  toolNames: [],
+});
 
 describe("member collaboration instruction provider parity", () => {
-  it("injects one exact rendered block with the caller address through all three provider seams", () => {
+  it("composes one exact provider-shared block and the three intrinsic Team tools", () => {
     const memberTeamContext = testMemberTeamContext({
       rootTeamRunId: "root-classroom-run",
       teamRunId: "study-group-task-run",
@@ -39,64 +28,43 @@ describe("member collaboration instruction provider parity", () => {
       agentRunId: "task-agent-student-one",
       taskTeamRunIds: ["study-group-task-run"],
       teamInstruction: "Teach and learn collaboratively.",
+      deliverInterAgentMessage: vi.fn(async () => undefined) as never,
     });
     const expected = renderMemberCollaborationInstruction({
       addressing: memberTeamContext.collaboration.addressing,
     });
 
-    const autobyteus = composeAutoByteusMemberSystemPrompt({
-      baseAgentInstruction: "Complete the classroom exercise.",
+    const providerSharedPrompt = composeCarpenterPrompt({
+      agentDefinition,
+      workspaceRootPath: "/tmp/classroom-workspace",
       memberTeamContext,
-      resolvedToolNames: [],
-    })!;
-    const codex = new TeamMemberCodexThreadBootstrapStrategy().prepare({
-      runContext: buildCodexRunContext(memberTeamContext),
-      agentInstruction: "Complete the classroom exercise.",
-      configuredToolExposure: buildConfiguredAgentToolExposure([]),
-    }).developerInstructions!;
-    const claude = buildClaudeTurnInput({
-      runContext: {
-        runtimeContext: {
-          memberTeamContext,
-          agentInstruction: "Complete the classroom exercise.",
-        },
-      } as never,
-      content: "Begin now.",
-      sendMessageToEnabled: true,
     });
+    const runtimeExposure = resolveRuntimeAgentToolExposure(
+      agentDefinition,
+      memberTeamContext,
+    );
 
-    expect(autobyteus).toContain(`## Runtime Instruction\n${expected}`);
-    expect(codex).toBe(expected);
-    expect(claude).toContain(`<runtime_instruction>\n${expected}\n</runtime_instruction>`);
-    for (const rendered of [autobyteus, codex, claude]) {
-      expect(occurrences(rendered, expected)).toBe(1);
-      expect(rendered).not.toContain("recipient_name");
-      expect(rendered).not.toContain("memberPath");
-      expect(rendered).not.toContain("Team membership roster");
-    }
+    expect(providerSharedPrompt).toContain(`## Team Runtime\n\n${expected}`);
+    expect(occurrences(providerSharedPrompt, expected)).toBe(1);
+    expect(providerSharedPrompt).not.toContain("recipient_name");
+    expect(providerSharedPrompt).not.toContain("memberPath");
+    expect(providerSharedPrompt).not.toContain("Team membership roster");
+    expect(runtimeExposure.requestedToolNames).toEqual([
+      "get_handoff_rules",
+      "send_message_to",
+      "delegate_task",
+    ]);
   });
 
-  it("does not inject the Team collaboration block into standalone provider inputs", () => {
+  it("does not inject the Team collaboration block or intrinsic tools for standalone Agents", () => {
     const distinctiveOpening = "You are working as a member of an AgentTeam.";
-    const autobyteus = composeAutoByteusMemberSystemPrompt({
-      baseAgentInstruction: "Standalone AutoByteus instruction.",
+    const providerSharedPrompt = composeCarpenterPrompt({
+      agentDefinition,
+      workspaceRootPath: "/tmp/standalone-workspace",
       memberTeamContext: null,
-      resolvedToolNames: [],
-    })!;
-    const codexStrategy = new TeamMemberCodexThreadBootstrapStrategy();
-    const claude = buildClaudeTurnInput({
-      runContext: {
-        runtimeContext: {
-          memberTeamContext: null,
-          agentInstruction: "Standalone Claude instruction.",
-        },
-      } as never,
-      content: "Begin now.",
-      sendMessageToEnabled: false,
     });
 
-    expect(autobyteus).not.toContain(distinctiveOpening);
-    expect(codexStrategy.appliesTo(buildCodexRunContext(null))).toBe(false);
-    expect(claude).not.toContain(distinctiveOpening);
+    expect(providerSharedPrompt).not.toContain(distinctiveOpening);
+    expect(resolveRuntimeAgentToolExposure(agentDefinition, null).requestedToolNames).toEqual([]);
   });
 });

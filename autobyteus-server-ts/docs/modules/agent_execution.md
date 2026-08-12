@@ -20,6 +20,35 @@ Manages runtime agent runs and message execution flow.
 
 Runtime managers compose definitions, prompts, tools, processors, and workspace context.
 
+## Carpenter Runtime Instructions
+
+Before creating any native AutoByteus, Codex, or Claude backend, the runtime
+resolves the selected agent definition and exact absolute effective workspace,
+then calls the shared `composeCarpenterPrompt(...)` boundary. A team run also
+supplies its validated `MemberTeamContext` so the same composition includes the
+exact selected team instruction, current member identity, communication roster,
+and delegation target roster.
+
+The stable semantic order is Agent Identity, optional Team Instruction and Team
+Runtime, Working Environment, Bash Operating Practice, File And Directory
+Practice, and optional configured Skills. Native AutoByteus places the Carpenter
+text in `AgentConfig.systemPrompt` and the core appends its one terminal Skills
+catalog. Codex passes the Carpenter text as thread `baseInstructions`; Claude
+passes it as SDK query `options.systemPrompt`. Codex/Claude configured skills use
+their provider-specific discovery/materialization paths rather than an eager
+prompt body.
+
+The composer fails before provider invocation when a required name/workspace,
+team member/delivery binding, or dynamic value is invalid. It also contains
+authored `agent.md` and `team.md` headings beneath their owning section and
+rejects unresolved Carpenter placeholders. Stable Claude instructions are not
+rebuilt in user turns.
+
+See
+[Prompt Engineering And Runtime Instruction Composition](./prompt_engineering.md)
+for the authoring contract and concrete foundation, Bash, skill, and tool
+examples.
+
 Configured agent skills are resolved before runtime-specific bootstrap through
 `SkillService.resolveConfiguredSkillsForAgent(agentDefinition)`. Native
 AutoByteus, Codex, Claude, and team-member launch paths should consume that
@@ -302,12 +331,15 @@ and working-context tool error, never fabricated success. If repair/persistence
 itself fails, the turn remains terminally errored. This recovery rule does not
 add a universal timeout to unrelated native tools.
 
-Claude Agent SDK and Codex App Server expose in-scope configured backend agent
+Claude Agent SDK and Codex App Server expose in-scope effective backend agent
 tools through the unified Agent Tools MCP route, not through runtime-owned
 duplicated tool projections. The enabled set includes selected server-owned
-tool families and selected configured MCP-origin registry tools. When at least
-one configured and available tool is enabled, the runtime materializer creates a
-live `autobyteus_agent_tools` descriptor:
+tool families and selected configured MCP-origin registry tools. A valid team
+context automatically unions `send_message_to` and `delegate_task` into that
+effective set even when the agent definition omitted both; configured duplicate
+names are deduplicated. Other tools remain explicitly configured and
+availability-gated. When at least one effective and available tool is enabled,
+the runtime materializer creates a live `autobyteus_agent_tools` descriptor:
 
 - Codex passes it only as thread-scoped
   `config.mcp_servers.autobyteus_agent_tools` to `thread/start` /

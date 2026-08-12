@@ -2,6 +2,7 @@ import type { BaseTool } from "autobyteus-ts/tools/base-tool.js";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
 import type { AgentDefinition } from "../../../agent-definition/domain/models.js";
 import type { MemberTeamContext } from "../../../agent-team-execution/domain/member-team-context.js";
+import type { RuntimeAgentToolExposure } from "../../shared/runtime-agent-tool-exposure.js";
 import { ensureAutoByteusSendMessageToToolRegistered } from "../../../agent-tools/agent-communication/send-message-to.js";
 import { ensureAutoByteusGetHandoffRulesToolRegistered } from "../../../agent-tools/agent-communication/get-handoff-rules.js";
 import { buildAgentRunMessageSenderContext } from "../../../agent-communication/domain/agent-run-message-sender.js";
@@ -12,6 +13,8 @@ import {
   isGetHandoffRulesToolName,
   createAutoByteusGetHandoffRulesToolForSender,
 } from "./agent-communication/autobyteus-send-message-tool-factory.js";
+import { DELEGATE_TASK_TOOL_NAME } from "../../../agent-tools/task-delegation/task-delegation-tool-contract.js";
+import { registerDelegateTaskTool } from "../../../agent-tools/task-delegation/delegate-task.js";
 
 type ToolResolutionLogger = {
   warn: (...args: unknown[]) => void;
@@ -30,6 +33,7 @@ const defaultLogger: ToolResolutionLogger = {
 
 export const resolveAutoByteusAgentTools = (input: {
   agentDefinition: AgentDefinition;
+  runtimeToolExposure: RuntimeAgentToolExposure;
   senderRunId?: string | null;
   senderName?: string | null;
   runtimeKind?: string | null;
@@ -39,7 +43,7 @@ export const resolveAutoByteusAgentTools = (input: {
   const { agentDefinition, memberTeamContext = null } = input;
   const logger = input.logger ?? defaultLogger;
   const resolvedToolNames = resolveAutoByteusStandaloneToolNames({
-    toolNames: agentDefinition.toolNames,
+    toolNames: input.runtimeToolExposure.requestedToolNames,
     memberTeamContext,
   });
   const tools: BaseTool[] = [];
@@ -72,6 +76,10 @@ export const resolveAutoByteusAgentTools = (input: {
         );
       }
       continue;
+    }
+
+    if (name === DELEGATE_TASK_TOOL_NAME && !defaultToolRegistry.getToolDefinition(name)) {
+      registerDelegateTaskTool();
     }
 
     if (!defaultToolRegistry.getToolDefinition(name)) {

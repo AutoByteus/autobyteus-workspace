@@ -140,7 +140,6 @@ runIntegration('Agent single-flow integration (LM Studio)', () => {
       null,
       null,
       null,
-      null,
       workspace
     );
 

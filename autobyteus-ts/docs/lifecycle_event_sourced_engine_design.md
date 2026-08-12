@@ -230,12 +230,15 @@ until `AGENT_READY` to avoid handling user/tool events before the system is full
 Processors remain as **internal, ordered pipelines** owned by handlers:
 
 - Input processors
-- System prompt processors (bootstrap only)
 - LLM response processors
 - Tool invocation preprocessors
 - Tool execution result processors
 
 **Key rule:** processors do not define lifecycle. They _customize_ how handlers respond to events.
+
+Native system-instruction completion is separate: bootstrap directly appends
+the configured Skills catalog, validates the complete instruction, and
+configures the LLM without a configurable processor pipeline.
 
 ---
 

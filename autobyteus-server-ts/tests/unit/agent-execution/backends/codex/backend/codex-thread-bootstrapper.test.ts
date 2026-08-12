@@ -3,7 +3,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRunConfig } from "../../../../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../../../../src/agent-execution/domain/agent-run-context.js";
-import { DefaultCodexThreadBootstrapStrategy } from "../../../../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrap-strategy.js";
 import {
   CodexThreadBootstrapper,
   normalizeSandboxMode,
@@ -17,16 +16,15 @@ import {
 } from "../../../../../../src/agent-tools/browser/browser-tool-contract.js";
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
 import { MemberTeamContext } from "../../../../../../src/agent-team-execution/domain/member-team-context.js";
-import { TeamBackendKind } from "../../../../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { Skill } from "../../../../../../src/skills/domain/models.js";
 import type { CodexWorkspaceSkillMaterializer } from "../../../../../../src/agent-execution/backends/codex/codex-workspace-skill-materializer.js";
 import type { CodexWorkspaceResolver } from "../../../../../../src/agent-execution/backends/codex/codex-workspace-resolver.js";
 import type { AgentDefinitionService } from "../../../../../../src/agent-definition/services/agent-definition-service.js";
 import type { SkillService } from "../../../../../../src/skills/services/skill-service.js";
-import type { CodexThreadBootstrapStrategy } from "../../../../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrap-strategy.js";
 import type { CodexAppServerClientManager } from "../../../../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
 import type { AgentToolMcpSessionService } from "../../../../../../src/agent-tools/mcp/agent-tool-mcp-session-service.js";
 import type { AgentToolMcpDescriptor } from "../../../../../../src/agent-tools/mcp/agent-tool-mcp-session.js";
+import { testMemberTeamContext } from "../../../../../fixtures/current-team-run-fixtures.js";
 
 const WORKING_DIRECTORY = "/tmp/codex-workspace";
 
@@ -84,28 +82,15 @@ const createRestoreRunContext = (input: {
   });
 
 const createMemberTeamContext = () =>
-  new MemberTeamContext({
+  testMemberTeamContext({
     teamRunId: "team-1",
+    rootTeamRunId: "team-1",
     teamDefinitionId: "team-def-1",
-    teamName: "Codex team",
-    teamBackendKind: TeamBackendKind.MIXED,
-    teamAddress: "/",
     memberAddress: "/ping",
+    coordinatorAddress: "/ping",
     agentRunId: "ping-run-1",
     runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-    coordinatorAddress: "/ping",
-    collaboration: {
-      addressing: {
-        rootTeamRunId: "team-1",
-        memberAddress: "/ping",
-      },
-    },
-    executionAddress: {
-      rootTeamRunId: "team-1",
-      taskTeamRunIds: [],
-      memberAddress: "/ping",
-      taskAgentRunId: null,
-    },
+    deliverInterAgentMessage: vi.fn(async () => undefined) as any,
   });
 
 const createSkill = (name: string) =>
@@ -162,8 +147,9 @@ const createBootstrapper = (input: {
     getAgentDefinitionById: vi.fn(async () => ({
       skillNames: input.skills.map((skill) => skill.name),
       toolNames: input.toolNames ?? [],
-      instructions: null,
-      description: null,
+      name: "Codex test agent",
+      instructions: "Run the test.",
+      description: "Test agent",
     })),
   } as unknown as AgentDefinitionService;
   const skillService = {
@@ -185,19 +171,11 @@ const createBootstrapper = (input: {
       redactedDescriptor: null,
     })),
   } as unknown as AgentToolMcpSessionService;
-  const teamStrategy = {
-    appliesTo: () => false,
-    prepare: async () => {
-      throw new Error("team strategy should not be used in this test");
-    },
-  } as CodexThreadBootstrapStrategy;
   const bootstrapper = new CodexThreadBootstrapper(
     workspaceSkillMaterializer,
     workspaceResolver,
     agentDefinitionService,
     skillService,
-    new DefaultCodexThreadBootstrapStrategy(),
-    teamStrategy,
     clientManager,
     agentToolMcpSessionService,
   );

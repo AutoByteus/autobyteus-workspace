@@ -13,7 +13,6 @@ const AgentDefinitionMutationFields = gql`
     toolNames
     inputProcessorNames
     llmResponseProcessorNames
-    systemPromptProcessorNames
     toolExecutionResultProcessorNames
     toolInvocationPreprocessorNames
     lifecycleProcessorNames

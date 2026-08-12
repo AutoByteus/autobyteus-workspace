@@ -93,6 +93,11 @@ name: test_skill
     expect(() => loader.loadSkill(skillDir)).toThrowError(/'name' and 'description'/);
   });
 
+  it("throws when required skill metadata is blank", () => {
+    const skillDir = writeSkillMd(`---\nname:   \ndescription:   \n---\n\nBody`);
+    expect(() => loader.loadSkill(skillDir)).toThrowError(/must be non-blank/);
+  });
+
   it("counts additional files", () => {
     const content = `---
 name: multi_file_skill

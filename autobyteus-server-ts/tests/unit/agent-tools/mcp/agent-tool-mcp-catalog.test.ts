@@ -3,7 +3,7 @@ import { ToolDefinition } from "autobyteus-ts/tools/registry/tool-definition.js"
 import { ToolOrigin } from "autobyteus-ts/tools/tool-origin.js";
 import { BaseTool } from "autobyteus-ts/tools/base-tool.js";
 import { ParameterSchema } from "autobyteus-ts/utils/parameter-schema.js";
-import { buildConfiguredAgentToolExposure } from "../../../../src/agent-execution/shared/configured-agent-tool-exposure.js";
+import { buildRuntimeAgentToolExposure } from "../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { buildAgentRunMessageSenderContext } from "../../../../src/agent-communication/domain/agent-run-message-sender.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentToolMcpCatalog } from "../../../../src/agent-tools/mcp/agent-tool-mcp-catalog.js";
@@ -52,7 +52,7 @@ const createCatalog = (browserSupported: boolean): AgentToolMcpCatalog =>
 
 describe("AgentToolMcpCatalog", () => {
   it("resolves configured supported tools across families with browser and team availability gates", () => {
-    const exposure = buildConfiguredAgentToolExposure([
+    const exposure = buildRuntimeAgentToolExposure([
       "send_message_to",
       "open_tab",
       "generate_image",
@@ -62,13 +62,13 @@ describe("AgentToolMcpCatalog", () => {
     ]);
 
     expect(createCatalog(false).resolveConfiguredSupportedToolNames({
-      configuredExposure: exposure,
+      runtimeExposure: exposure,
       sender,
       executionContext: { workingDirectory: "/tmp/workspace" },
     })).toEqual(["send_message_to", "generate_image", "publish_artifacts"]);
 
     expect(createCatalog(true).resolveConfiguredSupportedToolNames({
-      configuredExposure: exposure,
+      runtimeExposure: exposure,
       sender: memberSender,
       executionContext: { workingDirectory: "/tmp/workspace" },
     })).toEqual([
@@ -152,7 +152,7 @@ const buildSession = (input: {
   owner: input.owner ?? { runId: "run" },
   sender,
   runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-  configuredExposure: buildConfiguredAgentToolExposure(input.enabledTools),
+  runtimeExposure: buildRuntimeAgentToolExposure(input.enabledTools),
   executionContext: {},
   enabledTools: input.enabledTools,
   toolRoutes: input.toolRoutes,
@@ -171,7 +171,7 @@ describe("AgentToolMcpCatalog configured MCP bridge", () => {
       registry: registry as any,
     });
 
-    const exposure = catalog.resolveConfiguredSessionToolExposure(buildConfiguredAgentToolExposure([
+    const exposure = catalog.resolveRuntimeSessionToolExposure(buildRuntimeAgentToolExposure([
       "db_query",
     ]));
 
@@ -207,7 +207,7 @@ describe("AgentToolMcpCatalog configured MCP bridge", () => {
       registry: registry as any,
     });
 
-    const exposure = catalog.resolveConfiguredSessionToolExposure(buildConfiguredAgentToolExposure([
+    const exposure = catalog.resolveRuntimeSessionToolExposure(buildRuntimeAgentToolExposure([
       "send_message_to",
     ]));
 
@@ -233,8 +233,8 @@ describe("AgentToolMcpCatalog configured MCP bridge", () => {
       registry: registry as any,
     });
 
-    const exposure = catalog.resolveConfiguredSessionToolExposure(
-      buildConfiguredAgentToolExposure(["open_tab"]),
+    const exposure = catalog.resolveRuntimeSessionToolExposure(
+      buildRuntimeAgentToolExposure(["open_tab"]),
     );
 
     expect(exposure.enabledTools).toEqual(["open_tab"]);
@@ -280,8 +280,8 @@ describe("AgentToolMcpCatalog configured MCP bridge", () => {
       registry: registry as any,
     });
 
-    const exposure = catalog.resolveConfiguredSessionToolExposure(
-      buildConfiguredAgentToolExposure(["open_tab"]),
+    const exposure = catalog.resolveRuntimeSessionToolExposure(
+      buildRuntimeAgentToolExposure(["open_tab"]),
     );
     const session = buildSession({
       enabledTools: exposure.enabledTools,
@@ -313,8 +313,8 @@ describe("AgentToolMcpCatalog configured MCP bridge", () => {
       registry: new FakeToolRegistry() as any,
     });
 
-    const exposure = catalog.resolveConfiguredSessionToolExposure(
-      buildConfiguredAgentToolExposure(["open_tab"]),
+    const exposure = catalog.resolveRuntimeSessionToolExposure(
+      buildRuntimeAgentToolExposure(["open_tab"]),
     );
 
     expect(exposure.enabledTools).toEqual(["open_tab"]);
@@ -331,8 +331,8 @@ describe("AgentToolMcpCatalog configured MCP bridge", () => {
       structuredContent: { count: 1 },
     }));
     const catalog = new AgentToolMcpCatalog({ adapters: [], registry: registry as any });
-    const exposure = catalog.resolveConfiguredSessionToolExposure(
-      buildConfiguredAgentToolExposure(["db_query"]),
+    const exposure = catalog.resolveRuntimeSessionToolExposure(
+      buildRuntimeAgentToolExposure(["db_query"]),
     );
     const session = buildSession({
       enabledTools: exposure.enabledTools,
@@ -360,7 +360,7 @@ describe("AgentToolMcpCatalog configured MCP bridge", () => {
     const registry = new FakeToolRegistry();
     registry.register(buildMcpDefinition("db_query", "sqlite"));
     const catalog = new AgentToolMcpCatalog({ adapters: [], registry: registry as any });
-    const exposure = catalog.resolveConfiguredSessionToolExposure(buildConfiguredAgentToolExposure(["db_query"]));
+    const exposure = catalog.resolveRuntimeSessionToolExposure(buildRuntimeAgentToolExposure(["db_query"]));
     registry.register(buildMcpDefinition("db_query", "different-server"));
 
     expect(catalog.resolveToolCallAvailability(buildSession({

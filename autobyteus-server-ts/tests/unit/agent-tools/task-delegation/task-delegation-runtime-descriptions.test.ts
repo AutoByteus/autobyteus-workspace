@@ -120,12 +120,12 @@ describe("task delegation runtime descriptions", () => {
     expect(JSON.stringify(adapters.map((adapter) => adapter.definition))).not.toContain(["accept", "task"].join("_"));
     expect(adapters[1]?.definition.description).toContain("bound to the current task-agent or task-team ingress context");
     expect(adapters.every((adapter) => !adapter.isAvailable({
-      configuredExposure: { configuredToolNames: TASK_DELEGATION_TOOL_NAME_LIST } as never,
+      runtimeExposure: { requestedToolNames: TASK_DELEGATION_TOOL_NAME_LIST } as never,
       sender: null,
       executionContext: {},
     }))).toBe(true);
     expect(adapters.every((adapter) => adapter.isAvailable({
-      configuredExposure: { configuredToolNames: TASK_DELEGATION_TOOL_NAME_LIST } as never,
+      runtimeExposure: { requestedToolNames: TASK_DELEGATION_TOOL_NAME_LIST } as never,
       sender: {
         senderRunId: memberTeamContext.agentRunId,
         memberTeamContext,

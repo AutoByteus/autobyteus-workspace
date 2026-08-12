@@ -388,7 +388,6 @@ describe('provider-native tool continuation integration flow', () => {
           true,
           [new MemoryIngestInputProcessor()],
           null,
-          [],
           []
         );
         const context = new AgentContext(runtimeState.agentId, config, runtimeState);

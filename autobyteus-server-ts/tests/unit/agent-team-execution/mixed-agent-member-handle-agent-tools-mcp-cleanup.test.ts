@@ -1,10 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { MixedAgentMemberHandle } from "../../../src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.js";
 import { MixedAgentMemberContext, MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
-import { TeamRunConfig, type TeamMemberRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
+import type { TeamRunAgentNode } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
+import { createTeamExecutionAddress } from "../../../src/agent-team-execution/domain/team-execution-address.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import {
   getAgentToolMcpSessionRegistry,
@@ -14,49 +14,43 @@ import {
   resetAgentToolMcpSessionServiceForTests,
 } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-service.js";
 import { buildAgentRunMessageSenderContext } from "../../../src/agent-communication/domain/agent-run-message-sender.js";
-import { buildConfiguredAgentToolExposure } from "../../../src/agent-execution/shared/configured-agent-tool-exposure.js";
+import { buildRuntimeAgentToolExposure } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
+import { testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
 
-const buildTeamContext = (memberConfig: TeamMemberRunConfig) => {
+const buildTeamContext = (memberConfig: TeamRunAgentNode) => {
   const memberContext = new MixedAgentMemberContext({
-    memberName: memberConfig.memberName,
-    memberPath: memberConfig.memberPath,
-    memberRouteKey: memberConfig.memberRouteKey,
-    memberRunId: memberConfig.memberRunId!,
+    address: memberConfig.address,
+    agentRunId: memberConfig.agentRunId,
     runtimeKind: memberConfig.runtimeKind,
     platformAgentRunId: null,
+  });
+  const config = testTeamRunConfig({
+    rootTeamRunId: "team-run-1",
+    coordinatorAddress: memberConfig.address,
+    children: [memberConfig],
   });
   return {
     memberContext,
     teamContext: new TeamRunContext({
-      runId: "team-run-1",
+      teamRunId: "team-run-1",
+      teamAddress: "/",
       teamBackendKind: TeamBackendKind.MIXED,
-      coordinatorMemberName: memberConfig.memberName,
-      coordinatorMemberRouteKey: memberConfig.memberRouteKey,
-      config: new TeamRunConfig({
-        teamDefinitionId: "team-def-1",
-        teamBackendKind: TeamBackendKind.MIXED,
-        memberConfigs: [memberConfig],
-      }),
+      config,
       runtimeContext: new MixedTeamRunContext({
-        coordinatorMemberRouteKey: memberConfig.memberRouteKey,
         memberContexts: [memberContext],
+        teamExecutionAddress: createTeamExecutionAddress({
+          rootTeamRunId: "team-run-1",
+          taskTeamRunIds: [],
+          memberAddress: memberConfig.address,
+        }),
       }),
     }),
   };
 };
 
-const buildMemberConfig = (): TeamMemberRunConfig => ({
-  memberKind: "agent",
-  memberName: "worker",
-  memberPath: ["worker"],
-  memberRouteKey: "worker",
-  memberRunId: "worker-run-1",
-  agentDefinitionId: "agent-worker",
-  llmModelIdentifier: "model-1",
-  autoExecuteTools: false,
-  skillAccessMode: SkillAccessMode.NONE,
+const buildMemberConfig = (): TeamRunAgentNode => testAgentNode("/worker", {
+  agentRunId: "worker-run-1",
   runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-  memoryDir: "/tmp/worker-memory",
 });
 
 describe("MixedAgentMemberHandle Agent Tools MCP cleanup", () => {
@@ -79,33 +73,40 @@ describe("MixedAgentMemberHandle Agent Tools MCP cleanup", () => {
       senderName: "worker",
       runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
     });
+    const workerExecutionAddress = createTeamExecutionAddress({
+      rootTeamRunId: "team-run-1",
+      taskTeamRunIds: [],
+      memberAddress: "/worker",
+    });
     const matching = registry.createSession({
       owner: {
         runId: "worker-run-1",
-        teamRunId: "team-run-1",
-        memberRunId: "worker-run-1",
-        memberRouteKey: "worker",
-        memberName: "worker",
+        executionAddress: workerExecutionAddress,
+        agentRunId: "worker-run-1",
+        displayName: "worker",
       },
       sender,
-      configuredExposure: buildConfiguredAgentToolExposure([]),
+      runtimeExposure: buildRuntimeAgentToolExposure([]),
       enabledTools: [],
       toolRoutes: {},
     });
     const otherMember = registry.createSession({
       owner: {
         runId: "other-run-1",
-        teamRunId: "team-run-1",
-        memberRunId: "other-run-1",
-        memberRouteKey: "other",
-        memberName: "other",
+        executionAddress: createTeamExecutionAddress({
+          rootTeamRunId: "team-run-1",
+          taskTeamRunIds: [],
+          memberAddress: "/other",
+        }),
+        agentRunId: "other-run-1",
+        displayName: "other",
       },
       sender: buildAgentRunMessageSenderContext({
         senderRunId: "other-run-1",
         senderName: "other",
         runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
       }),
-      configuredExposure: buildConfiguredAgentToolExposure([]),
+      runtimeExposure: buildRuntimeAgentToolExposure([]),
       enabledTools: [],
       toolRoutes: {},
     });
@@ -115,7 +116,6 @@ describe("MixedAgentMemberHandle Agent Tools MCP cleanup", () => {
       config,
       agentRunManager: { createAgentRun: vi.fn() } as never,
       publish: vi.fn(),
-      notifyStatusChange: vi.fn(),
       deliverInterAgentMessage: vi.fn(),
     });
 

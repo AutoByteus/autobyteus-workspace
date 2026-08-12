@@ -7,7 +7,7 @@ import { ClaudeAgentRunContext } from "../../../../../../src/agent-execution/bac
 import { ClaudeSessionEventName } from "../../../../../../src/agent-execution/backends/claude/events/claude-session-event-name.js";
 import { buildClaudeSessionConfig } from "../../../../../../src/agent-execution/backends/claude/session/claude-session-config.js";
 import { ClaudeSessionManager } from "../../../../../../src/agent-execution/backends/claude/session/claude-session-manager.js";
-import { buildConfiguredAgentToolExposure } from "../../../../../../src/agent-execution/shared/configured-agent-tool-exposure.js";
+import { buildRuntimeAgentToolExposure } from "../../../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
 import type { ClaudeSdkQueryLike } from "../../../../../../src/runtime-management/claude/client/claude-sdk-client.js";
 
@@ -51,12 +51,13 @@ const createRunContext = (input: { runId: string; sessionId?: string }) =>
       runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
     }),
     runtimeContext: new ClaudeAgentRunContext({
+      carpenterSystemPrompt: "## Agent Identity\n\n- Name: Test agent",
       sessionConfig: buildClaudeSessionConfig({
         model: "haiku",
         workingDirectory: "/tmp",
         permissionMode: "default",
       }),
-      configuredToolExposure: buildConfiguredAgentToolExposure([]),
+      runtimeToolExposure: buildRuntimeAgentToolExposure([]),
       sessionId: input.sessionId,
     }),
   });

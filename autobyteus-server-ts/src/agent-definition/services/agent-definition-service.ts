@@ -1,7 +1,6 @@
 import {
   defaultInputProcessorRegistry,
   defaultLlmResponseProcessorRegistry,
-  defaultSystemPromptProcessorRegistry,
   defaultToolExecutionResultProcessorRegistry,
   defaultToolInvocationPreprocessorRegistry,
   defaultLifecycleEventProcessorRegistry,
@@ -29,7 +28,6 @@ type ProcessorRegistry = {
 type ProcessorRegistries = {
   input: ProcessorRegistry;
   llmResponse: ProcessorRegistry;
-  systemPrompt: ProcessorRegistry;
   toolExecutionResult: ProcessorRegistry;
   toolInvocationPreprocessor: ProcessorRegistry;
   lifecycle: ProcessorRegistry;
@@ -66,7 +64,6 @@ export type AgentDefinitionCreateInput = {
   toolNames?: string[];
   inputProcessorNames?: string[];
   llmResponseProcessorNames?: string[];
-  systemPromptProcessorNames?: string[];
   toolExecutionResultProcessorNames?: string[];
   toolInvocationPreprocessorNames?: string[];
   lifecycleProcessorNames?: string[];
@@ -104,7 +101,6 @@ export class AgentDefinitionService {
     this.registries = {
       input: options.registries?.input ?? defaultInputProcessorRegistry,
       llmResponse: options.registries?.llmResponse ?? defaultLlmResponseProcessorRegistry,
-      systemPrompt: options.registries?.systemPrompt ?? defaultSystemPromptProcessorRegistry,
       toolExecutionResult:
         options.registries?.toolExecutionResult ?? defaultToolExecutionResultProcessorRegistry,
       toolInvocationPreprocessor:
@@ -125,10 +121,6 @@ export class AgentDefinitionService {
     definition.llmResponseProcessorNames = filterOptionalProcessorNames(
       definition.llmResponseProcessorNames,
       this.registries.llmResponse,
-    );
-    definition.systemPromptProcessorNames = filterOptionalProcessorNames(
-      definition.systemPromptProcessorNames,
-      this.registries.systemPrompt,
     );
     definition.toolExecutionResultProcessorNames = filterOptionalProcessorNames(
       definition.toolExecutionResultProcessorNames,
@@ -165,10 +157,6 @@ export class AgentDefinitionService {
       llmResponseProcessorNames: filterOptionalProcessorNames(
         data.llmResponseProcessorNames ?? [],
         this.registries.llmResponse,
-      ),
-      systemPromptProcessorNames: filterOptionalProcessorNames(
-        data.systemPromptProcessorNames ?? [],
-        this.registries.systemPrompt,
       ),
       toolExecutionResultProcessorNames: filterOptionalProcessorNames(
         data.toolExecutionResultProcessorNames ?? [],
@@ -252,9 +240,6 @@ export class AgentDefinitionService {
           break;
         case "llmResponseProcessorNames":
           nextValue = filterOptionalProcessorNames(value as string[], this.registries.llmResponse);
-          break;
-        case "systemPromptProcessorNames":
-          nextValue = filterOptionalProcessorNames(value as string[], this.registries.systemPrompt);
           break;
         case "toolExecutionResultProcessorNames":
           nextValue = filterOptionalProcessorNames(

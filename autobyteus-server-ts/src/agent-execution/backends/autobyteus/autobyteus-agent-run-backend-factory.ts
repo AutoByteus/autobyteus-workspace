@@ -5,14 +5,12 @@ import {
   BaseAgentUserInputMessageProcessor,
   BaseLLMResponseProcessor,
   BaseLifecycleEventProcessor,
-  BaseSystemPromptProcessor,
   BaseToolExecutionResultProcessor,
   BaseToolInvocationPreprocessor,
   defaultAgentFactory,
   defaultInputProcessorRegistry,
   defaultLlmResponseProcessorRegistry,
   defaultLifecycleEventProcessorRegistry,
-  defaultSystemPromptProcessorRegistry,
   defaultToolExecutionResultProcessorRegistry,
   defaultToolInvocationPreprocessorRegistry,
   LLMFactory,
@@ -42,7 +40,8 @@ import {
 } from "./autobyteus-agent-run-backend.js";
 import type { AgentRunBackendFactory } from "../agent-run-backend-factory.js";
 import { buildAutoByteusManagedTeamContext } from "./autobyteus-managed-team-context-builder.js";
-import { composeAutoByteusMemberSystemPrompt } from "./autobyteus-member-system-prompt-composer.js";
+import { composeCarpenterPrompt } from "../../prompt/carpenter-prompt-composer.js";
+import { resolveRuntimeAgentToolExposure } from "../../shared/runtime-agent-tool-exposure.js";
 import { resolveAutoByteusAgentTools } from "./autobyteus-agent-tool-resolver.js";
 import { createLlmProviderApiKeyResolver } from "../../../secret-management/resolution/secret-management-provider-api-key-resolver.js";
 import { resolveCompactionLineageScope } from "./compaction-lineage-scope-resolver.js";
@@ -70,7 +69,6 @@ type PreprocessorRegistry<T> = {
 export type ProcessorRegistries = {
   input: ProcessorRegistry<BaseAgentUserInputMessageProcessor>;
   llmResponse: ProcessorRegistry<BaseLLMResponseProcessor>;
-  systemPrompt: ProcessorRegistry<BaseSystemPromptProcessor>;
   toolExecutionResult: ProcessorRegistry<BaseToolExecutionResultProcessor>;
   toolInvocationPreprocessor: PreprocessorRegistry<BaseToolInvocationPreprocessor>;
   lifecycle: ProcessorRegistry<BaseLifecycleEventProcessor>;
@@ -122,9 +120,6 @@ export type AutoByteusAgentRunBackendFactoryOptions = {
   compactionAgentRunnerFactory?: CompactionAgentRunnerFactory;
 };
 
-const asTrimmedString = (value: unknown): string | null =>
-  typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
-
 export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory {
   private readonly agentFactory: AgentFactoryLike;
   private readonly agentDefinitionService: AgentDefinitionService;
@@ -157,7 +152,6 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
     this.registries = {
       input: options.registries?.input ?? defaultInputProcessorRegistry,
       llmResponse: options.registries?.llmResponse ?? defaultLlmResponseProcessorRegistry,
-      systemPrompt: options.registries?.systemPrompt ?? defaultSystemPromptProcessorRegistry,
       toolExecutionResult:
         options.registries?.toolExecutionResult ??
         defaultToolExecutionResultProcessorRegistry,
@@ -306,30 +300,41 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       );
     }
 
-    const systemPrompt = asTrimmedString(agentDef.instructions);
-    const basePrompt = systemPrompt ?? agentDef.description;
-    if (!systemPrompt) {
+    let workspaceInstance = workspaceId
+      ? this.workspaceManager.getWorkspaceById(workspaceId)
+      : undefined;
+    if (workspaceId && !workspaceInstance) {
       logger.warn(
-        `No non-blank definition instructions found for AgentDefinition ${agentDefinitionId}. Using agent description as fallback.`,
-      );
-    } else {
-      logger.info(
-        `Resolved system prompt from fresh definition instructions for AgentDefinition ${agentDefinitionId}.`,
+        `Workspace with ID ${workspaceId} not found. Falling back to temp workspace.`,
       );
     }
+    if (!workspaceInstance) {
+      workspaceInstance = await this.workspaceManager.getOrCreateTempWorkspace();
+      logger.info(`Using temp workspace (ID: ${workspaceInstance.workspaceId}) for agent.`);
+    }
+    const workspaceRootPath = workspaceInstance?.getBasePath?.() ?? null;
+    if (!workspaceRootPath) {
+      throw new AgentCreationError("AutoByteus runtime workspace path is unavailable.");
+    }
 
-    const { tools, actualToolNames } = resolveAutoByteusAgentTools({
+    const runtimeToolExposure = resolveRuntimeAgentToolExposure(
+      agentDef,
+      options.memberTeamContext,
+    );
+
+    const { tools } = resolveAutoByteusAgentTools({
       agentDefinition: agentDef,
+      runtimeToolExposure,
       senderRunId: runId,
       senderName: agentDef.name,
       runtimeKind: options.runtimeKind,
       memberTeamContext: options.memberTeamContext,
       logger,
     });
-    const resolvedPrompt = composeAutoByteusMemberSystemPrompt({
-      baseAgentInstruction: basePrompt,
+    const resolvedPrompt = composeCarpenterPrompt({
+      agentDefinition: agentDef,
+      workspaceRootPath,
       memberTeamContext: options.memberTeamContext ?? null,
-      resolvedToolNames: actualToolNames,
     });
 
     const inputProcessors: BaseAgentUserInputMessageProcessor[] = [];
@@ -359,20 +364,6 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       }
     }
 
-    const systemPromptProcessors: BaseSystemPromptProcessor[] = [];
-    for (const name of mergeMandatoryAndOptional(
-      agentDef.systemPromptProcessorNames,
-      this.registries.systemPrompt,
-    )) {
-      const processor = this.registries.systemPrompt.getProcessor(name);
-      if (processor) {
-        systemPromptProcessors.push(processor);
-      } else {
-        logger.warn(
-          `System prompt processor '${name}' defined in agent definition '${agentDef.name}' not found in registry. Skipping.`,
-        );
-      }
-    }
     const toolExecutionResultProcessors: BaseToolExecutionResultProcessor[] = [];
     for (const name of mergeMandatoryAndOptional(
       agentDef.toolExecutionResultProcessorNames,
@@ -431,19 +422,6 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       llmConfig ?? undefined,
     );
 
-    let workspaceInstance = workspaceId
-      ? this.workspaceManager.getWorkspaceById(workspaceId)
-      : undefined;
-    if (workspaceId && !workspaceInstance) {
-      logger.warn(
-        `Workspace with ID ${workspaceId} not found. Falling back to temp workspace.`,
-      );
-    }
-    if (!workspaceInstance) {
-      workspaceInstance = await this.workspaceManager.getOrCreateTempWorkspace();
-      logger.info(`Using temp workspace (ID: ${workspaceInstance.workspaceId}) for agent.`);
-    }
-    const workspaceRootPath = workspaceInstance?.getBasePath?.() ?? null;
     const effectiveRuntimeKind =
       runtimeKindFromString(options.runtimeKind, RuntimeKind.AUTOBYTEUS) ??
       RuntimeKind.AUTOBYTEUS;
@@ -494,7 +472,6 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
         autoExecuteTools,
         inputProcessors,
         llmResponseProcessors,
-        systemPromptProcessors,
         toolExecutionResultProcessors,
         toolInvocationPreprocessors,
         workspaceRootPath,

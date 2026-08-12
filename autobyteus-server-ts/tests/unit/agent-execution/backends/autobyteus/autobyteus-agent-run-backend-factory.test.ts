@@ -235,10 +235,12 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     expect(built.agentConfig.tools.map((tool: BaseTool) => tool.definition?.name)).toEqual([
       "send_message_to",
       "get_handoff_rules",
+      "delegate_task",
     ]);
+    expect(built.agentConfig.systemPrompt).toContain("## Agent Identity");
     expect(built.agentConfig.systemPrompt).toContain("## Team Instruction");
-    expect(built.agentConfig.systemPrompt).toContain("## Agent Instruction");
-    expect(built.agentConfig.systemPrompt).toContain("## Runtime Instruction");
+    expect(built.agentConfig.systemPrompt).toContain("## Team Runtime");
+    expect(built.agentConfig.systemPrompt).toContain("## Working Environment");
     expect(built.agentConfig.initialCustomData?.teamContext).toEqual(
       expect.objectContaining({
         teamRunId: "team-1",
@@ -312,6 +314,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     expect(built.agentConfig.tools.map((tool: BaseTool) => tool.definition?.name)).toEqual([
       "send_message_to",
       "get_handoff_rules",
+      "delegate_task",
     ]);
     expect(built.agentConfig.systemPrompt).toContain("filesystem-like logical addresses");
     expect(built.agentConfig.systemPrompt).toContain("\n/professor\n");
@@ -459,7 +462,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     );
   });
 
-  it("keeps the exact-run send_message_to selector when logical delivery is unavailable", async () => {
+  it("keeps the exact-run send_message_to selector on the canonical Team binding", async () => {
     const factory = new AutoByteusAgentRunBackendFactory({
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async () =>
@@ -506,7 +509,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
           TeamBackendKind.MIXED,
           vi.fn().mockResolvedValue({ accepted: true }),
           null,
-          false,
+          true,
         ),
       }),
       "run-professor",
@@ -515,6 +518,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     expect(built.agentConfig.tools.map((tool: BaseTool) => tool.definition?.name)).toEqual([
       "send_message_to",
       "get_handoff_rules",
+      "delegate_task",
     ]);
     expect(built.agentConfig.systemPrompt).not.toContain("For logical Team recipients");
     expect(JSON.stringify(built.agentConfig.tools[0]?.definition)).toContain("target_agent_run_id");

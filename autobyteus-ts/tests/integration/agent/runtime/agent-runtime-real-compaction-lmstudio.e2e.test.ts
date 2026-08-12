@@ -351,7 +351,6 @@ runRealE2E('Agent runtime real compaction (LM Studio)', () => {
         null,
         null,
         null,
-        null,
         workspace,
         null,
         null,

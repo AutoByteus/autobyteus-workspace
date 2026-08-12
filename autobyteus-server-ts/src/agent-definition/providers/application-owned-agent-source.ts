@@ -83,7 +83,6 @@ export const readApplicationOwnedAgentDefinitionFromSource = async (
       skillNames: normalizedConfig.skillNames ?? [],
       inputProcessorNames: normalizedConfig.inputProcessorNames ?? [],
       llmResponseProcessorNames: normalizedConfig.llmResponseProcessorNames ?? [],
-      systemPromptProcessorNames: normalizedConfig.systemPromptProcessorNames ?? [],
       toolExecutionResultProcessorNames: normalizedConfig.toolExecutionResultProcessorNames ?? [],
       toolInvocationPreprocessorNames: normalizedConfig.toolInvocationPreprocessorNames ?? [],
       lifecycleProcessorNames: normalizedConfig.lifecycleProcessorNames ?? [],

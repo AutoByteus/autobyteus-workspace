@@ -17,7 +17,6 @@ const buildAgentDefinition = (overrides: Partial<AgentDefinition> = {}): AgentDe
   skillNames: ['skill-a'],
   inputProcessorNames: [],
   llmResponseProcessorNames: [],
-  systemPromptProcessorNames: [],
   toolExecutionResultProcessorNames: [],
   toolInvocationPreprocessorNames: [],
   lifecycleProcessorNames: [],

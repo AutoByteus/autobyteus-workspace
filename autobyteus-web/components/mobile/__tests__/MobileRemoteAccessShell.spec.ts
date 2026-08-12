@@ -103,7 +103,6 @@ const initialState = {
         toolNames: [],
         inputProcessorNames: [],
         llmResponseProcessorNames: [],
-        systemPromptProcessorNames: [],
         toolExecutionResultProcessorNames: [],
         toolInvocationPreprocessorNames: [],
         lifecycleProcessorNames: [],

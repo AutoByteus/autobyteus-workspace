@@ -16,7 +16,6 @@ const mockAgentDef: AgentDefinition = {
   toolNames: [],
   inputProcessorNames: [],
   llmResponseProcessorNames: [],
-  systemPromptProcessorNames: [],
   toolExecutionResultProcessorNames: [],
   toolInvocationPreprocessorNames: [],
   lifecycleProcessorNames: [],

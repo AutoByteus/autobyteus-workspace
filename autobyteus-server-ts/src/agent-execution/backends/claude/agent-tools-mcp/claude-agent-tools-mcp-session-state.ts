@@ -32,12 +32,14 @@ export class ClaudeAgentToolsMcpSessionState {
       sender: buildAgentRunMessageSenderContext({
         senderRunId: runContext.runId,
         senderName:
-          (runContext.runtimeContext.memberTeamContext ? getAgentTeamAddressBasename(runContext.runtimeContext.memberTeamContext.memberAddress) : null) ??
+          (runContext.config.memberTeamContext
+            ? getAgentTeamAddressBasename(runContext.config.memberTeamContext.memberAddress)
+            : null) ??
           runContext.config.agentDefinitionId,
         runtimeKind: runContext.config.runtimeKind,
-        memberTeamContext: runContext.runtimeContext.memberTeamContext,
+        memberTeamContext: runContext.config.memberTeamContext,
       }),
-      configuredExposure: runContext.runtimeContext.configuredToolExposure,
+      runtimeExposure: runContext.runtimeContext.runtimeToolExposure,
       executionContext: {
         workingDirectory: runContext.runtimeContext.sessionConfig.workingDirectory,
         memoryDir: runContext.config.memoryDir,
@@ -55,7 +57,7 @@ export class ClaudeAgentToolsMcpSessionState {
 const buildAgentToolsMcpOwnerIdentity = (
   runContext: ClaudeRunContext,
 ): AgentToolMcpSession["owner"] => {
-  const memberTeamContext = runContext.runtimeContext.memberTeamContext;
+  const memberTeamContext = runContext.config.memberTeamContext;
   if (!memberTeamContext) {
     return { runId: runContext.runId };
   }

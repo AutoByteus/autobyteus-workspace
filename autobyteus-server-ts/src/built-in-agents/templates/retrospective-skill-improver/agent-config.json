@@ -8,7 +8,6 @@
   ],
   "inputProcessorNames": [],
   "llmResponseProcessorNames": [],
-  "systemPromptProcessorNames": [],
   "toolExecutionResultProcessorNames": [],
   "toolInvocationPreprocessorNames": [],
   "lifecycleProcessorNames": [],

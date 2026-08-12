@@ -150,7 +150,6 @@ runIntegration('OpenAI single-agent flow', () => {
       null,
       null,
       null,
-      null,
       workspace,
       null,
       null,

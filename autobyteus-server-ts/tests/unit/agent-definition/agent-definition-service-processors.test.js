@@ -42,7 +42,6 @@ describe("AgentDefinitionService processor filtering", () => {
         registries: {
             input: registry,
             llmResponse: registry,
-            systemPrompt: registry,
             toolExecutionResult: registry,
             toolInvocationPreprocessor: registry,
             lifecycle: registry,
@@ -58,21 +57,18 @@ describe("AgentDefinitionService processor filtering", () => {
             systemPromptCategory: "Default",
             inputProcessorNames: ["MANDATORY_A", "optional_input"],
             llmResponseProcessorNames: ["MANDATORY_B", "optional_llm"],
-            systemPromptProcessorNames: ["optional_prompt", "MANDATORY_A"],
             toolExecutionResultProcessorNames: ["MANDATORY_A", "optional_tool_result"],
             toolInvocationPreprocessorNames: ["MANDATORY_B", "optional_invocation"],
             lifecycleProcessorNames: ["optional_lifecycle", "MANDATORY_A"],
         });
         expect(created.inputProcessorNames).toEqual(["optional_input"]);
         expect(created.llmResponseProcessorNames).toEqual(["optional_llm"]);
-        expect(created.systemPromptProcessorNames).toEqual(["optional_prompt"]);
         expect(created.toolExecutionResultProcessorNames).toEqual(["optional_tool_result"]);
         expect(created.toolInvocationPreprocessorNames).toEqual(["optional_invocation"]);
         expect(created.lifecycleProcessorNames).toEqual(["optional_lifecycle"]);
         const persisted = provider.create.mock.calls[0]?.[0];
         expect(persisted.inputProcessorNames).toEqual(["optional_input"]);
         expect(persisted.llmResponseProcessorNames).toEqual(["optional_llm"]);
-        expect(persisted.systemPromptProcessorNames).toEqual(["optional_prompt"]);
         expect(persisted.toolExecutionResultProcessorNames).toEqual(["optional_tool_result"]);
         expect(persisted.toolInvocationPreprocessorNames).toEqual(["optional_invocation"]);
         expect(persisted.lifecycleProcessorNames).toEqual(["optional_lifecycle"]);

@@ -3,7 +3,7 @@ import { BaseTool } from "autobyteus-ts/tools/base-tool.js";
 import { ToolDefinition } from "autobyteus-ts/tools/registry/tool-definition.js";
 import { ToolOrigin } from "autobyteus-ts/tools/tool-origin.js";
 import { ParameterSchema } from "autobyteus-ts/utils/parameter-schema.js";
-import { buildConfiguredAgentToolExposure } from "../../../../src/agent-execution/shared/configured-agent-tool-exposure.js";
+import { buildRuntimeAgentToolExposure } from "../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { buildAgentRunMessageSenderContext } from "../../../../src/agent-communication/domain/agent-run-message-sender.js";
 import { SEND_MESSAGE_TO_TOOL_NAME } from "../../../../src/agent-communication/services/send-message-to-tool-contract.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
@@ -90,7 +90,7 @@ describe("AgentToolMcpSessionService", () => {
       owner: { runId: "run-1" },
       sender: buildSender(),
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-      configuredExposure: buildConfiguredAgentToolExposure([
+      runtimeExposure: buildRuntimeAgentToolExposure([
         SEND_MESSAGE_TO_TOOL_NAME,
         "open_tab",
       ]),
@@ -132,7 +132,7 @@ describe("AgentToolMcpSessionService", () => {
       owner: { runId: "run-configured" },
       sender: buildSender(),
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-      configuredExposure: buildConfiguredAgentToolExposure([
+      runtimeExposure: buildRuntimeAgentToolExposure([
         "db_query",
         SEND_MESSAGE_TO_TOOL_NAME,
       ]),
@@ -175,7 +175,7 @@ describe("AgentToolMcpSessionService", () => {
     const result = service.createAgentToolMcpSession({
       owner: { runId: "run-2" },
       sender: buildSender(),
-      configuredExposure: buildConfiguredAgentToolExposure(["open_tab"]),
+      runtimeExposure: buildRuntimeAgentToolExposure(["open_tab"]),
     });
 
     expect(result.descriptor.enabledTools).toEqual([]);
@@ -187,9 +187,9 @@ describe("AgentToolMcpSessionService", () => {
     const registry = new AgentToolMcpSessionRegistry({ now: () => now });
     const service = buildService(registry);
     const created = service.createAgentToolMcpSession({
-      owner: { runId: "run-3", memberRunId: "member-run-3" },
+      owner: { runId: "run-3", agentRunId: "member-run-3" },
       sender: buildSender(),
-      configuredExposure: buildConfiguredAgentToolExposure([SEND_MESSAGE_TO_TOOL_NAME]),
+      runtimeExposure: buildRuntimeAgentToolExposure([SEND_MESSAGE_TO_TOOL_NAME]),
     });
     const token = created.descriptor.headers.Authorization.replace(/^Bearer\s+/, "");
 
@@ -208,18 +208,18 @@ describe("AgentToolMcpSessionService", () => {
     });
 
     const second = service.createAgentToolMcpSession({
-      owner: { runId: "run-3", memberRunId: "member-run-3" },
+      owner: { runId: "run-3", agentRunId: "member-run-3" },
       sender: buildSender(),
-      configuredExposure: buildConfiguredAgentToolExposure([SEND_MESSAGE_TO_TOOL_NAME]),
+      runtimeExposure: buildRuntimeAgentToolExposure([SEND_MESSAGE_TO_TOOL_NAME]),
     });
     const nonMatching = service.createAgentToolMcpSession({
-      owner: { runId: "run-3", memberRunId: "member-run-other" },
+      owner: { runId: "run-3", agentRunId: "member-run-other" },
       sender: buildSender(),
-      configuredExposure: buildConfiguredAgentToolExposure([SEND_MESSAGE_TO_TOOL_NAME]),
+      runtimeExposure: buildRuntimeAgentToolExposure([SEND_MESSAGE_TO_TOOL_NAME]),
     });
     const secondToken = second.descriptor.headers.Authorization.replace(/^Bearer\s+/, "");
     const nonMatchingToken = nonMatching.descriptor.headers.Authorization.replace(/^Bearer\s+/, "");
-    expect(service.revokeAgentToolMcpSessionsForMemberRun("member-run-3")).toBe(1);
+    expect(service.revokeAgentToolMcpSessionsForAgentRun("member-run-3")).toBe(1);
     expect(registry.resolveSession({ sessionId: second.session.sessionId, bearerToken: secondToken })).toMatchObject({
       ok: false,
       reason: "revoked",
@@ -236,7 +236,7 @@ describe("AgentToolMcpSessionService", () => {
     const created = service.createAgentToolMcpSession({
       owner: { runId: "run-restart" },
       sender: buildSender(),
-      configuredExposure: buildConfiguredAgentToolExposure([SEND_MESSAGE_TO_TOOL_NAME]),
+      runtimeExposure: buildRuntimeAgentToolExposure([SEND_MESSAGE_TO_TOOL_NAME]),
     });
     const oldToken = created.descriptor.headers.Authorization.replace(/^Bearer\s+/, "");
     const freshRegistry = new AgentToolMcpSessionRegistry();
@@ -261,7 +261,7 @@ describe("AgentToolMcpToolExecutor", () => {
     const { session } = registry.createSession({
       owner: { runId: "run-4" },
       sender: buildSender(),
-      configuredExposure: buildConfiguredAgentToolExposure([SEND_MESSAGE_TO_TOOL_NAME]),
+      runtimeExposure: buildRuntimeAgentToolExposure([SEND_MESSAGE_TO_TOOL_NAME]),
       enabledTools: [SEND_MESSAGE_TO_TOOL_NAME],
       toolRoutes: {
         [SEND_MESSAGE_TO_TOOL_NAME]: {
@@ -319,7 +319,7 @@ describe("AgentToolMcpToolExecutor", () => {
     const { session } = registry.createSession({
       owner: { runId: "run-raw-mcp" },
       sender: buildSender(),
-      configuredExposure: buildConfiguredAgentToolExposure(["db_query"]),
+      runtimeExposure: buildRuntimeAgentToolExposure(["db_query"]),
       enabledTools: ["db_query"],
       toolRoutes: {
         db_query: {

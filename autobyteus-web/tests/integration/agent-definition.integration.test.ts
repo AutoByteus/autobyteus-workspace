@@ -32,7 +32,6 @@ describe('agent-definition integration', () => {
           toolNames: [],
           inputProcessorNames: [],
           llmResponseProcessorNames: [],
-          systemPromptProcessorNames: [],
           toolExecutionResultProcessorNames: [],
           toolInvocationPreprocessorNames: [],
           lifecycleProcessorNames: [],

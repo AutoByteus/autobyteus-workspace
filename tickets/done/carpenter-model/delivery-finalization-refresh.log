@@ -1,0 +1,23 @@
+timestamp_utc=2026-08-12T14:04:49Z
+branch_before=codex/carpenter-model
+head_before=7d7574ae3b300ae21ef337cf9c671916d4b0d9bc
+origin_personal_before=023f4f550b07f27dbf388d55234a10b8eae0e0c7
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+origin_personal_after=023f4f550b07f27dbf388d55234a10b8eae0e0c7
+divergence_after=0	3
+latest_version_tag=voice-runtime-v0.1.1
+remote_latest_version_tags=
+v1.4.43
+v1.4.44
+v1.4.45
+v1.4.46
+v1.4.47
+v1.4.48
+v1.4.49
+v2026.02.26-personal-desktop-e2e.1
+v2026.02.26-personal-desktop-e2e.2
+v2026.02.26-personal-desktop-e2e.3
+voice-runtime-v0.1.0
+voice-runtime-v0.1.1
+remote_v1.4.50=

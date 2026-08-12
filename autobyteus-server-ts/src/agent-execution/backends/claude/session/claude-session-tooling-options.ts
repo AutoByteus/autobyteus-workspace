@@ -2,7 +2,7 @@ import type { MemberTeamContext } from "../../../../agent-team-execution/domain/
 import { PUBLISH_ARTIFACTS_TOOL_NAME } from "../../../../services/published-artifacts/published-artifact-tool-contract.js";
 import { SEND_MESSAGE_TO_TOOL_NAME } from "../../../../agent-communication/services/send-message-to-tool-contract.js";
 import { GET_HANDOFF_RULES_TOOL_NAME } from "../../../../agent-communication/services/get-handoff-rules-tool-contract.js";
-import type { ConfiguredAgentToolExposure } from "../../../shared/configured-agent-tool-exposure.js";
+import type { RuntimeAgentToolExposure } from "../../../shared/runtime-agent-tool-exposure.js";
 import { buildClaudeAgentToolsMcpToolName } from "../agent-tools-mcp/claude-agent-tools-mcp-tool-name.js";
 
 export type ClaudeSessionToolingOptions = {
@@ -19,36 +19,36 @@ export type ClaudeSessionToolingOptions = {
 };
 
 export const resolveClaudeSessionToolingOptions = (input: {
-  configuredToolExposure: ConfiguredAgentToolExposure;
+  runtimeToolExposure: RuntimeAgentToolExposure;
   hasMaterializedSkills: boolean;
   memberTeamContext: MemberTeamContext | null;
   agentToolsMcpEnabledToolNames?: Iterable<string> | null;
 }): ClaudeSessionToolingOptions => {
   const enabledBrowserToolNames = [
-    ...input.configuredToolExposure.enabledBrowserToolNames,
+    ...input.runtimeToolExposure.enabledBrowserToolNames,
   ];
   const enabledMediaToolNames = [
-    ...input.configuredToolExposure.enabledMediaToolNames,
+    ...input.runtimeToolExposure.enabledMediaToolNames,
   ];
   const enabledTaskDelegationToolNames = [
-    ...input.configuredToolExposure.enabledTaskDelegationToolNames,
+    ...input.runtimeToolExposure.enabledTaskDelegationToolNames,
   ];
   const sendMessageToToolingEnabled =
-    Boolean(input.memberTeamContext) || input.configuredToolExposure.sendMessageToConfigured;
-  const publishArtifactsToolingEnabled =
-    input.configuredToolExposure.publishArtifactsConfigured;
+    input.runtimeToolExposure.sendMessageToEnabled;
   const getHandoffRulesToolingEnabled =
-    Boolean(input.memberTeamContext);
+    input.runtimeToolExposure.getHandoffRulesEnabled;
+  const publishArtifactsToolingEnabled =
+    input.runtimeToolExposure.publishArtifactsEnabled;
   const taskDelegationToolingEnabled =
     Boolean(input.memberTeamContext) && enabledTaskDelegationToolNames.length > 0;
   const configuredAgentToolsMcpToolNames = collectConfiguredAgentToolsMcpToolNames({
     sendMessageToToolingEnabled,
+    getHandoffRulesToolingEnabled,
     enabledBrowserToolNames,
     enabledMediaToolNames,
     enabledTaskDelegationToolNames,
     taskDelegationToolingEnabled,
     publishArtifactsToolingEnabled,
-    getHandoffRulesToolingEnabled,
   });
   const agentToolsMcpEnabledToolNames = normalizeToolNames(
     input.agentToolsMcpEnabledToolNames ?? configuredAgentToolsMcpToolNames,
@@ -74,12 +74,12 @@ export const resolveClaudeSessionToolingOptions = (input: {
 
 const collectConfiguredAgentToolsMcpToolNames = (input: {
   sendMessageToToolingEnabled: boolean;
+  getHandoffRulesToolingEnabled: boolean;
   enabledBrowserToolNames: string[];
   enabledMediaToolNames: string[];
   enabledTaskDelegationToolNames: string[];
   taskDelegationToolingEnabled: boolean;
   publishArtifactsToolingEnabled: boolean;
-  getHandoffRulesToolingEnabled: boolean;
 }): string[] => {
   const toolNames = new Set<string>();
   if (input.sendMessageToToolingEnabled) {

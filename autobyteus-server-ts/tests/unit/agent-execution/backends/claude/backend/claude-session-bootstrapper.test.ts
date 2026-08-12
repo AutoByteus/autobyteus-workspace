@@ -4,34 +4,21 @@ import { AgentRunConfig } from "../../../../../../src/agent-execution/domain/age
 import { AgentRunContext } from "../../../../../../src/agent-execution/domain/agent-run-context.js";
 import { ClaudeSessionBootstrapper } from "../../../../../../src/agent-execution/backends/claude/backend/claude-session-bootstrapper.js";
 import { MemberTeamContext } from "../../../../../../src/agent-team-execution/domain/member-team-context.js";
-import { TeamBackendKind } from "../../../../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
+import { testMemberTeamContext } from "../../../../../fixtures/current-team-run-fixtures.js";
 
 const WORKING_DIRECTORY = "/tmp/claude-bootstrapper-workspace";
 
 const createMemberTeamContext = () =>
-  new MemberTeamContext({
+  testMemberTeamContext({
     teamRunId: "team-run-1",
+    rootTeamRunId: "team-run-1",
     teamDefinitionId: "team-def-1",
-    teamName: "Claude team",
-    teamBackendKind: TeamBackendKind.MIXED,
-    teamAddress: "/",
     memberAddress: "/Professor",
+    coordinatorAddress: "/Professor",
     agentRunId: "run-claude-team",
     runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-    coordinatorAddress: "/Professor",
-    collaboration: {
-      addressing: {
-        rootTeamRunId: "team-run-1",
-        memberAddress: "/Professor",
-      },
-    },
-    executionAddress: {
-      rootTeamRunId: "team-run-1",
-      taskTeamRunIds: [],
-      memberAddress: "/Professor",
-      taskAgentRunId: null,
-    },
+    deliverInterAgentMessage: vi.fn(async () => undefined) as any,
   });
 
 const createRunContext = (input: {
@@ -58,6 +45,7 @@ const createBootstrapper = () =>
     { materializeConfiguredClaudeWorkspaceSkills: vi.fn(async () => []) } as any,
     {
       getAgentDefinitionById: vi.fn(async () => ({
+        name: "Professor agent",
         instructions: "Teach the class.",
         description: "Professor",
         skillNames: [],
@@ -86,6 +74,8 @@ describe("ClaudeSessionBootstrapper", () => {
       autoExecuteTools: true,
     });
     expect(runContext.runtimeContext.autoExecuteTools).toBe(true);
-    expect(runContext.runtimeContext.memberTeamContext).toBe(memberTeamContext);
+    expect(runContext.config.memberTeamContext).toBe(memberTeamContext);
+    expect(runContext.runtimeContext.carpenterSystemPrompt).toContain("## Agent Identity");
+    expect(runContext.runtimeContext.carpenterSystemPrompt).toContain("## Team Runtime");
   });
 });

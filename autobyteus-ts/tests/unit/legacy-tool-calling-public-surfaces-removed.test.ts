@@ -58,7 +58,6 @@ describe('simplified native tool-loop public surface', () => {
     'agent/streaming/parsing-streaming-response-handler.ts',
     'agent/streaming/handlers/parsing-streaming-response-handler.ts',
     'agent/streaming/parser/index.ts',
-    'agent/system-prompt-processor/tool-manifest-injector-processor.ts',
     'tools/usage/providers/tool-manifest-provider.ts',
     'tools/usage/registries/tool-formatting-registry.ts',
     'llm/prompt-renderers/provider-tool-history-renderer-selection.ts',

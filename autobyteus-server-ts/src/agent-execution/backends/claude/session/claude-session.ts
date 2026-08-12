@@ -12,7 +12,6 @@ import { logRawClaudeSessionChunkDetails } from "../events/claude-session-event-
 import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
 import { ClaudeSessionMessageCache } from "./claude-session-message-cache.js";
 import type { ClaudeSessionConfig } from "./claude-session-config.js";
-import { buildClaudeTurnInput } from "./claude-turn-input-builder.js";
 import {
   createClaudeActiveTurnExecution,
   isClaudeActiveTurnInterrupted,
@@ -394,26 +393,20 @@ export class ClaudeSession {
     const activeTurn =
       this.activeTurnExecution?.turnId === options.turnId ? this.activeTurnExecution : null;
     const configuredToolingOptions = resolveClaudeSessionToolingOptions({
-      configuredToolExposure: this.runContext.runtimeContext.configuredToolExposure,
+      runtimeToolExposure: this.runContext.runtimeContext.runtimeToolExposure,
       hasMaterializedSkills: this.runContext.runtimeContext.materializedConfiguredSkills.length > 0,
-      memberTeamContext: this.runContext.runtimeContext.memberTeamContext,
-    });
-    const turnInput = buildClaudeTurnInput({
-      runContext: this.runContext,
-      content: options.content,
-      sendMessageToEnabled: configuredToolingOptions.sendMessageToToolingEnabled,
-      taskDelegationEnabled: configuredToolingOptions.taskDelegationToolingEnabled,
+      memberTeamContext: this.runContext.config.memberTeamContext,
     });
     const agentToolsMcpDescriptor = (
       configuredToolingOptions.agentToolsMcpToolingRequested ||
-      this.runContext.runtimeContext.configuredToolExposure.configuredToolNames.length > 0
+      this.runContext.runtimeContext.runtimeToolExposure.requestedToolNames.length > 0
     )
       ? this.agentToolsMcpSessionState.ensureDescriptor(this.runContext)
       : null;
     const toolingOptions = resolveClaudeSessionToolingOptions({
-      configuredToolExposure: this.runContext.runtimeContext.configuredToolExposure,
+      runtimeToolExposure: this.runContext.runtimeContext.runtimeToolExposure,
       hasMaterializedSkills: this.runContext.runtimeContext.materializedConfiguredSkills.length > 0,
-      memberTeamContext: this.runContext.runtimeContext.memberTeamContext,
+      memberTeamContext: this.runContext.config.memberTeamContext,
       agentToolsMcpEnabledToolNames: agentToolsMcpDescriptor?.enabledTools ?? [],
     });
     const mcpServers = await buildClaudeSessionMcpServerConfig({
@@ -428,7 +421,8 @@ export class ClaudeSession {
     });
     try {
       query = await this.dependencies.sdkClient.startQueryTurn({
-        prompt: turnInput,
+        prompt: options.content,
+        systemPrompt: this.runContext.runtimeContext.carpenterSystemPrompt,
         sessionId: this.resolveProviderSessionIdForResume(),
         model: this.model,
         workingDirectory: this.workingDirectory,

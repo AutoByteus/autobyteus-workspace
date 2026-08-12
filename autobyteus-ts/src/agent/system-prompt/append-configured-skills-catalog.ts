@@ -1,0 +1,76 @@
+import path from 'path';
+import { SkillRegistry } from '../../skills/registry.js';
+import { SkillAccessMode, resolveSkillAccessMode } from '../context/skill-access-mode.js';
+import type { AgentContextLike } from '../context/agent-context-like.js';
+
+export const appendConfiguredSkillsCatalog = (
+  systemPrompt: string,
+  context: AgentContextLike
+): string => {
+  const agentId = context.agentId;
+  const registry = new SkillRegistry();
+  const configuredSkills = context.config?.skills ?? [];
+  const skillAccessMode = resolveSkillAccessMode(
+    context.config?.skillAccessMode,
+    configuredSkills.length
+  );
+
+  if (skillAccessMode === SkillAccessMode.NONE) {
+    console.info(`Agent '${agentId}': Skill access mode is NONE. Skipping skill catalog.`);
+    return systemPrompt;
+  }
+
+  if (configuredSkills.length === 0) {
+    console.info(`Agent '${agentId}': No configured skills. Skipping skill catalog.`);
+    return systemPrompt;
+  }
+
+  const catalogSkills = configuredSkills
+    .map((skillName) => registry.getSkill(skillName))
+    .filter((skill): skill is NonNullable<typeof skill> => {
+      if (!skill) {
+        return false;
+      }
+      const name = skill.name?.trim() ?? '';
+      const description = skill.description?.trim() ?? '';
+      const rootPath = skill.rootPath?.trim() ?? '';
+      if (!name || !description || !rootPath) {
+        console.warn(`Agent '${agentId}': Omitting invalid configured skill catalog entry.`);
+        return false;
+      }
+      return path.isAbsolute(path.resolve(rootPath, 'SKILL.md'));
+    });
+
+  if (!catalogSkills.length) {
+    console.info(
+      `Agent '${agentId}': Configured skills produced no catalog entries. Skipping skill catalog.`
+    );
+    return systemPrompt;
+  }
+
+  const catalogEntries = catalogSkills.map(
+    (skill) =>
+      `- **${skill.name.trim()}**: ${skill.description.trim()}\n` +
+      `  - **SKILL.md:** \`${path.resolve(skill.rootPath, 'SKILL.md')}\``
+  );
+
+  const skillsBlock = `\n\n## Skills
+
+### Skill Catalog
+
+${catalogEntries.join('\n')}
+
+### Rules for Using Skills
+
+- Use a configured skill whenever it applies to the task.
+- When no configured skill applies, use the best available general approach.
+- When an applicable configured skill covers only part of the task, follow it for the covered part and use another available technique for the uncovered part.
+- Before beginning work governed by a skill, read its \`SKILL.md\` from the exact path listed above.
+- Resolve every relative path mentioned by a skill from the directory containing that skill's \`SKILL.md\`.
+`;
+
+  console.info(
+    `Agent '${agentId}': Added ${catalogEntries.length} configured skill catalog entries with paths. mode='${skillAccessMode}'.`
+  );
+  return systemPrompt + skillsBlock;
+};

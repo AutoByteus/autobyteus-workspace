@@ -47,7 +47,6 @@ export type AgentDefinition = {
   ownershipScope: AgentDefinitionOwnershipScope;
   role?: Maybe<Scalars['String']['output']>;
   skillNames: Array<Scalars['String']['output']>;
-  systemPromptProcessorNames: Array<Scalars['String']['output']>;
   toolExecutionResultProcessorNames: Array<Scalars['String']['output']>;
   toolInvocationPreprocessorNames: Array<Scalars['String']['output']>;
   toolNames: Array<Scalars['String']['output']>;
@@ -425,7 +424,6 @@ export type CreateAgentDefinitionInput = {
   name: Scalars['String']['input'];
   role?: InputMaybe<Scalars['String']['input']>;
   skillNames?: InputMaybe<Array<Scalars['String']['input']>>;
-  systemPromptProcessorNames?: InputMaybe<Array<Scalars['String']['input']>>;
   toolExecutionResultProcessorNames?: InputMaybe<Array<Scalars['String']['input']>>;
   toolInvocationPreprocessorNames?: InputMaybe<Array<Scalars['String']['input']>>;
   toolNames?: InputMaybe<Array<Scalars['String']['input']>>;
@@ -1684,7 +1682,6 @@ export type Query = {
   availableOptionalInputProcessorNames: Array<Scalars['String']['output']>;
   availableOptionalLifecycleProcessorNames: Array<Scalars['String']['output']>;
   availableOptionalLlmResponseProcessorNames: Array<Scalars['String']['output']>;
-  availableOptionalSystemPromptProcessorNames: Array<Scalars['String']['output']>;
   availableOptionalToolExecutionResultProcessorNames: Array<Scalars['String']['output']>;
   availableOptionalToolInvocationPreprocessorNames: Array<Scalars['String']['output']>;
   availableToolNames: Array<Scalars['String']['output']>;
@@ -2662,7 +2659,6 @@ export type UpdateAgentDefinitionInput = {
   name?: InputMaybe<Scalars['String']['input']>;
   role?: InputMaybe<Scalars['String']['input']>;
   skillNames?: InputMaybe<Array<Scalars['String']['input']>>;
-  systemPromptProcessorNames?: InputMaybe<Array<Scalars['String']['input']>>;
   toolExecutionResultProcessorNames?: InputMaybe<Array<Scalars['String']['input']>>;
   toolInvocationPreprocessorNames?: InputMaybe<Array<Scalars['String']['input']>>;
   toolNames?: InputMaybe<Array<Scalars['String']['input']>>;
@@ -2875,21 +2871,21 @@ export type RemoveApplicationPackageMutationVariables = Exact<{
 
 export type RemoveApplicationPackageMutation = { __typename?: 'Mutation', removeApplicationPackage: Array<{ __typename?: 'ApplicationPackage', packageId: string, displayName: string, sourceKind: ApplicationPackageSourceKind, sourceSummary?: string | null, applicationCount: number, isPlatformOwned: boolean, isRemovable: boolean }> };
 
-export type AgentDefinitionMutationFieldsFragment = { __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, systemPromptProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null };
+export type AgentDefinitionMutationFieldsFragment = { __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null };
 
 export type CreateAgentDefinitionMutationVariables = Exact<{
   input: CreateAgentDefinitionInput;
 }>;
 
 
-export type CreateAgentDefinitionMutation = { __typename?: 'Mutation', createAgentDefinition: { __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, systemPromptProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null } };
+export type CreateAgentDefinitionMutation = { __typename?: 'Mutation', createAgentDefinition: { __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null } };
 
 export type UpdateAgentDefinitionMutationVariables = Exact<{
   input: UpdateAgentDefinitionInput;
 }>;
 
 
-export type UpdateAgentDefinitionMutation = { __typename?: 'Mutation', updateAgentDefinition: { __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, systemPromptProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null } };
+export type UpdateAgentDefinitionMutation = { __typename?: 'Mutation', updateAgentDefinition: { __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null } };
 
 export type DeleteAgentDefinitionMutationVariables = Exact<{
   id: Scalars['String']['input'];
@@ -3325,12 +3321,12 @@ export type RemoveWorkspaceMutation = { __typename?: 'Mutation', removeWorkspace
 export type GetAgentCustomizationOptionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAgentCustomizationOptionsQuery = { __typename?: 'Query', availableToolNames: Array<string>, availableOptionalInputProcessorNames: Array<string>, availableOptionalLlmResponseProcessorNames: Array<string>, availableOptionalSystemPromptProcessorNames: Array<string>, availableOptionalToolExecutionResultProcessorNames: Array<string>, availableOptionalToolInvocationPreprocessorNames: Array<string>, availableOptionalLifecycleProcessorNames: Array<string> };
+export type GetAgentCustomizationOptionsQuery = { __typename?: 'Query', availableToolNames: Array<string>, availableOptionalInputProcessorNames: Array<string>, availableOptionalLlmResponseProcessorNames: Array<string>, availableOptionalToolExecutionResultProcessorNames: Array<string>, availableOptionalToolInvocationPreprocessorNames: Array<string>, availableOptionalLifecycleProcessorNames: Array<string> };
 
 export type GetAgentDefinitionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAgentDefinitionsQuery = { __typename?: 'Query', agentDefinitions: Array<{ __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, systemPromptProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null }> };
+export type GetAgentDefinitionsQuery = { __typename?: 'Query', agentDefinitions: Array<{ __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null }> };
 
 export type GetAgentTeamDefinitionsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3939,7 +3935,6 @@ export const AgentDefinitionMutationFieldsFragmentDoc = gql`
   toolNames
   inputProcessorNames
   llmResponseProcessorNames
-  systemPromptProcessorNames
   toolExecutionResultProcessorNames
   toolInvocationPreprocessorNames
   lifecycleProcessorNames
@@ -6655,7 +6650,6 @@ export const GetAgentCustomizationOptionsDocument = gql`
   availableToolNames
   availableOptionalInputProcessorNames
   availableOptionalLlmResponseProcessorNames
-  availableOptionalSystemPromptProcessorNames
   availableOptionalToolExecutionResultProcessorNames
   availableOptionalToolInvocationPreprocessorNames
   availableOptionalLifecycleProcessorNames
@@ -6695,7 +6689,6 @@ export const GetAgentDefinitionsDocument = gql`
     toolNames
     inputProcessorNames
     llmResponseProcessorNames
-    systemPromptProcessorNames
     toolExecutionResultProcessorNames
     toolInvocationPreprocessorNames
     lifecycleProcessorNames

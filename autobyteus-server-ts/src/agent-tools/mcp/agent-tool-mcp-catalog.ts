@@ -1,6 +1,6 @@
 import { defaultToolRegistry, type ToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
 import { ToolOrigin } from "autobyteus-ts/tools/tool-origin.js";
-import type { ConfiguredAgentToolExposure } from "../../agent-execution/shared/configured-agent-tool-exposure.js";
+import type { RuntimeAgentToolExposure } from "../../agent-execution/shared/runtime-agent-tool-exposure.js";
 import type { AgentToolMcpSession } from "./agent-tool-mcp-session.js";
 import type {
   AgentToolMcpAdapterProvider,
@@ -94,23 +94,20 @@ export class AgentToolMcpCatalog {
   }
 
   resolveConfiguredSupportedToolNames(
-    input: ConfiguredAgentToolExposure | AgentToolMcpAvailabilityContext,
+    input: RuntimeAgentToolExposure | AgentToolMcpAvailabilityContext,
   ): string[] {
-    return this.resolveConfiguredSessionToolExposure(input).enabledTools;
+    return this.resolveRuntimeSessionToolExposure(input).enabledTools;
   }
 
-  resolveConfiguredSessionToolExposure(
-    input: ConfiguredAgentToolExposure | AgentToolMcpAvailabilityContext,
+  resolveRuntimeSessionToolExposure(
+    input: RuntimeAgentToolExposure | AgentToolMcpAvailabilityContext,
   ): AgentToolMcpSessionToolExposure {
     const context = this.normalizeAvailabilityContext(input);
-    const configuredToolNames = normalizeToolNames([
-      ...context.configuredExposure.configuredToolNames,
-      ...(context.sender?.memberTeamContext ? ["send_message_to", "get_handoff_rules"] : []),
-    ]);
-    const activeStaticAdapters = this.resolveActiveStaticAdapters(configuredToolNames, context);
-    const protectedStaticAdapters = this.resolveProtectedStaticAdapters(configuredToolNames);
+    const requestedToolNames = normalizeToolNames(context.runtimeExposure.requestedToolNames);
+    const activeStaticAdapters = this.resolveActiveStaticAdapters(requestedToolNames, context);
+    const protectedStaticAdapters = this.resolveProtectedStaticAdapters(requestedToolNames);
     const configuredMcpResolution = this.configuredMcpSourceResolver.resolve({
-      configuredToolNames,
+      requestedToolNames,
     });
     const configuredMcpSourcesByName = new Map(
       configuredMcpResolution.sources.map((source) => [source.registeredToolName, source]),
@@ -122,7 +119,7 @@ export class AgentToolMcpCatalog {
       ...configuredMcpResolution.diagnostics,
     ];
 
-    for (const toolName of configuredToolNames) {
+    for (const toolName of requestedToolNames) {
       const mcpSource = configuredMcpSourcesByName.get(toolName) ?? null;
       const activeStaticAdapter = activeStaticAdapters.get(toolName) ?? null;
       const protectedStaticAdapter = protectedStaticAdapters.get(toolName) ?? null;
@@ -216,24 +213,24 @@ export class AgentToolMcpCatalog {
   }
 
   private normalizeAvailabilityContext(
-    input: ConfiguredAgentToolExposure | AgentToolMcpAvailabilityContext,
+    input: RuntimeAgentToolExposure | AgentToolMcpAvailabilityContext,
   ): AgentToolMcpAvailabilityContext {
-    if ("configuredExposure" in input) {
+    if ("runtimeExposure" in input) {
       return input;
     }
     return {
-      configuredExposure: input,
+      runtimeExposure: input,
       sender: null,
       executionContext: {},
     };
   }
 
   private resolveActiveStaticAdapters(
-    configuredToolNames: string[],
+    requestedToolNames: string[],
     context: AgentToolMcpAvailabilityContext,
   ): Map<string, AgentToolMcpToolAdapter> {
     const activeAdapters = new Map<string, AgentToolMcpToolAdapter>();
-    for (const toolName of configuredToolNames) {
+    for (const toolName of requestedToolNames) {
       const adapter = this.adaptersByName.get(toolName);
       if (adapter?.isAvailable(context)) {
         activeAdapters.set(toolName, adapter);
@@ -243,10 +240,10 @@ export class AgentToolMcpCatalog {
   }
 
   private resolveProtectedStaticAdapters(
-    configuredToolNames: string[],
+    requestedToolNames: string[],
   ): Map<string, AgentToolMcpToolAdapter> {
     const protectedAdapters = new Map<string, AgentToolMcpToolAdapter>();
-    for (const toolName of configuredToolNames) {
+    for (const toolName of requestedToolNames) {
       const adapter = this.adaptersByName.get(toolName);
       if (adapter && this.isStaticAdapterProtected(adapter)) {
         protectedAdapters.set(toolName, adapter);
