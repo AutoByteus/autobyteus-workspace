@@ -207,9 +207,6 @@ export function useMobileRunLaunchCoordinator() {
     if (!launchDraft) throw new Error('Team launch draft is unavailable.');
     const launched = await teamRunStore.launchDraft(launchDraft);
     const teamRunId = launched.rootTeamRunId;
-    teamContextsStore.addTeamContext(launched.context);
-    selectionStore.selectRunWithoutShellNavigation(teamRunId, 'team');
-    teamRunConfigStore.removeDraft(launchDraft.draftId);
     const focusedExecutionAddress = await ensureValidLeafTeamFocus(teamRunId);
     mobileWorkStore.moveDraftAttachmentsToPendingTeamRun(teamRunId);
     teamRunConfigStore.clearConfig();

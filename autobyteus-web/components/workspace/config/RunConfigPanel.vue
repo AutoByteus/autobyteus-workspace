@@ -79,6 +79,7 @@ import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore'
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore'
 import { useAgentContextsStore } from '~/stores/agentContextsStore'
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore'
+import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore'
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
 import { useWorkspaceStore } from '~/stores/workspace'
@@ -96,6 +97,7 @@ const runConfigStore = useAgentRunConfigStore()
 const teamRunConfigStore = useTeamRunConfigStore()
 const contextsStore = useAgentContextsStore()
 const teamContextsStore = useAgentTeamContextsStore()
+const teamRunStore = useAgentTeamRunStore()
 const definitionStore = useAgentDefinitionStore()
 const teamDefinitionStore = useAgentTeamDefinitionStore()
 const workspaceStore = useWorkspaceStore()
@@ -372,7 +374,11 @@ const handleRun = async () => {
           }
           return
         }
-        teamContextsStore.createRunFromTemplate()
+        const draft = teamRunConfigStore.selectedDraft
+        if (!draft) {
+          throw new Error('Team launch draft is unavailable.')
+        }
+        await teamRunStore.launchDraft(draft)
       } else if (effectiveAgentConfig.value) {
         if (!effectiveAgentConfig.value.workspaceId) {
           runConfigStore.setWorkspaceError('Workspace is required to run an agent.')
