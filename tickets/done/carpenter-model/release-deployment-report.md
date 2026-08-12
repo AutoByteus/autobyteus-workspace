@@ -4,16 +4,16 @@
 
 The user accepted the integrated, reviewed, documented, and locally packaged
 state and explicitly requested repository finalization plus a new version.
-`v1.4.50` is selected as the next available patch after current `v1.4.49`.
-Finalization and the documented tag-triggered release workflow are authorized.
+`v1.4.50` was selected as the next available patch after `v1.4.49`.
+Repository finalization and the documented tag-triggered release completed.
 
 ## Handoff Summary
 
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/delivery-revision-record.md`
-- Current delivery revision ID: `DR-004`
-- Notes: Integrated, reviewed, documented state includes `API-REV-002` DeepSeek and `API-REV-003` Codex real-provider evidence at 98% confidence plus a verified local macOS arm64 Electron 1.4.49 package, and is ready for user verification.
+- Current delivery revision ID: `DR-005`
+- Notes: User-accepted integrated state was archived, merged, released as `v1.4.50`, verified across all five tag workflows, and cleaned up.
 
 ## Initial Delivery Integration Refresh
 
@@ -56,23 +56,28 @@ Finalization and the documented tag-triggered release workflow are authorized.
 - Requested/selected version: `1.4.50`
 - Version rationale: next available patch after remote `v1.4.49`; remote `v1.4.50` confirmed absent at finalization refresh
 - Release notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/release-notes.md`
-- Release commit/tag: Pending documented release helper
+- Ticket archive commit: `b59cca99a66fd602f4e1c77439e50f3c02317457`
+- Target merge commit: `9f1f0afe3cb5bb536f305e777a4c0b9f6fdbb9a3`
+- Release commit: `8ddaad588c51c61eab31a86b782064c8b8ea0090`
+- Annotated tag: `v1.4.50`
+- Remote tag target: release commit confirmed
+- Synchronized versions: `autobyteus-web=1.4.50`; `autobyteus-message-gateway=1.4.50`; managed messaging manifest `releaseTag=v1.4.50` and `artifactVersion=1.4.50`
 
 ## Repository Finalization
 
 - Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/investigation-notes.md`
 - Ticket branch: `codex/carpenter-model`
-- Ticket branch commit result: Local safety checkpoint only; final ticket commit held
-- Ticket branch push result: Held pending user verification
+- Ticket branch commit result: `Completed` — `b59cca99a66fd602f4e1c77439e50f3c02317457`
+- Ticket branch push result: `Completed`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after verification / acceptance: N/A; no acceptance yet
+- Target advanced after verification / acceptance: `No`
 - Delivery-owned edits protected before re-integration: `Completed` through local checkpoint `7d7574ae3b300ae21ef337cf9c671916d4b0d9bc`; no re-integration was needed
-- Re-integration before final merge result: Pending required post-acceptance target refresh
-- Target branch update result: Held
-- Merge into target result: Held
-- Push target branch result: Held
-- Repository finalization status: `Authorized; execution pending in this finalization run`
+- Re-integration before final merge result: `Not required` — target remained unchanged
+- Target branch update result: `Completed`
+- Merge into target result: `Completed` — `9f1f0afe3cb5bb536f305e777a4c0b9f6fdbb9a3`
+- Push target branch result: `Completed`
+- Repository finalization status: `Completed`
 - Blocker: None
 
 ## Release / Publication / Deployment
@@ -80,8 +85,10 @@ Finalization and the documented tag-triggered release workflow are authorized.
 - Applicable: `Yes`
 - Method: `Documented Command`
 - Method reference / command: `pnpm release 1.4.50 -- --release-notes tickets/done/carpenter-model/release-notes.md`
-- Release/publication/deployment result: Pending repository finalization
-- Release notes handoff result: Prepared
+- Release/publication/deployment result: `Completed` — helper exited 0, branch/tag were pushed, GitHub Release published, and all tag workflows completed successfully
+- Release notes handoff result: `Used`
+- GitHub Release: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.50
+- Published assets observed: 21
 - Blocker: None
 
 ## Local Electron Verification Package
@@ -101,23 +108,38 @@ Finalization and the documented tag-triggered release workflow are authorized.
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model`
-- Worktree cleanup result: Held pending finalization
-- Worktree prune result: Held pending finalization
-- Local ticket branch cleanup result: Held pending finalization
-- Remote branch cleanup result: `Not required` — branch has not been pushed
+- Worktree cleanup result: `Completed`
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed`
+- Remote branch cleanup result: `Completed`
+- User-owned primary-checkout path preserved: `.article-work/`
 - Blocker: None
 
 ## Release Notes Summary
 
 - Release notes artifact created before verification / acceptance: `No` — release scope first appeared in the user's acceptance/authorization message; notes were created immediately afterward and before the archive commit
-- Archived release notes artifact used for release/publication: Pending `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/release-notes.md`
-- Release notes status: `Prepared`
+- Archived release notes artifact used for release/publication: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/release-notes.md`
+- Release notes status: `Used`
 
 ## Deployment Steps
 
-The documented `v1.4.50` tag push will trigger Desktop, Android APK, iOS,
-messaging-gateway, and server-Docker release workflows. Results will be observed
-and recorded after the helper pushes the branch and tag.
+The `v1.4.50` tag push triggered all documented publication workflows:
+
+- Desktop Release: `success` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/31605085922
+- Android APK Release: `success` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/31605085872
+- iOS App Store Connect Release: `success` on attempt 2 — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/31605085828
+- Release Messaging Gateway: `success` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/31605085763
+- Server Docker Release: `success` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/31605085749
+
+The first iOS attempt failed in the existing fake-node WKWebView UI smoke because
+the `AUTOBYTEUS_FAKE_MOBILE_READY` marker was not observed. The app/core build
+had completed, the Carpenter change does not touch iOS, and a single failed-job
+rerun passed without source or tag mutation. Recovery evidence is in
+`release-ios-recovery-v1.4.50.log`.
+
+Canonical rollout evidence: `release-workflow-status-v1.4.50.json`,
+`release-workflow-monitor-v1.4.50.log`, and
+`release-publication-v1.4.50.json`.
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -139,6 +161,11 @@ and recorded after the helper pushes the branch and tag.
 - `AC-006` documentation sync/source audit: Pass
 - README-guided Electron build: Pass; enterprise macOS arm64 1.4.49 DMG/ZIP created
 - Electron artifact integrity: Pass; DMG checksum valid, ZIP archive clean, executable architecture and bundle version confirmed
+- Release helper: Pass, exit 0
+- Remote `personal`, annotated `v1.4.50`, desktop/gateway versions, curated notes, and managed messaging manifest: synchronized
+- GitHub Release: published with 21 observed assets
+- Desktop, Android, iOS, messaging-gateway, and server-Docker tag workflows: Pass; iOS passed on one recovery rerun after an isolated UI-smoke flake
+- Post-finalization worktree/branch cleanup: Pass
 - `git diff --check`: Pass
 
 ## Rollback Criteria
@@ -152,4 +179,4 @@ as an ad hoc rollback.
 
 ## Final Status
 
-`User verification accepted — v1.4.50 finalization and release authorized; execution in progress.`
+`Completed — archived, merged, pushed, released as v1.4.50, all publication workflows successful, and cleanup completed.`

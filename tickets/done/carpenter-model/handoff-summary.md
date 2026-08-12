@@ -2,16 +2,17 @@
 
 ## Current Status
 
-`User verification accepted — finalization and v1.4.50 release authorized.`
+`Completed — finalized and released as v1.4.50.`
 
 The reviewed implementation, durable coverage, requested live DeepSeek and
 Codex validations, latest-base refresh, `AC-006` documentation sync, and the
 README-guided local Electron verification package are complete. No unresolved
 source, test-code, API/E2E, documentation, or local packaging finding remains.
-The user accepted the hands-on verification state on 2026-08-12 and explicitly
-requested finalization plus a new release. Delivery will archive the ticket,
-finalize it into `personal`, and use the documented release helper for the next
-available patch version, `v1.4.50`.
+The user accepted the hands-on verification state on 2026-08-12. The ticket is
+archived, merged into `personal`, published as `v1.4.50`, and cleaned up. All
+five documented tag-triggered workflows completed successfully; the initial
+iOS UI-smoke attempt was recovered by one failed-job rerun without source or tag
+changes.
 
 ## Delivered Behavior
 
@@ -177,7 +178,19 @@ are covered deterministically by retained evidence.
 - Explicit acceptance: User message on 2026-08-12 — “now finalize and release a new version”.
 - Finalization refresh: `origin/personal` remained at `023f4f550b07f27dbf388d55234a10b8eae0e0c7`; the ticket branch remains 3 ahead / 0 behind, so the accepted behavior state did not change and renewed verification is not required.
 - Release version selection: `v1.4.49` is the current product release and remote `v1.4.50` is absent, so the documented normal next patch release is `v1.4.50`.
-- Finalization, release publication, workflow observation, and cleanup results will be recorded in the archived delivery report.
+- Finalization result: ticket commit `b59cca99a66fd602f4e1c77439e50f3c02317457`; target merge `9f1f0afe3cb5bb536f305e777a4c0b9f6fdbb9a3`; release commit/tag target `8ddaad588c51c61eab31a86b782064c8b8ea0090` / `v1.4.50`.
+- Publication: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.50
+- Rollout: Desktop, Android APK, iOS App Store Connect, messaging-gateway, and server-Docker workflows all completed successfully.
+- Cleanup: dedicated ticket worktree plus local and remote ticket branches removed; user-owned primary-checkout `.article-work/` preserved.
+
+## Release Evidence
+
+- Release helper: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/release-command-v1.4.50.log`
+- Workflow status: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/release-workflow-status-v1.4.50.json`
+- Workflow monitor: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/release-workflow-monitor-v1.4.50.log`
+- Publication metadata: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/release-publication-v1.4.50.json`
+- iOS retry record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/release-ios-recovery-v1.4.50.log`
+- Cleanup: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/post-finalization-cleanup.log`
 
 ## Cumulative Artifact Package
 
