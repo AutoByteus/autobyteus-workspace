@@ -135,11 +135,11 @@ export class TeamAgentEventAdapter {
       case AgentRunEventType.TURN_INTERRUPTED:
         return correlated({ eventType: "TURN_INTERRUPTED", details: { turnId: text(raw(p, "turn_id", "turnId")), reason: text(p.reason) }, statusHint: hint });
       case AgentRunEventType.SEGMENT_START:
-        return correlated({ eventType: "SEGMENT_START", details: { segmentId: required(raw(p, "segment_id", "segmentId"), "segment_id"), turnId: text(raw(p, "turn_id", "turnId")), segmentType: required(raw(p, "segment_type", "segmentType"), "segment_type"), metadata: json(p.metadata) }, statusHint: hint });
+        return correlated({ eventType: "SEGMENT_START", details: { segmentId: required(p.id, "id"), turnId: text(raw(p, "turn_id", "turnId")), segmentType: required(raw(p, "segment_type", "segmentType"), "segment_type"), metadata: json(p.metadata) }, statusHint: hint });
       case AgentRunEventType.SEGMENT_CONTENT:
-        return correlated({ eventType: "SEGMENT_CONTENT", details: { segmentId: required(raw(p, "segment_id", "segmentId"), "segment_id"), turnId: text(raw(p, "turn_id", "turnId")), segmentType: required(raw(p, "segment_type", "segmentType"), "segment_type"), delta: stringValue(p.delta) }, statusHint: hint });
+        return correlated({ eventType: "SEGMENT_CONTENT", details: { segmentId: required(p.id, "id"), turnId: text(raw(p, "turn_id", "turnId")), segmentType: required(raw(p, "segment_type", "segmentType"), "segment_type"), delta: stringValue(p.delta) }, statusHint: hint });
       case AgentRunEventType.SEGMENT_END:
-        return correlated({ eventType: "SEGMENT_END", details: { segmentId: required(raw(p, "segment_id", "segmentId"), "segment_id"), turnId: text(raw(p, "turn_id", "turnId")), metadata: json(p.metadata), interrupted: boolean(p.interrupted) ?? false, reason: text(p.reason), failed: boolean(p.failed) ?? false, error: text(p.error) }, statusHint: hint });
+        return correlated({ eventType: "SEGMENT_END", details: { segmentId: required(p.id, "id"), turnId: text(raw(p, "turn_id", "turnId")), metadata: json(p.metadata), interrupted: boolean(p.interrupted) ?? false, reason: text(p.reason), failed: boolean(p.failed) ?? false, error: text(p.error) }, statusHint: hint });
       case AgentRunEventType.AGENT_STATUS:
         return correlated({ eventType: "AGENT_STATUS", details: createTeamAgentStatusDetails({ status: p.status, trigger: p.trigger, toolName: raw(p, "tool_name", "toolName"), errorMessage: raw(p, "error_message", "errorMessage"), errorDetails: raw(p, "error_details", "errorDetails") }), statusHint: hint });
       case AgentRunEventType.COMPACTION_STATUS:
