@@ -11,8 +11,12 @@ export const isCoalescibleStreamContent = (message: StreamEgressMessage): boolea
   message.type === ServerMessageType.SEGMENT_CONTENT &&
   typeof message.payload.delta === "string";
 
-export const cloneStreamContentMessage = <M extends StreamEgressMessage>(message: M): M =>
-  ({ type: message.type, payload: { ...message.payload } }) as M;
+export const cloneStreamContentMessage = (
+  message: StreamEgressMessage,
+): StreamEgressMessage => ({
+  type: message.type,
+  payload: { ...message.payload },
+});
 
 export const canAppendStreamContent = (
   target: StreamEgressMessage,
@@ -22,13 +26,13 @@ export const canAppendStreamContent = (
   isCoalescibleStreamContent(incoming) &&
   streamPayloadsEqual(payloadWithoutDelta(target), payloadWithoutDelta(incoming));
 
-export const appendStreamContent = <M extends StreamEgressMessage>(
-  target: M,
-  incoming: M,
-): M => ({
+export const appendStreamContent = (
+  target: StreamEgressMessage,
+  incoming: StreamEgressMessage,
+): StreamEgressMessage => ({
   type: target.type,
   payload: {
     ...target.payload,
     delta: `${String(target.payload.delta)}${String(incoming.payload.delta)}`,
   },
-}) as unknown as M;
+});

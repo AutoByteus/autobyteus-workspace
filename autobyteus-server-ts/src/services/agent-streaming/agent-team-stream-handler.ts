@@ -97,7 +97,9 @@ export class AgentTeamStreamHandler {
 
     const egress = new AgentStreamWebSocketEgress<TeamStreamServerMessage>({
       sendRaw: (payload) => connection.send(payload),
-      serialize: serializeTeamStreamServerMessage,
+      serialize: (message) => serializeTeamStreamServerMessage(
+        parseTeamStreamServerMessage(message),
+      ),
       onSendError: (error) => logger.error(
         `Team WebSocket egress failed: session=${sessionId}, run=${teamRunId}: ${String(error)}`,
       ),

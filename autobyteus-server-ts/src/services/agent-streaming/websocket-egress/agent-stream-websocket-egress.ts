@@ -1,4 +1,4 @@
-import { ServerMessage } from "../models.js";
+import type { ServerMessage } from "../models.js";
 import type {
   AgentStreamEgressControlComposition,
   AgentStreamEgressControlExtensions,
@@ -16,7 +16,7 @@ export interface AgentStreamServerMessageSink<
 
 export type AgentStreamWebSocketEgressOptions<M extends StreamEgressMessage = ServerMessage> = {
   sendRaw: (payload: string) => void;
-  serialize?: (message: M) => string;
+  serialize?: (message: StreamEgressMessage) => string;
   readIntervalMs?: () => number;
   onSendError?: (error: unknown) => void;
   onObserverError?: (error: unknown) => void;
@@ -27,11 +27,11 @@ export class AgentStreamWebSocketEgress<
   M extends StreamEgressMessage = ServerMessage,
 > implements AgentStreamServerMessageSink<M> {
   private disposed = false;
-  private readonly controls: AgentStreamEgressControlComposition<M>;
+  private readonly controls: AgentStreamEgressControlComposition;
   private readonly onObserverError: (error: unknown) => void;
 
   constructor(private readonly options: AgentStreamWebSocketEgressOptions<M>) {
-    this.controls = createDefaultAgentStreamEgressControlComposition<M>({
+    this.controls = createDefaultAgentStreamEgressControlComposition({
       readIntervalMs: options.readIntervalMs,
       onScheduledError: options.onSendError,
       extensions: options.controlExtensions,
@@ -83,10 +83,10 @@ export class AgentStreamWebSocketEgress<
     });
   }
 
-  private readonly forward = (message: M): void => {
+  private readonly forward = (message: StreamEgressMessage): void => {
     const serialized = this.options.serialize
       ? this.options.serialize(message)
-      : (message as unknown as ServerMessage).toJson();
+      : JSON.stringify({ type: message.type, payload: message.payload });
     this.options.sendRaw(serialized);
     this.observe({
       type: "MESSAGE_FORWARDED",

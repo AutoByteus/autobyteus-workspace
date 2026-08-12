@@ -35,16 +35,14 @@ export type AgentStreamContentCadenceSchedulerOptions = {
   onScheduledError: (error: unknown) => void;
 };
 
-export class AgentStreamContentCadenceScheduler<
-  M extends StreamEgressMessage = StreamEgressMessage,
-> implements AgentStreamEgressScheduler<M> {
-  private pendingContent: M[] = [];
+export class AgentStreamContentCadenceScheduler implements AgentStreamEgressScheduler {
+  private pendingContent: StreamEgressMessage[] = [];
   private flushTimer: ReturnType<typeof setTimeout> | null = null;
   private disposed = false;
 
   constructor(private readonly options: AgentStreamContentCadenceSchedulerOptions) {}
 
-  accept(message: M, forward: AgentStreamEgressForward<M>): void {
+  accept(message: StreamEgressMessage, forward: AgentStreamEgressForward): void {
     if (this.disposed) return;
     const action = classifyMessage(message);
     if (action === "COALESCE") {
@@ -57,7 +55,7 @@ export class AgentStreamContentCadenceScheduler<
     forward(message);
   }
 
-  flush(forward: AgentStreamEgressForward<M>): void {
+  flush(forward: AgentStreamEgressForward): void {
     this.cancelTimer();
     const snapshot = this.pendingContent;
     this.pendingContent = [];
@@ -71,7 +69,10 @@ export class AgentStreamContentCadenceScheduler<
     this.pendingContent = [];
   }
 
-  private enqueueContent(message: M, forward: AgentStreamEgressForward<M>): void {
+  private enqueueContent(
+    message: StreamEgressMessage,
+    forward: AgentStreamEgressForward,
+  ): void {
     const tail = this.pendingContent[this.pendingContent.length - 1];
     if (tail && canAppendStreamContent(tail, message)) {
       this.pendingContent[this.pendingContent.length - 1] = appendStreamContent(tail, message);
