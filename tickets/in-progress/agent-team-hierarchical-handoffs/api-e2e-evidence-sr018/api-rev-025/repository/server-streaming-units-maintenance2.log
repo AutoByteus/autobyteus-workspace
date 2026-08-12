@@ -1,0 +1,257 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:74034) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > connects through TeamRunService and publishes the current lifecycle snapshot
+Created agent session 49db9c6e-5f9b-4881-9c76-69c138d1b6c7 for run team-1
+Agent Team WebSocket connected: session=49db9c6e-5f9b-4881-9c76-69c138d1b6c7, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > preserves the complete 'persistent member' address across send, approval, and interrupt
+Created agent session 57260154-b73e-49da-93e1-b8f6183cae28 for run team-1
+Agent Team WebSocket connected: session=57260154-b73e-49da-93e1-b8f6183cae28, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > preserves the complete 'direct task Agent' address across send, approval, and interrupt
+Created agent session d1ff8b1b-0ac5-4698-a4c6-ef727c23b508 for run team-1
+Agent Team WebSocket connected: session=d1ff8b1b-0ac5-4698-a4c6-ef727c23b508, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > preserves the complete 'outer task AgentTeam member' address across send, approval, and interrupt
+Created agent session 0809cd05-0db2-48a5-b6b7-04cb0e8c2444 for run team-1
+Agent Team WebSocket connected: session=0809cd05-0db2-48a5-b6b7-04cb0e8c2444, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > preserves the complete 'nested task AgentTeam member' address across send, approval, and interrupt
+Created agent session e0ae35fd-fedb-4092-b9ca-f437b1769f4b for run team-1
+Agent Team WebSocket connected: session=e0ae35fd-fedb-4092-b9ca-f437b1769f4b, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > rejects SEND_MESSAGE before effect when execution_address is incomplete
+Created agent session 38ad6321-9a02-4592-b4b4-ac775d6ed16b for run team-1
+Agent Team WebSocket connected: session=38ad6321-9a02-4592-b4b4-ac775d6ed16b, run=team-1
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > rejects SEND_MESSAGE before effect when execution_address is incomplete
+Error handling team message for 38ad6321-9a02-4592-b4b4-ac775d6ed16b: [
+  {
+    "expected": "string",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "execution_address",
+      "task_agent_run_id"
+    ],
+    "message": "Invalid input: expected string, received undefined"
+  }
+]
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > rejects APPROVE_TOOL before effect when execution_address is incomplete
+Created agent session bf4ab681-bbba-4757-b4cd-93112d02a80d for run team-1
+Agent Team WebSocket connected: session=bf4ab681-bbba-4757-b4cd-93112d02a80d, run=team-1
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > rejects APPROVE_TOOL before effect when execution_address is incomplete
+Error handling team message for bf4ab681-bbba-4757-b4cd-93112d02a80d: [
+  {
+    "expected": "string",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "execution_address",
+      "task_agent_run_id"
+    ],
+    "message": "Invalid input: expected string, received undefined"
+  }
+]
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > rejects INTERRUPT_GENERATION before effect when execution_address is incomplete
+Created agent session 3a747c59-14d1-463d-9330-be745297a652 for run team-1
+Agent Team WebSocket connected: session=3a747c59-14d1-463d-9330-be745297a652, run=team-1
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > rejects INTERRUPT_GENERATION before effect when execution_address is incomplete
+Error handling team message for 3a747c59-14d1-463d-9330-be745297a652: [
+  {
+    "expected": "string",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "execution_address",
+      "task_agent_run_id"
+    ],
+    "message": "Invalid input: expected string, received undefined"
+  }
+]
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > rejects SEND_MESSAGE before effect when execution_address names a foreign root
+Created agent session 05efee54-7704-4c3d-a2b0-655397666246 for run team-1
+Agent Team WebSocket connected: session=05efee54-7704-4c3d-a2b0-655397666246, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > rejects APPROVE_TOOL before effect when execution_address names a foreign root
+Created agent session f9cdef3c-cf0a-486f-8f21-7675f5faa422 for run team-1
+Agent Team WebSocket connected: session=f9cdef3c-cf0a-486f-8f21-7675f5faa422, run=team-1
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > rejects APPROVE_TOOL before effect when execution_address names a foreign root
+TOOL_APPROVAL rejected for team run team-1: The command requires one exact execution_address object.
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > rejects INTERRUPT_GENERATION before effect when execution_address names a foreign root
+Created agent session 565d6658-a235-44a9-b73a-44f7c3f1f8c9 for run team-1
+Agent Team WebSocket connected: session=565d6658-a235-44a9-b73a-44f7c3f1f8c9, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > passes an exact stale nested task chain once and surfaces rejection without fallback
+Created agent session 1c4071f2-19fa-4f74-8260-994f10488270 for run team-1
+Agent Team WebSocket connected: session=1c4071f2-19fa-4f74-8260-994f10488270, run=team-1
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > passes an exact stale nested task chain once and surfaces rejection without fallback
+SEND_MESSAGE rejected: [TASK_TEAM_INSTANCE_NOT_ACTIVE] Nested task TeamRun is stale.
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > returns one failed interrupt acknowledgement for an exact stale address
+Created agent session 82f03b52-dcf4-4f23-aef3-9efb9a2e2012 for run team-1
+Agent Team WebSocket connected: session=82f03b52-dcf4-4f23-aef3-9efb9a2e2012, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > projects the exact execution address on Agent events
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > coalesces metadata refresh work across a burst of streamed Team events
+Created agent session 30d8b506-37e3-42f1-8a41-0b4673fe586b for run team-1
+Agent Team WebSocket connected: session=30d8b506-37e3-42f1-8a41-0b4673fe586b, run=team-1
+
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts (17 tests | 1 failed) 27ms
+     ✓ parses valid messages and rejects malformed envelopes 3ms
+     ✓ connects through TeamRunService and publishes the current lifecycle snapshot 3ms
+     ✓ closes with TEAM_NOT_FOUND when the TeamRun identity cannot be resolved 1ms
+     ✓ preserves the complete 'persistent member' address across send, approval, and interrupt 2ms
+     ✓ preserves the complete 'direct task Agent' address across send, approval, and interrupt 1ms
+     ✓ preserves the complete 'outer task AgentTeam member' address across send, approval, and interrupt 1ms
+     ✓ preserves the complete 'nested task AgentTeam member' address across send, approval, and interrupt 1ms
+     ✓ rejects SEND_MESSAGE before effect when execution_address is incomplete 1ms
+     ✓ rejects APPROVE_TOOL before effect when execution_address is incomplete 1ms
+     ✓ rejects INTERRUPT_GENERATION before effect when execution_address is incomplete 0ms
+     ✓ rejects SEND_MESSAGE before effect when execution_address names a foreign root 1ms
+     ✓ rejects APPROVE_TOOL before effect when execution_address names a foreign root 0ms
+     ✓ rejects INTERRUPT_GENERATION before effect when execution_address names a foreign root 1ms
+     ✓ passes an exact stale nested task chain once and surfaces rejection without fallback 1ms
+     ✓ returns one failed interrupt acknowledgement for an exact stale address 0ms
+     × projects the exact execution address on Agent events 7ms
+     ✓ coalesces metadata refresh work across a burst of streamed Team events 2ms
+ ✓ tests/unit/services/agent-streaming/team-run-event-websocket-message-mapper.test.ts (2 tests) 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current execution-address commands > projects the exact execution address on Agent events
+AssertionError: expected { agent_execution: { …(3) }, …(5) } to match object { agent_execution: { …(3) }, …(1) }
+(4 matching properties omitted from actual)
+
+- Expected
++ Received
+
+@@ -8,9 +8,9 @@
+        "task_team_run_ids": [
+          "task-team-outer",
+          "task-team-inner",
+        ],
+      },
+-     "kind": "task_agent",
++     "kind": "task_team_agent",
+    },
+    "invocation_id": "invocation-1",
+  }
+
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:381:29
+    379| 
+    380|     expect(message.type).toBe(ServerMessageType.TOOL_EXECUTION_SUCCEED…
+    381|     expect(message.payload).toMatchObject({
+       |                             ^
+    382|       agent_execution: {
+    383|         kind: "task_agent",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 18 passed (19)
+   Start at  06:34:04
+   Duration  4.80s (transform 3.01s, setup 14ms, import 4.18s, tests 31ms, environment 0ms)
+

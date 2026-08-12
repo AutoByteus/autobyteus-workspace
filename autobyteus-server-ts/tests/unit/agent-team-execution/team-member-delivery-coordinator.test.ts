@@ -111,17 +111,16 @@ describe("TeamMemberDeliveryCoordinator", () => {
     expect(published).toHaveLength(1);
     expect(published[0]).toMatchObject({
       eventSourceType: TeamRunEventSourceType.COMMUNICATION,
-      teamRunId: "root-run",
-      executionAddress: senderAddress,
-      data: {
-        teamRunId: "root-run",
+      payload: {
         senderAddress,
         receiverAddress: recipientAddress,
         content: "Research is ready for product review.",
         messageType: "handoff",
+        referenceFiles: [],
       },
     });
-    expect(published[0]?.data).not.toHaveProperty("senderRouteKey");
+    expect(published[0]).not.toHaveProperty("executionAddress");
+    expect(published[0]).not.toHaveProperty("data");
   });
 
   it("publishes no accepted communication when recipient input is rejected", async () => {

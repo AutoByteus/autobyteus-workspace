@@ -524,7 +524,7 @@ describe("mobile Round 4 UX refinements", () => {
     expect(useAgentContextsStore().activeRun?.config.autoExecuteTools).toBe(true);
   });
 
-  it("binds team Auto approve tools to the launch config, team context, and member configs", async () => {
+  it("binds team Auto approve tools to the selected immutable launch draft", async () => {
     const wrapper = mountWithPinia(MobileRunSetup, {
       props: { context: workspaceContext },
     });
@@ -555,20 +555,11 @@ describe("mobile Round 4 UX refinements", () => {
     await nextTick();
 
     expect(useTeamRunConfigStore().config?.autoExecuteTools).toBe(true);
-    useTeamRunConfigStore().setRuntimeModelCatalog(DEFAULT_AGENT_RUNTIME_KIND, [
-      "test-model",
-    ]);
-
-    const teamRunId = useAgentTeamContextsStore().createRunFromTemplate({
-      selectionMode: "mobile",
-    });
-    const activeTeam = useAgentTeamContextsStore().getTeamContextById(teamRunId);
-    expect(activeTeam?.config.autoExecuteTools).toBe(true);
-    expect(
-      Array.from(activeTeam?.leafAgentContextsByRouteKey.values() ?? []).map(
-        (member) => member.config.autoExecuteTools,
-      ),
-    ).toEqual([true, true]);
+    const selectedDraft = useTeamRunConfigStore().selectedDraft;
+    expect(selectedDraft).toBeTruthy();
+    expect(selectedDraft?.config.autoExecuteTools).toBe(true);
+    expect(Object.isFrozen(selectedDraft)).toBe(true);
+    expect(Object.isFrozen(selectedDraft?.config)).toBe(true);
   });
 
   it("lists launch workspaces from the workspace store and loads an unlisted server path into the active config", async () => {

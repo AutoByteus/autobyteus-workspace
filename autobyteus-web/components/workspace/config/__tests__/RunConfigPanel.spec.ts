@@ -6,8 +6,9 @@ import RunConfigPanel from '../RunConfigPanel.vue'
 import AgentRunConfigForm from '../AgentRunConfigForm.vue'
 import TeamRunConfigForm from '../TeamRunConfigForm.vue'
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
+import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures'
 
-const { agentRunState, teamRunState, agentContextState, teamContextState } = vi.hoisted(() => ({
+const { agentRunState, teamRunState, agentContextState, teamContextState, teamRunOwnerState } = vi.hoisted(() => ({
   agentRunState: {
     config: null,
     workspaceLoadingState: { isLoading: false, error: null, loadedPath: null },
@@ -36,10 +37,30 @@ const { agentRunState, teamRunState, agentContextState, teamContextState } = vi.
   },
   teamRunState: {
     config: null,
+    selectedDraft: null,
     workspaceLoadingState: { isLoading: false, error: null, loadedPath: null },
     launchReadiness: { canLaunch: false, blockingIssues: [], unresolvedMembers: [] },
-    updateConfig: vi.fn((patch: Record<string, unknown>) => {
-      teamRunState.config = { ...(teamRunState.config || {}), ...patch } as any
+    applyConfigEdit: vi.fn((edit: any) => {
+      const config = { ...(teamRunState.config || {}) } as any
+      if (edit.kind === 'set_workspace') {
+        config.workspaceId = edit.workspaceId
+        config.workspaceMetadata = edit.workspaceMetadata
+      } else if (edit.kind === 'set_runtime') config.runtimeKind = edit.runtimeKind
+      else if (edit.kind === 'set_model') config.llmModelIdentifier = edit.llmModelIdentifier
+      else if (edit.kind === 'set_llm_config') config.llmConfig = edit.llmConfig
+      else if (edit.kind === 'set_auto_execute_tools') config.autoExecuteTools = edit.autoExecuteTools
+      else if (edit.kind === 'set_member_override') {
+        config.memberOverrides = { ...(config.memberOverrides || {}) }
+        if (edit.override) config.memberOverrides[edit.memberAddress] = edit.override
+        else delete config.memberOverrides[edit.memberAddress]
+      }
+      teamRunState.config = config
+      if (teamRunState.selectedDraft) {
+        teamRunState.selectedDraft = Object.freeze({
+          ...teamRunState.selectedDraft,
+          config: Object.freeze({ ...config }),
+        }) as any
+      }
     }),
     setWorkspaceLoading: vi.fn((isLoading: boolean) => {
       teamRunState.workspaceLoadingState.isLoading = isLoading
@@ -52,6 +73,12 @@ const { agentRunState, teamRunState, agentContextState, teamContextState } = vi.
         workspaceId,
         workspaceMetadata,
       } as any
+      if (teamRunState.selectedDraft) {
+        teamRunState.selectedDraft = Object.freeze({
+          ...teamRunState.selectedDraft,
+          config: Object.freeze({ ...teamRunState.config }),
+        }) as any
+      }
     }),
     setWorkspaceError: vi.fn((message: string) => {
       teamRunState.workspaceLoadingState.isLoading = false
@@ -65,7 +92,9 @@ const { agentRunState, teamRunState, agentContextState, teamContextState } = vi.
   },
   teamContextState: {
     activeTeamContext: null,
-    createRunFromTemplate: vi.fn(),
+  },
+  teamRunOwnerState: {
+    launchDraft: vi.fn(),
   },
 }))
 const { workspaceCenterViewStoreMock, workspaceStoreMock } = vi.hoisted(() => ({
@@ -109,6 +138,10 @@ vi.mock('~/stores/agentTeamContextsStore', async () => {
   return { useAgentTeamContextsStore: () => reactive(teamContextState) }
 })
 
+vi.mock('~/stores/agentTeamRunStore', () => ({
+  useAgentTeamRunStore: () => teamRunOwnerState,
+}))
+
 vi.mock('~/stores/workspace', () => ({
   useWorkspaceStore: () => workspaceStoreMock,
 }))
@@ -137,6 +170,7 @@ describe('RunConfigPanel', () => {
     agentRunState.workspaceLoadingState = { isLoading: false, error: null, loadedPath: null }
     agentRunState.isConfigured = false
     teamRunState.config = null
+    teamRunState.selectedDraft = null
     teamRunState.workspaceLoadingState = { isLoading: false, error: null, loadedPath: null }
     teamRunState.launchReadiness = { canLaunch: false, blockingIssues: [], unresolvedMembers: [] }
     agentRunState.updateAgentConfig.mockClear()
@@ -148,7 +182,7 @@ describe('RunConfigPanel', () => {
       agentRunState.workspaceLoadingState.error = message
     })
     agentRunState.clearConfig.mockReset()
-    teamRunState.updateConfig.mockClear()
+    teamRunState.applyConfigEdit.mockClear()
     teamRunState.setWorkspaceLoading.mockClear()
     teamRunState.setWorkspaceLoaded.mockClear()
     teamRunState.setWorkspaceError.mockReset()
@@ -160,7 +194,8 @@ describe('RunConfigPanel', () => {
     agentContextState.activeRun = null
     agentContextState.createRunFromTemplate.mockReset()
     teamContextState.activeTeamContext = null
-    teamContextState.createRunFromTemplate.mockReset()
+    teamRunOwnerState.launchDraft.mockReset()
+    teamRunOwnerState.launchDraft.mockResolvedValue('team-run-1')
     workspaceStoreMock.createWorkspace.mockReset()
     workspaceStoreMock.createWorkspace.mockImplementation(async ({ root_path }: { root_path: string }) => {
       workspaceStoreMock.workspaces['ws-created'] = {
@@ -229,6 +264,12 @@ describe('RunConfigPanel', () => {
     const { useTeamRunConfigStore } = await import('~/stores/teamRunConfigStore')
     const teamStore = useTeamRunConfigStore() as any
     teamStore.config = { teamDefinitionId: 'team-def-1', workspaceId: 'ws-1' } as any
+    teamStore.selectedDraft = Object.freeze({
+      draftId: 'team-draft-1',
+      config: Object.freeze({ ...teamStore.config }),
+      focusedMemberAddress: '/coordinator',
+      pendingInputsByMemberAddress: Object.freeze({}),
+    }) as any
     teamStore.launchReadiness = { canLaunch: true, blockingIssues: [], unresolvedMembers: [] } as any
 
     const wrapper = mount(RunConfigPanel, {
@@ -239,10 +280,9 @@ describe('RunConfigPanel', () => {
 
     await wrapper.find('.run-btn').trigger('click')
 
-    const { useAgentTeamContextsStore } = await import('~/stores/agentTeamContextsStore')
-    const contextStore = useAgentTeamContextsStore() as any
-    expect(contextStore.createRunFromTemplate).toHaveBeenCalled()
-    expect(teamStore.clearConfig).toHaveBeenCalled()
+    expect(teamRunOwnerState.launchDraft).toHaveBeenCalledTimes(1)
+    expect(teamRunOwnerState.launchDraft).toHaveBeenCalledWith(teamStore.selectedDraft)
+    expect(teamStore.clearConfig).not.toHaveBeenCalled()
   })
 
   it('loads a pending New workspace path before creating an agent run', async () => {
@@ -370,6 +410,12 @@ describe('RunConfigPanel', () => {
       workspaceMetadata: { workspaceRootPath: '/tmp/default' },
       isLocked: false,
     } as any
+    teamStore.selectedDraft = Object.freeze({
+      draftId: 'team-draft-workspace',
+      config: Object.freeze({ ...teamStore.config }),
+      focusedMemberAddress: '/coordinator',
+      pendingInputsByMemberAddress: Object.freeze({}),
+    }) as any
     teamStore.launchReadiness = { canLaunch: true, blockingIssues: [], unresolvedMembers: [] } as any
     workspaceStoreMock.workspaces.temp_ws_default = {
       workspaceId: 'temp_ws_default',
@@ -401,8 +447,10 @@ describe('RunConfigPanel', () => {
         workspaceRootPath: '/home/autobyteus/team-workspace',
       }),
     )
-    expect(teamContextState.createRunFromTemplate).toHaveBeenCalledTimes(1)
-    expect(teamStore.clearConfig).toHaveBeenCalledTimes(1)
+    expect(teamRunOwnerState.launchDraft).toHaveBeenCalledTimes(1)
+    expect(teamRunOwnerState.launchDraft).toHaveBeenCalledWith(teamStore.selectedDraft)
+    expect(teamStore.selectedDraft.config.workspaceId).toBe('ws-created')
+    expect(teamStore.clearConfig).not.toHaveBeenCalled()
   })
 
   it('disables team run and shows the blocking message when mixed-runtime readiness fails', async () => {
@@ -532,7 +580,8 @@ describe('RunConfigPanel', () => {
 
     form.vm.$emit('select-existing', 'ws-draft-new')
 
-    expect(teamStore.updateConfig).toHaveBeenCalledWith({
+    expect(teamStore.applyConfigEdit).toHaveBeenCalledWith({
+      kind: 'set_workspace',
       workspaceId: 'ws-draft-new',
       workspaceMetadata: null,
     })
@@ -603,14 +652,25 @@ describe('RunConfigPanel', () => {
 
     const { useAgentTeamContextsStore } = await import('~/stores/agentTeamContextsStore')
     const contextStore = useAgentTeamContextsStore() as any
-    contextStore.activeTeamContext = {
-      config: {
-        teamDefinitionId: 'team-def-1',
-        teamDefinitionName: 'Team team-def-1',
+    const activeContext = buildTestTeamContext({
+      teamRunId: 'team-run-1',
+      teamDefinitionId: 'team-def-1',
+      teamDefinitionName: 'Team team-def-1',
+      rootChildren: [testAgentNode('/coordinator')],
+      workspaceRootPath: '/workspace/original',
+      configuration: {
         workspaceId: 'ws-original',
-        isLocked: false,
+        workspaceMetadata: {
+          workspaceId: 'ws-original',
+          workspaceRootPath: '/workspace/original',
+          displayName: 'Original workspace',
+          kind: 'filesystem',
+        },
+        isLocked: true,
       },
-    } as any
+    })
+    const topologyConfiguration = activeContext.topology.getConfigurationView()
+    contextStore.activeTeamContext = activeContext
 
     const wrapper = mount(RunConfigPanel, {
       global: {
@@ -620,8 +680,15 @@ describe('RunConfigPanel', () => {
 
     const form = wrapper.findComponent(TeamRunConfigForm)
     expect(form.props('readOnly')).toBe(true)
+    expect(form.props('config')).toBe(topologyConfiguration)
+    expect(Object.isFrozen(form.props('config'))).toBe(true)
 
     form.vm.$emit('select-existing', 'ws-new')
-    expect(contextStore.activeTeamContext?.config.workspaceId).toBe('ws-original')
+    form.vm.$emit('edit-config', { kind: 'set_model', llmModelIdentifier: 'changed-model' })
+    expect(contextStore.activeTeamContext).toBe(activeContext)
+    expect(contextStore.activeTeamContext.topology.getConfigurationView()).toBe(topologyConfiguration)
+    expect(topologyConfiguration.workspaceId).toBe('ws-original')
+    expect(topologyConfiguration.llmModelIdentifier).toBe('test-model')
+    expect(teamRunState.applyConfigEdit).not.toHaveBeenCalled()
   })
 })

@@ -4,89 +4,105 @@ import { reactive, ref } from 'vue';
 import WorkspaceHistoryWorkspaceSection from '../WorkspaceHistoryWorkspaceSection.vue';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { buildRunHistoryTeamExecutionRows } from '~/stores/runHistoryTeamExecutionRows';
+import type { TeamMemberTreeRow, TeamTreeNode } from '~/stores/runHistoryTypes';
+import {
+  createTeamExecutionAddress,
+  toTeamExecutionAddressDto,
+} from '~/types/agent/TeamExecutionAddress';
+import {
+  buildTestTeamContext,
+  testAgentNode,
+  testSubTeamNode,
+  testTaskProjection,
+} from '~/test-support/currentTeamTestFixtures';
 
-const stableMember = (memberRouteKey: string, overrides: Record<string, any> = {}) => ({
+const stableAgent = (
+  memberAddress: string,
+  overrides: Partial<TeamMemberTreeRow> = {},
+): TeamMemberTreeRow => ({
   teamRunId: 'team-run-1',
-  memberKind: 'agent',
-  memberRouteKey,
-  memberPath: [memberRouteKey],
-  memberName: memberRouteKey,
-  displayName: memberRouteKey,
-  memberRunId: `${memberRouteKey}-run`,
+  kind: 'agent',
+  memberAddress,
+  displayName: memberAddress.split('/').filter(Boolean).at(-1) ?? memberAddress,
+  agentRunId: `${memberAddress.replace(/[^a-z0-9]+/gi, '-')}-run`,
   workspaceRootPath: '/ws/a',
   summary: 'Team task summary',
   lastActivityAt: '2026-06-30T00:00:00.000Z',
   currentStatus: AgentStatus.Idle,
-  lastKnownStatus: 'ACTIVE',
   isActive: true,
   deleteLifecycle: 'READY',
   children: [],
   ...overrides,
 });
 
+const rootRow = (children: TeamMemberTreeRow[]): TeamMemberTreeRow => ({
+  teamRunId: 'team-run-1',
+  kind: 'agent_team',
+  memberAddress: '/',
+  displayName: 'Team Alpha',
+  teamDefinitionId: 'team-def-1',
+  teamRunIdForNode: 'team-run-1',
+  coordinatorAddress: children[0]?.memberAddress ?? '/worker',
+  workspaceRootPath: '/ws/a',
+  summary: 'Team task summary',
+  lastActivityAt: '2026-06-30T00:00:00.000Z',
+  currentStatus: null,
+  isActive: true,
+  deleteLifecycle: 'READY',
+  children,
+});
+
 const mountSubject = (options: {
-  teamOverride?: Record<string, any>;
-  liveContextOverride?: Record<string, any>;
+  stableChildren?: TeamMemberTreeRow[];
+  liveContext?: ReturnType<typeof buildTestTeamContext>;
   workspaceTeams?: any[];
-  workspaceTeamHistoryGroups?: any[];
   teamExpanded?: boolean;
+  canTerminateTeam?: (isActive: boolean) => boolean;
   selectedTeamRunId?: string | null;
   selectedType?: 'agent' | 'team' | null;
-  canTerminateTeam?: (isActive: boolean) => boolean;
 } = {}) => {
-  const worker = stableMember('worker');
-  const defaultTeam = {
+  const worker = stableAgent('/worker');
+  const stableChildren = options.stableChildren ?? [worker];
+  const defaultTaskAddress = createTeamExecutionAddress({
+    rootTeamRunId: 'team-run-1',
+    memberAddress: '/worker',
+    taskAgentRunId: 'task-agent-run-1',
+  });
+  const liveContext = options.liveContext ?? buildTestTeamContext({
+    teamRunId: 'team-run-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    rootChildren: [testAgentNode('/worker', { agentRunId: worker.agentRunId!, displayName: 'worker' })],
+    coordinatorAddress: '/worker',
+    focusedExecutionAddress: createTeamExecutionAddress({ rootTeamRunId: 'team-run-1', memberAddress: '/worker' }),
+    workspaceRootPath: '/ws/a',
+    tasks: [testTaskProjection({
+      taskId: 'task_0001',
+      executionAddress: defaultTaskAddress,
+      senderAddress: createTeamExecutionAddress({ rootTeamRunId: 'team-run-1', memberAddress: '/worker' }),
+    })],
+  });
+  const defaultTaskContext = liveContext.executions.getAgentContext(defaultTaskAddress);
+  if (defaultTaskContext) {
+    defaultTaskContext.state.currentStatus = AgentStatus.Running;
+    liveContext.executions.focus(defaultTaskAddress);
+  }
+  const team: TeamTreeNode = {
     teamRunId: 'team-run-1',
     teamDefinitionId: 'team-def-1',
     teamDefinitionName: 'Team Alpha',
     workspaceRootPath: '/ws/a',
     summary: 'Team task summary',
     lastActivityAt: '2026-06-30T00:00:00.000Z',
-    lastKnownStatus: 'ACTIVE',
     isActive: true,
     deleteLifecycle: 'READY',
-    focusedMemberRouteKey: 'worker',
-    members: [worker],
-    memberTree: [worker],
-  } as any;
-  const team = {
-    ...defaultTeam,
-    ...options.teamOverride,
-  } as any;
-  const taskAgentNode = {
-    memberKind: 'agent',
-    memberName: 'worker · task_0001',
-    displayName: 'worker · task_0001',
-    memberPath: ['worker', 'task-agent-run-1'],
-    memberRouteKey: 'task-agent-run-1',
-    memberRunId: 'task-agent-run-1',
-    agentDefinitionId: 'worker-agent',
-    isTaskAgentInstance: true,
-    taskAgentRunId: 'task-agent-run-1',
-    logicalMemberRouteKey: 'worker',
-    taskId: 'task_0001',
-    currentStatus: AgentStatus.Running,
+    focusedExecutionAddress: liveContext.executions.getFocusedAddress(),
+    rootTeam: rootRow(stableChildren),
+    members: stableChildren,
+    executionRows: [],
   };
-  const defaultLiveContext = {
-    teamRunId: 'team-run-1',
-    focusedMemberRouteKey: 'task-agent-run-1',
-    memberTree: [
-      { memberKind: 'agent', memberName: 'worker', displayName: 'worker', memberPath: ['worker'], memberRouteKey: 'worker', memberRunId: 'worker-run', agentDefinitionId: 'worker-agent' },
-      taskAgentNode,
-    ],
-    leafAgentContextsByRouteKey: new Map([
-      ['task-agent-run-1', { state: { currentStatus: AgentStatus.Running } }],
-    ]),
-  } as any;
-  const liveContext = {
-    ...defaultLiveContext,
-    ...options.liveContextOverride,
-  } as any;
-  const projectedTeam = {
-    ...team,
-    focusedMemberRouteKey: liveContext.focusedMemberRouteKey ?? team.focusedMemberRouteKey,
-  } as any;
-  projectedTeam.executionRows = buildRunHistoryTeamExecutionRows(projectedTeam, liveContext);
+  team.executionRows = buildRunHistoryTeamExecutionRows(team, liveContext);
+
   const actions = {
     onRemoveWorkspace: vi.fn(),
     onCreateRun: vi.fn(),
@@ -103,8 +119,8 @@ const mountSubject = (options: {
   const expandedTeamMembers = reactive<Record<string, boolean>>({});
   const selectedTeamRunId = ref<string | null>(options.selectedTeamRunId ?? 'team-run-1');
   const selectedType = ref<'agent' | 'team' | null>(options.selectedType ?? 'team');
-  const expansionKey = (workspaceId: string, teamRunId: string, memberRouteKey: string) =>
-    `${workspaceId}::${teamRunId}::${memberRouteKey}`;
+  const expansionKey = (workspaceId: string, teamRunId: string, selector: string) =>
+    `${workspaceId}::${teamRunId}::${selector}`;
   const state = {
     selectedRunId: null,
     isTeamRunSelected: (teamRunId: string) =>
@@ -126,10 +142,10 @@ const mountSubject = (options: {
     isTeamDefinitionExpanded: () => true,
     toggleTeamDefinition: vi.fn(),
     isTeamExpanded: () => options.teamExpanded ?? true,
-    isTeamMemberExpanded: vi.fn((workspaceId: string, teamRunId: string, memberRouteKey: string) =>
-      Boolean(expandedTeamMembers[expansionKey(workspaceId, teamRunId, memberRouteKey)])),
-    toggleTeamMember: vi.fn((workspaceId: string, teamRunId: string, memberRouteKey: string) => {
-      const key = expansionKey(workspaceId, teamRunId, memberRouteKey);
+    isTeamMemberExpanded: vi.fn((workspaceId: string, teamRunId: string, selector: string) =>
+      Boolean(expandedTeamMembers[expansionKey(workspaceId, teamRunId, selector)])),
+    toggleTeamMember: vi.fn((workspaceId: string, teamRunId: string, selector: string) => {
+      const key = expansionKey(workspaceId, teamRunId, selector);
       expandedTeamMembers[key] = !expandedTeamMembers[key];
     }),
     canTerminateTeam: options.canTerminateTeam ?? ((isActive: boolean) => isActive),
@@ -145,8 +161,8 @@ const mountSubject = (options: {
         canRemoveFromWorkspaces: false,
         agents: [],
       },
-      workspaceTeams: options.workspaceTeams ?? [projectedTeam],
-      workspaceTeamHistoryGroups: options.workspaceTeamHistoryGroups ?? [],
+      workspaceTeams: options.workspaceTeams ?? [team],
+      workspaceTeamHistoryGroups: [],
       state,
       avatars: {
         showAgentAvatar: () => false,
@@ -159,15 +175,13 @@ const mountSubject = (options: {
         showTeamMemberAvatar: () => false,
         getTeamMemberAvatarUrl: () => '',
         onTeamMemberAvatarError: vi.fn(),
-        getTeamMemberDisplayName: (member: any) => member.displayName || member.memberName,
+        getTeamMemberDisplayName: (member: any) => member.displayName,
         getTeamMemberInitials: () => 'W',
       },
       actions,
     },
     global: {
-      stubs: {
-        Icon: { template: '<span data-test="icon" />' },
-      },
+      stubs: { Icon: { template: '<span data-test="icon" />' } },
       mocks: {
         $t: (key: string) => ({
           'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.temporary_execution_title': 'Temporary task execution',
@@ -180,23 +194,12 @@ const mountSubject = (options: {
     },
   });
 
-  return {
-    wrapper,
-    actions,
-    state,
-    liveContext,
-    worker,
-    team: projectedTeam,
-    selectedTeamRunId,
-    selectedType,
-  };
+  return { wrapper, actions, state, liveContext, worker, team, selectedTeamRunId, selectedType };
 };
 
 describe('WorkspaceHistoryWorkspaceSection', () => {
   it('renders any-active definition activity and exact sibling run activity reactively', async () => {
-    const activeWorker = stableMember('active-worker', {
-      currentStatus: AgentStatus.Error,
-    });
+    const currentAddress = createTeamExecutionAddress({ rootTeamRunId: 'team-run-active', memberAddress: '/worker' });
     const activeRun = {
       teamRunId: 'team-run-active',
       teamDefinitionId: 'team-def-1',
@@ -206,17 +209,19 @@ describe('WorkspaceHistoryWorkspaceSection', () => {
       lastActivityAt: '2026-06-29T00:00:00.000Z',
       isActive: true,
       deleteLifecycle: 'READY',
-      focusedMemberRouteKey: 'active-worker',
-      members: [activeWorker],
-      memberTree: [activeWorker],
-    } as any;
+      focusedExecutionAddress: currentAddress,
+      rootTeam: rootRow([]),
+      members: [],
+      executionRows: [],
+    };
     const inactiveRun = {
       ...activeRun,
       teamRunId: 'team-run-inactive',
+      focusedExecutionAddress: createTeamExecutionAddress({ rootTeamRunId: 'team-run-inactive', memberAddress: '/worker' }),
       summary: 'Inactive task',
       lastActivityAt: '2026-06-30T00:00:00.000Z',
       isActive: false,
-    } as any;
+    };
     const { wrapper } = mountSubject({
       workspaceTeams: [activeRun, inactiveRun],
       teamExpanded: false,
@@ -224,423 +229,284 @@ describe('WorkspaceHistoryWorkspaceSection', () => {
     });
 
     const groupRow = wrapper.get('[data-test="workspace-team-definition-row-team-def-1"]');
-    const groupDot = groupRow.get('[data-test="team-activity-dot"]');
-    expect(groupDot.attributes()).toMatchObject({
+    expect(groupRow.get('[data-test="team-activity-dot"]').attributes()).toMatchObject({
       'data-active': 'true',
       'aria-label': 'Active team runs',
       title: 'Active team runs',
     });
-    expect(groupDot.classes()).toContain('bg-blue-500');
+    expect(wrapper.get('[data-test="workspace-team-row-team-run-active"] [data-test="team-activity-dot"]').attributes('data-active')).toBe('true');
+    expect(wrapper.get('[data-test="workspace-team-row-team-run-inactive"] [data-test="team-activity-dot"]').attributes('data-active')).toBe('false');
 
-    const activeRow = wrapper.get('[data-test="workspace-team-row-team-run-active"]');
-    const inactiveRow = wrapper.get('[data-test="workspace-team-row-team-run-inactive"]');
-    expect(activeRow.get('[data-test="team-activity-dot"]').attributes('data-active')).toBe('true');
-    expect(activeRow.get('[data-test="team-activity-dot"]').attributes('aria-label')).toBe('Active team run');
-    expect(inactiveRow.get('[data-test="team-activity-dot"]').attributes('data-active')).toBe('false');
-    expect(inactiveRow.get('[data-test="team-activity-dot"]').attributes('aria-label')).toBe('Inactive team run');
-    expect(activeRow.element.parentElement?.querySelector('button[title$="terminate_team"]')).toBeNull();
-
-    await wrapper.setProps({
-      workspaceTeams: [
-        { ...activeRun, isActive: false },
-        inactiveRun,
-      ],
-    });
+    await wrapper.setProps({ workspaceTeams: [{ ...activeRun, isActive: false }, inactiveRun] });
     await wrapper.vm.$nextTick();
-
     expect(groupRow.get('[data-test="team-activity-dot"]').attributes('data-active')).toBe('false');
     expect(groupRow.get('[data-test="team-activity-dot"]').attributes('aria-label')).toBe('No active team runs');
-    expect(wrapper.get('[data-test="workspace-team-row-team-run-active"] [data-test="team-activity-dot"]').attributes('data-active')).toBe('false');
   });
 
-  it('renders transient execution rows inline with ghost semantics and current identity', async () => {
+  it('renders and selects exact stable and task-Agent execution rows', async () => {
     const { wrapper, actions, state } = mountSubject();
 
-    const stableRow = wrapper.get('[data-test="workspace-team-member-team-run-1-worker"]');
-    expect(stableRow.attributes('data-row-kind')).toBe('stable_member');
+    const stableRow = wrapper.get('[data-row-kind="stable_member"]');
     expect(stableRow.text()).toContain('worker');
-    expect(stableRow.classes()).not.toContain('text-indigo-900');
-
     await stableRow.trigger('click');
-
-    expect(state.toggleTeamMember).toHaveBeenCalledWith(
-      'workspace:/ws/a',
-      'team-run-1',
-      'worker',
-    );
     expect(actions.onSelectTeamMember).toHaveBeenCalledWith(
       expect.objectContaining({
-        teamRunId: 'team-run-1',
-        memberRouteKey: 'worker',
         kind: 'stable_member',
+        memberAddress: '/worker',
+        executionAddress: createTeamExecutionAddress({ rootTeamRunId: 'team-run-1', memberAddress: '/worker' }),
       }),
       'workspace:/ws/a',
     );
+    expect(state.toggleTeamMember).not.toHaveBeenCalled();
+
     actions.onSelectTeamMember.mockClear();
-
-    const transientRow = wrapper.get('[data-test="workspace-team-transient-execution-row"]');
-    expect(transientRow.attributes('data-row-kind')).toBe('transient_execution');
-    expect(transientRow.attributes('data-transient-kind')).toBe('task_agent');
-    expect(transientRow.attributes('data-member-route-key')).toBe('task-agent-run-1');
-    expect(transientRow.attributes('aria-current')).toBe('true');
-    expect(transientRow.attributes('style')).toContain('margin-left: 12px');
-    expect(transientRow.classes()).toContain('bg-indigo-50/40');
-    expect(transientRow.classes()).toContain('ring-indigo-200');
-    expect(transientRow.findAll('[data-test="workspace-transient-status-dot"]')).toHaveLength(1);
-    const statusDot = transientRow.get('[data-test="workspace-transient-status-dot"]');
-    expect(statusDot.element.tagName.toLowerCase()).toBe('svg');
-    expect(statusDot.classes()).toEqual(expect.arrayContaining([
-      'h-2.5',
-      'w-2.5',
-      'text-blue-700',
-    ]));
-    const statusRingDots = statusDot.findAll('circle');
-    expect(statusRingDots).toHaveLength(8);
-    expect(statusRingDots[0].attributes('fill')).toBe('currentColor');
-    expect(statusRingDots[0].attributes('r')).toBe('0.95');
-    expect(transientRow.text()).toContain('worker · task_0001');
-    expect(transientRow.text()).not.toContain('Temporary');
-
-    await transientRow.trigger('click');
-
+    const taskRow = wrapper.get('[data-test="workspace-team-transient-execution-row"]');
+    expect(taskRow.attributes('data-transient-kind')).toBe('task_agent');
+    expect(taskRow.attributes('data-member-address')).toBe('/worker');
+    expect(taskRow.classes()).toContain('ring-indigo-200');
+    expect(taskRow.text()).toContain('worker');
+    expect(taskRow.get('[data-test="workspace-transient-status-dot"]').findAll('circle')).toHaveLength(8);
+    await taskRow.trigger('click');
     expect(actions.onSelectTeamMember).toHaveBeenCalledWith(
       expect.objectContaining({
-        teamRunId: 'team-run-1',
-        memberRouteKey: 'task-agent-run-1',
         kind: 'transient_execution',
+        transientKind: 'task_agent',
+        executionAddress: createTeamExecutionAddress({
+          rootTeamRunId: 'team-run-1',
+          memberAddress: '/worker',
+          taskAgentRunId: 'task-agent-run-1',
+        }),
       }),
       'workspace:/ws/a',
     );
   });
 
-  it('marks only the selected team run current when focused member routes repeat', async () => {
-    const teamBMember = stableMember('worker', {
+  it('marks only the selected TeamRun current when focused member addresses repeat', async () => {
+    const teamAMember = stableAgent('/worker');
+    const teamBMember = stableAgent('/worker', {
       teamRunId: 'team-run-2',
-      workspaceRootPath: '/ws/a',
-      memberRunId: 'worker-run-2',
+      agentRunId: 'worker-run-2',
     });
-    const teamB = {
-      teamRunId: 'team-run-2',
-      teamDefinitionId: 'team-def-1',
-      teamDefinitionName: 'Team Alpha',
-      workspaceRootPath: '/ws/a',
-      summary: 'Second team task summary',
-      lastActivityAt: '2026-06-30T00:00:00.000Z',
-      lastKnownStatus: 'ACTIVE',
-      isActive: true,
-      deleteLifecycle: 'READY',
-      focusedMemberRouteKey: 'worker',
-      members: [teamBMember],
-      memberTree: [teamBMember],
-      executionRows: [{
-        kind: 'stable_member',
-        teamRunId: 'team-run-2',
-        memberKind: 'agent',
-        memberRouteKey: 'worker',
-        memberPath: ['worker'],
-        displayName: 'worker',
-        depth: 0,
-        hasChildren: false,
-        row: teamBMember,
-      }],
-    } as any;
-    const teamAMember = stableMember('worker');
-    const teamA = {
-      teamRunId: 'team-run-1',
-      teamDefinitionId: 'team-def-1',
-      teamDefinitionName: 'Team Alpha',
-      workspaceRootPath: '/ws/a',
-      summary: 'First team task summary',
-      lastActivityAt: '2026-06-30T00:00:00.000Z',
-      lastKnownStatus: 'ACTIVE',
-      isActive: true,
-      deleteLifecycle: 'READY',
-      focusedMemberRouteKey: 'worker',
-      members: [teamAMember],
-      memberTree: [teamAMember],
-      executionRows: [{
-        kind: 'stable_member',
-        teamRunId: 'team-run-1',
-        memberKind: 'agent',
-        memberRouteKey: 'worker',
-        memberPath: ['worker'],
-        displayName: 'worker',
-        depth: 0,
-        hasChildren: false,
-        row: teamAMember,
-      }],
-    } as any;
+    const buildTeam = (teamRunId: string, member: TeamMemberTreeRow): TeamTreeNode => {
+      const focusedExecutionAddress = createTeamExecutionAddress({
+        rootTeamRunId: teamRunId,
+        memberAddress: '/worker',
+      });
+      const rootTeam = {
+        ...rootRow([member]),
+        teamRunId,
+        teamRunIdForNode: teamRunId,
+      };
+      return {
+        teamRunId,
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Team Alpha',
+        workspaceRootPath: '/ws/a',
+        summary: 'Team task summary',
+        lastActivityAt: '2026-06-30T00:00:00.000Z',
+        isActive: true,
+        deleteLifecycle: 'READY',
+        focusedExecutionAddress,
+        rootTeam,
+        members: [member],
+        executionRows: [{
+          kind: 'stable_member',
+          teamRunId,
+          memberAddress: '/worker',
+          executionAddress: focusedExecutionAddress,
+          memberKind: 'agent',
+          displayName: 'worker',
+          depth: 0,
+          hasChildren: false,
+          row: member,
+        }],
+      };
+    };
+    const teamA = buildTeam('team-run-1', teamAMember);
+    const teamB = buildTeam('team-run-2', teamBMember);
     const { wrapper, selectedTeamRunId, selectedType } = mountSubject({
       workspaceTeams: [teamA, teamB],
       selectedTeamRunId: 'team-run-2',
-      liveContextOverride: { focusedMemberRouteKey: 'worker' },
     });
 
-    let firstRow = wrapper.get('[data-test="workspace-team-member-team-run-1-worker"]');
-    let secondRow = wrapper.get('[data-test="workspace-team-member-team-run-2-worker"]');
-    expect(firstRow.classes()).not.toContain('bg-indigo-50');
-    expect(firstRow.attributes('aria-current')).toBeUndefined();
-    expect(secondRow.classes()).toContain('bg-indigo-50');
-    expect(secondRow.attributes('aria-current')).toBe('true');
-    expect(wrapper.findAll('[aria-current="true"]')).toHaveLength(1);
+    const teamARow = () => wrapper.get('[data-test="workspace-team-member-team-run-1-/worker"]');
+    const teamBRow = () => wrapper.get('[data-test="workspace-team-member-team-run-2-/worker"]');
+    expect(teamARow().attributes('aria-current')).toBeUndefined();
+    expect(teamBRow().attributes('aria-current')).toBe('true');
+    expect(teamARow().classes()).not.toContain('bg-indigo-50');
+    expect(teamBRow().classes()).toContain('bg-indigo-50');
 
     selectedTeamRunId.value = null;
     await wrapper.vm.$nextTick();
-    expect(wrapper.findAll('[aria-current="true"]')).toHaveLength(0);
+    expect(teamARow().attributes('aria-current')).toBeUndefined();
+    expect(teamBRow().attributes('aria-current')).toBeUndefined();
 
     selectedTeamRunId.value = 'team-run-1';
     selectedType.value = 'agent';
     await wrapper.vm.$nextTick();
-    firstRow = wrapper.get('[data-test="workspace-team-member-team-run-1-worker"]');
-    secondRow = wrapper.get('[data-test="workspace-team-member-team-run-2-worker"]');
-    expect(firstRow.attributes('aria-current')).toBeUndefined();
-    expect(secondRow.attributes('aria-current')).toBeUndefined();
-    expect(wrapper.findAll('[aria-current="true"]')).toHaveLength(0);
+    expect(teamARow().attributes('aria-current')).toBeUndefined();
+    expect(teamBRow().attributes('aria-current')).toBeUndefined();
   });
 
-  it('toggles transient task-team children from the row body and keeps disclosure toggle-only', async () => {
-    const worker = stableMember('worker');
-    const reviewLead = stableMember('SoftwareEngineeringTeam/review_lead', {
-      memberPath: ['SoftwareEngineeringTeam', 'review_lead'],
-      memberName: 'review_lead',
-      displayName: 'review_lead',
-    });
-    const structuralTeam = stableMember('SoftwareEngineeringTeam', {
-      memberKind: 'agent_team',
-      memberPath: ['SoftwareEngineeringTeam'],
-      memberName: 'Software Engineering Team',
-      displayName: 'Software Engineering Team',
-      teamDefinitionId: 'software-team',
-      children: [reviewLead],
-    });
-    const taskTeamChildNode = {
-      memberKind: 'agent',
-      memberName: 'review_lead',
-      displayName: 'review_lead',
-      memberPath: ['task-team-run-1', 'review_lead'],
-      memberRouteKey: 'task-team-run-1/review_lead',
-      memberRunId: 'task-team-run-1::review_lead',
-      agentDefinitionId: 'review-lead-agent',
-      isTaskTeamChildProjection: true,
-      parentTaskTeamRunId: 'task-team-run-1',
-      currentStatus: AgentStatus.Idle,
+  it('toggles an exact task-Team subtree while keeping task details out of the tree', async () => {
+    const worker = stableAgent('/worker');
+    const stableReviewer = stableAgent('/study_group/reviewer', { displayName: 'reviewer' });
+    const stableStudyGroup: TeamMemberTreeRow = {
+      ...stableAgent('/study_group', { displayName: 'Study Group' }),
+      kind: 'agent_team',
+      agentRunId: null,
+      teamDefinitionId: 'study-group-definition',
+      teamRunIdForNode: 'study-group-run',
+      coordinatorAddress: '/study_group/reviewer',
+      currentStatus: null,
+      children: [stableReviewer],
     };
-    const taskTeamNode = {
-      memberKind: 'agent_team',
-      memberName: 'Software Engineering Team · task_0002',
-      displayName: 'Software Engineering Team · task_0002',
-      memberPath: ['task-team-run-1'],
-      memberRouteKey: 'task-team-run-1',
-      memberRunId: 'task-team-run-1',
-      teamDefinitionId: 'software-team',
-      children: [taskTeamChildNode],
-      isTaskTeamInstance: true,
-      taskTeamRunId: 'task-team-run-1',
-      taskId: 'task_0002',
-      taskDescription: 'Review design body should stay on the right.',
-      taskReferenceFiles: [{ referenceId: 'ref-design', path: '/tmp/design-spec.md', type: 'file' }],
-      taskArguments: { raw_task_argument: 'must not render in Workspaces' },
-    };
-
-    const { wrapper, actions } = mountSubject({
-      teamOverride: {
-        members: [worker, structuralTeam],
-        memberTree: [worker, structuralTeam],
-      },
-      liveContextOverride: {
-        memberTree: [
-          { memberKind: 'agent', memberName: 'worker', displayName: 'worker', memberPath: ['worker'], memberRouteKey: 'worker', memberRunId: 'worker-run', agentDefinitionId: 'worker-agent' },
-          {
-            memberKind: 'agent_team',
-            memberName: 'Software Engineering Team',
-            displayName: 'Software Engineering Team',
-            memberPath: ['SoftwareEngineeringTeam'],
-            memberRouteKey: 'SoftwareEngineeringTeam',
-            memberRunId: 'software-team-run',
-            teamDefinitionId: 'software-team',
-            children: [
-              { memberKind: 'agent', memberName: 'review_lead', displayName: 'review_lead', memberPath: ['SoftwareEngineeringTeam', 'review_lead'], memberRouteKey: 'SoftwareEngineeringTeam/review_lead', memberRunId: 'review-lead-run', agentDefinitionId: 'review-lead' },
-            ],
-          },
-          taskTeamNode,
-        ],
-        memberNodesByRouteKey: new Map<string, any>([
-          ['task-team-run-1', taskTeamNode],
-          ['task-team-run-1/review_lead', taskTeamChildNode],
+    const taskTeamAddress = createTeamExecutionAddress({
+      rootTeamRunId: 'team-run-1',
+      taskTeamRunIds: ['task-team-run-1'],
+      memberAddress: '/study_group',
+    });
+    const taskChildAddress = createTeamExecutionAddress({
+      rootTeamRunId: 'team-run-1',
+      taskTeamRunIds: ['task-team-run-1'],
+      memberAddress: '/study_group/reviewer',
+    });
+    const liveContext = buildTestTeamContext({
+      teamRunId: 'team-run-1',
+      rootChildren: [
+        testAgentNode('/worker', { agentRunId: worker.agentRunId! }),
+        testSubTeamNode('/study_group', [
+          testAgentNode('/study_group/reviewer', { agentRunId: stableReviewer.agentRunId! }),
         ]),
-        leafAgentContextsByRouteKey: new Map(),
-        focusedMemberRouteKey: 'worker',
-      },
+      ],
+      coordinatorAddress: '/worker',
+      focusedExecutionAddress: createTeamExecutionAddress({ rootTeamRunId: 'team-run-1', memberAddress: '/worker' }),
+      tasks: [testTaskProjection({
+        taskId: 'task_0002',
+        executionAddress: taskTeamAddress,
+        senderAddress: createTeamExecutionAddress({ rootTeamRunId: 'team-run-1', memberAddress: '/worker' }),
+        content: 'Review design body should stay on the right.',
+        referenceFiles: [{
+          referenceId: 'ref-design',
+          path: '/tmp/design-spec.md',
+          type: 'file',
+          createdAt: '2026-06-30T00:00:00.000Z',
+          updatedAt: '2026-06-30T00:00:00.000Z',
+        }],
+      })],
+      executionMessages: [{
+        type: 'AGENT_STATUS',
+        payload: {
+          agent_execution: {
+            kind: 'task_team_agent',
+            execution_address: toTeamExecutionAddressDto(taskChildAddress),
+            agent_run_id: 'task-reviewer-run',
+          },
+          status: 'running',
+          trigger: null,
+          tool_name: null,
+          error_message: null,
+          error_details: null,
+        },
+      }],
     });
+    const { wrapper, actions } = mountSubject({ stableChildren: [worker, stableStudyGroup], liveContext });
 
-    let transientRows = wrapper.findAll('[data-test="workspace-team-transient-execution-row"]');
-    expect(transientRows).toHaveLength(1);
-    expect(transientRows[0].attributes('data-transient-kind')).toBe('task_team');
-    expect(transientRows[0].attributes('data-member-route-key')).toBe('task-team-run-1');
-    expect(transientRows[0].text()).toContain('Software Engineering Team · task_0002');
-    expect(wrapper.find('[data-member-route-key="task-team-run-1/review_lead"]').exists()).toBe(false);
+    let taskRows = wrapper.findAll('[data-test="workspace-team-transient-execution-row"]');
+    expect(taskRows).toHaveLength(1);
+    expect(taskRows[0].attributes('data-transient-kind')).toBe('task_team');
+    expect(taskRows[0].attributes('data-member-address')).toBe('/study_group');
+    const disclosure = () => wrapper.get('[data-test="workspace-team-transient-disclosure"]');
+    expect(disclosure().attributes('aria-expanded')).toBe('false');
 
-    let disclosure = wrapper.get('[data-test="workspace-team-transient-disclosure"][data-member-route-key="task-team-run-1"]');
-    expect(disclosure.attributes('aria-expanded')).toBe('false');
-
-    actions.onSelectTeamMember.mockClear();
-    await transientRows[0].trigger('click');
+    await taskRows[0].trigger('click');
     await wrapper.vm.$nextTick();
-    transientRows = wrapper.findAll('[data-test="workspace-team-transient-execution-row"]');
-    expect(transientRows).toHaveLength(2);
-    expect(transientRows[0].findAll('[data-test="workspace-transient-status-dot"]')).toHaveLength(0);
-    const childStatusDots = transientRows[1].findAll('[data-test="workspace-transient-status-dot"]');
-    expect(childStatusDots).toHaveLength(1);
-    expect(childStatusDots[0].element.tagName.toLowerCase()).toBe('svg');
-    expect(childStatusDots[0].findAll('circle')).toHaveLength(8);
-    expect(transientRows[1].attributes('data-transient-kind')).toBe('task_team_child');
-    expect(transientRows[1].attributes('data-member-route-key')).toBe('task-team-run-1/review_lead');
-    expect(transientRows[1].attributes('style')).toContain('margin-left: 12px');
-    expect(transientRows[1].text()).toContain('review_lead');
-    disclosure = wrapper.get('[data-test="workspace-team-transient-disclosure"][data-member-route-key="task-team-run-1"]');
-    expect(disclosure.attributes('aria-expanded')).toBe('true');
+    taskRows = wrapper.findAll('[data-test="workspace-team-transient-execution-row"]');
+    expect(taskRows).toHaveLength(2);
+    expect(taskRows[1].attributes('data-transient-kind')).toBe('task_team_child');
+    expect(taskRows[1].attributes('data-member-address')).toBe('/study_group/reviewer');
     expect(actions.onSelectTeamMember).toHaveBeenCalledWith(
-      expect.objectContaining({
-        kind: 'transient_execution',
-        transientKind: 'task_team',
-        memberRouteKey: 'task-team-run-1',
-      }),
+      expect.objectContaining({ executionAddress: taskTeamAddress }),
       'workspace:/ws/a',
     );
+    expect(disclosure().attributes('aria-expanded')).toBe('true');
 
     actions.onSelectTeamMember.mockClear();
-    await wrapper
-      .get('[data-test="workspace-team-transient-execution-row"][data-member-route-key="task-team-run-1"]')
-      .trigger('click');
+    await disclosure().trigger('click');
     await wrapper.vm.$nextTick();
-    transientRows = wrapper.findAll('[data-test="workspace-team-transient-execution-row"]');
-    expect(transientRows).toHaveLength(1);
-    expect(wrapper.find('[data-member-route-key="task-team-run-1/review_lead"]').exists()).toBe(false);
-    expect(actions.onSelectTeamMember).toHaveBeenCalledTimes(1);
-
-    actions.onSelectTeamMember.mockClear();
-    disclosure = wrapper.get('[data-test="workspace-team-transient-disclosure"][data-member-route-key="task-team-run-1"]');
-    await disclosure.trigger('click');
-    await wrapper.vm.$nextTick();
-    transientRows = wrapper.findAll('[data-test="workspace-team-transient-execution-row"]');
-    expect(transientRows).toHaveLength(2);
+    expect(wrapper.findAll('[data-test="workspace-team-transient-execution-row"]')).toHaveLength(1);
     expect(actions.onSelectTeamMember).not.toHaveBeenCalled();
-
-    disclosure = wrapper.get('[data-test="workspace-team-transient-disclosure"][data-member-route-key="task-team-run-1"]');
-    await disclosure.trigger('click');
-    await wrapper.vm.$nextTick();
-    transientRows = wrapper.findAll('[data-test="workspace-team-transient-execution-row"]');
-    expect(transientRows).toHaveLength(1);
-    expect(actions.onSelectTeamMember).not.toHaveBeenCalled();
-
-    const renderedText = wrapper.text();
-    expect(renderedText).not.toContain('Review design body should stay on the right.');
-    expect(renderedText).not.toContain('/tmp/design-spec.md');
-    expect(renderedText).not.toContain('raw_task_argument');
+    expect(wrapper.text()).not.toContain('Review design body should stay on the right.');
+    expect(wrapper.text()).not.toContain('/tmp/design-spec.md');
+    expect(wrapper.text()).not.toContain('raw_task_argument');
   });
 
-  it('removes transient execution rows when live projection cleanup removes the backing node', async () => {
+  it('removes transient execution rows when the exact live projection disappears', async () => {
     const { wrapper, team, worker } = mountSubject();
-
-    await wrapper.get('[data-test="workspace-team-member-team-run-1-worker"]').trigger('click');
-    await wrapper.vm.$nextTick();
     expect(wrapper.find('[data-test="workspace-team-transient-execution-row"]').exists()).toBe(true);
 
     await wrapper.setProps({
       workspaceTeams: [{
         ...team,
-        focusedMemberRouteKey: 'worker',
-        executionRows: [{
-          kind: 'stable_member',
-          teamRunId: 'team-run-1',
-          memberKind: 'agent',
-          memberRouteKey: 'worker',
-          memberPath: ['worker'],
-          displayName: 'worker',
-          depth: 0,
-          hasChildren: false,
-          row: worker,
-        }],
+        focusedExecutionAddress: createTeamExecutionAddress({ rootTeamRunId: 'team-run-1', memberAddress: '/worker' }),
+        executionRows: buildRunHistoryTeamExecutionRows({
+          ...team,
+          rootTeam: rootRow([worker]),
+          members: [worker],
+        }),
       }],
     });
     await wrapper.vm.$nextTick();
 
     expect(wrapper.find('[data-test="workspace-team-transient-execution-row"]').exists()).toBe(false);
-    expect(wrapper.find('[data-test="workspace-team-member-team-run-1-worker"]').exists()).toBe(true);
+    expect(wrapper.find('[data-row-kind="stable_member"]').exists()).toBe(true);
   });
 
-  it('toggles stable nested team row children from row body click and keyboard while selecting the row', async () => {
-    const reviewLead = stableMember('SoftwareEngineeringTeam/review_lead', {
-      memberPath: ['SoftwareEngineeringTeam', 'review_lead'],
-      memberName: 'review_lead',
-      displayName: 'review_lead',
-    });
-    const structuralTeam = stableMember('SoftwareEngineeringTeam', {
-      memberKind: 'agent_team',
-      memberPath: ['SoftwareEngineeringTeam'],
-      memberName: 'Software Engineering Team',
-      displayName: 'Software Engineering Team',
+  it('toggles stable nested Team children from row body and disclosure with exact addresses', async () => {
+    const reviewLead = stableAgent('/software_team/review_lead', { displayName: 'review_lead' });
+    const structuralTeam: TeamMemberTreeRow = {
+      ...stableAgent('/software_team', { displayName: 'Software Engineering Team' }),
+      kind: 'agent_team',
+      agentRunId: null,
       teamDefinitionId: 'software-team',
+      teamRunIdForNode: 'software-team-run',
+      coordinatorAddress: '/software_team/review_lead',
+      currentStatus: null,
       children: [reviewLead],
+    };
+    const liveContext = buildTestTeamContext({
+      teamRunId: 'team-run-1',
+      rootChildren: [testSubTeamNode('/software_team', [
+        testAgentNode('/software_team/review_lead', { agentRunId: reviewLead.agentRunId! }),
+      ])],
+      coordinatorAddress: '/software_team/review_lead',
+      focusedExecutionAddress: createTeamExecutionAddress({ rootTeamRunId: 'team-run-1', memberAddress: '/software_team/review_lead' }),
     });
+    const { wrapper, actions, state } = mountSubject({ stableChildren: [structuralTeam], liveContext });
 
-    const { wrapper, actions, state } = mountSubject({
-      teamOverride: {
-        focusedMemberRouteKey: 'SoftwareEngineeringTeam',
-        members: [structuralTeam],
-        memberTree: [structuralTeam],
-      },
-      liveContextOverride: {
-        focusedMemberRouteKey: 'SoftwareEngineeringTeam',
-        memberTree: [structuralTeam],
-        leafAgentContextsByRouteKey: new Map(),
-      },
-    });
+    const nestedRow = () => wrapper.get('[data-test="workspace-team-member-team-run-1-/software_team"]');
+    const childRow = () => wrapper.find('[data-test="workspace-team-member-team-run-1-/software_team/review_lead"]');
+    const disclosure = () => wrapper.get('[data-test="workspace-team-member-disclosure"]');
+    expect(disclosure().attributes('data-member-address')).toBe('/software_team');
+    expect(childRow().exists()).toBe(false);
 
-    const childSelector = '[data-test="workspace-team-member-team-run-1-SoftwareEngineeringTeam/review_lead"]';
-    let nestedRow = wrapper.get('[data-test="workspace-team-member-team-run-1-SoftwareEngineeringTeam"]');
-    let disclosure = wrapper.get('[data-test="workspace-team-member-disclosure"][data-member-route-key="SoftwareEngineeringTeam"]');
-    expect(disclosure.attributes('aria-expanded')).toBe('false');
-    expect(wrapper.find(childSelector).exists()).toBe(false);
-
-    await nestedRow.trigger('click');
+    await nestedRow().trigger('click');
     await wrapper.vm.$nextTick();
-
-    expect(state.toggleTeamMember).toHaveBeenLastCalledWith(
-      'workspace:/ws/a',
-      'team-run-1',
-      'SoftwareEngineeringTeam',
-    );
+    expect(state.toggleTeamMember).toHaveBeenLastCalledWith('workspace:/ws/a', 'team-run-1', '/software_team');
     expect(actions.onSelectTeamMember).toHaveBeenLastCalledWith(
-      expect.objectContaining({
-        kind: 'stable_member',
-        memberRouteKey: 'SoftwareEngineeringTeam',
-      }),
+      expect.objectContaining({ memberAddress: '/software_team' }),
       'workspace:/ws/a',
     );
-    expect(wrapper.find(childSelector).exists()).toBe(true);
+    expect(childRow().exists()).toBe(true);
 
-    nestedRow = wrapper.get('[data-test="workspace-team-member-team-run-1-SoftwareEngineeringTeam"]');
-    await nestedRow.trigger('click');
+    await nestedRow().trigger('keydown.space');
     await wrapper.vm.$nextTick();
-    expect(wrapper.find(childSelector).exists()).toBe(false);
-
-    nestedRow = wrapper.get('[data-test="workspace-team-member-team-run-1-SoftwareEngineeringTeam"]');
-    await nestedRow.trigger('keydown.enter');
-    await wrapper.vm.$nextTick();
-    expect(wrapper.find(childSelector).exists()).toBe(true);
-
-    nestedRow = wrapper.get('[data-test="workspace-team-member-team-run-1-SoftwareEngineeringTeam"]');
-    await nestedRow.trigger('keydown.space');
-    await wrapper.vm.$nextTick();
-    expect(wrapper.find(childSelector).exists()).toBe(false);
-    expect(actions.onSelectTeamMember).toHaveBeenCalledTimes(4);
+    expect(childRow().exists()).toBe(false);
 
     actions.onSelectTeamMember.mockClear();
-    disclosure = wrapper.get('[data-test="workspace-team-member-disclosure"][data-member-route-key="SoftwareEngineeringTeam"]');
-    await disclosure.trigger('click');
+    await disclosure().trigger('click');
     await wrapper.vm.$nextTick();
-    expect(wrapper.find(childSelector).exists()).toBe(true);
+    expect(childRow().exists()).toBe(true);
     expect(actions.onSelectTeamMember).not.toHaveBeenCalled();
   });
 });

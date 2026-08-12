@@ -1,0 +1,6 @@
+owned_port_60227=CLOSED
+owned_port_31227=CLOSED
+protected_port_60004=ABSENT_UNTOUCHED
+protected_port_31004=ABSENT_UNTOUCHED
+operational_database=NOT_INSPECTED
+source_fixture_hashes_unchanged=true

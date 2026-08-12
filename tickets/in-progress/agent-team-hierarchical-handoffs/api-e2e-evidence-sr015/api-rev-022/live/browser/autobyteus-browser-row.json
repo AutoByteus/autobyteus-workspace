@@ -1,0 +1,1371 @@
+{
+  "schemaVersion": 1,
+  "slug": "autobyteus",
+  "runtime": "autobyteus",
+  "model": "gpt-5.6-luna",
+  "startedAt": "2026-08-11T06:54:53.046Z",
+  "completedAt": "2026-08-11T06:55:52.813Z",
+  "passed": false,
+  "resultConditions": {
+    "freshRootTeamRun": true,
+    "rootedTopology": true,
+    "exactTaskAddress": true,
+    "exactOneDelegatedTask": true,
+    "acceptedStatus": true,
+    "exactOneSubmission": true,
+    "acceptedReview": true,
+    "exactOnePersistentReply": true,
+    "taskPeerDelivered": true,
+    "taskPeerReplyDelivered": true,
+    "observedTaskSummary": true,
+    "observedTaskTeamSummary": true,
+    "observedTransientTaskExecution": true,
+    "observedActiveTaskUi": true,
+    "observedAwaitingReviewUi": true,
+    "observedAcceptedTaskUi": true,
+    "observedSelectedDetail": true,
+    "taskDetailVisible": true,
+    "humanSenderVisible": false,
+    "noSerializedAddressLeak": true,
+    "completionMarkerVisible": true,
+    "refreshRetainedTaskCount": true,
+    "refreshRetainedTaskTeamSummary": true,
+    "terminalTransientCleanup": true,
+    "effectiveRuntimeMatches": true,
+    "effectiveCodexReasoningMatches": true
+  },
+  "effectiveLaunchForm": {
+    "runtimeKind": "autobyteus",
+    "model": "gpt-5.6-luna",
+    "reasoningEffort": "medium"
+  },
+  "rootRun": {
+    "teamRunId": "nested_classroom_test_team_225add5f659b42ef8aeea10faefcbef5",
+    "teamDefinitionId": "nested-classroom-test",
+    "teamDefinitionName": "Nested Classroom Test Team",
+    "coordinatorAddress": "/Teacher",
+    "createdAt": "2026-08-11T06:54:56.053Z",
+    "terminatedAt": null,
+    "isActive": true,
+    "rootTeam": {
+      "kind": "agent_team",
+      "address": "/",
+      "teamDefinitionId": "nested-classroom-test",
+      "teamRunId": "nested_classroom_test_team_225add5f659b42ef8aeea10faefcbef5",
+      "coordinatorAddress": "/Teacher",
+      "children": [
+        {
+          "kind": "agent",
+          "address": "/Teacher",
+          "agentDefinitionId": "team-local-agent:nested-classroom-test:teacher",
+          "agentRunId": "test_teacher_2055c6656c7d43dca13f1780f363d720",
+          "platformAgentRunId": null,
+          "role": null,
+          "description": null,
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "llmConfig": null,
+          "autoExecuteTools": true,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-022-live-20260811/temp_workspace",
+          "applicationExecutionContext": null
+        },
+        {
+          "kind": "agent_team",
+          "address": "/StudentStudyGroup",
+          "teamDefinitionId": "team-local-team:nested-classroom-test:student-study-group",
+          "teamRunId": "student_study_group_5bcd016b56ec4513b1b6889befa17fba",
+          "coordinatorAddress": "/StudentStudyGroup/student_one",
+          "role": null,
+          "description": null,
+          "children": [
+            {
+              "kind": "agent",
+              "address": "/StudentStudyGroup/student_one",
+              "agentDefinitionId": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-one",
+              "agentRunId": "student_one_c54eda6d66dd4f099394fe48730b5c79",
+              "platformAgentRunId": null,
+              "role": null,
+              "description": null,
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "gpt-5.6-luna",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-022-live-20260811/temp_workspace",
+              "applicationExecutionContext": null
+            },
+            {
+              "kind": "agent",
+              "address": "/StudentStudyGroup/student_two",
+              "agentDefinitionId": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-two",
+              "agentRunId": "student_two_f99048ed09b1441ea29cf4231d936424",
+              "platformAgentRunId": null,
+              "role": null,
+              "description": null,
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "gpt-5.6-luna",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-022-live-20260811/temp_workspace",
+              "applicationExecutionContext": null
+            }
+          ]
+        }
+      ]
+    },
+    "members": [
+      {
+        "memberAddress": "/Teacher",
+        "displayName": "Teacher",
+        "agentRunId": "test_teacher_2055c6656c7d43dca13f1780f363d720",
+        "status": "running",
+        "runtimeKind": "autobyteus",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-022-live-20260811/temp_workspace"
+      },
+      {
+        "memberAddress": "/StudentStudyGroup/student_one",
+        "displayName": "student_one",
+        "agentRunId": "student_one_c54eda6d66dd4f099394fe48730b5c79",
+        "status": "offline",
+        "runtimeKind": "autobyteus",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-022-live-20260811/temp_workspace"
+      },
+      {
+        "memberAddress": "/StudentStudyGroup/student_two",
+        "displayName": "student_two",
+        "agentRunId": "student_two_f99048ed09b1441ea29cf4231d936424",
+        "status": "offline",
+        "runtimeKind": "autobyteus",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-022-live-20260811/temp_workspace"
+      }
+    ]
+  },
+  "resumeConfig": {
+    "teamRunId": "nested_classroom_test_team_225add5f659b42ef8aeea10faefcbef5",
+    "isActive": true,
+    "metadata": {
+      "schemaVersion": 3,
+      "teamDefinitionName": "Nested Classroom Test Team",
+      "createdAt": "2026-08-11T06:54:56.053Z",
+      "archivedAt": null,
+      "rootTeam": {
+        "kind": "agent_team",
+        "address": "/",
+        "teamDefinitionId": "nested-classroom-test",
+        "teamRunId": "nested_classroom_test_team_225add5f659b42ef8aeea10faefcbef5",
+        "coordinatorAddress": "/Teacher",
+        "children": [
+          {
+            "kind": "agent",
+            "address": "/Teacher",
+            "agentDefinitionId": "team-local-agent:nested-classroom-test:teacher",
+            "agentRunId": "test_teacher_2055c6656c7d43dca13f1780f363d720",
+            "platformAgentRunId": "test_teacher_2055c6656c7d43dca13f1780f363d720",
+            "role": null,
+            "description": null,
+            "runtimeKind": "autobyteus",
+            "llmModelIdentifier": "gpt-5.6-luna",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "skillAccessMode": "PRELOADED_ONLY",
+            "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-022-live-20260811/temp_workspace",
+            "applicationExecutionContext": null
+          },
+          {
+            "kind": "agent_team",
+            "address": "/StudentStudyGroup",
+            "teamDefinitionId": "team-local-team:nested-classroom-test:student-study-group",
+            "teamRunId": "student_study_group_5bcd016b56ec4513b1b6889befa17fba",
+            "coordinatorAddress": "/StudentStudyGroup/student_one",
+            "role": null,
+            "description": null,
+            "children": [
+              {
+                "kind": "agent",
+                "address": "/StudentStudyGroup/student_one",
+                "agentDefinitionId": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-one",
+                "agentRunId": "student_one_c54eda6d66dd4f099394fe48730b5c79",
+                "platformAgentRunId": "student_one_c54eda6d66dd4f099394fe48730b5c79",
+                "role": null,
+                "description": null,
+                "runtimeKind": "autobyteus",
+                "llmModelIdentifier": "gpt-5.6-luna",
+                "llmConfig": null,
+                "autoExecuteTools": true,
+                "skillAccessMode": "PRELOADED_ONLY",
+                "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-022-live-20260811/temp_workspace",
+                "applicationExecutionContext": null
+              },
+              {
+                "kind": "agent",
+                "address": "/StudentStudyGroup/student_two",
+                "agentDefinitionId": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-two",
+                "agentRunId": "student_two_f99048ed09b1441ea29cf4231d936424",
+                "platformAgentRunId": "student_two_f99048ed09b1441ea29cf4231d936424",
+                "role": null,
+                "description": null,
+                "runtimeKind": "autobyteus",
+                "llmModelIdentifier": "gpt-5.6-luna",
+                "llmConfig": null,
+                "autoExecuteTools": true,
+                "skillAccessMode": "PRELOADED_ONLY",
+                "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-022-live-20260811/temp_workspace",
+                "applicationExecutionContext": null
+              }
+            ]
+          }
+        ]
+      },
+      "handoffs": [
+        {
+          "from": "/Teacher",
+          "to": "/StudentStudyGroup",
+          "rules": [
+            "When the user asks to send the classroom handoff token to the study group."
+          ]
+        },
+        {
+          "from": "/StudentStudyGroup/student_one",
+          "to": "/Teacher",
+          "rules": [
+            "When the delegated classroom task is finished and the teacher needs the outcome."
+          ]
+        },
+        {
+          "from": "/StudentStudyGroup/student_one",
+          "to": "/StudentStudyGroup/student_two",
+          "rules": [
+            "When the delegated classroom task asks the coordinator to consult the supporting student."
+          ]
+        }
+      ]
+    }
+  },
+  "finalTaskRecords": [
+    {
+      "taskId": "task_0001",
+      "status": "accepted",
+      "receiverTargetKind": "agent_team",
+      "content": "Perform exactly this nested task. Coordinator student_one must use send_message_to to send exactly TASK_PEER_AUTOBYTEUS to ./student_two, then wait for the peer reply. After receiving the peer reply, student_one must submit exactly NESTED_CLASSROOM_OK_AUTOBYTEUS via submit_task_result. Do not submit any other result or token, and do not delegate any additional task.",
+      "createdAt": "2026-08-11T06:55:07.969Z",
+      "senderAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_225add5f659b42ef8aeea10faefcbef5",
+        "taskTeamRunIds": [],
+        "memberAddress": "/Teacher",
+        "taskAgentRunId": null
+      },
+      "receiverAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_225add5f659b42ef8aeea10faefcbef5",
+        "taskTeamRunIds": [
+          "team_local_team_nested_classroom_test_student_st_d50ab8aa0d444547b3f327a6a541b9c4"
+        ],
+        "memberAddress": "/StudentStudyGroup/student_one",
+        "taskAgentRunId": null
+      },
+      "taskRun": {
+        "startedAt": "2026-08-11T06:55:08.009Z",
+        "address": {
+          "rootTeamRunId": "nested_classroom_test_team_225add5f659b42ef8aeea10faefcbef5",
+          "taskTeamRunIds": [
+            "team_local_team_nested_classroom_test_student_st_d50ab8aa0d444547b3f327a6a541b9c4"
+          ],
+          "memberAddress": "/StudentStudyGroup",
+          "taskAgentRunId": null
+        }
+      },
+      "updates": [
+        {
+          "kind": "submission",
+          "submissionId": "task_0001_submission_0001",
+          "reviewId": null,
+          "reviewedSubmissionId": null,
+          "decision": null,
+          "content": "NESTED_CLASSROOM_OK_AUTOBYTEUS",
+          "createdAt": "2026-08-11T06:55:37.687Z",
+          "senderAddress": {
+            "rootTeamRunId": "nested_classroom_test_team_225add5f659b42ef8aeea10faefcbef5",
+            "taskTeamRunIds": [
+              "team_local_team_nested_classroom_test_student_st_d50ab8aa0d444547b3f327a6a541b9c4"
+            ],
+            "memberAddress": "/StudentStudyGroup",
+            "taskAgentRunId": null
+          },
+          "receiverAddress": {
+            "rootTeamRunId": "nested_classroom_test_team_225add5f659b42ef8aeea10faefcbef5",
+            "taskTeamRunIds": [],
+            "memberAddress": "/Teacher",
+            "taskAgentRunId": null
+          }
+        },
+        {
+          "kind": "review",
+          "submissionId": null,
+          "reviewId": "task_0001_review_0001",
+          "reviewedSubmissionId": "task_0001_submission_0001",
+          "decision": "accept",
+          "content": "Accept the exact required result NESTED_CLASSROOM_OK_AUTOBYTEUS.",
+          "createdAt": "2026-08-11T06:55:46.512Z",
+          "senderAddress": {
+            "rootTeamRunId": "nested_classroom_test_team_225add5f659b42ef8aeea10faefcbef5",
+            "taskTeamRunIds": [],
+            "memberAddress": "/Teacher",
+            "taskAgentRunId": null
+          },
+          "receiverAddress": {
+            "rootTeamRunId": "nested_classroom_test_team_225add5f659b42ef8aeea10faefcbef5",
+            "taskTeamRunIds": [
+              "team_local_team_nested_classroom_test_student_st_d50ab8aa0d444547b3f327a6a541b9c4"
+            ],
+            "memberAddress": "/StudentStudyGroup",
+            "taskAgentRunId": null
+          }
+        }
+      ]
+    }
+  ],
+  "finalCommunications": [
+    {
+      "messageId": "teammsg_uyEuXAM43fXHu0XENd9RqUfEhtwfPKBf",
+      "content": "Please have your coordinator reply to /Teacher with exactly CLASSROOM_REPLY_AUTOBYTEUS.",
+      "messageType": "classroom_message",
+      "createdAt": "2026-08-11T06:55:00.149Z",
+      "senderAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_225add5f659b42ef8aeea10faefcbef5",
+        "taskTeamRunIds": [],
+        "memberAddress": "/Teacher",
+        "taskAgentRunId": null
+      },
+      "receiverAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_225add5f659b42ef8aeea10faefcbef5",
+        "taskTeamRunIds": [],
+        "memberAddress": "/StudentStudyGroup/student_one",
+        "taskAgentRunId": null
+      }
+    },
+    {
+      "messageId": "teammsg_54iviXIBEcoCb7bbzkKjUktr7tiesEFb",
+      "content": "CLASSROOM_REPLY_AUTOBYTEUS",
+      "messageType": "result",
+      "createdAt": "2026-08-11T06:55:03.739Z",
+      "senderAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_225add5f659b42ef8aeea10faefcbef5",
+        "taskTeamRunIds": [],
+        "memberAddress": "/StudentStudyGroup/student_one",
+        "taskAgentRunId": null
+      },
+      "receiverAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_225add5f659b42ef8aeea10faefcbef5",
+        "taskTeamRunIds": [],
+        "memberAddress": "/Teacher",
+        "taskAgentRunId": null
+      }
+    },
+    {
+      "messageId": "teammsg_CWSrezfk5eTs7v2zBG-hTzaiQLl7AoCl",
+      "content": "TASK_PEER_AUTOBYTEUS",
+      "messageType": "task_request",
+      "createdAt": "2026-08-11T06:55:09.388Z",
+      "senderAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_225add5f659b42ef8aeea10faefcbef5",
+        "taskTeamRunIds": [
+          "team_local_team_nested_classroom_test_student_st_d50ab8aa0d444547b3f327a6a541b9c4"
+        ],
+        "memberAddress": "/StudentStudyGroup/student_one",
+        "taskAgentRunId": null
+      },
+      "receiverAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_225add5f659b42ef8aeea10faefcbef5",
+        "taskTeamRunIds": [
+          "team_local_team_nested_classroom_test_student_st_d50ab8aa0d444547b3f327a6a541b9c4"
+        ],
+        "memberAddress": "/StudentStudyGroup/student_two",
+        "taskAgentRunId": null
+      }
+    },
+    {
+      "messageId": "teammsg_ibk5lMwcuH0IzLY1ngfA570DgjkMTPPj",
+      "content": "TASK_PEER_AUTOBYTEUS",
+      "messageType": "result",
+      "createdAt": "2026-08-11T06:55:10.754Z",
+      "senderAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_225add5f659b42ef8aeea10faefcbef5",
+        "taskTeamRunIds": [
+          "team_local_team_nested_classroom_test_student_st_d50ab8aa0d444547b3f327a6a541b9c4"
+        ],
+        "memberAddress": "/StudentStudyGroup/student_two",
+        "taskAgentRunId": null
+      },
+      "receiverAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_225add5f659b42ef8aeea10faefcbef5",
+        "taskTeamRunIds": [
+          "team_local_team_nested_classroom_test_student_st_d50ab8aa0d444547b3f327a6a541b9c4"
+        ],
+        "memberAddress": "/StudentStudyGroup/student_one",
+        "taskAgentRunId": null
+      }
+    },
+    {
+      "messageId": "teammsg_J_2moDRY18n9TN5yyl7muuvz8VdOFiJm",
+      "content": "Please proceed with the delegated task now: student_one must send exactly TASK_PEER_AUTOBYTEUS to ./student_two, await the peer reply, then submit exactly NESTED_CLASSROOM_OK_AUTOBYTEUS.",
+      "messageType": "classroom_message",
+      "createdAt": "2026-08-11T06:55:33.949Z",
+      "senderAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_225add5f659b42ef8aeea10faefcbef5",
+        "taskTeamRunIds": [],
+        "memberAddress": "/Teacher",
+        "taskAgentRunId": null
+      },
+      "receiverAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_225add5f659b42ef8aeea10faefcbef5",
+        "taskTeamRunIds": [],
+        "memberAddress": "/StudentStudyGroup/student_one",
+        "taskAgentRunId": null
+      }
+    },
+    {
+      "messageId": "teammsg_yig7MQTiyj0FTs9H7xul3qIl9Tt01Wqk",
+      "content": "TASK_PEER_AUTOBYTEUS",
+      "messageType": "task",
+      "createdAt": "2026-08-11T06:55:35.395Z",
+      "senderAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_225add5f659b42ef8aeea10faefcbef5",
+        "taskTeamRunIds": [],
+        "memberAddress": "/StudentStudyGroup/student_one",
+        "taskAgentRunId": null
+      },
+      "receiverAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_225add5f659b42ef8aeea10faefcbef5",
+        "taskTeamRunIds": [],
+        "memberAddress": "/StudentStudyGroup/student_two",
+        "taskAgentRunId": null
+      }
+    },
+    {
+      "messageId": "teammsg_kX8HZku8qLmsixjBp8O9ulxm8hQLi-Ne",
+      "content": "TASK_PEER_AUTOBYTEUS",
+      "messageType": "answer",
+      "createdAt": "2026-08-11T06:55:37.395Z",
+      "senderAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_225add5f659b42ef8aeea10faefcbef5",
+        "taskTeamRunIds": [],
+        "memberAddress": "/StudentStudyGroup/student_two",
+        "taskAgentRunId": null
+      },
+      "receiverAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_225add5f659b42ef8aeea10faefcbef5",
+        "taskTeamRunIds": [],
+        "memberAddress": "/StudentStudyGroup/student_one",
+        "taskAgentRunId": null
+      }
+    },
+    {
+      "messageId": "teammsg_9LCznbm8nk5gcMNe_wME9ltAoiKbW6go",
+      "content": "Please reply when ready; I am awaiting your peer response before final submission.",
+      "messageType": "follow_up",
+      "createdAt": "2026-08-11T06:55:37.493Z",
+      "senderAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_225add5f659b42ef8aeea10faefcbef5",
+        "taskTeamRunIds": [],
+        "memberAddress": "/StudentStudyGroup/student_one",
+        "taskAgentRunId": null
+      },
+      "receiverAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_225add5f659b42ef8aeea10faefcbef5",
+        "taskTeamRunIds": [],
+        "memberAddress": "/StudentStudyGroup/student_two",
+        "taskAgentRunId": null
+      }
+    },
+    {
+      "messageId": "teammsg_pGlwFab36O9ojxKHisFbRDhFgcs-52AQ",
+      "content": "Ready. The peer response is confirmed: TASK_PEER_AUTOBYTEUS.",
+      "messageType": "response",
+      "createdAt": "2026-08-11T06:55:39.718Z",
+      "senderAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_225add5f659b42ef8aeea10faefcbef5",
+        "taskTeamRunIds": [],
+        "memberAddress": "/StudentStudyGroup/student_two",
+        "taskAgentRunId": null
+      },
+      "receiverAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_225add5f659b42ef8aeea10faefcbef5",
+        "taskTeamRunIds": [],
+        "memberAddress": "/StudentStudyGroup/student_one",
+        "taskAgentRunId": null
+      }
+    },
+    {
+      "messageId": "teammsg_XLJQTLwQzKU8DgQXwSf8HyK1xVy7Ks6L",
+      "content": "NESTED_CLASSROOM_OK_AUTOBYTEUS",
+      "messageType": "result",
+      "createdAt": "2026-08-11T06:55:41.686Z",
+      "senderAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_225add5f659b42ef8aeea10faefcbef5",
+        "taskTeamRunIds": [],
+        "memberAddress": "/StudentStudyGroup/student_one",
+        "taskAgentRunId": null
+      },
+      "receiverAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_225add5f659b42ef8aeea10faefcbef5",
+        "taskTeamRunIds": [],
+        "memberAddress": "/Teacher",
+        "taskAgentRunId": null
+      }
+    },
+    {
+      "messageId": "teammsg_lj1fHqlMA-7yAVT2oFb6ffecW07nHxoG",
+      "content": "NESTED_CLASSROOM_OK_AUTOBYTEUS",
+      "messageType": "result",
+      "createdAt": "2026-08-11T06:55:45.730Z",
+      "senderAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_225add5f659b42ef8aeea10faefcbef5",
+        "taskTeamRunIds": [],
+        "memberAddress": "/StudentStudyGroup/student_one",
+        "taskAgentRunId": null
+      },
+      "receiverAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_225add5f659b42ef8aeea10faefcbef5",
+        "taskTeamRunIds": [],
+        "memberAddress": "/Teacher",
+        "taskAgentRunId": null
+      }
+    }
+  ],
+  "observedStatuses": [
+    "none",
+    "active",
+    "awaiting_review",
+    "accepted"
+  ],
+  "beforeRefresh": {
+    "taskHeader": [
+      "Tasks\n1 task"
+    ],
+    "taskEntries": 1,
+    "taskTeamEntries": 1,
+    "transientRows": 0,
+    "taskDetails": [
+      "Perform exactly this nested task. Coordinator student_one must use send_message_to to send exactly TASK_PEER_AUTOBYTEUS to ./student_two, then wait for the peer reply. After receiving the peer reply, student_one must submit exactly NESTED_CLASSROOM_OK_AUTOBYTEUS via submit_task_result. Do not submit any other result or token, and do not delegate any additional task."
+    ],
+    "interAgent": []
+  },
+  "afterRefresh": {
+    "taskHeader": [
+      "Tasks\n1 task"
+    ],
+    "taskEntries": 1,
+    "taskTeamEntries": 1,
+    "transientRows": 0,
+    "taskDetails": [
+      "Perform exactly this nested task. Coordinator student_one must use send_message_to to send exactly TASK_PEER_AUTOBYTEUS to ./student_two, then wait for the peer reply. After receiving the peer reply, student_one must submit exactly NESTED_CLASSROOM_OK_AUTOBYTEUS via submit_task_result. Do not submit any other result or token, and do not delegate any additional task."
+    ],
+    "interAgent": []
+  },
+  "samples": [
+    {
+      "elapsedMs": 400,
+      "taskHeader": [
+        "Tasks\n0 tasks"
+      ],
+      "taskEntries": 0,
+      "taskTeamEntries": 0,
+      "transientCount": 0,
+      "transientTexts": [],
+      "taskDetails": [],
+      "interAgent": [],
+      "taskStatus": "none",
+      "hasSubmission": false,
+      "hasAcceptedReview": false,
+      "hasReply": true,
+      "hasPeer": true,
+      "hasResult": true,
+      "hasComplete": true
+    },
+    {
+      "elapsedMs": 2400,
+      "taskHeader": [
+        "Tasks\n0 tasks"
+      ],
+      "taskEntries": 0,
+      "taskTeamEntries": 0,
+      "transientCount": 0,
+      "transientTexts": [],
+      "taskDetails": [],
+      "interAgent": [],
+      "taskStatus": "none",
+      "hasSubmission": false,
+      "hasAcceptedReview": false,
+      "hasReply": true,
+      "hasPeer": true,
+      "hasResult": true,
+      "hasComplete": true
+    },
+    {
+      "elapsedMs": 4400,
+      "taskHeader": [
+        "Tasks\n0 tasks"
+      ],
+      "taskEntries": 0,
+      "taskTeamEntries": 0,
+      "transientCount": 0,
+      "transientTexts": [],
+      "taskDetails": [],
+      "interAgent": [],
+      "taskStatus": "none",
+      "hasSubmission": false,
+      "hasAcceptedReview": false,
+      "hasReply": true,
+      "hasPeer": true,
+      "hasResult": true,
+      "hasComplete": true
+    },
+    {
+      "elapsedMs": 6400,
+      "taskHeader": [
+        "Tasks\n0 tasks"
+      ],
+      "taskEntries": 0,
+      "taskTeamEntries": 0,
+      "transientCount": 0,
+      "transientTexts": [],
+      "taskDetails": [],
+      "interAgent": [],
+      "taskStatus": "none",
+      "hasSubmission": false,
+      "hasAcceptedReview": false,
+      "hasReply": true,
+      "hasPeer": true,
+      "hasResult": true,
+      "hasComplete": true
+    },
+    {
+      "elapsedMs": 8400,
+      "taskHeader": [
+        "Tasks\n0 tasks"
+      ],
+      "taskEntries": 0,
+      "taskTeamEntries": 0,
+      "transientCount": 0,
+      "transientTexts": [],
+      "taskDetails": [],
+      "interAgent": [],
+      "taskStatus": "none",
+      "hasSubmission": false,
+      "hasAcceptedReview": false,
+      "hasReply": true,
+      "hasPeer": true,
+      "hasResult": true,
+      "hasComplete": true
+    },
+    {
+      "elapsedMs": 10400,
+      "taskHeader": [
+        "Tasks\n0 tasks"
+      ],
+      "taskEntries": 0,
+      "taskTeamEntries": 0,
+      "transientCount": 0,
+      "transientTexts": [],
+      "taskDetails": [],
+      "interAgent": [],
+      "taskStatus": "none",
+      "hasSubmission": false,
+      "hasAcceptedReview": false,
+      "hasReply": true,
+      "hasPeer": true,
+      "hasResult": true,
+      "hasComplete": true
+    },
+    {
+      "elapsedMs": 12400,
+      "taskHeader": [
+        "Tasks\n1 task"
+      ],
+      "taskEntries": 1,
+      "taskTeamEntries": 1,
+      "transientCount": 1,
+      "transientTexts": [
+        "StudentStudyGroup"
+      ],
+      "taskDetails": [
+        "Perform exactly this nested task. Coordinator student_one must use send_message_to to send exactly TASK_PEER_AUTOBYTEUS to ./student_two, then wait for the peer reply. After receiving the peer reply, student_one must submit exactly NESTED_CLASSROOM_OK_AUTOBYTEUS via submit_task_result. Do not submit any other result or token, and do not delegate any additional task."
+      ],
+      "interAgent": [],
+      "taskStatus": "active",
+      "hasSubmission": false,
+      "hasAcceptedReview": false,
+      "hasReply": true,
+      "hasPeer": true,
+      "hasResult": true,
+      "hasComplete": true
+    },
+    {
+      "elapsedMs": 14400,
+      "taskHeader": [
+        "Tasks\n1 task"
+      ],
+      "taskEntries": 1,
+      "taskTeamEntries": 1,
+      "transientCount": 1,
+      "transientTexts": [
+        "StudentStudyGroup"
+      ],
+      "taskDetails": [
+        "Perform exactly this nested task. Coordinator student_one must use send_message_to to send exactly TASK_PEER_AUTOBYTEUS to ./student_two, then wait for the peer reply. After receiving the peer reply, student_one must submit exactly NESTED_CLASSROOM_OK_AUTOBYTEUS via submit_task_result. Do not submit any other result or token, and do not delegate any additional task."
+      ],
+      "interAgent": [],
+      "taskStatus": "active",
+      "hasSubmission": false,
+      "hasAcceptedReview": false,
+      "hasReply": true,
+      "hasPeer": true,
+      "hasResult": true,
+      "hasComplete": true
+    },
+    {
+      "elapsedMs": 16400,
+      "taskHeader": [
+        "Tasks\n1 task"
+      ],
+      "taskEntries": 1,
+      "taskTeamEntries": 1,
+      "transientCount": 1,
+      "transientTexts": [
+        "StudentStudyGroup"
+      ],
+      "taskDetails": [
+        "Perform exactly this nested task. Coordinator student_one must use send_message_to to send exactly TASK_PEER_AUTOBYTEUS to ./student_two, then wait for the peer reply. After receiving the peer reply, student_one must submit exactly NESTED_CLASSROOM_OK_AUTOBYTEUS via submit_task_result. Do not submit any other result or token, and do not delegate any additional task."
+      ],
+      "interAgent": [],
+      "taskStatus": "active",
+      "hasSubmission": false,
+      "hasAcceptedReview": false,
+      "hasReply": true,
+      "hasPeer": true,
+      "hasResult": true,
+      "hasComplete": true
+    },
+    {
+      "elapsedMs": 18400,
+      "taskHeader": [
+        "Tasks\n1 task"
+      ],
+      "taskEntries": 1,
+      "taskTeamEntries": 1,
+      "transientCount": 1,
+      "transientTexts": [
+        "StudentStudyGroup"
+      ],
+      "taskDetails": [
+        "Perform exactly this nested task. Coordinator student_one must use send_message_to to send exactly TASK_PEER_AUTOBYTEUS to ./student_two, then wait for the peer reply. After receiving the peer reply, student_one must submit exactly NESTED_CLASSROOM_OK_AUTOBYTEUS via submit_task_result. Do not submit any other result or token, and do not delegate any additional task."
+      ],
+      "interAgent": [],
+      "taskStatus": "active",
+      "hasSubmission": false,
+      "hasAcceptedReview": false,
+      "hasReply": true,
+      "hasPeer": true,
+      "hasResult": true,
+      "hasComplete": true
+    },
+    {
+      "elapsedMs": 20400,
+      "taskHeader": [
+        "Tasks\n1 task"
+      ],
+      "taskEntries": 1,
+      "taskTeamEntries": 1,
+      "transientCount": 1,
+      "transientTexts": [
+        "StudentStudyGroup"
+      ],
+      "taskDetails": [
+        "Perform exactly this nested task. Coordinator student_one must use send_message_to to send exactly TASK_PEER_AUTOBYTEUS to ./student_two, then wait for the peer reply. After receiving the peer reply, student_one must submit exactly NESTED_CLASSROOM_OK_AUTOBYTEUS via submit_task_result. Do not submit any other result or token, and do not delegate any additional task."
+      ],
+      "interAgent": [],
+      "taskStatus": "active",
+      "hasSubmission": false,
+      "hasAcceptedReview": false,
+      "hasReply": true,
+      "hasPeer": true,
+      "hasResult": true,
+      "hasComplete": true
+    },
+    {
+      "elapsedMs": 22400,
+      "taskHeader": [
+        "Tasks\n1 task"
+      ],
+      "taskEntries": 1,
+      "taskTeamEntries": 1,
+      "transientCount": 1,
+      "transientTexts": [
+        "StudentStudyGroup"
+      ],
+      "taskDetails": [
+        "Perform exactly this nested task. Coordinator student_one must use send_message_to to send exactly TASK_PEER_AUTOBYTEUS to ./student_two, then wait for the peer reply. After receiving the peer reply, student_one must submit exactly NESTED_CLASSROOM_OK_AUTOBYTEUS via submit_task_result. Do not submit any other result or token, and do not delegate any additional task."
+      ],
+      "interAgent": [],
+      "taskStatus": "active",
+      "hasSubmission": false,
+      "hasAcceptedReview": false,
+      "hasReply": true,
+      "hasPeer": true,
+      "hasResult": true,
+      "hasComplete": true
+    },
+    {
+      "elapsedMs": 24400,
+      "taskHeader": [
+        "Tasks\n1 task"
+      ],
+      "taskEntries": 1,
+      "taskTeamEntries": 1,
+      "transientCount": 1,
+      "transientTexts": [
+        "StudentStudyGroup"
+      ],
+      "taskDetails": [
+        "Perform exactly this nested task. Coordinator student_one must use send_message_to to send exactly TASK_PEER_AUTOBYTEUS to ./student_two, then wait for the peer reply. After receiving the peer reply, student_one must submit exactly NESTED_CLASSROOM_OK_AUTOBYTEUS via submit_task_result. Do not submit any other result or token, and do not delegate any additional task."
+      ],
+      "interAgent": [],
+      "taskStatus": "active",
+      "hasSubmission": false,
+      "hasAcceptedReview": false,
+      "hasReply": true,
+      "hasPeer": true,
+      "hasResult": true,
+      "hasComplete": true
+    },
+    {
+      "elapsedMs": 26400,
+      "taskHeader": [
+        "Tasks\n1 task"
+      ],
+      "taskEntries": 1,
+      "taskTeamEntries": 1,
+      "transientCount": 1,
+      "transientTexts": [
+        "StudentStudyGroup"
+      ],
+      "taskDetails": [
+        "Perform exactly this nested task. Coordinator student_one must use send_message_to to send exactly TASK_PEER_AUTOBYTEUS to ./student_two, then wait for the peer reply. After receiving the peer reply, student_one must submit exactly NESTED_CLASSROOM_OK_AUTOBYTEUS via submit_task_result. Do not submit any other result or token, and do not delegate any additional task."
+      ],
+      "interAgent": [],
+      "taskStatus": "active",
+      "hasSubmission": false,
+      "hasAcceptedReview": false,
+      "hasReply": true,
+      "hasPeer": true,
+      "hasResult": true,
+      "hasComplete": true
+    },
+    {
+      "elapsedMs": 28400,
+      "taskHeader": [
+        "Tasks\n1 task"
+      ],
+      "taskEntries": 1,
+      "taskTeamEntries": 1,
+      "transientCount": 1,
+      "transientTexts": [
+        "StudentStudyGroup"
+      ],
+      "taskDetails": [
+        "Perform exactly this nested task. Coordinator student_one must use send_message_to to send exactly TASK_PEER_AUTOBYTEUS to ./student_two, then wait for the peer reply. After receiving the peer reply, student_one must submit exactly NESTED_CLASSROOM_OK_AUTOBYTEUS via submit_task_result. Do not submit any other result or token, and do not delegate any additional task."
+      ],
+      "interAgent": [],
+      "taskStatus": "active",
+      "hasSubmission": false,
+      "hasAcceptedReview": false,
+      "hasReply": true,
+      "hasPeer": true,
+      "hasResult": true,
+      "hasComplete": true
+    },
+    {
+      "elapsedMs": 30400,
+      "taskHeader": [
+        "Tasks\n1 task"
+      ],
+      "taskEntries": 1,
+      "taskTeamEntries": 1,
+      "transientCount": 1,
+      "transientTexts": [
+        "StudentStudyGroup"
+      ],
+      "taskDetails": [
+        "Perform exactly this nested task. Coordinator student_one must use send_message_to to send exactly TASK_PEER_AUTOBYTEUS to ./student_two, then wait for the peer reply. After receiving the peer reply, student_one must submit exactly NESTED_CLASSROOM_OK_AUTOBYTEUS via submit_task_result. Do not submit any other result or token, and do not delegate any additional task."
+      ],
+      "interAgent": [],
+      "taskStatus": "active",
+      "hasSubmission": false,
+      "hasAcceptedReview": false,
+      "hasReply": true,
+      "hasPeer": true,
+      "hasResult": true,
+      "hasComplete": true
+    },
+    {
+      "elapsedMs": 32400,
+      "taskHeader": [
+        "Tasks\n1 task"
+      ],
+      "taskEntries": 1,
+      "taskTeamEntries": 1,
+      "transientCount": 1,
+      "transientTexts": [
+        "StudentStudyGroup"
+      ],
+      "taskDetails": [
+        "Perform exactly this nested task. Coordinator student_one must use send_message_to to send exactly TASK_PEER_AUTOBYTEUS to ./student_two, then wait for the peer reply. After receiving the peer reply, student_one must submit exactly NESTED_CLASSROOM_OK_AUTOBYTEUS via submit_task_result. Do not submit any other result or token, and do not delegate any additional task."
+      ],
+      "interAgent": [],
+      "taskStatus": "active",
+      "hasSubmission": false,
+      "hasAcceptedReview": false,
+      "hasReply": true,
+      "hasPeer": true,
+      "hasResult": true,
+      "hasComplete": true
+    },
+    {
+      "elapsedMs": 34400,
+      "taskHeader": [
+        "Tasks\n1 task"
+      ],
+      "taskEntries": 1,
+      "taskTeamEntries": 1,
+      "transientCount": 1,
+      "transientTexts": [
+        "StudentStudyGroup"
+      ],
+      "taskDetails": [
+        "Perform exactly this nested task. Coordinator student_one must use send_message_to to send exactly TASK_PEER_AUTOBYTEUS to ./student_two, then wait for the peer reply. After receiving the peer reply, student_one must submit exactly NESTED_CLASSROOM_OK_AUTOBYTEUS via submit_task_result. Do not submit any other result or token, and do not delegate any additional task."
+      ],
+      "interAgent": [],
+      "taskStatus": "active",
+      "hasSubmission": false,
+      "hasAcceptedReview": false,
+      "hasReply": true,
+      "hasPeer": true,
+      "hasResult": true,
+      "hasComplete": true
+    },
+    {
+      "elapsedMs": 36400,
+      "taskHeader": [
+        "Tasks\n1 task"
+      ],
+      "taskEntries": 1,
+      "taskTeamEntries": 1,
+      "transientCount": 1,
+      "transientTexts": [
+        "StudentStudyGroup"
+      ],
+      "taskDetails": [
+        "Perform exactly this nested task. Coordinator student_one must use send_message_to to send exactly TASK_PEER_AUTOBYTEUS to ./student_two, then wait for the peer reply. After receiving the peer reply, student_one must submit exactly NESTED_CLASSROOM_OK_AUTOBYTEUS via submit_task_result. Do not submit any other result or token, and do not delegate any additional task."
+      ],
+      "interAgent": [],
+      "taskStatus": "active",
+      "hasSubmission": false,
+      "hasAcceptedReview": false,
+      "hasReply": true,
+      "hasPeer": true,
+      "hasResult": true,
+      "hasComplete": true
+    },
+    {
+      "elapsedMs": 38400,
+      "taskHeader": [
+        "Tasks\n1 task"
+      ],
+      "taskEntries": 1,
+      "taskTeamEntries": 1,
+      "transientCount": 1,
+      "transientTexts": [
+        "StudentStudyGroup"
+      ],
+      "taskDetails": [
+        "Perform exactly this nested task. Coordinator student_one must use send_message_to to send exactly TASK_PEER_AUTOBYTEUS to ./student_two, then wait for the peer reply. After receiving the peer reply, student_one must submit exactly NESTED_CLASSROOM_OK_AUTOBYTEUS via submit_task_result. Do not submit any other result or token, and do not delegate any additional task."
+      ],
+      "interAgent": [],
+      "taskStatus": "active",
+      "hasSubmission": false,
+      "hasAcceptedReview": false,
+      "hasReply": true,
+      "hasPeer": true,
+      "hasResult": true,
+      "hasComplete": true
+    },
+    {
+      "elapsedMs": 40400,
+      "taskHeader": [
+        "Tasks\n1 task"
+      ],
+      "taskEntries": 1,
+      "taskTeamEntries": 1,
+      "transientCount": 1,
+      "transientTexts": [
+        "StudentStudyGroup"
+      ],
+      "taskDetails": [
+        "Perform exactly this nested task. Coordinator student_one must use send_message_to to send exactly TASK_PEER_AUTOBYTEUS to ./student_two, then wait for the peer reply. After receiving the peer reply, student_one must submit exactly NESTED_CLASSROOM_OK_AUTOBYTEUS via submit_task_result. Do not submit any other result or token, and do not delegate any additional task."
+      ],
+      "interAgent": [],
+      "taskStatus": "awaiting_review",
+      "hasSubmission": true,
+      "hasAcceptedReview": false,
+      "hasReply": true,
+      "hasPeer": true,
+      "hasResult": true,
+      "hasComplete": true
+    },
+    {
+      "elapsedMs": 42400,
+      "taskHeader": [
+        "Tasks\n1 task"
+      ],
+      "taskEntries": 1,
+      "taskTeamEntries": 1,
+      "transientCount": 1,
+      "transientTexts": [
+        "StudentStudyGroup"
+      ],
+      "taskDetails": [
+        "Perform exactly this nested task. Coordinator student_one must use send_message_to to send exactly TASK_PEER_AUTOBYTEUS to ./student_two, then wait for the peer reply. After receiving the peer reply, student_one must submit exactly NESTED_CLASSROOM_OK_AUTOBYTEUS via submit_task_result. Do not submit any other result or token, and do not delegate any additional task."
+      ],
+      "interAgent": [],
+      "taskStatus": "awaiting_review",
+      "hasSubmission": true,
+      "hasAcceptedReview": false,
+      "hasReply": true,
+      "hasPeer": true,
+      "hasResult": true,
+      "hasComplete": true
+    },
+    {
+      "elapsedMs": 44400,
+      "taskHeader": [
+        "Tasks\n1 task"
+      ],
+      "taskEntries": 1,
+      "taskTeamEntries": 1,
+      "transientCount": 1,
+      "transientTexts": [
+        "StudentStudyGroup"
+      ],
+      "taskDetails": [
+        "Perform exactly this nested task. Coordinator student_one must use send_message_to to send exactly TASK_PEER_AUTOBYTEUS to ./student_two, then wait for the peer reply. After receiving the peer reply, student_one must submit exactly NESTED_CLASSROOM_OK_AUTOBYTEUS via submit_task_result. Do not submit any other result or token, and do not delegate any additional task."
+      ],
+      "interAgent": [],
+      "taskStatus": "awaiting_review",
+      "hasSubmission": true,
+      "hasAcceptedReview": false,
+      "hasReply": true,
+      "hasPeer": true,
+      "hasResult": true,
+      "hasComplete": true
+    },
+    {
+      "elapsedMs": 46400,
+      "taskHeader": [
+        "Tasks\n1 task"
+      ],
+      "taskEntries": 1,
+      "taskTeamEntries": 1,
+      "transientCount": 1,
+      "transientTexts": [
+        "StudentStudyGroup"
+      ],
+      "taskDetails": [
+        "Perform exactly this nested task. Coordinator student_one must use send_message_to to send exactly TASK_PEER_AUTOBYTEUS to ./student_two, then wait for the peer reply. After receiving the peer reply, student_one must submit exactly NESTED_CLASSROOM_OK_AUTOBYTEUS via submit_task_result. Do not submit any other result or token, and do not delegate any additional task."
+      ],
+      "interAgent": [],
+      "taskStatus": "awaiting_review",
+      "hasSubmission": true,
+      "hasAcceptedReview": false,
+      "hasReply": true,
+      "hasPeer": true,
+      "hasResult": true,
+      "hasComplete": true
+    }
+  ],
+  "consoleEvents": [
+    {
+      "type": "warning",
+      "text": "No member context found for message, skipping"
+    },
+    {
+      "type": "warning",
+      "text": "No member context found for message, skipping"
+    },
+    {
+      "type": "warning",
+      "text": "No member context found for message, skipping"
+    },
+    {
+      "type": "warning",
+      "text": "No member context found for message, skipping"
+    },
+    {
+      "type": "warning",
+      "text": "No exact task Team Agent execution exists at '/StudentStudyGroup/student_one'."
+    },
+    {
+      "type": "warning",
+      "text": "No exact task Team Agent execution exists at '/StudentStudyGroup/student_one'."
+    },
+    {
+      "type": "warning",
+      "text": "No exact task Team Agent execution exists at '/StudentStudyGroup/student_one'."
+    },
+    {
+      "type": "warning",
+      "text": "No member context found for message, skipping"
+    },
+    {
+      "type": "warning",
+      "text": "No member context found for message, skipping"
+    },
+    {
+      "type": "warning",
+      "text": "No member context found for message, skipping"
+    },
+    {
+      "type": "warning",
+      "text": "No member context found for message, skipping"
+    },
+    {
+      "type": "warning",
+      "text": "No member context found for message, skipping"
+    },
+    {
+      "type": "warning",
+      "text": "No member context found for message, skipping"
+    },
+    {
+      "type": "warning",
+      "text": "No member context found for message, skipping"
+    },
+    {
+      "type": "warning",
+      "text": "No member context found for message, skipping"
+    },
+    {
+      "type": "warning",
+      "text": "No member context found for message, skipping"
+    },
+    {
+      "type": "warning",
+      "text": "No exact task Team Agent execution exists at '/StudentStudyGroup/student_one'."
+    },
+    {
+      "type": "warning",
+      "text": "No exact task Team Agent execution exists at '/StudentStudyGroup/student_one'."
+    },
+    {
+      "type": "warning",
+      "text": "No exact task Team Agent execution exists at '/StudentStudyGroup/student_one'."
+    },
+    {
+      "type": "warning",
+      "text": "No exact task Team Agent execution exists at '/StudentStudyGroup/student_one'."
+    },
+    {
+      "type": "warning",
+      "text": "No exact task Team Agent execution exists at '/StudentStudyGroup/student_one'."
+    },
+    {
+      "type": "warning",
+      "text": "No exact task Team Agent execution exists at '/StudentStudyGroup/student_two'."
+    },
+    {
+      "type": "warning",
+      "text": "No member context found for message, skipping"
+    }
+  ],
+  "graphqlResponseSummaries": [
+    {
+      "at": "2026-08-11T06:54:53.601Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-11T06:54:53.602Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-11T06:54:56.083Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-11T06:54:56.089Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-11T06:54:56.102Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-11T06:54:58.614Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-11T06:55:03.612Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-11T06:55:08.276Z",
+      "status": 200,
+      "containsTaskDelegation": true,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-11T06:55:08.613Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-11T06:55:13.611Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-11T06:55:18.610Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-11T06:55:23.611Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-11T06:55:28.609Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-11T06:55:33.610Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-11T06:55:37.943Z",
+      "status": 200,
+      "containsTaskDelegation": true,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-11T06:55:38.611Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-11T06:55:43.614Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-11T06:55:46.777Z",
+      "status": 200,
+      "containsTaskDelegation": true,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-11T06:55:49.107Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-11T06:55:49.107Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-11T06:55:50.095Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-11T06:55:50.154Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-11T06:55:50.157Z",
+      "status": 200,
+      "containsTaskDelegation": true,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-11T06:55:50.168Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": true,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-11T06:55:50.203Z",
+      "status": 200,
+      "containsTaskDelegation": true,
+      "containsTeamCommunication": false,
+      "containsError": false
+    }
+  ],
+  "termination": {
+    "success": true,
+    "message": "Agent team run terminated successfully."
+  }
+}

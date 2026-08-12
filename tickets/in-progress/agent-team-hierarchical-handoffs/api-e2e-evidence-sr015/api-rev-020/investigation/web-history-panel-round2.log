@@ -1,0 +1,730 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts (4 tests | 1 failed) 111ms
+   × WorkspaceAgentRunsTreePanel regressions > routes team top-row clicks through persisted member hydration instead of blind team selection 59ms
+     → expected "spy" to be called with arguments: [ ObjectContaining{…} ]
+
+Received: 
+
+  1st spy call:
+
+  [
+-   ObjectContaining {
+-     "memberRouteKey": "super_agent",
++   {
++     "executionAddress": {
++       "memberAddress": "/super_agent",
++       "rootTeamRunId": "team-1",
++       "taskAgentRunId": null,
++       "taskTeamRunIds": [],
++     },
++     "memberAddress": "/super_agent",
+      "teamRunId": "team-1",
+    },
+  ]
+
+
+Number of calls: 1
+
+   ✓ WorkspaceAgentRunsTreePanel regressions > keeps a previously selected team expanded when another team row is opened 14ms
+   ✓ WorkspaceAgentRunsTreePanel regressions > removes a draft agent row through the local close path 15ms
+   ✓ WorkspaceAgentRunsTreePanel regressions > removes a draft team row through the local discard path 22ms
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > shows an error toast when terminate fails
+Failed to terminate run 'run-1'.
+
+ ❯ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts (50 tests | 5 failed) 635ms
+   ✓ WorkspaceAgentRunsTreePanel > loads workspace list without eager history tree on mount 30ms
+   ✓ WorkspaceAgentRunsTreePanel > renders workspace rows collapsed by default 17ms
+   ✓ WorkspaceAgentRunsTreePanel > fetches scoped workspace history when a workspace row is expanded 11ms
+   ✓ WorkspaceAgentRunsTreePanel > renders scoped workspace history loading, error, and empty states 23ms
+   ✓ WorkspaceAgentRunsTreePanel > opens workspace removal confirmation from the row action without expanding the row 8ms
+   ✓ WorkspaceAgentRunsTreePanel > does not render remove action for non-removable temp workspace rows 11ms
+   ✓ WorkspaceAgentRunsTreePanel > cancels workspace removal without mutating workspace or history state 9ms
+   ✓ WorkspaceAgentRunsTreePanel > confirms workspace removal and prunes history plus expansion state after success 16ms
+   ✓ WorkspaceAgentRunsTreePanel > keeps the workspace visible and reports an error when workspace removal fails 8ms
+   ✓ WorkspaceAgentRunsTreePanel > shows groups after opening a workspace but keeps run histories collapsed 8ms
+   ✓ WorkspaceAgentRunsTreePanel > keeps the individual team run disclosure chevron visually consistent with the parent team chevron 23ms
+   ✓ WorkspaceAgentRunsTreePanel > renders nested team members collapsed by default with a disclosure control 19ms
+   ✓ WorkspaceAgentRunsTreePanel > toggles nested team member disclosure without selecting the member 25ms
+   × WorkspaceAgentRunsTreePanel > toggles and selects a nested team row from the row body 28ms
+     → expected "spy" to be called with arguments: [ ObjectContaining{…} ]
+
+Received: 
+
+  1st spy call:
+
+  [
+-   ObjectContaining {
++   {
++     "depth": 0,
++     "displayName": "Engineering Org",
++     "executionAddress": {
++       "memberAddress": "/engineering_org",
++       "rootTeamRunId": "team-1",
++       "taskAgentRunId": null,
++       "taskTeamRunIds": [],
++     },
++     "hasChildren": true,
++     "kind": "stable_member",
++     "memberAddress": "/engineering_org",
++     "memberKind": "agent_team",
++     "row": {
++       "agentRunId": null,
++       "children": [
++         {
++           "agentRunId": "implementation-run",
++           "children": [],
++           "coordinatorAddress": null,
++           "currentStatus": "offline",
++           "deleteLifecycle": "READY",
++           "displayName": "Implementation Engineer",
++           "isActive": false,
++           "kind": "agent",
++           "lastActivityAt": "2026-01-01T02:00:00.000Z",
++           "lastKnownStatus": "IDLE",
++           "memberAddress": "/engineering_org/implementation_engineer",
++           "memberKind": "agent",
++           "memberName": "Implementation Engineer",
++           "memberPath": [
++             "engineering_org",
++             "implementation_engineer",
++           ],
++           "memberRouteKey": "engineering_org/implementation_engineer",
++           "memberRunId": "implementation-run",
++           "summary": "Implementation summary",
++           "teamRunId": "team-1",
++           "teamRunIdForNode": null,
++           "workspaceRootPath": "/ws/a",
++         },
++       ],
++       "coordinatorAddress": "/engineering_org/implementation_engineer",
++       "currentStatus": "offline",
++       "deleteLifecycle": "READY",
++       "displayName": "Engineering Org",
++       "isActive": false,
++       "kind": "agent_team",
++       "lastActivityAt": "2026-01-01T02:00:00.000Z",
++       "lastKnownStatus": "IDLE",
++       "memberAddress": "/engineering_org",
++       "memberKind": "agent_team",
++       "memberName": "Engineering Org",
++       "memberPath": [
++         "engineering_org",
++       ],
+        "memberRouteKey": "engineering_org",
++       "memberRunId": "engineering-org-run",
++       "summary": "Engineering org summary",
++       "teamDefinitionId": "engineering-org-def",
++       "teamRunId": "team-1",
++       "teamRunIdForNode": "engineering-org-run",
++       "workspaceRootPath": "/ws/a",
++     },
+      "teamRunId": "team-1",
+    },
+  ]
+
+
+Number of calls: 1
+
+   × WorkspaceAgentRunsTreePanel > keeps an expanded nested child visible after selecting it 24ms
+     → expected "spy" to be called with arguments: [ ObjectContaining{…} ]
+
+Received: 
+
+  1st spy call:
+
+  [
+-   ObjectContaining {
+-     "memberRouteKey": "engineering_org/implementation_engineer",
++   {
++     "executionAddress": {
++       "memberAddress": "/coordinator",
++       "rootTeamRunId": "team-1",
++       "taskAgentRunId": null,
++       "taskTeamRunIds": [],
++     },
++     "memberAddress": "/coordinator",
+      "teamRunId": "team-1",
+    },
+  ]
+
+  2nd spy call:
+
+  [
+-   ObjectContaining {
++   {
++     "depth": 1,
++     "displayName": "Implementation Engineer",
++     "executionAddress": {
++       "memberAddress": "/engineering_org/implementation_engineer",
++       "rootTeamRunId": "team-1",
++       "taskAgentRunId": null,
++       "taskTeamRunIds": [],
++     },
++     "hasChildren": false,
++     "kind": "stable_member",
++     "memberAddress": "/engineering_org/implementation_engineer",
++     "memberKind": "agent",
++     "row": {
++       "agentRunId": "implementation-run",
++       "children": [],
++       "coordinatorAddress": null,
++       "currentStatus": "offline",
++       "deleteLifecycle": "READY",
++       "displayName": "Implementation Engineer",
++       "isActive": false,
++       "kind": "agent",
++       "lastActivityAt": "2026-01-01T02:00:00.000Z",
++       "lastKnownStatus": "IDLE",
++       "memberAddress": "/engineering_org/implementation_engineer",
++       "memberKind": "agent",
++       "memberName": "Implementation Engineer",
++       "memberPath": [
++         "engineering_org",
++         "implementation_engineer",
++       ],
+        "memberRouteKey": "engineering_org/implementation_engineer",
++       "memberRunId": "implementation-run",
++       "summary": "Implementation summary",
++       "teamRunId": "team-1",
++       "teamRunIdForNode": null,
++       "workspaceRootPath": "/ws/a",
++     },
+      "teamRunId": "team-1",
+    },
+  ]
+
+
+Number of calls: 2
+
+   × WorkspaceAgentRunsTreePanel > expands nested ancestors when a team row opens a focused nested member 24ms
+     → expected "spy" to be called with arguments: [ ObjectContaining{…} ]
+
+Received: 
+
+  1st spy call:
+
+  [
+-   ObjectContaining {
+-     "memberRouteKey": "engineering_org/implementation_engineer",
++   {
++     "executionAddress": {
++       "memberAddress": "/engineering_org/implementation_engineer",
++       "rootTeamRunId": "team-1",
++       "taskAgentRunId": null,
++       "taskTeamRunIds": [],
++     },
++     "memberAddress": "/engineering_org/implementation_engineer",
+      "teamRunId": "team-1",
+    },
+  ]
+
+
+Number of calls: 1
+
+   ✓ WorkspaceAgentRunsTreePanel > refreshes expanded workspace history quietly on the background interval while mounted 6ms
+   ✓ WorkspaceAgentRunsTreePanel > renders agent avatar image when the tree node provides avatar URL 7ms
+   ✓ WorkspaceAgentRunsTreePanel > tracks broken avatar per URL key so a changed avatar URL can recover 3ms
+   ✓ WorkspaceAgentRunsTreePanel > selects run via runHistoryStore.selectTreeRun and emits run-selected 13ms
+   ✓ WorkspaceAgentRunsTreePanel > creates draft run from agent row plus button and emits run-created 8ms
+   ✓ WorkspaceAgentRunsTreePanel > does not render run-row configuration button 3ms
+   ✓ WorkspaceAgentRunsTreePanel > does not render Skill Improvement actions on run-history rows 9ms
+   ✓ WorkspaceAgentRunsTreePanel > renders grouped team rows under workspace and selects the team run when clicked 11ms
+   × WorkspaceAgentRunsTreePanel > opens a historical team row through the coordinator-focused member instead of the first alphabetical member 15ms
+     → expected "spy" to be called with arguments: [ ObjectContaining{…} ]
+
+Received: 
+
+  1st spy call:
+
+  [
+-   ObjectContaining {
+-     "memberRouteKey": "solution_designer",
+-     "memberRunId": "member-run-1",
++   {
++     "executionAddress": {
++       "memberAddress": "/solution_designer",
++       "rootTeamRunId": "team-1",
++       "taskAgentRunId": null,
++       "taskTeamRunIds": [],
++     },
++     "memberAddress": "/solution_designer",
+      "teamRunId": "team-1",
+    },
+  ]
+
+
+Number of calls: 1
+
+   ✓ WorkspaceAgentRunsTreePanel > strips the user requirement prefix from agent and team summary labels 11ms
+   ✓ WorkspaceAgentRunsTreePanel > renders team avatar image when team definition avatar is available 7ms
+   ✓ WorkspaceAgentRunsTreePanel > renders team member avatar image when matching agent definition avatar is available 12ms
+   × WorkspaceAgentRunsTreePanel > selects team member through runHistoryStore so persisted member history can hydrate 17ms
+     → expected "spy" to be called with arguments: [ ObjectContaining{…} ]
+
+Received: 
+
+  1st spy call:
+
+  [
+-   ObjectContaining {
+-     "memberRouteKey": "super_agent",
++   {
++     "executionAddress": {
++       "memberAddress": "/super_agent",
++       "rootTeamRunId": "team-1",
++       "taskAgentRunId": null,
++       "taskTeamRunIds": [],
++     },
++     "memberAddress": "/super_agent",
+      "teamRunId": "team-1",
+    },
+  ]
+
+  2nd spy call:
+
+  [
+-   ObjectContaining {
++   {
++     "depth": 0,
++     "displayName": "Super Agent",
++     "executionAddress": {
++       "memberAddress": "/super_agent",
++       "rootTeamRunId": "team-1",
++       "taskAgentRunId": null,
++       "taskTeamRunIds": [],
++     },
++     "hasChildren": false,
++     "kind": "stable_member",
++     "memberAddress": "/super_agent",
++     "memberKind": "agent",
++     "row": {
++       "agentRunId": "member-run-1",
++       "children": [],
++       "coordinatorAddress": null,
++       "currentStatus": "offline",
++       "deleteLifecycle": "READY",
++       "displayName": "Super Agent",
++       "isActive": false,
++       "kind": "agent",
++       "lastActivityAt": "2026-01-01T02:00:00.000Z",
++       "lastKnownStatus": "IDLE",
++       "memberAddress": "/super_agent",
++       "memberName": "Super Agent",
+        "memberRouteKey": "super_agent",
++       "memberRunId": "member-run-1",
++       "summary": "Team summary",
++       "teamRunId": "team-1",
++       "teamRunIdForNode": null,
++       "workspaceRootPath": "/ws/a",
++     },
+      "teamRunId": "team-1",
+    },
+  ]
+
+
+Number of calls: 2
+
+   ✓ WorkspaceAgentRunsTreePanel > keeps the global Workspaces tree free of delegated-task detail and full-context UI under an expanded live team 12ms
+   ✓ WorkspaceAgentRunsTreePanel > renders delete action for inactive team history rows 11ms
+   ✓ WorkspaceAgentRunsTreePanel > renders archive action for inactive team history rows 10ms
+   ✓ WorkspaceAgentRunsTreePanel > does not render team-row configuration button 10ms
+   ✓ WorkspaceAgentRunsTreePanel > deletes inactive team history from team row action without selecting the row 14ms
+   ✓ WorkspaceAgentRunsTreePanel > archives inactive team history from team row action without selecting the row 14ms
+   ✓ WorkspaceAgentRunsTreePanel > creates workspace from inline input when user presses Enter 9ms
+   ✓ WorkspaceAgentRunsTreePanel > opens native folder picker on embedded electron and creates workspace from selected path 5ms
+   ✓ WorkspaceAgentRunsTreePanel > does not create workspace when embedded electron picker is canceled 5ms
+   ✓ WorkspaceAgentRunsTreePanel > closes inline add workspace input without creating workspace on cancel 7ms
+   ✓ WorkspaceAgentRunsTreePanel > renders active status indicator for active runs 9ms
+   ✓ WorkspaceAgentRunsTreePanel > does not render status indicator for inactive runs 11ms
+   ✓ WorkspaceAgentRunsTreePanel > renders delete action only for inactive history runs 11ms
+   ✓ WorkspaceAgentRunsTreePanel > renders archive action only for inactive persisted history runs 12ms
+   ✓ WorkspaceAgentRunsTreePanel > terminates active run from row action without selecting the row 12ms
+   ✓ WorkspaceAgentRunsTreePanel > shows an error toast when terminate fails 10ms
+   ✓ WorkspaceAgentRunsTreePanel > deletes inactive history run from row action without selecting the row 15ms
+   ✓ WorkspaceAgentRunsTreePanel > archives inactive history run from row action without selecting the row 12ms
+   ✓ WorkspaceAgentRunsTreePanel > shows an error toast when archive fails 12ms
+   ✓ WorkspaceAgentRunsTreePanel > does not call delete when confirmation is cancelled 12ms
+   ✓ WorkspaceAgentRunsTreePanel > shows an error toast when delete fails 12ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts > WorkspaceAgentRunsTreePanel regressions > routes team top-row clicks through persisted member hydration instead of blind team selection
+AssertionError: expected "spy" to be called with arguments: [ ObjectContaining{…} ]
+
+Received: 
+
+  1st spy call:
+
+  [
+-   ObjectContaining {
+-     "memberRouteKey": "super_agent",
++   {
++     "executionAddress": {
++       "memberAddress": "/super_agent",
++       "rootTeamRunId": "team-1",
++       "taskAgentRunId": null,
++       "taskTeamRunIds": [],
++     },
++     "memberAddress": "/super_agent",
+      "teamRunId": "team-1",
+    },
+  ]
+
+
+Number of calls: 1
+
+ ❯ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts:424:47
+    422|     await flushPromises();
+    423| 
+    424|     expect(runHistoryStoreMock.selectTreeRun).toHaveBeenCalledWith(
+       |                                               ^
+    425|       expect.objectContaining({
+    426|         teamRunId: 'team-1',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > toggles and selects a nested team row from the row body
+AssertionError: expected "spy" to be called with arguments: [ ObjectContaining{…} ]
+
+Received: 
+
+  1st spy call:
+
+  [
+-   ObjectContaining {
++   {
++     "depth": 0,
++     "displayName": "Engineering Org",
++     "executionAddress": {
++       "memberAddress": "/engineering_org",
++       "rootTeamRunId": "team-1",
++       "taskAgentRunId": null,
++       "taskTeamRunIds": [],
++     },
++     "hasChildren": true,
++     "kind": "stable_member",
++     "memberAddress": "/engineering_org",
++     "memberKind": "agent_team",
++     "row": {
++       "agentRunId": null,
++       "children": [
++         {
++           "agentRunId": "implementation-run",
++           "children": [],
++           "coordinatorAddress": null,
++           "currentStatus": "offline",
++           "deleteLifecycle": "READY",
++           "displayName": "Implementation Engineer",
++           "isActive": false,
++           "kind": "agent",
++           "lastActivityAt": "2026-01-01T02:00:00.000Z",
++           "lastKnownStatus": "IDLE",
++           "memberAddress": "/engineering_org/implementation_engineer",
++           "memberKind": "agent",
++           "memberName": "Implementation Engineer",
++           "memberPath": [
++             "engineering_org",
++             "implementation_engineer",
++           ],
++           "memberRouteKey": "engineering_org/implementation_engineer",
++           "memberRunId": "implementation-run",
++           "summary": "Implementation summary",
++           "teamRunId": "team-1",
++           "teamRunIdForNode": null,
++           "workspaceRootPath": "/ws/a",
++         },
++       ],
++       "coordinatorAddress": "/engineering_org/implementation_engineer",
++       "currentStatus": "offline",
++       "deleteLifecycle": "READY",
++       "displayName": "Engineering Org",
++       "isActive": false,
++       "kind": "agent_team",
++       "lastActivityAt": "2026-01-01T02:00:00.000Z",
++       "lastKnownStatus": "IDLE",
++       "memberAddress": "/engineering_org",
++       "memberKind": "agent_team",
++       "memberName": "Engineering Org",
++       "memberPath": [
++         "engineering_org",
++       ],
+        "memberRouteKey": "engineering_org",
++       "memberRunId": "engineering-org-run",
++       "summary": "Engineering org summary",
++       "teamDefinitionId": "engineering-org-def",
++       "teamRunId": "team-1",
++       "teamRunIdForNode": "engineering-org-run",
++       "workspaceRootPath": "/ws/a",
++     },
+      "teamRunId": "team-1",
+    },
+  ]
+
+
+Number of calls: 1
+
+ ❯ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts:915:47
+    913| 
+    914|     expect(wrapper.find('[data-test="workspace-team-member-team-1-/eng…
+    915|     expect(runHistoryStoreMock.selectTreeRun).toHaveBeenCalledWith(
+       |                                               ^
+    916|       expect.objectContaining({
+    917|         teamRunId: 'team-1',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > keeps an expanded nested child visible after selecting it
+AssertionError: expected "spy" to be called with arguments: [ ObjectContaining{…} ]
+
+Received: 
+
+  1st spy call:
+
+  [
+-   ObjectContaining {
+-     "memberRouteKey": "engineering_org/implementation_engineer",
++   {
++     "executionAddress": {
++       "memberAddress": "/coordinator",
++       "rootTeamRunId": "team-1",
++       "taskAgentRunId": null,
++       "taskTeamRunIds": [],
++     },
++     "memberAddress": "/coordinator",
+      "teamRunId": "team-1",
+    },
+  ]
+
+  2nd spy call:
+
+  [
+-   ObjectContaining {
++   {
++     "depth": 1,
++     "displayName": "Implementation Engineer",
++     "executionAddress": {
++       "memberAddress": "/engineering_org/implementation_engineer",
++       "rootTeamRunId": "team-1",
++       "taskAgentRunId": null,
++       "taskTeamRunIds": [],
++     },
++     "hasChildren": false,
++     "kind": "stable_member",
++     "memberAddress": "/engineering_org/implementation_engineer",
++     "memberKind": "agent",
++     "row": {
++       "agentRunId": "implementation-run",
++       "children": [],
++       "coordinatorAddress": null,
++       "currentStatus": "offline",
++       "deleteLifecycle": "READY",
++       "displayName": "Implementation Engineer",
++       "isActive": false,
++       "kind": "agent",
++       "lastActivityAt": "2026-01-01T02:00:00.000Z",
++       "lastKnownStatus": "IDLE",
++       "memberAddress": "/engineering_org/implementation_engineer",
++       "memberKind": "agent",
++       "memberName": "Implementation Engineer",
++       "memberPath": [
++         "engineering_org",
++         "implementation_engineer",
++       ],
+        "memberRouteKey": "engineering_org/implementation_engineer",
++       "memberRunId": "implementation-run",
++       "summary": "Implementation summary",
++       "teamRunId": "team-1",
++       "teamRunIdForNode": null,
++       "workspaceRootPath": "/ws/a",
++     },
+      "teamRunId": "team-1",
+    },
+  ]
+
+
+Number of calls: 2
+
+ ❯ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts:948:47
+    946|     await flushPromises();
+    947| 
+    948|     expect(runHistoryStoreMock.selectTreeRun).toHaveBeenCalledWith(
+       |                                               ^
+    949|       expect.objectContaining({
+    950|         teamRunId: 'team-1',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > expands nested ancestors when a team row opens a focused nested member
+AssertionError: expected "spy" to be called with arguments: [ ObjectContaining{…} ]
+
+Received: 
+
+  1st spy call:
+
+  [
+-   ObjectContaining {
+-     "memberRouteKey": "engineering_org/implementation_engineer",
++   {
++     "executionAddress": {
++       "memberAddress": "/engineering_org/implementation_engineer",
++       "rootTeamRunId": "team-1",
++       "taskAgentRunId": null,
++       "taskTeamRunIds": [],
++     },
++     "memberAddress": "/engineering_org/implementation_engineer",
+      "teamRunId": "team-1",
+    },
+  ]
+
+
+Number of calls: 1
+
+ ❯ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts:967:47
+    965|     await flushPromises();
+    966| 
+    967|     expect(runHistoryStoreMock.selectTreeRun).toHaveBeenCalledWith(
+       |                                               ^
+    968|       expect.objectContaining({
+    969|         teamRunId: 'team-1',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > opens a historical team row through the coordinator-focused member instead of the first alphabetical member
+AssertionError: expected "spy" to be called with arguments: [ ObjectContaining{…} ]
+
+Received: 
+
+  1st spy call:
+
+  [
+-   ObjectContaining {
+-     "memberRouteKey": "solution_designer",
+-     "memberRunId": "member-run-1",
++   {
++     "executionAddress": {
++       "memberAddress": "/solution_designer",
++       "rootTeamRunId": "team-1",
++       "taskAgentRunId": null,
++       "taskTeamRunIds": [],
++     },
++     "memberAddress": "/solution_designer",
+      "teamRunId": "team-1",
+    },
+  ]
+
+
+Number of calls: 1
+
+ ❯ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts:1265:47
+    1263|     await flushPromises();
+    1264| 
+    1265|     expect(runHistoryStoreMock.selectTreeRun).toHaveBeenCalledWith(
+       |                                               ^
+    1266|       expect.objectContaining({
+    1267|         teamRunId: 'team-1',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > selects team member through runHistoryStore so persisted member history can hydrate
+AssertionError: expected "spy" to be called with arguments: [ ObjectContaining{…} ]
+
+Received: 
+
+  1st spy call:
+
+  [
+-   ObjectContaining {
+-     "memberRouteKey": "super_agent",
++   {
++     "executionAddress": {
++       "memberAddress": "/super_agent",
++       "rootTeamRunId": "team-1",
++       "taskAgentRunId": null,
++       "taskTeamRunIds": [],
++     },
++     "memberAddress": "/super_agent",
+      "teamRunId": "team-1",
+    },
+  ]
+
+  2nd spy call:
+
+  [
+-   ObjectContaining {
++   {
++     "depth": 0,
++     "displayName": "Super Agent",
++     "executionAddress": {
++       "memberAddress": "/super_agent",
++       "rootTeamRunId": "team-1",
++       "taskAgentRunId": null,
++       "taskTeamRunIds": [],
++     },
++     "hasChildren": false,
++     "kind": "stable_member",
++     "memberAddress": "/super_agent",
++     "memberKind": "agent",
++     "row": {
++       "agentRunId": "member-run-1",
++       "children": [],
++       "coordinatorAddress": null,
++       "currentStatus": "offline",
++       "deleteLifecycle": "READY",
++       "displayName": "Super Agent",
++       "isActive": false,
++       "kind": "agent",
++       "lastActivityAt": "2026-01-01T02:00:00.000Z",
++       "lastKnownStatus": "IDLE",
++       "memberAddress": "/super_agent",
++       "memberName": "Super Agent",
+        "memberRouteKey": "super_agent",
++       "memberRunId": "member-run-1",
++       "summary": "Team summary",
++       "teamRunId": "team-1",
++       "teamRunIdForNode": null,
++       "workspaceRootPath": "/ws/a",
++     },
+      "teamRunId": "team-1",
+    },
+  ]
+
+
+Number of calls: 2
+
+ ❯ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts:1470:47
+    1468|     await flushPromises();
+    1469| 
+    1470|     expect(runHistoryStoreMock.selectTreeRun).toHaveBeenCalledWith(
+       |                                               ^
+    1471|       expect.objectContaining({
+    1472|         teamRunId: 'team-1',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  6 failed | 48 passed (54)
+   Start at  21:56:00
+   Duration  6.43s (transform 3.32s, setup 9.75s, collect 548ms, tests 746ms, environment 415ms, prepare 313ms)
+

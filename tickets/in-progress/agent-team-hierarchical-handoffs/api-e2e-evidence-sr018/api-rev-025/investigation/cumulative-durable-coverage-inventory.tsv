@@ -1,0 +1,89 @@
+status	scope	path	decision	evidence
+M	server	autobyteus-server-ts/tests/e2e/external-channel/external-channel-team-open-delivery.e2e.test.ts	Needs Re-review / Revalidated	server-ticket-retained-final.log
+M	server	autobyteus-server-ts/tests/e2e/token-usage/token-usage-canonical-execution-address-graphql.e2e.test.ts	Needs Re-review / Revalidated	server-ticket-retained-final.log
+M	server	autobyteus-server-ts/tests/fixtures/current-team-run-fixtures.ts	Needs Re-review / Revalidated	server-ticket-retained-final.log
+M	server	autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts	Needs Re-review / Revalidated	server-ticket-retained-final.log
+M	server	autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts	Needs Re-review / Revalidated	server-ticket-retained-final.log
+M	server	autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts	Needs Re-review / Revalidated	server-ticket-retained-final.log
+M	server	autobyteus-server-ts/tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts	Needs Re-review / Revalidated	server-ticket-retained-final.log
+M	server	autobyteus-server-ts/tests/integration/agent-team-execution/team-run-service.integration.test.ts	Needs Re-review / Revalidated	server-ticket-retained-final.log
+M	server	autobyteus-server-ts/tests/integration/api/runtime-selection-top-level.integration.test.ts	Needs Re-review / Revalidated	server-ticket-retained-final.log
+M	server	autobyteus-server-ts/tests/integration/app-data-migrations/team-run-metadata-member-tree-history.integration.test.ts	Needs Re-review / Revalidated	server-ticket-retained-final.log
+M	server	autobyteus-server-ts/tests/integration/run-history/memory-layout-and-projection.integration.test.ts	Needs Re-review / Revalidated	server-ticket-retained-final.log
+M	server	autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts	Needs Re-review / Revalidated	server-ticket-retained-final.log
+M	server	autobyteus-server-ts/tests/unit/agent-execution/backends/claude/backend/claude-session-bootstrapper.test.ts	Needs Re-review / Revalidated	server-ticket-retained-final.log
+M	server	autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts	Needs Re-review / Revalidated	server-ticket-retained-final.log
+M	server	autobyteus-server-ts/tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts	Needs Re-review / Revalidated	server-ticket-retained-final.log
+M	server	autobyteus-server-ts/tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts	Needs Re-review / Revalidated	server-ticket-retained-final.log
+M	server	autobyteus-server-ts/tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts	Needs Re-review / Revalidated	server-ticket-retained-final.log
+M	server	autobyteus-server-ts/tests/unit/agent-execution/events/token-usage-event-enrichment-transformer.test.ts	Needs Re-review / Revalidated	server-ticket-retained-final.log
+M	server	autobyteus-server-ts/tests/unit/agent-team-execution/inter-agent-message-delivery.test.ts	Needs Re-review / Revalidated	server-ticket-retained-final.log
+M	server	autobyteus-server-ts/tests/unit/agent-team-execution/member-team-context-builder.test.ts	Needs Re-review / Revalidated	server-ticket-retained-final.log
+M	server	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts	Needs Re-review / Revalidated	server-ticket-retained-final.log
+M	server	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts	Needs Re-review / Revalidated	server-ticket-retained-final.log
+M	server	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts	Needs Re-review / Revalidated	server-ticket-retained-final.log
+M	server	autobyteus-server-ts/tests/unit/agent-team-execution/sub-team-active-run-directory.test.ts	Needs Re-review / Revalidated	server-ticket-retained-final.log
+M	server	autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-address-builder.test.ts	Needs Re-review / Revalidated	server-ticket-retained-final.log
+M	server	autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-service.test.ts	Needs Re-review / Revalidated	server-ticket-retained-final.log
+M	server	autobyteus-server-ts/tests/unit/agent-team-execution/team-definition-topology-planner.test.ts	Needs Re-review / Revalidated	server-ticket-retained-final.log
+M	server	autobyteus-server-ts/tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts	Needs Re-review / Revalidated	server-ticket-retained-final.log
+M	server	autobyteus-server-ts/tests/unit/agent-team-execution/team-member-delivery-coordinator.test.ts	Needs Re-review / Revalidated	server-ticket-retained-final.log
+M	server	autobyteus-server-ts/tests/unit/agent-team-execution/team-run-config-localization.test.ts	Needs Re-review / Revalidated	server-ticket-retained-final.log
+M	server	autobyteus-server-ts/tests/unit/agent-team-execution/team-run-metadata-mapper.test.ts	Needs Re-review / Revalidated	server-ticket-retained-final.log
+M	server	autobyteus-server-ts/tests/unit/agent-team-execution/team-run-service.test.ts	Needs Re-review / Revalidated	server-ticket-retained-final.log
+M	server	autobyteus-server-ts/tests/unit/agent-tools/team-communication/get-handoff-rules.test.ts	Needs Re-review / Revalidated	server-ticket-retained-final.log
+M	server	autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-canonical-execution-address-migration.test.ts	Needs Re-review / Revalidated	server-ticket-retained-final.log
+D	server	autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-legacy-path-columns-drop-migration.test.ts	Stale / Remove	current-contract replacement selections; canonical investigation removal decision
+M	server	autobyteus-server-ts/tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts	Needs Re-review / Revalidated	server-ticket-retained-final.log
+M	server	autobyteus-server-ts/tests/unit/services/agent-streaming/team-run-event-websocket-message-mapper.test.ts	Needs Re-review / Revalidated	server-ticket-retained-final.log
+M	web	autobyteus-web/components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+M	web	autobyteus-web/components/mobile/__tests__/MobileArtifacts.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+M	web	autobyteus-web/components/mobile/__tests__/MobileContextSelectionRegression.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+M	web	autobyteus-web/components/mobile/__tests__/MobileTeamMessages.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+M	web	autobyteus-web/components/mobile/__tests__/MobileUxRefinement.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+M	web	autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+M	web	autobyteus-web/components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+M	web	autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+M	web	autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+M	web	autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+M	web	autobyteus-web/components/workspace/running/__tests__/RunningTeamRow.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+M	web	autobyteus-web/components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+M	web	autobyteus-web/components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+D	web	autobyteus-web/components/workspace/team/__tests__/TeamDelegatedTasksSection.current-contract.spec.ts	Stale / Remove	current-contract replacement selections; canonical investigation removal decision
+M	web	autobyteus-web/components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+M	web	autobyteus-web/components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+D	web	autobyteus-web/components/workspace/team/__tests__/TeamOverviewPanel.current-task-visibility.spec.ts	Stale / Remove	current-contract replacement selections; canonical investigation removal decision
+M	web	autobyteus-web/components/workspace/team/__tests__/TeamOverviewPanel.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+M	web	autobyteus-web/components/workspace/team/__tests__/TeamWorkspaceView.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+M	web	autobyteus-web/composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+M	web	autobyteus-web/composables/__tests__/useWorkspaceHistoryTreeState.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+M	web	autobyteus-web/composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+M	web	autobyteus-web/composables/mobile/__tests__/useMobileWorkCatalog.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+M	web	autobyteus-web/graphql/queries/__tests__/runHistoryQueries.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+M	web	autobyteus-web/services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+M	web	autobyteus-web/services/agentStreaming/__tests__/TeamStreamingService.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+M	web	autobyteus-web/services/agentStreaming/__tests__/currentTaskExecutionFixture.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+M	web	autobyteus-web/services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+D	web	autobyteus-web/services/agentStreaming/__tests__/teamTaskExecutionEventRouter.spec.ts	Stale / Remove	current-contract replacement selections; canonical investigation removal decision
+M	web	autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+M	web	autobyteus-web/services/runHydration/__tests__/taskDelegationGraphqlDtoProjection.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+M	web	autobyteus-web/services/runHydration/__tests__/teamRunContextHydrationService.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+D	web	autobyteus-web/services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts	Stale / Remove	current-contract replacement selections; canonical investigation removal decision
+M	web	autobyteus-web/services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+A	web	autobyteus-web/services/teamExecution/__tests__/teamExecutionState.task-lifecycle.spec.ts	Add Durable Coverage / Revalidated	current-maintained-web-final.log
+M	web	autobyteus-web/services/workspace/__tests__/workspaceNavigationService.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+M	web	autobyteus-web/stores/__tests__/agentTeamContextsStore.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+M	web	autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+M	web	autobyteus-web/stores/__tests__/mobileWorkStore.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+M	web	autobyteus-web/stores/__tests__/runHistoryMetadata.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+M	web	autobyteus-web/stores/__tests__/runHistoryNavigationProjection.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+M	web	autobyteus-web/stores/__tests__/runHistoryStore.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+M	web	autobyteus-web/stores/__tests__/runHistoryTeamExecutionRows.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+M	web	autobyteus-web/stores/__tests__/runHistoryTeamMemberProjectionHydrator.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+M	web	autobyteus-web/stores/__tests__/runHistoryTeamRows.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+M	web	autobyteus-web/stores/__tests__/teamCommunicationStore.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+A	web	autobyteus-web/test-support/currentTeamTestFixtures.ts	Add Durable Coverage / Revalidated	current-maintained-web-final.log
+M	web	autobyteus-web/utils/__tests__/teamActiveExecutionMembers.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+M	web	autobyteus-web/utils/__tests__/teamDelegatedTaskEntries.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log
+D	web	autobyteus-web/utils/__tests__/teamDelegatedTaskLiveVisibility.spec.ts	Stale / Remove	current-contract replacement selections; canonical investigation removal decision
+M	web	autobyteus-web/utils/__tests__/teamRunConfigUtils.spec.ts	Needs Re-review / Revalidated	current-maintained-web-final.log

@@ -1,0 +1,9 @@
+{
+  "passed": false,
+  "rootTeamRunId": "nested_classroom_test_team_70b275939d8f47e6addc5cdbb1f86328",
+  "fatalError": "ReferenceError: serverBaseUrl is not defined\nReferenceError: serverBaseUrl is not defined\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr018/api-rev-030/live/run-config-mobile-reference.mjs:114:62\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)",
+  "termination": {
+    "success": true,
+    "message": "Agent team run terminated successfully."
+  }
+}

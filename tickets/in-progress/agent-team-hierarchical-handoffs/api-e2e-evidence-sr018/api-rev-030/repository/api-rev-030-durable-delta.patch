@@ -1,0 +1,22 @@
+diff --git a/autobyteus-server-ts/tests/unit/services/agent-streaming/agent-stream-websocket-egress.test.ts b/autobyteus-server-ts/tests/unit/services/agent-streaming/agent-stream-websocket-egress.test.ts
+index 5dd09f53c..aa33ae4b5 100644
+--- a/autobyteus-server-ts/tests/unit/services/agent-streaming/agent-stream-websocket-egress.test.ts
++++ b/autobyteus-server-ts/tests/unit/services/agent-streaming/agent-stream-websocket-egress.test.ts
+@@ -162,8 +162,15 @@ describe("AgentStreamWebSocketEgress", () => {
+     const sendRaw = vi.fn();
+     const egress = new AgentStreamWebSocketEgress({ sendRaw });
+     const incompleteTaskTeam = {
+-      agent_id: "leaf-run",
+-      task_team_run_id: "task-team-run",
++      agent_execution: {
++        kind: "task_team_agent",
++        execution_address: {
++          root_team_run_id: "root-team-run",
++          task_team_run_ids: ["task-team-run"],
++          member_address: "/StudyGroup/student_one",
++          task_agent_run_id: null,
++        },
++      },
+     };
+ 
+     egress.send(status("running", incompleteTaskTeam));

@@ -1,0 +1,85 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts > WorkspaceAgentRunsTreePanel regressions > routes team top-row clicks through persisted member hydration instead of blind team selection 43ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts > WorkspaceAgentRunsTreePanel regressions > keeps a previously selected team expanded when another team row is opened 10ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts > WorkspaceAgentRunsTreePanel regressions > removes a draft agent row through the local close path 13ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts > WorkspaceAgentRunsTreePanel regressions > removes a draft team row through the local discard path 12ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > loads workspace list without eager history tree on mount 24ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders workspace rows collapsed by default 14ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > fetches scoped workspace history when a workspace row is expanded 10ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders scoped workspace history loading, error, and empty states 19ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > opens workspace removal confirmation from the row action without expanding the row 6ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > does not render remove action for non-removable temp workspace rows 4ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > cancels workspace removal without mutating workspace or history state 9ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > confirms workspace removal and prunes history plus expansion state after success 11ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > keeps the workspace visible and reports an error when workspace removal fails 10ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > shows groups after opening a workspace but keeps run histories collapsed 7ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > keeps the individual team run disclosure chevron visually consistent with the parent team chevron 15ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders nested team members collapsed by default with a disclosure control 20ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > toggles nested team member disclosure without selecting the member 26ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > toggles and selects a nested team row from the row body 19ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > keeps an expanded nested child visible after selecting it 18ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > expands nested ancestors when a team row opens a focused nested member 16ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > refreshes expanded workspace history quietly on the background interval while mounted 5ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders agent avatar image when the tree node provides avatar URL 6ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > tracks broken avatar per URL key so a changed avatar URL can recover 3ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > selects run via runHistoryStore.selectTreeRun and emits run-selected 12ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > creates draft run from agent row plus button and emits run-created 8ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > does not render run-row configuration button 2ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > does not render Skill Improvement actions on run-history rows 9ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders grouped team rows under workspace and selects the team run when clicked 14ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > opens a historical team row through the coordinator-focused member instead of the first alphabetical member 12ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > strips the user requirement prefix from agent and team summary labels 12ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders team avatar image when team definition avatar is available 8ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders team member avatar image when matching agent definition avatar is available 12ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > selects team member through runHistoryStore so persisted member history can hydrate 13ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > keeps the global Workspaces tree free of delegated-task detail and full-context UI under an expanded live team 12ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders delete action for inactive team history rows 8ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders archive action for inactive team history rows 8ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > does not render team-row configuration button 9ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > deletes inactive team history from team row action without selecting the row 12ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > archives inactive team history from team row action without selecting the row 12ms
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > shows an error toast when terminate fails
+Failed to terminate run 'run-1'.
+
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > creates workspace from inline input when user presses Enter 9ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > opens native folder picker on embedded electron and creates workspace from selected path 4ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > does not create workspace when embedded electron picker is canceled 5ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > closes inline add workspace input without creating workspace on cancel 7ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders active status indicator for active runs 9ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > does not render status indicator for inactive runs 9ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders delete action only for inactive history runs 8ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders archive action only for inactive persisted history runs 9ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > terminates active run from row action without selecting the row 12ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > shows an error toast when terminate fails 13ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > deletes inactive history run from row action without selecting the row 13ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > archives inactive history run from row action without selecting the row 13ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > shows an error toast when archive fails 12ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > does not call delete when confirmation is cancelled 12ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > shows an error toast when delete fails 14ms
+
+ Test Files  2 passed (2)
+      Tests  54 passed (54)
+   Start at  07:03:00
+   Duration  5.44s (transform 2.78s, setup 8.19s, collect 464ms, tests 637ms, environment 337ms, prepare 289ms)
+

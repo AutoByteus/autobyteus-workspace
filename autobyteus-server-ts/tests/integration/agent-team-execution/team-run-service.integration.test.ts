@@ -1,196 +1,29 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
-import { AgentTeamDefinition, TeamMember } from "../../../src/agent-team-definition/domain/models.js";
 import type { TeamRunBackend } from "../../../src/agent-team-execution/backends/team-run-backend.js";
 import {
   MixedAgentMemberContext,
-  MixedSubTeamMemberContext,
   MixedTeamRunContext,
-  type MixedTeamMemberContext,
 } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
-import {
-  TeamRunConfig,
-  type TeamMemberRunConfig,
-  type TeamRunMemberConfig,
-} from "../../../src/agent-team-execution/domain/team-run-config.js";
+import type { TeamRunAgentNode } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
+import { createTeamExecutionAddress } from "../../../src/agent-team-execution/domain/team-execution-address.js";
 import { TeamRunService } from "../../../src/agent-team-execution/services/team-run-service.js";
 import type { TeamRunMetadata } from "../../../src/run-history/store/team-run-metadata-types.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
 
-const createMemberConfig = (input: {
-  memberName: string;
-  runtimeKind: RuntimeKind;
-  llmModelIdentifier?: string;
-  workspaceId?: string | null;
-  workspaceRootPath?: string | null;
-  memberRouteKey?: string | null;
-  memberRunId?: string | null;
-}): TeamMemberRunConfig => ({
-  memberKind: "agent",
-  memberName: input.memberName,
-  memberPath: [input.memberName],
-  memberRouteKey: input.memberRouteKey ?? input.memberName,
-  memberRunId: input.memberRunId ?? null,
-  agentDefinitionId: `agent-${input.memberName}`,
-  llmModelIdentifier: input.llmModelIdentifier ?? `model-${input.memberName}`,
-  autoExecuteTools: true,
-  skillAccessMode: SkillAccessMode.NONE,
-  runtimeKind: input.runtimeKind,
-  workspaceId: input.workspaceId ?? null,
-  workspaceRootPath: input.workspaceRootPath ?? null,
-  llmConfig: { tag: input.memberName },
-});
-
-const attachMemberRunIds = (
-  members: readonly TeamRunMemberConfig[],
-  teamRunId: string,
-): TeamRunMemberConfig[] => members.map((member) => {
-  const memberRunId =
-    member.memberRunId ??
-    `${teamRunId}__${member.memberRouteKey.replace(/[^a-zA-Z0-9_-]+/g, "_")}__historical`;
-  if (member.memberKind === "agent_team") {
-    return {
-      ...member,
-      memberRunId,
-      memberConfigs: attachMemberRunIds(member.memberConfigs, teamRunId),
-    };
-  }
-  return { ...member, memberRunId };
-});
-
-const platformRunIdFor = (member: TeamMemberRunConfig): string => {
-  if (member.runtimeKind === RuntimeKind.AUTOBYTEUS) {
-    return `native-${member.memberRouteKey}`;
-  }
-  if (member.runtimeKind === RuntimeKind.CLAUDE_AGENT_SDK) {
-    return `session-${member.memberRouteKey}`;
-  }
-  return `thread-${member.memberRouteKey}`;
-};
-
-const buildMixedMemberContexts = (
-  members: readonly TeamRunMemberConfig[],
-): MixedTeamMemberContext[] => members.map((member) => {
-  if (member.memberKind === "agent_team") {
-    return new MixedSubTeamMemberContext({
-      memberName: member.memberName,
-      memberPath: member.memberPath,
-      memberRouteKey: member.memberRouteKey,
-      memberRunId: member.memberRunId!,
-      teamDefinitionId: member.teamDefinitionId,
-      childTeamRunId: member.childTeamRunId ?? null,
-      childRuntimeContext: new MixedTeamRunContext({
-        coordinatorMemberRouteKey: member.coordinatorMemberRouteKey,
-        memberContexts: buildMixedMemberContexts(member.memberConfigs),
-      }),
-    });
-  }
-  return new MixedAgentMemberContext({
-    memberName: member.memberName,
-    memberPath: member.memberPath,
-    memberRouteKey: member.memberRouteKey,
-    memberRunId: member.memberRunId!,
-    runtimeKind: member.runtimeKind,
-    platformAgentRunId: platformRunIdFor(member),
-  });
-});
-
-const createTeamRunFromConfig = (input: {
-  runId: string;
-  config: TeamRunConfig;
-  coordinatorMemberName?: string | null;
-}): TeamRun => {
-  const memberTree = attachMemberRunIds(input.config.memberTree, input.runId);
-  const config = new TeamRunConfig({
-    teamDefinitionId: input.config.teamDefinitionId,
-    teamBackendKind: TeamBackendKind.MIXED,
-    coordinatorMemberName: input.config.coordinatorMemberName,
-    coordinatorMemberRouteKey: input.config.coordinatorMemberRouteKey,
-    memberTree,
-  });
-  const runtimeContext = new MixedTeamRunContext({
-    coordinatorMemberRouteKey: config.coordinatorMemberRouteKey,
-    memberContexts: buildMixedMemberContexts(config.memberTree),
-  });
-  const backend: TeamRunBackend = {
-    runId: input.runId,
-    teamBackendKind: TeamBackendKind.MIXED,
-    getRuntimeContext: () => runtimeContext,
-    isActive: () => true,
-    getLeafAgentStatusSnapshots: () => [],
-    hasOpenExecutionWork: () => false,
-    subscribeToEvents: () => () => undefined,
-    postMessage: vi.fn().mockResolvedValue({ accepted: true }),
-    deliverInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),
-    approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
-    interruptMember: vi.fn().mockResolvedValue({ accepted: true }),
-    settleMember: vi.fn().mockResolvedValue({ accepted: true }),
-    startTaskAgentInstance: vi.fn().mockResolvedValue({ accepted: true }),
-    settleTaskAgentInstance: vi.fn().mockResolvedValue({ accepted: true }),
-    terminate: vi.fn().mockResolvedValue({ accepted: true }),
-    publishEvent: vi.fn(),
-  };
-
-  return new TeamRun({
-    context: new TeamRunContext({
-      runId: input.runId,
-      teamBackendKind: TeamBackendKind.MIXED,
-      coordinatorMemberName: input.coordinatorMemberName ?? config.coordinatorMemberName,
-      coordinatorMemberRouteKey: config.coordinatorMemberRouteKey,
-      config,
-      runtimeContext,
-    }),
-    backend,
-  });
-};
-
-const createTeamDefinition = (input: {
-  id: string;
-  name: string;
-  coordinatorMemberName: string;
-  nodes: TeamMember[];
-}) => new AgentTeamDefinition({
-  id: input.id,
-  name: input.name,
-  description: `${input.name} description`,
-  instructions: `${input.name} instructions`,
-  coordinatorMemberName: input.coordinatorMemberName,
-  nodes: input.nodes,
-});
-
-const createSingleRuntimeMetadata = (input: {
-  teamRunId: string;
-  runtimeKind: RuntimeKind;
-  platformAgentRunId: string;
-}): TeamRunMetadata => {
-  const memberRouteKey = "Coordinator";
-  const memberRunId = `${input.teamRunId}__coordinator__historical_member`;
-  return {
-    teamRunId: input.teamRunId,
-    teamDefinitionId: "team-def-1",
-    teamDefinitionName: "Team One",
-    coordinatorMemberRouteKey: memberRouteKey,
-    createdAt: "2026-03-28T00:00:00.000Z",
-    updatedAt: "2026-03-28T00:00:00.000Z",
-    memberTree: [{
-      memberKind: "agent",
-      memberRouteKey,
-      memberPath: ["Coordinator"],
-      memberName: "Coordinator",
-      memberRunId,
-      runtimeKind: input.runtimeKind,
-      platformAgentRunId: input.platformAgentRunId,
-      agentDefinitionId: "agent-Coordinator",
-      llmModelIdentifier: "model-Coordinator",
-      autoExecuteTools: true,
-      skillAccessMode: SkillAccessMode.NONE,
-      llmConfig: { tag: "Coordinator" },
-      workspaceRootPath: "/tmp/team-workspace",
-    }],
-  };
+const definition = {
+  id: "team-def-1",
+  name: "Team One",
+  description: "Team One description",
+  instructions: "Coordinate exactly.",
+  coordinatorMemberName: "Coordinator",
+  nodes: [
+    { memberName: "Coordinator", ref: "agent-Coordinator", refType: "agent", refScope: "shared" },
+  ],
 };
 
 const createHistoryCatalogServiceMock = () => ({
@@ -199,17 +32,6 @@ const createHistoryCatalogServiceMock = () => ({
   recordTeamRunSummary: vi.fn().mockResolvedValue(undefined),
   recordTeamRunTerminated: vi.fn().mockResolvedValue(undefined),
   refreshTeamRunMetadata: vi.fn().mockResolvedValue(undefined),
-});
-
-const createTeamDefinitionService = (nodes: TeamMember[] = [
-  new TeamMember({ memberName: "Coordinator", ref: "agent-Coordinator", refType: "agent", refScope: "shared" }),
-]) => ({
-  getDefinitionById: vi.fn().mockResolvedValue(createTeamDefinition({
-    id: "team-def-1",
-    name: "Team One",
-    coordinatorMemberName: "Coordinator",
-    nodes,
-  })),
 });
 
 const createWorkspaceManager = () => ({
@@ -222,34 +44,120 @@ const createWorkspaceManager = () => ({
   }),
 });
 
-afterEach(() => {
-  vi.clearAllMocks();
+const platformRunIdFor = (node: TeamRunAgentNode): string => {
+  if (node.runtimeKind === RuntimeKind.AUTOBYTEUS) return `native-${node.agentRunId}`;
+  if (node.runtimeKind === RuntimeKind.CLAUDE_AGENT_SDK) return `session-${node.agentRunId}`;
+  return `thread-${node.agentRunId}`;
+};
+
+const createRun = (
+  context: TeamRunContext<MixedTeamRunContext>,
+): TeamRun => {
+  const backend = {
+    isActive: () => true,
+    getRuntimeContext: () => context.runtimeContext,
+    subscribeToEvents: () => () => undefined,
+    getLeafAgentStatusSnapshots: () => [],
+    hasOpenExecutionWork: () => false,
+  } as unknown as TeamRunBackend;
+  return new TeamRun({ context, backend });
+};
+
+const createRunFromConfig = (
+  teamRunId: string,
+  config: ReturnType<typeof testTeamRunConfig> | Parameters<typeof createRun>[0]["config"],
+): TeamRun => {
+  const agents = config.rootTeam.children.filter((node): node is TeamRunAgentNode => node.kind === "agent");
+  const runtimeContext = new MixedTeamRunContext({
+    memberContexts: agents.map((node) => new MixedAgentMemberContext({
+      address: node.address,
+      agentRunId: node.agentRunId,
+      runtimeKind: node.runtimeKind,
+      platformAgentRunId: node.platformAgentRunId ?? platformRunIdFor(node),
+    })),
+    teamExecutionAddress: createTeamExecutionAddress({
+      rootTeamRunId: teamRunId,
+      memberAddress: config.rootTeam.coordinatorAddress,
+    }),
+  });
+  return createRun(new TeamRunContext({
+    teamRunId,
+    teamAddress: "/",
+    teamBackendKind: TeamBackendKind.MIXED,
+    config,
+    runtimeContext,
+  }));
+};
+
+const launchConfig = (runtimeKind: RuntimeKind) => ({
+  memberAddress: "/Coordinator",
+  llmModelIdentifier: `model-${runtimeKind}`,
+  autoExecuteTools: true,
+  skillAccessMode: SkillAccessMode.NONE,
+  runtimeKind,
+  workspaceRootPath: "/tmp/team-workspace",
+  llmConfig: { runtimeKind },
 });
 
-describe("TeamRunService integration", () => {
-  it("builds launch preset member configs through mixed topology", async () => {
-    const service = new TeamRunService({
-      agentTeamRunManager: {} as never,
-      teamDefinitionService: createTeamDefinitionService() as never,
-      teamRunMetadataService: {} as never,
-      teamRunHistoryCatalogService: createHistoryCatalogServiceMock() as never,
-      workspaceManager: createWorkspaceManager() as never,
-    });
+const createService = (input: {
+  metadata?: TeamRunMetadata | null;
+  createRunImplementation?: (config: ReturnType<typeof testTeamRunConfig>, teamRunId: string) => Promise<TeamRun>;
+} = {}) => {
+  let activeRun: TeamRun | null = null;
+  const historyCatalog = createHistoryCatalogServiceMock();
+  const manager = {
+    createTeamRun: vi.fn(async (config, teamRunId) => {
+      activeRun = input.createRunImplementation
+        ? await input.createRunImplementation(config, teamRunId)
+        : createRunFromConfig(teamRunId, config);
+      return activeRun;
+    }),
+    restoreTeamRun: vi.fn(async (context: TeamRunContext<MixedTeamRunContext>) => {
+      activeRun = createRun(context);
+      return activeRun;
+    }),
+    getTeamRun: vi.fn(() => activeRun),
+    terminateTeamRun: vi.fn().mockResolvedValue(true),
+  };
+  const metadataService = {
+    readMetadata: vi.fn().mockResolvedValue(input.metadata ?? null),
+  };
+  let allocation = 0;
+  const service = new TeamRunService({
+    agentTeamRunManager: manager as never,
+    teamDefinitionService: {
+      getDefinitionById: vi.fn().mockImplementation(async (id: string) => id === definition.id ? definition : null),
+    } as never,
+    teamRunMetadataService: metadataService as never,
+    teamRunHistoryCatalogService: historyCatalog as never,
+    workspaceManager: createWorkspaceManager() as never,
+    memoryDir: "/tmp/team-run-service-integration",
+    agentRunIdentityAllocator: {
+      allocateForAgentDefinition: vi.fn(async () => `agent-run-${++allocation}`),
+    },
+  });
+  return { service, manager, metadataService, historyCatalog };
+};
 
-    const configs = await service.buildMemberConfigsFromLaunchPreset({
-      teamDefinitionId: "team-def-1",
+afterEach(() => vi.clearAllMocks());
+
+describe("TeamRunService current-schema integration", () => {
+  it("builds launch preset inputs with exact canonical member addresses", async () => {
+    const { service } = createService();
+
+    await expect(service.buildMemberConfigsFromLaunchPreset({
+      teamDefinitionId: definition.id,
       launchPreset: {
         workspaceRootPath: "/tmp/team-workspace",
-        llmModelIdentifier: "gpt-5.4-mini",
+        llmModelIdentifier: "gpt-5.6-luna",
         autoExecuteTools: true,
         skillAccessMode: SkillAccessMode.NONE,
         runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
       },
-    });
-
-    expect(configs).toEqual([
+    })).resolves.toEqual([
       expect.objectContaining({
-        memberName: "Coordinator",
+        memberAddress: "/Coordinator",
+        agentDefinitionId: "agent-Coordinator",
         runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
       }),
     ]);
@@ -259,72 +167,47 @@ describe("TeamRunService integration", () => {
     RuntimeKind.AUTOBYTEUS,
     RuntimeKind.CODEX_APP_SERVER,
     RuntimeKind.CLAUDE_AGENT_SDK,
-  ])("creates a %s team run through the mixed backend and persists member metadata", async (runtimeKind) => {
-    const config = new TeamRunConfig({
-      teamDefinitionId: "team-def-1",
-      teamBackendKind: TeamBackendKind.MIXED,
-      memberConfigs: [createMemberConfig({
-        memberName: "Coordinator",
-        runtimeKind,
-        llmModelIdentifier: `model-${runtimeKind}`,
-        workspaceId: "workspace-1",
-      })],
-    });
-    const allocatedMemberRunId = "coordinator_agent_11111111111111111111111111111111";
-    const agentTeamRunManager = {
-      createTeamRun: vi.fn().mockImplementation(
-        async (assignedConfig: TeamRunConfig, assignedTeamRunId: string) =>
-          createTeamRunFromConfig({
-            runId: assignedTeamRunId,
-            config: assignedConfig,
-            coordinatorMemberName: "Coordinator",
-          }),
-      ),
-      restoreTeamRun: vi.fn(),
-      getTeamRun: vi.fn(),
-      terminateTeamRun: vi.fn(),
-    };
-    const historyCatalogService = createHistoryCatalogServiceMock();
-    const service = new TeamRunService({
-      agentTeamRunManager: agentTeamRunManager as never,
-      teamDefinitionService: createTeamDefinitionService() as never,
-      teamRunMetadataService: { readMetadata: vi.fn() } as never,
-      teamRunHistoryCatalogService: historyCatalogService as never,
-      workspaceManager: createWorkspaceManager() as never,
-      memoryDir: "/tmp/memory",
-      agentRunIdentityAllocator: {
-        allocateForAgentDefinition: vi.fn().mockResolvedValue(allocatedMemberRunId),
-      },
+  ])("creates a %s TeamRun and records exact schema-v3 topology metadata", async (runtimeKind) => {
+    const { service, manager, historyCatalog } = createService();
+
+    const run = await service.createTeamRun({
+      teamDefinitionId: definition.id,
+      teamRunId: `team-run-${runtimeKind}`,
+      memberConfigs: [launchConfig(runtimeKind)],
     });
 
-    const result = await service.createTeamRun({
-      teamDefinitionId: "team-def-1",
-      memberConfigs: config.memberConfigs,
-    });
-
-    expect(result.runId).toMatch(/^team_one_[a-f0-9]{32}$/);
-    expect(result.teamBackendKind).toBe(TeamBackendKind.MIXED);
-    expect(agentTeamRunManager.createTeamRun).toHaveBeenCalledWith(
+    expect(run.teamRunId).toBe(`team-run-${runtimeKind}`);
+    expect(manager.createTeamRun).toHaveBeenCalledWith(
       expect.objectContaining({
         teamBackendKind: TeamBackendKind.MIXED,
-        memberConfigs: [
-          expect.objectContaining({
-            memberRunId: allocatedMemberRunId,
-          }),
-        ],
-      }),
-      result.runId,
-    );
-    expect(historyCatalogService.recordTeamRunCreated).toHaveBeenCalledWith(
-      expect.objectContaining({
-        teamRunId: result.runId,
-        metadata: expect.objectContaining({
-          memberTree: [expect.objectContaining({
-            memberRunId: allocatedMemberRunId,
+        rootTeam: expect.objectContaining({
+          address: "/",
+          teamRunId: run.teamRunId,
+          coordinatorAddress: "/Coordinator",
+          children: [expect.objectContaining({
+            kind: "agent",
+            address: "/Coordinator",
             runtimeKind,
-            platformAgentRunId: platformRunIdFor(result.config!.memberConfigs[0]!),
-            workspaceRootPath: "/tmp/team-workspace",
+            agentRunId: "agent-run-1",
           })],
+        }),
+      }),
+      run.teamRunId,
+    );
+    expect(historyCatalog.recordTeamRunCreated).toHaveBeenCalledWith(
+      expect.objectContaining({
+        teamRunId: run.teamRunId,
+        summary: "",
+        metadata: expect.objectContaining({
+          schemaVersion: 3,
+          rootTeam: expect.objectContaining({
+            teamRunId: run.teamRunId,
+            children: [expect.objectContaining({
+              address: "/Coordinator",
+              runtimeKind,
+              platformAgentRunId: expect.any(String),
+            })],
+          }),
         }),
       }),
     );
@@ -334,68 +217,64 @@ describe("TeamRunService integration", () => {
     [RuntimeKind.AUTOBYTEUS, "native-restore-1"],
     [RuntimeKind.CODEX_APP_SERVER, "thread-restore-1"],
     [RuntimeKind.CLAUDE_AGENT_SDK, "session-restore-1"],
-  ] as const)("restores historical %s metadata as MixedTeamRunContext", async (runtimeKind, platformAgentRunId) => {
-    const metadata = createSingleRuntimeMetadata({
-      teamRunId: `team-run-${runtimeKind}`,
+  ] as const)("restores current schema-v3 %s metadata into an exact mixed runtime context", async (
+    runtimeKind,
+    platformAgentRunId,
+  ) => {
+    const coordinator = testAgentNode("/Coordinator", {
+      agentDefinitionId: "agent-Coordinator",
+      agentRunId: "coordinator-run",
       runtimeKind,
       platformAgentRunId,
+      workspaceRootPath: "/tmp/team-workspace",
     });
-    let activeRun: TeamRun | null = null;
-    const agentTeamRunManager = {
-      createTeamRun: vi.fn(),
-      restoreTeamRun: vi.fn().mockImplementation(async (context: TeamRunContext<MixedTeamRunContext>) => {
-        activeRun = createTeamRunFromConfig({
-          runId: context.runId,
-          config: context.config!,
-          coordinatorMemberName: context.coordinatorMemberName,
-        });
-        return activeRun;
-      }),
-      getTeamRun: vi.fn().mockImplementation(() => activeRun),
-      terminateTeamRun: vi.fn().mockResolvedValue(true),
+    const config = testTeamRunConfig({
+      rootTeamRunId: `team-run-${runtimeKind}`,
+      rootTeamDefinitionId: definition.id,
+      coordinatorAddress: coordinator.address,
+      children: [coordinator],
+    });
+    const metadata: TeamRunMetadata = {
+      schemaVersion: 3,
+      teamDefinitionName: definition.name,
+      createdAt: "2026-08-12T00:00:00.000Z",
+      archivedAt: null,
+      rootTeam: config.rootTeam,
+      handoffs: config.handoffs,
     };
-    const historyCatalogService = createHistoryCatalogServiceMock();
-    const service = new TeamRunService({
-      agentTeamRunManager: agentTeamRunManager as never,
-      teamDefinitionService: createTeamDefinitionService() as never,
-      teamRunMetadataService: { readMetadata: vi.fn().mockResolvedValue(metadata) } as never,
-      teamRunHistoryCatalogService: historyCatalogService as never,
-      workspaceManager: createWorkspaceManager() as never,
-      memoryDir: "/tmp/memory",
-    });
+    const { service, manager, historyCatalog } = createService({ metadata });
 
-    await expect(service.restoreTeamRun(metadata.teamRunId)).resolves.toMatchObject({
-      runId: metadata.teamRunId,
+    const restored = await service.restoreTeamRun(config.rootTeam.teamRunId);
+
+    expect(restored.teamRunId).toBe(config.rootTeam.teamRunId);
+    const context = manager.restoreTeamRun.mock.calls[0]?.[0] as TeamRunContext<MixedTeamRunContext>;
+    expect(context).toMatchObject({
+      teamRunId: config.rootTeam.teamRunId,
+      teamAddress: "/",
       teamBackendKind: TeamBackendKind.MIXED,
     });
-    const restoredContext = agentTeamRunManager.restoreTeamRun.mock.calls[0]?.[0] as TeamRunContext<MixedTeamRunContext>;
-    expect(restoredContext.teamBackendKind).toBe(TeamBackendKind.MIXED);
-    expect(restoredContext.runtimeContext).toBeInstanceOf(MixedTeamRunContext);
-    expect(restoredContext.runtimeContext.memberContexts[0]).toEqual(expect.objectContaining({
+    expect(context.runtimeContext.memberContexts[0]).toMatchObject({
+      kind: "agent",
+      address: "/Coordinator",
+      agentRunId: "coordinator-run",
       runtimeKind,
       platformAgentRunId,
-    }));
-    expect(historyCatalogService.recordTeamRunRestored).toHaveBeenCalledWith(
-      expect.objectContaining({ teamRunId: metadata.teamRunId }),
+    });
+    expect(historyCatalog.recordTeamRunRestored).toHaveBeenCalledWith(
+      expect.objectContaining({
+        teamRunId: config.rootTeam.teamRunId,
+        metadata: expect.objectContaining({ schemaVersion: 3 }),
+      }),
     );
   });
 
-  it("records termination history only when team termination succeeds", async () => {
-    const historyCatalogService = createHistoryCatalogServiceMock();
-    const agentTeamRunManager = {
-      terminateTeamRun: vi.fn().mockResolvedValueOnce(false).mockResolvedValueOnce(true),
-    };
-    const service = new TeamRunService({
-      agentTeamRunManager: agentTeamRunManager as never,
-      teamDefinitionService: createTeamDefinitionService() as never,
-      teamRunMetadataService: {} as never,
-      teamRunHistoryCatalogService: historyCatalogService as never,
-      workspaceManager: createWorkspaceManager() as never,
-    });
+  it("records termination history only after successful manager termination", async () => {
+    const { service, manager, historyCatalog } = createService();
+    manager.terminateTeamRun.mockResolvedValueOnce(false).mockResolvedValueOnce(true);
 
     await expect(service.terminateTeamRun("team-run-1")).resolves.toBe(false);
-    expect(historyCatalogService.recordTeamRunTerminated).not.toHaveBeenCalled();
+    expect(historyCatalog.recordTeamRunTerminated).not.toHaveBeenCalled();
     await expect(service.terminateTeamRun("team-run-1")).resolves.toBe(true);
-    expect(historyCatalogService.recordTeamRunTerminated).toHaveBeenCalledWith({ teamRunId: "team-run-1" });
+    expect(historyCatalog.recordTeamRunTerminated).toHaveBeenCalledWith({ teamRunId: "team-run-1" });
   });
 });

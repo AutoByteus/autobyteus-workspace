@@ -1,0 +1,144 @@
+API-F-015 source/event contract audit
+HEAD=d21fdeb2717e932d1af591a9396862016117a744
+
+[server current inter-Agent event payload]
+    75	  const type = messageType(input.request.messageType);
+    76	  const messageId = buildTeamCommunicationMessageId({
+    77	    teamRunId: input.request.rootTeamRunId,
+    78	    senderAddress: input.request.senderAddress,
+    79	    receiverAddress: input.request.receiverAddress,
+    80	    messageType: type,
+    81	    content: input.request.content,
+    82	    createdAt,
+    83	  });
+    84	  const files = references(input.request.referenceFiles);
+    85	  return {
+    86	    eventType: AgentRunEventType.INTER_AGENT_MESSAGE,
+    87	    runId: input.recipientRunId,
+    88	    payload: {
+    89	      message_id: messageId,
+    90	      team_run_id: input.request.rootTeamRunId,
+    91	      sender_agent_id: input.request.sender.participant.agentRunId,
+    92	      sender_agent_name: input.request.sender.participant.displayName,
+    93	      sender_address: input.request.senderAddress,
+    94	      receiver_run_id: input.recipientRunId,
+    95	      receiver_agent_name: input.request.recipient.participant.displayName,
+    96	      receiver_address: input.request.receiverAddress,
+    97	      recipient_role_name: input.request.recipient.participant.displayName,
+    98	      content: input.request.content,
+    99	      message_type: type,
+   100	      reference_files: files,
+   101	      reference_file_entries: buildInterAgentMessageReferenceFileEntries({
+   102	        teamRunId: input.request.rootTeamRunId,
+   103	        messageId,
+   104	        referenceFiles: files,
+   105	        timestamp: createdAt,
+   106	      }),
+   107	      created_at: createdAt,
+   108	    },
+   109	    statusHint: null,
+   110	  };
+   111	};
+
+[frontend current exact member resolver]
+     1	import type { AgentContext } from '~/types/agent/AgentContext';
+     2	import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
+     3	import type { ServerMessage } from './protocol';
+     4	import {
+     5	  parseTeamExecutionAddress,
+     6	  serializeTeamExecutionAddress,
+     7	  type TeamExecutionAddress,
+     8	} from '~/types/agent/TeamExecutionAddress';
+     9	
+    10	export interface TeamStreamMemberContextResolution {
+    11	  context: AgentContext;
+    12	  executionAddress: TeamExecutionAddress;
+    13	}
+    14	
+    15	/** Read-only exact lookup after the task projection router has completed any ensure/repair. */
+    16	export const resolveTeamStreamMemberContext = (
+    17	  teamContext: AgentTeamContext,
+    18	  message: ServerMessage,
+    19	): TeamStreamMemberContextResolution | null => {
+    20	  const payload = 'payload' in message && message.payload && typeof message.payload === 'object'
+    21	    ? message.payload as { execution_address?: unknown }
+    22	    : null;
+    23	  if (!payload?.execution_address) return null;
+    24	  try {
+    25	    const executionAddress = parseTeamExecutionAddress(payload.execution_address);
+    26	    if (executionAddress.rootTeamRunId !== teamContext.teamRunId) return null;
+    27	    const context = teamContext.agentExecutionsByKey.get(serializeTeamExecutionAddress(executionAddress)) ?? null;
+    28	    return context ? { context, executionAddress } : null;
+    29	  } catch {
+    30	    return null;
+    31	  }
+    32	};
+
+[frontend stream drop site]
+   392	    }
+   393	    if (projectionResult.outcome === 'handled') {
+   394	      commitTaskMutation();
+   395	      this.scheduleTaskExecutionCleanup(teamContext, projectionResult.cleanupExecutionAddress);
+   396	      return;
+   397	    }
+   398	
+   399	    const taskAgentIdentity = projectionResult.taskAgentIdentity ?? extractTaskAgentIdentity(message);
+   400	    const removeTaskAgentAfterMessage = shouldRemoveTaskAgentAfterMessage(message, taskAgentIdentity);
+   401	    if (taskMutation.kind === 'TOPOLOGY' && !removeTaskAgentAfterMessage) commitTaskMutation();
+   402	    const memberResolution = projectionResult.outcome === 'memberContext'
+   403	      ? { context: projectionResult.context, executionAddress: projectionResult.executionAddress }
+   404	      : resolveTeamStreamMemberContext(teamContext, message);
+   405	
+   406	    if (!memberResolution) {
+   407	      commitTaskMutation();
+   408	      console.warn('No member context found for message, skipping');
+   409	      return;
+   410	    }
+   411	
+   412	    dispatchAgentStreamMessage(message, {
+   413	      kind: 'team_member',
+   414	      context: memberResolution.context,
+   415	      teamRunId: teamContext.teamRunId,
+   416	      executionAddress: memberResolution.executionAddress,
+   417	    });
+   418	
+   419	    if (removeTaskAgentAfterMessage && taskAgentIdentity) {
+   420	      taskMutation = mergeTaskExecutionProjectionMutations(
+
+[durable mock currently supplies non-production field]
+   155	    const studentAddress = createTeamExecutionAddress({
+   156	      rootTeamRunId: team.teamRunId,
+   157	      memberAddress: '/StudentStudyGroup/student_one',
+   158	    });
+   159	    const student = team.agentExecutionsByKey.get(serializeTeamExecutionAddress(studentAddress))!;
+   160	    emit(callbacks, 'INTER_AGENT_MESSAGE', {
+   161	      message_id: 'message-1', team_run_id: team.teamRunId,
+   162	      sender_agent_id: context.state.runId, sender_agent_name: 'Teacher',
+   163	      receiver_run_id: student.state.runId, receiver_agent_name: 'student_one',
+   164	      recipient_role_name: 'student_one', content: 'Please solve this.', message_type: 'assignment',
+   165	      execution_address: studentAddress,
+   166	    });
+   167	    expect(student.state.conversation.messages.at(-1)?.segments[0]).toMatchObject({
+   168	      type: 'inter_agent_message', senderAgentRunId: context.state.runId,
+   169	      content: 'Please solve this.', messageType: 'assignment',
+   170	    });
+   171	    expect(context.state.conversation.messages).toHaveLength(0);
+   172	  });
+   173	
+   174	  it('forwards exact Team communication messages to the communication projection store', () => {
+   175	    const { callbacks, team } = createHarness();
+   176	    const receiverAddress = createTeamExecutionAddress({
+   177	      rootTeamRunId: team.teamRunId,
+   178	      taskTeamRunIds: ['task-team-outer'],
+   179	      memberAddress: '/StudentStudyGroup/student_one',
+   180	    });
+   181	    const payload = {
+   182	      messageId: 'team-message-1', teamRunId: team.teamRunId,
+   183	      senderAddress: teacherAddress(), receiverAddress,
+   184	      content: 'Coordinate the task Team.', messageType: 'assignment',
+   185	      createdAt: '2026-08-11T00:02:00.000Z', referenceFiles: [],
+   186	    };
+   187	    emit(callbacks, 'TEAM_COMMUNICATION_MESSAGE', payload);
+   188	    expect(upsertTeamCommunicationMessageMock).toHaveBeenCalledWith(payload);
+   189	  });
+   190	

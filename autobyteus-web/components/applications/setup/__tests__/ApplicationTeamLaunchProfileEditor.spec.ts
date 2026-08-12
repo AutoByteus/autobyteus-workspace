@@ -148,22 +148,22 @@ describe('ApplicationTeamLaunchProfileEditor', () => {
           },
           memberProfiles: [
             {
-              memberRouteKey: 'researcher',
-              memberName: 'researcher',
+              memberAddress: '/researcher',
+              displayName: 'researcher',
               agentDefinitionId: 'bundle-agent__researcher',
               runtimeKind: 'claude_agent_sdk',
               llmModelIdentifier: 'claude-sonnet',
             },
             {
-              memberRouteKey: 'writer',
-              memberName: 'writer',
+              memberAddress: '/writer',
+              displayName: 'writer',
               agentDefinitionId: 'bundle-agent__writer-old',
               runtimeKind: 'lmstudio',
               llmModelIdentifier: 'old-writer-model',
             },
             {
-              memberRouteKey: 'editor',
-              memberName: 'editor',
+              memberAddress: '/editor',
+              displayName: 'editor',
               agentDefinitionId: 'bundle-agent__editor',
               runtimeKind: 'lmstudio',
               llmModelIdentifier: 'editor-model',
@@ -188,15 +188,15 @@ describe('ApplicationTeamLaunchProfileEditor', () => {
       },
       memberProfiles: [
         {
-          memberRouteKey: 'researcher',
-          memberName: 'researcher',
+          memberAddress: '/researcher',
+          displayName: 'researcher',
           agentDefinitionId: 'bundle-agent__researcher',
           runtimeKind: 'claude_agent_sdk',
           llmModelIdentifier: 'claude-sonnet',
         },
         {
-          memberRouteKey: 'writer',
-          memberName: 'writer',
+          memberAddress: '/writer',
+          displayName: 'writer',
           agentDefinitionId: 'bundle-agent__writer-new',
           runtimeKind: '',
           llmModelIdentifier: '',

@@ -20,25 +20,39 @@ const {
   windowNodeContextStoreMock,
   addToastMock,
 } = vi.hoisted(() => {
-  const normalizeMember = (member: any): any => ({
-    ...member,
-    memberKind: member.memberKind ?? 'agent',
-    memberRouteKey: member.memberRouteKey ?? member.memberName ?? '',
-    memberPath: member.memberPath ?? [member.memberRouteKey ?? member.memberName ?? ''],
-    displayName: member.displayName ?? member.memberName ?? member.memberRouteKey ?? '',
-    currentStatus: member.currentStatus ?? member.status ?? 'offline',
-    children: (member.children ?? []).map(normalizeMember),
+  const exactAddress = (value: string): string => value.startsWith('/') ? value : `/${value}`;
+  const executionAddress = (teamRunId: string, memberAddress: string) => ({
+    rootTeamRunId: teamRunId,
+    taskTeamRunIds: [],
+    memberAddress,
+    taskAgentRunId: null,
   });
+  const buildCurrentMember = (member: any): any => {
+    const memberAddress = exactAddress(member.memberAddress);
+    const kind = member.kind ?? 'agent';
+    return {
+      ...member,
+      kind,
+      memberAddress,
+      displayName: member.displayName ?? memberAddress.split('/').filter(Boolean).at(-1) ?? 'member',
+      agentRunId: kind === 'agent' ? (member.agentRunId ?? `${memberAddress}-run`) : null,
+      teamRunIdForNode: kind === 'agent_team' ? (member.teamRunIdForNode ?? `${memberAddress}-team-run`) : null,
+      coordinatorAddress: kind === 'agent_team'
+        ? exactAddress(member.coordinatorAddress ?? member.children?.[0]?.memberAddress ?? memberAddress)
+        : null,
+      currentStatus: member.currentStatus ?? 'offline',
+      children: (member.children ?? []).map(buildCurrentMember),
+    };
+  };
 
-  const normalizeTeamNode = (team: any): any => {
-    const members = (team.members ?? []).map(normalizeMember);
-    const memberTree = (team.memberTree ?? []).map(normalizeMember);
+  const buildCurrentTeamNode = (team: any): any => {
+    const members = (team.members ?? []).map(buildCurrentMember);
     const flattenRows = (rows: any[], depth = 0): any[] => rows.flatMap((row) => [{
       kind: 'stable_member',
       teamRunId: team.teamRunId,
-      memberKind: row.memberKind,
-      memberRouteKey: row.memberRouteKey,
-      memberPath: row.memberPath,
+      memberKind: row.kind,
+      memberAddress: row.memberAddress,
+      executionAddress: executionAddress(team.teamRunId, row.memberAddress),
       displayName: row.displayName,
       depth,
       hasChildren: row.children.length > 0,
@@ -46,14 +60,32 @@ const {
     }, ...flattenRows(row.children, depth + 1)]);
     return {
       ...team,
-      focusedMemberRouteKey: team.focusedMemberRouteKey ?? team.focusedMemberName ?? '',
+      focusedExecutionAddress: team.focusedExecutionAddress ?? executionAddress(
+        team.teamRunId,
+        exactAddress(team.focusedAddress ?? team.coordinatorAddress ?? members[0]?.memberAddress ?? '/'),
+      ),
+      rootTeam: team.rootTeam ?? {
+        teamRunId: team.teamRunId,
+        kind: 'agent_team',
+        memberAddress: '/',
+        displayName: team.teamDefinitionName,
+        teamDefinitionId: team.teamDefinitionId,
+        teamRunIdForNode: team.teamRunId,
+        coordinatorAddress: exactAddress(team.coordinatorAddress ?? members[0]?.memberAddress ?? '/'),
+        workspaceRootPath: team.workspaceRootPath ?? null,
+        summary: team.summary,
+        lastActivityAt: team.lastActivityAt,
+        currentStatus: null,
+        isActive: team.isActive,
+        deleteLifecycle: team.deleteLifecycle,
+        children: members,
+      },
       members,
-      memberTree,
-      executionRows: team.executionRows ?? flattenRows(memberTree.length > 0 ? memberTree : members),
+      executionRows: flattenRows(members),
     };
   };
 
-  const normalizeTeamNodes = (teams: any[]): any[] => teams.map(normalizeTeamNode);
+  const buildCurrentTeamNodes = (teams: any[]): any[] => teams.map(buildCurrentTeamNode);
 
   const workspaceIdFromRoot = (workspaceRootPath: string | null | undefined): string =>
     `workspace:${workspaceRootPath || 'unknown'}`;
@@ -143,9 +175,9 @@ const {
       getTreeNodes: vi.fn(() => state.nodes.map(normalizeWorkspaceNode)),
       getTeamNodes: vi.fn((workspaceRootPath?: string) => {
         if (!workspaceRootPath) {
-          return normalizeTeamNodes(Object.values(state.teamNodesByWorkspace).flat());
+          return buildCurrentTeamNodes(Object.values(state.teamNodesByWorkspace).flat());
         }
-        return normalizeTeamNodes(state.teamNodesByWorkspace[workspaceRootPath] || []);
+        return buildCurrentTeamNodes(state.teamNodesByWorkspace[workspaceRootPath] || []);
       }),
       getAgentNavigationAncestry: vi.fn((runId: string) => {
         for (const workspace of state.nodes.map(normalizeWorkspaceNode)) {
@@ -167,7 +199,7 @@ const {
         }
         return null;
       }),
-      getTeamMemberNavigationAncestorRouteKeys: vi.fn(() => []),
+      getTeamMemberNavigationAncestorAddresses: vi.fn(() => []),
       formatRelativeTime: vi.fn((iso: string) => (iso.includes('01:00') ? 'now' : '4h')),
       selectTreeRun: vi.fn(),
       createDraftRun: vi.fn().mockResolvedValue('temp-2'),
@@ -197,7 +229,6 @@ const {
     teamRunStoreMock: {
       stopPendingTeamIds: { __v_isRef: true, value: {} },
       terminateTeamRun: vi.fn().mockResolvedValue(undefined),
-      discardDraftTeamRun: vi.fn().mockResolvedValue(true),
     },
     agentDefinitionStoreMock: {
       agentDefinitions: [
@@ -362,13 +393,13 @@ describe('WorkspaceAgentRunsTreePanel regressions', () => {
         isActive: false,
         currentStatus: 'idle',
         deleteLifecycle: 'READY',
-        focusedMemberName: 'super_agent',
+        focusedAddress: '/super_agent',
         members: [
           {
             teamRunId: 'team-1',
-            memberRouteKey: 'super_agent',
-            memberName: 'Super Agent',
-            memberRunId: 'member-run-1',
+            memberAddress: '/super_agent',
+            displayName: 'Super Agent',
+            agentRunId: 'member-run-1',
             workspaceRootPath: '/ws/a',
             summary: 'Team summary',
             lastActivityAt: '2026-01-01T02:00:00.000Z',
@@ -390,7 +421,7 @@ describe('WorkspaceAgentRunsTreePanel regressions', () => {
     expect(runHistoryStoreMock.selectTreeRun).toHaveBeenCalledWith(
       expect.objectContaining({
         teamRunId: 'team-1',
-        memberRouteKey: 'super_agent',
+        memberAddress: '/super_agent',
       }),
     );
   });
@@ -410,13 +441,13 @@ describe('WorkspaceAgentRunsTreePanel regressions', () => {
         isActive: true,
         currentStatus: 'processing',
         deleteLifecycle: 'CLEANUP_PENDING',
-        focusedMemberName: 'live_member',
+        focusedAddress: '/live_member',
         members: [
           {
             teamRunId: 'team-live',
-            memberRouteKey: 'live_member',
-            memberName: 'Live Member',
-            memberRunId: 'member-live-1',
+            memberAddress: '/live_member',
+            displayName: 'Live Member',
+            agentRunId: 'member-live-1',
             workspaceRootPath: '/ws/a',
             summary: 'Live member summary',
             lastActivityAt: '2026-01-01T02:00:00.000Z',
@@ -437,13 +468,13 @@ describe('WorkspaceAgentRunsTreePanel regressions', () => {
         isActive: false,
         currentStatus: 'idle',
         deleteLifecycle: 'READY',
-        focusedMemberName: 'history_member',
+        focusedAddress: '/history_member',
         members: [
           {
             teamRunId: 'team-history',
-            memberRouteKey: 'history_member',
-            memberName: 'History Member',
-            memberRunId: 'member-history-1',
+            memberAddress: '/history_member',
+            displayName: 'History Member',
+            agentRunId: 'member-history-1',
             workspaceRootPath: '/ws/a',
             summary: 'History member summary',
             lastActivityAt: '2026-01-01T03:00:00.000Z',
@@ -458,14 +489,14 @@ describe('WorkspaceAgentRunsTreePanel regressions', () => {
     const wrapper = mountComponent();
     await flushPromises();
 
-    expect(wrapper.find('[data-test="workspace-team-member-team-live-live_member"]').exists()).toBe(true);
-    expect(wrapper.find('[data-test="workspace-team-member-team-history-history_member"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="workspace-team-member-team-live-/live_member"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="workspace-team-member-team-history-/history_member"]').exists()).toBe(false);
 
     await wrapper.get('[data-test="workspace-team-row-team-history"]').trigger('click');
     await flushPromises();
 
-    expect(wrapper.find('[data-test="workspace-team-member-team-live-live_member"]').exists()).toBe(true);
-    expect(wrapper.find('[data-test="workspace-team-member-team-history-history_member"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="workspace-team-member-team-live-/live_member"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="workspace-team-member-team-history-/history_member"]').exists()).toBe(true);
   });
 
   it('removes a draft agent row through the local close path', async () => {
@@ -481,47 +512,4 @@ describe('WorkspaceAgentRunsTreePanel regressions', () => {
     expect(addToastMock).toHaveBeenCalledWith('Draft run removed.', 'success');
   });
 
-  it('removes a draft team row through the local discard path', async () => {
-    runHistoryState.teamNodesByWorkspace['/ws/a'] = [
-      {
-        teamRunId: 'temp-team-1',
-        teamDefinitionId: 'team-def-1',
-        teamDefinitionName: 'Team Alpha',
-        workspaceRootPath: '/ws/a',
-        summary: 'Draft team summary',
-        lastActivityAt: '2026-01-01T02:00:00.000Z',
-        lastKnownStatus: 'IDLE',
-        isActive: false,
-        currentStatus: 'idle',
-        deleteLifecycle: 'READY',
-        focusedMemberName: 'super_agent',
-        members: [
-          {
-            teamRunId: 'temp-team-1',
-            memberRouteKey: 'super_agent',
-            memberName: 'Super Agent',
-            memberRunId: 'temp-member-1',
-            workspaceRootPath: '/ws/a',
-            summary: 'Draft team summary',
-            lastActivityAt: '2026-01-01T02:00:00.000Z',
-            lastKnownStatus: 'IDLE',
-            isActive: false,
-            deleteLifecycle: 'READY',
-          },
-        ],
-      },
-    ];
-
-    const wrapper = mountComponent();
-    await flushPromises();
-    await expandTeamDefinitionGroup(wrapper);
-
-    await wrapper.get('button[title="Remove draft team"]').trigger('click');
-    await flushPromises();
-
-    expect(teamRunStoreMock.discardDraftTeamRun).toHaveBeenCalledWith('temp-team-1');
-    expect(teamRunStoreMock.terminateTeamRun).not.toHaveBeenCalled();
-    expect(runHistoryStoreMock.deleteTeamRun).not.toHaveBeenCalled();
-    expect(addToastMock).toHaveBeenCalledWith('Draft team removed.', 'success');
-  });
 });

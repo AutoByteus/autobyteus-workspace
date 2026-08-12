@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 2,
+  "slug": "autobyteus",
+  "runtime": "autobyteus",
+  "model": "gpt-5.6-luna",
+  "startedAt": "2026-08-12T05:11:23.631Z",
+  "completedAt": "2026-08-12T05:11:57.764Z",
+  "passed": false,
+  "fatalError": "TimeoutError: locator.selectOption: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#team-run-runtime-kind')\u001b[22m\n\nlocator.selectOption: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#team-run-runtime-kind')\u001b[22m\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr018/api-rev-025/live/run-one-team-browser-row.mjs:161:48",
+  "rootRun": null,
+  "consoleEvents": [],
+  "graphqlResponseSummaries": [
+    {
+      "at": "2026-08-12T05:11:25.505Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    },
+    {
+      "at": "2026-08-12T05:11:25.505Z",
+      "status": 200,
+      "containsTaskDelegation": false,
+      "containsTeamCommunication": false,
+      "containsError": false
+    }
+  ],
+  "termination": null
+}

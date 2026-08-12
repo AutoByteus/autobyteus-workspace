@@ -1,0 +1,3 @@
+# Accidental whole-server attempt (not acceptance evidence)
+
+The intended selected-server command used the GNU/bash `mapfile` builtin, which is unavailable in the host shell. Because the shell invocation did not use `set -e`, Vitest received no paths and began the entire server suite. The run was terminated as soon as the empty selection was recognized. It is incomplete, includes failures outside the maintained SR-018 selection, and is not counted as acceptance evidence. No operational database or protected process was contacted; test output names only repository test SQLite and per-test temporary app-data paths. The selected command was reissued with `xargs` and its independent result is authoritative.

@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "runtimeRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-026-live-20260812-1",
+  "runtimeEnvironmentPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-026-live-20260812-1/.env",
+  "databasePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-026-live-20260812-1.db",
+  "databaseUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-026-live-20260812-1.db",
+  "operationalTargetMatch": false,
+  "childDatabaseUrlPresent": false,
+  "childDatabaseUrlTestPresent": false,
+  "environmentDatabaseAssignmentMatches": true,
+  "configurationOnlyResolvedExactTarget": true,
+  "databaseExistsAfterConfigOnlyPreflight": false
+}

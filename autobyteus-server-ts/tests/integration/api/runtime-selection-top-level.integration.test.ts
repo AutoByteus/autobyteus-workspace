@@ -737,10 +737,10 @@ describe("runtime-selection top-level integration", () => {
       try {
         const connectedMessage = JSON.parse(await nextMessage()) as {
           type: string;
-          payload: { team_id: string };
+          payload: { session_id: string };
         };
         expect(connectedMessage.type).toBe("CONNECTED");
-        expect(connectedMessage.payload.team_id).toBe(teamRunId);
+        expect(connectedMessage.payload.session_id).toEqual(expect.any(String));
 
         socket.send(
           JSON.stringify({
@@ -749,11 +749,13 @@ describe("runtime-selection top-level integration", () => {
               message_id: "msg-team-autobyteus-1",
               dedupe_key: "dedupe-team-autobyteus-1",
               content: "hello mixed-only team",
+              context_file_paths: [],
+              image_urls: [],
               execution_address: {
-                rootTeamRunId: teamRunId,
-                taskTeamRunIds: [],
-                memberAddress: "/Coordinator",
-                taskAgentRunId: null,
+                root_team_run_id: teamRunId,
+                task_team_run_ids: [],
+                member_address: "/Coordinator",
+                task_agent_run_id: null,
               },
             },
           }),
@@ -832,10 +834,10 @@ describe("runtime-selection top-level integration", () => {
       try {
         const connectedMessage = JSON.parse(await nextMessage()) as {
           type: string;
-          payload: { team_id: string };
+          payload: { session_id: string };
         };
         expect(connectedMessage.type).toBe("CONNECTED");
-        expect(connectedMessage.payload.team_id).toBe(teamRunId);
+        expect(connectedMessage.payload.session_id).toEqual(expect.any(String));
 
         socket.send(
           JSON.stringify({
@@ -844,11 +846,13 @@ describe("runtime-selection top-level integration", () => {
               message_id: "msg-team-mixed-1",
               dedupe_key: "dedupe-team-mixed-1",
               content: "coordinate the mixed fix",
+              context_file_paths: [],
+              image_urls: [],
               execution_address: {
-                rootTeamRunId: teamRunId,
-                taskTeamRunIds: [],
-                memberAddress: "/Coordinator",
-                taskAgentRunId: null,
+                root_team_run_id: teamRunId,
+                task_team_run_ids: [],
+                member_address: "/Coordinator",
+                task_agent_run_id: null,
               },
             },
           }),
@@ -947,11 +951,13 @@ describe("runtime-selection top-level integration", () => {
                 message_id: "msg-team-mixed-restore-1",
                 dedupe_key: "dedupe-team-mixed-restore-1",
                 content: "resume mixed coordination",
+                context_file_paths: [],
+                image_urls: [],
                 execution_address: {
-                  rootTeamRunId: teamRunId,
-                  taskTeamRunIds: [],
-                  memberAddress: "/Coordinator",
-                  taskAgentRunId: null,
+                  root_team_run_id: teamRunId,
+                  task_team_run_ids: [],
+                  member_address: "/Coordinator",
+                  task_agent_run_id: null,
                 },
               },
             }),

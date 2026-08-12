@@ -146,11 +146,6 @@ const removeBackups = async (metadataPath: string): Promise<void> => {
   await Promise.all(backups.map((name) => fs.rm(path.join(path.dirname(metadataPath), name))));
 };
 
-const emptyPlatformStateStore = {
-  listExistingPlatformDatabasePaths: () => [],
-  resolveApplicationIdForPlatformDatabasePath: () => null,
-};
-
 const emptyTokenMigrator = {
   migrate: async () => [{
     itemId: "token-usage",
@@ -173,7 +168,6 @@ const createRunner = (
       new TeamCanonicalIdentityMigration(
         memoryDir,
         appDataDir,
-        emptyPlatformStateStore as never,
         emptyTokenMigrator,
       ),
     ]),

@@ -26,6 +26,21 @@ The latest coverage investigation and execution coverage report are authoritativ
 | API-REV-018 | `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`; Round 18 | SR-015; ARCH-REV-009; IR-021; CRR-038 | Fail / 72% (API-REV-017) | Fail / 91% (product Pass; environment safety Fail) |
 | API-REV-019 | `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`; Round 19 | SR-015; ARCH-REV-009; IR-021; CRR-038; CRR-039 | Fail / 91% (API-REV-018; product Pass, environment safety Fail) | Pass / 97% |
 
+| API-REV-020 | `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`; Round 20 | SR-015; ARCH-REV-009; IR-023; CRR-042 | Pass / 97% (API-REV-019; pre-refresh) | Fail / 61% |
+| API-REV-021 | `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`; Round 21 | SR-015; ARCH-REV-009; IR-025; CRR-045 | Fail / 61% (API-REV-020) | Fail / 64% |
+
+| API-REV-022 | `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`; Round 22 | SR-015; ARCH-REV-009; IR-026; CRR-047 | Fail / 64% (API-REV-021) | Fail / 84% |
+| API-REV-024 | `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`; Round 24 | SR-018; ARCH-REV-011; IR-030; CRR-053 | Fail / 84% (API-REV-022; API-REV-023 was incomplete and has no authoritative result) | Fail / 57% |
+| API-REV-025 | `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`; Round 25 | SR-018; ARCH-REV-011; IR-031; CRR-055 | Fail / 57% (API-REV-024) | Fail / 73% |
+
+| API-REV-026 | `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`; Round 26 | SR-018; ARCH-REV-011; IR-032; CRR-057 | Fail / 73% (API-REV-025) | Fail / 74% |
+| API-REV-027 | `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`; Round 27 | SR-018; ARCH-REV-011; IR-034; CRR-060 | Fail / 74% (API-REV-026) | Fail / 86% |
+| API-REV-028 | `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`; Round 28 | SR-018; ARCH-REV-011; IR-034; CRR-060; CRR-061 | Fail / 86% (API-REV-027) | Fail / 88% |
+| API-REV-029 | `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`; Round 29 | SR-018; ARCH-REV-011; IR-035; CRR-063 | Fail / 88% (API-REV-028) | Fail / 90% |
+| API-REV-030 | `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`; Round 30 | SR-018; ARCH-REV-011; IR-036; CRR-065 | Fail / 90% (API-REV-029) | Fail / 93% |
+
+| API-REV-031 | `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`; Round 31 | SR-018; ARCH-REV-011; IR-037; CRR-067 | Fail / 93% (API-REV-030) | Pass / 98% |
+
 ## Revision Entries
 
 ### API-REV-001 — Hierarchical AgentTeam handoff coverage baseline passes
@@ -491,3 +506,271 @@ None. API-REV-016 had no unresolved failure. Its backend/runtime and three-provi
 - New or remaining failure IDs: `None`.
 - Recommended recipient: `code_reviewer` for proportional review of the unchanged six-path durable coverage package.
 - Remaining risks and disclosures: proportional review remains mandatory before delivery. API-REV-014's operational database mutation and API-REV-018's inherited-target incident remain disclosed; API-REV-019 did not inspect, repair, copy, roll back, delete, or otherwise act on that database. User-held `60004/31004` remained running with original PIDs. One malformed, non-authoritative whole-web command attempt is disclosed and replaced by exact passing selections.
+
+### API-REV-020 — Safe startup passes but current delegated-task overview visibility fails
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`; fresh post-integration round 20 after `CRR-042` Pass.
+- Triggering finding or scenario IDs: resolved `CR-F-023`; new `API-UI-TASK-020-001` / `API-F-013`; R-039; UC-021; AC-036.
+- Related revision IDs: `SR-015`; `ARCH-REV-009`; `IR-023`; `CRR-042`; prior `API-REV-019` is historical pre-refresh proof.
+- Why recorded: the latest-base merge made API-REV-019 historical. API-REV-020 freshly proved the checked recent-`RUNNING` migration lifecycle, began current latest-base web maintenance, then isolated a critical exact current-contract frontend failure before live-provider execution.
+- Coverage decisions or durable test paths changed: `1 added / 24 updated / 0 removed`, all API/E2E-owned and preserved as incomplete work. Obsolete deleted-owner, missing-root, and route/path fixtures were converted to one reusable current rooted Team fixture and exact execution addresses. The cumulative inventory and patch are in `api-e2e-evidence-sr015/api-rev-020/`.
+- Scenarios rechecked: server full build/bootstrap; real checked disposable recent-`RUNNING` readable-migration process lifecycle; maintained current web `25 files / 162 tests`; three additional current components `18/18`; broad web validity discovery `75 files / 464 tests`; exact Team overview reproduction `4/8` failing while the accompanying Team workspace passes `12/12`.
+- Commands/environment/broader-validation delta: only the retained real process E2E used the checked disposable launcher with ambient database selectors excluded. No new server/frontend/browser/provider environment, secret import, or provider call was started after the deterministic critical failure.
+
+#### Prior Failure Resolution
+
+| Prior failure | Previous classification | Current resolution | Evidence |
+| --- | --- | --- | --- |
+| `API-ENV-F-018-001` / `CR-F-022` | API/E2E environment Local Fix | Remains resolved; only checked disposable launcher path used. | `api-e2e-evidence-sr015/api-rev-020/environment/recent-running-readable-migration-lifecycle.log` |
+| `API-F-011` / `API-F-012` | Frontend implementation defects resolved by IR-021 | Projection coverage remains green; `API-F-013` is a distinct overview filtering failure after a live task projection exists. | `repository/maintained-web-current-contract-final.log`; `team-overview-task-visibility-failure-analysis.md` |
+| `CR-F-023` | Startup implementation defect resolved by IR-023 | Resolved downstream by the real recent-`RUNNING` lifecycle and retry convergence. | `environment/recent-running-readable-migration-lifecycle.log` |
+
+- Canonical artifacts updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-coverage-investigation.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md`; this record.
+- Prior result and confidence: `Pass / 97%` (`API-REV-019`; pre-refresh).
+- Current result and confidence: `Fail / 61%`.
+- New or remaining failure IDs: `API-F-013` / `API-UI-TASK-020-001`.
+- Recommended recipient: `code_reviewer` for focused failure-origin review, not proportional successful-test review.
+- Remaining risks or untested scope: the retained durable delta is incomplete/non-green; further stale latest-base web fixtures remain to adjudicate; fresh AutoByteus, Codex, and Claude browser/provider rows are not tested. The user-held `60004/31004` stack remains untouched. API-REV-014 and API-REV-018 operational database incidents remain disclosed; API-REV-020 never targeted or inspected that database.
+### API-REV-021 — IR-025 passes downstream; exact inter-Agent sender presentation fails
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`; API/E2E round 21 after `CRR-045` Pass.
+- Triggering finding or scenario IDs: resolved `API-F-013`; new `API-F-014`; `API-UI-TASK-021-001`; `API-WEB-PRESENTATION-021-001`; R-039 / UC-021 / AC-036.
+- Related revision IDs: `SR-015`; `ARCH-REV-009`; `IR-025`; `CRR-045`.
+- Why recorded: IR-025's exact delegator-focus fix passes the maintained frontend and server rechecks. Resumed broad current-fixture maintenance then exposed a distinct valid user-visible failure: inter-Agent sender labels are derived from serialized execution-key JSON rather than rooted member address/display identity.
+- Coverage decisions or durable paths changed: the incomplete preserved package is now `1 added / 30 updated / 0 removed`. Six additional stale fixtures were converted to current canonical addresses; five pass, while `AgentTeamEventMonitor.spec.ts` is retained failing as direct evidence. No coverage was removed.
+- Scenarios added/changed/removed/rechecked: `API-F-013` passes (`7 files / 33 web tests`, `17/17 server tests`); the prior 24-path dirty selection passes `160/160`; `API-F-014` fails one assertion in a six-file/39-test selection. Remaining builds, stale-fixture maintenance, and all three fresh live rows were halted.
+- Commands/environment/broader-validation delta: frontend Vitest and explicit test-owned SQLite only. No server/frontend stack, vault import, browser, provider call, or disposable live database was started. The user-held stack and operational database remained untouched.
+
+#### Prior Failure Resolution
+
+| Prior failure | Previous result | Current resolution | Evidence |
+| --- | --- | --- | --- |
+| `API-F-013` / `CR-F-024` | API-REV-020 implementation failure | Resolved downstream: exact task visibility/component selection passes 33/33 and server task service passes 17/17. | `api-e2e-evidence-sr015/api-rev-021/repository/api-f013-focused-web.log`; `api-f013-focused-server.log` |
+
+- Canonical artifacts updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-coverage-investigation.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md`; this record.
+- Prior result and confidence: `Fail / 61%` (`API-REV-020`).
+- Current result and confidence: `Fail / 64%`.
+- New or remaining failure IDs: `API-F-014`.
+- Recommended recipient: `code_reviewer` for focused failure-origin review; preliminary implementation owner is `implementation_engineer`.
+- Remaining risks or untested scope: the durable package remains incomplete/non-green/unreviewed; remaining latest-base fixture maintenance, builds, checked disposable vault setup, and fresh AutoByteus/Codex/Claude browser/provider rows are Not Tested. Both operational-database incident disclosures remain active; no operational target was contacted.
+
+### API-REV-022 — Task UI passes live; real inter-Agent stream projection fails
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`; API/E2E round 22 after `CRR-047` Pass.
+- Triggering finding or scenario IDs: resolved `API-F-014`; new `API-F-015`; `API-WEB-PRESENTATION-022-001`; `API-LIVE-022-AUTOBYTEUS-TASK`; `API-WEB-INTERAGENT-022-001`; R-039 / UC-021 / AC-036.
+- Related revision IDs: `SR-015`; `ARCH-REV-009`; `IR-026`; `CRR-047`.
+- Why recorded: IR-026's exact execution-key sender mapping passes deterministic coverage, the current durable suite/builds are green, and the checked disposable real AutoByteus browser row directly passes delegated-task UI/lifecycle. The same row reveals that exact delivered inter-Agent messages are skipped before presentation because the real server event field and frontend exact member resolver disagree.
+- Coverage decisions or durable paths changed: cumulative preserved API/E2E delta is `1 added / 42 updated / 0 removed`; all 42 test files pass `297/297`. The exact inventory and patch are under `api-e2e-evidence-sr015/api-rev-022/investigation/`. This green package remains unreviewed because focused failure-origin review takes precedence.
+- Scenarios added/changed/removed/rechecked: API-F-014 `4/4`; all current durable web `297/297`; server affected `52/52`; server typecheck/full build/bootstrap and Nuxt build; checked safe-target preflight/vault import/PID proof; one fresh AutoByteus imported nested classroom row with task-Team peer, active/awaiting/accepted, task details, refresh, and cleanup; real inter-Agent presentation failure correlation.
+- Commands/environment/broader-validation delta: actual TTY `pnpm secrets:import` imported nine configured identifiers from `/Users/normy/.autobyteus/server-data/.env` only into the exact disposable database. `startBuiltTestServer` plus PID lsof proved that target. Real Chrome used owned `60122/31122`. Codex, Claude, and standalone rows were fail-fast `Not Tested` after the common critical frontend failure.
+
+#### Prior Failure Resolution
+
+| Prior failure | Previous result | Current resolution | Evidence |
+| --- | --- | --- | --- |
+| `API-F-014` / `CR-F-025` | API-REV-021 implementation failure | Resolved downstream in the current deterministic presentation selection; strict current execution-key mapping passes `4/4`. | `api-e2e-evidence-sr015/api-rev-022/repository/api-f014-crr047-recheck.log` |
+| `API-F-013` / `CR-F-024` | Resolved in API-REV-021 source/deterministic checks | Remains resolved and now passes the real browser: task count/details, exact task Team, lifecycle, refresh retention, and cleanup are direct. | `live/browser/autobyteus-browser-row.json`; task screenshots |
+
+- Canonical artifacts updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-coverage-investigation.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md`; this record.
+- Prior result and confidence: `Fail / 64%` (`API-REV-021`).
+- Current result and confidence: `Fail / 84%`.
+- New or remaining failure IDs: `API-F-015` / `API-WEB-INTERAGENT-022-001`.
+- Recommended recipient: `code_reviewer` for focused failure-origin review; preliminary implementation owner is `implementation_engineer`.
+- Remaining risks / untested scope: after correction, rerun AutoByteus first, then complete fresh Codex `gpt-5.6-luna` medium, authenticated Claude, and standalone Agent rows. Preserve the 43-path durable delta and return it for proportional review only after overall Pass. Historical operational-database incident disclosures remain; API-REV-022 never targeted or inspected that database. All owned live resources were removed.
+
+### API-REV-024 — Current aggregate passes focused coverage; mobile reference root identity fails
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`; API/E2E round 24 after `CRR-053` Pass.
+- Triggering finding or scenario IDs: `API-F-016`; `API-MOBILE-REFERENCE-024-001`; `API-WEB-AGGREGATE-024-001`; `API-WEB-RESTORE-024-001`; `API-WEB-STREAM-024-001`; `API-WEB-UI-024-001`; R-051 / R-052 and SR-018 current aggregate contracts.
+- Related revision IDs: `SR-018`; `ARCH-REV-011`; `IR-030`; `CRR-053`.
+- Why recorded: the fresh SR-018 investigation reset authority after the paused, incomplete API-REV-023. Current aggregate, delayed restore, stream, and task-UI coverage passes a focused `61/61`, but a direct current mobile component test proves that structured-reference selection drops the canonical root TeamRun ID because production reads a removed flat `activeTeamContext.teamRunId` property.
+- Coverage decisions or durable paths changed: the preserved cumulative package is currently `2 added / 44 updated / 5 removed`. API-REV-024 added a current-only fixture helper and aggregate lifecycle suite, updated current aggregate/strict boundary tests, and removed five tests whose production projection/router/metadata owners were deleted by SR-018. Each removal and its current replacement boundary is recorded in the canonical investigation. This package remains incomplete, mixed, and unreviewed.
+- Scenarios added/changed/removed/rechecked: current aggregate selection passes `10 files / 61 tests`; broader maintained-web discovery is mixed at `24 failed / 24 passed` files and `82 failed / 222 passed` tests; the focused `MobileTeamMessages.spec.ts` run passes one assertion and fails one valid exact-root reference identity assertion.
+- Commands/environment/broader-validation delta: repository Vitest only. No server, frontend, browser, provider process, vault import, migration, or database was started. Builds and all fresh AutoByteus, Codex, Claude, and standalone live rows were fail-fast `Not Tested` after the common user-surface failure.
+
+#### Prior Failure Resolution
+
+| Prior failure | Previous result | Current resolution | Evidence |
+| --- | --- | --- | --- |
+| `CR-F-028`, `CR-F-029`, `CR-F-030` | Source corrections accepted by CRR-053 after incomplete API-REV-023 | Focused current aggregate/restore coverage passes `61/61`, including delayed child materialization and strict foreign/terminal rejection; full safe-target browser/provider validation remains outstanding. | `api-e2e-evidence-sr018/api-rev-024/repository/current-aggregate-focused-round2.log` |
+| `API-F-015` / `CR-F-026` / `CR-F-027` | API-REV-022 Fail followed by source correction | Not revalidated in a completed current SR-018 live round; no result is inferred from the interrupted API-REV-023. | Canonical investigation and execution report |
+
+- Canonical artifacts updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-coverage-investigation.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md`; this record.
+- Prior result and confidence: `Fail / 84%` (`API-REV-022`). API-REV-023 was interrupted before a completed result and is intentionally absent from the revision index.
+- Current result and confidence: `Fail / 57%`.
+- New or remaining failure IDs: `API-F-016` / `API-MOBILE-REFERENCE-024-001`.
+- Recommended recipient: `code_reviewer` for focused failure-origin review, not proportional successful-test review; preliminary owner is `implementation_engineer` for a bounded Local Fix.
+- Remaining risks or untested scope: the preserved durable package is mixed/incomplete/unreviewed; remaining stale-fixture adjudication, production builds, checked disposable-target setup, and fresh AutoByteus/Codex/Claude/standalone browser-provider rows remain Not Tested. Both historical operational-database incident disclosures remain preserved. API-REV-024 did not contact any database, and the protected `127.0.0.1:60004` / `31004` stack remained untouched.
+
+### API-REV-025 — IR-031 passes downstream; real existing-Team launch fails
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`; API/E2E round 25 after `CRR-055` Pass.
+- Triggering findings/scenarios: resolved `API-F-016` / `CR-F-031`; new `API-F-017` / `API-LIVE-025-TEAM-LAUNCH-001`; SR-018 current aggregate and required real three-runtime browser/provider matrix.
+- Related revision IDs: `SR-018`; `ARCH-REV-011`; `IR-031`; `CRR-055`.
+- Why recorded: API-REV-025 independently proves IR-031 and completes the broad dirty durable maintenance, production builds, and safe disposable environment. The first authoritative real current Team launch then fails with a browser `DataCloneError` before any TeamRun/provider process begins.
+- Coverage decisions or durable paths changed: cumulative preserved package is `2 added / 80 updated / 6 removed` across `37 server / 51 web` paths. All 82 present paths pass their affected selections. Six stale/deleted-owner removals retain current replacements. The package is not submitted for proportional successful-test review while the product result is Fail.
+- Scenarios rechecked: exact mobile `2/2`; current aggregate `61/61`; complete maintained web `44 files / 312 tests`; ticket-retained server `74 files / 523 tests` plus 7 capability-gated files / 20 skipped tests not counted as provider proof; server typecheck/build/bootstrap and Nuxt build; full-server diagnostic baseline; safe preflight/migrations/vault import/PID proof; public staged fixture import and provider catalog; real Chrome existing-Team Run action.
+- Commands/environment/broader delta: actual TTY `pnpm secrets:import` from `/Users/normy/.autobyteus/server-data/.env` configured nine identifiers only in the disposable target. Checked `startBuiltTestServer` used `60225`, frontend used `31225`, and PID lsof proved zero operational target references. Browser execution halted at the common launch error before AutoByteus/Codex/Claude calls.
+
+#### Prior Failure Resolution
+
+| Prior failure | Previous result | Current resolution | Evidence |
+| --- | --- | --- | --- |
+| `API-F-016` / `CR-F-031` | API-REV-024 implementation failure | Resolved downstream: exact mobile root TeamRun reference identity and close-back pass `2/2`; aggregate selection remains green. | `api-e2e-evidence-sr018/api-rev-025/repository/api-f016-post-crr055.log` |
+| `CR-F-028` through `CR-F-030` | Source corrections accepted before API-REV-024/025 | Current aggregate, restore, stream, task UI, hydration, and navigation selections pass deterministically; live provider proof remains blocked by distinct `API-F-017`. | `repository/current-aggregate-focused-post-crr055.log`; `current-maintained-web-final.log` |
+
+- Canonical artifacts updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-coverage-investigation.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md`; this record.
+- Prior result and confidence: `Fail / 57%` (`API-REV-024`).
+- Current result and confidence: `Fail / 73%`.
+- New or remaining failure IDs: `API-F-017` / `API-LIVE-025-TEAM-LAUNCH-001`.
+- Recommended recipient: `code_reviewer` for focused failure-origin review, not proportional successful-test review; preliminary owner is `implementation_engineer` for a bounded current frontend Local Fix.
+- Remaining risks / untested scope: real AutoByteus, Codex, Claude, standalone Agent, restore/reconnect, and mobile reference-content rows are `Not Tested` after fail-fast. The whole-server baseline remains non-clean and is not acceptance. The 88-path durable package remains unreviewed.
+- Cleanup and disclosures: owned server/frontend stopped; `60225/31225` closed; disposable runtime/database removed; source fixture hashes unchanged; no secrets captured. The operational database was not inspected or acted on. Protected `60004/31004` were absent after the reported power loss and were not touched. Both historical operational-database incident disclosures remain preserved.
+
+### API-REV-026 — IR-032 passes downstream; real Team launch calls a missing store action
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`; API/E2E round 26 after `CRR-057` Pass.
+- Triggering findings/scenarios: resolved `API-F-017` / `CR-F-032`; revalidated `CR-F-033`; new `API-F-018` / `API-LIVE-026-TEAM-LAUNCH-001`; required SR-018 safe browser/provider matrix.
+- Related revision IDs: `SR-018`; `ARCH-REV-011`; `IR-032`; `CRR-057`.
+- Why recorded: API-REV-026 independently proves the immutable reactive Team launch draft and typed form/store edit owner, completes current deterministic/build/safe-target setup, and then exposes a distinct real critical launch failure at the next production store seam.
+- Coverage decisions or durable paths changed: cumulative preserved package is `2 added / 82 updated / 6 removed` across `37 server / 53 web` paths. This round updates `teamRunConfigStore.spec.ts`, `TeamRunConfigForm.spec.ts`, and `RunConfigPanel.spec.ts` to the typed immutable contract. All 84 present paths pass their selected suites; the package remains unreviewed while the overall result is Fail.
+- Scenarios rechecked: exact launch/edit `38/38`; launch mobile/boundary `41/41`; current maintained web `48 files / 343 tests`; retained server `74 files / 523 tests` plus 7 capability-gated files / 20 skips not counted as provider proof; server typecheck/build/bootstrap and Nuxt build; checked disposable preflight/migrations/vault import/PID proof; public staged fixture import and provider catalog; real Chrome Team launch.
+- Commands/environment/broader-validation delta: actual TTY `pnpm secrets:import` configured nine identifiers only in disposable `api-rev-026-live-20260812-1.db`; checked launcher used `60226`, frontend used `31226`, and PID lsof proved the exact disposable database with zero operational target references. Real browser execution halted after **Run Team** produced Error 500 before root TeamRun/provider creation.
+
+#### Prior Failure Resolution
+
+| Prior failure | Previous result | Current resolution | Evidence |
+| --- | --- | --- | --- |
+| `API-F-017` / `CR-F-032` | API-REV-025 implementation failure: real reactive Team definition caused `DataCloneError` before the form rendered | Resolved downstream: real Team catalog **Run** reaches `/workspace`; exact controls render; AutoByteus `gpt-5.6-luna` and auto approval can be selected; **Run Team** submits without clone/frozen-prop error. | `api-e2e-evidence-sr018/api-rev-026/live/browser/autobyteus-team-list.png`; `autobyteus-launch-config.png`; browser log/result |
+| `CR-F-033` | Source-only approval in CRR-057 | Direct current durable coverage passes the closed `TeamLaunchConfigEdit` union, store-owned pruning, immutable replacement, and read-only props; real form interaction also succeeds. | `repository/team-launch-edit-focused-final.log`; `team-launch-mobile-and-boundary-focused.log` |
+
+- Canonical artifacts updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-coverage-investigation.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md`; this record.
+- Prior result and confidence: `Fail / 73%` (`API-REV-025`).
+- Current result and confidence: `Fail / 74%`.
+- New or remaining failure IDs: `API-F-018` / `API-LIVE-026-TEAM-LAUNCH-001`.
+- Recommended recipient: `code_reviewer` for focused failure-origin review, not proportional successful-test review; preliminary owner is `implementation_engineer` for a bounded current frontend Local Fix.
+- Remaining risks / untested scope: production `RunConfigPanel.vue` calls absent `teamContextsStore.createRunFromTemplate`; fresh AutoByteus task lifecycle, Codex, Claude, standalone Agent, restore/reconnect, and mobile reference-content rows are `Not Tested`. The 90-path durable package remains unreviewed.
+- Cleanup and disclosures: owned server/frontend stopped; `60226/31226` closed; disposable runtime/database/vault removed; source fixture hashes unchanged; no secret values retained. The operational database was not inspected or acted on. Protected `60004/31004` were absent and untouched. Both historical operational-database incident disclosures remain preserved.
+
+
+### API-REV-027 — Canonical Team launch passes; mandatory live task-Team peer exchange fails
+
+- Trigger: `CRR-060 Pass`; round 27 against `SR-018` / `ARCH-REV-011` / `IR-034` at HEAD `649e244418fd6a4a21626ea4be5f7b0bab859412`.
+- Prior result: `API-REV-026 Fail / 74%`.
+- Current result: `Fail / 86%`.
+- Prior failure resolution: `API-F-018` is resolved downstream. Current RunConfigPanel durable seams pass `16/16`; real imported Team launch creates rooted AutoByteus and Codex TeamRuns and enters chat without the removed context-registry action.
+- Durable coverage: cumulative exact package remains `2 added / 82 updated / 6 removed` (`90` paths; `37 server / 53 web`). `RunConfigPanel.spec.ts` is currentized to real `{topology, executions}` and canonical `agentTeamRunStore.launchDraft`. Full web passes `343/343`; retained server passes `523/523` plus 20 declared skips excluded from provider proof; typecheck/builds/diff hygiene pass.
+- Safe broader execution: fresh checked disposable database/runtime, actual interactive secret import only into that target, exact PID lsof, public staged-package import, and source-integrity/cleanup checks pass. Real Chrome executed AutoByteus and Codex Team/task lifecycles.
+- New failure: `API-F-019` / `API-LIVE-027-TASK-PEER-001`. Both runtimes created the exact nonempty task-Team chain and exact submit/accepted lifecycle but emitted zero required task-scoped peer messages/replies despite an explicit must-send-and-wait instruction. Failure origin is unclear; request focused code-review classification.
+- Not Tested after fail-fast: authenticated Claude Team row, standalone Agent matrix, selected-active-Team config browser inspection, and real mobile reference content.
+- Cleanup/disclosures: owned ports closed and owned data removed; source fixture unchanged; operational database not inspected or acted on; protected `60004/31004` absent and untouched; both historical incident disclosures preserved.
+- Canonical artifacts updated: coverage investigation, execution report, and this revision record.
+- Recommended recipient: `code_reviewer` for focused failure-origin review, not proportional successful-test review.
+
+
+### API-REV-028 — Bound capability passes; real Codex task-Team peer call exposes binding rejection
+
+- Triggering role/report/round: `code_reviewer`; canonical `code-review-report.md`; round 28 after `CRR-061` API/E2E Local Fix.
+- Triggering findings/scenarios: resolved `API-F-019` / `CR-F-036`; new `API-F-020` / `API-LIVE-028-CODEX-TASK-PEER-BOUND-001`.
+- Related revision IDs: `SR-018`; `ARCH-REV-011`; `IR-034`; `CRR-060`; `CRR-061`.
+- Why recorded: CRR-061 correctly reclassified provider tool-call omission as model behavior and required direct capability proof. The new deterministic actual-bound production probe passes, but the user-authorized stronger staged Agent instruction caused a real Codex task-scoped session to invoke the tool and expose a distinct production binding rejection.
+- Coverage decisions/durable paths changed: API-REV-028 made no repository-resident durable addition, update, or removal. The cumulative package remains exactly `90` paths (`2 added / 82 updated / 6 removed`; `37 server / 53 web`) and remains unreviewed while the overall result is Fail. The temporary probe was removed from the repository after an evidence copy was retained.
+- Scenarios rechecked: capability/exposure `31/31`; actual-bound request/reply `1/1`; web current `343/343`; retained server `523/523` plus 20 declared skips excluded from live proof; server typecheck/build/bootstrap; Nuxt production build; checked disposable setup; staged fixture integrity; AutoByteus behavior observation; real Codex bound tool call.
+- Commands/environment/broader delta: actual interactive `pnpm secrets:import` read the requested source only into disposable `api-rev-028-live-20260812-1.db`; checked server/frontend used `60228/31228`; PID lsof proved the exact disposable database. The stronger `student_one/agent.md` existed only in the staged fixture. Owned processes/data and the temporary test were removed.
+
+#### Prior Failure Resolution
+
+| Prior failure | Previous result | Current resolution | Evidence |
+| --- | --- | --- | --- |
+| `API-F-019` / `CR-F-036` | API-REV-027 model-call omission; capability Not Tested | Resolved: a real active task Team invoked the actual bound AutoByteus request and reverse MCP reply seams. Exact same root, identical nonempty ordered chain, concrete task AgentRuns, exact once-only content, and no persistent fallback passed. | `api-e2e-evidence-sr018/api-rev-028/capability/task-team-bound-tool-capability.log`; evidence test copy |
+
+- New failure: `API-F-020`. A real Codex `student_one` task-scoped session called `send_message_to({recipient_address:"./student_two",content:"TASK_PEER_CODEX"})` and received `TOOL_EXECUTION_FAILED` because its active task TeamRun binding was classified as foreign/reordered/truncated/wrong-parent/wrong-Team. Public records prove the exact active root/task-Team chain and no submit/review.
+- Canonical artifacts updated: `api-e2e-coverage-investigation.md`; `api-e2e-execution-coverage-report.md`; this record.
+- Prior result/confidence: `Fail / 86%` (`API-REV-027`).
+- Current result/confidence: `Fail / 88%`.
+- Recommended recipient: `code_reviewer` for focused failure-origin review; preliminary source owner is `implementation_engineer` if the current binding mismatch is confirmed.
+- Remaining risks / Not Tested: authenticated Claude Team, standalone Agent matrix, selected-active-Team config browser inspection, and real mobile reference-content path halted after API-F-020. The operational database was not inspected or acted on; protected `60004/31004` were absent and untouched; both incident disclosures, delivery stash, and backup remain preserved.
+
+### API-REV-029 — IR-035 passes downstream; standalone first-send live assistant content is blank until refresh
+
+- Triggering role/report/round: `code_reviewer`; canonical `code-review-report.md`; round 29 after `CRR-063` Pass.
+- Triggering findings/scenarios: resolved `API-F-020` / `CR-F-037`; new `API-F-021` / `API-LIVE-029-STANDALONE-FIRST-SEND-001`.
+- Related revision IDs: `SR-018`; `ARCH-REV-011`; `IR-035`; `CRR-063`.
+- Why recorded: API-REV-029 independently proves IR-035 at lifecycle-faithful first-level/nested boundaries and through all three real imported-Team providers, then exposes a distinct current standalone first-send live projection failure.
+- Coverage decisions/durable paths changed: one already-counted durable file, `autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts`, now preserves persistent parent topology and fresh child materialization. API-REV-029 delta is `0 added / 1 updated / 0 removed`; the cumulative unreviewed package remains `90` paths (`2 added / 82 updated / 6 removed`). The temporary 2-case capability test was removed after its evidence copy was retained.
+- Scenarios rechecked: lifecycle-faithful capability `2/2`; affected durable `25/25`; exposure `31/31`; maintained web `343/343`; retained server `523/523` plus twenty declared skips excluded from live proof; production typecheck/builds; safe target; public fixture import; real AutoByteus/Codex/Claude Team rows; standalone AutoByteus first-send/live/restore.
+- Commands/environment/broader delta: actual TTY `pnpm secrets:import` configured nine identifiers only in disposable `api-rev-029-live-20260812-1.db`; checked server/frontend used `60229/31229`; PID lsof proved the exact disposable target. The initial wrong frontend variable names created no run/provider call and were corrected before counted execution.
+
+#### Prior Failure Resolution
+
+| Prior failure | Previous result | Current resolution | Evidence |
+| --- | --- | --- | --- |
+| `API-F-020` / `CR-F-037` | API-REV-028 real Codex task-scoped bound call rejected persistent/fresh identity | Resolved downstream: first-level and nested lifecycle-faithful probes pass, affected durable selection passes, and fresh real AutoByteus/Codex/Claude task-Team peer request/reply journeys all pass with exact chains and no persistent fallback. | `api-e2e-evidence-sr018/api-rev-029/capability/task-team-bound-first-and-nested.log`; `repository/ir035-lifecycle-faithful-durable.log`; three `live/browser/*-browser-row.json` files |
+
+- New failure: `API-F-021`. A real standalone AutoByteus first send creates the run and persists exact assistant content `STANDALONE_AUTOBYTEUS_OK`, but the live Chrome assistant bubble remains empty for 240 seconds. Reload/historical hydration renders the exact content. Preliminary owner is implementation source at first-send/live conversation projection; focused failure-origin review is requested.
+- Canonical artifacts updated: `api-e2e-coverage-investigation.md`; `api-e2e-execution-coverage-report.md`; this record.
+- Prior result/confidence: `Fail / 88%` (`API-REV-028`).
+- Current result/confidence: `Fail / 90%`.
+- Recommended recipient: `code_reviewer` for focused failure-origin review, not proportional successful-test review.
+- Remaining risks / Not Tested: fresh Codex/Claude standalone Agents, selected-active-Team config browser inspection, and real mobile reference-content path halted after API-F-021. Owned resources were removed; operational database action was none; protected `60004/31004` were absent and untouched; both incident disclosures, delivery stash, and backup remain preserved.
+
+### API-REV-030 — IR-036 resolves standalone live egress; persisted mobile Team communication remains empty
+
+- Triggering role/report/round: `code_reviewer`; canonical `code-review-report.md`; round 30 after `CRR-065` Pass.
+- Triggering findings/scenarios: resolved `API-F-021` / `CR-F-038`; new `API-F-022` / `API-MOBILE-REFERENCE-030-001`.
+- Related revision IDs: `SR-018`; `ARCH-REV-011`; `IR-036`; `CRR-065`.
+- Why recorded: API-REV-030 directly rechecks IR-036 with all three real standalone providers, closes the prior live-first-send failure, finishes the real selected-Team configuration row, and exposes a distinct persisted/active mobile Team-communication hydration failure.
+- Coverage decisions/durable paths changed: currentized the stale incomplete-Team-status fixture in `autobyteus-server-ts/tests/unit/services/agent-streaming/agent-stream-websocket-egress.test.ts` to a current rooted task-Team execution shape while preserving the intentional missing `agent_run_id`. API-REV-030 delta is `0 added / 1 updated / 0 removed`; cumulative unreviewed package is `91` paths (`2 added / 83 updated / 6 removed`; `38 server / 53 web`).
+- Scenarios rechecked: egress/handlers `67/67`; current server `573/573` with twenty declared skips excluded from live proof; current web `343/343`; server typecheck/build/bootstrap; Nuxt build; exact safe-target lifecycle; fresh standalone AutoByteus/Codex/Claude live/persist/restore; real imported-Team selected-config; real active and persisted mobile Team communication/reference.
+- Commands/environment/broader delta: checked absent disposable SQLite target, configuration-only preflight, migrations, actual interactive `pnpm secrets:import`, checked built-server launcher, PID lsof, real Chrome, public staged fixture import, exact cleanup. Owned `60230/31230` closed and owned runtime/database/vault removed.
+
+#### Prior Failure Resolution
+
+| Prior failure | Previous result | Current resolution | Evidence |
+| --- | --- | --- | --- |
+| `API-F-021` / `CR-F-038` | API-REV-029 persisted exact standalone AutoByteus output but live assistant content was blank until refresh | Resolved downstream: fresh real AutoByteus, Codex, and Claude rows each render exact assistant content before refresh, persist it exactly once, restore the same run/content, and terminate cleanly. | `api-e2e-evidence-sr018/api-rev-030/live/browser/standalone-autobyteus.json`; `standalone-codex.json`; `standalone-claude.json` |
+
+- New failure: `API-F-022`. Exact server Team communication records—including one reference—exist for `nested_classroom_test_team_eeceab75d5cb483cab682be1841176c8`, and desktop restore/config pass, but the freshly paired mobile surface selects that Team/Teacher and renders `Messages · 0`. Active and persisted reference-row attempts both fail. Preliminary boundary is raw Apollo Team-communication DTO admission into the strict domain store; focused origin review is required.
+- Canonical artifacts updated: `api-e2e-coverage-investigation.md`; `api-e2e-execution-coverage-report.md`; this record; `api-e2e-evidence-sr018/api-rev-030/failure-api-f022-mobile-team-communication-restore-analysis.md`.
+- Prior result/confidence: `Fail / 90%` (`API-REV-029`).
+- Current result/confidence: `Fail / 93%`.
+- Recommended recipient: `code_reviewer` for focused failure-origin review, not proportional successful-test review.
+- Remaining risks / Not Tested: exact reference content and close-back are unreachable until the mobile communication list hydrates. No Electron-shell claim. The cumulative durable package remains unreviewed. Operational database action was none; protected `60004/31004`, both incident disclosures, delivery stash, and backup remain preserved.
+
+### API-REV-031 — Exact Apollo Team communication hydration restores desktop and mobile active/persisted references
+
+- Triggering role/report/round: `code_reviewer`; canonical `code-review-report.md`; round 31 after `CRR-067` Pass.
+- Triggering findings/scenarios: resolved `API-F-022` / `CR-F-039` / `API-MOBILE-REFERENCE-030-001`.
+- Related revision IDs: `SR-018`; `ARCH-REV-011`; `IR-037`; `CRR-067`.
+- Why recorded: API-REV-031 adds the missing durable actual-service seam, rechecks the shared browser boundary on desktop and mobile rather than assuming a mobile-only defect, and directly proves active and persisted reference restoration on the exact current root.
+- Coverage decisions/durable paths changed: added `autobyteus-web/services/runHydration/__tests__/teamCommunicationHydrationService.spec.ts`. It proves exact Apollo projection for persistent/nested task-Team addresses and structured references plus whole-collection invalid-shape rejection. API-REV-031 delta is `1 added / 0 updated / 0 removed`; cumulative package is `92` paths (`3 added / 83 updated / 6 removed`; `38 server / 54 web`).
+- Scenarios rechecked: new seam `2/2`; service/store/mobile `11/11`; current web `345/345`; current server `573/573` with 20 declared skips excluded from live proof; server production typecheck/build/bootstrap; Nuxt production build; checked safe-target lifecycle; real imported AutoByteus active desktop/mobile communication/reference; selected-Team config; terminal persistence and clean reload on desktop/mobile.
+- Commands/environment/broader delta: fresh absent disposable SQLite target, configuration-only preflight, Prisma migration, actual interactive `pnpm secrets:import` into the disposable vault, checked server launcher, exact PID `lsof`, staged fixture import, real Google Chrome, exact termination, and cleanup. The initial frontend binding attempt used obsolete environment names and created no Team; it was stopped/currentized and disclosed. Two temporary predicate-order/cardinality mistakes were corrected and a final fresh browser run passed directly.
+
+#### Prior Failure Resolution
+
+| Prior failure | Previous result | Current resolution | Evidence |
+| --- | --- | --- | --- |
+| `API-F-022` / `CR-F-039` | API-REV-030 exact server communication records existed, but active/persisted mobile rendered `Messages · 0`; shared desktop restore remained uncertain | Resolved downstream: exact root `nested_classroom_test_team_eeeb98d0f6134d70a50eb512a9563ed5` shows two rooted records, `Messages · 2`, exact path/content/open/back on active and persisted mobile, and exact path/content/return on active and persisted desktop, with zero console errors. | `api-e2e-evidence-sr018/api-rev-031/live/browser/active-desktop-mobile-reference.json`; `persisted-desktop-mobile-reference.json`; screenshots |
+
+- Provider/runtime disposition: fresh AutoByteus Team execution directly covers IR-037; API-REV-030 standalone AutoByteus/Codex/Claude and API-REV-029 imported-Team AutoByteus/Codex/Claude remain authoritative because IR-037 is provider-neutral Team GraphQL hydration with no provider-adapter or standalone-egress source intersection.
+- Canonical artifacts updated: `api-e2e-coverage-investigation.md`; `api-e2e-execution-coverage-report.md`; this record; `api-e2e-evidence-sr018/api-rev-031/`.
+- Prior result/confidence: `Fail / 93%` (`API-REV-030`).
+- Current result/confidence: **Pass / 98%**.
+- Recommended recipient: `code_reviewer` for proportional review of the complete 92-path durable package before delivery.
+- Residual risk: only non-material Electron-shell-specific uncertainty; real browser desktop-equivalent and responsive/mobile surfaces pass. Operational database action was none; protected `60004/31004`, both incident disclosures, delivery stash, and backup remain preserved.
+
+### API-REV-032 — CRR-068 bounded durable-test corrections
+
+- Triggering role/report/round: `code_reviewer`; canonical `api-e2e-test-review-report.md`; round 32 after `CRR-068 Fail — Local Fix`.
+- Triggering findings: `TR-F-004`, `TR-F-005`.
+- Related revision IDs: `SR-018`; `ARCH-REV-011`; `IR-037`; `CRR-067`; `CRR-068`.
+- Why recorded: CRR-068 accepted API-REV-031's product/runtime Pass but found two deleted type-only imports/synthetic task-instance fixtures and one unsupported generic standalone-egress compatibility-payload assertion in the cumulative durable package.
+- Coverage decisions/durable paths changed: updated `autobyteus-agent-run-backend-factory.test.ts`, `mixed-team-manager.test.ts`, and `agent-stream-websocket-egress.test.ts`; no path added or removed in this round. Deleted task instance types/IDs were replaced by actual task Agent/Team run ID plus task ID facts. The stale standalone compatibility-payload case was removed; supported standalone dedupe and unchanged strict Team exact-address coverage remain.
+- Focused execution: `4 files / 65 tests` passed. Static audit found zero deleted instance symbols/wrappers, zero retired generic-egress route/instance fields, zero missing relative imports across `86` active cumulative durable paths, and clean focused diff hygiene.
+- Cumulative package: exactly `92` paths (`3 added / 83 updated / 6 removed`; `38 server / 54 web`), with exact inventory/patch equality, zero status mismatches, clean cumulative diff, and reverse-apply proof.
+- Broader-validation delta: **Not Required** and not executed. API-REV-031 real browser/provider/system evidence remains authoritative because API-REV-032 changes durable tests only.
+- Environment/safety: no server, frontend, browser, provider, vault, or live migration action. Vitest used only `autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db`. The operational database was not inspected or acted on; protected `60004/31004`, both incident disclosures, delivery stash, and backup remain preserved.
+- Prior result/confidence: `Pass / 98%` (`API-REV-031`).
+- Current result/confidence: **Pass / 98%**.
+- Recommended recipient: `code_reviewer` for proportional re-review of the corrected complete durable package before delivery.

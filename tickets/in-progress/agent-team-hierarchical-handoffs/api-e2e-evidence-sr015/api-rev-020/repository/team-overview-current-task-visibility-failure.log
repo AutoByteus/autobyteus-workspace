@@ -1,0 +1,112 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+
+stderr | components/workspace/team/__tests__/TeamOverviewPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/team/__tests__/TeamOverviewPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts (12 tests) 60ms
+ ❯ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts (8 tests | 4 failed) 72ms
+   ✓ TeamOverviewPanel.vue > renders Messages without the removed Task Plan section 23ms
+   ✓ TeamOverviewPanel.vue > keeps Team tab section expansion parent-owned with Messages open first 9ms
+   × TeamOverviewPanel.vue > opens Tasks immediately when the selected team already has delegated task entries 9ms
+     → expected 'Tasks0 tasks' to contain '1 task'
+   × TeamOverviewPanel.vue > opens Tasks when delegated task entries appear while mounted 4ms
+     → expected 'Tasks0 tasks' to contain '1 task'
+   × TeamOverviewPanel.vue > preserves manual collapse for the same task set but reopens for a new task identity 9ms
+     → expected false to be true // Object.is equality
+   ✓ TeamOverviewPanel.vue > resets Messages open when the selected team run changes without taking over message identity 7ms
+   × TeamOverviewPanel.vue > opens Tasks when the selected team run changes to another run with delegated task entries 6ms
+     → expected 'Tasks0 tasks' to contain '1 task'
+   ✓ TeamOverviewPanel.vue > counts and passes route/path identity for a focused subteam without a member run id 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > opens Tasks immediately when the selected team already has delegated task entries
+AssertionError: expected 'Tasks0 tasks' to contain '1 task'
+
+Expected: "1 task"
+Received: "Tasks0 tasks"
+
+ ❯ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:196:77
+    194|     const wrapper = mountSubject();
+    195| 
+    196|     expect(wrapper.get('[data-test="team-delegated-tasks-header"]').te…
+       |                                                                             ^
+    197|     expect(messagesPanelIsVisible(wrapper)).toBe(false);
+    198|     expect(delegatedTasksBodyIsVisible(wrapper)).toBe(true);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > opens Tasks when delegated task entries appear while mounted
+AssertionError: expected 'Tasks0 tasks' to contain '1 task'
+
+Expected: "1 task"
+Received: "Tasks0 tasks"
+
+ ❯ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:216:77
+    214|     await wrapper.vm.$nextTick();
+    215| 
+    216|     expect(wrapper.get('[data-test="team-delegated-tasks-header"]').te…
+       |                                                                             ^
+    217|     expect(messagesPanelIsVisible(wrapper)).toBe(false);
+    218|     expect(delegatedTasksBodyIsVisible(wrapper)).toBe(true);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > preserves manual collapse for the same task set but reopens for a new task identity
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:225:50
+    223|     const wrapper = mountSubject();
+    224| 
+    225|     expect(delegatedTasksBodyIsVisible(wrapper)).toBe(true);
+       |                                                  ^
+    226| 
+    227|     await wrapper.get('[data-test="team-delegated-tasks-header"]').tri…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > opens Tasks when the selected team run changes to another run with delegated task entries
+AssertionError: expected 'Tasks0 tasks' to contain '1 task'
+
+Expected: "1 task"
+Received: "Tasks0 tasks"
+
+ ❯ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:275:77
+    273|     await wrapper.vm.$nextTick();
+    274| 
+    275|     expect(wrapper.get('[data-test="team-delegated-tasks-header"]').te…
+       |                                                                             ^
+    276|     expect(messagesPanelIsVisible(wrapper)).toBe(false);
+    277|     expect(delegatedTasksBodyIsVisible(wrapper)).toBe(true);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  4 failed | 16 passed (20)
+   Start at  22:10:23
+   Duration  6.54s (transform 3.49s, setup 10.89s, collect 653ms, tests 132ms, environment 447ms, prepare 339ms)
+

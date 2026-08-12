@@ -1,0 +1,5 @@
+{
+  "passed": false,
+  "fatalError": "Error:REFERENCE_ROWS_MISSING:Home\n\nNested Classroom Test Team\n\nInactive\n\nSwitch\n\nTeacher\n\n⌄\nMessages · 0\nActivity · 1\nTeam messages\n\nNo team messages yet for the focused member.\n\nHide\nNo team messages yet for the focused member.\n💬\nChat\n▶\nRuns\n📁\nFiles\n▣\nArtifacts\n●\nActivity\nError: REFERENCE_ROWS_MISSING:Home\n\nNested Classroom Test Team\n\nInactive\n\nSwitch\n\nTeacher\n\n⌄\nMessages · 0\nActivity · 1\nTeam messages\n\nNo team messages yet for the focused member.\n\nHide\nNo team messages yet for the focused member.\n💬\nChat\n▶\nRuns\n📁\nFiles\n▣\nArtifacts\n●\nActivity\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr018/api-rev-030/live/run-mobile-reference-persisted.mjs:17:117",
+  "consoleEvents": []
+}

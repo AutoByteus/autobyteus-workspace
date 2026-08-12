@@ -60,22 +60,22 @@ describe('workspaceNavigationService', () => {
     const route = buildWorkspaceExecutionRoute({
       kind: 'team',
       teamRunId: 'team-run-1',
-      memberRouteKey: 'writer',
+      memberAddress: '/writer',
     })
 
     expect(parseWorkspaceExecutionLinkQuery((route as any).query as LocationQuery)).toEqual({
       kind: 'team',
       teamRunId: 'team-run-1',
-      memberRouteKey: 'writer',
+      memberAddress: '/writer',
     })
-    expect(createWorkspaceExecutionLinkSignature({ kind: 'team', teamRunId: 'team-run-1', memberRouteKey: 'writer' })).toBe('team:team-run-1:writer')
+    expect(createWorkspaceExecutionLinkSignature({ kind: 'team', teamRunId: 'team-run-1', memberAddress: '/writer' })).toBe('team:team-run-1:/writer')
   })
 
   it('strips workspace execution query params without disturbing others', () => {
     expect(stripWorkspaceExecutionLinkQuery({
       workspaceExecutionKind: 'team',
       workspaceExecutionRunId: 'team-run-1',
-      workspaceExecutionMemberRouteKey: 'writer',
+      workspaceExecutionMemberAddress: '/writer',
       preserved: 'value',
     })).toEqual({
       preserved: 'value',
@@ -101,12 +101,12 @@ describe('workspaceNavigationService', () => {
     await openWorkspaceExecutionLink({
       kind: 'team',
       teamRunId: 'team-run-1',
-      memberRouteKey: 'writer',
+      memberAddress: '/writer',
     })
 
     expect(openTeamRunMock).toHaveBeenCalledWith({
       teamRunId: 'team-run-1',
-      memberRouteKey: 'writer',
+      memberAddress: '/writer',
       resolveWorkspaceMetadataByRootPath: resolveWorkspaceMetadataByRootPathMock,
       ensureWorkspaceByRootPath: ensureWorkspaceByRootPathMock,
     })

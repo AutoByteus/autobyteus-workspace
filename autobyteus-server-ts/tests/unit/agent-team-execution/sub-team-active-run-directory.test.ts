@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 import type { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
 import { SubTeamActiveRunDirectory } from "../../../src/agent-team-execution/services/sub-team-active-run-directory.js";
 
-const buildRun = (runId: string, active = true): TeamRun => ({
-  runId,
+const buildRun = (teamRunId: string, active = true): TeamRun => ({
+  teamRunId,
   isActive: () => active,
 } as TeamRun);
 
@@ -33,11 +33,11 @@ describe("SubTeamActiveRunDirectory", () => {
     const restored = buildRun("child-team-run");
 
     directory.bind(first);
-    directory.unbind(first.runId);
-    expect(directory.resolveActiveRun(first.runId)).toBeNull();
+    directory.unbind(first.teamRunId);
+    expect(directory.resolveActiveRun(first.teamRunId)).toBeNull();
 
     directory.bind(restored);
-    expect(directory.resolveActiveRun(restored.runId)).toBe(restored);
+    expect(directory.resolveActiveRun(restored.teamRunId)).toBe(restored);
   });
 
   it("clears every owned binding when the root manager is disposed", () => {

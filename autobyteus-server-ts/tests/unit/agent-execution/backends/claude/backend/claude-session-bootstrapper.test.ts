@@ -13,15 +13,24 @@ const createMemberTeamContext = () =>
   new MemberTeamContext({
     teamRunId: "team-run-1",
     teamDefinitionId: "team-def-1",
+    teamName: "Claude team",
     teamBackendKind: TeamBackendKind.MIXED,
-    memberName: "Professor",
-    memberRouteKey: "professor",
-    memberRunId: "run-claude-team",
+    teamAddress: "/",
+    memberAddress: "/Professor",
+    agentRunId: "run-claude-team",
+    runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+    coordinatorAddress: "/Professor",
     collaboration: {
       addressing: {
         rootTeamRunId: "team-run-1",
         memberAddress: "/Professor",
       },
+    },
+    executionAddress: {
+      rootTeamRunId: "team-run-1",
+      taskTeamRunIds: [],
+      memberAddress: "/Professor",
+      taskAgentRunId: null,
     },
   });
 
@@ -30,7 +39,7 @@ const createRunContext = (input: {
   memberTeamContext?: MemberTeamContext | null;
 }) =>
   new AgentRunContext({
-    runId: input.memberTeamContext?.memberRunId ?? "run-claude-standalone",
+    runId: input.memberTeamContext?.agentRunId ?? "run-claude-standalone",
     config: new AgentRunConfig({
       runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
       agentDefinitionId: "agent-def-claude",

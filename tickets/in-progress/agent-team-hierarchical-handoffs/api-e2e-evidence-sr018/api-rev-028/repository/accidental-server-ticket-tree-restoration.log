@@ -1,0 +1,17 @@
+API-REV-028 execution-hygiene disclosure
+Date: 2026-08-12
+
+While correcting an initially mis-targeted evidence-directory command, API/E2E removed the ignored/untracked worktree-local autobyteus-server-ts/tickets directory together with its accidental API-REV-028 child. This was not production source, test data, a database, the user stack, or an operational runtime, but it was not an owned directory and the removal was erroneous.
+
+Immediate restoration source:
+/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tickets
+
+Cross-worktree verification before restoration:
+- workspace-superrepo: 80 files, SHA-256 manifest 4e67111a1393bfa1f4ce75e6085b18883fcf09fd9f165964d03b072b7e71cd22
+- agent-idle-status-lifecycle: 80 files, same manifest
+- agent-run-id-global-allocation-refactor: 80 files, same manifest
+
+Restored assigned-worktree tree:
+- 80 files, SHA-256 manifest 4e67111a1393bfa1f4ce75e6085b18883fcf09fd9f165964d03b072b7e71cd22
+
+Result: byte-identical restoration; no remaining worktree delta from the mishap. All API-REV-028 evidence now targets the root ticket workspace path.

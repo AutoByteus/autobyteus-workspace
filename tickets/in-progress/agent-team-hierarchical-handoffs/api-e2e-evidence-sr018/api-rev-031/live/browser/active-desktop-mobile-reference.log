@@ -1,0 +1,6 @@
+{
+  "passed": false,
+  "rootTeamRunId": null,
+  "fatalError": "TimeoutError: locator.waitFor: Timeout 120000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('div.group').filter({ hasText: 'Nested Classroom Test Team' }).first() to be visible\u001b[22m\n\nlocator.waitFor: Timeout 120000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('div.group').filter({ hasText: 'Nested Classroom Test Team' }).first() to be visible\u001b[22m\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr018/api-rev-031/live/run-active-desktop-mobile-reference.mjs:217:14",
+  "termination": null
+}

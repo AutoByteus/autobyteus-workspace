@@ -1,132 +1,69 @@
-import { AgentContext } from '~/types/agent/AgentContext';
-import type {
-  AgentTeamContext,
-  AgentTeamMemberNode,
-  SubTeamMemberNode,
-  TeamMemberNode,
-} from '~/types/agent/AgentTeamContext';
-import { AgentRunState } from '~/types/agent/AgentRunState';
-import { AgentStatus } from '~/types/agent/AgentStatus';
+import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import {
   createTeamExecutionAddress,
-  serializeTeamExecutionAddress,
+  toTeamExecutionAddressDto,
   type TeamExecutionAddress,
 } from '~/types/agent/TeamExecutionAddress';
+import type { TeamTaskProjectionStatus } from '~/services/teamExecution/teamExecutionModels';
+import {
+  buildTestTeamContext,
+  testAgentNode,
+  testSubTeamNode,
+  testTaskProjection,
+} from '~/test-support/currentTeamTestFixtures';
 
 const ROOT_TEAM_RUN_ID = 'root-team-run-1';
 const NOW = '2026-08-10T12:00:00.000Z';
 
-const agent = (address: string, displayName: string): AgentTeamMemberNode => ({
-  kind: 'agent',
-  address,
-  displayName,
-  agentDefinitionId: `${displayName.toLowerCase()}-definition`,
-  agentRunId: `${displayName.toLowerCase()}-persistent-run`,
-  currentStatus: AgentStatus.Idle,
-});
-
-const agentContext = (node: AgentTeamMemberNode): AgentContext => {
-  const config = {
-    agentDefinitionId: node.agentDefinitionId,
-    agentDefinitionName: node.displayName,
-    llmModelIdentifier: 'gpt-5.6-luna',
-    runtimeKind: 'autobyteus' as const,
-    workspaceId: null,
-    workspaceMetadata: null,
-    autoExecuteTools: true,
-    skillAccessMode: 'NONE' as const,
-    isLocked: true,
-    llmConfig: null,
-  };
-  const state = new AgentRunState(node.agentRunId, {
-    id: node.agentRunId,
-    messages: [],
-    createdAt: NOW,
-    updatedAt: NOW,
-    agentDefinitionId: node.agentDefinitionId,
-    agentName: node.displayName,
-    llmModelIdentifier: config.llmModelIdentifier,
-  });
-  state.currentStatus = AgentStatus.Idle;
-  return new AgentContext(config, state);
-};
-
-const walk = (node: TeamMemberNode, visit: (candidate: TeamMemberNode) => void): void => {
-  visit(node);
-  if (node.kind === 'agent_team') node.children.forEach((child) => walk(child, visit));
-};
-
-export const buildCurrentTaskExecutionTeam = (): AgentTeamContext => {
-  const teacher = agent('/Teacher', 'Teacher');
-  const studentOne = agent('/StudentStudyGroup/student_one', 'student_one');
-  const labOne = agent('/StudentStudyGroup/LabGroup/lab_one', 'lab_one');
-  const labTwo = agent('/StudentStudyGroup/LabGroup/lab_two', 'lab_two');
-  const labGroup: SubTeamMemberNode = {
-    kind: 'agent_team',
-    address: '/StudentStudyGroup/LabGroup',
-    displayName: 'LabGroup',
-    teamDefinitionId: 'lab-group-definition',
-    teamRunId: 'lab-group-persistent-run',
-    coordinatorAddress: labOne.address,
-    children: [labOne, labTwo],
-  };
-  const studentTwo = agent('/StudentStudyGroup/student_two', 'student_two');
-  const studyGroup: SubTeamMemberNode = {
-    kind: 'agent_team',
-    address: '/StudentStudyGroup',
-    displayName: 'StudentStudyGroup',
-    teamDefinitionId: 'study-group-definition',
-    teamRunId: 'study-group-persistent-run',
-    coordinatorAddress: studentOne.address,
-    children: [studentOne, labGroup, studentTwo],
-  };
-  const rootTeam: SubTeamMemberNode = {
-    kind: 'agent_team',
-    address: '/',
-    displayName: 'Nested Classroom Test Team',
-    teamDefinitionId: 'nested-classroom-definition',
-    teamRunId: ROOT_TEAM_RUN_ID,
-    coordinatorAddress: teacher.address,
-    children: [teacher, studyGroup],
-  };
-  const memberNodesByAddress = new Map<string, TeamMemberNode>();
-  const agentExecutionsByKey = new Map<string, AgentContext>();
-  walk(rootTeam, (node) => {
-    memberNodesByAddress.set(node.address, node);
-    if (node.kind === 'agent') {
-      const address = createTeamExecutionAddress({
-        rootTeamRunId: ROOT_TEAM_RUN_ID,
-        memberAddress: node.address,
-      });
-      agentExecutionsByKey.set(serializeTeamExecutionAddress(address), agentContext(node));
-    }
-  });
-  return {
-    teamRunId: ROOT_TEAM_RUN_ID,
-    config: {
-      teamDefinitionId: rootTeam.teamDefinitionId,
-      teamDefinitionName: rootTeam.displayName,
-      runtimeKind: 'autobyteus',
-      workspaceId: null,
-      workspaceMetadata: null,
+export const buildCurrentTaskExecutionTeam = (): AgentTeamContext => buildTestTeamContext({
+  teamRunId: ROOT_TEAM_RUN_ID,
+  teamDefinitionId: 'nested-classroom-definition',
+  teamDefinitionName: 'Nested Classroom Test Team',
+  coordinatorAddress: '/Teacher',
+  focusedExecutionAddress: createTeamExecutionAddress({
+    rootTeamRunId: ROOT_TEAM_RUN_ID,
+    memberAddress: '/Teacher',
+  }),
+  rootChildren: [
+    testAgentNode('/Teacher', {
+      agentDefinitionId: 'teacher-definition',
+      agentRunId: 'teacher-persistent-run',
       llmModelIdentifier: 'gpt-5.6-luna',
-      llmConfig: null,
-      autoExecuteTools: true,
-      skillAccessMode: 'NONE',
-      memberOverrides: {},
-      isLocked: true,
-    },
-    rootTeam,
-    memberNodesByAddress,
-    agentExecutionsByKey,
-    focusedExecutionAddress: createTeamExecutionAddress({
-      rootTeamRunId: ROOT_TEAM_RUN_ID,
-      memberAddress: teacher.address,
     }),
-    isActive: true,
-    isSubscribed: true,
-  };
-};
+    testSubTeamNode('/StudentStudyGroup', [
+      testAgentNode('/StudentStudyGroup/student_one', {
+        agentDefinitionId: 'student-one-definition',
+        agentRunId: 'student-one-persistent-run',
+        llmModelIdentifier: 'gpt-5.6-luna',
+      }),
+      testSubTeamNode('/StudentStudyGroup/LabGroup', [
+        testAgentNode('/StudentStudyGroup/LabGroup/lab_one', {
+          agentDefinitionId: 'lab-one-definition',
+          agentRunId: 'lab-one-persistent-run',
+          llmModelIdentifier: 'gpt-5.6-luna',
+        }),
+        testAgentNode('/StudentStudyGroup/LabGroup/lab_two', {
+          agentDefinitionId: 'lab-two-definition',
+          agentRunId: 'lab-two-persistent-run',
+          llmModelIdentifier: 'gpt-5.6-luna',
+        }),
+      ], {
+        teamDefinitionId: 'lab-group-definition',
+        teamRunId: 'lab-group-persistent-run',
+        coordinatorAddress: '/StudentStudyGroup/LabGroup/lab_one',
+      }),
+      testAgentNode('/StudentStudyGroup/student_two', {
+        agentDefinitionId: 'student-two-definition',
+        agentRunId: 'student-two-persistent-run',
+        llmModelIdentifier: 'gpt-5.6-luna',
+      }),
+    ], {
+      teamDefinitionId: 'study-group-definition',
+      teamRunId: 'study-group-persistent-run',
+      coordinatorAddress: '/StudentStudyGroup/student_one',
+    }),
+  ],
+});
 
 export const taskAgentAddress = (input: {
   memberAddress?: string;
@@ -137,6 +74,16 @@ export const taskAgentAddress = (input: {
   taskTeamRunIds: input.taskTeamRunIds ?? [],
   memberAddress: input.memberAddress ?? '/Teacher',
   taskAgentRunId: input.taskAgentRunId ?? 'task-agent-run-1',
+});
+
+export const taskTeamExecutionAddress = (input: {
+  nested?: boolean;
+  taskTeamRunIds?: string[];
+} = {}): TeamExecutionAddress => createTeamExecutionAddress({
+  rootTeamRunId: ROOT_TEAM_RUN_ID,
+  taskTeamRunIds: input.taskTeamRunIds ?? (input.nested ? ['task-team-outer', 'task-team-inner'] : ['task-team-outer']),
+  memberAddress: input.nested ? '/StudentStudyGroup/LabGroup' : '/StudentStudyGroup',
+  taskAgentRunId: null,
 });
 
 export const taskTeamCoordinatorAddress = (input: {
@@ -151,121 +98,142 @@ export const taskTeamCoordinatorAddress = (input: {
   taskAgentRunId: null,
 });
 
-type TaskStatus = 'active' | 'awaiting_review' | 'accepted';
-
-const eventName = (status: TaskStatus): string => status === 'active'
-  ? 'TASK_DELEGATION_ACTIVATED'
-  : status === 'awaiting_review'
-    ? 'TASK_DELEGATION_SUBMITTED'
-    : 'TASK_DELEGATION_REVIEWED';
-
-export const taskAgentEvent = (input: {
-  status?: TaskStatus;
+export const taskAgentProjection = (input: {
   address?: TeamExecutionAddress;
   senderAddress?: TeamExecutionAddress;
   taskId?: string;
   description?: string;
+  status?: TeamTaskProjectionStatus;
 } = {}) => {
-  const status = input.status ?? 'active';
   const address = input.address ?? taskAgentAddress();
-  const senderAddress = input.senderAddress ?? createTeamExecutionAddress({
-    rootTeamRunId: ROOT_TEAM_RUN_ID,
-    taskTeamRunIds: address.taskTeamRunIds,
-    memberAddress: '/StudentStudyGroup/student_one',
+  return testTaskProjection({
+    taskId: input.taskId ?? 'task-agent-0001',
+    executionAddress: address,
+    senderAddress: input.senderAddress ?? createTeamExecutionAddress({
+      rootTeamRunId: ROOT_TEAM_RUN_ID,
+      taskTeamRunIds: address.taskTeamRunIds,
+      memberAddress: address.taskTeamRunIds.length ? '/StudentStudyGroup/student_one' : '/Teacher',
+    }),
+    status: input.status,
+    content: input.description ?? 'Solve the delegated classroom exercise.',
   });
-  const taskId = input.taskId ?? 'task-agent-0001';
-  return {
-    type: 'TASK_DELEGATION_EVENT',
-    payload: {
-      event_type: eventName(status),
-      execution_address: address,
-      senderAddress,
-      taskId,
-      taskLabel: 'Task Agent exercise',
-      description: input.description ?? 'Solve the delegated classroom exercise.',
-      status,
-      decision: status === 'accepted' ? 'accept' : null,
-      updatedAt: status === 'active' ? NOW : status === 'awaiting_review' ? '2026-08-10T12:01:00.000Z' : '2026-08-10T12:02:00.000Z',
-      target: { kind: 'agent', address: address.memberAddress },
-      execution: {
-        kind: 'task_agent',
-        taskAgentInstance: {
-          taskAgentRunId: address.taskAgentRunId,
-          owningTeamRunId: address.taskTeamRunIds.at(-1) ?? address.rootTeamRunId,
-          taskId,
-        },
-      },
-      referenceFiles: [],
-      taskArguments: {
-        target: { kind: 'agent', address: address.memberAddress },
-        description: input.description ?? 'Solve the delegated classroom exercise.',
-        reference_files: [],
-      },
-    },
-  } as const;
 };
 
-export const taskTeamEvent = (input: {
+export const taskTeamProjection = (input: {
   nested?: boolean;
-  status?: TaskStatus;
+  status?: TeamTaskProjectionStatus;
   taskId?: string;
   taskTeamRunIds?: string[];
   senderAddress?: TeamExecutionAddress;
   description?: string;
 } = {}) => {
   const nested = input.nested ?? false;
-  const status = input.status ?? 'active';
-  const address = taskTeamCoordinatorAddress({ nested, taskTeamRunIds: input.taskTeamRunIds });
-  const targetAddress = nested ? '/StudentStudyGroup/LabGroup' : '/StudentStudyGroup';
-  const taskId = input.taskId ?? (nested ? 'task-team-inner-0002' : 'task-team-outer-0001');
-  const taskTeamRunId = address.taskTeamRunIds.at(-1)!;
-  const senderAddress = input.senderAddress ?? createTeamExecutionAddress({
-    rootTeamRunId: ROOT_TEAM_RUN_ID,
-    taskTeamRunIds: address.taskTeamRunIds.slice(0, -1),
-    memberAddress: nested ? '/StudentStudyGroup/student_one' : '/Teacher',
+  const address = taskTeamExecutionAddress({ nested, taskTeamRunIds: input.taskTeamRunIds });
+  return testTaskProjection({
+    taskId: input.taskId ?? (nested ? 'task-team-inner-0002' : 'task-team-outer-0001'),
+    executionAddress: address,
+    senderAddress: input.senderAddress ?? createTeamExecutionAddress({
+      rootTeamRunId: ROOT_TEAM_RUN_ID,
+      taskTeamRunIds: address.taskTeamRunIds.slice(0, -1),
+      memberAddress: nested ? '/StudentStudyGroup/student_one' : '/Teacher',
+    }),
+    status: input.status,
+    content: input.description ?? (nested
+      ? 'Coordinate the nested laboratory exercise.'
+      : 'Coordinate the study-group exercise.'),
   });
-  const description = input.description ?? (nested
-    ? 'Coordinate the nested laboratory exercise.'
-    : 'Coordinate the study-group exercise.');
+};
+
+export const taskAgentEvent = (input: {
+  status?: TeamTaskProjectionStatus;
+  address?: TeamExecutionAddress;
+  senderAddress?: TeamExecutionAddress;
+  taskId?: string;
+  description?: string;
+} = {}) => {
+  const projection = taskAgentProjection(input);
+  if (input.status === 'awaiting_review') return {
+    type: 'TASK_DELEGATION_EVENT',
+    payload: {
+      event_type: 'TASK_DELEGATION_RESULT_SUBMITTED',
+      task_id: projection.taskId,
+      execution_address: toTeamExecutionAddressDto(projection.executionAddress),
+      submission_id: `${projection.taskId}-submission`,
+      submitted_at: '2026-08-10T12:01:00.000Z',
+    },
+  } as const;
+  if (input.status === 'accepted') return {
+    type: 'TASK_DELEGATION_EVENT',
+    payload: {
+      event_type: 'TASK_DELEGATION_RESULT_REVIEWED',
+      task_id: projection.taskId,
+      execution_address: toTeamExecutionAddressDto(projection.executionAddress),
+      review_id: `${projection.taskId}-review`,
+      reviewed_submission_id: `${projection.taskId}-submission`,
+      decision: 'accept',
+      reviewed_at: '2026-08-10T12:02:00.000Z',
+    },
+  } as const;
   return {
     type: 'TASK_DELEGATION_EVENT',
     payload: {
-      event_type: eventName(status),
-      execution_address: address,
-      senderAddress,
-      taskId,
-      taskLabel: nested ? 'Nested lab task' : 'Study-group task',
-      description,
-      status,
-      decision: status === 'accepted' ? 'accept' : null,
-      updatedAt: status === 'active' ? NOW : status === 'awaiting_review' ? '2026-08-10T12:01:00.000Z' : '2026-08-10T12:02:00.000Z',
-      target: {
-        kind: 'agent_team',
-        address: targetAddress,
-        coordinatorAddress: address.memberAddress,
-      },
-      execution: {
-        kind: 'task_team',
-        taskTeamInstance: {
-          taskTeamRunId,
-          parentTeamRunId: address.taskTeamRunIds.at(-2) ?? address.rootTeamRunId,
-          taskId,
-        },
-      },
-      tasks: [{
-        taskId,
-        taskLabel: nested ? 'Nested lab task' : 'Study-group task',
-        description,
-        status,
-        referenceFiles: [],
-        taskArguments: {
-          target: { kind: 'agent_team', address: targetAddress },
-          description,
-          reference_files: [],
-        },
-      }],
+      event_type: 'TASK_DELEGATION_ACTIVATED',
+      task_id: projection.taskId,
+      execution_address: toTeamExecutionAddressDto(projection.executionAddress),
+      sender_address: toTeamExecutionAddressDto(projection.senderAddress),
+      content: projection.content,
+      reference_files: [],
+      created_at: projection.createdAt,
+      started_at: projection.startedAt,
+    },
+  } as const;
+};
+
+export const taskTeamEvent = (input: {
+  nested?: boolean;
+  status?: TeamTaskProjectionStatus;
+  taskId?: string;
+  taskTeamRunIds?: string[];
+  senderAddress?: TeamExecutionAddress;
+  description?: string;
+} = {}) => {
+  const projection = taskTeamProjection(input);
+  if (input.status === 'awaiting_review') return {
+    type: 'TASK_DELEGATION_EVENT',
+    payload: {
+      event_type: 'TASK_DELEGATION_RESULT_SUBMITTED',
+      task_id: projection.taskId,
+      execution_address: toTeamExecutionAddressDto(projection.executionAddress),
+      submission_id: `${projection.taskId}-submission`,
+      submitted_at: '2026-08-10T12:01:00.000Z',
+    },
+  } as const;
+  if (input.status === 'accepted') return {
+    type: 'TASK_DELEGATION_EVENT',
+    payload: {
+      event_type: 'TASK_DELEGATION_RESULT_REVIEWED',
+      task_id: projection.taskId,
+      execution_address: toTeamExecutionAddressDto(projection.executionAddress),
+      review_id: `${projection.taskId}-review`,
+      reviewed_submission_id: `${projection.taskId}-submission`,
+      decision: 'accept',
+      reviewed_at: '2026-08-10T12:02:00.000Z',
+    },
+  } as const;
+  return {
+    type: 'TASK_DELEGATION_EVENT',
+    payload: {
+      event_type: 'TASK_DELEGATION_ACTIVATED',
+      task_id: projection.taskId,
+      execution_address: toTeamExecutionAddressDto(projection.executionAddress),
+      sender_address: toTeamExecutionAddressDto(projection.senderAddress),
+      content: projection.content,
+      reference_files: [],
+      created_at: projection.createdAt,
+      started_at: projection.startedAt,
     },
   } as const;
 };
 
 export const currentTaskExecutionRootTeamRunId = ROOT_TEAM_RUN_ID;
+export const currentTaskExecutionNow = NOW;

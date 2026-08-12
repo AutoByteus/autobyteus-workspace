@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { createTeamExecutionAddress } from "../../../src/agent-team-execution/domain/team-execution-address.js";
 import {
   buildDeliveryEndpointForParticipant,
   type InterAgentMessageParticipant,
@@ -7,50 +9,42 @@ import {
 const buildParticipant = (
   overrides: Partial<InterAgentMessageParticipant> = {},
 ): InterAgentMessageParticipant => ({
-  memberKind: "agent",
-  memberName: "review_lead",
-  memberPath: ["BuildSquad", "review_lead"],
-  memberRouteKey: "BuildSquad/review_lead",
-  memberRunId: "review-lead-run",
-  address: {
-    teamRunId: "team-parent",
-    memberPath: ["BuildSquad", "review_lead"],
-    memberRouteKey: "BuildSquad/review_lead",
-  },
+  kind: "agent",
+  displayName: "review_lead",
+  agentRunId: "review-lead-run",
+  executionAddress: createTeamExecutionAddress({
+    rootTeamRunId: "team-parent",
+    taskTeamRunIds: [],
+    memberAddress: "/BuildSquad/review_lead",
+  }),
+  runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+  platformAgentRunId: "codex-review-lead-run",
+  taskId: null,
   ...overrides,
 });
 
-describe("inter-agent-message-delivery participant invariants", () => {
-  it("accepts the actual participant when its address exactly matches its path", () => {
-    expect(buildDeliveryEndpointForParticipant(buildParticipant())).toEqual({
-      participant: buildParticipant(),
-      selector: { kind: "path", memberPath: ["BuildSquad", "review_lead"] },
+describe("inter-agent-message-delivery endpoint", () => {
+  it("carries the exact current participant without synthesizing a legacy selector", () => {
+    const participant = buildParticipant();
+    const endpoint = buildDeliveryEndpointForParticipant(participant);
+
+    expect(endpoint).toEqual({ participant });
+    expect(endpoint).not.toHaveProperty("selector");
+    expect(Object.isFrozen(endpoint)).toBe(true);
+  });
+
+  it("preserves task Agent and ordered task-Team execution identity unchanged", () => {
+    const participant = buildParticipant({
+      agentRunId: "task-agent-run",
+      taskId: "task-1",
+      executionAddress: createTeamExecutionAddress({
+        rootTeamRunId: "team-parent",
+        taskTeamRunIds: ["outer-task-team", "inner-task-team"],
+        memberAddress: "/BuildSquad/review_lead",
+        taskAgentRunId: "task-agent-run",
+      }),
     });
-  });
 
-  it("rejects participant address paths that diverge from participant paths", () => {
-    expect(() => buildDeliveryEndpointForParticipant(buildParticipant({
-      address: {
-        teamRunId: "team-parent",
-        memberPath: ["BuildSquad", "qa_specialist"],
-        memberRouteKey: "BuildSquad/qa_specialist",
-      },
-    }))).toThrow("participant.address.memberPath 'BuildSquad/qa_specialist' does not match participant.memberPath 'BuildSquad/review_lead'");
-  });
-
-  it("rejects participant route keys that diverge from the actual participant path", () => {
-    expect(() => buildDeliveryEndpointForParticipant(buildParticipant({
-      memberRouteKey: "BuildSquad/qa_specialist",
-    }))).toThrow("participant.memberRouteKey 'BuildSquad/qa_specialist' does not match participant.memberPath 'BuildSquad/review_lead'");
-  });
-
-  it("rejects address route keys that diverge from the address path", () => {
-    expect(() => buildDeliveryEndpointForParticipant(buildParticipant({
-      address: {
-        teamRunId: "team-parent",
-        memberPath: ["BuildSquad", "review_lead"],
-        memberRouteKey: "BuildSquad/qa_specialist",
-      },
-    }))).toThrow("memberRouteKey 'BuildSquad/qa_specialist' does not match memberPath 'BuildSquad/review_lead'");
+    expect(buildDeliveryEndpointForParticipant(participant).participant).toBe(participant);
   });
 });

@@ -1,0 +1,60 @@
+head=462db859d863670b37e78971ac8938e05b7b5a53
+production_file_diff:
+current_contract_key_writers:
+autobyteus-web/test-support/currentTeamTestFixtures.ts:126:    agentExecutionsByKey.set(serializeTeamExecutionAddress(executionAddress), testAgentContext({
+autobyteus-web/test-support/currentTeamTestFixtures.ts:135:    agentExecutionsByKey.set(serializeTeamExecutionAddress(entry.executionAddress), entry.context);
+autobyteus-web/stores/agentTeamContextsStore.ts:108:        agentExecutionsByKey.set(conversation.id, memberContext);
+autobyteus-web/services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts:198:    existing.agentExecutionsByKey.set(serializeTeamExecutionAddress(taskExecution), taskContext);
+autobyteus-web/services/agentStreaming/__tests__/currentTaskExecutionFixture.ts:101:      agentExecutionsByKey.set(serializeTeamExecutionAddress(address), agentContext(node));
+failure_owner_source:
+    70	  const getInterAgentSenderNameById = (team: AgentTeamContext | null): Record<string, string> => {
+    71	    if (!team) {
+    72	      return {};
+    73	    }
+    74	
+    75	    const mapping: Record<string, string> = {};
+    76	    team.agentExecutionsByKey.forEach((memberContext, memberAddress) => {
+    77	      const agentRunId = String(memberContext.state.runId || '').trim();
+    78	      if (!agentRunId || mapping[agentRunId]) {
+    79	        return;
+    80	      }
+    81	      const memberNode = team.memberNodesByAddress.get(memberAddress) || null;
+    82	      mapping[agentRunId] = memberNode?.displayName || getMemberDisplayName(memberAddress, memberContext);
+    83	    });
+    84	
+    85	    return mapping;
+    86	  };
+exact_test_failure:
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts (15 tests) 133ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts > AgentTeamEventMonitor.vue > passes sender-id to member-name mapping to AgentEventMonitor
+AssertionError: expected { …(2) } to deeply equal { member_a111: 'Professor', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "member_a111": "Professor",
+-   "member_b222": "Student",
++   "member_a111": "Professor\",\"taskAgentRunId\":null}",
++   "member_b222": "Student\",\"taskAgentRunId\":null}",
+  }
+
+ ❯ components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts:136:55
+    134|     ]));
+    135|     expect(monitor.classes()).toEqual(expect.arrayContaining(['min-h-0…
+    136|     expect(monitor.props('interAgentSenderNameById')).toEqual({
+       |                                                       ^
+    137|       member_a111: 'Professor',
+    138|       member_b222: 'Student',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+user_stack_listeners:
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    71461 normy   26u  IPv4 0xbe9eaf34a35017b1      0t0  TCP 127.0.0.1:60004 (LISTEN)
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    73207 normy   12u  IPv4 0xe0271daf60061249      0t0  TCP 127.0.0.1:31004 (LISTEN)

@@ -1,0 +1,44 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+
+stderr | components/mobile/__tests__/MobileTeamMessages.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/mobile/__tests__/MobileTeamMessages.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ components/mobile/__tests__/MobileTeamMessages.spec.ts (2 tests | 1 failed) 63ms
+   ✓ MobileTeamMessages > renders structured reference files as tappable rows without linkifying raw prose paths 31ms
+   × MobileTeamMessages > opens a phone reference viewer by team/message/reference identity and closes back to the list 32ms
+     → expected ':message-1:ref-1:0Close' to contain 'team-1:message-1:ref-1:0'
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/mobile/__tests__/MobileTeamMessages.spec.ts > MobileTeamMessages > opens a phone reference viewer by team/message/reference identity and closes back to the list
+AssertionError: expected ':message-1:ref-1:0Close' to contain 'team-1:message-1:ref-1:0'
+
+Expected: "team-1:message-1:ref-1:0"
+Received: ":message-1:ref-1:0Close"
+
+ ❯ components/mobile/__tests__/MobileTeamMessages.spec.ts:108:85
+    106|     await flushPromises();
+    107| 
+    108|     expect(wrapper.get('[data-testid="mobile-team-reference-viewer-stu…
+       |                                                                                     ^
+    109| 
+    110|     await wrapper.get('[data-testid="close-reference"]').trigger('clic…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+   Start at  21:57:30
+   Duration  7.34s (transform 3.66s, setup 6.33s, collect 159ms, tests 63ms, environment 308ms, prepare 205ms)
+

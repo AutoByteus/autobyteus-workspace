@@ -1,0 +1,180 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+
+stdout | tests/unit/agent-team-execution/task-delegation-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:68730) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stderr | tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > commits result submission and returns a concise message when notification delivery fails
+TaskDelegationService: task notification delivery failed {
+  code: 'TASK_NOTIFICATION_DELIVERY_FAILED',
+  notification_type: 'result_submitted',
+  task_id: 'task_0001',
+  target_member_address: '/coordinator',
+  target_task_agent_run_id: null,
+  target_task_team_run_id: null,
+  message: 'No recipient'
+}
+
+stderr | tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > returns only a concise message when revision notification delivery fails
+TaskDelegationService: task notification delivery failed {
+  code: 'TASK_NOTIFICATION_DELIVERY_FAILED',
+  notification_type: 'revision_requested',
+  task_id: 'task_0001',
+  target_member_address: '/worker',
+  target_task_agent_run_id: 'worker_00000000000000000000000000000001',
+  target_task_team_run_id: null,
+  message: 'No recipient'
+}
+
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts (17 tests | 1 failed) 47ms
+     ✓ delegates repeated singular active work with explicit member targets and submit_task_result work-packet protocol 9ms
+     ✓ resolves task-owned reference files by task identity without message IDs 1ms
+     ✓ rejects relative delegate_task reference files before task creation 1ms
+     ✓ rejects invalid absolute-looking delegate_task reference files before task creation 1ms
+     ✓ rejects relative submit_task_result reference files before submission persistence 1ms
+     ✓ rejects relative review_task_result reference files before review persistence 1ms
+     × delegates to an explicit team target and binds a task-team execution instance 9ms
+     ✓ keeps activation visible content task-centered instead of sender-framed 1ms
+     ✓ submits, revises, submits again, accepts latest pending submission, and settles after idle 6ms
+     ✓ commits result submission and returns a concise message when notification delivery fails 2ms
+     ✓ returns only a concise message when revision notification delivery fails 1ms
+     ✓ keeps rejected activations not_started and does not publish active exact-run targets 1ms
+     ✓ rolls back task-agent directory and ledger state when activation throws 1ms
+     ✓ supports task-agent delegators and blocks parent settlement while child delegation is open 4ms
+     ✓ rejects settled task-agent delegate_task before creating child work 2ms
+     ✓ rejects settled task-agent review identity before recording a child review 1ms
+     ✓ exposes only delegate_task, submit_task_result, and review_task_result parsers/tools 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > delegates to an explicit team target and binds a task-team execution instance
+AssertionError: expected { …(10) } to deeply equal ObjectContaining{…}
+
+- Expected
++ Received
+
+- ObjectContaining {
++ {
+    "execution_kind": "task_team",
+    "message_type": "task_team_delegation_work_packet",
+    "sender_id": "system.task_delegation",
+    "suppress_system_task_notification": true,
+    "task_delegation_system_task_notification": true,
++   "task_delegation_system_task_notification_display_content": "You have a new task.
++
++ Task ID: task_0001
++
++ Task:
++ Coordinate the design review.
++
++ Reference files:
++ - None specified",
+    "task_id": "task_0001",
+    "task_ids": [
+      "task_0001",
+    ],
+-   "task_team_instance_id": "task_team_task_0001",
+    "task_team_run_id": "team_def_design_99a176c3cf944483bf73a4e27f328d6e",
+    "team_run_id": "team-run-1",
+  }
+
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:657:36
+    655|     expect(start.message.content).not.toContain(activeTaskTeamRunId);
+    656|     expect(start.message.content).not.toContain("Ingress coordinator");
+    657|     expect(start.message.metadata).toEqual(expect.objectContaining({
+       |                                    ^
+    658|       sender_id: "system.task_delegation",
+    659|       team_run_id: "team-run-1",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 16 passed (17)
+   Start at  06:29:04
+   Duration  5.33s (transform 3.44s, setup 12ms, import 4.67s, tests 47ms, environment 0ms)
+

@@ -1,0 +1,40 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > keeps subscription transport state separate from backend Team lifecycle
+Team WebSocket connected
+Team WebSocket disconnected: closed
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > reattaches transport callbacks to the latest exact Team context
+Team WebSocket connected
+Team WebSocket disconnected: closed
+
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > keeps subscription transport state separate from backend Team lifecycle 3ms
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > reattaches transport callbacks to the latest exact Team context 1ms
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > projects status and content only into the exact persistent execution context 2ms
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > drops a live member payload without canonical execution identity instead of using focus 1ms
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > mirrors an exact external user message into its addressed conversation 0ms
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > routes successful tool execution through the browser-owned success handler at the exact execution 2ms
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > projects an inter-Agent delivery as a user input only in the exact persistent receiver conversation 1ms
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > projects an inter-Agent delivery only into the exact nonempty task-Team receiver context 2ms
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > drops a member input without exact execution identity instead of using recipient data as fallback 1ms
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > forwards exact Team communication messages to the communication projection store 0ms
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > routes compaction lifecycle only to the exact addressed member 1ms
+
+ Test Files  1 passed (1)
+      Tests  11 passed (11)
+   Start at  10:04:10
+   Duration  4.47s (transform 2.53s, setup 3.91s, collect 41ms, tests 15ms, environment 130ms, prepare 136ms)
+

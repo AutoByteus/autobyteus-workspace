@@ -1,0 +1,134 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+
+ ❯ tests/unit/services/agent-streaming/agent-stream-websocket-egress.test.ts (32 tests | 1 failed) 18ms
+     ✓ uses one fixed non-sliding 100 ms window 3ms
+     ✓ uses one fixed non-sliding 500 ms window 1ms
+     ✓ uses one fixed non-sliding 1000 ms window 0ms
+     ✓ uses one fixed non-sliding 2000 ms window 0ms
+     ✓ preserves immutable input messages and ordered A/B/A groups 1ms
+     ✓ keeps same-identity content mergeable across running without moving the original timer 1ms
+     ✓ suppresses an exact repeated standalone status but forwards a payload transition 0ms
+     ✓ isolates stable-member, task-agent, and nested task-team status identities 0ms
+     × fails open when a status identity is incomplete 5ms
+     ✓ resets status state per connection and on disposal 0ms
+     ✓ runs registered filters in order and keeps observers non-authoritative 0ms
+     ✓ keeps nested delivery data immutable across registered observers and filters 0ms
+     ✓ sends declared companion 'CONNECTED' without changing pending tail or timer 0ms
+     ✓ sends declared companion 'AGENT_COMMAND_ACK' without changing pending tail or timer 0ms
+     ✓ sends declared companion 'TOKEN_USAGE_UPDATED' without changing pending tail or timer 1ms
+     ✓ sends declared companion 'AGENT_STATUS' without changing pending tail or timer 0ms
+     ✓ sends declared companion 'AGENT_STATUS' without changing pending tail or timer 0ms
+     ✓ flushes content before dependent boundary 'SEGMENT_END' 0ms
+     ✓ flushes content before dependent boundary 'TURN_COMPLETED' 0ms
+     ✓ flushes content before dependent boundary 'TURN_INTERRUPTED' 1ms
+     ✓ flushes content before dependent boundary 'ASSISTANT_COMPLETE' 0ms
+     ✓ flushes content before dependent boundary 'AGENT_STATUS' 0ms
+     ✓ flushes content before dependent boundary 'AGENT_STATUS' 0ms
+     ✓ flushes content before dependent boundary 'AGENT_STATUS' 0ms
+     ✓ flushes content before dependent boundary 'ERROR' 0ms
+     ✓ flushes content before dependent boundary 'TOOL_EXECUTION_STARTED' 0ms
+     ✓ flushes content before dependent boundary 'TOOL_EXECUTION_INTERRUPTED' 0ms
+     ✓ flushes content before dependent boundary 'TEAM_RUN_LIFECYCLE' 0ms
+     ✓ treats invalid content delta conservatively without fabricating content 0ms
+     ✓ applies a changed setting only to the next newly opened window 0ms
+     ✓ disposes pending unsendable connection state idempotently 0ms
+     ✓ reports timer-triggered send failure through the bounded error callback 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-stream-websocket-egress.test.ts > AgentStreamWebSocketEgress > fails open when a status identity is incomplete
+AssertionError: expected [ { type: 'AGENT_STATUS', …(1) } ] to have a length of 2 but got 1
+
+- Expected
++ Received
+
+- 2
++ 1
+
+ ❯ tests/unit/services/agent-streaming/agent-stream-websocket-egress.test.ts:172:32
+    170|     egress.send(status("running", incompleteTaskTeam));
+    171| 
+    172|     expect(parseSent(sendRaw)).toHaveLength(2);
+       |                                ^
+    173|   });
+    174| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 31 passed (32)
+   Start at  13:55:11
+   Duration  739ms (transform 104ms, setup 10ms, import 128ms, tests 18ms, environment 0ms)
+

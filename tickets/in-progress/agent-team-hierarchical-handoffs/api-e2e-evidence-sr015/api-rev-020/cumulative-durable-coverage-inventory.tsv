@@ -1,0 +1,26 @@
+status	path	owner	disposition	current_result
+M	autobyteus-web/components/mobile/__tests__/MobileArtifacts.spec.ts	api_e2e_engineer	Updated current rooted/execution-address fixture	See API-REV-020 evidence
+M	autobyteus-web/components/mobile/__tests__/MobileContextSelectionRegression.spec.ts	api_e2e_engineer	Updated current rooted/execution-address fixture	See API-REV-020 evidence
+M	autobyteus-web/components/mobile/__tests__/MobileTeamMessages.spec.ts	api_e2e_engineer	Updated current rooted/execution-address fixture	See API-REV-020 evidence
+M	autobyteus-web/components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts	api_e2e_engineer	Updated current rooted/execution-address fixture	See API-REV-020 evidence
+M	autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts	api_e2e_engineer	Updated current rooted/execution-address fixture	See API-REV-020 evidence
+M	autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts	api_e2e_engineer	Updated current rooted/execution-address fixture	See API-REV-020 evidence
+M	autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts	api_e2e_engineer	Updated current rooted/execution-address fixture	See API-REV-020 evidence
+M	autobyteus-web/components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts	api_e2e_engineer	Updated current rooted/execution-address fixture	See API-REV-020 evidence
+M	autobyteus-web/components/workspace/team/__tests__/TeamOverviewPanel.spec.ts	api_e2e_engineer	Updated current rooted/execution-address fixture	See API-REV-020 evidence
+M	autobyteus-web/components/workspace/team/__tests__/TeamWorkspaceView.spec.ts	api_e2e_engineer	Updated current rooted/execution-address fixture	See API-REV-020 evidence
+M	autobyteus-web/composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts	api_e2e_engineer	Updated current rooted/execution-address fixture	See API-REV-020 evidence
+M	autobyteus-web/composables/__tests__/useWorkspaceHistoryTreeState.spec.ts	api_e2e_engineer	Updated current rooted/execution-address fixture	See API-REV-020 evidence
+M	autobyteus-web/composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts	api_e2e_engineer	Updated current rooted/execution-address fixture	See API-REV-020 evidence
+M	autobyteus-web/composables/mobile/__tests__/useMobileWorkCatalog.spec.ts	api_e2e_engineer	Updated current rooted/execution-address fixture	See API-REV-020 evidence
+M	autobyteus-web/services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts	api_e2e_engineer	Updated current rooted/execution-address fixture	See API-REV-020 evidence
+M	autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts	api_e2e_engineer	Updated current rooted/execution-address fixture	See API-REV-020 evidence
+M	autobyteus-web/services/runHydration/__tests__/teamRunContextHydrationService.spec.ts	api_e2e_engineer	Updated current rooted/execution-address fixture	See API-REV-020 evidence
+M	autobyteus-web/services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts	api_e2e_engineer	Updated current rooted/execution-address fixture	See API-REV-020 evidence
+M	autobyteus-web/stores/__tests__/mobileWorkStore.spec.ts	api_e2e_engineer	Updated current rooted/execution-address fixture	See API-REV-020 evidence
+M	autobyteus-web/stores/__tests__/runHistoryNavigationProjection.spec.ts	api_e2e_engineer	Updated current rooted/execution-address fixture	See API-REV-020 evidence
+M	autobyteus-web/stores/__tests__/runHistoryTeamExecutionRows.spec.ts	api_e2e_engineer	Updated current rooted/execution-address fixture	See API-REV-020 evidence
+M	autobyteus-web/stores/__tests__/runHistoryTeamRows.spec.ts	api_e2e_engineer	Updated current rooted/execution-address fixture	See API-REV-020 evidence
+M	autobyteus-web/utils/__tests__/teamActiveExecutionMembers.spec.ts	api_e2e_engineer	Updated current rooted/execution-address fixture	See API-REV-020 evidence
+M	autobyteus-web/utils/__tests__/teamDelegatedTaskEntries.spec.ts	api_e2e_engineer	Updated current rooted/execution-address fixture	See API-REV-020 evidence
+A	autobyteus-web/test-support/currentTeamTestFixtures.ts	api_e2e_engineer	Added reusable current rooted Team test fixture	See API-REV-020 evidence

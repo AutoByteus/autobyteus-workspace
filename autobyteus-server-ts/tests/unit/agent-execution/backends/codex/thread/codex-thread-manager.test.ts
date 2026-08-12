@@ -40,15 +40,24 @@ const createRunContext = (
         ? new MemberTeamContext({
             teamRunId: input.teamRunId,
             teamDefinitionId: "team-def",
+            teamName: "Codex team",
             teamBackendKind: TeamBackendKind.MIXED,
-            memberName: runId,
-            memberRouteKey: runId,
-            memberRunId: runId,
+            teamAddress: "/",
+            memberAddress: `/${runId}`,
+            agentRunId: runId,
+            runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+            coordinatorAddress: `/${runId}`,
             collaboration: {
               addressing: {
                 rootTeamRunId: input.teamRunId,
                 memberAddress: `/${runId}`,
               },
+            },
+            executionAddress: {
+              rootTeamRunId: input.teamRunId,
+              taskTeamRunIds: [],
+              memberAddress: `/${runId}`,
+              taskAgentRunId: null,
             },
           })
         : null,

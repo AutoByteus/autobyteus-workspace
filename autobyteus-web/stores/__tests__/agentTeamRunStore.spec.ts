@@ -1,202 +1,69 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { createPinia, setActivePinia } from 'pinia';
-import { useAgentTeamRunStore } from '../agentTeamRunStore';
-import { TeamStreamingService } from '~/services/agentStreaming';
-import { AgentStatus } from '~/types/agent/AgentStatus';
-import { RestoreAgentTeamRun } from '~/graphql/mutations/agentTeamRunMutations';
-import { resolveTeamStreamMemberContext } from '~/services/agentStreaming/teamStreamMemberContextResolver';
-import { handleTeamRunLifecycle } from '~/services/agentStreaming/handlers/teamHandler';
-import type { ServerMessage } from '~/services/agentStreaming/protocol';
-import { hydrateContextAttachment } from '~/utils/contextFiles/contextAttachmentModel';
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { createPinia, setActivePinia } from 'pinia'
+import { useAgentTeamRunStore } from '../agentTeamRunStore'
+import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore'
+import { TeamStreamingService } from '~/services/agentStreaming'
+import { AgentStatus } from '~/types/agent/AgentStatus'
+import {
+  createTeamExecutionAddress,
+  type TeamExecutionAddress,
+} from '~/types/agent/TeamExecutionAddress'
+import {
+  buildTestTeamContext,
+  testAgentNode,
+  testSubTeamNode,
+} from '~/test-support/currentTeamTestFixtures'
+import type { AgentTeamContext } from '~/types/agent/AgentTeamContext'
+import type { TeamLaunchDraft, TeamLaunchDraftId } from '~/types/agent/TeamLaunchDraft'
 
 const {
   mockConnect,
   mockDisconnect,
   mockAttachContext,
   mockConnectionState,
+  mockIsReady,
   mockSendMessage,
   mockApproveTool,
   mockDenyTool,
   mockInterruptGeneration,
   mockMutate,
-  mockQuery,
   mockClearActivities,
+  mockHydrateLiveTeamRunContext,
   teamContextsStoreMock,
   runHistoryStoreMock,
-  teamDefinitionStoreMock,
   contextFileUploadStoreMock,
-  runtimeProviderLookup,
+  teamDefinitions,
   mockServiceOptions,
-  addToastMock,
 } = vi.hoisted(() => ({
   mockConnect: vi.fn(),
   mockDisconnect: vi.fn(),
   mockAttachContext: vi.fn(),
   mockConnectionState: { value: 'connected' as 'connected' | 'disconnected' | 'connecting' | 'reconnecting' },
+  mockIsReady: { value: true },
   mockSendMessage: vi.fn(),
   mockApproveTool: vi.fn(),
   mockDenyTool: vi.fn(),
   mockInterruptGeneration: vi.fn(),
   mockMutate: vi.fn(),
-  mockQuery: vi.fn(),
   mockClearActivities: vi.fn(),
+  mockHydrateLiveTeamRunContext: vi.fn(),
   teamContextsStoreMock: {
-    activeTeamContext: null as any,
-    focusedMemberContext: null as any,
-    focusedMemberNode: null as any,
-    activeExecutionFocusedMemberRouteKey: '' as string,
-    activeExecutionFocusedMemberContext: null as any,
-    activeExecutionFocusedMemberNode: null as any,
+    activeTeamContext: null as AgentTeamContext | null,
     getTeamContextById: vi.fn(),
-    removeTeamContext: vi.fn(),
-    promoteTemporaryTeamRunId: vi.fn(),
-    lockConfig: vi.fn(),
+    addTeamContext: vi.fn(),
   },
   runHistoryStoreMock: {
     markTeamAsActive: vi.fn(),
     markTeamAsInactive: vi.fn(),
     refreshTreeQuietly: vi.fn().mockResolvedValue(undefined),
-    refreshRunNavigationTopology: vi.fn(),
     applyRunNavigationEffect: vi.fn(),
-    teamResumeConfigByTeamRunId: {} as Record<string, { isActive: boolean }>,
-  },
-  teamDefinitionStoreMock: {
-    getAgentTeamDefinitionById: vi.fn(),
   },
   contextFileUploadStoreMock: {
-    finalizeDraftAttachments: vi.fn(async ({ attachments }: { attachments: any[] }) => attachments),
+    finalizeDraftAttachments: vi.fn(async ({ attachments }: { attachments: unknown[] }) => attachments),
   },
-  runtimeProviderLookup: {
-    autobyteus: [{ provider: { id: 'OPENAI', name: 'OpenAI' }, models: [{ modelIdentifier: 'gpt-5.4' }] }],
-    codex_app_server: [{ provider: { id: 'OPENAI', name: 'OpenAI' }, models: [{ modelIdentifier: 'gpt-5.3-codex' }, { modelIdentifier: 'gpt-5.4' }] }],
-    claude_agent_sdk: [{ provider: { id: 'ANTHROPIC', name: 'Anthropic' }, models: [{ modelIdentifier: 'claude-sonnet' }, { modelIdentifier: 'claude-opus' }] }],
-  },
-  mockServiceOptions: { value: null as any },
-  addToastMock: vi.fn(),
-}));
-
-const buildAgentNode = (memberRouteKey: string, agentDefinitionId = `${memberRouteKey}-def`) => ({
-  memberKind: 'agent',
-  memberName: memberRouteKey.split('/').at(-1) || memberRouteKey,
-  displayName: memberRouteKey.split('/').at(-1) || memberRouteKey,
-  memberPath: memberRouteKey.split('/'),
-  memberRouteKey,
-  agentDefinitionId,
-});
-
-const buildTeamContext = (params: {
-  teamRunId: string
-  focusedMemberRouteKey?: string
-  memberContexts: Record<string, any>
-  config?: Record<string, any>
-  isSubscribed?: boolean
-  isActive?: boolean
-  unsubscribe?: (() => void) | undefined
-}) => {
-  const memberTree = Object.keys(params.memberContexts).map((memberRouteKey) =>
-    buildAgentNode(memberRouteKey),
-  );
-  const memberNodesByRouteKey = new Map(memberTree.map((node) => [node.memberRouteKey, node]));
-  return {
-    teamRunId: params.teamRunId,
-    focusedMemberRouteKey: params.focusedMemberRouteKey || Object.keys(params.memberContexts)[0] || '',
-    isSubscribed: params.isSubscribed ?? false,
-    config: params.config || {},
-    memberTree,
-    memberNodesByRouteKey,
-    leafAgentContextsByRouteKey: new Map(Object.entries(params.memberContexts)),
-    coordinatorMemberRouteKey: Object.keys(params.memberContexts)[0] || null,
-    historicalHydration: null,
-    isActive: params.isActive ?? true,
-    unsubscribe: params.unsubscribe,
-  };
-};
-
-const indexMemberNodes = (nodes: any[]): Map<string, any> => {
-  const indexed = new Map<string, any>();
-  const visit = (node: any) => {
-    indexed.set(node.memberRouteKey, node);
-    if (Array.isArray(node.children)) {
-      node.children.forEach(visit);
-    }
-  };
-  nodes.forEach(visit);
-  return indexed;
-};
-
-const setActiveTeamContext = (teamContext: any) => {
-  if (!teamContext.memberTree) {
-    const memberRouteKeys = Array.from(teamContext.leafAgentContextsByRouteKey.keys());
-    teamContext.memberTree = memberRouteKeys.map((memberRouteKey) => buildAgentNode(memberRouteKey as string));
-  }
-  if (!teamContext.memberNodesByRouteKey) {
-    teamContext.memberNodesByRouteKey = indexMemberNodes(teamContext.memberTree);
-  }
-  teamContextsStoreMock.activeTeamContext = teamContext;
-  teamContextsStoreMock.focusedMemberContext = teamContext.leafAgentContextsByRouteKey.get(teamContext.focusedMemberRouteKey) || null;
-  teamContextsStoreMock.focusedMemberNode = teamContext.memberNodesByRouteKey.get(teamContext.focusedMemberRouteKey) || null;
-  teamContextsStoreMock.activeExecutionFocusedMemberRouteKey = teamContext.focusedMemberRouteKey;
-  teamContextsStoreMock.activeExecutionFocusedMemberContext = teamContextsStoreMock.focusedMemberContext;
-  teamContextsStoreMock.activeExecutionFocusedMemberNode = teamContextsStoreMock.focusedMemberNode;
-  teamContextsStoreMock.getTeamContextById.mockImplementation((teamRunId: string) =>
-    teamRunId === teamContext.teamRunId ? teamContext : null,
-  );
-};
-
-const setActiveExecutionFocus = (teamContext: any, memberRouteKey: string) => {
-  teamContextsStoreMock.activeExecutionFocusedMemberRouteKey = memberRouteKey;
-  teamContextsStoreMock.activeExecutionFocusedMemberContext =
-    teamContext.leafAgentContextsByRouteKey.get(memberRouteKey) || null;
-  teamContextsStoreMock.activeExecutionFocusedMemberNode =
-    teamContext.memberNodesByRouteKey.get(memberRouteKey) || null;
-};
-
-const sanitizeMemberRouteKeyForRunId = (memberRouteKey: string): string =>
-  memberRouteKey.replace(/[^A-Za-z0-9]+/g, '_').replace(/^_+|_+$/g, '') || 'member';
-
-const buildResumeMetadataMember = (node: any): any => {
-  const memberRunId =
-    node.memberRunId ||
-    `${sanitizeMemberRouteKeyForRunId(node.memberRouteKey)}-backend-run`;
-  if (node.memberKind === 'agent_team') {
-    return {
-      memberKind: 'agent_team',
-      memberRouteKey: node.memberRouteKey,
-      memberPath: node.memberPath || node.memberRouteKey.split('/'),
-      memberName: node.memberName,
-      memberRunId,
-      teamDefinitionId: node.teamDefinitionId || `${node.memberName}-team-definition`,
-      teamRunId: node.teamRunId || `${memberRunId}-team`,
-      coordinatorMemberRouteKey: node.coordinatorMemberRouteKey || null,
-      memberTree: (node.children || []).map(buildResumeMetadataMember),
-    };
-  }
-  return {
-    memberKind: 'agent',
-    memberRouteKey: node.memberRouteKey,
-    memberPath: node.memberPath || node.memberRouteKey.split('/'),
-    memberName: node.memberName,
-    memberRunId,
-    runtimeKind: 'codex_app_server',
-    platformAgentRunId: memberRunId,
-    agentDefinitionId: node.agentDefinitionId || `${node.memberRouteKey}-definition`,
-    llmModelIdentifier: 'gpt-5.4',
-    autoExecuteTools: true,
-    skillAccessMode: 'PRELOADED_ONLY',
-    llmConfig: null,
-    workspaceRootPath: '/tmp/test-workspace',
-  };
-};
-
-const buildResumeMetadataFromContext = (teamRunId: string, teamContext: any) => ({
-  teamRunId,
-  teamDefinitionId: teamContext.config?.teamDefinitionId || 'team-def-1',
-  teamDefinitionName: teamContext.config?.teamDefinitionName || 'Team',
-  coordinatorMemberRouteKey:
-    teamContext.coordinatorMemberRouteKey || teamContext.focusedMemberRouteKey || '',
-  createdAt: '2026-06-04T00:00:00.000Z',
-  memberTree: (teamContext.memberTree || []).map(buildResumeMetadataMember),
-});
+  teamDefinitions: new Map<string, unknown>(),
+  mockServiceOptions: { value: null as unknown },
+}))
 
 vi.mock('~/services/agentStreaming', () => ({
   ConnectionState: {
@@ -206,1444 +73,382 @@ vi.mock('~/services/agentStreaming', () => ({
     RECONNECTING: 'reconnecting',
   },
   TeamStreamingService: vi.fn().mockImplementation((_endpoint, options) => {
-    mockServiceOptions.value = options;
+    mockServiceOptions.value = options
     return {
-    get connectionState() {
-      return mockConnectionState.value;
-    },
-    connect: mockConnect,
-    disconnect: mockDisconnect,
-    attachContext: mockAttachContext,
-    sendMessage: mockSendMessage,
-    approveTool: mockApproveTool,
-    denyTool: mockDenyTool,
-    interruptGeneration: mockInterruptGeneration,
-    };
+      get connectionState() { return mockConnectionState.value },
+      get isReady() { return mockIsReady.value },
+      connect: mockConnect,
+      disconnect: mockDisconnect,
+      attachContext: mockAttachContext,
+      sendMessage: mockSendMessage,
+      approveTool: mockApproveTool,
+      denyTool: mockDenyTool,
+      interruptGeneration: mockInterruptGeneration,
+    }
   }),
-}));
-
-vi.mock('~/composables/useToasts', () => ({
-  useToasts: () => ({ addToast: addToastMock }),
-}));
+}))
 
 vi.mock('~/stores/windowNodeContextStore', () => ({
-  useWindowNodeContextStore: () => ({
-    getBoundEndpoints: () => ({
-      teamWs: 'ws://node-a.example/ws/agent-team',
-    }),
-  }),
-}));
+  useWindowNodeContextStore: () => ({ getBoundEndpoints: () => ({ teamWs: 'ws://node-a.example/ws/agent-team' }) }),
+}))
 
 vi.mock('~/stores/agentTeamContextsStore', () => ({
   useAgentTeamContextsStore: () => teamContextsStoreMock,
-}));
+}))
 
 vi.mock('~/utils/apolloClient', () => ({
-  getApolloClient: () => ({
-    mutate: mockMutate,
-    query: mockQuery,
-  }),
-}));
+  getApolloClient: () => ({ mutate: mockMutate }),
+}))
 
 vi.mock('~/stores/agentActivityStore', () => ({
   useAgentActivityStore: () => ({
     clearActivities: mockClearActivities,
     getCompactionActivities: vi.fn(() => []),
   }),
-}));
+}))
 
-vi.mock('~/services/eventMonitor/recentEventMonitorMutationCoordinator', () => ({
-  commitRecentEventMonitorEffect: vi.fn(() => ({
-    retentionChanged: false,
-    presentationChanged: false,
-  })),
-  primeRecentEventMonitorBaseline: vi.fn(),
-  resetRecentEventMonitorBaseline: vi.fn(),
-}));
+vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => runHistoryStoreMock }))
+vi.mock('~/stores/contextFileUploadStore', () => ({ useContextFileUploadStore: () => contextFileUploadStoreMock }))
 
-vi.mock('~/stores/runHistoryStore', () => ({
-  useRunHistoryStore: () => runHistoryStoreMock,
-}));
+vi.mock('~/services/runHydration/teamRunContextHydrationService', () => ({
+  hydrateLiveTeamRunContext: mockHydrateLiveTeamRunContext,
+}))
+
+vi.mock('~/stores/runHistoryLoadActions', () => ({
+  ensureRunHistoryWorkspaceByRootPath: vi.fn(),
+  resolveRunHistoryWorkspaceMetadataByRootPath: vi.fn(),
+}))
 
 vi.mock('~/stores/agentTeamDefinitionStore', () => ({
-  useAgentTeamDefinitionStore: () => teamDefinitionStoreMock,
-}));
+  useAgentTeamDefinitionStore: () => ({
+    getAgentTeamDefinitionById: (id: string) => teamDefinitions.get(id) ?? null,
+  }),
+}))
 
-vi.mock('~/stores/contextFileUploadStore', () => ({
-  useContextFileUploadStore: () => contextFileUploadStoreMock,
-}));
+const execution = (
+  rootTeamRunId: string,
+  memberAddress: string,
+  taskTeamRunIds: string[] = [],
+  taskAgentRunId: string | null = null,
+): TeamExecutionAddress => createTeamExecutionAddress({ rootTeamRunId, memberAddress, taskTeamRunIds, taskAgentRunId })
 
-vi.mock('~/composables/useRuntimeScopedModelSelection', () => ({
-  loadRuntimeProviderGroupsForSelection: vi.fn(async (runtimeKind: string) =>
-    (runtimeProviderLookup as Record<string, any[]>)[runtimeKind] ?? [],
-  ),
-}));
+const setActiveTeam = (team: AgentTeamContext): void => {
+  teamContextsStoreMock.activeTeamContext = team
+  teamContextsStoreMock.getTeamContextById.mockImplementation((rootTeamRunId: string) =>
+    rootTeamRunId === team.executions.getRootTeamRunId() ? team : undefined)
+}
 
-describe('agentTeamRunStore', () => {
+const twoMemberTeam = (input: {
+  teamRunId?: string
+  focusedMemberAddress?: string
+  isActive?: boolean
+} = {}): AgentTeamContext => {
+  const teamRunId = input.teamRunId ?? 'team-1'
+  return buildTestTeamContext({
+    teamRunId,
+    coordinatorAddress: '/coordinator',
+    rootChildren: [
+      testAgentNode('/coordinator', {
+        displayName: 'Coordinator',
+        agentRunId: `${teamRunId}-coordinator-run`,
+        currentStatus: AgentStatus.Running,
+      }),
+      testAgentNode('/worker', {
+        displayName: 'Worker',
+        agentRunId: `${teamRunId}-worker-run`,
+        currentStatus: AgentStatus.Idle,
+      }),
+    ],
+    focusedExecutionAddress: execution(teamRunId, input.focusedMemberAddress ?? '/worker'),
+    isActive: input.isActive,
+  })
+}
+
+describe('agentTeamRunStore current rooted execution contract', () => {
   beforeEach(() => {
-    setActivePinia(createPinia());
-    vi.clearAllMocks();
-    mockConnectionState.value = 'connected';
-    mockConnect.mockReset();
-    mockDisconnect.mockReset();
-    mockAttachContext.mockReset();
-    mockSendMessage.mockReset();
-    mockApproveTool.mockReset();
-    mockDenyTool.mockReset();
-    mockInterruptGeneration.mockReset();
-    mockInterruptGeneration.mockReturnValue(true);
-    mockServiceOptions.value = null;
-    addToastMock.mockReset();
-    mockMutate.mockReset();
-    mockQuery.mockReset();
-    teamContextsStoreMock.activeTeamContext = null;
-    teamContextsStoreMock.focusedMemberContext = null;
-    teamContextsStoreMock.focusedMemberNode = null;
-    teamContextsStoreMock.activeExecutionFocusedMemberRouteKey = '';
-    teamContextsStoreMock.activeExecutionFocusedMemberContext = null;
-    teamContextsStoreMock.activeExecutionFocusedMemberNode = null;
-    teamContextsStoreMock.getTeamContextById.mockReset();
-    teamContextsStoreMock.removeTeamContext.mockReset();
-    teamContextsStoreMock.promoteTemporaryTeamRunId.mockReset();
-    teamContextsStoreMock.lockConfig.mockReset();
-    runHistoryStoreMock.teamResumeConfigByTeamRunId = {};
-    contextFileUploadStoreMock.finalizeDraftAttachments.mockImplementation(async ({ attachments }: { attachments: any[] }) => attachments);
-    mockQuery.mockImplementation(async ({ variables }: { variables: { teamRunId: string } }) => {
-      const activeTeamContext = teamContextsStoreMock.activeTeamContext;
-      return {
-        data: {
-          getTeamRunResumeConfig: {
-            teamRunId: variables.teamRunId,
-            isActive: true,
-            metadata: buildResumeMetadataFromContext(variables.teamRunId, activeTeamContext || {
-              focusedMemberRouteKey: '',
-              config: {},
-              memberTree: [],
-            }),
-          },
-        },
-        errors: [],
-      };
-    });
-  });
+    setActivePinia(createPinia())
+    vi.clearAllMocks()
+    mockConnectionState.value = 'connected'
+    mockIsReady.value = true
+    mockInterruptGeneration.mockReturnValue(true)
+    mockServiceOptions.value = null
+    teamContextsStoreMock.activeTeamContext = null
+    teamContextsStoreMock.getTeamContextById.mockReset()
+    teamDefinitions.clear()
+    contextFileUploadStoreMock.finalizeDraftAttachments.mockImplementation(
+      async ({ attachments }: { attachments: unknown[] }) => attachments,
+    )
+  })
 
-  it('connects team stream using bound node team WS endpoint', () => {
-    const teamContext = {
-      teamRunId: 'team-1',
-      isSubscribed: false,
-      unsubscribe: undefined as undefined | (() => void),
-    };
-    teamContextsStoreMock.getTeamContextById.mockReturnValue(teamContext);
+  it('connects the exact Team context to the bound Team WebSocket endpoint', () => {
+    const team = twoMemberTeam({ teamRunId: 'team-connect' })
+    setActiveTeam(team)
 
-    const store = useAgentTeamRunStore();
-    store.connectToTeamStream('team-1');
+    const service = useAgentTeamRunStore().connectToTeamStream('team-connect')
 
+    expect(service).toBeTruthy()
     expect(TeamStreamingService).toHaveBeenCalledWith(
       'ws://node-a.example/ws/agent-team',
       expect.objectContaining({
         onInterruptCommandResult: expect.any(Function),
         onInterruptCommandTransportFailure: expect.any(Function),
       }),
-    );
-    expect(mockConnect).toHaveBeenCalledWith('team-1', teamContext);
-    expect(teamContext.isSubscribed).toBe(true);
-    expect(typeof teamContext.unsubscribe).toBe('function');
+    )
+    expect(mockConnect).toHaveBeenCalledWith('team-connect', team)
+  })
 
-    teamContext.unsubscribe?.();
-    expect(mockDisconnect).toHaveBeenCalledTimes(1);
-  });
+  it('reattaches an existing service to the latest context with the same root identity', () => {
+    const original = twoMemberTeam({ teamRunId: 'team-reattach' })
+    setActiveTeam(original)
+    const store = useAgentTeamRunStore()
+    store.connectToTeamStream('team-reattach')
+    const replacement = twoMemberTeam({ teamRunId: 'team-reattach' })
+    teamContextsStoreMock.getTeamContextById.mockReturnValue(replacement)
 
-  it('marks team as offline but keeps context for history restore after terminate', async () => {
-    const teamContext = {
-      teamRunId: 'team-1',
-      isSubscribed: true,
-      isActive: true,
-      unsubscribe: undefined as undefined | (() => void),
-      leafAgentContextsByRouteKey: new Map([
-        ['member-a', { submissionPending: true, state: { runId: 'agent-a', currentStatus: AgentStatus.Running } }],
-        ['member-b', { state: { runId: 'agent-b', currentStatus: AgentStatus.Idle } }],
-      ]),
-    };
-    teamContextsStoreMock.getTeamContextById.mockReturnValue(teamContext);
+    store.connectToTeamStream('team-reattach')
+
+    expect(TeamStreamingService).toHaveBeenCalledTimes(1)
+    expect(mockAttachContext).toHaveBeenCalledWith(replacement)
+  })
+
+  it('terminates once, disconnects, and preserves an offline context for history restore', async () => {
+    const team = twoMemberTeam({ teamRunId: 'team-terminate' })
+    setActiveTeam(team)
+    const worker = team.executions.getAgentContext(execution('team-terminate', '/worker'))!
+    worker.submissionPending = true
+    const store = useAgentTeamRunStore()
+    store.connectToTeamStream('team-terminate')
     mockMutate.mockResolvedValue({
-      data: {
-        terminateAgentTeamRun: {
-          success: true,
-          message: 'terminated',
-        },
-      },
-      errors: [],
-    });
-
-    const store = useAgentTeamRunStore();
-    store.connectToTeamStream('team-1');
-    const result = await store.terminateTeamRun('team-1');
-
-    expect(result).toBe(true);
-    expect(mockDisconnect).toHaveBeenCalledTimes(1);
-    expect(teamContext.unsubscribe).toBeUndefined();
-    expect(teamContext.isSubscribed).toBe(false);
-    expect(teamContext.isActive).toBe(false);
-    expect(teamContext.leafAgentContextsByRouteKey.get('member-a')?.state.currentStatus).toBe(AgentStatus.Offline);
-    expect(teamContext.leafAgentContextsByRouteKey.get('member-a')?.submissionPending).toBe(false);
-    expect(teamContext.leafAgentContextsByRouteKey.get('member-b')?.state.currentStatus).toBe(AgentStatus.Offline);
-    expect(mockClearActivities).toHaveBeenCalledWith('agent-a');
-    expect(mockClearActivities).toHaveBeenCalledWith('agent-b');
-    expect(teamContextsStoreMock.removeTeamContext).not.toHaveBeenCalled();
-    expect(mockMutate).toHaveBeenCalledTimes(1);
-    expect(runHistoryStoreMock.markTeamAsInactive).toHaveBeenCalledWith('team-1');
-    expect(runHistoryStoreMock.refreshTreeQuietly).toHaveBeenCalledTimes(1);
-  });
-
-  it('does not mark a persisted team inactive when backend termination fails', async () => {
-    const teamContext = {
-      teamRunId: 'team-terminate-fails-1',
-      isSubscribed: true,
-      isActive: true,
-      unsubscribe: undefined as undefined | (() => void),
-      leafAgentContextsByRouteKey: new Map([
-        ['member-a', { state: { runId: 'agent-a', currentStatus: AgentStatus.Running } }],
-      ]),
-    };
-    teamContextsStoreMock.getTeamContextById.mockReturnValue(teamContext);
-    mockMutate.mockResolvedValue({
-      data: {
-        terminateAgentTeamRun: {
-          success: false,
-          message: 'not found',
-        },
-      },
-      errors: [],
-    });
-
-    const store = useAgentTeamRunStore();
-    store.connectToTeamStream('team-terminate-fails-1');
-    const result = await store.terminateTeamRun('team-terminate-fails-1');
-
-    expect(result).toBe(false);
-    expect(mockDisconnect).not.toHaveBeenCalled();
-    expect(teamContext.isSubscribed).toBe(true);
-    expect(teamContext.isActive).toBe(true);
-    expect(store.stopPendingTeamIds['team-terminate-fails-1']).toBeUndefined();
-    expect(runHistoryStoreMock.markTeamAsInactive).not.toHaveBeenCalled();
-    expect(runHistoryStoreMock.refreshTreeQuietly).not.toHaveBeenCalled();
-  });
-
-  it('deduplicates concurrent team Stop requests through the shared store-owned pending state', async () => {
-    const teamContext = {
-      teamRunId: 'team-stop-pending-1',
-      isSubscribed: true,
-      isActive: true,
-      leafAgentContextsByRouteKey: new Map(),
-    };
-    teamContextsStoreMock.getTeamContextById.mockReturnValue(teamContext);
-    let resolveMutation!: (value: any) => void;
-    mockMutate.mockReturnValue(new Promise((resolve) => {
-      resolveMutation = resolve;
-    }));
-
-    const store = useAgentTeamRunStore();
-    const firstStop = store.terminateTeamRun(teamContext.teamRunId);
-    expect(store.stopPendingTeamIds[teamContext.teamRunId]).toBe(true);
-
-    await expect(store.terminateTeamRun(teamContext.teamRunId)).resolves.toBe(false);
-    expect(mockMutate).toHaveBeenCalledTimes(1);
-
-    resolveMutation({
       data: { terminateAgentTeamRun: { success: true, message: 'terminated' } },
       errors: [],
-    });
-    await expect(firstStop).resolves.toBe(true);
-    expect(teamContext.isActive).toBe(false);
-    expect(store.stopPendingTeamIds[teamContext.teamRunId]).toBeUndefined();
-  });
+    })
 
-  it('discardDraftTeamRun removes a temporary team locally without backend termination', () => {
-    const teamContext = {
-      teamRunId: 'temp-team-1',
-      isSubscribed: true,
-      unsubscribe: undefined as undefined | (() => void),
-      leafAgentContextsByRouteKey: new Map([
-        ['member-a', { submissionPending: true, state: { runId: 'agent-a', currentStatus: AgentStatus.Idle } }],
-        ['member-b', { submissionPending: false, state: { runId: 'agent-b', currentStatus: AgentStatus.Idle } }],
-      ]),
-    };
-    teamContextsStoreMock.getTeamContextById.mockReturnValue(teamContext);
+    expect(await store.terminateTeamRun('team-terminate')).toBe(true)
 
-    const store = useAgentTeamRunStore();
-    store.connectToTeamStream('temp-team-1');
-    const result = store.discardDraftTeamRun('temp-team-1');
+    expect(mockMutate).toHaveBeenCalledTimes(1)
+    expect(mockDisconnect).toHaveBeenCalledTimes(1)
+    expect(team.executions.isRootTeamActive()).toBe(false)
+    expect(worker.state.currentStatus).toBe(AgentStatus.Offline)
+    expect(worker.submissionPending).toBe(false)
+    expect(runHistoryStoreMock.markTeamAsInactive).toHaveBeenCalledWith('team-terminate')
+  })
 
-    expect(result).toBe(true);
-    expect(mockDisconnect).toHaveBeenCalledTimes(1);
-    expect(teamContext.isSubscribed).toBe(false);
-    expect(teamContext.leafAgentContextsByRouteKey.get('member-a')?.submissionPending).toBe(false);
-    expect(teamContextsStoreMock.removeTeamContext).toHaveBeenCalledWith('temp-team-1');
-    expect(mockClearActivities).toHaveBeenCalledWith('agent-a');
-    expect(mockClearActivities).toHaveBeenCalledWith('agent-b');
-    expect(mockMutate).not.toHaveBeenCalled();
-  });
-
-  it('reconnects and sends over WebSocket for a persisted team', async () => {
-    const focusedMember = {
-      state: {
-        runId: 'member-1',
-        conversation: {
-          messages: [] as any[],
-          updatedAt: '2026-02-21T00:00:00.000Z',
-        },
-      },
-    };
-    const teamContext = {
-      teamRunId: 'team-1',
-      focusedMemberRouteKey: 'professor',
-      isSubscribed: false,
-      config: {
-        teamDefinitionId: 'team-def-1',
-        workspaceId: 'ws-1',
-        llmModelIdentifier: 'model-x',
-        llmConfig: null,
-        autoExecuteTools: false,
-        skillAccessMode: 'PRELOADED_ONLY',
-        memberOverrides: {},
-      },
-      memberTree: [
-        buildAgentNode('professor', 'agent-a'),
-        buildAgentNode('student', 'agent-b'),
-      ],
-      leafAgentContextsByRouteKey: new Map([['professor', focusedMember]]),
-    };
-
-    setActiveTeamContext(teamContext);
-    teamContextsStoreMock.getTeamContextById.mockImplementation((teamRunId: string) =>
-      teamRunId === 'team-1' ? teamContext : null,
-    );
-
-    const store = useAgentTeamRunStore();
-    await store.sendMessageToFocusedMember('hello from history', []);
-
-    expect(mockMutate).not.toHaveBeenCalled();
-    expect(runHistoryStoreMock.markTeamAsActive).toHaveBeenCalledWith('team-1');
-    expect(runHistoryStoreMock.refreshTreeQuietly).toHaveBeenCalledTimes(1);
-    expect(TeamStreamingService).toHaveBeenCalledWith(
-      'ws://node-a.example/ws/agent-team',
-      expect.objectContaining({
-        onInterruptCommandResult: expect.any(Function),
-        onInterruptCommandTransportFailure: expect.any(Function),
-      }),
-    );
-    expect(mockConnect).toHaveBeenCalledWith('team-1', teamContext);
-    expect(mockSendMessage).toHaveBeenCalledWith('hello from history', {
-      segments: [{ kind: 'member', memberRouteKey: 'professor' }],
-    }, [], [], expect.objectContaining({
-      messageId: expect.stringMatching(/^client_/),
-      dedupeKey: expect.stringContaining('member_input:'),
-    }));
-    expect(teamContext.isSubscribed).toBe(true);
-  });
-
-  it('publishes the authoritative Error status with exact navigation when team restore fails', async () => {
-    const focusedMember = {
-      state: {
-        runId: 'member-restore-failure',
-        currentStatus: AgentStatus.Offline,
-        conversation: {
-          messages: [] as any[],
-          updatedAt: '2026-08-09T09:00:00.000Z',
-        },
-      },
-      submissionPending: false,
-    };
-    const teamContext = buildTeamContext({
-      teamRunId: 'team-restore-failure',
-      focusedMemberRouteKey: 'professor',
-      isActive: false,
-      config: {
-        teamDefinitionId: 'team-def-1',
-        workspaceId: 'ws-1',
-        llmModelIdentifier: 'model-x',
-        memberOverrides: {},
-      },
-      memberContexts: { professor: focusedMember },
-    });
-    setActiveTeamContext(teamContext);
-    runHistoryStoreMock.teamResumeConfigByTeamRunId = {
-      'team-restore-failure': { isActive: false },
-    };
-    mockMutate.mockResolvedValueOnce({
-      data: {
-        restoreAgentTeamRun: {
-          success: false,
-          teamRunId: 'team-restore-failure',
-          message: 'restore failed',
-        },
-      },
-      errors: [],
-    });
-    const store = useAgentTeamRunStore();
-
-    await store.sendMessageToFocusedMember('recover this run', []);
-
-    expect(focusedMember.state.currentStatus).toBe(AgentStatus.Error);
-    expect(focusedMember.state.conversation.messages).toHaveLength(2);
-    expect(runHistoryStoreMock.applyRunNavigationEffect).toHaveBeenCalledTimes(2);
-    expect(runHistoryStoreMock.applyRunNavigationEffect).toHaveBeenLastCalledWith({
-      kind: 'team_member',
-      teamRunId: 'team-restore-failure',
-      memberRouteKey: 'professor',
-      memberRunId: 'member-restore-failure',
-      currentStatus: AgentStatus.Error,
-      summary: 'recover this run',
-    }, {
-      kind: 'PRESENTATION',
-      occurredAt: focusedMember.state.conversation.updatedAt,
-    });
-    expect(runHistoryStoreMock.markTeamAsActive).not.toHaveBeenCalled();
-    expect(runHistoryStoreMock.refreshRunNavigationTopology).not.toHaveBeenCalled();
-    expect(runHistoryStoreMock.refreshTreeQuietly).not.toHaveBeenCalled();
-    expect(mockSendMessage).not.toHaveBeenCalled();
-  });
-
-  it('launches a temporary team send to the focused offline non-coordinator instead of active-execution fallback', async () => {
-    const solutionDesigner = {
-      state: {
-        runId: 'temp-team-focused::solution_designer',
-        conversation: {
-          messages: [] as any[],
-          updatedAt: '2026-06-12T00:00:00.000Z',
-        },
-      },
-      submissionPending: false,
-    };
-    const codeReviewer = {
-      state: {
-        runId: 'temp-team-focused::code_reviewer',
-        conversation: {
-          messages: [] as any[],
-          updatedAt: '2026-06-12T00:00:00.000Z',
-        },
-      },
-      submissionPending: false,
-    };
-    const attachment = hydrateContextAttachment({ locator: '/tmp/spec.md', type: 'Markdown' });
-    const unsupportedAttachment = hydrateContextAttachment({
-      locator: 'local-file://opaque/image.png',
-      type: 'Image',
-    });
-    const teamContext = buildTeamContext({
-      teamRunId: 'temp-team-focused',
-      focusedMemberRouteKey: 'code_reviewer',
-      isActive: false,
-      config: {
-        teamDefinitionId: 'software-engineering-team',
-        runtimeKind: 'codex_app_server',
-        workspaceId: 'ws-1',
-        llmModelIdentifier: 'gpt-5.3-codex',
-        llmConfig: null,
-        autoExecuteTools: false,
-        skillAccessMode: 'PRELOADED_ONLY',
-        memberOverrides: {},
-      },
-      memberContexts: {
-        solution_designer: solutionDesigner,
-        code_reviewer: codeReviewer,
-      },
-    });
-    teamContext.coordinatorMemberRouteKey = 'solution_designer';
-
-    teamDefinitionStoreMock.getAgentTeamDefinitionById.mockReturnValue({
-      id: 'software-engineering-team',
-      nodes: [
-        { memberName: 'solution_designer', refType: 'AGENT', ref: 'solution-designer-agent' },
-        { memberName: 'code_reviewer', refType: 'AGENT', ref: 'code-reviewer-agent' },
-      ],
-    });
-    setActiveTeamContext(teamContext);
-    setActiveExecutionFocus(teamContext, 'solution_designer');
-    teamContextsStoreMock.promoteTemporaryTeamRunId.mockImplementation((temporaryRunId: string, permanentRunId: string) => {
-      expect(temporaryRunId).toBe('temp-team-focused');
-      teamContext.teamRunId = permanentRunId;
-    });
-    teamContextsStoreMock.getTeamContextById.mockImplementation((teamRunId: string) =>
-      teamRunId === teamContext.teamRunId ? teamContext : null,
-    );
+  it('does not mutate local lifecycle when backend termination rejects', async () => {
+    const team = twoMemberTeam({ teamRunId: 'team-terminate-reject' })
+    setActiveTeam(team)
     mockMutate.mockResolvedValue({
-      data: {
-        createAgentTeamRun: {
-          success: true,
-          teamRunId: 'team-focused-real',
-          message: 'ok',
-        },
-      },
+      data: { terminateAgentTeamRun: { success: false, message: 'not found' } },
       errors: [],
-    });
-    let cachedRootActiveAtPublication: boolean | undefined;
-    runHistoryStoreMock.markTeamAsActive.mockImplementationOnce((teamRunId: string) => {
-      cachedRootActiveAtPublication = teamContextsStoreMock.getTeamContextById(teamRunId)?.isActive;
-    });
+    })
 
-    const store = useAgentTeamRunStore();
-    await store.sendMessageToFocusedMember(
-      'please review this implementation',
-      [attachment, unsupportedAttachment],
-    );
+    expect(await useAgentTeamRunStore().terminateTeamRun('team-terminate-reject')).toBe(false)
 
-    expect(codeReviewer.state.conversation.messages).toHaveLength(1);
-    expect(cachedRootActiveAtPublication).toBe(true);
-    expect(teamContext.isActive).toBe(true);
-    const patchCallsBeforeInitialLifecycle = runHistoryStoreMock.applyRunNavigationEffect.mock.calls.length;
-    expect(handleTeamRunLifecycle({
-      team_run_id: 'team-focused-real', is_active: true,
-    }, teamContext as any)).toBe(false);
-    expect(runHistoryStoreMock.applyRunNavigationEffect).toHaveBeenCalledTimes(
-      patchCallsBeforeInitialLifecycle,
-    );
-    expect(runHistoryStoreMock.refreshRunNavigationTopology).not.toHaveBeenCalled();
-    expect(solutionDesigner.state.conversation.messages).toHaveLength(0);
-    expect(contextFileUploadStoreMock.finalizeDraftAttachments).toHaveBeenCalledWith({
-      draftOwner: {
-        kind: 'team_member_draft',
-        draftTeamRunId: 'temp-team-focused',
-        memberRouteKey: 'code_reviewer',
-      },
-      finalOwner: {
-        kind: 'team_member_final',
-        teamRunId: 'team-focused-real',
-        memberRouteKey: 'code_reviewer',
-      },
-      attachments: [attachment, unsupportedAttachment],
-    });
-    expect(codeReviewer.state.conversation.messages[0].contextFilePaths).toEqual([
-      attachment,
-      unsupportedAttachment,
-    ]);
+    expect(team.executions.isRootTeamActive()).toBe(true)
+    expect(runHistoryStoreMock.markTeamAsInactive).not.toHaveBeenCalled()
+  })
+
+  it('deduplicates concurrent Stop requests while the first mutation is pending', async () => {
+    const team = twoMemberTeam({ teamRunId: 'team-stop-dedupe' })
+    setActiveTeam(team)
+    let complete!: (value: unknown) => void
+    mockMutate.mockReturnValue(new Promise((resolve) => { complete = resolve }))
+    const store = useAgentTeamRunStore()
+
+    const first = store.terminateTeamRun('team-stop-dedupe')
+    expect(await store.terminateTeamRun('team-stop-dedupe')).toBe(false)
+    expect(mockMutate).toHaveBeenCalledTimes(1)
+    complete({ data: { terminateAgentTeamRun: { success: true, message: 'terminated' } }, errors: [] })
+    expect(await first).toBe(true)
+  })
+
+  it('sends to the exact focused persistent execution and records the local submission', async () => {
+    const team = twoMemberTeam({ teamRunId: 'team-send', focusedMemberAddress: '/worker' })
+    setActiveTeam(team)
+
+    await useAgentTeamRunStore().sendMessageToFocusedMember('inspect exact identity', [])
+
     expect(mockSendMessage).toHaveBeenCalledWith(
-      'please review this implementation',
-      { segments: [{ kind: 'member', memberRouteKey: 'code_reviewer' }] },
-      ['/tmp/spec.md'],
-      [],
-      expect.objectContaining({
-        messageId: expect.stringMatching(/^client_/),
-        dedupeKey: expect.stringContaining('member_input:team-focused-real:code_reviewer:'),
-      }),
-    );
-  });
-
-  it('rejects stale focused routes instead of sending to an active-execution fallback', async () => {
-    const coordinator = {
-      state: {
-        runId: 'coordinator-run',
-        conversation: {
-          messages: [] as any[],
-          updatedAt: '2026-06-12T00:00:00.000Z',
-        },
-      },
-    };
-    const teamContext = buildTeamContext({
-      teamRunId: 'team-stale-focus-send-1',
-      focusedMemberRouteKey: 'coordinator',
-      config: {
-        teamDefinitionId: 'team-def-1',
-        workspaceId: 'ws-1',
-        llmModelIdentifier: 'model-x',
-        llmConfig: null,
-        autoExecuteTools: false,
-        skillAccessMode: 'PRELOADED_ONLY',
-        memberOverrides: {},
-      },
-      memberContexts: {
-        coordinator,
-      },
-    });
-    teamContext.focusedMemberRouteKey = 'missing_member';
-    teamContext.coordinatorMemberRouteKey = 'coordinator';
-    setActiveTeamContext(teamContext);
-    setActiveExecutionFocus(teamContext, 'coordinator');
-
-    const store = useAgentTeamRunStore();
-    await expect(store.sendMessageToFocusedMember('do not reroute stale focus', [])).rejects.toThrow(
-      "No valid focused team message target 'missing_member' (missing_node).",
-    );
-
-    expect(coordinator.state.conversation.messages).toHaveLength(0);
-    expect(mockSendMessage).not.toHaveBeenCalled();
-  });
-
-  it('sends to active-execution focus instead of stale task-only logical focus', async () => {
-    const coordinator = {
-      state: {
-        runId: 'coordinator-run',
-        conversation: {
-          messages: [] as any[],
-          updatedAt: '2026-02-21T00:00:00.000Z',
-        },
-      },
-    };
-    const worker = {
-      state: {
-        runId: 'worker-run',
-        currentStatus: AgentStatus.Offline,
-        conversation: {
-          messages: [{
-            type: 'user',
-            text: 'Task-agent run: worker-task-agent-run',
-            timestamp: new Date('2026-02-21T00:00:00.000Z'),
-          }] as any[],
-          updatedAt: '2026-02-21T00:00:00.000Z',
-        },
-      },
-    };
-    const teamContext = buildTeamContext({
-      teamRunId: 'team-active-focus-send-1',
-      focusedMemberRouteKey: 'worker',
-      config: {
-        teamDefinitionId: 'team-def-1',
-        workspaceId: 'ws-1',
-        llmModelIdentifier: 'model-x',
-        llmConfig: null,
-        autoExecuteTools: false,
-        skillAccessMode: 'PRELOADED_ONLY',
-        memberOverrides: {},
-      },
-      memberContexts: {
-        coordinator,
-        worker,
-      },
-    });
-    teamContext.coordinatorMemberRouteKey = 'coordinator';
-    setActiveTeamContext(teamContext);
-    setActiveExecutionFocus(teamContext, 'coordinator');
-
-    const store = useAgentTeamRunStore();
-    await store.sendMessageToFocusedMember('send to active execution', []);
-
-    expect(coordinator.state.conversation.messages).toHaveLength(1);
-    expect(worker.state.conversation.messages).toHaveLength(1);
-    expect(worker.state.conversation.messages[0]).toMatchObject({
-      type: 'user',
-      text: 'Task-agent run: worker-task-agent-run',
-    });
-    expect(mockSendMessage).toHaveBeenCalledWith(
-      'send to active execution',
-      { segments: [{ kind: 'member', memberRouteKey: 'coordinator' }] },
+      'inspect exact identity',
+      execution('team-send', '/worker'),
       [],
       [],
       expect.objectContaining({
-        messageId: expect.stringMatching(/^client_/),
-        dedupeKey: expect.stringContaining('member_input:team-active-focus-send-1:coordinator:'),
+        messageId: expect.any(String),
+        dedupeKey: expect.stringContaining('team-send'),
       }),
-    );
-  });
+    )
+    const worker = team.executions.getAgentContext(execution('team-send', '/worker'))!
+    expect(worker.state.conversation.messages.at(-1)).toMatchObject({ text: 'inspect exact identity' })
+    expect(runHistoryStoreMock.markTeamAsActive).toHaveBeenCalledWith('team-send')
+  })
 
-  it('does not synthesize a focused-member approval target when no event target is supplied', async () => {
-    const teamContext = buildTeamContext({
-      teamRunId: 'team-approval-no-fallback-1',
-      focusedMemberRouteKey: 'BuildSquad',
-      memberContexts: {
-        program_manager: {
-          state: { runId: 'pm-run-1', currentStatus: AgentStatus.Idle },
-        },
-        'BuildSquad/review_lead': {
-          state: { runId: 'review-run-1', currentStatus: AgentStatus.Running },
-        },
-      },
-    });
-    setActiveTeamContext(teamContext);
-
-    const store = useAgentTeamRunStore();
-    store.connectToTeamStream('team-approval-no-fallback-1');
-    await store.postToolExecutionApproval('tool-no-fallback-1', true, null, null);
-
-    expect(mockApproveTool).toHaveBeenCalledWith('tool-no-fallback-1', null, undefined);
-    expect(mockApproveTool).not.toHaveBeenCalledWith('tool-no-fallback-1', {
-      memberRouteKey: 'BuildSquad',
-    }, undefined);
-  });
-
-  it('approves nested tool requests using the event source target after focus changes', async () => {
-    const teamContext = buildTeamContext({
-      teamRunId: 'team-approval-1',
-      focusedMemberRouteKey: 'BuildSquad',
-      memberContexts: {
-        program_manager: {
-          state: { runId: 'pm-run-1', currentStatus: AgentStatus.Idle },
-        },
-        'BuildSquad/review_lead': {
-          state: { runId: 'review-run-1', currentStatus: AgentStatus.Running },
-        },
-      },
-    });
-    teamContext.memberTree = [
-      buildAgentNode('program_manager', 'agent-pm'),
-      {
-        memberKind: 'agent_team',
-        memberName: 'BuildSquad',
-        displayName: 'BuildSquad',
-        memberPath: ['BuildSquad'],
-        memberRouteKey: 'BuildSquad',
-        teamDefinitionId: 'build-squad',
-        children: [buildAgentNode('BuildSquad/review_lead', 'agent-review')],
-      },
-    ] as any;
-    teamContext.memberNodesByRouteKey = new Map([
-      ['program_manager', teamContext.memberTree[0]],
-      ['BuildSquad', teamContext.memberTree[1]],
-      ['BuildSquad/review_lead', (teamContext.memberTree[1] as any).children[0]],
-    ]);
-    setActiveTeamContext(teamContext);
-    teamContextsStoreMock.focusedMemberContext = null;
-    teamContextsStoreMock.focusedMemberNode = teamContext.memberNodesByRouteKey.get('BuildSquad');
-
-    const store = useAgentTeamRunStore();
-    store.connectToTeamStream('team-approval-1');
-    await store.postToolExecutionApproval('tool-1', true, null, {
-      memberRouteKey: 'BuildSquad/review_lead',
-      memberPath: ['BuildSquad', 'review_lead'],
-      sourceRouteKey: 'BuildSquad/review_lead',
-      sourcePath: ['BuildSquad', 'review_lead'],
-    });
-
-    expect(mockApproveTool).toHaveBeenCalledWith('tool-1', {
-      memberRouteKey: 'BuildSquad/review_lead',
-      memberPath: ['BuildSquad', 'review_lead'],
-      sourceRouteKey: 'BuildSquad/review_lead',
-      sourcePath: ['BuildSquad', 'review_lead'],
-    }, undefined);
-    expect(mockDenyTool).not.toHaveBeenCalled();
-  });
-
-  it('restores persisted inactive team runs before sending', async () => {
-    const focusedMember = {
-      state: {
-        runId: 'member-1',
-        conversation: {
-          messages: [] as any[],
-          updatedAt: '2026-02-21T00:00:00.000Z',
-        },
-      },
-      submissionPending: false,
-    };
-    const teamContext = {
-      teamRunId: 'team-restore-1',
-      focusedMemberRouteKey: 'professor',
-      isSubscribed: false,
-      isActive: false,
-      config: {
-        teamDefinitionId: 'team-def-1',
-        workspaceId: 'ws-1',
-        llmModelIdentifier: 'model-x',
-        llmConfig: null,
-        autoExecuteTools: false,
-        skillAccessMode: 'PRELOADED_ONLY',
-        memberOverrides: {},
-      },
-      memberTree: [
-        buildAgentNode('professor', 'agent-a'),
-        buildAgentNode('student', 'agent-b'),
-      ],
-      leafAgentContextsByRouteKey: new Map([['professor', focusedMember]]),
-    };
-
-    setActiveTeamContext(teamContext);
-    teamContextsStoreMock.getTeamContextById.mockImplementation((teamRunId: string) =>
-      teamRunId === 'team-restore-1' ? teamContext : null,
-    );
-    runHistoryStoreMock.teamResumeConfigByTeamRunId = {
-      'team-restore-1': { isActive: false },
-    };
-    mockMutate.mockResolvedValueOnce({
-      data: {
-        restoreAgentTeamRun: {
-          success: true,
-          teamRunId: 'team-restore-1',
-          message: 'restored',
-        },
-      },
-      errors: [],
-    });
-    let cachedRootActiveAtPublication: boolean | undefined;
-    runHistoryStoreMock.markTeamAsActive.mockImplementationOnce((teamRunId: string) => {
-      cachedRootActiveAtPublication = teamContextsStoreMock.getTeamContextById(teamRunId)?.isActive;
-    });
-
-    const store = useAgentTeamRunStore();
-    await store.sendMessageToFocusedMember('restore then send', []);
-
-    expect(mockMutate).toHaveBeenCalledWith(
-      expect.objectContaining({
-        mutation: RestoreAgentTeamRun,
-        variables: { teamRunId: 'team-restore-1' },
-      }),
-    );
-    expect(teamContextsStoreMock.lockConfig).toHaveBeenCalledWith('team-restore-1');
-    expect(runHistoryStoreMock.markTeamAsActive).toHaveBeenCalledWith('team-restore-1');
-    expect(cachedRootActiveAtPublication).toBe(true);
-    expect(teamContext.isActive).toBe(true);
-    const patchCallsBeforeInitialLifecycle = runHistoryStoreMock.applyRunNavigationEffect.mock.calls.length;
-    expect(handleTeamRunLifecycle({
-      team_run_id: 'team-restore-1', is_active: true,
-    }, teamContext as any)).toBe(false);
-    expect(runHistoryStoreMock.applyRunNavigationEffect).toHaveBeenCalledTimes(
-      patchCallsBeforeInitialLifecycle,
-    );
-    expect(runHistoryStoreMock.refreshRunNavigationTopology).not.toHaveBeenCalled();
-    expect(mockSendMessage).toHaveBeenCalledWith('restore then send', {
-      segments: [{ kind: 'member', memberRouteKey: 'professor' }],
-    }, [], [], expect.objectContaining({
-      messageId: expect.stringMatching(/^client_/),
-      dedupeKey: expect.stringContaining('member_input:'),
-    }));
-  });
-
-  it('acknowledges a restored team-member send locally before restore resolves', () => {
-    let resolveRestore: (value: any) => void = () => {};
-    const focusedMember = {
-      requirement: 'restore pending',
-      contextFilePaths: [] as any[],
-      submissionPending: false,
-      state: {
-        runId: 'member-1',
-        currentStatus: AgentStatus.Offline,
-        conversation: {
-          messages: [] as any[],
-          updatedAt: '2026-02-21T00:00:00.000Z',
-        },
-      },
-    };
-    const teamContext = buildTeamContext({
-      teamRunId: 'team-restore-pending-1',
-      focusedMemberRouteKey: 'professor',
-      isActive: false,
-      config: {
-        teamDefinitionId: 'team-def-1',
-        workspaceId: 'ws-1',
-        llmModelIdentifier: 'model-x',
-        llmConfig: null,
-        autoExecuteTools: false,
-        skillAccessMode: 'PRELOADED_ONLY',
-        memberOverrides: {},
-      },
-      memberContexts: {
-        professor: focusedMember,
-      },
-    });
-
-    setActiveTeamContext(teamContext);
-    teamContextsStoreMock.getTeamContextById.mockImplementation((teamRunId: string) =>
-      teamRunId === 'team-restore-pending-1' ? teamContext : null,
-    );
-    runHistoryStoreMock.teamResumeConfigByTeamRunId = {
-      'team-restore-pending-1': { isActive: false },
-    };
-    mockMutate.mockReturnValueOnce(new Promise((resolve) => {
-      resolveRestore = resolve;
-    }));
-
-    const store = useAgentTeamRunStore();
-    const sendPromise = store.sendMessageToFocusedMember('restore pending', []);
-
-    expect(focusedMember.state.conversation.messages).toHaveLength(1);
-    expect(focusedMember.state.conversation.messages[0]).toMatchObject({
-      type: 'user',
-      text: 'restore pending',
-    });
-    expect(focusedMember.requirement).toBe('');
-    expect(focusedMember.contextFilePaths).toEqual([]);
-    expect(focusedMember.submissionPending).toBe(true);
-    expect(focusedMember.state.currentStatus).toBe(AgentStatus.Offline);
-    expect(teamContext.isActive).toBe(false);
-
-    resolveRestore({
-      data: {
-        restoreAgentTeamRun: {
-          success: true,
-          teamRunId: 'team-restore-pending-1',
-          message: 'restored',
-        },
-      },
-      errors: [],
-    });
-    return sendPromise;
-  });
-
-  it('reconnects stale disconnected team stream after successful send', async () => {
-    const teamRunId = `team-reconnect-${Date.now()}`;
-    const focusedMember = {
-      state: {
-        runId: 'member-1',
-        conversation: {
-          messages: [] as any[],
-          updatedAt: '2026-02-21T00:00:00.000Z',
-        },
-      },
-      submissionPending: false,
-    };
-    const teamContext = {
-      teamRunId,
-      focusedMemberRouteKey: 'professor',
-      isSubscribed: true,
-      config: {
-        teamDefinitionId: 'team-def-1',
-        workspaceId: 'ws-1',
-        llmModelIdentifier: 'model-x',
-        llmConfig: null,
-        autoExecuteTools: false,
-        skillAccessMode: 'PRELOADED_ONLY',
-        memberOverrides: {},
-      },
-      leafAgentContextsByRouteKey: new Map([['professor', focusedMember]]),
-    };
-
-    setActiveTeamContext(teamContext);
-    teamContextsStoreMock.getTeamContextById.mockImplementation((teamRunId: string) =>
-      teamRunId === teamContext.teamRunId ? teamContext : null,
-    );
-
-    const store = useAgentTeamRunStore();
-    store.connectToTeamStream(teamRunId);
-    expect(mockConnect).toHaveBeenCalledTimes(1);
-
-    mockConnect.mockImplementation(() => {
-      mockConnectionState.value = 'connected';
-    });
-    mockConnectionState.value = 'disconnected';
-    await store.sendMessageToFocusedMember('hello after reconnect', []);
-
-    expect(mockConnect).toHaveBeenCalledTimes(2);
-    expect(mockConnect).toHaveBeenLastCalledWith(teamRunId, teamContext);
-    expect(mockSendMessage).toHaveBeenCalledWith('hello after reconnect', {
-      segments: [{ kind: 'member', memberRouteKey: 'professor' }],
-    }, [], [], expect.objectContaining({
-      messageId: expect.stringMatching(/^client_/),
-      dedupeKey: expect.stringContaining('member_input:'),
-    }));
-  });
-
-  it('reattaches an existing team stream service to the latest team context', () => {
-    const teamRunId = `team-reattach-${Date.now()}`;
-    const initialTeamContext = {
-      teamRunId,
-      isSubscribed: false,
-      unsubscribe: undefined as undefined | (() => void),
-    };
-    const replacementTeamContext = {
-      teamRunId,
-      isSubscribed: false,
-      unsubscribe: undefined as undefined | (() => void),
-    };
-
-    teamContextsStoreMock.getTeamContextById
-      .mockReturnValueOnce(initialTeamContext)
-      .mockReturnValueOnce(replacementTeamContext);
-
-    const store = useAgentTeamRunStore();
-    store.connectToTeamStream(teamRunId);
-    store.connectToTeamStream(teamRunId);
-
-    expect(mockAttachContext).toHaveBeenCalledWith(replacementTeamContext);
-    expect(mockConnect).toHaveBeenCalledTimes(1);
-    expect(replacementTeamContext.isSubscribed).toBe(true);
-    expect(typeof replacementTeamContext.unsubscribe).toBe('function');
-  });
-
-  it('interruptFocusedMemberGeneration should send the exact member target without clearing submission pending optimistically', () => {
-    const focusedMember = {
-      submissionPending: true,
-      state: {
-        runId: 'member-1',
-        conversation: {
-          messages: [] as any[],
-          updatedAt: '2026-02-21T00:00:00.000Z',
-        },
-      },
-    };
-    const teamContext = {
-      teamRunId: 'team-1',
-      focusedMemberRouteKey: 'professor',
-      isSubscribed: false,
-      config: {
-        teamDefinitionId: 'team-def-1',
-        workspaceId: 'ws-1',
-        llmModelIdentifier: 'model-x',
-        llmConfig: null,
-        autoExecuteTools: false,
-        memberOverrides: {},
-      },
-      leafAgentContextsByRouteKey: new Map([['professor', focusedMember]]),
-    };
-
-    setActiveTeamContext(teamContext);
-    teamContextsStoreMock.getTeamContextById.mockReturnValue(teamContext);
-
-    const store = useAgentTeamRunStore();
-    store.connectToTeamStream('team-1');
-    const result = store.interruptFocusedMemberGeneration({
-      teamRunId: 'team-1',
-      targetMemberRouteKey: 'professor',
-      targetMemberRunId: 'member-1',
-    });
-
-    expect(result).toBe(true);
-    expect(mockInterruptGeneration).toHaveBeenCalledWith(
-      expect.stringMatching(/^client_interrupt_/),
-      {
-        targetMemberRouteKey: 'professor',
-        targetMemberRunId: 'member-1',
-      },
-    );
-    expect(focusedMember.submissionPending).toBe(true);
-  });
-
-  it('shows one member-aware interrupt failure toast without changing team activity', () => {
-    const teamContext = buildTeamContext({
-      teamRunId: 'team-toast-1',
-      focusedMemberRouteKey: 'reviewer',
-      memberContexts: { reviewer: { state: { runId: 'reviewer-run', conversation: { messages: [] } } } },
-      isActive: true,
-    });
-    setActiveTeamContext(teamContext);
-    const store = useAgentTeamRunStore();
-    store.connectToTeamStream('team-toast-1');
-
-    mockServiceOptions.value.onInterruptCommandTransportFailure({
-      commandId: 'client_interrupt_transport',
-      target: {
-        target_kind: 'team_member', team_run_id: 'team-toast-1',
-        member_route_key: 'reviewer', member_run_id: 'reviewer-run',
-      },
-      reason: {
-        code: 'INTERRUPT_TRANSPORT_DISCONNECTED',
-        connectionState: 'disconnected',
-        message: 'Connection closed.',
-      },
-    });
-
-    expect(addToastMock).toHaveBeenCalledTimes(1);
-    expect(addToastMock).toHaveBeenCalledWith(expect.stringContaining('reviewer'), 'error');
-    expect(teamContext.isActive).toBe(true);
-  });
-
-  it('interruptFocusedMemberGeneration rejects missing member target without using active-team fallback', () => {
-    const teamContext = buildTeamContext({
-      teamRunId: 'team-1',
-      focusedMemberRouteKey: 'professor',
-      memberContexts: {},
-    });
-
-    teamContextsStoreMock.activeTeamContext = teamContext;
-    teamContextsStoreMock.getTeamContextById.mockReturnValue(teamContext);
-
-    const store = useAgentTeamRunStore();
-    store.connectToTeamStream('team-1');
-    const result = store.interruptFocusedMemberGeneration({
-      teamRunId: 'team-1',
-      targetMemberRouteKey: '   ',
-      targetMemberRunId: 'member-1',
-    });
-
-    expect(result).toBe(false);
-    expect(mockInterruptGeneration).not.toHaveBeenCalled();
-  });
-
-  it('fans out mixed member runtimes when launching a temporary team', async () => {
-    const workspaceMetadata = {
-      workspaceId: 'agent_ws_metadata',
-      workspaceRootPath: '/tmp/MetadataTeam',
-      displayName: 'MetadataTeam',
-      kind: 'filesystem' as const,
-    };
-    const focusedMember = {
-      submissionPending: false,
-      state: {
-        runId: 'member-1',
-        conversation: {
-          messages: [] as any[],
-          updatedAt: '2026-02-21T00:00:00.000Z',
-        },
-      },
-    };
-    const teamContext = {
-      teamRunId: 'temp-team-123',
-      focusedMemberRouteKey: 'professor',
-      isSubscribed: false,
-      config: {
-        teamDefinitionId: 'team-def-1',
-        runtimeKind: 'codex_app_server',
-        workspaceId: workspaceMetadata.workspaceId,
-        workspaceMetadata,
-        llmModelIdentifier: 'gpt-5.3-codex',
-        llmConfig: { reasoning_effort: 'high' },
-        autoExecuteTools: false,
-        skillAccessMode: 'PRELOADED_ONLY',
-        memberOverrides: {
-          professor: {
-            agentDefinitionId: 'agent-a',
-            llmModelIdentifier: 'gpt-5.3-codex',
-            llmConfig: { reasoning_effort: 'medium' },
-          },
-          student: {
-            agentDefinitionId: 'agent-b',
-            runtimeKind: 'claude_agent_sdk',
-            llmModelIdentifier: 'claude-sonnet',
-            llmConfig: { thinking_enabled: true },
-          },
-        },
-      },
-      memberTree: [
-        buildAgentNode('professor', 'agent-a'),
-        buildAgentNode('student', 'agent-b'),
-      ],
-      leafAgentContextsByRouteKey: new Map([['professor', focusedMember]]),
-    };
-
-    teamDefinitionStoreMock.getAgentTeamDefinitionById.mockReturnValue({
-      id: 'team-def-1',
-      nodes: [
-        { memberName: 'professor', refType: 'AGENT', ref: 'agent-a' },
-        { memberName: 'student', refType: 'AGENT', ref: 'agent-b' },
-      ],
-    });
-
-    setActiveTeamContext(teamContext);
-    teamContextsStoreMock.getTeamContextById.mockImplementation((teamRunId: string) =>
-      teamRunId === 'team-1' ? { ...teamContext, teamRunId: 'team-1' } : null,
-    );
-
+  it('restores an inactive Team and sends to the unchanged exact execution address', async () => {
+    const stale = twoMemberTeam({ teamRunId: 'team-restore', focusedMemberAddress: '/worker', isActive: false })
+    const hydrated = twoMemberTeam({ teamRunId: 'team-restore', focusedMemberAddress: '/worker', isActive: true })
+    setActiveTeam(stale)
     mockMutate.mockResolvedValue({
-      data: {
-        createAgentTeamRun: {
-          success: true,
-          teamRunId: 'team-1',
-          message: 'ok',
-        },
-      },
+      data: { restoreAgentTeamRun: { success: true, teamRunId: 'team-restore' } },
       errors: [],
-    });
+    })
+    mockHydrateLiveTeamRunContext.mockResolvedValue({ hydratedContext: hydrated })
 
-    const store = useAgentTeamRunStore();
-    await store.sendMessageToFocusedMember('launch', []);
+    await useAgentTeamRunStore().sendMessageToFocusedMember('restore then send', [])
 
-    expect(mockMutate).toHaveBeenCalledWith(
-      expect.objectContaining({
-        variables: {
-          input: expect.objectContaining({
-            teamDefinitionId: 'team-def-1',
-            memberConfigs: expect.arrayContaining([
-              expect.objectContaining({
-                memberName: 'professor',
-                agentDefinitionId: 'agent-a',
-                runtimeKind: 'codex_app_server',
-                workspaceId: workspaceMetadata.workspaceId,
-                workspaceRootPath: workspaceMetadata.workspaceRootPath,
-                skillAccessMode: 'PRELOADED_ONLY',
-                llmConfig: { reasoning_effort: 'medium' },
-              }),
-              expect.objectContaining({
-                memberName: 'student',
-                agentDefinitionId: 'agent-b',
-                runtimeKind: 'claude_agent_sdk',
-                llmModelIdentifier: 'claude-sonnet',
-                workspaceId: workspaceMetadata.workspaceId,
-                workspaceRootPath: workspaceMetadata.workspaceRootPath,
-                skillAccessMode: 'PRELOADED_ONLY',
-                llmConfig: { thinking_enabled: true },
-              }),
-            ]),
-          }),
-        },
-      }),
-    );
-    expect(teamContextsStoreMock.promoteTemporaryTeamRunId).toHaveBeenCalledWith(
-      'temp-team-123',
-      'team-1',
-    );
-    expect(teamContextsStoreMock.lockConfig).toHaveBeenCalledWith('team-1');
-    expect(mockSendMessage).toHaveBeenCalledWith('launch', {
-      segments: [{ kind: 'member', memberRouteKey: 'professor' }],
-    }, [], [], expect.objectContaining({
-      messageId: expect.stringMatching(/^client_/),
-      dedupeKey: expect.stringContaining('member_input:'),
-    }));
-  });
+    expect(mockMutate).toHaveBeenCalledWith(expect.objectContaining({ variables: { teamRunId: 'team-restore' } }))
+    expect(mockHydrateLiveTeamRunContext).toHaveBeenCalledWith(expect.objectContaining({
+      teamRunId: 'team-restore',
+      memberAddress: '/worker',
+    }))
+    expect(teamContextsStoreMock.addTeamContext).toHaveBeenCalledWith(hydrated)
+    expect(mockSendMessage).toHaveBeenCalledWith(
+      'restore then send',
+      execution('team-restore', '/worker'),
+      [],
+      [],
+      expect.any(Object),
+    )
+  })
 
-  it('reconciles temporary team member contexts to backend member run IDs before streaming direct sends', async () => {
-    const focusedMember = {
-      submissionPending: false,
-      state: {
-        runId: 'temp-team-classroom::professor',
-        conversation: {
-          id: 'temp-team-classroom::professor',
-          messages: [] as any[],
-          updatedAt: '2026-06-04T00:00:00.000Z',
+  it('launches a nested mixed-runtime draft with exact rooted memberAddress inputs and focus', async () => {
+    teamDefinitions.set('root-definition', {
+      id: 'root-definition',
+      name: 'Nested Mixed Team',
+      coordinatorMemberName: 'program_manager',
+      nodes: [
+        { memberName: 'program_manager', refType: 'AGENT', ref: 'pm-definition' },
+        { memberName: 'BuildSquad', refType: 'AGENT_TEAM', ref: 'build-definition' },
+      ],
+    })
+    teamDefinitions.set('build-definition', {
+      id: 'build-definition',
+      name: 'Build Squad',
+      coordinatorMemberName: 'review_lead',
+      nodes: [
+        { memberName: 'review_lead', refType: 'AGENT', ref: 'review-definition' },
+        { memberName: 'implementer', refType: 'AGENT', ref: 'impl-definition' },
+      ],
+    })
+    const configStore = useTeamRunConfigStore()
+    configStore.setRuntimeModelCatalog('codex_app_server', ['gpt-5.4'])
+    configStore.setRuntimeModelCatalog('claude_agent_sdk', ['claude-sonnet'])
+    configStore.setRuntimeModelCatalog('autobyteus', ['gpt-5.6-luna'])
+    const draft: TeamLaunchDraft = Object.freeze({
+      draftId: 'team-draft-nested' as TeamLaunchDraftId,
+      focusedMemberAddress: '/BuildSquad/review_lead',
+      pendingInputsByMemberAddress: Object.freeze({}),
+      config: Object.freeze({
+        teamDefinitionId: 'root-definition',
+        teamDefinitionName: 'Nested Mixed Team',
+        runtimeKind: 'codex_app_server',
+        workspaceId: 'test-workspace',
+        workspaceMetadata: {
+          workspaceId: 'test-workspace',
+          workspaceRootPath: '/tmp/test-workspace',
+          displayName: 'test-workspace',
+          kind: 'filesystem',
         },
-      },
-    };
-    const studentMember = {
-      submissionPending: false,
-      state: {
-        runId: 'temp-team-classroom::student',
-        conversation: {
-          id: 'temp-team-classroom::student',
-          messages: [] as any[],
-          updatedAt: '2026-06-04T00:00:00.000Z',
-        },
-      },
-    };
-    const teamContext = buildTeamContext({
-      teamRunId: 'temp-team-classroom',
-      focusedMemberRouteKey: 'professor',
-      config: {
-        teamDefinitionId: 'classroomsimulation',
-        teamDefinitionName: 'ClassRoomSimulation',
-        runtimeKind: 'autobyteus',
-        workspaceId: 'ws-classroom',
         llmModelIdentifier: 'gpt-5.4',
         llmConfig: null,
         autoExecuteTools: true,
-        skillAccessMode: 'PRELOADED_ONLY',
-        memberOverrides: {},
-      },
-      memberContexts: {
-        professor: focusedMember,
-        student: studentMember,
-      },
-    });
-    teamContext.coordinatorMemberRouteKey = 'professor';
-
-    teamDefinitionStoreMock.getAgentTeamDefinitionById.mockReturnValue({
-      id: 'classroomsimulation',
-      nodes: [
-        { memberName: 'professor', refType: 'AGENT', ref: 'professor' },
-        { memberName: 'student', refType: 'AGENT', ref: 'student' },
-      ],
-    });
-    setActiveTeamContext(teamContext);
-    teamContextsStoreMock.promoteTemporaryTeamRunId.mockImplementation((temporaryRunId: string, permanentRunId: string) => {
-      expect(temporaryRunId).toBe('temp-team-classroom');
-      teamContext.teamRunId = permanentRunId;
-      teamContext.leafAgentContextsByRouteKey.forEach((memberContext: any, memberRouteKey: string) => {
-        memberContext.state.runId = `${permanentRunId}::${memberRouteKey}`;
-        memberContext.state.conversation.id = `${permanentRunId}::${memberRouteKey}`;
-      });
-    });
-    teamContextsStoreMock.getTeamContextById.mockImplementation((teamRunId: string) =>
-      teamRunId === teamContext.teamRunId ? teamContext : null,
-    );
-    mockMutate.mockResolvedValueOnce({
-      data: {
-        createAgentTeamRun: {
-          success: true,
-          teamRunId: 'team-classroom-real',
-          message: 'ok',
-        },
-      },
-      errors: [],
-    });
-    mockQuery.mockResolvedValueOnce({
-      data: {
-        getTeamRunResumeConfig: {
-          teamRunId: 'team-classroom-real',
-          isActive: true,
-          metadata: {
-            teamRunId: 'team-classroom-real',
-            teamDefinitionId: 'classroomsimulation',
-            teamDefinitionName: 'ClassRoomSimulation',
-            coordinatorMemberRouteKey: 'professor',
-            createdAt: '2026-06-04T00:00:00.000Z',
-            memberTree: [
-              {
-                memberKind: 'agent',
-                memberRouteKey: 'professor',
-                memberPath: ['professor'],
-                memberName: 'professor',
-                memberRunId: 'professor-real-run',
-                runtimeKind: 'autobyteus',
-                platformAgentRunId: 'professor-real-run',
-                agentDefinitionId: 'professor',
-                llmModelIdentifier: 'gpt-5.4',
-                autoExecuteTools: true,
-                skillAccessMode: 'PRELOADED_ONLY',
-                llmConfig: null,
-                workspaceRootPath: '/tmp/classroom',
-              },
-              {
-                memberKind: 'agent',
-                memberRouteKey: 'student',
-                memberPath: ['student'],
-                memberName: 'student',
-                memberRunId: 'student-real-run',
-                runtimeKind: 'autobyteus',
-                platformAgentRunId: 'student-real-run',
-                agentDefinitionId: 'student',
-                llmModelIdentifier: 'gpt-5.4',
-                autoExecuteTools: true,
-                skillAccessMode: 'PRELOADED_ONLY',
-                llmConfig: null,
-                workspaceRootPath: '/tmp/classroom',
-              },
-            ],
-          },
-        },
-      },
-      errors: [],
-    });
-
-    const store = useAgentTeamRunStore();
-    await store.sendMessageToFocusedMember('give student a hard math problem to solve', []);
-
-    expect(focusedMember.state.runId).toBe('professor-real-run');
-    expect(studentMember.state.runId).toBe('student-real-run');
-    const professorNode = teamContext.memberNodesByRouteKey.get('professor') as { memberRunId?: string | null } | undefined;
-    const studentNode = teamContext.memberNodesByRouteKey.get('student') as { memberRunId?: string | null } | undefined;
-    expect(professorNode?.memberRunId).toBe('professor-real-run');
-    expect(studentNode?.memberRunId).toBe('student-real-run');
-    expect(focusedMember.state.conversation.messages).toHaveLength(1);
-    expect(mockConnect).toHaveBeenCalledWith('team-classroom-real', teamContext);
-    expect(mockSendMessage).toHaveBeenCalledWith(
-      'give student a hard math problem to solve',
-      { segments: [{ kind: 'member', memberRouteKey: 'professor' }] },
-      [],
-      [],
-      expect.objectContaining({
-        messageId: expect.stringMatching(/^client_/),
-        dedupeKey: expect.stringContaining('member_input:team-classroom-real:professor:'),
-      }),
-    );
-
-    const routedStatus: ServerMessage = {
-      type: 'AGENT_STATUS',
-      payload: {
-        status: 'running',
-        agent_id: 'professor-real-run',
-        agent_name: 'professor',
-        member_route_key: 'professor',
-        member_path: ['professor'],
-      },
-    };
-    expect(resolveTeamStreamMemberContext(teamContext as any, routedStatus)?.context).toBe(focusedMember);
-  });
-
-  it('uses nested route keys in mixed leaf member configs when launching a temporary team', async () => {
-    const focusedMember = {
-      submissionPending: false,
-      state: {
-        runId: 'temp-team-123::Nested Group/Leaf A',
-        conversation: {
-          messages: [] as any[],
-          updatedAt: '2026-02-21T00:00:00.000Z',
-        },
-      },
-    };
-    const teamContext = {
-      teamRunId: 'temp-team-123',
-      focusedMemberRouteKey: 'Nested Group/Leaf A',
-      isSubscribed: false,
-      config: {
-        teamDefinitionId: 'team-def-nested',
-        runtimeKind: 'claude_agent_sdk',
-        workspaceId: 'ws-1',
-        llmModelIdentifier: 'claude-sonnet',
-        llmConfig: { thinking_enabled: true },
-        autoExecuteTools: true,
-        skillAccessMode: 'PRELOADED_ONLY',
+        skillAccessMode: 'NONE',
         memberOverrides: {
-          'Nested Group/Leaf B': {
-            agentDefinitionId: 'agent-leaf-b',
-            runtimeKind: 'codex_app_server',
-            llmModelIdentifier: 'gpt-5.4',
-            llmConfig: { reasoning_effort: 'medium' },
+          '/BuildSquad/review_lead': {
+            agentDefinitionId: 'review-definition',
+            runtimeKind: 'claude_agent_sdk',
+            llmModelIdentifier: 'claude-sonnet',
+          },
+          '/BuildSquad/implementer': {
+            agentDefinitionId: 'impl-definition',
+            runtimeKind: 'autobyteus',
+            llmModelIdentifier: 'gpt-5.6-luna',
           },
         },
-      },
-      memberTree: [
-        {
-          memberKind: 'agent_team',
-          memberName: 'Nested Group',
-          displayName: 'Nested Group',
-          memberPath: ['Nested Group'],
-          memberRouteKey: 'Nested Group',
-          teamDefinitionId: 'sub-team-1',
-          children: [
-            buildAgentNode('Nested Group/Leaf A', 'agent-leaf-a'),
-            buildAgentNode('Nested Group/Leaf B', 'agent-leaf-b'),
-          ],
-        },
-      ],
-      leafAgentContextsByRouteKey: new Map([['Nested Group/Leaf A', focusedMember]]),
-    };
-
-    teamDefinitionStoreMock.getAgentTeamDefinitionById.mockImplementation((id: string) => {
-      if (id === 'team-def-nested') {
-        return {
-          id: 'team-def-nested',
-          nodes: [
-            { memberName: 'Nested Group', refType: 'AGENT_TEAM', ref: 'sub-team-1' },
-          ],
-        };
-      }
-      if (id === 'sub-team-1') {
-        return {
-          id: 'sub-team-1',
-          nodes: [
-            { memberName: 'Leaf A', refType: 'AGENT', ref: 'agent-leaf-a' },
-            { memberName: 'Leaf B', refType: 'AGENT', ref: 'agent-leaf-b' },
-          ],
-        };
-      }
-      return null;
-    });
-
-    setActiveTeamContext(teamContext);
-    teamContextsStoreMock.getTeamContextById.mockImplementation((teamRunId: string) =>
-      teamRunId === 'team-nested-1' ? { ...teamContext, teamRunId: 'team-nested-1' } : null,
-    );
-
-    mockMutate.mockResolvedValue({
-      data: {
-        createAgentTeamRun: {
-          success: true,
-          teamRunId: 'team-nested-1',
-          message: 'ok',
-        },
-      },
-      errors: [],
-    });
-
-    const store = useAgentTeamRunStore();
-    await store.sendMessageToFocusedMember('launch nested', []);
-
-    expect(mockMutate).toHaveBeenCalledWith(
-      expect.objectContaining({
-        variables: {
-          input: expect.objectContaining({
-            teamDefinitionId: 'team-def-nested',
-            memberConfigs: [
-              expect.objectContaining({
-                memberName: 'Leaf A',
-                memberRouteKey: 'Nested Group/Leaf A',
-                agentDefinitionId: 'agent-leaf-a',
-                runtimeKind: 'claude_agent_sdk',
-                llmModelIdentifier: 'claude-sonnet',
-                llmConfig: { thinking_enabled: true },
-              }),
-              expect.objectContaining({
-                memberName: 'Leaf B',
-                memberRouteKey: 'Nested Group/Leaf B',
-                agentDefinitionId: 'agent-leaf-b',
-                runtimeKind: 'codex_app_server',
-                llmModelIdentifier: 'gpt-5.4',
-                llmConfig: { reasoning_effort: 'medium' },
-              }),
-            ],
-          }),
-        },
+        isLocked: true,
       }),
-    );
-    expect(mockSendMessage).toHaveBeenCalledWith('launch nested', {
-      segments: [{ kind: 'member', memberRouteKey: 'Nested Group/Leaf A' }],
-    }, [], [], expect.objectContaining({
-      messageId: expect.stringMatching(/^client_/),
-      dedupeKey: expect.stringContaining('member_input:'),
-    }));
-  });
-});
+    })
+    const programManager = testAgentNode('/program_manager', { agentRunId: 'pm-run' })
+    const reviewer = testAgentNode('/BuildSquad/review_lead', { agentRunId: 'review-run' })
+    const implementer = testAgentNode('/BuildSquad/implementer', { agentRunId: 'impl-run' })
+    const hydrated = buildTestTeamContext({
+      teamRunId: 'team-nested-live',
+      teamDefinitionId: 'root-definition',
+      coordinatorAddress: programManager.address,
+      rootChildren: [
+        programManager,
+        testSubTeamNode('/BuildSquad', [reviewer, implementer], {
+          teamDefinitionId: 'build-definition',
+          teamRunId: 'build-run',
+          coordinatorAddress: reviewer.address,
+        }),
+      ],
+    })
+    mockMutate.mockResolvedValue({
+      data: { createAgentTeamRun: { success: true, teamRunId: 'team-nested-live' } },
+      errors: [],
+    })
+    mockHydrateLiveTeamRunContext.mockResolvedValue({ hydratedContext: hydrated })
+
+    const result = await useAgentTeamRunStore().launchDraft(draft)
+
+    expect(mockMutate).toHaveBeenCalledWith(expect.objectContaining({
+      variables: {
+        input: {
+          teamDefinitionId: 'root-definition',
+          memberConfigs: expect.arrayContaining([
+            expect.objectContaining({
+              memberAddress: '/program_manager',
+              runtimeKind: 'codex_app_server',
+              llmModelIdentifier: 'gpt-5.4',
+            }),
+            expect.objectContaining({
+              memberAddress: '/BuildSquad/review_lead',
+              runtimeKind: 'claude_agent_sdk',
+              llmModelIdentifier: 'claude-sonnet',
+            }),
+            expect.objectContaining({
+              memberAddress: '/BuildSquad/implementer',
+              runtimeKind: 'autobyteus',
+              llmModelIdentifier: 'gpt-5.6-luna',
+            }),
+          ]),
+        },
+      },
+    }))
+    expect(result.rootTeamRunId).toBe('team-nested-live')
+    expect(result.executionAddress).toEqual(execution('team-nested-live', '/BuildSquad/review_lead'))
+    expect(result.context.executions.getFocusedAddress()).toEqual(result.executionAddress)
+  })
+
+  it('preserves an explicit approval target and never synthesizes a default target', async () => {
+    const team = twoMemberTeam({ teamRunId: 'team-approval' })
+    setActiveTeam(team)
+    const store = useAgentTeamRunStore()
+    store.connectToTeamStream('team-approval')
+    const explicit = { executionAddress: execution('team-approval', '/worker', ['task-team-1']) }
+
+    await store.postToolExecutionApproval('inv-default', true)
+    await store.postToolExecutionApproval('inv-exact', false, 'no', explicit)
+
+    expect(mockApproveTool).toHaveBeenCalledWith('inv-default', null, undefined)
+    expect(mockDenyTool).toHaveBeenCalledWith('inv-exact', explicit, 'no')
+  })
+
+  it('interrupts only an exact same-root execution address', () => {
+    const team = twoMemberTeam({ teamRunId: 'team-interrupt' })
+    setActiveTeam(team)
+    const store = useAgentTeamRunStore()
+    store.connectToTeamStream('team-interrupt')
+    const target = execution('team-interrupt', '/worker', ['task-team-1'], 'task-agent-1')
+
+    expect(store.interruptFocusedMemberGeneration({
+      teamRunId: 'team-interrupt',
+      executionAddress: target,
+    })).toBe(true)
+    expect(mockInterruptGeneration).toHaveBeenCalledWith(expect.any(String), { executionAddress: target })
+    expect(store.interruptFocusedMemberGeneration({
+      teamRunId: 'team-interrupt',
+      executionAddress: execution('foreign-root', '/worker'),
+    })).toBe(false)
+    expect(mockInterruptGeneration).toHaveBeenCalledTimes(1)
+  })
+})

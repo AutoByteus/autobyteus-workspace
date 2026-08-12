@@ -28,41 +28,26 @@ const runContext = new AgentRunContext({
     memberTeamContext: new MemberTeamContext({
       teamRunId: 'team-run-1',
       teamDefinitionId: 'team-def-1',
+      teamName: 'Planner team',
       teamBackendKind: TeamBackendKind.MIXED,
-      memberName: 'worker',
-      memberPath: ['planner', 'worker'],
-      memberRouteKey: 'planner.worker',
-      memberRunId: 'member-run-1',
+      teamAddress: '/planner',
+      memberAddress: '/planner/worker',
+      agentRunId: 'member-run-1',
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      coordinatorAddress: '/planner/worker',
       collaboration: {
         addressing: {
           rootTeamRunId: 'team-run-1',
           memberAddress: '/planner/worker',
         },
       },
-      tokenUsageExecutionScope: {
+      executionAddress: {
         rootTeamRunId: 'team-run-1',
-        teamScopeAddress: { segments: [] },
-        currentRunAddress: {
-          segments: [
-            { kind: 'member', memberRouteKey: 'planner.worker' },
-            { kind: 'task_agent', taskAgentRunId: 'task-agent-run-1' },
-          ],
-        },
-      },
-      taskAgentInstance: {
-        taskAgentInstanceId: 'task-agent-instance-1',
+        taskTeamRunIds: [],
+        memberAddress: '/planner/worker',
         taskAgentRunId: 'task-agent-run-1',
-        teamRunId: 'team-run-1',
-        taskId: 'task-1',
-        logicalMember: {
-          memberName: 'worker',
-          memberPath: ['planner', 'worker'],
-          memberRouteKey: 'planner.worker',
-          templateMemberRunId: 'template-worker-run',
-          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-        },
-        createdAt: '2026-06-24T00:00:00.000Z',
       },
+      taskId: 'task-1',
     }),
   }),
 });
@@ -126,8 +111,6 @@ describe('TokenUsageEventEnrichmentTransformer', () => {
         model_provider: 'OPENAI',
         provider_name: 'Codex snapshot should survive enrichment',
         model_identifier: 'gpt-5.4-mini',
-        root_team_run_id: 'payload-team-should-be-overridden',
-        member_route_key: 'payload-route-should-be-overridden',
       },
       statusHint: null,
     };
@@ -142,19 +125,16 @@ describe('TokenUsageEventEnrichmentTransformer', () => {
     const payload = output[0]!.payload as unknown as TokenUsageUpdatedPayload;
     expect(payload.run_id).toBe('member-run-1');
     expect(payload.runtime_kind).toBe(RuntimeKind.CODEX_APP_SERVER);
-    expect(payload.root_team_run_id).toBe('team-run-1');
     expect(payload.execution_address).toEqual({
-      segments: [
-        { kind: 'member', memberRouteKey: 'planner.worker' },
-        { kind: 'task_agent', taskAgentRunId: 'task-agent-run-1' },
-      ],
+      rootTeamRunId: 'team-run-1',
+      taskTeamRunIds: [],
+      memberAddress: '/planner/worker',
+      taskAgentRunId: 'task-agent-run-1',
     });
-    expect(payload.member_agent_run_id).toBe('member-run-1');
-    expect(payload.member_route_key).toBe('planner.worker');
+    expect(payload.task_id).toBe('task-1');
     expect(payload.agent_definition_id).toBe('agent-def-1');
     expect(payload.workspace_id).toBe('workspace-1');
     expect(payload.provider_name).toBe('Codex snapshot should survive enrichment');
-    expect(payload.task_agent_instance_id).toBe('task-agent-instance-1');
     expect(payload.accounting_input_tokens).toBe(100);
     expect(payload.accounting_output_tokens).toBe(25);
     expect(payload.accounting_total_tokens).toBe(125);

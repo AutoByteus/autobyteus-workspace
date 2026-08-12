@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import TeamCommunicationPanel from '../TeamCommunicationPanel.vue';
 import { useTeamCommunicationStore } from '~/stores/teamCommunicationStore';
-import type { ConversationTargetAddress } from '~/types/agent/ConversationTargetAddress';
+import { createTeamExecutionAddress, type TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
 const labels: Record<string, string> = {
   'workspace.components.workspace.team.TeamCommunicationPanel.to_counterpart': 'to',
@@ -15,16 +15,15 @@ const labels: Record<string, string> = {
   'workspace.components.workspace.team.TeamCommunicationPanel.select_message': 'Select a message to read the full content.',
 };
 
-const member = (memberRouteKey: string): ConversationTargetAddress => ({
-  segments: [{ kind: 'member', memberRouteKey }],
+const member = (memberName: string): TeamExecutionAddress => createTeamExecutionAddress({
+  rootTeamRunId: 'team-1',
+  memberAddress: `/${memberName}`,
 });
 
-const taskTeamChild = (taskTeamRunId: string, memberRouteKey: string): ConversationTargetAddress => ({
-  segments: [
-    { kind: 'member', memberRouteKey: 'BuildSquad' },
-    { kind: 'task_team', taskTeamRunId },
-    { kind: 'member', memberRouteKey },
-  ],
+const taskTeamChild = (taskTeamRunId: string, memberName: string): TeamExecutionAddress => createTeamExecutionAddress({
+  rootTeamRunId: 'team-1',
+  taskTeamRunIds: [taskTeamRunId],
+  memberAddress: `/BuildSquad/${memberName}`,
 });
 
 const mountSubject = (propOverrides: Record<string, unknown> = {}) => mount(TeamCommunicationPanel, {
@@ -93,9 +92,9 @@ describe('TeamCommunicationPanel.vue', () => {
     const rows = wrapper.findAll('[data-test="team-communication-message-row"]');
     expect(rows).toHaveLength(2);
     expect(rows[0].text()).toContain('Assignment');
-    expect(rows[0].text()).toContain('from solution_designer');
+    expect(rows[0].text()).toContain('from /solution_designer');
     expect(rows[1].text()).toContain('Handoff');
-    expect(rows[1].text()).toContain('to reviewer');
+    expect(rows[1].text()).toContain('to /reviewer');
     expect(wrapper.get('[data-test="team-communication-message-markdown"]').text()).toContain('Please implement this new UI ownership model.');
     expect(wrapper.findAll('[data-test="team-communication-reference-row"]')).toHaveLength(3);
     expect(wrapper.find('a[href*="/tmp/handoff.md"]').exists()).toBe(false);

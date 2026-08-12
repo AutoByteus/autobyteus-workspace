@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "source": "test-owned disposable runtime raw trace",
+  "secretValuesIncluded": false,
+  "rows": [
+    {
+      "ts": 1786527216.473,
+      "turnId": "019ff551-f356-7771-97fb-9063996dabda",
+      "seq": 1,
+      "traceType": "user",
+      "content": "Your team is accountable for the delegated task below. This task-scoped team run exits after acceptance and safe settlement.\n\nTask label: Within your nested team, student_one must use send_message_to to send exactly...\nTask ID: task_0001\nTask review owner: Teacher\nDescription:\nWithin your nested team, student_one must use send_message_to to send exactly TASK_PEER_CODEX to ./student_two. Then wait for the peer reply. After receiving it, student_one must submit the task result using submit_task_result, with the submitted result exactly NESTED_CLASSROOM_OK_CODEX (and no other result text). Do not delegate any additional tasks. The coordinator must ensure this exact lifecycle is completed.\nReference files:\n- None specified\n\nTask lifecycle guidance:\n1. Work directly from this task packet. Do not call get_my_tasks; that tool is not part of this workflow.\n2. The framework marks this task execution internally active/running when it starts; do not spend a tool call reporting in_progress.\n3. When your result is ready for task review, call submit_task_result with a non-empty message and optional reference_files.\n4. If the system sends revision instructions for this task, continue work and then call submit_task_result again with the revised result.\n5. Do not use send_message_to for task result submission, revision responses, acceptance, or finalization; task lifecycle is handled by submit_task_result and review_task_result.\n6. Use send_message_to only for ordinary non-lifecycle teammate communication when that is genuinely needed.\n7. The task review owner reviews submitted results with review_task_result. After acceptance and safe gates, the framework settles this task execution instance.",
+      "toolName": null,
+      "toolCallId": null,
+      "toolArgs": null,
+      "toolResult": null,
+      "toolError": null,
+      "sourceEvent": "AgentRun.postUserMessage"
+    },
+    {
+      "ts": 1786527230.465,
+      "turnId": "019ff551-f356-7771-97fb-9063996dabda",
+      "seq": 3,
+      "traceType": "tool_call",
+      "content": "",
+      "toolName": "send_message_to",
+      "toolCallId": "exec-f56cc8f1-8fe8-49dd-9ab3-9076d4d088c4",
+      "toolArgs": {
+        "recipient_address": "./student_two",
+        "content": "TASK_PEER_CODEX"
+      },
+      "toolResult": null,
+      "toolError": null,
+      "sourceEvent": "TOOL_EXECUTION_STARTED"
+    },
+    {
+      "ts": 1786527230.467,
+      "turnId": "019ff551-f356-7771-97fb-9063996dabda",
+      "seq": 4,
+      "traceType": "tool_result",
+      "content": "",
+      "toolName": "send_message_to",
+      "toolCallId": "exec-f56cc8f1-8fe8-49dd-9ab3-9076d4d088c4",
+      "toolArgs": null,
+      "toolResult": null,
+      "toolError": "Team execution is invalid: task TeamRun 'team_local_team_nested_classroom_test_student_st_83bff45debba4967abefd82deff5277f' has a foreign, reordered, truncated, wrong-parent, or wrong-Team binding.",
+      "sourceEvent": "TOOL_EXECUTION_FAILED"
+    },
+    {
+      "ts": 1786527244.136,
+      "turnId": "019ff551-f356-7771-97fb-9063996dabda",
+      "seq": 6,
+      "traceType": "tool_call",
+      "content": "",
+      "toolName": "get_handoff_rules",
+      "toolCallId": "exec-3429570a-9a5b-4414-99fd-a299ca05ae27",
+      "toolArgs": {},
+      "toolResult": null,
+      "toolError": null,
+      "sourceEvent": "TOOL_EXECUTION_STARTED"
+    },
+    {
+      "ts": 1786527244.138,
+      "turnId": "019ff551-f356-7771-97fb-9063996dabda",
+      "seq": 7,
+      "traceType": "tool_result",
+      "content": "",
+      "toolName": "get_handoff_rules",
+      "toolCallId": "exec-3429570a-9a5b-4414-99fd-a299ca05ae27",
+      "toolArgs": null,
+      "toolResult": {
+        "handoffs": [
+          {
+            "when": "When the delegated classroom task is finished and the teacher needs the outcome.",
+            "recipient_address": "/Teacher"
+          },
+          {
+            "when": "When the delegated classroom task asks the coordinator to consult the supporting student.",
+            "recipient_address": "/StudentStudyGroup/student_two"
+          }
+        ]
+      },
+      "toolError": null,
+      "sourceEvent": "TOOL_EXECUTION_SUCCEEDED"
+    },
+    {
+      "ts": 1786527256.594,
+      "turnId": "019ff551-f356-7771-97fb-9063996dabda",
+      "seq": 9,
+      "traceType": "assistant",
+      "content": "Unable to complete: the required peer message was rejected due to an invalid team execution context, so no peer reply was received.",
+      "toolName": null,
+      "toolCallId": null,
+      "toolArgs": null,
+      "toolResult": null,
+      "toolError": null,
+      "sourceEvent": "SEGMENT_END"
+    }
+  ]
+}

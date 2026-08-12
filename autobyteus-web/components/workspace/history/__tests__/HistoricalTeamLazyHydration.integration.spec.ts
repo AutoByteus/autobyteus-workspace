@@ -7,6 +7,7 @@ import TeamWorkspaceView from '../../team/TeamWorkspaceView.vue';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
+import { createTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
 const flushPromises = async () => {
   await Promise.resolve();
@@ -15,54 +16,62 @@ const flushPromises = async () => {
   await nextTick();
 };
 
-const buildWorkspaceHistoryResponse = () => ({
-  listWorkspaceRunHistory: [
-    {
-      workspaceRootPath: '/ws/a',
-      workspaceName: 'autobyteus-workspace-superrepo',
-      agentDefinitions: [],
-      teamDefinitions: [
-        {
-          teamDefinitionId: 'team-def-1',
-          teamDefinitionName: 'Software Engineering Team',
-          runs: [
-            {
-              teamRunId: 'team-1',
-              teamDefinitionId: 'team-def-1',
-              teamDefinitionName: 'Software Engineering Team',
-              coordinatorMemberRouteKey: 'solution_designer',
-              workspaceRootPath: '/ws/a',
-              summary: 'Build the demo fruit shop website',
-              lastActivityAt: '2026-01-01T00:05:00.000Z',
-              lastKnownStatus: 'IDLE',
-              deleteLifecycle: 'READY',
-              isActive: false,
-              members: [
-                {
-                  memberRouteKey: 'solution_designer',
-                  memberName: 'solution_designer',
-                  memberRunId: 'member-run-sd',
-                  workspaceRootPath: '/ws/a',
-                },
-                {
-                  memberRouteKey: 'architect_reviewer',
-                  memberName: 'architect_reviewer',
-                  memberRunId: 'member-run-ar',
-                  workspaceRootPath: '/ws/a',
-                },
-                {
-                  memberRouteKey: 'code_reviewer',
-                  memberName: 'code_reviewer',
-                  memberRunId: 'member-run-cr',
-                  workspaceRootPath: '/ws/a',
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
+const agentMetadata = (address: string, agentRunId: string, agentDefinitionId: string) => ({
+  kind: 'agent' as const,
+  address,
+  role: null,
+  description: null,
+  agentRunId,
+  runtimeKind: 'autobyteus',
+  platformAgentRunId: null,
+  agentDefinitionId,
+  llmModelIdentifier: 'model-x',
+  autoExecuteTools: false,
+  skillAccessMode: 'PRELOADED_ONLY',
+  llmConfig: null,
+  workspaceRootPath: '/ws/a',
+  applicationExecutionContext: null,
+});
+
+const buildRootMetadata = () => ({
+  kind: 'agent_team' as const,
+  address: '/',
+  teamDefinitionId: 'team-def-1',
+  teamRunId: 'team-1',
+  coordinatorAddress: '/solution_designer',
+  children: [
+    agentMetadata('/solution_designer', 'member-run-sd', 'agent-sd'),
+    agentMetadata('/architect_reviewer', 'member-run-ar', 'agent-ar'),
+    agentMetadata('/code_reviewer', 'member-run-cr', 'agent-cr'),
   ],
+});
+
+const buildWorkspaceHistoryResponse = () => ({
+  listWorkspaceRunHistory: [{
+    workspaceRootPath: '/ws/a',
+    workspaceName: 'autobyteus-workspace-superrepo',
+    agentDefinitions: [],
+    teamDefinitions: [{
+      teamDefinitionId: 'team-def-1',
+      teamDefinitionName: 'Software Engineering Team',
+      runs: [{
+        teamRunId: 'team-1',
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Software Engineering Team',
+        coordinatorAddress: '/solution_designer',
+        workspaceRootPath: '/ws/a',
+        summary: 'Build the demo fruit shop website',
+        createdAt: '2026-01-01T00:05:00.000Z',
+        isActive: false,
+        rootTeam: buildRootMetadata(),
+        members: [
+          { memberAddress: '/solution_designer', displayName: 'solution_designer', agentRunId: 'member-run-sd', status: 'idle', workspaceRootPath: '/ws/a' },
+          { memberAddress: '/architect_reviewer', displayName: 'architect_reviewer', agentRunId: 'member-run-ar', status: 'idle', workspaceRootPath: '/ws/a' },
+          { memberAddress: '/code_reviewer', displayName: 'code_reviewer', agentRunId: 'member-run-cr', status: 'idle', workspaceRootPath: '/ws/a' },
+        ],
+      }],
+    }],
+  }],
 });
 
 const buildTeamResumeConfigResponse = () => ({
@@ -70,68 +79,31 @@ const buildTeamResumeConfigResponse = () => ({
     teamRunId: 'team-1',
     isActive: false,
     metadata: {
-      teamRunId: 'team-1',
-      teamDefinitionId: 'team-def-1',
+      schemaVersion: 3,
       teamDefinitionName: 'Software Engineering Team',
-      coordinatorMemberRouteKey: 'solution_designer',
       createdAt: '2026-01-01T00:00:00.000Z',
-      updatedAt: '2026-01-01T00:05:00.000Z',
-      memberTree: [
-        {
-          memberKind: 'agent',
-          memberRouteKey: 'solution_designer',
-          memberPath: ['solution_designer'],
-          memberName: 'solution_designer',
-          memberRunId: 'member-run-sd',
-          agentDefinitionId: 'agent-sd',
-          llmModelIdentifier: 'model-x',
-          runtimeKind: 'AUTOBYTEUS',
-          autoExecuteTools: false,
-          skillAccessMode: 'PRELOADED_ONLY',
-          llmConfig: null,
-          workspaceRootPath: '/ws/a',
-        },
-        {
-          memberKind: 'agent',
-          memberRouteKey: 'architect_reviewer',
-          memberPath: ['architect_reviewer'],
-          memberName: 'architect_reviewer',
-          memberRunId: 'member-run-ar',
-          agentDefinitionId: 'agent-ar',
-          llmModelIdentifier: 'model-x',
-          runtimeKind: 'AUTOBYTEUS',
-          autoExecuteTools: false,
-          skillAccessMode: 'PRELOADED_ONLY',
-          llmConfig: null,
-          workspaceRootPath: '/ws/a',
-        },
-        {
-          memberKind: 'agent',
-          memberRouteKey: 'code_reviewer',
-          memberPath: ['code_reviewer'],
-          memberName: 'code_reviewer',
-          memberRunId: 'member-run-cr',
-          agentDefinitionId: 'agent-cr',
-          llmModelIdentifier: 'model-x',
-          runtimeKind: 'AUTOBYTEUS',
-          autoExecuteTools: false,
-          skillAccessMode: 'PRELOADED_ONLY',
-          llmConfig: null,
-          workspaceRootPath: '/ws/a',
-        },
-      ],
+      archivedAt: null,
+      rootTeam: buildRootMetadata(),
+      handoffs: [],
     },
   },
 });
 
-const buildProjectionResponse = (memberRouteKey: string) => ({
+const runIdByAddress: Record<string, string> = {
+  '/solution_designer': 'member-run-sd',
+  '/architect_reviewer': 'member-run-ar',
+  '/code_reviewer': 'member-run-cr',
+};
+
+const buildProjectionResponse = (memberAddress: string) => ({
   getTeamMemberRunProjection: {
-    agentRunId: `member-run-${memberRouteKey}`,
-    summary: `${memberRouteKey} summary`,
+    agentRunId: runIdByAddress[memberAddress],
+    summary: `${memberAddress.slice(1)} summary`,
     lastActivityAt: '2026-01-01T00:05:00.000Z',
+    hasEarlierActiveTraceEvents: false,
     conversation: [
-      { kind: 'message', role: 'user', content: `hello from ${memberRouteKey}`, ts: 1700000000 },
-      { kind: 'message', role: 'assistant', content: `reply from ${memberRouteKey}`, ts: 1700000010 },
+      { kind: 'message', role: 'user', content: `hello from ${memberAddress}`, ts: 1700000000 },
+      { kind: 'message', role: 'assistant', content: `reply from ${memberAddress}`, ts: 1700000010 },
     ],
     activities: [],
   },
@@ -218,6 +190,7 @@ const {
   teamRunConfigStoreMock: {
     clearConfig: vi.fn(),
     setConfig: vi.fn(),
+    selectDraft: vi.fn(),
   },
   agentRunStoreMock: {
     terminateRun: vi.fn().mockResolvedValue(true),
@@ -227,7 +200,6 @@ const {
   },
   agentTeamRunStoreMock: {
     terminateTeamRun: vi.fn().mockResolvedValue(undefined),
-    discardDraftTeamRun: vi.fn().mockResolvedValue(true),
     connectToTeamStream: vi.fn(),
     disconnectTeamStream: vi.fn(),
   },
@@ -258,6 +230,7 @@ vi.mock('~/graphql/queries/runHistoryQueries', () => ({
   GetTeamRunResumeConfig: 'GetTeamRunResumeConfig',
   GetTeamMemberRunProjection: 'GetTeamMemberRunProjection',
   GetTeamCommunicationMessages: 'GetTeamCommunicationMessages',
+  GetTaskDelegationRecords: 'GetTaskDelegationRecords',
 }));
 
 vi.mock('~/graphql/mutations/runHistoryMutations', () => ({
@@ -406,10 +379,10 @@ describe('Historical team lazy hydration integration', () => {
       }
 
       if (query === 'GetTeamMemberRunProjection') {
-        const memberRouteKey = String(variables?.memberRouteKey);
-        projectionCalls.push(memberRouteKey);
+        const memberAddress = String(variables?.memberAddress);
+        projectionCalls.push(memberAddress);
         return {
-          data: buildProjectionResponse(memberRouteKey),
+          data: buildProjectionResponse(memberAddress),
           errors: [],
         };
       }
@@ -417,6 +390,13 @@ describe('Historical team lazy hydration integration', () => {
       if (query === 'GetTeamCommunicationMessages') {
         return {
           data: { getTeamCommunicationMessages: [] },
+          errors: [],
+        };
+      }
+
+      if (query === 'GetTaskDelegationRecords') {
+        return {
+          data: { getTaskDelegationRecords: [] },
           errors: [],
         };
       }
@@ -440,33 +420,29 @@ describe('Historical team lazy hydration integration', () => {
 
     const hydratedTeam = teamContextsStore.getTeamContextById('team-1') as any;
     expect(hydratedTeam).toBeTruthy();
-    expect(hydratedTeam?.focusedMemberRouteKey).toBe('solution_designer');
-    expect(hydratedTeam?.members.get('solution_designer')?.state.conversation.messages.length).toBe(2);
-    expect(hydratedTeam?.members.get('architect_reviewer')?.state.conversation.messages.length).toBe(0);
-    expect(hydratedTeam?.historicalHydration?.memberProjectionLoadStateByRouteKey).toEqual({
-      solution_designer: 'loaded',
-      architect_reviewer: 'unloaded',
-      code_reviewer: 'unloaded',
+    expect(hydratedTeam?.executions.getFocusedAddress()).toEqual(
+      createTeamExecutionAddress({ rootTeamRunId: 'team-1', memberAddress: '/solution_designer' }),
+    );
+    const memberAddress = (value: string) => createTeamExecutionAddress({
+      rootTeamRunId: 'team-1',
+      memberAddress: value,
     });
-    expect(projectionCalls).toEqual(['solution_designer']);
+    expect(hydratedTeam?.executions.getAgentContext(memberAddress('/solution_designer'))?.state.conversation.messages.length).toBe(2);
+    expect(hydratedTeam?.executions.getAgentContext(memberAddress('/architect_reviewer'))?.state.conversation.messages.length).toBe(0);
+    expect(projectionCalls).toEqual(['/solution_designer']);
     expect(resumeConfigCalls).toBe(1);
     expect(selectionStore.selectedType).toBe('team');
     expect(selectionStore.selectedRunId).toBe('team-1');
     expect(wrapper.find('h4').text()).toBe('solution_designer');
 
-    await wrapper.get('[data-test="workspace-team-member-team-1-architect_reviewer"]').trigger('click');
+    await wrapper.get('[data-test="workspace-team-member-team-1-/architect_reviewer"]').trigger('click');
     await flushPromises();
 
     const refocusedTeam = teamContextsStore.getTeamContextById('team-1') as any;
     expect(resumeConfigCalls).toBe(1);
-    expect(projectionCalls).toEqual(['solution_designer', 'architect_reviewer']);
-    expect(refocusedTeam?.focusedMemberRouteKey).toBe('architect_reviewer');
-    expect(refocusedTeam?.members.get('architect_reviewer')?.state.conversation.messages.length).toBe(2);
-    expect(refocusedTeam?.historicalHydration?.memberProjectionLoadStateByRouteKey).toEqual({
-      solution_designer: 'loaded',
-      architect_reviewer: 'loaded',
-      code_reviewer: 'unloaded',
-    });
+    expect(projectionCalls).toEqual(['/solution_designer', '/architect_reviewer']);
+    expect(refocusedTeam?.executions.getFocusedAddress().memberAddress).toBe('/architect_reviewer');
+    expect(refocusedTeam?.executions.getAgentContext(memberAddress('/architect_reviewer'))?.state.conversation.messages.length).toBe(2);
     expect(wrapper.find('h4').text()).toBe('architect_reviewer');
 
     wrapper.unmount();

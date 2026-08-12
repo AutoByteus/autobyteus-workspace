@@ -1,25 +1,57 @@
 import { describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
-import { MixedTaskAgentInstanceRegistry } from "../../../src/agent-team-execution/backends/mixed/members/mixed-task-agent-instance-registry.js";
+import { MixedTaskAgentExecutionRegistry } from "../../../src/agent-team-execution/backends/mixed/members/mixed-task-agent-execution-registry.js";
 import { MixedTeamMemberConfigResolver } from "../../../src/agent-team-execution/backends/mixed/members/mixed-team-member-config-resolver.js";
 import { MixedAgentMemberContext, MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
-import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { createTeamExecutionAddress } from "../../../src/agent-team-execution/domain/team-execution-address.js";
+import { testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
 
-describe("MixedTaskAgentInstanceRegistry task-agent memory", () => {
-  it("starts task agents with their own memoryDir under the logical member team path", async () => {
+describe("MixedTaskAgentExecutionRegistry task-agent memory", () => {
+  it("starts a task Agent with its own memory directory in the owning TeamRun scope", async () => {
+    const workerNode = testAgentNode("/worker", {
+      agentRunId: "worker-template-run",
+      agentDefinitionId: "agent-worker",
+      llmModelIdentifier: "model-1",
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+    });
+    const config = testTeamRunConfig({
+      rootTeamRunId: "owning-team-run",
+      rootTeamDefinitionId: "team-def",
+      coordinatorAddress: "/worker",
+      children: [workerNode],
+    });
+    const teamExecutionAddress = createTeamExecutionAddress({
+      rootTeamRunId: "owning-team-run",
+      taskTeamRunIds: [],
+      memberAddress: "/worker",
+    });
+    const teamContext = new TeamRunContext({
+      teamRunId: "owning-team-run",
+      teamAddress: "/",
+      teamBackendKind: TeamBackendKind.MIXED,
+      config,
+      runtimeContext: new MixedTeamRunContext({
+        memberContexts: [new MixedAgentMemberContext({
+          address: "/worker",
+          agentRunId: "worker-template-run",
+          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+          platformAgentRunId: null,
+        })],
+        teamExecutionAddress,
+      }),
+    });
     const createdConfigs: unknown[] = [];
-    const createAgentRun = vi.fn(async (config, runId) => {
-      createdConfigs.push(config);
+    const createAgentRun = vi.fn(async (runConfig, runId) => {
+      createdConfigs.push(runConfig);
       return {
         runId,
-        config,
+        config: runConfig,
         isActive: () => true,
         getPlatformAgentRunId: () => null,
         getStatusSnapshot: () => ({ status: "idle" }),
@@ -30,74 +62,36 @@ describe("MixedTaskAgentInstanceRegistry task-agent memory", () => {
         terminate: async () => ({ accepted: true }),
       };
     });
-    const logicalMember = new MixedAgentMemberContext({
-      memberName: "worker",
-      memberPath: ["worker"],
-      memberRouteKey: "worker",
-      memberRunId: "worker-template-run",
-      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-      platformAgentRunId: null,
-    });
-    const teamContext = new TeamRunContext({
-      runId: "owning-team-run",
-      teamBackendKind: TeamBackendKind.MIXED,
-      coordinatorMemberName: "worker",
-      coordinatorMemberRouteKey: "worker",
-      config: new TeamRunConfig({
-        teamDefinitionId: "team-def",
-        teamBackendKind: TeamBackendKind.MIXED,
-        memberConfigs: [{
-          memberName: "worker",
-          memberRouteKey: "worker",
-          memberRunId: "worker-template-run",
-          agentDefinitionId: "agent-worker",
-          llmModelIdentifier: "model-1",
-          autoExecuteTools: false,
-          skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
-          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-          memoryDir: "/tmp/template-member-memory-dir",
-        }],
-      }),
-      runtimeContext: new MixedTeamRunContext({
-        coordinatorMemberRouteKey: "worker",
-        memberContexts: [logicalMember],
-        collaborationRootTeamRunId: "owning-team-run",
-        teamMountPath: [],
-        effectiveHandoffs: [],
-      }),
-    });
-    const registry = new MixedTaskAgentInstanceRegistry({
+    const registry = new MixedTaskAgentExecutionRegistry({
       teamContext,
       configResolver: new MixedTeamMemberConfigResolver(teamContext),
       agentRunManager: { createAgentRun } as never,
       publish: vi.fn(),
-      notifyStatusChange: vi.fn(),
       deliverInterAgentMessage: vi.fn(),
     });
     const taskAgentRunId = "worker_00000000000000000000000000000001";
 
-    const result = await registry.start({
-      identity: {
-        taskAgentInstanceId: "task-agent-instance-1",
+    await expect(registry.start({
+      taskId: "task_0001",
+      receiver: createTeamExecutionAddress({
+        rootTeamRunId: "owning-team-run",
+        taskTeamRunIds: [],
+        memberAddress: "/worker",
         taskAgentRunId,
-        teamRunId: "owning-team-run",
-        taskId: "task_0001",
-        logicalMember: {
-          memberName: "worker",
-          memberPath: ["worker"],
-          memberRouteKey: "worker",
-          templateMemberRunId: "worker-template-run",
-        },
-        createdAt: "2026-06-11T00:00:00.000Z",
-      },
+      }),
+      sourceNode: workerNode,
       message: new AgentInputUserMessage("start task", SenderType.USER),
-    });
+    })).resolves.toEqual({ accepted: true });
+    registry.releaseWork(taskAgentRunId);
 
-    expect(result).toMatchObject({ accepted: true });
+    await vi.waitFor(() => expect(createAgentRun).toHaveBeenCalledTimes(1));
     expect(createAgentRun).toHaveBeenCalledWith(
       expect.objectContaining({
         memoryDir: new AgentMemoryLayout(appConfigProvider.config.getMemoryDir())
-          .getTeamAgentRunDirPath({ rootTeamRunId: "owning-team-run", teamRunPath: [] }, taskAgentRunId),
+          .getTeamAgentRunDirPath({
+            rootTeamRunId: "owning-team-run",
+            ancestorTeamRunIds: [],
+          }, taskAgentRunId),
       }),
       taskAgentRunId,
     );

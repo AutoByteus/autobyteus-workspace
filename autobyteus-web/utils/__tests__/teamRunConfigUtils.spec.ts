@@ -8,11 +8,51 @@ import {
 } from '~/utils/teamRunConfigUtils'
 import { evaluateTeamRunLaunchReadiness } from '~/utils/teamRunLaunchReadiness'
 
-const agentMetadataMember = (member: Record<string, unknown>) => ({
-  memberKind: 'agent' as const,
-  memberPath: String(member.memberRouteKey).split('/'),
-  ...member,
-} as any)
+const agentMetadataMember = (member: Record<string, unknown>) => {
+  const memberAddress = String(member.memberAddress)
+  return {
+    kind: 'agent' as const,
+    address: memberAddress ? `/${memberAddress}` : '',
+    role: null,
+    description: null,
+    agentRunId: member.agentRunId,
+    runtimeKind: member.runtimeKind,
+    platformAgentRunId: member.platformAgentRunId,
+    agentDefinitionId: member.agentDefinitionId,
+    llmModelIdentifier: member.llmModelIdentifier,
+    autoExecuteTools: member.autoExecuteTools,
+    skillAccessMode: member.skillAccessMode,
+    llmConfig: member.llmConfig,
+    workspaceRootPath: member.workspaceRootPath,
+    applicationExecutionContext: null,
+  } as any
+}
+
+const teamMetadata = (input: {
+  teamRunId: string
+  teamDefinitionId: string
+  teamDefinitionName: string
+  coordinatorAddress: string
+  createdAt: string
+  archivedAt: null
+  members: ReturnType<typeof agentMetadataMember>[]
+}) => ({
+  schemaVersion: 3 as const,
+  teamDefinitionName: input.teamDefinitionName,
+  createdAt: input.createdAt,
+  archivedAt: input.archivedAt,
+  rootTeam: {
+    kind: 'agent_team' as const,
+    address: '/',
+    role: null,
+    description: null,
+    teamDefinitionId: input.teamDefinitionId,
+    teamRunId: input.teamRunId,
+    coordinatorAddress: `/${input.coordinatorAddress}`,
+    children: input.members,
+  },
+  handoffs: [],
+})
 
 const workspaceMetadata = (workspaceId: string, rootPath = '/tmp/workspace') => ({
   workspaceId,
@@ -69,18 +109,17 @@ describe('teamRunConfigUtils', () => {
 
   it('reconstructs global defaults and only keeps divergent overrides from member metadata', () => {
     const config = reconstructTeamRunConfigFromMetadata({
-      metadata: {
+      metadata: teamMetadata({
         teamRunId: 'team-1',
         teamDefinitionId: 'team-def-1',
         teamDefinitionName: 'Test Team',
-        coordinatorMemberRouteKey: 'professor',
+        coordinatorAddress: 'professor',
         createdAt: '2026-03-30T00:00:00.000Z',
         archivedAt: null,
-        memberTree: [
+        members: [
           agentMetadataMember({
-            memberRouteKey: 'professor',
-            memberName: 'Professor',
-            memberRunId: 'member-1',
+            memberAddress: 'professor',
+            agentRunId: 'member-1',
             runtimeKind: 'codex_app_server',
             platformAgentRunId: null,
             agentDefinitionId: 'agent-a',
@@ -91,9 +130,8 @@ describe('teamRunConfigUtils', () => {
             workspaceRootPath: '/tmp/workspace',
           }),
           agentMetadataMember({
-            memberRouteKey: 'student',
-            memberName: 'Student',
-            memberRunId: 'member-2',
+            memberAddress: 'student',
+            agentRunId: 'member-2',
             runtimeKind: 'codex_app_server',
             platformAgentRunId: null,
             agentDefinitionId: 'agent-b',
@@ -104,9 +142,8 @@ describe('teamRunConfigUtils', () => {
             workspaceRootPath: '/tmp/workspace',
           }),
           agentMetadataMember({
-            memberRouteKey: 'critic',
-            memberName: 'Critic',
-            memberRunId: 'member-3',
+            memberAddress: 'critic',
+            agentRunId: 'member-3',
             runtimeKind: 'codex_app_server',
             platformAgentRunId: null,
             agentDefinitionId: 'agent-c',
@@ -117,7 +154,7 @@ describe('teamRunConfigUtils', () => {
             workspaceRootPath: '/tmp/workspace',
           }),
         ],
-      },
+      }),
       primaryWorkspaceMetadata: workspaceMetadata('ws-1'),
       isLocked: true,
     })
@@ -128,7 +165,7 @@ describe('teamRunConfigUtils', () => {
     expect(config.autoExecuteTools).toBe(true)
     expect(config.skillAccessMode).toBe('PRELOADED_ONLY')
     expect(config.memberOverrides).toEqual({
-      critic: {
+      '/critic': {
         agentDefinitionId: 'agent-c',
         autoExecuteTools: false,
         llmConfig: null,
@@ -138,18 +175,17 @@ describe('teamRunConfigUtils', () => {
 
   it('reconstructs member runtime overrides when one member runtime differs from the dominant team runtime', () => {
     const config = reconstructTeamRunConfigFromMetadata({
-      metadata: {
+      metadata: teamMetadata({
         teamRunId: 'team-2',
         teamDefinitionId: 'team-def-2',
         teamDefinitionName: 'Mixed Team',
-        coordinatorMemberRouteKey: 'writer',
+        coordinatorAddress: 'writer',
         createdAt: '2026-03-30T00:00:00.000Z',
         archivedAt: null,
-        memberTree: [
+        members: [
           agentMetadataMember({
-            memberRouteKey: 'writer',
-            memberName: 'Writer',
-            memberRunId: 'member-1',
+            memberAddress: 'writer',
+            agentRunId: 'member-1',
             runtimeKind: 'codex_app_server',
             platformAgentRunId: null,
             agentDefinitionId: 'agent-writer',
@@ -160,9 +196,8 @@ describe('teamRunConfigUtils', () => {
             workspaceRootPath: '/tmp/workspace',
           }),
           agentMetadataMember({
-            memberRouteKey: 'reviewer',
-            memberName: 'Reviewer',
-            memberRunId: 'member-2',
+            memberAddress: 'reviewer',
+            agentRunId: 'member-2',
             runtimeKind: 'claude_agent_sdk',
             platformAgentRunId: null,
             agentDefinitionId: 'agent-reviewer',
@@ -173,14 +208,14 @@ describe('teamRunConfigUtils', () => {
             workspaceRootPath: '/tmp/workspace',
           }),
         ],
-      },
+      }),
       primaryWorkspaceMetadata: workspaceMetadata('ws-2'),
       isLocked: false,
     })
 
     expect(config.runtimeKind).toBe('codex_app_server')
     expect(config.memberOverrides).toEqual({
-      reviewer: {
+      '/reviewer': {
         agentDefinitionId: 'agent-reviewer',
         runtimeKind: 'claude_agent_sdk',
         llmModelIdentifier: 'claude-sonnet',
@@ -190,18 +225,17 @@ describe('teamRunConfigUtils', () => {
 
   it('does not synthesize member override keys from bare member names', () => {
     const config = reconstructTeamRunConfigFromMetadata({
-      metadata: {
+      metadata: teamMetadata({
         teamRunId: 'team-duplicate-leaf',
         teamDefinitionId: 'team-def-duplicate-leaf',
         teamDefinitionName: 'Duplicate Leaf Team',
-        coordinatorMemberRouteKey: 'program_manager',
+        coordinatorAddress: 'program_manager',
         createdAt: '2026-05-17T00:00:00.000Z',
         archivedAt: null,
-        memberTree: [
+        members: [
           agentMetadataMember({
-            memberRouteKey: 'program_manager',
-            memberName: 'program_manager',
-            memberRunId: 'program-manager-run',
+            memberAddress: 'program_manager',
+            agentRunId: 'program-manager-run',
             runtimeKind: 'codex_app_server',
             platformAgentRunId: null,
             agentDefinitionId: 'agent-program-manager',
@@ -212,9 +246,8 @@ describe('teamRunConfigUtils', () => {
             workspaceRootPath: '/tmp/workspace',
           }),
           agentMetadataMember({
-            memberRouteKey: '',
-            memberName: 'review_lead',
-            memberRunId: 'missing-route-review-lead-run',
+            memberAddress: '',
+            agentRunId: 'missing-route-review-lead-run',
             runtimeKind: 'claude_agent_sdk',
             platformAgentRunId: null,
             agentDefinitionId: 'agent-missing-route-review-lead',
@@ -225,9 +258,8 @@ describe('teamRunConfigUtils', () => {
             workspaceRootPath: '/tmp/workspace',
           }),
           agentMetadataMember({
-            memberRouteKey: 'BuildSquad/review_lead',
-            memberName: 'review_lead',
-            memberRunId: 'build-review-lead-run',
+            memberAddress: 'BuildSquad/review_lead',
+            agentRunId: 'build-review-lead-run',
             runtimeKind: 'claude_agent_sdk',
             platformAgentRunId: null,
             agentDefinitionId: 'agent-build-review-lead',
@@ -238,14 +270,14 @@ describe('teamRunConfigUtils', () => {
             workspaceRootPath: '/tmp/workspace',
           }),
         ],
-      },
+      }),
       primaryWorkspaceMetadata: workspaceMetadata('ws-duplicate-leaf'),
       isLocked: false,
     })
 
     expect(config.memberOverrides).not.toHaveProperty('review_lead')
     expect(config.memberOverrides).toEqual({
-      'BuildSquad/review_lead': {
+      '/BuildSquad/review_lead': {
         agentDefinitionId: 'agent-build-review-lead',
         runtimeKind: 'claude_agent_sdk',
         llmModelIdentifier: 'claude-sonnet',
@@ -255,18 +287,17 @@ describe('teamRunConfigUtils', () => {
 
   it('reconstructs a coherent default runtime/model/config tuple for mixed metadata and stays launch-ready', () => {
     const config = reconstructTeamRunConfigFromMetadata({
-      metadata: {
+      metadata: teamMetadata({
         teamRunId: 'team-3',
         teamDefinitionId: 'team-def-3',
         teamDefinitionName: 'Mixed Restore Team',
-        coordinatorMemberRouteKey: 'writer',
+        coordinatorAddress: 'writer',
         createdAt: '2026-04-23T00:00:00.000Z',
         archivedAt: null,
-        memberTree: [
+        members: [
           agentMetadataMember({
-            memberRouteKey: 'writer',
-            memberName: 'Writer',
-            memberRunId: 'member-1',
+            memberAddress: 'writer',
+            agentRunId: 'member-1',
             runtimeKind: 'autobyteus',
             platformAgentRunId: null,
             agentDefinitionId: 'agent-writer',
@@ -277,9 +308,8 @@ describe('teamRunConfigUtils', () => {
             workspaceRootPath: '/tmp/workspace',
           }),
           agentMetadataMember({
-            memberRouteKey: 'researcher',
-            memberName: 'Researcher',
-            memberRunId: 'member-2',
+            memberAddress: 'researcher',
+            agentRunId: 'member-2',
             runtimeKind: 'autobyteus',
             platformAgentRunId: null,
             agentDefinitionId: 'agent-researcher',
@@ -290,9 +320,8 @@ describe('teamRunConfigUtils', () => {
             workspaceRootPath: '/tmp/workspace',
           }),
           agentMetadataMember({
-            memberRouteKey: 'reviewer',
-            memberName: 'Reviewer',
-            memberRunId: 'member-3',
+            memberAddress: 'reviewer',
+            agentRunId: 'member-3',
             runtimeKind: 'codex_app_server',
             platformAgentRunId: null,
             agentDefinitionId: 'agent-reviewer',
@@ -303,9 +332,8 @@ describe('teamRunConfigUtils', () => {
             workspaceRootPath: '/tmp/workspace',
           }),
           agentMetadataMember({
-            memberRouteKey: 'implementer',
-            memberName: 'Implementer',
-            memberRunId: 'member-4',
+            memberAddress: 'implementer',
+            agentRunId: 'member-4',
             runtimeKind: 'codex_app_server',
             platformAgentRunId: null,
             agentDefinitionId: 'agent-implementer',
@@ -316,9 +344,8 @@ describe('teamRunConfigUtils', () => {
             workspaceRootPath: '/tmp/workspace',
           }),
           agentMetadataMember({
-            memberRouteKey: 'critic',
-            memberName: 'Critic',
-            memberRunId: 'member-5',
+            memberAddress: 'critic',
+            agentRunId: 'member-5',
             runtimeKind: 'codex_app_server',
             platformAgentRunId: null,
             agentDefinitionId: 'agent-critic',
@@ -329,7 +356,7 @@ describe('teamRunConfigUtils', () => {
             workspaceRootPath: '/tmp/workspace',
           }),
         ],
-      },
+      }),
       primaryWorkspaceMetadata: workspaceMetadata('ws-3'),
       isLocked: false,
     })
@@ -338,19 +365,19 @@ describe('teamRunConfigUtils', () => {
     expect(config.llmModelIdentifier).toBe('codex-model-a')
     expect(config.llmConfig).toEqual({ reasoning_effort: 'high' })
     expect(config.memberOverrides).toEqual({
-      writer: {
+      '/writer': {
         agentDefinitionId: 'agent-writer',
         runtimeKind: 'autobyteus',
         llmModelIdentifier: 'auto-model-z',
         llmConfig: { thinking_level: 4 },
       },
-      researcher: {
+      '/researcher': {
         agentDefinitionId: 'agent-researcher',
         runtimeKind: 'autobyteus',
         llmModelIdentifier: 'auto-model-z',
         llmConfig: { thinking_level: 4 },
       },
-      critic: {
+      '/critic': {
         agentDefinitionId: 'agent-critic',
         llmModelIdentifier: 'codex-model-b',
         llmConfig: { reasoning_effort: 'medium' },

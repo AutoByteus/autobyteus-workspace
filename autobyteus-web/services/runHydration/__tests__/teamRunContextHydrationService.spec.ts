@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { hydrateLiveTeamRunContext } from '../teamRunContextHydrationService';
+import { createTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
 const {
   queryMock,
@@ -27,7 +28,8 @@ vi.mock('../teamCommunicationHydrationService', () => ({
 }));
 
 vi.mock('../taskDelegationHydrationService', () => ({
-  fetchAndHydrateTaskDelegationRecordsForTeam: fetchTaskDelegationsMock,
+  fetchTaskDelegationRecordsForTeam: fetchTaskDelegationsMock,
+  hydrateTaskDelegationRecords: vi.fn(),
 }));
 
 vi.mock('~/services/runHydration/runProjectionActivityHydration', async (importOriginal) => {
@@ -57,26 +59,34 @@ vi.mock('~/services/eventMonitor/recentEventMonitorMutationCoordinator', async (
 });
 
 const metadata = {
-  teamRunId: 'team-live-recovery',
-  teamDefinitionId: 'team-def-1',
+  schemaVersion: 3,
   teamDefinitionName: 'Recovery Team',
-  coordinatorMemberRouteKey: 'member-a',
   createdAt: '2026-08-09T10:00:00.000Z',
-  memberTree: [{
-    memberKind: 'agent',
-    memberRouteKey: 'member-a',
-    memberPath: ['member-a'],
-    memberName: 'Member A',
-    memberRunId: 'run-a',
-    runtimeKind: 'autobyteus',
-    platformAgentRunId: 'run-a',
-    agentDefinitionId: 'agent-a',
-    llmModelIdentifier: 'gpt-test',
-    autoExecuteTools: true,
-    skillAccessMode: 'PRELOADED_ONLY',
-    llmConfig: null,
-    workspaceRootPath: null,
-  }],
+  archivedAt: null,
+  rootTeam: {
+    kind: 'agent_team',
+    address: '/',
+    teamDefinitionId: 'team-def-1',
+    teamRunId: 'team-live-recovery',
+    coordinatorAddress: '/member-a',
+    children: [{
+      kind: 'agent',
+      address: '/member-a',
+      role: null,
+      description: null,
+      agentRunId: 'run-a',
+      runtimeKind: 'autobyteus',
+      platformAgentRunId: 'run-a',
+      agentDefinitionId: 'agent-a',
+      llmModelIdentifier: 'gpt-test',
+      autoExecuteTools: true,
+      skillAccessMode: 'PRELOADED_ONLY',
+      llmConfig: null,
+      workspaceRootPath: null,
+      applicationExecutionContext: null,
+    }],
+  },
+  handoffs: [],
 };
 
 const projectedActivity = {
@@ -97,8 +107,17 @@ describe('hydrateLiveTeamRunContext Event Monitor final-prime ownership', () => 
     reconstructTeamRunConfigFromMetadataMock.mockReturnValue({
       teamDefinitionId: 'team-def-1',
       teamDefinitionName: 'Recovery Team',
+      runtimeKind: 'autobyteus',
+      workspaceId: null,
+      workspaceMetadata: null,
+      llmModelIdentifier: 'gpt-test',
+      llmConfig: null,
+      autoExecuteTools: true,
+      skillAccessMode: 'PRELOADED_ONLY',
+      memberOverrides: {},
       isLocked: true,
     });
+    fetchTaskDelegationsMock.mockResolvedValue([]);
   });
 
   it.each([
@@ -117,7 +136,7 @@ describe('hydrateLiveTeamRunContext Event Monitor final-prime ownership', () => 
     expectedActivityCalls,
   }) => {
     queryMock.mockImplementation(async ({ variables }: { variables: Record<string, unknown> }) => (
-      variables.memberRouteKey
+      variables.memberAddress
         ? { data: { getTeamMemberRunProjection: projection }, errors: [] }
         : {
             data: {
@@ -137,7 +156,11 @@ describe('hydrateLiveTeamRunContext Event Monitor final-prime ownership', () => 
       ensureWorkspaceByRootPath: vi.fn().mockResolvedValue(null),
     });
 
-    const memberContext = result.hydratedContext.leafAgentContextsByRouteKey.get('member-a');
+    const memberAddress = createTeamExecutionAddress({
+      rootTeamRunId: 'team-live-recovery',
+      memberAddress: '/member-a',
+    });
+    const memberContext = result.hydratedContext.executions.getAgentContext(memberAddress);
     expect(memberContext).toBeDefined();
     expect(hydrateActivitiesFromProjectionMock).toHaveBeenCalledTimes(expectedActivityCalls);
     if (projection) {

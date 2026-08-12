@@ -1,0 +1,27 @@
+9:import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures'
+11:const { agentRunState, teamRunState, agentContextState, teamContextState, teamRunOwnerState } = vi.hoisted(() => ({
+40:    selectedDraft: null,
+58:      if (teamRunState.selectedDraft) {
+59:        teamRunState.selectedDraft = Object.freeze({
+60:          ...teamRunState.selectedDraft,
+76:      if (teamRunState.selectedDraft) {
+77:        teamRunState.selectedDraft = Object.freeze({
+78:          ...teamRunState.selectedDraft,
+91:    createRunFromTemplate: vi.fn(),
+96:  teamRunOwnerState: {
+142:  useAgentTeamRunStore: () => teamRunOwnerState,
+173:    teamRunState.selectedDraft = null
+195:    agentContextState.createRunFromTemplate.mockReset()
+197:    teamRunOwnerState.launchDraft.mockReset()
+198:    teamRunOwnerState.launchDraft.mockResolvedValue('team-run-1')
+267:    teamStore.selectedDraft = Object.freeze({
+283:    expect(teamRunOwnerState.launchDraft).toHaveBeenCalledTimes(1)
+284:    expect(teamRunOwnerState.launchDraft).toHaveBeenCalledWith(teamStore.selectedDraft)
+331:    expect(agentContextState.createRunFromTemplate).toHaveBeenCalledTimes(1)
+369:    expect(agentContextState.createRunFromTemplate).not.toHaveBeenCalled()
+413:    teamStore.selectedDraft = Object.freeze({
+450:    expect(teamRunOwnerState.launchDraft).toHaveBeenCalledTimes(1)
+451:    expect(teamRunOwnerState.launchDraft).toHaveBeenCalledWith(teamStore.selectedDraft)
+452:    expect(teamStore.selectedDraft.config.workspaceId).toBe('ws-created')
+530:    expect(agentContextState.createRunFromTemplate).not.toHaveBeenCalled()
+655:    const activeContext = buildTestTeamContext({

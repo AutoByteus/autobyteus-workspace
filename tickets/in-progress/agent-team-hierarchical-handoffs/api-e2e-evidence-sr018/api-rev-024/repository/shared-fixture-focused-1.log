@@ -1,0 +1,596 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+
+stderr | components/mobile/__tests__/MobileArtifacts.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamOverviewPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/running/__tests__/RunningTeamRow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileArtifacts.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamOverviewPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/running/__tests__/RunningTeamRow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ × components/workspace/running/__tests__/RunningTeamRow.spec.ts > RunningTeamRow > renders exact-run activity independently from subscription, members, and row action 5ms
+   → Cannot add property isSubscribed, object is not extensible
+ × components/workspace/running/__tests__/RunningTeamRow.spec.ts > RunningTeamRow > filters initializing task-only logical members from active running rows 23ms
+   → expected 'false' to be 'true' // Object.is equality
+ × components/workspace/running/__tests__/RunningTeamRow.spec.ts > RunningTeamRow > keeps logical members with direct conversation history visible in the running sidebar 0ms
+   → Cannot read properties of undefined (reading 'get')
+ × components/workspace/running/__tests__/RunningTeamRow.spec.ts > RunningTeamRow > does not keep a logical worker visible when its only conversation is a task-agent work packet 1ms
+   → Cannot read properties of undefined (reading 'get')
+ ✓ composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts > useMobileFocusedRunIdentity > resolves the selected agent run only when the mobile context and active context match 3ms
+ ✓ composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts > useMobileFocusedRunIdentity > returns no focused run id for non-run and stale selected contexts 1ms
+ × composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts > useMobileFocusedRunIdentity > resolves the focused leaf member run for selected team contexts 5ms
+   → Cannot read properties of undefined (reading 'trim')
+ × composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts > useMobileFocusedRunIdentity > rejects team contexts when selected team or focused route is stale 1ms
+   → Cannot read properties of undefined (reading 'trim')
+ ✓ components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts > AgentTeamEventMonitor.vue > passes sender-id to member-name mapping to AgentEventMonitor 13ms
+ ✓ components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts > AgentTeamEventMonitor.vue > passes focused member display name and avatar to AgentEventMonitor 2ms
+ × components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts > AgentTeamEventMonitor.vue > uses roster focus for displayed Focus history while active execution can remain on the coordinator 2ms
+   → Cannot add property focusedExecutionAddress, object is not extensible
+ × components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts > AgentTeamEventMonitor.vue > does not render task-agent work packets as the logical parent conversation 0ms
+   → Cannot read properties of undefined (reading 'get')
+ ✓ components/mobile/__tests__/MobileArtifacts.spec.ts > MobileArtifacts > lists active agent-run artifacts newest first and selects the newest artifact 28ms
+ ✓ components/mobile/__tests__/MobileArtifacts.spec.ts > MobileArtifacts > passes selected artifacts to the shared viewer and refreshes on reselection 8ms
+ ✓ components/mobile/__tests__/MobileArtifacts.spec.ts > MobileArtifacts > does not leak stale artifacts into non-run mobile contexts 4ms
+ × components/mobile/__tests__/MobileArtifacts.spec.ts > MobileArtifacts > uses the focused team member run id when team focus changes 4ms
+   → Cannot read properties of undefined (reading 'trim')
+ × components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > shows focused member name in header 28ms
+   → expected 'professor' to be 'Professor' // Object.is equality
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > does not render the token usage header chip 4ms
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > shows focused member status in header 1ms
+ × components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > shows focused member avatar in header when available 4ms
+   → expected false to be true // Object.is equality
+ × components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > does not silently substitute the team title for an unresolved exact focus address 5ms
+   → expected 'professor' to be 'missing-member' // Object.is equality
+ × components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > shows roster focus in the header when active execution falls back to the coordinator 1ms
+   → Cannot read properties of undefined (reading 'forEach')
+ × components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > keeps roster focus in the header after simplifying the shell controls 2ms
+   → expected 'professor' to be 'Student' // Object.is equality
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > opens selected team config from header action 3ms
+ × components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > seeds a new team config from the selected run without sharing nested global or member llmConfig 4ms
+   → expected { …(11) } to deeply equal ObjectContaining{…}
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > renders the focused monitor directly 4ms
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > passes the focused member run to the composer skill-improvement CTA 2ms
+ × components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > preserves the shared composer only for a focused subteam 1ms
+   → Initial Team focus must resolve to an Agent.
+ × components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > renders Messages without the removed Task Plan section 24ms
+   → expected 'Messages0 Messages' to contain '1 Messages'
+ × components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > keeps Team tab section expansion parent-owned with Messages open first 11ms
+   → Unable to get [data-test="team-delegated-tasks-body"] within: <div class="flex h-full flex-col overflow-hidden bg-white">
+  <section class="flex min-h-0 flex-col transition-all duration-300 ease-in-out flex-1" data-test="team-messages-section"><button type="button" class="flex flex-shrink-0 items-center justify-between border-b border-gray-200 bg-white px-3 py-2 text-left transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" data-test="team-messages-header" aria-expanded="true">
+      <div class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transform text-gray-500 transition-transform duration-300" data-test="team-messages-disclosure" aria-hidden="true">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+        <h3 class="text-xs font-bold leading-none tracking-wider text-gray-900">Messages</h3>
+      </div><span class="text-xs font-medium text-gray-600">0 Messages</span>
+    </button>
+    <div data-test="team-communication-panel" class="min-h-0 flex-1"></div>
+  </section>
+  <!--v-if-->
+</div>
+ × components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > opens Tasks immediately when the selected team already has delegated task entries 3ms
+   → Team topology contains duplicate canonical addresses.
+ × components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > opens Tasks when delegated task entries appear while mounted 5ms
+   → Unable to get [data-test="team-delegated-tasks-body"] within: <div class="flex h-full flex-col overflow-hidden bg-white">
+  <section class="flex min-h-0 flex-col transition-all duration-300 ease-in-out flex-1" data-test="team-messages-section"><button type="button" class="flex flex-shrink-0 items-center justify-between border-b border-gray-200 bg-white px-3 py-2 text-left transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" data-test="team-messages-header" aria-expanded="true">
+      <div class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transform text-gray-500 transition-transform duration-300" data-test="team-messages-disclosure" aria-hidden="true">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+        <h3 class="text-xs font-bold leading-none tracking-wider text-gray-900">Messages</h3>
+      </div><span class="text-xs font-medium text-gray-600">0 Messages</span>
+    </button>
+    <div data-test="team-communication-panel" class="min-h-0 flex-1"></div>
+  </section>
+  <!--v-if-->
+</div>
+ × components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > preserves manual collapse for the same task set but reopens for a new task identity 2ms
+   → Team topology contains duplicate canonical addresses.
+ × components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > resets Messages open when the selected team run changes without taking over message identity 5ms
+   → Unable to get [data-test="team-delegated-tasks-header"] within: <div class="flex h-full flex-col overflow-hidden bg-white">
+  <section class="flex min-h-0 flex-col transition-all duration-300 ease-in-out flex-1" data-test="team-messages-section"><button type="button" class="flex flex-shrink-0 items-center justify-between border-b border-gray-200 bg-white px-3 py-2 text-left transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" data-test="team-messages-header" aria-expanded="true">
+      <div class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transform text-gray-500 transition-transform duration-300" data-test="team-messages-disclosure" aria-hidden="true">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+        <h3 class="text-xs font-bold leading-none tracking-wider text-gray-900">Messages</h3>
+      </div><span class="text-xs font-medium text-gray-600">0 Messages</span>
+    </button>
+    <div data-test="team-communication-panel" class="min-h-0 flex-1"></div>
+  </section>
+  <!--v-if-->
+</div>
+ × components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > opens Tasks when the selected team run changes to another run with delegated task entries 6ms
+   → Unable to get [data-test="team-delegated-tasks-body"] within: <div class="flex h-full flex-col overflow-hidden bg-white">
+  <section class="flex min-h-0 flex-col transition-all duration-300 ease-in-out flex-1" data-test="team-messages-section"><button type="button" class="flex flex-shrink-0 items-center justify-between border-b border-gray-200 bg-white px-3 py-2 text-left transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" data-test="team-messages-header" aria-expanded="true">
+      <div class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transform text-gray-500 transition-transform duration-300" data-test="team-messages-disclosure" aria-hidden="true">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+        <h3 class="text-xs font-bold leading-none tracking-wider text-gray-900">Messages</h3>
+      </div><span class="text-xs font-medium text-gray-600">0 Messages</span>
+    </button>
+    <div data-test="team-communication-panel" class="min-h-0 flex-1"></div>
+  </section>
+  <!--v-if-->
+</div>
+ × components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > counts and passes route/path identity for a focused subteam without a member run id 2ms
+   → Initial Team focus must resolve to an Agent.
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 24 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts > useMobileFocusedRunIdentity > resolves the focused leaf member run for selected team contexts
+TypeError: Cannot read properties of undefined (reading 'trim')
+ ❯ Proxy.setRunSelection stores/agentSelectionStore.ts:33:32
+     31|   actions: {
+     32|     setRunSelection(runId: string, type: Exclude<SelectionType, 'team_…
+     33|       const normalized = runId.trim();
+       |                                ^
+     34|       if (!normalized) throw new Error('Run selection requires a real …
+     35|       this.subject = type === 'agent'
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ Proxy.selectRunWithoutShellNavigation stores/agentSelectionStore.ts:43:113
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ seedTeamRun composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts:78:28
+ ❯ composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts:142:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/24]⎯
+
+ FAIL  composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts > useMobileFocusedRunIdentity > rejects team contexts when selected team or focused route is stale
+TypeError: Cannot read properties of undefined (reading 'trim')
+ ❯ Proxy.setRunSelection stores/agentSelectionStore.ts:33:32
+     31|   actions: {
+     32|     setRunSelection(runId: string, type: Exclude<SelectionType, 'team_…
+     33|       const normalized = runId.trim();
+       |                                ^
+     34|       if (!normalized) throw new Error('Run selection requires a real …
+     35|       this.subject = type === 'agent'
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ Proxy.selectRunWithoutShellNavigation stores/agentSelectionStore.ts:43:113
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ seedTeamRun composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts:78:28
+ ❯ composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts:156:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/24]⎯
+
+ FAIL  components/mobile/__tests__/MobileArtifacts.spec.ts > MobileArtifacts > uses the focused team member run id when team focus changes
+TypeError: Cannot read properties of undefined (reading 'trim')
+ ❯ Proxy.setRunSelection stores/agentSelectionStore.ts:33:32
+     31|   actions: {
+     32|     setRunSelection(runId: string, type: Exclude<SelectionType, 'team_…
+     33|       const normalized = runId.trim();
+       |                                ^
+     34|       if (!normalized) throw new Error('Run selection requires a real …
+     35|       this.subject = type === 'agent'
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ Proxy.selectRunWithoutShellNavigation stores/agentSelectionStore.ts:43:113
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ seedActiveTeamRun components/mobile/__tests__/MobileArtifacts.spec.ts:107:28
+ ❯ components/mobile/__tests__/MobileArtifacts.spec.ts:199:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/24]⎯
+
+ FAIL  components/workspace/running/__tests__/RunningTeamRow.spec.ts > RunningTeamRow > renders exact-run activity independently from subscription, members, and row action
+TypeError: Cannot add property isSubscribed, object is not extensible
+ ❯ components/workspace/running/__tests__/RunningTeamRow.spec.ts:47:13
+     45|   it('renders exact-run activity independently from subscription, memb…
+     46|     const teamRun = buildTeamContext() as any;
+     47|     teamRun.isSubscribed = false;
+       |             ^
+     48|     const wrapper = mountRow(teamRun);
+     49| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/24]⎯
+
+ FAIL  components/workspace/running/__tests__/RunningTeamRow.spec.ts > RunningTeamRow > filters initializing task-only logical members from active running rows
+AssertionError: expected 'false' to be 'true' // Object.is equality
+
+Expected: "true"
+Received: "false"
+
+ ❯ components/workspace/running/__tests__/RunningTeamRow.spec.ts:81:48
+     79|     const rows = wrapper.findAll('.member-row');
+     80|     expect(rows.map((row) => row.attributes('data-address'))).toEqual(…
+     81|     expect(rows[0].attributes('data-focused')).toBe('true');
+       |                                                ^
+     82|     expect(wrapper.text()).not.toContain('Worker');
+     83|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/24]⎯
+
+ FAIL  components/workspace/running/__tests__/RunningTeamRow.spec.ts > RunningTeamRow > keeps logical members with direct conversation history visible in the running sidebar
+TypeError: Cannot read properties of undefined (reading 'get')
+ ❯ components/workspace/running/__tests__/RunningTeamRow.spec.ts:87:49
+     85|   it('keeps logical members with direct conversation history visible i…
+     86|     const teamRun = buildTeamContext();
+     87|     const worker = teamRun.agentExecutionsByKey.get(serializeTeamExecu…
+       |                                                 ^
+     88|       rootTeamRunId: teamRun.teamRunId,
+     89|       memberAddress: '/worker',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/24]⎯
+
+ FAIL  components/workspace/running/__tests__/RunningTeamRow.spec.ts > RunningTeamRow > does not keep a logical worker visible when its only conversation is a task-agent work packet
+TypeError: Cannot read properties of undefined (reading 'get')
+ ❯ components/workspace/running/__tests__/RunningTeamRow.spec.ts:107:49
+    105|   it('does not keep a logical worker visible when its only conversatio…
+    106|     const teamRun = buildTeamContext();
+    107|     const worker = teamRun.agentExecutionsByKey.get(serializeTeamExecu…
+       |                                                 ^
+    108|       rootTeamRunId: teamRun.teamRunId,
+    109|       memberAddress: '/worker',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/24]⎯
+
+ FAIL  components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts > AgentTeamEventMonitor.vue > uses roster focus for displayed Focus history while active execution can remain on the coordinator
+TypeError: Cannot add property focusedExecutionAddress, object is not extensible
+ ❯ components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts:164:29
+    162| 
+    163|   it('uses roster focus for displayed Focus history while active execu…
+    164|     state.activeTeamContext.focusedExecutionAddress = createTeamExecut…
+       |                             ^
+    165|     state.focusedMemberContext = state.activeTeamContext.agentExecutio…
+    166|     state.focusedMemberNode = state.activeTeamContext.memberNodesByAdd…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/24]⎯
+
+ FAIL  components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts > AgentTeamEventMonitor.vue > does not render task-agent work packets as the logical parent conversation
+TypeError: Cannot read properties of undefined (reading 'get')
+ ❯ components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts:188:73
+    186|   it('does not render task-agent work packets as the logical parent co…
+    187|     const studentAddress = createTeamExecutionAddress({ rootTeamRunId:…
+    188|     const studentContext = state.activeTeamContext.agentExecutionsByKe…
+       |                                                                         ^
+    189|     studentContext.state.conversation.messages.push({
+    190|       type: 'user',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/24]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > renders Messages without the removed Task Plan section
+AssertionError: expected 'Messages0 Messages' to contain '1 Messages'
+
+Expected: "1 Messages"
+Received: "Messages0 Messages"
+
+ ❯ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:166:70
+    164|     expect(wrapper.text()).not.toContain('Task Plan');
+    165|     expect(wrapper.text()).not.toContain('No task plan yet');
+    166|     expect(wrapper.get('[data-test="team-messages-header"]').text()).t…
+       |                                                                      ^
+    167|     expect(wrapper.get('[data-test="team-delegated-tasks-header"]').te…
+    168|     expect(wrapper.find('[data-test="team-messages-disclosure"]').exis…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/24]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > keeps Team tab section expansion parent-owned with Messages open first
+Error: Unable to get [data-test="team-delegated-tasks-body"] within: <div class="flex h-full flex-col overflow-hidden bg-white">
+  <section class="flex min-h-0 flex-col transition-all duration-300 ease-in-out flex-1" data-test="team-messages-section"><button type="button" class="flex flex-shrink-0 items-center justify-between border-b border-gray-200 bg-white px-3 py-2 text-left transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" data-test="team-messages-header" aria-expanded="true">
+      <div class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transform text-gray-500 transition-transform duration-300" data-test="team-messages-disclosure" aria-hidden="true">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+        <h3 class="text-xs font-bold leading-none tracking-wider text-gray-900">Messages</h3>
+      </div><span class="text-xs font-medium text-gray-600">0 Messages</span>
+    </button>
+    <div data-test="team-communication-panel" class="min-h-0 flex-1"></div>
+  </section>
+  <!--v-if-->
+</div>
+ ❯ VueWrapper.BaseWrapper.get ../node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7279:15
+    7277|             return result;
+    7278|         }
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+       |               ^
+    7280|     };
+    7281|     BaseWrapper.prototype.getComponent = function (selector) {
+ ❯ delegatedTasksBodyIsVisible components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:146:13
+ ❯ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:180:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/24]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > opens Tasks immediately when the selected team already has delegated task entries
+Error: Team topology contains duplicate canonical addresses.
+ ❯ createTeamTopologySnapshot services/teamExecution/teamTopologySnapshot.ts:127:46
+    125|   const nodes = collectNodes(rootTeam);
+    126|   const byAddress = new Map(nodes.map((node) => [node.address, node] a…
+    127|   if (byAddress.size !== nodes.length) throw new Error('Team topology …
+       |                                              ^
+    128|   const configuration = freezeConfigurationView(input.configuration);
+    129|   return Object.freeze({
+ ❯ buildTeamRunFrontendProjection services/teamExecution/teamRunFrontendProjectionBuilder.ts:24:20
+ ❯ buildTestTeamContext test-support/currentTeamTestFixtures.ts:275:19
+ ❯ seedActiveTeam components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:67:46
+ ❯ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:192:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/24]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > opens Tasks when delegated task entries appear while mounted
+Error: Unable to get [data-test="team-delegated-tasks-body"] within: <div class="flex h-full flex-col overflow-hidden bg-white">
+  <section class="flex min-h-0 flex-col transition-all duration-300 ease-in-out flex-1" data-test="team-messages-section"><button type="button" class="flex flex-shrink-0 items-center justify-between border-b border-gray-200 bg-white px-3 py-2 text-left transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" data-test="team-messages-header" aria-expanded="true">
+      <div class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transform text-gray-500 transition-transform duration-300" data-test="team-messages-disclosure" aria-hidden="true">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+        <h3 class="text-xs font-bold leading-none tracking-wider text-gray-900">Messages</h3>
+      </div><span class="text-xs font-medium text-gray-600">0 Messages</span>
+    </button>
+    <div data-test="team-communication-panel" class="min-h-0 flex-1"></div>
+  </section>
+  <!--v-if-->
+</div>
+ ❯ VueWrapper.BaseWrapper.get ../node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7279:15
+    7277|             return result;
+    7278|         }
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+       |               ^
+    7280|     };
+    7281|     BaseWrapper.prototype.getComponent = function (selector) {
+ ❯ delegatedTasksBodyIsVisible components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:146:13
+ ❯ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:205:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/24]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > preserves manual collapse for the same task set but reopens for a new task identity
+Error: Team topology contains duplicate canonical addresses.
+ ❯ createTeamTopologySnapshot services/teamExecution/teamTopologySnapshot.ts:127:46
+    125|   const nodes = collectNodes(rootTeam);
+    126|   const byAddress = new Map(nodes.map((node) => [node.address, node] a…
+    127|   if (byAddress.size !== nodes.length) throw new Error('Team topology …
+       |                                              ^
+    128|   const configuration = freezeConfigurationView(input.configuration);
+    129|   return Object.freeze({
+ ❯ buildTeamRunFrontendProjection services/teamExecution/teamRunFrontendProjectionBuilder.ts:24:20
+ ❯ buildTestTeamContext test-support/currentTeamTestFixtures.ts:275:19
+ ❯ seedActiveTeam components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:67:46
+ ❯ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:222:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/24]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > resets Messages open when the selected team run changes without taking over message identity
+Error: Unable to get [data-test="team-delegated-tasks-header"] within: <div class="flex h-full flex-col overflow-hidden bg-white">
+  <section class="flex min-h-0 flex-col transition-all duration-300 ease-in-out flex-1" data-test="team-messages-section"><button type="button" class="flex flex-shrink-0 items-center justify-between border-b border-gray-200 bg-white px-3 py-2 text-left transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" data-test="team-messages-header" aria-expanded="true">
+      <div class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transform text-gray-500 transition-transform duration-300" data-test="team-messages-disclosure" aria-hidden="true">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+        <h3 class="text-xs font-bold leading-none tracking-wider text-gray-900">Messages</h3>
+      </div><span class="text-xs font-medium text-gray-600">0 Messages</span>
+    </button>
+    <div data-test="team-communication-panel" class="min-h-0 flex-1"></div>
+  </section>
+  <!--v-if-->
+</div>
+ ❯ VueWrapper.BaseWrapper.get ../node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7279:15
+    7277|             return result;
+    7278|         }
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+       |               ^
+    7280|     };
+    7281|     BaseWrapper.prototype.getComponent = function (selector) {
+ ❯ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:253:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/24]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > opens Tasks when the selected team run changes to another run with delegated task entries
+Error: Unable to get [data-test="team-delegated-tasks-body"] within: <div class="flex h-full flex-col overflow-hidden bg-white">
+  <section class="flex min-h-0 flex-col transition-all duration-300 ease-in-out flex-1" data-test="team-messages-section"><button type="button" class="flex flex-shrink-0 items-center justify-between border-b border-gray-200 bg-white px-3 py-2 text-left transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" data-test="team-messages-header" aria-expanded="true">
+      <div class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transform text-gray-500 transition-transform duration-300" data-test="team-messages-disclosure" aria-hidden="true">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+        <h3 class="text-xs font-bold leading-none tracking-wider text-gray-900">Messages</h3>
+      </div><span class="text-xs font-medium text-gray-600">0 Messages</span>
+    </button>
+    <div data-test="team-communication-panel" class="min-h-0 flex-1"></div>
+  </section>
+  <!--v-if-->
+</div>
+ ❯ VueWrapper.BaseWrapper.get ../node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7279:15
+    7277|             return result;
+    7278|         }
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+       |               ^
+    7280|     };
+    7281|     BaseWrapper.prototype.getComponent = function (selector) {
+ ❯ delegatedTasksBodyIsVisible components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:146:13
+ ❯ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:270:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/24]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > counts and passes route/path identity for a focused subteam without a member run id
+Error: Initial Team focus must resolve to an Agent.
+ ❯ buildTeamRunFrontendProjection services/teamExecution/teamRunFrontendProjectionBuilder.ts:44:59
+     42|   });
+     43|   const focusedNode = topology.getNode(initialFocusedAddress.memberAdd…
+     44|   if (!focusedNode || focusedNode.kind !== 'agent') throw new Error('I…
+       |                                                           ^
+     45|   const executions = createTeamExecutionState({
+     46|     rootTeamRunId,
+ ❯ buildTestTeamContext test-support/currentTeamTestFixtures.ts:275:19
+ ❯ seedFocusedSubteam components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:111:46
+ ❯ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts:281:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/24]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > shows focused member name in header
+AssertionError: expected 'professor' to be 'Professor' // Object.is equality
+
+Expected: "Professor"
+Received: "professor"
+
+ ❯ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts:160:39
+    158|   it('shows focused member name in header', () => {
+    159|     const wrapper = mountComponent();
+    160|     expect(wrapper.find('h4').text()).toBe('Professor');
+       |                                       ^
+    161|   });
+    162| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/24]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > shows focused member avatar in header when available
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts:176:29
+    174|     const wrapper = mountComponent();
+    175|     const avatar = wrapper.find('img[alt="Professor avatar"]');
+    176|     expect(avatar.exists()).toBe(true);
+       |                             ^
+    177|     expect(avatar.attributes('src')).toBe('https://example.com/profess…
+    178|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/24]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > does not silently substitute the team title for an unresolved exact focus address
+AssertionError: expected 'professor' to be 'missing-member' // Object.is equality
+
+Expected: "missing-member"
+Received: "professor"
+
+ ❯ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts:188:39
+    186|     });
+    187|     const wrapper = mountComponent();
+    188|     expect(wrapper.find('h4').text()).toBe('missing-member');
+       |                                       ^
+    189|   });
+    190| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/24]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > shows roster focus in the header when active execution falls back to the coordinator
+TypeError: Cannot read properties of undefined (reading 'forEach')
+ ❯ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts:195:34
+    193|       focusedExecutionAddress: createTeamExecutionAddress({ rootTeamRu…
+    194|     });
+    195|     context.agentExecutionsByKey.forEach((candidate: any) => {
+       |                                  ^
+    196|       if (candidate.state.runId === 'student-run') candidate.state.cur…
+    197|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/24]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > keeps roster focus in the header after simplifying the shell controls
+AssertionError: expected 'professor' to be 'Student' // Object.is equality
+
+Expected: "Student"
+Received: "professor"
+
+ ❯ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts:213:39
+    211|     const wrapper = mountComponent();
+    212| 
+    213|     expect(wrapper.find('h4').text()).toBe('Student');
+       |                                       ^
+    214|   });
+    215| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/24]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > seeds a new team config from the selected run without sharing nested global or member llmConfig
+AssertionError: expected { …(11) } to deeply equal ObjectContaining{…}
+
+- Expected
++ Received
+
+- ObjectContaining {
++ {
++   "autoExecuteTools": true,
+    "isLocked": false,
+-   "llmConfig": {
+-     "nested": {
+-       "values": [
+-         "xhigh",
+-       ],
+-     },
+-     "reasoning_effort": "xhigh",
+-   },
+-   "memberOverrides": ObjectContaining {
+-     "professor": ObjectContaining {
+-       "llmConfig": {
+-         "nested": {
+-           "values": [
+-             "medium",
+-           ],
+-         },
+-         "reasoning_effort": "medium",
+-       },
+-     },
+-   },
++   "llmConfig": null,
++   "llmModelIdentifier": "test-model",
++   "memberOverrides": {},
++   "runtimeKind": "autobyteus",
++   "skillAccessMode": "NONE",
++   "teamDefinitionId": "team-def-1",
++   "teamDefinitionName": "Class Room Simulation",
++   "workspaceId": null,
++   "workspaceMetadata": null,
+  }
+
+ ❯ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts:255:18
+    253| 
+    254|     const seed = teamRunConfigStoreMock.setConfig.mock.calls[0]?.[0];
+    255|     expect(seed).toEqual(expect.objectContaining({
+       |                  ^
+    256|       isLocked: false,
+    257|       llmConfig: {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/24]⎯
+
+ FAIL  components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > preserves the shared composer only for a focused subteam
+Error: Initial Team focus must resolve to an Agent.
+ ❯ buildTeamRunFrontendProjection services/teamExecution/teamRunFrontendProjectionBuilder.ts:44:59
+     42|   });
+     43|   const focusedNode = topology.getNode(initialFocusedAddress.memberAdd…
+     44|   if (!focusedNode || focusedNode.kind !== 'agent') throw new Error('I…
+       |                                                           ^
+     45|   const executions = createTeamExecutionState({
+     46|     rootTeamRunId,
+ ❯ Module.buildTestTeamContext test-support/currentTeamTestFixtures.ts:275:19
+ ❯ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts:304:10
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/24]⎯
+
+
+ Test Files  6 failed (6)
+      Tests  24 failed | 12 passed (36)
+   Start at  21:39:17
+   Duration  8.35s (transform 4.23s, setup 41.58s, collect 2.03s, tests 225ms, environment 1.78s, prepare 1.39s)
+

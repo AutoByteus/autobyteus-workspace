@@ -36,13 +36,13 @@ const taskStatsQuery = `
   query CanonicalTokenStats($start: DateTime!, $end: DateTime!) {
     tokenUsageTaskStatisticsInPeriod(startTime: $start, endTime: $end) {
       rows {
-        rowKind rootTeamRunId memberAddress taskTeamRunId taskAgentRunId executionAddress displayName
+        rowKind runId taskId executionAddress displayName
         aggregate { grossInputTokens outputTokens totalTokens estimatedApiTotalCost }
         children {
-          rowKind rootTeamRunId memberAddress taskTeamRunId taskAgentRunId executionAddress displayName
+          rowKind runId taskId executionAddress displayName
           aggregate { grossInputTokens outputTokens totalTokens estimatedApiTotalCost }
           children {
-            rowKind rootTeamRunId memberAddress taskTeamRunId taskAgentRunId executionAddress displayName
+            rowKind runId taskId executionAddress displayName
             aggregate { grossInputTokens outputTokens totalTokens estimatedApiTotalCost }
           }
         }
@@ -54,10 +54,8 @@ const taskStatsQuery = `
 
 type TaskRow = {
   rowKind: string;
-  rootTeamRunId: string | null;
-  memberAddress: string | null;
-  taskTeamRunId: string | null;
-  taskAgentRunId: string | null;
+  runId: string | null;
+  taskId: string | null;
   executionAddress: unknown | null;
   displayName: string;
   aggregate: {
@@ -200,11 +198,6 @@ const writeCurrentTeamFiles = async (input: {
   }, null, 2));
 };
 
-const emptyPlatformStateStore = {
-  listExistingPlatformDatabasePaths: () => [],
-  resolveApplicationIdForPlatformDatabasePath: () => null,
-};
-
 const execGraphql = async <T>(query: string, variables?: Record<string, unknown>): Promise<T> => {
   const result = await graphql({ schema, source: query, variableValues: variables });
   if (result.errors?.length) throw result.errors[0];
@@ -246,7 +239,7 @@ describe("canonical token execution-address migration GraphQL integration", () =
     await prisma.$disconnect();
   });
 
-  it("preserves the terminal historical record while canonical owner reparents rows and GraphQL exposes exact hierarchy", async () => {
+  it("preserves the terminal historical record while canonical owner writes exact addresses and GraphQL exposes hierarchy", async () => {
     const suffix = randomUUID();
     const rootTeamRunId = `canonical-root-${suffix}`;
     const taskTeamRunId = `canonical-task-team-${suffix}`;
@@ -322,7 +315,6 @@ describe("canonical token execution-address migration GraphQL integration", () =
         new TeamCanonicalIdentityMigration(
           memoryDir,
           path.join(tempRoot!, "app-data"),
-          emptyPlatformStateStore as never,
         ),
       ]),
       new AppDataMigrationRecordRepository(prisma),
@@ -344,17 +336,15 @@ describe("canonical token execution-address migration GraphQL integration", () =
 
     const persistedRows = await prisma.$queryRaw<Array<{
       usage_event_id: string;
-      root_team_run_id: string | null;
       execution_address_json: string | null;
     }>>`
-      SELECT "usage_event_id", "root_team_run_id", "execution_address_json"
+      SELECT "usage_event_id", "execution_address_json"
       FROM "token_usage_ledger_events"
       WHERE "usage_event_id" IN (${ids.teacher}, ${ids.student}, ${ids.taskAgent}, ${ids.standalone})`;
     const byId = new Map(persistedRows.map((row) => [row.usage_event_id, row]));
     expect(JSON.parse(byId.get(ids.teacher)!.execution_address_json!)).toEqual(
       executionAddress(rootTeamRunId, "/Teacher"),
     );
-    expect(byId.get(ids.student)!.root_team_run_id).toBe(rootTeamRunId);
     expect(JSON.parse(byId.get(ids.student)!.execution_address_json!)).toEqual(
       executionAddress(rootTeamRunId, "/StudentStudyGroup/student_one", [taskTeamRunId]),
     );
@@ -392,7 +382,8 @@ describe("canonical token execution-address migration GraphQL integration", () =
     )).toBe(false);
 
     const root = result.tokenUsageTaskStatisticsInPeriod.rows.find(
-      (row) => row.rootTeamRunId === rootTeamRunId,
+      (row) => row.rowKind === "TEAM_RUN"
+        && JSON.stringify(row.executionAddress) === JSON.stringify(executionAddress(rootTeamRunId, "/")),
     );
     expect(root).toMatchObject({
       rowKind: "TEAM_RUN",
@@ -405,12 +396,18 @@ describe("canonical token execution-address migration GraphQL integration", () =
     });
     const studentMember = root!.children.find(
       (row) => row.rowKind === "MEMBER_RUN"
-        && row.memberAddress === "/StudentStudyGroup/student_one",
+        && JSON.stringify(row.executionAddress) === JSON.stringify(
+          executionAddress(rootTeamRunId, "/StudentStudyGroup/student_one"),
+        ),
     );
-    const taskTeam = studentMember!.children.find((row) => row.taskTeamRunId === taskTeamRunId);
+    const taskTeam = studentMember!.children.find(
+      (row) => row.rowKind === "TASK_TEAM_RUN"
+        && JSON.stringify(row.executionAddress) === JSON.stringify(
+          executionAddress(rootTeamRunId, "/StudentStudyGroup/student_one", [taskTeamRunId]),
+        ),
+    );
     expect(taskTeam).toMatchObject({
       rowKind: "TASK_TEAM_RUN",
-      memberAddress: "/StudentStudyGroup/student_one",
       executionAddress: executionAddress(
         rootTeamRunId,
         "/StudentStudyGroup/student_one",
@@ -418,14 +415,19 @@ describe("canonical token execution-address migration GraphQL integration", () =
       ),
     });
     const assistantMember = root!.children.find(
-      (row) => row.rowKind === "MEMBER_RUN" && row.memberAddress === "/assistant",
+      (row) => row.rowKind === "MEMBER_RUN"
+        && JSON.stringify(row.executionAddress) === JSON.stringify(
+          executionAddress(rootTeamRunId, "/assistant"),
+        ),
     );
     expect(assistantMember!.children.find(
-      (row) => row.taskAgentRunId === `assistant-task-${suffix}`,
+      (row) => row.rowKind === "TASK_AGENT_RUN"
+        && JSON.stringify(row.executionAddress) === JSON.stringify(
+          executionAddress(rootTeamRunId, "/assistant", [], `assistant-task-${suffix}`),
+        ),
     ))
       .toMatchObject({
         rowKind: "TASK_AGENT_RUN",
-        memberAddress: "/assistant",
         executionAddress: executionAddress(
           rootTeamRunId,
           "/assistant",

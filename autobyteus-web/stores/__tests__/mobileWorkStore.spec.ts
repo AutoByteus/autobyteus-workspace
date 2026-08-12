@@ -2,6 +2,7 @@ import { createPinia, setActivePinia } from 'pinia';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { useMobileWorkStore } from '~/stores/mobileWorkStore';
 import type { MobileWorkContext } from '~/types/mobileWork';
+import { createTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
 const agentRunContext: MobileWorkContext = {
   kind: 'agent-run',
@@ -73,7 +74,7 @@ describe('mobileWorkStore', () => {
       title: 'Team',
       summary: 'Running team',
       workspaceRootPath: '/Users/normy/project',
-      focusedMemberRouteKey: 'builder',
+      focusedExecutionAddress: createTeamExecutionAddress({ rootTeamRunId: 'team-1', memberAddress: '/builder' }),
       isActive: true,
       lastActivityAt: '2026-05-18T16:00:00.000Z',
       statusLabel: 'Running',
@@ -88,7 +89,10 @@ describe('mobileWorkStore', () => {
       presentation: 'inline',
     });
 
-    expect(store.updateFocusedTeamMember('team-1', 'reviewer')).toBe(true);
+    expect(store.updateFocusedTeamMember('team-1', createTeamExecutionAddress({
+      rootTeamRunId: 'team-1',
+      memberAddress: '/reviewer',
+    }))).toBe(true);
     expect(store.pendingFilePreviewRequest).toBeNull();
   });
 });

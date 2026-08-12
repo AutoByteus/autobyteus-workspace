@@ -5,30 +5,30 @@ import { PrismaClient } from "@prisma/client";
 import { describe, expect, it, vi } from "vitest";
 import { TeamCanonicalIdentityMigration } from "../../../src/app-data-migrations/migrations/team-canonical-identity-migration.js";
 import {
-  PrismaTokenUsageCanonicalExecutionAddressMigrationStore,
-  type TokenUsageCanonicalExecutionAddressMigrationStore,
-  type TokenUsageCanonicalExecutionAddressUpdate,
-} from "../../../src/app-data-migrations/migrations/token-usage-canonical-execution-address-migration-store.js";
+  PrismaTokenUsageCanonicalIdentityMigrationStore,
+  type TokenUsageCanonicalIdentityMigrationStore,
+  type TokenUsageCanonicalIdentityUpdate,
+} from "../../../src/app-data-migrations/migrations/token-usage-canonical-identity-migration-store.js";
 import { TokenUsageCanonicalExecutionAddressMigrator } from "../../../src/app-data-migrations/migrations/token-usage-canonical-execution-address-migrator.js";
-import type { RawTokenUsageLedgerBackfillRow } from "../../../src/app-data-migrations/migrations/token-usage-execution-address-backfill-planner.js";
+import type { RawTokenUsageLedgerBackfillRow } from "../../../src/app-data-migrations/migrations/token-usage-canonical-execution-address-planner.js";
 
-class InMemoryMigrationStore implements TokenUsageCanonicalExecutionAddressMigrationStore {
-  readonly appliedBatches: readonly TokenUsageCanonicalExecutionAddressUpdate[][] = [];
+class InMemoryMigrationStore implements TokenUsageCanonicalIdentityMigrationStore {
+  readonly appliedBatches: readonly TokenUsageCanonicalIdentityUpdate[][] = [];
   readonly listRows = vi.fn(async (): Promise<readonly RawTokenUsageLedgerBackfillRow[]> =>
     this.rows.map((row) => ({ ...row })));
 
   constructor(readonly rows: RawTokenUsageLedgerBackfillRow[]) {}
 
-  readonly applyCanonicalExecutionAddressBatch = vi.fn(async (
-    updates: readonly TokenUsageCanonicalExecutionAddressUpdate[],
+  readonly applyCanonicalTeamIdentityTransaction = vi.fn(async (
+    updates: readonly TokenUsageCanonicalIdentityUpdate[],
   ): Promise<void> => {
-    (this.appliedBatches as TokenUsageCanonicalExecutionAddressUpdate[][]).push(
+    (this.appliedBatches as TokenUsageCanonicalIdentityUpdate[][]).push(
       updates.map((update) => ({ ...update })),
     );
     for (const update of updates) {
       const row = this.rows.find((candidate) => candidate.id === update.id);
       if (!row) throw new Error(`Missing row ${update.id}`);
-      row.root_team_run_id = update.rootTeamRunId;
+      row.root_team_run_id = JSON.parse(update.executionAddressJson).rootTeamRunId as string;
       row.execution_address_json = update.executionAddressJson;
     }
   });
@@ -115,6 +115,35 @@ const emptyPlatformStateStore = {
   resolveApplicationIdForPlatformDatabasePath: () => null,
 };
 
+const TOKEN_USAGE_MIGRATION_SQL_FILES = Object.freeze([
+  "20260624090000_add_token_usage_ledger_events/migration.sql",
+  "20260625193000_token_usage_component_pricing_explainability/migration.sql",
+  "20260629120000_add_token_usage_display_fields/migration.sql",
+  "20260702093000_token_usage_execution_address/migration.sql",
+  "20260730090000_add_token_usage_provider_name/migration.sql",
+  "20260801090000_token_usage_member_display_name/migration.sql",
+] as const);
+
+const createIsolatedLegacyTokenDatabase = async (): Promise<{
+  tempRoot: string;
+  prisma: PrismaClient;
+}> => {
+  const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "token-canonical-transaction-"));
+  const prisma = new PrismaClient({
+    datasources: { db: { url: `file:${path.join(tempRoot, "test.db")}` } },
+  });
+  for (const relativePath of TOKEN_USAGE_MIGRATION_SQL_FILES) {
+    const sql = await fs.readFile(
+      path.join(process.cwd(), "prisma", "migrations", relativePath),
+      "utf-8",
+    );
+    for (const statement of sql.split(";").map((entry) => entry.trim()).filter(Boolean)) {
+      await prisma.$executeRawUnsafe(statement);
+    }
+  }
+  return { tempRoot, prisma };
+};
+
 describe("canonical token execution-address migration", () => {
   it("reconstructs direct, task-Agent, and nested task-Team addresses and is exact-current idempotent", async () => {
     nextRowId = 1;
@@ -162,7 +191,7 @@ describe("canonical token execution-address migration", () => {
       const first = await new TokenUsageCanonicalExecutionAddressMigrator(memoryDir, store).migrate();
 
       expect(first.filter((detail) => detail.status === "FAILED")).toEqual([]);
-      expect(store.applyCanonicalExecutionAddressBatch).toHaveBeenCalledTimes(1);
+      expect(store.applyCanonicalTeamIdentityTransaction).toHaveBeenCalledTimes(1);
       expect(parseAddress(rows[0]!)).toEqual(executionAddress("rootA", "/Teacher"));
       expect(rows[1]!.root_team_run_id).toBe("rootA");
       expect(parseAddress(rows[1]!)).toEqual(
@@ -184,7 +213,8 @@ describe("canonical token execution-address migration", () => {
         secondStore,
       ).migrate();
       expect(second.filter((detail) => detail.status === "FAILED")).toEqual([]);
-      expect(secondStore.applyCanonicalExecutionAddressBatch).not.toHaveBeenCalled();
+      expect(secondStore.applyCanonicalTeamIdentityTransaction).toHaveBeenCalledTimes(1);
+      expect(secondStore.appliedBatches).toEqual([[]]);
       expect(second.every((detail) => detail.status === "SKIPPED")).toBe(true);
     } finally {
       await fs.rm(tempRoot, { recursive: true, force: true });
@@ -204,7 +234,7 @@ describe("canonical token execution-address migration", () => {
 
     expect(details).toHaveLength(1);
     expect(detailText(details)).toContain("lacks a reconstructable canonical execution address");
-    expect(store.applyCanonicalExecutionAddressBatch).not.toHaveBeenCalled();
+    expect(store.applyCanonicalTeamIdentityTransaction).not.toHaveBeenCalled();
     expect(store.rows.every((row) => row.execution_address_json === null)).toBe(true);
   });
 
@@ -224,14 +254,14 @@ describe("canonical token execution-address migration", () => {
 
       expect(detailText(details)).toContain("Cannot read strict current task records");
       expect(store.listRows).not.toHaveBeenCalled();
-      expect(store.applyCanonicalExecutionAddressBatch).not.toHaveBeenCalled();
+      expect(store.applyCanonicalTeamIdentityTransaction).not.toHaveBeenCalled();
     } finally {
       await fs.rm(tempRoot, { recursive: true, force: true });
     }
   });
 
   it("rolls back an earlier Prisma row when a later update affects no row, then commits a repaired batch", async () => {
-    const prisma = new PrismaClient();
+    const { tempRoot, prisma } = await createIsolatedLegacyTokenDatabase();
     const eventOne = `canonical-atomic-one-${Date.now()}`;
     const eventTwo = `canonical-atomic-two-${Date.now()}`;
     try {
@@ -258,11 +288,11 @@ describe("canonical token execution-address migration", () => {
       const [first, second] = persisted;
       const firstAddress = JSON.stringify(executionAddress("root-after", "/Teacher"));
       const secondAddress = JSON.stringify(executionAddress("root-after", "/Student"));
-      const store = new PrismaTokenUsageCanonicalExecutionAddressMigrationStore(prisma);
+      const store = new PrismaTokenUsageCanonicalIdentityMigrationStore(prisma);
 
-      await expect(store.applyCanonicalExecutionAddressBatch([
-        { id: first!.id, rootTeamRunId: "root-after", executionAddressJson: firstAddress },
-        { id: 999_999_999, rootTeamRunId: "root-after", executionAddressJson: secondAddress },
+      await expect(store.applyCanonicalTeamIdentityTransaction([
+        { id: first!.id, executionAddressJson: firstAddress },
+        { id: 999_999_999, executionAddressJson: secondAddress },
       ])).rejects.toThrow("expected exactly one");
 
       const afterRollback = await prisma.$queryRaw<Array<{
@@ -276,27 +306,40 @@ describe("canonical token execution-address migration", () => {
         execution_address_json: null,
       }]);
 
-      await store.applyCanonicalExecutionAddressBatch([
-        { id: second!.id, rootTeamRunId: "root-after", executionAddressJson: secondAddress },
-        { id: first!.id, rootTeamRunId: "root-after", executionAddressJson: firstAddress },
+      await store.applyCanonicalTeamIdentityTransaction([
+        { id: second!.id, executionAddressJson: secondAddress },
+        { id: first!.id, executionAddressJson: firstAddress },
       ]);
       const committed = await prisma.$queryRaw<Array<{
         id: number;
-        root_team_run_id: string | null;
         execution_address_json: string | null;
       }>>`
-        SELECT "id", "root_team_run_id", "execution_address_json"
+        SELECT "id", "execution_address_json"
         FROM "token_usage_ledger_events"
         WHERE "id" IN (${first!.id}, ${second!.id}) ORDER BY "id" ASC`;
       expect(committed).toEqual([
-        { id: first!.id, root_team_run_id: "root-after", execution_address_json: firstAddress },
-        { id: second!.id, root_team_run_id: "root-after", execution_address_json: secondAddress },
+        { id: first!.id, execution_address_json: firstAddress },
+        { id: second!.id, execution_address_json: secondAddress },
       ]);
+      const columns = await prisma.$queryRaw<Array<{ name: string }>>`
+        PRAGMA table_info("token_usage_ledger_events")`;
+      expect(columns.map((column) => column.name)).not.toEqual(expect.arrayContaining([
+        "root_team_run_id",
+        "team_run_path_json",
+        "member_agent_run_id",
+        "member_path_json",
+        "member_route_key",
+        "task_agent_instance_id",
+        "task_agent_run_id",
+      ]));
+      const indexes = await prisma.$queryRaw<Array<{ name: string }>>`
+        PRAGMA index_list("token_usage_ledger_events")`;
+      expect(indexes.map((index) => index.name)).toContain(
+        "token_usage_ledger_events_execution_root_observed_at_idx",
+      );
     } finally {
-      await prisma.tokenUsageLedgerEvent.deleteMany({
-        where: { usageEventId: { in: [eventOne, eventTwo] } },
-      });
       await prisma.$disconnect();
+      await fs.rm(tempRoot, { recursive: true, force: true });
     }
   });
 

@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { TeamStreamingService } from '../TeamStreamingService';
-import { createTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
+import { createTeamExecutionAddress, toTeamExecutionAddressDto } from '~/types/agent/TeamExecutionAddress';
+import { buildTestTeamContext, testAgentNode, testSubTeamNode } from '~/test-support/currentTeamTestFixtures';
 
 const addressCases = [
   {
@@ -56,16 +57,20 @@ const createHarness = (state = 'connected') => {
     wsClient,
     onInterruptCommandResult: commandResults,
   });
-  service.connect('team-1', {
+  const team = buildTestTeamContext({
     teamRunId: 'team-1',
-    config: {},
-    rootTeam: { children: [] },
-    memberNodesByAddress: new Map(),
-    agentExecutionsByKey: new Map(),
-    focusedExecutionAddress: addressCases[0]!.address,
-    isActive: true,
-    isSubscribed: true,
-  } as any);
+    coordinatorAddress: '/worker',
+    rootChildren: [
+      testAgentNode('/worker', { agentRunId: 'worker-run' }),
+      testSubTeamNode('/BuildSquad', [
+        testAgentNode('/BuildSquad/reviewer', { agentRunId: 'reviewer-run' }),
+        testSubTeamNode('/BuildSquad/ReviewCell', [
+          testAgentNode('/BuildSquad/ReviewCell/reviewer', { agentRunId: 'nested-reviewer-run' }),
+        ], { coordinatorAddress: '/BuildSquad/ReviewCell/reviewer' }),
+      ], { coordinatorAddress: '/BuildSquad/reviewer' }),
+    ],
+  });
+  service.connect('team-1', team);
   return { callbacks, commandResults, service, wsClient };
 };
 
@@ -87,7 +92,7 @@ describe('TeamStreamingService exact execution-address serialization', () => {
         content: 'perform exact work',
         context_file_paths: ['/tmp/context.txt'],
         image_urls: ['https://example.invalid/image.png'],
-        execution_address: address,
+        execution_address: toTeamExecutionAddressDto(address),
         message_id: 'message-1',
         dedupe_key: 'dedupe-1',
       },
@@ -103,33 +108,21 @@ describe('TeamStreamingService exact execution-address serialization', () => {
       type: 'INTERRUPT_GENERATION',
       payload: {
         command_id: 'interrupt-1',
-        execution_address: address,
+        execution_address: toTeamExecutionAddressDto(address),
       },
     });
   });
 
-  it.each(addressCases)('echoes the complete $name address for tool approval', ({ address }) => {
-    const { callbacks, service, wsClient } = createHarness();
-    callbacks.get('onMessage')?.(JSON.stringify({
-      type: 'TOOL_APPROVAL_REQUESTED',
-      payload: {
-        invocation_id: 'invocation-1',
-        tool_name: 'run_bash',
-        arguments: { command: 'pwd' },
-        execution_address: address,
-        approval_token: { invocationId: 'invocation-1', invocationVersion: 1 },
-      },
-    }));
-
-    service.approveTool('invocation-1', null, 'approved by user');
+  it.each(addressCases)('echoes the complete explicit $name address for tool approval', ({ address }) => {
+    const { service, wsClient } = createHarness();
+    service.approveTool('invocation-1', { executionAddress: address }, 'approved by user');
 
     expect(sent(wsClient)).toEqual({
       type: 'APPROVE_TOOL',
       payload: {
         invocation_id: 'invocation-1',
-        execution_address: address,
+        execution_address: toTeamExecutionAddressDto(address),
         reason: 'approved by user',
-        approval_token: { invocationId: 'invocation-1', invocationVersion: 1 },
       },
     });
   });
@@ -144,7 +137,7 @@ describe('TeamStreamingService exact execution-address serialization', () => {
       type: 'DENY_TOOL',
       payload: {
         invocation_id: 'invocation-denied',
-        execution_address: address,
+        execution_address: toTeamExecutionAddressDto(address),
         reason: 'not approved',
       },
     });
@@ -182,14 +175,10 @@ describe('TeamStreamingService exact execution-address serialization', () => {
         command_type: 'INTERRUPT_GENERATION',
         command_id: 'interrupt-ack',
         state: 'accepted',
-        target: {
-          target_kind: 'team_member',
-          team_run_id: 'team-1',
-          execution_address: {
-            ...address,
-            taskTeamRunIds: ['task-team-outer'],
-          },
-        },
+        execution_address: toTeamExecutionAddressDto(createTeamExecutionAddress({
+          ...address,
+          taskTeamRunIds: ['task-team-outer'],
+        })),
       },
     }));
     expect(commandResults).not.toHaveBeenCalled();
@@ -200,11 +189,7 @@ describe('TeamStreamingService exact execution-address serialization', () => {
         command_type: 'INTERRUPT_GENERATION',
         command_id: 'interrupt-ack',
         state: 'accepted',
-        target: {
-          target_kind: 'team_member',
-          team_run_id: 'team-1',
-          execution_address: address,
-        },
+        execution_address: toTeamExecutionAddressDto(address),
       },
     }));
     expect(commandResults).toHaveBeenCalledOnce();

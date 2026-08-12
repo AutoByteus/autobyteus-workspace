@@ -16,7 +16,6 @@ import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.
 import { AgentDefinition } from "../../../../../src/agent-definition/domain/models.js";
 import { AutoByteusAgentRunBackendFactory } from "../../../../../src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js";
 import { AgentRunConfig } from "../../../../../src/agent-execution/domain/agent-run-config.js";
-import type { TaskAgentInstanceIdentity } from "../../../../../src/agent-team-execution/domain/task-agent-instance.js";
 import { TeamBackendKind } from "../../../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { buildTaskDelegationToolContextFromNativeContext } from "../../../../../src/agent-tools/task-delegation/task-delegation-autobyteus-context.js";
 import { registerAgentCommunicationTools } from "../../../../../src/agent-tools/agent-communication/register-agent-communication-tools.js";
@@ -61,12 +60,17 @@ const createToolDefinition = (toolClass: typeof DummyTool, category: ToolCategor
     toolClass,
   });
 
+type TaskAgentContextFacts = Readonly<{
+  taskAgentRunId: string;
+  taskId: string;
+}>;
+
 const createMemberTeamContext = (
   _teamBackendKind: TeamBackendKind,
   deliverInterAgentMessage: ReturnType<typeof vi.fn> = vi
     .fn()
     .mockResolvedValue({ accepted: true }),
-  taskAgentInstance: TaskAgentInstanceIdentity | null = null,
+  taskAgentContext: TaskAgentContextFacts | null = null,
   sendMessageToEnabled = true,
 ) =>
   testMemberTeamContext({
@@ -75,10 +79,11 @@ const createMemberTeamContext = (
     rootTeamRunId: "team-1",
     memberAddress: "/professor",
     coordinatorAddress: "/professor",
-    agentRunId: taskAgentInstance?.taskAgentRunId ?? "run-professor",
+    agentRunId: taskAgentContext?.taskAgentRunId ?? "run-professor",
     teamInstruction: "Coordinate as a team.",
     deliverInterAgentMessage: sendMessageToEnabled ? deliverInterAgentMessage : null,
-    taskAgentInstance,
+    taskAgentRunId: taskAgentContext?.taskAgentRunId ?? null,
+    taskId: taskAgentContext?.taskId ?? null,
   });
 
 describe("AutoByteusAgentRunBackendFactory", () => {
@@ -515,18 +520,15 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     expect(JSON.stringify(built.agentConfig.tools[0]?.definition)).toContain("target_agent_run_id");
   });
 
-  it("propagates mixed AutoByteus task-agent identity into managed custom data and task delegation context", async () => {
-    const taskAgentInstance: TaskAgentInstanceIdentity = {
-      taskAgentInstanceId: "task_agent_task_0007",
+  it("propagates the actual AutoByteus task Agent run and task ID into managed custom data and task delegation context", async () => {
+    const taskAgentContext: TaskAgentContextFacts = {
       taskAgentRunId: "team-1__professor__task_0007",
-      owningTeamRunId: "team-1",
       taskId: "task_0007",
-      createdAt: "2026-05-29T00:00:00.000Z",
     };
     const memberTeamContext = createMemberTeamContext(
       TeamBackendKind.MIXED,
       vi.fn().mockResolvedValue({ accepted: true }),
-      taskAgentInstance,
+      taskAgentContext,
     );
     const factory = new AutoByteusAgentRunBackendFactory({
       agentDefinitionService: {
@@ -580,11 +582,12 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       memberAddress: "/professor",
       agentRunId: "team-1__professor__task_0007",
       addressing: { rootTeamRunId: "team-1", memberAddress: "/professor" },
-      taskAgentInstance: {
-        taskAgentInstanceId: "task_agent_task_0007",
+      taskId: "task_0007",
+      executionAddress: {
+        rootTeamRunId: "team-1",
+        taskTeamRunIds: [],
+        memberAddress: "/professor",
         taskAgentRunId: "team-1__professor__task_0007",
-        owningTeamRunId: "team-1",
-        taskId: "task_0007",
       },
     });
 
@@ -599,13 +602,9 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         rootTeamRunId: "team-1",
         taskTeamRunIds: [],
         memberAddress: "/professor",
-      },
-      taskAgentInstance: {
-        taskAgentInstanceId: "task_agent_task_0007",
         taskAgentRunId: "team-1__professor__task_0007",
-        owningTeamRunId: "team-1",
-        taskId: "task_0007",
       },
+      taskId: "task_0007",
     });
   });
 

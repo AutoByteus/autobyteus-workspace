@@ -1,0 +1,10 @@
+API-REV-029 owned cleanup verification
+port_31229_listeners=0
+port_60229_listeners=0
+port_60004_listeners=0
+port_31004_listeners=0
+owned_runtime_root_removed=true
+owned_disposable_database_removed=true
+temporary_repository_probe_removed=true
+source_fixture_unchanged=true
+operational_database_not_inspected_or_acted_on=true

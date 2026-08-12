@@ -1,0 +1,24 @@
+Staged student_one agent.md path:
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-028-live-20260812-1/staged-package/agent-teams/nested-classroom-test/agent-teams/student-study-group/agents/student-one/agent.md
+Source fixture remains byte-identical; only test-owned staging copy changed.
+Staged collaboration section:
+
+For the standard smoke test, if asked to return `NESTED_CLASSROOM_OK`, submit exactly:
+
+`NESTED_CLASSROOM_OK`
+
+## Collaboration
+
+For this test fixture, when a delegated task asks you to consult `student_two`, the peer exchange is mandatory and must happen before submission.
+
+1. Call `send_message_to` exactly once with `recipient_address: "./student_two"` and the exact requested token as `content`.
+2. Wait until `student_two` replies to your current task-scoped execution.
+3. Only after receiving that reply, call `submit_task_result` exactly once with the exact requested result token.
+
+Do not merely describe the peer exchange, do not skip the tool call, and do not submit before the reply. You remain responsible for the final result.
+
+## Tool Rules
+
+- Use `submit_task_result` for final task result submission.
+- Do not use `send_message_to` as the task result protocol.
+- Do not accept or reject results; that is `Teacher`'s job through `review_task_result`.

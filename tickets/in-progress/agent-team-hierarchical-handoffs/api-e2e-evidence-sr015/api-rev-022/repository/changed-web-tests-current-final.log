@@ -1,0 +1,626 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+
+stderr | components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileArtifacts.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamOverviewPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileTeamMessages.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileUxRefinement.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileTeamMessages.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileUxRefinement.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamOverviewPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileArtifacts.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > uses controlled collapsed state with human task count and no approval summary 23ms
+ ✓ components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > renders task detail navigation without duplicating execution hierarchy rows 6ms
+ ✓ components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > switches the whole right pane to a task-owned reference preview and refreshes repeated reference selections 18ms
+ ✓ components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > returns from reference preview to task body when a summary row is selected 8ms
+ ✓ components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > adds a message-style horizontal split resize handle for the task navigator 5ms
+ ✓ components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > selects task summaries for reading without focusing execution targets 4ms
+ ✓ components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > keeps task-team summary selection detail-only with no member navigation 4ms
+ ✓ components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts > TeamDelegatedTasksSection > shows the empty delegated-task state 2ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > loads workspace list without eager history tree on mount 29ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders workspace rows collapsed by default 15ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > fetches scoped workspace history when a workspace row is expanded 10ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders scoped workspace history loading, error, and empty states 20ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > opens workspace removal confirmation from the row action without expanding the row 8ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > does not render remove action for non-removable temp workspace rows 5ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > cancels workspace removal without mutating workspace or history state 12ms
+ ✓ components/mobile/__tests__/MobileTeamMessages.spec.ts > MobileTeamMessages > renders structured reference files as tappable rows without linkifying raw prose paths 28ms
+ ✓ components/mobile/__tests__/MobileTeamMessages.spec.ts > MobileTeamMessages > opens a phone reference viewer by team/message/reference identity and closes back to the list 48ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > places team auto approve before a collapsed accessible member override disclosure 37ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > toggles the member override disclosure without mutating config fields 6ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > renders runtime selector and member override entries 10ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > loads models for the team runtime and syncs runtime catalogs for explicit member runtimes 4ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > changes runtime kind and reloads runtime-scoped models 5ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > renders Codex effort-only reasoning defaults visibly on the team-global config path 19ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > starts team-global advanced collapsed for OpenAI Responses off defaults 39ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > confirms workspace removal and prunes history plus expansion state after success 25ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > keeps the workspace visible and reports an error when workspace removal fails 9ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > shows groups after opening a workspace but keeps run histories collapsed 12ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > keeps the individual team run disclosure chevron visually consistent with the parent team chevron 28ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders nested team members collapsed by default with a disclosure control 36ms
+ ✓ components/mobile/__tests__/MobileArtifacts.spec.ts > MobileArtifacts > lists active agent-run artifacts newest first and selects the newest artifact 33ms
+ ✓ components/mobile/__tests__/MobileArtifacts.spec.ts > MobileArtifacts > passes selected artifacts to the shared viewer and refreshes on reselection 23ms
+ ✓ components/mobile/__tests__/MobileArtifacts.spec.ts > MobileArtifacts > does not leak stale artifacts into non-run mobile contexts 4ms
+ ✓ components/mobile/__tests__/MobileArtifacts.spec.ts > MobileArtifacts > uses the focused team member run id when team focus changes 7ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > prunes inherited member-only llmConfig overrides when the global model changes 7ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > prunes inherited member llmConfig overrides when the global runtime changes 18ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > renders nested leaf overrides under their subteam group and keeps canonical-address override identity 6ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > renders selected existing team run configuration as read-only while keeping member overrides inspectable 7ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts > TeamRunConfigForm > marks historical team member config as missing when read-only metadata has null llmConfig 9ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > toggles nested team member disclosure without selecting the member 30ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > toggles and selects a nested team row from the row body 54ms
+ ✓ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > renders Messages without the removed Task Plan section 42ms
+ ✓ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > keeps Team tab section expansion parent-owned with Messages open first 13ms
+ ✓ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > opens Tasks immediately when the selected team already has delegated task entries 42ms
+ ✓ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > opens Tasks when delegated task entries appear while mounted 9ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > keeps an expanded nested child visible after selecting it 48ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > expands nested ancestors when a team row opens a focused nested member 30ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > refreshes expanded workspace history quietly on the background interval while mounted 8ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders agent avatar image when the tree node provides avatar URL 6ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > tracks broken avatar per URL key so a changed avatar URL can recover 5ms
+ ✓ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > does not show an existing run monitor after switching mobile Chat to a non-run context 22ms
+ ✓ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > routes non-run file attachments to mobile draft state instead of the stale selected run 19ms
+ ✓ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > shows composer attachments from the current mobile context only 5ms
+ ✓ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > reconciles mobile current agent-run context when a temporary run is promoted after first send 3ms
+ ✓ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > reconciles mobile current team-run context and pending state when a temporary team is promoted after first send 7ms
+ ✓ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > keeps pending team run attachments visible across focus changes and flushes them to the focused leaf before send 10ms
+ ✓ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > blocks pending team run attachment flush for non-leaf focus without consuming pending files 4ms
+ ✓ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > uses draft attachment count for run setup and launches with the next-run draft 22ms
+ ✓ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > updates both team focus and the mobile work context when changing an existing team-run target 11ms
+ ✓ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > preserves manual collapse for the same task set but reopens for a new task identity 12ms
+ ✓ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > resets Messages open when the selected team run changes without taking over message identity 58ms
+ ✓ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > opens Tasks when the selected team run changes to another run with delegated task entries 27ms
+ ✓ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts > TeamOverviewPanel.vue > counts and passes route/path identity for a focused subteam without a member run id 4ms
+ ✓ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > hides existing-run target selector on Runs while keeping compact target controls on focused work tabs 11ms
+ ✓ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > keeps non-chat tabs in a bounded block task surface so h-full roots fill the viewport 5ms
+ ✓ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > prefers remembered valid team focus when mapping Recent team runs and falls back safely when stale 1ms
+ ✓ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > does not leak stale run or tool activity into non-run mobile activity contexts 3ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > shows mixed-success reachability instead of claiming the desktop is unreachable 10ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > uses concise configure-only mobile setup without first-message entry or launch summary 49ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > removes team launch first-message target from setup while keeping searchable team selection 32ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > keeps mobile launch disabled instead of silently choosing a model for unconfigured agents 10ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > selects run via runHistoryStore.selectTreeRun and emits run-selected 56ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > creates draft run from agent row plus button and emits run-created 17ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > does not render run-row configuration button 5ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > does not render Skill Improvement actions on run-history rows 13ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders grouped team rows under workspace and selects the team run when clicked 33ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > consumes a single-use setup intent so selected agents open visible setup preselected 14ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > binds agent Auto approve tools to the launch config and created context 16ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > binds team Auto approve tools to the launch config, team context, and member configs 40ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > lists launch workspaces from the workspace store and loads an unlisted server path into the active config 19ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > keeps context visibility adjacent to the mobile composer send decision 8ms
+ ✓ components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts > Historical team lazy hydration integration > opens a historical team through the sidebar and lazily hydrates only the newly selected member 123ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > opens a historical team row through the coordinator-focused member instead of the first alphabetical member 37ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > strips the user requirement prefix from agent and team summary labels 41ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders team avatar image when team definition avatar is available 33ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders team member avatar image when matching agent definition avatar is available 21ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > keeps mobile Files browse-first while preserving secondary filters and deliberate deep search 36ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > renders Activity as a compact digest without secondary issue filters or redundant headers 31ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > renders compaction rows in the mobile run Activity list and count 18ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > opens mobile Files from run root-path metadata with an empty workspace store 36ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > releases the mobile Files live session when the visible context changes 18ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > keeps interactive Terminal and VNC out of mobile refinement surfaces 0ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > selects team member through runHistoryStore so persisted member history can hydrate 19ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > keeps the global Workspaces tree free of delegated-task detail and full-context UI under an expanded live team 19ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders delete action for inactive team history rows 25ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders archive action for inactive team history rows 27ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > does not render team-row configuration button 20ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > deletes inactive team history from team row action without selecting the row 28ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > archives inactive team history from team row action without selecting the row 27ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > creates workspace from inline input when user presses Enter 63ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > opens native folder picker on embedded electron and creates workspace from selected path 15ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > does not create workspace when embedded electron picker is canceled 10ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > closes inline add workspace input without creating workspace on cancel 7ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders active status indicator for active runs 12ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > does not render status indicator for inactive runs 11ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders delete action only for inactive history runs 20ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders archive action only for inactive persisted history runs 11ms
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > shows an error toast when terminate fails
+Failed to terminate run 'run-1'.
+
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > terminates active run from row action without selecting the row 26ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > shows an error toast when terminate fails 27ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > deletes inactive history run from row action without selecting the row 34ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > archives inactive history run from row action without selecting the row 42ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > shows an error toast when archive fails 32ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > does not call delete when confirmation is cancelled 30ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > shows an error toast when delete fails 52ms
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/running/__tests__/RunningTeamRow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryNavigationProjection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts > WorkspaceAgentRunsTreePanel regressions > routes team top-row clicks through persisted member hydration instead of blind team selection 119ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts > WorkspaceAgentRunsTreePanel regressions > keeps a previously selected team expanded when another team row is opened 28ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts > WorkspaceAgentRunsTreePanel regressions > removes a draft agent row through the local close path 15ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts > WorkspaceAgentRunsTreePanel regressions > removes a draft team row through the local discard path 16ms
+stdout | components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts > WorkspaceHistoryWorkspaceSection > renders any-active definition activity and exact sibling run activity reactively 30ms
+ ✓ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts > WorkspaceHistoryWorkspaceSection > renders and selects exact stable and task-Agent execution rows 14ms
+ ✓ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts > WorkspaceHistoryWorkspaceSection > toggles an exact task-Team subtree while keeping task details out of the tree 9ms
+ ✓ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts > WorkspaceHistoryWorkspaceSection > removes transient execution rows when the exact live projection disappears 11ms
+ ✓ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts > WorkspaceHistoryWorkspaceSection > toggles stable nested Team children from row body and disclosure with exact addresses 6ms
+stdout | components/workspace/running/__tests__/RunningTeamRow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryNavigationProjection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/running/__tests__/RunningTeamRow.spec.ts > RunningTeamRow > renders exact-run activity independently from subscription, members, and row action 25ms
+ ✓ components/workspace/running/__tests__/RunningTeamRow.spec.ts > RunningTeamRow > filters initializing task-only logical members from active running rows 3ms
+ ✓ components/workspace/running/__tests__/RunningTeamRow.spec.ts > RunningTeamRow > keeps logical members with direct conversation history visible in the running sidebar 2ms
+ ✓ components/workspace/running/__tests__/RunningTeamRow.spec.ts > RunningTeamRow > does not keep a logical worker visible when its only conversation is a task-agent work packet 1ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > publishes the asynchronously loaded initial workspace catalog with exactly one topology refresh 13ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > fetches run history tree from GraphQL 2ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > hydrates and connects newly discovered active runs from workspace history 2ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > fetchWorkspaceHistory does not reconcile unrelated active contexts outside the scoped workspace 1ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > projects backend-visible temp workspace descriptors as non-removable roots with local drafts 1ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > prefers fixed temp identity and non-removability when temp and filesystem descriptors share one root 1ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > keeps permanent local standalone contexts visible until history reconciliation dedupes them 1ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > does not project history-only removed workspace roots without visible descriptors 0ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > preserves subscribed live member statuses while refreshing root team activity 4ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > preserves subscribed single-agent live status during active history refresh 1ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > returns backend readiness error on fetchTree when backend is not ready 0ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > opens a run, hydrates projection, selects runContext, and connects stream when active 3ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > opens an inactive run and hydrates offline status without connecting stream 5ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > trusts history active state and reconnects an agent stream when reopening an active run 2ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > does not clobber live active context state when reopening an already subscribed run 2ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > creates draft run for selected workspace and agent 1ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > reuses model from existing context when creating draft run 5ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > prefers the selected same-definition context and deep-clones its llmConfig when creating a draft run 20ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > clears copied llmConfig when model resolution changes the source model for a draft run 1ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > reuses an existing workspace id when local cache has matching root path 0ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > fetches workspaces before creating one when cache is not loaded yet 0ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > projects persisted history and temp drafts into workspace tree 1ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > pruneWorkspace clears global agent selection when the selected run belongs to the removed workspace 0ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > pruneWorkspace clears global team selection when the selected team belongs to the removed workspace 0ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > overlays persisted run status with matching live context only 0ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > projects offline draft contexts as inactive in tree projection 0ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > selectTreeRun delegates to openRun for history rows 0ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > selectTreeRun selects local temp context for draft rows 0ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > deleteRun removes local state and refreshes tree when backend succeeds 1ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > deleteRun does not mutate local state when backend rejects deletion 0ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > deleteRun rejects draft run IDs without backend mutation call 0ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > archiveRun removes local state and refreshes tree when backend succeeds 1ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > archiveRun does not mutate local state when backend rejects archive 0ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > archiveRun rejects draft run IDs without backend mutation call 0ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > archiveTeamRun removes local team state and refreshes tree when backend succeeds 1ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > archiveTeamRun leaves local state unchanged when backend rejects archive 0ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > archiveTeamRun rejects draft team IDs without backend mutation call 0ms
+ ✓ components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts > TeamCommunicationPanel.vue > renders compact newest-first address-based message rows with reference icons 40ms
+ ✓ components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts > TeamCommunicationPanel.vue > shows the empty state when no exact address match exists 2ms
+ ✓ components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts > TeamCommunicationPanel.vue > opens a selected reference using the selected message and reference ids 6ms
+ ✓ components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts > Team Tasks Focus + send-message workflow > selects task details from Tasks without changing the exact focused send target 47ms
+ ✓ components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts > Team Tasks Focus + send-message workflow > selects task-Team summaries without changing exact focus or reintroducing member navigation 109ms
+ ✓ stores/__tests__/runHistoryNavigationProjection.spec.ts > runHistoryNavigationProjection current exact execution identity > publishes stable and transient rows, exact focus/indexes, and reconciles equal branches 12ms
+ ✓ stores/__tests__/runHistoryNavigationProjection.spec.ts > runHistoryNavigationProjection current exact execution identity > reuses an unrelated workspace Team bucket when one Team topology changes 1ms
+ ✓ stores/__tests__/runHistoryNavigationProjection.spec.ts > runHistoryNavigationProjection current exact execution identity > patches only the indexed standalone branch and skips activity in the same minute bucket 1ms
+ ✓ stores/__tests__/runHistoryNavigationProjection.spec.ts > runHistoryNavigationProjection current exact execution identity > applies tight task-row and exact-focus patches while equal/detail-free changes do no work 1ms
+ ✓ stores/__tests__/runHistoryNavigationProjection.spec.ts > runHistoryNavigationProjection current exact execution identity > applies combined status, summary, and activity through one exact Team branch patch 0ms
+ ✓ stores/__tests__/runHistoryNavigationProjection.spec.ts > runHistoryNavigationProjection current exact execution identity > patches the root Team lifecycle and no-ops an equal snapshot 0ms
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > shows focused member name in header 20ms
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > does not render the token usage header chip 5ms
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > shows focused member status in header 5ms
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > shows focused member avatar in header when available 5ms
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > does not silently substitute the team title for an unresolved exact focus address 11ms
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > shows roster focus in the header when active execution falls back to the coordinator 2ms
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > keeps roster focus in the header after simplifying the shell controls 1ms
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > opens selected team config from header action 3ms
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > seeds a new team config from the selected run without sharing nested global or member llmConfig 74ms
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > renders the focused monitor directly 1ms
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > passes the focused member run to the composer skill-improvement CTA 17ms
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts > TeamWorkspaceView > preserves the shared composer only for a focused subteam 25ms
+stdout | components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts > ApplicationTeamLaunchProfileEditor > repairs stale saved member overrides by exact route/id match and drops stale carry-forward overrides 17ms
+stderr | stores/__tests__/agentTeamContextsStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentTeamRunStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/teamCommunicationStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/teamRunConfigUtils.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/agentTeamContextsStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/agentTeamContextsStore.spec.ts > agentTeamContextsStore > creates exact-address member executions with mixed runtimes from overrides 6ms
+ ✓ stores/__tests__/agentTeamContextsStore.spec.ts > agentTeamContextsStore > keeps rooted nested topology while indexing exact leaf executions 2ms
+ ✓ stores/__tests__/agentTeamContextsStore.spec.ts > agentTeamContextsStore > returns only the currently selected Team context 1ms
+ ✓ stores/__tests__/agentTeamContextsStore.spec.ts > agentTeamContextsStore > changes exact focus without moving another member draft or attachments 1ms
+ ✓ stores/__tests__/agentTeamContextsStore.spec.ts > agentTeamContextsStore > focuses an exact persistent member and triggers lazy historical hydration 2ms
+stdout | stores/__tests__/agentTeamRunStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts > AgentTeamEventMonitor.vue > passes sender-id to member-name mapping to AgentEventMonitor 48ms
+ ✓ components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts > AgentTeamEventMonitor.vue > passes focused member display name and avatar to AgentEventMonitor 2ms
+ ✓ components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts > AgentTeamEventMonitor.vue > uses roster focus for displayed Focus history while active execution can remain on the coordinator 2ms
+ ✓ components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts > AgentTeamEventMonitor.vue > does not render task-agent work packets as the logical parent conversation 1ms
+stdout | stores/__tests__/teamCommunicationStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > keeps subscription transport state separate from backend Team lifecycle
+Team WebSocket connected
+Team WebSocket disconnected: closed
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > reattaches transport callbacks to the latest exact Team context
+Team WebSocket connected
+Team WebSocket disconnected: closed
+
+stdout | utils/__tests__/teamRunConfigUtils.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > keeps subscription transport state separate from backend Team lifecycle 4ms
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > reattaches transport callbacks to the latest exact Team context 1ms
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > projects status and content only into the exact persistent execution context 2ms
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > drops a live member payload without canonical execution identity instead of using focus 0ms
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > mirrors an exact external user message into its addressed conversation 0ms
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > routes successful tool execution through the browser-owned success handler at the exact execution 3ms
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > routes an exact inter-Agent message only to the receiver execution conversation 22ms
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > forwards exact Team communication messages to the communication projection store 1ms
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > routes compaction lifecycle only to the exact addressed member 4ms
+ ✓ stores/__tests__/teamCommunicationStore.spec.ts > teamCommunicationStore > hydrates and groups focused-member sent and received messages by counterpart address 11ms
+ ✓ stores/__tests__/teamCommunicationStore.spec.ts > teamCommunicationStore > matches static nested members by exact normalized address 1ms
+ ✓ stores/__tests__/teamCommunicationStore.spec.ts > teamCommunicationStore > matches task-agent messages by member plus task_agent segment 0ms
+ ✓ stores/__tests__/teamCommunicationStore.spec.ts > teamCommunicationStore > matches task-team root messages by member plus task_team segment 0ms
+ ✓ stores/__tests__/teamCommunicationStore.spec.ts > teamCommunicationStore > isolates concurrent task-team child runs by exact task_team segment 2ms
+ ✓ stores/__tests__/teamCommunicationStore.spec.ts > teamCommunicationStore > matches task-agent messages inside task-team children by the full address 3ms
+ ✓ stores/__tests__/teamCommunicationStore.spec.ts > teamCommunicationStore > upserts live address-first payloads with reference files 0ms
+ ✓ utils/__tests__/teamRunConfigUtils.spec.ts > teamRunConfigUtils > treats only property presence as an explicit member llmConfig override 1ms
+ ✓ utils/__tests__/teamRunConfigUtils.spec.ts > teamRunConfigUtils > resolves effective member config from explicit override or global fallback 1ms
+ ✓ utils/__tests__/teamRunConfigUtils.spec.ts > teamRunConfigUtils > compares model configs independent of key order 9ms
+ ✓ utils/__tests__/teamRunConfigUtils.spec.ts > teamRunConfigUtils > treats explicit null llmConfig as a meaningful member override 0ms
+ ✓ utils/__tests__/teamRunConfigUtils.spec.ts > teamRunConfigUtils > reconstructs global defaults and only keeps divergent overrides from member metadata 1ms
+ ✓ utils/__tests__/teamRunConfigUtils.spec.ts > teamRunConfigUtils > reconstructs member runtime overrides when one member runtime differs from the dominant team runtime 0ms
+ ✓ utils/__tests__/teamRunConfigUtils.spec.ts > teamRunConfigUtils > does not synthesize member override keys from bare member names 0ms
+ ✓ utils/__tests__/teamRunConfigUtils.spec.ts > teamRunConfigUtils > reconstructs a coherent default runtime/model/config tuple for mixed metadata and stays launch-ready 0ms
+ ✓ services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts > teamTaskTeamExecutionProjection current exact execution tree > materializes a distinct task Team root and children with visible task details 6ms
+ ✓ services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts > teamTaskTeamExecutionProjection current exact execution tree > keeps exact ordered outer and nested task-Team identities and cleans up only the selected subtree 3ms
+ ✓ services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts > teamTaskTeamExecutionProjection current exact execution tree > restores active and awaiting-review task executions in depth order and excludes accepted records 1ms
+ ✓ services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts > teamTaskTeamExecutionProjection current exact execution tree > builds separately selectable UI rows for outer/nested task Teams and a task Agent 3ms
+stderr | stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > does not mutate local lifecycle when backend termination rejects
+Error terminating team team-1 on backend: Error: not found
+    at Proxy.terminateTeamRun (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/stores/agentTeamRunStore.ts:232:17)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts:181:12
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > interrupts only the exact same-root execution and leaves submission state for the ack
+Cannot interrupt generation: execution address does not belong to the Team run.
+
+ ✓ stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > connects the exact Team context to the bound Team WebSocket endpoint 3ms
+ ✓ stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > terminates once, disconnects, and preserves an offline context for history restore 2ms
+ ✓ stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > does not mutate local lifecycle when backend termination rejects 6ms
+ ✓ stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > deduplicates concurrent Stop requests while the first mutation is pending 0ms
+ ✓ stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > discards a temporary Team locally without a backend termination 1ms
+ ✓ stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > sends to the exact focused persistent execution and records the local submission 52ms
+ ✓ stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > restores an inactive persisted Team before sending to the unchanged execution address 1ms
+ ✓ stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > fails closed when the focused execution is absent instead of selecting another member 1ms
+ ✓ stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > launches a nested mixed-runtime Team with exact rooted memberAddress inputs and focused target 2ms
+ ✓ stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > does not synthesize an approval target and preserves an explicit event target 0ms
+ ✓ stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > reattaches an existing stream service to the latest context 0ms
+ ✓ stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > interrupts only the exact same-root execution and leaves submission state for the ack 0ms
+stdout | services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts > openTeamRun real loader/builder Event Monitor prime ownership > finishes with the exact current member primed for 'historical projection-present open' 5ms
+ ✓ services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts > openTeamRun real loader/builder Event Monitor prime ownership > finishes with the exact current member primed for 'active projection-present open' 1ms
+ ✓ services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts > openTeamRun real loader/builder Event Monitor prime ownership > finishes with the exact current member primed for 'active projection-absent open' 1ms
+ ✓ services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts > openTeamRun real loader/builder Event Monitor prime ownership > replaces a non-subscribed execution and finishes with that exact replacement primed 1ms
+ ✓ services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts > openTeamRun real loader/builder Event Monitor prime ownership > preserves a subscribed execution and finishes with that exact live context primed 1ms
+ ✓ services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts > openTeamRun real loader/builder Event Monitor prime ownership > owns a separate final prime after lazy historical projection hydration 3ms
+ ✓ services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts > openTeamRun current exact execution identity > preserves a subscribed live member context and establishes the final baseline once 6ms
+ ✓ services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts > openTeamRun current exact execution identity > adds one fresh hydrated current Team context with exact rooted members 1ms
+ ✓ services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts > openTeamRun current exact execution identity > hydrates only a newly introduced exact member while preserving an existing live member 1ms
+ ✓ services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts > openTeamRun current exact execution identity > preserves an exact requested task-Agent focus present in the subscribed execution map 1ms
+ ✓ services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts > openTeamRun current exact execution identity > falls back to the hydrated focus when a requested execution identity is absent 1ms
+ ✓ services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts > openTeamRun current exact execution identity > replaces an unsubscribed inactive Team projection and leaves it disconnected 0ms
+stderr | services/runHydration/__tests__/teamRunContextHydrationService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/mobile/__tests__/useMobileWorkCatalog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/teamActiveExecutionMembers.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useWorkspaceHistoryTreeState.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/teamDelegatedTaskEntries.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryTeamRows.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/mobileWorkStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/runHydration/__tests__/teamRunContextHydrationService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/runHydration/__tests__/teamRunContextHydrationService.spec.ts > hydrateLiveTeamRunContext Event Monitor final-prime ownership > primes each real loader/builder context exactly once 'after projected activity hydration' 6ms
+ ✓ services/runHydration/__tests__/teamRunContextHydrationService.spec.ts > hydrateLiveTeamRunContext Event Monitor final-prime ownership > primes each real loader/builder context exactly once 'when the member projection is absent' 2ms
+stdout | composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/mobile/__tests__/useMobileWorkCatalog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useWorkspaceHistoryTreeState.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/__tests__/teamActiveExecutionMembers.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useWorkspaceHistoryTreeState.spec.ts > useWorkspaceHistoryTreeState > defaults workspaces, agent groups, team-definition groups, and team runs to collapsed 4ms
+ ✓ composables/__tests__/useWorkspaceHistoryTreeState.spec.ts > useWorkspaceHistoryTreeState > prunes workspace expansion state for removed workspaces 1ms
+ ✓ composables/__tests__/useWorkspaceHistoryTreeState.spec.ts > useWorkspaceHistoryTreeState > reveals only the selected agent run ancestry 1ms
+ ✓ composables/__tests__/useWorkspaceHistoryTreeState.spec.ts > useWorkspaceHistoryTreeState > reveals selected team ancestry from the run-history store selected team source 0ms
+ ✓ composables/__tests__/useWorkspaceHistoryTreeState.spec.ts > useWorkspaceHistoryTreeState > keeps selected reveal pending until matching data becomes available 0ms
+ ✓ composables/__tests__/useWorkspaceHistoryTreeState.spec.ts > useWorkspaceHistoryTreeState > does not re-open an already revealed selected path after manual collapse and quiet refresh 0ms
+ ✓ composables/__tests__/useWorkspaceHistoryTreeState.spec.ts > useWorkspaceHistoryTreeState > expands exact member ancestors from the cached navigation index 0ms
+ ✓ composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts > useWorkspaceHistorySelectionActions current rooted addresses > does not resolve focused Team history selection by a duplicate bare member name 3ms
+ ✓ composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts > useWorkspaceHistorySelectionActions current rooted addresses > resolves focused Team history selection by its exact nested member address 1ms
+ ✓ utils/__tests__/teamActiveExecutionMembers.spec.ts > teamActiveExecutionMembers current execution tree > falls back from a settled task-agent-only logical member to the coordinator 2ms
+ ✓ utils/__tests__/teamActiveExecutionMembers.spec.ts > teamActiveExecutionMembers current execution tree > keeps the exact concrete task-agent execution visible when its logical member is inactive 1ms
+ ✓ utils/__tests__/teamActiveExecutionMembers.spec.ts > teamActiveExecutionMembers current execution tree > does not treat a task-agent-only logical member conversation as active execution 0ms
+ ✓ utils/__tests__/teamActiveExecutionMembers.spec.ts > teamActiveExecutionMembers current execution tree > keeps a direct logical member conversation visible after the member is offline 0ms
+ ✓ utils/__tests__/teamActiveExecutionMembers.spec.ts > teamActiveExecutionMembers current execution tree > includes task-Team roots, scoped children, and nested task Agents together 0ms
+ ✓ composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts > useMobileFocusedRunIdentity > resolves the selected agent run only when the mobile context and active context match 2ms
+ ✓ composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts > useMobileFocusedRunIdentity > returns no focused run id for non-run and stale selected contexts 1ms
+ ✓ composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts > useMobileFocusedRunIdentity > resolves the focused leaf member run for selected team contexts 1ms
+ ✓ composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts > useMobileFocusedRunIdentity > rejects team contexts when selected team or focused route is stale 1ms
+stdout | utils/__tests__/teamDelegatedTaskEntries.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryTeamRows.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/__tests__/teamDelegatedTaskEntries.spec.ts > deriveDelegatedTaskEntries current canonical identity > filters persisted task records by the exact focused sender or receiver execution address 2ms
+ ✓ utils/__tests__/teamDelegatedTaskEntries.spec.ts > deriveDelegatedTaskEntries current canonical identity > matches a Team-target record by exact ingress and enriches it from the live task-Team node 1ms
+ ✓ utils/__tests__/teamDelegatedTaskEntries.spec.ts > deriveDelegatedTaskEntries current canonical identity > classifies a child-context record by its final exact task-agent identity 0ms
+ ✓ composables/mobile/__tests__/useMobileWorkCatalog.spec.ts > useMobileWorkCatalog > maps query-shaped team runs from createdAt and binary activity without legacy team status fields 10ms
+ ✓ composables/mobile/__tests__/useMobileWorkCatalog.spec.ts > useMobileWorkCatalog > uses guarded activity sort keys when a malformed run context lacks an activity timestamp 3ms
+stdout | stores/__tests__/mobileWorkStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/runHistoryTeamRows.spec.ts > runHistoryTeamRows current rooted metadata > builds stable live context rows while filtering transient task executions 6ms
+ ✓ stores/__tests__/runHistoryTeamRows.spec.ts > runHistoryTeamRows current rooted metadata > uses structural membership labels rather than Agent definition names 2ms
+ ✓ stores/__tests__/mobileWorkStore.spec.ts > mobileWorkStore > preserves the Artifacts tab through store tab normalization 2ms
+ ✓ stores/__tests__/mobileWorkStore.spec.ts > mobileWorkStore > preserves an explicit Artifacts tab when selecting a mobile work context 1ms
+ ✓ stores/__tests__/mobileWorkStore.spec.ts > mobileWorkStore > still falls back unknown tab ids to Chat 0ms
+ ✓ stores/__tests__/mobileWorkStore.spec.ts > mobileWorkStore > hands off one revisioned Event Monitor preview request to Mobile Files 0ms
+ ✓ stores/__tests__/mobileWorkStore.spec.ts > mobileWorkStore > clears a pending preview when team focus changes 0ms
+stderr | services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | graphql/queries/__tests__/runHistoryQueries.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryTeamExecutionRows.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/workspace/__tests__/workspaceNavigationService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryMetadata.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryTeamMemberProjectionHydrator.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts > teamStreamMemberContextResolver exact execution identity > leaves an absent task-agent execution unresolved without mutating topology 5ms
+ ✓ services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts > teamStreamMemberContextResolver exact execution identity > rejects an otherwise matching member address from a foreign root TeamRun 0ms
+ ✓ services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts > teamStreamMemberContextResolver exact execution identity > routes a follow-up message to the exact existing task-agent execution context 2ms
+stdout | graphql/queries/__tests__/runHistoryQueries.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryTeamExecutionRows.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/workspace/__tests__/workspaceNavigationService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/runHistoryTeamExecutionRows.spec.ts > runHistoryTeamExecutionRows exact addresses > preserves live placement while separating stable and transient execution rows 3ms
+ ✓ stores/__tests__/runHistoryTeamExecutionRows.spec.ts > runHistoryTeamExecutionRows exact addresses > falls back to stable rooted rows only when no live context exists 0ms
+ ✓ graphql/queries/__tests__/runHistoryQueries.spec.ts > Event Monitor active-trace page queries > exposes only explicit standalone/team subject identity and an opaque cursor 3ms
+ ✓ graphql/queries/__tests__/runHistoryQueries.spec.ts > GetRunFileChanges query > requests inline content for live buffered file-change hydration without legacy artifact ids 0ms
+ ✓ graphql/queries/__tests__/runHistoryQueries.spec.ts > ListWorkspaceRunHistory query > uses V2 standalone and team history catalog shapes without persisted live fields 0ms
+ ✓ graphql/queries/__tests__/runHistoryQueries.spec.ts > GetTeamCommunicationMessages query > requests address-first sender and receiver fields without removed flat participant identity 0ms
+ ✓ graphql/queries/__tests__/runHistoryQueries.spec.ts > GetTaskDelegationRecords query > requests durable address-first task records with updates and references 0ms
+ ✓ services/workspace/__tests__/workspaceNavigationService.spec.ts > workspaceNavigationService > builds and parses agent execution routes 1ms
+ ✓ services/workspace/__tests__/workspaceNavigationService.spec.ts > workspaceNavigationService > builds and parses team execution routes with member focus 0ms
+ ✓ services/workspace/__tests__/workspaceNavigationService.spec.ts > workspaceNavigationService > strips workspace execution query params without disturbing others 0ms
+ ✓ services/workspace/__tests__/workspaceNavigationService.spec.ts > workspaceNavigationService > routes agent execution links through the agent open coordinator 1ms
+ ✓ services/workspace/__tests__/workspaceNavigationService.spec.ts > workspaceNavigationService > routes team execution links through the team open coordinator 0ms
+stdout | stores/__tests__/runHistoryTeamMemberProjectionHydrator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryMetadata.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/runHistoryMetadata.spec.ts > runHistoryMetadata canonical address identity > keeps same-named leaves distinct by exact rooted address without a bare-name fallback 1ms
+ ✓ stores/__tests__/runHistoryTeamMemberProjectionHydrator.spec.ts > runHistoryTeamMemberProjectionHydrator > applies active member projection while preserving canonical live status 4ms
+
+ Test Files  42 passed (42)
+      Tests  297 passed (297)
+   Start at  07:03:44
+   Duration  24.19s (transform 5.51s, setup 152.24s, collect 12.37s, tests 3.49s, environment 15.42s, prepare 9.08s)
+

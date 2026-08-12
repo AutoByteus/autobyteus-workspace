@@ -81,7 +81,9 @@ describe('taskDelegationGraphqlDtoProjection', () => {
     const withUnknownMetadata = capturedApolloRecord() as any;
     withUnknownMetadata.senderAddress.__typename = 'UnexpectedAddressObject';
 
-    expect(projectTaskDelegationRecordDto(withRemovedPath)).toBeNull();
-    expect(projectTaskDelegationRecordDto(withUnknownMetadata)).toBeNull();
+    expect(() => projectTaskDelegationRecordDto(withRemovedPath))
+      .toThrow('Task delegation record.receiverAddress has unsupported or missing fields.');
+    expect(() => projectTaskDelegationRecordDto(withUnknownMetadata))
+      .toThrow('Task delegation record.senderAddress has the wrong GraphQL type.');
   });
 });

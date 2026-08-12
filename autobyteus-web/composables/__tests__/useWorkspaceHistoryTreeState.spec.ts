@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { nextTick, reactive } from 'vue';
 import { useWorkspaceHistoryTreeState } from '../useWorkspaceHistoryTreeState';
 import { AgentStatus } from '~/types/agent/AgentStatus';
+import { createTeamExecutionAddress, serializeTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
 const flushReactiveUpdates = async () => {
   await nextTick();
@@ -47,9 +48,24 @@ const buildTeamNode = (teamRunId = 'team-1') => ({
   lastKnownStatus: 'IDLE',
   isActive: false,
   deleteLifecycle: 'READY',
-  focusedMemberRouteKey: 'solution_designer',
+  focusedExecutionAddress: createTeamExecutionAddress({ rootTeamRunId: teamRunId, memberAddress: '/solution_designer' }),
+  rootTeam: {
+    teamRunId,
+    kind: 'agent_team',
+    memberAddress: '/',
+    displayName: 'Team Alpha',
+    teamDefinitionId: 'team-def-1',
+    teamRunIdForNode: teamRunId,
+    coordinatorAddress: '/solution_designer',
+    workspaceRootPath: null,
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T01:00:00.000Z',
+    currentStatus: null,
+    isActive: false,
+    deleteLifecycle: 'READY',
+    children: [],
+  },
   members: [],
-  memberTree: [],
   executionRows: [],
 });
 
@@ -128,21 +144,21 @@ const buildReactiveHarness = () => {
         teamDefinitionGroupKey: team.teamDefinitionId,
       } : null;
     },
-    getTeamMemberNavigationAncestorRouteKeys: (teamRunId: string, memberRouteKey: string) => {
+    getTeamMemberNavigationAncestorAddresses: (teamRunId: string, executionAddress: any) => {
       const team = state.teams.find((candidate) => candidate.teamRunId === teamRunId);
       const targetIndex = team?.executionRows.findIndex(
-        (row: any) => row.memberRouteKey === memberRouteKey,
+        (row: any) => serializeTeamExecutionAddress(row.executionAddress) === serializeTeamExecutionAddress(executionAddress),
       ) ?? -1;
       if (!team || targetIndex < 0) return [];
-      const ancestorRouteKeys: string[] = [];
+      const ancestorAddresses: string[] = [];
       let expectedDepth = team.executionRows[targetIndex].depth - 1;
       for (let index = targetIndex - 1; index >= 0 && expectedDepth >= 0; index -= 1) {
         const row = team.executionRows[index];
         if (row.depth !== expectedDepth || !row.hasChildren) continue;
-        ancestorRouteKeys.unshift(row.memberRouteKey);
+        ancestorAddresses.unshift(row.memberAddress);
         expectedDepth -= 1;
       }
-      return ancestorRouteKeys;
+      return ancestorAddresses;
     },
   };
 
@@ -272,21 +288,23 @@ describe('useWorkspaceHistoryTreeState', () => {
 
   it('expands exact member ancestors from the cached navigation index', () => {
     const { state, treeState } = buildReactiveHarness();
+    const address = (memberAddress: string, taskAgentRunId: string | null = null) =>
+      createTeamExecutionAddress({ rootTeamRunId: 'team-1', memberAddress, taskAgentRunId });
     state.teams = [{
       ...buildTeamNode('team-1'),
       executionRows: [
-        { memberRouteKey: 'BuildSquad', depth: 0, hasChildren: true },
-        { memberRouteKey: 'BuildSquad/reviewer', depth: 1, hasChildren: true },
-        { memberRouteKey: 'task-agent-run-1', depth: 2, hasChildren: false },
+        { memberAddress: '/BuildSquad', executionAddress: address('/BuildSquad'), depth: 0, hasChildren: true },
+        { memberAddress: '/BuildSquad/reviewer', executionAddress: address('/BuildSquad/reviewer'), depth: 1, hasChildren: true },
+        { memberAddress: '/BuildSquad/reviewer', executionAddress: address('/BuildSquad/reviewer', 'task-agent-run-1'), depth: 2, hasChildren: false },
       ],
     }];
 
     expect(treeState.expandTeamMemberAncestors(
       'workspace-a',
       'team-1',
-      'task-agent-run-1',
+      address('/BuildSquad/reviewer', 'task-agent-run-1'),
     )).toBe(true);
-    expect(treeState.isTeamMemberExpanded('workspace-a', 'team-1', 'BuildSquad')).toBe(true);
-    expect(treeState.isTeamMemberExpanded('workspace-a', 'team-1', 'BuildSquad/reviewer')).toBe(true);
+    expect(treeState.isTeamMemberExpanded('workspace-a', 'team-1', '/BuildSquad')).toBe(true);
+    expect(treeState.isTeamMemberExpanded('workspace-a', 'team-1', '/BuildSquad/reviewer')).toBe(true);
   });
 });

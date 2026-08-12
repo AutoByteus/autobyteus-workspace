@@ -150,10 +150,10 @@ const attachTaskAgentRun = (
     runtimeKind: logicalContext.runtimeKind,
     platformAgentRunId: null,
   });
-  const taskAgentInstances = (manager as unknown as {
-    taskAgentInstances: { handles: Map<string, unknown> };
-  }).taskAgentInstances;
-  taskAgentInstances.handles.set(
+  const taskAgentExecutions = (manager as unknown as {
+    taskAgentExecutions: { handles: Map<string, unknown> };
+  }).taskAgentExecutions;
+  taskAgentExecutions.handles.set(
     taskAgentRunId,
     makeHandle(taskContext, taskAgentRun),
   );

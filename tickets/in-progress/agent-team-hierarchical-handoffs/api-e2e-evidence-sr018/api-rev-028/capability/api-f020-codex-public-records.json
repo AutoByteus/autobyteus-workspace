@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "nested_classroom_test_team_3dd794cd902b4177841607a68c41cfcd",
+  "data": {
+    "getTaskDelegationRecords": [
+      {
+        "taskId": "task_0001",
+        "status": "active",
+        "receiverTargetKind": "agent_team",
+        "content": "Within your nested team, student_one must use send_message_to to send exactly TASK_PEER_CODEX to ./student_two. Then wait for the peer reply. After receiving it, student_one must submit the task result using submit_task_result, with the submitted result exactly NESTED_CLASSROOM_OK_CODEX (and no other result text). Do not delegate any additional tasks. The coordinator must ensure this exact lifecycle is completed.",
+        "createdAt": "2026-08-12T09:33:36.262Z",
+        "senderAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_3dd794cd902b4177841607a68c41cfcd",
+          "taskTeamRunIds": [],
+          "memberAddress": "/Teacher",
+          "taskAgentRunId": null
+        },
+        "receiverAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_3dd794cd902b4177841607a68c41cfcd",
+          "taskTeamRunIds": [
+            "team_local_team_nested_classroom_test_student_st_83bff45debba4967abefd82deff5277f"
+          ],
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "taskAgentRunId": null
+        },
+        "taskRun": {
+          "startedAt": "2026-08-12T09:33:36.268Z",
+          "address": {
+            "rootTeamRunId": "nested_classroom_test_team_3dd794cd902b4177841607a68c41cfcd",
+            "taskTeamRunIds": [
+              "team_local_team_nested_classroom_test_student_st_83bff45debba4967abefd82deff5277f"
+            ],
+            "memberAddress": "/StudentStudyGroup",
+            "taskAgentRunId": null
+          }
+        },
+        "updates": []
+      }
+    ],
+    "getTeamCommunicationMessages": [
+      {
+        "messageId": "teammsg_32ZZUX4BUclhM4xmCFWbBW_KuNu6b7M1",
+        "content": "Please ask your coordinator to reply to /Teacher with exactly CLASSROOM_REPLY_CODEX. This is an ordinary classroom communication request; inspect the attached reference if useful.",
+        "messageType": "agent_message",
+        "senderAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_3dd794cd902b4177841607a68c41cfcd",
+          "taskTeamRunIds": [],
+          "memberAddress": "/Teacher",
+          "taskAgentRunId": null
+        },
+        "receiverAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_3dd794cd902b4177841607a68c41cfcd",
+          "taskTeamRunIds": [],
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "taskAgentRunId": null
+        }
+      },
+      {
+        "messageId": "teammsg_PN7yQ689pF0rNDm73F9tJI1RGU0lOw6y",
+        "content": "CLASSROOM_REPLY_CODEX",
+        "messageType": "agent_message",
+        "senderAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_3dd794cd902b4177841607a68c41cfcd",
+          "taskTeamRunIds": [],
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "taskAgentRunId": null
+        },
+        "receiverAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_3dd794cd902b4177841607a68c41cfcd",
+          "taskTeamRunIds": [],
+          "memberAddress": "/Teacher",
+          "taskAgentRunId": null
+        }
+      },
+      {
+        "messageId": "teammsg_Pr7Qb7ogkLjYRCY7c31km7GwYkaElN_-",
+        "content": "Ordinary classroom check-in: please continue the already-delegated nested task and wait for the peer reply before submitting its required exact result.",
+        "messageType": "agent_message",
+        "senderAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_3dd794cd902b4177841607a68c41cfcd",
+          "taskTeamRunIds": [],
+          "memberAddress": "/Teacher",
+          "taskAgentRunId": null
+        },
+        "receiverAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_3dd794cd902b4177841607a68c41cfcd",
+          "taskTeamRunIds": [],
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "taskAgentRunId": null
+        }
+      },
+      {
+        "messageId": "teammsg_QxYOXymRbSDzhidO5FoDcV2L-xKXb1u6",
+        "content": "CLASSROOM_REPLY_CODEX",
+        "messageType": "agent_message",
+        "senderAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_3dd794cd902b4177841607a68c41cfcd",
+          "taskTeamRunIds": [],
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "taskAgentRunId": null
+        },
+        "receiverAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_3dd794cd902b4177841607a68c41cfcd",
+          "taskTeamRunIds": [],
+          "memberAddress": "/StudentStudyGroup/student_two",
+          "taskAgentRunId": null
+        }
+      },
+      {
+        "messageId": "teammsg_sO5o4wr7lI2CLyi0boA0OWRMJx8fWWO6",
+        "content": "CLASSROOM_REPLY_CODEX",
+        "messageType": "agent_message",
+        "senderAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_3dd794cd902b4177841607a68c41cfcd",
+          "taskTeamRunIds": [],
+          "memberAddress": "/StudentStudyGroup/student_two",
+          "taskAgentRunId": null
+        },
+        "receiverAddress": {
+          "rootTeamRunId": "nested_classroom_test_team_3dd794cd902b4177841607a68c41cfcd",
+          "taskTeamRunIds": [],
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "taskAgentRunId": null
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,102 @@
+
+> autobyteus@1.4.47 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts graphql/queries/__tests__/runHistoryQueries.spec.ts services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts services/workspace/__tests__/workspaceNavigationService.spec.ts stores/__tests__/agentTeamContextsStore.spec.ts stores/__tests__/runHistoryMetadata.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+
+stderr | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | graphql/queries/__tests__/runHistoryQueries.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryMetadata.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentTeamContextsStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/workspace/__tests__/workspaceNavigationService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/agentTeamContextsStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | graphql/queries/__tests__/runHistoryQueries.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryMetadata.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/workspace/__tests__/workspaceNavigationService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ graphql/queries/__tests__/runHistoryQueries.spec.ts (5 tests) 3ms
+ ✓ stores/__tests__/runHistoryMetadata.spec.ts (1 test) 2ms
+ ✓ services/workspace/__tests__/workspaceNavigationService.spec.ts (5 tests) 4ms
+ ❯ services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts (6 tests | 2 failed) 14ms
+   ✓ openTeamRun real loader/builder Event Monitor prime ownership > finishes with the exact current member primed for 'historical projection-present open' 5ms
+   × openTeamRun real loader/builder Event Monitor prime ownership > finishes with the exact current member primed for 'active projection-present open' 3ms
+     → expected "spy" to be called 2 times, but got 1 times
+   ✓ openTeamRun real loader/builder Event Monitor prime ownership > finishes with the exact current member primed for 'active projection-absent open' 1ms
+   × openTeamRun real loader/builder Event Monitor prime ownership > replaces a non-subscribed execution and finishes with that exact replacement primed 2ms
+     → expected "spy" to be called 2 times, but got 1 times
+   ✓ openTeamRun real loader/builder Event Monitor prime ownership > preserves a subscribed execution and finishes with that exact live context primed 1ms
+   ✓ openTeamRun real loader/builder Event Monitor prime ownership > owns a separate final prime after lazy historical projection hydration 1ms
+ ✓ stores/__tests__/agentTeamContextsStore.spec.ts (5 tests) 17ms
+ ✓ components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts (2 tests) 73ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts > openTeamRun real loader/builder Event Monitor prime ownership > finishes with the exact current member primed for 'active projection-present open'
+AssertionError: expected "spy" to be called 2 times, but got 1 times
+ ❯ services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts:282:49
+    280|       ?.agentExecutionsByKey.get(serializeTeamExecutionAddress(createT…
+    281|     expect(finalMember).toBeDefined();
+    282|     expect(hydrateActivitiesFromProjectionMock).toHaveBeenCalledTimes(…
+       |                                                 ^
+    283|     if (activityCalls > 0) {
+    284|       expect(hydrateActivitiesFromProjectionMock.mock.invocationCallOr…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts > openTeamRun real loader/builder Event Monitor prime ownership > replaces a non-subscribed execution and finishes with that exact replacement primed
+AssertionError: expected "spy" to be called 2 times, but got 1 times
+ ❯ services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts:302:49
+    300|     expect(finalMember).not.toBe(memberContext);
+    301|     expect(resetRecentEventMonitorBaselineMock).not.toHaveBeenCalled();
+    302|     expect(hydrateActivitiesFromProjectionMock).toHaveBeenCalledTimes(…
+       |                                                 ^
+    303|     expect(primeRecentEventMonitorBaselineMock).toHaveBeenCalledWith(f…
+    304|     expect(primeRecentEventMonitorBaselineMock.mock.calls.at(-1)?.[0])…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 5 passed (6)
+      Tests  2 failed | 22 passed (24)
+   Start at  06:43:01
+   Duration  5.12s (transform 2.69s, setup 24.51s, collect 929ms, tests 113ms, environment 1.07s, prepare 877ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

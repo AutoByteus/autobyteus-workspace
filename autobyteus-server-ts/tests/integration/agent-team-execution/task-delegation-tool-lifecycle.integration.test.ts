@@ -5,7 +5,6 @@ import fastify, { type FastifyInstance } from "fastify";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../../src/agent-execution/domain/agent-operation-result.js";
-import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
 import type { AgentTeamAddress } from "../../../src/agent-collaboration/domain/agent-team-address.js";
 import type { InterAgentMessageDeliveryIntent } from "../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
 import type { TeamRunBackend } from "../../../src/agent-team-execution/backends/team-run-backend.js";
@@ -14,11 +13,8 @@ import {
   MixedSubTeamMemberContext,
   MixedTeamRunContext,
 } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
-import type {
-  StartTaskAgentInstanceRequest,
-  TaskAgentInstanceIdentity,
-} from "../../../src/agent-team-execution/domain/task-agent-instance.js";
-import type { StartTaskTeamInstanceRequest } from "../../../src/agent-team-execution/domain/task-team-instance.js";
+import type { StartTaskAgentExecutionRequest } from "../../../src/agent-team-execution/domain/task-agent-execution.js";
+import type { StartTaskTeamExecutionRequest } from "../../../src/agent-team-execution/domain/task-team-execution.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
@@ -28,8 +24,10 @@ import {
   type TeamRunEvent,
   type TeamRunEventListener,
   type TeamRunEventUnsubscribe,
-  type TeamRunTaskDelegationEventPayload,
+  type TeamRunTaskDelegationEvent,
 } from "../../../src/agent-team-execution/domain/team-run-event.js";
+import { createTeamAgentExecutionBinding } from "../../../src/agent-team-execution/domain/team-agent-execution-binding.js";
+import type { TaskActivationEventLease } from "../../../src/agent-team-execution/services/task-activation-event-barrier.js";
 import { createMemberLogicalAddressContext } from "../../../src/agent-team-execution/domain/member-logical-address-context.js";
 import { TeamRecipientResolver } from "../../../src/agent-team-execution/services/team-recipient-resolver.js";
 import { TeamRunTreeIndex } from "../../../src/agent-team-execution/services/team-run-tree-index.js";
@@ -77,10 +75,9 @@ const registries: TaskDelegationRunRegistry[] = [];
 
 class ManagedTaskBackend implements TeamRunBackend {
   readonly teamRunId = rootTeamRunId;
-  readonly runId = rootTeamRunId;
   readonly teamBackendKind = TeamBackendKind.MIXED;
-  readonly taskAgentStarts: StartTaskAgentInstanceRequest[] = [];
-  readonly taskTeamStarts: StartTaskTeamInstanceRequest[] = [];
+  readonly taskAgentStarts: StartTaskAgentExecutionRequest[] = [];
+  readonly taskTeamStarts: StartTaskTeamExecutionRequest[] = [];
   readonly taskAgentSettlements: Array<{ address: AgentTeamAddress; runId: string }> = [];
   readonly postedMessages: Array<{
     message: AgentInputUserMessage;
@@ -90,6 +87,7 @@ class ManagedTaskBackend implements TeamRunBackend {
   readonly publishedEvents: TeamRunEvent[] = [];
   readonly taskAgentStartResults: AgentOperationResult[] = [];
   private readonly listeners = new Set<TeamRunEventListener>();
+  private activeLease: TaskActivationEventLease | null = null;
 
   constructor(private readonly runtimeContext: MixedTeamRunContext) {}
 
@@ -119,30 +117,52 @@ class ManagedTaskBackend implements TeamRunBackend {
   async deliverInterAgentMessage(_intent: InterAgentMessageDeliveryIntent): Promise<AgentOperationResult> {
     return { accepted: true };
   }
+  async executeMemberCommand(): Promise<AgentOperationResult> { return { accepted: true }; }
+  async deliverResolvedInterAgentMessage(): Promise<AgentOperationResult> { return { accepted: true }; }
   async approveToolInvocation(): Promise<AgentOperationResult> { return { accepted: true }; }
   async interruptMember(): Promise<AgentOperationResult> { return { accepted: true }; }
   async settleMember(): Promise<AgentOperationResult> { return { accepted: true }; }
-  async startTaskAgentInstance(request: StartTaskAgentInstanceRequest): Promise<AgentOperationResult> {
+  async startTaskAgentExecution(request: StartTaskAgentExecutionRequest): Promise<AgentOperationResult> {
     this.taskAgentStarts.push(request);
     return this.taskAgentStartResults.shift() ?? { accepted: true };
   }
-  async settleTaskAgentInstance(
+  releaseTaskAgentExecutionWork(): void {}
+  async settleTaskAgentExecution(
     memberAddress: AgentTeamAddress,
     taskAgentRunId: string,
   ): Promise<AgentOperationResult> {
     this.taskAgentSettlements.push({ address: memberAddress, runId: taskAgentRunId });
     return { accepted: true };
   }
-  async startTaskTeamInstance(request: StartTaskTeamInstanceRequest): Promise<AgentOperationResult> {
+  async startTaskTeamExecution(request: StartTaskTeamExecutionRequest): Promise<AgentOperationResult> {
     this.taskTeamStarts.push(request);
     return { accepted: true };
   }
-  async postMessageToTaskTeamInstance(): Promise<AgentOperationResult> { return { accepted: true }; }
-  async settleTaskTeamInstance(): Promise<AgentOperationResult> { return { accepted: true }; }
+  markTaskTeamExecutionActive(): void {}
+  releaseTaskTeamExecutionWork(): void {}
+  async postMessageToTaskTeamExecution(): Promise<AgentOperationResult> { return { accepted: true }; }
+  async settleTaskTeamExecution(): Promise<AgentOperationResult> { return { accepted: true }; }
   async terminate(): Promise<AgentOperationResult> { return { accepted: true }; }
   publishEvent(event: TeamRunEvent): void {
     this.publishedEvents.push(event);
     for (const listener of this.listeners) listener(event);
+  }
+  openTaskActivationEventLease(executionAddress: ReturnType<typeof createTeamExecutionAddress>): TaskActivationEventLease {
+    if (this.activeLease) throw new Error("A task activation lease is already open.");
+    this.activeLease = Object.freeze({ leaseId: `lease-${this.publishedEvents.length + 1}`, executionAddress });
+    return this.activeLease;
+  }
+  assertTaskActivationEventLeaseWithinBudget(lease: TaskActivationEventLease): void {
+    if (this.activeLease?.leaseId !== lease.leaseId) throw new Error("Task activation lease is not active.");
+  }
+  commitTaskActivationEventLease(lease: TaskActivationEventLease, event: TeamRunEvent): void {
+    this.assertTaskActivationEventLeaseWithinBudget(lease);
+    this.activeLease = null;
+    this.publishEvent(event);
+  }
+  abortTaskActivationEventLease(lease: TaskActivationEventLease): void {
+    this.assertTaskActivationEventLeaseWithinBudget(lease);
+    this.activeLease = null;
   }
 }
 
@@ -275,28 +295,25 @@ const persistentContext = (
   caller: {
     executionAddress: createTeamExecutionAddress({ rootTeamRunId, memberAddress }),
     agentRunId,
-    taskAgentInstance: null,
-    taskTeamInstance: null,
   },
   coordinatorAddress: address("/coordinator"),
   addressing: createMemberLogicalAddressContext({ rootTeamRunId, memberAddress }),
 });
 
 const taskAgentContext = (harness: Harness, taskId: string): TaskDelegationContext => {
-  const start = harness.backend.taskAgentStarts.find((candidate) => candidate.identity.taskId === taskId);
+  const start = harness.backend.taskAgentStarts.find((candidate) => candidate.taskId === taskId);
   if (!start) throw new Error(`Task '${taskId}' was not activated.`);
-  const identity = start.identity;
-  const active = getTaskAgentDirectory(rootTeamRunId).resolveTaskAgentRunId(identity.taskAgentRunId);
-  if (!active) throw new Error(`Task Agent '${identity.taskAgentRunId}' is not active.`);
+  const taskAgentRunId = start.receiver.taskAgentRunId!;
+  const active = getTaskAgentDirectory(rootTeamRunId).resolveTaskAgentRunId(taskAgentRunId);
+  if (!active) throw new Error(`Task Agent '${taskAgentRunId}' is not active.`);
   return {
-    teamRunId: identity.owningTeamRunId,
+    teamRunId: rootTeamRunId,
     teamDefinitionId: "task-delegation-integration-team",
     teamName: "Task Delegation Integration Team",
     caller: {
       executionAddress: start.receiver,
-      agentRunId: identity.taskAgentRunId,
-      taskAgentInstance: identity,
-      taskTeamInstance: null,
+      agentRunId: taskAgentRunId,
+      taskId: start.taskId,
     },
     coordinatorAddress: address("/coordinator"),
     addressing: createMemberLogicalAddressContext({
@@ -337,33 +354,28 @@ const executeReview = async (
 ) as Promise<ReviewTaskResultResult>;
 
 const publishIdle = (backend: ManagedTaskBackend, taskId: string): void => {
-  const start = backend.taskAgentStarts.find((candidate) => candidate.identity.taskId === taskId);
+  const start = backend.taskAgentStarts.find((candidate) => candidate.taskId === taskId);
   if (!start) throw new Error(`Task '${taskId}' was not activated.`);
   backend.publishEvent({
     eventSourceType: TeamRunEventSourceType.AGENT,
-    teamRunId: rootTeamRunId,
-    executionAddress: start.receiver,
-    data: {
-      runtimeKind: start.sourceNode.runtimeKind,
+    execution: createTeamAgentExecutionBinding({
       executionAddress: start.receiver,
-      displayName: start.sourceNode.address.slice(1),
-      taskAgentInstance: start.identity,
-      agentEvent: {
-        eventType: AgentRunEventType.AGENT_STATUS,
-        runId: start.identity.taskAgentRunId,
-        payload: { status: "idle" },
-        statusHint: "IDLE",
-      },
+      agentRunId: start.receiver.taskAgentRunId!,
+    }),
+    payload: {
+      eventType: "AGENT_STATUS",
+      details: { status: "idle" },
+      statusHint: "IDLE",
     },
   });
 };
 
 const eventPayloads = (
   backend: ManagedTaskBackend,
-  eventType: TeamRunTaskDelegationEventPayload["eventType"],
-): TeamRunTaskDelegationEventPayload[] => backend.publishedEvents
+  eventType: TeamRunTaskDelegationEvent["eventType"],
+): TeamRunTaskDelegationEvent[] => backend.publishedEvents
   .filter((event) => event.eventSourceType === TeamRunEventSourceType.TASK_DELEGATION)
-  .map((event) => event.data as TeamRunTaskDelegationEventPayload)
+  .map((event) => event.payload)
   .filter((payload) => payload.eventType === eventType);
 
 const recordsById = (records: readonly TaskDelegationRecord[]) =>
@@ -398,16 +410,13 @@ describe("task delegation tool lifecycle integration", () => {
     expect(created).toEqual({ task_id: "task_0001", status: "active" });
     const start = harness.backend.taskAgentStarts[0]!;
     expect(start).toMatchObject({
+      taskId: "task_0001",
       sourceNode: { address: "/worker", agentRunId: "run-worker" },
       receiver: {
         rootTeamRunId,
         taskTeamRunIds: [],
         memberAddress: "/worker",
-        taskAgentRunId: start.identity.taskAgentRunId,
-      },
-      identity: {
-        taskId: "task_0001",
-        owningTeamRunId: rootTeamRunId,
+        taskAgentRunId: start.receiver.taskAgentRunId,
       },
     });
     expect(start.message.content).toContain("submit_task_result");
@@ -428,7 +437,7 @@ describe("task delegation tool lifecycle integration", () => {
     })).resolves.toEqual({ task_id: "task_0001", status: "accepted" });
     publishIdle(harness.backend, "task_0001");
     await vi.waitFor(() => expect(harness.backend.taskAgentSettlements).toEqual([
-      { address: "/worker", runId: start.identity.taskAgentRunId },
+      { address: "/worker", runId: start.receiver.taskAgentRunId },
     ]));
 
     const records = recordsById(await harness.recordsService.getTaskDelegationRecords(rootTeamRunId));
@@ -462,8 +471,8 @@ describe("task delegation tool lifecycle integration", () => {
     })).resolves.toEqual({ task_id: "task_0002", status: "active" });
     const childStart = harness.backend.taskAgentStarts[1]!;
     expect(childStart).toMatchObject({
+      taskId: "task_0002",
       sourceNode: { address: "/reviewer", agentRunId: "run-reviewer" },
-      identity: { taskId: "task_0002" },
     });
 
     await executeSubmit(harness, taskAgentContext(harness, "task_0002"), {
@@ -471,7 +480,7 @@ describe("task delegation tool lifecycle integration", () => {
     });
     expect(harness.backend.postedMessages.at(-1)).toMatchObject({
       target: "/worker",
-      targetAgentRunId: parentStart.identity.taskAgentRunId,
+      targetAgentRunId: parentStart.receiver.taskAgentRunId,
     });
     await expect(executeReview(harness, parentContext, {
       task_id: "task_0002",
@@ -536,24 +545,21 @@ describe("task delegation tool lifecycle integration", () => {
 
     expect(harness.backend.taskAgentStarts).toEqual([]);
     const start = harness.backend.taskTeamStarts[0]!;
-    expect(start.identity).toMatchObject({
-      taskTeamInstanceId: "task_team_task_0001",
-      parentTeamRunId: rootTeamRunId,
-      taskId: "task_0001",
-    });
+    const taskTeamRunId = start.receiver.taskTeamRunIds.at(-1)!;
+    expect(start.taskId).toBe("task_0001");
     expect(start.teamNode).toMatchObject({
       kind: "agent_team",
       address: "/design_team",
       coordinatorAddress: "/design_team/team_lead",
-      teamRunId: start.identity.taskTeamRunId,
+      teamRunId: taskTeamRunId,
     });
     expect(start.receiver).toEqual(createTeamExecutionAddress({
       rootTeamRunId,
-      taskTeamRunIds: [start.identity.taskTeamRunId],
+      taskTeamRunIds: [taskTeamRunId],
       memberAddress: "/design_team/team_lead",
     }));
     expect(start.config.rootTeam.children.find((node) => node.address === "/design_team"))
-      .toMatchObject({ teamRunId: start.identity.taskTeamRunId });
+      .toMatchObject({ teamRunId: taskTeamRunId });
 
     const record = (await harness.recordsService.getTaskDelegationRecords(rootTeamRunId))[0]!;
     expect(record).toMatchObject({
@@ -562,7 +568,7 @@ describe("task delegation tool lifecycle integration", () => {
       taskRun: {
         address: createTeamExecutionAddress({
           rootTeamRunId,
-          taskTeamRunIds: [start.identity.taskTeamRunId],
+          taskTeamRunIds: [taskTeamRunId],
           memberAddress: "/design_team",
         }),
       },

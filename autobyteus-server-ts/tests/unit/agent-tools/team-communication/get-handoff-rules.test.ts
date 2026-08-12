@@ -1,13 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { buildAgentRunMessageSenderContext } from "../../../../src/agent-communication/domain/agent-run-message-sender.js";
 import { GetHandoffRulesService } from "../../../../src/agent-communication/services/get-handoff-rules-service.js";
-import { serializeAgentCommunicationToolResult } from "../../../../src/agent-communication/services/agent-communication-tool-result.js";
 import { MemberCollaborationContext } from "../../../../src/agent-team-execution/domain/member-collaboration-context.js";
 import { createMemberLogicalAddressContext } from "../../../../src/agent-team-execution/domain/member-logical-address-context.js";
 import { MemberTeamContext } from "../../../../src/agent-team-execution/domain/member-team-context.js";
 import { TeamBackendKind } from "../../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { createBoundAutoByteusGetHandoffRulesTool } from "../../../../src/agent-tools/agent-communication/get-handoff-rules.js";
-import { toAgentCommunicationMcpToolResult } from "../../../../src/agent-tools/mcp/agent-communication-mcp-result-mapper.js";
 import { GetHandoffRulesMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/get-handoff-rules-mcp-adapter-provider.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 
@@ -22,12 +20,20 @@ const buildContext = (handoffs: Array<{ from: string; to: string; rules: string[
   return new MemberTeamContext({
     teamRunId: "research-run",
     teamDefinitionId: "research-team",
+    teamName: "Research team",
     teamBackendKind: TeamBackendKind.MIXED,
-    memberName: "research_lead",
-    memberPath: ["research_lead"],
-    memberRouteKey: "research_lead",
-    memberRunId: "run-research-lead",
+    teamAddress: "/research_team",
+    memberAddress: "/research_team/research_lead",
+    agentRunId: "run-research-lead",
+    runtimeKind: RuntimeKind.AUTOBYTEUS,
+    coordinatorAddress: "/research_team/research_lead",
     collaboration,
+    executionAddress: {
+      rootTeamRunId: "root-run",
+      taskTeamRunIds: [],
+      memberAddress: "/research_team/research_lead",
+      taskAgentRunId: null,
+    },
   });
 };
 
@@ -49,69 +55,47 @@ describe("get_handoff_rules", () => {
 
     const parsed = JSON.parse(await tool.execute({}, {}));
 
-    expect(parsed).toEqual({
-      accepted: true,
-      code: "HANDOFF_RULES_RETRIEVED",
-      message: "Retrieved 2 outgoing handoff rule edges.",
-      result: {
-        member_address: "/research_team/research_lead",
-        handoffs,
-      },
-    });
+    expect(parsed).toEqual({ handoffs: [
+      { recipient_address: "/research_team/field_team", when: "When field research is required." },
+      { recipient_address: "/research_team/field_team", when: "When interviews are approved." },
+      { recipient_address: "/product_manager", when: "When approved research is ready." },
+    ] });
   });
 
   it("treats no outgoing handoffs as a successful empty result", () => {
-    expect(new GetHandoffRulesService().getRules(buildContext([]).collaboration)).toEqual({
-      accepted: true,
-      code: "HANDOFF_RULES_RETRIEVED",
-      message: "Retrieved 0 outgoing handoff rule edges.",
-      result: {
-        member_address: "/research_team/research_lead",
-        handoffs: [],
-      },
-    });
+    expect(new GetHandoffRulesService().getRules(buildContext([]).collaboration)).toEqual({ handoffs: [] });
   });
 
-  it("returns the required typed rejection outside Team collaboration context", () => {
-    expect(new GetHandoffRulesService().getRules(null)).toEqual({
-      accepted: false,
-      code: "COLLABORATION_CONTEXT_REQUIRED",
-      message: "get_handoff_rules requires an active Team collaboration context.",
-      result: null,
-    });
+  it("rejects outside Team collaboration context", () => {
+    expect(() => new GetHandoffRulesService().getRules(null)).toThrowError(
+      expect.objectContaining({ code: "COLLABORATION_CONTEXT_REQUIRED" }),
+    );
   });
 
-  it("projects identical MCP text and structuredContent with rejection-only isError", () => {
+  it("keeps the MCP adapter unavailable outside Team context", () => {
     const service = new GetHandoffRulesService();
-    const accepted = toAgentCommunicationMcpToolResult(service.getRules(buildContext([]).collaboration));
-    const rejected = toAgentCommunicationMcpToolResult(service.getRules(null));
-
-    expect(JSON.parse((accepted.content[0] as { text: string }).text)).toEqual(accepted.structuredContent);
-    expect(accepted).not.toHaveProperty("isError");
-    expect(JSON.parse((rejected.content[0] as { text: string }).text)).toEqual(rejected.structuredContent);
-    expect(rejected.isError).toBe(true);
-    expect(rejected.structuredContent).toMatchObject({
-      accepted: false,
-      code: "COLLABORATION_CONTEXT_REQUIRED",
-      result: null,
-    });
+    const adapter = new GetHandoffRulesMcpAdapterProvider(service).getAdapters()[0]!;
+    expect(adapter.isAvailable?.({ sender: null } as never)).toBe(false);
+    expect(adapter.isAvailable?.({ sender: buildAgentRunMessageSenderContext({
+      senderRunId: "run-research-lead",
+      senderName: "research_lead",
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      memberTeamContext: buildContext([]),
+    }) } as never)).toBe(true);
   });
 
-  it.each([
-    { label: "accepted", memberTeamContext: buildContext([]), isError: undefined },
-    { label: "rejected", memberTeamContext: null, isError: true },
-  ])("keeps the actual MCP provider $label envelope equal to the native service envelope", async ({ memberTeamContext, isError }) => {
+  it("keeps the actual MCP provider envelope equal to the native service result", async () => {
     const service = new GetHandoffRulesService();
+    const memberTeamContext = buildContext([]);
     const sender = buildAgentRunMessageSenderContext({
-      senderRunId: memberTeamContext?.memberRunId ?? "standalone-run",
-      senderName: memberTeamContext?.memberName ?? "standalone",
+      senderRunId: memberTeamContext.agentRunId,
+      senderName: "research_lead",
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       memberTeamContext,
     });
     const adapter = new GetHandoffRulesMcpAdapterProvider(service).getAdapters()[0]!;
-    const expectedText = serializeAgentCommunicationToolResult(
-      service.getRules(memberTeamContext?.collaboration),
-    );
+    const expectedResult = service.getRules(memberTeamContext.collaboration);
+    const expectedText = JSON.stringify(expectedResult);
 
     const projected = await adapter.execute({
       session: { sender } as never,
@@ -121,7 +105,7 @@ describe("get_handoff_rules", () => {
     expect(projected.kind).toBe("mcp_tool_result");
     if (projected.kind !== "mcp_tool_result") throw new Error("Expected MCP tool result.");
     expect(projected.result.content).toEqual([{ type: "text", text: expectedText }]);
-    expect(projected.result.structuredContent).toEqual(JSON.parse(expectedText));
-    expect(projected.result.isError).toBe(isError);
+    expect(projected.result.structuredContent).toEqual(expectedResult);
+    expect(projected.result).not.toHaveProperty("isError");
   });
 });

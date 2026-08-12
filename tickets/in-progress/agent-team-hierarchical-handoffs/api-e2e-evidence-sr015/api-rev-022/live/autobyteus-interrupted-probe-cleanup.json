@@ -1,0 +1,12 @@
+{
+  "reason": "API-REV-022 probe predicate used title-case-only sender regex; product journey completed and was intentionally terminated before corrected rerun",
+  "teamRunId": "nested_classroom_test_team_b6512a5e07b146a28b7418ad0afe43c4",
+  "result": {
+    "data": {
+      "terminateAgentTeamRun": {
+        "success": false,
+        "message": "Agent team run not found."
+      }
+    }
+  }
+}

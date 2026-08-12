@@ -40,19 +40,14 @@ describe('runHistoryTeamMemberProjectionHydrator', () => {
     expect(() => applyProjectionToTeamMemberContext({
       teamRunId: 'team-run-1',
       metadata: {
-        teamRunId: 'team-run-1',
-        teamDefinitionId: 'team-definition-1',
-        teamDefinitionName: 'Team',
-        coordinatorMemberRouteKey: 'coordinator',
         createdAt: '2026-06-03T00:00:00.000Z',
-        memberTree: [],
       },
       member: {
-        memberKind: 'agent',
-        memberRouteKey: 'worker',
-        memberPath: ['worker'],
-        memberName: 'worker',
-        memberRunId: 'worker-run-1',
+        kind: 'agent',
+        address: '/worker',
+        role: null,
+        description: null,
+        agentRunId: 'worker-run-1',
         runtimeKind: 'codex_app_server',
         platformAgentRunId: null,
         agentDefinitionId: 'worker-definition',
@@ -61,6 +56,7 @@ describe('runHistoryTeamMemberProjectionHydrator', () => {
         skillAccessMode: 'PRELOADED_ONLY',
         llmConfig: null,
         workspaceRootPath: '/tmp/workspace',
+        applicationExecutionContext: null,
       },
       projection: null,
       memberContext,
@@ -77,7 +73,7 @@ describe('runHistoryTeamMemberProjectionHydrator', () => {
       },
     });
     expect(memberContext.state.runId).toBe('worker-run-1');
-    expect(memberContext.state.conversation.id).toBe('team-run-1::worker');
+    expect(memberContext.state.conversation.id).toBe('team-run-1::/worker');
     expect(memberContext.state.currentStatus).toBe(AgentStatus.Running);
   });
 });

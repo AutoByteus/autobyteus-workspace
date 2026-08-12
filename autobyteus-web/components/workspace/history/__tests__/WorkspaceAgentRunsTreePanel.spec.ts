@@ -54,25 +54,39 @@ const {
   pickFolderPathMock,
   addToastMock,
 } = vi.hoisted(() => {
-  const normalizeMember = (member: any): any => ({
-    ...member,
-    memberKind: member.memberKind ?? 'agent',
-    memberRouteKey: member.memberRouteKey ?? member.memberName ?? '',
-    memberPath: member.memberPath ?? [member.memberRouteKey ?? member.memberName ?? ''],
-    displayName: member.displayName ?? member.memberName ?? member.memberRouteKey ?? '',
-    currentStatus: member.currentStatus ?? member.status ?? 'offline',
-    children: (member.children ?? []).map(normalizeMember),
+  const exactAddress = (value: string): string => value.startsWith('/') ? value : `/${value}`;
+  const executionAddress = (teamRunId: string, memberAddress: string) => ({
+    rootTeamRunId: teamRunId,
+    taskTeamRunIds: [],
+    memberAddress,
+    taskAgentRunId: null,
   });
+  const buildCurrentMember = (member: any): any => {
+    const memberAddress = exactAddress(member.memberAddress);
+    const kind = member.kind ?? 'agent';
+    return {
+      ...member,
+      kind,
+      memberAddress,
+      displayName: member.displayName ?? memberAddress.split('/').filter(Boolean).at(-1) ?? 'member',
+      agentRunId: kind === 'agent' ? (member.agentRunId ?? `${memberAddress}-run`) : null,
+      teamRunIdForNode: kind === 'agent_team' ? (member.teamRunIdForNode ?? `${memberAddress}-team-run`) : null,
+      coordinatorAddress: kind === 'agent_team'
+        ? exactAddress(member.coordinatorAddress ?? member.children?.[0]?.memberAddress ?? memberAddress)
+        : null,
+      currentStatus: member.currentStatus ?? 'offline',
+      children: (member.children ?? []).map(buildCurrentMember),
+    };
+  };
 
-  const normalizeTeamNode = (team: any): any => {
-    const members = (team.members ?? []).map(normalizeMember);
-    const memberTree = (team.memberTree ?? []).map(normalizeMember);
+  const buildCurrentTeamNode = (team: any): any => {
+    const members = (team.members ?? []).map(buildCurrentMember);
     const flattenRows = (rows: any[], depth = 0): any[] => rows.flatMap((row) => [{
       kind: 'stable_member',
       teamRunId: team.teamRunId,
-      memberKind: row.memberKind,
-      memberRouteKey: row.memberRouteKey,
-      memberPath: row.memberPath,
+      memberKind: row.kind,
+      memberAddress: row.memberAddress,
+      executionAddress: executionAddress(team.teamRunId, row.memberAddress),
       displayName: row.displayName,
       depth,
       hasChildren: row.children.length > 0,
@@ -80,14 +94,32 @@ const {
     }, ...flattenRows(row.children, depth + 1)]);
     return {
       ...team,
-      focusedMemberRouteKey: team.focusedMemberRouteKey ?? team.focusedMemberName ?? '',
+      focusedExecutionAddress: team.focusedExecutionAddress ?? executionAddress(
+        team.teamRunId,
+        exactAddress(team.focusedAddress ?? team.coordinatorAddress ?? members[0]?.memberAddress ?? '/'),
+      ),
+      rootTeam: team.rootTeam ?? {
+        teamRunId: team.teamRunId,
+        kind: 'agent_team',
+        memberAddress: '/',
+        displayName: team.teamDefinitionName,
+        teamDefinitionId: team.teamDefinitionId,
+        teamRunIdForNode: team.teamRunId,
+        coordinatorAddress: exactAddress(team.coordinatorAddress ?? members[0]?.memberAddress ?? '/'),
+        workspaceRootPath: team.workspaceRootPath ?? null,
+        summary: team.summary,
+        lastActivityAt: team.lastActivityAt,
+        currentStatus: null,
+        isActive: team.isActive,
+        deleteLifecycle: team.deleteLifecycle,
+        children: members,
+      },
       members,
-      memberTree,
-      executionRows: team.executionRows ?? flattenRows(memberTree.length > 0 ? memberTree : members),
+      executionRows: flattenRows(members),
     };
   };
 
-  const normalizeTeamNodes = (teams: any[]): any[] => teams.map(normalizeTeamNode);
+  const buildCurrentTeamNodes = (teams: any[]): any[] => teams.map(buildCurrentTeamNode);
 
   const workspaceIdFromRoot = (workspaceRootPath: string | null | undefined): string =>
     `workspace:${workspaceRootPath || 'unknown'}`;
@@ -190,9 +222,9 @@ const {
       getTreeNodes: vi.fn(() => state.nodes.map(normalizeWorkspaceNode)),
       getTeamNodes: vi.fn((workspaceRootPath?: string) => {
         if (!workspaceRootPath) {
-          return normalizeTeamNodes(Object.values(state.teamNodesByWorkspace).flat());
+          return buildCurrentTeamNodes(Object.values(state.teamNodesByWorkspace).flat());
         }
-        return normalizeTeamNodes(state.teamNodesByWorkspace[workspaceRootPath] || []);
+        return buildCurrentTeamNodes(state.teamNodesByWorkspace[workspaceRootPath] || []);
       }),
       getAgentNavigationAncestry: vi.fn((runId: string) => {
         for (const workspace of state.nodes.map(normalizeWorkspaceNode)) {
@@ -214,11 +246,11 @@ const {
         }
         return null;
       }),
-      getTeamMemberNavigationAncestorRouteKeys: vi.fn((teamRunId: string, memberRouteKey: string) => {
-        const team = normalizeTeamNodes(Object.values(state.teamNodesByWorkspace).flat())
+      getTeamMemberNavigationAncestorAddresses: vi.fn((teamRunId: string, targetAddress: any) => {
+        const team = buildCurrentTeamNodes(Object.values(state.teamNodesByWorkspace).flat())
           .find((candidate) => candidate.teamRunId === teamRunId);
         const targetIndex = team?.executionRows.findIndex(
-          (row: any) => row.memberRouteKey === memberRouteKey,
+          (row: any) => row.memberAddress === targetAddress.memberAddress,
         ) ?? -1;
         if (!team || targetIndex < 0) return [];
         const ancestors: string[] = [];
@@ -226,7 +258,7 @@ const {
         for (let index = targetIndex - 1; index >= 0 && expectedDepth >= 0; index -= 1) {
           const row = team.executionRows[index];
           if (row.depth !== expectedDepth || !row.hasChildren) continue;
-          ancestors.unshift(row.memberRouteKey);
+          ancestors.unshift(row.memberAddress);
           expectedDepth -= 1;
         }
         return ancestors;
@@ -498,7 +530,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     }
   };
 
-  const seedNestedTeamRun = (focusedMemberRouteKey = 'coordinator') => {
+  const seedNestedTeamRun = (focusedAddress = 'coordinator') => {
     runHistoryState.teamNodesByWorkspace['/ws/a'] = [
       {
         teamRunId: 'team-1',
@@ -511,15 +543,14 @@ describe('WorkspaceAgentRunsTreePanel', () => {
         isActive: false,
         currentStatus: 'offline',
         deleteLifecycle: 'READY',
-        focusedMemberRouteKey,
+        focusedAddress,
         members: [
           {
             teamRunId: 'team-1',
-            memberKind: 'agent',
-            memberRouteKey: 'coordinator',
-            memberName: 'Coordinator',
+            kind: 'agent',
+            memberAddress: '/coordinator',
             displayName: 'Coordinator',
-            memberRunId: 'coordinator-run',
+            agentRunId: 'coordinator-run',
             workspaceRootPath: '/ws/a',
             summary: 'Coordinator summary',
             lastActivityAt: '2026-01-01T02:00:00.000Z',
@@ -529,12 +560,11 @@ describe('WorkspaceAgentRunsTreePanel', () => {
           },
           {
             teamRunId: 'team-1',
-            memberKind: 'agent_team',
-            memberRouteKey: 'engineering_org',
-            memberPath: ['engineering_org'],
-            memberName: 'Engineering Org',
+            kind: 'agent_team',
+            memberAddress: '/engineering_org',
             displayName: 'Engineering Org',
-            memberRunId: 'engineering-org-run',
+            teamRunIdForNode: 'engineering-org-run',
+            coordinatorAddress: '/engineering_org/implementation_engineer',
             teamDefinitionId: 'engineering-org-def',
             workspaceRootPath: '/ws/a',
             summary: 'Engineering org summary',
@@ -545,12 +575,10 @@ describe('WorkspaceAgentRunsTreePanel', () => {
             children: [
               {
                 teamRunId: 'team-1',
-                memberKind: 'agent',
-                memberRouteKey: 'engineering_org/implementation_engineer',
-                memberPath: ['engineering_org', 'implementation_engineer'],
-                memberName: 'Implementation Engineer',
+                kind: 'agent',
+                memberAddress: '/engineering_org/implementation_engineer',
                 displayName: 'Implementation Engineer',
-                memberRunId: 'implementation-run',
+                agentRunId: 'implementation-run',
                 workspaceRootPath: '/ws/a',
                 summary: 'Implementation summary',
                 lastActivityAt: '2026-01-01T02:00:00.000Z',
@@ -732,7 +760,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
         isActive: false,
         currentStatus: 'offline',
         deleteLifecycle: 'READY',
-        focusedMemberName: 'super_agent',
+        focusedAddress: '/super_agent',
         members: [],
       },
     ];
@@ -763,13 +791,13 @@ describe('WorkspaceAgentRunsTreePanel', () => {
         isActive: false,
         currentStatus: 'offline',
         deleteLifecycle: 'READY',
-        focusedMemberName: 'super_agent',
+        focusedAddress: '/super_agent',
         members: [
           {
             teamRunId: 'team-1',
-            memberRouteKey: 'super_agent',
-            memberName: 'Super Agent',
-            memberRunId: 'member-1',
+            memberAddress: '/super_agent',
+            displayName: 'Super Agent',
+            agentRunId: 'member-1',
             workspaceRootPath: '/ws/a',
             summary: 'Member summary',
             lastActivityAt: '2026-01-01T02:00:00.000Z',
@@ -813,7 +841,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
       'rotate-0',
       'text-gray-400',
     ]));
-    expect(wrapper.find('[data-test="workspace-team-member-team-1-super_agent"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="workspace-team-member-team-1-/super_agent"]').exists()).toBe(true);
   });
 
   it('renders nested team members collapsed by default with a disclosure control', async () => {
@@ -826,12 +854,12 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     await wrapper.get('[data-test="workspace-team-row-team-1"]').trigger('click');
     await flushPromises();
 
-    expect(wrapper.find('[data-test="workspace-team-member-team-1-coordinator"]').exists()).toBe(true);
-    expect(wrapper.find('[data-test="workspace-team-member-team-1-engineering_org"]').exists()).toBe(true);
-    expect(wrapper.find('[data-test="workspace-team-member-team-1-engineering_org/implementation_engineer"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="workspace-team-member-team-1-/coordinator"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="workspace-team-member-team-1-/engineering_org"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="workspace-team-member-team-1-/engineering_org/implementation_engineer"]').exists()).toBe(false);
 
     const disclosure = wrapper.get(
-      '[data-test="workspace-team-member-disclosure"][data-member-route-key="engineering_org"]',
+      '[data-test="workspace-team-member-disclosure"][data-member-address="/engineering_org"]',
     );
     expect(disclosure.attributes('aria-expanded')).toBe('false');
   });
@@ -847,20 +875,20 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     runHistoryStoreMock.selectTreeRun.mockClear();
 
     const disclosure = wrapper.get(
-      '[data-test="workspace-team-member-disclosure"][data-member-route-key="engineering_org"]',
+      '[data-test="workspace-team-member-disclosure"][data-member-address="/engineering_org"]',
     );
     await disclosure.trigger('click');
     await flushPromises();
 
     expect(disclosure.attributes('aria-expanded')).toBe('true');
-    expect(wrapper.find('[data-test="workspace-team-member-team-1-engineering_org/implementation_engineer"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="workspace-team-member-team-1-/engineering_org/implementation_engineer"]').exists()).toBe(true);
     expect(runHistoryStoreMock.selectTreeRun).not.toHaveBeenCalled();
 
     await disclosure.trigger('click');
     await flushPromises();
 
     expect(disclosure.attributes('aria-expanded')).toBe('false');
-    expect(wrapper.find('[data-test="workspace-team-member-team-1-engineering_org/implementation_engineer"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="workspace-team-member-team-1-/engineering_org/implementation_engineer"]').exists()).toBe(false);
     expect(runHistoryStoreMock.selectTreeRun).not.toHaveBeenCalled();
   });
 
@@ -874,21 +902,21 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     await flushPromises();
     runHistoryStoreMock.selectTreeRun.mockClear();
 
-    await wrapper.get('[data-test="workspace-team-member-team-1-engineering_org"]').trigger('click');
+    await wrapper.get('[data-test="workspace-team-member-team-1-/engineering_org"]').trigger('click');
     await flushPromises();
 
-    expect(wrapper.find('[data-test="workspace-team-member-team-1-engineering_org/implementation_engineer"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="workspace-team-member-team-1-/engineering_org/implementation_engineer"]').exists()).toBe(true);
     expect(runHistoryStoreMock.selectTreeRun).toHaveBeenCalledWith(
       expect.objectContaining({
         teamRunId: 'team-1',
-        memberRouteKey: 'engineering_org',
+        memberAddress: '/engineering_org',
       }),
     );
 
-    await wrapper.get('[data-test="workspace-team-member-team-1-engineering_org"]').trigger('click');
+    await wrapper.get('[data-test="workspace-team-member-team-1-/engineering_org"]').trigger('click');
     await flushPromises();
 
-    expect(wrapper.find('[data-test="workspace-team-member-team-1-engineering_org/implementation_engineer"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="workspace-team-member-team-1-/engineering_org/implementation_engineer"]').exists()).toBe(false);
     expect(runHistoryStoreMock.selectTreeRun).toHaveBeenCalledTimes(2);
   });
 
@@ -902,11 +930,11 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     await flushPromises();
 
     await wrapper
-      .get('[data-test="workspace-team-member-disclosure"][data-member-route-key="engineering_org"]')
+      .get('[data-test="workspace-team-member-disclosure"][data-member-address="/engineering_org"]')
       .trigger('click');
     await flushPromises();
 
-    const childSelector = '[data-test="workspace-team-member-team-1-engineering_org/implementation_engineer"]';
+    const childSelector = '[data-test="workspace-team-member-team-1-/engineering_org/implementation_engineer"]';
     expect(wrapper.find(childSelector).exists()).toBe(true);
     await wrapper.get(childSelector).trigger('click');
     await flushPromises();
@@ -914,7 +942,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     expect(runHistoryStoreMock.selectTreeRun).toHaveBeenCalledWith(
       expect.objectContaining({
         teamRunId: 'team-1',
-        memberRouteKey: 'engineering_org/implementation_engineer',
+        memberAddress: '/engineering_org/implementation_engineer',
       }),
     );
     expect(wrapper.find(childSelector).exists()).toBe(true);
@@ -933,13 +961,13 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     expect(runHistoryStoreMock.selectTreeRun).toHaveBeenCalledWith(
       expect.objectContaining({
         teamRunId: 'team-1',
-        memberRouteKey: 'engineering_org/implementation_engineer',
+        memberAddress: '/engineering_org/implementation_engineer',
       }),
     );
-    expect(wrapper.find('[data-test="workspace-team-member-team-1-engineering_org/implementation_engineer"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="workspace-team-member-team-1-/engineering_org/implementation_engineer"]').exists()).toBe(true);
     expect(
       wrapper
-        .get('[data-test="workspace-team-member-disclosure"][data-member-route-key="engineering_org"]')
+        .get('[data-test="workspace-team-member-disclosure"][data-member-address="/engineering_org"]')
         .attributes('aria-expanded'),
     ).toBe('true');
   });
@@ -1092,13 +1120,13 @@ describe('WorkspaceAgentRunsTreePanel', () => {
         isActive: false,
         currentStatus: 'offline',
         deleteLifecycle: 'READY',
-        focusedMemberName: 'super_agent',
+        focusedAddress: '/super_agent',
         members: [
           {
             teamRunId: 'team-1',
-            memberRouteKey: 'super_agent',
-            memberName: 'Super Agent',
-            memberRunId: 'member-run-1',
+            memberAddress: '/super_agent',
+            displayName: 'Super Agent',
+            agentRunId: 'member-run-1',
             workspaceRootPath: '/ws/a',
             summary: 'Team summary',
             lastActivityAt: '2026-01-01T02:00:00.000Z',
@@ -1147,7 +1175,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
                 teamRunId: 'team-1',
                 teamDefinitionId: 'team-def-1',
                 teamDefinitionName: 'Team Alpha',
-                coordinatorMemberRouteKey: 'solution_designer',
+                coordinatorAddress: '/solution_designer',
                 workspaceRootPath: '/ws/a',
                 summary: 'Team summary',
                 lastActivityAt: '2026-01-01T02:00:00.000Z',
@@ -1156,16 +1184,16 @@ describe('WorkspaceAgentRunsTreePanel', () => {
                 isActive: false,
                 members: [
                   {
-                    memberRouteKey: 'architect_reviewer',
-                    memberName: 'Architect Reviewer',
-                    memberRunId: 'member-run-2',
+                    memberAddress: '/architect_reviewer',
+                    displayName: 'Architect Reviewer',
+                    agentRunId: 'member-run-2',
                     runtimeKind: 'AUTOBYTEUS',
                     workspaceRootPath: '/ws/a',
                   },
                   {
-                    memberRouteKey: 'solution_designer',
-                    memberName: 'Solution Designer',
-                    memberRunId: 'member-run-1',
+                    memberAddress: '/solution_designer',
+                    displayName: 'Solution Designer',
+                    agentRunId: 'member-run-1',
                     runtimeKind: 'AUTOBYTEUS',
                     workspaceRootPath: '/ws/a',
                   },
@@ -1188,13 +1216,13 @@ describe('WorkspaceAgentRunsTreePanel', () => {
         isActive: false,
         currentStatus: 'offline',
         deleteLifecycle: 'READY',
-        focusedMemberName: 'solution_designer',
+        focusedAddress: '/solution_designer',
         members: [
           {
             teamRunId: 'team-1',
-            memberRouteKey: 'architect_reviewer',
-            memberName: 'Architect Reviewer',
-            memberRunId: 'member-run-2',
+            memberAddress: '/architect_reviewer',
+            displayName: 'Architect Reviewer',
+            agentRunId: 'member-run-2',
             workspaceRootPath: '/ws/a',
             summary: 'Team summary',
             lastActivityAt: '2026-01-01T02:00:00.000Z',
@@ -1204,9 +1232,9 @@ describe('WorkspaceAgentRunsTreePanel', () => {
           },
           {
             teamRunId: 'team-1',
-            memberRouteKey: 'solution_designer',
-            memberName: 'Solution Designer',
-            memberRunId: 'member-run-1',
+            memberAddress: '/solution_designer',
+            displayName: 'Solution Designer',
+            agentRunId: 'member-run-1',
             workspaceRootPath: '/ws/a',
             summary: 'Team summary',
             lastActivityAt: '2026-01-01T02:00:00.000Z',
@@ -1231,8 +1259,13 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     expect(runHistoryStoreMock.selectTreeRun).toHaveBeenCalledWith(
       expect.objectContaining({
         teamRunId: 'team-1',
-        memberRouteKey: 'solution_designer',
-        memberRunId: 'member-run-1',
+        memberAddress: '/solution_designer',
+        executionAddress: {
+          rootTeamRunId: 'team-1',
+          taskTeamRunIds: [],
+          memberAddress: '/solution_designer',
+          taskAgentRunId: null,
+        },
       }),
     );
   });
@@ -1301,7 +1334,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
         isActive: false,
         currentStatus: 'offline',
         deleteLifecycle: 'READY',
-        focusedMemberName: 'super_agent',
+        focusedAddress: '/super_agent',
         members: [],
       },
     ];
@@ -1329,7 +1362,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
         isActive: false,
         currentStatus: 'offline',
         deleteLifecycle: 'READY',
-        focusedMemberName: 'super_agent',
+        focusedAddress: '/super_agent',
         members: [],
       },
     ];
@@ -1356,13 +1389,13 @@ describe('WorkspaceAgentRunsTreePanel', () => {
         isActive: false,
         currentStatus: 'offline',
         deleteLifecycle: 'READY',
-        focusedMemberName: 'super_agent',
+        focusedAddress: '/super_agent',
         members: [
           {
             teamRunId: 'team-1',
-            memberRouteKey: 'super_agent',
-            memberName: 'Super Agent',
-            memberRunId: 'member-run-1',
+            memberAddress: '/super_agent',
+            displayName: 'Super Agent',
+            agentRunId: 'member-run-1',
             workspaceRootPath: '/ws/a',
             summary: 'Team summary',
             lastActivityAt: '2026-01-01T02:00:00.000Z',
@@ -1401,13 +1434,13 @@ describe('WorkspaceAgentRunsTreePanel', () => {
         isActive: false,
         currentStatus: 'offline',
         deleteLifecycle: 'READY',
-        focusedMemberName: 'super_agent',
+        focusedAddress: '/super_agent',
         members: [
           {
             teamRunId: 'team-1',
-            memberRouteKey: 'super_agent',
-            memberName: 'Super Agent',
-            memberRunId: 'member-run-1',
+            memberAddress: '/super_agent',
+            displayName: 'Super Agent',
+            agentRunId: 'member-run-1',
             workspaceRootPath: '/ws/a',
             summary: 'Team summary',
             lastActivityAt: '2026-01-01T02:00:00.000Z',
@@ -1428,7 +1461,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     await teamRow.trigger('click');
     await flushPromises();
 
-    const memberButton = wrapper.find('[data-test="workspace-team-member-team-1-super_agent"]');
+    const memberButton = wrapper.find('[data-test="workspace-team-member-team-1-/super_agent"]');
     expect(memberButton.exists()).toBe(true);
     await memberButton.trigger('click');
     await flushPromises();
@@ -1436,7 +1469,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     expect(runHistoryStoreMock.selectTreeRun).toHaveBeenCalledWith(
       expect.objectContaining({
         teamRunId: 'team-1',
-        memberRouteKey: 'super_agent',
+        memberAddress: '/super_agent',
       }),
     );
     expect(wrapper.emitted('run-selected')).toContainEqual([
@@ -1457,13 +1490,12 @@ describe('WorkspaceAgentRunsTreePanel', () => {
         isActive: true,
         currentStatus: 'running',
         deleteLifecycle: 'CLEANUP_PENDING',
-        focusedMemberRouteKey: 'implementation_engineer',
+        focusedAddress: '/implementation_engineer',
         members: [
           {
             teamRunId: 'team-1',
-            memberKind: 'agent',
-            memberRouteKey: 'implementation_engineer',
-            memberName: 'implementation_engineer',
+            kind: 'agent',
+            memberAddress: '/implementation_engineer',
             displayName: 'implementation_engineer',
             currentStatus: 'running',
             workspaceRootPath: '/ws/a',
@@ -1479,7 +1511,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     await wrapper.get('[data-test="workspace-team-row-team-1"]').trigger('click');
     await flushPromises();
 
-    expect(wrapper.find('[data-test="workspace-team-member-team-1-implementation_engineer"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="workspace-team-member-team-1-/implementation_engineer"]').exists()).toBe(true);
     expect(wrapper.find('[data-test="team-delegated-task-context-tree"]').exists()).toBe(false);
     expect(wrapper.find('[data-test="team-delegated-task-navigator"]').exists()).toBe(false);
     expect(wrapper.find('[data-test="left-delegated-task-summary-row"]').exists()).toBe(false);
@@ -1501,7 +1533,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
         isActive: false,
         currentStatus: 'offline',
         deleteLifecycle: 'READY',
-        focusedMemberName: 'super_agent',
+        focusedAddress: '/super_agent',
         members: [],
       },
     ];
@@ -1527,7 +1559,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
         isActive: false,
         currentStatus: 'offline',
         deleteLifecycle: 'READY',
-        focusedMemberName: 'super_agent',
+        focusedAddress: '/super_agent',
         members: [],
       },
     ];
@@ -1553,13 +1585,13 @@ describe('WorkspaceAgentRunsTreePanel', () => {
         isActive: false,
         currentStatus: 'offline',
         deleteLifecycle: 'READY',
-        focusedMemberName: 'super_agent',
+        focusedAddress: '/super_agent',
         members: [
           {
             teamRunId: 'team-1',
-            memberRouteKey: 'super_agent',
-            memberName: 'Super Agent',
-            memberRunId: 'member-run-1',
+            memberAddress: '/super_agent',
+            displayName: 'Super Agent',
+            agentRunId: 'member-run-1',
             workspaceRootPath: '/ws/a',
             summary: 'Team summary',
             lastActivityAt: '2026-01-01T02:00:00.000Z',
@@ -1592,7 +1624,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
         isActive: false,
         currentStatus: 'offline',
         deleteLifecycle: 'READY',
-        focusedMemberName: 'super_agent',
+        focusedAddress: '/super_agent',
         members: [],
       },
     ];
@@ -1630,7 +1662,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
         isActive: false,
         currentStatus: 'offline',
         deleteLifecycle: 'READY',
-        focusedMemberName: 'super_agent',
+        focusedAddress: '/super_agent',
         members: [],
       },
     ];

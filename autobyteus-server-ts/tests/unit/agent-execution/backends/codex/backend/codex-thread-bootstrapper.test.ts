@@ -89,14 +89,22 @@ const createMemberTeamContext = () =>
     teamDefinitionId: "team-def-1",
     teamName: "Codex team",
     teamBackendKind: TeamBackendKind.MIXED,
-    memberName: "ping",
-    memberRouteKey: "ping",
-    memberRunId: "ping-run-1",
+    teamAddress: "/",
+    memberAddress: "/ping",
+    agentRunId: "ping-run-1",
+    runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+    coordinatorAddress: "/ping",
     collaboration: {
       addressing: {
         rootTeamRunId: "team-1",
         memberAddress: "/ping",
       },
+    },
+    executionAddress: {
+      rootTeamRunId: "team-1",
+      taskTeamRunIds: [],
+      memberAddress: "/ping",
+      taskAgentRunId: null,
     },
   });
 

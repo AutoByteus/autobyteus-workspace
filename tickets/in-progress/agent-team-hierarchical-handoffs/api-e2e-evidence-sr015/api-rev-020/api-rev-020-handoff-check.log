@@ -1,0 +1,41 @@
+API_REV_020_HANDOFF_CHECK
+2026-08-10T20:16:32Z
+HEAD=619a442eebe7c6a1fce8d38d03ed2e7a7c71ed07
+REVISION_INDEX:
+29:| API-REV-020 | `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`; Round 20 | SR-015; ARCH-REV-009; IR-023; CRR-042 | Pass / 97% (API-REV-019; pre-refresh) | Fail / 61% |
+REVISION_ENTRY:
+497:### API-REV-020 — Safe startup passes but current delegated-task overview visibility fails
+INVESTIGATION:
+19:- Current API/E2E Revision ID: `API-REV-020` (`Fail / 61%`; prior integrated-state proof `API-REV-019 Pass / 97%` is historical after latest-base merge `af9286bc4` and IR-023).
+62:### Final API-REV-020 investigation update — halted on `API-F-013`
+REPORT:
+24:- Latest Authoritative Round: `API-REV-020 Fail / 61%`.
+32:- Reroute required during execution: `Yes`; `API-F-013` requires focused failure-origin review.
+50:| `API-UI-TASK-020-001` / `API-F-013` | R-039 / UC-021 / AC-036 live delegated-task count, details, auto-open, selection | Exact rooted TeamOverview component | Durable current-contract component integration | **Fail** (`4/8`; `Tasks0 tasks`) | `api-e2e-evidence-sr015/api-rev-020/repository/team-overview-current-task-visibility-failure.log` |
+89:- Material deviation: provider/browser startup was intentionally not performed after `API-F-013`; a known critical UI failure makes a Pass impossible and additional calls would not close the gap.
+129:| `API-F-011` / `CR-F-020` and `API-F-012` / `CR-F-021` | IR-021 product correction, previously passed | Current projection tests in maintained selection pass. `API-F-013` is a distinct overview filtering defect after valid task materialization. | `repository/maintained-web-current-contract-final.log`; failure analysis |
+137:| Fail | `API-UI-TASK-020-001` / `API-F-013` | Valid live task Agent is filtered from the Team overview under stable Agent focus, producing `Tasks0 tasks`. |
+155:`code_reviewer` for focused failure-origin review of `API-F-013`, not proportional successful-test review.
+159:- Result: `Fail`
+DURABLE_INVENTORY_ROWS:
+25
+REQUIRED_EVIDENCE_EXISTS:
+PASS /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-020/environment/recent-running-readable-migration-lifecycle.log
+PASS /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-020/repository/server-build-full-initial.log
+PASS /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-020/repository/maintained-web-current-contract-final.log
+PASS /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-020/repository/additional-current-contract-passing.log
+PASS /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-020/repository/team-overview-current-task-visibility-failure.log
+PASS /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-020/repository/team-overview-task-visibility-source-audit.log
+PASS /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-020/repository/web-related-broad-round1.log
+PASS /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-020/team-overview-task-visibility-failure-analysis.md
+PASS /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-020/cumulative-durable-coverage-inventory.tsv
+PASS /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-020/cumulative-durable-diff.patch
+USER_STACK:
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    71461 normy   26u  IPv4 0xbe9eaf34a35017b1      0t0  TCP 127.0.0.1:60004 (LISTEN)
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    73207 normy   12u  IPv4 0xe0271daf60061249      0t0  TCP 127.0.0.1:31004 (LISTEN)
+PRODUCTION_DIFF:
+NONE
+DIFF_CHECK:
+PASS

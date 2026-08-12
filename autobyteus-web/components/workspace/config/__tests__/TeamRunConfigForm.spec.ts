@@ -265,7 +265,7 @@ describe('TeamRunConfigForm', () => {
           MemberOverrideItem: {
             name: 'MemberOverrideItem',
             template: '<div class="member-override-item-stub"></div>',
-            props: ['memberName', 'memberRouteKey', 'memberBreadcrumb', 'override', 'isCoordinator', 'disabled', 'advancedInitiallyExpanded', 'missingHistoricalConfig', 'globalRuntimeKind', 'globalLlmModel', 'globalLlmConfig'],
+            props: ['memberName', 'memberAddress', 'memberBreadcrumb', 'override', 'isCoordinator', 'disabled', 'advancedInitiallyExpanded', 'missingHistoricalConfig', 'globalRuntimeKind', 'globalLlmModel', 'globalLlmConfig'],
             emits: ['update:override'],
           },
         },
@@ -278,6 +278,9 @@ describe('TeamRunConfigForm', () => {
     await wrapper.get('[data-test="team-member-overrides-toggle"]').trigger('click')
     await wrapper.vm.$nextTick()
   }
+
+  const emittedConfigEdits = (wrapper: any) =>
+    (wrapper.emitted('edit-config') ?? []).map(([edit]: [unknown]) => edit)
 
   it('places team auto approve before a collapsed accessible member override disclosure', async () => {
     const { wrapper } = buildWrapper({}, sixMemberTeamDef)
@@ -371,8 +374,23 @@ describe('TeamRunConfigForm', () => {
     await wrapper.find('select#team-run-runtime-kind').setValue('codex_app_server')
     await wrapper.vm.$nextTick()
 
-    expect(config.runtimeKind).toBe('codex_app_server')
-    expect(config.llmModelIdentifier).toBe('')
+    expect(emittedConfigEdits(wrapper)).toEqual([
+      { kind: 'set_runtime', runtimeKind: 'codex_app_server' },
+      { kind: 'set_model', llmModelIdentifier: '' },
+      { kind: 'set_llm_config', llmConfig: null },
+    ])
+    expect(config.runtimeKind).toBe('autobyteus')
+    expect(config.llmModelIdentifier).toBe('gpt-5.4')
+
+    await wrapper.setProps({
+      config: {
+        ...config,
+        runtimeKind: 'codex_app_server',
+        llmModelIdentifier: '',
+        llmConfig: null,
+      },
+    })
+    await wrapper.vm.$nextTick()
     expect(llmStore.fetchProvidersWithModels).toHaveBeenCalledWith('codex_app_server')
   })
 
@@ -405,7 +423,11 @@ describe('TeamRunConfigForm', () => {
 
     await reasoningSelect.setValue('xhigh')
 
-    expect(config.llmConfig).toEqual({ reasoning_effort: 'xhigh' })
+    expect(emittedConfigEdits(wrapper)).toContainEqual({
+      kind: 'set_llm_config',
+      llmConfig: { reasoning_effort: 'xhigh' },
+    })
+    expect(config.llmConfig).toBeNull()
   })
 
   it('starts team-global advanced collapsed for OpenAI Responses off defaults', async () => {
@@ -430,7 +452,7 @@ describe('TeamRunConfigForm', () => {
     expect(config.llmConfig).toBeNull()
   })
 
-  it('prunes inherited member-only llmConfig overrides when the global model changes', async () => {
+  it('emits the closed model edit while leaving inherited-config pruning to the store owner', async () => {
     const { wrapper, config } = buildWrapper({
       runtimeKind: 'codex_app_server',
       llmModelIdentifier: 'gpt-5.4',
@@ -451,17 +473,16 @@ describe('TeamRunConfigForm', () => {
     await wrapper.findComponent({ name: 'SearchableGroupedSelect' }).vm.$emit('update:modelValue', 'gpt-5.3-codex')
     await wrapper.vm.$nextTick()
 
-    expect(config.llmModelIdentifier).toBe('gpt-5.3-codex')
-    expect(config.llmConfig).toBeNull()
-    expect(config.memberOverrides).toEqual({
-      'Member B': {
-        agentDefinitionId: 'agent-b',
-        autoExecuteTools: true,
-      },
-    })
+    expect(emittedConfigEdits(wrapper)).toEqual([
+      { kind: 'set_model', llmModelIdentifier: 'gpt-5.3-codex' },
+      { kind: 'set_llm_config', llmConfig: null },
+    ])
+    expect(config.llmModelIdentifier).toBe('gpt-5.4')
+    expect(config.llmConfig).toEqual({ reasoning_effort: 'high' })
+    expect(config.memberOverrides['Member A'].llmConfig).toEqual({ reasoning_effort: 'xhigh' })
   })
 
-  it('prunes inherited member llmConfig overrides when the global runtime changes', async () => {
+  it('emits the closed runtime edit while leaving inherited-config pruning to the store owner', async () => {
     const { wrapper, config } = buildWrapper({
       runtimeKind: 'autobyteus',
       llmModelIdentifier: 'gpt-5.4',
@@ -482,18 +503,18 @@ describe('TeamRunConfigForm', () => {
     await wrapper.find('select#team-run-runtime-kind').setValue('codex_app_server')
     await wrapper.vm.$nextTick()
 
-    expect(config.runtimeKind).toBe('codex_app_server')
-    expect(config.llmModelIdentifier).toBe('')
-    expect(config.llmConfig).toBeNull()
-    expect(config.memberOverrides).toEqual({
-      'Member B': {
-        agentDefinitionId: 'agent-b',
-        llmModelIdentifier: 'gpt-5.4',
-      },
-    })
+    expect(emittedConfigEdits(wrapper)).toEqual([
+      { kind: 'set_runtime', runtimeKind: 'codex_app_server' },
+      { kind: 'set_model', llmModelIdentifier: '' },
+      { kind: 'set_llm_config', llmConfig: null },
+    ])
+    expect(config.runtimeKind).toBe('autobyteus')
+    expect(config.llmModelIdentifier).toBe('gpt-5.4')
+    expect(config.llmConfig).toEqual({ thinking_level: 5 })
+    expect(config.memberOverrides['Member A'].llmConfig).toEqual({ thinking_level: 3 })
   })
 
-  it('renders nested leaf overrides under their subteam group and keeps route-key override identity', async () => {
+  it('renders nested leaf overrides under their subteam group and keeps canonical-address override identity', async () => {
     const { wrapper } = buildWrapper({}, nestedTeamDef)
     await wrapper.vm.$nextTick()
     await expandMemberOverrides(wrapper)
@@ -507,24 +528,27 @@ describe('TeamRunConfigForm', () => {
     const itemTexts = groups[0].findAllComponents({ name: 'MemberOverrideItem' })
 
     expect(items).toHaveLength(3)
-    expect(items[0].props('memberRouteKey')).toBe('program_manager')
+    expect(items[0].props('memberAddress')).toBe('/program_manager')
     expect(itemTexts).toHaveLength(2)
     expect(itemTexts[0].props('memberName')).toBe('review_lead')
-    expect(itemTexts[0].props('memberRouteKey')).toBe('BuildSquad/review_lead')
+    expect(itemTexts[0].props('memberAddress')).toBe('/BuildSquad/review_lead')
     expect(itemTexts[0].props('memberBreadcrumb')).toBe('BuildSquad / review_lead')
     expect(itemTexts[1].props('memberName')).toBe('qa_specialist')
-    expect(itemTexts[1].props('memberRouteKey')).toBe('BuildSquad/qa_specialist')
+    expect(itemTexts[1].props('memberAddress')).toBe('/BuildSquad/qa_specialist')
 
-    itemTexts[0].vm.$emit('update:override', 'BuildSquad/review_lead', {
+    itemTexts[0].vm.$emit('update:override', '/BuildSquad/review_lead', {
       agentDefinitionId: 'agent-review',
       runtimeKind: 'codex_app_server',
     })
-    expect((wrapper.props('config') as any).memberOverrides).toMatchObject({
-      'BuildSquad/review_lead': {
+    expect(emittedConfigEdits(wrapper)).toContainEqual({
+      kind: 'set_member_override',
+      memberAddress: '/BuildSquad/review_lead',
+      override: {
         agentDefinitionId: 'agent-review',
         runtimeKind: 'codex_app_server',
       },
     })
+    expect((wrapper.props('config') as any).memberOverrides).toEqual({})
   })
 
   it('renders selected existing team run configuration as read-only while keeping member overrides inspectable', async () => {
@@ -558,6 +582,7 @@ describe('TeamRunConfigForm', () => {
       llmModelIdentifier: 'changed-model',
     })
     expect(config.memberOverrides).toEqual({})
+    expect(emittedConfigEdits(wrapper)).toEqual([])
   })
 
   it('marks historical team member config as missing when read-only metadata has null llmConfig', async () => {

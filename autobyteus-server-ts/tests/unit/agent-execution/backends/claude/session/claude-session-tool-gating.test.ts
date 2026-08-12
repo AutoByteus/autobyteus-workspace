@@ -37,17 +37,25 @@ const createMemberTeamContext = () =>
   new MemberTeamContext({
     teamRunId: "team-1",
     teamDefinitionId: "team-def-1",
+    teamName: "Claude team",
     teamBackendKind: TeamBackendKind.MIXED,
-    memberName: "Professor",
-    memberPath: ["professor"],
-    memberRouteKey: "professor",
-    memberRunId: "run-1",
+    teamAddress: "/",
+    memberAddress: "/professor",
+    agentRunId: "run-1",
+    runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+    coordinatorAddress: "/professor",
     collaboration: {
       addressing: {
         rootTeamRunId: "team-1",
         memberAddress: "/professor",
       },
       deliverInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),
+    },
+    executionAddress: {
+      rootTeamRunId: "team-1",
+      taskTeamRunIds: [],
+      memberAddress: "/professor",
+      taskAgentRunId: null,
     },
   });
 
@@ -165,7 +173,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
     );
     expect(startQueryTurn).toHaveBeenCalledWith(
       expect.objectContaining({
-        prompt: expect.stringContaining("Your absolute collaboration address is `/professor`."),
+        prompt: expect.stringContaining("Your address in the AgentTeam is:\n\n/professor"),
         allowedTools: ["read_page", "mcp__autobyteus_agent_tools__read_page"],
       }),
     );
@@ -195,7 +203,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
     expect(startQueryTurn).toHaveBeenCalledWith(
       expect.objectContaining({
         prompt: expect.stringContaining(
-          "If you use `send_message_to`, choose exactly one selector",
+          "use `send_message_to` to notify that Agent or AgentTeam",
         ),
         allowedTools: expect.arrayContaining([
           "send_message_to",
@@ -230,7 +238,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
     );
     expect(startQueryTurn).toHaveBeenCalledWith(
       expect.objectContaining({
-        prompt: expect.stringContaining("Bare names are invalid."),
+        prompt: expect.stringContaining("Bare member names, `../`, and backslashes are not valid addresses."),
         allowedTools: [
           "send_message_to",
           "mcp__autobyteus_agent_tools__send_message_to",
@@ -253,16 +261,15 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
 
     expect(createAgentToolMcpSession).toHaveBeenCalledWith(
       expect.objectContaining({
-        owner: {
+        owner: expect.objectContaining({
           runId: "run-1",
-          teamRunId: "team-1",
-          memberRunId: "run-1",
-          memberRouteKey: "professor",
-          memberName: "Professor",
-        },
+          agentRunId: "run-1",
+          displayName: "professor",
+          executionAddress: memberTeamContext.executionAddress,
+        }),
         sender: expect.objectContaining({
           senderRunId: "run-1",
-          senderName: "Professor",
+          senderName: "professor",
           runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
           memberTeamContext,
         }),
@@ -434,7 +441,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
     );
     expect(startQueryTurn).toHaveBeenCalledWith(
       expect.objectContaining({
-        prompt: expect.stringContaining("Task delegation protocol"),
+        prompt: expect.stringContaining("`delegate_task.recipient_address` uses the same logical-address grammar"),
         allowedTools: [
           "delegate_task",
           "mcp__autobyteus_agent_tools__delegate_task",

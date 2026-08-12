@@ -3,34 +3,16 @@ import websocket from "@fastify/websocket";
 import WebSocket from "ws";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
-import type { AgentOperationResult } from "../../../src/agent-execution/domain/agent-operation-result.js";
-import type { ConversationTargetAddress } from "../../../src/agent-team-execution/domain/conversation-target-address.js";
-import type { TeamRunEventListener } from "../../../src/agent-team-execution/domain/team-run-event.js";
+import { createTeamExecutionAddress } from "../../../src/agent-team-execution/domain/team-execution-address.js";
 import { AgentTeamStreamHandler } from "../../../src/services/agent-streaming/agent-team-stream-handler.js";
 import { AgentSessionManager } from "../../../src/services/agent-streaming/agent-session-manager.js";
 import { ServerMessageType } from "../../../src/services/agent-streaming/models.js";
+import { TeamStreamBroadcaster } from "../../../src/services/agent-streaming/team-stream-broadcaster.js";
+import { projectTeamExecutionAddressDto } from "../../../src/services/agent-streaming/team-agent-event-websocket-projector.js";
 
 const wait = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 
-type WsMessage = {
-  type: string;
-  payload: Record<string, unknown>;
-};
-
-const parseMessage = (raw: WebSocket.RawData): WsMessage => JSON.parse(raw.toString()) as WsMessage;
-
-const waitForOpen = (socket: WebSocket, timeoutMs = 2_000): Promise<void> =>
-  new Promise((resolve, reject) => {
-    const timer = setTimeout(() => reject(new Error("Timed out waiting for websocket open")), timeoutMs);
-    socket.once("open", () => {
-      clearTimeout(timer);
-      resolve();
-    });
-    socket.once("error", (error) => {
-      clearTimeout(timer);
-      reject(error);
-    });
-  });
+type WsMessage = { type: string; payload: Record<string, unknown> };
 
 const waitForCondition = async (predicate: () => boolean, label: string, timeoutMs = 2_000): Promise<void> => {
   const deadline = Date.now() + timeoutMs;
@@ -69,70 +51,77 @@ const closeSocket = async (socket: WebSocket | null): Promise<void> => {
 };
 
 let commandCounter = 0;
-
-const makeSendCommand = (payload: Record<string, unknown>) => {
+const sendMessage = (
+  socket: WebSocket,
+  executionAddress: ReturnType<typeof createTeamExecutionAddress> | Record<string, unknown>,
+  content: string,
+): void => {
   commandCounter += 1;
   const messageId = `client-${commandCounter}`;
-  return {
-  type: "SEND_MESSAGE",
-  payload: {
-    message_id: messageId,
-    dedupe_key: `member_input:${messageId}`,
-    context_file_paths: [],
-    image_urls: [],
-    ...payload,
-  },
-  };
+  const execution_address = "rootTeamRunId" in executionAddress
+    ? projectTeamExecutionAddressDto(executionAddress as ReturnType<typeof createTeamExecutionAddress>)
+    : executionAddress;
+  socket.send(JSON.stringify({
+    type: "SEND_MESSAGE",
+    payload: {
+      execution_address,
+      message_id: messageId,
+      dedupe_key: `member_input:${messageId}`,
+      content,
+      context_file_paths: [],
+      image_urls: [],
+    },
+  }));
 };
 
-const sendCommand = (socket: WebSocket, payload: Record<string, unknown>): void => {
-  socket.send(JSON.stringify(makeSendCommand(payload)));
-};
-
-const buildTeamRun = (results: AgentOperationResult[] = []) => {
-  const queuedResults = [...results];
-  const postMessageToConversationTarget = vi.fn(async () => queuedResults.shift() ?? { accepted: true });
-  return {
-    runId: "team-run-1",
-    getLeafAgentStatusSnapshots: vi.fn().mockReturnValue([]),
-    hasOpenExecutionWork: vi.fn().mockReturnValue(true),
-    subscribeToEvents: vi.fn((_listener: TeamRunEventListener) => () => undefined),
-    postMessage: vi.fn().mockResolvedValue({ accepted: true }),
-    postMessageToConversationTarget,
-    approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
-    interruptMember: vi.fn().mockResolvedValue({ accepted: true }),
-  };
-};
-
-const startHarness = async (input: { results?: AgentOperationResult[] } = {}) => {
+const startHarness = async (input: {
+  executeResult?: { accepted: boolean; code?: string; message?: string };
+} = {}) => {
   const app = fastify();
   await app.register(websocket);
-  const teamRun = buildTeamRun(input.results);
+  const executeMemberCommand = vi.fn(async () => input.executeResult ?? { accepted: true });
+  const teamRun = {
+    teamRunId: "team-run-1",
+    getLeafAgentStatusSnapshots: vi.fn().mockReturnValue([]),
+    hasOpenExecutionWork: vi.fn().mockReturnValue(false),
+    subscribeToEvents: vi.fn(() => () => undefined),
+    executeMemberCommand,
+  };
   const teamRunService = {
     getTeamRun: vi.fn().mockReturnValue(teamRun),
     resolveTeamRun: vi.fn().mockResolvedValue(teamRun),
     recordRunActivity: vi.fn().mockResolvedValue(undefined),
     refreshRunMetadata: vi.fn().mockResolvedValue(undefined),
   };
+  const teamRunManager = {
+    getLifecycleSnapshot: vi.fn().mockReturnValue({ teamRunId: "team-run-1", isActive: true }),
+    subscribeToLifecycle: vi.fn().mockReturnValue(() => undefined),
+  };
   const handler = new AgentTeamStreamHandler(
     new AgentSessionManager(),
     teamRunService as never,
-    undefined,
-    undefined,
+    new TeamStreamBroadcaster(),
     { getInitialMessages: vi.fn().mockReturnValue([]) } as never,
+    teamRunManager as never,
   );
   await registerAgentWebsocket(app, {} as never, handler);
   await app.listen({ host: "127.0.0.1", port: 0 });
   const address = app.server.address();
-  if (!address || typeof address === "string") {
-    throw new Error("Expected server address info");
-  }
+  if (!address || typeof address === "string") throw new Error("Expected server address info");
+
   const socket = new WebSocket(`ws://127.0.0.1:${address.port}/ws/agent-team/team-run-1`);
   const messages: WsMessage[] = [];
-  socket.on("message", (raw) => messages.push(parseMessage(raw)));
-  await waitForOpen(socket);
+  socket.on("message", (raw) => messages.push(JSON.parse(raw.toString()) as WsMessage));
+  await new Promise<void>((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error("Timed out waiting for websocket open")), 2_000);
+    socket.once("open", () => {
+      clearTimeout(timer);
+      resolve();
+    });
+    socket.once("error", reject);
+  });
   await waitForMessage(messages, (message) => message.type === ServerMessageType.CONNECTED, "CONNECTED");
-  return { app, socket, messages, teamRun, teamRunService };
+  return { app, socket, messages, executeMemberCommand, teamRunService };
 };
 
 let cleanup: { app: FastifyInstance; socket: WebSocket | null } | null = null;
@@ -143,182 +132,109 @@ afterEach(async () => {
   cleanup = null;
 });
 
-describe("team conversation target websocket integration", () => {
-  it("routes flat structural and typed runtime targets through the websocket address boundary", async () => {
+describe("team exact execution-address websocket integration", () => {
+  it("preserves persistent, task Agent, outer task-Team, and nested task-Team addresses", async () => {
+    const harness = await startHarness();
+    cleanup = harness;
+    const addresses = [
+      createTeamExecutionAddress({
+        rootTeamRunId: "team-run-1",
+        taskTeamRunIds: [],
+        memberAddress: "/worker",
+        taskAgentRunId: null,
+      }),
+      createTeamExecutionAddress({
+        rootTeamRunId: "team-run-1",
+        taskTeamRunIds: [],
+        memberAddress: "/worker",
+        taskAgentRunId: "task-agent-run-1",
+      }),
+      createTeamExecutionAddress({
+        rootTeamRunId: "team-run-1",
+        taskTeamRunIds: ["task-team-run-1"],
+        memberAddress: "/BuildSquad/reviewer",
+        taskAgentRunId: null,
+      }),
+      createTeamExecutionAddress({
+        rootTeamRunId: "team-run-1",
+        taskTeamRunIds: ["task-team-run-1", "task-team-run-2"],
+        memberAddress: "/BuildSquad/NestedSquad/reviewer",
+        taskAgentRunId: "task-agent-run-2",
+      }),
+    ];
+
+    addresses.forEach((address, index) => sendMessage(harness.socket, address, `exact-${index}`));
+    await waitForCondition(
+      () => harness.executeMemberCommand.mock.calls.length === addresses.length,
+      "four exact SEND_MESSAGE calls",
+    );
+
+    expect(harness.executeMemberCommand.mock.calls.map(([address]) => address)).toEqual(addresses);
+    expect(harness.executeMemberCommand.mock.calls.map(([, command]) => command)).toEqual(
+      addresses.map((_address, index) => expect.objectContaining({
+        kind: "post_message",
+        message: expect.objectContaining({ content: `exact-${index}` }),
+      })),
+    );
+    expect(harness.teamRunService.recordRunActivity).toHaveBeenCalledTimes(addresses.length);
+  });
+
+  it("rejects an incomplete or foreign-root address before any execution effect", async () => {
     const harness = await startHarness();
     cleanup = harness;
 
-    sendCommand(harness.socket, {
-      content: "flat structural",
-      target_member_route_key: "worker",
-    });
-    sendCommand(harness.socket, {
-      content: "task agent",
-      conversation_target_address: {
-        segments: [
-          { kind: "member", member_route_key: "worker" },
-          { kind: "task_agent", task_agent_run_id: "task-agent-run-1" },
-        ],
-      },
-    });
-    sendCommand(harness.socket, {
-      content: "task team root",
-      conversation_target_address: {
-        segments: [
-          { kind: "member", member_route_key: "BuildSquad" },
-          { kind: "task_team", task_team_run_id: "task-team-run-1" },
-        ],
-      },
-    });
-    sendCommand(harness.socket, {
-      content: "nested runtime path",
-      conversation_target_address: {
-        segments: [
-          { kind: "member", member_route_key: "BuildSquad" },
-          { kind: "task_team", task_team_run_id: "task-team-run-1" },
-          { kind: "member", member_route_key: "NestedSquad" },
-          { kind: "task_team", task_team_run_id: "task-team-run-2" },
-          { kind: "member", member_route_key: "api_engineer" },
-          { kind: "task_agent", task_agent_run_id: "task-agent-run-2" },
-        ],
-      },
-    });
+    sendMessage(harness.socket, {
+      root_team_run_id: "team-run-1",
+      task_team_run_ids: [],
+      member_address: "/worker",
+    }, "incomplete");
+    sendMessage(harness.socket, {
+      root_team_run_id: "foreign-root",
+      task_team_run_ids: [],
+      member_address: "/worker",
+      task_agent_run_id: null,
+    }, "foreign");
 
-    await waitForCondition(
-      () => harness.teamRun.postMessageToConversationTarget.mock.calls.length === 4,
-      "four routed SEND_MESSAGE calls",
+    await waitForMessage(
+      harness.messages,
+      (message) => message.type === ServerMessageType.ERROR
+        && message.payload.code === "INVALID_TARGET",
+      "foreign-root rejection",
     );
-
-    const postedAddresses = harness.teamRun.postMessageToConversationTarget.mock.calls
-      .map((call) => call[1] as ConversationTargetAddress);
-    expect(postedAddresses).toEqual([
-      { segments: [{ kind: "member", memberRouteKey: "worker" }] },
-      {
-        segments: [
-          { kind: "member", memberRouteKey: "worker" },
-          { kind: "task_agent", taskAgentRunId: "task-agent-run-1" },
-        ],
-      },
-      {
-        segments: [
-          { kind: "member", memberRouteKey: "BuildSquad" },
-          { kind: "task_team", taskTeamRunId: "task-team-run-1" },
-        ],
-      },
-      {
-        segments: [
-          { kind: "member", memberRouteKey: "BuildSquad" },
-          { kind: "task_team", taskTeamRunId: "task-team-run-1" },
-          { kind: "member", memberRouteKey: "NestedSquad" },
-          { kind: "task_team", taskTeamRunId: "task-team-run-2" },
-          { kind: "member", memberRouteKey: "api_engineer" },
-          { kind: "task_agent", taskAgentRunId: "task-agent-run-2" },
-        ],
-      },
-    ]);
-    expect(harness.teamRun.postMessage).not.toHaveBeenCalled();
-    expect(harness.teamRunService.recordRunActivity).toHaveBeenCalledTimes(4);
+    expect(harness.executeMemberCommand).not.toHaveBeenCalled();
+    expect(harness.teamRunService.recordRunActivity).not.toHaveBeenCalled();
   });
 
-  it("keeps concurrent runtime ids distinct and does not choose a latest-run fallback", async () => {
-    const harness = await startHarness();
-    cleanup = harness;
-
-    for (const taskTeamRunId of ["task-team-run-1", "task-team-run-2"]) {
-      sendCommand(harness.socket, {
-        content: `message ${taskTeamRunId}`,
-        conversation_target_address: {
-          segments: [
-            { kind: "member", member_route_key: "BuildSquad" },
-            { kind: "task_team", task_team_run_id: taskTeamRunId },
-            { kind: "member", member_route_key: "review_lead" },
-          ],
-        },
-      });
-    }
-    for (const taskAgentRunId of ["task-agent-run-1", "task-agent-run-2"]) {
-      sendCommand(harness.socket, {
-        content: `message ${taskAgentRunId}`,
-        conversation_target_address: {
-          segments: [
-            { kind: "member", member_route_key: "worker" },
-            { kind: "task_agent", task_agent_run_id: taskAgentRunId },
-          ],
-        },
-      });
-    }
-
-    await waitForCondition(
-      () => harness.teamRun.postMessageToConversationTarget.mock.calls.length === 4,
-      "four concurrent-id SEND_MESSAGE calls",
-    );
-
-    const postedAddresses = harness.teamRun.postMessageToConversationTarget.mock.calls
-      .map((call) => call[1] as ConversationTargetAddress);
-    expect(postedAddresses.map((address) => address.segments)).toEqual([
-      [
-        { kind: "member", memberRouteKey: "BuildSquad" },
-        { kind: "task_team", taskTeamRunId: "task-team-run-1" },
-        { kind: "member", memberRouteKey: "review_lead" },
-      ],
-      [
-        { kind: "member", memberRouteKey: "BuildSquad" },
-        { kind: "task_team", taskTeamRunId: "task-team-run-2" },
-        { kind: "member", memberRouteKey: "review_lead" },
-      ],
-      [
-        { kind: "member", memberRouteKey: "worker" },
-        { kind: "task_agent", taskAgentRunId: "task-agent-run-1" },
-      ],
-      [
-        { kind: "member", memberRouteKey: "worker" },
-        { kind: "task_agent", taskAgentRunId: "task-agent-run-2" },
-      ],
-    ]);
-    expect(harness.teamRun.postMessage).not.toHaveBeenCalled();
-  });
-
-  it("reports backend invalid runtime targets over the websocket without structural fallback or activity recording", async () => {
+  it("surfaces a stale nested task-Team rejection without retry or persistent fallback", async () => {
     const harness = await startHarness({
-      results: [{
+      executeResult: {
         accepted: false,
-        code: "TASK_TEAM_RUN_NOT_FOUND",
-        message: "Task-team run 'stale-task-team-run' was not found.",
-      }],
-    });
-    cleanup = harness;
-
-    sendCommand(harness.socket, {
-      content: "stale runtime target",
-      conversation_target_address: {
-        segments: [
-          { kind: "member", member_route_key: "BuildSquad" },
-          { kind: "task_team", task_team_run_id: "stale-task-team-run" },
-        ],
+        code: "TASK_TEAM_INSTANCE_NOT_ACTIVE",
+        message: "Nested task TeamRun is stale.",
       },
     });
+    cleanup = harness;
+    const address = createTeamExecutionAddress({
+      rootTeamRunId: "team-run-1",
+      taskTeamRunIds: ["stale-outer", "stale-inner"],
+      memberAddress: "/BuildSquad/NestedSquad/reviewer",
+      taskAgentRunId: null,
+    });
 
-    await waitForCondition(
-      () => harness.teamRun.postMessageToConversationTarget.mock.calls.length === 1,
-      "stale runtime SEND_MESSAGE call",
-    );
+    sendMessage(harness.socket, address, "must not fall back");
     const error = await waitForMessage(
       harness.messages,
-      (message) => message.type === ServerMessageType.ERROR,
-      "INVALID_TARGET error",
+      (message) => message.type === ServerMessageType.ERROR
+        && message.payload.code === "INVALID_TARGET",
+      "stale nested task-Team rejection",
     );
 
-    expect(error.payload).toMatchObject({
-      code: "INVALID_TARGET",
-      message: "Task-team run 'stale-task-team-run' was not found.",
-    });
-    expect(harness.teamRun.postMessageToConversationTarget.mock.calls[0]?.[1]).toEqual({
-      segments: [
-        { kind: "member", memberRouteKey: "BuildSquad" },
-        { kind: "task_team", taskTeamRunId: "stale-task-team-run" },
-      ],
-    });
-    expect(harness.teamRun.postMessage).not.toHaveBeenCalled();
+    expect(error.payload.message).toBe("Nested task TeamRun is stale.");
+    expect(harness.executeMemberCommand).toHaveBeenCalledOnce();
+    expect(harness.executeMemberCommand).toHaveBeenCalledWith(
+      address,
+      expect.objectContaining({ kind: "post_message" }),
+    );
     expect(harness.teamRunService.recordRunActivity).not.toHaveBeenCalled();
   });
 });

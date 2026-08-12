@@ -1,0 +1,88 @@
+HEAD=209daad0c74eeb78cc3631b26bdd53f197c10d56
+SOURCE:
+    40	            <span class="shrink-0 text-xs font-semibold text-blue-700">Open</span>
+    41	          </button>
+    42	        </div>
+    43	      </article>
+    44	    </template>
+    45	
+    46	    <MobileTeamReferenceViewer
+    47	      v-if="selectedReferenceContext && activeTeamContext"
+    48	      :team-run-id="activeTeamContext.teamRunId"
+    49	      :message-id="selectedReferenceContext.message.messageId"
+    50	      :reference="selectedReferenceContext.reference"
+    51	      :refresh-signal="referenceRefreshSignal"
+    52	      @close="selectedReferenceContext = null"
+    53	    />
+    54	  </section>
+    55	</template>
+    56	
+    57	<script setup lang="ts">
+    58	import { computed, ref } from 'vue';
+    59	import { Icon } from '@iconify/vue';
+    60	import MobileTeamReferenceViewer from '~/components/mobile/MobileTeamReferenceViewer.vue';
+    61	import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
+    62	import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
+    63	import { useTeamCommunicationStore } from '~/stores/teamCommunicationStore';
+    64	import type {
+    65	  TeamCommunicationPerspectiveMessage,
+    66	  TeamCommunicationReferenceFile,
+    67	} from '~/stores/teamCommunicationTypes';
+    68	import type { MobileWorkContext } from '~/types/mobileWork';
+    69	import {
+    70	  referenceFileIcon,
+    71	  referenceFileName,
+    72	} from '~/utils/teamCommunication/referenceFilePresentation';
+    73	
+    74	const props = defineProps<{
+    75	  context: MobileWorkContext | null;
+    76	}>();
+    77	
+    78	const selectionStore = useAgentSelectionStore();
+    79	const teamContextsStore = useAgentTeamContextsStore();
+    80	const teamCommunicationStore = useTeamCommunicationStore();
+    81	const selectedReferenceContext = ref<{
+    82	  message: TeamCommunicationPerspectiveMessage;
+    83	  reference: TeamCommunicationReferenceFile;
+    84	} | null>(null);
+    85	const referenceRefreshSignal = ref(0);
+    86	
+    87	const activeTeamContext = computed(() => {
+    88	  if (props.context?.kind !== 'team-run') return null;
+    89	  if (selectionStore.selectedType !== 'team' || selectionStore.selectedRunId !== props.context.teamRunId) return null;
+    90	  return teamContextsStore.getTeamContextById(props.context.teamRunId) ?? null;
+    91	});
+    92	const messages = computed(() => {
+    93	  const team = activeTeamContext.value;
+    94	  if (!team) return [];
+    95	  return teamCommunicationStore.getPerspectiveForAddress(
+    96	    team.executions.getRootTeamRunId(),
+    97	    team.executions.getFocusedAddress(),
+    98	  ).messages;
+    99	});
+   100	
+CURRENT_CONTEXT_TYPE:
+import type { TeamExecutionState } from '~/services/teamExecution/teamExecutionState';
+import type {
+  TeamTopologyAgentNode,
+  TeamTopologyAgentTeamNode,
+  TeamTopologyNode,
+  TeamTopologySnapshot,
+} from '~/services/teamExecution/teamTopologySnapshot';
+
+export type AgentTeamMemberNode = TeamTopologyAgentNode;
+export type SubTeamMemberNode = TeamTopologyAgentTeamNode;
+export type TeamMemberNode = TeamTopologyNode;
+export interface AgentTeamContext {
+  readonly topology: TeamTopologySnapshot;
+  readonly executions: TeamExecutionState;
+}
+EXACT_ROOT_OWNER_REFERENCES:
+stores/agentTeamContextsStore.ts:51:      const rootTeamRunId = context.executions.getRootTeamRunId();
+services/teamExecution/teamExecutionState.ts:46:  getRootTeamRunId(): string;
+components/mobile/MobileActivityDigest.vue:97:    team.executions.getRootTeamRunId(),
+components/mobile/MobileTeamMessages.vue:96:    team.executions.getRootTeamRunId(),
+components/mobile/__tests__/MobileArtifacts.spec.ts:105:  useAgentTeamContextsStore().teams.set(context.executions.getRootTeamRunId(), context);
+components/mobile/__tests__/MobileArtifacts.spec.ts:106:  useAgentSelectionStore().selectRunWithoutShellNavigation(context.executions.getRootTeamRunId(), 'team');
+components/mobile/__tests__/MobileContextSelectionRegression.spec.ts:144:  const rootTeamRunId = context.executions.getRootTeamRunId();
+components/mobile/__tests__/MobileContextSelectionRegression.spec.ts:172:  team.executions.getAgentContext(stableTeamAddress(team.executions.getRootTeamRunId(), memberAddress));

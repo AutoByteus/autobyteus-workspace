@@ -1,0 +1,927 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+
+stdout | tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:52442) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts (5 tests | 2 failed) 10ms
+     ✓ interrupts only the persistent Agent selected by its exact execution address 4ms
+     ✓ rejects an unknown task AgentRun selection without falling back to the persistent Agent 1ms
+     ✓ settles only the requested canonical member address 1ms
+     × routes approval to the exact task AgentRun at the logical address 3ms
+     × routes messages to the exact task AgentRun at the logical address 1ms
+stdout | tests/unit/agent-team-execution/team-run-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:52445) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/agent-team-execution/team-run-service.test.ts (13 tests | 11 failed) 26ms
+     ✓ returns an active team run without attempting restore 3ms
+     ✓ returns null when restore fails 0ms
+     × uses canonical member error status rather than diagnostic error content 6ms
+     × selects the mixed team backend when member runtimes span multiple runtimes 1ms
+     × rejects public memberRunId before top-level or member run allocation 6ms
+     × activates filesystem workspace metadata roots even when workspaceId is already present 1ms
+     × activates each distinct team workspace root once per create request 1ms
+     × rejects filesystem reference team launches when the root path is missing 1ms
+     × restores mixed team runs using persisted member runtime metadata 1ms
+     × preserves the existing default IDLE/empty history semantics on create 0ms
+     × records summary through the team catalog boundary 0ms
+     × builds launch member configs with shared and team-local agent ids 4ms
+     × rejects a subteam node as the root coordinator 0ms
+ ❯ tests/unit/agent-team-execution/team-member-delivery-coordinator.test.ts (2 tests | 1 failed) 12ms
+     × commits recipient input once and publishes one canonical accepted communication 11ms
+     ✓ publishes no accepted communication when recipient input is rejected 1ms
+ ❯ tests/unit/agent-team-execution/team-definition-topology-planner.test.ts (4 tests | 4 failed) 13ms
+     × routes nested agent_team definitions to mixed and preserves recursive member topology 4ms
+     × rejects a root-authored handoff that collides with a rebased child handoff 5ms
+     × rejects ambiguous bare leaf configs when nested members repeat a name 3ms
+     × resolves team-local subteams and their local agents from the containing team id 1ms
+ ❯ tests/unit/agent-team-execution/inter-agent-message-delivery.test.ts (4 tests | 4 failed) 9ms
+     × accepts the actual participant when its address exactly matches its path 6ms
+     × rejects participant address paths that diverge from participant paths 1ms
+     × rejects participant route keys that diverge from the actual participant path 1ms
+     × rejects address route keys that diverge from the address path 0ms
+ ❯ tests/unit/agent-team-execution/team-run-config-localization.test.ts (4 tests | 4 failed) 8ms
+     × recursively localizes every member and nested Team coordinator in one pass 2ms
+     × can localize the already parent-local nested Team at the next child factory boundary 0ms
+     × rejects a descendant outside the subteam mount instead of producing a mixed namespace 3ms
+     × rejects a missing, non-direct, or non-Agent coordinator without prefix fallback 1ms
+stdout | tests/unit/agent-team-execution/team-run-metadata-mapper.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:52492) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/agent-team-execution/team-run-metadata-mapper.test.ts (3 tests | 3 failed) 7ms
+     × captures child subteam run IDs and nested leaf platform IDs in recursive metadata 4ms
+     × restores recursive child runtime identity for lazy mixed subteam restoration 1ms
+     × restores the persisted handoff snapshot unchanged without consulting the mutated definition 1ms
+stdout | tests/unit/agent-team-execution/member-team-context-builder.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:52493) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/agent-team-execution/member-team-context-builder.test.ts (4 tests | 4 failed) 5ms
+     × builds one root-canonical collaboration binding and filters outgoing handoffs 3ms
+     × rebases a child-local member path under its collaboration mount 0ms
+     × keeps delivery enabled for an Agent with no configured outgoing handoffs 0ms
+     × keeps the canonical address and cloned handoffs unchanged after source mutation 0ms
+stdout | tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:52494) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts (2 tests | 2 failed) 5ms
+     × fails fast for recordable non-AutoByteus members missing upstream memoryDir 3ms
+     × passes the supplied memoryDir through to AgentRunManager without deriving a fallback 0ms
+ ❯ tests/unit/agent-team-execution/task-delegation-address-builder.test.ts (2 tests | 2 failed) 4ms
+     × builds team-target receiver addresses as the actual task-team ingress inbox 3ms
+     × prefixes child task-team local delegation addresses with the root-visible parent chain 0ms
+ ❯ tests/unit/agent-team-execution/sub-team-active-run-directory.test.ts (4 tests | 4 failed) 5ms
+     × binds and resolves an active persistent or restored child TeamRun 3ms
+     × removes stale inactive bindings on lookup 0ms
+     × unbinds on child disposal and permits a later restored run with the same identity 0ms
+     × clears every owned binding when the root manager is disposed 0ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 41 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-team-execution/inter-agent-message-delivery.test.ts > inter-agent-message-delivery participant invariants > accepts the actual participant when its address exactly matches its path
+AssertionError: expected { participant: { …(6) } } to deeply equal { participant: { …(6) }, …(1) }
+
+- Expected
++ Received
+
+@@ -15,13 +15,6 @@
+        "review_lead",
+      ],
+      "memberRouteKey": "BuildSquad/review_lead",
+      "memberRunId": "review-lead-run",
+    },
+-   "selector": {
+-     "kind": "path",
+-     "memberPath": [
+-       "BuildSquad",
+-       "review_lead",
+-     ],
+-   },
+  }
+
+ ❯ tests/unit/agent-team-execution/inter-agent-message-delivery.test.ts:25:69
+     23| describe("inter-agent-message-delivery participant invariants", () => {
+     24|   it("accepts the actual participant when its address exactly matches …
+     25|     expect(buildDeliveryEndpointForParticipant(buildParticipant())).to…
+       |                                                                     ^
+     26|       participant: buildParticipant(),
+     27|       selector: { kind: "path", memberPath: ["BuildSquad", "review_lea…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/inter-agent-message-delivery.test.ts > inter-agent-message-delivery participant invariants > rejects participant address paths that diverge from participant paths
+AssertionError: expected [Function] to throw an error
+
+- Expected: 
+null
+
++ Received: 
+undefined
+
+ ❯ tests/unit/agent-team-execution/inter-agent-message-delivery.test.ts:38:10
+     36|         memberRouteKey: "BuildSquad/qa_specialist",
+     37|       },
+     38|     }))).toThrow("participant.address.memberPath 'BuildSquad/qa_specia…
+       |          ^
+     39|   });
+     40| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/inter-agent-message-delivery.test.ts > inter-agent-message-delivery participant invariants > rejects participant route keys that diverge from the actual participant path
+AssertionError: expected [Function] to throw an error
+
+- Expected: 
+null
+
++ Received: 
+undefined
+
+ ❯ tests/unit/agent-team-execution/inter-agent-message-delivery.test.ts:44:10
+     42|     expect(() => buildDeliveryEndpointForParticipant(buildParticipant({
+     43|       memberRouteKey: "BuildSquad/qa_specialist",
+     44|     }))).toThrow("participant.memberRouteKey 'BuildSquad/qa_specialist…
+       |          ^
+     45|   });
+     46| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/inter-agent-message-delivery.test.ts > inter-agent-message-delivery participant invariants > rejects address route keys that diverge from the address path
+AssertionError: expected [Function] to throw an error
+
+- Expected: 
+null
+
++ Received: 
+undefined
+
+ ❯ tests/unit/agent-team-execution/inter-agent-message-delivery.test.ts:54:10
+     52|         memberRouteKey: "BuildSquad/qa_specialist",
+     53|       },
+     54|     }))).toThrow("memberRouteKey 'BuildSquad/qa_specialist' does not m…
+       |          ^
+     55|   });
+     56| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/member-team-context-builder.test.ts > MemberTeamContextBuilder > builds one root-canonical collaboration binding and filters outgoing handoffs
+TypeError: Cannot read properties of undefined (reading 'index')
+ ❯ MemberTeamContextBuilder.build src/agent-team-execution/services/member-team-context-builder.ts:23:36
+     21|     taskId?: string | null;
+     22|   }): Promise<MemberTeamContext> {
+     23|     const team = input.teamContext.index.getTeam(input.teamContext.tea…
+       |                                    ^
+     24|     if (!team) throw new Error(`Missing Team node '${input.teamContext…
+     25|     const addressing = createMemberLogicalAddressContext({
+ ❯ tests/unit/agent-team-execution/member-team-context-builder.test.ts:29:8
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/member-team-context-builder.test.ts > MemberTeamContextBuilder > rebases a child-local member path under its collaboration mount
+TypeError: Cannot read properties of undefined (reading 'index')
+ ❯ MemberTeamContextBuilder.build src/agent-team-execution/services/member-team-context-builder.ts:23:36
+     21|     taskId?: string | null;
+     22|   }): Promise<MemberTeamContext> {
+     23|     const team = input.teamContext.index.getTeam(input.teamContext.tea…
+       |                                    ^
+     24|     if (!team) throw new Error(`Missing Team node '${input.teamContext…
+     25|     const addressing = createMemberLogicalAddressContext({
+ ❯ tests/unit/agent-team-execution/member-team-context-builder.test.ts:66:63
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/member-team-context-builder.test.ts > MemberTeamContextBuilder > keeps delivery enabled for an Agent with no configured outgoing handoffs
+TypeError: Cannot read properties of undefined (reading 'index')
+ ❯ MemberTeamContextBuilder.build src/agent-team-execution/services/member-team-context-builder.ts:23:36
+     21|     taskId?: string | null;
+     22|   }): Promise<MemberTeamContext> {
+     23|     const team = input.teamContext.index.getTeam(input.teamContext.tea…
+       |                                    ^
+     24|     if (!team) throw new Error(`Missing Team node '${input.teamContext…
+     25|     const addressing = createMemberLogicalAddressContext({
+ ❯ tests/unit/agent-team-execution/member-team-context-builder.test.ts:95:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/member-team-context-builder.test.ts > MemberTeamContextBuilder > keeps the canonical address and cloned handoffs unchanged after source mutation
+TypeError: Cannot read properties of undefined (reading 'index')
+ ❯ MemberTeamContextBuilder.build src/agent-team-execution/services/member-team-context-builder.ts:23:36
+     21|     taskId?: string | null;
+     22|   }): Promise<MemberTeamContext> {
+     23|     const team = input.teamContext.index.getTeam(input.teamContext.tea…
+       |                                    ^
+     24|     if (!team) throw new Error(`Missing Team node '${input.teamContext…
+     25|     const addressing = createMemberLogicalAddressContext({
+ ❯ tests/unit/agent-team-execution/member-team-context-builder.test.ts:121:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts > MixedAgentMemberHandle memoryDir invariant > fails fast for recordable non-AutoByteus members missing upstream memoryDir
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ buildTeamContext tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts:28:15
+ ❯ tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts:62:44
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts > MixedAgentMemberHandle memoryDir invariant > passes the supplied memoryDir through to AgentRunManager without deriving a fallback
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ buildTeamContext tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts:28:15
+ ❯ tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts:84:44
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/sub-team-active-run-directory.test.ts > SubTeamActiveRunDirectory > binds and resolves an active persistent or restored child TeamRun
+TypeError: Cannot read properties of undefined (reading 'trim')
+ ❯ SubTeamActiveRunDirectory.bind src/agent-team-execution/services/sub-team-active-run-directory.ts:8:33
+      6| 
+      7|   bind(run: TeamRun): void {
+      8|     const runId = run.teamRunId.trim();
+       |                                 ^
+      9|     if (!runId) {
+     10|       throw new Error("childTeamRunId is required.");
+ ❯ tests/unit/agent-team-execution/sub-team-active-run-directory.test.ts:15:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/sub-team-active-run-directory.test.ts > SubTeamActiveRunDirectory > removes stale inactive bindings on lookup
+TypeError: Cannot read properties of undefined (reading 'trim')
+ ❯ SubTeamActiveRunDirectory.bind src/agent-team-execution/services/sub-team-active-run-directory.ts:8:33
+      6| 
+      7|   bind(run: TeamRun): void {
+      8|     const runId = run.teamRunId.trim();
+       |                                 ^
+      9|     if (!runId) {
+     10|       throw new Error("childTeamRunId is required.");
+ ❯ tests/unit/agent-team-execution/sub-team-active-run-directory.test.ts:24:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/sub-team-active-run-directory.test.ts > SubTeamActiveRunDirectory > unbinds on child disposal and permits a later restored run with the same identity
+TypeError: Cannot read properties of undefined (reading 'trim')
+ ❯ SubTeamActiveRunDirectory.bind src/agent-team-execution/services/sub-team-active-run-directory.ts:8:33
+      6| 
+      7|   bind(run: TeamRun): void {
+      8|     const runId = run.teamRunId.trim();
+       |                                 ^
+      9|     if (!runId) {
+     10|       throw new Error("childTeamRunId is required.");
+ ❯ tests/unit/agent-team-execution/sub-team-active-run-directory.test.ts:35:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/sub-team-active-run-directory.test.ts > SubTeamActiveRunDirectory > clears every owned binding when the root manager is disposed
+TypeError: Cannot read properties of undefined (reading 'trim')
+ ❯ SubTeamActiveRunDirectory.bind src/agent-team-execution/services/sub-team-active-run-directory.ts:8:33
+      6| 
+      7|   bind(run: TeamRun): void {
+      8|     const runId = run.teamRunId.trim();
+       |                                 ^
+      9|     if (!runId) {
+     10|       throw new Error("childTeamRunId is required.");
+ ❯ tests/unit/agent-team-execution/sub-team-active-run-directory.test.ts:45:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-address-builder.test.ts > TaskDelegationAddressBuilder > builds team-target receiver addresses as the actual task-team ingress inbox
+Error: TeamExecutionAddress contains an unsupported identity field.
+ ❯ createTeamExecutionAddress src/agent-team-execution/domain/team-execution-address.ts:28:11
+     26|   const allowed = new Set(["rootTeamRunId", "taskTeamRunIds", "memberA…
+     27|   if (keys.some((key) => !allowed.has(key))) {
+     28|     throw new Error("TeamExecutionAddress contains an unsupported iden…
+       |           ^
+     29|   }
+     30|   const taskTeamRunIds = Object.freeze((input.taskTeamRunIds ?? []).ma…
+ ❯ TaskDelegationAddressBuilder.buildTaskTeamIngressAddress src/agent-team-execution/task-delegation/task-delegation-address-builder.ts:18:12
+ ❯ tests/unit/agent-team-execution/task-delegation-address-builder.test.ts:32:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-address-builder.test.ts > TaskDelegationAddressBuilder > prefixes child task-team local delegation addresses with the root-visible parent chain
+Error: TeamExecutionAddress contains an unsupported identity field.
+ ❯ createTeamExecutionAddress src/agent-team-execution/domain/team-execution-address.ts:28:11
+     26|   const allowed = new Set(["rootTeamRunId", "taskTeamRunIds", "memberA…
+     27|   if (keys.some((key) => !allowed.has(key))) {
+     28|     throw new Error("TeamExecutionAddress contains an unsupported iden…
+       |           ^
+     29|   }
+     30|   const taskTeamRunIds = Object.freeze((input.taskTeamRunIds ?? []).ma…
+ ❯ TaskDelegationAddressBuilder.buildTaskTeamIngressAddress src/agent-team-execution/task-delegation/task-delegation-address-builder.ts:18:12
+ ❯ tests/unit/agent-team-execution/task-delegation-address-builder.test.ts:74:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-definition-topology-planner.test.ts > TeamDefinitionTopologyPlanner > routes nested agent_team definitions to mixed and preserves recursive member topology
+TypeError: Cannot read properties of undefined (reading 'slice')
+ ❯ TeamDefinitionTopologyPlanner.buildPlan src/agent-team-execution/services/team-definition-topology-planner.ts:67:66
+     65|     for (const launch of input.memberConfigs) {
+     66|       const address = createAgentTeamAddress(
+     67|         launch.memberAddress === "/" ? [] : launch.memberAddress.slice…
+       |                                                                  ^
+     68|       );
+     69|       if (settingsByAddress.has(address)) throw new Error(`Duplicate l…
+ ❯ tests/unit/agent-team-execution/team-definition-topology-planner.test.ts:65:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-definition-topology-planner.test.ts > TeamDefinitionTopologyPlanner > rejects a root-authored handoff that collides with a rebased child handoff
+AssertionError: expected TypeError: Cannot read properties of unde… to match object { Object (code) }
+
+- Expected
++ Received
+
+- {
+-   "code": "COLLABORATION_HANDOFF_DUPLICATE",
++ TypeError {
++   "message": "Cannot read properties of undefined (reading 'slice')",
+  }
+
+ ❯ tests/unit/agent-team-execution/team-definition-topology-planner.test.ts:154:5
+    152|     ]));
+    153| 
+    154|     await expect(planner.buildPlan({
+       |     ^
+    155|       teamDefinitionId: "root-team",
+    156|       memberConfigs: [
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-definition-topology-planner.test.ts > TeamDefinitionTopologyPlanner > rejects ambiguous bare leaf configs when nested members repeat a name
+AssertionError: expected [Function] to throw error including 'ambiguous' but got 'Cannot read properties of undefined (…'
+
+Expected: "ambiguous"
+Received: "Cannot read properties of undefined (reading 'slice')"
+
+ ❯ tests/unit/agent-team-execution/team-definition-topology-planner.test.ts:189:5
+    187|     ]));
+    188| 
+    189|     await expect(planner.buildPlan({
+       |     ^
+    190|       teamDefinitionId: "root-team",
+    191|       memberConfigs: [buildLeafConfig("Worker")],
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-definition-topology-planner.test.ts > TeamDefinitionTopologyPlanner > resolves team-local subteams and their local agents from the containing team id
+TypeError: Cannot read properties of undefined (reading 'slice')
+ ❯ TeamDefinitionTopologyPlanner.buildPlan src/agent-team-execution/services/team-definition-topology-planner.ts:67:66
+     65|     for (const launch of input.memberConfigs) {
+     66|       const address = createAgentTeamAddress(
+     67|         launch.memberAddress === "/" ? [] : launch.memberAddress.slice…
+       |                                                                  ^
+     68|       );
+     69|       if (settingsByAddress.has(address)) throw new Error(`Duplicate l…
+ ❯ tests/unit/agent-team-execution/team-definition-topology-planner.test.ts:222:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts > MixedTeamManager focused member routing > routes approval to the exact task AgentRun at the logical address
+TypeError: Cannot read properties of undefined (reading 'handles')
+ ❯ attachTaskAgentRun tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts:156:22
+    154|     taskAgentInstances: { handles: Map<string, unknown> };
+    155|   }).taskAgentInstances;
+    156|   taskAgentInstances.handles.set(
+       |                      ^
+    157|     taskAgentRunId,
+    158|     makeHandle(taskContext, taskAgentRun),
+ ❯ tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts:220:46
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts > MixedTeamManager focused member routing > routes messages to the exact task AgentRun at the logical address
+TypeError: Cannot read properties of undefined (reading 'handles')
+ ❯ attachTaskAgentRun tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts:156:22
+    154|     taskAgentInstances: { handles: Map<string, unknown> };
+    155|   }).taskAgentInstances;
+    156|   taskAgentInstances.handles.set(
+       |                      ^
+    157|     taskAgentRunId,
+    158|     makeHandle(taskContext, taskAgentRun),
+ ❯ tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts:243:46
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-member-delivery-coordinator.test.ts > TeamMemberDeliveryCoordinator > commits recipient input once and publishes one canonical accepted communication
+AssertionError: expected { …(2) } to match object { …(4) }
+(8 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "data": {
+-     "content": "Research is ready for product review.",
+-     "messageType": "handoff",
+-     "receiverAddress": {
+-       "memberAddress": "/product_manager",
+-       "rootTeamRunId": "root-run",
+-       "taskAgentRunId": null,
+-       "taskTeamRunIds": [],
+-     },
+-     "senderAddress": {
+-       "memberAddress": "/research_lead",
+-       "rootTeamRunId": "root-run",
+-       "taskAgentRunId": null,
+-       "taskTeamRunIds": [],
+-     },
+-     "teamRunId": "root-run",
+-   },
+    "eventSourceType": "COMMUNICATION",
+-   "executionAddress": {
+-     "memberAddress": "/research_lead",
+-     "rootTeamRunId": "root-run",
+-     "taskAgentRunId": null,
+-     "taskTeamRunIds": [],
+-   },
+-   "teamRunId": "root-run",
+  }
+
+ ❯ tests/unit/agent-team-execution/team-member-delivery-coordinator.test.ts:112:26
+    110|     expect(delivery).toHaveBeenCalledTimes(1);
+    111|     expect(published).toHaveLength(1);
+    112|     expect(published[0]).toMatchObject({
+       |                          ^
+    113|       eventSourceType: TeamRunEventSourceType.COMMUNICATION,
+    114|       teamRunId: "root-run",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-run-config-localization.test.ts > localizeSubTeamRunTopology > recursively localizes every member and nested Team coordinator in one pass
+TypeError: (0 , __vite_ssr_import_3__.localizeSubTeamRunTopology) is not a function
+ ❯ tests/unit/agent-team-execution/team-run-config-localization.test.ts:54:20
+     52|   it("recursively localizes every member and nested Team coordinator i…
+     53|     const source = buildResearchTeam();
+     54|     const result = localizeSubTeamRunTopology(source);
+       |                    ^
+     55| 
+     56|     expect(result.coordinatorMemberRouteKey).toBe("research_lead");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-run-config-localization.test.ts > localizeSubTeamRunTopology > can localize the already parent-local nested Team at the next child factory boundary
+TypeError: (0 , __vite_ssr_import_3__.localizeSubTeamRunTopology) is not a function
+ ❯ tests/unit/agent-team-execution/team-run-config-localization.test.ts:90:30
+     88| 
+     89|   it("can localize the already parent-local nested Team at the next ch…
+     90|     const researchTopology = localizeSubTeamRunTopology(buildResearchT…
+       |                              ^
+     91|     const fieldTeam = researchTopology.memberTree[1] as TeamSubTeamMem…
+     92|     const fieldTopology = localizeSubTeamRunTopology(fieldTeam);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-run-config-localization.test.ts > localizeSubTeamRunTopology > rejects a descendant outside the subteam mount instead of producing a mixed namespace
+AssertionError: expected error to match asymmetric matcher
+
+- Expected
++ Received
+
+- ObjectContaining {
+-   "code": "TEAM_RUN_LOCALIZATION_PREFIX_INVALID",
++ TypeError {
++   "message": "(0 , __vite_ssr_import_3__.localizeSubTeamRunTopology) is not a function",
+  }
+
+ ❯ tests/unit/agent-team-execution/team-run-config-localization.test.ts:109:54
+    107|     source.memberConfigs.push(agent("escaped", ["other_team", "escaped…
+    108| 
+    109|     expect(() => localizeSubTeamRunTopology(source)).toThrow(expect.ob…
+       |                                                      ^
+    110|       code: "TEAM_RUN_LOCALIZATION_PREFIX_INVALID",
+    111|     }));
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-run-config-localization.test.ts > localizeSubTeamRunTopology > rejects a missing, non-direct, or non-Agent coordinator without prefix fallback
+AssertionError: expected error to match asymmetric matcher
+
+- Expected
++ Received
+
+- ObjectContaining {
+-   "code": "TEAM_RUN_COORDINATOR_INVALID",
++ TypeError {
++   "message": "(0 , __vite_ssr_import_3__.localizeSubTeamRunTopology) is not a function",
+  }
+
+ ❯ tests/unit/agent-team-execution/team-run-config-localization.test.ts:118:54
+    116|     source.coordinatorMemberRouteKey = "research_team/field_team/field…
+    117| 
+    118|     expect(() => localizeSubTeamRunTopology(source)).toThrow(expect.ob…
+       |                                                      ^
+    119|       code: "TEAM_RUN_COORDINATOR_INVALID",
+    120|     }));
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-run-metadata-mapper.test.ts > TeamRunMetadataMapper > captures child subteam run IDs and nested leaf platform IDs in recursive metadata
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ tests/unit/agent-team-execution/team-run-metadata-mapper.test.ts:22:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-run-metadata-mapper.test.ts > TeamRunMetadataMapper > restores recursive child runtime identity for lazy mixed subteam restoration
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ TeamRunMetadataMapper.buildRestoreContext src/agent-team-execution/services/team-run-metadata-mapper.ts:26:20
+ ❯ tests/unit/agent-team-execution/team-run-metadata-mapper.test.ts:218:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-run-metadata-mapper.test.ts > TeamRunMetadataMapper > restores the persisted handoff snapshot unchanged without consulting the mutated definition
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ TeamRunMetadataMapper.buildRestoreContext src/agent-team-execution/services/team-run-metadata-mapper.ts:26:20
+ ❯ tests/unit/agent-team-execution/team-run-metadata-mapper.test.ts:386:35
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService > uses canonical member error status rather than diagnostic error content
+TypeError: Cannot read properties of undefined (reading 'eventType')
+ ❯ src/agent-team-execution/services/team-run-service.ts:163:27
+    161| 
+    162|       if (event.eventSourceType === TeamRunEventSourceType.AGENT) {
+    163|         if (event.payload.eventType !== "ERROR") return;
+       |                           ^
+    164|         terminalPhase = "FAILED";
+    165|         listener({
+ ❯ emitAgentEvent tests/unit/agent-team-execution/team-run-service.test.ts:118:7
+ ❯ tests/unit/agent-team-execution/team-run-service.test.ts:133:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[31/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService > selects the mixed team backend when member runtimes span multiple runtimes
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ tests/unit/agent-team-execution/team-run-service.test.ts:160:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[32/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService > rejects public memberRunId before top-level or member run allocation
+AssertionError: expected [Function] to throw error including 'Public team launch cannot supply memb…' but got 'Cannot read properties of undefined (…'
+
+Expected: "Public team launch cannot supply memberRunId"
+Received: "Cannot read properties of undefined (reading 'slice')"
+
+ ❯ tests/unit/agent-team-execution/team-run-service.test.ts:208:5
+    206|     const { service, mocks } = createSubject();
+    207| 
+    208|     await expect(
+       |     ^
+    209|       service.createTeamRun({
+    210|         teamDefinitionId: "team-def-1",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[33/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService > activates filesystem workspace metadata roots even when workspaceId is already present
+TypeError: Cannot read properties of undefined (reading 'slice')
+ ❯ TeamDefinitionTopologyPlanner.buildPlan src/agent-team-execution/services/team-definition-topology-planner.ts:67:66
+     65|     for (const launch of input.memberConfigs) {
+     66|       const address = createAgentTeamAddress(
+     67|         launch.memberAddress === "/" ? [] : launch.memberAddress.slice…
+       |                                                                  ^
+     68|       );
+     69|       if (settingsByAddress.has(address)) throw new Error(`Duplicate l…
+ ❯ TeamRunService.createTeamRun src/agent-team-execution/services/team-run-service.ts:224:18
+ ❯ tests/unit/agent-team-execution/team-run-service.test.ts:255:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[34/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService > activates each distinct team workspace root once per create request
+TypeError: Cannot read properties of undefined (reading 'slice')
+ ❯ TeamDefinitionTopologyPlanner.buildPlan src/agent-team-execution/services/team-definition-topology-planner.ts:67:66
+     65|     for (const launch of input.memberConfigs) {
+     66|       const address = createAgentTeamAddress(
+     67|         launch.memberAddress === "/" ? [] : launch.memberAddress.slice…
+       |                                                                  ^
+     68|       );
+     69|       if (settingsByAddress.has(address)) throw new Error(`Duplicate l…
+ ❯ TeamRunService.createTeamRun src/agent-team-execution/services/team-run-service.ts:224:18
+ ❯ tests/unit/agent-team-execution/team-run-service.test.ts:334:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[35/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService > rejects filesystem reference team launches when the root path is missing
+AssertionError: expected [Function] to throw error including 'workspaceRootPath is required' but got 'Cannot read properties of undefined (…'
+
+Expected: "workspaceRootPath is required"
+Received: "Cannot read properties of undefined (reading 'slice')"
+
+ ❯ tests/unit/agent-team-execution/team-run-service.test.ts:390:5
+    388|     const workspaceId = buildFilesystemWorkspaceId("/tmp/MissingRoot");
+    389| 
+    390|     await expect(service.createTeamRun({
+       |     ^
+    391|       teamDefinitionId: "team-def-1",
+    392|       memberConfigs: [
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[36/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService > restores mixed team runs using persisted member runtime metadata
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ tests/unit/agent-team-execution/team-run-service.test.ts:415:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[37/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService > preserves the existing default IDLE/empty history semantics on create
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ tests/unit/agent-team-execution/team-run-service.test.ts:533:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[38/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService > records summary through the team catalog boundary
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ tests/unit/agent-team-execution/team-run-service.test.ts:605:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService > builds launch member configs with shared and team-local agent ids
+AssertionError: expected [ { …(9) }, { …(9) }, { …(9) } ] to deeply equal [ ObjectContaining{…}, …(2) ]
+
+- Expected
++ Received
+
+  [
+    {
+      "agentDefinitionId": "shared-reviewer",
+-     "memberName": "sharedLead",
++     "applicationExecutionContext": null,
++     "autoExecuteTools": false,
++     "llmConfig": {
++       "temperature": 0.1,
++     },
++     "llmModelIdentifier": "gpt-test",
++     "memberAddress": "/sharedLead",
++     "runtimeKind": "autobyteus",
++     "skillAccessMode": "PRELOADED_ONLY",
++     "workspaceRootPath": "/tmp/workspace",
+    },
+    {
+      "agentDefinitionId": "team-local-agent:root-team:reviewer",
+-     "memberName": "localLead",
++     "applicationExecutionContext": null,
++     "autoExecuteTools": false,
++     "llmConfig": {
++       "temperature": 0.1,
++     },
++     "llmModelIdentifier": "gpt-test",
++     "memberAddress": "/localLead",
++     "runtimeKind": "autobyteus",
++     "skillAccessMode": "PRELOADED_ONLY",
++     "workspaceRootPath": "/tmp/workspace",
+    },
+    {
+      "agentDefinitionId": "team-local-agent:sub-team:reviewer",
+-     "memberName": "subReviewer",
++     "applicationExecutionContext": null,
++     "autoExecuteTools": false,
++     "llmConfig": {
++       "temperature": 0.1,
++     },
++     "llmModelIdentifier": "gpt-test",
++     "memberAddress": "/subTeam/subReviewer",
++     "runtimeKind": "autobyteus",
++     "skillAccessMode": "PRELOADED_ONLY",
++     "workspaceRootPath": "/tmp/workspace",
+    },
+  ]
+
+ ❯ tests/unit/agent-team-execution/team-run-service.test.ts:683:21
+    681|     });
+    682| 
+    683|     expect(configs).toEqual([
+       |                     ^
+    684|       expect.objectContaining({
+    685|         memberName: "sharedLead",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[40/41]⎯
+
+ FAIL  tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService > rejects a subteam node as the root coordinator
+TypeError: Cannot read properties of undefined (reading 'address')
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:81:47
+     79| 
+     80| export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+     81|   const address = assertAgentTeamAddress(node.address);
+       |                                               ^
+     82|   if (node.kind === "agent") {
+     83|     if (address === "/") throw new Error("The root TeamRun node must b…
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:176:21
+ ❯ tests/unit/agent-team-execution/team-run-service.test.ts:703:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[41/41]⎯
+
+
+ Test Files  11 failed (11)
+      Tests  41 failed | 6 passed (47)
+   Start at  06:11:19
+   Duration  10.01s (transform 3.09s, setup 51ms, import 8.22s, tests 105ms, environment 1ms)
+

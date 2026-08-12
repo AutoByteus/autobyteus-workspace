@@ -6,6 +6,8 @@ import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useTeamCommunicationStore } from '~/stores/teamCommunicationStore';
 import type { MobileWorkContext } from '~/types/mobileWork';
+import { createTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
+import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
 
 let pinia: Pinia;
 
@@ -16,34 +18,27 @@ const teamRunContext: MobileWorkContext = {
   title: 'Software Team',
   summary: 'Existing team run',
   workspaceRootPath: '/Users/normy/project',
-  focusedMemberRouteKey: 'lead',
+  focusedExecutionAddress: createTeamExecutionAddress({ rootTeamRunId: 'team-1', memberAddress: '/lead' }),
   isActive: true,
   lastActivityAt: '2026-05-18T16:00:00.000Z',
   statusLabel: 'Running',
 };
 
 function seedTeamContext(): void {
-  const leadNode = {
-    memberKind: 'agent',
-    memberName: 'lead',
+  const leadNode = testAgentNode('/lead', {
     displayName: 'Lead',
-    memberPath: ['lead'],
-    memberRouteKey: 'lead',
-    memberRunId: 'lead-run',
+    agentRunId: 'lead-run',
     agentDefinitionId: 'agent-1',
-  };
-  useAgentTeamContextsStore().teams.set('team-1', {
+  });
+  useAgentTeamContextsStore().teams.set('team-1', buildTestTeamContext({
     teamRunId: 'team-1',
-    config: { teamDefinitionId: 'team-def-1', workspaceId: 'workspace-1' },
-    memberTree: [leadNode],
-    memberNodesByRouteKey: new Map([['lead', leadNode]]),
-    leafAgentContextsByRouteKey: new Map([['lead', { state: { runId: 'lead-run' } }]]),
-    coordinatorMemberRouteKey: 'lead',
-    historicalHydration: null,
-    focusedMemberRouteKey: 'lead',
+    teamDefinitionId: 'team-def-1',
+    rootChildren: [leadNode],
+    coordinatorAddress: '/lead',
+    focusedExecutionAddress: createTeamExecutionAddress({ rootTeamRunId: 'team-1', memberAddress: '/lead' }),
     isActive: false,
     isSubscribed: false,
-  } as any);
+  }));
   useAgentSelectionStore().selectRunWithoutShellNavigation('team-1', 'team');
 }
 
@@ -51,8 +46,8 @@ function seedReferenceMessage(): void {
   useTeamCommunicationStore().replaceProjection('team-1', [
     {
       messageId: 'message-1',
-      senderAddress: { segments: [{ kind: 'member', memberRouteKey: 'solution_designer' }] },
-      receiverAddress: { segments: [{ kind: 'member', memberRouteKey: 'lead' }] },
+      senderAddress: createTeamExecutionAddress({ rootTeamRunId: 'team-1', memberAddress: '/solution_designer' }),
+      receiverAddress: createTeamExecutionAddress({ rootTeamRunId: 'team-1', memberAddress: '/lead' }),
       content: 'Please review the attached design. Raw /tmp/design-spec.md stays prose.',
       messageType: 'handoff',
       createdAt: '2026-04-12T10:00:00.000Z',

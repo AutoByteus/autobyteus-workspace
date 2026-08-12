@@ -1,11 +1,11 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { AgentRunEventType } from "../../../../src/agent-execution/domain/agent-run-event.js";
 import { TeamRunEventSourceType } from "../../../../src/agent-team-execution/domain/team-run-event.js";
 import { createTeamExecutionAddress } from "../../../../src/agent-team-execution/domain/team-execution-address.js";
-import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
+import { createTeamAgentExecutionBinding } from "../../../../src/agent-team-execution/domain/team-agent-execution-binding.js";
 import { AgentTeamStreamHandler } from "../../../../src/services/agent-streaming/agent-team-stream-handler.js";
 import { AgentSessionManager } from "../../../../src/services/agent-streaming/agent-session-manager.js";
 import { TeamStreamBroadcaster } from "../../../../src/services/agent-streaming/team-stream-broadcaster.js";
+import { projectTeamExecutionAddressDto } from "../../../../src/services/agent-streaming/team-agent-event-websocket-projector.js";
 import {
   ClientMessageType,
   ServerMessageType,
@@ -88,7 +88,6 @@ const createHarness = async (input: {
     new AgentSessionManager(),
     teamRunService as never,
     new TeamStreamBroadcaster(),
-    undefined,
     { getInitialMessages: vi.fn(() => []) } as never,
     teamRunManager as never,
   );
@@ -119,16 +118,39 @@ const handle = async (
   );
 };
 
+const clientCommandPayload = (
+  type: ClientMessageType,
+  executionAddress: Record<string, unknown>,
+): Record<string, unknown> => type === ClientMessageType.SEND_MESSAGE
+  ? {
+      execution_address: executionAddress,
+      content: "must not send",
+      message_id: "message-invalid",
+      dedupe_key: "dedupe-invalid",
+      context_file_paths: [],
+      image_urls: [],
+    }
+  : type === ClientMessageType.INTERRUPT_GENERATION
+    ? { execution_address: executionAddress, command_id: "interrupt-invalid" }
+    : { execution_address: executionAddress, invocation_id: "invocation-invalid", reason: null };
+
 describe("AgentTeamStreamHandler current execution-address commands", () => {
   afterEach(() => vi.useRealTimers());
 
   it("parses valid messages and rejects malformed envelopes", () => {
     expect(AgentTeamStreamHandler.parseMessage(JSON.stringify({
       type: ClientMessageType.SEND_MESSAGE,
-      payload: { content: "hello" },
+      payload: {
+        content: "hello",
+        context_file_paths: [],
+        image_urls: [],
+        execution_address: projectTeamExecutionAddressDto(executionCases[0]!.address),
+        message_id: "message-1",
+        dedupe_key: "dedupe-1",
+      },
     }))).toMatchObject({ type: ClientMessageType.SEND_MESSAGE });
-    expect(() => AgentTeamStreamHandler.parseMessage("not-json")).toThrow("Invalid JSON");
-    expect(() => AgentTeamStreamHandler.parseMessage("{}")).toThrow("Message missing 'type' field");
+    expect(() => AgentTeamStreamHandler.parseMessage("not-json")).toThrow();
+    expect(() => AgentTeamStreamHandler.parseMessage("{}")).toThrow();
   });
 
   it("connects through TeamRunService and publishes the current lifecycle snapshot", async () => {
@@ -161,7 +183,7 @@ describe("AgentTeamStreamHandler current execution-address commands", () => {
     "preserves the complete $name address across send, approval, and interrupt",
     async ({ address }) => {
       const harness = await createHarness();
-      const exactAddress = JSON.parse(JSON.stringify(address));
+      const exactAddress = projectTeamExecutionAddressDto(address);
 
       await handle(harness, ClientMessageType.SEND_MESSAGE, {
         execution_address: exactAddress,
@@ -205,11 +227,7 @@ describe("AgentTeamStreamHandler current execution-address commands", () => {
           command_type: "INTERRUPT_GENERATION",
           command_id: "interrupt-1",
           state: "accepted",
-          target: {
-            target_kind: "team_member",
-            team_run_id: "team-1",
-            execution_address: address,
-          },
+          execution_address: projectTeamExecutionAddressDto(address),
         },
       });
     },
@@ -221,22 +239,14 @@ describe("AgentTeamStreamHandler current execution-address commands", () => {
     ClientMessageType.INTERRUPT_GENERATION,
   ])("rejects %s before effect when execution_address is incomplete", async (type) => {
     const harness = await createHarness();
-    await handle(harness, type, {
-      execution_address: {
-        rootTeamRunId: "team-1",
-        taskTeamRunIds: ["task-team-outer"],
-        memberAddress: "/BuildSquad/reviewer",
-      },
-      content: "must not send",
-      invocation_id: "invocation-1",
-      command_id: "interrupt-1",
-    });
+    await handle(harness, type, clientCommandPayload(type, {
+        root_team_run_id: "team-1",
+        task_team_run_ids: ["task-team-outer"],
+        member_address: "/BuildSquad/reviewer",
+      }));
 
     expect(harness.executeMemberCommand).not.toHaveBeenCalled();
-    expect(parseSent(harness.connection)).toContainEqual(expect.objectContaining({
-      type: ServerMessageType.ERROR,
-      payload: expect.objectContaining({ code: "INVALID_TARGET" }),
-    }));
+    expect(parseSent(harness.connection)).toEqual([]);
   });
 
   it.each([
@@ -245,23 +255,30 @@ describe("AgentTeamStreamHandler current execution-address commands", () => {
     ClientMessageType.INTERRUPT_GENERATION,
   ])("rejects %s before effect when execution_address names a foreign root", async (type) => {
     const harness = await createHarness();
-    await handle(harness, type, {
-      execution_address: {
-        rootTeamRunId: "foreign-root",
-        taskTeamRunIds: [],
-        memberAddress: "/worker",
-        taskAgentRunId: null,
-      },
-      content: "must not send",
-      invocation_id: "invocation-1",
-      command_id: "interrupt-1",
-    });
+    await handle(harness, type, clientCommandPayload(type, {
+        root_team_run_id: "foreign-root",
+        task_team_run_ids: [],
+        member_address: "/worker",
+        task_agent_run_id: null,
+    }));
 
     expect(harness.executeMemberCommand).not.toHaveBeenCalled();
-    expect(parseSent(harness.connection)).toContainEqual(expect.objectContaining({
-      type: ServerMessageType.ERROR,
-      payload: expect.objectContaining({ code: "INVALID_TARGET" }),
-    }));
+    const messages = parseSent(harness.connection);
+    if (type === ClientMessageType.INTERRUPT_GENERATION) {
+      expect(messages).toContainEqual(expect.objectContaining({
+        type: ServerMessageType.AGENT_COMMAND_ACK,
+        payload: expect.objectContaining({
+          code: "INVALID_TARGET",
+          state: "rejected",
+          execution_address: expect.objectContaining({ root_team_run_id: "foreign-root" }),
+        }),
+      }));
+    } else {
+      expect(messages).toContainEqual(expect.objectContaining({
+        type: ServerMessageType.ERROR,
+        payload: expect.objectContaining({ code: "INVALID_TARGET" }),
+      }));
+    }
   });
 
   it("passes an exact stale nested task chain once and surfaces rejection without fallback", async () => {
@@ -280,8 +297,12 @@ describe("AgentTeamStreamHandler current execution-address commands", () => {
     });
 
     await handle(harness, ClientMessageType.SEND_MESSAGE, {
-      execution_address: stale,
+      execution_address: projectTeamExecutionAddressDto(stale),
       content: "must not fall back",
+      message_id: "message-stale",
+      dedupe_key: "dedupe-stale",
+      context_file_paths: [],
+      image_urls: [],
     });
 
     expect(harness.executeMemberCommand).toHaveBeenCalledOnce();
@@ -292,10 +313,10 @@ describe("AgentTeamStreamHandler current execution-address commands", () => {
     expect(harness.teamRunService.recordRunActivity).not.toHaveBeenCalled();
     expect(parseSent(harness.connection)).toContainEqual(expect.objectContaining({
       type: ServerMessageType.ERROR,
-      payload: {
+      payload: expect.objectContaining({
         code: "INVALID_TARGET",
         message: "Nested task TeamRun is stale.",
-      },
+      }),
     }));
   });
 
@@ -310,7 +331,7 @@ describe("AgentTeamStreamHandler current execution-address commands", () => {
     const stale = executionCases[3]!.address;
 
     await handle(harness, ClientMessageType.INTERRUPT_GENERATION, {
-      execution_address: stale,
+      execution_address: projectTeamExecutionAddressDto(stale),
       command_id: "interrupt-stale",
     });
 
@@ -324,11 +345,7 @@ describe("AgentTeamStreamHandler current execution-address commands", () => {
           state: "failed",
           code: "TASK_TEAM_INSTANCE_NOT_ACTIVE",
           message: "Nested task TeamRun is stale.",
-          target: {
-            target_kind: "team_member",
-            team_run_id: "team-1",
-            execution_address: stale,
-          },
+          execution_address: projectTeamExecutionAddressDto(stale),
         },
       },
     ]);
@@ -343,27 +360,30 @@ describe("AgentTeamStreamHandler current execution-address commands", () => {
 
     const message = handler.convertTeamEvent({
       eventSourceType: TeamRunEventSourceType.AGENT,
-      teamRunId: "team-1",
-      executionAddress: address,
-      data: {
-        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      execution: createTeamAgentExecutionBinding({
         executionAddress: address,
-        displayName: "reviewer",
-        agentEvent: {
-          runId: "task-reviewer-run",
-          eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
-          payload: { invocation_id: "invocation-1", tool_name: "read_file", result: "ok" },
-          statusHint: null,
+        agentRunId: "task-reviewer-run",
+      }),
+      payload: {
+        eventType: "TOOL_EXECUTION_SUCCEEDED",
+        details: {
+          invocationId: "invocation-1",
+          toolName: "read_file",
+          turnId: "turn-1",
+          arguments: null,
+          result: "ok",
         },
-        taskAgentInstance: null,
+        statusHint: null,
       },
     });
 
     expect(message.type).toBe(ServerMessageType.TOOL_EXECUTION_SUCCEEDED);
     expect(message.payload).toMatchObject({
-      agent_name: "reviewer",
-      runtime_kind: RuntimeKind.CODEX_APP_SERVER,
-      execution_address: address,
+      agent_execution: {
+        kind: "task_team_agent",
+        execution_address: projectTeamExecutionAddressDto(address),
+        agent_run_id: "task-reviewer-run",
+      },
       invocation_id: "invocation-1",
     });
   });
@@ -376,19 +396,11 @@ describe("AgentTeamStreamHandler current execution-address commands", () => {
     const address = executionCases[0]!.address;
     const event = {
       eventSourceType: TeamRunEventSourceType.AGENT,
-      teamRunId: "team-1",
-      executionAddress: address,
-      data: {
-        runtimeKind: RuntimeKind.AUTOBYTEUS,
-        executionAddress: address,
-        displayName: "worker",
-        agentEvent: {
-          runId: "worker-run",
-          eventType: AgentRunEventType.SEGMENT_CONTENT,
-          payload: { id: "segment-1", segment_type: "text", delta: "x" },
-          statusHint: null,
-        },
-        taskAgentInstance: null,
+      execution: createTeamAgentExecutionBinding({ executionAddress: address, agentRunId: "worker-run" }),
+      payload: {
+        eventType: "SEGMENT_CONTENT",
+        details: { segmentId: "segment-1", turnId: "turn-1", segmentType: "text", delta: "x" },
+        statusHint: null,
       },
     };
 

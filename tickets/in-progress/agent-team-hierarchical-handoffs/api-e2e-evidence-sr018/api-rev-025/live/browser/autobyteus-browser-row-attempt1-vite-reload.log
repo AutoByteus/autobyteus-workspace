@@ -1,0 +1,9 @@
+{
+  "slug": "autobyteus",
+  "runtime": "autobyteus",
+  "model": "gpt-5.6-luna",
+  "passed": false,
+  "rootTeamRunId": null,
+  "termination": null,
+  "fatalError": "TimeoutError: page.waitForURL: Timeout 120000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/workspace**\" until \"load\"\n  navigated to \"http://127.0.0.1:31225/agent-teams?view=team-list\"\n  navigated to \"http://127.0.0.1:31225/agent-teams?view=team-list\"\n  navigated to \"http://127.0.0.1:31225/agent-teams?view=team-list\"\n  navigated to \"http://127.0.0.1:31225/agent-teams?view=team-list\"\n============================================================\npage.waitForURL: Timeout 120000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/workspace**\" until \"load\"\n  navigated to \"http://127.0.0.1:31225/agent-teams?view=team-list\"\n  navigated to \"http://127.0.0.1:31225/agent-teams?view=team-list\"\n  navigated to \"http://127.0.0.1:31225/agent-teams?view=team-list\"\n  navigated to \"http://127.0.0.1:31225/agent-teams?view=team-list\"\n============================================================\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr018/api-rev-025/live/run-one-team-browser-row.mjs:159:14"
+}

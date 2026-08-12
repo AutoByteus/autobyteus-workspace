@@ -1,0 +1,8 @@
+port_60004=FREE
+port_31004=FREE
+port_60227=FREE
+port_31227=FREE
+runtime_target=ABSENT
+database_target=ABSENT
+key_target=ABSENT
+operational_database=NOT_INSPECTED

@@ -6,8 +6,6 @@ import {
 } from "../../src/agent-collaboration/domain/agent-team-address.js";
 import { MemberCollaborationContext } from "../../src/agent-team-execution/domain/member-collaboration-context.js";
 import { MemberTeamContext } from "../../src/agent-team-execution/domain/member-team-context.js";
-import type { TaskAgentInstanceIdentity } from "../../src/agent-team-execution/domain/task-agent-instance.js";
-import type { TaskTeamInstanceIdentity } from "../../src/agent-team-execution/domain/task-team-instance.js";
 import { TeamBackendKind } from "../../src/agent-team-execution/domain/team-backend-kind.js";
 import {
   TeamRunConfig,
@@ -99,8 +97,8 @@ export const testMemberTeamContext = (input: {
   deliverInterAgentMessage?: MemberCollaborationContext["deliverInterAgentMessage"];
   outgoingHandoffs?: MemberCollaborationContext["outgoingHandoffs"];
   teamInstruction?: string | null;
-  taskAgentInstance?: TaskAgentInstanceIdentity | null;
-  taskTeamInstance?: TaskTeamInstanceIdentity | null;
+  taskAgentRunId?: string | null;
+  taskId?: string | null;
 } = {}): MemberTeamContext => {
   const memberAddress = assertAgentTeamAddress(input.memberAddress ?? "/coordinator");
   const teamAddress = assertAgentTeamAddress(input.teamAddress ?? "/");
@@ -130,9 +128,9 @@ export const testMemberTeamContext = (input: {
       rootTeamRunId,
       taskTeamRunIds: input.taskTeamRunIds ?? [],
       memberAddress,
+      taskAgentRunId: input.taskAgentRunId ?? null,
     }),
-    taskAgentInstance: input.taskAgentInstance,
-    taskTeamInstance: input.taskTeamInstance,
+    taskId: input.taskId ?? null,
   });
 };
 

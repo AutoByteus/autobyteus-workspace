@@ -1,0 +1,11 @@
+inventory_counts:
+A 2
+D 6
+M 82
+scope_server 37
+scope_web 53
+total 90
+diff_path_count:
+88
+missing_inventory_paths:
+missing_exit=0

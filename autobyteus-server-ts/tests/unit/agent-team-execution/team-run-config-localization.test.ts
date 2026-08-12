@@ -1,122 +1,100 @@
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { describe, expect, it } from "vitest";
-import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import {
-  localizeSubTeamRunTopology,
-  type TeamMemberRunConfig,
-  type TeamSubTeamMemberRunConfig,
-} from "../../../src/agent-team-execution/domain/team-run-config.js";
+import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
+import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
+import { testAgentNode, testAgentTeamNode } from "../../fixtures/current-team-run-fixtures.js";
 
-const agent = (name: string, path: string[]): TeamMemberRunConfig => ({
-  memberKind: "agent",
-  memberName: name,
-  memberPath: path,
-  memberRouteKey: path.join("/"),
-  memberRunId: `run-${name}`,
-  agentDefinitionId: `agent-${name}`,
-  llmModelIdentifier: "test-model",
-  autoExecuteTools: true,
-  skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
-  runtimeKind: RuntimeKind.AUTOBYTEUS,
-});
+const buildResearchRoot = () => {
+  const fieldTeam = testAgentTeamNode({
+    address: "/research_team/field_team",
+    coordinatorAddress: "/research_team/field_team/field_lead",
+    teamRunId: "child-field-team",
+    children: [
+      testAgentNode("/research_team/field_team/field_lead"),
+      testAgentNode("/research_team/field_team/interviewer"),
+    ],
+  });
+  const researchTeam = testAgentTeamNode({
+    address: "/research_team",
+    coordinatorAddress: "/research_team/research_lead",
+    teamRunId: "child-research-team",
+    children: [testAgentNode("/research_team/research_lead"), fieldTeam],
+  });
+  return testAgentTeamNode({
+    address: "/",
+    coordinatorAddress: "/root_lead",
+    teamRunId: "root-run",
+    children: [testAgentNode("/root_lead"), researchTeam],
+  });
+};
 
-const buildResearchTeam = (): TeamSubTeamMemberRunConfig => ({
-  memberKind: "agent_team",
-  memberName: "research_team",
-  memberPath: ["research_team"],
-  memberRouteKey: "research_team",
-  memberRunId: "run-research-team",
-  teamDefinitionId: "research-team",
-  childTeamRunId: "child-research-team",
-  coordinatorMemberRouteKey: "research_team/research_lead",
-  memberConfigs: [
-    agent("research_lead", ["research_team", "research_lead"]),
-    {
-      memberKind: "agent_team",
-      memberName: "field_team",
-      memberPath: ["research_team", "field_team"],
-      memberRouteKey: "research_team/field_team",
-      memberRunId: "run-field-team",
-      teamDefinitionId: "field-team",
-      childTeamRunId: "child-field-team",
-      coordinatorMemberRouteKey: "research_team/field_team/field_lead",
-      memberConfigs: [
-        agent("field_lead", ["research_team", "field_team", "field_lead"]),
-        agent("interviewer", ["research_team", "field_team", "interviewer"]),
+describe("TeamRunConfig exact rooted topology", () => {
+  it("clones and freezes every recursive Agent/AgentTeam address without localization", () => {
+    const source = buildResearchRoot();
+    const config = new TeamRunConfig({
+      teamBackendKind: TeamBackendKind.MIXED,
+      rootTeam: source,
+    });
+
+    expect(config.rootTeam.children[1]).toMatchObject({
+      address: "/research_team",
+      coordinatorAddress: "/research_team/research_lead",
+      children: [
+        { address: "/research_team/research_lead" },
+        {
+          address: "/research_team/field_team",
+          coordinatorAddress: "/research_team/field_team/field_lead",
+          children: [
+            { address: "/research_team/field_team/field_lead" },
+            { address: "/research_team/field_team/interviewer" },
+          ],
+        },
       ],
-    },
-  ],
-});
-
-describe("localizeSubTeamRunTopology", () => {
-  it("recursively localizes every member and nested Team coordinator in one pass", () => {
-    const source = buildResearchTeam();
-    const result = localizeSubTeamRunTopology(source);
-
-    expect(result.coordinatorMemberRouteKey).toBe("research_lead");
-    expect(result.memberTree).toEqual([
-      expect.objectContaining({
-        memberKind: "agent",
-        memberName: "research_lead",
-        memberPath: ["research_lead"],
-        memberRouteKey: "research_lead",
-      }),
-      expect.objectContaining({
-        memberKind: "agent_team",
-        memberName: "field_team",
-        memberPath: ["field_team"],
-        memberRouteKey: "field_team",
-        coordinatorMemberRouteKey: "field_team/field_lead",
-        memberConfigs: [
-          expect.objectContaining({
-            memberName: "field_lead",
-            memberPath: ["field_team", "field_lead"],
-            memberRouteKey: "field_team/field_lead",
-          }),
-          expect.objectContaining({
-            memberName: "interviewer",
-            memberPath: ["field_team", "interviewer"],
-            memberRouteKey: "field_team/interviewer",
-          }),
-        ],
-      }),
-    ]);
-    expect(source.coordinatorMemberRouteKey).toBe("research_team/research_lead");
-    expect((source.memberConfigs[1] as TeamSubTeamMemberRunConfig).coordinatorMemberRouteKey)
-      .toBe("research_team/field_team/field_lead");
+    });
+    expect(Object.isFrozen(config)).toBe(true);
+    expect(Object.isFrozen(config.rootTeam.children)).toBe(true);
   });
 
-  it("can localize the already parent-local nested Team at the next child factory boundary", () => {
-    const researchTopology = localizeSubTeamRunTopology(buildResearchTeam());
-    const fieldTeam = researchTopology.memberTree[1] as TeamSubTeamMemberRunConfig;
-    const fieldTopology = localizeSubTeamRunTopology(fieldTeam);
+  it("keeps the same canonical root-visible addresses at every child factory boundary", () => {
+    const config = new TeamRunConfig({
+      teamBackendKind: TeamBackendKind.MIXED,
+      rootTeam: buildResearchRoot(),
+    });
+    const research = config.rootTeam.children[1];
+    const field = research.kind === "agent_team" ? research.children[1] : null;
 
-    expect(fieldTopology.coordinatorMemberRouteKey).toBe("field_lead");
-    expect(fieldTopology.memberTree.map((member) => ({
-      name: member.memberName,
-      path: member.memberPath,
-      route: member.memberRouteKey,
-    }))).toEqual([
-      { name: "field_lead", path: ["field_lead"], route: "field_lead" },
-      { name: "interviewer", path: ["interviewer"], route: "interviewer" },
-    ]);
+    expect(research).toMatchObject({ address: "/research_team" });
+    expect(field).toMatchObject({ address: "/research_team/field_team" });
+    expect(field && field.kind === "agent_team" ? field.children.map((node) => node.address) : [])
+      .toEqual([
+        "/research_team/field_team/field_lead",
+        "/research_team/field_team/interviewer",
+      ]);
   });
 
-  it("rejects a descendant outside the subteam mount instead of producing a mixed namespace", () => {
-    const source = buildResearchTeam();
-    source.memberConfigs.push(agent("escaped", ["other_team", "escaped"]));
+  it("rejects a descendant outside its exact parent AgentTeam address", () => {
+    const root = buildResearchRoot();
+    const research = root.children[1];
+    if (research.kind !== "agent_team") throw new Error("research fixture is not an AgentTeam");
+    const invalidResearch = { ...research, children: [...research.children, testAgentNode("/other_team/escaped")] };
 
-    expect(() => localizeSubTeamRunTopology(source)).toThrow(expect.objectContaining({
-      code: "TEAM_RUN_LOCALIZATION_PREFIX_INVALID",
-    }));
+    expect(() => new TeamRunConfig({
+      teamBackendKind: TeamBackendKind.MIXED,
+      rootTeam: { ...root, children: [root.children[0]!, invalidResearch] },
+    })).toThrow("is not a direct child of AgentTeam '/research_team'");
   });
 
-  it("rejects a missing, non-direct, or non-Agent coordinator without prefix fallback", () => {
-    const source = buildResearchTeam();
-    source.coordinatorMemberRouteKey = "research_team/field_team/field_lead";
+  it("rejects a missing, nested, or non-Agent coordinator without prefix fallback", () => {
+    const root = buildResearchRoot();
+    const research = root.children[1];
+    if (research.kind !== "agent_team") throw new Error("research fixture is not an AgentTeam");
+    const invalidResearch = {
+      ...research,
+      coordinatorAddress: "/research_team/field_team/field_lead" as typeof research.coordinatorAddress,
+    };
 
-    expect(() => localizeSubTeamRunTopology(source)).toThrow(expect.objectContaining({
-      code: "TEAM_RUN_COORDINATOR_INVALID",
-    }));
+    expect(() => new TeamRunConfig({
+      teamBackendKind: TeamBackendKind.MIXED,
+      rootTeam: { ...root, children: [root.children[0]!, invalidResearch] },
+    })).toThrow("must have exactly one direct Agent coordinator '/research_team/field_team/field_lead'");
   });
 });

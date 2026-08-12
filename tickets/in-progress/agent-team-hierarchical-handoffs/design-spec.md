@@ -18,11 +18,17 @@ The older execution model underneath that boundary still represents one logical 
 
 The original recursive `memberTree` nevertheless has useful locality: genuine Agent definition, launch, platform, run, role, description, workspace-root, and application-context facts are naturally stored next to the Agent they configure. SR-007's proposed persisted `topology + launch profiles + bindings` separation was therefore over-normalized. SR-008 retains the recursive aggregate and removes only parallel authorities.
 
-The production application path has an existing semantic compatibility boundary that SR-011 did not map. `@autobyteus/application-sdk-contracts` declares backend-definition V4 and frontend-SDK V4; its V4 launch, binding, target, and producer/event contracts contain `memberRouteKey`, `memberPath`, `teamPath`, and generic run fields. `parseApplicationManifest` requires frontend SDK V4, `parseApplicationBackendManifest` requires both V4 SDK values, and `ApplicationBackendDefinitionLoader` requires exported definition V4. `FileApplicationBundleProvider` already excludes parser failures into `ApplicationCatalogDiagnostic`; import validation fails them and application availability quarantines a diagnosed application. Therefore changing V4 types in place would make a supported installed old V4 bundle look current. Separately, `ApplicationPlatformStateStore.listExistingPlatformDatabasePaths()` enumerates physical platform databases without catalog membership, which is the correct durable migration inventory seam.
+The application path has exact contract gates that SR-011 did not map. `@autobyteus/application-sdk-contracts` declares backend-definition V4 and frontend-SDK V4; its V4 launch, binding, target, and producer/event contracts contain `memberRouteKey`, `memberPath`, `teamPath`, and generic run fields. `parseApplicationManifest`, `parseApplicationBackendManifest`, and `ApplicationBackendDefinitionLoader` validate those declarations before execution. Changing the types under V4 would make the gates lie, so the semantic contracts still require an atomic V5 cut. The user has now explicitly confirmed that this application framework has no supported users or predecessor state. Therefore exact V5 validation is a current-contract boundary only: project-owned application source/artifacts/fixtures/databases are replaced directly, while application migration, predecessor readers, V4 adapters, special quarantine/upgrade workflow, and fallback are excluded.
 
 CRR-022 exposed one narrower migration-design defect after SR-012 implementation. The stable flat writer stored `memberName` as presentation and normalized `memberRouteKey` independently; the maintained safe fixture contains `Program Manager` / `program_manager` and `QA Specialist` / `qa_specialist`. The predecessor `memberTree` schema likewise accepted `memberName` independently from structural `memberRouteKey`/`memberPath`. `AppDataMigrationRunner.runPending()` skips a migration whose ID is already `SUCCEEDED` or `SUCCEEDED_WITH_WARNINGS`. A read-only operational inventory found predecessor member-tree files and a terminal `20260517_team_run_metadata_member_tree` record, while the ticket-owned `20260801_team_canonical_identity` ID was absent. SR-013 assigned final TeamRun conversion to the later pending canonical owner and passed complete ARCH-REV-008.
 
 CRR-025 exposes the analogous token rollout gap after IR-014. The pre-ticket `20260703_token_usage_execution_address_backfill` definition is required on startup and writes legacy `{segments}` JSON. Current target code changes the converter under that same ID, so a normal predecessor start records terminal status and target `runPending()` executes the corrected converter zero times. Strict current token readers then normalize the old payload to `null`. A read-only operational snapshot confirms the production-reachable state: the old token ID is `SUCCEEDED`, `20260801...` is absent, and roughly 139k Team token rows retain `{segments}`. In addition, the migration database boundary exposes only independent row updates; a forced second-write failure leaves the first row committed. The pending canonical aggregate must therefore own target token conversion and delegate one all-or-nothing batch to a transaction-owning migration store.
+
+CRR-050 is the current full-ticket structural result. It preserves the backend canonical identity/routing, migrations/startup, V5 application admission, providers, storage, and safe-launcher work, but finds two remaining authoritative-boundary failures. First, `TeamRunEvent` pairs an independent discriminator with an independent data union, task events erase exact domain types to `unknown`, the server mapper casts into generic `Record<string,unknown>`, and the browser checks only that `type` is a string. Member input also repeats one receiving execution as both `execution_address` and `recipient_address`. Second, frontend `TeamRunNodeBase` mixes immutable topology, concrete task execution, task lifecycle, presentation, and relationship facts; task Team materialization clones source topology with empty run-ID placeholders; thirty production callers reach into `agentExecutionsByKey`, including eleven raw-key parsers; and streaming, GraphQL restore, focus, history/navigation, status/timeline, and cleanup coordinate by shared mutation. Reachable API-F-012 through API-F-015 are consequences of these shapes, not separate local defects.
+
+Before SR-016 design, the ticket branch was fetch/merge-refreshed onto `origin/personal@023f4f550b07f27dbf388d55234a10b8eae0e0c7`. The integrated solution HEAD is `307b13a98b65c8912f596fde7195c6534dd4479d`, 57 commits ahead and zero behind at the checkpoint. The only conflict proved that workspace selection and execution focus are distinct: current-row presentation requires the selected root TeamRun and exact focused `TeamExecutionAddress`. The resolved focused test passes 6/6.
+
+ARCH-REV-010 then completed a full cumulative review of SR-017. It passed the rooted TeamRun aggregate, logical/concrete address ownership, shared message/task resolver, provider protocol, released-data migration and token transaction, task activation, frontend execution aggregate, cleanup inventory, and direct forward-only V5 application cut. It resolved CR-F-029/CR-F-030 at design level and left only DR-005/DR-006. DR-005 proves two supported Agent-status production paths were absent from the exact stream boundary: `AgentTeamStreamHandler.sendInitialStatusSnapshot()` projects persistent/task/task-Team Agent statuses directly through generic `ServerMessage`, and `MemberCommandStatusOverlayStore` manufactures initializing/error Team Agent events before AgentRun materialization through a generic builder. DR-006 identifies only a stale UC-019 sentence; the governing application outcome remains discard/rebuild. SR-018 closes these exact gaps and does not reopen accepted structure.
 
 ## Intended Change
 
@@ -48,13 +54,24 @@ Team collaboration becomes an intrinsic runtime capability. Every Team-bound Age
 
 SR-011 adds no production data field or runtime branch. It fixes the downstream live-validation environment and matrix needed to prove this design through real provider lifecycles.
 
-SR-012 closes ARCH-REV-006 / DR-004 at the existing application compatibility boundary. `@autobyteus/application-sdk-contracts` advances the breaking backend-definition and frontend-SDK semantic contracts from V4 to V5. Application manifest schema V4, backend bundle envelope V1, and iframe transport V4 remain independently versioned because their own shapes do not change; their SDK compatibility declarations point to V5. Existing application/backend manifest parsers, catalog diagnostics/quarantine, package validation, and backend definition loader reject V4 before application execution. Project-owned SDK source/dist, both application sources, build scripts, vendor copies, and importable outputs advance atomically. Physical application platform-database discovery and canonical migration remain store-owned and catalog-independent, so excluded V4 code cannot hide durable data. No V4 adapter or external bundle edit is designed. The user-approved requirements basis remains authoritative; implementation remains blocked until architecture re-review passes.
+SR-012 introduced the necessary V5 semantic version boundary after ARCH-REV-006 / DR-004. The current user clarification simplifies its rollout: `@autobyteus/application-sdk-contracts` still advances the breaking backend-definition and frontend-SDK contracts from V4 to V5, while independent unchanged application-manifest, backend-bundle, and iframe protocol versions stay unchanged. Project-owned SDK source/dist, both application sources, build scripts, vendor copies, importable outputs, fixtures, and fresh databases advance atomically. Existing manifest/definition parsers and loaders accept only the exact current declarations before execution. No application predecessor migration, V4 adapter, old-bundle compatibility/quarantine/upgrade workflow, external bundle edit, or database preservation path is designed.
 
 SR-013 corrects CRR-022 / CR-F-011 without changing the target model. One pure migration-only flat decoder owns historical display/route interpretation. Stable `20260517_team_run_metadata_member_tree` uses it for flat-to-predecessor conversion when pending. Ticket-owned `20260801_team_canonical_identity` remains separately pending and becomes the sole owner of schema-v3 replacement: it converts predecessor trees directly and composes the same flat decoder in memory for a residual/repaired safe flat file left behind when `20260517` is already terminal with warnings. It validates normalized route/path agreement and topology but never compares `memberName` with the address basename. Therefore fresh flat input, already-terminal predecessor output, and terminal-warning residual flat input all have an executable path without rerunning a completed ID or requiring a listening API; invalid structural data still blocks before mutation, and current repositories remain v3-only. The user explicitly approved SR-013 for architecture re-review without changing the coordinator-required operational AgentTeam invariant or adding later AgentOrg container scope.
 
 SR-014 changes no protocol, data model, owner, or data-flow spine. It records the user's exact natural-language implementation copy in one file and forbids provider paraphrase or duplicate full-text authorities. AutoByteus, Codex App Server, and Claude Agent SDK inject the same rendered block through their existing system-instruction seams; only `{{member_address}}` varies. The user explicitly classified this as a pure-text implementation clarification with no additional architecture review.
 
-SR-015 corrects CRR-025 / CR-F-013 and makes the CR-F-014 transaction contract executable without changing target identity or runtime behavior. `20260801_team_canonical_identity` is the one independently pending target canonical record for both rooted TeamRun and token semantic identity. After its TeamRun/task items are current, it invokes a migration-local token migrator that preserves IR-014's strict task index and row planner, plans every row before mutation, and submits one immutable update batch to a Prisma/SQLite transaction-owning store. The historical `20260703_token_usage_execution_address_backfill` definition is removed from the current registry; its durable record remains untouched evidence. Both token legacy-column cleanup definitions are ordered after and require exact `20260801...` success. The existing server gate remains the single pre-listen decision because the canonical aggregate cannot return `SUCCEEDED` when the token item fails. No new migration ID, status reset, second gate, per-row commit, or runtime legacy reader is added.
+SR-015 corrected CRR-025 / CR-F-013 and made the CR-F-014 transaction contract executable without changing target identity or runtime behavior. `20260801_team_canonical_identity` became the independently pending target record for rooted TeamRun and token semantic identity. SR-016 tightens that accepted ownership instead of retaining two later cleanup owners: the same canonical token item now performs semantic address conversion and physical removal of every obsolete Team-identity column in one verified Prisma/SQLite transaction. The historical `20260703_token_usage_execution_address_backfill` definition and both narrow token column-drop definitions are absent from the current registry; their durable terminal records remain untouched evidence. The existing exact canonical server gate remains the single pre-listen decision. No new migration ID, status reset, second gate, per-row commit, physical pre-conversion column drop, or runtime legacy reader is added.
+
+
+SR-016 corrects CRR-050 / CR-F-028–CR-F-030 without replacing those accepted subsystems. One browser-safe `@autobyteus/team-stream-contracts` workspace package owns the exact strict `/ws/agent-team` server/client DTO unions, runtime schemas, and serializers. Server `TeamRunEvent`, Team Agent, and task events become correlated unions; the Team member ingress adapter exhaustively validates the established generic standalone Agent event into the correlated Team Agent variant before publication; every other producer constructs its exact variant; the mapper is exhaustive and cast-free after narrowing; Team egress accepts only the exact contract; and browser admission validates the complete message before any mutation. Agent/task/member-input variants have one receiving/execution authority, communication retains its semantically distinct sender and receiver, derived Agent collaboration duplicates are filtered, and current aliases/arbitrary fields/unproduced variants/no-op Team approval tokens are removed.
+
+SR-017 does not reopen that model. It records the user's explicit forward-only application rule and removes a speculative subsystem from the solution: the application framework has no supported users or predecessor state, so project-owned source, manifests, definitions, generated/vendor/importable outputs, fixtures, and fresh databases move directly to V5/current shape. Ordinary exact parsers/loaders reject non-current input. `20260801...` has no application item, canonical startup does not enumerate application databases, and production/migration code contains no application predecessor decoder, compatibility adapter, special quarantine/upgrade workflow, dual reader, fallback, or database preservation path.
+
+SR-018 closes the two remaining status producers with one smaller domain capability. `createTeamAgentExecutionBinding({executionAddress,agentRunId})` is the sole classifier/validator for persistent Agent, task Agent, and Agent inside a task AgentTeam. `TeamAgentStatusSnapshot {execution,details,statusHint}` is the sole immutable Agent-status projection value. Mixed persistent/task/task-Team handles and config-backed offline members construct it from their already-owned exact address and allocated AgentRun ID. `TeamRuntimeSnapshotService` projects the non-event connection/open/restore snapshot directly through the same exact Team Agent status projector and strict serializer used by the correlated live `AGENT_STATUS` arm; it does not manufacture a `TeamRunEvent`. For an unmaterialized send/delegation target, the mixed handle supplies that same binding to `MemberCommandStatusOverlayStore`, which stores only exact status details by a private canonical key and publishes through one narrow `createTeamAgentStatusEvent(snapshot)` correlated constructor. The first matching real correlated status removes the overlay. TeamRun/name/runtime/raw-ID/task-instance/execution duplicates, the legacy snapshot model, generic initial-status mapper, and generic command-start event builder are removed. UC-019 is corrected to migrate only supported released TeamRun/history/communication/task/token/external data; application databases remain unsupported discard/rebuild input.
+
+Frontend state is split by real subject without changing the one recursive disk aggregate. `TeamLaunchDraft` owns pre-launch configuration, logical member focus, and pending input without any copied definition topology or run/execution/conversation identity; the existing definition catalog supplies its read-only definition view. V5 `@autobyteus/application-sdk-contracts` owns the one exact `ApplicationExecutionContext` compile-time shape; the server aliases it, and server/browser metadata boundaries map and validate it through their existing canonical execution-address capabilities rather than casting a generic record. One `TeamRunFrontendProjectionBuilder` atomically projects a closed launch/open input—validated canonical metadata, exact root lifecycle, logical Agent focus, and one discriminated fresh/loaded/historical-unloaded identity-free Agent seed per metadata Agent—into run-ID-free immutable `TeamTopologySnapshot` (logical placement plus node-local effective launch configuration) and a paired `TeamExecutionState` (all concrete run/application bindings and lifecycle). Lifecycle is therefore supplied by its actual launch/resume owner rather than inferred from metadata, while seeds carry only workspace/dynamic hydration facts and cannot repeat metadata-owned run/config/application identity. Because `ApplicationExecutionContext.producer.executionAddress` is execution identity, the builder consumes it into concrete Agent executions rather than topology; task Agent variants preserve the stable application assignment while rebinding the producer to their exact task address. The server enforces the same invariant earlier at the existing AgentRun-construction boundary so task Agent runtime, published-artifact, and application-stream attribution are correct at source rather than repaired by the browser. `AgentTeamContext` is only `{topology,executions}`: it does not repeat root TeamRun ID/lifecycle, mutable launched config, hydration, or stream-session state. The execution aggregate's private index stores only five valid variants—persistent Team, persistent Agent, task Agent, task AgentTeam root, and real Agent inside a task AgentTeam—and every applicable run ID is server-allocated and non-empty. The root/task Team IDs derive from their execution addresses; only a child persistent Team stores its distinct child binding. Each task execution stores only its task ID; one private one-entry-per-task projection index supplies active status/timeline and derived history, so there is no copied task snapshot or second mutable history archive. Durable-confirmed activation may seed that projection, while later live result signals request a complete record refresh and never manufacture partial timeline state. Complete GraphQL snapshots enter one staged monotonic reconciliation with immutable base facts, append-only retention, and atomic terminal cleanup. The aggregate alone owns root lifecycle, Agent-context association, task graph/projection, focus, and cleanup; established AgentContext/projector ownership remains the one source of Agent-local conversation/status/tool state, which typed Team views read without copying. The aggregate returns typed external effects and subject-specific immutable views, never its concrete union/map, and does not fetch GraphQL or mutate navigation/token stores. The launch owner constructs a fresh paired context only after success, transfers logical focus/pending input once, and atomically replaces the draft; failure leaves the draft unchanged. Active configuration/relaunch views derive from immutable topology; all Agent/Team WebSocket connection state remains transport-owned rather than living on contexts. The `services/teamExecution/` capability owns this model, while streaming remains a thin typed transport adapter. Private pure transition/navigation-projector modules keep the lifecycle owner cohesive without creating alternate public coordinators.
+
+The same tightness rule now applies to backend task execution and token persistence. `taskId` is the only task-management identity **inside its root TeamRun scope** and the activated task record's non-null `taskRun.address` is the concrete execution locator; a cross-root task lookup accepts `{rootTeamRunId,taskId}` rather than pretending IDs are global. `TaskAgentInstanceIdentity`, `TaskTeamInstanceIdentity`, their deterministic `task_agent_${taskId}` / `task_team_${taskId}` aliases, copied owner/parent/run/timestamp fields, generic `task_context`, and separate activation-result run-ID fields are removed. The active ledger may derive one non-persisted correlated `ActiveTaskExecutionBinding {kind,taskId,executionAddress}`; task-bound member context retains only `taskId` beside its already-owned execution address, which supplies root scope. Token storage likewise retains canonical `execution_address_json`, actual Agent `run_id`, task-operation `task_id`, and usage facts, while removing parallel root/member/task-run/task-instance columns. Root-Team queries derive the root from canonical JSON and use one named expression index, not another writable identity field. The exact contract and model are normative in `team-stream-execution-projection-contract.md` and `team-run-canonical-identity-refactor.md`.
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
@@ -71,9 +88,9 @@ SR-015 corrects CRR-025 / CR-F-013 and makes the CR-F-014 transaction contract e
 | BEH-011 | flat `{kind,name}` task roster -> direct task activation | `recipient_address` -> same shared recipient -> direct-current-Team policy -> task factory (`DS-005`, `DS-006`) | Same public address field/resolution as messaging; current task eligibility/lifecycle preserved |
 | BEH-012 | minimal SR-006 caller/recipient over route-bearing execution state | same minimal boundary over `AgentTeamAddress` and rooted index (`DS-004`–`DS-006`) | No config/run/handle/lifecycle leak through shared resolver |
 | BEH-013 | `TeamRunConfig` mixes genuine local facts with redundant identity and generic IDs | v3 Agent/AgentTeam node union + local facts + derived index (`DS-001`–`DS-003`) | Useful locality retained; parallel identity removed |
-| BEH-014 | conversation/task/event/token each encode task/member route variants | one `TeamExecutionAddress` + contextual resolver (`DS-007`, `DS-008`) | Exact persistent/task attribution without a route side channel |
+| BEH-014 | conversation/task/event/token encode task/member variants; Team events/wire are uncorrelated/generic and duplicate receiver identity; connection snapshots and pre-run status overlays bypass the exact Team Agent contract | one Agent binding/status snapshot -> correlated live/status-overlay event or direct non-event snapshot projection -> exact Team stream DTO -> strict browser admission -> one execution owner (`DS-007`, `DS-014A`–`DS-014J`) | Exact persistent/task attribution and supported initial/pre-run status are structurally enforced from real producer to consumer |
 | BEH-015 | fresh/terminal TeamRun predecessor plus terminal `20260703...` token record with old `{segments}`; target converter currently hidden under the skipped old ID and row writes are independent | shared TeamRun decoder -> pending `20260801...` TeamRun/task conversion -> strict token planning -> one store transaction -> exact canonical gate -> target-only readers (`DS-009A`–`DS-009D`, `DS-013A`–`DS-013D`) | Display divergence is safe; token task chains remain exact; completed IDs never rerun; plan/transaction failure mutates zero token rows and blocks startup |
-| BEH-016 | transports/SDK/web expose route/path bundles and scoped routes; exact V4 application manifest/backend-definition/frontend-SDK gates admit those legacy SDK shapes | target DTOs + recursive `rootTeam` + address/execution indexes + exact V5 application SDK admission (`DS-007`, `DS-008`, `DS-012`) | Observable UI/API behavior preserved with one identity model; V4 bundles excluded before execution while their durable DBs remain migration-visible |
+| BEH-016 | transports/SDK/web expose route/path bundles; frontend additionally mixes draft/topology/task/presentation in optional mutable nodes and public raw-key maps; exact V4 application gates admit legacy SDK shapes | exact V5 application admission + identity-free `TeamLaunchDraft` + immutable `TeamTopologySnapshot` + private valid `TeamExecutionState` + typed views (`DS-012`, `DS-014`, `DS-015A`–`DS-015G`) | Observable pre-launch/UI/API behavior and latest selected-TeamRun gating are preserved without provisional/placeholder execution, raw-key parsing, or alternate identity |
 | BEH-017 | memory scope name conflates concrete lineage with topology | execution resolver -> storage-private `ancestorTeamRunIds` (`DS-008`) | Physical memory/context paths remain unchanged |
 | BEH-018 | no single required imported nested-Team scenario spans all three live runtimes with fixed test models and isolated secrets | staged package import -> fresh per-runtime TeamRun -> collaboration/task/restore spines -> redacted matrix evidence (`DS-011`) | Real provider lifecycle parity is proved without mutating source packages or operational data; unavailable/skipped is not Pass |
 
@@ -83,16 +100,17 @@ SR-015 corrects CRR-025 / CR-F-013 and makes the CR-F-014 transaction contract e
 | --- | --- |
 | [agent-team-addressing-handoff-contract.md](./agent-team-addressing-handoff-contract.md) | Normative recipient grammar, AgentTeam coordinator targeting, handoff authoring/projection, intrinsic Team tools, filesystem-like system instruction, and shared message/task behavior |
 | [agent-team-collaboration-system-instruction.md](./agent-team-collaboration-system-instruction.md) | Normative exact Agent-facing renderer template and AutoByteus/Codex/Claude system-instruction injection contract |
-| [team-run-canonical-identity-refactor.md](./team-run-canonical-identity-refactor.md) | Normative SR-015 rooted schema, recipient/handoff seam, execution address, corrected TeamRun/token predecessor migration chains, exact V5 application SDK admission, API/frontend/storage contract, case spines, and verification seams |
+| [team-run-canonical-identity-refactor.md](./team-run-canonical-identity-refactor.md) | Normative SR-018-aligned rooted schema, recipient/handoff seam, execution address, corrected TeamRun/token predecessor migration chains, direct forward-only V5 application target, complete status/stream/frontend boundary linkage, storage contract, case spines, and verification seams |
+| [team-stream-execution-projection-contract.md](./team-stream-execution-projection-contract.md) | Normative correlated TeamRun events, shared Agent binding/status snapshot, strict shared Team WebSocket contract, immutable topology/concrete-execution model, `TeamExecutionState` ownership, eighteen case spines, removal inventory, and verification seams |
 | [nested-classroom-live-validation-contract.md](./nested-classroom-live-validation-contract.md) | Normative downstream fixture staging/import, isolated-secret preparation, three-runtime/model matrix, live assertions, evidence, result classification, and cleanup |
 
-Requirements remain authoritative if wording conflicts. SR-013 passed ARCH-REV-008; SR-015 is the active architecture re-review delta for CR-F-013/CR-F-014. SR-014 changes only the exact Agent-facing copy and remains user-approved for implementation after the migration gate is cleared.
+Requirements remain authoritative if wording conflicts. ARCH-REV-010 is the current complete architecture gate; SR-018 is the active correction package for DR-005/DR-006. It preserves every passed SR-017 decision, closes the two real status producers through one shared binding/snapshot/projector, and retains the unused application's direct target-only cut. SR-014 changes only the exact Agent-facing copy.
 
 ## Task Design Health Assessment (Mandatory)
 
 - Change posture: `Comprehensive Refactor`.
 - Design issue signal: `Yes`.
-- Root causes: parallel identity authorities, kind-ambiguous run fields, root/nested shape asymmetry, copied/localized child state, duplicated execution locators, an omitted semantic version boundary at application admission, and two persisted-transition ownership omissions: historical display/structure semantics were conflated, and target token semantics were attached to a terminal predecessor ID behind a per-row persistence boundary.
+- Root causes: parallel identity authorities, kind-ambiguous run fields, root/nested shape asymmetry, copied/localized child state, duplicated execution locators, synthetic task-instance objects that restate a root-scoped task record/execution address, token columns that restate canonical JSON identity, prior migration/application boundary omissions already corrected, plus two current shared-structure failures: an uncorrelated/generic Team event transport and a frontend boundary that conflates immutable topology with concrete execution lifecycle while exposing its raw index.
 - Design-principle response:
   - one authority per meaning;
   - preserve genuine facts and useful locality;
@@ -104,6 +122,17 @@ Requirements remain authoritative if wording conflicts. SR-013 passed ARCH-REV-0
   - every supported predecessor state has a separately executable target migration-ID path;
   - one canonical aggregate record owns cross-store target identity, while each database store owns its transaction;
   - migration plans validate completely before the first mutation and summaries describe committed outcomes only;
+  - cross-process contracts use one exact runtime-validated DTO/schema authority;
+  - immutable topology and concrete execution are different subjects, not optional variants of one node;
+  - the draft refers to the existing definition catalog instead of copying a second definition topology;
+  - root/task Team run identity derives from the execution address; only a child persistent Team stores its distinct binding;
+  - root-TeamRun-scoped task ID owns task management while the task record's execution address owns concrete execution; cross-root selection names both scope and ID and no synthetic instance identity is standardized;
+  - canonical token execution JSON owns Team execution identity; a named expression index serves root-query performance without another writable root field, and one migration-store transaction owns row plus schema contraction;
+  - application producer execution identity belongs to the concrete Agent execution, not immutable topology; task variants rebind that one context instead of carrying the persistent producer address;
+  - one lifecycle owner exposes typed commands/queries while private pure modules support rather than bypass it;
+  - the internal concrete union/index never escapes through a broad getter; consumers receive subject-specific immutable views;
+  - execution projection lives in a `teamExecution` capability rather than under streaming transport, so launch/restore/history are not made transport dependents;
+  - invalid wire or partially known execution state is rejected/absent instead of normalized or padded with placeholders;
   - tool output contains only facts needed for the Agent's next decision;
   - Team-owned protocol capabilities are materialized by Team runtime rather than duplicated in package configuration;
   - thin adapters preserve operation-specific domain values; and
@@ -147,7 +176,7 @@ Remove rather than deprecate current production uses of:
 - normal-reader legacy normalization.
 - the generic communication result envelope, caller/source repetition, and `HANDOFF_RULES_RETRIEVED` success code on the model-visible `get_handoff_rules` path; and
 - package `toolNames` as a prerequisite for Team collaboration protocol tools; and
-- current V4 backend-definition/frontend-SDK exports, declarations, manifests, definitions, or generated/vendored project artifacts outside explicit incompatibility fixtures.
+- current V4 backend-definition/frontend-SDK exports, declarations, manifests, definitions, or generated/vendored project artifacts; non-target literals may exist only in strict-parser tests, never production compatibility code.
 
 Legacy shapes remain only in migration input modules/fixtures under a narrow explicit source allowlist. Definition-local `memberName`, unrelated filesystem paths, address-derived storage encoding, and opaque provider payload keys are not active mounted identity and may remain.
 
@@ -160,8 +189,8 @@ Legacy shapes remain only in migration input modules/fixtures under a narrow exp
 | Communication/task JSON | Migration required | Replace path/task bundles with `TeamExecutionAddress` |
 | Token usage DB | Migration required | Replace duplicate execution-address schema transactionally |
 | External-channel bindings | Migration required | Replace route/path pair with address selector |
-| Application platform DBs | Migration required | Convert discovered launch/run identity transactionally from physical store inventory, independent of bundle admission |
-| Installed application bundle code | Compatibility rejection; no migration | Exact V5 backend-definition/frontend-SDK contracts are admitted; V4 code remains unmodified and excluded/quarantined until independently upgraded |
+| Application platform DBs | Discard/rebuild | Unused feature has no supported predecessor cohort; recreate project fixtures/databases directly in current schema and add no migration reader |
+| Application bundle code/artifacts | Direct target replacement | Move all project-owned source/generated/vendor/importable outputs atomically to exact V5; non-target external inputs are unsupported |
 | Derived indexes/caches | Discard/rebuild | They are views of migrated authoritative data |
 | Agent memory directories | Directly usable | Concrete run-ID lineage remains truthful |
 | Final context files/locators | Directly usable | Derive same storage segments from address |
@@ -169,18 +198,18 @@ Legacy shapes remain only in migration input modules/fixtures under a narrow exp
 
 ### Migration Plan
 
-1. Keep the dependency order `20260517_team_run_metadata_member_tree` -> `20260801_team_canonical_identity` -> pending token legacy-column cleanup -> later derived/index migrations. Registry array order, not the date embedded in an ID, is authoritative.
-2. Let `AppDataMigrationRunner` preserve its terminal-record rule. If `20260517...` or historical `20260703_token_usage_execution_address_backfill` is `SUCCEEDED`/`SUCCEEDED_WITH_WARNINGS`, never reset it or depend on changed code under it. Remove the old token definition from the current registry. `20260801...` remains independently pending for the supported predecessor and is the sole target canonical record.
+1. Keep the registry order `20260517_team_run_metadata_member_tree` -> the two pre-existing token model/provider backfills -> `20260801_team_canonical_identity` -> later unrelated derived/index migrations. Registry array order, not the date embedded in an ID, is authoritative. The token backfills are attempted first but are not canonical prerequisites under the established runner. For the provider-name backfill, have its migration-local database execute `SELECT *` for the complete ledger/candidate rows; pass only `id`, `runtime_kind`, `model_provider`, `provider_name`, and `model_identifier` into classification; and snapshot the discovered physical row by lexically sorted column name while excluding only `provider_name`. After each guarded update, re-read and require the exact same column set and values for every other field. This works before contraction and on a later retry after contraction without statically naming any removed identity/display column.
+2. Let `AppDataMigrationRunner` preserve its terminal-record rule. If `20260517...`, historical `20260703_token_usage_execution_address_backfill`, or either historical narrow column-drop ID is `SUCCEEDED`/`SUCCEEDED_WITH_WARNINGS`, never reset it or depend on changed code under it. Remove the old semantic converter and both narrow column-drop definitions from the current registry. `20260801...` remains independently pending for the supported predecessor and is the sole target canonical record for semantic conversion plus physical Team-identity schema contraction.
 3. Keep one pure migration-only TeamRun flat decoder in the prerequisite-converter module. It accepts only flat v1 with direct Agent entries, one non-empty display `memberName`, and one non-empty one-segment structural `memberRouteKey`; rejects nested route/memberTree/Team fields; requires any optional hybrid `memberPath` to equal the route; preserves display `memberName` exactly; constructs `memberPath:[memberRouteKey]`; and preserves genuine Agent facts. It never derives structural identity from the display name.
 4. When `20260517...` is pending, it uses that decoder, validates the complete staged predecessor through the corrected canonical converter, then backs up and atomically replaces flat input with predecessor `memberTree`. In `20260801...`, accept already-current v3, predecessor `memberTree`, or residual flat v1. Decode residual flat in memory, validate route/path/topology/run/coordinator invariants, and write only final v3. No intermediate or fallback form reaches current runtime.
 5. Within `20260801...`, finish every TeamRun/task-record item before token planning. If a TeamRun/task identity source is invalid, record an actionable dependency failure and do not invoke token persistence. Otherwise build the strict task-Team index from current task records, list token rows in deterministic ID order, and use the IR-014 planner to classify every row as exact-current/standalone skip, canonical mutation, or failure.
-6. If any task-index or row plan fails, append its precise details, call no token mutation method, return the canonical aggregate `FAILED`, and leave all token rows unchanged. If every plan is valid, serialize one immutable `TokenUsageCanonicalExecutionAddressUpdate[]` containing only required mutations.
-7. Give `TokenUsageCanonicalExecutionAddressMigrationStore` one mutation method: `applyCanonicalExecutionAddressBatch(updates)`. Its Prisma implementation opens one transaction, applies updates in stable row-ID order, requires exactly one affected row per update, reads/verifies the targeted root/address values before commit, and throws on any mismatch. The transaction then commits every update or rolls back every update. Per-row `updateTokenUsageLedgerRow` is removed.
-8. Only after the batch commits may token row details count as `MIGRATED`. On transaction failure, the token item reports zero migrated rows plus one actionable database failure (and affected row identities as bounded detail), `20260801...` returns `FAILED`, and the migration record remains retryable. A crash after commit but before record completion is recovered idempotently: the next non-terminal/stale retry sees exact-current rows, performs no duplicate mutation, and can complete the record.
-9. Enumerate other canonical subjects through their established store owners. Application platform databases come from `ApplicationPlatformStateStore.listExistingPlatformDatabasePaths()`, not the admitted bundle catalog. Files use final validation + backup + same-directory atomic rename; application databases retain their store-owned transactions.
-10. Retarget both pending token legacy-column cleanup definitions to require exact `20260801_team_canonical_identity` success. A cleanup ID already terminal in supported predecessor history remains untouched; a pending cleanup cannot drop route/path inputs before the target token transaction succeeds.
+6. If any task-index or row plan fails, append its precise details, call no token mutation method, return the canonical aggregate `FAILED`, and leave token rows, columns, and indexes unchanged. If every plan is valid, serialize one immutable `TokenUsageCanonicalExecutionAddressUpdate[]` containing only required address mutations.
+7. Give `TokenUsageCanonicalIdentityMigrationStore` one mutation method: `applyCanonicalTeamIdentityTransaction(updates)`. Its Prisma/SQLite implementation opens one transaction, applies required `execution_address_json` updates in stable row-ID order, requires exactly one affected row per update, and verifies exact canonical JSON. In that same transaction it removes every still-present obsolete Team identity column (`team_run_path_json`, `member_path_json`, `member_route_key`, `root_team_run_id`, `member_agent_run_id`, `task_agent_instance_id`, `task_agent_run_id`), removes the obsolete root-column index, installs exactly one non-partial `token_usage_ledger_events_execution_root_observed_at_idx` over `json_extract(execution_address_json,'$.rootTeamRunId'), observed_at`, and verifies row count, unique usage IDs, current addresses, final columns, and required indexes. Actual Agent `run_id`, task-operation `task_id`, and all usage/presentation/cost facts remain unchanged. Per-row or independent column-drop APIs are removed.
+8. Do not add a Prisma migration that drops those input columns before app-data conversion. Historical Prisma migrations still establish the predecessor physical table on a fresh install; the target `schema.prisma` and generated client omit obsolete fields while the migration-local raw store alone reads and removes them after planning. SQLite DDL and row changes are one transaction, so any update, drop, index, or verification failure rolls back both data and schema. An empty row-update list still runs when obsolete columns remain; an exact-current/clean table skips.
+9. Only after the combined transaction commits may token row/column details count as `MIGRATED`. On failure, the token item reports zero migrated rows/columns plus one actionable database failure (and affected row identities as bounded detail), `20260801...` returns `FAILED`, and the migration record remains retryable. A crash after commit but before record completion is recovered idempotently: the next non-terminal/stale retry sees exact-current rows and target columns/indexes, performs no duplicate mutation, and can complete the record.
+10. Enumerate only supported released canonical subjects through their established store owners. Files use final validation + backup + same-directory atomic rename. Do not call `ApplicationPlatformStateStore.listExistingPlatformDatabasePaths()` from canonical migration: application project fixtures/databases are reset/rebuilt directly to current schema and are not migration items.
 11. `server-runtime.ts` keeps one targeted pre-listen check: `20260801...` must be exactly `SUCCEEDED`. Missing, `FAILED`, `RUNNING`, or `SUCCEEDED_WITH_WARNINGS` blocks bootstrap/listen with canonical record/item details; unrelated migration warnings remain non-blocking.
-12. Rebuild derived indexes only after authoritative conversion, then start strict target-only repositories, exact V5 application admission, generated contracts, SDKs, integrations, and web client.
+12. Start strict target-only repositories, exact V5 application admission, generated contracts, SDKs, integrations, and web client only after canonical success. Token root-Team lookup uses raw SQL with `WHERE json_extract(execution_address_json,'$.rootTeamRunId') = ?` and chronological ordering through `token_usage_ledger_events_execution_root_observed_at_idx`; it does not reintroduce a Prisma/writable root field.
 
 For TeamRun metadata, route/path are the sole duplicated structural pair. Historical `memberName` is presentation, not a third identity assertion. Genuine Agent fields, role/description, timestamps, handoff rule text/order, configured coordinator meaning, and concrete run IDs remain preserved under their target owners.
 
@@ -199,8 +228,11 @@ For TeamRun metadata, route/path are the sole duplicated structural pair. Histor
 | DS-009A–D | Startup over fresh flat, terminal-prerequisite, unsafe, or retry/current TeamRun data | Canonical v3 succeeds or startup blocks with byte-stable evidence | App-data runner + stable prerequisite + canonical migration |
 | DS-010 | Team Agent completes work or stops blocked | Applicable handoffs are delivered or the Agent completes normally | Team runtime instruction + Agent collaboration |
 | DS-011 | Downstream live validation starts | Three fresh imported nested-classroom TeamRuns produce redacted passing evidence across AutoByteus, Codex, and Claude, or the matrix reports a truthful blocker/failure | API/E2E environment + execution ownership |
-| DS-012 | Project application build/import/catalog/open/launch or startup migration encounters an application subject | Every project-owned artifact is V5-consistent; V5 code is admitted, V4 code is diagnosed before execution, and every physical platform DB is migrated regardless of admission | Application SDK contracts + application bundle provider/loader + application storage migration |
+| DS-012A–D | Project application source/artifact build, exact validation, launch, or consistency check | Every project-owned artifact/database is target-consistent; exact V5 code launches and non-target input stops at ordinary strict validation; no application migration/compatibility path exists | Application SDK contracts + build outputs + existing exact manifest/definition parsers/loaders |
 | DS-013A–D | Startup encounters legacy/current token rows with absent or terminal historical token record | Pending canonical owner commits exact addresses once, or zero rows change and the exact startup gate remains closed | `20260801...` canonical aggregate + token migrator/planner/index + transaction-owning migration store |
+| DS-014A–J | Live Agent/task/communication/member-input/external/control event, exact client command, initial Agent-status snapshot, pre-run command-status overlay, or invalid raw Team message | Exact current DTO is admitted and applied to its one owner, or invalid input mutates nothing | shared Agent binding/status snapshot + correlated TeamRun events where an event exists + `@autobyteus/team-stream-contracts` + strict server/browser adapters |
+| DS-015A–G | Draft launch/failure plus fresh/live/restored/focused/terminal frontend Team execution | Identity-free launch draft, immutable topology, one valid concrete execution state, and typed UI views | launch owner + frontend `TeamExecutionState` aggregate + private transitions/navigation projector |
+| DS-016A–B | Persistent or task-scoped Team AgentRun is constructed with an application assignment | `AgentRunConfig` contains a producer address equal to that exact concrete execution, or construction fails before the run exists | existing `MixedAgentMemberHandle` AgentRun-construction boundary |
 
 ## Primary Execution Spine(s)
 
@@ -277,9 +309,9 @@ isolated app-data root + isolated secret database
 
 The fixture source and `$HOME/.autobyteus/server-data/.env` are read-only inputs. `pnpm secrets:import` targets only the isolated database. No live result is inferred from adapter mocks, and no skipped row can satisfy the terminal condition.
 
-### DS-012 — Application SDK V5 cut and admission cases
+### DS-012 — Forward-only application SDK V5 cut
 
-DS-012 is a bounded application compatibility spine, not another Team identity owner. It reuses the repository's current exact gates and keeps durable-state migration orthogonal to executable bundle admission.
+DS-012 is a bounded target-artifact spine, not a compatibility or migration subsystem. The application framework has no supported user/predecessor cohort. The contracts package owns the exact current semantic version/types; project builds own generated outputs; existing parsers/loaders own ordinary target validation; and fresh project fixtures/databases are created directly in the current schema.
 
 #### DS-012A — Project-owned V5 artifact production
 
@@ -292,29 +324,25 @@ DS-012 is a bounded application compatibility spine, not another Team identity o
   -> build backend SDK + frontend SDK against that dist
   -> update brief-studio + socratic-math-teacher source application.json
   -> update their backend/bundle.json + backend definition + build scripts
-  -> regenerate backend dist + UI vendor contracts + importable-package outputs
+  -> regenerate backend dist + UI vendor contracts + importable-package outputs + fresh target-schema test DBs
   -> package-consistency verifier compares every declared/current contract value and forbidden field inventory
   -> terminal: all project-owned executable/importable artifacts are internally V5-consistent
 ```
 
 `APPLICATION_MANIFEST_VERSION_V4`, `APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION_V1`, and `APPLICATION_IFRAME_CONTRACT_VERSION_V4` remain unchanged. They version independent envelope/transport shapes; application manifest V4 and backend bundle V1 now declare frontend/backend SDK compatibility V5. Generated/vendored files are outputs of the source build, not alternate hand-maintained authorities.
 
-#### DS-012B — Old installed bundle discovery
+#### DS-012B — Exact target validation
 
 ```text
-ApplicationPackageRegistrySnapshot
-  -> FileApplicationBundleProvider scans applications/<localApplicationId>/application.json
-  -> parseApplicationManifest sees ui.frontendSdkContractVersion = "4"
-     OR parseApplicationBackendManifest sees backendDefinition/frontendSdk = "4"
-  -> compatibility parse failure carries manifest path + field + observed value + required "5" + rebuild/reinstall action
-  -> existing createDiagnostic adds application/package/root identity
-  -> record is absent from snapshot.applications
-  -> diagnostic is present in snapshot.diagnostics
-  -> ApplicationAvailabilityService exposes QUARANTINED detail
-  -> catalog/open/asset/backend launch cannot reach application execution
+application package input
+  -> parseApplicationManifest requires current envelope + frontendSdkContractVersion = "5"
+  -> parseApplicationBackendManifest requires current bundle envelope + both SDK declarations = "5"
+  -> ApplicationBackendDefinitionLoader requires definitionContractVersion = "5"
+  -> any mismatch is an ordinary exact-schema/load error before exposure/hook/handler execution
+  -> exact target continues; invalid input stops
 ```
 
-Package import/update validation uses the same provider and fails the operation with the same actionable message. No V4 type adapter, UI load, worker start, handler invocation, or external package edit occurs.
+There is no version negotiation, V4-specific adapter, quarantine/upgrade/reinstall state machine, predecessor bundle reader, or external package rewrite. The parser may report the offending field and expected current value as normal validation information, but production owns no historical compatibility policy.
 
 #### DS-012C — Exact V5 catalog and backend launch
 
@@ -330,41 +358,21 @@ application.json manifestVersion = "4", frontendSdkContractVersion = "5"
   -> canonical application launch/binding/target/input/event adapters operate only on memberAddress/TeamExecutionAddress and typed run IDs
 ```
 
-If manifests claim V5 but the loaded definition reports V4, the loader terminates that load with application ID, entry-module path, observed value, required V5, and rebuild/reinstall guidance. No lifecycle hook or handler runs.
+If manifests claim V5 but the loaded definition is not V5, the loader returns its ordinary exact-contract failure and no lifecycle hook or handler runs.
 
-#### DS-012D — Durable application DB migration independent of admission
-
-```text
-startup required canonical-identity migration
-  -> ApplicationPlatformStateStore.listExistingPlatformDatabasePaths()
-  -> enumerate <appData>/applications/*/db/platform.sqlite without consulting bundle catalog
-  -> recover applicationId from storage metadata/known tables/readable storage key
-  -> unreadable identity: record path-specific required-item failure and block
-  -> readable identity: run platform-owned canonical identity converter transaction
-  -> validate target columns/JSON + record item result
-  -> repeat for V5-admitted, V4-quarantined, missing-bundle, and persisted-only subjects alike
-  -> all durable items succeed -> allow target catalog/services bootstrap
-  -> any required item fails -> no server listen
-```
-
-Bundle code is not migrated. Catalog status cannot add, remove, or mark complete a database migration subject. The converter does not load an application backend definition or application-owned migration script to transform platform-owned identity.
-
-#### DS-012E — Package and canonical-identity verification
+#### DS-012D — Target consistency and no-migration proof
 
 ```text
 source/build inventory
-  -> assert no current V4 backend-definition/frontend-SDK export/declaration outside rejection fixtures
-  -> assert SDK source/dist + app source/vendor/importable versions all equal V5
-old-version fixtures
-  -> application-manifest SDK V4 rejected
-  -> backend manifest backend/frontend V4 rejected
-  -> manifest-V5/definition-V4 load rejected before hooks/handlers
-target-version fixtures
-  -> exact V5 package admitted
-  -> launch AgentTeam -> canonical binding members -> canonical target/input -> canonical producer event -> frontend validator accepts
-migration fixture
-  -> same old V4 bundle's platform DB is still discovered and converted
+  -> assert SDK source/dist + application source/vendor/importable declarations all equal V5
+  -> assert canonical application address/execution types contain no removed route/path/generic-run fields
+  -> assert fresh application test DB/fixtures use only the current schema
+  -> assert `20260801...` inventory contains no application bundle/database item
+  -> assert production has no application predecessor decoder, migration, V4 adapter, special quarantine/upgrade branch, or fallback
+  -> exact V5 package launch exercises canonical binding/target/input/producer event end to end
 ```
+
+Project-owned application databases may be deleted/recreated as test/setup data; production migration code never opens a predecessor application database. A strict-parser negative test may use a non-target version literal, but no production compatibility branch or migration follows from it.
 
 ### DS-009 — TeamRun predecessor migration cases
 
@@ -442,11 +450,13 @@ A fully current installation with terminal success records executes neither conv
 ```text
 operator starts supported predecessor -> 20260703 token record becomes terminal with {segments}
   -> operator upgrades and starts target
-  -> physical Prisma schema migration + Prisma initialization
-  -> AppDataMigrationRunner skips historical 20260703 record unchanged
+  -> historical Prisma migrations establish/preserve predecessor token columns; target generated client omits them
+  -> pre-existing model/provider backfills are attempted before canonical contraction; either may remain retryable
+  -> AppDataMigrationRunner skips historical 20260703 and narrow column-drop records unchanged
   -> independently pending 20260801 canonical owner converts/validates TeamRun + task records
   -> token migrator builds strict task-Team index and plans every legacy/current row
-  -> migration store applies/verifies one immutable batch in one transaction
+  -> migration store applies/verifies one immutable address batch, removes all obsolete Team identity columns,
+     replaces the old root-column index with `token_usage_ledger_events_execution_root_observed_at_idx` in one transaction
   -> 20260801 aggregate records SUCCEEDED
   -> exact canonical gate opens -> strict token reader/hierarchy observes TeamExecutionAddress
 ```
@@ -460,7 +470,7 @@ The same path applies when the old token record is absent: no current definition
   -> task index reports unreadable/missing/duplicate/conflicting mapping
      OR row planner reports irreconcilable root/chain/member/task-Agent identity
   -> planner returns actionable failures before mutation
-  -> batch store is never called; token rows remain unchanged
+  -> transaction store is never called; token rows, columns, and indexes remain unchanged
   -> 20260801 records FAILED -> exact gate blocks bootstrap/listen
 ```
 
@@ -469,16 +479,16 @@ No row fallback, partial best effort, or `SUCCEEDED_WITH_WARNINGS` result is per
 #### DS-013C — Transaction write/verification failure
 
 ```text
-all row plans valid -> immutable update batch
+all row plans valid -> immutable update batch (possibly empty when only schema contraction remains)
   -> store opens one Prisma/SQLite transaction
   -> earlier update succeeds inside transaction
-  -> later update or read-back verification fails
-  -> transaction rolls back all updates
-  -> summary reports migratedCount=0 and database failure
+  -> later update, column drop, expression-index creation, or final verification fails
+  -> transaction rolls back every row and schema/index mutation
+  -> summary reports migrated rows/columns=0 and one database failure
   -> 20260801 records FAILED -> exact gate remains closed
 ```
 
-A durable SQLite test forces the later failure and proves the earlier row's root/address columns are unchanged after rollback.
+A durable SQLite test forces a failure after an earlier row update and at least one schema operation, then proves the row, complete column set, and indexes are byte/structurally unchanged after rollback.
 
 #### DS-013D — Repair, retry, and exact-current idempotence
 
@@ -486,8 +496,8 @@ A durable SQLite test forces the later failure and proves the earlier row's root
 operator repairs the invalid source or transient persistence fault
   -> normal startup retries non-terminal 20260801
   -> already-current TeamRun/application/token subjects skip
-  -> remaining token plans commit in one transaction
-  -> exact-current second run produces no update batch
+  -> remaining token plans and obsolete-column contraction commit in one transaction
+  -> exact-current second run sees no updates, no obsolete columns, and the exact expression index
   -> 20260801 exact SUCCEEDED; unrelated warning remains non-blocking; startup opens once
 ```
 
@@ -496,14 +506,273 @@ A process interruption after token commit but before migration-record completion
 ### DS-007 — Concrete execution round trip
 
 ```text
-Agent/task runtime event
-  -> TeamRunEvent {executionAddress}
-  -> child/root bridges forward unchanged
-  -> WebSocket execution_address
-  -> frontend canonical serialization key
-  -> command returns same execution address
-  -> TeamExecutionResolver selects exact persistent/task run
+runtime/record produces typed TeamExecutionAddress
+  -> correlated TeamRun event or exact command DTO
+  -> exhaustive Team stream mapper / strict shared serializer
+  -> strict browser/server admission
+  -> frontend TeamExecutionState or server TeamExecutionResolver
+  -> typed exact execution result/effect
 ```
+
+Serialization is private to the owning boundary; no intermediate consumer parses a key or reconstructs a route. DS-014 closes the asynchronous event boundary, while DS-015 closes browser execution ownership.
+
+### DS-014 — Exact Team event and WebSocket cases
+
+#### DS-014A — Agent event
+
+```text
+Agent runtime AgentRunEvent
+  -> member bridge verifies raw AgentRun ID
+  -> member bridge calls createTeamAgentExecutionBinding(exact address, verified allocated/raw AgentRun ID): address only for persistent/task Agent, address + genuine AgentRun ID for task-Team Agent
+  -> TeamAgentEventAdapter validates/maps the exact correlated subtype, filters duplicate Agent collaboration events, and removes raw run identity from details
+  -> correlated TeamRunAgentEvent
+  -> exhaustive Team mapper over already-correlated details
+  -> TeamStreamServerMessage
+  -> shared serializer -> WebSocket -> shared strict browser parser
+  -> TeamExecutionState validates/materializes the exact Agent execution, then dispatches status/timeline
+```
+
+#### DS-014B — Task activation/result submission/result review
+
+```text
+Task ledger transition
+  -> serialize only this TeamRun's short activation critical section
+  -> allocate exact taskRun.address and open bounded new-subtree TaskActivationEventBarrier before runtime start/post
+  -> runtime accepts the work packet behind a closed execution gate, emits only synchronous held initialization, and acknowledges preparation-quiescent
+  -> rejection/persist failure/overflow discards queue and settles fresh execution
+  -> verify final barrier budget before durable write
+  -> persist active record
+  -> typed TASK_DELEGATION_ACTIVATED publication bypasses barrier
+  -> publisher selects record.taskRun.address as the one concrete task executionAddress
+  -> release queued runtime events FIFO immediately after activation, then open work execution; later task transitions publish directly
+  -> activation carries only task ID + durable base content/sender/references/createdAt/taskRun.startedAt; its type implies active and initial updatedAt derives from startedAt
+  -> result signals carry only task ID + event-specific correlation/decision/time; current/previous status, derived update/task-label/terminal fields, repeated base facts, and persistent target/task-Team coordinator ingress are absent
+  -> remove duplicate TASK_DELEGATION_STATUS_UPDATED, currently emitted only after the same submission/review transition
+  -> one-to-one strict TASK_DELEGATION_EVENT DTO
+  -> browser admission
+  -> TeamExecutionState validates target/run chain; activation seeds one durable-confirmed task projection
+  -> later signals leave the complete projection untouched and return the root-bound task-record refresh effect
+```
+
+#### DS-014C — Communication
+
+```text
+accepted Team communication
+  -> COMMUNICATION event {senderAddress,receiverAddress,...}
+  -> exact TEAM_COMMUNICATION_MESSAGE DTO
+  -> strict browser admission
+  -> communication projection
+  -> sender/receiver presentation through typed execution/topology queries
+```
+
+#### DS-014D — Member input
+
+```text
+accepted user/inter-Agent input
+  -> MEMBER_INPUT event with one outer recipient executionAddress
+  -> exact MEMBER_INPUT_MESSAGE payload with execution_address only
+  -> strict browser admission
+  -> TeamExecutionState resolves exact AgentContext
+  -> transcript input once
+```
+
+#### DS-014E — Connection/lifecycle/acknowledgement/error
+
+```text
+Team session/lifecycle/command result/protocol failure
+  -> successful server binding emits CONNECTED {session_id}
+  -> bound-root lifecycle emits TEAM_RUN_LIFECYCLE {is_active}
+  -> exact AGENT_COMMAND_ACK / ERROR builder
+  -> shared strict serializer -> browser strict parser
+  -> transport session / root persistent-Team lifecycle / command tracker / protocol diagnostic owner
+```
+
+The endpoint-bound WebSocket session already owns the root TeamRun scope, so neither control message repeats `team_id`/`team_run_id`. Low-level socket open does not mark the Team application stream ready; only the exact post-binding `CONNECTED` handshake does. Connection/subscription state never enters `AgentTeamContext`; root lifecycle enters only the root persistent-Team execution record.
+
+Initial Agent status follows DS-014I immediately after `CONNECTED` and before the lifecycle snapshot. Connection readiness and status are separate concerns: the snapshot reuses the exact Agent-status projector but is not turned into a `TeamRunEvent`.
+
+#### DS-014F — External user input
+
+```text
+accepted external-channel envelope + exact resolved recipient
+  -> exact EXTERNAL_USER_MESSAGE with one execution_address
+  -> shared serializer -> strict browser admission
+  -> TeamExecutionState resolves exact AgentContext
+  -> transcript projection once
+```
+
+#### DS-014G — Exact Team client command
+
+```text
+typed focused Agent execution
+  -> Team client command factory requires exact executionAddress
+  -> exact SEND_MESSAGE / INTERRUPT / APPROVE / DENY DTO
+  -> shared strict serializer -> WebSocket -> strict server parser
+  -> exact execution resolver + command owner
+  -> delivery/lifecycle event, acknowledgement, or typed ERROR
+```
+
+SEND_MESSAGE generates message/dedupe IDs and explicit arrays; approval/denial uses invocation ID plus exact address and has no server-unused approval token.
+
+#### DS-014H — Invalid message/command
+
+```text
+raw JSON
+  -> strict complete union parser rejects unknown/missing/surplus/alias/invalid identity
+  -> typed protocol diagnostic
+  -> zero task refresh, execution/focus mutation, communication projection, transcript dispatch, or command execution
+```
+
+#### DS-014I — Initial connection/open/restore Agent status snapshot
+
+```text
+Team workspace connects/opens/restores a bound TeamRun
+  -> AgentTeamStreamHandler emits exact CONNECTED {session_id}
+  -> TeamRuntimeSnapshotService asks TeamRun.getLeafAgentStatusSnapshots()
+  -> mixed persistent/task/task-Team managers enumerate materialized handles plus config-backed offline persistent Agents
+  -> each runtime/config owner supplies exact TeamExecutionAddress + allocated AgentRun ID
+  -> createTeamAgentExecutionBinding classifies/validates persistent_agent, task_agent, or task_team_agent
+  -> one TeamAgentStatusDetails constructor removes TeamRun/name/runtime/raw-ID/task-instance/execution duplicates
+  -> immutable TeamAgentStatusSnapshot {execution,details,statusHint}
+  -> projectTeamAgentStatusMessage, the same projector used by the live AGENT_STATUS arm
+  -> shared strict serializer -> WebSocket -> shared strict browser parser
+  -> TeamExecutionState validates the binding and dispatches the same AgentContext status transition
+  -> exact scoped TEAM_RUN_LIFECYCLE {is_active}
+```
+
+For a task Agent, the constructor requires `executionAddress.taskAgentRunId === allocated agentRunId` and transports no duplicate ID. For an Agent inside a task AgentTeam, it requires a non-empty task-Team run chain, null task-Agent ID, and the genuine member AgentRun ID supplied by the child mixed context/config; that ID appears exactly once in the binding. Persistent Agent bindings contain no run ID. `TeamRuntimeSnapshotService` never constructs a `TeamRunEvent`, never uses generic `ServerMessage`, and never parses or guesses a binding. `TeamRunLiveProjectionService` consumes the same immutable snapshot through a separate typed run-list mapper; it does not reuse the WebSocket DTO or strip a generic payload bag.
+
+#### DS-014J — Pre-run send/delegation status overlay and replacement
+
+```text
+send_message_to or delegate_task selects an unmaterialized persistent/task/task-Team Agent handle
+  -> handle already owns exact TeamExecutionAddress + allocated AgentRun ID before ensureReady()
+  -> same createTeamAgentExecutionBinding constructor
+  -> MemberCommandStatusOverlayStore receives the typed binding and exact initializing/error facts
+  -> store keeps only TeamAgentStatusDetails by private canonical execution key
+  -> TeamAgentStatusSnapshot {execution,details,statusHint}
+  -> createTeamAgentStatusEvent(snapshot) constructs the correlated AGENT/AGENT_STATUS TeamRunEvent
+  -> task activation barrier applies when this is a newly prepared task subtree
+  -> same Team Agent status projector -> strict serializer/parser
+  -> same TeamExecutionState/AgentContext status transition
+  -> successful first matching real correlated AGENT_STATUS publication replaces status through the same path
+  -> member bridge calls clearAcceptedLiveStatus(binding); exact binding equality deletes only that overlay
+```
+
+The overlay owns temporary pre-run status details, not execution identity. It accepts no display name, runtime kind, TeamRun ID, task instance, raw Agent ID, or fallback route shape. `createTeamAgentStatusEvent(snapshot)` is event-only; the connection-snapshot path does not call it.
+
+### DS-015 — Frontend concrete execution cases
+
+#### DS-015A — Launch draft to fresh persistent state
+
+```text
+definition/configuration UI -> TeamLaunchDraft
+  -> logical member focus + pending input; no TeamExecutionAddress/AgentContext/run ID
+  -> launch owner sends config
+  -> server returns canonical metadata with real Team/Agent run IDs + exact active lifecycle
+  -> launch owner assembles closed projection input with logical Agent focus + one fresh identity-free Agent seed per metadata Agent
+  -> TeamRunFrontendProjectionBuilder validates/splits once
+  -> run-ID/execution-address-free immutable TeamTopologySnapshot with logical/effective-launch root + private address index
+  -> one PersistentTeamExecution/PersistentAgentExecution per metadata node; Agent execution consumes typed application producer context
+  -> TeamExecutionState seed + exact initial focus/root lifecycle
+  -> transfer pending input to exact real execution once
+  -> replace selected draft with TeamRun context atomically
+  -> typed workspace/history/navigation rows
+```
+
+#### DS-015B — Task Agent
+
+```text
+validated task event or active task record with taskAgentRunId
+  -> locate immutable source Agent topology node
+  -> preserve stable application assignment and rebind producer to the exact task execution
+  -> create/update TaskAgentExecution + AgentContext
+  -> execution stores one taskId reference; the single task-projection index supplies lifecycle/timeline/presentation
+```
+
+#### DS-015C — Task AgentTeam and nested task AgentTeam
+
+```text
+validated task event/record with ordered taskTeamRunIds
+  -> locate immutable source AgentTeam topology node
+  -> create TaskTeamExecution root with real last taskTeamRunId
+  -> later exact Agent event/hydration with real AgentRun ID
+  -> preserve the source Agent's stable application assignment and rebind producer to the exact task-Team-Agent execution
+  -> create TaskTeamAgentExecution
+  -> nested delegation appends one run ID and repeats
+```
+
+No topology subtree is cloned and no absent descendant receives an empty run ID.
+
+#### DS-015D — Restore/hydration convergence
+
+```text
+open TeamRun -> resume owner obtains canonical metadata + exact lifecycle + requested logical Agent focus + complete loaded/historical-unloaded Agent seeds
+  -> one projection builder creates immutable run-ID/execution-address-free topology + complete persistent execution/application-binding graph
+  -> complete root-scoped durable task-record response parent-before-child
+  -> TeamTaskProjectionMapper uses each taskRun.address as the enclosing execution, validates expected root plus the distinct delivery receiver against target kind/topology, and emits one all-or-nothing complete snapshot
+  -> TeamExecutionState.reconcileTaskSnapshot
+  -> stage a task-ID/address-unique monotonic merge: newer row replaces, older input preserves the existing row, equal-time conflict rejects, and a known row absent from a concurrent append-only response remains
+  -> enclosing execution record owns concrete task identity; private graph alone derives parent/child edges from that address + topology
+  -> exact Agent context/status hydration
+  -> same valid state as equivalent live transitions
+  -> restore focus only when concrete target exists; otherwise deterministic fallback
+```
+
+#### DS-015E — Focus/selection/presentation
+
+```text
+user selects typed execution row
+  -> TeamExecutionState.focus validates concrete focusability
+  -> workspace selection independently owns selected root TeamRun
+  -> current row iff selected root and exact focus both match
+  -> typed presentation/navigation queries drive desktop/mobile UI
+```
+
+#### DS-015F — Terminal cleanup
+
+```text
+complete root-scoped durable task-record reconciliation confirms terminal task plus every materialized descendant in the same staged candidate
+  -> TeamExecutionState validates one-copy task projections and locates the exact task root
+  -> reject the whole snapshot if a descendant is absent/stale/nonterminal; otherwise atomically retain terminal projections, then remove the exact concrete subtree + AgentContexts + graph edges
+  -> repair focus atomically
+  -> derived reactive navigation/history views recompute once from committed aggregate state
+```
+
+#### DS-015G — Draft launch failure
+
+```text
+TeamLaunchDraft -> launch/import/config/server failure
+  -> no topology/execution context is constructed or registered
+  -> draft config, logical focus, and pending input remain unchanged
+  -> actionable error; retry requests one fresh server allocation
+```
+
+### DS-016 — Exact application producer binding at Team AgentRun construction
+
+#### DS-016A — Persistent Team Agent
+
+```text
+MixedAgentMemberHandle.ensureReady
+  -> handle derives exact persistent TeamExecutionAddress
+  -> node-local ApplicationExecutionContext is null or its producer address must equal that address
+  -> mismatch fails before AgentRunConfig / AgentRun creation
+  -> matching context enters AgentRunConfig unchanged
+  -> Agent runtime, published artifact, and application event/stream use that one producer
+```
+
+#### DS-016B — Task Agent or Agent inside a task AgentTeam
+
+```text
+MixedAgentMemberHandle.ensureReady
+  -> handle derives exact task TeamExecutionAddress from runtime task-Team chain/task-Agent identity
+  -> node-local ApplicationExecutionContext supplies only stable applicationId/bindingId/displayName/runtimeKind
+  -> handle replaces producer.executionAddress with the exact task execution
+  -> rebound context enters AgentRunConfig before AgentRun creation/restore
+  -> Agent runtime, published artifact, and application event/stream attribute the task execution at source
+```
+
+Task versus persistent is decided only from the handle's already-typed concrete execution address (`taskTeamRunIds` non-empty or `taskAgentRunId` non-null). No lookup, root/local guess, browser repair, or second application binding is introduced.
 
 ## Spine Narratives (Mandatory)
 
@@ -513,14 +782,18 @@ Agent/task runtime event
 - **Task AgentTeam:** selected persistent node supplies logical addresses, coordinator, and genuine Agent configuration. Factory creates a fresh active execution tree/run directory and registers it by task TeamRun ID. It must not localize addresses.
 - **Message:** AgentTeam target maps once to `coordinatorAddress`; root manager keeps handle/config mechanics private.
 - **Task:** eligibility is tested only after shared resolution by comparing `parentAddress(recipient.address)` with caller Team address.
-- **History/UI:** logical tree is keyed by address; concrete live/history contexts are keyed by execution address so persistent/task instances at one address do not collide.
+- **History/UI topology:** immutable rooted topology is address-keyed and never receives task or presentation mutation.
+- **Pre-launch draft:** configuration, logical focus, and pending input remain run-identity-free; only a successful server allocation creates topology/execution state, while failure preserves the draft.
+- **Frontend execution:** `TeamExecutionState` privately keys valid concrete executions by exact address, owns live/restore/focus/task-status/task-timeline/cleanup, associates the existing Agent-local projection owner without copying its state, and returns typed view rows; persistent/task instances at one logical address do not collide.
+- **Team stream:** correlated domain variants map exhaustively to the strict shared wire union; browser admission finishes before any state mutation. Real producer output, not hand-authored browser mocks, defines the contract seam.
+- **Initial Agent status:** a bound TeamRun enumerates one immutable status snapshot per concrete/offline Agent through mixed runtime owners; the snapshot enters the exact Agent-status projector directly because connection state is not a domain event.
+- **Pre-run Agent status:** an unmaterialized mixed handle constructs the same execution binding from its already allocated identity, lets the overlay own only temporary details, publishes one correlated status event, and removes the overlay when real Agent status arrives.
 - **Migration:** the runner owns ID ordering/terminal skips; one migration-only decoder owns flat semantics; stable `20260517...` owns its pending flat-to-predecessor record transition; pending `20260801...` owns final v3 replacement from predecessor or terminal-warning residual flat input. Display-name divergence is accepted, structural contradiction blocks before source mutation, and legacy decoding ends before current repositories start.
 - **Handoff completion:** Team runtime guarantees both tools and the instruction. Retrieval is deterministic projection; only the Agent evaluates natural language and decides applicability. Delivery remains owned by `send_message_to`, so retrieval never claims that a handoff occurred.
 - **Live validation:** API/E2E owns staging/import, secret isolation, one fresh run per runtime, public observation, redaction, failure classification, and cleanup. The production design does not acquire a test-only package or credential owner.
-- **Application V5 build:** the contracts package is the sole semantic-version/type source; downstream SDK/application artifacts are generated consumers and must agree before the checkpoint is accepted.
-- **Old bundle:** existing parser/provider/diagnostic/quarantine ownership excludes V4 from the executable catalog before UI assets, worker start, lifecycle hooks, or handlers.
-- **Exact V5 launch:** all three exact gates pass in order—application manifest, backend bundle manifest, then loaded definition—before application behavior is exposed.
-- **Application durable state:** the physical storage store enumerates platform DBs without catalog membership, and the required migration finishes before V5 catalog/services start. Code compatibility never decides whether data exists.
+- **Application V5 build:** the contracts package is the sole semantic-version/type source; downstream SDK/application artifacts and fresh project databases/fixtures are generated target consumers and must agree before the checkpoint is accepted.
+- **Exact application validation/launch:** application manifest, backend bundle manifest, and loaded definition must all declare the target contract before application behavior is exposed. Invalid input stops through ordinary strict validation; no compatibility/quarantine/upgrade workflow exists.
+- **Application state:** the unused feature has no supported predecessor state. Canonical migration never enumerates application databases; project fixtures/databases are reset/rebuilt directly to target.
 
 ## Spine Actors / Main-Line Nodes
 
@@ -540,17 +813,31 @@ Agent/task runtime event
 | collaboration instruction renderer | One provider-neutral filesystem-like protocol block using caller canonical address | Full roster/topology/rule injection or provider session lifecycle |
 | task delegation | Direct eligibility, fresh task run IDs, task lifecycle | Second parser/address language |
 | `TeamExecutionAddress` + resolver | Concrete locator serialization/contextual resolution | Logical tree authoring |
+| task-activation sequence in `TaskDelegationService` | Serialize only the short per-TeamRun activation section, prepare one gated exact execution, require durable activation, publish activation before exposing its runtime events/work, and commit/abort the attempt | Event-buffer mechanics, generic Team event routing, frontend recovery, serialization of task work after activation |
+| `TaskActivationEventBarrier` at TeamRun publication | Hold only events referring to one prepared task subtree; atomically publish its activation then drain FIFO, or discard all held events | Task ledger state, persistence, runtime creation/settlement, address guessing, transport retry |
+| task event publisher | Publish the active record's non-null `taskRun.address` as the one concrete task-event identity | Reuse delivery receiver as task root or synthesize an address from event details |
 | app-data runner/record repository | Ordered execution, terminal-ID skip, retry records/status | TeamRun field interpretation |
 | migration-only flat decoder | One pure flat-v1 -> structural predecessor interpretation, preserving display name | Migration records, file mutation, canonical address construction, or runtime parsing |
 | stable `20260517...` prerequisite | Pending flat-v1 -> predecessor-memberTree record transition using the shared decoder | Canonical v3 ownership or completed-record normalization |
 | ticket-owned `20260801...` canonical migration | Predecessor or residual-flat -> strict v3, item mutation/evidence, exact startup result | Runtime fallback or duplicate display/route interpretation |
-| frontend projection | Recursive display and derived address/execution maps | Alternate route identity |
+| `@autobyteus/team-stream-contracts` | Exact strict Team server/client DTO unions, Zod runtime schemas, serialization | Domain routing/topology/task policy, frontend state |
+| `TeamAgentExecutionBinding` constructor | Classify and validate persistent/task/task-Team Agent identity from one exact execution address plus the runtime/config owner's allocated AgentRun ID | Tree lookup, route guessing, status details, transport serialization |
+| `TeamAgentStatusSnapshot` + status-details constructor | One immutable status projection shared by live events, initial snapshots, overlays, and typed run-list mapping | Event publication, stream session, frontend status storage |
+| `TeamAgentEventAdapter` at the member bridge | Verify AgentRun binding and exhaustively adapt/filter/reject standalone Agent events before Team publication | Generic Team payload admission, logical routing, or mixed-manager access |
+| `TeamRuntimeSnapshotService` | Sequence exact initial Agent-status messages and root lifecycle after binding by calling the shared status projector directly | Fake TeamRun events, binding construction/parsing, generic Team message creation |
+| `MemberCommandStatusOverlayStore` | Own temporary pre-run initializing/error details and exact replacement on the first matching correlated live status | Agent execution identity construction, display/runtime metadata, fallback routing |
+| frontend `TeamLaunchDraft` + launch owner | Pre-launch config/logical focus/pending input; success-only replacement with canonical execution context | TeamRun/AgentRun IDs, execution address, AgentContext, stream/history identity before allocation |
+| frontend `TeamTopologySnapshot` | Immutable recursive root, private canonical-address index, typed topology queries | Task lifecycle, presentation mutation, draft or execution state |
+| `TeamRunFrontendProjectionBuilder` | All-or-nothing closed launch/open input projection into one immutable topology and complete persistent execution seed | Lifecycle inference from metadata, context registration, live task mutation, or tolerant metadata normalization |
+| frontend `TeamExecutionState` | Private concrete execution index/graph, Agent-context association, one task-projection index for active views and derived history, live/restore transitions, focus, cleanup, typed views over single-owned Agent state | Agent-local conversation/status/tool projection, second task/history archive, durable task storage, GraphQL fetching, navigation-store mutation, topology mutation |
+| private execution transitions/navigation projector | Pure invariant-preserving transition and read-model derivation serving `TeamExecutionState` | Public mutation/query authority or raw-key exposure |
+| existing `MixedAgentMemberHandle` construction boundary | Validate persistent application producer identity or rebind task producer identity before `AgentRunConfig` creation | SDK contract ownership, application-event consumer repair, or topology projection |
 | live validation harness | Isolated package/secret/runtime setup, public scenario orchestration, redacted evidence, cleanup | Production identity or provider behavior, secret values, source-package mutation |
 | `@autobyteus/application-sdk-contracts` | V5 backend-definition/frontend-SDK constants and canonical application identity types | Bundle discovery, migration, worker lifecycle |
-| application manifest/backend manifest parsers | Exact declared-version validation and actionable incompatibility error text | SDK type translation or durable DB discovery |
-| `FileApplicationBundleProvider` + availability service | Catalog exclusion, diagnostic identity, quarantine/import validation | V4 adaptation or application execution |
+| application manifest/backend manifest parsers | Exact current declared-version validation | SDK type translation, compatibility negotiation, or durable DB discovery |
+| `FileApplicationBundleProvider` + availability service | Existing ordinary invalid-package handling and catalog publication | V4 adaptation, special upgrade/quarantine policy, or application migration |
 | backend definition loader | Exact V5 exported-definition check before exposures/hooks/handlers | Manifest compatibility negotiation |
-| application platform state store + canonical migration | Physical DB enumeration, transactional conversion, required item evidence | Executable bundle admission or external bundle rewrite |
+| application project build/test setup | Regenerate target artifacts and recreate target-schema fixtures/databases | Predecessor application discovery, conversion, or preservation |
 
 ## Ownership Map
 
@@ -567,18 +854,39 @@ Agent/task runtime event
 | Team collaboration tool availability | Team runtime capability composer |
 | Root/child structure | `rootTeam` / `children` |
 | Derived address lookup | Disposable `TeamRunTreeIndex` |
-| Task execution identity | Task identity + active task execution directory |
+| Task-management identity | `taskId` on `TaskDelegationRecord`, unique only within its root TeamRun ledger; cross-root selectors use `{rootTeamRunId,taskId}` |
+| Activated task concrete execution | non-null `TaskDelegationRecord.taskRun.address`; active ledger derives a non-persisted `ActiveTaskExecutionBinding` |
+| Task-bound caller context | existing `TeamExecutionAddress` plus nullable `taskId`; actual AgentRun binding remains the Agent runtime's `agentRunId` |
+| Activated task's concrete event/record root | non-null `TaskDelegationRecord.taskRun.address` |
+| Task activation ordering policy | `TaskDelegationService` activation sequence |
+| Bounded exact-subtree event hold/release mechanics | TeamRun publication's `TaskActivationEventBarrier` |
 | Cross-boundary concrete locator | `TeamExecutionAddress` |
 | Physical memory lineage | Storage `ancestorTeamRunIds` |
-| Application SDK semantic target | `@autobyteus/application-sdk-contracts` V5 constants/types |
-| Executable application admission | Existing application/backend manifest parsers, bundle provider diagnostics, and definition loader |
-| Application platform DB inventory | `ApplicationPlatformStateStore.listExistingPlatformDatabasePaths()` independent of catalog |
+| Application SDK semantic target and cross-process application execution-context type | `@autobyteus/application-sdk-contracts` V5 constants/types; server aliases rather than redeclares the shape |
+| Executable application target validation | Existing application/backend manifest parsers and definition loader; exact V5 only |
+| Application fixtures/databases | Project build/test setup creates current schema directly; no migration inventory |
 | Flat-v1 interpretation | one pure migration-only prerequisite decoder reused by both migration definitions |
 | Predecessor-memberTree interpretation and canonicalization | `20260801...` canonical converter only |
 | Target token semantic conversion record/result | `20260801...` canonical aggregate token item |
 | Historical token `{segments}` interpretation and row planning | migration-local token planner + strict task-Team index |
-| Token database atomic mutation | `TokenUsageCanonicalExecutionAddressMigrationStore.applyCanonicalExecutionAddressBatch` |
+| Token semantic conversion + schema contraction | `TokenUsageCanonicalIdentityMigrationStore.applyCanonicalTeamIdentityTransaction` under the `20260801...` token item |
+| Token root-Team query acceleration | `token_usage_ledger_events_execution_root_observed_at_idx` over canonical `execution_address_json`; never a writable root identity column |
 | Migration ID order/terminal semantics | App-data registry + runner/record repository |
+| TeamRun event correlation | closed `TeamRunEvent` / task event unions |
+| Team Agent execution binding across every status/event producer | `createTeamAgentExecutionBinding({executionAddress,agentRunId})` in the Team Agent domain |
+| Team Agent status projection value | immutable `TeamAgentStatusSnapshot {execution,details,statusHint}` plus one status-details constructor |
+| Initial connection/open/restore Agent-status sequencing | `TeamRuntimeSnapshotService`; status message projection remains owned by the Team Agent projector |
+| Temporary pre-run Agent status | `MemberCommandStatusOverlayStore` owns details only; `createTeamAgentStatusEvent(snapshot)` owns correlated event construction |
+| Team WebSocket wire spelling/admission | `@autobyteus/team-stream-contracts` |
+| Frontend pre-launch state | `TeamLaunchDraft` / Team launch owner |
+| Frontend immutable mounted structure and effective launch facts | `TeamTopologySnapshot` (run-ID/execution-address-free `teamDefinitionName` + logical/configuration `rootTeam` + private derived address index + typed queries) |
+| Closed canonical metadata/lifecycle/focus/Agent-seed input -> paired frontend context | `TeamRunFrontendProjectionBuilder` (one all-or-nothing launch/restore builder) |
+| Frontend persistent/task run/application bindings, lifecycle, and focus | `TeamExecutionState` |
+| Frontend task status/timeline/history projection | `TeamExecutionState`'s one private task-ID projection index; active and history views derive from it |
+| Frontend Agent-local conversation/status/tool state and Agent run ID | the associated `AgentContext` plus established Agent projector; never copied into a Team execution record |
+| Team Agent runtime application producer binding | existing `MixedAgentMemberHandle` AgentRun-construction boundary |
+| Frontend selected root subject | workspace/Agent selection store, composed with exact execution focus |
+| Frontend Team stream connection/subscription | `TeamStreamingService` / WebSocket transport, never `AgentTeamContext` |
 
 ## Thin Entry Facades / Public Wrappers (If Applicable)
 
@@ -586,23 +894,30 @@ Agent/task runtime event
 - AutoByteus/MCP `send_message_to` wrappers independently preserve the existing delivery envelope and operation codes; rejected delivery envelopes alone set `isError`.
 - Provider bootstrap/tool resolvers consume the Team runtime's composed intrinsic exposure; they do not ask package configuration independently whether the Team protocol tools exist.
 - AutoByteus/MCP task and communication parameter schemas/manifests expose `recipient_address` consistently; no adapter translates `recipient_name` or `recipient_path`.
-- GraphQL/REST/WebSocket converters rename/shape transport fields but do not parse alternative logical addresses.
-- Frontend action/store facades serialize `TeamExecutionAddress` through one utility; they do not synthesize scoped routes.
+- GraphQL/REST converters shape target fields without alternative logical addresses. Team WebSocket mapping/serialization and server/client admission use the one exact shared contract.
+- The Team launch store/owner accepts `TeamLaunchDraft`, calls the supported launch surface, and only on canonical success constructs and registers the real topology/execution context plus transfers pending input. It exposes no temporary run/execution identity.
+- `TeamStreamingService` is a thin orchestrator: strict parse -> exhaustive routing to established connection/ack/error/communication owners or `TeamExecutionState.applyExecutionMessage` for the exact execution-projection subset -> observe the already-committed aggregate change -> execute only typed Agent-dispatch/token/task-refresh effects. It never applies the change itself and owns no alias normalization, task materialization, focus mutation, or cleanup scheduler.
+- `AgentTeamStreamHandler.sendInitialStatusSnapshot` is a thin session sequencer: request exact snapshots -> call the shared status projector -> send exact contract messages -> send root lifecycle. It does not build bindings, create TeamRun events, or map generic messages.
+- Frontend actions/stores pass typed `TeamExecutionAddress` to `TeamExecutionState`; serialization stays private and no facade exposes a key.
 - Storage locator facades derive physical segments after exact execution resolution; they do not expose directory lineage as topology.
-- Application bundle scanners retain the existing `ApplicationCatalogDiagnostic` shape; compatibility parser errors put manifest/entry path, field, observed value, required V5, and rebuild/reinstall action in `message`, while the diagnostic already supplies application/package/root identity. No parallel compatibility service or negotiation DTO is added.
-- Application package import/update validation uses the same provider scan as catalog refresh, so it cannot accept a package catalog would quarantine.
-- Backend definition loading checks V5 before exposures, hooks, or handlers become callable; adapters do not convert V4 exports.
+- Application package scanning/import uses the existing strict manifest parsers; non-target declarations are ordinary invalid input and add no version-specific compatibility/quarantine/upgrade DTO or state machine.
+- Backend definition loading checks exact V5 before exposures, hooks, or handlers become callable; adapters do not convert old exports.
+- Application project build/test setup regenerates every source/dist/vendor/importable artifact and target-schema fixture/database together; canonical migration does not enumerate application state.
 
 ## Removal / Decommission Plan (Mandatory)
 
-1. Introduce target types/validators and characterization tests.
-2. Cut producers to rooted v3 nodes and canonical address/execution values.
-3. Cut root/persistent/task runtime consumers.
-4. Cut durable stores through migration and target-only repositories; remove the historical `20260703...` token definition from current registry authority, compose token conversion into `20260801...`, and replace per-row token writes with one transaction-owning batch store.
-5. Cut transports plus application SDK contracts to V5, application admission gates, project application sources/build scripts, integrations, and frontend atomically.
-6. Regenerate SDK `dist`, both application backend/UI vendor outputs, and importable packages; reject the checkpoint if their declared versions or identity fields disagree.
-7. Delete legacy runtime types, current V4 SDK exports, localizers, prefixers, mappers, aliases, fallback tests, and dead exports.
-8. Enforce a repository-wide allowlist scan.
+1. Preserve accepted rooted backend/migration/V5/provider/storage behavior with characterization coverage.
+2. Add strict Team stream DTO/schema package and real producer-to-parser tests without a production dual path.
+3. Add the exhaustive standalone-Agent -> correlated-Team-Agent ingress adapter; correlate TeamRun/task events; cut Team mapper/broadcaster/egress/client parsing atomically; delete generic Team payload, derived Agent collaboration duplication, aliases, duplicate receiver identity, and unused Team approval-token shapes.
+4. Replace legacy leaf-status snapshots and command-start status bags with the shared binding/status snapshot. Cut the real connection/open/restore and pre-run overlay producers to the exact status projector/constructor in the same Team stream cut; remove the generic initial-status mapper and generic command-status builder.
+5. Add identity-free `TeamLaunchDraft`, immutable `TeamTopologySnapshot`, valid execution union, and `TeamExecutionState`; construct persistent executions only after real server allocation and route live events plus GraphQL restore/hydration through the same transitions.
+6. Cut focus/open/history/navigation/status/timeline/presentation/token/mobile/desktop consumers to typed aggregate queries/view rows.
+7. Cut successful draft replacement/pending-input transfer to the launch owner and terminal cleanup to the aggregate; delete provisional run/execution identity and rebase code.
+8. Delete the six old task tree/projection/router/restore modules, public topology/execution maps, run/application-execution bindings on frontend topology, duplicate `AgentTeamContext` root/lifecycle/config/hydration/subscription fields, `AgentContext` connection ownership, every raw-key parser, topology task fields, copied task snapshots/separate mutable task-history archives, mutable stored task labels, duplicate task-status event, empty placeholders, dormant route-key egress branches, and three unused route-key results.
+9. Remove `TaskAgentInstanceIdentity`, `TaskTeamInstanceIdentity`, synthetic instance-ID factories/clone helpers/fields, copied task owner/parent/run/timestamp identity, generic Team `task_context`, separate task activation-result run IDs, and current task status/token/work-packet fields derived from the exact execution address. Replace internal active lookup with task ID or typed execution address by subject.
+10. Contract token current storage to `execution_address_json` + actual Agent `run_id` + optional task-operation `task_id` + usage facts. Remove both narrow column-drop definitions/current registrations, obsolete Team identity columns/index, and all current repository/domain/DTO fields that mirror the canonical address; preserve only migration-local input parsing under the exact allowlist.
+11. Regenerate/retain all already-required SDK/application outputs and reject any regression in V5/current canonical identity.
+12. Enforce the exact-path current-production allowlist and full cumulative source review before API/E2E resumes.
 
 Do not retain an old-field compatibility DTO, dual writer, route-key adapter, or localized-child fallback “temporarily.”
 
@@ -612,11 +927,14 @@ Do not retain an old-field compatibility DTO, dual writer, route-key adapter, or
 - `send_message_to` alone retains the approved `{accepted,code,message,result}` delivery/rejection envelope.
 - Exact-run message codes remain unchanged.
 - Shared syntax/tree failures have identical codes for message and task entry before task wrapping.
-- Team communication participants and runtime events carry `TeamExecutionAddress` values.
-- Child/root event bridges forward execution address unchanged; no prefix repair occurs.
-- Historical projections store sufficient concrete identity to rehydrate an inactive task execution without reading live handles.
-- V4 application manifest/backend/definition rejection returns no application execution result; catalog/import surfaces carry an actionable incompatibility diagnostic and the availability surface reports `QUARANTINED`. Exact V5 acceptance proceeds normally.
-- A compatibility diagnostic does not suppress or complete the independent per-database migration result.
+- Correlated TeamRun events carry singular exact execution identity by variant; communication alone carries both semantically distinct participants.
+- Initial connection/open/restore Agent status carries the same exact binding/details/status hint without becoming a TeamRun event; pre-run overlay status is a real correlated event and is replaced by its matching live status.
+- Child/root bridges forward those values unchanged; no prefix repair occurs.
+- Exact strict Team DTOs cross WebSocket; rejected raw input causes no downstream mutation.
+- `TeamExecutionState` atomically commits an aggregate-owned transition or reports unchanged/rejected, and returns only typed Agent-dispatch/token/task-refresh effects plus immutable query views; an unchanged post-activation task signal may request refresh without inventing state, and the aggregate does not mutate external stores.
+- Team launch returns either a fully canonical execution context plus one pending-input transfer or an actionable failure that leaves the identity-free draft untouched; it never returns/promotes a provisional execution.
+- Historical task records store sufficient concrete identity to converge through the same transition owner without reading live handles.
+- Non-target application manifest/backend/definition input returns no application execution result through ordinary strict validation. Exact V5 acceptance proceeds normally; no compatibility status or application migration result exists.
 
 ## Bounded Local / Internal Spines (If Applicable)
 
@@ -625,9 +943,18 @@ Do not retain an old-field compatibility DTO, dual writer, route-key adapter, or
 - Coordinator target: AgentTeam recipient -> exact `coordinatorAddress` -> Agent node validation -> private handle lookup.
 - Task eligibility: derive caller Team and recipient parent -> exact equality -> reject caller -> activate selected kind.
 - Storage locator: execution address -> concrete run resolution -> `ancestorTeamRunIds`/Agent run ID -> unchanged filesystem path.
-- Application compatibility: parse exact declaration -> fail with observed/required/action or admit; loaded definition repeats the exact V5 assertion before callable behavior.
-- Application durable inventory: physical platform DB paths -> application ID recovery -> per-DB transaction/result; catalog membership is never an input.
-- Token canonical item: TeamRun/task readiness -> strict task-Team index -> deterministic row plans -> no-mutation failure or immutable batch -> one store transaction/update-count/read-back verification -> committed summary or total rollback.
+- Application target validation: parse exact current declarations -> reject invalid input or admit; loaded definition repeats the exact V5 assertion before callable behavior.
+- Application project state: regenerate source/dist/vendor/importable artifacts and recreate target-schema fixtures/databases; assert canonical migration has no application inventory.
+- Token canonical item: TeamRun/task readiness -> strict task-Team index -> deterministic row plans -> no-mutation failure or immutable update batch -> one store transaction for row conversion + obsolete-column/index replacement + complete verification -> committed summary or total rollback.
+- Team Agent ingress: raw standalone Agent event -> verify handle AgentRun binding -> exhaustive `TeamAgentEventAdapter` -> publish correlated Team event, filter collaboration duplicate, or emit typed admission error.
+- Initial Agent-status projection: mixed persistent/task/task-Team enumeration -> shared binding constructor -> immutable `TeamAgentStatusSnapshot` -> shared status projector -> strict serializer; root lifecycle follows, and no event is synthesized.
+- Pre-run status overlay: already-bound handle identity -> shared binding constructor -> overlay details by private key -> correlated status-event constructor -> shared status projector -> first real typed status deletes overlay.
+- Task activation publication/state machine: per-TeamRun activation sequencer enters critical section -> prepare/bind exact task identity with its work-release gate closed -> derive `taskRun.address` -> open one exact-subtree barrier -> runtime accepts/enqueues the work packet, emits only synchronous held initialization, and acknowledges preparation-quiescent while task work/commands remain closed -> verify the final barrier budget -> build and durably persist the privately staged active record -> synchronously commit ledger/directory -> publish matching activation through the barrier -> drain related events FIFO -> close barrier -> open work-release gate -> leave critical section; any start/persist/limit failure -> abort barrier/gate -> settle/unregister prepared execution -> discard staged/starting entry -> leave critical section -> return `not_started`. No event can race budget validation and durable commit because the prepared runtime is quiescent until gate release.
+- Team wire admission: raw frame -> strict shared parser -> exhaustive DTO adapter -> aggregate-owned synchronous transition -> minimal disposition/true external effects -> thin effect execution; rejection stops before every state/effect owner.
+- Initial frontend projection: exact canonical metadata -> build immutable topology and complete persistent execution set in memory -> validate one-to-one/node/run/application invariants -> register one context or register nothing.
+- Task-record reconciliation: GraphQL complete root-scoped response -> require every `taskRun.address` -> validate root/run chain/delivery receiver plus unique task/address and immutable base facts -> reject the whole response on one invalid row -> emit one discriminated complete snapshot of minimal projections -> stage a monotonic one-projection-per-task merge (newer replaces, older/missing preserves, equal-time conflict rejects) -> require every materialized terminal subtree descendant to be terminal in the same candidate -> atomically commit projection/graph/focus -> derive active and history views from the same projection index.
+- Task graph parentage: task Agent -> source Agent by removing task-Agent ID; first-level task Team -> persistent source Team; nested task Team/task-Team Agent -> containing task Team by run-ID-chain prefix/tail plus topology validation.
+- Team Agent application binding: derive exact persistent/task execution -> exact-map shared application context -> persistent equality check or task producer-address replacement -> construct `AgentRunConfig` -> artifacts/events inherit truthful source identity.
 
 ## Off-Spine Concerns Around The Spine
 
@@ -635,7 +962,7 @@ Do not retain an old-field compatibility DTO, dual writer, route-key adapter, or
 - Definition cache refresh affects only new runs.
 - Handoffs remain natural-language guidance, not deterministic policy.
 - Opaque provider tool arguments may contain old-looking keys but stay untyped history.
-- Application database discovery is dynamic and each physically discovered database needs its own durable migration result even when its bundle is absent or V4-incompatible.
+- Application predecessor data is unsupported; no dynamic database discovery or migration result belongs to this ticket.
 - Application manifest V4, backend bundle V1, and iframe V4 are independent envelope/transport versions and must not be renamed merely to match SDK V5; only compatibility declarations advance.
 - Generated/vendored/importable outputs are repository-resident release artifacts and require consistency proof, not best-effort rebuild instructions.
 - Data volume is unknown; converters must be bounded/observable and restartable.
@@ -651,8 +978,17 @@ Do not retain an old-field compatibility DTO, dual writer, route-key adapter, or
 7. Storage owns concrete directory lineage and preserves physical layout.
 8. Frontend owns projection/state keys, not another topology language.
 9. Team runtime owns intrinsic collaboration capability exposure; Agent package configuration and provider adapters may not override or weaken it.
-10. Application SDK contracts own semantic version/type identity; bundle parsers/loaders own admission; application storage/migration owns durable DB discovery. None may substitute for another.
+10. Application SDK contracts own semantic version/type identity; bundle parsers/loaders own ordinary current validation; project build/test setup owns fresh target artifacts/databases. No application migration or compatibility owner exists.
 11. The `20260801...` app-data definition owns target canonical sequencing/status; the token migration store alone owns database transaction mechanics. The runner, planner, and server gate may not bypass either boundary.
+12. The member bridge plus `TeamAgentEventAdapter` owns standalone-Agent-to-Team admission; Team domain publishers cannot bypass it with a generic Agent payload.
+13. `@autobyteus/team-stream-contracts` owns wire validation/spelling only; Team domain and frontend execution owners cannot move routing or lifecycle policy into that package.
+14. `TeamRunFrontendProjectionBuilder` owns the all-or-nothing initial split; after registration, only `TeamExecutionState` may mutate concrete frontend execution state.
+15. `TeamExecutionState` owns live/restore/focus/cleanup transitions; streaming, GraphQL restore, navigation, history, and components cannot import private reducers or touch its index.
+16. The workspace selection store owns which root TeamRun is selected; `TeamExecutionState` owns focus inside that run. Presentation composes both and neither writes the other.
+17. V5 application SDK contracts own the shared context shape; `MixedAgentMemberHandle` alone binds that context to the concrete Agent execution before run construction. Downstream artifact/event consumers cannot repair a stale producer address.
+18. `TaskDelegationService` owns activation ordering; TeamRun publication owns only the bounded barrier mechanics. Runtime factories, task event mappers, WebSocket transport, and frontend state cannot publish around, reproduce, or recover that ordering.
+19. The Team Agent domain owns binding/status construction. Mixed handles/config-backed offline enumeration supply allocated facts; snapshot service, overlay store, event adapter, history projection, transport, and browser may consume but may not reconstruct or guess the binding.
+20. `TeamRuntimeSnapshotService` owns initial status/lifecycle sequencing but not domain event creation. `MemberCommandStatusOverlayStore` owns temporary details/replacement but not execution identity. Both converge on the same Team Agent status projector and frontend Agent-status transition.
 
 ## Boundary Encapsulation Map
 
@@ -665,11 +1001,25 @@ Do not retain an old-field compatibility DTO, dual writer, route-key adapter, or
 | runtime -> transport | address, coordinator address, typed IDs, execution address | generic member ID, path/route aliases |
 | domain -> storage | exact logical/concrete selector | public `teamRunPath` topology claim |
 | server -> frontend | recursive root projection + execution addresses | compatibility route maps |
+| launch draft -> launch owner | config, logical focus address, pending input | temporary TeamRun/AgentRun/conversation ID or draft execution address |
 | application SDK source -> SDK/app artifacts | exact V5 constants + canonical identity types | stale V4 export, hand-authored divergent vendor type |
-| bundle -> executable catalog/worker | exact V5 compatibility declarations/definition | V4 payload adapter or version guessing |
-| application storage -> migration | physical DB path + recovered application ID | admitted-bundle requirement |
-| token planner -> token migration store | immutable validated `{id,rootTeamRunId,executionAddressJson}` batch | legacy parser callbacks, per-row commit API, migration-record mutation |
+| bundle -> executable catalog/worker | exact V5 declarations/definition | old payload adapter, version guessing, or compatibility state machine |
+| application project setup -> target store | freshly created current-schema fixture/database | predecessor application DB reader or migration |
+| token planner -> token migration store | immutable validated `{id,executionAddressJson}` batch plus the store-owned exact obsolete-column policy | legacy parser callbacks, copied root identity, per-row/drop API, migration-record mutation |
 | canonical migration -> startup | one `20260801...` status with token item detail | inference from historical `20260703...` status or unrelated warnings |
+| standalone Agent bridge -> Team event domain | correlated Agent binding (address-only persistent/task Agent; address + genuine run ID for task-Team Agent) + `TeamAgentEvent`, or explicit filtered/rejected result | raw `AgentRunEvent`, run ID inside event details, generic payload bag |
+| mixed Agent handle/config owner -> Team Agent domain | exact `executionAddress` + allocated `agentRunId` into the one binding constructor; exact current status facts into the one details constructor | display/name/runtime/TeamRun/task-instance identity bundle, local/root fallback, independently parsed binding |
+| TeamRun -> initial Team stream | immutable `TeamAgentStatusSnapshot` values + root lifecycle; direct shared status-projector call | fake TeamRun event, legacy `TeamLeafAgentStatusSnapshot`, generic `ServerMessage`, duplicate Agent/Team identity |
+| unmaterialized handle -> pre-run status overlay | already-constructed binding + initializing/error facts | raw config/handle, display name, runtime kind, task instance, alternate identity parser |
+| status overlay -> Team event domain | `createTeamAgentStatusEvent(snapshot)` and matching typed live-status replacement | generic event builder, cast, status-owned execution identity |
+| task activation -> TeamRun publication | one prepared `taskRun.address`, bounded activation lease, and the matching typed activated event | unbounded/generic buffering, delivery receiver as subtree identity, transport timer, frontend missing-parent inference |
+| Team domain -> Team wire | one narrowed `TeamRunEvent` variant mapped field-by-field | cast, arbitrary payload, duplicated execution identity |
+| Team wire -> frontend transport | fully parsed `TeamStreamServerMessage` | partial `{type,payload}`, aliases, surplus fields |
+| transport -> frontend execution | exact projection message command to `TeamExecutionState`; minimal disposition/true external effects back | redundant change DTO/apply step, internal map/key/reducer access, or transport-owned task mutation |
+| canonical TeamRun metadata -> frontend context | one all-or-nothing `{topology,executions}` result | partial registration, topology run bindings, tolerant cast |
+| GraphQL task record -> execution aggregate | flat validated `TeamTaskProjection` with `executionAddress = taskRun.address` | delivery receiver, parent, or nested task wrapper copied into projection |
+| root selection + execution focus -> row presentation | independently read selected root ID and exact focused execution address | either owner mutating or substituting for the other |
+| persisted application context -> AgentRun construction | exact shared type with persistent match or task-address rebind | generic object cast or consumer-side producer repair |
 
 ## Dependency Rules
 
@@ -679,15 +1029,22 @@ Do not retain an old-field compatibility DTO, dual writer, route-key adapter, or
 - Team capability composer may depend on the presence of a bound Team collaboration context and canonical server-owned tool definitions; provider bootstraps consume its result rather than recomputing availability.
 - Handoff guidance projector depends only on immutable caller-bound outgoing edges, performs no second caller filter, and returns no delivery/service/provider result type.
 - Task delegation depends on the shared resolver and AgentTeam execution interfaces; Agent collaboration does not import task types.
+- Task delegation may control one task-specific activation-publication lease exposed by the TeamRun facade; it cannot access the barrier queue/listeners. The TeamRun publication barrier depends only on correlated Team events plus typed canonical execution-address subtree comparison and cannot import task persistence, frontend, or WebSocket code.
 - Migration input modules may depend on legacy schemas; current domain/store modules may not.
 - Storage encoding depends on address derivation and exact run identity after contextual resolution, not on provider adapters.
-- Frontend types mirror target transport contracts and do not import migration compatibility types.
-- Application SDK backend/frontend packages depend on the contracts package V5 types; contracts do not depend on server bundle discovery or migration.
-- Bundle parsers depend on V5 constants, not on backend/frontend SDK implementations. The bundle provider aggregates parser errors into existing diagnostics; availability consumes diagnostics but does not reinterpret versions.
-- Canonical application DB migration depends on physical application storage and store-owned legacy/current schemas, never on the application catalog, backend bundle, worker loader, or application-owned migrations.
+- `@autobyteus/team-stream-contracts` depends only on `zod` and exact transport DTO modules; it imports no server domain or frontend store. Server and web depend on it.
+- The Team Agent binding/status domain depends only on canonical execution-address and Agent status vocabularies. Mixed handles, `TeamAgentEventAdapter`, `TeamRuntimeSnapshotService`, `MemberCommandStatusOverlayStore`, run-history projection, and the Team Agent projector depend on that boundary; none may declare a parallel binding/snapshot type.
+- `TeamRuntimeSnapshotService` may call `TeamRun.getLeafAgentStatusSnapshots()` and `projectTeamAgentStatusMessage()` but may not call the TeamRun event mapper or generic standalone/Team `ServerMessage` builders.
+- `MemberCommandStatusOverlayStore` receives an already-built binding, stores exact details only, and may call `createTeamAgentStatusEvent(snapshot)`. After the member bridge has successfully published a real correlated `AGENT_STATUS`, it calls `clearAcceptedLiveStatus(binding)`; the store removes only an exact binding match. It may not import runtime config, topology, mixed managers, or route/address fallback logic.
+- TeamRun event domain depends on Team execution/task domain types, never on the wire package. The server adapter alone maps domain events to wire DTOs.
+- `TeamLaunchDraft` depends on definition/config/input types and canonical logical addresses only. It does not import `TeamExecutionAddress`, `AgentContext`, stream/history/token types, or canonical TeamRun metadata.
+- Frontend protocol types come from the shared Team contract and import no migration compatibility types. `TeamExecutionState` depends on immutable frontend topology and Agent contexts; UI/stores depend only on its public typed API, not its private transitions/index.
+- Application SDK backend/frontend packages depend on the contracts package V5 types; contracts do not depend on server bundle discovery, migration, or compatibility policy.
+- Bundle parsers depend on V5 constants, not on backend/frontend SDK implementations. Ordinary invalid-package handling may report parser failure but does not reinterpret versions or start a compatibility workflow.
+- Application project build/test setup creates the current storage schema directly; canonical app-data migration and current repositories never import or interpret a predecessor application database.
 - Canonical token planning depends on already-current TeamRun/task records and migration-only legacy token input types. The current token repository never imports the planner.
-- `20260801...` may compose the token migrator; the migrator may depend on the strict task index/planner and token migration store; the store depends only on Prisma/current database configuration and owns the transaction. The planner/store never update app-data migration records or decide startup.
-- Token legacy-column cleanup depends on exact `20260801...` success, not on historical `20260703...`; server startup depends on exact `20260801...` status, not on cleanup or unrelated warnings.
+- `20260801...` may compose the token migrator; the migrator may depend on the strict task index/planner and token migration store; the store depends only on raw SQLite/Prisma transaction capability and owns row conversion, obsolete-column removal, and index replacement as one transaction. The planner/store never update app-data migration records or decide startup.
+- Pre-existing token model/provider backfills precede canonical contraction. Historical semantic/column-drop records are neither registered target owners nor startup prerequisites. Server startup depends only on exact `20260801...` status, not on those historical records or unrelated warnings.
 - The iframe transport remains V4 and may be consumed by frontend SDK V5 because it is an independently versioned, unchanged protocol.
 
 ## Interface Boundary Mapping
@@ -704,21 +1061,32 @@ Do not retain an old-field compatibility DTO, dual writer, route-key adapter, or
 | Agent node | address + Agent definition/run/platform/presentation/launch fields |
 | AgentTeam node | address + Team definition/run/coordinator + children |
 | execution locator | `{rootTeamRunId,taskTeamRunIds,memberAddress,taskAgentRunId}` |
+| active task execution binding | derived/non-persisted `{kind:"task_agent"|"task_team",taskId,executionAddress}` |
+| task-bound Team member context | existing execution address + nullable `taskId`; no instance identity object |
+| Team Agent execution binding input | `{executionAddress:TeamExecutionAddress,agentRunId:string}` into the sole domain constructor |
+| Team Agent execution binding output | `persistent_agent`/`task_agent` address-only, or `task_team_agent` address + genuine `agentRunId` |
+| Team Agent status snapshot | immutable `{execution:TeamAgentExecutionBinding,details:TeamAgentStatusDetails,statusHint:AgentRunStatusHint}` |
+| initial Team Agent status projection | `TeamAgentStatusSnapshot -> projectTeamAgentStatusMessage -> exact AGENT_STATUS TeamStreamServerMessage`; no TeamRun event |
+| pre-run Team Agent status event | `createTeamAgentStatusEvent(snapshot) -> correlated TeamRun AGENT/AGENT_STATUS variant` |
+| accepted-live status replacement | member bridge calls `MemberCommandStatusOverlayStore.clearAcceptedLiveStatus(binding)` only after successful correlated `AGENT_STATUS` publication; exact binding equality selects only that overlay |
 | GraphQL/REST | `memberAddress`, `coordinatorAddress`, typed run IDs, execution address as applicable |
-| WebSocket | `execution_address` with stable serializer |
-| frontend topology | `rootTeam` + derived `memberNodesByAddress` |
-| frontend runtime | execution-address serialized key |
+| Team WebSocket server/client | exact `TeamStreamServerMessage` / `TeamStreamClientMessage` strict unions; `execution_address` appears exactly where variant semantics require |
+| frontend launch draft | `{draftId,config,focusedMemberAddress,pendingInputsByMemberAddress}` with no copied topology or run/execution identity |
+| frontend projection input | canonical metadata + exact root lifecycle + initial logical Agent focus + one discriminated identity-free Agent seed per metadata Agent |
+| frontend topology | immutable `TeamTopologySnapshot` with recursive `rootTeam` and typed lookup; no public map |
+| frontend runtime | private `TeamExecutionState`; typed `TeamConcreteExecution` and `TeamExecutionNavigationRow` queries |
 | external binding | `targetMemberAddress` |
 | storage scope | private `{rootTeamRunId,ancestorTeamRunIds}` |
-| token canonical update plan | immutable `{id,rootTeamRunId,executionAddressJson}` rows built only after full plan validity |
-| token migration store mutation | `applyCanonicalExecutionAddressBatch(readonly updates[])` as the sole write API; one verified transaction |
+| token canonical update plan | immutable `{id,executionAddressJson}` rows built only after full plan validity; root is inside canonical JSON |
+| token current identity | nullable `executionAddressJson` + actual Agent `runId` + optional operation `taskId`; no parallel Team columns |
+| token migration store mutation | `applyCanonicalTeamIdentityTransaction(readonly updates[])` as the sole write/schema API; one verified transaction |
 | canonical startup status | exact `20260801_team_canonical_identity` aggregate including token item |
 | application backend definition contract | exact `"5"`; current canonical launch/binding/target/event types |
 | application frontend SDK contract | exact `"5"`; canonical validators/client types |
 | application manifest | schema `"4"`, `ui.frontendSdkContractVersion: "5"` |
 | application backend bundle manifest | envelope `"1"`, `sdkCompatibility: {backendDefinitionContractVersion:"5",frontendSdkContractVersion:"5"}` |
 | iframe transport | unchanged protocol `"4"` |
-| incompatible bundle result | absent from launchable catalog + existing diagnostic/quarantine with path, observed/required version, and rebuild/reinstall action |
+| invalid application package result | ordinary exact-parser/loader failure before execution; no compatibility/quarantine/upgrade state |
 
 ### Application V5 canonical identity mapping
 
@@ -794,8 +1162,8 @@ Every SDK `memberAddress` is the serialized canonical domain `AgentTeamAddress`;
 - Run IDs remain typed and never substitute for logical address.
 - Current interfaces reject removed fields rather than ignore them.
 - Model-facing handoff output has one condition and one directly reusable destination per row; it exposes no transport acknowledgement or redundant caller/source identity.
-- Application compatibility versions name distinct semantic/protocol layers; V5 is not copied onto unchanged envelope types.
-- Old bundle rejection is an admission result, not a migrated or adapted current contract.
+- Application semantic and envelope/transport versions name distinct current contract layers; V5 is not copied mechanically onto unchanged envelope types.
+- Non-target package rejection is ordinary current validation, not a compatibility or migration result.
 
 ## Main Domain Subject Naming Check
 
@@ -822,8 +1190,7 @@ Reuse and tighten:
 - blocking operational DB migration phase;
 - existing GraphQL/WebSocket generation and frontend state mechanisms; and
 - current memory/context storage layout;
-- current exact application manifest/backend manifest/definition gates, catalog diagnostics/quarantine, and package validation;
-- application platform state's physical DB enumeration; and
+- current exact application manifest/backend manifest/definition gates and ordinary package validation; and
 - existing SDK/application build pipelines for deterministic regeneration.
 
 Do not add a new provider-neutral topology service or a persisted profile/binding subsystem.
@@ -835,7 +1202,7 @@ Do not add a new provider-neutral topology service or a persisted profile/bindin
 | `agent-collaboration/domain` | `AgentTeamAddress`, recipient-address expression, authored handoff edge |
 | `agent-communication/services` | operation contracts, exact handoff guidance projection, send dispatch/delivery result |
 | `agent-team-definition` | authoring schema and recursive graph resolution |
-| `agent-team-execution/domain` | rooted node types, metadata aggregate, execution address |
+| `agent-team-execution/domain` | rooted node types, metadata aggregate, execution address, one Team Agent execution binding constructor, one exact status-details/snapshot value, and one correlated status-event constructor |
 | `agent-team-execution/services` | tree compiler/index, recipient resolver, execution resolver |
 | `agent-execution/shared` + Team member instruction composition | intrinsic Team tool exposure, canonical name de-duplication, provider-neutral filesystem-like completion protocol |
 | `agent-team-execution/backends/mixed` | concrete persistent/task lifecycle and private handles |
@@ -844,10 +1211,13 @@ Do not add a new provider-neutral topology service or a persisted profile/bindin
 | `app-data-migrations` | stable TeamRun prerequisite, one pending `20260801...` canonical aggregate including token semantic conversion, strict token planner/index, transaction-owning token migration store, ordered record lifecycle, exact startup gate, and evidence |
 | API/SDK/integration | target-only DTOs/contracts |
 | `application-sdk-contracts` | Own exact backend-definition/frontend-SDK V5 constants and canonical application identity shapes; retain independent unchanged envelope/iframe constants |
-| `application-bundles` + worker loader | Exact V5 declaration/export admission, existing diagnostic/quarantine/package-validation surfaces |
-| project applications/builds | V5 source manifests/definitions and generated/vendor/importable artifact consistency |
-| application storage migration | Catalog-independent physical platform DB inventory and transactional canonical conversion |
-| web | recursive projection and execution-keyed runtime state |
+| `application-bundles` + worker loader | Exact V5 declaration/export validation through existing current parsers/loaders; no compatibility state machine |
+| project applications/builds | V5 source manifests/definitions, generated/vendor/importable artifact consistency, and fresh target-schema fixtures/databases |
+| `team-stream-contracts` workspace package | exact strict Team WebSocket DTOs, runtime schemas, parser, serializer |
+| Team streaming service boundary | exact initial status/lifecycle sequencing plus one Team Agent status projector shared by live event and direct snapshot inputs; no generic Team message path |
+| web Team launch | identity-free `TeamLaunchDraft`, supported launch call, success-only canonical context construction/input transfer, failure preservation |
+| web `TeamExecutionState` | valid concrete execution aggregate, private index/graph, focus/lifecycle/presentation/cleanup, typed views |
+| web `TeamTopologySnapshot` | immutable rooted projection constructed only from real run metadata, private derived address index, typed topology queries |
 | memory/context storage | physical lineage and stable locator derivation |
 | API/E2E live harness | staged package import, isolated secret DB/app data, required runtime/model matrix, public assertions, redacted evidence, cleanup |
 
@@ -869,38 +1239,76 @@ Proposed names may adapt to repository conventions, but ownership must remain:
 | `agent-team-execution/services/member-run-instruction-composer.ts` | Include the Team protocol whenever Team context exists; remove boolean gating for the intrinsic handoff/delivery tools |
 | `agent-team-execution/domain/team-run-config.ts` or replacement node module | Define `TeamRunAgentNode` / `TeamRunAgentTeamNode` union |
 | `run-history/store/team-run-metadata-types.ts` | Define current `TeamRunMetadataV3` persistence contract |
+| `run-history/store/team-run-metadata-schema.ts` | Replace object-only application-context acceptance with exact SDK-owned field mapping and canonical producer-address validation; current schema v3 admits no surplus/generic context record |
 | `agent-team-execution/services/team-run-tree-compiler.ts` | Compile definition closure + launch input into rooted tree/handoffs |
 | `agent-team-execution/services/team-run-tree-index.ts` | Derive exact lookup view |
 | `agent-team-execution/services/team-run-metadata-mapper.ts` | Map current aggregate without legacy normalization |
 | `agent-team-execution/services/team-recipient-resolver.ts` | Resolve one minimal recipient |
 | `agent-team-execution/domain/team-execution-address.ts` | Validate/serialize concrete locator |
 | `agent-team-execution/services/team-execution-resolver.ts` | Resolve persistent/task execution contextually |
-| mixed child/task factories | Share persistent root tree; materialize task IDs without localization |
+| mixed child factory | Share persistent root tree without localization |
+| task Agent/task-Team materialization | Allocate real run IDs, compose exact `TeamExecutionAddress`, and derive `ActiveTaskExecutionBinding`; create no synthetic task instance identity |
 | `team-run-member-tree-prerequisite-converter.ts` | Own one pure migration-only flat decoder; require direct Agent/one-segment structural route/non-empty display name, preserve display, emit/validate predecessor; expose no runtime reader |
 | `team-run-metadata-member-tree-migration.ts` | Keep stable ID; when pending, use the shared decoder and own predecessor backup/atomic replacement; never own terminal-record normalization |
 | `team-canonical-identity-migration.ts` + metadata converter | Keep separate pending `20260801...` ID; accept v3/predecessor/residual flat, derive v3 addresses only from agreeing route/path, finish TeamRun/task items, compose the token semantic migrator, and own the one aggregate status consumed by startup |
 | `token-usage-execution-address-backfill-migration.ts` | Rename/move to `token-usage-canonical-execution-address-migrator.ts`; remove `AppDataMigrationDefinition`/historical ID ownership; preserve IR-014 index/planning orchestration and return canonical item details to `20260801...` |
 | `token-usage-execution-address-backfill-planner.ts` | Rename to target-neutral migration-local canonical planner if practical; keep `{segments}` parsing isolated here and preserve exact nested task-Team reconstruction/fail-closed behavior |
 | `token-usage-task-team-run-index.ts` | Keep strict current task-record indexing, ordered ancestor validation, and actionable duplicate/conflict/unreadable issues |
-| new `token-usage-canonical-execution-address-migration-store.ts` | Own deterministic row scan plus `applyCanonicalExecutionAddressBatch`; Prisma implementation updates and verifies the immutable batch inside one transaction; expose no per-row mutation method |
-| `app-data-migration-registry.ts` | Remove the current definition registered as `20260703_token_usage_execution_address_backfill`; keep `20260801...` before both pending token legacy-column cleanup definitions |
-| token legacy path/route column-drop migrations | Require exact `TEAM_CANONICAL_IDENTITY_MIGRATION_ID` success before schema cleanup; never infer target readiness from the historical token record |
+| `token-usage-canonical-execution-address-migration-store.ts` (rename to `token-usage-canonical-identity-migration-store.ts`) | Own deterministic raw row/schema scan plus `applyCanonicalTeamIdentityTransaction`; update addresses, remove the exact obsolete column/index set, install/verify `token_usage_ledger_events_execution_root_observed_at_idx`, and prove total rollback in one transaction; expose no per-row or independent drop method |
+| `token-usage-provider-name-snapshot-backfill-migration.ts` / row projection | Be attempted before canonical contraction; database `SELECT *`, classify from the five semantic fields only, and preserve the dynamic lexically sorted physical row excluding only `provider_name`; name no unrelated legacy identity/display column and remain retry-safe after contraction |
+| `app-data-migration-registry.ts` | Order pre-existing token model/provider backfills before `20260801...`; remove current registrations for historical `20260703_token_usage_execution_address_backfill` and both narrow token column-drop definitions |
+| `token-usage-legacy-path-columns-drop-migration.ts` / `token-usage-legacy-route-column-drop-migration.ts` | Remove definitions/files from current source; terminal records may remain in persisted migration history only |
+| `prisma/schema.prisma`, token domain/repository/projections | Omit redundant Team identity fields; write/read canonical address + actual Agent run/task facts; query root scope with raw `json_extract` SQL through the named expression index. Add no physical Prisma drop migration before app-data conversion |
 | `server-runtime.ts` | Keep one exact-`20260801...` pre-listen gate; include the canonical record/token item detail in actionable failure logging; ignore unrelated warning statuses |
-| web store/builders | Consume `rootTeam`, derive address index, key runtime by execution address |
+| new `autobyteus-team-stream-contracts` workspace package | Own exact strict `/ws/agent-team` server/client DTO schemas, parse, and serialize; no domain routing or UI dependency |
+| new `agent-team-execution/domain/team-agent-execution-binding.ts` | Own `TeamAgentExecutionBinding` and the sole `createTeamAgentExecutionBinding({executionAddress,agentRunId})` classifier/validator; persistent/task Agent outputs contain no repeated run ID, task-Team Agent output contains the genuine allocated ID once |
+| new `agent-team-execution/domain/team-agent-status.ts` | Own exact `TeamAgentStatusDetails`, `TeamAgentStatusSnapshot`, status-details construction from supported raw/current facts, status-hint derivation, and immutable snapshot construction; no name/runtime/Team/task identity fields |
+| `team-agent-event.ts` + `team-agent-event-adapter.ts` | Define the exact correlated Team Agent union and `createTeamAgentStatusEvent(snapshot)`; exhaustively convert established standalone Agent events before Team publication through the shared binding/status constructors; filter derived Agent collaboration duplicates; remove raw run identity from details while retaining it only as the required task-Team-Agent binding |
+| `team-run.ts`, `team-manager.ts`, `team-run-backend.ts`, `mixed-team-run-backend.ts`, `mixed-team-manager.ts`, mixed persistent/task/subteam/task-Team member handles | Change leaf-status enumeration to return `readonly TeamAgentStatusSnapshot[]`. Handles/config-backed offline members construct the binding from their exact execution address plus allocated context/node AgentRun ID, apply overlay details, and expose no legacy payload. Child/task Team handles forward the exact snapshots unchanged; delete identity prefixing/pass-through reconstruction. |
+| `member-command-status-overlay-store.ts` | Accept an already-constructed `TeamAgentExecutionBinding`; store only exact `TeamAgentStatusDetails` by the private canonical execution key; publish initializing/error through `createTeamAgentStatusEvent(snapshot)`; expose `clearAcceptedLiveStatus(binding)` and remove only after a matching correlated live status is successfully published, without casts |
+| `team-runtime-snapshot-service.ts` + `agent-team-stream-handler.ts` | Sequence `CONNECTED`, direct projection of every `TeamAgentStatusSnapshot` through `projectTeamAgentStatusMessage`, then scoped lifecycle. Return/send exact contract messages only; do not manufacture TeamRun events or generic `ServerMessage` |
+| `team-agent-event-websocket-projector.ts` | Export one exact `projectTeamAgentStatusMessage(snapshot)` function; the correlated live `AGENT_STATUS` arm delegates to it and `TeamRuntimeSnapshotService` calls it directly. Other Agent variants remain exhaustive. |
+| `run-history/services/team-run-live-projection-service.ts` | Map `TeamAgentStatusSnapshot` through a run-history-owned typed list DTO/projection, deriving presentation through the rooted Team index when needed; never strip a generic payload or reuse the Team wire DTO as history state |
+| `task-agent-instance.ts`, `task-team-instance.ts`, task identity factories and clone helpers | Replace identity objects with kind-specific start requests that carry `taskId`, exact `executionAddress`, source node/config, and work message only; remove deterministic instance IDs and copied owner/parent/run/time fields |
+| `task-delegation-activation-coordinator.ts`, task Agent/task-Team registries and directories | Prepare a derived `ActiveTaskExecutionBinding` with a closed work-release gate; index active resolution by task ID or typed execution address according to the query; expose starting entries only to cleanup; commit active visibility or settle/unregister exactly once |
+| `task-delegation-service.ts`, ledger, records, settlement, notification, tool/provider result boundaries | Serialize only the short per-TeamRun activation section; privately stage one active candidate; require throwing durable activation persistence; use task ID/address rather than instance IDs; expose provider result only as `{task_id,status[,message]}`; synchronously promote, publish/release, then open work; abort every pre-publication failure without a durable/active remainder |
+| `team-run.ts`, backend interfaces, mixed Team publication, and new focused `task-activation-event-barrier.ts` | Expose one task-specific activation lease; hold the exact subtree within count/UTF-8-byte bounds, let unrelated events bypass, publish matching activation then FIFO-drain, and keep queue/listeners private |
+| `team-run-event.ts` + task publisher | Replace independent source/data and `unknown` publisher with three nonduplicated correlated domain/task variants and singular identity; activation emits exact durable base create/start facts once, result variants emit event-specific correlation/decision/time only, labels/status/terminal/update facts derive, and duplicate status publication is removed |
+| Team mapper + new `team-agent-event-websocket-projector.ts` + Team broadcaster/egress/handler | Return/accept the exact Team contract, exhaustively map already-correlated Team variants, and strictly parse client commands. The dedicated Team Agent projector maps all correlated Agent details and never calls or changes the generic standalone-Agent mapper. Emit `CONNECTED {session_id}` only after TeamRun binding and scoped `TEAM_RUN_LIFECYCLE {is_active}` without duplicate TeamRun identity; generic `ServerMessage` may not enter Team egress |
+| frontend protocol modules + `TeamStreamingService` | Import the exact Team contract; delete loose mirrored Team DTOs/aliases, type-only cast parser, redundant control-message TeamRun IDs, and frontend-only Team approval-token type/map/payload/casts; mark application readiness only from the exact `CONNECTED` handshake while retaining invocation-to-address tracking |
+| new `teamClientMessageFactory.ts` | Construct exact Team commands from typed addresses, allocate message/dedupe/command identities, and supply explicit arrays/null before strict serialization |
+| `TeamToolApprovalTracker.ts` | Rename to `TeamToolApprovalTargetTracker.ts`; retain only invocation-to-execution-address association and remove token storage/access/casts |
+| new `TeamLaunchDraft.ts` + existing `teamRunConfigStore.ts` (prefer rename to `teamLaunchDraftStore.ts`) | Own one deep-readonly pre-launch config/logical focus/pending-input snapshot; query the existing definition catalog rather than copying topology; replace through typed edit actions, with no duplicate current Team config |
+| `agentTeamContextsStore.ts` + Team selection | Context store contains launched contexts under real root TeamRun IDs only; selection discriminates `{kind:"team_draft",draftId}` from `{kind:"team_run",rootTeamRunId}`; launch success commits context/selection/pending-input transfer synchronously after complete validation, while failure preserves the draft |
+| `AgentTeamContext.ts` | Compose only `topology: TeamTopologySnapshot` and `executions: TeamExecutionState`; remove duplicate root ID/lifecycle, launched config, hydration, and transport/session fields; expose neither topology nor execution indexes as maps |
+| new `services/teamExecution/teamRunFrontendProjectionBuilder.ts` | Atomically validate/project one closed canonical metadata + root-lifecycle + initial-focus + exact per-Agent seed input into run-ID/execution-address-free topology plus one persistent execution record per metadata node; reject lifecycle inference, missing/duplicate/surplus seeds, non-Agent focus, and repeated seed run/config/application identity; map every SDK-owned application-context field, validate its producer through the frontend canonical execution-address capability, and place it on execution; shared by launch and restore; no partially registered context |
+| new `services/teamExecution/teamTopologySnapshot.ts` | Own immutable run-ID/execution-address-free `teamDefinitionName` plus logical/effective-launch-configuration topology, private canonical-address index, and typed lookup/list/configuration views |
+| new `services/teamExecution/teamExecutionModels.ts` | Own the five correlated concrete variants plus one minimal task projection and typed query/navigation/effect views; root persistent Team uses `{kind:"root"}`, child persistent Team alone carries `{kind:"child",teamRunId}`, task Team identity derives from the task-chain tail, task executions store only `taskId`, and each Agent variant alone owns its typed platform/application execution bindings |
+| new `services/teamExecution/teamTaskProjectionMapper.ts` | Convert one complete root-scoped GraphQL response into the closed `TeamTaskProjectionSnapshot`; require every concrete `taskRun.address`; validate root/run chain plus Agent receiver == task address without task-Agent ID or AgentTeam receiver == configured coordinator ingress inside the task Team; reject all on one invalid row, drop delivery receiver/parent/presentation label, and expose no repository/fetch behavior |
+| new `services/teamExecution/teamExecutionState.ts` + private `teamExecutionTransitions.ts` / `teamExecutionNavigationProjector.ts` | Own valid execution union, private lookup/graph, Agent-context association, one monotonic task-projection index for active views and derived history, live/restore/focus/cleanup, typed effects/views; read but do not copy Agent-local state, reject staged reconciliation conflicts atomically, and keep support modules aggregate-private rather than public coordinators |
+| `AgentContext.ts`, Agent streaming service, Team streaming service | Keep Agent-local configuration/conversation/status/tool/composer state on AgentContext; move `isSubscribed`/`unsubscribe` into transport-owned session maps; Team construction uses permanent IDs only and removes identity reconciliation/promotion assignments |
+| `application-orchestration/domain/models.ts` + focused application-context value functions | Alias the SDK-owned `ApplicationExecutionContext` rather than redeclaring it; exactly clone/validate the three-field context and canonical producer address, assert persistent equality, and construct task-address rebound copies for server metadata/AgentRun boundaries; no generic record or second logical-address parser |
+| `mixed-agent-member-handle.ts` | At its existing AgentRun-construction boundary, derive one exact execution address; use the application-context value functions to validate persistent producer identity or rebind task/task-Team-Agent producer identity before constructing `AgentRunConfig`; do not add an application-orchestration facade or post-publication repair |
+| hydration/open/history/navigation/mobile/token/presentation/event-monitor/approval consumers | Use typed aggregate commands/queries/view rows only; preserve selected-root + exact-focus predicate |
+| old `teamTaskExecution*` modules | Delete/absorb; no forwarding wrappers, topology cloning, aliases, or placeholders |
+| `agent-team-execution/domain/team-leaf-agent-status-snapshot.ts` | Delete; replaced by the shared binding/status snapshot with no duplicate Team/name/run/execution identity |
+| `services/agent-streaming/team-stream-agent-identity-payload.ts` | Delete; direct snapshot projection uses the shared Team Agent status projector |
+| `agent-team-execution/services/team-member-command-start-status-events.ts` | Delete; exact status details/snapshot plus `createTeamAgentStatusEvent(snapshot)` replace the generic payload/event builder |
+| `backends/mixed/events/mixed-team-event-bridge.ts` status-snapshot forwarding symbol | Delete `forwardMixedTeamLeafAgentStatusSnapshot` (or the entire file if no other owned behavior remains); exact canonical snapshots require no prefix/rebase/pass-through adapter |
 | downstream live-test support/evidence | Reuse the supported package import, TeamRun launch, runtime catalog, `pnpm secrets:import`, and live E2E isolation patterns; no production test hook |
-| `autobyteus-application-sdk-contracts/src/index.ts`, `manifests.ts`, binding/event contract modules | Replace V4 backend-definition/frontend-SDK constants and legacy route/path identity fields with V5 canonical address/execution contracts; retain independent manifest V4, bundle V1, iframe V4 |
+| `autobyteus-application-sdk-contracts/src/index.ts`, `manifests.ts`, binding/event contract modules | Replace V4 backend-definition/frontend-SDK constants and legacy route/path identity fields with V5 canonical address/execution contracts; export the one exact `ApplicationExecutionContext {applicationId,bindingId,producer}` type; retain independent manifest V4, bundle V1, iframe V4 |
 | `autobyteus-application-backend-sdk` target-address/launch-profile helpers and dist | Consume V5 `memberAddress`, typed IDs, and execution address; remove route/path helper signatures; rebuild |
 | `autobyteus-application-frontend-sdk` validators/startup and dist | Validate V5 canonical application event/target shapes; keep iframe V4 bootstrap transport; rebuild |
-| server application/backend manifest parsers | Require V5 compatibility values and emit standard actionable incompatibility text |
-| `FileApplicationBundleProvider` / `ApplicationAvailabilityService` | Exclude invalid record, retain diagnostic identity, quarantine unavailable application; no V4 adapter |
+| server application/backend manifest parsers | Require exact V5 current values and return ordinary strict validation failure for any mismatch |
+| `FileApplicationBundleProvider` / `ApplicationAvailabilityService` | Retain general invalid-package/catalog behavior only; add no V4 adapter or special compatibility/quarantine/upgrade path |
 | `ApplicationBackendDefinitionLoader` | Require exported definition V5 before callable exposures/hooks/handlers |
-| `ApplicationPlatformStateStore` + canonical migration | Inventory every physical platform DB independent of catalog; recover identity/convert/report/block |
-| `applications/brief-studio` and `applications/socratic-math-teacher` source/build/vendor/dist/importable trees | Advance source declarations/definitions/scripts to V5 and regenerate all artifacts from workspace SDK output |
-| package-consistency/identity coverage | Compare all project-owned V5 declarations/artifacts; test V4 rejection, V5 acceptance, canonical launch/binding/target/event, and old-bundle DB discovery |
+| `ApplicationPlatformStateStore` / application test setup | Keep current-schema runtime store; recreate project-owned fixtures/databases directly and expose no predecessor migration path |
+| `applications/brief-studio` and `applications/socratic-math-teacher` source/build/vendor/dist/importable trees | Advance source declarations/definitions/scripts to V5 and regenerate all artifacts plus fresh target-schema fixtures/databases from workspace outputs |
+| package-consistency/identity coverage | Compare all project-owned V5 declarations/artifacts; prove exact V5 launch/binding/target/event, ordinary invalid-version rejection, and absence of application migration/fallback production code |
 
 ## Reusable Owned Structures Check
 
-`AgentTeamAddress`, `ResolvedTeamRecipient`, `HandoffInstruction`, `GetHandoffRulesResult`, `TeamExecutionAddress`, and the rooted node union are reusable because multiple independent consumers need exactly the same semantics. They remain deliberately narrow. The send delivery envelope is operation-specific rather than a shared base for read-only guidance. `TeamRunTreeIndex`, active task execution tree, provider handles, and storage scope are owned internal views and are not promoted into public shared contracts.
+`AgentTeamAddress`, `ResolvedTeamRecipient`, `HandoffInstruction`, `GetHandoffRulesResult`, `TeamExecutionAddress`, the rooted node union, exact Team transport DTOs, and the concrete execution union are reusable because multiple independent consumers need exactly the same semantics. They remain deliberately narrow. The send delivery envelope is operation-specific rather than a shared base for read-only guidance. `TeamRunTreeIndex`, active task execution tree, provider handles, and storage scope are owned internal views and are not promoted into public shared contracts.
 
 ## Shared Structure / Data Model Tightness Check
 
@@ -915,8 +1323,19 @@ Proposed names may adapt to repository conventions, but ownership must remain:
 - `workspaceId` and `memoryDir` are derived and not invented in metadata.
 - Indexes repeat keys only ephemerally for performance and are never serialized.
 - V5 exists once per changed semantic contract in the contracts package; manifest/bundle/definition fields reference it, while unchanged envelope versions remain separate facts.
-- Application compatibility diagnostics reuse the existing catalog diagnostic rather than adding a second status model.
-- Physical application DB inventory does not duplicate the application catalog because it answers a different question: which durable stores exist, not which code can execute.
+- Application validation reuses the ordinary exact parser/loader boundary rather than adding a compatibility status model.
+- `ApplicationExecutionContext` has one SDK-owned cross-process type. Server application-domain imports alias it, metadata/frontend boundaries validate every field and canonical producer address, and no `Record<string,unknown>` version remains current.
+- Application persistence is not a rollout authority: project-owned fixtures/databases are recreated from the current schema, and canonical migration performs no application database discovery.
+- Each Team domain event variant owns exactly the identity meaningful to that event; member input does not repeat its receiver. Task activation carries the just-persisted base task facts once; later variants carry only transition/correlation facts, while label and terminal state derive.
+- `TeamAgentExecutionBinding` is identical for live events, initial snapshots, overlays, and frontend status admission. Only the task-Team Agent variant adds `agentRunId`, because that fact is not encoded by its execution address; the constructor still receives/validates the allocated ID for all three kinds.
+- `TeamAgentStatusSnapshot` composes the binding with exact status details/status hint once. Status details contain no execution address, TeamRun ID, Agent ID/name, runtime kind, or task aliases; connection/event/history owners project the same value for their own boundaries.
+- The Team transport union is strict and correlated; it has no shared optional identity base, arbitrary record, or dual spelling.
+- `TeamLaunchDraft` stores only config, logical focus, and pending input; it queries the existing definition catalog for a read-only topology view rather than copying another topology authority, and it cannot represent a run or execution.
+- Topology contains no task/presentation fields. Each execution variant requires its applicable real run IDs; no shared optional base creates invalid combinations.
+- Each concrete task execution stores only a task ID reference. One private task projection owns task content/status/timeline once and supplies both active and history views; no mutable history archive, copied task snapshot, or stored presentation label exists.
+- Backend task management stores `taskId` once on the task record and concrete execution once as `taskRun.address`. The active binding is a derived discriminated view, not a persisted identity object; member context adds only nullable task ID to its already-owned execution address.
+- Token rows store canonical execution JSON, actual Agent run ID, optional task-operation ID, and usage facts. Root/member/task run components are derived; the root expression index is query acceleration, not a writable identity field.
+- Serialized execution keys repeat identity only privately for lookup and never become a consumer-facing structure or presentation fallback.
 
 ## Final File Responsibility Mapping
 
@@ -926,10 +1345,16 @@ Implementation should prefer modifying the existing owners above. New files are 
 2. a derived tree index;
 3. one concrete execution-address domain/resolver pair; and
 4. store-owned migration input/converter modules;
-5. one token canonical-address migration store because an atomic batch transaction is a real persistence owner rather than helper indirection; and
-6. a focused package-consistency verifier only if no existing build/test module can own the cross-artifact assertion.
+5. one token canonical-identity migration store because atomic row conversion plus schema/index contraction is a real persistence owner rather than helper indirection; and
+6. a focused package-consistency verifier only if no existing build/test module can own the cross-artifact assertion;
+7. one small `@autobyteus/team-stream-contracts` package because server/browser share a real runtime-validated transport boundary; and
+8. one frontend `TeamLaunchDraft` model/launch owner because pre-launch editing is a different lifecycle from execution; and
+9. one frontend `TeamExecutionState` aggregate with private pure transitions/navigation projection because concrete execution has a real lifecycle.
+10. one focused `task-activation-event-barrier.ts` because synchronous task runtime events must be ordered behind durable activation at the existing TeamRun publication boundary; it is not a general event bus, retry queue, or task state owner.
+11. one `team-agent-execution-binding.ts` because live events, connection snapshots, overlays, history, and frontend materialization require the same exact three-way execution identity invariant.
+12. one `team-agent-status.ts` because status details/snapshot construction is reused by live, initial, overlay, and history producers while event/transport owners remain separate.
 
-No new broad `agent-team-topology` subsystem, repository, facade, or orchestration layer is designed.
+No new broad topology service, compatibility facade, generic state repository, or empty forwarding layer is designed. The two Team Agent domain files own real reused invariants rather than forwarding; the contract package owns only transport; the draft owns no execution; the aggregate owns only browser concrete-execution state.
 
 ## Applied Patterns (If Any)
 
@@ -939,6 +1364,8 @@ No new broad `agent-team-topology` subsystem, repository, facade, or orchestrati
 - **Functional core / imperative shell:** pure address/tree validation and conversion inside lifecycle/storage shells.
 - **Anti-corruption migration boundary:** legacy schemas terminate before current runtime.
 - **Thin adapter:** providers/transports preserve shared domain result.
+- **Correlated protocol union:** source discriminator, exact payload, and runtime schema stay one variant from server mapping through browser admission.
+- **Aggregate/state machine:** `TeamExecutionState` owns concrete execution transitions and invariants; private pure reducers/projectors support it.
 - **Action-oriented projection:** LLM tools expose the smallest next-decision shape instead of internal service metadata.
 
 ## Target Subsystem / Folder / File Mapping
@@ -949,10 +1376,11 @@ The detailed repository inventory and target seams are recorded in [investigatio
 - `autobyteus-server-ts/src/agent-team-definition/`
 - `autobyteus-server-ts/src/agent-team-execution/`
 - `autobyteus-server-ts/src/run-history/`
-- `autobyteus-server-ts/src/task-delegation/` and Agent task tools
+- `autobyteus-server-ts/src/agent-team-execution/task-delegation/` and Agent task tools
 - `autobyteus-server-ts/src/app-data-migrations/`
-- GraphQL/REST/WebSocket and project-owned application SDK/integration packages
-- `autobyteus-web/stores/`, contexts, selectors, task projections, and builders
+- GraphQL/REST and project-owned application SDK/integration packages
+- new `autobyteus-team-stream-contracts/` workspace package plus Team WebSocket server/frontend adapters
+- new `autobyteus-web/services/teamExecution/` capability (`teamTopologySnapshot`, `teamRunFrontendProjectionBuilder`, `teamExecutionModels`, `teamTaskProjectionMapper`, `teamExecutionState`, and aggregate-private transition/navigation projection modules), plus contexts and hydration/open/history/navigation/mobile/token/presentation consumers
 - memory/context storage components
 - existing Agent-package import, secret-import CLI, and live E2E support used by the downstream [nested-classroom validation contract](./nested-classroom-live-validation-contract.md);
 - `autobyteus-application-sdk-contracts/`, `autobyteus-application-backend-sdk/`, and `autobyteus-application-frontend-sdk/`;
@@ -961,7 +1389,7 @@ The detailed repository inventory and target seams are recorded in [investigatio
 
 ## Folder Boundary Check
 
-The target follows existing capability folders. Address is collaboration-shared; rooted execution is AgentTeam execution/run history; tasks remain task-owned; migration remains store-owned/coordinated; frontend remains a projection. There is no folder whose only purpose is to rename or forward another subsystem's value.
+The target follows capability ownership rather than placing domain state under transport. Address is collaboration-shared; rooted execution is AgentTeam execution/run history; tasks remain task-owned; migration remains store-owned/coordinated. The new Team stream package exists because a real process boundary needs one runtime-valid contract; it owns no business policy. New `autobyteus-web/services/teamExecution/` owns the immutable topology projection, all-or-nothing metadata projection builder, concrete execution aggregate, and its private pure reducers/projector. `services/agentStreaming/` owns only connection/session orchestration, strict message admission/routing, and exact client-command construction; it depends inward on the execution aggregate, never the reverse. Hydration/open/history/navigation consume the aggregate's public query/transition boundary and cannot import its private reducers. No folder exists only to rename or forward another subsystem's value.
 
 ## Concrete Examples / Shape Guidance (Mandatory When Needed)
 
@@ -1011,7 +1439,7 @@ rootTeam.address   = /
 rootTeam.teamRunId = <rootTeamRunId directory identity>
 ```
 
-A full representative JSON and all twenty-one case spines are normative in [team-run-canonical-identity-refactor.md](./team-run-canonical-identity-refactor.md) §§5 and 10.
+A full representative persisted JSON and the migration/runtime identity case spines are normative in [team-run-canonical-identity-refactor.md](./team-run-canonical-identity-refactor.md) §§5 and 10. Exact Team event/status/frontend execution/application-producer models and eighteen SR-018 case spines are normative in [team-stream-execution-projection-contract.md](./team-stream-execution-projection-contract.md) §§4–13.
 
 ## Backward-Compatibility Rejection Log (Mandatory)
 
@@ -1039,11 +1467,23 @@ A full representative JSON and all twenty-one case spines are normative in [team
 | keep Team handoff tools configuration-gated | permits a system instruction that the Agent cannot execute and duplicates Team protocol in package configuration |
 | edit the external nested-classroom package for tests | violates source-package scope and makes live evidence depend on mutable user data; stage an isolated test-owned package instead |
 | treat unavailable provider row as skipped Pass | does not prove the user-required three-runtime behavior and hides environment/product failures |
-| change backend/frontend SDK shapes under V4 | existing exact gates would admit a normal old bundle as current |
-| accept V4 and translate to V5 | recreates the mixed-version adapter explicitly excluded by the clean cut |
+| change backend/frontend SDK shapes under V4 | existing exact gates would falsely label old shapes as the current contract |
+| accept V4 and translate to V5 | recreates a mixed-version adapter for a feature with no supported predecessor cohort |
 | bump manifest/bundle/iframe envelope versions to V5 mechanically | conflates independent unchanged protocols with the two breaking SDK semantics |
-| derive application DB migration subjects from admitted catalog | hides durable state whenever bundle code is old, missing, or invalid |
+| add or inventory application predecessor DB migration | creates preservation/legacy machinery for unused unsupported state; rebuild/reset project fixtures directly |
+| add a V4-specific quarantine/upgrade/reinstall workflow | turns ordinary invalid target input into a compatibility subsystem the user explicitly rejected |
 | hand-edit only source or only generated application artifacts | permits importable/vendor runtime divergence from checked source |
+| keep generic Team `ServerMessage` and validate in consumers | leaves source/payload/identity agreement distributed and recreates API-F-015 |
+| wrap initial connection status in a fake `TeamRunEvent` | connection snapshot is current state, not a newly published domain fact; call the same exact status projector directly |
+| keep a second snapshot/overlay binding parser | permits live, initial, and pre-run status to disagree about task-Agent/task-Team-Agent identity; construct one binding at the runtime/config owner |
+| keep `TeamLeafAgentStatusSnapshot` or generic command-start payload | repeats TeamRun, Agent name/run, task aliases, and execution identity beside the new exact binding/status details |
+| accept camel/snake task aliases | preserves two current contracts and request-time compatibility logic |
+| keep both member-input `execution_address` and `recipient_address` | creates two authorities for one receiver |
+| wrap the public `agentExecutionsByKey` map | preserves the bypass instead of establishing one authoritative state owner |
+| clone topology into task execution | conflates mounted structure with concrete runtime and requires invalid placeholder IDs |
+| create missing task-Team children with empty IDs | represents an execution that does not exist and breaks focus/history invariants |
+| make `TeamExecutionState` fetch GraphQL or mutate navigation directly | turns the aggregate into an orchestration blob; return only true external-work effects and derive navigation through its query boundary |
+| reuse `AgentTeamContext`/`AgentContext` for a pre-launch draft | creates synthetic run/conversation identities and a cross-index promotion transaction; keep `TeamLaunchDraft` identity-free and construct execution after success |
 
 ## Derived Layering (If Useful)
 
@@ -1067,19 +1507,20 @@ Migration runs alongside store ownership before the current-store layer becomes 
 5. Refactor definition mounting, coordinator/handoff compilation, and typed ID assignment.
 6. Cut metadata create/write/strict restore.
 7. Cut persistent child/root runtime to shared tree/index.
-8. Cut task Agent/AgentTeam identities/factories and active directories.
+8. Cut task Agent/AgentTeam factories and active directories to task ID + exact execution address; delete synthetic task instance identities and copied owner/parent/run/time fields.
 9. Introduce/carry `TeamExecutionAddress` through runtime and durable records.
 10. Extract one TeamRun migration-only flat decoder; preserve stable `20260517...` as its pending predecessor-record owner; correct `20260801...` as the sole final-v3 owner from predecessor or residual flat input; implement DS-009A–D record/order/backup/byte-stability/idempotence coverage.
-11. Move IR-014 token orchestration out of the historical `20260703...` app-data definition into a `20260801...`-composed canonical token migrator; remove the old definition from current registry, add the transaction-owning immutable batch store, retarget pending legacy-column cleanup, and implement DS-013A–D terminal-record/no-mutation/rollback/retry coverage.
+11. Move IR-014 token orchestration out of historical `20260703...` into the `20260801...` token item; order the two required pre-existing token backfills before it; remove the old converter and both narrow column-drop definitions from current registry; give one store transaction ownership of canonical row updates, obsolete-column/index replacement, and verification; omit obsolete fields from target Prisma/domain/repository shapes; implement DS-013A–D terminal-record/no-mutation/data+schema rollback/retry coverage.
 12. Keep `server-runtime.ts` on the one exact `20260801...` pre-listen gate and prove token failure/missing/canonical-warning block while unrelated warnings do not. Then cut target-only repositories and remove normalizers.
-13. Define backend-definition/frontend-SDK V5 in the contracts package; cut GraphQL/REST/WebSocket/application canonical identity types and backend/frontend SDK consumers.
-14. Update exact application/backend manifest gates and definition loader; update both project application source manifests, backend definitions, and build scripts; regenerate SDK dist, application vendor/backend dist, and importable outputs; run V5 consistency and V4-rejection checks as one atomic checkpoint.
-15. Cut frontend recursive projection and execution keys.
-16. Cut memory/context selectors without moving files.
-17. Delete legacy code/tests/exports; enforce allowlist scan including current V4 application SDK declarations outside rejection fixtures and the historical token ID outside explicit migration-history fixtures/docs.
-18. Run implementation; TeamRun fresh/terminal-predecessor chains; token terminal-record/transaction rollback/retry chains; unsafe byte/row stability and exact startup gating; V4 rejection/V5 acceptance; package consistency; admission-independent application DB migration; canonical application launch/binding/event; API/frontend; restore; and storage evidence.
-19. Execute DS-011 exactly through the imported nested-classroom live-validation contract and record all three runtime rows without skip-based Pass.
-20. Reconcile durable documentation.
+13. Preserve the implemented V5 application/GraphQL/REST canonical contracts; make V5 application SDK contracts own the exact `ApplicationExecutionContext` type, alias it from the server domain, replace metadata/browser generic-record casting with exact canonical-address-aware mapping, and at the existing `MixedAgentMemberHandle` AgentRun-construction boundary validate persistent application producer addresses and rebind task/task-Team-Agent producer addresses before `AgentRunConfig`; prove DS-016 source attribution. Add `@autobyteus/team-stream-contracts` as the only exact Team WebSocket DTO/schema/serializer owner.
+14. Refactor task activation into prepare/start/commit-or-abort phases over derived `ActiveTaskExecutionBinding`; add the one TeamRun publication barrier; make activation persistence throw on failure instead of logging-and-continuing; and prove activation precedes synchronously emitted task-Agent/task-Team-child events while unrelated Team events bypass. Add the one Team Agent execution-binding constructor and exact status-details/snapshot value; cut live Agent admission, initial connection/open/restore snapshot enumeration, config-backed offline status, pre-run command overlays, and run-history list projection to those owners. Then add the exhaustive standalone-Agent -> correlated-Team-Agent ingress adapter, filter duplicate Agent collaboration events, correlate TeamRun/task events, and cut the Team mapper/broadcaster/egress/client handler plus browser admission atomically. Initial status calls the shared status projector directly without a TeamRun event; pre-run status uses `createTeamAgentStatusEvent(snapshot)` and clears on the first matching live status. Activation carries only the durable base create/start facts, result events carry only their event-specific correlation/decision/time facts, and presentation label/status/terminal/update state derives; duplicate status publication, generic `task_context`, and separate activation run-ID results are removed. Remove the unused Team approval-token shapes and implement DS-014A–J real producer-to-consumer and invalid-no-mutation seams.
+15. Introduce identity-free `TeamLaunchDraft`, run-ID/execution-address-free immutable `TeamTopologySnapshot`, the five-variant concrete execution union, `TeamExecutionState`, one task-ID projection index, and one all-or-nothing `TeamRunFrontendProjectionBuilder`; move each persisted Agent node's application producer context into its paired concrete Agent execution, rebind task variants to their exact task addresses, reduce `AgentTeamContext` to topology/executions, keep stream session state transport-owned, construct the paired persistent context only after real server allocation, then route activation/task-refresh/Agent events and GraphQL restore/hydration through its transitions. Stage complete task-record merges atomically and derive history from the same retained projection.
+16. Cut focus/open/history/navigation/status/timeline/presentation/approval/event-monitor/token/mobile/desktop callers to typed aggregate APIs; preserve selected-root + exact-focus behavior.
+17. Cut successful draft replacement/pending-input transfer to the launch owner and terminal cleanup to the aggregate; implement DS-015 draft-success/failure, convergence, focus, and cleanup cases.
+18. Delete old task projection/tree/router/restore files, public topology/execution maps and raw-key parsers, frontend-topology run bindings, duplicate context root/lifecycle/config/hydration/subscription fields, AgentContext connection ownership, copied task snapshots/separate mutable history, stored task labels, duplicate task-status event, legacy `TeamLeafAgentStatusSnapshot`, generic initial-status mapper, generic command-start status builder, redundant snapshot-prefix/pass-through symbol, synthetic task identities/context/result fields, redundant current token identity columns, provisional/empty identities and rebase code, mixed topology fields, wire aliases/duplicate identity, dormant route branches, dead route results, and the application database migrator; enforce the exact six-path released-data migration-only legacy allowlist plus existing V5 constraints.
+19. Run implementation and full cumulative source review, including all retained migration/application/provider/storage evidence plus DS-014A–J/DS-015/DS-016. Keep API/E2E paused until Pass.
+20. Resume affected/deterministic/API/browser/imported three-runtime execution through the existing coverage and live-validation contracts; no skip-based Pass.
+21. Reconcile durable documentation.
 
 ## Key Tradeoffs
 
@@ -1089,6 +1530,10 @@ Migration runs alongside store ownership before the current-store layer becomes 
 - Blocking migration reduces availability during upgrade but prevents routing against partially converted identity. Reusing pending `20260801...` for token semantics avoids a redundant migration/gate authority; the token store still owns the database transaction internally.
 - Atomic project cut rejects mixed-version compatibility in exchange for one clean current contract. V5 is assigned only to the breaking backend-definition/frontend-SDK semantics; unchanged manifest/bundle/iframe versions retain their own numbers.
 - Logical address and concrete run IDs both remain because they answer different questions.
+- One small Team stream contract package is accepted to remove duplicated server/browser protocol authority; it is deliberately transport-only.
+- Task AgentTeam descendants appear only when concrete run IDs exist. Truthful partial materialization is preferred over a visually complete but invalid cloned tree.
+- Pre-launch editing uses a separate draft rather than convenient `AgentContext` reuse. One explicit pending-input/focus transfer after launch is cheaper and clearer than synthetic run/conversation IDs plus identity rebasing.
+- One frontend execution aggregate centralizes lifecycle authority; private pure reducers/projectors preserve separation of concerns without exposing alternate owners.
 
 ## Risks
 
@@ -1096,11 +1541,14 @@ Migration runs alongside store ownership before the current-store layer becomes 
 - display-only `memberName` could be reintroduced as structural validation, rejecting safe history;
 - terminal prerequisite records could be mistakenly expected to rerun, or residual flat items could require an unavailable post-listen retry surface;
 - the terminal historical token ID could remain registered as target authority, causing corrected conversion never to execute for supported predecessors;
-- per-row token commits or premature `MIGRATED` details could leave/describe a partial database after later failure;
-- a large token transaction could increase upgrade time; deterministic planning, mutation-only batching, bounded failure details, progress logging, and idempotent retry mitigate it without weakening atomicity;
+- per-row token commits, independent column drops, or premature `MIGRATED` details could leave/describe a partially converted database after later failure;
+- a large token row+schema transaction could increase upgrade time; deterministic preflight, mutation only after complete planning, bounded failure details, progress logging, expression-index verification, and idempotent retry mitigate it without weakening atomicity;
+- a physical Prisma drop migration or incorrectly ordered provider backfill could erase/read predecessor fields before canonical planning; the registry and target schema deliberately separate generated-client omission from app-data-owned physical contraction;
+- a root-Team query could regress into a full ledger scan after removing `root_team_run_id`; the store-owned JSON-root expression index and query-plan coverage are required;
+- deleting synthetic task identity could expose a caller that was using a copied field as hidden routing authority; the complete source inventory must move each caller explicitly to task ID, exact execution address, or actual Agent run ID by subject rather than add a replacement bundle;
 - genuine route/path/topology contradictions could be weakened while accepting display divergence;
 - task-chain conversion could merge equal logical addresses if run IDs/order are mishandled;
-- dynamically discovered application DBs could be skipped;
+- speculative application database migration or compatibility machinery could survive despite the direct forward-only cut;
 - root-tree sharing could accidentally materialize siblings or leak mutable objects;
 - task execution could accidentally persist a second logical tree;
 - frontend state could collide if any map uses only member address;
@@ -1110,14 +1558,27 @@ Migration runs alongside store ownership before the current-store layer becomes 
 - the external classroom fixture's obsolete prose could exercise a removed task selector unless the staged overlay is explicit; and
 - live provider credentials, catalogs, rate limits, or processes could fail, requiring truthful Blocked/Fail evidence rather than a false pass;
 - a stale project application manifest/vendor/importable copy could pass source compilation but fail or misbehave when imported;
-- an old bundle could be correctly quarantined while its durable platform DB is incorrectly skipped if migration consumes the catalog; and
-- a manifest could claim V5 while exporting a V4 backend definition, requiring the loader's final exact gate before callable behavior.
+- application implementation could accidentally retain the removed database migrator or special V4 compatibility/quarantine workflow; source inventory must prove both absent; and
+- a manifest could claim V5 while exporting a non-V5 backend definition, requiring the loader's final exact gate before callable behavior;
+- strict Team wire admission could expose a real producer drift; rejection must be observable and mutation-free rather than normalized;
+- connection/open/restore status could remain on a generic `ServerMessage` path or be disguised as a fake TeamRun event, leaving two projection authorities;
+- a task-Team Agent snapshot/overlay could omit or guess its genuine member AgentRun ID even though the child runtime context already owns it, or a task Agent could repeat rather than validate the ID encoded by its execution address;
+- the pre-run overlay could retain name/runtime/task aliases, fail to clear on real status, or clear a different same-address task execution if it does not key by the full canonical execution address;
+- task runtime startup currently emits before durable activation; an unbounded or transport-owned workaround would either reorder unrelated Team events or recreate missing-parent inference. The exact-subtree bounded publication barrier, activation-specific throwing persistence, synchronous ledger commit, and forced start/persist/overflow cleanup proofs contain that risk at its producer owner;
+- the contract package could become a wrong-domain shared module if routing/topology enters it;
+- `TeamExecutionState` could become a coordination blob if it fetches GraphQL or mutates navigation instead of returning effects;
+- consumer migration could leave a raw-map/key-parser bypass; removal and exact-path scans must be compile/review gates;
+- task-Team child materialization could regress into empty-ID placeholders instead of awaiting a real Agent event/hydration;
+- task events could recreate a second partial lifecycle/timeline overlay, or a stale complete query could erase a concurrently activated task/history row;
+- `ApplicationExecutionContext.producer.executionAddress` could remain hidden in supposedly run-ID-free topology, or server/frontend task Agent contexts could retain the persistent producer address and misattribute runtime artifacts/events;
+- pre-launch UI code could leak draft IDs into execution/history/stream identity or lose pending input/focus during successful replacement; and
+- latest selected-TeamRun gating could be lost while moving focus, marking an identical-address row in another TeamRun current.
 
-Mitigation is semantic-role-aware predecessor validators, one independently pending `20260801...` target owner, fresh/terminal TeamRun DS-009 and token DS-013 chain coverage, fail-not-guess planning, byte/row-stable rejection, one verified token transaction with forced-later-failure rollback proof, idempotence, exact three-level persistent/restored/task coverage, one execution serializer, source allowlist enforcement, exact V5 gate/diagnostic tests, source-to-generated package consistency checks, catalog-independent physical DB inventory tests, canonical application launch/binding/event round trips, byte/path storage preservation tests, exact handoff projection/order tests, provider prompt snapshots, intrinsic-exposure tests, independent send-envelope regression coverage, and the isolated/redacted/no-skip DS-011 live matrix.
+Mitigation is semantic-role-aware predecessor validators, one independently pending `20260801...` released-data owner, fresh/terminal TeamRun DS-009 and token DS-013 chain coverage, fail-not-guess planning, byte/row-stable rejection, one verified token row+schema transaction with forced post-update/post-DDL rollback proof, provider-before-canonical order and fresh-install coverage, canonical root-query/index-plan proof, idempotence, task-identity contraction scans, exact three-level persistent/restored/task coverage, one execution serializer, one Agent binding/status constructor set, real connection/open/restore plus pre-run/replacement DS-014I/J seams, exact six-path source allowlist enforcement, exact V5 target validation, source-to-generated/vendor/importable/fresh-database consistency and application no-migration scans, canonical application launch/binding/event round trips plus DS-016 persistent/task published-artifact and application-stream producer proof, byte/path storage preservation tests for supported released data, exact handoff projection/order tests, provider prompt snapshots, intrinsic-exposure tests, independent send-envelope regression coverage, all real producer/projection-to-serializer-to-strict-parser-to-consumer DS-014A–J seams, activation-base/post-activation-refresh contract tests, monotonic staged task reconciliation with concurrent-query/terminal-descendant proof, identity-free draft success/failure plus valid/live-restore/focus/cleanup DS-015 seams, exact-path removal scans, and the isolated/redacted/no-skip DS-011 live matrix.
 
 ## Guidance For Implementation
 
-- Treat requirements and all four supplements as normative; this specification supplies ownership and sequence.
+- Treat requirements and all five supplements as normative; this specification supplies ownership and sequence.
 - Build target validators before migration converters.
 - Preserve genuine Agent fields byte/semantic-equivalently.
 - Make root and nested AgentTeam nodes one type.
@@ -1130,16 +1591,31 @@ Mitigation is semantic-role-aware predecessor validators, one independently pend
 - Do not reuse or change the send delivery envelope merely to simplify `get_handoff_rules`.
 - Keep provider handles, runtime configs, nodes, and lifecycle IDs private behind operation owners.
 - Use one `TeamExecutionAddress` serializer everywhere.
+- Implement the correlated TeamRun/task event unions before mapper cleanup; use exhaustive narrowing and `assertNever`, never casts.
+- Implement `createTeamAgentExecutionBinding` and the exact status-details/snapshot constructors before changing any status producer. Every mixed persistent/task/task-Team handle and offline config-backed member must call that same boundary with its exact execution address and allocated AgentRun ID.
+- Make `TeamRuntimeSnapshotService` project `TeamAgentStatusSnapshot` directly through the same `projectTeamAgentStatusMessage` used by the correlated live `AGENT_STATUS` arm. Do not manufacture a TeamRun event, use generic `ServerMessage`, or retain `TeamLeafAgentStatusSnapshot`/`team-stream-agent-identity-payload.ts`.
+- Give `MemberCommandStatusOverlayStore` an already-constructed binding and exact status facts only. Publish through `createTeamAgentStatusEvent(snapshot)`, store only details by the full private execution key, and clear on the first matching typed real status. Delete the generic command-start status builder and all display/runtime/task aliases.
+- Make `@autobyteus/team-stream-contracts` strict and transport-only. Team broadcaster/egress and browser/server command admission must accept its exact types, not generic records.
+- Use one receiver/execution field per Agent/task/member-input variant; keep both communication participants only because they are semantically distinct.
+- Keep task events semantically tight: activation publishes the durable base facts exactly once; later task events only signal a transition and request a complete record refresh. Derive labels/terminal state, and never create a partial task/timeline projection from an update event.
+- Prepare and bind the exact task execution before starting it, then derive `taskRun.address` and open exactly one bounded publication barrier for that subtree. Durable activation persistence is mandatory: publish activation and drain FIFO only after persistence plus synchronous ledger/directory commit; otherwise discard held events, settle/unregister the new runtime, and return `not_started`. Do not buffer in WebSocket/browser code or materialize a missing task parent from a child event.
+- Make topology immutable, run-ID/execution-address-free, and task-free. Construct only the five valid concrete execution variants with real run bindings; application producer context belongs to each concrete Agent execution and is rebound for task variants; absent task-Team Agents remain absent.
+- Enforce the application producer invariant at source too: `MixedAgentMemberHandle` derives the exact address once, rejects a mismatched persistent context, and rebinds a task/task-Team-Agent context before `AgentRunConfig`. Do not repair producer identity in artifact/event consumers.
+- Keep pre-launch configuration/focus/pending input in `TeamLaunchDraft`. Do not create a provisional TeamRun/AgentRun, execution address, AgentContext, or conversation. On launch success construct the canonical context and transfer once; on failure preserve the draft.
+- Make `TeamExecutionState` the sole execution/focus/lifecycle owner. Keep its index private; consumers pass typed addresses and receive typed records/views/effects. Private reducers/projectors may support it but cannot become public mutation paths.
+- Route live events, task-record restore/hydration, and terminal cleanup through the aggregate. Store each task projection once, let executions reference only task ID, merge append-only complete snapshots monotonically in a staged atomic candidate, and derive history rather than storing it again. Let the launch/context store only replace a draft with a fully constructed real topology/execution context and preserve selected root TeamRun as its separate workspace-selection fact.
+- Delete, do not wrap, the old task tree/projection/router/restore modules and raw map/key parsers.
 - Never compare historical TeamRun `memberName` with route/path or rewrite it to manufacture agreement; it is display-only input and is omitted from v3.
 - Derive a predecessor node address only after normalized `memberRouteKey` and `memberPath` agree exactly; reject parent/duplicate/coordinator/run contradictions without mutation.
 - Keep flat TeamRun interpretation in one migration-only decoder. `20260517...` owns the pending predecessor write; `20260801...` owns final v3 and may compose that decoder for residual flat input after a terminal record. Do not depend on terminal ID reruns, require a listening API for recovery, duplicate the decoder, or add a speculative third TeamRun migration.
 - Treat DS-013A–D as normative. Remove `20260703_token_usage_execution_address_backfill` from current registry authority, compose the preserved strict token index/planner under `20260801...`, and never reset or reinterpret the historical record.
-- Give the token migration store exactly one immutable batch mutation. Complete all planning first; use one transaction with affected-row and read-back verification; on failure roll back all rows and report zero migrated. Do not expose a per-row commit method.
-- Retarget pending token legacy-column cleanup to exact `20260801...` success and keep the one existing exact canonical pre-listen gate; unrelated warnings stay non-blocking.
-- Treat the five DS-012 case spines as normative: source/artifact build, old-bundle rejection, exact V5 launch, catalog-independent durable migration, and verification.
-- Keep V5 constants/types in the contracts package; do not introduce a compatibility service, V4 adapter, or duplicated version literal policy.
-- Reuse existing catalog diagnostics/quarantine. Every compatibility failure must name location/field, observed value, required V5, and rebuild/reinstall action before execution.
-- Discover/migrate application platform DBs from physical storage before catalog admission and never load bundle code to convert platform-owned identity.
-- Regenerate, do not selectively patch, SDK dist/vendor/importable outputs and fail consistency coverage on any stale V4 declaration.
+- Give the token migration store exactly one immutable transaction method. Complete all planning first; then atomically update exact addresses, remove every obsolete Team identity column/index, create/verify `token_usage_ledger_events_execution_root_observed_at_idx`, and validate retained rows/facts. On any failure roll back data and schema and report zero migrated rows/columns. Do not expose per-row commits or independent drop methods.
+- Attempt provider/model backfills before canonical contraction without making them prerequisites, remove the old converter and both narrow cleanup definitions from current registry, and keep the one existing exact canonical pre-listen gate; unrelated warnings stay non-blocking.
+- Use task ID for task management and `TeamExecutionAddress` for concrete resolution. Do not recreate task-instance aliases, copied task owner/run/time bundles, generic `task_context`, or activation-result run-ID fields in domain, work packets, status, token, wire, or provider contracts.
+- Treat the four DS-012 case spines as normative: target artifact build, exact current validation, exact V5 launch, and target consistency/no-migration proof.
+- Keep V5 constants/types in the contracts package; do not introduce a compatibility service, V4 adapter, version-specific quarantine/upgrade workflow, predecessor application reader, or duplicated version-literal policy.
+- Keep invalid-package handling generic. A non-target declaration fails ordinary exact parsing/loading before execution; it does not start a compatibility lifecycle.
+- Do not discover or migrate application platform DBs. Recreate project fixtures/databases directly in current schema and prove `20260801...` has no application item.
+- Regenerate, do not selectively patch, SDK dist/vendor/importable outputs and fail consistency coverage on any stale V4 semantic declaration.
 - Do not alter delivery-owned dirty documentation/finalization files during solution design.
-- Do not run live provider tests during design. SR-013 changes solution artifacts only; the user has authorized architecture re-review, but implementation and API/E2E execution remain blocked until that review passes.
+- Do not run live provider tests during design. SR-018 changes solution artifacts only; implementation and API/E2E execution remain paused until complete architecture and full cumulative source review pass.

@@ -1,75 +1,56 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { MixedTeamRunBackend } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-backend.js";
-import {
-  MixedAgentMemberContext,
-  MixedTeamRunContext,
-} from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
+import { MixedAgentMemberContext, MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
-import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
-import {
-  TeamRunEventSourceType,
-  type TeamRunEvent,
-  type TeamRunEventListener,
-} from "../../../src/agent-team-execution/domain/team-run-event.js";
+import { TeamRunEventSourceType, type TeamRunEvent, type TeamRunEventListener } from "../../../src/agent-team-execution/domain/team-run-event.js";
+import { createTeamExecutionAddress } from "../../../src/agent-team-execution/domain/team-execution-address.js";
+import { createTeamAgentExecutionBinding } from "../../../src/agent-team-execution/domain/team-agent-execution-binding.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
+
+const persistentAddress = createTeamExecutionAddress({
+  rootTeamRunId: "team-mixed-1",
+  memberAddress: "/Reviewer",
+});
 
 const createBackendContext = () => {
-  const config = new TeamRunConfig({
-    teamDefinitionId: "team-def-mixed-1",
-    teamBackendKind: TeamBackendKind.MIXED,
-    memberConfigs: [
-      {
-        memberName: "Coordinator",
-        memberRouteKey: "coord-route",
-        memberRunId: "coord-run",
-        agentDefinitionId: "agent-coordinator",
-        llmModelIdentifier: "gpt-5.4-mini",
-        autoExecuteTools: false,
-        skillAccessMode: SkillAccessMode.NONE,
-        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-        workspaceId: "workspace-coordinator",
-        llmConfig: { reasoning_effort: "medium" },
-      },
-      {
-        memberName: "Reviewer",
-        memberRouteKey: "reviewer-route",
-        memberRunId: "reviewer-run",
-        agentDefinitionId: "agent-reviewer",
-        llmModelIdentifier: "haiku",
-        autoExecuteTools: false,
-        skillAccessMode: SkillAccessMode.NONE,
-        runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-        workspaceId: "workspace-reviewer",
-        llmConfig: { reasoning_effort: "medium" },
-      },
-    ],
+  const coordinator = testAgentNode("/Coordinator", {
+    agentRunId: "coord-run",
+    runtimeKind: RuntimeKind.CODEX_APP_SERVER,
   });
-
+  const reviewer = testAgentNode("/Reviewer", {
+    agentRunId: "reviewer-run",
+    runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+  });
+  const config = testTeamRunConfig({
+    rootTeamRunId: "team-mixed-1",
+    rootTeamDefinitionId: "team-def-mixed-1",
+    coordinatorAddress: coordinator.address,
+    children: [coordinator, reviewer],
+  });
   return new TeamRunContext({
-    runId: "team-mixed-1",
+    teamRunId: "team-mixed-1",
+    teamAddress: "/",
     teamBackendKind: TeamBackendKind.MIXED,
     config,
     runtimeContext: new MixedTeamRunContext({
-      coordinatorMemberRouteKey: "coord-route",
+      teamExecutionAddress: createTeamExecutionAddress({
+        rootTeamRunId: "team-mixed-1",
+        memberAddress: "/Coordinator",
+      }),
       memberContexts: [
         new MixedAgentMemberContext({
-          memberName: "Coordinator",
-          memberPath: ["Coordinator"],
-          memberRouteKey: "coord-route",
-          memberRunId: "coord-run",
-          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+          address: coordinator.address,
+          agentRunId: coordinator.agentRunId,
+          runtimeKind: coordinator.runtimeKind,
           platformAgentRunId: "thread-coord-1",
         }),
         new MixedAgentMemberContext({
-          memberName: "Reviewer",
-          memberPath: ["Reviewer"],
-          memberRouteKey: "reviewer-route",
-          memberRunId: "reviewer-run",
-          runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+          address: reviewer.address,
+          agentRunId: reviewer.agentRunId,
+          runtimeKind: reviewer.runtimeKind,
           platformAgentRunId: "session-reviewer-1",
         }),
       ],
@@ -80,232 +61,134 @@ const createBackendContext = () => {
 const createManager = () => {
   let active = true;
   const listeners = new Set<TeamRunEventListener>();
-
   return {
     hasActiveMembers: vi.fn(() => active),
     getLeafAgentStatusSnapshots: vi.fn(() => []),
     hasOpenExecutionWork: vi.fn(() => false),
     postMessage: vi.fn().mockResolvedValue({ accepted: true }),
+    executeMemberCommand: vi.fn().mockResolvedValue({ accepted: true }),
     deliverInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),
+    deliverResolvedInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),
+    resolveRecipient: vi.fn(),
     approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
     interruptMember: vi.fn().mockResolvedValue({ accepted: true }),
+    settleMember: vi.fn().mockResolvedValue({ accepted: true }),
+    startTaskAgentExecution: vi.fn().mockResolvedValue({ accepted: true }),
+    releaseTaskAgentExecutionWork: vi.fn(),
+    settleTaskAgentExecution: vi.fn().mockResolvedValue({ accepted: true }),
+    startTaskTeamExecution: vi.fn().mockResolvedValue({ accepted: true }),
+    markTaskTeamExecutionActive: vi.fn(),
+    releaseTaskTeamExecutionWork: vi.fn(),
+    postMessageToTaskTeamExecution: vi.fn().mockResolvedValue({ accepted: true }),
+    settleTaskTeamExecution: vi.fn().mockResolvedValue({ accepted: true }),
     terminate: vi.fn().mockResolvedValue({ accepted: true }),
+    publishEvent: vi.fn(),
+    openTaskActivationEventLease: vi.fn(),
+    assertTaskActivationEventLeaseWithinBudget: vi.fn(),
+    commitTaskActivationEventLease: vi.fn(),
+    abortTaskActivationEventLease: vi.fn(),
     subscribeToEvents: vi.fn((listener: TeamRunEventListener) => {
       listeners.add(listener);
-      return () => {
-        listeners.delete(listener);
-      };
+      return () => listeners.delete(listener);
     }),
     emit(event: TeamRunEvent) {
-      for (const listener of listeners) {
-        listener(event);
-      }
+      listeners.forEach((listener) => listener(event));
     },
-    setActive(value: boolean) {
-      active = value;
-    },
+    setActive(value: boolean) { active = value; },
   };
 };
 
-afterEach(() => {
-  vi.clearAllMocks();
-});
+afterEach(() => vi.clearAllMocks());
 
 describe("MixedTeamRunBackend integration", () => {
-  it("routes backend operations through the team manager and exposes runtime state", async () => {
+  it("routes current exact-address operations through the Team manager", async () => {
     const manager = createManager();
     const context = createBackendContext();
-    const backend = new MixedTeamRunBackend(context, manager as any);
+    const backend = new MixedTeamRunBackend(context, manager as never);
+    const userMessage = new AgentInputUserMessage("coordinate the mixed task");
 
-    expect(backend.runId).toBe("team-mixed-1");
+    expect(backend.teamRunId).toBe("team-mixed-1");
     expect(backend.teamBackendKind).toBe(TeamBackendKind.MIXED);
     expect(backend.isActive()).toBe(true);
-    expect(backend.getLeafAgentStatusSnapshots()).toEqual([]);
-    expect(backend.hasOpenExecutionWork()).toBe(false);
     expect(backend.getRuntimeContext()).toBe(context.runtimeContext);
+    await expect(backend.postMessage(userMessage, "/Coordinator")).resolves.toEqual({ accepted: true });
+    expect(manager.postMessage).toHaveBeenCalledWith(userMessage, "/Coordinator", null);
 
-    const userMessage = new AgentInputUserMessage("coordinate the mixed task");
-    await expect(
-      backend.postMessage(userMessage, { kind: "route_key", memberRouteKey: "coord-route" }),
-    ).resolves.toEqual({
-      accepted: true,
-    });
-    expect(manager.postMessage).toHaveBeenCalledWith(userMessage, {
-      kind: "route_key",
-      memberRouteKey: "coord-route",
-    }, null);
-
-    await expect(
-      backend.deliverInterAgentMessage({
-        senderRunId: "coord-run",
-        senderSelector: { kind: "route_key", memberRouteKey: "coord-route" },
-        senderMemberName: "Coordinator",
-        senderPath: ["Coordinator"],
-        senderRouteKey: "coord-route",
-        teamRunId: "team-mixed-1",
-        recipientSelector: { kind: "route_key", memberRouteKey: "reviewer-route" },
-        recipientMemberName: "Reviewer",
-        recipientPath: ["Reviewer"],
-        recipientRouteKey: "reviewer-route",
-        content: "Please continue.",
-        messageType: "agent_message",
-      }),
-    ).resolves.toEqual({ accepted: true });
-    expect(manager.deliverInterAgentMessage).toHaveBeenCalledWith({
-      senderRunId: "coord-run",
-      senderSelector: { kind: "route_key", memberRouteKey: "coord-route" },
-      senderMemberName: "Coordinator",
-      senderPath: ["Coordinator"],
-      senderRouteKey: "coord-route",
-      teamRunId: "team-mixed-1",
-      recipientSelector: { kind: "route_key", memberRouteKey: "reviewer-route" },
-      recipientMemberName: "Reviewer",
-      recipientPath: ["Reviewer"],
-      recipientRouteKey: "reviewer-route",
+    const intent = {
+      recipientAddress: "/Reviewer",
+      caller: { rootTeamRunId: "team-mixed-1", memberAddress: "/Coordinator" },
       content: "Please continue.",
       messageType: "agent_message",
-    });
+    } as const;
+    await expect(backend.deliverInterAgentMessage(intent)).resolves.toEqual({ accepted: true });
+    expect(manager.deliverInterAgentMessage).toHaveBeenCalledWith(intent);
 
-    await expect(
-      backend.approveToolInvocation(
-        { kind: "route_key", memberRouteKey: "reviewer-route" },
-        "inv-1",
-        true,
-        "approved",
-      ),
-    ).resolves.toEqual({ accepted: true });
+    await expect(backend.approveToolInvocation("/Reviewer", "inv-1", true, "approved"))
+      .resolves.toEqual({ accepted: true });
     expect(manager.approveToolInvocation).toHaveBeenCalledWith(
-      { kind: "route_key", memberRouteKey: "reviewer-route" },
-      "inv-1",
-      true,
-      "approved",
-      null,
-      null,
+      "/Reviewer", "inv-1", true, "approved", null, null,
     );
-
-    await expect(backend.interruptMember("reviewer-route", "reviewer-run")).resolves.toEqual({ accepted: true });
-    expect(manager.interruptMember).toHaveBeenCalledWith("reviewer-route", "reviewer-run");
-
-    await expect(backend.terminate()).resolves.toEqual({ accepted: true });
-    expect(manager.terminate).toHaveBeenCalledTimes(1);
+    await expect(backend.interruptMember("/Reviewer", "reviewer-run"))
+      .resolves.toEqual({ accepted: true });
+    expect(manager.interruptMember).toHaveBeenCalledWith("/Reviewer", "reviewer-run");
+    await expect(backend.executeMemberCommand(persistentAddress, { kind: "interrupt" }))
+      .resolves.toEqual({ accepted: true });
+    expect(manager.executeMemberCommand).toHaveBeenCalledWith(
+      persistentAddress,
+      { kind: "interrupt" },
+    );
   });
 
-  it("returns validation and inactive-run failures before delegating", async () => {
+  it("returns validation and inactive-run failures before effect", async () => {
     const manager = createManager();
-    const backend = new MixedTeamRunBackend(createBackendContext(), manager as any);
+    const backend = new MixedTeamRunBackend(createBackendContext(), manager as never);
 
-    await expect(
-      backend.postMessage(new AgentInputUserMessage("hello"), null),
-    ).resolves.toMatchObject({
+    await expect(backend.postMessage(new AgentInputUserMessage("hello"), null)).resolves.toMatchObject({
       accepted: false,
       code: "TARGET_MEMBER_REQUIRED",
     });
     expect(manager.postMessage).not.toHaveBeenCalled();
 
     manager.setActive(false);
-
-    await expect(
-      backend.postMessage(
-        new AgentInputUserMessage("hello"),
-        { kind: "route_key", memberRouteKey: "coord-route" },
-      ),
-    ).resolves.toMatchObject({
-      accepted: false,
-      code: "RUN_NOT_FOUND",
-    });
-    await expect(
-      backend.deliverInterAgentMessage({
-        senderRunId: "coord-run",
-        senderSelector: { kind: "route_key", memberRouteKey: "coord-route" },
-        senderMemberName: "Coordinator",
-        senderPath: ["Coordinator"],
-        senderRouteKey: "coord-route",
-        teamRunId: "team-mixed-1",
-        recipientSelector: { kind: "route_key", memberRouteKey: "reviewer-route" },
-        recipientMemberName: "Reviewer",
-        recipientPath: ["Reviewer"],
-        recipientRouteKey: "reviewer-route",
-        content: "hello",
-      }),
-    ).resolves.toMatchObject({
-      accepted: false,
-      code: "RUN_NOT_FOUND",
-    });
-    await expect(
-      backend.approveToolInvocation(
-        { kind: "route_key", memberRouteKey: "reviewer-route" },
-        "inv-1",
-        true,
-      ),
-    ).resolves.toMatchObject({
-      accepted: false,
-      code: "RUN_NOT_FOUND",
-    });
-    await expect(backend.interruptMember("reviewer-route", "reviewer-run")).resolves.toMatchObject({
-      accepted: false,
-      code: "RUN_NOT_FOUND",
-    });
-    await expect(backend.terminate()).resolves.toEqual({ accepted: true });
-    expect(backend.getLeafAgentStatusSnapshots()).toEqual([]);
-    expect(backend.hasOpenExecutionWork()).toBe(false);
+    await expect(backend.postMessage(new AgentInputUserMessage("hello"), "/Coordinator"))
+      .resolves.toMatchObject({ accepted: false, code: "RUN_NOT_FOUND" });
+    await expect(backend.deliverInterAgentMessage({} as never))
+      .resolves.toMatchObject({ accepted: false, code: "RUN_NOT_FOUND" });
+    await expect(backend.approveToolInvocation("/Reviewer", "inv-1", true))
+      .resolves.toMatchObject({ accepted: false, code: "RUN_NOT_FOUND" });
+    await expect(backend.interruptMember("/Reviewer", "reviewer-run"))
+      .resolves.toMatchObject({ accepted: false, code: "RUN_NOT_FOUND" });
+    expect(manager.postMessage).not.toHaveBeenCalled();
+    expect(manager.deliverInterAgentMessage).not.toHaveBeenCalled();
+    expect(manager.approveToolInvocation).not.toHaveBeenCalled();
+    expect(manager.interruptMember).not.toHaveBeenCalled();
   });
 
-  it("forwards team events from the manager subscription", () => {
+  it("forwards the current Agent event unchanged from the manager subscription", () => {
     const manager = createManager();
-    const backend = new MixedTeamRunBackend(createBackendContext(), manager as any);
+    const backend = new MixedTeamRunBackend(createBackendContext(), manager as never);
     const observed: TeamRunEvent[] = [];
-
-    const unsubscribe = backend.subscribeToEvents((event) => {
-      observed.push(event);
-    });
-
-    manager.emit({
+    const unsubscribe = backend.subscribeToEvents((event) => observed.push(event));
+    const event: TeamRunEvent = {
       eventSourceType: TeamRunEventSourceType.AGENT,
-      teamRunId: "team-mixed-1",
-      sourcePath: ["Coordinator"],
-      data: {
-        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-        memberName: "Coordinator",
-        memberPath: ["Coordinator"],
-        memberRouteKey: "coord-route",
-        memberRunId: "coord-run",
-        agentEvent: {
-          eventType: AgentRunEventType.SEGMENT_CONTENT,
-          runId: "coord-run",
-          payload: {
-            id: "seg-1",
-            segment_type: "text",
-            delta: "hello",
-          },
-        },
+      execution: createTeamAgentExecutionBinding({
+        executionAddress: createTeamExecutionAddress({
+          rootTeamRunId: "team-mixed-1",
+          memberAddress: "/Coordinator",
+        }),
+        agentRunId: "coord-run",
+      }),
+      payload: {
+        eventType: "SEGMENT_CONTENT",
+        details: { segmentId: "seg-1", turnId: "turn-1", segmentType: "text", delta: "hello" },
+        statusHint: null,
       },
-    });
+    };
 
-    expect(observed).toHaveLength(1);
-    expect(observed[0]).toMatchObject({
-      eventSourceType: TeamRunEventSourceType.AGENT,
-      teamRunId: "team-mixed-1",
-      sourcePath: ["Coordinator"],
-      data: {
-        memberName: "Coordinator",
-        memberPath: ["Coordinator"],
-        memberRouteKey: "coord-route",
-        memberRunId: "coord-run",
-        agentEvent: {
-          eventType: AgentRunEventType.SEGMENT_CONTENT,
-        },
-      },
-    });
-
+    manager.emit(event);
+    expect(observed).toEqual([event]);
     unsubscribe();
-    manager.emit({
-      eventSourceType: TeamRunEventSourceType.TEAM,
-      teamRunId: "team-mixed-1",
-      sourcePath: [],
-      data: {
-        status: "idle",
-      },
-    });
-    expect(observed).toHaveLength(1);
+    manager.emit(event);
+    expect(observed).toEqual([event]);
   });
 });

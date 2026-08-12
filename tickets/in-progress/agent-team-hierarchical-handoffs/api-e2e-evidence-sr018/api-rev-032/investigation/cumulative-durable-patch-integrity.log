@@ -1,0 +1,14 @@
+[patch integrity]
+reverse_apply_check=PASS
+
+[corrected path patch headers]
+2851:diff --git a/autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts b/autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts
+3884:diff --git a/autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts b/autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts
+7921:diff --git a/autobyteus-server-ts/tests/unit/services/agent-streaming/agent-stream-websocket-egress.test.ts b/autobyteus-server-ts/tests/unit/services/agent-streaming/agent-stream-websocket-egress.test.ts
+7981:diff --git a/autobyteus-server-ts/tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts b/autobyteus-server-ts/tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts
+
+[corrected inventory rows]
+13:M	server	autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts	Needs Update / Currentized / Revalidated	crr068-focused-final.log; crr068-static-audit.log
+23:M	server	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts	Needs Update / Currentized / Revalidated	crr068-focused-final.log; crr068-static-audit.log
+37:M	server	autobyteus-server-ts/tests/unit/services/agent-streaming/agent-stream-websocket-egress.test.ts	Stale Case Removed / Supported Boundary Revalidated	crr068-focused-final.log; crr068-static-audit.log
+38:M	server	autobyteus-server-ts/tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts	Still Valid / Replacement Boundary Revalidated	crr068-focused-final.log; crr068-static-audit.log

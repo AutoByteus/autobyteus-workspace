@@ -7,7 +7,6 @@ import { ExternalChannelTransport } from "autobyteus-ts/external-channel/channel
 import { ExternalPeerType } from "autobyteus-ts/external-channel/peer-type.js";
 import type { ExternalOutboundEnvelope } from "autobyteus-ts/external-channel/external-outbound-envelope.js";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
 import type { AgentOperationResult } from "../../../src/agent-execution/domain/agent-operation-result.js";
 import type { InterAgentMessageDeliveryIntent } from "../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
 import { createMemberLogicalAddressContext } from "../../../src/agent-team-execution/domain/member-logical-address-context.js";
@@ -16,6 +15,8 @@ import { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
 import { TeamRunContext, type RuntimeTeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
 import { createTeamExecutionAddress } from "../../../src/agent-team-execution/domain/team-execution-address.js";
 import { TeamRunEventSourceType, type TeamRunEvent, type TeamRunEventListener } from "../../../src/agent-team-execution/domain/team-run-event.js";
+import { createTeamAgentExecutionBinding } from "../../../src/agent-team-execution/domain/team-agent-execution-binding.js";
+import type { TeamAgentEvent } from "../../../src/agent-team-execution/domain/team-agent-event.js";
 import type { TeamRunBackend } from "../../../src/agent-team-execution/backends/team-run-backend.js";
 import { MixedAgentMemberContext, MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
 import { TeamRecipientResolver } from "../../../src/agent-team-execution/services/team-recipient-resolver.js";
@@ -37,7 +38,7 @@ import { address, testAgentNode, testTeamRunConfig } from "../../fixtures/curren
 
 const tempFiles = new Set<string>();
 const cleanOverlapReply = "Sent the student a hard cyclic inequality problem to solve.";
-const cleanFinalFollowUp = "clean final coordinator follow-up";
+const streamedFollowUp = "noisy partial duplicate";
 const secondFollowUp = "coordinator follow-up two";
 
 afterEach(async () => {
@@ -196,7 +197,7 @@ describe("external channel team open delivery e2e", () => {
       await waitFor(() => enqueuedOutbounds.length === 3);
       expect(enqueuedOutbounds.map((envelope) => envelope.replyText)).toEqual([
         cleanOverlapReply,
-        cleanFinalFollowUp,
+        streamedFollowUp,
         secondFollowUp,
       ]);
       expect(enqueuedOutbounds.some((envelope) => envelope.replyText.includes("worker internal only"))).toBe(false);
@@ -212,7 +213,7 @@ describe("external channel team open delivery e2e", () => {
       expect(publishedRecords).toHaveLength(3);
       expect(publishedRecords.map((record) => record.replyTextFinal).sort()).toEqual([
         cleanOverlapReply,
-        cleanFinalFollowUp,
+        streamedFollowUp,
         secondFollowUp,
       ].sort());
       expect(records.some((record) => record.replyTextFinal?.includes("worker internal only"))).toBe(false);
@@ -287,12 +288,11 @@ class DeterministicTeamRunBackend implements TeamRunBackend {
     expect(request.recipientAddress).toBe("/coordinator");
     setTimeout(() => {
       this.emitTextTurn("worker", "run-worker", "turn-worker-internal", "worker internal only");
-      this.emitFinalPrecedenceTurn(
+      this.emitFragmentTurn(
         "coordinator",
         "run-coordinator",
         "turn-follow-up-1",
         ["noisy partial", " partial duplicate"],
-        cleanFinalFollowUp,
       );
       this.emitTextTurn("coordinator", "run-coordinator", "turn-follow-up-2", secondFollowUp);
     }, 5).unref?.();
@@ -311,36 +311,36 @@ class DeterministicTeamRunBackend implements TeamRunBackend {
   publishEvent(event: TeamRunEvent): void { for (const listener of this.listeners) listener(event); }
 
   private emitTextTurn(memberName: string, memberRunId: string, turnId: string, text: string): void {
-    this.emitFinalPrecedenceTurn(memberName, memberRunId, turnId, [text], text);
+    this.emitFragmentTurn(memberName, memberRunId, turnId, [text]);
   }
 
   private emitOverlappingStreamTurn(memberName: string, memberRunId: string, turnId: string, fragments: string[]): void {
-    const events = [
-      { eventType: AgentRunEventType.TURN_STARTED, payload: { turnId } },
-      ...fragments.map((fragment) => ({
-        eventType: AgentRunEventType.SEGMENT_CONTENT,
-        payload: { turnId, segment_type: "text", delta: fragment },
+    const events: TeamAgentEvent[] = [
+      { eventType: "TURN_STARTED", details: { turnId }, statusHint: "ACTIVE" },
+      ...fragments.map((fragment, index): TeamAgentEvent => ({
+        eventType: "SEGMENT_CONTENT",
+        details: { segmentId: `segment-${index}`, turnId, segmentType: "text", delta: fragment },
+        statusHint: "ACTIVE",
       })),
-      { eventType: AgentRunEventType.TURN_COMPLETED, payload: { turnId } },
+      { eventType: "TURN_COMPLETED", details: { turnId, reason: null }, statusHint: "IDLE" },
     ];
     this.emitEvents(memberName, memberRunId, events);
   }
 
-  private emitFinalPrecedenceTurn(
+  private emitFragmentTurn(
     memberName: string,
     memberRunId: string,
     turnId: string,
     fragments: string[],
-    finalText: string,
   ): void {
-    const events = [
-      { eventType: AgentRunEventType.TURN_STARTED, payload: { turnId } },
-      ...fragments.map((fragment) => ({
-        eventType: AgentRunEventType.SEGMENT_CONTENT,
-        payload: { turnId, segment_type: "text", delta: fragment },
+    const events: TeamAgentEvent[] = [
+      { eventType: "TURN_STARTED", details: { turnId }, statusHint: "ACTIVE" },
+      ...fragments.map((fragment, index): TeamAgentEvent => ({
+        eventType: "SEGMENT_CONTENT",
+        details: { segmentId: `segment-${index}`, turnId, segmentType: "text", delta: fragment },
+        statusHint: "ACTIVE",
       })),
-      { eventType: AgentRunEventType.SEGMENT_END, payload: { turnId, segment_type: "text", text: finalText } },
-      { eventType: AgentRunEventType.TURN_COMPLETED, payload: { turnId } },
+      { eventType: "TURN_COMPLETED", details: { turnId, reason: null }, statusHint: "IDLE" },
     ];
     this.emitEvents(memberName, memberRunId, events);
   }
@@ -348,31 +348,18 @@ class DeterministicTeamRunBackend implements TeamRunBackend {
   private emitEvents(
     memberName: string,
     memberRunId: string,
-    events: Array<{ eventType: AgentRunEventType; payload: Record<string, unknown> }>,
+    events: TeamAgentEvent[],
   ): void {
+    const executionAddress = createTeamExecutionAddress({
+      rootTeamRunId: this.teamRunId,
+      memberAddress: `/${memberName}`,
+    });
     for (const event of events) {
       for (const listener of this.listeners) {
         listener({
           eventSourceType: TeamRunEventSourceType.AGENT,
-          teamRunId: this.teamRunId,
-          executionAddress: createTeamExecutionAddress({
-            rootTeamRunId: this.teamRunId,
-            memberAddress: `/${memberName}`,
-          }),
-          data: {
-            runtimeKind: RuntimeKind.AUTOBYTEUS,
-            executionAddress: createTeamExecutionAddress({
-              rootTeamRunId: this.teamRunId,
-              memberAddress: `/${memberName}`,
-            }),
-            displayName: memberName,
-            agentEvent: {
-              eventType: event.eventType,
-              runId: memberRunId,
-              statusHint: event.eventType === AgentRunEventType.TURN_COMPLETED ? "IDLE" : "ACTIVE",
-              payload: event.payload,
-            },
-          },
+          execution: createTeamAgentExecutionBinding({ executionAddress, agentRunId: memberRunId }),
+          payload: event,
         });
       }
     }

@@ -1,0 +1,25 @@
+{
+  "data": {
+    "getRunProjection": {
+      "runId": "api_rev_030_browser_agent_4a349f47c5dc48138dc3d316753cc43d",
+      "summary": "**[User Requirement]** Reply with exactly STANDALONE_AUTOBYTEUS_OK and nothing else.",
+      "lastActivityAt": "2026-08-12T12:14:35.814Z",
+      "conversation": [
+        {
+          "kind": "message",
+          "role": "user",
+          "content": "**[User Requirement]**\nReply with exactly STANDALONE_AUTOBYTEUS_OK and nothing else.",
+          "media": null,
+          "ts": 1786536874.589
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "STANDALONE_AUTOBYTEUS_OK",
+          "media": null,
+          "ts": 1786536875.814
+        }
+      ]
+    }
+  }
+}

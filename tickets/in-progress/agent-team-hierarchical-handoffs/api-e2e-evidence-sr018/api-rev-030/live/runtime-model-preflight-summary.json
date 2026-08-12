@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "required": {
+    "autobyteus": {
+      "enabled": true,
+      "model": "gpt-5.6-luna",
+      "modelPresent": true
+    },
+    "codex_app_server": {
+      "enabled": true,
+      "model": "gpt-5.6-luna",
+      "reasoningEffort": "medium",
+      "modelPresent": true
+    },
+    "claude_agent_sdk": {
+      "enabled": true,
+      "modelCandidates": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "default"
+      ]
+    }
+  },
+  "nestedDefinitionId": "nested-classroom-test"
+}

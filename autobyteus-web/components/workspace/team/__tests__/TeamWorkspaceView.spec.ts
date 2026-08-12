@@ -2,6 +2,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import TeamWorkspaceView from '../TeamWorkspaceView.vue';
 import { AgentStatus } from '~/types/agent/AgentStatus';
+import { createTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
+import { buildTestTeamContext, testAgentNode, testSubTeamNode } from '~/test-support/currentTeamTestFixtures';
 
 const {
   state,
@@ -15,7 +17,6 @@ const {
 } = vi.hoisted(() => {
   const localState = {
     activeTeamContext: null as any,
-    activeExecutionFocusedMemberRouteKey: '' as string,
   };
 
   return {
@@ -24,22 +25,6 @@ const {
       get activeTeamContext() {
         return localState.activeTeamContext;
       },
-      get activeExecutionFocusedMemberRouteKey() {
-        return localState.activeExecutionFocusedMemberRouteKey;
-      },
-      get activeExecutionFocusedMemberContext() {
-        const routeKey = teamContextsStoreMock.activeExecutionFocusedMemberRouteKey;
-        return routeKey
-          ? localState.activeTeamContext?.leafAgentContextsByRouteKey.get(routeKey) ?? null
-          : null;
-      },
-      get activeExecutionFocusedMemberNode() {
-        const routeKey = teamContextsStoreMock.activeExecutionFocusedMemberRouteKey;
-        return routeKey
-          ? localState.activeTeamContext?.memberNodesByRouteKey.get(routeKey) ?? null
-          : null;
-      },
-      setFocusedMember: vi.fn(),
       focusMemberAndEnsureHydrated: vi.fn().mockResolvedValue(undefined),
     },
     agentDefinitionStoreMock: {
@@ -108,68 +93,44 @@ vi.mock('~/stores/agentTeamRunStore', () => ({
   useAgentTeamRunStore: () => agentTeamRunStoreMock,
 }));
 
-const buildAgentMemberNode = (memberRouteKey: string, displayName: string, memberRunId: string, agentDefinitionId: string) => ({
-  memberKind: 'agent',
-  memberName: memberRouteKey,
+const buildAgentMemberNode = (memberAddress: string, displayName: string, agentRunId: string, agentDefinitionId: string) => testAgentNode(
+  memberAddress.startsWith('/') ? memberAddress : `/${memberAddress}`,
+  {
   displayName,
-  memberPath: [memberRouteKey],
-  memberRouteKey,
-  memberRunId,
+  agentRunId,
   agentDefinitionId,
-});
+  },
+);
 
-const buildTeamContext = (overrides: Record<string, any> = {}) => {
-  const professorNode = buildAgentMemberNode('professor', 'Professor', 'professor-run', 'agent-professor-def');
-  const studentNode = buildAgentMemberNode('student', 'Student', 'student-run', 'agent-student-def');
+const buildTeamContext = (input: {
+  focusedMemberAddress?: string;
+  configuration?: Record<string, any>;
+} = {}) => {
+  const professorNode = buildAgentMemberNode('Professor', 'Professor', 'professor-run', 'agent-professor-def');
+  const studentNode = buildAgentMemberNode('Student', 'Student', 'student-run', 'agent-student-def');
 
-  return {
+  return buildTestTeamContext({
     teamRunId: 'team-1',
-    config: {
-      teamDefinitionName: 'Class Room Simulation',
-      teamDefinitionId: 'team-def-1',
-    },
-    focusedMemberRouteKey: 'professor',
-    memberTree: [professorNode, studentNode],
-    memberNodesByRouteKey: new Map<string, any>([
-      ['professor', professorNode],
-      ['student', studentNode],
-    ]),
-    leafAgentContextsByRouteKey: new Map<string, any>([
-      ['professor', {
-        config: {
-          agentDefinitionId: 'agent-professor-def',
-          agentDefinitionName: 'Professor',
-          agentAvatarUrl: null,
-        },
-        state: {
-          runId: 'professor-run',
-          currentStatus: AgentStatus.Running,
-          conversation: { agentName: 'Professor', messages: [] },
-        },
-      }],
-      ['student', {
-        config: {
-          agentDefinitionId: 'agent-student-def',
-          agentDefinitionName: 'Student',
-          agentAvatarUrl: null,
-        },
-        state: {
-          runId: 'student-run',
-          currentStatus: AgentStatus.Idle,
-          conversation: { agentName: 'Student', messages: [] },
-        },
-      }],
-    ]),
+    teamDefinitionName: 'Class Room Simulation',
+    teamDefinitionId: 'team-def-1',
+    rootChildren: [
+      { ...professorNode, currentStatus: AgentStatus.Running },
+      { ...studentNode, currentStatus: AgentStatus.Idle },
+    ],
+    coordinatorAddress: '/Professor',
+    focusedExecutionAddress: createTeamExecutionAddress({
+      rootTeamRunId: 'team-1',
+      memberAddress: input.focusedMemberAddress ?? '/Professor',
+    }),
     isActive: true,
-    ...overrides,
-  };
+    configuration: input.configuration,
+  });
 };
 
 describe('TeamWorkspaceView', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     state.activeTeamContext = buildTeamContext();
-    state.activeExecutionFocusedMemberRouteKey = 'professor';
   });
 
   const mountComponent = () => mount(TeamWorkspaceView, {
@@ -178,7 +139,7 @@ describe('TeamWorkspaceView', () => {
         AgentTeamEventMonitor: { template: '<div data-test="team-event-monitor"><slot name="composerContext" /></div>' },
         SkillImprovementComposerCta: {
           props: ['target'],
-          template: '<div data-test="skill-improvement-cta" :data-kind="target && target.kind" :data-team-run-id="target && target.teamRunId" :data-member-run-id="target && target.memberRunId" />',
+          template: '<div data-test="skill-improvement-cta" :data-kind="target && target.kind" :data-team-run-id="target && target.teamRunId" :data-agent-run-id="target && target.agentRunId" />',
         },
         AgentUserInputForm: { template: '<div data-test="agent-user-input-form" />' },
         WorkspaceHeaderActions: {
@@ -220,26 +181,17 @@ describe('TeamWorkspaceView', () => {
     expect(avatar.attributes('src')).toBe('https://example.com/professor.png');
   });
 
-  it('falls back to the team title when no active execution focus is available', () => {
-    state.activeTeamContext = buildTeamContext({
-      focusedMemberRouteKey: 'missing-member',
-      memberTree: [],
-      memberNodesByRouteKey: new Map<string, any>(),
-      leafAgentContextsByRouteKey: new Map<string, any>(),
-    });
-    state.activeExecutionFocusedMemberRouteKey = '';
-    const wrapper = mountComponent();
-    expect(wrapper.find('h4').text()).toBe('Class Room Simulation');
+  it('rejects an unresolved initial focus instead of substituting another identity', () => {
+    expect(() => buildTeamContext({ focusedMemberAddress: '/missing-member' }))
+      .toThrow('Initial Team focus must resolve to an Agent.');
   });
 
   it('shows roster focus in the header when active execution falls back to the coordinator', () => {
-    const context = buildTeamContext({
-      coordinatorMemberRouteKey: 'professor',
-      focusedMemberRouteKey: 'student',
-    });
-    context.leafAgentContextsByRouteKey.get('student').state.currentStatus = AgentStatus.Initializing;
+    const context = buildTeamContext({ focusedMemberAddress: '/Student' });
+    context.executions.getAgentContext(createTeamExecutionAddress({
+      rootTeamRunId: 'team-1', memberAddress: '/Student',
+    }))!.state.currentStatus = AgentStatus.Initializing;
     state.activeTeamContext = context;
-    state.activeExecutionFocusedMemberRouteKey = 'professor';
 
     const wrapper = mountComponent();
 
@@ -248,11 +200,7 @@ describe('TeamWorkspaceView', () => {
   });
 
   it('keeps roster focus in the header after simplifying the shell controls', () => {
-    state.activeTeamContext = buildTeamContext({
-      coordinatorMemberRouteKey: 'professor',
-      focusedMemberRouteKey: 'student',
-    });
-    state.activeExecutionFocusedMemberRouteKey = 'professor';
+    state.activeTeamContext = buildTeamContext({ focusedMemberAddress: '/Student' });
 
     const wrapper = mountComponent();
 
@@ -267,7 +215,7 @@ describe('TeamWorkspaceView', () => {
 
   it('seeds a new team config from the selected run without sharing nested global or member llmConfig', async () => {
     state.activeTeamContext = buildTeamContext({
-      config: {
+      configuration: {
         teamDefinitionName: 'Class Room Simulation',
         teamDefinitionId: 'team-def-1',
         llmModelIdentifier: 'gpt-5.4',
@@ -281,7 +229,7 @@ describe('TeamWorkspaceView', () => {
           nested: { values: ['xhigh'] },
         },
         memberOverrides: {
-          professor: {
+          '/Professor': {
             agentDefinitionId: 'agent-professor-def',
             llmModelIdentifier: 'gpt-5.3-codex',
             llmConfig: {
@@ -293,7 +241,7 @@ describe('TeamWorkspaceView', () => {
       },
     });
 
-    const sourceConfig = state.activeTeamContext.config;
+    const sourceConfig = state.activeTeamContext.topology.getConfigurationView();
     const wrapper = mountComponent();
     await wrapper.get('[data-test="new-agent"]').trigger('click');
 
@@ -305,7 +253,7 @@ describe('TeamWorkspaceView', () => {
         nested: { values: ['xhigh'] },
       },
       memberOverrides: expect.objectContaining({
-        professor: expect.objectContaining({
+        '/Professor': expect.objectContaining({
           llmConfig: {
             reasoning_effort: 'medium',
             nested: { values: ['medium'] },
@@ -315,9 +263,9 @@ describe('TeamWorkspaceView', () => {
     }));
 
     (seed.llmConfig.nested.values as string[]).push('mutated');
-    (seed.memberOverrides.professor.llmConfig.nested.values as string[]).push('mutated');
+    (seed.memberOverrides['/Professor'].llmConfig.nested.values as string[]).push('mutated');
     expect(sourceConfig.llmConfig.nested.values).toEqual(['xhigh']);
-    expect(sourceConfig.memberOverrides.professor.llmConfig.nested.values).toEqual(['medium']);
+    expect(sourceConfig.memberOverrides['/Professor'].llmConfig.nested.values).toEqual(['medium']);
     expect(agentRunConfigStoreMock.clearConfig).toHaveBeenCalledTimes(1);
     expect(selectionStoreMock.clearSelection).toHaveBeenCalledTimes(1);
   });
@@ -334,68 +282,32 @@ describe('TeamWorkspaceView', () => {
     const cta = wrapper.get('[data-test="skill-improvement-cta"]');
     expect(cta.attributes('data-kind')).toBe('team-member');
     expect(cta.attributes('data-team-run-id')).toBe('team-1');
-    expect(cta.attributes('data-member-run-id')).toBe('professor-run');
+    expect(cta.attributes('data-agent-run-id')).toBe('professor-run');
   });
 
-  it('preserves the shared composer only for a focused subteam', async () => {
-    const professorNode = buildAgentMemberNode('professor', 'Professor', 'professor-run', 'agent-professor-def');
-    const studentNode = buildAgentMemberNode('subteam/student', 'Student', 'student-run', 'agent-student-def');
-    const subteamNode = {
-      memberKind: 'agent_team',
-      memberName: 'subteam',
+  it('keeps focus on an exact Agent and does not substitute a non-focusable AgentTeam', () => {
+    const professorNode = buildAgentMemberNode('/Professor', 'Professor', 'professor-run', 'agent-professor-def');
+    const studentNode = buildAgentMemberNode('/subteam/student', 'Student', 'student-run', 'agent-student-def');
+    const subteamNode = testSubTeamNode('/subteam', [studentNode], {
       displayName: 'Review Subteam',
-      memberPath: ['subteam'],
-      memberRouteKey: 'subteam',
-      children: [studentNode],
-    };
-
-    state.activeTeamContext = buildTeamContext({
-      focusedMemberRouteKey: 'subteam',
-      memberTree: [professorNode, subteamNode],
-      memberNodesByRouteKey: new Map<string, any>([
-        ['professor', professorNode],
-        ['subteam', subteamNode],
-        ['subteam/student', studentNode],
-      ]),
-      leafAgentContextsByRouteKey: new Map<string, any>([
-        ['professor', {
-          config: {
-            agentDefinitionId: 'agent-professor-def',
-            agentDefinitionName: 'Professor',
-            agentAvatarUrl: null,
-          },
-          state: {
-            runId: 'professor-run',
-            currentStatus: AgentStatus.Running,
-            conversation: { agentName: 'Professor', messages: [] },
-          },
-        }],
-        ['subteam/student', {
-          config: {
-            agentDefinitionId: 'agent-student-def',
-            agentDefinitionName: 'Student',
-            agentAvatarUrl: null,
-          },
-          state: {
-            runId: 'student-run',
-            currentStatus: AgentStatus.Idle,
-            conversation: { agentName: 'Student', messages: [] },
-          },
-        }],
-      ]),
+      teamRunId: 'subteam-run',
+      coordinatorAddress: '/subteam/student',
     });
-    state.activeExecutionFocusedMemberRouteKey = 'professor';
+
+    state.activeTeamContext = buildTestTeamContext({
+        teamRunId: 'team-1',
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Class Room Simulation',
+        rootChildren: [professorNode, subteamNode],
+        coordinatorAddress: '/professor',
+        focusedExecutionAddress: createTeamExecutionAddress({ rootTeamRunId: 'team-1', memberAddress: '/Professor' }),
+    });
 
     const wrapper = mountComponent();
 
-    expect(wrapper.text()).toContain('Replying to');
-    expect(wrapper.text()).toContain('Review Subteam');
+    expect(wrapper.find('h4').text()).toBe('Professor');
     expect(wrapper.find('[data-test="agent-user-input-form"]').exists()).toBe(false);
-    expect(wrapper.find('textarea').exists()).toBe(true);
-
-    await wrapper.find('textarea').setValue('hello subteam');
-    await wrapper.get('button[type="submit"]').trigger('submit');
-
-    expect(agentTeamRunStoreMock.sendMessageToFocusedMember).toHaveBeenCalledWith('hello subteam', []);
+    expect(wrapper.find('textarea').exists()).toBe(false);
+    expect(agentTeamRunStoreMock.sendMessageToFocusedMember).not.toHaveBeenCalled();
   });
 });

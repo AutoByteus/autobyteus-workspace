@@ -1,0 +1,50 @@
+{
+  "slug": "claude",
+  "runtime": "claude_agent_sdk",
+  "model": "haiku",
+  "passed": false,
+  "rootTeamRunId": "nested_classroom_test_team_3cc599df518247c782ab41b2eccee939",
+  "resultConditions": {
+    "freshRootTeamRun": true,
+    "rootedTopology": true,
+    "exactTaskAddress": true,
+    "exactOneDelegatedTask": true,
+    "acceptedStatus": false,
+    "exactOneSubmission": false,
+    "acceptedReview": false,
+    "exactOnePersistentReply": true,
+    "taskPeerDeliveredObservation": true,
+    "taskPeerReplyDeliveredObservation": false,
+    "referenceDelivered": true,
+    "observedTaskSummaryObservation": false,
+    "observedTaskTeamSummaryObservation": false,
+    "observedTransientTaskExecutionObservation": true,
+    "observedActiveTaskUiObservation": false,
+    "observedAwaitingReviewUiObservation": false,
+    "observedAcceptedTaskUiObservation": false,
+    "observedSelectedDetailObservation": false,
+    "observedTeamCommunicationUiObservation": true,
+    "observedReferenceUiObservation": true,
+    "taskDetailVisibleObservation": false,
+    "teamCommunicationVisibleObservation": true,
+    "noSyntheticInterAgentInline": true,
+    "noSerializedAddressLeak": true,
+    "completionMarkerVisible": true,
+    "refreshRetainedTaskHeaderCount": true,
+    "refreshRetainedVisibleTaskCountObservation": false,
+    "refreshRetainedTaskTeamSummaryObservation": false,
+    "terminalTransientCleanup": false,
+    "effectiveRuntimeMatches": true,
+    "effectiveCodexReasoningMatches": true,
+    "noBrowserConsoleErrors": true
+  },
+  "observedStatuses": [
+    "none",
+    "active"
+  ],
+  "termination": {
+    "success": true,
+    "message": "Agent team run terminated successfully."
+  },
+  "fatalError": null
+}

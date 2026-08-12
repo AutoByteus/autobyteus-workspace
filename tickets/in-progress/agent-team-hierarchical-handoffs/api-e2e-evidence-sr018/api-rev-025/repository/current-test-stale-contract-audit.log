@@ -1,0 +1,34 @@
+Current-contract stale-authority audit
+head=f7e825cc64a862555b0e26ea529599fe85d2f8b5
+selection_count=44
+
+### activeTeamContext\.teamRunId
+<zero matches>
+
+### activeTeamContext\.focusedExecutionAddress
+<zero matches>
+
+### activeTeamContext\.agentExecutionsByKey
+<zero matches>
+
+### activeTeamContext\.isSubscribed
+<zero matches>
+
+### activeTeamContext\.historicalHydration
+<zero matches>
+
+### memberNodesByAddress
+<zero matches>
+
+### teamTaskExecutionEventRouter
+<zero matches>
+
+### discardDraftTeamRun
+components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts:203:    discardDraftTeamRun: vi.fn().mockResolvedValue(true),
+components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts:232:      discardDraftTeamRun: vi.fn().mockResolvedValue(true),
+
+### createRunFromTemplate
+stores/__tests__/runHistoryStore.spec.ts:237:      createRunFromTemplate: vi.fn().mockReturnValue('temp-123'),
+stores/__tests__/runHistoryStore.spec.ts:1516:    expect(agentContextsStoreMock.createRunFromTemplate).not.toHaveBeenCalled();
+stores/__tests__/runHistoryStore.spec.ts:1557:    expect(agentContextsStoreMock.createRunFromTemplate).not.toHaveBeenCalled();
+

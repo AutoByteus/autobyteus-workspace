@@ -1,0 +1,12 @@
+A 2
+D 6
+M 83
+scope_server 38
+scope_web 53
+api_rev_030_new_durable_delta=0_added_1_updated_0_removed
+source_inventory=API-REV-029
+cumulative_paths=91
+patch_bytes=1172234
+status=UPDATED_UNREVIEWED_FAILURE_CONTEXT
+path_state_audit=PASS
+diff_check=PASS

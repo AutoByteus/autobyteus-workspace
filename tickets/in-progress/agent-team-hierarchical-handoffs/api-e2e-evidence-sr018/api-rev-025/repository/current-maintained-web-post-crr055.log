@@ -1,0 +1,1683 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+
+stderr | stores/__tests__/runHistoryStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/teamActiveExecutionMembers.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentTeamRunStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileUxRefinement.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runHydration/__tests__/teamRunContextHydrationService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryNavigationProjection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/runHydration/__tests__/teamRunContextHydrationService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileUxRefinement.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentTeamRunStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/__tests__/teamActiveExecutionMembers.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryNavigationProjection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts (6 tests | 6 failed) 14ms
+   × openTeamRun current exact execution identity > preserves a subscribed live member context and establishes the final baseline once 7ms
+     → (0 , useTeamRunConfigStore)(...).selectDraft is not a function
+   × openTeamRun current exact execution identity > adds one fresh hydrated current Team context with exact rooted members 1ms
+     → (0 , useTeamRunConfigStore)(...).selectDraft is not a function
+   × openTeamRun current exact execution identity > hydrates only a newly introduced exact member while preserving an existing live member 1ms
+     → (0 , useTeamRunConfigStore)(...).selectDraft is not a function
+   × openTeamRun current exact execution identity > preserves an exact requested task-Agent focus present in the subscribed execution map 1ms
+     → Cannot read properties of undefined (reading 'set')
+   × openTeamRun current exact execution identity > falls back to the hydrated focus when a requested execution identity is absent 1ms
+     → (0 , useTeamRunConfigStore)(...).selectDraft is not a function
+   × openTeamRun current exact execution identity > replaces an unsubscribed inactive Team projection and leaves it disconnected 1ms
+     → Cannot add property unsubscribe, object is not extensible
+ ❯ utils/__tests__/teamActiveExecutionMembers.spec.ts (5 tests | 4 failed) 17ms
+   × teamActiveExecutionMembers current execution tree > falls back from a settled task-agent-only logical member to the coordinator 10ms
+     → expected { …(4) } to deeply equal { …(4) }
+   × teamActiveExecutionMembers current execution tree > keeps the exact concrete task-agent execution visible when its logical member is inactive 2ms
+     → Team topology contains duplicate canonical addresses.
+   × teamActiveExecutionMembers current execution tree > does not treat a task-agent-only logical member conversation as active execution 2ms
+     → expected { …(4) } to deeply equal { …(4) }
+   ✓ teamActiveExecutionMembers current execution tree > keeps a direct logical member conversation visible after the member is offline 1ms
+   × teamActiveExecutionMembers current execution tree > includes task-Team roots, scoped children, and nested task Agents together 1ms
+     → Team topology contains duplicate canonical addresses.
+ ❯ services/runHydration/__tests__/teamRunContextHydrationService.spec.ts (2 tests | 2 failed) 12ms
+   × hydrateLiveTeamRunContext Event Monitor final-prime ownership > primes each real loader/builder context exactly once 'after projected activity hydration' 9ms
+     → [vitest] No "fetchTaskDelegationRecordsForTeam" export is defined on the "../taskDelegationHydrationService" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+   × hydrateLiveTeamRunContext Event Monitor final-prime ownership > primes each real loader/builder context exactly once 'when the member projection is absent' 1ms
+     → [vitest] No "fetchTaskDelegationRecordsForTeam" export is defined on the "../taskDelegationHydrationService" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+ ❯ stores/__tests__/runHistoryNavigationProjection.spec.ts (6 tests | 6 failed) 10ms
+   × runHistoryNavigationProjection current exact execution identity > publishes stable and transient rows, exact focus/indexes, and reconciles equal branches 6ms
+     → Team topology contains duplicate canonical addresses.
+   × runHistoryNavigationProjection current exact execution identity > reuses an unrelated workspace Team bucket when one Team topology changes 1ms
+     → Team topology contains duplicate canonical addresses.
+   × runHistoryNavigationProjection current exact execution identity > patches only the indexed standalone branch and skips activity in the same minute bucket 0ms
+     → Team topology contains duplicate canonical addresses.
+   × runHistoryNavigationProjection current exact execution identity > applies tight task-row and exact-focus patches while equal/detail-free changes do no work 0ms
+     → Team topology contains duplicate canonical addresses.
+   × runHistoryNavigationProjection current exact execution identity > applies combined status, summary, and activity through one exact Team branch patch 1ms
+     → Team topology contains duplicate canonical addresses.
+   × runHistoryNavigationProjection current exact execution identity > patches the root Team lifecycle and no-ops an equal snapshot 0ms
+     → Team topology contains duplicate canonical addresses.
+stderr | stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > archiveTeamRun rejects draft team IDs without backend mutation call
+Failed to archive team run 'temp-team-123': TypeError: Cannot destructure property 'data' of '(intermediate value)' as it is undefined.
+    at archiveTeamRunInHistoryStore (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/stores/runHistoryMutationActions.ts:205:13)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at Proxy.archiveTeamRun (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/stores/runHistoryStore.ts:346:23)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/stores/__tests__/runHistoryStore.spec.ts:2365:22
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+ ❯ stores/__tests__/runHistoryStore.spec.ts (37 tests | 7 failed) 138ms
+   ✓ runHistoryStore > publishes the asynchronously loaded initial workspace catalog with exactly one topology refresh 4ms
+   ✓ runHistoryStore > fetches run history tree from GraphQL 4ms
+   ✓ runHistoryStore > hydrates and connects newly discovered active runs from workspace history 7ms
+   × runHistoryStore > fetchWorkspaceHistory does not reconcile unrelated active contexts outside the scoped workspace 6ms
+     → Cannot set properties of undefined (setting 'workspaceId')
+   ✓ runHistoryStore > projects backend-visible temp workspace descriptors as non-removable roots with local drafts 4ms
+   ✓ runHistoryStore > prefers fixed temp identity and non-removability when temp and filesystem descriptors share one root 1ms
+   ✓ runHistoryStore > keeps permanent local standalone contexts visible until history reconciliation dedupes them 8ms
+   ✓ runHistoryStore > does not project history-only removed workspace roots without visible descriptors 1ms
+   × runHistoryStore > preserves subscribed live member statuses while refreshing root team activity 5ms
+     → Cannot set properties of undefined (setting 'workspaceId')
+   ✓ runHistoryStore > preserves subscribed single-agent live status during active history refresh 1ms
+   ✓ runHistoryStore > returns backend readiness error on fetchTree when backend is not ready 9ms
+   × runHistoryStore > opens a run, hydrates projection, selects runContext, and connects stream when active 38ms
+     → agentRunStore.isAgentStreamReady is not a function
+   × runHistoryStore > opens an inactive run and hydrates offline status without connecting stream 1ms
+     → agentRunStore.isAgentStreamReady is not a function
+   × runHistoryStore > trusts history active state and reconnects an agent stream when reopening an active run 1ms
+     → agentRunStore.isAgentStreamReady is not a function
+   × runHistoryStore > does not clobber live active context state when reopening an already subscribed run 1ms
+     → agentRunStore.isAgentStreamReady is not a function
+   ✓ runHistoryStore > creates draft run for selected workspace and agent 9ms
+   ✓ runHistoryStore > reuses model from existing context when creating draft run 1ms
+   ✓ runHistoryStore > prefers the selected same-definition context and deep-clones its llmConfig when creating a draft run 12ms
+   ✓ runHistoryStore > clears copied llmConfig when model resolution changes the source model for a draft run 1ms
+   ✓ runHistoryStore > reuses an existing workspace id when local cache has matching root path 0ms
+   ✓ runHistoryStore > fetches workspaces before creating one when cache is not loaded yet 1ms
+   ✓ runHistoryStore > projects persisted history and temp drafts into workspace tree 1ms
+   ✓ runHistoryStore > pruneWorkspace clears global agent selection when the selected run belongs to the removed workspace 1ms
+   ✓ runHistoryStore > pruneWorkspace clears global team selection when the selected team belongs to the removed workspace 0ms
+   ✓ runHistoryStore > overlays persisted run status with matching live context only 1ms
+   ✓ runHistoryStore > projects offline draft contexts as inactive in tree projection 0ms
+   ✓ runHistoryStore > selectTreeRun delegates to openRun for history rows 3ms
+   ✓ runHistoryStore > selectTreeRun selects local temp context for draft rows 1ms
+   ✓ runHistoryStore > deleteRun removes local state and refreshes tree when backend succeeds 2ms
+   ✓ runHistoryStore > deleteRun does not mutate local state when backend rejects deletion 0ms
+   ✓ runHistoryStore > deleteRun rejects draft run IDs without backend mutation call 0ms
+   ✓ runHistoryStore > archiveRun removes local state and refreshes tree when backend succeeds 2ms
+   ✓ runHistoryStore > archiveRun does not mutate local state when backend rejects archive 1ms
+   ✓ runHistoryStore > archiveRun rejects draft run IDs without backend mutation call 1ms
+   ✓ runHistoryStore > archiveTeamRun removes local team state and refreshes tree when backend succeeds 1ms
+   ✓ runHistoryStore > archiveTeamRun leaves local state unchanged when backend rejects archive 0ms
+   × runHistoryStore > archiveTeamRun rejects draft team IDs without backend mutation call 9ms
+     → expected "spy" to not be called at all, but actually been called 1 times
+
+Received: 
+
+  1st spy call:
+
+    Array [
+      Object {
+        "mutation": Object {
+          "definitions": Array [
+            Object {
+              "description": undefined,
+              "directives": Array [],
+              "kind": "OperationDefinition",
+              "name": Object {
+                "kind": "Name",
+                "value": "ArchiveStoredTeamRun",
+              },
+              "operation": "mutation",
+              "selectionSet": Object {
+                "kind": "SelectionSet",
+                "selections": Array [
+                  Object {
+                    "alias": undefined,
+                    "arguments": Array [
+                      Object {
+                        "kind": "Argument",
+                        "name": [Object],
+                        "value": [Object],
+                      },
+                    ],
+                    "directives": Array [],
+                    "kind": "Field",
+                    "name": Object {
+                      "kind": "Name",
+                      "value": "archiveStoredTeamRun",
+                    },
+                    "selectionSet": Object {
+                      "kind": "SelectionSet",
+                      "selections": Array [
+                        [Object],
+                        [Object],
+                      ],
+                    },
+                  },
+                ],
+              },
+              "variableDefinitions": Array [
+                Object {
+                  "defaultValue": undefined,
+                  "description": undefined,
+                  "directives": Array [],
+                  "kind": "VariableDefinition",
+                  "type": Object {
+                    "kind": "NonNullType",
+                    "type": Object {
+                      "kind": "NamedType",
+                      "name": Object {
+                        "kind": "Name",
+                        "value": "String",
+                      },
+                    },
+                  },
+                  "variable": Object {
+                    "kind": "Variable",
+                    "name": Object {
+                      "kind": "Name",
+                      "value": "teamRunId",
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+          "kind": "Document",
+          "loc": Object {
+            "end": 144,
+            "start": 0,
+          },
+        },
+        "variables": Object {
+          "teamRunId": "temp-team-123",
+        },
+      },
+    ]
+
+
+Number of calls: 1
+
+ ❯ stores/__tests__/agentTeamRunStore.spec.ts (12 tests | 12 failed) 33ms
+   × agentTeamRunStore current rooted execution contract > connects the exact Team context to the bound Team WebSocket endpoint 10ms
+     → expected null to be truthy
+   × agentTeamRunStore current rooted execution contract > terminates once, disconnects, and preserves an offline context for history restore 4ms
+     → Cannot read properties of undefined (reading 'get')
+   × agentTeamRunStore current rooted execution contract > does not mutate local lifecycle when backend termination rejects 4ms
+     → Cannot read properties of undefined (reading 'trim')
+   × agentTeamRunStore current rooted execution contract > deduplicates concurrent Stop requests while the first mutation is pending 1ms
+     → Cannot read properties of undefined (reading 'trim')
+   × agentTeamRunStore current rooted execution contract > discards a temporary Team locally without a backend termination 3ms
+     → useAgentTeamRunStore(...).discardDraftTeamRun is not a function
+   × agentTeamRunStore current rooted execution contract > sends to the exact focused persistent execution and records the local submission 4ms
+     → Cannot read properties of undefined (reading 'trim')
+   × agentTeamRunStore current rooted execution contract > restores an inactive persisted Team before sending to the unchanged execution address 1ms
+     → Cannot destructure property 'data' of '(intermediate value)' as it is undefined.
+   × agentTeamRunStore current rooted execution contract > fails closed when the focused execution is absent instead of selecting another member 0ms
+     → Cannot read properties of undefined (reading 'trim')
+   × agentTeamRunStore current rooted execution contract > launches a nested mixed-runtime Team with exact rooted memberAddress inputs and focused target 2ms
+     → Cannot convert undefined or null to object
+   × agentTeamRunStore current rooted execution contract > does not synthesize an approval target and preserves an explicit event target 1ms
+     → Cannot read properties of undefined (reading 'trim')
+   × agentTeamRunStore current rooted execution contract > reattaches an existing stream service to the latest context 1ms
+     → expected "spy" to be called 1 times, but got 0 times
+   × agentTeamRunStore current rooted execution contract > interrupts only the exact same-root execution and leaves submission state for the ack 0ms
+     → Cannot read properties of undefined (reading 'get')
+ ❯ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts (4 tests | 1 failed) 142ms
+   ✓ WorkspaceAgentRunsTreePanel regressions > routes team top-row clicks through persisted member hydration instead of blind team selection 65ms
+   ✓ WorkspaceAgentRunsTreePanel regressions > keeps a previously selected team expanded when another team row is opened 31ms
+   ✓ WorkspaceAgentRunsTreePanel regressions > removes a draft agent row through the local close path 14ms
+   × WorkspaceAgentRunsTreePanel regressions > removes a draft team row through the local discard path 31ms
+     → Unable to get button[title="Remove draft team"] within: <div class="flex h-full flex-col bg-white">
+  <div class="flex items-center justify-between border-t border-gray-200 px-3 py-2">
+    <h3 class="text-sm font-semibold text-gray-700">Workspaces</h3><button type="button" class="inline-flex h-6 w-6 items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-indigo-50 hover:text-indigo-600" title="Add workspace"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button>
+  </div>
+  <!--v-if-->
+  <div class="min-h-0 flex-1 overflow-y-auto px-1 pb-2">
+    <div class="space-y-1">
+      <section class="rounded-md">
+        <div class="group/workspace-row flex items-center rounded-md text-sm text-gray-700 transition-colors hover:bg-gray-50 focus-within:bg-gray-50" data-test="workspace-row" data-workspace-id="workspace:/ws/a" data-workspace-root="/ws/a" aria-expanded="true"><button type="button" class="flex min-w-0 flex-1 items-center px-2 py-1.5 text-left" aria-expanded="true"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1.5 h-4 w-4 text-gray-400 transition-transform rotate-0"></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1.5 h-4 w-4 text-gray-500"></svg><span class="truncate">autobyteus_org</span></button>
+          <!--v-if-->
+        </div>
+        <div class="ml-2 mt-0.5 space-y-1">
+          <!--v-if-->
+          <div class="rounded-md">
+            <div class="flex items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-50"><button type="button" class="flex min-w-0 flex-1 items-center text-left" data-test="workspace-agent-row" data-workspace-root="/ws/a" data-agent-definition-id="agent-def-1" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform -rotate-90"></svg><span class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"><img src="https://example.com/superagent.png" alt="SuperAgent avatar" class="h-full w-full object-cover"></span><span class="truncate font-medium">SuperAgent</span><span class="ml-1 text-xs text-gray-400">(2)</span></button><button type="button" class="ml-2 inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-colors hover:bg-indigo-50 hover:text-indigo-600" title="New run with this agent"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button></div>
+            <!--v-if-->
+          </div>
+          <div class="mt-1 space-y-0.5">
+            <div class="px-2 py-1 text-[0.6875rem] font-semibold uppercase tracking-wide text-gray-400"> Teams </div>
+            <div class="rounded-md"><button type="button" class="flex w-full items-center rounded-md px-2 py-1 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50" data-test="workspace-team-definition-row-team-def-1" aria-expanded="true"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform rotate-0"></svg><span class="h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5" role="img" aria-label="No active team runs" title="No active team runs" data-test="team-activity-dot" data-active="false"></span><span class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"><img src="https://example.com/team-alpha.png" alt="Team Alpha avatar" class="h-full w-full object-cover"></span><span class="truncate font-medium">Team Alpha</span><span class="ml-1 text-xs text-gray-400">(1)</span></button>
+              <div class="ml-3 mt-0.5 space-y-0.5">
+                <div class="rounded-md">
+                  <div class="group/team-row flex items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-50"><button type="button" class="flex min-w-0 flex-1 items-center text-left" data-test="workspace-team-row-temp-team-1" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 flex-shrink-0 text-gray-400 transition-transform -rotate-90" data-test="workspace-team-run-disclosure"></svg><span class="h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5" role="img" aria-label="Inactive team run" title="Inactive team run" data-test="team-activity-dot" data-active="false"></span><span class="truncate font-medium">Draft team summary</span></button>
+                    <div class="ml-2 flex flex-shrink-0 items-center gap-1"><button type="button" class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-amber-50 hover:text-amber-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50" title="Archive team history"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-3.5 w-3.5"></svg></button><button type="button" class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50" title="Delete team history permanently"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-3.5 w-3.5"></svg></button><span class="text-xs text-gray-400">4h</span></div>
+                  </div>
+                  <!--v-if-->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  <!--v-if-->
+  <!--v-if-->
+</div>
+stderr | components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts > Historical team lazy hydration integration > opens a historical team through the sidebar and lazily hydrates only the newly selected member
+Failed to open team: TypeError: (0 , __vite_ssr_import_4__.useTeamRunConfigStore)(...).selectDraft is not a function
+    at openTeamRun (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts:55:29)
+    at openTeamMemberRunFromHistory (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/stores/runHistorySelectionActions.ts:48:20)
+    at Proxy.openTeamMemberRun (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/stores/runHistoryStore.ts:433:7)
+    at selectTreeRunFromHistory (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/stores/runHistorySelectionActions.ts:121:5)
+    at Proxy.selectTreeRun (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/stores/runHistoryStore.ts:440:7)
+    at Object.onSelectTeam (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/composables/useWorkspaceHistorySelectionActions.ts:85:7)
+
+ ❯ components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts (1 test | 1 failed) 111ms
+   × Historical team lazy hydration integration > opens a historical team through the sidebar and lazily hydrates only the newly selected member 110ms
+     → expected undefined to deeply equal { rootTeamRunId: 'team-1', …(3) }
+ ❯ components/mobile/__tests__/MobileUxRefinement.spec.ts (15 tests | 1 failed) 248ms
+   ✓ mobile Round 4 UX refinements > shows mixed-success reachability instead of claiming the desktop is unreachable 18ms
+   ✓ mobile Round 4 UX refinements > uses concise configure-only mobile setup without first-message entry or launch summary 26ms
+   ✓ mobile Round 4 UX refinements > removes team launch first-message target from setup while keeping searchable team selection 19ms
+   ✓ mobile Round 4 UX refinements > keeps mobile launch disabled instead of silently choosing a model for unconfigured agents 8ms
+   ✓ mobile Round 4 UX refinements > consumes a single-use setup intent so selected agents open visible setup preselected 16ms
+   ✓ mobile Round 4 UX refinements > binds agent Auto approve tools to the launch config and created context 28ms
+   × mobile Round 4 UX refinements > binds team Auto approve tools to the launch config, team context, and member configs 18ms
+     → (0 , useAgentTeamContextsStore)(...).createRunFromTemplate is not a function
+   ✓ mobile Round 4 UX refinements > lists launch workspaces from the workspace store and loads an unlisted server path into the active config 20ms
+   ✓ mobile Round 4 UX refinements > keeps context visibility adjacent to the mobile composer send decision 24ms
+   ✓ mobile Round 4 UX refinements > keeps mobile Files browse-first while preserving secondary filters and deliberate deep search 19ms
+   ✓ mobile Round 4 UX refinements > renders Activity as a compact digest without secondary issue filters or redundant headers 5ms
+   ✓ mobile Round 4 UX refinements > renders compaction rows in the mobile run Activity list and count 3ms
+   ✓ mobile Round 4 UX refinements > opens mobile Files from run root-path metadata with an empty workspace store 20ms
+   ✓ mobile Round 4 UX refinements > releases the mobile Files live session when the visible context changes 18ms
+   ✓ mobile Round 4 UX refinements > keeps interactive Terminal and VNC out of mobile refinement surfaces 4ms
+stderr | utils/__tests__/teamDelegatedTaskEntries.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryTeamRows.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentTeamContextsStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryTeamExecutionRows.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/__tests__/teamDelegatedTaskEntries.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentTeamContextsStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryTeamRows.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryTeamExecutionRows.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ utils/__tests__/teamDelegatedTaskEntries.spec.ts (3 tests | 3 failed) 7ms
+   × deriveDelegatedTaskEntries current canonical identity > filters persisted task records by the exact focused sender or receiver execution address 6ms
+     → Team topology contains duplicate canonical addresses.
+   × deriveDelegatedTaskEntries current canonical identity > matches a Team-target record by exact ingress and enriches it from the live task-Team node 1ms
+     → Team topology contains duplicate canonical addresses.
+   × deriveDelegatedTaskEntries current canonical identity > classifies a child-context record by its final exact task-agent identity 0ms
+     → Team topology contains duplicate canonical addresses.
+stdout | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ stores/__tests__/runHistoryTeamExecutionRows.spec.ts (2 tests | 1 failed) 8ms
+   × runHistoryTeamExecutionRows exact addresses > preserves live placement while separating stable and transient execution rows 6ms
+     → Team topology contains duplicate canonical addresses.
+   ✓ runHistoryTeamExecutionRows exact addresses > falls back to stable rooted rows only when no live context exists 1ms
+ ❯ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts (6 tests | 6 failed) 9ms
+   × WorkspaceHistoryWorkspaceSection > renders any-active definition activity and exact sibling run activity reactively 6ms
+     → Team topology contains duplicate canonical addresses.
+   × WorkspaceHistoryWorkspaceSection > renders and selects exact stable and task-Agent execution rows 1ms
+     → Team topology contains duplicate canonical addresses.
+   × WorkspaceHistoryWorkspaceSection > marks only the selected TeamRun current when focused member addresses repeat 1ms
+     → Team topology contains duplicate canonical addresses.
+   × WorkspaceHistoryWorkspaceSection > toggles an exact task-Team subtree while keeping task details out of the tree 1ms
+     → Team topology contains duplicate canonical addresses.
+   × WorkspaceHistoryWorkspaceSection > removes transient execution rows when the exact live projection disappears 1ms
+     → Team topology contains duplicate canonical addresses.
+   × WorkspaceHistoryWorkspaceSection > toggles stable nested Team children from row body and disclosure with exact addresses 0ms
+     → Initial Team focus must resolve to an Agent.
+ ❯ stores/__tests__/runHistoryTeamRows.spec.ts (2 tests | 1 failed) 13ms
+   × runHistoryTeamRows current rooted metadata > builds stable live context rows while filtering transient task executions 10ms
+     → Team topology contains duplicate canonical addresses.
+   ✓ runHistoryTeamRows current rooted metadata > uses structural membership labels rather than Agent definition names 2ms
+stdout | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ stores/__tests__/agentTeamContextsStore.spec.ts (5 tests | 5 failed) 32ms
+   × agentTeamContextsStore > creates exact-address member executions with mixed runtimes from overrides 5ms
+     → store.createRunFromTemplate is not a function
+   × agentTeamContextsStore > keeps rooted nested topology while indexing exact leaf executions 1ms
+     → store.createRunFromTemplate is not a function
+   × agentTeamContextsStore > returns only the currently selected Team context 1ms
+     → store.createRunFromTemplate is not a function
+   × agentTeamContextsStore > changes exact focus without moving another member draft or attachments 2ms
+     → Persistent Agent run binding mismatch for '/agent-1'.
+   × agentTeamContextsStore > focuses an exact persistent member and triggers lazy historical hydration 21ms
+     → Cannot add property historicalHydration, object is not extensible
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts (12 tests) 143ms
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > shows an error toast when terminate fails
+Failed to terminate run 'run-1'.
+
+ ✓ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts (11 tests) 139ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts (50 tests) 1133ms
+stderr | components/workspace/team/__tests__/TeamOverviewPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileTeamMessages.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileArtifacts.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/running/__tests__/RunningTeamRow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/team/__tests__/TeamOverviewPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileTeamMessages.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileArtifacts.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | services/teamExecution/__tests__/teamExecutionState.task-lifecycle.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/team/__tests__/TeamOverviewPanel.spec.ts (7 tests) 159ms
+ ✓ components/mobile/__tests__/MobileTeamMessages.spec.ts (2 tests) 98ms
+ ✓ components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts (8 tests) 140ms
+ ✓ components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts (3 tests) 73ms
+ ✓ components/workspace/team/__tests__/TeamWorkspaceView.spec.ts (12 tests) 86ms
+ ✓ components/mobile/__tests__/MobileArtifacts.spec.ts (4 tests) 53ms
+stdout | components/workspace/running/__tests__/RunningTeamRow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/running/__tests__/RunningTeamRow.spec.ts (4 tests) 56ms
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/teamExecution/__tests__/teamExecutionState.task-lifecycle.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current rooted event dispatch > keeps WebSocket readiness separate from backend Team lifecycle
+Team WebSocket transport connected
+
+ ✓ services/teamExecution/__tests__/teamExecutionState.task-lifecycle.spec.ts (7 tests) 37ms
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.spec.ts (9 tests) 29ms
+stderr | services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/teamCommunicationStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | graphql/queries/__tests__/runHistoryQueries.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/teamRunConfigUtils.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | graphql/queries/__tests__/runHistoryQueries.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ graphql/queries/__tests__/runHistoryQueries.spec.ts (5 tests) 5ms
+stdout | stores/__tests__/teamCommunicationStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts (1 test) 26ms
+ ✓ stores/__tests__/teamCommunicationStore.spec.ts (7 tests) 17ms
+stdout | components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts (5 tests) 29ms
+stdout | utils/__tests__/teamRunConfigUtils.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/__tests__/teamRunConfigUtils.spec.ts (8 tests) 20ms
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts (16 tests) 29ms
+ ✓ components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts (4 tests) 34ms
+stdout | services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts (5 tests) 10ms
+stdout | composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts (4 tests) 9ms
+stderr | composables/__tests__/useWorkspaceHistoryTreeState.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runHydration/__tests__/taskDelegationGraphqlDtoProjection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/mobile/__tests__/useMobileWorkCatalog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/mobileWorkStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/workspace/__tests__/workspaceNavigationService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryTeamMemberProjectionHydrator.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryMetadata.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/__tests__/useWorkspaceHistoryTreeState.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runHydration/__tests__/taskDelegationGraphqlDtoProjection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/mobileWorkStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/mobile/__tests__/useMobileWorkCatalog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/runHydration/__tests__/taskDelegationGraphqlDtoProjection.spec.ts (2 tests) 7ms
+ ✓ stores/__tests__/mobileWorkStore.spec.ts (5 tests) 7ms
+ ✓ composables/__tests__/useWorkspaceHistoryTreeState.spec.ts (7 tests) 8ms
+stdout | composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/workspace/__tests__/workspaceNavigationService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts (2 tests) 6ms
+ ✓ services/workspace/__tests__/workspaceNavigationService.spec.ts (5 tests) 8ms
+ ✓ composables/mobile/__tests__/useMobileWorkCatalog.spec.ts (2 tests) 6ms
+stdout | stores/__tests__/runHistoryTeamMemberProjectionHydrator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/runHistoryTeamMemberProjectionHydrator.spec.ts (1 test) 6ms
+stdout | stores/__tests__/runHistoryMetadata.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/runHistoryMetadata.spec.ts (1 test) 3ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts [ components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts ]
+Error: Failed to resolve import "~/services/agentStreaming/teamTaskExecutionEventRouter" from "components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts:20:53
+  18 |    taskTeamEvent
+  19 |  } from "~/services/agentStreaming/__tests__/currentTaskExecutionFixture";
+  20 |  import { handleTaskExecutionProjectionMessage } from "~/services/agentStreaming/teamTaskExecutionEventRouter";
+     |                                                        ^
+  21 |  import { createTeamExecutionAddress, serializeTeamExecutionAddress } from "~/types/agent/TeamExecutionAddress";
+  22 |  const labels = {
+ ❯ TransformPluginContext._formatLog ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28999:43
+ ❯ TransformPluginContext.error ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28996:14
+ ❯ normalizeUrl ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27119:18
+ ❯ ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27177:32
+ ❯ TransformPluginContext.transform ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27145:4
+ ❯ EnvironmentPluginContainer.transform ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28797:14
+ ❯ loadAndTransform ../node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:22670:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/57]⎯
+
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 56 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  stores/__tests__/agentTeamContextsStore.spec.ts > agentTeamContextsStore > creates exact-address member executions with mixed runtimes from overrides
+TypeError: store.createRunFromTemplate is not a function
+ ❯ stores/__tests__/agentTeamContextsStore.spec.ts:96:26
+     94|     })
+     95| 
+     96|     const teamId = store.createRunFromTemplate()
+       |                          ^
+     97|     const team = store.teams.get(teamId)!
+     98|     expect(team.agentExecutionsByKey.size).toBe(2)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/57]⎯
+
+ FAIL  stores/__tests__/agentTeamContextsStore.spec.ts > agentTeamContextsStore > keeps rooted nested topology while indexing exact leaf executions
+TypeError: store.createRunFromTemplate is not a function
+ ❯ stores/__tests__/agentTeamContextsStore.spec.ts:122:26
+    120|     })
+    121| 
+    122|     const teamId = store.createRunFromTemplate()
+       |                          ^
+    123|     const team = store.teams.get(teamId)!
+    124|     expect(team.rootTeam.children).toMatchObject([
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/57]⎯
+
+ FAIL  stores/__tests__/agentTeamContextsStore.spec.ts > agentTeamContextsStore > returns only the currently selected Team context
+TypeError: store.createRunFromTemplate is not a function
+ ❯ stores/__tests__/agentTeamContextsStore.spec.ts:145:26
+    143|       nodes: [{ memberName: 'agent-1', refType: 'AGENT', ref: 'def-1' …
+    144|     })
+    145|     const teamId = store.createRunFromTemplate()
+       |                          ^
+    146|     expect(store.activeTeamContext?.teamRunId).toBe(teamId)
+    147|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/57]⎯
+
+ FAIL  stores/__tests__/agentTeamContextsStore.spec.ts > agentTeamContextsStore > changes exact focus without moving another member draft or attachments
+Error: Persistent Agent run binding mismatch for '/agent-1'.
+ ❯ services/teamExecution/teamRunFrontendProjectionBuilder.ts:33:68
+     31|     const seed = seedByAddress.get(member.address);
+     32|     if (!seed) throw new Error(`Missing persistent Agent seed for '${m…
+     33|     if (seed.agentContext.state.runId !== member.agentRunId) throw new…
+       |                                                                    ^
+     34|     return Object.freeze({
+     35|       executionAddress: createTeamExecutionAddress({ rootTeamRunId, me…
+ ❯ buildTeamRunFrontendProjection services/teamExecution/teamRunFrontendProjectionBuilder.ts:30:50
+ ❯ Module.buildTestTeamContext test-support/currentTeamTestFixtures.ts:281:19
+ ❯ stores/__tests__/agentTeamContextsStore.spec.ts:155:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/57]⎯
+
+ FAIL  stores/__tests__/agentTeamContextsStore.spec.ts > agentTeamContextsStore > focuses an exact persistent member and triggers lazy historical hydration
+TypeError: Cannot add property historicalHydration, object is not extensible
+ ❯ stores/__tests__/agentTeamContextsStore.spec.ts:179:10
+    177|       rootChildren: [testAgentNode('/member-a'), testAgentNode('/membe…
+    178|     })
+    179|     team.historicalHydration = {
+       |          ^
+    180|       createdAt: '2026-01-01T00:00:00.000Z',
+    181|       updatedAt: '2026-01-01T00:00:00.000Z',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/57]⎯
+
+ FAIL  stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > connects the exact Team context to the bound Team WebSocket endpoint
+AssertionError: expected null to be truthy
+
+- Expected: 
+true
+
++ Received: 
+null
+
+ ❯ stores/__tests__/agentTeamRunStore.spec.ts:157:21
+    155|     const team = twoMemberTeam({ isSubscribed: false }); setActiveTeam…
+    156|     const service = useAgentTeamRunStore().connectToTeamStream(team.te…
+    157|     expect(service).toBeTruthy();
+       |                     ^
+    158|     expect(TeamStreamingService).toHaveBeenCalledWith('ws://node-a.exa…
+    159|       onInterruptCommandResult: expect.any(Function), onInterruptComma…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/57]⎯
+
+ FAIL  stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > terminates once, disconnects, and preserves an offline context for history restore
+TypeError: Cannot read properties of undefined (reading 'get')
+ ❯ stores/__tests__/agentTeamRunStore.spec.ts:167:46
+    165|     const team = twoMemberTeam({ isSubscribed: true }); setActiveTeam(…
+    166|     useAgentTeamRunStore().connectToTeamStream(team.teamRunId);
+    167|     const worker = team.agentExecutionsByKey.get(serializeTeamExecutio…
+       |                                              ^
+    168|     worker.submissionPending = true;
+    169|     mockMutate.mockResolvedValue({ data: { terminateAgentTeamRun: { su…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/57]⎯
+
+ FAIL  stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > does not mutate local lifecycle when backend termination rejects
+TypeError: Cannot read properties of undefined (reading 'trim')
+ ❯ Proxy.terminateTeamRun stores/agentTeamRunStore.ts:89:26
+     87|     async terminateTeamRun(rootTeamRunId: string): Promise<boolean> {
+     88|       const team = useAgentTeamContextsStore().getTeamContextById(root…
+     89|       if (!rootTeamRunId.trim() || this.stopPendingTeamIds[rootTeamRun…
+       |                          ^
+     90|       this.stopPendingTeamIds = { ...this.stopPendingTeamIds, [rootTea…
+     91|       try {
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ stores/__tests__/agentTeamRunStore.spec.ts:181:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/57]⎯
+
+ FAIL  stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > deduplicates concurrent Stop requests while the first mutation is pending
+TypeError: Cannot read properties of undefined (reading 'trim')
+ ❯ Proxy.terminateTeamRun stores/agentTeamRunStore.ts:89:26
+     87|     async terminateTeamRun(rootTeamRunId: string): Promise<boolean> {
+     88|       const team = useAgentTeamContextsStore().getTeamContextById(root…
+     89|       if (!rootTeamRunId.trim() || this.stopPendingTeamIds[rootTeamRun…
+       |                          ^
+     90|       this.stopPendingTeamIds = { ...this.stopPendingTeamIds, [rootTea…
+     91|       try {
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ stores/__tests__/agentTeamRunStore.spec.ts:190:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/57]⎯
+
+ FAIL  stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > discards a temporary Team locally without a backend termination
+TypeError: useAgentTeamRunStore(...).discardDraftTeamRun is not a function
+ ❯ stores/__tests__/agentTeamRunStore.spec.ts:198:35
+    196|     const team = twoMemberTeam({ teamRunId: 'temp-team-1', isSubscribe…
+    197|     useAgentTeamRunStore().connectToTeamStream(team.teamRunId);
+    198|     expect(useAgentTeamRunStore().discardDraftTeamRun(team.teamRunId))…
+       |                                   ^
+    199|     expect(mockMutate).not.toHaveBeenCalled();
+    200|     expect(teamContextsStoreMock.removeTeamContext).toHaveBeenCalledWi…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/57]⎯
+
+ FAIL  stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > sends to the exact focused persistent execution and records the local submission
+TypeError: Cannot read properties of undefined (reading 'trim')
+ ❯ Module.createTeamExecutionAddress types/agent/TeamExecutionAddress.ts:34:45
+     32|     throw new Error('TeamExecutionAddress contains an unsupported iden…
+     33|   }
+     34|   const rootTeamRunId = input.rootTeamRunId.trim();
+       |                                             ^
+     35|   if (!rootTeamRunId) throw new Error('rootTeamRunId is required.');
+     36|   const taskTeamRunIds = [...(input.taskTeamRunIds ?? [])].map((id) =>…
+ ❯ execution stores/__tests__/agentTeamRunStore.spec.ts:83:28
+ ❯ stores/__tests__/agentTeamRunStore.spec.ts:207:76
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/57]⎯
+
+ FAIL  stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > restores an inactive persisted Team before sending to the unchanged execution address
+TypeError: Cannot destructure property 'data' of '(intermediate value)' as it is undefined.
+ ❯ loadTeamRunContextHydrationPayload services/runHydration/teamRunContextHydrationService.ts:266:11
+    264|   input: LoadTeamRunContextHydrationInput,
+    265| ): Promise<LoadedTeamRunContextHydrationPayload> => {
+    266|   const { data, errors } = await getApolloClient().query<GetTeamRunRes…
+       |           ^
+    267|     query: GetTeamRunResumeConfig,
+    268|     variables: { teamRunId: input.teamRunId },
+ ❯ hydrateLiveTeamRunContext services/runHydration/teamRunContextHydrationService.ts:295:19
+ ❯ Proxy.hydrateRun stores/agentTeamRunStore.ts:184:23
+ ❯ Proxy.sendMessageToFocusedMember stores/agentTeamRunStore.ts:137:28
+ ❯ stores/__tests__/agentTeamRunStore.spec.ts:218:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/57]⎯
+
+ FAIL  stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > fails closed when the focused execution is absent instead of selecting another member
+TypeError: Cannot read properties of undefined (reading 'trim')
+ ❯ Module.createTeamExecutionAddress types/agent/TeamExecutionAddress.ts:34:45
+     32|     throw new Error('TeamExecutionAddress contains an unsupported iden…
+     33|   }
+     34|   const rootTeamRunId = input.rootTeamRunId.trim();
+       |                                             ^
+     35|   if (!rootTeamRunId) throw new Error('rootTeamRunId is required.');
+     36|   const taskTeamRunIds = [...(input.taskTeamRunIds ?? [])].map((id) =>…
+ ❯ execution stores/__tests__/agentTeamRunStore.spec.ts:83:28
+ ❯ stores/__tests__/agentTeamRunStore.spec.ts:225:66
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/57]⎯
+
+ FAIL  stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > launches a nested mixed-runtime Team with exact rooted memberAddress inputs and focused target
+TypeError: Cannot convert undefined or null to object
+ ❯ stores/__tests__/agentTeamRunStore.spec.ts:244:12
+    242|       workspaceRootPath: '/tmp/test-workspace',
+    243|     });
+    244|     Object.assign(team.config, {
+       |            ^
+    245|       runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-5.4', …
+    246|       memberOverrides: {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/57]⎯
+
+ FAIL  stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > does not synthesize an approval target and preserves an explicit event target
+TypeError: Cannot read properties of undefined (reading 'trim')
+ ❯ Module.createTeamExecutionAddress types/agent/TeamExecutionAddress.ts:34:45
+     32|     throw new Error('TeamExecutionAddress contains an unsupported iden…
+     33|   }
+     34|   const rootTeamRunId = input.rootTeamRunId.trim();
+       |                                             ^
+     35|   if (!rootTeamRunId) throw new Error('rootTeamRunId is required.');
+     36|   const taskTeamRunIds = [...(input.taskTeamRunIds ?? [])].map((id) =>…
+ ❯ execution stores/__tests__/agentTeamRunStore.spec.ts:83:28
+ ❯ stores/__tests__/agentTeamRunStore.spec.ts:271:42
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/57]⎯
+
+ FAIL  stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > reattaches an existing stream service to the latest context
+AssertionError: expected "spy" to be called 1 times, but got 0 times
+ ❯ stores/__tests__/agentTeamRunStore.spec.ts:282:34
+    280|     store.connectToTeamStream(original.teamRunId); const replacement =…
+    281|     teamContextsStoreMock.getTeamContextById.mockReturnValue(replaceme…
+    282|     expect(TeamStreamingService).toHaveBeenCalledTimes(1); expect(mock…
+       |                                  ^
+    283|   });
+    284| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/57]⎯
+
+ FAIL  stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > interrupts only the exact same-root execution and leaves submission state for the ack
+TypeError: Cannot read properties of undefined (reading 'get')
+ ❯ stores/__tests__/agentTeamRunStore.spec.ts:287:46
+    285|   it('interrupts only the exact same-root execution and leaves submiss…
+    286|     const team = twoMemberTeam(); setActiveTeam(team); const store = u…
+    287|     const worker = team.agentExecutionsByKey.get(serializeTeamExecutio…
+       |                                              ^
+    288|     worker.submissionPending = true; const target = execution(team.tea…
+    289|     expect(store.interruptFocusedMemberGeneration({ teamRunId: team.te…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/57]⎯
+
+ FAIL  stores/__tests__/runHistoryNavigationProjection.spec.ts > runHistoryNavigationProjection current exact execution identity > publishes stable and transient rows, exact focus/indexes, and reconciles equal branches
+Error: Team topology contains duplicate canonical addresses.
+ ❯ createTeamTopologySnapshot services/teamExecution/teamTopologySnapshot.ts:127:46
+    125|   const nodes = collectNodes(rootTeam);
+    126|   const byAddress = new Map(nodes.map((node) => [node.address, node] a…
+    127|   if (byAddress.size !== nodes.length) throw new Error('Team topology …
+       |                                              ^
+    128|   const configuration = freezeConfigurationView(input.configuration);
+    129|   return Object.freeze({
+ ❯ buildTeamRunFrontendProjection services/teamExecution/teamRunFrontendProjectionBuilder.ts:24:20
+ ❯ buildTestTeamContext test-support/currentTeamTestFixtures.ts:281:19
+ ❯ buildTeamContext stores/__tests__/runHistoryNavigationProjection.spec.ts:63:10
+ ❯ buildProjection stores/__tests__/runHistoryNavigationProjection.spec.ts:99:5
+ ❯ stores/__tests__/runHistoryNavigationProjection.spec.ts:106:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/57]⎯
+
+ FAIL  stores/__tests__/runHistoryNavigationProjection.spec.ts > runHistoryNavigationProjection current exact execution identity > reuses an unrelated workspace Team bucket when one Team topology changes
+Error: Team topology contains duplicate canonical addresses.
+ ❯ createTeamTopologySnapshot services/teamExecution/teamTopologySnapshot.ts:127:46
+    125|   const nodes = collectNodes(rootTeam);
+    126|   const byAddress = new Map(nodes.map((node) => [node.address, node] a…
+    127|   if (byAddress.size !== nodes.length) throw new Error('Team topology …
+       |                                              ^
+    128|   const configuration = freezeConfigurationView(input.configuration);
+    129|   return Object.freeze({
+ ❯ buildTeamRunFrontendProjection services/teamExecution/teamRunFrontendProjectionBuilder.ts:24:20
+ ❯ buildTestTeamContext test-support/currentTeamTestFixtures.ts:281:19
+ ❯ buildTeamContext stores/__tests__/runHistoryNavigationProjection.spec.ts:63:10
+ ❯ buildProjection stores/__tests__/runHistoryNavigationProjection.spec.ts:99:5
+ ❯ stores/__tests__/runHistoryNavigationProjection.spec.ts:134:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/57]⎯
+
+ FAIL  stores/__tests__/runHistoryNavigationProjection.spec.ts > runHistoryNavigationProjection current exact execution identity > patches only the indexed standalone branch and skips activity in the same minute bucket
+Error: Team topology contains duplicate canonical addresses.
+ ❯ createTeamTopologySnapshot services/teamExecution/teamTopologySnapshot.ts:127:46
+    125|   const nodes = collectNodes(rootTeam);
+    126|   const byAddress = new Map(nodes.map((node) => [node.address, node] a…
+    127|   if (byAddress.size !== nodes.length) throw new Error('Team topology …
+       |                                              ^
+    128|   const configuration = freezeConfigurationView(input.configuration);
+    129|   return Object.freeze({
+ ❯ buildTeamRunFrontendProjection services/teamExecution/teamRunFrontendProjectionBuilder.ts:24:20
+ ❯ buildTestTeamContext test-support/currentTeamTestFixtures.ts:281:19
+ ❯ buildTeamContext stores/__tests__/runHistoryNavigationProjection.spec.ts:63:10
+ ❯ buildProjection stores/__tests__/runHistoryNavigationProjection.spec.ts:99:5
+ ❯ stores/__tests__/runHistoryNavigationProjection.spec.ts:144:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/57]⎯
+
+ FAIL  stores/__tests__/runHistoryNavigationProjection.spec.ts > runHistoryNavigationProjection current exact execution identity > applies tight task-row and exact-focus patches while equal/detail-free changes do no work
+Error: Team topology contains duplicate canonical addresses.
+ ❯ createTeamTopologySnapshot services/teamExecution/teamTopologySnapshot.ts:127:46
+    125|   const nodes = collectNodes(rootTeam);
+    126|   const byAddress = new Map(nodes.map((node) => [node.address, node] a…
+    127|   if (byAddress.size !== nodes.length) throw new Error('Team topology …
+       |                                              ^
+    128|   const configuration = freezeConfigurationView(input.configuration);
+    129|   return Object.freeze({
+ ❯ buildTeamRunFrontendProjection services/teamExecution/teamRunFrontendProjectionBuilder.ts:24:20
+ ❯ buildTestTeamContext test-support/currentTeamTestFixtures.ts:281:19
+ ❯ buildTeamContext stores/__tests__/runHistoryNavigationProjection.spec.ts:63:10
+ ❯ buildProjection stores/__tests__/runHistoryNavigationProjection.spec.ts:99:5
+ ❯ stores/__tests__/runHistoryNavigationProjection.spec.ts:160:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/57]⎯
+
+ FAIL  stores/__tests__/runHistoryNavigationProjection.spec.ts > runHistoryNavigationProjection current exact execution identity > applies combined status, summary, and activity through one exact Team branch patch
+Error: Team topology contains duplicate canonical addresses.
+ ❯ createTeamTopologySnapshot services/teamExecution/teamTopologySnapshot.ts:127:46
+    125|   const nodes = collectNodes(rootTeam);
+    126|   const byAddress = new Map(nodes.map((node) => [node.address, node] a…
+    127|   if (byAddress.size !== nodes.length) throw new Error('Team topology …
+       |                                              ^
+    128|   const configuration = freezeConfigurationView(input.configuration);
+    129|   return Object.freeze({
+ ❯ buildTeamRunFrontendProjection services/teamExecution/teamRunFrontendProjectionBuilder.ts:24:20
+ ❯ buildTestTeamContext test-support/currentTeamTestFixtures.ts:281:19
+ ❯ buildTeamContext stores/__tests__/runHistoryNavigationProjection.spec.ts:63:10
+ ❯ buildProjection stores/__tests__/runHistoryNavigationProjection.spec.ts:99:5
+ ❯ stores/__tests__/runHistoryNavigationProjection.spec.ts:187:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/57]⎯
+
+ FAIL  stores/__tests__/runHistoryNavigationProjection.spec.ts > runHistoryNavigationProjection current exact execution identity > patches the root Team lifecycle and no-ops an equal snapshot
+Error: Team topology contains duplicate canonical addresses.
+ ❯ createTeamTopologySnapshot services/teamExecution/teamTopologySnapshot.ts:127:46
+    125|   const nodes = collectNodes(rootTeam);
+    126|   const byAddress = new Map(nodes.map((node) => [node.address, node] a…
+    127|   if (byAddress.size !== nodes.length) throw new Error('Team topology …
+       |                                              ^
+    128|   const configuration = freezeConfigurationView(input.configuration);
+    129|   return Object.freeze({
+ ❯ buildTeamRunFrontendProjection services/teamExecution/teamRunFrontendProjectionBuilder.ts:24:20
+ ❯ buildTestTeamContext test-support/currentTeamTestFixtures.ts:281:19
+ ❯ buildTeamContext stores/__tests__/runHistoryNavigationProjection.spec.ts:63:10
+ ❯ buildProjection stores/__tests__/runHistoryNavigationProjection.spec.ts:99:5
+ ❯ stores/__tests__/runHistoryNavigationProjection.spec.ts:215:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/57]⎯
+
+ FAIL  stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > fetchWorkspaceHistory does not reconcile unrelated active contexts outside the scoped workspace
+TypeError: Cannot set properties of undefined (setting 'workspaceId')
+ ❯ stores/__tests__/runHistoryStore.spec.ts:681:30
+    679|       isSubscribed: true,
+    680|     });
+    681|     activeTeamContext.config.workspaceId = 'ws-b';
+       |                              ^
+    682|     const activeTeamMemberContext = activeTeamContext.agentExecutionsB…
+    683|       serializeTeamExecutionAddress(createTeamExecutionAddress({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/57]⎯
+
+ FAIL  stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > preserves subscribed live member statuses while refreshing root team activity
+TypeError: Cannot set properties of undefined (setting 'workspaceId')
+ ❯ stores/__tests__/runHistoryStore.spec.ts:954:21
+    952|       isSubscribed: true,
+    953|     });
+    954|     liveTeam.config.workspaceId = 'ws-1';
+       |                     ^
+    955|     liveTeam.config.isLocked = false;
+    956|     const liveMember = (memberAddress: string) => liveTeam.agentExecut…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/57]⎯
+
+ FAIL  stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > opens a run, hydrates projection, selects runContext, and connects stream when active
+TypeError: agentRunStore.isAgentStreamReady is not a function
+ ❯ openAgentRun services/runOpen/agentRunOpenCoordinator.ts:42:41
+     40|   const existingContext = agentContextsStore.getRun(input.runId);
+     41|   const agentRunStore = useAgentRunStore();
+     42|   const streamConnected = agentRunStore.isAgentStreamReady(input.runId…
+       |                                         ^
+     43|   const shouldTreatAsLive = resumeConfig.isActive;
+     44|   const strategy = decideRunOpenStrategy({
+ ❯ openHistoricalRun stores/runHistoryLoadActions.ts:277:20
+ ❯ Proxy.openRun stores/runHistoryStore.ts:126:7
+ ❯ stores/__tests__/runHistoryStore.spec.ts:1147:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/57]⎯
+
+ FAIL  stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > opens an inactive run and hydrates offline status without connecting stream
+TypeError: agentRunStore.isAgentStreamReady is not a function
+ ❯ openAgentRun services/runOpen/agentRunOpenCoordinator.ts:42:41
+     40|   const existingContext = agentContextsStore.getRun(input.runId);
+     41|   const agentRunStore = useAgentRunStore();
+     42|   const streamConnected = agentRunStore.isAgentStreamReady(input.runId…
+       |                                         ^
+     43|   const shouldTreatAsLive = resumeConfig.isActive;
+     44|   const strategy = decideRunOpenStrategy({
+ ❯ openHistoricalRun stores/runHistoryLoadActions.ts:277:20
+ ❯ Proxy.openRun stores/runHistoryStore.ts:126:7
+ ❯ stores/__tests__/runHistoryStore.spec.ts:1263:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/57]⎯
+
+ FAIL  stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > trusts history active state and reconnects an agent stream when reopening an active run
+TypeError: agentRunStore.isAgentStreamReady is not a function
+ ❯ openAgentRun services/runOpen/agentRunOpenCoordinator.ts:42:41
+     40|   const existingContext = agentContextsStore.getRun(input.runId);
+     41|   const agentRunStore = useAgentRunStore();
+     42|   const streamConnected = agentRunStore.isAgentStreamReady(input.runId…
+       |                                         ^
+     43|   const shouldTreatAsLive = resumeConfig.isActive;
+     44|   const strategy = decideRunOpenStrategy({
+ ❯ openHistoricalRun stores/runHistoryLoadActions.ts:277:20
+ ❯ Proxy.openRun stores/runHistoryStore.ts:126:7
+ ❯ stores/__tests__/runHistoryStore.spec.ts:1364:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/57]⎯
+
+ FAIL  stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > does not clobber live active context state when reopening an already subscribed run
+TypeError: agentRunStore.isAgentStreamReady is not a function
+ ❯ openAgentRun services/runOpen/agentRunOpenCoordinator.ts:42:41
+     40|   const existingContext = agentContextsStore.getRun(input.runId);
+     41|   const agentRunStore = useAgentRunStore();
+     42|   const streamConnected = agentRunStore.isAgentStreamReady(input.runId…
+       |                                         ^
+     43|   const shouldTreatAsLive = resumeConfig.isActive;
+     44|   const strategy = decideRunOpenStrategy({
+ ❯ openHistoricalRun stores/runHistoryLoadActions.ts:277:20
+ ❯ Proxy.openRun stores/runHistoryStore.ts:126:7
+ ❯ stores/__tests__/runHistoryStore.spec.ts:1476:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/57]⎯
+
+ FAIL  stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > archiveTeamRun rejects draft team IDs without backend mutation call
+AssertionError: expected "spy" to not be called at all, but actually been called 1 times
+
+Received: 
+
+  1st spy call:
+
+    Array [
+      Object {
+        "mutation": Object {
+          "definitions": Array [
+            Object {
+              "description": undefined,
+              "directives": Array [],
+              "kind": "OperationDefinition",
+              "name": Object {
+                "kind": "Name",
+                "value": "ArchiveStoredTeamRun",
+              },
+              "operation": "mutation",
+              "selectionSet": Object {
+                "kind": "SelectionSet",
+                "selections": Array [
+                  Object {
+                    "alias": undefined,
+                    "arguments": Array [
+                      Object {
+                        "kind": "Argument",
+                        "name": [Object],
+                        "value": [Object],
+                      },
+                    ],
+                    "directives": Array [],
+                    "kind": "Field",
+                    "name": Object {
+                      "kind": "Name",
+                      "value": "archiveStoredTeamRun",
+                    },
+                    "selectionSet": Object {
+                      "kind": "SelectionSet",
+                      "selections": Array [
+                        [Object],
+                        [Object],
+                      ],
+                    },
+                  },
+                ],
+              },
+              "variableDefinitions": Array [
+                Object {
+                  "defaultValue": undefined,
+                  "description": undefined,
+                  "directives": Array [],
+                  "kind": "VariableDefinition",
+                  "type": Object {
+                    "kind": "NonNullType",
+                    "type": Object {
+                      "kind": "NamedType",
+                      "name": Object {
+                        "kind": "Name",
+                        "value": "String",
+                      },
+                    },
+                  },
+                  "variable": Object {
+                    "kind": "Variable",
+                    "name": Object {
+                      "kind": "Name",
+                      "value": "teamRunId",
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+          "kind": "Document",
+          "loc": Object {
+            "end": 144,
+            "start": 0,
+          },
+        },
+        "variables": Object {
+          "teamRunId": "temp-team-123",
+        },
+      },
+    ]
+
+
+Number of calls: 1
+
+ ❯ stores/__tests__/runHistoryStore.spec.ts:2368:28
+    2366| 
+    2367|     expect(archived).toBe(false);
+    2368|     expect(mutateMock).not.toHaveBeenCalled();
+       |                            ^
+    2369|   });
+    2370| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[31/57]⎯
+
+ FAIL  stores/__tests__/runHistoryTeamExecutionRows.spec.ts > runHistoryTeamExecutionRows exact addresses > preserves live placement while separating stable and transient execution rows
+Error: Team topology contains duplicate canonical addresses.
+ ❯ createTeamTopologySnapshot services/teamExecution/teamTopologySnapshot.ts:127:46
+    125|   const nodes = collectNodes(rootTeam);
+    126|   const byAddress = new Map(nodes.map((node) => [node.address, node] a…
+    127|   if (byAddress.size !== nodes.length) throw new Error('Team topology …
+       |                                              ^
+    128|   const configuration = freezeConfigurationView(input.configuration);
+    129|   return Object.freeze({
+ ❯ buildTeamRunFrontendProjection services/teamExecution/teamRunFrontendProjectionBuilder.ts:24:20
+ ❯ buildTestTeamContext test-support/currentTeamTestFixtures.ts:281:19
+ ❯ stores/__tests__/runHistoryTeamExecutionRows.spec.ts:103:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[32/57]⎯
+
+ FAIL  stores/__tests__/runHistoryTeamRows.spec.ts > runHistoryTeamRows current rooted metadata > builds stable live context rows while filtering transient task executions
+Error: Team topology contains duplicate canonical addresses.
+ ❯ createTeamTopologySnapshot services/teamExecution/teamTopologySnapshot.ts:127:46
+    125|   const nodes = collectNodes(rootTeam);
+    126|   const byAddress = new Map(nodes.map((node) => [node.address, node] a…
+    127|   if (byAddress.size !== nodes.length) throw new Error('Team topology …
+       |                                              ^
+    128|   const configuration = freezeConfigurationView(input.configuration);
+    129|   return Object.freeze({
+ ❯ buildTeamRunFrontendProjection services/teamExecution/teamRunFrontendProjectionBuilder.ts:24:20
+ ❯ buildTestTeamContext test-support/currentTeamTestFixtures.ts:281:19
+ ❯ stores/__tests__/runHistoryTeamRows.spec.ts:65:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[33/57]⎯
+
+ FAIL  utils/__tests__/teamActiveExecutionMembers.spec.ts > teamActiveExecutionMembers current execution tree > falls back from a settled task-agent-only logical member to the coordinator
+AssertionError: expected { …(4) } to deeply equal { …(4) }
+
+- Expected
++ Received
+
+  {
+-   "memberAddress": "/coordinator",
++   "memberAddress": "/worker",
+    "rootTeamRunId": "team-active-execution-1",
+    "taskAgentRunId": null,
+    "taskTeamRunIds": [],
+  }
+
+ ❯ utils/__tests__/teamActiveExecutionMembers.spec.ts:82:73
+     80| 
+     81|     expect(entryIds(team)).toEqual(['/coordinator']);
+     82|     expect(resolveActiveExecutionFocus(team, stableAddress('/worker'))…
+       |                                                                         ^
+     83|   });
+     84| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[34/57]⎯
+
+ FAIL  utils/__tests__/teamActiveExecutionMembers.spec.ts > teamActiveExecutionMembers current execution tree > keeps the exact concrete task-agent execution visible when its logical member is inactive
+Error: Team topology contains duplicate canonical addresses.
+ ❯ createTeamTopologySnapshot services/teamExecution/teamTopologySnapshot.ts:127:46
+    125|   const nodes = collectNodes(rootTeam);
+    126|   const byAddress = new Map(nodes.map((node) => [node.address, node] a…
+    127|   if (byAddress.size !== nodes.length) throw new Error('Team topology …
+       |                                              ^
+    128|   const configuration = freezeConfigurationView(input.configuration);
+    129|   return Object.freeze({
+ ❯ buildTeamRunFrontendProjection services/teamExecution/teamRunFrontendProjectionBuilder.ts:24:20
+ ❯ buildTestTeamContext test-support/currentTeamTestFixtures.ts:281:19
+ ❯ buildTeam utils/__tests__/teamActiveExecutionMembers.spec.ts:48:10
+ ❯ utils/__tests__/teamActiveExecutionMembers.spec.ts:95:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[35/57]⎯
+
+ FAIL  utils/__tests__/teamActiveExecutionMembers.spec.ts > teamActiveExecutionMembers current execution tree > does not treat a task-agent-only logical member conversation as active execution
+AssertionError: expected { …(4) } to deeply equal { …(4) }
+
+- Expected
++ Received
+
+  {
+-   "memberAddress": "/coordinator",
++   "memberAddress": "/worker",
+    "rootTeamRunId": "team-active-execution-1",
+    "taskAgentRunId": null,
+    "taskTeamRunIds": [],
+  }
+
+ ❯ utils/__tests__/teamActiveExecutionMembers.spec.ts:118:73
+    116| 
+    117|     expect(entryIds(team)).toEqual(['/coordinator']);
+    118|     expect(resolveActiveExecutionFocus(team, stableAddress('/worker'))…
+       |                                                                         ^
+    119|   });
+    120| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[36/57]⎯
+
+ FAIL  utils/__tests__/teamActiveExecutionMembers.spec.ts > teamActiveExecutionMembers current execution tree > includes task-Team roots, scoped children, and nested task Agents together
+Error: Team topology contains duplicate canonical addresses.
+ ❯ createTeamTopologySnapshot services/teamExecution/teamTopologySnapshot.ts:127:46
+    125|   const nodes = collectNodes(rootTeam);
+    126|   const byAddress = new Map(nodes.map((node) => [node.address, node] a…
+    127|   if (byAddress.size !== nodes.length) throw new Error('Team topology …
+       |                                              ^
+    128|   const configuration = freezeConfigurationView(input.configuration);
+    129|   return Object.freeze({
+ ❯ buildTeamRunFrontendProjection services/teamExecution/teamRunFrontendProjectionBuilder.ts:24:20
+ ❯ buildTestTeamContext test-support/currentTeamTestFixtures.ts:281:19
+ ❯ buildTeam utils/__tests__/teamActiveExecutionMembers.spec.ts:48:10
+ ❯ utils/__tests__/teamActiveExecutionMembers.spec.ts:168:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[37/57]⎯
+
+ FAIL  utils/__tests__/teamDelegatedTaskEntries.spec.ts > deriveDelegatedTaskEntries current canonical identity > filters persisted task records by the exact focused sender or receiver execution address
+Error: Team topology contains duplicate canonical addresses.
+ ❯ createTeamTopologySnapshot services/teamExecution/teamTopologySnapshot.ts:127:46
+    125|   const nodes = collectNodes(rootTeam);
+    126|   const byAddress = new Map(nodes.map((node) => [node.address, node] a…
+    127|   if (byAddress.size !== nodes.length) throw new Error('Team topology …
+       |                                              ^
+    128|   const configuration = freezeConfigurationView(input.configuration);
+    129|   return Object.freeze({
+ ❯ buildTeamRunFrontendProjection services/teamExecution/teamRunFrontendProjectionBuilder.ts:24:20
+ ❯ buildTestTeamContext test-support/currentTeamTestFixtures.ts:281:19
+ ❯ teamContext utils/__tests__/teamDelegatedTaskEntries.spec.ts:79:10
+ ❯ utils/__tests__/teamDelegatedTaskEntries.spec.ts:97:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[38/57]⎯
+
+ FAIL  utils/__tests__/teamDelegatedTaskEntries.spec.ts > deriveDelegatedTaskEntries current canonical identity > matches a Team-target record by exact ingress and enriches it from the live task-Team node
+Error: Team topology contains duplicate canonical addresses.
+ ❯ createTeamTopologySnapshot services/teamExecution/teamTopologySnapshot.ts:127:46
+    125|   const nodes = collectNodes(rootTeam);
+    126|   const byAddress = new Map(nodes.map((node) => [node.address, node] a…
+    127|   if (byAddress.size !== nodes.length) throw new Error('Team topology …
+       |                                              ^
+    128|   const configuration = freezeConfigurationView(input.configuration);
+    129|   return Object.freeze({
+ ❯ buildTeamRunFrontendProjection services/teamExecution/teamRunFrontendProjectionBuilder.ts:24:20
+ ❯ buildTestTeamContext test-support/currentTeamTestFixtures.ts:281:19
+ ❯ teamContext utils/__tests__/teamDelegatedTaskEntries.spec.ts:79:10
+ ❯ utils/__tests__/teamDelegatedTaskEntries.spec.ts:113:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39/57]⎯
+
+ FAIL  utils/__tests__/teamDelegatedTaskEntries.spec.ts > deriveDelegatedTaskEntries current canonical identity > classifies a child-context record by its final exact task-agent identity
+Error: Team topology contains duplicate canonical addresses.
+ ❯ createTeamTopologySnapshot services/teamExecution/teamTopologySnapshot.ts:127:46
+    125|   const nodes = collectNodes(rootTeam);
+    126|   const byAddress = new Map(nodes.map((node) => [node.address, node] a…
+    127|   if (byAddress.size !== nodes.length) throw new Error('Team topology …
+       |                                              ^
+    128|   const configuration = freezeConfigurationView(input.configuration);
+    129|   return Object.freeze({
+ ❯ buildTeamRunFrontendProjection services/teamExecution/teamRunFrontendProjectionBuilder.ts:24:20
+ ❯ buildTestTeamContext test-support/currentTeamTestFixtures.ts:281:19
+ ❯ teamContext utils/__tests__/teamDelegatedTaskEntries.spec.ts:79:10
+ ❯ utils/__tests__/teamDelegatedTaskEntries.spec.ts:138:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[40/57]⎯
+
+ FAIL  components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > binds team Auto approve tools to the launch config, team context, and member configs
+TypeError: (0 , useAgentTeamContextsStore)(...).createRunFromTemplate is not a function
+ ❯ components/mobile/__tests__/MobileUxRefinement.spec.ts:562:51
+    560|     ]);
+    561| 
+    562|     const teamRunId = useAgentTeamContextsStore().createRunFromTemplat…
+       |                                                   ^
+    563|       selectionMode: "mobile",
+    564|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[41/57]⎯
+
+ FAIL  services/runHydration/__tests__/teamRunContextHydrationService.spec.ts > hydrateLiveTeamRunContext Event Monitor final-prime ownership > primes each real loader/builder context exactly once 'after projected activity hydration'
+ FAIL  services/runHydration/__tests__/teamRunContextHydrationService.spec.ts > hydrateLiveTeamRunContext Event Monitor final-prime ownership > primes each real loader/builder context exactly once 'when the member projection is absent'
+Error: [vitest] No "fetchTaskDelegationRecordsForTeam" export is defined on the "../taskDelegationHydrationService" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+vi.mock(import("../taskDelegationHydrationService"), async (importOriginal) => {
+  const actual = await importOriginal()
+  return {
+    ...actual,
+    // your mocked methods
+  }
+})
+
+ ❯ fetchTeamOwnedRecords services/runHydration/teamRunContextHydrationService.ts:178:5
+    176|   const [, taskDelegationRecords] = await Promise.all([
+    177|     fetchAndHydrateTeamCommunicationForTeam({ client, teamRunId }),
+    178|     fetchTaskDelegationRecordsForTeam({ client, teamRunId }),
+       |     ^
+    179|   ]);
+    180|   return taskDelegationRecords;
+ ❯ loadRuntimePayload services/runHydration/teamRunContextHydrationService.ts:200:39
+ ❯ Module.hydrateLiveTeamRunContext services/runHydration/teamRunContextHydrationService.ts:295:19
+ ❯ services/runHydration/__tests__/teamRunContextHydrationService.spec.ts:143:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[42/57]⎯
+
+ FAIL  services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts > openTeamRun current exact execution identity > preserves a subscribed live member context and establishes the final baseline once
+TypeError: (0 , useTeamRunConfigStore)(...).selectDraft is not a function
+ ❯ Module.openTeamRun services/runOpen/teamRunOpenCoordinator.ts:55:29
+     53|       ? selection.selectRunWithoutShellNavigation(input.teamRunId, 'te…
+     54|       : selection.selectRun(input.teamRunId, 'team');
+     55|     useTeamRunConfigStore().selectDraft(null);
+       |                             ^
+     56|     useAgentRunConfigStore().clearConfig();
+     57|   }
+ ❯ services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts:136:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[43/57]⎯
+
+ FAIL  services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts > openTeamRun current exact execution identity > adds one fresh hydrated current Team context with exact rooted members
+TypeError: (0 , useTeamRunConfigStore)(...).selectDraft is not a function
+ ❯ Module.openTeamRun services/runOpen/teamRunOpenCoordinator.ts:55:29
+     53|       ? selection.selectRunWithoutShellNavigation(input.teamRunId, 'te…
+     54|       : selection.selectRun(input.teamRunId, 'team');
+     55|     useTeamRunConfigStore().selectDraft(null);
+       |                             ^
+     56|     useAgentRunConfigStore().clearConfig();
+     57|   }
+ ❯ services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts:155:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[44/57]⎯
+
+ FAIL  services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts > openTeamRun current exact execution identity > hydrates only a newly introduced exact member while preserving an existing live member
+TypeError: (0 , useTeamRunConfigStore)(...).selectDraft is not a function
+ ❯ Module.openTeamRun services/runOpen/teamRunOpenCoordinator.ts:55:29
+     53|       ? selection.selectRunWithoutShellNavigation(input.teamRunId, 'te…
+     54|       : selection.selectRun(input.teamRunId, 'team');
+     55|     useTeamRunConfigStore().selectDraft(null);
+       |                             ^
+     56|     useAgentRunConfigStore().clearConfig();
+     57|   }
+ ❯ services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts:183:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[45/57]⎯
+
+ FAIL  services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts > openTeamRun current exact execution identity > preserves an exact requested task-Agent focus present in the subscribed execution map
+TypeError: Cannot read properties of undefined (reading 'set')
+ ❯ services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts:198:35
+    196|     const taskContext = testAgentContext({ runId: 'task-agent-run-1', …
+    197|     const existing = makeTeam();
+    198|     existing.agentExecutionsByKey.set(serializeTeamExecutionAddress(ta…
+       |                                   ^
+    199|     const hydrated = makeTeam({ focus: address('/member-a') });
+    200|     getTeamContextByIdMock.mockReturnValue(existing);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[46/57]⎯
+
+ FAIL  services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts > openTeamRun current exact execution identity > falls back to the hydrated focus when a requested execution identity is absent
+TypeError: (0 , useTeamRunConfigStore)(...).selectDraft is not a function
+ ❯ Module.openTeamRun services/runOpen/teamRunOpenCoordinator.ts:55:29
+     53|       ? selection.selectRunWithoutShellNavigation(input.teamRunId, 'te…
+     54|       : selection.selectRun(input.teamRunId, 'team');
+     55|     useTeamRunConfigStore().selectDraft(null);
+       |                             ^
+     56|     useAgentRunConfigStore().clearConfig();
+     57|   }
+ ❯ services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts:223:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[47/57]⎯
+
+ FAIL  services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts > openTeamRun current exact execution identity > replaces an unsubscribed inactive Team projection and leaves it disconnected
+TypeError: Cannot add property unsubscribe, object is not extensible
+ ❯ services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts:237:14
+    235|     const unsubscribe = vi.fn();
+    236|     const existing = makeTeam({ active: false, subscribed: false });
+    237|     existing.unsubscribe = unsubscribe;
+       |              ^
+    238|     const replacementA = testAgentContext({ runId: 'run-a', status: Ag…
+    239|     replacementA.state.conversation.id = 'replacement-conversation';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[48/57]⎯
+
+ FAIL  components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts > Historical team lazy hydration integration > opens a historical team through the sidebar and lazily hydrates only the newly selected member
+AssertionError: expected undefined to deeply equal { rootTeamRunId: 'team-1', …(3) }
+
+- Expected: 
+{
+  "memberAddress": "/solution_designer",
+  "rootTeamRunId": "team-1",
+  "taskAgentRunId": null,
+  "taskTeamRunIds": [],
+}
+
++ Received: 
+undefined
+
+ ❯ components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts:423:51
+    421|     const hydratedTeam = teamContextsStore.getTeamContextById('team-1'…
+    422|     expect(hydratedTeam).toBeTruthy();
+    423|     expect(hydratedTeam?.focusedExecutionAddress).toEqual(
+       |                                                   ^
+    424|       createTeamExecutionAddress({ rootTeamRunId: 'team-1', memberAddr…
+    425|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[49/57]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts > WorkspaceAgentRunsTreePanel regressions > removes a draft team row through the local discard path
+Error: Unable to get button[title="Remove draft team"] within: <div class="flex h-full flex-col bg-white">
+  <div class="flex items-center justify-between border-t border-gray-200 px-3 py-2">
+    <h3 class="text-sm font-semibold text-gray-700">Workspaces</h3><button type="button" class="inline-flex h-6 w-6 items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-indigo-50 hover:text-indigo-600" title="Add workspace"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button>
+  </div>
+  <!--v-if-->
+  <div class="min-h-0 flex-1 overflow-y-auto px-1 pb-2">
+    <div class="space-y-1">
+      <section class="rounded-md">
+        <div class="group/workspace-row flex items-center rounded-md text-sm text-gray-700 transition-colors hover:bg-gray-50 focus-within:bg-gray-50" data-test="workspace-row" data-workspace-id="workspace:/ws/a" data-workspace-root="/ws/a" aria-expanded="true"><button type="button" class="flex min-w-0 flex-1 items-center px-2 py-1.5 text-left" aria-expanded="true"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1.5 h-4 w-4 text-gray-400 transition-transform rotate-0"></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1.5 h-4 w-4 text-gray-500"></svg><span class="truncate">autobyteus_org</span></button>
+          <!--v-if-->
+        </div>
+        <div class="ml-2 mt-0.5 space-y-1">
+          <!--v-if-->
+          <div class="rounded-md">
+            <div class="flex items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-50"><button type="button" class="flex min-w-0 flex-1 items-center text-left" data-test="workspace-agent-row" data-workspace-root="/ws/a" data-agent-definition-id="agent-def-1" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform -rotate-90"></svg><span class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"><img src="https://example.com/superagent.png" alt="SuperAgent avatar" class="h-full w-full object-cover"></span><span class="truncate font-medium">SuperAgent</span><span class="ml-1 text-xs text-gray-400">(2)</span></button><button type="button" class="ml-2 inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-colors hover:bg-indigo-50 hover:text-indigo-600" title="New run with this agent"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-4 w-4"></svg></button></div>
+            <!--v-if-->
+          </div>
+          <div class="mt-1 space-y-0.5">
+            <div class="px-2 py-1 text-[0.6875rem] font-semibold uppercase tracking-wide text-gray-400"> Teams </div>
+            <div class="rounded-md"><button type="button" class="flex w-full items-center rounded-md px-2 py-1 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50" data-test="workspace-team-definition-row-team-def-1" aria-expanded="true"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform rotate-0"></svg><span class="h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5" role="img" aria-label="No active team runs" title="No active team runs" data-test="team-activity-dot" data-active="false"></span><span class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"><img src="https://example.com/team-alpha.png" alt="Team Alpha avatar" class="h-full w-full object-cover"></span><span class="truncate font-medium">Team Alpha</span><span class="ml-1 text-xs text-gray-400">(1)</span></button>
+              <div class="ml-3 mt-0.5 space-y-0.5">
+                <div class="rounded-md">
+                  <div class="group/team-row flex items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-50"><button type="button" class="flex min-w-0 flex-1 items-center text-left" data-test="workspace-team-row-temp-team-1" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="mr-1 h-3.5 w-3.5 flex-shrink-0 text-gray-400 transition-transform -rotate-90" data-test="workspace-team-run-disclosure"></svg><span class="h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5" role="img" aria-label="Inactive team run" title="Inactive team run" data-test="team-activity-dot" data-active="false"></span><span class="truncate font-medium">Draft team summary</span></button>
+                    <div class="ml-2 flex flex-shrink-0 items-center gap-1"><button type="button" class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-amber-50 hover:text-amber-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50" title="Archive team history"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-3.5 w-3.5"></svg></button><button type="button" class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50" title="Delete team history permanently"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 16 16" class="h-3.5 w-3.5"></svg></button><span class="text-xs text-gray-400">4h</span></div>
+                  </div>
+                  <!--v-if-->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  <!--v-if-->
+  <!--v-if-->
+</div>
+ ❯ VueWrapper.BaseWrapper.get ../node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7279:15
+    7277|             return result;
+    7278|         }
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+       |               ^
+    7280|     };
+    7281|     BaseWrapper.prototype.getComponent = function (selector) {
+ ❯ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts:551:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[50/57]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts > WorkspaceHistoryWorkspaceSection > renders any-active definition activity and exact sibling run activity reactively
+Error: Team topology contains duplicate canonical addresses.
+ ❯ createTeamTopologySnapshot services/teamExecution/teamTopologySnapshot.ts:127:46
+    125|   const nodes = collectNodes(rootTeam);
+    126|   const byAddress = new Map(nodes.map((node) => [node.address, node] a…
+    127|   if (byAddress.size !== nodes.length) throw new Error('Team topology …
+       |                                              ^
+    128|   const configuration = freezeConfigurationView(input.configuration);
+    129|   return Object.freeze({
+ ❯ buildTeamRunFrontendProjection services/teamExecution/teamRunFrontendProjectionBuilder.ts:24:20
+ ❯ buildTestTeamContext test-support/currentTeamTestFixtures.ts:281:19
+ ❯ mountSubject components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:80:46
+ ❯ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:236:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[51/57]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts > WorkspaceHistoryWorkspaceSection > renders and selects exact stable and task-Agent execution rows
+Error: Team topology contains duplicate canonical addresses.
+ ❯ createTeamTopologySnapshot services/teamExecution/teamTopologySnapshot.ts:127:46
+    125|   const nodes = collectNodes(rootTeam);
+    126|   const byAddress = new Map(nodes.map((node) => [node.address, node] a…
+    127|   if (byAddress.size !== nodes.length) throw new Error('Team topology …
+       |                                              ^
+    128|   const configuration = freezeConfigurationView(input.configuration);
+    129|   return Object.freeze({
+ ❯ buildTeamRunFrontendProjection services/teamExecution/teamRunFrontendProjectionBuilder.ts:24:20
+ ❯ buildTestTeamContext test-support/currentTeamTestFixtures.ts:281:19
+ ❯ mountSubject components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:80:46
+ ❯ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:258:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[52/57]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts > WorkspaceHistoryWorkspaceSection > marks only the selected TeamRun current when focused member addresses repeat
+Error: Team topology contains duplicate canonical addresses.
+ ❯ createTeamTopologySnapshot services/teamExecution/teamTopologySnapshot.ts:127:46
+    125|   const nodes = collectNodes(rootTeam);
+    126|   const byAddress = new Map(nodes.map((node) => [node.address, node] a…
+    127|   if (byAddress.size !== nodes.length) throw new Error('Team topology …
+       |                                              ^
+    128|   const configuration = freezeConfigurationView(input.configuration);
+    129|   return Object.freeze({
+ ❯ buildTeamRunFrontendProjection services/teamExecution/teamRunFrontendProjectionBuilder.ts:24:20
+ ❯ buildTestTeamContext test-support/currentTeamTestFixtures.ts:281:19
+ ❯ mountSubject components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:80:46
+ ❯ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:338:58
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[53/57]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts > WorkspaceHistoryWorkspaceSection > toggles an exact task-Team subtree while keeping task details out of the tree
+Error: Team topology contains duplicate canonical addresses.
+ ❯ createTeamTopologySnapshot services/teamExecution/teamTopologySnapshot.ts:127:46
+    125|   const nodes = collectNodes(rootTeam);
+    126|   const byAddress = new Map(nodes.map((node) => [node.address, node] a…
+    127|   if (byAddress.size !== nodes.length) throw new Error('Team topology …
+       |                                              ^
+    128|   const configuration = freezeConfigurationView(input.configuration);
+    129|   return Object.freeze({
+ ❯ buildTeamRunFrontendProjection services/teamExecution/teamRunFrontendProjectionBuilder.ts:24:20
+ ❯ buildTestTeamContext test-support/currentTeamTestFixtures.ts:281:19
+ ❯ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:404:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[54/57]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts > WorkspaceHistoryWorkspaceSection > removes transient execution rows when the exact live projection disappears
+Error: Team topology contains duplicate canonical addresses.
+ ❯ createTeamTopologySnapshot services/teamExecution/teamTopologySnapshot.ts:127:46
+    125|   const nodes = collectNodes(rootTeam);
+    126|   const byAddress = new Map(nodes.map((node) => [node.address, node] a…
+    127|   if (byAddress.size !== nodes.length) throw new Error('Team topology …
+       |                                              ^
+    128|   const configuration = freezeConfigurationView(input.configuration);
+    129|   return Object.freeze({
+ ❯ buildTeamRunFrontendProjection services/teamExecution/teamRunFrontendProjectionBuilder.ts:24:20
+ ❯ buildTestTeamContext test-support/currentTeamTestFixtures.ts:281:19
+ ❯ mountSubject components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:80:46
+ ❯ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:448:39
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[55/57]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts > WorkspaceHistoryWorkspaceSection > toggles stable nested Team children from row body and disclosure with exact addresses
+Error: Initial Team focus must resolve to an Agent.
+ ❯ buildTeamRunFrontendProjection services/teamExecution/teamRunFrontendProjectionBuilder.ts:44:59
+     42|   });
+     43|   const focusedNode = topology.getNode(initialFocusedAddress.memberAdd…
+     44|   if (!focusedNode || focusedNode.kind !== 'agent') throw new Error('I…
+       |                                                           ^
+     45|   const executions = createTeamExecutionState({
+     46|     rootTeamRunId,
+ ❯ buildTestTeamContext test-support/currentTeamTestFixtures.ts:281:19
+ ❯ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts:480:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[56/57]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 1 unhandled error during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: Cannot read properties of undefined (reading 'trim')
+ ❯ Proxy.terminateTeamRun stores/agentTeamRunStore.ts:89:26
+     87|     async terminateTeamRun(rootTeamRunId: string): Promise<boolean> {
+     88|       const team = useAgentTeamContextsStore().getTeamContextById(root…
+     89|       if (!rootTeamRunId.trim() || this.stopPendingTeamIds[rootTeamRun…
+       |                          ^
+     90|       this.stopPendingTeamIds = { ...this.stopPendingTeamIds, [rootTea…
+     91|       try {
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ stores/__tests__/agentTeamRunStore.spec.ts:189:63
+ ❯ ../node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11
+ ❯ ../node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26
+ ❯ ../node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1897:20
+ ❯ runWithTimeout ../node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1863:10
+ ❯ runTest ../node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1574:12
+ ❯ processTicksAndRejections node:internal/process/task_queues:103:5
+
+This error originated in "stores/__tests__/agentTeamRunStore.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  15 failed | 29 passed (44)
+      Tests  56 failed | 259 passed (315)
+     Errors  1 error
+   Start at  22:22:30
+   Duration  23.21s (transform 6.18s, setup 153.09s, collect 13.18s, tests 3.17s, environment 14.85s, prepare 8.78s)
+

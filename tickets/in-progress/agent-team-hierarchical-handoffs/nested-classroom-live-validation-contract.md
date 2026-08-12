@@ -5,11 +5,12 @@
 - Canonical path: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/nested-classroom-live-validation-contract.md`
 - Purpose: Define the required later live API/E2E validation fixture, runtime/model matrix, secret-import isolation, observable assertions, and evidence standard for the comprehensive AgentTeam refactor.
 - Scope: Downstream API/E2E investigation and execution after implementation and source review; no live provider call is part of solution design.
-- Status: `Refined — SR-014 exact prompt-copy verification added; no architecture impact`
-- Approval applicability: This supplement defines intended verification behavior. The user explicitly required one imported nested-classroom example AgentTeam and live coverage across AutoByteus, Codex App Server, and Claude Agent SDK, including the stated GPT-5.6 Luna selections and use of `$HOME/.autobyteus/server-data/.env` through the repository secret importer. SR-012 changed only application SDK compatibility design, and SR-013 changes only persisted predecessor migration interpretation and sequencing. This live contract remains user-approved and unchanged; the user has authorized the cumulative package for architecture re-review.
-- Related requirements: R-021, R-044–R-048
-- Related acceptance criteria: AC-019, AC-040–AC-044
+- Status: `Refined — SR-018 package aligned with the complete Team event/initial-status/pre-run-status stream and concrete-execution projection contract`
+- Approval applicability: This supplement defines intended verification behavior. The user explicitly required one imported nested-classroom example AgentTeam and live coverage across AutoByteus, Codex App Server, and Claude Agent SDK, including the stated GPT-5.6 Luna selections and use of `$HOME/.autobyteus/server-data/.env` through the repository secret importer. SR-016 adds proof that live events cross the exact strict Team stream boundary and materialize only valid concrete frontend executions. SR-017 changes only the unused application's rollout policy. SR-018 adds proof that real initial connection/open/restore status and pre-run send/delegation status use the same binding/wire/frontend status transition; it does not change the approved runtime matrix.
+- Related requirements: R-021, R-044–R-052
+- Related acceptance criteria: AC-019, AC-040–AC-048
 - Exact system-instruction copy: [agent-team-collaboration-system-instruction.md](./agent-team-collaboration-system-instruction.md)
+- Exact Team stream/execution projection contract: [team-stream-execution-projection-contract.md](./team-stream-execution-projection-contract.md)
 
 ## 1. Purpose And Ownership
 
@@ -140,6 +141,7 @@ isolated app-data root + isolated secrets database
   -> exercise intrinsic get_handoff_rules and send_message_to
   -> exercise recipient_address AgentTeam coordinator routing
   -> exercise delegate_task recipient_address and task-Team lifecycle
+  -> observe the exact validated Team WebSocket event sequence and concrete frontend executions
   -> terminate and restore the root TeamRun where the supported live harness permits
   -> collect redacted provider/runtime/events/history evidence
   -> terminate processes and remove disposable state
@@ -159,8 +161,17 @@ Each live row must establish all applicable observations through public/runtime-
 6. `send_message_to({recipient_address:"./StudentStudyGroup", ...})` from `/Teacher` reaches `/StudentStudyGroup/student_one` exactly once and records truthful source/recipient execution addresses;
 7. a nested Agent can address its peer relatively and the root coordinator absolutely without a flat-name, representative, or root/local fallback;
 8. `delegate_task({recipient_address:"./StudentStudyGroup", ...})` from `/Teacher` creates a task AgentTeam, enters through `student_one`, completes `submit_task_result`/`review_task_result`, and retains the current task-owned lifecycle;
-9. persistent and task executions sharing a logical address remain distinct through typed run IDs and `TeamExecutionAddress`; and
-10. termination/restoration, when exercised, preserves the launch-time rooted topology and handoff snapshot.
+9. persistent and task executions sharing a logical address remain distinct through typed run IDs and `TeamExecutionAddress`;
+10. every observed Agent/task/communication/member-input Team message passes the exact strict all-snake-case wire contract—including nested execution-address fields—without aliases, duplicate receiver identity, arbitrary fields, or partially parsed dispatch;
+11. frontend task Agent, task Team, and nested task-Team Agent projections contain real TeamRun/AgentRun IDs, leave rooted topology unchanged, and expose no placeholder ID or raw serialized execution-key label; and
+12. termination/restoration, when exercised, preserves the launch-time rooted topology and handoff snapshot while the concrete execution projection converges through the same lifecycle owner;
+13. Team collaboration produces one canonical communication projection and one exact recipient input—never additional derived Agent collaboration messages;
+14. Team approve/deny commands carry invocation ID plus exact execution address and no `approval_token`, while message/interrupt commands likewise use a required exact address; and
+15. the one closed canonical metadata/lifecycle/focus/Agent-seed projection builder creates a launched frontend context with run-ID/execution-address-free immutable topology and one persistent execution per metadata node; lifecycle comes from launch/resume, seed coverage is exact, the root Team ID derives from its execution address, only child persistent Teams retain child bindings, effective launch configuration derives from topology, and application producer context belongs to the exact concrete Agent execution—including task-address rebinding. Agent-local state remains single-owned by AgentContext rather than copied into execution records, and no provisional or duplicate run/lifecycle/config/hydration/subscription field exists. Team group rows remain non-focusable, a task-Team coordinator Agent row appears only after its real Agent execution exists, task Agent/Team executions reference one task ID while active/history views derive from one monotonic retained task projection, and complete-root-record-confirmed terminal cleanup retains the task and descendant projections; and
+16. application-level Team stream readiness follows exact post-binding `CONNECTED {session_id}`, while `TEAM_RUN_LIFECYCLE {is_active}` updates the already-bound root persistent-Team execution; neither control message repeats a TeamRun identity; and
+17. task activation/result/status/token observations correlate by root-TeamRun-scoped task ID plus exact execution address, with no synthetic task Agent/Team instance ID, copied owner/parent/run/time bundle, generic `task_context`, separate activation run-ID result, or current token root/member/task-run identity field. Two independently launched classroom roots may both allocate `task_0001` without collision because cross-root inspection uses `{rootTeamRunId,taskId}` and concrete projection uses the address. Root-scoped token history remains queryable through `token_usage_ledger_events_execution_root_observed_at_idx` after canonical schema contraction;
+18. initial Team connection/open/restore status for persistent `/Teacher`, a task Agent where exercised, and `/StudentStudyGroup/student_one` inside a task AgentTeam uses the same exact `agent_execution` and Agent-status DTO as a live status. The task-Team Agent carries its genuine member AgentRun ID exactly once; no TeamRun ID, Agent name/runtime/raw-ID, task alias, second execution address, generic Team message, or fabricated TeamRun event is observed; and
+19. send/delegation to an unmaterialized persistent/task/task-Team Agent produces exact initializing or error feedback through the same Agent-status browser transition, preserves activation-before-child ordering, and the first matching real Agent status replaces the temporary overlay. A different execution at the same logical member address is not cleared or overwritten.
 
 Deterministic API/E2E coverage remains responsible for exact negative cases, migration failures, UI state, and exhaustive field-removal assertions. The live matrix is additive evidence that the same contract survives real provider tool/prompt lifecycles.
 
@@ -173,7 +184,7 @@ The execution coverage report must contain one row per runtime with:
 - runtime kind, exact model identifier, and effective non-secret model configuration;
 - canonical address and execution-address observations;
 - intrinsic tool exposure and provider instruction evidence;
-- handoff-result shape, message delivery, task lifecycle, terminate/restore outcomes;
+- handoff-result shape, message delivery, task lifecycle, initial-status binding observations, pre-run status/replacement observations, and terminate/restore outcomes;
 - command/test identifier, timestamps, duration, and exit/result classification; and
 - redacted log/evidence paths.
 

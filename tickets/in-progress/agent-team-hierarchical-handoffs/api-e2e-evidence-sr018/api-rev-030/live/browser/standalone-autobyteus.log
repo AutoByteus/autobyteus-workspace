@@ -1,0 +1,12 @@
+{
+  "slug": "autobyteus",
+  "runtime": "autobyteus",
+  "model": "gpt-5.6-luna",
+  "passed": false,
+  "runId": "api_rev_030_browser_agent_64afef936ceb41bfb87ef56dc8a42db0",
+  "fatalError": "Error: GRAPHQL_FAILED:400:[{\"message\":\"Field \\\"metadataConfig\\\" of type \\\"RunMetadataConfigObject!\\\" must have a selection of subfields. Did you mean \\\"metadataConfig { ... }\\\"?\",\"locations\":[{\"line\":1,\"column\":70}]}]\nError: GRAPHQL_FAILED:400:[{\"message\":\"Field \\\"metadataConfig\\\" of type \\\"RunMetadataConfigObject!\\\" must have a selection of subfields. Did you mean \\\"metadataConfig { ... }\\\"?\",\"locations\":[{\"line\":1,\"column\":70}]}]\n    at gql (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr018/api-rev-030/live/run-one-standalone-browser-row.mjs:19:42)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr018/api-rev-030/live/run-one-standalone-browser-row.mjs:117:18",
+  "termination": {
+    "success": true,
+    "message": "Agent run terminated successfully."
+  }
+}

@@ -1,0 +1,96 @@
+diff -ru /Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/nested-classroom-test/agent-teams/student-study-group/agents/student-one/agent.md /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-029-live-20260812-1/staged-package/agent-teams/nested-classroom-test/agent-teams/student-study-group/agents/student-one/agent.md
+--- /Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/nested-classroom-test/agent-teams/student-study-group/agents/student-one/agent.md	2026-07-02 12:35:09
++++ /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-029-live-20260812-1/staged-package/agent-teams/nested-classroom-test/agent-teams/student-study-group/agents/student-one/agent.md	2026-08-12 12:36:39
+@@ -22,7 +22,13 @@
+ 
+ ## Collaboration
+ 
+-You may use `send_message_to` to ask `student_two` for ordinary help, but you remain responsible for submitting the final result.
++For this test fixture, when a delegated task asks you to consult `student_two`, the peer exchange is mandatory and must happen before submission.
++
++1. Call `send_message_to` exactly once with `recipient_address: "./student_two"` and the exact requested token as `content`.
++2. Wait until `student_two` replies to your current task-scoped execution.
++3. Only after receiving that reply, call `submit_task_result` exactly once with the exact requested result token.
++
++Do not merely describe the peer exchange, do not skip the tool call, and do not submit before the reply. You remain responsible for the final result.
+ 
+ ## Tool Rules
+ 
+diff -ru /Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/nested-classroom-test/agent-teams/student-study-group/team-config.json /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-029-live-20260812-1/staged-package/agent-teams/nested-classroom-test/agent-teams/student-study-group/team-config.json
+--- /Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/nested-classroom-test/agent-teams/student-study-group/team-config.json	2026-06-26 15:33:48
++++ /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-029-live-20260812-1/staged-package/agent-teams/nested-classroom-test/agent-teams/student-study-group/team-config.json	2026-08-12 12:36:39
+@@ -14,5 +14,14 @@
+       "refType": "agent",
+       "refScope": "team_local"
+     }
++  ],
++  "handoffs": [
++    {
++      "from": "/student_one",
++      "to": "/student_two",
++      "rules": [
++        "When the delegated classroom task asks the coordinator to consult the supporting student."
++      ]
++    }
+   ]
+ }
+diff -ru /Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/nested-classroom-test/agents/teacher/agent.md /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-029-live-20260812-1/staged-package/agent-teams/nested-classroom-test/agents/teacher/agent.md
+--- /Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/nested-classroom-test/agents/teacher/agent.md	2026-07-02 12:34:47
++++ /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-029-live-20260812-1/staged-package/agent-teams/nested-classroom-test/agents/teacher/agent.md	2026-08-12 12:36:39
+@@ -12,7 +12,7 @@
+ 
+ When the user asks you to test nested delegation, delegate one bounded task to the nested team by calling:
+ 
+-`delegate_task({"target":{"kind":"team","name":"StudentStudyGroup"},"description":"..."})`
++`delegate_task({"recipient_address":"./StudentStudyGroup","task":"..."})`
+ 
+ The task description should be complete and should tell the students what exact answer or token to return.
+ 
+@@ -24,8 +24,8 @@
+ 
+ ## Tool Rules
+ 
+-- Use `delegate_task` only with the explicit target object shape: `{ "kind": "member" | "team", "name": "..." }`.
+-- For this fixture, prefer the team target `{ "kind": "team", "name": "StudentStudyGroup" }`.
++- Use `delegate_task` only with the exact `recipient_address` string.
++- For this fixture, use `recipient_address: "./StudentStudyGroup"`.
+ - Use `review_task_result` for accepting or requesting revision of task results.
+ - Do not use `send_message_to` for task result submission, revision requests, acceptance, or finalization.
+ - Use `send_message_to` only for ordinary non-lifecycle classroom communication if needed.
+diff -ru /Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/nested-classroom-test/team-config.json /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-029-live-20260812-1/staged-package/agent-teams/nested-classroom-test/team-config.json
+--- /Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/nested-classroom-test/team-config.json	2026-06-26 15:33:48
++++ /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-029-live-20260812-1/staged-package/agent-teams/nested-classroom-test/team-config.json	2026-08-12 12:36:39
+@@ -14,5 +14,21 @@
+       "refType": "agent_team",
+       "refScope": "team_local"
+     }
++  ],
++  "handoffs": [
++    {
++      "from": "/Teacher",
++      "to": "/StudentStudyGroup",
++      "rules": [
++        "When the user asks to send the classroom handoff token to the study group."
++      ]
++    },
++    {
++      "from": "/StudentStudyGroup/student_one",
++      "to": "/Teacher",
++      "rules": [
++        "When the delegated classroom task is finished and the teacher needs the outcome."
++      ]
++    }
+   ]
+ }
+diff -ru /Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/nested-classroom-test/team.md /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-029-live-20260812-1/staged-package/agent-teams/nested-classroom-test/team.md
+--- /Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/nested-classroom-test/team.md	2026-06-26 15:33:48
++++ /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-029-live-20260812-1/staged-package/agent-teams/nested-classroom-test/team.md	2026-08-12 12:36:39
+@@ -22,7 +22,7 @@
+ Expected behavior:
+ 
+ 1. `Teacher` calls `delegate_task` with an explicit team target:
+-   `delegate_task({"target":{"kind":"team","name":"StudentStudyGroup"},"description":"..."})`.
++   `delegate_task({"recipient_address":"./StudentStudyGroup","task":"..."})`.
+ 2. The runtime creates a task-team execution for `StudentStudyGroup`.
+ 3. `student_one`, as the nested team coordinator, submits the result with `submit_task_result`.
+ 4. `Teacher` reviews the result with `review_task_result` and accepts it when the expected token is present.

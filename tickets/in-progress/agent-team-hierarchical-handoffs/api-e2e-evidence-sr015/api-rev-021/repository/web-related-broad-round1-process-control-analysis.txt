@@ -1,0 +1,4 @@
+The first 75-file rerun overlapped the accidental unfiltered suite that remained alive after the unavailable-mapfile command.
+Both API/E2E-owned process groups were terminated. This incomplete log is discovery-only and not an authoritative result.
+The exact selection will be rerun in bounded batches after fixture maintenance.
+No server, browser, database, vault, secret import, or user-held listener was used.

@@ -1,0 +1,43 @@
+diff -ru /Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/nested-classroom-test/agent-teams/student-study-group/team-config.json autobyteus-server-ts/tests/.tmp/api-rev-031-live-20260812-1/staged-package/agent-teams/nested-classroom-test/agent-teams/student-study-group/team-config.json
+--- /Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/nested-classroom-test/agent-teams/student-study-group/team-config.json	2026-06-26 15:33:48
++++ autobyteus-server-ts/tests/.tmp/api-rev-031-live-20260812-1/staged-package/agent-teams/nested-classroom-test/agent-teams/student-study-group/team-config.json	2026-08-12 16:47:44
+@@ -14,5 +14,14 @@
+       "refType": "agent",
+       "refScope": "team_local"
+     }
++  ],
++  "handoffs": [
++    {
++      "from": "/student_one",
++      "to": "/student_two",
++      "rules": [
++        "When the delegated classroom task asks the coordinator to consult the supporting student."
++      ]
++    }
+   ]
+ }
+diff -ru /Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/nested-classroom-test/team-config.json autobyteus-server-ts/tests/.tmp/api-rev-031-live-20260812-1/staged-package/agent-teams/nested-classroom-test/team-config.json
+--- /Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/nested-classroom-test/team-config.json	2026-06-26 15:33:48
++++ autobyteus-server-ts/tests/.tmp/api-rev-031-live-20260812-1/staged-package/agent-teams/nested-classroom-test/team-config.json	2026-08-12 16:47:44
+@@ -14,5 +14,21 @@
+       "refType": "agent_team",
+       "refScope": "team_local"
+     }
++  ],
++  "handoffs": [
++    {
++      "from": "/Teacher",
++      "to": "/StudentStudyGroup",
++      "rules": [
++        "When the user asks to send the classroom handoff token to the study group."
++      ]
++    },
++    {
++      "from": "/StudentStudyGroup/student_one",
++      "to": "/Teacher",
++      "rules": [
++        "When the delegated classroom task is finished and the teacher needs the outcome."
++      ]
++    }
+   ]
+ }

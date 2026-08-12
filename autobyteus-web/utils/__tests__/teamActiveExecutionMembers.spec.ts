@@ -1,165 +1,184 @@
 import { describe, expect, it } from 'vitest';
 import { AgentStatus } from '~/types/agent/AgentStatus';
+import { createTeamExecutionAddress, toTeamExecutionAddressDto } from '~/types/agent/TeamExecutionAddress';
+import {
+  buildTestTeamContext,
+  testAgentContext,
+  testAgentNode,
+  testSubTeamNode,
+  testTaskProjection,
+} from '~/test-support/currentTeamTestFixtures';
+import type { TeamExecutionProjectionMessage, TeamTaskProjection } from '~/services/teamExecution/teamExecutionModels';
 import {
   flattenActiveExecutionMemberNodesForDisplay,
-  resolveActiveExecutionFocusedMemberRouteKey,
+  resolveActiveExecutionFocus,
 } from '../teamActiveExecutionMembers';
 
-const buildMemberNode = (memberRouteKey: string, displayName = memberRouteKey, overrides: Record<string, any> = {}) => ({
-  memberKind: 'agent',
-  memberName: memberRouteKey.split('/').at(-1) || memberRouteKey,
-  displayName,
-  memberPath: memberRouteKey.split('/'),
-  memberRouteKey,
-  agentDefinitionId: `${memberRouteKey}-def`,
-  ...overrides,
+const ROOT = 'team-active-execution-1';
+const stableAddress = (memberAddress: string) => createTeamExecutionAddress({
+  rootTeamRunId: ROOT,
+  memberAddress,
 });
-
-const buildContext = (runId: string, status: AgentStatus, messages: any[] = []) => ({
-  state: {
-    runId,
-    currentStatus: status,
-    conversation: {
-      id: runId,
-      createdAt: '2026-06-02T00:00:00.000Z',
-      updatedAt: '2026-06-02T00:00:00.000Z',
-      messages,
-    },
-  },
-  conversation: {
-    id: runId,
-    createdAt: '2026-06-02T00:00:00.000Z',
-    updatedAt: '2026-06-02T00:00:00.000Z',
-    messages,
-  },
+const taskAgentAddress = (taskAgentRunId: string, taskTeamRunIds: string[] = []) => createTeamExecutionAddress({
+  rootTeamRunId: ROOT,
+  taskTeamRunIds,
+  memberAddress: taskTeamRunIds.length ? '/SoftwareTeam/worker' : '/worker',
+  taskAgentRunId,
 });
+const entryIds = (team: ReturnType<typeof buildTestTeamContext>) =>
+  flattenActiveExecutionMemberNodesForDisplay(team).map(({ node, executionAddress }) =>
+    executionAddress.taskAgentRunId
+      ?? executionAddress.taskTeamRunIds.at(-1)
+      ?? node.address);
 
-const buildTeamContext = (workerContext = buildContext('worker-run', AgentStatus.Offline), extraNodes: any[] = [], extraContexts: Array<[string, any]> = []) => {
-  const coordinatorNode = buildMemberNode('coordinator', 'Coordinator');
-  const workerNode = buildMemberNode('worker', 'Worker');
-  const memberTree = [coordinatorNode, workerNode, ...extraNodes];
-  return {
-    teamRunId: 'team-active-execution-1',
-    coordinatorMemberRouteKey: 'coordinator',
-    focusedMemberRouteKey: 'worker',
-    memberTree,
-    memberNodesByRouteKey: new Map(memberTree.map((node) => [node.memberRouteKey, node])),
-    leafAgentContextsByRouteKey: new Map([
-      ['coordinator', buildContext('coordinator-run', AgentStatus.Running)],
-      ['worker', workerContext],
-      ...extraContexts,
-    ]),
-  } as any;
+const buildTeam = (input: {
+  workerStatus?: AgentStatus;
+  workerMessages?: any[];
+  extraPersistentNodes?: ReturnType<typeof testSubTeamNode>[];
+  tasks?: TeamTaskProjection[];
+  executionMessages?: TeamExecutionProjectionMessage[];
+} = {}) => {
+  const coordinator = testAgentNode('/coordinator', {
+    displayName: 'Coordinator',
+    agentRunId: 'coordinator-run',
+    currentStatus: AgentStatus.Running,
+  });
+  const worker = testAgentNode('/worker', {
+    displayName: 'Worker',
+    agentRunId: 'worker-run',
+    currentStatus: input.workerStatus ?? AgentStatus.Offline,
+  });
+  return buildTestTeamContext({
+    teamRunId: ROOT,
+    coordinatorAddress: '/coordinator',
+    focusedExecutionAddress: stableAddress('/worker'),
+    rootChildren: [coordinator, worker, ...(input.extraPersistentNodes ?? [])],
+    contexts: [
+      {
+        executionAddress: stableAddress('/coordinator'),
+        context: testAgentContext({ runId: 'coordinator-run', status: AgentStatus.Running }),
+      },
+      {
+        executionAddress: stableAddress('/worker'),
+        context: testAgentContext({
+          runId: 'worker-run',
+          status: input.workerStatus ?? AgentStatus.Offline,
+          messages: input.workerMessages ?? [],
+        }),
+      },
+    ],
+    tasks: input.tasks,
+    executionMessages: input.executionMessages,
+  });
 };
 
-const routeKeys = (teamContext: any) =>
-  flattenActiveExecutionMemberNodesForDisplay(teamContext).map((entry) => entry.node.memberRouteKey);
-
-describe('teamActiveExecutionMembers', () => {
-  it('falls back from a settled task-agent-only logical member to the coordinator for active execution', () => {
-    const worker = buildContext('worker-run', AgentStatus.Offline, [
-      {
+describe('teamActiveExecutionMembers current execution tree', () => {
+  it('falls back from a settled task-agent-only logical member to the coordinator', () => {
+    const team = buildTeam({
+      workerMessages: [{
         type: 'user',
         text: 'You have been activated as task agent for task_0001.',
         timestamp: new Date('2026-06-02T00:00:00.000Z'),
-      },
-    ]);
-    const teamContext = buildTeamContext(worker);
+      }],
+    });
 
-    expect(routeKeys(teamContext)).toEqual(['coordinator']);
-    expect(resolveActiveExecutionFocusedMemberRouteKey(teamContext, 'worker')).toBe('coordinator');
+    expect(entryIds(team)).toEqual(['/coordinator']);
+    expect(resolveActiveExecutionFocus(team, stableAddress('/worker'))).toEqual(stableAddress('/worker'));
   });
 
-  it('keeps a logical parent visible while its concrete task-agent child is active', () => {
-    const taskAgentNode = buildMemberNode('team-1__worker__task_0001', 'Worker · task_0001', {
-      memberPath: ['worker', 'team-1__worker__task_0001'],
-      memberRunId: 'team-1__worker__task_0001',
-      isTaskAgentInstance: true,
-      taskAgentRunId: 'team-1__worker__task_0001',
-      taskId: 'task_0001',
-      logicalMemberRouteKey: 'worker',
+  it('keeps the exact concrete task-agent execution visible when its logical member is inactive', () => {
+    const executionAddress = taskAgentAddress('task-agent-run-1');
+    const team = buildTeam({
+      tasks: [testTaskProjection({
+        taskId: 'task_0001',
+        executionAddress,
+        senderAddress: stableAddress('/coordinator'),
+      })],
     });
-    const teamContext = buildTeamContext(
-      buildContext('worker-run', AgentStatus.Offline),
-      [taskAgentNode],
-      [['team-1__worker__task_0001', buildContext('team-1__worker__task_0001', AgentStatus.Running)]],
-    );
 
-    expect(routeKeys(teamContext)).toEqual(['coordinator', 'worker', 'team-1__worker__task_0001']);
-    expect(resolveActiveExecutionFocusedMemberRouteKey(teamContext, 'team-1__worker__task_0001')).toBe('team-1__worker__task_0001');
+    expect(entryIds(team)).toEqual(['/coordinator', 'task-agent-run-1']);
+    expect(resolveActiveExecutionFocus(team, executionAddress)).toEqual(executionAddress);
   });
 
   it('does not treat a task-agent-only logical member conversation as active execution', () => {
-    const taskOnlyWorker = buildContext('worker-run', AgentStatus.Initializing, [
-      {
+    const team = buildTeam({
+      workerStatus: AgentStatus.Initializing,
+      workerMessages: [{
         type: 'user',
         text: 'Task-agent run: opaque-run-id',
         timestamp: new Date('2026-06-02T00:00:00.000Z'),
-      },
-    ]);
-    const teamContext = buildTeamContext(taskOnlyWorker);
+      }],
+    });
 
-    expect(routeKeys(teamContext)).toEqual(['coordinator']);
-    expect(resolveActiveExecutionFocusedMemberRouteKey(teamContext, 'worker')).toBe('coordinator');
+    expect(entryIds(team)).toEqual(['/coordinator']);
+    expect(resolveActiveExecutionFocus(team, stableAddress('/worker'))).toEqual(stableAddress('/worker'));
   });
 
   it('keeps a direct logical member conversation visible after the member is offline', () => {
-    const worker = buildContext('worker-run', AgentStatus.Offline, [
-      {
+    const team = buildTeam({
+      workerMessages: [{
         type: 'user',
         text: 'direct member follow-up',
         timestamp: new Date('2026-06-02T00:00:00.000Z'),
-      },
-    ]);
-    const teamContext = buildTeamContext(worker);
+      }],
+    });
 
-    expect(routeKeys(teamContext)).toEqual(['coordinator', 'worker']);
+    expect(entryIds(team)).toEqual(['/coordinator', '/worker']);
   });
 
-  it('includes task-team roots, scoped child projections, and nested task agents together', () => {
-    const scopedChild = buildMemberNode('task-team-run-1/worker', 'Worker', {
-      memberPath: ['task-team-run-1', 'worker'],
-      isTaskTeamChildProjection: true,
-      parentTaskTeamRunId: 'task-team-run-1',
-      taskTeamRelativeMemberRouteKey: 'worker',
+  it('includes task-Team roots, scoped children, and nested task Agents together', () => {
+    const taskTeamExecutionAddress = createTeamExecutionAddress({
+      rootTeamRunId: ROOT,
+      taskTeamRunIds: ['task-team-run-1'],
+      memberAddress: '/SoftwareTeam',
     });
-    const nestedTaskAgent = buildMemberNode('task-agent-run-inside-team', 'Worker · nested task', {
-      memberPath: ['task-team-run-1', 'worker', 'task-agent-run-inside-team'],
-      memberRunId: 'task-agent-run-inside-team',
-      isTaskAgentInstance: true,
-      taskAgentRunId: 'task-agent-run-inside-team',
-      taskId: 'task_nested',
-      logicalMemberRouteKey: 'task-team-run-1/worker',
-      parentTaskTeamRunId: 'task-team-run-1',
+    const scopedChildAddress = createTeamExecutionAddress({
+      rootTeamRunId: ROOT,
+      taskTeamRunIds: ['task-team-run-1'],
+      memberAddress: '/SoftwareTeam/worker',
     });
-    const taskTeamRoot = {
-      memberKind: 'agent_team',
-      memberName: 'SoftwareTeam task',
-      displayName: 'SoftwareTeam task',
-      memberPath: ['task-team-run-1'],
-      memberRouteKey: 'task-team-run-1',
-      memberRunId: 'task-team-run-1',
-      teamDefinitionId: 'software-team',
-      teamRunId: 'task-team-run-1',
-      children: [scopedChild, nestedTaskAgent],
-      isTaskTeamInstance: true,
-      taskTeamRunId: 'task-team-run-1',
-      taskExecutionStatus: 'active',
-    };
-    const teamContext = buildTeamContext(
-      buildContext('worker-run', AgentStatus.Offline),
-      [taskTeamRoot],
-      [
-        ['task-team-run-1/worker', buildContext('task-team-run-1/worker', AgentStatus.Offline)],
-        ['task-agent-run-inside-team', buildContext('task-agent-run-inside-team', AgentStatus.Running)],
+    const nestedTaskAgentAddress = taskAgentAddress('nested-task-agent-run', ['task-team-run-1']);
+    const softwareWorker = testAgentNode('/SoftwareTeam/worker', { agentRunId: 'worker-persistent-run' });
+    const softwareTeam = testSubTeamNode('/SoftwareTeam', [softwareWorker], {
+      teamRunId: 'software-team-persistent-run',
+      coordinatorAddress: softwareWorker.address,
+    });
+    const team = buildTeam({
+      extraPersistentNodes: [softwareTeam],
+      tasks: [
+        testTaskProjection({
+          taskId: 'task-team-1',
+          executionAddress: taskTeamExecutionAddress,
+          senderAddress: stableAddress('/coordinator'),
+        }),
+        testTaskProjection({
+          taskId: 'task_nested',
+          executionAddress: nestedTaskAgentAddress,
+          senderAddress: scopedChildAddress,
+        }),
       ],
-    );
+      executionMessages: [{
+        type: 'AGENT_STATUS',
+        payload: {
+          agent_execution: {
+            kind: 'task_team_agent',
+            execution_address: toTeamExecutionAddressDto(scopedChildAddress),
+            agent_run_id: 'task-team-worker-run',
+          },
+          status: 'running',
+          trigger: null,
+          tool_name: null,
+          error_message: null,
+          error_details: null,
+        },
+      }],
+    });
 
-    expect(routeKeys(teamContext)).toEqual([
-      'coordinator',
+    expect(entryIds(team)).toEqual([
+      '/coordinator',
       'task-team-run-1',
-      'task-team-run-1/worker',
-      'task-agent-run-inside-team',
+      'nested-task-agent-run',
+      'task-team-run-1',
     ]);
   });
 });

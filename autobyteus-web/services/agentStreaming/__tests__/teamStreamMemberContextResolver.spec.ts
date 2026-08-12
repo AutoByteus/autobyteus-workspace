@@ -1,152 +1,88 @@
 import { describe, expect, it } from 'vitest';
-import { AgentContext } from '~/types/agent/AgentContext';
-import { AgentRunState } from '~/types/agent/AgentRunState';
-import type { AgentTeamContext, AgentTeamMemberNode } from '~/types/agent/AgentTeamContext';
-import { AgentStatus } from '~/types/agent/AgentStatus';
-import { resolveTeamStreamMemberContext } from '../teamStreamMemberContextResolver';
-import { ensureTaskAgentProjection } from '../teamTaskAgentContextProjection';
-import type { ServerMessage } from '../protocol';
+import { createTeamExecutionAddress, toTeamExecutionAddressDto } from '~/types/agent/TeamExecutionAddress';
+import {
+  buildCurrentTaskExecutionTeam,
+  currentTaskExecutionRootTeamRunId,
+  taskAgentAddress,
+  taskAgentEvent,
+  taskTeamCoordinatorAddress,
+  taskTeamEvent,
+} from './currentTaskExecutionFixture';
 
-const createLogicalAgentContext = (memberName: string, runId: string): AgentContext => {
-  const conversation = {
-    id: runId,
-    messages: [],
-    createdAt: '2026-06-03T00:00:00.000Z',
-    updatedAt: '2026-06-03T00:00:00.000Z',
-    agentDefinitionId: `${memberName}-definition`,
-    agentName: memberName,
-    llmModelIdentifier: 'test-model',
-  };
-  const context = new AgentContext(
-    {
-      agentDefinitionId: `${memberName}-definition`,
-      agentDefinitionName: memberName,
-      llmModelIdentifier: 'test-model',
-      runtimeKind: 'codex_app_server',
-      workspaceId: null,
-      workspaceMetadata: null,
-      autoExecuteTools: true,
-      skillAccessMode: 'NONE',
-      isLocked: true,
-      llmConfig: null,
-    },
-    new AgentRunState(runId, conversation),
-  );
-  context.state.currentStatus = AgentStatus.Offline;
-  return context;
-};
+const status = (input: {
+  kind: 'persistent_agent' | 'task_agent' | 'task_team_agent';
+  address: ReturnType<typeof createTeamExecutionAddress>;
+  agentRunId?: string;
+}) => ({
+  type: 'AGENT_STATUS' as const,
+  payload: {
+    agent_execution: input.kind === 'task_team_agent'
+      ? {
+          kind: input.kind,
+          execution_address: toTeamExecutionAddressDto(input.address),
+          agent_run_id: input.agentRunId!,
+        }
+      : { kind: input.kind, execution_address: toTeamExecutionAddressDto(input.address) },
+    status: 'running' as const,
+    trigger: null,
+    tool_name: null,
+    error_message: null,
+    error_details: null,
+  },
+});
 
-const createTeamContext = (): AgentTeamContext => {
-  const coordinator = createLogicalAgentContext('coordinator', 'coordinator-run');
-  const worker = createLogicalAgentContext('worker', 'worker-run');
-  const coordinatorNode: AgentTeamMemberNode = {
-    memberKind: 'agent',
-    memberName: 'coordinator',
-    displayName: 'Coordinator',
-    memberPath: ['coordinator'],
-    memberRouteKey: 'coordinator',
-    memberRunId: 'coordinator-run',
-    agentDefinitionId: 'coordinator-definition',
-    currentStatus: AgentStatus.Running,
-  };
-  const workerNode: AgentTeamMemberNode = {
-    memberKind: 'agent',
-    memberName: 'worker',
-    displayName: 'Worker',
-    memberPath: ['worker'],
-    memberRouteKey: 'worker',
-    memberRunId: 'worker-run',
-    agentDefinitionId: 'worker-definition',
-    currentStatus: AgentStatus.Offline,
-  };
-  return {
-    teamRunId: 'team-run-1',
-    config: {} as any,
-    isActive: true,
-    focusedMemberRouteKey: 'coordinator',
-    coordinatorMemberRouteKey: 'coordinator',
-    memberTree: [coordinatorNode, workerNode],
-    memberNodesByRouteKey: new Map([
-      ['coordinator', coordinatorNode],
-      ['worker', workerNode],
-    ]),
-    leafAgentContextsByRouteKey: new Map([
-      ['coordinator', coordinator],
-      ['worker', worker],
-    ]),
-    isSubscribed: true,
-  };
-};
+describe('TeamExecutionState exact Agent binding resolution', () => {
+  it('dispatches a persistent Agent message to exactly one associated context', () => {
+    const team = buildCurrentTaskExecutionTeam();
+    const address = createTeamExecutionAddress({
+      rootTeamRunId: currentTaskExecutionRootTeamRunId,
+      memberAddress: '/Teacher',
+    });
 
-describe('teamStreamMemberContextResolver', () => {
-  it('leaves explicit missing task-agent identity unresolved without mutating topology', () => {
-    const teamContext = createTeamContext();
-    const workerContext = teamContext.leafAgentContextsByRouteKey.get('worker')!;
-    const message: ServerMessage = {
-      type: 'AGENT_STATUS',
-      payload: {
-        status: 'initializing',
-        agent_id: 'opaque-runtime-run',
-        agent_name: 'worker',
-        member_route_key: 'worker',
-        member_path: ['worker'],
-        source_route_key: 'worker',
-        source_path: ['worker'],
-        task_agent_instance_id: 'task-agent-instance-1',
-        task_agent_run_id: 'opaque-runtime-run',
-        task_id: 'task-1',
-      },
-    };
-
-    const resolution = resolveTeamStreamMemberContext(teamContext, message);
-
-    expect(resolution).toBeNull();
-    expect(teamContext.leafAgentContextsByRouteKey.has('opaque-runtime-run')).toBe(false);
-    expect(teamContext.memberNodesByRouteKey.has('opaque-runtime-run')).toBe(false);
-    expect(workerContext.state.runId).toBe('worker-run');
+    expect(team.executions.applyExecutionMessage(status({ kind: 'persistent_agent', address }) as any))
+      .toEqual({
+        disposition: 'unchanged',
+        effects: [{ kind: 'dispatch_agent', executionAddress: address, message: status({ kind: 'persistent_agent', address }) }],
+      });
   });
 
-  it('skips identity-less routed messages with a mismatched logical agent id', () => {
-    const teamContext = createTeamContext();
-    const workerContext = teamContext.leafAgentContextsByRouteKey.get('worker')!;
-    const message: ServerMessage = {
-      type: 'AGENT_STATUS',
-      payload: {
-        status: 'initializing',
-        agent_id: 'opaque-mismatched-run',
-        agent_name: 'worker',
-        member_route_key: 'worker',
-        member_path: ['worker'],
-      },
-    };
-
-    expect(resolveTeamStreamMemberContext(teamContext, message)).toBeNull();
-    expect(workerContext.state.runId).toBe('worker-run');
-    expect(teamContext.leafAgentContextsByRouteKey.has('opaque-mismatched-run')).toBe(false);
+  it('rejects a missing task Agent instead of substituting its persistent Agent', () => {
+    const team = buildCurrentTaskExecutionTeam();
+    const address = taskAgentAddress({ taskAgentRunId: 'missing-task-agent-run' });
+    expect(team.executions.applyExecutionMessage(status({ kind: 'task_agent', address }) as any))
+      .toMatchObject({ disposition: 'rejected', code: 'TEAM_EXECUTION_NOT_FOUND', effects: [] });
   });
 
-  it('routes identity-less follow-up messages to an existing task-agent context by exact run id', () => {
-    const teamContext = createTeamContext();
-    const taskAgentContext = ensureTaskAgentProjection(teamContext, {
-      taskAgentRunId: 'opaque-existing-task-agent',
-      taskAgentInstanceId: 'task-agent-instance-2',
-      taskId: 'task-2',
-      logicalMemberRouteKey: 'worker',
-      logicalMemberPath: ['worker'],
-    }).context;
-    const message: ServerMessage = {
-      type: 'SEGMENT_START',
-      payload: {
-        id: 'seg-1',
-        turn_id: 'turn-1',
-        segment_type: 'text',
-        agent_id: 'opaque-existing-task-agent',
-        agent_name: 'worker',
-        member_route_key: 'worker',
-        member_path: ['worker'],
-      },
-    };
+  it('resolves a task Agent only after exact activation materializes it', () => {
+    const team = buildCurrentTaskExecutionTeam();
+    const address = taskAgentAddress({ taskAgentRunId: 'existing-task-agent-run' });
+    expect(team.executions.applyExecutionMessage(taskAgentEvent({ address }) as any).disposition).toBe('applied');
+    expect(team.executions.applyExecutionMessage(status({ kind: 'task_agent', address }) as any))
+      .toMatchObject({
+        disposition: 'unchanged',
+        effects: [{ kind: 'dispatch_agent', executionAddress: address }],
+      });
+    expect(team.executions.getAgentContext(address)?.state.runId).toBe('existing-task-agent-run');
+  });
 
-    expect(resolveTeamStreamMemberContext(teamContext, message)?.context).toBe(taskAgentContext);
+  it('materializes a real Agent inside an active task Team only from its correlated binding', () => {
+    const team = buildCurrentTaskExecutionTeam();
+    expect(team.executions.applyExecutionMessage(taskTeamEvent() as any).disposition).toBe('applied');
+    const address = taskTeamCoordinatorAddress();
+    expect(team.executions.hasExecution(address)).toBe(false);
+
+    const message = status({ kind: 'task_team_agent', address, agentRunId: 'task-team-agent-run' });
+    expect(team.executions.applyExecutionMessage(message as any)).toMatchObject({
+      disposition: 'applied',
+      effects: [{ kind: 'dispatch_agent', executionAddress: address }],
+    });
+    expect(team.executions.getAgentContext(address)?.state.runId).toBe('task-team-agent-run');
+  });
+
+  it('rejects an Agent binding from another collaboration root', () => {
+    const team = buildCurrentTaskExecutionTeam();
+    const address = createTeamExecutionAddress({ rootTeamRunId: 'foreign-root', memberAddress: '/Teacher' });
+    expect(team.executions.applyExecutionMessage(status({ kind: 'persistent_agent', address }) as any))
+      .toMatchObject({ disposition: 'rejected', code: 'TEAM_EXECUTION_IDENTITY_MISMATCH', effects: [] });
   });
 });

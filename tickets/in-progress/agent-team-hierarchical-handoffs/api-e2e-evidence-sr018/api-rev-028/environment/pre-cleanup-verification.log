@@ -1,0 +1,15 @@
+2026-08-12T09:45:29Z
+owned listeners
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    20943 normy   27u  IPv4 0x489a5938c08e5652      0t0  TCP 127.0.0.1:60228 (LISTEN)
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    46065 normy   17u  IPv4 0x59e48441c73e16e1      0t0  TCP 127.0.0.1:31228 (LISTEN)
+protected listeners
+database exact target
+COMMAND   PID  USER   FD   TYPE DEVICE SIZE/OFF      NODE NAME
+node    20943 normy   19u   REG   1,13   884736 338451272 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-028-live-20260812-1.db
+node    20943 normy   20u   REG   1,13   884736 338451272 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-028-live-20260812-1.db
+node    20943 normy   21u   REG   1,13   884736 338451272 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-028-live-20260812-1.db
+node    20943 normy   22u   REG   1,13   884736 338451272 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-028-live-20260812-1.db
+node    20943 normy   24u   REG   1,13   884736 338451272 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-028-live-20260812-1.db
+node    20943 normy   25u   REG   1,13   884736 338451272 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-028-live-20260812-1.db

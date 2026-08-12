@@ -1,0 +1,24 @@
+2026-08-10T19:28:21Z
+head=619a442eebe7c6a1fce8d38d03ed2e7a7c71ed07
+branch=codex/agent-team-hierarchical-handoffs
+ambient_DATABASE_URL_present=true
+ambient_DATABASE_URL_TEST_present=false
+user_stack:
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    71461 normy   26u  IPv4 0xbe9eaf34a35017b1      0t0  TCP 127.0.0.1:60004 (LISTEN)
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    73207 normy   12u  IPv4 0xe0271daf60061249      0t0  TCP 127.0.0.1:31004 (LISTEN)
+owned_candidate_ports:
+60020=available
+31020=available
+protected_state:
+stash@{0}: On codex/agent-team-hierarchical-handoffs: delivery DR-004 protect pre-SR-015 docs and delivery artifacts
+stash@{1}: On codex/agent-team-hierarchical-handoffs: delivery re-entry protect DR-001 docs and handoff artifacts
+stash@{2}: On codex/agent-idle-status-lifecycle: preserve api-e2e round6 artifacts before 2026-07-29 rebase
+stash@{3}: On personal: delivery preserve ignored main worktree files before release
+stash@{4}: On personal: delivery preserve unrelated main worktree before event monitor file URI finalization
+stash@{5}: On personal: safety: stash partial send-message global routing WIP from main checkout before refreshing personal 2026-06-12T02:43:33Z
+stash@{6}: On personal: delivery-protect-main-personal-before-refresh-20260606
+stash@{7}: On codex/mobile-remote-access-requirements: pre-rebase-mobile-remote-access-20260519-095946
+stash@{8}: On personal: pre-release preserve docs/future-features before claude tool args release
+stash@{9}: On personal: pre-sync-personal-before-reset-20260423-082934

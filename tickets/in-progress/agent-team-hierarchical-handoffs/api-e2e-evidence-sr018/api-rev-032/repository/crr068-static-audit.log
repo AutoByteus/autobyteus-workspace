@@ -1,0 +1,40 @@
+CRR-068 bounded durable-test static audit
+head=66cfe11e9057b0276c95cb5e9a01784d74b07499
+audited_at=2026-08-12T15:30:52Z
+
+[deleted-symbol and synthetic-instance audit]
+occurrences=0
+result=PASS
+
+[unsupported standalone egress compatibility-payload audit]
+occurrences=0
+result=PASS
+
+[current strict Team identity replacement boundary]
+126:      execution_address: executionAddress,
+134:    ? { execution_address: executionAddress, command_id: "interrupt-invalid" }
+135:    : { execution_address: executionAddress, invocation_id: "invocation-invalid", reason: null };
+147:        execution_address: projectTeamExecutionAddressDto(executionCases[0]!.address),
+189:        execution_address: exactAddress,
+197:        execution_address: exactAddress,
+202:        execution_address: exactAddress,
+230:          execution_address: projectTeamExecutionAddressDto(address),
+240:  ])("rejects %s before effect when execution_address is incomplete", async (type) => {
+256:  ])("rejects %s before effect when execution_address names a foreign root", async (type) => {
+273:          execution_address: expect.objectContaining({ root_team_run_id: "foreign-root" }),
+300:      execution_address: projectTeamExecutionAddressDto(stale),
+334:      execution_address: projectTeamExecutionAddressDto(stale),
+348:          execution_address: projectTeamExecutionAddressDto(stale),
+354:  it("projects the exact execution address on Agent events", () => {
+382:      agent_execution: {
+383:        kind: "task_team_agent",
+384:        execution_address: projectTeamExecutionAddressDto(address),
+result=PASS
+
+[active cumulative durable relative-import resolution]
+active_inventory_paths=86
+missing_relative_import_count=0
+result=PASS
+
+[focused diff hygiene]
+result=PASS
