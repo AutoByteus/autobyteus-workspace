@@ -209,7 +209,6 @@ export function useMobileRunLaunchCoordinator() {
     const teamRunId = launched.rootTeamRunId;
     const focusedExecutionAddress = await ensureValidLeafTeamFocus(teamRunId);
     mobileWorkStore.moveDraftAttachmentsToPendingTeamRun(teamRunId);
-    teamRunConfigStore.clearConfig();
 
     return {
       context: {

@@ -42,7 +42,7 @@
         :team-definition="activeTeamDefinition"
         :workspace-loading-state="effectiveWorkspaceLoadingState"
         :initial-path="initialWorkspacePath"
-        :read-only="isSelectionMode"
+        :read-only="isSelectionMode || isRunPreparationPending || isTeamLaunchPending"
         @select-existing="handleSelectExisting"
         @workspace-input-change="handleWorkspaceInputChange"
         @edit-config="handleTeamConfigEdit"
@@ -109,8 +109,9 @@ const { t: $t } = useLocalization()
 type PendingWorkspaceInput = { mode: 'existing' | 'new'; pendingPath: string }
 
 const pendingWorkspaceInput = ref<PendingWorkspaceInput>({ mode: 'existing', pendingPath: '' })
-const isLaunching = ref(false)
+const isRunPreparationPending = ref(false)
 const isSelectionMode = computed(() => !!selectionStore.selectedRunId)
+const isTeamLaunchPending = computed(() => teamRunStore.isDraftLaunchPending(teamRunConfigStore.selectedDraft?.draftId ?? null))
 
 const effectiveAgentConfig = computed((): AgentRunConfig | null => {
   if (selectionStore.isAgentSelected && selectionStore.selectedRunId) {
@@ -216,7 +217,7 @@ const initialWorkspacePath = computed(() => {
 })
 
 const handleSelectExisting = (workspaceId: string) => {
-  if (isSelectionMode.value) {
+  if (isSelectionMode.value || isRunPreparationPending.value || isTeamLaunchPending.value) {
     return
   }
   const selectedWorkspace = workspaceStore.workspaces[workspaceId] || null
@@ -234,11 +235,12 @@ const handleSelectExisting = (workspaceId: string) => {
 }
 
 const handleTeamConfigEdit = (edit: TeamLaunchConfigEdit) => {
-  if (isSelectionMode.value || !effectiveTeamConfig.value) return
+  if (isSelectionMode.value || isRunPreparationPending.value || isTeamLaunchPending.value || !effectiveTeamConfig.value) return
   teamRunConfigStore.applyConfigEdit(edit)
 }
 
 const handleWorkspaceInputChange = (input: PendingWorkspaceInput) => {
+  if (isRunPreparationPending.value || isTeamLaunchPending.value) return
   pendingWorkspaceInput.value = {
     mode: input.mode,
     pendingPath: input.mode === 'new' ? input.pendingPath.trim() : '',
@@ -341,7 +343,7 @@ const canLaunchAgentBeforeRun = computed(() => {
 })
 
 const isRunDisabled = computed(() => {
-  if (isLaunching.value || effectiveWorkspaceLoadingState.value.isLoading) {
+  if (isRunPreparationPending.value || isTeamLaunchPending.value || effectiveWorkspaceLoadingState.value.isLoading) {
     return true
   }
   if (!isSelectionMode.value) {
@@ -352,12 +354,12 @@ const isRunDisabled = computed(() => {
 })
 
 const handleRun = async () => {
-  if (isLaunching.value) {
+  if (isRunPreparationPending.value || isTeamLaunchPending.value) {
     return
   }
 
   if (!isSelectionMode.value) {
-    isLaunching.value = true
+    isRunPreparationPending.value = true
     try {
       const workspaceReady = await ensurePendingWorkspaceLoadedForRun()
       if (!workspaceReady) {
@@ -378,7 +380,9 @@ const handleRun = async () => {
         if (!draft) {
           throw new Error('Team launch draft is unavailable.')
         }
-        await teamRunStore.launchDraft(draft)
+        const launch = teamRunStore.launchDraft(draft)
+        isRunPreparationPending.value = false
+        await launch
       } else if (effectiveAgentConfig.value) {
         if (!effectiveAgentConfig.value.workspaceId) {
           runConfigStore.setWorkspaceError('Workspace is required to run an agent.')
@@ -388,7 +392,7 @@ const handleRun = async () => {
         runConfigStore.clearConfig()
       }
     } finally {
-      isLaunching.value = false
+      isRunPreparationPending.value = false
     }
   }
 }

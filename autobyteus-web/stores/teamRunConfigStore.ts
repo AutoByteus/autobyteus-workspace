@@ -35,6 +35,7 @@ interface WorkspaceLoadingState {
 
 interface TeamLaunchDraftState {
   drafts: Map<TeamLaunchDraftId, TeamLaunchDraft>
+  inFlightDrafts: Map<TeamLaunchDraftId, TeamLaunchDraft>
   selectedDraftId: TeamLaunchDraftId | null
   isPanelExpanded: boolean
   hasFirstMessageSent: boolean
@@ -149,9 +150,28 @@ const replaceDraft = (
   changes: Partial<Pick<TeamLaunchDraft, 'config' | 'focusedMemberAddress' | 'pendingInputsByMemberAddress'>>,
 ): TeamLaunchDraft => Object.freeze({ ...draft, ...changes })
 
+const assertNoInFlightDraft = (
+  inFlightDrafts: ReadonlyMap<TeamLaunchDraftId, TeamLaunchDraft>,
+  operation: string,
+): void => {
+  const draftId = inFlightDrafts.keys().next().value as TeamLaunchDraftId | undefined
+  if (draftId) throw new Error(`Team launch draft '${draftId}' is in flight and cannot ${operation}.`)
+}
+
+const assertDraftMutable = (
+  inFlightDrafts: ReadonlyMap<TeamLaunchDraftId, TeamLaunchDraft>,
+  draftId: TeamLaunchDraftId,
+  operation: string,
+): void => {
+  if (inFlightDrafts.has(draftId)) {
+    throw new Error(`Team launch draft '${draftId}' is in flight and cannot ${operation}.`)
+  }
+}
+
 export const useTeamRunConfigStore = defineStore('teamRunConfig', {
   state: (): TeamLaunchDraftState => ({
     drafts: new Map(),
+    inFlightDrafts: new Map(),
     selectedDraftId: null,
     isPanelExpanded: true,
     hasFirstMessageSent: false,
@@ -171,10 +191,15 @@ export const useTeamRunConfigStore = defineStore('teamRunConfig', {
       return evaluateTeamRunLaunchReadiness(this.selectedDraft?.config ?? null, this.runtimeModelCatalogs)
     },
     displayName(): string { return this.selectedDraft?.config.teamDefinitionName ?? '' },
+    hasInFlightLaunch(state): boolean { return state.inFlightDrafts.size > 0 },
+    isDraftLaunchInFlight: (state) => (draftId: TeamLaunchDraftId | null): boolean => (
+      Boolean(draftId) && state.inFlightDrafts.has(draftId as TeamLaunchDraftId)
+    ),
   },
 
   actions: {
     createDraft(config: TeamRunConfig, focusedMemberAddress: AgentTeamAddress): TeamLaunchDraftId {
+      assertNoInFlightDraft(this.inFlightDrafts, 'be replaced')
       const draftId = createTeamLaunchDraftId()
       const draft: TeamLaunchDraft = Object.freeze({
         draftId,
@@ -207,17 +232,21 @@ export const useTeamRunConfigStore = defineStore('teamRunConfig', {
     applyConfigEdit(edit: TeamLaunchConfigEdit) {
       const draft = this.selectedDraft
       if (!draft) return
+      assertDraftMutable(this.inFlightDrafts, draft.draftId, 'be edited')
       this.replaceSelectedDraft(replaceDraft(draft, { config: freezeConfig(applyConfigEdit(draft.config, edit)) }))
     },
 
     focusMember(memberAddress: AgentTeamAddress) {
       const draft = this.selectedDraft
-      if (draft) this.replaceSelectedDraft(replaceDraft(draft, { focusedMemberAddress: memberAddress }))
+      if (!draft) return
+      assertDraftMutable(this.inFlightDrafts, draft.draftId, 'change focus')
+      this.replaceSelectedDraft(replaceDraft(draft, { focusedMemberAddress: memberAddress }))
     },
 
     setPendingInput(memberAddress: AgentTeamAddress, input: TeamLaunchPendingInput | null) {
       const draft = this.selectedDraft
       if (!draft) return
+      assertDraftMutable(this.inFlightDrafts, draft.draftId, 'change pending input')
       const pending = { ...draft.pendingInputsByMemberAddress }
       if (input) pending[memberAddress] = freezePendingInput(input)
       else delete pending[memberAddress]
@@ -225,6 +254,7 @@ export const useTeamRunConfigStore = defineStore('teamRunConfig', {
     },
 
     removeDraft(draftId: TeamLaunchDraftId) {
+      assertDraftMutable(this.inFlightDrafts, draftId, 'be removed')
       if (!this.drafts.has(draftId)) return
       const next = new Map(this.drafts)
       next.delete(draftId)
@@ -233,13 +263,43 @@ export const useTeamRunConfigStore = defineStore('teamRunConfig', {
     },
 
     selectDraft(draftId: TeamLaunchDraftId | null) {
+      if (draftId !== this.selectedDraftId) assertNoInFlightDraft(this.inFlightDrafts, 'change selection')
       if (draftId && !this.drafts.has(draftId)) throw new Error(`Team launch draft '${draftId}' was not found.`)
       this.selectedDraftId = draftId
     },
 
     replaceSelectedDraft(draft: TeamLaunchDraft) {
       if (!this.selectedDraftId || draft.draftId !== this.selectedDraftId) throw new Error('Selected Team launch draft identity changed.')
+      assertDraftMutable(this.inFlightDrafts, draft.draftId, 'be replaced')
       this.drafts = new Map(this.drafts).set(draft.draftId, draft)
+    },
+
+    admitDraftLaunch(draft: TeamLaunchDraft) {
+      const selectedDraft = this.selectedDraft
+      if (!selectedDraft || selectedDraft !== draft || this.selectedDraftId !== draft.draftId) {
+        throw new Error(`Team launch draft '${draft.draftId}' is not the exact selected snapshot.`)
+      }
+      assertNoInFlightDraft(this.inFlightDrafts, 'start another launch')
+      this.inFlightDrafts = new Map(this.inFlightDrafts).set(draft.draftId, draft)
+    },
+
+    completeDraftLaunch(draft: TeamLaunchDraft) {
+      if (this.inFlightDrafts.get(draft.draftId) !== draft || this.drafts.get(draft.draftId) !== draft) {
+        throw new Error(`Team launch draft '${draft.draftId}' is not the exact admitted snapshot.`)
+      }
+      const drafts = new Map(this.drafts)
+      drafts.delete(draft.draftId)
+      this.drafts = drafts
+      if (this.selectedDraftId === draft.draftId) this.selectedDraftId = null
+    },
+
+    releaseDraftLaunch(draft: TeamLaunchDraft) {
+      if (this.inFlightDrafts.get(draft.draftId) !== draft) {
+        throw new Error(`Team launch draft '${draft.draftId}' is not the exact in-flight snapshot.`)
+      }
+      const inFlightDrafts = new Map(this.inFlightDrafts)
+      inFlightDrafts.delete(draft.draftId)
+      this.inFlightDrafts = inFlightDrafts
     },
 
     setRuntimeModelCatalog(runtimeKind: string, modelIdentifiers: string[]) {
@@ -248,9 +308,11 @@ export const useTeamRunConfigStore = defineStore('teamRunConfig', {
       this.runtimeModelCatalogs = { ...this.runtimeModelCatalogs, [normalizedRuntimeKind]: [...new Set(modelIdentifiers)] }
     },
     setWorkspaceLoading(isLoading: boolean) {
+      if (this.selectedDraftId) assertDraftMutable(this.inFlightDrafts, this.selectedDraftId, 'change workspace state')
       this.workspaceLoadingState = { ...this.workspaceLoadingState, isLoading, error: isLoading ? null : this.workspaceLoadingState.error }
     },
     setWorkspaceLoaded(workspaceId: string, path: string, workspaceMetadata: WorkspaceMetadata | null = null) {
+      if (this.selectedDraftId) assertDraftMutable(this.inFlightDrafts, this.selectedDraftId, 'change workspace')
       this.workspaceLoadingState = { isLoading: false, loadedPath: path, error: null }
       this.applyConfigEdit({
         kind: 'set_workspace',
@@ -258,8 +320,12 @@ export const useTeamRunConfigStore = defineStore('teamRunConfig', {
         workspaceMetadata: workspaceMetadata ?? createWorkspaceMetadata({ workspaceId, workspaceRootPath: path }),
       })
     },
-    setWorkspaceError(error: string) { this.workspaceLoadingState = { ...this.workspaceLoadingState, isLoading: false, error } },
+    setWorkspaceError(error: string) {
+      if (this.selectedDraftId) assertDraftMutable(this.inFlightDrafts, this.selectedDraftId, 'change workspace state')
+      this.workspaceLoadingState = { ...this.workspaceLoadingState, isLoading: false, error }
+    },
     clearWorkspaceState() {
+      if (this.selectedDraftId) assertDraftMutable(this.inFlightDrafts, this.selectedDraftId, 'change workspace')
       this.workspaceLoadingState = { isLoading: false, error: null, loadedPath: null }
       if (this.selectedDraft) this.applyConfigEdit({ kind: 'set_workspace', workspaceId: null, workspaceMetadata: null })
     },
@@ -269,6 +335,7 @@ export const useTeamRunConfigStore = defineStore('teamRunConfig', {
     markFirstMessageSent() { this.hasFirstMessageSent = true; this.collapsePanel() },
     clearConfig() {
       const draftId = this.selectedDraftId
+      if (draftId) assertDraftMutable(this.inFlightDrafts, draftId, 'be cleared')
       if (draftId) this.removeDraft(draftId)
       this.isPanelExpanded = true
       this.hasFirstMessageSent = false

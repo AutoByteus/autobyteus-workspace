@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore';
 import type { TeamLaunchDraftId } from '~/types/agent/TeamLaunchDraft';
+import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 
 export type SelectionType = 'agent' | 'team' | 'team_draft';
 export type RunSelectionSubject =
@@ -9,6 +10,13 @@ export type RunSelectionSubject =
   | Readonly<{ kind: 'team_draft'; draftId: TeamLaunchDraftId }>;
 
 interface AgentSelectionState { subject: RunSelectionSubject | null }
+
+const assertSelectionMutable = (): void => {
+  const drafts = useTeamRunConfigStore();
+  if (drafts.hasInFlightLaunch) {
+    throw new Error('Run selection cannot change while a Team launch draft is in flight.');
+  }
+};
 
 export const useAgentSelectionStore = defineStore('agentSelection', {
   state: (): AgentSelectionState => ({ subject: null }),
@@ -30,6 +38,7 @@ export const useAgentSelectionStore = defineStore('agentSelection', {
   },
   actions: {
     setRunSelection(runId: string, type: Exclude<SelectionType, 'team_draft'> = 'agent') {
+      assertSelectionMutable();
       const normalized = runId.trim();
       if (!normalized) throw new Error('Run selection requires a real run ID.');
       this.subject = type === 'agent'
@@ -37,9 +46,19 @@ export const useAgentSelectionStore = defineStore('agentSelection', {
         : Object.freeze({ kind: 'team_run', rootTeamRunId: normalized });
     },
     setTeamDraftSelection(draftId: TeamLaunchDraftId) {
+      assertSelectionMutable();
       this.subject = Object.freeze({ kind: 'team_draft', draftId });
     },
-    clearRunSelection() { this.subject = null; },
+    clearRunSelection() { assertSelectionMutable(); this.subject = null; },
+    promoteTeamDraftLaunch(draftId: TeamLaunchDraftId, rootTeamRunId: string) {
+      const drafts = useTeamRunConfigStore();
+      const normalizedRootTeamRunId = rootTeamRunId.trim();
+      if (!drafts.isDraftLaunchInFlight(draftId)) {
+        throw new Error(`Team launch draft '${draftId}' is not in flight.`);
+      }
+      if (!normalizedRootTeamRunId) throw new Error('Team launch promotion requires a real TeamRun ID.');
+      this.subject = Object.freeze({ kind: 'team_run', rootTeamRunId: normalizedRootTeamRunId });
+    },
     selectRunWithoutShellNavigation(runId: string, type: Exclude<SelectionType, 'team_draft'> = 'agent') { this.setRunSelection(runId, type); },
     selectTeamDraftWithoutShellNavigation(draftId: TeamLaunchDraftId) { this.setTeamDraftSelection(draftId); },
     clearSelectionWithoutShellNavigation() { this.clearRunSelection(); },
