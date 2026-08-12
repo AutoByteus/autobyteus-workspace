@@ -45,6 +45,7 @@
         :read-only="isSelectionMode"
         @select-existing="handleSelectExisting"
         @workspace-input-change="handleWorkspaceInputChange"
+        @edit-config="handleTeamConfigEdit"
       />
 
       <div v-else class="mt-4 text-center text-red-500">{{ $t('workspace.components.workspace.config.RunConfigPanel.error_definition_not_found') }}</div>
@@ -88,6 +89,7 @@ import AgentRunConfigForm from './AgentRunConfigForm.vue'
 import TeamRunConfigForm from './TeamRunConfigForm.vue'
 import type { AgentRunConfig } from '~/types/agent/AgentRunConfig'
 import type { TeamRunConfig } from '~/types/agent/TeamRunConfig'
+import type { TeamLaunchConfigEdit } from '~/types/agent/TeamLaunchDraft'
 
 const selectionStore = useAgentSelectionStore()
 const runConfigStore = useAgentRunConfigStore()
@@ -221,12 +223,17 @@ const handleSelectExisting = (workspaceId: string) => {
     || null
 
   if (effectiveTeamConfig.value) {
-    teamRunConfigStore.updateConfig({ workspaceId, workspaceMetadata })
+    teamRunConfigStore.applyConfigEdit({ kind: 'set_workspace', workspaceId, workspaceMetadata })
     setActiveTab('files')
   } else if (effectiveAgentConfig.value) {
     runConfigStore.updateAgentConfig({ workspaceId, workspaceMetadata })
     setActiveTab('files')
   }
+}
+
+const handleTeamConfigEdit = (edit: TeamLaunchConfigEdit) => {
+  if (isSelectionMode.value || !effectiveTeamConfig.value) return
+  teamRunConfigStore.applyConfigEdit(edit)
 }
 
 const handleWorkspaceInputChange = (input: PendingWorkspaceInput) => {

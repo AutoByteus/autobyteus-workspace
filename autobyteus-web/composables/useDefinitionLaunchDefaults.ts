@@ -9,6 +9,7 @@ import type {
   MemberConfigOverride,
   TeamRunConfig,
 } from '~/types/agent/TeamRunConfig'
+import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
 import {
   normalizeDefaultLaunchConfig,
   normalizeModelConfigRecord,
@@ -36,18 +37,45 @@ export const buildEditableAgentRunSeed = (config: AgentRunConfig): AgentRunConfi
   isLocked: false,
 })
 
-export const cloneTeamConfig = (config: TeamRunConfig): TeamRunConfig => ({
-  ...config,
+const cloneWorkspaceMetadata = (
+  metadata: WorkspaceMetadata | null,
+): WorkspaceMetadata | null => metadata
+  ? {
+      workspaceId: metadata.workspaceId,
+      workspaceRootPath: metadata.workspaceRootPath,
+      displayName: metadata.displayName,
+      kind: metadata.kind,
+    }
+  : null
+
+const cloneMemberOverride = (override: MemberConfigOverride): MemberConfigOverride => {
+  const cloned: MemberConfigOverride = {
+    agentDefinitionId: override.agentDefinitionId,
+  }
+  if (override.runtimeKind !== undefined) cloned.runtimeKind = override.runtimeKind
+  if (override.llmModelIdentifier !== undefined) cloned.llmModelIdentifier = override.llmModelIdentifier
+  if (override.autoExecuteTools !== undefined) cloned.autoExecuteTools = override.autoExecuteTools
+  if (Object.hasOwn(override, 'llmConfig')) cloned.llmConfig = normalizeModelConfig(override.llmConfig)
+  return cloned
+}
+
+export const cloneTeamConfig = (config: Readonly<TeamRunConfig>): TeamRunConfig => ({
+  teamDefinitionId: config.teamDefinitionId,
+  teamDefinitionName: config.teamDefinitionName,
+  runtimeKind: config.runtimeKind,
+  workspaceId: config.workspaceId,
+  workspaceMetadata: cloneWorkspaceMetadata(config.workspaceMetadata),
+  llmModelIdentifier: config.llmModelIdentifier,
   llmConfig: normalizeModelConfig(config.llmConfig),
+  autoExecuteTools: config.autoExecuteTools,
+  skillAccessMode: config.skillAccessMode,
   memberOverrides: Object.fromEntries(
-    Object.entries(config.memberOverrides || {}).map(([memberName, override]) => [
-      memberName,
-      {
-        ...override,
-        llmConfig: normalizeModelConfig(override.llmConfig),
-      } satisfies MemberConfigOverride,
+    Object.entries(config.memberOverrides || {}).map(([memberAddress, override]) => [
+      memberAddress,
+      cloneMemberOverride(override),
     ]),
   ),
+  isLocked: config.isLocked,
 })
 
 export const buildEditableTeamRunSeed = (config: TeamRunConfig): TeamRunConfig => ({

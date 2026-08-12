@@ -126,7 +126,8 @@ export function useMobileRunLaunchCoordinator() {
     }
     if (!teamRunConfigStore.config) {
       teamRunConfigStore.setTemplate(definition);
-      teamRunConfigStore.updateConfig({
+      teamRunConfigStore.applyConfigEdit({
+        kind: 'set_workspace',
         workspaceId: draft.workspaceId,
         workspaceMetadata: workspaceMetadataForId(workspaceStore, draft.workspaceId),
       });

@@ -1,23 +1,31 @@
 import { defineStore } from 'pinia'
 import type { AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore'
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
-import { buildTeamRunTemplate } from '~/composables/useDefinitionLaunchDefaults'
-import { type TeamRunConfig } from '~/types/agent/TeamRunConfig'
+import { buildTeamRunTemplate, cloneTeamConfig } from '~/composables/useDefinitionLaunchDefaults'
+import { type MemberConfigOverride, type TeamRunConfig } from '~/types/agent/TeamRunConfig'
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
 import { createWorkspaceMetadata } from '~/utils/workspaceMetadata'
 import { normalizeMemberAddress } from '~/utils/teamDefinitionMembers'
 import {
   createTeamLaunchDraftId,
+  type TeamLaunchConfigEdit,
   type TeamLaunchDraft,
   type TeamLaunchDraftId,
   type TeamLaunchPendingInput,
 } from '~/types/agent/TeamLaunchDraft'
+import type { ContextAttachment } from '~/types/conversation'
 import type { AgentTeamAddress } from '~/types/agent/TeamExecutionAddress'
 import {
   evaluateTeamRunLaunchReadiness,
   type RuntimeModelCatalogs,
   type TeamRunLaunchReadiness,
 } from '~/utils/teamRunLaunchReadiness'
+import {
+  hasExplicitMemberLlmConfigOverride,
+  hasExplicitMemberLlmModelOverride,
+  hasExplicitMemberRuntimeOverride,
+  hasMeaningfulMemberOverride,
+} from '~/utils/teamRunConfigUtils'
 
 interface WorkspaceLoadingState {
   isLoading: boolean
@@ -34,8 +42,6 @@ interface TeamLaunchDraftState {
   runtimeModelCatalogs: RuntimeModelCatalogs
 }
 
-const cloneConfig = (config: TeamRunConfig): TeamRunConfig => structuredClone(config)
-
 const deepFreeze = (value: unknown): void => {
   if (!value || typeof value !== 'object' || Object.isFrozen(value)) return
   Object.values(value).forEach(deepFreeze)
@@ -43,15 +49,99 @@ const deepFreeze = (value: unknown): void => {
 }
 
 const freezeConfig = (config: TeamRunConfig): Readonly<TeamRunConfig> => {
-  const cloned = cloneConfig(config)
+  const cloned = cloneTeamConfig(config)
   deepFreeze(cloned)
   return cloned
 }
 
+const cloneAttachment = (attachment: ContextAttachment): ContextAttachment => {
+  const common = {
+    id: attachment.id,
+    locator: attachment.locator,
+    displayName: attachment.displayName,
+    type: attachment.type,
+  }
+  switch (attachment.kind) {
+    case 'workspace_path': return { ...common, kind: 'workspace_path' }
+    case 'uploaded': return {
+      ...common,
+      kind: 'uploaded',
+      storedFilename: attachment.storedFilename,
+      phase: attachment.phase,
+    }
+    case 'external_url': return { ...common, kind: 'external_url' }
+    case 'unsupported_local_file': return { ...common, kind: 'unsupported_local_file' }
+  }
+}
+
 const freezePendingInput = (input: TeamLaunchPendingInput): TeamLaunchPendingInput => {
-  const cloned = structuredClone(input)
+  const cloned: TeamLaunchPendingInput = {
+    text: input.text,
+    attachments: input.attachments.map(cloneAttachment),
+  }
   deepFreeze(cloned)
   return cloned
+}
+
+const pruneInheritedMemberLlmConfigs = (
+  overrides: Readonly<Record<string, MemberConfigOverride>>,
+  changedGlobal: Readonly<{ runtime: boolean; model: boolean }>,
+): Record<string, MemberConfigOverride> => Object.fromEntries(
+  Object.entries(overrides).flatMap(([memberAddress, override]) => {
+    const shouldPruneConfig = hasExplicitMemberLlmConfigOverride(override) && (
+      (changedGlobal.runtime && !hasExplicitMemberRuntimeOverride(override)) ||
+      (changedGlobal.model && !hasExplicitMemberLlmModelOverride(override))
+    )
+    if (!shouldPruneConfig) return [[memberAddress, override]]
+    const prunedOverride = { ...override }
+    delete prunedOverride.llmConfig
+    return hasMeaningfulMemberOverride(prunedOverride) ? [[memberAddress, prunedOverride]] : []
+  }),
+)
+
+const canonicalMemberAddress = (value: string): AgentTeamAddress => {
+  const normalized = normalizeMemberAddress(value)
+  if (normalized !== value) throw new Error(`Team launch edit requires canonical member address '${value}'.`)
+  return normalized
+}
+
+const applyConfigEdit = (config: Readonly<TeamRunConfig>, edit: TeamLaunchConfigEdit): TeamRunConfig => {
+  const next = cloneTeamConfig(config)
+  switch (edit.kind) {
+    case 'set_workspace':
+      next.workspaceId = edit.workspaceId
+      next.workspaceMetadata = edit.workspaceMetadata
+      return next
+    case 'set_runtime':
+      next.memberOverrides = pruneInheritedMemberLlmConfigs(next.memberOverrides, {
+        runtime: edit.runtimeKind !== next.runtimeKind,
+        model: false,
+      })
+      next.runtimeKind = edit.runtimeKind
+      return next
+    case 'set_model':
+      next.memberOverrides = pruneInheritedMemberLlmConfigs(next.memberOverrides, {
+        runtime: false,
+        model: edit.llmModelIdentifier !== next.llmModelIdentifier,
+      })
+      next.llmModelIdentifier = edit.llmModelIdentifier
+      return next
+    case 'set_llm_config':
+      next.llmConfig = edit.llmConfig
+      return next
+    case 'set_auto_execute_tools':
+      next.autoExecuteTools = edit.autoExecuteTools
+      return next
+    case 'set_member_override': {
+      const memberAddress = canonicalMemberAddress(edit.memberAddress)
+      if (edit.override && hasMeaningfulMemberOverride(edit.override)) {
+        next.memberOverrides[memberAddress] = edit.override
+      } else {
+        delete next.memberOverrides[memberAddress]
+      }
+      return next
+    }
+  }
 }
 
 const replaceDraft = (
@@ -114,12 +204,10 @@ export const useTeamRunConfigStore = defineStore('teamRunConfig', {
       this.createDraft(config, focusedMemberAddress)
     },
 
-    updateConfig(updates: Partial<TeamRunConfig>) {
+    applyConfigEdit(edit: TeamLaunchConfigEdit) {
       const draft = this.selectedDraft
       if (!draft) return
-      const next = cloneConfig({ ...draft.config, ...updates } as TeamRunConfig)
-      if ('workspaceId' in updates && !('workspaceMetadata' in updates)) next.workspaceMetadata = null
-      this.replaceSelectedDraft(replaceDraft(draft, { config: freezeConfig(next) }))
+      this.replaceSelectedDraft(replaceDraft(draft, { config: freezeConfig(applyConfigEdit(draft.config, edit)) }))
     },
 
     focusMember(memberAddress: AgentTeamAddress) {
@@ -164,12 +252,16 @@ export const useTeamRunConfigStore = defineStore('teamRunConfig', {
     },
     setWorkspaceLoaded(workspaceId: string, path: string, workspaceMetadata: WorkspaceMetadata | null = null) {
       this.workspaceLoadingState = { isLoading: false, loadedPath: path, error: null }
-      this.updateConfig({ workspaceId, workspaceMetadata: workspaceMetadata ?? createWorkspaceMetadata({ workspaceId, workspaceRootPath: path }) })
+      this.applyConfigEdit({
+        kind: 'set_workspace',
+        workspaceId,
+        workspaceMetadata: workspaceMetadata ?? createWorkspaceMetadata({ workspaceId, workspaceRootPath: path }),
+      })
     },
     setWorkspaceError(error: string) { this.workspaceLoadingState = { ...this.workspaceLoadingState, isLoading: false, error } },
     clearWorkspaceState() {
       this.workspaceLoadingState = { isLoading: false, error: null, loadedPath: null }
-      if (this.selectedDraft) this.updateConfig({ workspaceId: null, workspaceMetadata: null })
+      if (this.selectedDraft) this.applyConfigEdit({ kind: 'set_workspace', workspaceId: null, workspaceMetadata: null })
     },
     collapsePanel() { this.isPanelExpanded = false },
     expandPanel() { this.isPanelExpanded = true },

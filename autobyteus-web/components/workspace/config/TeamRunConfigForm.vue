@@ -141,6 +141,7 @@
 import { computed, ref, toRef } from 'vue'
 import type { AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore'
 import type { TeamRunConfig, MemberConfigOverride } from '~/types/agent/TeamRunConfig'
+import type { TeamLaunchConfigEdit } from '~/types/agent/TeamLaunchDraft'
 import RuntimeModelConfigFields from '~/components/launch-config/RuntimeModelConfigFields.vue'
 import WorkspaceSelector from './WorkspaceSelector.vue'
 import MemberOverrideTree from './MemberOverrideTree.vue'
@@ -152,9 +153,6 @@ import {
   flattenLeafAgentMemberNodes,
 } from '~/utils/teamDefinitionMembers'
 import {
-  hasExplicitMemberLlmConfigOverride,
-  hasExplicitMemberLlmModelOverride,
-  hasExplicitMemberRuntimeOverride,
   hasMeaningfulMemberOverride,
 } from '~/utils/teamRunConfigUtils'
 
@@ -165,7 +163,7 @@ interface WorkspaceLoadingState {
 }
 
 const props = defineProps<{
-  config: TeamRunConfig
+  config: Readonly<TeamRunConfig>
   teamDefinition: AgentTeamDefinition
   workspaceLoadingState: WorkspaceLoadingState
   initialPath?: string
@@ -175,6 +173,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'select-existing', workspaceId: string): void
   (e: 'workspace-input-change', input: { mode: 'existing' | 'new'; pendingPath: string }): void
+  (e: 'edit-config', edit: TeamLaunchConfigEdit): void
 }>()
 
 const teamDefinitionStore = useAgentTeamDefinitionStore()
@@ -210,68 +209,27 @@ useTeamRunRuntimeCatalogSync(toRef(props, 'config'))
 
 const handleOverrideUpdate = (memberAddress: string, override: MemberConfigOverride | null) => {
   if (isFormReadOnly.value) return
-  const overrides = { ...(props.config.memberOverrides || {}) }
-  if (override && hasMeaningfulMemberOverride(override)) {
-    overrides[memberAddress] = override
-  } else {
-    delete overrides[memberAddress]
-  }
-  props.config.memberOverrides = overrides
+  emit('edit-config', { kind: 'set_member_override', memberAddress, override })
 }
 
 const updateAutoExecute = (checked: boolean) => {
   if (isFormReadOnly.value) return
-  props.config.autoExecuteTools = checked
-}
-
-const pruneInheritedMemberLlmConfigs = (changedGlobal: { runtime: boolean; model: boolean }) => {
-  if (!changedGlobal.runtime && !changedGlobal.model) return
-
-  const currentOverrides = props.config.memberOverrides || {}
-  const nextOverrides: Record<string, MemberConfigOverride> = {}
-  let pruned = false
-
-  for (const [memberName, override] of Object.entries(currentOverrides)) {
-    const shouldPruneConfig = hasExplicitMemberLlmConfigOverride(override) && (
-      (changedGlobal.runtime && !hasExplicitMemberRuntimeOverride(override)) ||
-      (changedGlobal.model && !hasExplicitMemberLlmModelOverride(override))
-    )
-
-    if (!shouldPruneConfig) {
-      nextOverrides[memberName] = override
-      continue
-    }
-
-    const prunedOverride = { ...override }
-    delete prunedOverride.llmConfig
-    if (hasMeaningfulMemberOverride(prunedOverride)) {
-      nextOverrides[memberName] = prunedOverride
-    }
-    pruned = true
-  }
-
-  if (pruned) {
-    props.config.memberOverrides = nextOverrides
-  }
+  emit('edit-config', { kind: 'set_auto_execute_tools', autoExecuteTools: checked })
 }
 
 const updateRuntimeKind = (value: string) => {
   if (isFormReadOnly.value) return
-  const runtimeChanged = value !== props.config.runtimeKind
-  pruneInheritedMemberLlmConfigs({ runtime: runtimeChanged, model: false })
-  props.config.runtimeKind = value
+  emit('edit-config', { kind: 'set_runtime', runtimeKind: value })
 }
 
 const updateLlmModelIdentifier = (value: string) => {
   if (isFormReadOnly.value) return
-  const modelChanged = value !== props.config.llmModelIdentifier
-  pruneInheritedMemberLlmConfigs({ runtime: false, model: modelChanged })
-  props.config.llmModelIdentifier = value
+  emit('edit-config', { kind: 'set_model', llmModelIdentifier: value })
 }
 
 const updateLlmConfig = (value: Record<string, unknown> | null) => {
   if (isFormReadOnly.value) return
-  props.config.llmConfig = value
+  emit('edit-config', { kind: 'set_llm_config', llmConfig: value })
 }
 
 const handleSelectExisting = (workspaceId: string) => {

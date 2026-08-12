@@ -194,7 +194,7 @@ export function useMobileRunSetupController(options: MobileRunSetupControllerOpt
     if (mode.value === 'agent' && agentRunConfigStore.config) {
       agentRunConfigStore.updateAgentConfig({ workspaceId })
     } else if (mode.value === 'team' && teamRunConfigStore.config) {
-      teamRunConfigStore.updateConfig({ workspaceId })
+      teamRunConfigStore.applyConfigEdit({ kind: 'set_workspace', workspaceId, workspaceMetadata: null })
     }
   }
 
@@ -245,7 +245,7 @@ export function useMobileRunSetupController(options: MobileRunSetupControllerOpt
     if (mode.value === 'agent') {
       agentRunConfigStore.updateAgentConfig({ autoExecuteTools: checked })
     } else {
-      teamRunConfigStore.updateConfig({ autoExecuteTools: checked })
+      teamRunConfigStore.applyConfigEdit({ kind: 'set_auto_execute_tools', autoExecuteTools: checked })
     }
   }
 
@@ -253,7 +253,7 @@ export function useMobileRunSetupController(options: MobileRunSetupControllerOpt
     if (mode.value === 'agent') {
       agentRunConfigStore.updateAgentConfig({ runtimeKind })
     } else {
-      teamRunConfigStore.updateConfig({ runtimeKind })
+      teamRunConfigStore.applyConfigEdit({ kind: 'set_runtime', runtimeKind })
     }
   }
 
@@ -261,7 +261,7 @@ export function useMobileRunSetupController(options: MobileRunSetupControllerOpt
     if (mode.value === 'agent') {
       agentRunConfigStore.updateAgentConfig({ llmModelIdentifier })
     } else {
-      teamRunConfigStore.updateConfig({ llmModelIdentifier })
+      teamRunConfigStore.applyConfigEdit({ kind: 'set_model', llmModelIdentifier })
     }
   }
 
@@ -269,7 +269,7 @@ export function useMobileRunSetupController(options: MobileRunSetupControllerOpt
     if (mode.value === 'agent') {
       agentRunConfigStore.updateAgentConfig({ llmConfig })
     } else {
-      teamRunConfigStore.updateConfig({ llmConfig })
+      teamRunConfigStore.applyConfigEdit({ kind: 'set_llm_config', llmConfig })
     }
   }
 
