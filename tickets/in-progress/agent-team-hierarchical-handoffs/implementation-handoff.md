@@ -22,16 +22,16 @@
 
 - Implementation cycle: `Local Fix`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/implementation-revision-record.md`
-- Current implementation revision ID: `IR-034`
+- Current implementation revision ID: `IR-035`
 - Related solution revision IDs: cumulative `SR-001`–`SR-018`; current `SR-018`
-- Related architecture-review revision IDs: current `ARCH-REV-011` Pass; `ARCH-REV-010` was the immediately preceding design rework gate
-- Related code-review revision IDs: `CRR-059` focused IR-033 source Fail — Local Fix; `CRR-057` is the preceding focused source Pass and `CRR-058` is the prior API/E2E failure-origin trigger
-- Related API/E2E revision IDs: `API-REV-026` is paused at its incomplete `74%` checkpoint and is non-authoritative for this source
+- Related architecture-review revision IDs: current `ARCH-REV-011` Pass; no requirement or design reroute applies
+- Related code-review revision IDs: `CRR-062` triggering API/E2E failure-origin Fail — implementation Local Fix; `CRR-061` preceding API/E2E Local Fix; historical source-readiness `CRR-060` Pass, `9.3/10` (`92.8/100`)
+- Related API/E2E revision IDs: `API-REV-028` is paused at its incomplete `88%` checkpoint; the real Codex task-Team invocation is failure evidence, not acceptance evidence
 - Related delivery revision IDs: `DR-005` and cumulative delivery blocker state
-- Triggering finding: `CR-F-035`; `CR-F-034` / `API-F-018` is resolved in source but still requires downstream browser re-execution; `CR-F-028` through `CR-F-033` remain resolved
-- Production source commit: `8d312409d463e81fe428a6be276385b12d5e9d8e` (`fix(web): read selected Team config from topology`), on top of IR-033 docs HEAD `a4ef4670ff9f54990b613e1206e7c25a32401d74`
+- Triggering finding: `CR-F-037` / `API-F-020` / `API-LIVE-028-CODEX-TASK-PEER-BOUND-001`; `CR-F-028` through `CR-F-035` remain resolved and `CR-F-036` is resolved as an evaluation finding
+- Production source commit: `c2da87da0781fda4e58b269a0dd4d83aad3f60d8` (`fix(server): separate task Team placement from execution`), on top of IR-034 docs HEAD `649e244418fd6a4a21626ea4be5f7b0bab859412`
 
-IR-034 closes the selected-Team configuration query defect exposed by CRR-059. `RunConfigPanel` now obtains the exact immutable read-only configuration through `activeTeamContext.topology.getConfigurationView()` rather than reading the removed flat `AgentTeamContext.config`. The context remains exactly `{topology, executions}`; no copied config, fallback, alias, compatibility behavior, or mutable selected-Team edit owner was added. IR-033's canonical success-only launch promotion and all cumulative SR-018 boundaries remain unchanged.
+IR-035 corrects the task-Team execution admission defect exposed by CRR-062. `TaskTeamActiveExecutionResolver` now treats the containing persistent/current Team index as logical placement authority and the active child TeamRun's own materialized index as fresh concrete execution authority. It proves the exact direct logical parent, logical Team definition/coordinator, complete active run chain, root/task identity, optional runtime parent boundary when present, and fresh leaf TeamRun ID without requiring the persistent logical node's TeamRun ID to equal the freshly allocated task TeamRun ID. No persistent-root mutation, fallback delivery, retry, alternate selector, compatibility address, or relaxed AgentRun check was added.
 
 ## Reviewed Behavior Implementation Trace
 
@@ -40,6 +40,7 @@ IR-034 closes the selected-Team configuration query defect exposed by CRR-059. `
 | `BEH-001`–`BEH-013` | Preserve rooted TeamRun v3, canonical logical/concrete identity, shared recipient resolution, intrinsic collaboration, providers, handoffs, and direct-current-Team task semantics. | Existing canonical domain/services plus updated mixed/task callers. | Preserved; no route/name/path fallback or alternate selector was added. |
 | `BEH-014`, `DS-007`, `DS-014A`–`J` | Close Team domain/event/status/WebSocket identity, including live, initial/restore, and pre-run statuses. | `team-agent-execution-binding.ts`, `team-agent-status.ts`, `team-agent-event.ts`, `team-agent-event-adapter.ts`, `team-runtime-snapshot-service.ts`, `member-command-status-overlay-store.ts`, `team-agent-event-websocket-projector.ts`, and `@autobyteus/team-stream-contracts`. | One immutable binding/status model and one strict projector/serializer path. Initial status is non-event state; pre-run status is a real correlated event. |
 | `BEH-014`, activation ordering | Publish durable task activation before child output/work and fail closed before active exposure. | `task-activation-event-barrier.ts`, task activation coordinator/service, task directories, mixed execution registries, and TeamRun publication lease. | Prepared executions are start-gated; activation persistence/commit precedes event release/work opening; overflow/start/persist failure aborts the prepared execution and held events. |
+| `BEH-004`, `BEH-009`, `BEH-011`, `R-023`, `R-034`–`R-036`, `AC-043` | Preserve persistent logical Team placement while allocating and routing through one fresh task AgentTeam execution. | `TaskTeamRunIdentityFactory` -> task activation/active directory -> `TaskTeamActiveExecutionResolver` -> `MixedTeamManager` exact task-Team delivery. | Logical parentage is validated in the containing persistent/materialized topology; the fresh concrete ID is validated only in the active child TeamRun. Exact first-level/nested chains, task IDs, member/AgentRun identity, and no-persistent-fallback behavior remain fail closed. |
 | `BEH-015`, `DS-013A`–`D` | Keep released-data conversion and exact startup gate; make canonical token conversion one atomic row+schema transaction. | canonical migration/migrator/planner/store, Prisma schema, token runtime/repository/projections. | Planning completes before mutation; row updates, read-back verification, obsolete-column contraction, and canonical root index creation share one transaction. Old independent backfill/drop owners are removed. |
 | `BEH-016`, `R-050`, `R-051`, `AC-047`, `DS-015A`–`G` | Separate immutable topology from concrete execution/task lifecycle; admit one complete task snapshot; reconcile monotonically and atomically; keep Agent status single-owned and reactive. | `taskDelegationGraphqlDtoProjection.ts`, `taskDelegationHydrationService.ts`, `teamRunContextHydrationService.ts`, `teamTaskProjectionMapper.ts`, `teamExecutionState.ts`, and aggregate-private concrete/materialization/invariant/reconciliation modules. | One invalid GraphQL row rejects the collection and preserves prior state; nested parent-chain/topology/update invariants fail closed; a supported restored task-Team child projection waits only for its exact real task-Team Agent binding and then materializes atomically; terminal history never rematerializes; cleanup rejects nonterminal descendants; raw `AgentContext.state` changes invalidate aggregate queries. |
 | `BEH-016`, `DS-016A`–`B` | Preserve exact V5 application execution producer binding without application predecessor migration. | application SDK contract, server application execution context, mixed Agent materialization, frontend exact mapper/history parser. | Persistent producer address is asserted; task/task-Team Agent execution rebinds exactly; application predecessor database migration is deleted. |
@@ -62,6 +63,7 @@ IR-034 closes the selected-Team configuration query defect exposed by CRR-059. `
 - IR-032 Team launch-draft delta: `autobyteus-web/types/agent/TeamLaunchDraft.ts`, `composables/useDefinitionLaunchDefaults.ts`, `stores/teamRunConfigStore.ts`, `components/workspace/config/TeamRunConfigForm.vue`, `RunConfigPanel.vue`, and the mobile run launch/setup composables
 - IR-033 canonical Team draft promotion delta: `autobyteus-web/stores/agentTeamRunStore.ts`, `components/workspace/config/RunConfigPanel.vue`, and `composables/mobile/useMobileRunLaunchCoordinator.ts`
 - IR-034 selected Team configuration query delta: `autobyteus-web/components/workspace/config/RunConfigPanel.vue`
+- IR-035 task-Team logical/fresh execution correction: `autobyteus-server-ts/src/agent-team-execution/backends/mixed/delivery/task-team-active-execution-resolver.ts`
 - Frontend task admission/commit boundary: `autobyteus-web/services/runHydration/taskDelegationGraphqlDtoProjection.ts`, `taskDelegationHydrationService.ts`, `teamRunContextHydrationService.ts`, and `stores/taskDelegationStore.ts`
 - Frontend stream/draft/hydration/open/history/navigation/mobile/presentation consumers: `autobyteus-web/services/agentStreaming/`, `stores/`, `components/`, `composables/`, `types/`, and `utils/`
 
@@ -74,17 +76,17 @@ IR-034 closes the selected-Team configuration query defect exposed by CRR-059. `
 
 ## Known Risks
 
-- The cumulative SR-018 source remains broad. IR-034 is a bounded one-line/one-file query correction, but the next review still decides readiness against the cumulative contract.
-- Repository-wide frontend TypeScript remains non-clean on inherited and dirty test/tooling inputs. Direct TypeScript emitted `456` diagnostics, while the exact changed production path had `0`; the production Nuxt build passed.
+- The cumulative SR-018 source remains broad. IR-035 is a bounded one-file resolver invariant correction, but the next review still decides source readiness against the cumulative contract.
 - API/E2E must resume its incomplete current-Team coverage and safe live matrix after source Pass. Implementation did not edit or stage its visible `2 added / 82 updated / 6 removed` 90-path durable package.
-- A real selected-Team Edit config browser rerun, desktop launch/server allocation/provider execution, standalone Agent, restore/reconnect, mobile reference, and the AutoByteus/Codex/Claude nested-classroom matrix remain downstream work for SR-018/IR-034.
+- The package-level server `pnpm typecheck` remains non-clean because current `tsconfig.json` declares `rootDir=src` while including tests; it emitted `606` inherited TS6059 diagnostics and none referenced the changed source file. Production `build:full` TypeScript and sanitized bootstrap passed.
+- The real Codex task-Team peer request/reply, lifecycle-faithful API fixture correction, Claude/standalone/config/mobile rows, and the cumulative three-runtime matrix remain downstream work for SR-018/IR-035.
 
 ## Task Design Health Assessment Implementation Check
 
 - Reviewed change posture: cumulative `Comprehensive Refactor`; current round `Local Fix`
 - Reviewed root-cause classification: uncorrelated Team event/wire shapes, mixed mutable frontend topology/execution ownership, stale cleanup authorities, and incomplete status-producer closure
 - Reviewed refactor decision: `Refactor Needed Now`
-- Implementation matched the reviewed assessment: `Yes`; IR-034 preserves the exact topology/execution aggregate and queries selected-run configuration only through the immutable topology owner
+- Implementation matched the reviewed assessment: `Yes`; IR-035 keeps logical Team placement and fresh task execution as separate authorities inside the existing resolver owner, without changing the active-directory or routing boundaries
 - If challenged, routed as `Design Impact`: `N/A` after `ARCH-REV-011` Pass
 - Evidence / notes: the implementation introduces the reviewed singular boundaries rather than retaining wrappers or compatibility selectors. `TeamExecutionState` and the mixed manager remain below the 500-effective-line guard; changed deltas over 220 lines were assessed as cohesive boundary replacement, generated declarations, or net deletion/contraction.
 
@@ -95,7 +97,7 @@ IR-034 closes the selected-Team configuration query defect exposed by CRR-059. `
 - Dead/obsolete code and dormant replaced paths removed in scope: `Yes`
 - Shared structures remain tight: `Yes`
 - Canonical shared design guidance reapplied: `Yes`
-- Changed source implementation files within size guardrail: `Yes`; the one IR-034 production file remains below `500` effective non-empty lines (`RunConfigPanel.vue`, `369`)
+- Changed source implementation files within size guardrail: `Yes`; the one IR-035 production file remains below `500` effective non-empty lines (`task-team-active-execution-resolver.ts`, `219`) and the changed-line delta is below the `220` split signal
 - Notes: the historical Team identity scan still returns exactly the six approved migration-local production paths. Current web production has no legacy route/path identity, raw execution/topology maps, synthetic task instances, approval token, duplicate member-input receiver, application predecessor migration owner, `ensureTaskTeamAgent`, `removeExecutionSubtree`, permissive task-record normalizer, or legacy task hydration wrapper.
 
 ## Persisted Data Transition Check
@@ -118,18 +120,18 @@ IR-034 closes the selected-Team configuration query defect exposed by CRR-059. `
 
 ## Local Implementation Checks Run
 
-- Deleted-after-use exact current-context/component probe — Pass `1/1` file, `1/1` case: a real Pinia `agentTeamContextsStore` containing an exact `{topology, executions}` current Team context and a real Team selection renders `TeamRunConfigForm` with `readOnly=true`, the identical frozen `topology.getConfigurationView()` object, and no empty-selection state (`/tmp/ir034-selected-team-config-probe.log`). The temporary probe was removed.
-- `autobyteus-web`: `pnpm build` — Pass on final IR-034 source, including 15-route static prerender (`/tmp/ir034-web-build-final.log`).
-- `autobyteus-web`: `pnpm exec tsc --noEmit --skipLibCheck` — repository-wide Fail with `456` inherited/dirty test/tooling diagnostics; the exact changed production path contains `0` diagnostics (`/tmp/ir034-web-tsc-final.log`). This is not reported as a passing repository-wide typecheck.
-- Static audits — Pass: source commit contains exactly `RunConfigPanel.vue`; no production flat active-Team config consumer remains; the exact topology query is present; the temporary probe is absent; `git diff --check` passes; the file is below `500` effective non-empty lines; protected stash/backup remain exact (`/tmp/ir034-final-audit.log`). API/E2E's dirty `RunConfigPanel.spec.ts` was not edited or staged.
-- Shared design principles were reread for this implementation round (`/tmp/ir034-design-principles-read.log`). CRR-059 independently passed IR-033's canonical launch correction, and that resolution is preserved rather than rerun beyond the affected IR-034 boundary.
+- Deleted-after-use lifecycle-faithful first-level probe — Pass `1/1`: the parent manager retained the persistent root config while the active child used the fresh task config; same-task-Team peer delivery reached the fresh AgentRun and did not call the persistent member registry (`/tmp/ir035-first-level-lifecycle-final.log`). The temporary copied test was removed.
+- Deleted-after-use resolver proof — Pass `6/6`: exact nested request and reply identities plus command target resolved through a persistent parent and two fresh child executions; foreign-root, reordered, truncated, wrong-parent, wrong-Team, missing/inactive, and mismatched AgentRun cases rejected with `COLLABORATION_CONTEXT_REQUIRED` (`/tmp/ir035-task-team-resolver-proof-final.log`). The temporary test was removed.
+- Current focused maintained selection — Pass `2/2` files, `25/25` cases: `mixed-team-manager.test.ts` and `task-delegation-service.test.ts` (`/tmp/ir035-server-focused-final.log`). The dirty API/E2E-owned test file was executed unchanged and was not staged.
+- `autobyteus-server-ts`: `pnpm build:full` — Pass: production TypeScript, asset copy, built-in agent bootstrap smoke, and sanitized no-`DATABASE_URL` built-module/bootstrap smoke (`/tmp/ir035-server-build-final.log`).
+- `autobyteus-server-ts`: `pnpm typecheck` — repository configuration Fail with `606` inherited TS6059 `rootDir=src` / included-test diagnostics and `0` references to the changed source path (`/tmp/ir035-server-typecheck-initial.log`). This is not reported as a passing repository-wide typecheck; the production build TypeScript passed.
+- Static/safety audits — Pass: source commit contains exactly the resolver; `git diff --check` passes; the file is `219` effective non-empty lines; temporary probes are absent; the protected delivery stash and backup SHA remain exact. No API/E2E durable coverage was edited or staged (`/tmp/ir035-final-audit.log`).
+- Shared design principles were reread for this implementation round (`/tmp/ir035-design-principles-read.log`).
 
 ## Frontend Rendered-Result Check
 
-- Affected journey: select a launched Team -> workspace Edit config cog -> `RunConfigPanel` -> read-only Team configuration projected from immutable topology. Canonical desktop/mobile/first-send launch remains preserved.
-- UI change character: state/identity ownership and interaction correctness; no visual layout, CSS, or copy redesign.
-- Implementation feedback: the exact current Team context and real Pinia selected-Team path rendered the read-only form with the immutable topology configuration in the deleted-after-use component probe, and the final Nuxt production build passed. No CSS, layout, markup, or copy changed. A separate browser was intentionally not started because the user-held stack is protected and safe isolated browser/provider execution is downstream-owned.
-- Remaining unverified states: real Chrome Edit config rendering, server allocation and provider launch for AutoByteus/Codex/Claude, standalone Agent, restore/reconnect, mobile reference, and the cumulative three-runtime matrix.
+- `Not Applicable` for IR-035. The correction is backend-only task-Team execution validation and delivery selection; no frontend markup, style, copy, or interaction code changed.
+- No browser or user-held stack was started or touched. Fresh safe-target browser/provider proof remains downstream-owned after source Pass.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
@@ -145,7 +147,8 @@ IR-034 closes the selected-Team configuration query defect exposed by CRR-059. `
 10. Prove existing-Team desktop, mobile, and first-send launch create one immutable draft, accept automatic reactive default-workspace metadata without clone failure, apply runtime/model/model-config/auto-execute/member-override edits through typed replacement, and route through one canonical owner that registers/selects only the real server TeamRun, transfers focus/pending input once, removes the draft only after success, and preserves it on failure.
 11. Replace the API/E2E-owned `RunConfigPanel` fake `createRunFromTemplate` seam with current real Pinia/store-boundary coverage; rerun the real Team catalog/detail Run -> Run Team path for each supported runtime and confirm no provisional context identity exists.
 12. Replace the same dirty fixture's fabricated `activeTeamContext.config` with an exact `{topology, executions}` context; prove selected-Team Edit config renders the identical immutable topology configuration as read-only and never mutates or copies it.
+13. Correct the lifecycle-masking task-Team fixture so the parent retains persistent topology while the child owns fresh materialized run IDs; prove first-level and nested same-task-Team request/reply for all supported runtimes, exact public records, foreign/reordered/truncated/wrong-parent/wrong-Team rejection, and zero persistent fallback.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Yes. API/E2E remains paused until the focused IR-034 source re-review passes. API-REV-026 remains incomplete at `74%`; its visible `2 added / 82 updated / 6 removed` 90-path durable state is neither edited, staged, nor claimed by implementation. Earlier deterministic/live/provider evidence does not verify IR-034. Any repository-resident durable coverage add/update/remove after the source Pass must return through proportional code review before delivery.
+Yes. API/E2E remains paused until the focused IR-035 source re-review passes. API-REV-028 remains incomplete at `88%`; its visible `2 added / 82 updated / 6 removed` 90-path durable state is neither edited, staged, nor claimed by implementation. The real Codex rejection is valid failure-origin evidence but does not verify the corrected source. After Pass, API/E2E must correct its lifecycle-masking fixture/probe, rerun exact task-Team request/reply on the checked disposable target, and finish the remaining matrix. Any repository-resident durable coverage add/update/remove must return through proportional code review before delivery.
