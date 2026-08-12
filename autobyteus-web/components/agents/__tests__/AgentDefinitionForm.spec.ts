@@ -107,7 +107,6 @@ describe('AgentDefinitionForm', () => {
     const instructions = wrapper.get('textarea#instructions')
     expect(instructions.attributes('required')).toBeDefined()
     expect(instructions.attributes('placeholder')).toBe("Enter the agent's system instructions...")
-    expect(wrapper.text()).not.toContain('systemPromptProcessors')
   })
 
   it('emits submit payload containing instructions', async () => {
@@ -125,7 +124,6 @@ describe('AgentDefinitionForm', () => {
     expect(payload.instructions).toBe('Always produce an executable plan.')
     expect(payload.name).toBe('Planner Agent')
     expect(payload.defaultLaunchConfig).toBeNull()
-    expect(payload).not.toHaveProperty('systemPromptProcessorNames')
   })
 
   it('emits defaultLaunchConfig when launch preferences are provided', async () => {

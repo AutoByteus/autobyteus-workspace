@@ -18,38 +18,40 @@
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/solution-revision-record.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/design-review-report.md`
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence, when applicable: N/A
+- Triggering rework reports and revision records:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/code-review-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/code-review-revision-record.md`
 
 ## Current Implementation Summary
 
-The implementation replaces the three runtime-specific prompt-construction paths with one server-owned carpenter composer and projects its result through the existing native, Codex, and Claude high-authority instruction boundaries. A provider-neutral runtime-tool-exposure owner now normalizes configured names and automatically adds exactly `send_message_to` and `delegate_task` for valid team contexts while leaving standalone exposure configured-only. Native Skills remains terminal and metadata/path-only; the actual post-Skills payload is rejected before state or LLM mutation if a documentation placeholder remains. The obsolete optional system-prompt-processor authoring/runtime surface and superseded prompt strategies/composers were removed cleanly across server, GraphQL, built-in configs, and web authoring surfaces.
+The current implementation replaces the three runtime-specific prompt-construction paths with one server-owned carpenter composer and projects its result through the existing native, Codex, and Claude high-authority instruction boundaries. A provider-neutral runtime-tool-exposure owner normalizes configured names and automatically adds exactly `send_message_to` and `delegate_task` for valid team contexts while leaving standalone exposure configured-only. Under `SR-004`, native Skills is now one direct platform-owned catalog append inside `SystemPromptProcessingStep`; the complete result is validated before state or LLM mutation. The generic core prompt-mutator configuration, pipeline, abstractions, registry/registration, barrels/root exports, and obsolete tests are deleted without aliases or a constructor compatibility slot. Fence containment now distinguishes openings from legal active closes and preserves same-marker non-closing content.
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
-- Related solution revision IDs: `SR-003`
-- Related architecture-review revision IDs: `ARCH-REV-003`
-- Related code-review revision IDs: `N/A`
+- Current implementation revision ID: `IR-002`
+- Related solution revision IDs: `SR-004` (retains `SR-003` automatic-team-tool behavior)
+- Related architecture-review revision IDs: `ARCH-REV-004`
+- Related code-review revision IDs: `CRR-001`
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A` (`AR-001` obsolete; `AR-002` and `AR-003` were resolved before implementation)
+- Triggering finding IDs: `CR-001`, `CR-002`; premise `CR-MP-001`
 
 ## Reviewed Behavior Implementation Trace
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
 | `BEH-001` | One minimal structured foundation for every runtime | `agent-execution/prompt/carpenter-prompt-composer.ts`; native/Codex/Claude bootstrap callers | Implemented once and projected without provider-local rewording. |
-| `BEH-002` | Configured-only lazy skills; no skill bodies in the prompt | Core `available-skills-processor.ts`; existing Codex/Claude materializers retained | Native catalog contains validated metadata and absolute `SKILL.md` paths only. |
+| `BEH-002` | Configured-only lazy skills; no skill bodies in the prompt | Core `system-prompt/append-configured-skills-catalog.ts`; existing Codex/Claude materializers retained | Native catalog is a direct platform append containing validated metadata and absolute `SKILL.md` paths only. |
 | `BEH-003` | Provider-native tool transport plus two automatic team tools | `agent-execution/shared/runtime-agent-tool-exposure.ts`; native resolver and Agent Tools MCP inputs | Configured names normalize/deduplicate; team contexts add exactly the two approved names. |
 | `BEH-004` | Same semantic prompt across native, Codex, and Claude | Native factory, `codex-thread-bootstrapper.ts`, `claude-session-bootstrapper.ts`, `claude-session.ts`, `claude-sdk-client.ts` | Native uses `AgentConfig.systemPrompt`; Codex uses `baseInstructions`; Claude uses SDK `systemPrompt` and leaves `prompt` user-only. |
 | `BEH-005` | Bind exact effective workspace and distinguish skill roots | Each bootstrap resolves workspace before calling the composer; working-environment renderer | Composer requires and renders a nonblank absolute workspace path. |
 | `BEH-006` | Preserve one source-neutral Skill model | Existing `SkillService`/registries/providers retained; `skills/loader.ts` validation tightened | No skill kind or loader tool added. |
 | `BEH-007` | Name plus optional description/body, with no role or fallback | `carpenter-prompt-sections.ts` | Blank optional content omits; description never becomes instructions. |
-| `BEH-008` | Stable section order, containment, terminal Skills only | Composer, `markdown-heading-containment.ts`, removed optional processor surface | Authored ATX headings are fence-aware and contained; obsolete reconstruction paths are deleted. |
+| `BEH-008` | Stable section order, correct fence containment, terminal Skills only, no generic mutator surface | Composer and corrected `markdown-heading-containment.ts`; core `AgentConfig`/bootstrap; deleted pipeline/processor files and exports | Active fences close only with the same marker, sufficient length, and trailing spaces/tabs only. No configurable/public generic prompt mutation remains. |
 | `BEH-009` | Exact concise Bash section | `BASH_OPERATING_PRACTICE_SECTION` | Implemented from the approved supplement. |
 | `BEH-010` | Exact separate file/directory section | `FILE_AND_DIRECTORY_PRACTICE_SECTION` | Implemented from the approved supplement. |
 | `BEH-011` | Team Instruction plus context-derived Team Runtime only for members | `team-runtime-instruction-renderer.ts`; roster/delegation manifest builders | Standalone omits both; valid team context renders fixed messaging/delegation protocol and current rosters. |
-| `BEH-012` | Fail/suppress dynamic values at their owning boundary; reject unresolved final payload | Composer scalar/body validation; strict skill loading/catalog suppression; core `system-prompt-processing-step.ts` | Native assertion runs after Skills and before processed-state assignment or LLM configuration. |
+| `BEH-012` | Fail/suppress dynamic values at their owning boundary; reject unresolved final payload | Composer scalar/body validation; direct Skills appender; core `system-prompt-processing-step.ts` | One direct append runs exactly once; a real registered configured skill with placeholder-shaped valid metadata proves rejection before processed-state assignment or LLM configuration. |
 
 ## Key Files Or Areas
 
@@ -57,10 +59,13 @@ The implementation replaces the three runtime-specific prompt-construction paths
 - Added `autobyteus-server-ts/src/agent-team-execution/services/team-runtime-instruction-renderer.ts` and tightened team roster/context validation.
 - Replaced `configured-agent-tool-exposure.ts` with `runtime-agent-tool-exposure.ts`; propagated the single shape through native and the existing Codex/Claude Agent Tools MCP transport paths.
 - Simplified native, Codex, and Claude bootstrap/session prompt projections; Claude now sends persistent content through SDK `systemPrompt` rather than rebuilding XML in user turns.
-- Updated core native Skills rendering and final-payload validation.
+- Extracted native catalog rendering to focused `append-configured-skills-catalog.ts`; `SystemPromptProcessingStep` invokes it directly once and owns complete-payload validation.
+- Removed the core `AgentConfig` prompt-mutator default/property/constructor/copy slot, updated every positional caller, and deleted the generic pipeline, processor abstractions, registry/registration, public barrels/root export, and obsolete suites.
+- Corrected authored Markdown containment with separate opening/active-close recognition and focused backtick, tilde, non-close, longer-close, trailing-whitespace, and overflow coverage.
 - Removed old runtime prompt composers, provider bootstrap strategies, Claude turn-input builder, and their obsolete unit tests.
 - Removed `systemPromptProcessorNames` from the server domain/config/service, agent-management tools, GraphQL surface, startup registry injection, built-in agent configs, generated web types, authoring form/detail/store/query paths, localization, and affected unit fixtures.
 - Added/updated focused server, core, and web unit/component coverage for the new owners and removals.
+- Updated current core architecture/runtime/Skills documentation and repository fixture/migration writers so retired prompt-mutator names are absent from current source, public barrels, active tests, and durable current docs.
 
 ## Important Assumptions
 
@@ -70,10 +75,11 @@ The implementation replaces the three runtime-specific prompt-construction paths
 
 ## Known Risks
 
-- API/E2E/integration coverage remains downstream-owned and contains known stale references to the removed exposure filename/field and old `## Agent Skills` heading. Exact locations are listed in the coverage hints below.
+- API/E2E/integration coverage remains downstream-owned and still contains known stale imports/field names for the renamed runtime exposure in three provider/session suites. Exact locations are listed in the coverage hints below.
 - Full server `pnpm typecheck` remains unusable because the existing `tsconfig.json` includes tests while declaring `rootDir: src`, producing repository-wide `TS6059`; the source-only build config typecheck passed.
 - Web Nuxt typecheck could not run because the current `vue-tsc`/TypeScript toolchain resolves an unavailable `typescript/package.json` export (`./lib/tsc`). Focused mounted component/store tests passed, but this tooling failure remains an environment limitation.
-- Durable conceptual/authoring documentation required by `R-006`/`AC-006` still needs the delivery-owned documentation sync against the integrated branch state.
+- The test-inclusive core TypeScript check remains blocked by unrelated existing strict-test errors; the production build passed and the output contained no positional `AgentConfig` signature failures.
+- Current core durable docs were updated for the closed platform append and ordinary lazy Skills boundary. Delivery still owns final documentation no-impact/sync against the integrated branch state.
 
 ## Task Design Health Assessment Implementation Check
 
@@ -81,8 +87,8 @@ The implementation replaces the three runtime-specific prompt-construction paths
 - Reviewed root-cause classification: `Boundary Or Ownership Issue` and `Duplicated Policy Or Coordination`
 - Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now`
 - Implementation matched the reviewed assessment (`Yes`/`No`): `Yes`
-- If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A`
-- Evidence / notes: semantic prompt composition now has one owner, team runtime rendering is bounded to team context, and runtime tool exposure has one provider-neutral owner. Provider adapters consume those boundaries without reconstructing policy or changing MCP lifecycle ownership.
+- If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `Yes` — `CR-001` was routed through `SR-004` / `ARCH-REV-004` before implementation revision.
+- Evidence / notes: semantic prompt composition has one owner, team runtime rendering is bounded to team context, runtime tool exposure has one provider-neutral owner, and native prompt completion is now structurally closed around one direct platform Skills append. Provider adapters consume those boundaries without reconstructing policy or changing MCP lifecycle ownership.
 
 ## Legacy / Compatibility Removal Check
 
@@ -92,7 +98,7 @@ The implementation replaces the three runtime-specific prompt-construction paths
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`
-- Notes: the largest changed implementation files remain below 500 effective nonblank lines (489, 477, and 460). No tracked changed file added more than 220 lines. The historical JSON key is handled only by generic recognized-field projection/unknown-key tolerance, not a version-specific compatibility branch.
+- Notes: the largest changed implementation files remain below 500 effective nonblank lines (489, 477, and 460). No revision source file crosses the 220-line delta signal. The core generic prompt-mutation files and exports are deleted rather than aliased. Historical JSON supersets are handled only by generic recognized-field projection/unknown-key tolerance, not a version-specific compatibility branch.
 
 ## Persisted Data Transition Check (When Applicable)
 
@@ -113,11 +119,12 @@ The implementation replaces the three runtime-specific prompt-construction paths
 ## Local Implementation Checks Run
 
 - `autobyteus-server-ts`: `pnpm exec tsc -p tsconfig.build.json --noEmit --pretty false` — passed.
-- `autobyteus-server-ts`: 16 changed server unit files — 116 tests passed.
-- `autobyteus-server-ts`: new composer and runtime-exposure unit files — 11 tests passed.
-- `autobyteus-ts`: final-payload and Skills unit files — 7 tests passed.
+- `autobyteus-server-ts`: revised containment plus native factory suites — 17 tests passed, including exact backtick/tilde/non-close/long-close/overflow cases.
+- `autobyteus-ts`: revised bootstrap/catalog/config/public-surface suites plus the focused AgentFactory skill integration — 48 tests passed.
 - `autobyteus-ts`: `pnpm build` — passed, including runtime-dependency verification.
-- `autobyteus-web`: 12 affected component/store unit files — 108 tests passed.
+- `autobyteus-web`: affected Agent Definition form component suite — 4 tests passed.
+- Repository fixture/migration Python sources: `python3 -m py_compile ...` — passed.
+- Retired-name absence search over current source, public barrels, active tests, scripts, and durable current docs (excluding historical ticket/migration artifacts) — no matches.
 - Repository: `git diff --check` — passed.
 - Known non-passing tool checks are recorded under Known Risks rather than represented as behavior failures.
 
@@ -136,15 +143,12 @@ The implementation replaces the three runtime-specific prompt-construction paths
 - Assert byte/semantic parity of the carpenter section order across native, Codex `baseInstructions`, and Claude SDK `systemPrompt`, including blank optional bodies and authored-heading containment around fenced code.
 - Exercise team and standalone runtime bootstraps: configured-name normalization/deduplication; automatic exposure of exactly `send_message_to` and `delegate_task`; provider-native schemas; no prompt tool catalog; live team delivery binding failure.
 - Verify Claude multi-turn behavior keeps raw user content in `prompt` and supplies the unchanged carpenter system prompt separately on every SDK query without changing session identity, cleanup, or client reference counting.
-- Verify native configured skills render only the exact `## Skills` metadata/path catalog, preserve configured order, omit bodies, suppress NONE/empty/unresolved/invalid entries, and reject unresolved placeholders after Skills before state/LLM mutation.
-- Verify file-backed historical JSON with `systemPromptProcessorNames` still reads through generic current-field projection and that all current write/API/UI paths omit the field.
+- Verify native configured skills render only the exact `## Skills` metadata/path catalog, preserve configured order, omit bodies, suppress NONE/empty/unresolved/invalid entries, and reject unresolved placeholders after the single direct append before state/LLM mutation.
+- Verify file-backed historical JSON supersets still read through generic current-field projection and that all current write/API/UI paths omit retired prompt-mutator fields.
 - Known stale downstream-owned coverage requiring investigation/update before execution:
   - `autobyteus-server-ts/tests/integration/agent-execution/claude-session-manager.integration.test.ts`
   - `autobyteus-server-ts/tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts`
   - `autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts`
-  - `autobyteus-server-ts/tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts`
-  - `autobyteus-ts/tests/integration/agent/agent-skills.test.ts`
-  - `autobyteus-web/tests/integration/agent-definition.integration.test.ts`
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 

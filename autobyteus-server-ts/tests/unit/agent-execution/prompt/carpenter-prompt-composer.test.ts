@@ -95,6 +95,52 @@ describe("composeCarpenterPrompt", () => {
 });
 
 describe("containAuthoredMarkdownHeadings", () => {
+  it("keeps backtick-fenced headings unchanged after same-marker non-closing content", () => {
+    const authored = [
+      "```md",
+      "```not-a-close",
+      "# stays code",
+      "```  \t",
+      "# shifts outside",
+    ].join("\n");
+
+    expect(containAuthoredMarkdownHeadings(authored, 3)).toBe([
+      "```md",
+      "```not-a-close",
+      "# stays code",
+      "```  \t",
+      "#### shifts outside",
+    ].join("\n"));
+  });
+
+  it("requires the same marker and sufficient length before closing a tilde fence", () => {
+    const authored = [
+      "~~~~text",
+      "```",
+      "~~~",
+      "# stays code",
+      "~~~~~",
+      "## shifts outside",
+    ].join("\n");
+
+    expect(containAuthoredMarkdownHeadings(authored, 2)).toBe([
+      "~~~~text",
+      "```",
+      "~~~",
+      "# stays code",
+      "~~~~~",
+      "### shifts outside",
+    ].join("\n"));
+  });
+
+  it("accepts a longer same-marker close with trailing tabs", () => {
+    const authored = "```js\n# stays code\n`````\t\n# shifts outside";
+
+    expect(containAuthoredMarkdownHeadings(authored, 2)).toBe(
+      "```js\n# stays code\n`````\t\n### shifts outside",
+    );
+  });
+
   it("preserves relative heading hierarchy and converts overflow to bold labels", () => {
     expect(containAuthoredMarkdownHeadings("# A\n### B\n###### C", 3)).toBe(
       "#### A\n###### B\n**C**",

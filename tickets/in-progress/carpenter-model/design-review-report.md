@@ -7,37 +7,38 @@
 - Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/design-spec.md`
 - Supplemental Task Artifacts Reviewed: `system-prompt-contract.md`, `agent-identity-prompt-spec.md`, `working-environment-prompt-spec.md`, `bash-operating-practice-prompt-spec.md`, `file-and-directory-practice-prompt-spec.md`, `team-and-runtime-prompt-spec.md`, `prompt-value-binding-spec.md`, `system-skill-decision.md`, and `classroom-simulation-composed-system-prompt.md`, all at the canonical ticket paths listed in the investigation inventory.
 - Solution Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-001`, `SR-002`, `SR-003`
+- Triggering Downstream Artifacts Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/implementation-handoff.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/implementation-revision-record.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/code-review-report.md`, and `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/code-review-revision-record.md`.
+- Relevant Solution Revision IDs: `SR-001`, `SR-002`, `SR-003`, `SR-004`
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-003`
-- Current Review Round: `3`
-- Trigger: Solution-designer re-review handoff for user-approved `SR-003`, which replaces descriptor-dependent Team Runtime with fixed team-context protocol and automatic provider-native team-tool exposure.
-- Prior Review Round Reviewed: Round 2 / `ARCH-REV-002` (`Fail — Design Impact`).
-- Latest Authoritative Round: Round 3 / `ARCH-REV-003`.
-- Current-State Evidence Basis: prior-round evidence plus direct verification of the approved `SR-003` requirements/design/supplement delta; the current shared configured-exposure boundary and its native, Codex, and Claude consumers; task-delegation and communication tool registration/MCP adapters; and confirmation that existing MCP and ref-counted Codex client lifecycles remain unchanged.
+- Current Architecture Review Revision ID: `ARCH-REV-004`
+- Current Review Round: `4`
+- Trigger: Solution-designer re-review handoff for `SR-004`, rerouted from code review `CRR-001` findings `CR-001` and `CR-002` after the first implementation pass exposed an incomplete core removal boundary and a reachable fence-containment defect.
+- Prior Review Round Reviewed: Round 3 / `ARCH-REV-003` (`Pass`) plus downstream code review `CRR-001` (`Fail — Design Impact`).
+- Latest Authoritative Round: Round 4 / `ARCH-REV-004`.
+- Current-State Evidence Basis: prior-round evidence plus direct verification of `SR-004`, `CRR-001`, current `AgentConfig`/`SystemPromptPipeline`/processor exports and callers, current native final-payload ordering, the reproduced fence state machine, and the updated design, binding, contract, removal, sequence, and coverage mappings.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
 - Overall Basis Status (`Confirmed`/`Contradicted`/`Blocked`): `Confirmed`
 - Approved requirements / intended behavior understood: Yes. The complete requirements basis and intended-behavior supplements were approved on 2026-08-12.
-- Relevant existing behavior and evidence confirmed: Yes. The current three provider paths, configured skill exposure, post-resolution tool exposure, team context, persisted file-definition readers, and authoring surfaces match the investigation.
-- Approved change, preserved behavior, and outside scope understood: Yes. The review does not reopen the approved prompt text, the one ordinary lazy-skill model, provider-native tool/skill transport, the no-migration decision, or the external repository follow-ups.
-- Remaining material ambiguity, if any: None. The same-day user clarification is explicit: every valid team context gets exactly two automatic collaboration tools through provider-native exposure; Team Runtime is fixed context-derived protocol; prompt composition has no tool/descriptor input; existing MCP/client lifecycle is unchanged.
+- Relevant existing behavior and evidence confirmed: Yes. The current three provider paths, configured skill exposure, post-resolution tool exposure, team context, persisted file-definition readers, authoring surfaces, public core prompt-processor surface, and fence-containment defect match the investigation and `CRR-001` evidence.
+- Approved change, preserved behavior, and outside scope understood: Yes. The review does not reopen the approved prompt text, automatic team tools, the one ordinary lazy-skill model, provider-native tool/skill transport, the no-migration decision, unchanged MCP/client lifecycle, or external repository follow-ups. `SR-004` closes the omitted core runtime surface and corrects containment without changing behavior intent.
+- Remaining material ambiguity, if any: None. The direct native Skills appender, singular final-payload owner, complete core removal set, positional-caller update rule, fence close grammar, and focused verification obligations are explicit.
 
 | Behavior ID | Kind | Design Alignment With Approved Intent (`Pass`/`Fail`) | Approved Trigger / Contract And Current-State Evidence (`Pass`/`Fail`/`Unclear`) | Target Outcome / Path / Spine Coherence (`Pass`/`Fail`/`Unclear`) | Status (`Confirmed`/`Needs Correction`/`Unclear`) | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
 | `BEH-001` | System | Pass | Pass | Pass | Confirmed | None. |
-| `BEH-002` | System | Pass | Pass | Pass | Confirmed | None. |
+| `BEH-002` | System | Pass | Pass | Pass | Confirmed | None; the ordinary native Skills catalog moves from the generic processor pipeline to one direct platform-owned appender without changing its lazy configured-skill semantics. |
 | `BEH-003` | Contract | Pass | Pass | Pass | Confirmed | None; shared runtime exposure adds/deduplicates the two team defaults before each provider-native projection. |
 | `BEH-004` | System | Pass | Pass | Pass | Confirmed | None; prompt projection is descriptor-independent and provider lifecycle remains encapsulated. |
 | `BEH-005` | Operational | Pass | Pass | Pass | Confirmed | None. |
 | `BEH-006` | Contract | Pass | Pass | Pass | Confirmed | None. |
 | `BEH-007` | System | Pass | Pass | Pass | Confirmed | None. |
-| `BEH-008` | System | Pass | Pass | Pass | Confirmed | None. |
+| `BEH-008` | System | Pass | Pass | Pass | Confirmed | None; the design now removes both the authoring layer and the public core processor/pipeline layer, and pins legal fence closing separately from opening recognition. |
 | `BEH-009` | System | Pass | Pass | Pass | Confirmed | None. |
 | `BEH-010` | System | Pass | Pass | Pass | Confirmed | None. |
 | `BEH-011` | System | Pass | Pass | Pass | Confirmed | None; validated team context is the sole Team Runtime source and automatic-tool trigger. |
-| `BEH-012` | Contract | Pass | Pass | Pass | Confirmed | None; context-only composition and the post-Skills native invariant remain explicit. |
+| `BEH-012` | Contract | Pass | Pass | Pass | Confirmed | None; the direct append is followed by complete-payload validation, and coverage must use a real valid configured skill containing placeholder-shaped metadata rather than an injectable test processor. |
 
 ## Supplemental Artifact Coherence Verdict
 
@@ -49,7 +50,7 @@
 | `bash-operating-practice-prompt-spec.md` | Pass | Pass | Pass | Pass | Pass | None. |
 | `file-and-directory-practice-prompt-spec.md` | Pass | Pass | Pass | Pass | Pass | None. |
 | `team-and-runtime-prompt-spec.md` | Pass | Pass | Pass | Pass | Pass | None. |
-| `prompt-value-binding-spec.md` | Pass | Pass | Pass | Pass | Pass | None; it now distinguishes carpenter-portion validation from actual final-payload ownership. |
+| `prompt-value-binding-spec.md` | Pass | Pass | Pass | Pass | Pass | None; it distinguishes carpenter-portion validation from the direct native final-payload owner and defines the separate legal fence-close rule. |
 | `system-skill-decision.md` | Pass | Pass | Pass | Pass | Pass | None; the ownership table now matches the approved Bash/File sections. |
 | `classroom-simulation-composed-system-prompt.md` | Pass | Pass | Pass | Pass | Pass | None; authored-body normalization is correctly recorded as out of scope and externally owned. |
 
@@ -60,7 +61,7 @@
 | Assessment is present for the current task posture | Pass | Requirements and design identify a large behavior change/refactor. | None. |
 | Root-cause classification is explicit and evidence-backed | Pass | Shared structure looseness and boundary/ownership fragmentation are traced across the three runtime composers. | None. |
 | Refactor needed now / no refactor needed / deferred decision is explicit | Pass | One shared semantic composer and clean removal are required now; external package cleanup and authored-body editorial normalization are explicitly deferred. | None. |
-| Refactor decision is supported by the concrete design sections or residual-risk rationale | Pass | Spines, ownership, file mapping, removal inventory, automatic-tool exposure boundary, and sequence implement the approved decision without changing MCP/client lifecycle. | None. |
+| Refactor decision is supported by the concrete design sections or residual-risk rationale | Pass | Spines, ownership, exact core removal inventory, focused Skills appender, fence correction, automatic-tool exposure boundary, file mapping, and sequence implement the approved decision without changing MCP/client lifecycle. | None. |
 
 ## Spine Inventory Verdict
 
@@ -80,7 +81,7 @@
 | Boundary / Owner | Authoritative Public Entry Point Is Clear? (`Pass`/`Fail`) | Internal Owned Mechanisms Stay Internal? (`Pass`/`Fail`) | Caller Bypass Risk Is Controlled? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `CarpenterPromptComposer` | Pass | Pass | Pass | Pass | Correct semantic owner for the shared carpenter portion. |
-| `SystemPromptPipeline` / final native provider payload | Pass | Pass | Pass | Pass | `SystemPromptProcessingStep` owns the post-Skills assertion before state/LLM mutation. |
+| `SystemPromptProcessingStep` / final native provider payload | Pass | Pass | Pass | Pass | It directly invokes one focused configured-Skills appender, asserts the complete payload, then mutates state/configures the LLM; no generic pipeline or caller-provided mutator remains. |
 | Shared runtime tool exposure | Pass | Pass | Pass | Pass | One context-aware union feeds all provider projectors; no provider-local defaults. |
 | Codex/Claude Agent Tools MCP lifecycle | Pass | Pass | Pass | Pass | Existing creation, identity, cleanup, and client ownership remain unchanged and outside prompt composition. |
 | Claude session bootstrap/cleanup | Pass | Pass | Pass | Pass | Descriptor identity, reuse, create/resume projection, and cleanup are explicit. |
@@ -103,6 +104,7 @@
 | `TeamRuntimeInstructionRenderer.render(...)` | Pass | Pass | Pass | Low | Pass |
 | Agent Tools MCP descriptor creation | Pass | Pass | Pass | Low | Pass |
 | Native final prompt processing boundary | Pass | Pass | Pass | Low | Pass |
+| `appendConfiguredSkillsCatalog` | Pass | Pass | Pass | Low | Pass |
 | `resolveRuntimeAgentToolExposure` | Pass | Pass | Pass | Low | Pass |
 | Provider instruction projection fields | Pass | Pass | Pass | Low | Pass |
 
@@ -115,7 +117,7 @@
 | Skill resolution/materialization | Pass | Pass | N/A | Pass | Existing SkillService and provider materializers remain authoritative. |
 | Automatic team-tool exposure | Pass | Pass | Pass | Pass | The existing shared exposure capability is renamed and extended rather than duplicated in three adapters. |
 | Agent Tools MCP and Codex ref-counted client lifecycle | Pass | Pass | N/A | Pass | Current ownership is explicitly preserved; no prompt-driven session or cleanup change remains. |
-| Heading containment | Pass | Pass | Pass | Pass | A small fence-aware reusable concern is justified by multiple authored bodies. |
+| Heading containment | Pass | Pass | Pass | Pass | A small fence-aware reusable concern is justified by multiple authored bodies; opening and active-fence closing have distinct exact recognition rules. |
 
 ## Subsystem / Capability-Area Allocation Verdict
 
@@ -123,7 +125,7 @@
 | --- | --- | --- | --- | --- | --- |
 | Shared prompt composition | Pass | Pass | Pass | Pass | Server-owned and provider-neutral. |
 | Team execution rendering | Pass | Pass | Pass | Pass | Team facts remain team-owned. |
-| Native terminal skill catalog | Pass | Pass | Pass | Pass | Final validation is correctly allocated after terminal catalog rendering. |
+| Native terminal skill catalog | Pass | Pass | Pass | Pass | Focused appending replaces the generic processor abstraction, and final validation is correctly allocated after rendering. |
 | Runtime tool exposure | Pass | Pass | Pass | Pass | Shared requested-name owner serves native/Codex/Claude without absorbing provider transport. |
 | Codex backend lifecycle | Pass | Pass | Pass | Pass | Existing lifecycle is unchanged; the superseded full-cleanup target is prohibited. |
 | Claude backend lifecycle | Pass | Pass | Pass | Pass | Explicit state and cleanup mapping. |
@@ -135,7 +137,7 @@
 | --- | --- | --- | --- | --- | --- |
 | Cross-provider prompt composition | Pass | Pass | Pass | Pass | `carpenter-prompt-composer.ts`. |
 | Fixed section Markdown | Pass | Pass | Pass | Pass | `carpenter-prompt-sections.ts`. |
-| Fence-aware heading containment | Pass | Pass | Pass | Pass | `markdown-heading-containment.ts`. |
+| Fence-aware heading containment | Pass | Pass | Pass | Pass | `markdown-heading-containment.ts` owns distinct opening and legal active-close recognition without becoming a general Markdown parser. |
 | Team capability rendering | Pass | Pass | Pass | Pass | `team-runtime-instruction-renderer.ts`. |
 
 ## Shared Structure / Data Model Tightness Verdict
@@ -147,6 +149,7 @@
 | Claude runtime context | Pass | Pass | Pass | Pass | Pass | Replaces duplicate instruction/team fields with the composed prompt while existing MCP state stays separately owned. |
 | Skill model | Pass | Pass | Pass | Pass | Pass | One ordinary model is preserved. |
 | Agent definition authoring model | Pass | Pass | Pass | Pass | Pass | Obsolete optional processor field is removed without a replacement field. |
+| Native `AgentConfig` | Pass | Pass | Pass | Pass | Pass | Skills/access mode remain; processor objects, global defaults, constructor slot, and copy propagation are removed rather than replaced or aliased. |
 
 ## File Responsibility Mapping Verdict
 
@@ -154,9 +157,10 @@
 | --- | --- | --- | --- | --- | --- |
 | `carpenter-prompt-composer.ts` | Pass | Pass | Pass | Pass | Shared order/normalization/composition. |
 | `carpenter-prompt-sections.ts` | Pass | Pass | Pass | Pass | Fixed approved Markdown. |
-| `markdown-heading-containment.ts` | Pass | Pass | Pass | Pass | Fence-aware authored-body containment only. |
+| `markdown-heading-containment.ts` | Pass | Pass | Pass | Pass | Fence-aware authored-body containment with separate opening and closing recognition only. |
 | `team-runtime-instruction-renderer.ts` | Pass | Pass | Pass | Pass | Generated team runtime only. |
-| Native factory and prompt pipeline files | Pass | Pass | Pass | Pass | Final-payload owner, ordering, failure path, and tests are explicit. |
+| Native final step and focused Skills appender | Pass | Pass | Pass | Pass | Direct append, ordering, failure path, and real-skill coverage are explicit. |
+| Core `AgentConfig`, barrels, and deleted processor/pipeline files | Pass | Pass | Pass | Pass | Exact fields, constructor/copy slot, exports, sources, tests, caller updates, and absence searches are mapped. |
 | `runtime-agent-tool-exposure.ts` and provider callers | Pass | Pass | Pass | Pass | Cleanly replaces configured-only naming and centralizes the exact two team defaults. |
 | Codex bootstrap file | Pass | Pass | Pass | Pass | Consumes shared exposure and context-only prompt composition without changing factory/context/cleanup/manager lifecycle. |
 | Claude bootstrap/context/client/cleanup files | Pass | Pass | Pass | Pass | Create/resume and cleanup are explicit. |
@@ -181,6 +185,8 @@
 | Claude per-turn XML instruction wrapping and duplicate fields | Pass | Pass | Pass | Pass | SDK system prompt becomes authoritative. |
 | Description fallbacks | Pass | Pass | Pass | Pass | Optional identity fields are explicit. |
 | `systemPromptProcessorNames` authoring/runtime surface | Pass | Pass | Pass | Pass | Domain/config/service/API/tool/web/generated/built-in removal is enumerated. |
+| Core `AgentConfig` processor injection/default/copy surface | Pass | Pass | Pass | Pass | The exact property, mutable default, constructor position, assignment, copy propagation, caller updates, and tests are named. |
+| Generic `SystemPromptPipeline` and processor base/definition/registry/registration exports | Pass | Pass | Pass | Pass | Files, barrels, package-root exports, obsolete tests, usages, and compatibility aliases are explicitly removed. |
 | Obsolete headings/wording | Pass | Pass | Pass | Pass | Exact target sections are authoritative. |
 
 ## Legacy / Backward-Compatibility Verdict
@@ -190,6 +196,7 @@
 | Runtime composers/strategies | No | Pass | Pass | No compatibility path retained. |
 | Historical file-definition keys | No | Pass | Pass | Version-agnostic current reader ignores unrecognized keys. |
 | Provider prompt transport | No | Pass | Pass | One high-authority field per provider. |
+| Core native prompt mutation | No | Pass | Pass | One direct platform-owned Skills append replaces the public configurable processor/pipeline contract without an alias or null compatibility slot. |
 
 ## Persisted-Data Transition Verdict (When Applicable)
 
@@ -204,6 +211,8 @@
 | --- | --- | --- | --- | --- |
 | Shared composer and team renderer introduction | Pass | Pass | Pass | Pass |
 | Native projection and terminal Skills | Pass | Pass | Pass | Pass |
+| Core processor/pipeline removal and positional `AgentConfig` callers | Pass | Pass | Pass | Pass |
+| Fence containment correction | Pass | Pass | Pass | Pass |
 | Runtime tool exposure and Codex/Claude transport | Pass | Pass | Pass | Pass |
 | Claude projection/create/resume/cleanup | Pass | Pass | Pass | Pass |
 | Definition/API/web clean removal | Pass | Pass | Pass | Pass |
@@ -218,6 +227,7 @@
 | Optional/invalid value behavior | Yes | Pass | Pass | Pass | Binding matrix is actionable. |
 | Final native prompt after skill append | Yes | Pass | Pass | Pass | `SR-002` provides exact post-Skills placement and the placeholder-shaped metadata case. |
 | Automatic team tools across providers | Yes | Pass | Pass | Pass | The design gives an omitted-config/dedup example and requires native, Codex, and Claude boundary assertions. |
+| Same-marker fence-like content versus legal close | Yes | Pass | Pass | Pass | `SR-004` provides the non-closing content example plus backtick, tilde, longer-close, and overflow coverage obligations. |
 
 ## Material Premise Validation (Only When Needed)
 
@@ -240,8 +250,8 @@
 - Initiating basis kind: `User`.
 - Independent product-supported initiating trigger or applicable governing contract: the user creates or updates an ordinary skill through the exposed Skills authoring surface with a non-blank free-form description containing `{{token}}`, then configures that skill for a native agent run.
 - Support evidence: GraphQL `createSkill`/`updateSkill` call `SkillService`, which writes the supplied description to `SKILL.md`; the current and proposed validation require non-blank metadata but define no double-brace rejection. The supported configured-skill path renders name/description in the native catalog.
-- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: Skills authoring UI/GraphQL mutation -> `SkillService.createSkill` or `updateSkill` -> configured skill resolution -> `CarpenterPromptComposer` final assertion runs on the carpenter portion -> native `SystemPromptPipeline` terminal `AvailableSkillsProcessor` appends the catalog -> provider system prompt.
-- Lifecycle preconditions and material consequence at the claimed point: the dynamic value is valid under the proposed skill metadata rules and is added only after the composer assertion. The actual final native provider instruction therefore contains forbidden unresolved-placeholder syntax despite `AC-014`.
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: Skills authoring UI/GraphQL mutation -> `SkillService.createSkill` or `updateSkill` -> configured skill resolution -> `CarpenterPromptComposer` assertion on the carpenter portion -> native `SystemPromptProcessingStep` calls the direct `appendConfiguredSkillsCatalog` -> complete-payload assertion -> provider system prompt or bootstrap failure.
+- Lifecycle preconditions and material consequence at the claimed point: the dynamic value is valid under the skill metadata rules and is added only after the composer assertion. Without the complete-payload assertion, the actual final native provider instruction would contain forbidden unresolved-placeholder syntax despite `AC-014`.
 - Reachability: `Reachable`.
 - Review consequence / proportionate response: resolved by `SR-002`; `SystemPromptProcessingStep` now owns the actual final assertion with focused no-provider-invocation coverage.
 
@@ -256,6 +266,18 @@
 - Lifecycle preconditions and material consequence at the claimed point: concurrent same-workspace runs remain supported, but the superseded full-cleanup mechanism that caused the over-release is absent. The first live run retains its reference.
 - Reachability: `Not Reachable`.
 - Review consequence / proportionate response: `MP-003` cannot drive a finding or cleanup machinery in `SR-003`. Preserve the existing MCP/client lifecycle as the design requires.
+
+### `MP-004` — A supported authored instruction body contains a same-marker fenced content line that is not a legal closing fence
+
+- Related approved requirement or established contract: `R-010`, `R-014`, `AC-010`, and `AC-014`; authored fenced Markdown must remain unchanged while only ATX headings outside fences are contained.
+- Relevant behavior ID(s): `BEH-008`, `BEH-012`.
+- Initiating basis kind: `User`.
+- Independent product-supported initiating trigger or applicable governing contract: a user creates or edits an agent definition's free-form instruction body through the Agent Definition form or GraphQL create/update mutation; file-backed `agent.md` authoring is also supported.
+- Support evidence: `CRR-001` / `CR-MP-001` traces the exposed `instructions` textarea and mutations to `AgentDefinition.instructions`, and directly reproduces the current parser result.
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: Agent Definition form/GraphQL mutation or file-backed source -> `AgentDefinition.instructions` -> `composeCarpenterPrompt` -> `containAuthoredMarkdownHeadings` -> native, Codex, or Claude provider instruction projection.
+- Lifecycle preconditions and material consequence at the claimed point: for an opened backtick fence containing a same-marker prefix followed by non-whitespace content and then an ATX heading, the current shared prefix matcher falsely closes the fence and rewrites that fenced heading. The authored code content changes before provider projection.
+- Reachability: `Reachable`.
+- Review consequence / proportionate response: `SR-004` provides the bounded correction: distinct opening/active-close recognition, same marker, run length at least the opener, trailing spaces/tabs only, and focused backtick/tilde/non-close/longer-close/overflow coverage. No generalized Markdown parser is introduced.
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
@@ -280,12 +302,13 @@ N/A — no current finding.
 ## Residual Risks
 
 - Claude create and resume must continue to pass the same composed `options.systemPrompt`; the design addresses this and focused execution evidence remains required downstream.
-- Heading containment must remain fence-aware; the design and test plan address this.
-- Native post-Skills placeholder rejection and corrected supplemental wording are now design-complete; downstream implementation and coverage still must verify them.
+- Positional `AgentConfig` callers must all be updated without leaving a null compatibility slot; the explicit repository-wide absence search and source re-review must verify the clean cut.
+- Heading containment must implement the exact legal active-close rule and preserve same-marker content; the focused cases remain downstream implementation evidence.
+- Native post-Skills placeholder rejection must be exercised through a real registered configured skill; downstream implementation and source review still must verify it.
 - External `shell-first-operating-practice` package/consumer cleanup and authored-body editorial normalization remain follow-ups in their owning repositories and must not introduce a compatibility runtime path here.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass` — prior `MP-003` is `Not Reachable` under the approved `SR-003` target and drives no finding or machinery.
-- Notes: `ARCH-REV-003` is authoritative. `AR-002` and `AR-003` remain resolved. `AR-001` is obsolete because the descriptor-driven prompt prerequisite and its proposed cleanup changes were removed; the replacement automatic-tool spine is independently owned and implementation-ready.
+- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass` — `MP-004` is reachable through supported authoring and the bounded parser correction is proportionate; prior `MP-003` remains `Not Reachable` and drives no machinery.
+- Notes: `ARCH-REV-004` is authoritative. `SR-004` resolves code-review design impact `CR-001` and carries the bounded `CR-002` correction into an actionable design. Earlier `AR-002` and `AR-003` remain resolved, and `AR-001` remains obsolete under the approved `SR-003` target replacement. Implementation revision and source re-review are required before API/E2E.

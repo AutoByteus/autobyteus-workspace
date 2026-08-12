@@ -1,12 +1,12 @@
 import path from 'path';
-import { describe, it, expect, beforeEach } from 'vitest';
-import { AvailableSkillsProcessor } from '../../../../src/agent/system-prompt-processor/available-skills-processor.js';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { appendConfiguredSkillsCatalog } from '../../../../src/agent/system-prompt/append-configured-skills-catalog.js';
 import { SkillRegistry } from '../../../../src/skills/registry.js';
 import { Skill } from '../../../../src/skills/model.js';
 import { SkillAccessMode } from '../../../../src/agent/context/skill-access-mode.js';
 
 const makeContext = () => ({
-  agentId: 'agent-1',
+  agentId: 'test_agent',
   config: { skills: [] as string[], skillAccessMode: undefined as SkillAccessMode | undefined }
 });
 
@@ -25,20 +25,13 @@ ${catalogEntries}
 - Resolve every relative path mentioned by a skill from the directory containing that skill's \`SKILL.md\`.
 `;
 
-describe('AvailableSkillsProcessor', () => {
+describe('appendConfiguredSkillsCatalog', () => {
   beforeEach(() => {
     new SkillRegistry().clear();
   });
 
   it('returns the original prompt unchanged when no skills are configured', () => {
-    const result = new AvailableSkillsProcessor().process(
-      'Original Prompt',
-      {},
-      'test_agent',
-      makeContext()
-    );
-
-    expect(result).toBe('Original Prompt');
+    expect(appendConfiguredSkillsCatalog('Original Prompt', makeContext())).toBe('Original Prompt');
   });
 
   it('does not advertise registry-only skills when no skills are configured', () => {
@@ -48,14 +41,7 @@ describe('AvailableSkillsProcessor', () => {
       new Skill('registry_only', 'Registry only', 'REGISTRY_ONLY_BODY', '/registry/only')
     );
 
-    const result = new AvailableSkillsProcessor().process(
-      'Original',
-      {},
-      'test_agent',
-      makeContext()
-    );
-
-    expect(result).toBe('Original');
+    expect(appendConfiguredSkillsCatalog('Original', makeContext())).toBe('Original');
   });
 
   it('returns the original prompt unchanged when skill access mode is NONE', () => {
@@ -68,28 +54,14 @@ describe('AvailableSkillsProcessor', () => {
     context.config.skills = ['configured'];
     context.config.skillAccessMode = SkillAccessMode.NONE;
 
-    const result = new AvailableSkillsProcessor().process(
-      'Original',
-      {},
-      'test_agent',
-      context
-    );
-
-    expect(result).toBe('Original');
+    expect(appendConfiguredSkillsCatalog('Original', context)).toBe('Original');
   });
 
   it('returns the original prompt unchanged when configured names do not resolve', () => {
     const context = makeContext();
     context.config.skills = ['missing'];
 
-    const result = new AvailableSkillsProcessor().process(
-      'Original',
-      {},
-      'test_agent',
-      context
-    );
-
-    expect(result).toBe('Original');
+    expect(appendConfiguredSkillsCatalog('Original', context)).toBe('Original');
   });
 
   it('omits configured entries with blank required metadata', () => {
@@ -97,9 +69,8 @@ describe('AvailableSkillsProcessor', () => {
     (registry as any).skills.set('invalid', new Skill('invalid', '   ', 'BODY', '/invalid'));
     const context = makeContext();
     context.config.skills = ['invalid'];
-    expect(new AvailableSkillsProcessor().process('Original', {}, 'test_agent', context)).toBe(
-      'Original'
-    );
+
+    expect(appendConfiguredSkillsCatalog('Original', context)).toBe('Original');
   });
 
   it('renders the exact configured catalog contract in configured order without skill bodies', () => {
@@ -133,12 +104,7 @@ describe('AvailableSkillsProcessor', () => {
       `  - **SKILL.md:** \`${path.resolve(relativeRoot, 'SKILL.md')}\``
     ].join('\n');
 
-    const result = new AvailableSkillsProcessor().process(
-      'Original',
-      {},
-      'test_agent',
-      context
-    );
+    const result = appendConfiguredSkillsCatalog('Original', context);
 
     expect(result).toBe(`Original${expectedSkillsBlock(catalogEntries)}`);
     expect(result).not.toContain('UNIQUE_SKILL_A_BODY');

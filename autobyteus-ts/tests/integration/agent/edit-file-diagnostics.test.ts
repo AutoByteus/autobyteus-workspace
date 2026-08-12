@@ -781,7 +781,6 @@ runDiagnostics('edit_file diagnostics integration (LM Studio)', () => {
       null,
       null,
       null,
-      null,
       workspace
     );
 

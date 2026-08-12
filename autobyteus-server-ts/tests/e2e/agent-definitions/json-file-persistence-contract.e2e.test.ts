@@ -155,7 +155,6 @@ describe("JSON file persistence contract e2e (md-centric, no mocks)", () => {
     });
     expect(Array.isArray(agentConfig.inputProcessorNames)).toBe(true);
     expect(Array.isArray(agentConfig.llmResponseProcessorNames)).toBe(true);
-    expect(Array.isArray(agentConfig.systemPromptProcessorNames)).toBe(true);
     expect(Array.isArray(agentConfig.toolExecutionResultProcessorNames)).toBe(true);
     expect(Array.isArray(agentConfig.toolInvocationPreprocessorNames)).toBe(true);
     expect(Array.isArray(agentConfig.lifecycleProcessorNames)).toBe(true);

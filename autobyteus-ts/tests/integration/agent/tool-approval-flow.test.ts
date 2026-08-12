@@ -103,7 +103,6 @@ const createAgentFixture = async (tools: any[]): Promise<AgentFixture> => {
     null,
     null,
     null,
-    null,
     workspace
   );
   const agent = new AgentFactory().createAgent(config);

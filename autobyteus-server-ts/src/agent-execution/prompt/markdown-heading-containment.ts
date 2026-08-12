@@ -1,7 +1,18 @@
 const ATX_HEADING = /^( {0,3})(#{1,6})(?:[ \t]+)(.*)$/;
-const FENCE = /^( {0,3})(`{3,}|~{3,})/;
+const OPENING_FENCE = /^( {0,3})(`{3,}|~{3,})(.*)$/;
 
 type Heading = { index: number; indent: string; level: number; text: string };
+
+const isActiveFenceClose = (
+  line: string,
+  marker: "`" | "~",
+  openingLength: number,
+): boolean => {
+  const close = line.match(/^( {0,3})(`+|~+)[ \t]*$/);
+  return Boolean(
+    close && close[2][0] === marker && close[2].length >= openingLength,
+  );
+};
 
 export const containAuthoredMarkdownHeadings = (
   authoredMarkdown: string,
@@ -13,19 +24,18 @@ export const containAuthoredMarkdownHeadings = (
   let fenceLength = 0;
 
   lines.forEach((line, index) => {
-    const fence = line.match(FENCE);
-    if (fence) {
-      const marker = fence[2][0] as "`" | "~";
-      if (!fenceMarker) {
-        fenceMarker = marker;
-        fenceLength = fence[2].length;
-      } else if (marker === fenceMarker && fence[2].length >= fenceLength) {
+    if (fenceMarker) {
+      if (isActiveFenceClose(line, fenceMarker, fenceLength)) {
         fenceMarker = null;
         fenceLength = 0;
       }
       return;
     }
-    if (fenceMarker) {
+
+    const openingFence = line.match(OPENING_FENCE);
+    if (openingFence) {
+      fenceMarker = openingFence[2][0] as "`" | "~";
+      fenceLength = openingFence[2].length;
       return;
     }
     const match = line.match(ATX_HEADING);

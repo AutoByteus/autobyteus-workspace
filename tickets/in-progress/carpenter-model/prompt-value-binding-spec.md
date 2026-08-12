@@ -36,7 +36,7 @@ An authored body must not create sibling sections outside its carpenter-owned wr
 - The team instruction body is nested below `## Team Instruction`; its authored ATX headings must therefore begin at level 3 or deeper.
 - Find the smallest ATX heading level present in the body. If it is not deeper than the containing heading, shift every ATX heading in that body downward by the same number of levels needed to make the smallest one exactly one level deeper. This preserves relative hierarchy.
 - If a shifted heading would exceed level 6, render that heading as a bold label at the corresponding body position rather than allowing it to escape the containing section or silently dropping its text.
-- Do not rewrite prose, lists, code fences, links, or other authored Markdown.
+- Do not rewrite prose, lists, code fences, links, or other authored Markdown. Opening-fence recognition may include an info string. While a fence is active, only a same-marker run at least as long as the opening run and followed solely by spaces/tabs may close it; a same-marker prefix followed by other content remains fenced content.
 
 For the Classroom Simulation fixture, this deterministically changes professor-body `##` headings to `####` and team-body `##` headings to `###`.
 
@@ -123,7 +123,7 @@ Provider adapters place the carpenter Markdown in their approved high-authority 
 
 | Runtime | Content after shared composition | Actual final-instruction owner | Required failure point |
 | --- | --- | --- | --- |
-| Native AutoByteus | Terminal `AvailableSkillsProcessor` may append configured skill name, description, and path | `autobyteus-ts/src/agent/bootstrap-steps/system-prompt-processing-step.ts`, immediately after `SystemPromptPipeline.process` | Reject the complete string before assigning `processedSystemPrompt` or calling `llmInstance.configureSystemPrompt`; use the existing critical bootstrap error/`AgentErrorEvent` path |
+| Native AutoByteus | Direct platform-owned `appendConfiguredSkillsCatalog` may append configured skill name, description, and path | `autobyteus-ts/src/agent/bootstrap-steps/system-prompt-processing-step.ts`, immediately after that one direct append | Reject the complete string before assigning `processedSystemPrompt` or calling `llmInstance.configureSystemPrompt`; use the existing critical bootstrap error/`AgentErrorEvent` path. No configurable processor list or generic pipeline exists |
 | Codex | No later textual skill catalog; skills and tools are provider-native/out-of-band | `CarpenterPromptComposer` result used directly as `baseInstructions` | Reject before thread creation/restoration |
 | Claude | No later textual skill catalog; skills and tools are provider-native/out-of-band | `CarpenterPromptComposer` result used directly as query `options.systemPrompt` | Reject before SDK query |
 

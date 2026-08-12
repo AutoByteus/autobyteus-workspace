@@ -4,6 +4,7 @@ import path from 'path';
 import os from 'os';
 import { AgentFactory } from '../../../src/agent/factory/agent-factory.js';
 import { AgentConfig } from '../../../src/agent/context/agent-config.js';
+import { appendConfiguredSkillsCatalog } from '../../../src/agent/system-prompt/append-configured-skills-catalog.js';
 import { SkillRegistry } from '../../../src/skills/registry.js';
 import { BaseLLM } from '../../../src/llm/base.js';
 import { LLMModel } from '../../../src/llm/models.js';
@@ -65,7 +66,7 @@ const resetFactory = () => {
   (AgentFactory as any).instance = undefined;
 };
 
-const expectedSkillsBlock = (skillPath: string): string => `\n\n## Agent Skills
+const expectedSkillsBlock = (skillPath: string): string => `\n\n## Skills
 
 ### Skill Catalog
 
@@ -110,15 +111,11 @@ describe('AgentFactory skill integration', () => {
         null,
         null,
         null,
-        null,
         [skillPath]
       );
 
       const agent = new AgentFactory().createAgent(config);
-      let systemPrompt = 'Initial prompt';
-      for (const processor of agent.context.config.systemPromptProcessors) {
-        systemPrompt = processor.process(systemPrompt, {}, agent.agentId, agent.context);
-      }
+      const systemPrompt = appendConfiguredSkillsCatalog('Initial prompt', agent.context);
 
       expect(systemPrompt).toBe(`Initial prompt${expectedSkillsBlock(skillPath)}`);
       expect(agent.context.config.skills).toEqual(['java_expert']);
@@ -153,18 +150,14 @@ describe('AgentFactory skill integration', () => {
         null,
         null,
         null,
-        null,
         []
       );
 
       const agent = new AgentFactory().createAgent(config);
-      let systemPrompt = 'Initial';
-      for (const processor of agent.context.config.systemPromptProcessors) {
-        systemPrompt = processor.process(systemPrompt, {}, agent.agentId, agent.context);
-      }
+      const systemPrompt = appendConfiguredSkillsCatalog('Initial', agent.context);
 
       expect(systemPrompt).toBe('Initial');
-      expect(systemPrompt).not.toContain('## Agent Skills');
+      expect(systemPrompt).not.toContain('## Skills');
       expect(systemPrompt).not.toContain('### Skill Catalog');
       expect(agent.context.config.skills).toEqual([]);
     } finally {

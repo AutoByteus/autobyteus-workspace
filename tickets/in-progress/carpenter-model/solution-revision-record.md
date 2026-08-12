@@ -9,6 +9,7 @@ The latest requirements, investigation notes, design spec, and supplements remai
 | `SR-001` | Solution Designer / initial approved solution / round 1 | N/A | `Initial Baseline` | Ready for architecture review |
 | `SR-002` | Architecture Reviewer / `design-review-report.md` / round 1 | `AR-001`, `AR-002`, `AR-003` | `Design Impact` | Ready for architecture re-review |
 | `SR-003` | User clarification + Architecture Reviewer / `design-review-report.md` / round 2 | `AR-001` (`MP-003`) | `Requirement Clarification` + `Design Impact` | Ready for architecture re-review |
+| `SR-004` | Code Reviewer / `code-review-report.md` / round 1 | `CR-001`, `CR-002`, `CR-MP-001` | `Design Impact` + `Local Fix` | Ready for architecture re-review |
 
 ## Revision Entries
 
@@ -56,3 +57,18 @@ The latest requirements, investigation notes, design spec, and supplements remai
 - Downstream and architecture-review impact: The carpenter implementation no longer touches Codex/Claude MCP resource lifecycle. Implementation owns one small shared automatic-tool union plus provider-boundary verification, while prompt composition remains provider-transport-independent.
 - Next recipient or routing: `architecture_reviewer` with the complete package and both prior review records.
 - Remaining gaps or risks: no blocking design gap known. Provider adapters must all consume the shared exposure resolver, and task-result submission/review tools remain owned by existing task-execution lifecycle packets rather than the fixed carpenter Team Runtime.
+
+### SR-004 — Close the core native prompt mutation boundary and correct fence containment
+
+- Triggering role, report path, and round: Code Reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/code-review-report.md`; source review round 1 (`CRR-001`).
+- Triggering finding IDs: `CR-001`, `CR-002`, and reachability premise `CR-MP-001`.
+- Prior authoritative result: `Fail — Design Impact`.
+- Current authoritative result: Revised solution package ready for architecture re-review; approved requirements and intended behavior remain unchanged.
+- Why this revision is recorded: The reviewed complete-removal inventory stopped at server/API/UI configuration and omitted the public core `AgentConfig` processor list/default/copy path, generic `SystemPromptPipeline`, processor definition/registry/registration APIs, and package exports. Review also reproduced a reachable same-marker fence-like content line that incorrectly closed a fence and exposed a later code heading to rewriting.
+- Resolution: Remove the generic prompt-processor concept across the remaining core source and public barrels. `AgentConfig` carries no prompt-mutator objects. `SystemPromptProcessingStep` directly invokes one focused platform-owned `appendConfiguredSkillsCatalog`, validates the complete result, then mutates state/configures the LLM. Delete the processor base/definition/registry/default singleton/registration/generic pipeline and obsolete tests without compatibility aliases. Replace the containment helper's shared prefix match with distinct opening and closing rules; an active fence closes only on the same marker, sufficient length, and trailing whitespace only. Require a real configured-skill final-payload test and focused backtick/tilde/non-close/overflow containment cases.
+- Approved behavior or requirement IDs affected: `BEH-002`, `BEH-008`, `BEH-012`; `R-010`, `R-014`; `AC-010`, `AC-014`. Behavior intent did not change.
+- Canonical artifacts and sections updated: `investigation-notes.md` source/reproduction evidence and findings 46–48; `design-spec.md` current state, behavior map, spines, ownership, complete removal inventory, interfaces, exact files, sequence, risks, and guidance; `prompt-value-binding-spec.md` fence-closing and native final-payload contracts; `system-prompt-contract.md` explicit core clean cut; this revision record.
+- Supplemental artifacts updated, added, or removed: no artifact added or removed. Exact prompt wording is unchanged.
+- Downstream and architecture-review impact: Architecture review must validate the newly complete core removal boundary. After pass, implementation must revise `IR-001`, then return to source review; API/E2E remains blocked.
+- Next recipient or routing: `architecture_reviewer` with the complete package plus implementation and code-review artifacts.
+- Remaining gaps or risks: no requirement ambiguity. Positional `AgentConfig` callers require atomic signature updates, current docs describing the generic pipeline must be updated, and implementation must prove no retired names remain in current source/public barrels/active tests or durable current documentation.

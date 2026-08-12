@@ -1147,7 +1147,6 @@ runIntegration('edit_file scenario benchmark integration (LM Studio)', () => {
       null,
       null,
       null,
-      null,
       workspace
     );
 

@@ -142,7 +142,6 @@ describe('Agent single-flow integration (Ollama native tool calling)', () => {
       null,
       null,
       null,
-      null,
       workspace
     );
 

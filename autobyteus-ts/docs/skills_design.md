@@ -89,11 +89,12 @@ preloaded into the prompt. `NONE` suppresses the catalog entirely.
 
 ### Catalog-only system prompt
 
-For a newly bootstrapped native run, the mandatory
-`AvailableSkillsProcessor` appends a catalog like this:
+For a newly bootstrapped native run, `SystemPromptProcessingStep` directly calls
+the platform-owned `appendConfiguredSkillsCatalog` function after the carpenter
+foundation has been composed. It appends a catalog like this:
 
 ```markdown
-## Agent Skills
+## Skills
 
 ### Skill Catalog
 
@@ -109,7 +110,7 @@ For a newly bootstrapped native run, the mandatory
 - Resolve every relative path mentioned by a skill from the directory containing that skill's `SKILL.md`.
 ```
 
-The processor preserves configured order and emits only:
+The appender preserves configured order and emits only:
 
 - skill name
 - skill description
@@ -160,11 +161,12 @@ skills from concrete paths and resolves configured names. Directory discovery
 is an administrative/bootstrap mechanism; it does not make registry-only skills
 visible to an unconfigured agent.
 
-### `AvailableSkillsProcessor`
+### `appendConfiguredSkillsCatalog`
 
-This mandatory native system-prompt processor owns the configured catalog and
-shared usage rules. It does not own filesystem access and does not infer access
-from the presence of a skill.
+This focused platform-owned function owns the configured catalog and shared
+usage rules. It is called exactly once by the native final-instruction step and
+is not configurable, registered, or ordered by agent definitions. It does not
+own filesystem access and does not infer access from the presence of a skill.
 
 ### General-purpose tools
 
@@ -185,7 +187,7 @@ For a native agent configured with `java_expert` and `read_file`:
 1. The server resolves `java_expert` to its managed root path.
 2. `AgentFactory` registers the path and normalizes the configured entry to its
    skill name.
-3. `AvailableSkillsProcessor` appends the catalog metadata and absolute
+3. `appendConfiguredSkillsCatalog` appends the catalog metadata and absolute
    `SKILL.md` path; it does not append the body.
 4. When the task requires Java guidance, the agent calls `read_file` with the
    advertised absolute entry-point path.
@@ -207,7 +209,7 @@ agent is expected to use file-backed skills.
   embedded skill text. Restore does not rewrite old context into the new prompt
   shape.
 - **Codex and Claude runtimes** use their provider-specific skill
-  materialization/bootstrap paths. The native `AvailableSkillsProcessor`
+  materialization/bootstrap paths. The native configured-catalog
   contract must not be assumed to replace those provider mechanisms.
 
 ## 6. Operational Limits and Failure Behavior
@@ -220,7 +222,7 @@ agent is expected to use file-backed skills.
   authorization, and direct-read capability; they cannot guarantee that every
   model will follow the instruction on every turn.
 - Skill paths are trusted-local paths resolved and authorized by existing server
-  and tool boundaries. The prompt processor is not a separate security layer.
+  and tool boundaries. The catalog appender is not a separate security layer.
 
 ## 7. Benefits
 

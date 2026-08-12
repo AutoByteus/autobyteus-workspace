@@ -52,7 +52,7 @@ Rules:
 - The logical structure is provider-independent. Native maps the complete Markdown to `AgentConfig.systemPrompt`, Codex to `baseInstructions`, and Claude Agent SDK to the query `options.systemPrompt` custom string; adapters preserve section identity, content, and relative meaning.
 - Prompt order is organization, not an invented authority system; actual instruction authority remains governed by the runtime/provider instruction hierarchy.
 - Do not render an `Available Tools` section. Tool schemas and authorization are supplied out-of-band by the current runtime/provider tool mechanism.
-- The optional Skills representation is terminal in the logical order. The obsolete optional system-prompt-processor extension surface is removed, so no later processor can append or mutate content outside this closed contract.
+- The optional Skills representation is terminal in the logical order. Native AutoByteus appends it through one direct platform-owned catalog function inside its final prompt step. The server authoring surface, core `AgentConfig` processor list/default/copy path, generic pipeline, registry/registration APIs, and public processor exports are removed, so no caller-configurable processor can append or mutate content outside this closed contract.
 
 ## Agent Identity
 

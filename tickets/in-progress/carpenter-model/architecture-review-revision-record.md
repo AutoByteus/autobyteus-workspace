@@ -7,6 +7,7 @@
 | `ARCH-REV-001` | Round 1 / initial architecture review | `SR-001` | N/A | Fail — Design Impact | `AR-001`, `AR-002`, `AR-003` |
 | `ARCH-REV-002` | Round 2 / `SR-002` re-review | `SR-002` | Fail — Design Impact | Fail — Design Impact | `AR-001`, `AR-002`, `AR-003` |
 | `ARCH-REV-003` | Round 3 / user-approved automatic-team-tool clarification | `SR-003` | Fail — Design Impact | Pass | `AR-001`, `AR-002`, `AR-003` |
+| `ARCH-REV-004` | Round 4 / `SR-004` re-review after code review reroute | `SR-004` | Pass, then downstream `CRR-001` Fail — Design Impact | Pass | `CR-001`, `CR-002` |
 
 ## Revision Entries
 
@@ -74,3 +75,28 @@ None.
 - Material classification changes: Overall decision changes from `Fail — Design Impact` to `Pass`. `AR-001` is obsolete rather than mechanically “fixed” because its finding-driving target machinery was removed by an approved behavior/design replacement.
 - Recommended recipient: `implementation_engineer`
 - Remaining risks or uncertainty: No blocking uncertainty. Implementation must preserve exact automatic-tool deduplication across all three provider projections, keep MCP/client lifecycle untouched, preserve Claude create/resume system-prompt symmetry, and verify fence-aware headings plus native final-payload rejection.
+
+### ARCH-REV-004 — Core native removal and fence correction passed
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/design-review-report.md`
+- Review round and trigger: Round 4, solution-designer re-review handoff for `SR-004` after code review `CRR-001` returned one design-impact finding and one bounded local defect from the first implementation pass.
+- Triggering role, report path, and finding IDs: `code_reviewer` via `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/code-review-report.md`; `CR-001`, `CR-002`, and `CR-MP-001`.
+- Relevant solution revision IDs: `SR-004` (retaining approved `SR-003` behavior)
+- Prior authoritative decision: Architecture `Pass` at `ARCH-REV-003`; downstream source review `Fail — Design Impact` at `CRR-001`.
+- Current authoritative decision: `Pass`
+- What changed in the review result or what baseline was established: `SR-004` extends the clean removal boundary through the public core runtime. `AgentConfig` loses processor defaults/injection/copy state; the generic pipeline, processor abstractions, registry/registration, exports, tests, and usages are removed; one focused platform-owned Skills appender is called directly by the singular final native step. It also defines a legal active-fence close separately from opening recognition and carries the reachable parser case into focused coverage.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001` | Open — Design Impact | Resolved in design | `CRR-001`, `SR-004`, `ARCH-REV-004` | The current design names every omitted `AgentConfig` field/constructor/copy path, `SystemPromptPipeline`, processor base/definition/registry/default/registration/barrel/root export, obsolete tests/usages, positional caller updates, replacement owner, and repository-wide absence search; no alias or compatibility slot remains. |
+| `CR-002` | Open — Local Fix | Resolved in design / pending implementation evidence | `CRR-001`, `CR-MP-001`, `SR-004`, `MP-004`, `ARCH-REV-004` | The design separates opening from active-close recognition, requires same marker and sufficient run length followed only by spaces/tabs, preserves same-marker content, and specifies info-string/backtick/tilde/longer-close/overflow tests. |
+| `AR-001` | Obsolete / resolved by target replacement | Unchanged | `SR-003`, `SR-004`, `ARCH-REV-003`, `ARCH-REV-004` | Prompt composition remains descriptor-independent and existing MCP/client lifecycle remains unchanged. |
+| `AR-002` | Resolved | Resolved under the closed direct owner | `SR-002`, `SR-004`, `ARCH-REV-004` | `SystemPromptProcessingStep` directly appends configured Skills, validates the complete payload before state/LLM mutation, and requires a real configured-skill failure case rather than injected processor coverage. |
+| `AR-003` | Resolved | Resolved | `SR-002`, `SR-004`, `ARCH-REV-004` | Supplemental ownership and external follow-up statements remain coherent; exact prompt wording is unchanged. |
+
+- New or remaining finding IDs: None.
+- Material classification changes: The source-review `Design Impact` is resolved at the design layer. `CR-MP-001` is retained as architecture premise `MP-004` with `Reachable` status; it justifies only the bounded fence correction.
+- Recommended recipient: `implementation_engineer`
+- Remaining risks or uncertainty: No blocking design uncertainty. Implementation must update every positional `AgentConfig` caller, prove the retired public/core names absent, implement the exact fence close rule, and return through source review before API/E2E. Existing Claude create/resume symmetry and unchanged MCP/client lifecycle remain downstream verification obligations.

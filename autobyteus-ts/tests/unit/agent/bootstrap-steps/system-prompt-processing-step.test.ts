@@ -1,26 +1,38 @@
-import { describe, expect, it, vi } from 'vitest';
-import { BaseSystemPromptProcessor } from '../../../../src/agent/system-prompt-processor/base-processor.js';
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { SystemPromptProcessingStep } from '../../../../src/agent/bootstrap-steps/system-prompt-processing-step.js';
+import { AgentErrorEvent } from '../../../../src/agent/events/agent-events.js';
+import { SkillRegistry } from '../../../../src/skills/registry.js';
 
-class PlaceholderAppendingProcessor extends BaseSystemPromptProcessor {
-  static getName(): string {
-    return 'PlaceholderAppendingProcessor';
-  }
+const tempDirectories: string[] = [];
 
-  process(systemPrompt: string): string {
-    return `${systemPrompt}\n\n{{skill_token}}`;
+afterEach(() => {
+  new SkillRegistry().clear();
+  for (const directory of tempDirectories.splice(0)) {
+    fs.rmSync(directory, { recursive: true, force: true });
   }
-}
+});
 
 describe('SystemPromptProcessingStep', () => {
-  it('rejects unresolved placeholders after terminal processing without mutating state or configuring the LLM', async () => {
+  it('rejects placeholder-shaped metadata from a real configured skill before state or LLM mutation', async () => {
+    const skillDirectory = fs.mkdtempSync(path.join(os.tmpdir(), 'final-prompt-skill-'));
+    tempDirectories.push(skillDirectory);
+    fs.writeFileSync(
+      path.join(skillDirectory, 'SKILL.md'),
+      '---\nname: placeholder_skill\ndescription: Valid metadata with {{skill_token}}\n---\nSkill body.\n',
+      'utf8'
+    );
+    new SkillRegistry().registerSkillFromPath(skillDirectory);
+
     const configureSystemPrompt = vi.fn();
     const postLifecycleEvent = vi.fn(async () => undefined);
     const context = {
       agentId: 'agent-1',
       config: {
         systemPrompt: 'Base prompt',
-        systemPromptProcessors: [new PlaceholderAppendingProcessor()],
+        skills: ['placeholder_skill'],
       },
       state: {
         processedSystemPrompt: null,
@@ -38,5 +50,6 @@ describe('SystemPromptProcessingStep', () => {
     expect(context.state.processedSystemPrompt).toBeNull();
     expect(configureSystemPrompt).not.toHaveBeenCalled();
     expect(postLifecycleEvent).toHaveBeenCalledOnce();
+    expect(postLifecycleEvent.mock.calls[0]?.[0]).toBeInstanceOf(AgentErrorEvent);
   });
 });

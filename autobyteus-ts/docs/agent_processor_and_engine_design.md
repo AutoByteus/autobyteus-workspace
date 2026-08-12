@@ -50,7 +50,9 @@ Processors are the "functional units" of the agent. They intercept data at speci
 All processors share a common architectural pattern:
 
 - **Base Classes**: Each type has an abstract base class (e.g., `BaseLLMResponseProcessor`) defining its contract.
-- **Explicit Registration**: Processors are registered through registries (e.g., `registerSystemPromptProcessors()`), keeping ordering deterministic in Node.js/TypeScript.
+- **Explicit Registration**: Configurable processor categories use their owned
+  registries or composition roots, keeping ordering deterministic in
+  Node.js/TypeScript.
 - **Configuration (`ProcessorOption`)**: Processors are enabled/disabled via `ProcessorOption` objects, which define their name and whether they are `mandatory`.
 - **Ordering**: Processors of the same type run in a specific sequence defined by their `get_order()` method.
 
@@ -64,14 +66,19 @@ All processors share a common architectural pattern:
   - Appending context or instructions dynamically.
   - Expanding macros or shortcuts in user input.
 
-#### B. System Prompt Processors (`src/agent/system-prompt-processor`)
+#### B. Platform-Owned System Instruction Completion
 
-- **Role**: Dynamically construct or modify non-tool system-prompt content sent
-  to the LLM. The built-in `AvailableSkillsProcessor` is one current example.
-- **Tool boundary**: System prompt processors must not encode tool definitions,
-  invocation examples, or a model-authored tool syntax. `LlmPhase` sends tools
-  only through provider-native request schemas.
-- **Execution Timing (Important)**: System prompt processors run **once during bootstrapping** in `SystemPromptProcessingStep`. They are **not** invoked before every LLM call.
+- **Role**: `SystemPromptProcessingStep` owns the closed native completion
+  sequence. It directly appends the configured Skills metadata/path catalog,
+  validates the complete instruction, stores it, and configures the LLM.
+- **Closed boundary**: Agent configuration cannot supply arbitrary system-prompt
+  mutators, ordering, or global defaults. Skills is the one terminal native
+  append.
+- **Tool boundary**: Prompt content does not encode tool definitions, invocation
+  examples, or model-authored tool syntax. `LlmPhase` sends tools only through
+  provider-native request schemas.
+- **Execution timing**: The sequence runs once during native bootstrap, not
+  before every LLM call.
 
 #### C. LLM Response Processors (`src/agent/llm-response-processor`)
 
@@ -139,7 +146,8 @@ JSON remains the execution authority.
 1.  **User Input**: User sends "List files in src".
 2.  **Engine**: Enqueues `UserMessageReceivedEvent`.
 3.  **Input Processor**: Runs (no changes).
-4.  **System Prompt Processor (Bootstrap)**: Non-tool prompt processors run once.
+4.  **System Instruction Completion (Bootstrap)**: The platform appends the
+    configured Skills catalog and validates the complete instruction once.
 5.  **LLM Call**: `LlmPhase` uses `ToolSchemaProvider` to build the native schema
     for `list_directory`, supplies it through the provider `tools` field, and
     enables native deltas on the unified stream handler.
@@ -164,10 +172,14 @@ JSON remains the execution authority.
 
 ## 6. Lifecycle Events vs. Pipeline Processors (Clarifying the Boundaries)
 
-Autobyteus exposes **two** extensibility mechanisms that often occur near the same moments:
+Autobyteus exposes processor and lifecycle extension mechanisms that often
+occur near the same moments:
 
-- **Pipeline processors** (Input, System Prompt, LLM Response, Tool Pre/Post, Tool Result) are invoked by **the owning turn phases, pipelines, or lifecycle handlers**.
+- **Pipeline processors** (Input, LLM Response, Tool Pre/Post, Tool Result) are invoked by **the owning turn phases, pipelines, or lifecycle handlers**.
 - **Lifecycle processors** (`src/agent/lifecycle/`) are invoked by **status transitions** inside `AgentStatusManager`.
+
+Native system-instruction completion is a closed platform bootstrap sequence,
+not an extension mechanism.
 
 ### Lifecycle Event Enum (`src/agent/lifecycle/events.ts`)
 
@@ -184,7 +196,7 @@ The `LifecycleEvent` enum defines user-facing hook points:
 
 ### Ordering Summary (Implemented Behavior)
 
-1. System prompt processors run **once at bootstrap** (not before each LLM call).
+1. Platform-owned system-instruction completion runs **once at bootstrap** (not before each LLM call).
 2. `BEFORE_LLM_CALL` lifecycle processors run when entering `AWAITING_LLM_RESPONSE`, before the LLM request is sent.
 3. `AFTER_LLM_RESPONSE` lifecycle processors run when entering `ANALYZING_LLM_RESPONSE`, before LLM response processors run.
 4. `BEFORE_TOOL_EXECUTE` lifecycle processors run before `ToolPhase` invokes tools.

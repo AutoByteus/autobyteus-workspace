@@ -76,7 +76,6 @@ runIntegration('LM Studio single-agent run_bash flow', () => {
       null,
       null,
       null,
-      null,
       workspace,
     );
 
@@ -286,7 +285,6 @@ runIntegration('LM Studio single-agent run_bash flow', () => {
         ].join(' '),
         [runBashTool],
         true,
-        null,
         null,
         null,
         null,

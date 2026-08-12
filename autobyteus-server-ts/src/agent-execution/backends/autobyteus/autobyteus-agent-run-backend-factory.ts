@@ -472,7 +472,6 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
         autoExecuteTools,
         inputProcessors,
         llmResponseProcessors,
-        null,
         toolExecutionResultProcessors,
         toolInvocationPreprocessors,
         workspaceRootPath,
