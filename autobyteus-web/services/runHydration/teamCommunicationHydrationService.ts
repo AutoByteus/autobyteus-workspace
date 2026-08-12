@@ -1,7 +1,8 @@
+import type { GetTeamCommunicationMessagesQuery } from '~/generated/graphql';
 import { GetTeamCommunicationMessages } from '~/graphql/queries/runHistoryQueries';
-import type { GetTeamCommunicationMessagesQueryData } from '~/stores/runHistoryTypes';
 import { useTeamCommunicationStore } from '~/stores/teamCommunicationStore';
 import type { TeamCommunicationMessage } from '~/stores/teamCommunicationTypes';
+import { projectTeamCommunicationMessageDtos } from './teamCommunicationGraphqlDtoProjection';
 
 export const hydrateTeamCommunicationMessages = (
   teamRunId: string,
@@ -23,7 +24,7 @@ export const fetchAndHydrateTeamCommunicationForTeam = async (params: {
   teamRunId: string;
 }): Promise<void> => {
   try {
-    const response = await params.client.query<GetTeamCommunicationMessagesQueryData>({
+    const response = await params.client.query<GetTeamCommunicationMessagesQuery>({
       query: GetTeamCommunicationMessages,
       variables: {
         teamRunId: params.teamRunId,
@@ -33,10 +34,10 @@ export const fetchAndHydrateTeamCommunicationForTeam = async (params: {
     if (response.errors && response.errors.length > 0) {
       throw new Error(response.errors.map((error: { message: string }) => error.message).join(', '));
     }
-    hydrateTeamCommunicationMessages(
-      params.teamRunId,
-      response.data?.getTeamCommunicationMessages || [],
+    const messages = projectTeamCommunicationMessageDtos(
+      response.data?.getTeamCommunicationMessages ?? [],
     );
+    hydrateTeamCommunicationMessages(params.teamRunId, messages);
   } catch (error) {
     console.warn(
       `[runHistoryStore] Failed to fetch team communication messages for team '${params.teamRunId}'`,

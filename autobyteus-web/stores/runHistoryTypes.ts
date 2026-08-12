@@ -2,7 +2,6 @@ import type { AgentRuntimeKind, SkillAccessMode } from '~/types/agent/AgentRunCo
 import type { AgentStatus } from '~/types/agent/AgentStatus';
 import type { RunProjectionConversationEntry } from '~/services/runHydration/runProjectionConversation';
 import type { RunProjectionActivityEntry } from '~/services/runHydration/runProjectionActivityHydration';
-import type { TeamCommunicationMessage } from '~/stores/teamCommunicationTypes';
 import type { TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 import type { ApplicationExecutionContext } from '@autobyteus/application-sdk-contracts';
 
@@ -272,10 +271,6 @@ export interface ArchiveStoredTeamRunMutationData {
   };
 }
 
-
-export interface GetTeamCommunicationMessagesQueryData {
-  getTeamCommunicationMessages: TeamCommunicationMessage[];
-}
 
 export interface GetTaskDelegationRecordsQueryData {
   getTaskDelegationRecords: unknown[];
