@@ -2,32 +2,32 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/design-spec.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/design-spec.md`
 - Supplemental task artifacts:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/system-prompt-contract.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/agent-identity-prompt-spec.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/working-environment-prompt-spec.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/bash-operating-practice-prompt-spec.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/file-and-directory-practice-prompt-spec.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/team-and-runtime-prompt-spec.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/prompt-value-binding-spec.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/system-skill-decision.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/classroom-simulation-composed-system-prompt.md`
-- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/solution-revision-record.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/design-review-report.md`
-- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/architecture-review-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/system-prompt-contract.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/agent-identity-prompt-spec.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/working-environment-prompt-spec.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/bash-operating-practice-prompt-spec.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/file-and-directory-practice-prompt-spec.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/team-and-runtime-prompt-spec.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/prompt-value-binding-spec.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/system-skill-decision.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/classroom-simulation-composed-system-prompt.md`
+- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/solution-revision-record.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/design-review-report.md`
+- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/architecture-review-revision-record.md`
 - Triggering rework reports and revision records:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/code-review-report.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/code-review-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/code-review-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/code-review-revision-record.md`
 
 ## Current Implementation Summary
 
 The current implementation replaces the three runtime-specific prompt-construction paths with one server-owned carpenter composer and projects its result through the existing native, Codex, and Claude high-authority instruction boundaries. A provider-neutral runtime-tool-exposure owner normalizes configured names and automatically adds exactly `send_message_to` and `delegate_task` for valid team contexts while leaving standalone exposure configured-only. Under `SR-004`, native Skills is now one direct platform-owned catalog append inside `SystemPromptProcessingStep`; the complete result is validated before state or LLM mutation. The generic core prompt-mutator configuration, pipeline, abstractions, registry/registration, barrels/root exports, and obsolete tests are deleted without aliases or a constructor compatibility slot. Fence containment now distinguishes openings from legal active closes and preserves same-marker non-closing content.
 
 - Implementation cycle: `Rework`
-- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/implementation-revision-record.md`
+- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/implementation-revision-record.md`
 - Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-004` (retains `SR-003` automatic-team-tool behavior)
 - Related architecture-review revision IDs: `ARCH-REV-004`

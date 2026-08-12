@@ -2,34 +2,34 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/design-spec.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/design-spec.md`
 - Supplemental Task Artifacts:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/system-prompt-contract.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/agent-identity-prompt-spec.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/working-environment-prompt-spec.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/bash-operating-practice-prompt-spec.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/file-and-directory-practice-prompt-spec.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/team-and-runtime-prompt-spec.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/prompt-value-binding-spec.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/system-skill-decision.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/classroom-simulation-composed-system-prompt.md`
-- Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/solution-revision-record.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/design-review-report.md`
-- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/architecture-review-revision-record.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/implementation-handoff.md`
-- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/implementation-revision-record.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/code-review-report.md`
-- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/code-review-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/system-prompt-contract.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/agent-identity-prompt-spec.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/working-environment-prompt-spec.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/bash-operating-practice-prompt-spec.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/file-and-directory-practice-prompt-spec.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/team-and-runtime-prompt-spec.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/prompt-value-binding-spec.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/system-skill-decision.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/classroom-simulation-composed-system-prompt.md`
+- Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/solution-revision-record.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/design-review-report.md`
+- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/architecture-review-revision-record.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/implementation-handoff.md`
+- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/implementation-revision-record.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/code-review-report.md`
+- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/code-review-revision-record.md`
 - Delivery Revision Record (delivery re-entry only): N/A
 - Relevant Delivery Revision IDs: N/A
-- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 1
-- Trigger: `CRR-002` source-review Pass for `IR-002` at commit `cc8817fee1047504fea5c87bd69bb48ede287d88`
-- Prior Investigation Reviewed: N/A
-- Latest Authoritative Investigation: Round 1 completed disposition and execution result
+- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/api-e2e-revision-record.md`
+- Current API/E2E Revision ID: `API-REV-003`
+- Current Investigation Round: 3
+- Trigger: explicit user request to inspect the live result and additionally validate the real Codex runtime with `gpt-5.6-luna`
+- Prior Investigation Reviewed: Round 2 / `API-REV-002` Pass at 98%, `CRR-004` Not Applicable, and `DR-002` delivery refresh Pass
+- Latest Authoritative Investigation: Round 3 live Codex completion on reviewed checkpoint `7d7574ae3b300ae21ef337cf9c671916d4b0d9bc`
 
 ## Current Requirement And Design Basis
 
@@ -182,12 +182,15 @@ The final authoritative execution at commit `cc8817fee1047504fea5c87bd69bb48ede2
 
 ## Broader Validation Decision
 
-- Decision: **Not Required**
-- Selected execution mode completed: deterministic lifecycle/API execution using real in-process GraphQL/file services, active native backend/core tools/filesystem, real loopback MCP, actual WebSocket/session/client projections with a deterministic Claude SDK adapter, provider bootstrap owners, and mounted Nuxt DOM/store integration.
-- Direct evidence making additional browser/desktop/live-provider execution unnecessary: the changed user surface is deletion of an obsolete control and payload field, directly proven by mounted UI/store tests and the real current writer; no layout, IPC, window, packaging, or desktop-shell path changed. The high-authority provider payload mappings are directly asserted before external transport. Actual model prose compliance would be stochastic and would not improve changed-boundary proof.
-- Confidence after repository execution: **97%**, with every applicable category at least 95%.
-- Browser-specific decision: not required for a removed control with direct mounted DOM and persistence evidence.
-- External live-provider decision: not required; eight live Claude tests and one live WebSocket subcase remained honestly gated.
+- Round-1 decision: `Not Required` based on complete deterministic changed-boundary evidence.
+- Round-2 trigger/result: explicit user request; real native AutoByteus + DeepSeek `deepseek-v4-flash` completed successfully.
+- Round-3 trigger/result: explicit user request; real Codex App Server + `gpt-5.6-luna` completed successfully.
+- Exact model preflight: built production `CodexModelCatalog` queried the live `codex app-server` `model/list` boundary and confirmed `gpt-5.6-luna` available with `low|medium|high|xhigh|max` reasoning and `fast` service tier metadata.
+- Round-3 execution mode: `RUN_CODEX_E2E=1`, exact model overrides set to `gpt-5.6-luna`, and the repository-owned GraphQL/WebSocket two-turn live Codex history scenario.
+- Real results: (1) GraphQL created the definition/run/workspace, the production Codex backend created a `codex_app_server` run, both exact-token user turns received their expected model responses, active history retained the first title, the projection retained both user messages, and teardown passed; (2) a separate current GraphQL runtime scenario materialized a configured skill and its linked guidance, and Luna returned the unique skill-required token. Two files / two selected tests passed; 19 nonmatching cases in the filtered second file were skipped by the explicit `-t` selection and are not counted as passes.
+- Initial probe correction: `pnpm exec tsx` was unavailable because `tsx` is not a repository dependency; the same value-safe exact-model probe was rerun successfully against the already-built production JavaScript modules. This was an execution-method correction, not a product failure.
+- Credential model: Codex used the locally authenticated real Codex CLI (`codex-cli 0.147.0`); no credentials or tokens were logged.
+- Browser/desktop decision remains unchanged: no browser-specific boundary changed.
 
 ## Desktop Application Validation Decision
 
@@ -208,13 +211,30 @@ The final authoritative execution at commit `cc8817fee1047504fea5c87bd69bb48ede2
 | External authored-skill body cleanup | Explicitly outside repository/ticket implementation | Authored content can still duplicate foundations | External package owners |
 | Durable documentation `AC-006` | Delivery-owned integrated-state synchronization | Docs incomplete until delivery | Delivery engineer must update or record no-impact |
 
+## Round-3 Live Confidence Reassessment
+
+| Confidence Category | Round-2 | Round-3 Final | Codex Evidence Gain | Residual Uncertainty |
+| --- | --- | --- | --- | --- |
+| Requirement and acceptance-criteria proof | 99% | 99% | Real Codex completed two turns and obeyed a materialized configured skill through current high-authority instructions | Live Claude remains gated; deterministic Claude boundary already passes |
+| Changed-boundary execution directness | 100% | 100% | Full GraphQL → Codex backend → app-server → WebSocket/projection path | None material |
+| Cross-boundary integration realism and mock gap | 99% | 100% | Real DeepSeek and real Codex external transports now both pass | No real Claude provider turn |
+| Environment, configuration, identity, and fixture fidelity | 99% | 99% | Live model catalog, exact model ID, actual authenticated Codex CLI, isolated workspace/data | Single macOS arm64 host |
+| Failure, edge-case, lifecycle, and recovery evidence | 98% | 99% | Real two-turn continuity, history/projection invariants, configured-skill materialization, session closure and cleanup | Provider failure/retry not induced |
+| User-surface, browser, and desktop-shell confidence | 95% | 95% | No browser boundary changed | No pixel-level browser/desktop run |
+| Durable regression coverage quality and relevance | 97% | 97% | No round-3 test edits; repository-owned gated scenario reused | Live scenarios depend on local credentials/runtime availability |
+
+- Overall final confidence: **98%** (rounded simple average `98.43%`)
+- Confidence movement: overall rounded score remains 98%, while cross-boundary realism reached 100% and lifecycle evidence increased to 99%
+- Any applicable category below 90%: **No**
+- Every critical acceptance criterion directly proven: **Yes**
+
 ## Investigation Decision
 
-- Proceed To API/E2E Execution: **Completed**
-- Repository-Resident Durable Coverage Added / Updated / Removed: **0 added / 5 updated / 0 removed**
-- Final confidence: **97%**
-- Broader validation decision: **Not Required** after direct deterministic lifecycle evidence
+- Proceed To API/E2E Execution: **Completed, including requested real DeepSeek and Codex validations**
+- Repository-Resident Durable Coverage Added / Updated / Removed In Round 3: **0 / 0 / 0**
+- Final confidence: **98%**
+- Broader validation decision: **Completed by explicit user request — real Codex App Server with exact `gpt-5.6-luna` passed**
 - Latest authoritative result: **Pass**
-- Reroute Required: **Yes — changed durable coverage must receive proportional `code_reviewer` review before delivery**
+- Reroute Required: **No durable test-code review is applicable; send round 3 to `code_reviewer` for authoritative Not Applicable routing before delivery refresh**
 - Recommended Recipient: `code_reviewer`
-- Notes: Mandatory investigation preceded every durable edit and final execution. Initial stale-suite and inherited-edit decisions are preserved above; execution evidence changed them only from planned updates to validated updates.
+- Notes: Live evidence now covers both the native AutoByteus/DeepSeek path and Codex App Server. No secrets were printed or added to repository files.

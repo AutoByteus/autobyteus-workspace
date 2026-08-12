@@ -3,19 +3,19 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/requirements.md`
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/design-spec.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/requirements.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/design-spec.md`
 - Supplemental Task Artifacts Reviewed As Context: the canonical `system-prompt-contract.md`, five focused prompt specifications, `prompt-value-binding-spec.md`, `system-skill-decision.md`, and Classroom Simulation fixture in the ticket directory.
-- Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/solution-revision-record.md`
+- Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/solution-revision-record.md`
 - Relevant Solution Revision IDs: `SR-003`, `SR-004`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/design-review-report.md`
-- Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/architecture-review-revision-record.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/design-review-report.md`
+- Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/architecture-review-revision-record.md`
 - Relevant Architecture Review Revision IDs: `ARCH-REV-003`, `ARCH-REV-004`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/implementation-handoff.md`
-- Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/implementation-revision-record.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/implementation-handoff.md`
+- Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/implementation-revision-record.md`
 - Relevant Implementation Revision IDs: `IR-001`, `IR-002`
-- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/code-review-revision-record.md`
+- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/code-review-revision-record.md`
 - Current Code Review Revision ID: `CRR-002`
 - Current Review Round: `2`
 - Trigger: Re-review of `IR-002` at commit `cc8817fee1047504fea5c87bd69bb48ede287d88`, implementing `SR-004` / `ARCH-REV-004` after `CRR-001` findings `CR-001` and `CR-002`.

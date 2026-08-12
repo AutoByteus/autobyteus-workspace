@@ -13,7 +13,7 @@
 
 ### ARCH-REV-001 — Initial carpenter-model architecture review baseline
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/design-review-report.md`
 - Review round and trigger: Round 1, solution-designer handoff of user-approved `SR-001`.
 - Triggering role, report path, and finding IDs: `solution_designer`; no prior review report; new findings `AR-001`, `AR-002`, `AR-003`.
 - Relevant solution revision IDs: `SR-001`
@@ -32,9 +32,9 @@ None.
 
 ### ARCH-REV-002 — Exact-session and final-payload corrections re-reviewed
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/design-review-report.md`
 - Review round and trigger: Round 2, solution-designer re-review handoff for `SR-002`.
-- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/design-review-report.md`; `AR-001`, `AR-002`, `AR-003`.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/design-review-report.md`; `AR-001`, `AR-002`, `AR-003`.
 - Relevant solution revision IDs: `SR-002`
 - Prior authoritative decision: `Fail — Design Impact`
 - Current authoritative decision: `Fail — Design Impact`
@@ -55,9 +55,9 @@ None.
 
 ### ARCH-REV-003 — Context-owned prompt and automatic team-tool design passed
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/design-review-report.md`
 - Review round and trigger: Round 3, solution-designer re-review handoff for user-approved `SR-003`.
-- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/design-review-report.md`; remaining `AR-001` and the approved behavior clarification affecting `BEH-003`, `BEH-004`, `BEH-011`, and `BEH-012`.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/design-review-report.md`; remaining `AR-001` and the approved behavior clarification affecting `BEH-003`, `BEH-004`, `BEH-011`, and `BEH-012`.
 - Relevant solution revision IDs: `SR-003`
 - Prior authoritative decision: `Fail — Design Impact`
 - Current authoritative decision: `Pass`
@@ -78,9 +78,9 @@ None.
 
 ### ARCH-REV-004 — Core native removal and fence correction passed
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/design-review-report.md`
 - Review round and trigger: Round 4, solution-designer re-review handoff for `SR-004` after code review `CRR-001` returned one design-impact finding and one bounded local defect from the first implementation pass.
-- Triggering role, report path, and finding IDs: `code_reviewer` via `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/code-review-report.md`; `CR-001`, `CR-002`, and `CR-MP-001`.
+- Triggering role, report path, and finding IDs: `code_reviewer` via `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/code-review-report.md`; `CR-001`, `CR-002`, and `CR-MP-001`.
 - Relevant solution revision IDs: `SR-004` (retaining approved `SR-003` behavior)
 - Prior authoritative decision: Architecture `Pass` at `ARCH-REV-003`; downstream source review `Fail — Design Impact` at `CRR-001`.
 - Current authoritative decision: `Pass`

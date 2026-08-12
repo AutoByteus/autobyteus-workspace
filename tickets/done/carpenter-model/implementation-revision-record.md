@@ -13,7 +13,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 
 ### IR-001 — Shared carpenter prompt and runtime tool exposure baseline
 
-- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/design-review-report.md`; initial implementation round
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/design-review-report.md`; initial implementation round
 - Triggering finding IDs: `N/A` (`AR-001` is obsolete and `AR-002`/`AR-003` were resolved in the reviewed solution)
 - Classification: `Initial Baseline`
 - Prior authoritative result: `N/A`
@@ -33,7 +33,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 
 ### IR-002 — Close native prompt mutation and fence containment boundaries
 
-- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/code-review-report.md`; `CRR-001`, followed by architecture re-review `ARCH-REV-004`; implementation rework round 1
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/code-review-report.md`; `CRR-001`, followed by architecture re-review `ARCH-REV-004`; implementation rework round 1
 - Triggering finding IDs: `CR-001`, `CR-002`; premise `CR-MP-001`
 - Classification: `Local Fix` after approved upstream `Design Impact`
 - Prior authoritative result: `IR-001` implementation received `CRR-001` `Fail — Design Impact`

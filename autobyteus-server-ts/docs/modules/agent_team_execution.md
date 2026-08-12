@@ -55,8 +55,8 @@ names exist.
 | Path | Authoritative owner | Member execution primitive | Notes |
 | --- | --- | --- | --- |
 | Any server team run (all-AutoByteus, all-Codex, all-Claude, heterogeneous, or nested) | `MixedTeamManager` | Agent members own one runtime-specific `AgentRun`; subteam members own child `TeamRun`s | `MixedTeamManager` is retained by name and is the single active server team manager. Runtime-specific team managers/backends are not instantiated by server team create/restore. |
-| AutoByteus member in a server team | `MixedAgentMemberHandle -> AgentRunManager -> AutoByteusAgentRunBackendFactory` | Standalone AutoByteus `AgentRun` | Server-composed `MemberTeamContext`/`MemberRunInstructionComposer` prompt path provides team instructions, roster, send-message guidance, and task-delegation guidance; native manifest injection is not used for server team members. |
-| Codex or Claude member in a server team | `MixedAgentMemberHandle -> AgentRunManager` | Standalone Codex or Claude `AgentRun` | Uses runtime-neutral member bootstrap for teammate instructions, `send_message_to`, and configured task-delegation tools. |
+| AutoByteus member in a server team | `MixedAgentMemberHandle -> AgentRunManager -> AutoByteusAgentRunBackendFactory` | Standalone AutoByteus `AgentRun` | The shared Carpenter composer consumes `MemberTeamContext` and emits Team Instruction/Team Runtime with current rosters; native core then appends only the terminal configured Skills catalog. |
+| Codex or Claude member in a server team | `MixedAgentMemberHandle -> AgentRunManager` | Standalone Codex or Claude `AgentRun` | The same Carpenter semantics project through provider instruction boundaries; `send_message_to` and `delegate_task` are automatically included in effective team tool exposure and routed through Agent Tools MCP. |
 ## Nested Member Identity And Commands
 
 - `TeamMemberSelector` is the domain/backend structural member identity for
@@ -466,16 +466,19 @@ RUN_MIXED_TASK_DELEGATION_E2E=1 RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 \
   advertised in the prompt. The bound server-owned `send_message_to` tool still
   carries delivery through `MemberTeamContext` and `TeamRun` /
   `MixedTeamManager`.
-- Mixed AutoByteus standalone members explicitly strip legacy `ToolCategory.TASK_MANAGEMENT` names before exposure, while preserving configured server-owned task-delegation tools (`delegate_task`, `submit_task_result`, and `review_task_result`).
-- Task-delegation and communication tools are configured agent capabilities, not
-  runtime-level provider policy. Codex App Server and Claude Agent SDK receive
-  them through Agent Tools MCP only when the current member/tool configuration
-  and member-team context make them available; AutoByteus uses its local
-  wrappers. Runtime adapters must not add provider `tool_choice` special cases,
-  forced-tool dampening, or framework auto-review behavior for task results. If
-  a model does not call an available tool despite clear instructions, treat that
-  as prompt/model/test configuration until a framework invariant above is
-  violated.
+- Mixed AutoByteus member runs explicitly strip legacy
+  `ToolCategory.TASK_MANAGEMENT` names before exposure. A valid team context
+  automatically unions `send_message_to` and `delegate_task`; configured
+  `submit_task_result` and `review_task_result` remain available when selected.
+- The automatic pair is a runtime team invariant, not provider policy and not a
+  prompt-derived permission. Codex App Server and Claude Agent SDK receive the
+  effective set through Agent Tools MCP; AutoByteus uses local native wrappers.
+  Current delivery binding, recipient/target rosters, and tool services still
+  authorize calls. Runtime adapters must not add provider `tool_choice` special
+  cases, forced-tool dampening, or framework auto-review behavior for task
+  results. If a model does not call an available tool despite clear
+  instructions, treat that as prompt/model/test configuration until a framework
+  invariant above is violated.
 
 ## Mixed Member Event Bridge
 
@@ -545,13 +548,13 @@ RUN_MIXED_TASK_DELEGATION_E2E=1 RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 \
 - `src/agent-team-execution/services/agent-team-run-manager.ts` (`AgentTeamRunManager`)
 - `src/agent-team-execution/services/team-definition-topology-planner.ts`
 - `src/agent-team-execution/services/member-team-context-builder.ts`
-- `src/agent-team-execution/services/member-run-instruction-composer.ts`
+- `src/agent-team-execution/services/team-runtime-instruction-renderer.ts`
+- `src/agent-execution/prompt/carpenter-prompt-composer.ts`
 - `src/agent-team-execution/services/inter-agent-message-router.ts`
 - `src/agent-team-execution/services/team-command-status-overlay-store.ts`
 - `src/agent-team-execution/task-delegation/*`
 - `src/agent-tools/task-delegation/*`
-- `src/agent-execution/backends/codex/task-delegation/*`
-- `src/agent-execution/backends/claude/task-delegation/*`
+- `src/agent-execution/shared/runtime-agent-tool-exposure.ts`
 - `src/agent-team-execution/services/team-member-command-start-status-events.ts`
 - `src/agent-team-execution/domain/team-run-member-identity.ts`
 - `src/agent-team-execution/backends/mixed/mixed-team-manager.ts`

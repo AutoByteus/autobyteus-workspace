@@ -1,0 +1,82 @@
+Carpenter Model — delivery post-integration check
+Date: 2026-08-12
+
+Base integration result:
+- origin/personal remained at bootstrap revision
+  023f4f550b07f27dbf388d55234a10b8eae0e0c7.
+- No new base commit was integrated.
+- No post-integration executable rerun was required because the code/test state
+  was byte-identical to the authoritative CRR-003 / API-REV-001 candidate after
+  the delivery refresh.
+
+Retained authoritative executable evidence:
+- API/E2E: API-REV-001 Pass, 97% confidence.
+- Deterministic total: 23 files / 165 tests passed.
+- Updated durable test subset: 17 passed; 8 live Claude cases and 1 live
+  WebSocket subcase explicitly provider-gated and not counted as passes.
+- Source-only server TypeScript, core build/runtime dependency verification,
+  retired-source search, and git diff --check passed in API-REV-001.
+- Proportional test-code review: CRR-003 Pass, no findings.
+
+Delivery documentation validation after sync:
+- git diff --check: PASS
+- Retired current runtime symbols/classes search across durable docs: PASS
+  (no stale removed class/path references; explicit removal statements retained)
+- AC-006 concept check: PASS
+  - platform-owned agent foundation documented with a concrete authoring/runtime example
+  - exact Bash-first policy documented
+  - ordinary configured lazy-skill catalog/path example documented
+  - provider-native and automatic team-tool contracts documented
+- Cross-document source/path spot check: PASS
+
+Post-integration result: PASS
+No behavior or validation premise changed during delivery refresh.
+
+Delivery re-entry after API/E2E round 2:
+- Re-entry revisions: API-REV-002 / CRR-004 / DR-002.
+- origin/personal was fetched again and remained
+  023f4f550b07f27dbf388d55234a10b8eae0e0c7; ticket divergence remains
+  3 ahead / 0 behind. No re-integration was required.
+- The user-requested repository-supported built-server deepseek.agent-flow used
+  the production native AutoByteus bootstrap/backend and real
+  deepseek-v4-flash transport: PASS, 1 file / 2 tests.
+- Value-safe live log: api-e2e-live-execution.log; no secret values logged.
+- Final API/E2E confidence: 98%.
+- Round-2 durable coverage delta: added 0, updated 0, removed 0.
+- CRR-004 result: Not Applicable; CRR-003 remains authoritative for the
+  unchanged five round-1 durable test edits.
+- Documentation impact: none; the live evidence confirms rather than changes
+  the DR-001 AC-006 documentation contract.
+- User-verification gate: still active. The live-test request was not explicit
+  final acceptance or repository-finalization authorization.
+
+Delivery re-entry result: PASS
+The authoritative user-verification handoff now includes the real-provider
+result and 98% confidence without changing the implementation candidate.
+
+Delivery re-entry after API/E2E round 3:
+- Re-entry revisions: API-REV-003 / CRR-005 / DR-003.
+- origin/personal was fetched again and remained
+  023f4f550b07f27dbf388d55234a10b8eae0e0c7; ticket divergence remains
+  3 ahead / 0 behind. No re-integration was required.
+- Built production CodexModelCatalog confirmed exact gpt-5.6-luna availability.
+- Real Codex App Server selected live scenarios: PASS, 2 files / 2 selected
+  tests; the filtered configured-skill file reported 19 nonmatching skips.
+- Covered GraphQL/backend/WebSocket two-turn history/projection plus configured
+  runtime-skill materialization and linked-guidance behavior.
+- The initial unavailable tsx probe was corrected to already-built production
+  JavaScript. No source/test change was made; this is not a product failure.
+- Value-safe Codex log: api-e2e-codex-live-execution.log; no credential values
+  logged.
+- Final API/E2E confidence remains 98%.
+- Round-3 durable coverage delta: added 0, updated 0, removed 0.
+- CRR-005 result: Not Applicable; CRR-003 remains authoritative for the
+  unchanged five round-1 durable test edits.
+- Documentation impact: none; the live evidence confirms rather than changes
+  the DR-001 provider projection and configured lazy-skill documentation.
+- User-verification gate: still active. The Codex live-test request was not
+  explicit final acceptance or repository-finalization authorization.
+
+Delivery re-entry result: PASS
+The authoritative user-verification handoff now includes both DeepSeek and
+Codex real-provider evidence at 98% confidence without changing the candidate.

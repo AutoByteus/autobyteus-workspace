@@ -30,7 +30,7 @@ The latest requirements, investigation notes, design spec, and supplements remai
 
 ### SR-002 — Close Codex lease and native final-payload ownership gaps
 
-- Triggering role, report path, and round: Architecture Reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/design-review-report.md`; round 1 (`ARCH-REV-001`).
+- Triggering role, report path, and round: Architecture Reviewer; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/design-review-report.md`; round 1 (`ARCH-REV-001`).
 - Triggering finding IDs: `AR-001`, `AR-002`, `AR-003`.
 - Prior authoritative result: `Fail — Design Impact`.
 - Current authoritative result: Revised solution package ready for architecture re-review; approved requirements remain unchanged.
@@ -45,7 +45,7 @@ The latest requirements, investigation notes, design spec, and supplements remai
 
 ### SR-003 — Make team tools automatic and remove prompt-to-MCP coupling
 
-- Triggering role, report path, and round: User clarification after Architecture Reviewer round 2; `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/design-review-report.md`; `ARCH-REV-002`.
+- Triggering role, report path, and round: User clarification after Architecture Reviewer round 2; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/design-review-report.md`; `ARCH-REV-002`.
 - Triggering finding IDs: remaining `AR-001`, specifically `MP-003`.
 - Prior authoritative result: `Fail — Design Impact`.
 - Current authoritative result: User-approved clarified requirements and revised design ready for architecture re-review.
@@ -60,7 +60,7 @@ The latest requirements, investigation notes, design spec, and supplements remai
 
 ### SR-004 — Close the core native prompt mutation boundary and correct fence containment
 
-- Triggering role, report path, and round: Code Reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/code-review-report.md`; source review round 1 (`CRR-001`).
+- Triggering role, report path, and round: Code Reviewer; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/carpenter-model/code-review-report.md`; source review round 1 (`CRR-001`).
 - Triggering finding IDs: `CR-001`, `CR-002`, and reachability premise `CR-MP-001`.
 - Prior authoritative result: `Fail — Design Impact`.
 - Current authoritative result: Revised solution package ready for architecture re-review; approved requirements and intended behavior remain unchanged.
