@@ -6,21 +6,21 @@
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/requirements.md`
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/design-spec.md`
-- Supplemental Task Artifacts Reviewed As Context: `system-prompt-contract.md`, `agent-identity-prompt-spec.md`, `working-environment-prompt-spec.md`, `bash-operating-practice-prompt-spec.md`, `file-and-directory-practice-prompt-spec.md`, `team-and-runtime-prompt-spec.md`, `prompt-value-binding-spec.md`, `system-skill-decision.md`, and `classroom-simulation-composed-system-prompt.md` at their canonical ticket paths.
+- Supplemental Task Artifacts Reviewed As Context: the canonical `system-prompt-contract.md`, five focused prompt specifications, `prompt-value-binding-spec.md`, `system-skill-decision.md`, and Classroom Simulation fixture in the ticket directory.
 - Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-001`, `SR-002`, `SR-003`
+- Relevant Solution Revision IDs: `SR-003`, `SR-004`
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/design-review-report.md`
 - Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/architecture-review-revision-record.md`
-- Relevant Architecture Review Revision IDs: `ARCH-REV-001`, `ARCH-REV-002`, `ARCH-REV-003`
+- Relevant Architecture Review Revision IDs: `ARCH-REV-003`, `ARCH-REV-004`
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/implementation-revision-record.md`
-- Relevant Implementation Revision IDs: `IR-001`
+- Relevant Implementation Revision IDs: `IR-001`, `IR-002`
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/tickets/in-progress/carpenter-model/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: `1`
-- Trigger: Initial source review of commit `99976b55ab0f988e09fa9851f760ca9776f30a1c`.
-- Prior Review Round Reviewed: `N/A`
-- Latest Authoritative Round: Round 1 / `CRR-001`
+- Current Code Review Revision ID: `CRR-002`
+- Current Review Round: `2`
+- Trigger: Re-review of `IR-002` at commit `cc8817fee1047504fea5c87bd69bb48ede287d88`, implementing `SR-004` / `ARCH-REV-004` after `CRR-001` findings `CR-001` and `CR-002`.
+- Prior Review Round Reviewed: Round 1 / `CRR-001` (`Fail — Design Impact`)
+- Latest Authoritative Round: Round 2 / `CRR-002`
 - Coverage Investigation Reviewed: `N/A`
 - Execution Coverage Report Reviewed: `N/A`
 - API/E2E Revision Record Reviewed: `N/A`
@@ -33,109 +33,100 @@
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: shared carpenter prompt composition and authored-heading containment; native/Codex/Claude projection; provider-neutral requested-tool exposure and automatic team tools; native terminal Skills and final-payload validation; team runtime rendering; agent-definition/API/web removal of optional processor selection; persisted-config handling; obsolete strategy/composer cleanup.
-- Files / areas reviewed: all 117 changed paths, with production-path tracing through the three runtime bootstrappers/factories, core `AgentConfig`/prompt pipeline, team context/roster builders, MCP catalog/session transport, skill loaders/processors, GraphQL definition surfaces, and affected web authoring/store code.
-- Explicit exclusions: API/E2E execution, stale integration/E2E repair, live browser validation, and durable conceptual documentation synchronization remain downstream-owned.
+- Changed implementation and behavior reviewed: complete core generic prompt-mutator removal; direct native Skills catalog append and final validation; every affected positional `AgentConfig` call; authored-fence correction; current docs/fixture/migration writer cleanup; prior unaffected Carpenter prompt/tool/provider paths revalidated from preserved round-1 evidence.
+- Files / areas reviewed: the 56-file `IR-002` revision diff, current core prompt/bootstrap/config/barrel source, current server containment/native factory source, repository residual references, changed tests, migration/fixture writers, and the updated solution/design/review chain.
+- Explicit exclusions: API/E2E coverage investigation/execution, the three known stale provider/session suites, live browser execution, and final integrated documentation synchronization remain downstream-owned.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: Yes; `R-001`–`R-014`, `AC-001`–`AC-014`, and all exact prompt supplements were reviewed.
-- Design-spec behavior map verified against the implementation: Mostly. The primary native/Codex/Claude prompt/tool spines are present, but the approved closed native prompt contract is contradicted by the still-public core processor extension surface, and the heading-containment implementation can rewrite content inside a reachable fenced body.
-- Design review report and round confirmed: Yes; `ARCH-REV-003` was the implementation basis.
-- Behavior-basis status: `Contradicted`
-- Changed or newly discovered behavior, if any: No new supported product behavior. Two implementation/design mismatches were found against existing approved behavior.
-- Remaining material ambiguity, if any: None for the findings below.
+- Approved requirements basis understood: Yes; behavior intent is unchanged from round 1.
+- Design-spec behavior map verified against the implementation: Yes. `SR-004` closes the core mutation boundary and corrects the reachable fenced-content path while preserving the `SR-003` provider/tool spines.
+- Design review report and round confirmed: Yes; `ARCH-REV-004` is authoritative and passed.
+- Behavior-basis status: `Confirmed`
+- Changed or newly discovered behavior, if any: None.
+- Remaining material ambiguity, if any: None.
 
 | Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence |
 | --- | --- | --- | --- |
-| `BEH-001` | Confirmed | Resolved definition/workspace/team context -> `composeCarpenterPrompt` -> native/Codex/Claude instruction boundary. | N/A |
-| `BEH-002` | Confirmed | Skill service -> native terminal metadata/path catalog or provider-native materializer; bodies remain lazy. | N/A |
-| `BEH-003` | Confirmed | `resolveRuntimeAgentToolExposure` unions/deduplicates the two team defaults before native/MCP projection. | N/A |
-| `BEH-004` | Confirmed | Native `AgentConfig.systemPrompt`, Codex `baseInstructions`, and Claude query `systemPrompt`; Claude user `prompt` remains raw turn content. | N/A |
-| `BEH-005` | Confirmed | Each adapter supplies its resolved working directory to the composer and its normal runtime/tool boundary. | N/A |
-| `BEH-006` | Confirmed | Existing ordinary `Skill` model and provider materializers remain in use; no kind taxonomy was added. | N/A |
-| `BEH-007` | Confirmed | Identity renderer uses name, optional description/body, no role, and no description fallback. | N/A |
-| `BEH-008` | Contradicted | Ordered section composition is shared, but `autobyteus-ts/src/agent/context/agent-config.ts` still accepts and copies arbitrary `systemPromptProcessors`, and core exports retain processor registration/registry entry points. | `R-010` / `AC-010` require removal of the optional extension surface so Skills is terminal and no later configurable processor can mutate the contract. |
-| `BEH-009` | Confirmed | Fixed exact Bash section is emitted by the shared section owner. | N/A |
-| `BEH-010` | Confirmed | Fixed exact File And Directory section follows Bash. | N/A |
-| `BEH-011` | Confirmed | Valid `MemberTeamContext` -> fixed Team Runtime renderer and automatic provider tools; standalone omits team sections. | N/A |
-| `BEH-012` | Contradicted | Required/optional scalar handling and final placeholder validation are present, but the fence state machine can treat a non-closing same-marker content line as a close and rewrite a following fenced heading. | Supported agent-instruction authoring -> `AgentDefinition.instructions` -> containment -> provider prompt violates the approved fenced-content preservation rule; see `CR-MP-001`. |
+| `BEH-001` | Confirmed | Shared composer remains the single semantic prompt owner for native, Codex, and Claude. | N/A |
+| `BEH-002` | Confirmed | Native bootstrap directly calls `appendConfiguredSkillsCatalog`; Codex/Claude materializers remain unchanged. | N/A |
+| `BEH-003` | Confirmed | Shared runtime exposure and automatic team tools are unchanged by `IR-002`. | N/A |
+| `BEH-004` | Confirmed | Native/Codex/Claude instruction projections and MCP/client lifecycle are unchanged. | N/A |
+| `BEH-005` | Confirmed | Exact adapter-resolved workspaces still feed the shared composer. | N/A |
+| `BEH-006` | Confirmed | One ordinary Skill model remains; the native representation moved without adding taxonomy. | N/A |
+| `BEH-007` | Confirmed | Identity rendering is unchanged and remains contract-aligned. | N/A |
+| `BEH-008` | Confirmed | `AgentConfig` has no prompt-mutator default/property/parameter/copy slot; the generic pipeline, abstractions, registry, registration, barrels, and exports are deleted. | N/A |
+| `BEH-009` | Confirmed | Exact Bash section unchanged. | N/A |
+| `BEH-010` | Confirmed | Exact File And Directory section unchanged. | N/A |
+| `BEH-011` | Confirmed | Team renderer and independent automatic tool projection unchanged. | N/A |
+| `BEH-012` | Confirmed | Legal active-fence closes are separate from openings; native final validation follows the one real Skills append and precedes state/LLM mutation. | N/A |
 
 ## Structural / Design Checks
 
 | Check | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | Shared composer/tool-exposure owners replace the three fragmented provider policies. | None beyond findings. |
-| Implementation matches approved behavior-defining supplemental artifacts | Fail | Fixed text/order/bindings match, but the optional core processor surface and fence parsing contradict `system-prompt-contract.md` and `prompt-value-binding-spec.md`. | Resolve `CR-001` and `CR-002`. |
-| Data-flow spine inventory clarity and preservation under shared principles | Pass | Definition/workspace/team facts flow through one composer; tool exposure remains a parallel provider-native spine. | None. |
-| Ownership boundary preservation and clarity | Fail | Semantic ownership is good, but public core runtime configuration still allows arbitrary post-composition processors. | Resolve `CR-001`. |
-| Off-spine concern clarity | Pass | Heading containment, skill cataloging, roster building, and provider transport serve named owners. | None. |
-| Existing capability/subsystem reuse check | Pass | Existing skill, roster, delegation, MCP, workspace, and provider lifecycle owners are reused. | None. |
-| Reusable owned structures check | Pass | Shared composer, sections, containment, team renderer, and runtime exposure remove repeated provider policy. | None. |
-| Shared-structure/data-model tightness check | Pass | Composer input and runtime exposure shapes are narrow and provider-neutral. | None. |
-| Repeated coordination ownership check | Pass | Section ordering and automatic team-tool union each have one owner. | None. |
-| Empty indirection check | Pass | New files own policy or transformation; no pass-through-only layer was added. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Prompt semantics, team rendering, exposure, and provider projection remain separated. | None. |
-| Ownership-driven dependency check | Pass | Adapters depend on shared semantic owners; composer does not inspect MCP/provider state. | None. |
-| Authoritative Boundary Rule check | Pass | No reviewed caller simultaneously bypasses a new owner into its internals. | None. |
-| File placement check | Pass | New prompt files are under `agent-execution/prompt`; team rendering remains under team execution. | None. |
-| Flat-vs-over-split layout judgment | Pass | Three small prompt files represent real separate responsibilities without artificial depth. | None. |
-| Interface/API/query/command/service-method boundary clarity | Fail | `AgentConfig` still publicly accepts arbitrary `systemPromptProcessors`, contradicting the closed current runtime interface. | Resolve `CR-001`. |
-| Naming quality and naming-to-responsibility alignment check | Pass | Carpenter/runtime-exposure naming is truthful; the historical-key split/join is slightly opaque but bounded. | Prefer a documented current-field projection rather than string obfuscation when revising. |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | Fixed policy is centralized. | None. |
-| Patch-on-patch complexity control | Pass | Old strategies/composers were deleted rather than wrapped. | None. |
-| Dead/obsolete code cleanup completeness in changed scope | Fail | Core optional processor registry/registration exports and injection points remain. | Resolve `CR-001`. |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Fail | Provider/tool tests are coherent, but the containment suite misses valid fence-content cases and the native final-payload test uses a custom processor rather than the required real Skills append scenario. | Add focused coverage with the fixes. |
-| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Provider and exposure fixtures are scoped and reusable. | None. |
-| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | Obsolete unit suites were removed; known broader stale suites are explicitly handed to API/E2E. | None. |
-| API/E2E readiness for the next workflow stage | Fail | Focused tests pass, but source/design corrections are required before API/E2E. | Do not advance until reimplementation and source re-review pass. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | `SR-004` names the omitted core boundary and keeps one direct platform owner. | None. |
+| Implementation matches approved behavior-defining supplemental artifacts | Pass | Direct Skills sequence, final invariant, and exact fence-close grammar match the updated contract/binding spec. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | Native spine is now composer -> direct catalog append -> validation -> LLM; other provider spines are unchanged. | None. |
+| Ownership boundary preservation and clarity | Pass | No caller-configurable/native global prompt mutation remains. | None. |
+| Off-spine concern clarity | Pass | Skills catalog rendering is a focused native concern; containment stays internal to prompt composition. | None. |
+| Existing capability/subsystem reuse check | Pass | Existing SkillRegistry, skill access mode, bootstrap error event, and provider projection owners are reused. | None. |
+| Reusable owned structures check | Pass | The extracted catalog function owns only deterministic catalog rendering. | None. |
+| Shared-structure/data-model tightness check | Pass | `AgentConfig` is tighter; no replacement processor list, alias, or null compatibility slot exists. | None. |
+| Repeated coordination ownership check | Pass | One bootstrap step owns append/validate/configure ordering. | None. |
+| Empty indirection check | Pass | The direct appender owns validation/content policy rather than forwarding. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Core config, bootstrap, catalog, and server containment responsibilities are distinct. | None. |
+| Ownership-driven dependency check | Pass | Bootstrap depends on catalog behavior; config does not own executable prompt callbacks. | None. |
+| Authoritative Boundary Rule check | Pass | No caller bypasses the final native instruction boundary to configure an unchecked post-Skills payload. | None. |
+| File placement check | Pass | `agent/system-prompt` owns the focused catalog; obsolete processor directory is gone. | None. |
+| Flat-vs-over-split layout judgment | Pass | The new single-function folder reflects one real closed concern without artificial layers. | None. |
+| Interface/API/query/command/service-method boundary clarity | Pass | Positional `AgentConfig` signature is atomically contracted; public barrels no longer expose retired types. | None. |
+| Naming quality and naming-to-responsibility alignment check | Pass | `appendConfiguredSkillsCatalog` accurately names the only transformation. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | Catalog text/validation has one current owner. | None. |
+| Patch-on-patch complexity control | Pass | Rework deletes the prior extension machinery instead of disabling or wrapping it. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Source/barrel/active-test/current-doc search is clean; historical tickets/migration history remain historical only. | None. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Real registered skill proves final rejection; backtick/tilde/non-close/long-close/overflow cases prove containment. | None. |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Temp skill cleanup and compact table-like containment fixtures remain isolated. | None. |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | Obsolete processor suites are deleted, not renamed as compatibility coverage. | None. |
+| API/E2E readiness for the next workflow stage | Pass | Source corrections and focused evidence pass; known stale broader suites are explicitly ready for coverage investigation. | API/E2E must investigate the inherited E2E assertion edit and three listed stale suites before execution. |
 
 ## Source File Size And Structure Audit
 
-All changed implementation-source files were measured using effective non-empty lines. Tests, fixtures, generated GraphQL output, localization, JSON, and ticket artifacts were excluded. No changed source file exceeds 500 effective lines and no changed source delta exceeds 220 lines.
+Round-1 unaffected source measurements remain valid. `IR-002` changed source was remeasured using effective non-empty lines; tests, generated output, and documentation are excluded.
 
 | Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
 | --- | ---: | --- | --- | --- | --- | --- | --- |
-| `claude/session/claude-session.ts` | 489 | Pass | Pass (20) | Pass | Pass | None | None |
-| `autobyteus/autobyteus-agent-run-backend-factory.ts` | 477 | Pass | Pass (74) | Pass | Pass | None | None |
-| `runtime-management/claude/client/claude-sdk-client.ts` | 460 | Pass | Pass (2) | Pass | Pass | None | None |
-| `autobyteus-web/components/agents/AgentDefinitionForm.vue` | 419 | Pass | Pass (3) | Pass | Pass | None | None |
-| `agent-definition/providers/file-agent-definition-provider.ts` | 385 | Pass | Pass (1) | Pass | Pass | None | None |
-| `codex/backend/codex-thread-bootstrapper.ts` | 367 | Pass | Pass (75) | Pass | Pass | None | None |
-| `autobyteus-web/stores/agentDefinitionStore.ts` | 318 | Pass | Pass (3) | Pass | Pass | None | None |
-| `agent-execution/services/agent-run-manager.ts` | 295 | Pass | Pass (6) | Pass | Pass | None | None |
-| `agent-tools/mcp/agent-tool-mcp-catalog.ts` | 293 | Pass | Pass (34) | Pass | Pass | None | None |
-| `api/graphql/types/agent-definition.ts` | 272 | Pass | Pass (10) | Pass | Pass | None | None |
-| `agent-definition/services/agent-definition-service.ts` | 271 | Pass | Pass (15) | Pass | Pass | None | None |
-| `member-team-context-builder.ts` | 219 | Pass | Pass (6) | Pass | Pass | None | None |
-| New `carpenter-prompt-composer.ts` / `carpenter-prompt-sections.ts` / `markdown-heading-containment.ts` | 50 / 51 / 49 | Pass | Pass (54 / 62 / 53) | Composer/sections pass; containment has `CR-002` | Pass | `Local Fix` for containment | Resolve `CR-002` |
-| New `runtime-agent-tool-exposure.ts` / `team-runtime-instruction-renderer.ts` | 57 / 46 | Pass | Pass (64 / 48) | Pass | Pass | None | None |
-| `autobyteus-ts` prompt step / Skills processor | 44 / 76 | Pass | Pass (4 / 18) | Final boundary is correct; surrounding configurable processor API is not closed | Pass | `Design Impact` | Resolve `CR-001` |
-| All remaining changed implementation-source files | 11–173 each | Pass | Pass (1–50 each) | Pass except the core `AgentConfig`/processor surface recorded in `CR-001` | Pass | As finding | Resolve `CR-001` |
+| `autobyteus-agent-run-backend-factory.ts` | 476 | Pass | Pass (1) | Pass | Pass | None | Keep |
+| `markdown-heading-containment.ts` | 57 | Pass | Pass (28) | Pass | Pass | None | Keep |
+| `system-prompt-processing-step.ts` | 44 | Pass | Pass (4) | Pass | Pass | None | Keep |
+| `agent-config.ts` | 119 | Pass | Pass (13) | Pass | Pass | None | Keep |
+| `append-configured-skills-catalog.ts` | 64 | Pass | Pass (76) | Pass | Pass | None | Keep |
+| Core/server barrel files | 5 / 36 | Pass | Pass (1 each) | Pass | Pass | None | Keep |
+| `scripts/migrate-legacy-agent-db-to-files.py` | 529 | Pre-existing breach; accepted for this round because the 3-line delta only deletes the retired selected/output field and adds no responsibility | Pass (3) | Pass — cohesive legacy-to-current migration owner | Pass | Residual pre-existing size risk, not introduced or expanded by this cleanup | Keep; decompose only with a separately scoped migration-script change |
+| `scripts/seed-personal-test-fixtures.py` | 417 | Pass | Pass (2) | Pass | Pass | None | Keep |
+
+No new or expanded source file crosses the hard limit, and no `IR-002` source delta crosses 220 lines.
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | No dual prompt format, compatibility wrapper, or version-specific reader was added. |
-| No legacy old-behavior retention in changed scope | Fail | The obsolete optional core prompt-processor extension remains callable/exported. |
-| Dead/obsolete code cleanup completeness in changed scope | Fail | Registry/registration entry points remain after all production callers were removed. |
-| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Current field projection ignores historical keys; no bulk rewrite was added. |
-| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | Current reader/writer remains version-agnostic. |
-| Approved transition mechanics match the reviewed design | Pass | Existing data stays directly usable and new writes omit the retired field. |
+| No backward-compatibility mechanisms in changed scope | Pass | No alias, disabled registry, constructor placeholder, or dual prompt route remains. |
+| No legacy old-behavior retention in changed scope | Pass | Historical file keys are ignored by generic current-field projection only. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Core pipeline/processor machinery, exports, tests, docs claims, and current fixture writers are removed/updated. |
+| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | No bulk data rewrite; current migration output simply omits the retired field. |
+| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | Current runtime remains current-shape-only. |
+| Approved transition mechanics match the reviewed design | Pass | Directly usable supersets remain readable and current writers omit obsolete data. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal
 
-| Item / Path | Type | Evidence | Why It Must Be Removed | Required Action |
-| --- | --- | --- | --- | --- |
-| `autobyteus-ts/src/agent/context/agent-config.ts` optional `systemPromptProcessors` constructor/property/copy path and mutable `DEFAULT_SYSTEM_PROMPT_PROCESSORS` | `LegacyBranch` / `UnusedFlag` | Lines 25–27, 39, 60, 86–91, and 118 retain arbitrary processor injection/copying. | `R-010` / `AC-010` require one terminal platform-owned Skills mutation and no optional extension surface. | Redesign the core config boundary so callers cannot inject or globally mutate arbitrary prompt processors. |
-| `autobyteus-ts/src/agent/system-prompt-processor/processor-definition.ts`, `processor-registry.ts`, `register-system-prompt-processors.ts`, and their public exports | `UnusedHelper` / `DormantPath` | Production search finds no caller after server registration removal; `index.ts` still exports them. | They preserve the retired customization contract and make cleanup incomplete. | Remove obsolete registry/registration API or justify a non-optional internal owner in the corrected design. |
+None.
 
 ## Docs-Impact Verdict
 
 - Docs impact: `Yes`
-- Why: The carpenter foundation, ordinary lazy skills, automatic team tools, provider projection, and removal of optional prompt-processor customization change durable conceptual/authoring behavior.
-- Files or areas likely affected: project skill design/agent authoring/runtime prompt documentation identified by delivery after branch integration. Documentation work remains delivery-owned.
+- Why: The core architecture/Skills documentation needed to stop describing a configurable processor pipeline; `IR-002` updated those directly affected current core docs. Project-level integrated documentation verification remains required.
+- Files or areas likely affected: core runtime/processor/Skills architecture docs already changed; final project conceptual/authoring documentation remains delivery-owned.
 
 ## Material Premise Validation
 
@@ -143,93 +134,67 @@ All changed implementation-source files were measured using effective non-empty 
 
 | Premise ID | Current Status | Changed Evidence / Reason |
 | --- | --- | --- |
-| `MP-001` | Confirmed | Existing Codex MCP lifecycle remains unchanged; it drives no finding. |
-| `MP-002` | Confirmed | Native post-Skills final validation exists before state/LLM mutation. The exact real-skill coverage requested upstream is still absent, but source behavior is present. |
-| `MP-003` | No Longer Relevant | The prohibited full-cleanup mechanism remains absent; `Not Reachable` drives no finding. |
+| `MP-001` | Confirmed | Provider MCP lifecycle remains unchanged and drives no finding. |
+| `MP-002` | Confirmed | A real registered skill with placeholder-shaped metadata now exercises the complete native boundary. |
+| `MP-003` | No Longer Relevant | Prohibited cleanup machinery remains absent; this `Not Reachable` premise drives nothing. |
+| `MP-004` / `CR-MP-001` | Confirmed, consequence resolved | Supported authored content still reaches containment, but separate legal-close recognition preserves fenced headings; focused cases pass. |
 
-### `CR-MP-001` — A supported authored instruction body contains a same-marker fenced content line that is not a legal closing fence
-
-- Origin: `New`
-- Related approved requirement or established contract: `R-010`, `R-014`, `AC-010`, `AC-014`; authored fenced Markdown must remain untouched while only ATX headings outside fences are contained.
-- Relevant behavior ID(s): `BEH-008`, `BEH-012`
-- Initiating basis kind: `User`
-- Independent product-supported initiating trigger or applicable governing contract: A user creates or edits an agent definition's free-form instruction body through the Agent Definition form or GraphQL create/update mutation.
-- Support evidence: `AgentDefinitionForm.vue` exposes the `instructions` textarea and mutations carry it to `CreateAgentDefinitionInput` / `UpdateAgentDefinitionInput`; file-backed `agent.md` bodies are another supported source.
-- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: Agent Definition form/GraphQL mutation or file-backed source -> `AgentDefinition.instructions` -> `composeCarpenterPrompt` -> `containAuthoredMarkdownHeadings` -> provider system/base instructions.
-- Lifecycle preconditions and material consequence at the claimed point: For ` ```md\n```not-a-close\n# should stay code\n``` `, the current fence regex treats ` ```not-a-close ` as a close, rewrites the following fenced heading to `#### should stay code`, and treats the actual close as a new opener. Authored code content is mutated.
-- Reachability: `Reachable`
-- Review consequence / proportionate response: `CR-002` requires a bounded parser correction and focused regression test; no generalized Markdown parser framework is required.
+No new or reclassified material premise is needed for this review result.
 
 ## Review Scorecard
 
-- Overall score (`/10`): `8.9`
-- Overall score (`/100`): `89`
-- Score calculation note: Simple average of the ten category scores; the failing categories and findings determine the review decision.
+- Overall score (`/10`): `9.4`
+- Overall score (`/100`): `94`
+- Score calculation note: Simple average, rounded; every category meets the 9.0 clean-pass target.
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
-| 1 | Data-Flow Spine Inventory and Clarity | 9.4 | Prompt and tool spines are explicit, shared, and provider-independent. | No material spine issue beyond the extension boundary. | Preserve this structure. |
-| 2 | Ownership Clarity and Boundary Encapsulation | 8.7 | New semantic owners are strong. | Core runtime config still permits arbitrary prompt mutation outside the closed owner. | Resolve `CR-001`. |
-| 3 | API / Interface / Query / Command Clarity | 8.8 | Server/API/web selection fields are removed cleanly. | Public `AgentConfig` and core exports still advertise the retired extension. | Close the core interface. |
-| 4 | Separation of Concerns and File Placement | 9.3 | Prompt, team, tool, skill, and provider responsibilities are well placed. | Fence state handling has one local correctness flaw. | Correct `CR-002` without broadening the helper. |
-| 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.2 | Composer and exposure shapes are narrow and eliminate duplication. | Core processor list remains a parallel mutation representation. | Make Skills the single terminal representation. |
-| 6 | Naming Quality and Local Readability | 9.0 | New names align with responsibilities. | The split/join historical-key filter is opaque and the processor names no longer reflect current ownership. | Use explicit, documented current-field handling during revision. |
-| 7 | API/E2E Readiness | 8.7 | Seventy-five focused server tests and seven focused core tests pass. | Source/design findings remain; containment and real post-Skills placeholder coverage are incomplete. | Fix and add focused coverage before API/E2E. |
-| 8 | Runtime Correctness And Behavioral Fidelity | 8.6 | Main provider projections and tool union match the approved contract. | Reachable fenced content is rewritten, and the closed mutation contract is not structurally enforced. | Resolve both findings. |
-| 9 | No Backward-Compatibility / No Legacy Retention | 9.1 | No dual prompt formats or request-time fallback were added. | Obsolete core extension API remains, though it has no in-repo production caller. | Remove the retired surface. |
-| 10 | Cleanup Completeness | 8.6 | Old server/provider composers and strategies were deleted. | Core registry/registration and optional injection paths remain dormant/exported. | Complete core cleanup under a corrected design. |
+| 1 | Data-Flow Spine Inventory and Clarity | 9.5 | Shared prompt and independent provider-tool spines remain direct and inspectable. | Broader execution evidence is pending. | Validate end to end next. |
+| 2 | Ownership Clarity and Boundary Encapsulation | 9.6 | The native final instruction has one closed owner with no callback surface. | None material. | Preserve the direct sequence. |
+| 3 | API / Interface / Query / Command Clarity | 9.5 | Core/public/server/web interfaces omit the retired concept atomically. | Positional `AgentConfig` remains inherently edit-sensitive. | Prefer named options in a separately designed future change if warranted. |
+| 4 | Separation of Concerns and File Placement | 9.2 | Catalog and containment concerns are focused and correctly placed. | A pre-existing migration utility remains 529 effective lines. | Decompose only under a dedicated migration-tool scope. |
+| 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.5 | `AgentConfig` is contracted and the deterministic catalog function is narrow. | None material. | Preserve current tight shapes. |
+| 6 | Naming Quality and Local Readability | 9.4 | New function and folder names are precise; fence logic is explicit. | Minor positional-constructor readability remains pre-existing. | No ticket-local change required. |
+| 7 | API/E2E Readiness | 9.1 | Source checks/build/focused scenarios pass and stale suites are identified. | Coverage investigation and realistic execution are still pending. | API/E2E should disposition stale/inherited coverage first. |
+| 8 | Runtime Correctness And Behavioral Fidelity | 9.5 | Both prior defects are directly resolved at their actual owners. | Full lifecycle evidence remains downstream. | Execute native/Codex/Claude scenarios. |
+| 9 | No Backward-Compatibility / No Legacy Retention | 9.6 | No compatibility slot, alias, registry, or version-specific runtime fallback remains. | Historical records/docs intentionally remain historical. | None. |
+| 10 | Cleanup Completeness | 9.6 | Obsolete source, exports, tests, and current documentation references are removed. | Known stale broader provider/session tests remain for their owner. | API/E2E should update/remove only after investigation. |
 
 ## Findings
 
-### `CR-001` — The closed native prompt contract still exposes arbitrary core system-prompt processors
-
-- Severity: `High`
-- Classification: `Design Impact`
-- Affected behavior/contracts: `BEH-008`; `R-010`; `AC-010`; the approved terminal-Skills ownership boundary.
-- Evidence: `autobyteus-ts/src/agent/context/agent-config.ts` retains a public mutable `DEFAULT_SYSTEM_PROMPT_PROCESSORS`, public `systemPromptProcessors` property, constructor injection parameter, and copy propagation. `autobyteus-ts/src/agent/system-prompt-processor/index.ts` still exports the processor definition, registry, default registry, and registration function; production search finds no remaining caller for that registry. The new final-payload test itself supplies a custom `PlaceholderAppendingProcessor`, demonstrating that the supposedly removed runtime extension remains accepted.
-- Consequence: The source does not structurally enforce the approved closed composition contract or terminal Skills ownership, and obsolete public/dormant API remains after the server authoring surface was removed. This finding is based directly on the governing removal contract; it does not assume a hypothetical current UI path that mutates the core default.
-- Why `Design Impact`: The reviewed target mapping called the server/domain/API/web list complete while omitting the public core `AgentConfig` and exported registry boundaries. Correcting this requires an explicit upstream decision about the core mandatory processor representation and public API removal, not an unreviewed local signature shift.
-- Required action: Update the design/change inventory to close the core runtime boundary, then implement the clean cut. At minimum, callers must not be able to inject/copy/globally mutate arbitrary prompt processors; obsolete registry/registration exports with no current owner must be removed. Preserve one platform-owned terminal Skills append and the post-pipeline final validator.
-
-### `CR-002` — Fence containment rewrites headings after a non-closing fence-like content line
-
-- Severity: `Medium`
-- Classification: `Local Fix`
-- Affected behavior/contracts: `BEH-008`, `BEH-012`; `R-010`, `R-014`; `AC-010`, `AC-014`; `CR-MP-001`.
-- Evidence: `markdown-heading-containment.ts` uses one unanchored `FENCE` prefix regex for both opening and closing. While inside a fence it closes on any same-marker run of sufficient length, even when non-space text follows. Direct execution with ` ```md\n```not-a-close\n# should stay code\n``` ` produced `#### should stay code` inside the authored code block.
-- Consequence: Supported free-form agent/team Markdown can be modified inside a fenced region, contradicting the explicit preservation rule.
-- Required action: Distinguish valid fence opening from valid closing syntax; while a fence is active, close only on a same-marker run of sufficient length followed solely by allowed trailing whitespace. Add regression tests covering this case, ordinary info-string openings, alternate markers, and the existing overflow behavior.
+None.
 
 ## Classification
 
-- Overall failure classification: `Design Impact`
-- The structural core-surface gap takes precedence for routing. `CR-002` is a bounded implementation correction to carry through the revised solution.
+N/A — current review passes.
 
 ## Recommended Recipient
 
-- `solution_designer`
-- Reason: `CR-001` reveals an omitted core public/runtime boundary in the reviewed design. The cumulative package must return through solution/design review before implementation revision and source re-review.
+`api_e2e_engineer`
 
 ## Residual Risks
 
-- Known stale integration/E2E tests remain downstream work only after source review passes.
-- The full server typecheck and Nuxt typecheck retain the documented existing tooling blockers; focused source checks/tests passed and do not resolve those repository-wide issues.
-- External shell-first skill-package cleanup and authored-body editorial normalization remain explicitly out of scope.
+- Three provider/session integration/E2E suites still contain pre-revision runtime-exposure names and require the mandated coverage investigation before edits/execution.
+- `autobyteus-server-ts/tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts` was already changed upstream by removing the retired-field assertion; API/E2E must explicitly disposition and validate this inherited durable-coverage change rather than treating it as pre-approved coverage.
+- Full server and Nuxt typechecks retain the documented repository/toolchain blockers; source-only server checking and core build pass.
+- The pre-existing migration script is 529 effective non-empty lines; the ticket delta removes three lines and adds no responsibility, so it is recorded as non-blocking size risk.
+- Live browser and integrated documentation checks remain downstream-owned.
 
 ## Validation Evidence
 
-- `autobyteus-server-ts`: focused composer, runtime exposure, native factory, Codex bootstrap, Claude bootstrap/session/tooling suites — `7 files / 75 tests passed`.
-- `autobyteus-ts`: final-payload and Skills suites — `2 files / 7 tests passed`.
-- Direct containment probe reproduced `CR-002` with the current source.
-- Changed-source audit: no current implementation source over 500 effective non-empty lines; no implementation-source delta over 220 lines.
-- Worktree remained clean before review artifacts were written.
+- `autobyteus-server-ts`: source-only TypeScript check passed during re-review.
+- `autobyteus-server-ts`: containment and native factory suites — `2 files / 17 tests passed`.
+- `autobyteus-ts`: config, direct catalog, real final-payload, skill integration, and public-surface suites — `5 files / 48 tests passed`.
+- `autobyteus-ts`: production build and runtime-dependency verification passed during re-review.
+- `git diff --check HEAD^ HEAD` passed; worktree was clean before this report update.
+- Residual search confirms retired core prompt-mutator names are absent from current source/public barrels/active current tests; matches are limited to historical ticket/migration documentation.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
+- Review Decision: `Pass`
 - Review Entry Point: `Implementation Review`
-- Material-Premise Gate: `Pass` — the only new scenario-dependent finding has a complete supported authoring path in `CR-MP-001`; no `Not Reachable` premise drives a finding or deduction.
-- Score Summary: `8.9/10` (`89/100`); Ownership, Interface Clarity, API/E2E Readiness, Runtime Fidelity, and Cleanup are below the 9.0 clean-pass threshold.
-- Failure Origin: Reviewed design omitted the core runtime extension surface from its claimed complete removal boundary; implementation also contains a bounded fence-state defect.
-- Recommended Recipient: `solution_designer`
-- Notes: Do not advance to API/E2E. After solution/design revision and implementation, repeat implementation source review before API/E2E.
+- Material-Premise Gate: `Pass`
+- Score Summary: `9.4/10` (`94/100`), with every category at or above 9.0.
+- Failure Origin: `N/A`
+- Recommended Recipient: `api_e2e_engineer`
+- Notes: `CR-001` and `CR-002` are resolved under `SR-004` / `ARCH-REV-004` / `IR-002`. API/E2E coverage investigation and execution may proceed.
