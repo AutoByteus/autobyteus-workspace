@@ -35,13 +35,33 @@ Browser-tool support has two explicit source families:
   `dynamicTools` path and old Claude `autobyteus_browser` MCP server path are
   not retained for these migrated tools
 
+## Runtime Exposure Resolution
+
+`src/agent-execution/shared/runtime-agent-tool-exposure.ts` is the common
+runtime-neutral boundary before native schemas or Agent Tools MCP projection.
+It trims and deduplicates configured `AgentDefinition.toolNames`. For every
+valid non-null `MemberTeamContext`, it then automatically unions exactly:
+
+- `send_message_to`
+- `delegate_task`
+
+This automatic pair is required by the Team Runtime communication and
+delegation contract and applies even when the agent definition omitted both
+names. Standalone runs receive no automatic pair and preserve their explicitly
+configured set. Browser, media, publishing, configured MCP-origin, and the other
+task lifecycle tools remain explicitly selected and availability-gated.
+
+Prompt composition does not inspect configured/effective tool names and does
+not render an `Available Tools` catalog. Tool manifests and schemas are
+provider-native, out-of-band capability contracts.
+
 ## Server-Owned Agent Communication Tool
 
 `send_message_to` is the shared first-party agent communication tool. Its
 canonical contract, selector parsing, runtime-neutral dispatcher, direct
 exact-run routing, and optional direct-message grants live under
 `src/agent-communication`; AutoByteus, Codex, and Claude adapters project the
-same contract through their configured runtime surfaces. Codex App Server and
+same contract through their effective runtime surfaces. Codex App Server and
 Claude Agent SDK now project `send_message_to` through the server-hosted
 `autobyteus_agent_tools` MCP descriptor instead of runtime-specific
 send-message wrappers/handlers.
@@ -57,10 +77,12 @@ The tool accepts exactly one target selector:
   direct input to the active target run, and emits a direct `INTER_AGENT_MESSAGE`
   without Team Communication projection fields.
 
-Standalone configured runs can use `target_agent_run_id` without team context.
+Explicitly configured standalone runs can use `target_agent_run_id` without team context.
 They cannot use `recipient_name` unless the run is actually executing as a team
-member. See [Agent Communication](./agent_communication.md) for the full selector
-and projection contract.
+member. Every valid team context receives `send_message_to` automatically; the
+active delivery binding and roster still govern whether a call succeeds. See
+[Agent Communication](./agent_communication.md) for the full selector and
+projection contract.
 
 ## Server-Hosted Agent Tools MCP Server
 
@@ -121,14 +143,15 @@ Runtime projection is explicit and uses the same manifest/service boundary:
 
 - Mixed AutoByteus standalone member/task-agent runs may receive thin
   server-owned local wrappers for the canonical delegation and acceptance tools
-  when configured, and they strip the legacy task-management tool names from
-  mixed team contexts.
-- Codex App Server and Claude Agent SDK receive configured task-delegation
-  tools through the unified `autobyteus_agent_tools` Agent Tools MCP descriptor.
+  when included in effective exposure, and they strip the legacy
+  task-management tool names from mixed team contexts.
+- Codex App Server and Claude Agent SDK receive effective task-delegation tools
+  through the unified `autobyteus_agent_tools` Agent Tools MCP descriptor.
   The old Codex task-delegation `dynamicTools` path and the old Claude
   `autobyteus_team` MCP server path are not retained for these migrated tools.
-- Tool availability is configuration-driven. Runtime adapters must not expose
-  these tools when the member is not configured for them, and this layer must
+- A valid team context automatically exposes `delegate_task` even when omitted
+  from the agent definition. `submit_task_result` and `review_task_result`
+  remain explicitly configured and context/availability-gated. This layer must
   not add provider `tool_choice` policy, forced-tool dampening, or
   framework-driven auto-acceptance to compensate for model/prompt behavior.
 

@@ -285,10 +285,12 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     expect(built.agentConfig).toBeInstanceOf(AgentConfig);
     expect(built.agentConfig.tools.map((tool: BaseTool) => tool.definition?.name)).toEqual([
       "send_message_to",
+      "delegate_task",
     ]);
     expect(built.agentConfig.systemPrompt).toContain("## Team Instruction");
-    expect(built.agentConfig.systemPrompt).toContain("## Agent Instruction");
-    expect(built.agentConfig.systemPrompt).toContain("## Runtime Instruction");
+    expect(built.agentConfig.systemPrompt).toContain("## Agent Identity");
+    expect(built.agentConfig.systemPrompt).toContain("## Team Runtime");
+    expect(built.agentConfig.systemPrompt).toContain("## Working Environment");
     expect(built.agentConfig.initialCustomData?.teamContext).toEqual(
       expect.objectContaining({
         teamRunId: "team-1",
@@ -358,6 +360,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
 
     expect(built.agentConfig.tools.map((tool: BaseTool) => tool.definition?.name)).toEqual([
       "send_message_to",
+      "delegate_task",
     ]);
     expect(built.agentConfig.systemPrompt).toContain(
       "No logical `recipient_name` roster recipients are currently listed for this run.",
@@ -503,7 +506,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     );
   });
 
-  it("advertises exact-run send_message_to while warning that recipient_name delivery is disabled", async () => {
+  it("rejects a team context without its required message-delivery binding", async () => {
     const factory = new AutoByteusAgentRunBackendFactory({
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async () =>
@@ -539,7 +542,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       } as any,
     });
 
-    const built = await (factory as any).buildAgentConfig(
+    await expect((factory as any).buildAgentConfig(
       new AgentRunConfig({
         agentDefinitionId: "agent-1",
         llmModelIdentifier: "dummy-model",
@@ -554,15 +557,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         ),
       }),
       "run-professor",
-    );
-
-    expect(built.agentConfig.tools.map((tool: BaseTool) => tool.definition?.name)).toEqual([
-      "send_message_to",
-    ]);
-    expect(built.agentConfig.systemPrompt).toContain(
-      "Do not set `recipient_name` from this run; it requires an active team member context with Team Communication enabled.",
-    );
-    expect(built.agentConfig.systemPrompt).toContain("Set `target_agent_run_id`");
+    )).rejects.toThrow("requires an active message-delivery binding");
   });
 
   it("propagates mixed AutoByteus task-agent identity into managed custom data and task delegation context", async () => {

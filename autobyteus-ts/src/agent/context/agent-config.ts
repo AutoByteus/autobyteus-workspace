@@ -1,4 +1,3 @@
-import { BaseSystemPromptProcessor, AvailableSkillsProcessor } from '../system-prompt-processor/index.js';
 import { BaseLLM } from '../../llm/base.js';
 import { SkillAccessMode, resolveSkillAccessMode } from './skill-access-mode.js';
 import type { BaseTool } from '../../tools/base-tool.js';
@@ -22,9 +21,6 @@ function deepClone<T>(value: T): T {
 
 export class AgentConfig {
   static DEFAULT_LLM_RESPONSE_PROCESSORS: BaseLLMResponseProcessor[] = [];
-  static DEFAULT_SYSTEM_PROMPT_PROCESSORS: BaseSystemPromptProcessor[] = [
-    new AvailableSkillsProcessor()
-  ];
 
   name: string;
   role: string;
@@ -36,7 +32,6 @@ export class AgentConfig {
   autoExecuteTools: boolean;
   inputProcessors: BaseAgentUserInputMessageProcessor[];
   llmResponseProcessors: BaseLLMResponseProcessor[];
-  systemPromptProcessors: BaseSystemPromptProcessor[];
   toolExecutionResultProcessors: BaseToolExecutionResultProcessor[];
   toolInvocationPreprocessors: BaseToolInvocationPreprocessor[];
   lifecycleProcessors: BaseLifecycleEventProcessor[];
@@ -57,7 +52,6 @@ export class AgentConfig {
     autoExecuteTools = true,
     inputProcessors: BaseAgentUserInputMessageProcessor[] | null = null,
     llmResponseProcessors: BaseLLMResponseProcessor[] | null = null,
-    systemPromptProcessors: BaseSystemPromptProcessor[] | null = null,
     toolExecutionResultProcessors: BaseToolExecutionResultProcessor[] | null = null,
     toolInvocationPreprocessors: BaseToolInvocationPreprocessor[] | null = null,
     workspaceRootPath: string | null = null,
@@ -83,12 +77,6 @@ export class AgentConfig {
         ? llmResponseProcessors
         : [...AgentConfig.DEFAULT_LLM_RESPONSE_PROCESSORS];
 
-    const defaultProcessors =
-      systemPromptProcessors !== null && systemPromptProcessors !== undefined
-        ? systemPromptProcessors
-        : [...AgentConfig.DEFAULT_SYSTEM_PROMPT_PROCESSORS];
-
-    this.systemPromptProcessors = defaultProcessors;
     this.toolExecutionResultProcessors = toolExecutionResultProcessors ?? [];
     this.toolInvocationPreprocessors = toolInvocationPreprocessors ?? [];
     this.lifecycleProcessors = lifecycleProcessors ?? [];
@@ -115,7 +103,6 @@ export class AgentConfig {
       this.autoExecuteTools,
       this.inputProcessors.slice(),
       this.llmResponseProcessors.slice(),
-      this.systemPromptProcessors.slice(),
       this.toolExecutionResultProcessors.slice(),
       this.toolInvocationPreprocessors.slice(),
       this.workspaceRootPath,

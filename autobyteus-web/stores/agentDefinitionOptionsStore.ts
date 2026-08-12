@@ -9,7 +9,6 @@ export const useAgentDefinitionOptionsStore = defineStore('agentDefinitionOption
   const toolNames = ref<string[]>([]);
   const inputProcessors = ref<string[]>([]);
   const llmResponseProcessors = ref<string[]>([]);
-  const systemPromptProcessors = ref<string[]>([]);
   const toolExecutionResultProcessors = ref<string[]>([]);
   const toolInvocationPreprocessors = ref<string[]>([]);
   const lifecycleProcessors = ref<string[]>([]);
@@ -37,7 +36,6 @@ export const useAgentDefinitionOptionsStore = defineStore('agentDefinitionOption
         lifecycleProcessors.value = data.availableOptionalLifecycleProcessorNames || [];
         inputProcessors.value = data.availableOptionalInputProcessorNames || [];
         llmResponseProcessors.value = data.availableOptionalLlmResponseProcessorNames || [];
-        systemPromptProcessors.value = data.availableOptionalSystemPromptProcessorNames || [];
         toolExecutionResultProcessors.value = data.availableOptionalToolExecutionResultProcessorNames || [];
       }
     } catch (e) {
@@ -53,7 +51,6 @@ export const useAgentDefinitionOptionsStore = defineStore('agentDefinitionOption
     toolNames,
     inputProcessors,
     llmResponseProcessors,
-    systemPromptProcessors,
     toolExecutionResultProcessors,
     toolInvocationPreprocessors,
     lifecycleProcessors,

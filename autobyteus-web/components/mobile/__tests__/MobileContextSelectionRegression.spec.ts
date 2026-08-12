@@ -187,7 +187,6 @@ function seedCatalog(): void {
       toolNames: [],
       inputProcessorNames: [],
       llmResponseProcessorNames: [],
-      systemPromptProcessorNames: [],
       toolExecutionResultProcessorNames: [],
       toolInvocationPreprocessorNames: [],
       lifecycleProcessorNames: [],

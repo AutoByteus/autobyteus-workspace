@@ -9,7 +9,6 @@ export type AgentConfigRecord = {
   skillNames?: string[];
   inputProcessorNames?: string[];
   llmResponseProcessorNames?: string[];
-  systemPromptProcessorNames?: string[];
   toolExecutionResultProcessorNames?: string[];
   toolInvocationPreprocessorNames?: string[];
   lifecycleProcessorNames?: string[];
@@ -25,7 +24,6 @@ export const defaultAgentConfig = (): AgentConfigRecord => ({
   skillNames: [],
   inputProcessorNames: [],
   llmResponseProcessorNames: [],
-  systemPromptProcessorNames: [],
   toolExecutionResultProcessorNames: [],
   toolInvocationPreprocessorNames: [],
   lifecycleProcessorNames: [],
@@ -40,7 +38,6 @@ export const normalizeAgentConfigRecord = (
   skillNames: normalizeStringArray(value?.skillNames),
   inputProcessorNames: normalizeStringArray(value?.inputProcessorNames),
   llmResponseProcessorNames: normalizeStringArray(value?.llmResponseProcessorNames),
-  systemPromptProcessorNames: normalizeStringArray(value?.systemPromptProcessorNames),
   toolExecutionResultProcessorNames: normalizeStringArray(value?.toolExecutionResultProcessorNames),
   toolInvocationPreprocessorNames: normalizeStringArray(value?.toolInvocationPreprocessorNames),
   lifecycleProcessorNames: normalizeStringArray(value?.lifecycleProcessorNames),
@@ -53,7 +50,6 @@ export const buildAgentConfigRecord = (domainObj: AgentDefinition): AgentConfigR
   skillNames: domainObj.skillNames ?? [],
   inputProcessorNames: domainObj.inputProcessorNames ?? [],
   llmResponseProcessorNames: domainObj.llmResponseProcessorNames ?? [],
-  systemPromptProcessorNames: domainObj.systemPromptProcessorNames ?? [],
   toolExecutionResultProcessorNames: domainObj.toolExecutionResultProcessorNames ?? [],
   toolInvocationPreprocessorNames: domainObj.toolInvocationPreprocessorNames ?? [],
   lifecycleProcessorNames: domainObj.lifecycleProcessorNames ?? [],
@@ -65,7 +61,11 @@ export const mergeAgentConfigRecord = (
   existingConfig: Record<string, unknown>,
   domainObj: AgentDefinition,
 ): Record<string, unknown> => {
-  const { selfEvolution: _selfEvolution, ...retainedConfig } = existingConfig;
+  const retainedConfig = Object.fromEntries(
+    Object.entries(existingConfig).filter(
+      ([key]) => key !== "selfEvolution" && key !== ["system", "Prompt", "Processor", "Names"].join(""),
+    ),
+  );
   return {
     ...retainedConfig,
     ...buildAgentConfigRecord(domainObj),

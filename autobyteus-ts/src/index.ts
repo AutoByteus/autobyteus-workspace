@@ -27,7 +27,6 @@ export * from './agent/shutdown-steps/index.js';
 export * from './agent/status/index.js';
 export * from './agent/streaming/index.js';
 export * from './agent/streaming/handlers/index.js';
-export * from './agent/system-prompt-processor/index.js';
 export * from './agent/tool-execution-result-processor/index.js';
 export * from './agent/tool-invocation-preprocessor/index.js';
 export * from './agent/tool-approval-result.js';

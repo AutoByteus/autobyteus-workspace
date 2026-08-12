@@ -15,7 +15,7 @@ import { ClaudeSessionMessageCache } from "../../../../../../src/agent-execution
 import { ClaudeSessionToolUseCoordinator } from "../../../../../../src/agent-execution/backends/claude/session/claude-session-tool-use-coordinator.js";
 import { ClaudeSessionEventName } from "../../../../../../src/agent-execution/backends/claude/events/claude-session-event-name.js";
 import { projectClaudeAgentLifecycleSnapshot } from "../../../../../../src/agent-execution/backends/claude/events/claude-status-projector.js";
-import { buildConfiguredAgentToolExposure } from "../../../../../../src/agent-execution/shared/configured-agent-tool-exposure.js";
+import { buildRuntimeAgentToolExposure } from "../../../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
 import type {
   ClaudeSdkQueryLike,
@@ -192,7 +192,8 @@ const createSession = (input: {
         permissionMode: "default",
         autoExecuteTools: input.autoExecuteTools ?? false,
       }),
-      configuredToolExposure: buildConfiguredAgentToolExposure([]),
+      carpenterSystemPrompt: "## Agent Identity\n\n- Name: Test agent",
+      runtimeToolExposure: buildRuntimeAgentToolExposure([]),
       sessionId: input.sessionId ?? "run-1",
       hasCompletedTurn: input.hasCompletedTurn ?? false,
       activeTurnId: input.activeTurnId ?? null,
@@ -269,6 +270,7 @@ describe("ClaudeSession", () => {
     ]));
     expect(startQueryTurn.mock.calls[0]?.[0]).toMatchObject({
       prompt: expectedContent,
+      systemPrompt: "## Agent Identity\n\n- Name: Test agent",
     });
   });
 

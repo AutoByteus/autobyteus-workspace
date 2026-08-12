@@ -26,7 +26,6 @@ describe("createAgentDefinitionTool", () => {
             system_prompt_category: "TestCategory",
             system_prompt_name: "TestPrompt",
             tool_names: "Tool1, Tool2",
-            system_prompt_processor_names: "",
             input_processor_names: "",
             llm_response_processor_names: "",
             tool_execution_result_processor_names: "",
@@ -37,7 +36,6 @@ describe("createAgentDefinitionTool", () => {
         expect(passed.toolNames).toEqual(["Tool1", "Tool2"]);
         expect(passed.inputProcessorNames).toEqual([]);
         expect(passed.llmResponseProcessorNames).toEqual([]);
-        expect(passed.systemPromptProcessorNames).toEqual([]);
         expect(passed.toolExecutionResultProcessorNames).toEqual([]);
         expect(passed.lifecycleProcessorNames).toEqual([]);
         expect(result).toContain("created successfully with ID: 123");

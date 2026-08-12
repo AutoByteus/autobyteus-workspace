@@ -645,7 +645,6 @@ runIntegration('run_bash scenario benchmark integration (LM Studio)', () => {
       null,
       null,
       null,
-      null,
       workspace
     );
 

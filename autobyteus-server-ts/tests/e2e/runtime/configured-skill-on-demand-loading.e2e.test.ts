@@ -2,7 +2,7 @@ import "reflect-metadata";
 import os from "node:os";
 import path from "node:path";
 import { createRequire } from "node:module";
-import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, realpath, rm, writeFile } from "node:fs/promises";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { AgentFactory } from "autobyteus-ts/agent/factory/agent-factory.js";
@@ -60,7 +60,9 @@ describe("Configured skill on-demand loading active native runtime e2e", () => {
   const llms = new Set<DeterministicLLM>();
 
   beforeAll(async () => {
-    dataRoot = await mkdtemp(path.join(os.tmpdir(), "configured-skill-on-demand-e2e-"));
+    dataRoot = await realpath(
+      await mkdtemp(path.join(os.tmpdir(), "configured-skill-on-demand-e2e-")),
+    );
     workspaceRoot = path.join(dataRoot, "workspace");
     await mkdir(workspaceRoot, { recursive: true });
     await writeFile(
@@ -232,6 +234,18 @@ describe("Configured skill on-demand loading active native runtime e2e", () => {
     const noReaderContext = noReaderBackend.getContext().runtimeContext as AgentContext;
     expect(noReaderBackend.isActive()).toBe(true);
     expect(Object.keys(noReaderContext.toolInstances)).toEqual([]);
+    expect(noReaderContext.processedSystemPrompt.match(/^## .+$/gm)).toEqual([
+      "## Agent Identity",
+      "## Working Environment",
+      "## Bash Operating Practice",
+      "## File And Directory Practice",
+      "## Skills",
+    ]);
+    expect(noReaderContext.processedSystemPrompt).toContain(
+      `- Agent workspace: \`${workspaceRoot}\``,
+    );
+    expect(noReaderContext.processedSystemPrompt).not.toContain("## Available Tools");
+    expect(noReaderContext.processedSystemPrompt).not.toContain("- Role: assistant");
     expect(noReaderContext.processedSystemPrompt).toContain(`- **${skillName}**: ${description}`);
     expect(noReaderContext.processedSystemPrompt).not.toContain(versionA);
     await terminateBackend(noReaderBackend);
@@ -241,7 +255,12 @@ describe("Configured skill on-demand loading active native runtime e2e", () => {
     try {
       const readerAgentId = await createAgentDefinition({
         name: `reader-${unique}`,
-        toolNames: [retiredToolNames[0]!, "read_file", ...retiredToolNames.slice(1)],
+        toolNames: [
+          retiredToolNames[0]!,
+          "read_file",
+          "run_bash",
+          ...retiredToolNames.slice(1),
+        ],
         skillNames: [skillName],
       });
       const readerBackend = await createBackend({
@@ -250,7 +269,7 @@ describe("Configured skill on-demand loading active native runtime e2e", () => {
       });
       const runtimeContext = readerBackend.getContext().runtimeContext as AgentContext;
       expect(readerBackend.isActive()).toBe(true);
-      expect(Object.keys(runtimeContext.toolInstances)).toEqual(["read_file"]);
+      expect(Object.keys(runtimeContext.toolInstances)).toEqual(["read_file", "run_bash"]);
       for (const retiredToolName of retiredToolNames) {
         expect(runtimeContext.toolInstances).not.toHaveProperty(retiredToolName);
         expect(warnSpy).toHaveBeenCalledWith(
@@ -259,6 +278,7 @@ describe("Configured skill on-demand loading active native runtime e2e", () => {
       }
 
       const skillEntryPath = path.join(dataRoot, "skills", skillName, "SKILL.md");
+      expect(path.dirname(skillEntryPath)).not.toBe(workspaceRoot);
       expect(runtimeContext.processedSystemPrompt).toContain(
         `- **SKILL.md:** \`${skillEntryPath}\``,
       );
@@ -304,6 +324,30 @@ describe("Configured skill on-demand loading active native runtime e2e", () => {
       });
       expect(relativeRead).toBe(relativeToken);
       expect(runtimeContext.processedSystemPrompt).not.toContain(versionB);
+
+      const runBashTool = runtimeContext.getTool("run_bash");
+      expect(runBashTool).toBeDefined();
+      const skillPackageAfterSupportedUpdate = await readFile(skillEntryPath, "utf-8");
+      const defaultCwdResult = await runBashTool!.execute(runtimeContext, {
+        command: "pwd && printf 'workspace-output' > carpenter-output.txt",
+      }) as { stdout: string; effectiveCwd: string };
+      expect(defaultCwdResult.stdout.trim()).toBe(workspaceRoot);
+      expect(defaultCwdResult.effectiveCwd).toBe(workspaceRoot);
+      expect(await readFile(path.join(workspaceRoot, "carpenter-output.txt"), "utf-8"))
+        .toBe("workspace-output");
+      expect(await readFile(skillEntryPath, "utf-8")).toBe(skillPackageAfterSupportedUpdate);
+
+      const nestedWorkspace = path.join(workspaceRoot, "nested-task");
+      await mkdir(nestedWorkspace, { recursive: true });
+      const nestedCwdResult = await runBashTool!.execute(runtimeContext, {
+        command: "pwd",
+        cwd: nestedWorkspace,
+      }) as { stdout: string; effectiveCwd: string };
+      expect(nestedCwdResult.stdout.trim()).toBe(nestedWorkspace);
+      expect(nestedCwdResult.effectiveCwd).toBe(nestedWorkspace);
+      expect(runtimeContext.processedSystemPrompt).toContain(
+        `- Agent workspace: \`${workspaceRoot}\``,
+      );
 
       await terminateBackend(readerBackend);
     } finally {

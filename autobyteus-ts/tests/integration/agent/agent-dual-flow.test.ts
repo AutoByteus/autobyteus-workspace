@@ -91,7 +91,6 @@ runIntegration('Agent dual-flow integration (LM Studio native tool calling)', ()
       null,
       null,
       null,
-      null,
       tempDirA
     );
 
@@ -103,7 +102,6 @@ runIntegration('Agent dual-flow integration (LM Studio native tool calling)', ()
       null,
       [tool],
       true,
-      null,
       null,
       null,
       null,

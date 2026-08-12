@@ -92,12 +92,16 @@ export class SkillLoader {
       descriptionValue = `${descFirst}\n${descRest}`;
     }
 
+    if (!nameValue.trim() || !descriptionValue.trim()) {
+      throw new Error("SKILL.md frontmatter 'name' and 'description' must be non-blank");
+    }
+
     const body = parts[2]?.trim() ?? "";
 
     return {
       metadata: {
-        name: nameValue,
-        description: descriptionValue,
+        name: nameValue.trim(),
+        description: descriptionValue.trim(),
       },
       body,
     };

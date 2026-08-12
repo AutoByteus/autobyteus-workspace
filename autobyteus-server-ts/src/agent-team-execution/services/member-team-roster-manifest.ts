@@ -30,8 +30,14 @@ const compact = <T>(values: Array<T | null | undefined>): T[] =>
   values.filter((value): value is T => value !== null && value !== undefined);
 
 const nonEmpty = (value: string | null | undefined): string | null => {
-  const trimmed = value?.trim() ?? "";
+  const trimmed = value?.trim().replace(/\r?\n|\r/g, " ").trim() ?? "";
   return trimmed.length > 0 ? trimmed : null;
+};
+
+const requireLabel = (value: string, label: string): string => {
+  const normalized = nonEmpty(value);
+  if (!normalized) throw new Error(`${label} must be non-blank.`);
+  return normalized;
 };
 
 const formatMemberRow = (member: TeamMembershipRosterMember): string => {
@@ -40,7 +46,7 @@ const formatMemberRow = (member: TeamMembershipRosterMember): string => {
     labels.push(`${member.representsTeamName} representative`);
   }
   const suffix = labels.length > 0 ? ` (${labels.join(", ")})` : "";
-  return `   - ${member.memberName}${suffix}`;
+  return `   - ${requireLabel(member.memberName, "Roster member name")}${suffix}`;
 };
 
 const buildSelfRow = (input: {
@@ -88,7 +94,7 @@ const buildLocalTeam = (
   const isCoordinator = currentMemberIsCoordinator(context);
   const currentMemberRole = isCoordinator ? "coordinator" : "member";
   return {
-    teamName: context.teamName,
+    teamName: requireLabel(context.teamName, "Team name"),
     teamRouteKey: null,
     currentMemberRole,
     members: [
@@ -130,7 +136,7 @@ export const buildTeamMembershipRosterManifest = (
 ): TeamMembershipRosterManifest => {
   const recipients = context.communicationRecipients;
   return {
-    currentMemberName: context.memberName,
+    currentMemberName: requireLabel(context.memberName, "Current team member name"),
     allowedRecipientNames: [...context.allowedRecipientNames],
     teams: compact([
       buildLocalTeam(context, recipients),
@@ -149,7 +155,7 @@ export const renderTeamMembershipRosterManifest = (
   const lines: string[] = [
     "Team membership roster",
     "",
-    `You are: ${manifest.currentMemberName}`,
+    `You are: ${requireLabel(manifest.currentMemberName, "Current team member name")}`,
     "",
     "You are a member of these teams:",
   ];
@@ -158,7 +164,7 @@ export const renderTeamMembershipRosterManifest = (
     if (index > 0) {
       lines.push("");
     }
-    lines.push(`${index + 1}. ${team.teamName}`);
+    lines.push(`${index + 1}. ${requireLabel(team.teamName, "Team name")}`);
     lines.push(`   Your role: ${team.currentMemberRole}`);
     lines.push("   Team members:");
     lines.push(...team.members.map((member) => formatMemberRow(member)));
@@ -166,17 +172,9 @@ export const renderTeamMembershipRosterManifest = (
     if (messageableRows.length > 0) {
       lines.push("");
       lines.push("   You can message:");
-      lines.push(...messageableRows.map((member) => `   - ${member.recipientName}`));
+      lines.push(...messageableRows.map((member) => `   - ${requireLabel(member.recipientName!, "Recipient name")}`));
     }
   });
-
-  lines.push("");
-  lines.push("When using send_message_to, choose exactly one target selector.");
-  if (manifest.allowedRecipientNames.length > 0) {
-    lines.push("Use recipient_name for one logical roster recipient:");
-    lines.push(...manifest.allowedRecipientNames.map((recipientName) => `- ${recipientName}`));
-  }
-  lines.push("Use target_agent_run_id instead when a task packet, task event, or prior message gives a concrete currently active AgentRun id and the message must reach that exact live run. Do not provide both selectors.");
 
   return lines.join("\n");
 };

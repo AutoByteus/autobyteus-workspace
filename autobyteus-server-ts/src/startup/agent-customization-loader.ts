@@ -5,11 +5,9 @@ import {
   type BaseAgentUserInputMessageProcessor,
   type BaseLLMResponseProcessor,
   type BaseToolInvocationPreprocessor,
-  defaultSystemPromptProcessorRegistry,
   defaultInputProcessorRegistry,
   defaultLlmResponseProcessorRegistry,
   defaultToolInvocationPreprocessorRegistry,
-  registerSystemPromptProcessors,
 } from "autobyteus-ts";
 import { UserInputContextBuildingProcessor } from "../agent-customization/processors/prompt/user-input-context-building-processor.js";
 import { WorkspacePathSanitizationProcessor } from "../agent-customization/processors/security-processor/workspace-path-sanitization-processor.js";
@@ -60,21 +58,8 @@ function registerToolInvocationPreprocessor(processorClass: ToolInvocationPrepro
   logger.info(`Registered tool invocation preprocessor '${name}'.`);
 }
 
-function ensureSystemPromptProcessorsRegistered(): void {
-  const requiredNames = ["AvailableSkillsProcessor"];
-  const missing = requiredNames.filter((name) => !defaultSystemPromptProcessorRegistry.contains(name));
-  if (missing.length === 0) {
-    logger.info("System prompt processors already registered.");
-    return;
-  }
-  registerSystemPromptProcessors();
-  logger.info(`Registered system prompt processors: ${requiredNames.join(", ")}`);
-}
-
 export function loadAgentCustomizations(): void {
   logger.info("Registering agent customization processors...");
-
-  ensureSystemPromptProcessorsRegistered();
 
   registerInputProcessor(WorkspacePathSanitizationProcessor);
   registerInputProcessor(UserInputContextBuildingProcessor);

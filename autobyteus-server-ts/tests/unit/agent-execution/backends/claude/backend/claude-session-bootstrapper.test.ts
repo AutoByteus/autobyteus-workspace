@@ -17,6 +17,8 @@ const createMemberTeamContext = () =>
     memberName: "Professor",
     memberRouteKey: "professor",
     memberRunId: "run-claude-team",
+    sendMessageToEnabled: true,
+    deliverInterAgentMessage: vi.fn(async () => undefined) as any,
   });
 
 const createRunContext = (input: {
@@ -43,6 +45,7 @@ const createBootstrapper = () =>
     { materializeConfiguredClaudeWorkspaceSkills: vi.fn(async () => []) } as any,
     {
       getAgentDefinitionById: vi.fn(async () => ({
+        name: "Professor agent",
         instructions: "Teach the class.",
         description: "Professor",
         skillNames: [],
@@ -71,6 +74,8 @@ describe("ClaudeSessionBootstrapper", () => {
       autoExecuteTools: true,
     });
     expect(runContext.runtimeContext.autoExecuteTools).toBe(true);
-    expect(runContext.runtimeContext.memberTeamContext).toBe(memberTeamContext);
+    expect(runContext.config.memberTeamContext).toBe(memberTeamContext);
+    expect(runContext.runtimeContext.carpenterSystemPrompt).toContain("## Agent Identity");
+    expect(runContext.runtimeContext.carpenterSystemPrompt).toContain("## Team Runtime");
   });
 });

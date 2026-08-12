@@ -26,7 +26,8 @@ The important ownership rule is:
    - `AgentEventInbox`
    - `AgentEventScheduler`
 3. `AgentWorker` runs direct bootstrap through `AgentBootstrapper.run(context)`.
-4. `SystemPromptPipeline` applies system-prompt processors during bootstrap.
+4. `SystemPromptProcessingStep` directly appends the platform-owned configured
+   Skills catalog, validates the complete instruction, and configures the LLM.
 5. `AgentReadyEvent` moves the runtime to the ready/idle state.
 6. The worker loop waits for the next dispatchable event entry.
 

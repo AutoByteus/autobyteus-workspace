@@ -19,7 +19,7 @@ import { ClaudeSessionEventName } from "../../../src/agent-execution/backends/cl
 import type { ClaudeSessionEvent } from "../../../src/agent-execution/backends/claude/claude-runtime-shared.js";
 import { ClaudeModelCatalog } from "../../../src/llm-management/services/claude-model-catalog.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import { buildConfiguredAgentToolExposure } from "../../../src/agent-execution/shared/configured-agent-tool-exposure.js";
+import { buildRuntimeAgentToolExposure } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 
 const claudeBinaryReady = spawnSync("claude", ["--version"], {
   stdio: "ignore",
@@ -93,7 +93,16 @@ const createRunContext = (input: {
         permissionMode: DEFAULT_CLAUDE_PERMISSION_MODE,
         autoExecuteTools: input.autoExecuteTools,
       }),
-      configuredToolExposure: buildConfiguredAgentToolExposure([]),
+      carpenterSystemPrompt: [
+        "## Agent Identity",
+        "",
+        "- Name: Claude session integration agent",
+        "",
+        "## Working Environment",
+        "",
+        `- Agent workspace: \`${input.workspaceRoot}\``,
+      ].join("\n"),
+      runtimeToolExposure: buildRuntimeAgentToolExposure([]),
     }),
   });
 

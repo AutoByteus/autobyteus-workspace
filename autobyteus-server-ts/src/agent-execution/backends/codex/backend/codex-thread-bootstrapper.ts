@@ -32,13 +32,6 @@ import {
   type CodexDynamicToolRegistration,
 } from "../codex-dynamic-tool.js";
 import {
-  DefaultCodexThreadBootstrapStrategy,
-  type CodexThreadBootstrapStrategy,
-} from "./codex-thread-bootstrap-strategy.js";
-import {
-  getTeamMemberCodexThreadBootstrapStrategy,
-} from "../team-communication/team-member-codex-thread-bootstrap-strategy.js";
-import {
   getCodexAppServerClientManager,
   type CodexAppServerClientManager,
 } from "../../../../runtime-management/codex/client/codex-app-server-client-manager.js";
@@ -50,9 +43,9 @@ import {
   type CodexSandboxMode,
 } from "../../../../runtime-management/codex/codex-sandbox-mode-setting.js";
 import {
-  resolveConfiguredAgentToolExposure,
-  type ConfiguredAgentToolExposure,
-} from "../../../shared/configured-agent-tool-exposure.js";
+  resolveRuntimeAgentToolExposure,
+  type RuntimeAgentToolExposure,
+} from "../../../shared/runtime-agent-tool-exposure.js";
 import { buildAgentRunMessageSenderContext } from "../../../../agent-communication/domain/agent-run-message-sender.js";
 import {
   getAgentToolMcpSessionService,
@@ -61,6 +54,7 @@ import {
 import {
   materializeCodexAgentToolsMcpThreadConfig,
 } from "../agent-tools-mcp/codex-agent-tools-mcp-materializer.js";
+import { composeCarpenterPrompt } from "../../../prompt/carpenter-prompt-composer.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
@@ -180,8 +174,6 @@ export class CodexThreadBootstrapper {
   private readonly workspaceResolver: CodexWorkspaceResolver;
   private readonly agentDefinitionService: AgentDefinitionService;
   private readonly skillService: SkillService;
-  private readonly defaultBootstrapStrategy: CodexThreadBootstrapStrategy;
-  private readonly teamBootstrapStrategy: CodexThreadBootstrapStrategy;
   private readonly clientManager: CodexAppServerClientManager;
   private readonly agentToolMcpSessionService: AgentToolMcpSessionService;
 
@@ -190,8 +182,6 @@ export class CodexThreadBootstrapper {
     workspaceResolver: CodexWorkspaceResolver = getCodexWorkspaceResolver(),
     agentDefinitionService: AgentDefinitionService = AgentDefinitionService.getInstance(),
     skillService: SkillService = SkillService.getInstance(),
-    defaultBootstrapStrategy: CodexThreadBootstrapStrategy = new DefaultCodexThreadBootstrapStrategy(),
-    teamBootstrapStrategy: CodexThreadBootstrapStrategy = getTeamMemberCodexThreadBootstrapStrategy(),
     clientManager: CodexAppServerClientManager = getCodexAppServerClientManager(),
     agentToolMcpSessionService: AgentToolMcpSessionService = getAgentToolMcpSessionService(),
   ) {
@@ -199,8 +189,6 @@ export class CodexThreadBootstrapper {
     this.workspaceResolver = workspaceResolver;
     this.agentDefinitionService = agentDefinitionService;
     this.skillService = skillService;
-    this.defaultBootstrapStrategy = defaultBootstrapStrategy;
-    this.teamBootstrapStrategy = teamBootstrapStrategy;
     this.clientManager = clientManager;
     this.agentToolMcpSessionService = agentToolMcpSessionService;
   }
@@ -227,27 +215,32 @@ export class CodexThreadBootstrapper {
     const agentDefinition = await this.agentDefinitionService.getAgentDefinitionById(
       runContext.config.agentDefinitionId,
     );
+    if (!agentDefinition) {
+      throw new Error(`Agent definition '${runContext.config.agentDefinitionId}' was not found.`);
+    }
     const configuredSkills = this.skillService.resolveConfiguredSkillsForAgent(agentDefinition);
-    const configuredToolExposure = resolveConfiguredAgentToolExposure(agentDefinition);
+    const runtimeToolExposure = resolveRuntimeAgentToolExposure(
+      agentDefinition,
+      runContext.config.memberTeamContext,
+    );
     const skillAccessMode = resolveSkillAccessMode(
       runContext.config.skillAccessMode ?? null,
       configuredSkills.length,
     );
-    const agentInstruction = this.composeBootstrapAgentInstruction(agentDefinition);
-    const threadConfigInput = await this.prepareThreadConfigInput(
-      runContext,
-      agentInstruction,
-      configuredToolExposure,
-    );
-    const dynamicToolRegistrations = threadConfigInput.dynamicToolRegistrations;
+    const carpenterSystemPrompt = composeCarpenterPrompt({
+      agentDefinition,
+      workspaceRootPath: workingDirectory,
+      memberTeamContext: runContext.config.memberTeamContext,
+    });
+    const dynamicToolRegistrations: CodexDynamicToolRegistration[] | null = null;
     const codexThreadConfig = this.buildThreadConfig({
       agentRunConfig: runContext.config,
       workingDirectory,
-      baseInstructions: threadConfigInput.baseInstructions,
-      developerInstructions: threadConfigInput.developerInstructions,
+      baseInstructions: carpenterSystemPrompt,
+      developerInstructions: null,
       appServerConfig: this.createAgentToolsMcpAppServerConfig({
         runContext,
-        configuredToolExposure,
+        runtimeToolExposure,
         workingDirectory,
       }),
       dynamicToolRegistrations,
@@ -271,15 +264,6 @@ export class CodexThreadBootstrapper {
         activeTurnId: existingRuntimeContext?.activeTurnId ?? null,
       }),
     });
-  }
-
-  private composeBootstrapAgentInstruction(agentDefinition: {
-    instructions?: unknown;
-    description?: unknown;
-  } | null): string | null {
-    const definitionInstructions = asTrimmedString(agentDefinition?.instructions);
-    const fallbackInstructions = asTrimmedString(agentDefinition?.description);
-    return definitionInstructions ?? fallbackInstructions;
   }
 
   private buildThreadConfig(input: {
@@ -310,7 +294,7 @@ export class CodexThreadBootstrapper {
 
   private createAgentToolsMcpAppServerConfig(input: {
     runContext: AgentRunContext<CodexAgentRunContext | null>;
-    configuredToolExposure: ConfiguredAgentToolExposure;
+    runtimeToolExposure: RuntimeAgentToolExposure;
     workingDirectory: string;
   }): ReturnType<typeof materializeCodexAgentToolsMcpThreadConfig> | null {
     const memberTeamContext = input.runContext.config.memberTeamContext;
@@ -330,7 +314,7 @@ export class CodexThreadBootstrapper {
         runtimeKind: input.runContext.config.runtimeKind,
         memberTeamContext: memberTeamContext ?? null,
       }),
-      configuredExposure: input.configuredToolExposure,
+      runtimeExposure: input.runtimeToolExposure,
       executionContext: {
         workingDirectory: input.workingDirectory,
         memoryDir: input.runContext.config.memoryDir,
@@ -342,21 +326,6 @@ export class CodexThreadBootstrapper {
       return null;
     }
     return materializeCodexAgentToolsMcpThreadConfig(result.descriptor);
-  }
-
-  private async prepareThreadConfigInput(
-    runContext: AgentRunContext<CodexAgentRunContext | null>,
-    agentInstruction: string | null,
-    configuredToolExposure: ConfiguredAgentToolExposure,
-  ) {
-    const strategy = this.teamBootstrapStrategy.appliesTo(runContext)
-      ? this.teamBootstrapStrategy
-      : this.defaultBootstrapStrategy;
-      return strategy.prepare({
-        runContext,
-        agentInstruction,
-        configuredToolExposure,
-      });
   }
 
   private async prepareWorkspaceSkills(input: {

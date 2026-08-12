@@ -1,6 +1,6 @@
 import { BaseBootstrapStep } from './base-bootstrap-step.js';
 import { AgentErrorEvent } from '../events/agent-events.js';
-import { SystemPromptPipeline } from '../pipelines/system-prompt-pipeline.js';
+import { appendConfiguredSkillsCatalog } from '../system-prompt/append-configured-skills-catalog.js';
 import type { AgentContext } from '../context/agent-context.js';
 
 export class SystemPromptProcessingStep extends BaseBootstrapStep {
@@ -22,7 +22,11 @@ export class SystemPromptProcessingStep extends BaseBootstrapStep {
       const baseSystemPrompt = context.config.systemPrompt ?? llmInstance.config.systemMessage;
       console.debug(`Agent '${agentId}': Retrieved base system prompt.`);
 
-      const currentSystemPrompt = new SystemPromptPipeline().process(baseSystemPrompt, context);
+      const currentSystemPrompt = appendConfiguredSkillsCatalog(baseSystemPrompt, context);
+
+      if (/\{\{[^}]+\}\}/.test(currentSystemPrompt)) {
+        throw new Error('Final provider instruction contains an unresolved documentation placeholder.');
+      }
 
       context.state.processedSystemPrompt = currentSystemPrompt;
 
