@@ -26,7 +26,6 @@ const serializeDefinition = (definition: AgentDefinition): Record<string, unknow
   tool_names: definition.toolNames,
   input_processor_names: definition.inputProcessorNames,
   llm_response_processor_names: definition.llmResponseProcessorNames,
-  system_prompt_processor_names: definition.systemPromptProcessorNames,
   tool_execution_result_processor_names: definition.toolExecutionResultProcessorNames,
   tool_invocation_preprocessor_names: definition.toolInvocationPreprocessorNames,
   lifecycle_processor_names: definition.lifecycleProcessorNames,

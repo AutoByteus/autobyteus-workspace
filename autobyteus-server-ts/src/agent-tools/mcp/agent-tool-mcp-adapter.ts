@@ -1,6 +1,6 @@
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import type { AgentRunMessageSenderContext } from "../../agent-communication/domain/agent-run-message-sender.js";
-import type { ConfiguredAgentToolExposure } from "../../agent-execution/shared/configured-agent-tool-exposure.js";
+import type { RuntimeAgentToolExposure } from "../../agent-execution/shared/runtime-agent-tool-exposure.js";
 import type {
   AgentToolMcpExecutionContext,
   AgentToolMcpSession,
@@ -9,7 +9,7 @@ import type { AgentToolMcpSupportedToolDefinition } from "./agent-tool-mcp-defin
 import type { McpToolResult } from "./agent-tools-mcp-result-mapper.js";
 
 export type AgentToolMcpAvailabilityContext = {
-  configuredExposure: ConfiguredAgentToolExposure;
+  runtimeExposure: RuntimeAgentToolExposure;
   sender: AgentRunMessageSenderContext | null;
   executionContext: AgentToolMcpExecutionContext;
 };

@@ -18,40 +18,25 @@ import {
   DEFAULT_CLAUDE_PERMISSION_MODE,
 } from "../session/claude-session-config.js";
 import { ClaudeAgentRunContext, type ClaudeRunContext } from "./claude-agent-run-context.js";
-import {
-  DefaultClaudeSessionBootstrapStrategy,
-  type ClaudeSessionBootstrapStrategy,
-} from "./claude-session-bootstrap-strategy.js";
-import {
-  getTeamMemberClaudeSessionBootstrapStrategy,
-} from "../team-communication/team-member-claude-session-bootstrap-strategy.js";
-import { resolveConfiguredAgentToolExposure } from "../../../shared/configured-agent-tool-exposure.js";
-
-const asTrimmedString = (value: unknown): string | null =>
-  typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
+import { resolveRuntimeAgentToolExposure } from "../../../shared/runtime-agent-tool-exposure.js";
+import { composeCarpenterPrompt } from "../../../prompt/carpenter-prompt-composer.js";
 
 export class ClaudeSessionBootstrapper {
   private readonly workspaceResolver: ClaudeWorkspaceResolver;
   private readonly workspaceSkillMaterializer: ClaudeWorkspaceSkillMaterializer;
   private readonly agentDefinitionService: AgentDefinitionService;
   private readonly skillService: SkillService;
-  private readonly defaultBootstrapStrategy: ClaudeSessionBootstrapStrategy;
-  private readonly teamBootstrapStrategy: ClaudeSessionBootstrapStrategy;
 
   constructor(
     workspaceResolver: ClaudeWorkspaceResolver = getClaudeWorkspaceResolver(),
     workspaceSkillMaterializer: ClaudeWorkspaceSkillMaterializer = getClaudeWorkspaceSkillMaterializer(),
     agentDefinitionService: AgentDefinitionService = AgentDefinitionService.getInstance(),
     skillService: SkillService = SkillService.getInstance(),
-    defaultBootstrapStrategy: ClaudeSessionBootstrapStrategy = new DefaultClaudeSessionBootstrapStrategy(),
-    teamBootstrapStrategy: ClaudeSessionBootstrapStrategy = getTeamMemberClaudeSessionBootstrapStrategy(),
   ) {
     this.workspaceResolver = workspaceResolver;
     this.workspaceSkillMaterializer = workspaceSkillMaterializer;
     this.agentDefinitionService = agentDefinitionService;
     this.skillService = skillService;
-    this.defaultBootstrapStrategy = defaultBootstrapStrategy;
-    this.teamBootstrapStrategy = teamBootstrapStrategy;
   }
 
   async bootstrapForCreate(
@@ -76,8 +61,14 @@ export class ClaudeSessionBootstrapper {
     const agentDefinition = await this.agentDefinitionService.getAgentDefinitionById(
       runContext.config.agentDefinitionId,
     );
+    if (!agentDefinition) {
+      throw new Error(`Agent definition '${runContext.config.agentDefinitionId}' was not found.`);
+    }
     const configuredSkills = this.skillService.resolveConfiguredSkillsForAgent(agentDefinition);
-    const configuredToolExposure = resolveConfiguredAgentToolExposure(agentDefinition);
+    const runtimeToolExposure = resolveRuntimeAgentToolExposure(
+      agentDefinition,
+      runContext.config.memberTeamContext,
+    );
     const skillAccessMode = resolveSkillAccessMode(
       runContext.config.skillAccessMode ?? null,
       configuredSkills.length,
@@ -90,28 +81,27 @@ export class ClaudeSessionBootstrapper {
         configuredSkills: exposedConfiguredSkills,
         skillAccessMode,
       });
-    const agentInstruction =
-      asTrimmedString(agentDefinition?.instructions) ??
-      asTrimmedString(agentDefinition?.description);
+    const carpenterSystemPrompt = composeCarpenterPrompt({
+      agentDefinition,
+      workspaceRootPath: workingDirectory,
+      memberTeamContext: runContext.config.memberTeamContext,
+    });
     const sessionConfig = buildClaudeSessionConfig({
       model: runContext.config.llmModelIdentifier,
       workingDirectory,
       permissionMode: DEFAULT_CLAUDE_PERMISSION_MODE,
       autoExecuteTools: runContext.config.autoExecuteTools,
     });
-    const runtimeContextInput = await this.prepareRuntimeContextInput(runContext);
-
     return new AgentRunContext({
       runId: runContext.runId,
       config: runContext.config,
       runtimeContext: new ClaudeAgentRunContext({
         sessionConfig,
-        agentInstruction,
-        configuredToolExposure,
+        carpenterSystemPrompt,
+        runtimeToolExposure,
         configuredSkills: exposedConfiguredSkills,
         materializedConfiguredSkills,
         skillAccessMode,
-        memberTeamContext: runtimeContextInput.memberTeamContext,
         sessionId: existingRuntimeContext?.sessionId ?? null,
         hasCompletedTurn: existingRuntimeContext?.hasCompletedTurn ?? false,
         activeTurnId: existingRuntimeContext?.activeTurnId ?? null,
@@ -119,14 +109,6 @@ export class ClaudeSessionBootstrapper {
     });
   }
 
-  private async prepareRuntimeContextInput(
-    runContext: AgentRunContext<ClaudeAgentRunContext | null>,
-  ) {
-    const strategy = this.teamBootstrapStrategy.appliesTo(runContext)
-      ? this.teamBootstrapStrategy
-      : this.defaultBootstrapStrategy;
-    return strategy.prepare({ runContext });
-  }
 }
 
 let cachedClaudeSessionBootstrapper: ClaudeSessionBootstrapper | null = null;

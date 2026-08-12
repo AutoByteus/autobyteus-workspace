@@ -25,7 +25,6 @@ describe('agentDefinitionOptionsStore', () => {
       availableToolNames: ['tool_a', 'tool_b'],
       availableOptionalInputProcessorNames: ['OptionalInput'],
       availableOptionalLlmResponseProcessorNames: ['OptionalLlm'],
-      availableOptionalSystemPromptProcessorNames: ['OptionalPrompt'],
       availableOptionalToolExecutionResultProcessorNames: ['OptionalToolResult'],
       availableOptionalToolInvocationPreprocessorNames: ['OptionalInvocation'],
       availableOptionalLifecycleProcessorNames: ['OptionalLifecycle'],
@@ -43,7 +42,6 @@ describe('agentDefinitionOptionsStore', () => {
     expect(store.toolNames).toEqual(['tool_a', 'tool_b'])
     expect(store.inputProcessors).toEqual(['OptionalInput'])
     expect(store.llmResponseProcessors).toEqual(['OptionalLlm'])
-    expect(store.systemPromptProcessors).toEqual(['OptionalPrompt'])
     expect(store.toolExecutionResultProcessors).toEqual(['OptionalToolResult'])
     expect(store.toolInvocationPreprocessors).toEqual(['OptionalInvocation'])
     expect(store.lifecycleProcessors).toEqual(['OptionalLifecycle'])

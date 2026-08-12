@@ -79,7 +79,6 @@ type AgentDefinitionArrayField =
   | 'toolNames'
   | 'inputProcessorNames'
   | 'llmResponseProcessorNames'
-  | 'systemPromptProcessorNames'
   | 'toolExecutionResultProcessorNames'
   | 'toolInvocationPreprocessorNames'
   | 'lifecycleProcessorNames';
@@ -88,7 +87,6 @@ const componentLists: Array<{ title: string; key: AgentDefinitionArrayField }> =
   { title: $t('agents.components.agents.AgentDetail.optionalProcessor.tools'), key: 'toolNames' },
   { title: $t('agents.components.agents.AgentDetail.optionalProcessor.inputProcessors'), key: 'inputProcessorNames' },
   { title: $t('agents.components.agents.AgentDetail.optionalProcessor.llmResponseProcessors'), key: 'llmResponseProcessorNames' },
-  { title: $t('agents.components.agents.AgentDetail.optionalProcessor.systemPromptProcessors'), key: 'systemPromptProcessorNames' },
   { title: $t('agents.components.agents.AgentDetail.optionalProcessor.toolExecutionResultProcessors'), key: 'toolExecutionResultProcessorNames' },
   { title: $t('agents.components.agents.AgentDetail.optionalProcessor.toolInvocationPreprocessors'), key: 'toolInvocationPreprocessorNames' },
   { title: $t('agents.components.agents.AgentDetail.optionalProcessor.lifecycleProcessors'), key: 'lifecycleProcessorNames' },

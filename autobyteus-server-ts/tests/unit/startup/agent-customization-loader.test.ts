@@ -1,10 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
-  defaultSystemPromptProcessorRegistry,
   defaultInputProcessorRegistry,
   defaultLlmResponseProcessorRegistry,
   defaultToolInvocationPreprocessorRegistry,
-  type SystemPromptProcessorDefinition,
   type AgentUserInputMessageProcessorDefinition,
   type LLMResponseProcessorDefinition,
   type ToolInvocationPreprocessorDefinition,
@@ -16,29 +14,21 @@ import { MediaUrlTransformerProcessor } from "../../../src/agent-customization/p
 import { MediaInputPathNormalizationPreprocessor } from "../../../src/agent-customization/processors/tool-invocation/media-input-path-normalization-preprocessor.js";
 
 describe("loadAgentCustomizations", () => {
-  let systemPromptSnapshot: Record<string, SystemPromptProcessorDefinition>;
   let inputSnapshot: Record<string, AgentUserInputMessageProcessorDefinition>;
   let llmResponseSnapshot: Record<string, LLMResponseProcessorDefinition>;
   let toolInvocationSnapshot: Record<string, ToolInvocationPreprocessorDefinition>;
 
   beforeEach(() => {
-    systemPromptSnapshot = defaultSystemPromptProcessorRegistry.getAllDefinitions();
     inputSnapshot = defaultInputProcessorRegistry.getAllDefinitions();
     llmResponseSnapshot = defaultLlmResponseProcessorRegistry.getAllDefinitions();
     toolInvocationSnapshot = defaultToolInvocationPreprocessorRegistry.getAllDefinitions();
 
-    defaultSystemPromptProcessorRegistry.clear();
     defaultInputProcessorRegistry.clear();
     defaultLlmResponseProcessorRegistry.clear();
     defaultToolInvocationPreprocessorRegistry.clear();
   });
 
   afterEach(() => {
-    defaultSystemPromptProcessorRegistry.clear();
-    Object.values(systemPromptSnapshot).forEach((definition) => {
-      defaultSystemPromptProcessorRegistry.registerProcessor(definition);
-    });
-
     defaultInputProcessorRegistry.clear();
     Object.values(inputSnapshot).forEach((definition) => {
       defaultInputProcessorRegistry.registerProcessor(definition);
@@ -53,14 +43,6 @@ describe("loadAgentCustomizations", () => {
     Object.values(toolInvocationSnapshot).forEach((definition) => {
       defaultToolInvocationPreprocessorRegistry.registerPreprocessor(definition);
     });
-  });
-
-  it("registers core system prompt processors", () => {
-    loadAgentCustomizations();
-
-    expect(defaultSystemPromptProcessorRegistry.listProcessorNames()).toEqual([
-      "AvailableSkillsProcessor",
-    ]);
   });
 
   it("registers customization processors in all registries", () => {

@@ -11,7 +11,7 @@ import {
   resetAgentToolMcpSessionServiceForTests,
 } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-service.js";
 import { buildAgentRunMessageSenderContext } from "../../../src/agent-communication/domain/agent-run-message-sender.js";
-import { buildConfiguredAgentToolExposure } from "../../../src/agent-execution/shared/configured-agent-tool-exposure.js";
+import { buildRuntimeAgentToolExposure } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 
 describe("AgentRunManager", () => {
   beforeEach(() => {
@@ -419,7 +419,7 @@ describe("AgentRunManager", () => {
     const matching = registry.createSession({
       owner: { runId: "run-with-mcp" },
       sender,
-      configuredExposure: buildConfiguredAgentToolExposure([]),
+      runtimeExposure: buildRuntimeAgentToolExposure([]),
       enabledTools: [],
       toolRoutes: {},
     });
@@ -430,7 +430,7 @@ describe("AgentRunManager", () => {
         senderName: "other",
         runtimeKind: "codex_app_server",
       }),
-      configuredExposure: buildConfiguredAgentToolExposure([]),
+      runtimeExposure: buildRuntimeAgentToolExposure([]),
       enabledTools: [],
       toolRoutes: {},
     });

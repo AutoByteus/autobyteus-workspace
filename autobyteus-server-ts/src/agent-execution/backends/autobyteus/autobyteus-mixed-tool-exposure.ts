@@ -27,12 +27,12 @@ export const resolveAutoByteusStandaloneToolNames = (input: {
   toolNames: Iterable<string> | null | undefined;
   memberTeamContext: MemberTeamContext | null | undefined;
 }): string[] => {
-  const configuredToolNames = Array.from(input.toolNames ?? []);
+  const requestedToolNames = Array.from(input.toolNames ?? []);
   if (!isMixedAutoByteusStandaloneMember(input.memberTeamContext)) {
-    return configuredToolNames;
+    return requestedToolNames;
   }
 
-  return configuredToolNames.filter((toolName) => {
+  return requestedToolNames.filter((toolName) => {
     const normalizedToolName = toolName.trim();
     if (LEGACY_LOCAL_TASK_PLAN_TOOL_NAMES.has(normalizedToolName)) {
       return false;

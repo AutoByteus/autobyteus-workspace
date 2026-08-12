@@ -10,7 +10,7 @@ const makeContext = () => ({
   config: { skills: [] as string[], skillAccessMode: undefined as SkillAccessMode | undefined }
 });
 
-const expectedSkillsBlock = (catalogEntries: string): string => `\n\n## Agent Skills
+const expectedSkillsBlock = (catalogEntries: string): string => `\n\n## Skills
 
 ### Skill Catalog
 
@@ -90,6 +90,16 @@ describe('AvailableSkillsProcessor', () => {
     );
 
     expect(result).toBe('Original');
+  });
+
+  it('omits configured entries with blank required metadata', () => {
+    const registry = new SkillRegistry();
+    (registry as any).skills.set('invalid', new Skill('invalid', '   ', 'BODY', '/invalid'));
+    const context = makeContext();
+    context.config.skills = ['invalid'];
+    expect(new AvailableSkillsProcessor().process('Original', {}, 'test_agent', context)).toBe(
+      'Original'
+    );
   });
 
   it('renders the exact configured catalog contract in configured order without skill bodies', () => {

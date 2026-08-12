@@ -24,6 +24,10 @@ export class SystemPromptProcessingStep extends BaseBootstrapStep {
 
       const currentSystemPrompt = new SystemPromptPipeline().process(baseSystemPrompt, context);
 
+      if (/\{\{[^}]+\}\}/.test(currentSystemPrompt)) {
+        throw new Error('Final provider instruction contains an unresolved documentation placeholder.');
+      }
+
       context.state.processedSystemPrompt = currentSystemPrompt;
 
       llmInstance.configureSystemPrompt(currentSystemPrompt);

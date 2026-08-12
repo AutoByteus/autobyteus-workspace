@@ -3,7 +3,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRunConfig } from "../../../../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../../../../src/agent-execution/domain/agent-run-context.js";
-import { DefaultCodexThreadBootstrapStrategy } from "../../../../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrap-strategy.js";
 import {
   CodexThreadBootstrapper,
   normalizeSandboxMode,
@@ -23,7 +22,6 @@ import type { CodexWorkspaceSkillMaterializer } from "../../../../../../src/agen
 import type { CodexWorkspaceResolver } from "../../../../../../src/agent-execution/backends/codex/codex-workspace-resolver.js";
 import type { AgentDefinitionService } from "../../../../../../src/agent-definition/services/agent-definition-service.js";
 import type { SkillService } from "../../../../../../src/skills/services/skill-service.js";
-import type { CodexThreadBootstrapStrategy } from "../../../../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrap-strategy.js";
 import type { CodexAppServerClientManager } from "../../../../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
 import type { AgentToolMcpSessionService } from "../../../../../../src/agent-tools/mcp/agent-tool-mcp-session-service.js";
 import type { AgentToolMcpDescriptor } from "../../../../../../src/agent-tools/mcp/agent-tool-mcp-session.js";
@@ -92,6 +90,8 @@ const createMemberTeamContext = () =>
     memberName: "ping",
     memberRouteKey: "ping",
     memberRunId: "ping-run-1",
+    sendMessageToEnabled: true,
+    deliverInterAgentMessage: vi.fn(async () => undefined) as any,
   });
 
 const createSkill = (name: string) =>
@@ -148,8 +148,9 @@ const createBootstrapper = (input: {
     getAgentDefinitionById: vi.fn(async () => ({
       skillNames: input.skills.map((skill) => skill.name),
       toolNames: input.toolNames ?? [],
-      instructions: null,
-      description: null,
+      name: "Codex test agent",
+      instructions: "Run the test.",
+      description: "Test agent",
     })),
   } as unknown as AgentDefinitionService;
   const skillService = {
@@ -171,19 +172,11 @@ const createBootstrapper = (input: {
       redactedDescriptor: null,
     })),
   } as unknown as AgentToolMcpSessionService;
-  const teamStrategy = {
-    appliesTo: () => false,
-    prepare: async () => {
-      throw new Error("team strategy should not be used in this test");
-    },
-  } as CodexThreadBootstrapStrategy;
   const bootstrapper = new CodexThreadBootstrapper(
     workspaceSkillMaterializer,
     workspaceResolver,
     agentDefinitionService,
     skillService,
-    new DefaultCodexThreadBootstrapStrategy(),
-    teamStrategy,
     clientManager,
     agentToolMcpSessionService,
   );

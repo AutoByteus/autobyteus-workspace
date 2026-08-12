@@ -64,14 +64,6 @@ argumentSchema.addParameter(
 );
 argumentSchema.addParameter(
   new ParameterDefinition({
-    name: "system_prompt_processor_names",
-    type: ParameterType.STRING,
-    description: "A comma-separated string of optional system prompt processor names.",
-    required: false,
-  }),
-);
-argumentSchema.addParameter(
-  new ParameterDefinition({
     name: "input_processor_names",
     type: ParameterType.STRING,
     description: "A comma-separated string of optional input processor names.",
@@ -129,7 +121,6 @@ export async function createAgentDefinition(
   category?: string | null,
   avatar_url?: string | null,
   tool_names?: string | null,
-  system_prompt_processor_names?: string | null,
   input_processor_names?: string | null,
   llm_response_processor_names?: string | null,
   tool_execution_result_processor_names?: string | null,
@@ -148,7 +139,6 @@ export async function createAgentDefinition(
       category: category ?? undefined,
       avatarUrl: avatar_url ?? undefined,
       toolNames: parseCsvList(tool_names),
-      systemPromptProcessorNames: parseCsvList(system_prompt_processor_names),
       inputProcessorNames: parseCsvList(input_processor_names),
       llmResponseProcessorNames: parseCsvList(llm_response_processor_names),
       toolExecutionResultProcessorNames: parseCsvList(tool_execution_result_processor_names),

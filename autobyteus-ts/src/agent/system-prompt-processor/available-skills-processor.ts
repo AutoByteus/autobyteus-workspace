@@ -41,7 +41,19 @@ export class AvailableSkillsProcessor extends BaseSystemPromptProcessor {
 
     const catalogSkills = configuredSkills
       .map((skillName) => registry.getSkill(skillName))
-      .filter((skill): skill is NonNullable<typeof skill> => Boolean(skill));
+      .filter((skill): skill is NonNullable<typeof skill> => {
+        if (!skill) {
+          return false;
+        }
+        const name = skill.name?.trim() ?? '';
+        const description = skill.description?.trim() ?? '';
+        const rootPath = skill.rootPath?.trim() ?? '';
+        if (!name || !description || !rootPath) {
+          console.warn(`Agent '${agentId}': Omitting invalid configured skill catalog entry.`);
+          return false;
+        }
+        return path.isAbsolute(path.resolve(rootPath, 'SKILL.md'));
+      });
 
     if (!catalogSkills.length) {
       console.info(
@@ -52,11 +64,11 @@ export class AvailableSkillsProcessor extends BaseSystemPromptProcessor {
 
     const catalogEntries = catalogSkills.map(
       (skill) =>
-        `- **${skill.name}**: ${skill.description}\n` +
+        `- **${skill.name.trim()}**: ${skill.description.trim()}\n` +
         `  - **SKILL.md:** \`${path.resolve(skill.rootPath, 'SKILL.md')}\``
     );
 
-    const skillsBlock = `\n\n## Agent Skills
+    const skillsBlock = `\n\n## Skills
 
 ### Skill Catalog
 

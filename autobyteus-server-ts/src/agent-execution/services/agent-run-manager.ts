@@ -19,7 +19,7 @@ import {
 import { CodexAgentRunContext } from "../backends/codex/backend/codex-agent-run-context.js";
 import { buildCodexThreadConfig } from "../backends/codex/thread/codex-thread-config.js";
 import { resolveApprovalPolicyForRunConfig } from "../backends/codex/backend/codex-thread-bootstrapper.js";
-import { buildConfiguredAgentToolExposure } from "../shared/configured-agent-tool-exposure.js";
+import { buildRuntimeAgentToolExposure } from "../shared/runtime-agent-tool-exposure.js";
 import { AgentCreationError, AgentTerminationError } from "../errors.js";
 import {
   RunFileChangeService,
@@ -248,8 +248,8 @@ export class AgentRunManager {
           permissionMode: DEFAULT_CLAUDE_PERMISSION_MODE,
           autoExecuteTools: config.autoExecuteTools,
         }),
-        configuredToolExposure: buildConfiguredAgentToolExposure([]),
-        memberTeamContext: config.memberTeamContext,
+        carpenterSystemPrompt: "Pending runtime bootstrap.",
+        runtimeToolExposure: buildRuntimeAgentToolExposure([], config.memberTeamContext),
         sessionId: platformAgentRunId,
       });
     }

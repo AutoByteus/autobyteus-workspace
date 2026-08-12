@@ -2,7 +2,6 @@ import { Query, Resolver } from "type-graphql";
 import {
   defaultInputProcessorRegistry,
   defaultLlmResponseProcessorRegistry,
-  defaultSystemPromptProcessorRegistry,
   defaultToolExecutionResultProcessorRegistry,
   defaultToolInvocationPreprocessorRegistry,
   defaultLifecycleEventProcessorRegistry,
@@ -46,17 +45,6 @@ export class AgentCustomizationOptionsResolver {
       return toOptionalNames(options);
     } catch (error) {
       logger.error(`Error fetching available LLM response processors: ${String(error)}`);
-      return [];
-    }
-  }
-
-  @Query(() => [String])
-  availableOptionalSystemPromptProcessorNames(): string[] {
-    try {
-      const options = defaultSystemPromptProcessorRegistry.getOrderedProcessorOptions();
-      return toOptionalNames(options);
-    } catch (error) {
-      logger.error(`Error fetching available system prompt processors: ${String(error)}`);
       return [];
     }
   }
