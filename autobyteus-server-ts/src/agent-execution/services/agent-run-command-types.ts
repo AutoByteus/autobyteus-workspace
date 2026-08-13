@@ -4,10 +4,12 @@ import type { AgentStatusPayload } from "../domain/agent-status-payload.js";
 
 export type AgentRunCommandState =
   | "STARTING"
+  | "ADMITTED"
   | "FORWARDED"
   | "COMPLETED"
   | "FAILED"
-  | "REJECTED";
+  | "REJECTED"
+  | "CANCELLED";
 
 export type AgentRunCommandAckState =
   | "accepted"
@@ -15,22 +17,17 @@ export type AgentRunCommandAckState =
   | "duplicate_completed"
   | "duplicate_failed"
   | "duplicate_rejected"
+  | "duplicate_cancelled"
   | "rejected"
   | "failed";
 
 export type AgentRunCommandErrorCode =
-  | "RUN_COMMAND_IN_PROGRESS"
   | "INVALID_COMMAND_ID"
   | "RUN_NOT_FOUND"
   | "ACTIVATION_FAILED"
   | "RUNTIME_REJECTED"
+  | "AGENT_RUN_TERMINATED_BEFORE_INPUT_FORWARD"
   | "UNKNOWN_ERROR";
-
-export type AgentRunCommandTurnAssociation =
-  | { kind: "PENDING_IDENTITY" }
-  | { kind: "IDENTIFIED"; turnId: string }
-  | { kind: "AWAITING_ANONYMOUS_START" }
-  | { kind: "ANONYMOUS_ARMED"; armedAtSequence: number };
 
 export type SendMessageCommandAckPayload = {
   command_type: "SEND_MESSAGE";
@@ -55,8 +52,7 @@ export type AgentRunCommandRecord = {
   terminalAt: string | null;
   code?: AgentRunCommandErrorCode;
   message?: string;
-  turnId?: string | null;
-  association: AgentRunCommandTurnAssociation;
+  turnId: string | null;
 };
 
 export type AgentRunCommandCoordinatorInput = {

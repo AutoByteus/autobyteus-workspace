@@ -127,7 +127,7 @@ export class ClaudeSession {
     });
   }
 
-  async sendTurn(message: AgentInputUserMessage): Promise<{ turnId: string | null }> {
+  async startTurn(message: AgentInputUserMessage): Promise<{ turnId: string | null }> {
     const content = asString(
       appendContextFileReferenceSection(message.content, message.contextFiles, {
         resolveUri: (uri) => this.contextFileLocalPathResolver.resolve(uri),
@@ -137,7 +137,9 @@ export class ClaudeSession {
       throw new Error("Claude runtime message content is required.");
     }
     if (this.activeTurnId) {
-      throw new Error(`Claude runtime turn is already active for run '${this.runId}'.`);
+      throw new Error(
+        `Claude start_turn invariant failed because turn '${this.activeTurnId}' is active for run '${this.runId}'.`,
+      );
     }
 
     const turnId = `${this.runId}:turn:${Date.now()}`;
@@ -330,15 +332,6 @@ export class ClaudeSession {
   }
 
 
-  private forgetActiveTurnQuery(activeTurn: ClaudeActiveTurnExecution): void {
-    const query = activeTurn.query;
-    activeTurn.queryClosed = true;
-    activeTurn.query = null;
-    if (query && this.dependencies.activeQueriesByRunId.get(this.runId) === query) {
-      this.dependencies.activeQueriesByRunId.delete(this.runId);
-    }
-  }
-
   private closeActiveTurnQuery(activeTurn: ClaudeActiveTurnExecution): void {
     if (activeTurn.queryClosed) {
       return;
@@ -497,11 +490,7 @@ export class ClaudeSession {
       throw enrichClaudeRuntimeErrorWithDiagnostics(error, processDiagnostics);
     } finally {
       if (activeTurn) {
-        if (isClaudeActiveTurnInterrupted(activeTurn, options.abortController)) {
-          this.forgetActiveTurnQuery(activeTurn);
-        } else {
-          this.closeActiveTurnQuery(activeTurn);
-        }
+        this.closeActiveTurnQuery(activeTurn);
       } else if (query) {
         this.dependencies.activeQueriesByRunId.delete(this.runId);
         this.dependencies.sdkClient.closeQuery(query);

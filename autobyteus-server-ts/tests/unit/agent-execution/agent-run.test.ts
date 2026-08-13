@@ -1,3 +1,4 @@
+import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { describe, expect, it, vi } from "vitest";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
@@ -7,6 +8,11 @@ import {
   type AgentRunEvent,
 } from "../../../src/agent-execution/domain/agent-run-event.js";
 import type { AgentRuntimeLifecycleSnapshot } from "../../../src/agent-execution/domain/agent-runtime-lifecycle-snapshot.js";
+import type {
+  AgentRunBackendInputDispatch,
+  AgentRunBackendInputDispatchResult,
+  AgentRunInputLifecycle,
+} from "../../../src/agent-execution/input/agent-run-input-contract.js";
 
 const createDeferred = <T>() => {
   let resolve!: (value: T) => void;
@@ -18,10 +24,18 @@ const createDeferred = <T>() => {
   return { promise, resolve, reject };
 };
 
+const event = (
+  runId: string,
+  eventType: AgentRunEventType,
+  payload: Record<string, unknown>,
+): AgentRunEvent => ({ eventType, runId, payload, statusHint: null });
+
 const createHarness = (options: {
   runId?: string;
   snapshot?: AgentRuntimeLifecycleSnapshot;
-  postUserMessage?: ReturnType<typeof vi.fn>;
+  append?: "supported" | "unsupported";
+  dispatchUserInput?: ReturnType<typeof vi.fn>;
+  terminate?: ReturnType<typeof vi.fn>;
 } = {}) => {
   const runId = options.runId ?? "agent-run-1";
   const context = new AgentRunContext({
@@ -48,6 +62,7 @@ const createHarness = (options: {
   const backend = {
     runId,
     runtimeKind: context.config.runtimeKind,
+    inputCapabilities: { activeTurnAppend: options.append ?? "unsupported" },
     getContext: () => context,
     getPlatformAgentRunId: () => "platform-run-1",
     isActive: () => snapshot.availability === "active",
@@ -55,161 +70,439 @@ const createHarness = (options: {
     subscribeToSourceEventBatches: vi.fn().mockImplementation(
       (next: (events: readonly AgentRunEvent[]) => void | Promise<void>) => {
         sourceListener = next;
-        return () => {
-          sourceListener = null;
-        };
+        return () => { sourceListener = null; };
       },
     ),
-    postUserMessage: options.postUserMessage ?? vi.fn().mockResolvedValue({ accepted: true }),
+    dispatchUserInput: options.dispatchUserInput ?? vi.fn().mockResolvedValue({
+      forwarded: true,
+      turnId: null,
+    }),
     approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
     interrupt: vi.fn().mockResolvedValue({ accepted: true }),
-    terminate: vi.fn().mockResolvedValue({ accepted: true }),
+    terminate: options.terminate ?? vi.fn().mockResolvedValue({ accepted: true }),
   };
   const run = new AgentRun({ context, backend: backend as never });
   return {
     backend,
     run,
     getSourceListener: () => sourceListener,
-    setSnapshot: (value: AgentRuntimeLifecycleSnapshot) => {
-      snapshot = value;
-    },
+    setSnapshot: (value: AgentRuntimeLifecycleSnapshot) => { snapshot = value; },
   };
 };
 
-const event = (
-  runId: string,
-  eventType: AgentRunEventType,
-  payload: Record<string, unknown>,
-): AgentRunEvent => ({ eventType, runId, payload, statusHint: null });
-
-const observedStatuses = (events: AgentRunEvent[]) => events
-  .filter((item) => item.eventType === AgentRunEventType.AGENT_STATUS)
-  .map((item) => item.payload.status);
-
-describe("AgentRun", () => {
-  it("serializes delayed command facts and runtime turn evidence through one run-owned state", async () => {
-    const sendDeferred = createDeferred<{ accepted: true }>();
+describe("AgentRun input admission", () => {
+  it("returns admission before an idle start dispatch settles and records forwarding once", async () => {
+    const deferred = createDeferred<AgentRunBackendInputDispatchResult>();
     const harness = createHarness({
-      postUserMessage: vi.fn().mockImplementation(() => sendDeferred.promise),
+      dispatchUserInput: vi.fn().mockReturnValue(deferred.promise),
     });
-    const observedEvents: AgentRunEvent[] = [];
-    harness.run.subscribeToEvents((item) => observedEvents.push(item));
+    const lifecycle: AgentRunInputLifecycle[] = [];
 
-    const postPromise = harness.run.postUserMessage({ text: "start" } as never);
-    await vi.waitFor(() => {
-      expect(harness.backend.postUserMessage).toHaveBeenCalledTimes(1);
+    const result = await harness.run.postUserMessage(
+      new AgentInputUserMessage("start"),
+      { lifecycleObserver: (fact) => lifecycle.push(fact) },
+    );
+
+    expect(result).toEqual({ accepted: true, turnId: null });
+    expect(harness.backend.dispatchUserInput).toHaveBeenCalledWith({
+      kind: "start_turn",
+      message: expect.objectContaining({ content: "start" }),
     });
-
-    expect(harness.run.getStatusSnapshot()).toEqual({
-      status: "initializing",
-      agent_id: "agent-run-1",
-    });
-    expect(observedStatuses(observedEvents)).toEqual(["initializing"]);
-
-    sendDeferred.resolve({ accepted: true });
-    await postPromise;
+    expect(lifecycle).toEqual([{ kind: "admitted" }]);
     expect(harness.run.getStatusSnapshot().status).toBe("initializing");
+
+    deferred.resolve({ forwarded: true, turnId: "turn-1" });
+    await vi.waitFor(() => expect(lifecycle).toContainEqual({
+      kind: "turn_associated",
+      turnId: "turn-1",
+    }));
+    expect(lifecycle).toEqual([
+      { kind: "admitted" },
+      { kind: "forwarded", dispatchKind: "start_turn", turnId: "turn-1" },
+      { kind: "turn_associated", turnId: "turn-1" },
+    ]);
+  });
+
+  it("claims exact active Codex append and exposes only that atomic turn id", async () => {
+    const harness = createHarness({
+      append: "supported",
+      snapshot: {
+        availability: "active",
+        phase: "running",
+        currentTurn: { kind: "IDENTIFIED", turnId: "turn-active" },
+      },
+    });
+
+    const result = await harness.run.postUserMessage(new AgentInputUserMessage("steer"));
+
+    expect(result).toEqual({ accepted: true, turnId: "turn-active" });
+    expect(harness.backend.dispatchUserInput).toHaveBeenCalledWith({
+      kind: "append_to_active_turn",
+      turnId: "turn-active",
+      message: expect.objectContaining({ content: "steer" }),
+    });
+  });
+
+  it("admits Claude/AutoByteus input while active and starts it only after terminal", async () => {
+    const harness = createHarness({
+      append: "unsupported",
+      snapshot: {
+        availability: "active",
+        phase: "running",
+        currentTurn: { kind: "IDENTIFIED", turnId: "turn-active" },
+      },
+    });
+
+    await expect(harness.run.postUserMessage(new AgentInputUserMessage("reply"))).resolves.toEqual({
+      accepted: true,
+      turnId: null,
+    });
+    expect(harness.backend.dispatchUserInput).not.toHaveBeenCalled();
 
     harness.setSnapshot({
       availability: "active",
-      phase: "running",
-      currentTurn: { kind: "IDENTIFIED", turnId: "turn-1" },
+      phase: "idle",
+      currentTurn: { kind: "NONE" },
     });
     await harness.getSourceListener()?.([
+      event(harness.run.runId, AgentRunEventType.TURN_COMPLETED, { turn_id: "turn-active" }),
+    ]);
+
+    await vi.waitFor(() => expect(harness.backend.dispatchUserInput).toHaveBeenCalledWith({
+      kind: "start_turn",
+      message: expect.objectContaining({ content: "reply" }),
+    }));
+  });
+
+  it("retains anonymous-turn input until the canonical terminal instead of guessing", async () => {
+    const harness = createHarness({
+      append: "supported",
+      snapshot: {
+        availability: "active",
+        phase: "running",
+        currentTurn: { kind: "ANONYMOUS" },
+      },
+    });
+
+    await expect(harness.run.postUserMessage(new AgentInputUserMessage("wait"))).resolves.toEqual({
+      accepted: true,
+      turnId: null,
+    });
+    expect(harness.backend.dispatchUserInput).not.toHaveBeenCalled();
+
+    harness.setSnapshot({ availability: "active", phase: "idle", currentTurn: { kind: "NONE" } });
+    await harness.getSourceListener()?.([
+      event(harness.run.runId, AgentRunEventType.TURN_COMPLETED, {}),
+    ]);
+    await vi.waitFor(() => expect(harness.backend.dispatchUserInput).toHaveBeenCalledWith({
+      kind: "start_turn",
+      message: expect.objectContaining({ content: "wait" }),
+    }));
+  });
+
+  it("keeps several next-turn inputs FIFO and one provider invocation at a time", async () => {
+    const first = createDeferred<AgentRunBackendInputDispatchResult>();
+    const second = createDeferred<AgentRunBackendInputDispatchResult>();
+    const dispatch = vi.fn()
+      .mockReturnValueOnce(first.promise)
+      .mockReturnValueOnce(second.promise);
+    const harness = createHarness({ dispatchUserInput: dispatch });
+
+    await harness.run.postUserMessage(new AgentInputUserMessage("first"));
+    await harness.run.postUserMessage(new AgentInputUserMessage("second"));
+    expect(dispatch).toHaveBeenCalledTimes(1);
+
+    first.resolve({ forwarded: true, turnId: "turn-1" });
+    await vi.waitFor(() => expect(harness.run.getStatusSnapshot().status).toBe("running"));
+    expect(dispatch).toHaveBeenCalledTimes(1);
+
+    harness.setSnapshot({ availability: "active", phase: "idle", currentTurn: { kind: "NONE" } });
+    await harness.getSourceListener()?.([
+      event(harness.run.runId, AgentRunEventType.TURN_COMPLETED, { turn_id: "turn-1" }),
+    ]);
+    await vi.waitFor(() => expect(dispatch).toHaveBeenCalledTimes(2));
+    expect((dispatch.mock.calls[1]?.[0] as AgentRunBackendInputDispatch).message.content).toBe("second");
+    second.resolve({ forwarded: true, turnId: "turn-2" });
+  });
+
+  it("orders synchronous start and terminal facts behind forwarding result", async () => {
+    const lifecycle: AgentRunInputLifecycle[] = [];
+    let harness: ReturnType<typeof createHarness>;
+    const dispatch = vi.fn().mockImplementation(async () => {
+      harness.setSnapshot({ availability: "active", phase: "idle", currentTurn: { kind: "NONE" } });
+      await harness.getSourceListener()?.([
+        event("agent-run-sync", AgentRunEventType.TURN_STARTED, { turn_id: "turn-sync" }),
+        event("agent-run-sync", AgentRunEventType.TURN_COMPLETED, { turn_id: "turn-sync" }),
+      ]);
+      return { forwarded: true, turnId: "turn-sync" };
+    });
+    harness = createHarness({ runId: "agent-run-sync", dispatchUserInput: dispatch });
+
+    await harness.run.postUserMessage(new AgentInputUserMessage("sync"), {
+      lifecycleObserver: (fact) => lifecycle.push(fact),
+    });
+
+    await vi.waitFor(() => expect(lifecycle.at(-1)).toEqual({
+      kind: "completed",
+      turnId: "turn-sync",
+    }));
+    expect(lifecycle).toEqual([
+      { kind: "admitted" },
+      { kind: "forwarded", dispatchKind: "start_turn", turnId: "turn-sync" },
+      { kind: "turn_associated", turnId: "turn-sync" },
+      { kind: "completed", turnId: "turn-sync" },
+    ]);
+  });
+
+  it("does not retry or convert a rejected append", async () => {
+    const lifecycle: AgentRunInputLifecycle[] = [];
+    const harness = createHarness({
+      append: "supported",
+      snapshot: {
+        availability: "active",
+        phase: "running",
+        currentTurn: { kind: "IDENTIFIED", turnId: "turn-active" },
+      },
+      dispatchUserInput: vi.fn().mockResolvedValue({
+        forwarded: false,
+        code: "STEER_REJECTED",
+        message: "no",
+        turnId: null,
+      }),
+    });
+
+    await harness.run.postUserMessage(new AgentInputUserMessage("append"), {
+      lifecycleObserver: (fact) => lifecycle.push(fact),
+    });
+    await vi.waitFor(() => expect(lifecycle.at(-1)).toMatchObject({ kind: "failed" }));
+    expect(harness.backend.dispatchUserInput).toHaveBeenCalledTimes(1);
+    expect(harness.backend.dispatchUserInput.mock.calls[0]?.[0]).toMatchObject({
+      kind: "append_to_active_turn",
+    });
+  });
+
+  it("settles reject-after-start as one protocol failure without retry", async () => {
+    const lifecycle: AgentRunInputLifecycle[] = [];
+    let harness: ReturnType<typeof createHarness>;
+    const dispatch = vi.fn().mockImplementation(async () => {
+      harness.setSnapshot({
+        availability: "active",
+        phase: "running",
+        currentTurn: { kind: "IDENTIFIED", turnId: "turn-observed" },
+      });
+      await harness.getSourceListener()?.([
+        event("agent-run-protocol", AgentRunEventType.TURN_STARTED, { turn_id: "turn-observed" }),
+      ]);
+      return {
+        forwarded: false,
+        code: "PROVIDER_REJECTED",
+        message: "late rejection",
+        turnId: null,
+      };
+    });
+    harness = createHarness({ runId: "agent-run-protocol", dispatchUserInput: dispatch });
+
+    await harness.run.postUserMessage(new AgentInputUserMessage("start"), {
+      lifecycleObserver: (fact) => lifecycle.push(fact),
+    });
+
+    await vi.waitFor(() => expect(lifecycle.at(-1)).toEqual({
+      kind: "failed",
+      code: "AGENT_RUN_INPUT_PROVIDER_PROTOCOL_VIOLATION",
+      message: "Provider rejected input after publishing a canonical turn start.",
+      turnId: "turn-observed",
+    }));
+    expect(dispatch).toHaveBeenCalledTimes(1);
+    expect(lifecycle.filter((fact) => fact.kind === "failed")).toHaveLength(1);
+  });
+
+  it("retains waiting input through interrupt acceptance and drains only on terminal", async () => {
+    const harness = createHarness({
+      snapshot: {
+        availability: "active",
+        phase: "running",
+        currentTurn: { kind: "IDENTIFIED", turnId: "turn-active" },
+      },
+    });
+    await harness.run.postUserMessage(new AgentInputUserMessage("after interrupt"));
+
+    await expect(harness.run.interrupt("turn-active")).resolves.toEqual({ accepted: true });
+    expect(harness.backend.dispatchUserInput).not.toHaveBeenCalled();
+
+    harness.setSnapshot({ availability: "active", phase: "idle", currentTurn: { kind: "NONE" } });
+    await harness.getSourceListener()?.([
+      event(harness.run.runId, AgentRunEventType.TURN_INTERRUPTED, { turn_id: "turn-active" }),
+    ]);
+    await vi.waitFor(() => expect(harness.backend.dispatchUserInput).toHaveBeenCalledWith({
+      kind: "start_turn",
+      message: expect.objectContaining({ content: "after interrupt" }),
+    }));
+  });
+
+  it("cancels waiting admitted input once on accepted termination", async () => {
+    const lifecycle: AgentRunInputLifecycle[] = [];
+    const harness = createHarness({
+      snapshot: {
+        availability: "active",
+        phase: "running",
+        currentTurn: { kind: "IDENTIFIED", turnId: "turn-active" },
+      },
+    });
+    await harness.run.postUserMessage(new AgentInputUserMessage("queued"), {
+      lifecycleObserver: (fact) => lifecycle.push(fact),
+    });
+
+    await expect(harness.run.terminate()).resolves.toEqual({ accepted: true });
+    expect(lifecycle).toEqual([
+      { kind: "admitted" },
+      { kind: "cancelled", code: "AGENT_RUN_TERMINATED_BEFORE_INPUT_FORWARD" },
+    ]);
+    await expect(harness.run.postUserMessage(new AgentInputUserMessage("late"))).resolves.toMatchObject({
+      accepted: false,
+      code: "AGENT_RUN_NOT_ACCEPTING_INPUT",
+    });
+  });
+
+  it("reopens a rejected termination without losing queued order", async () => {
+    const terminate = vi.fn().mockResolvedValue({ accepted: false, code: "BUSY" });
+    const harness = createHarness({
+      snapshot: {
+        availability: "active",
+        phase: "running",
+        currentTurn: { kind: "IDENTIFIED", turnId: "turn-active" },
+      },
+      terminate,
+    });
+    await harness.run.postUserMessage(new AgentInputUserMessage("queued"));
+    await expect(harness.run.terminate()).resolves.toEqual({ accepted: false, code: "BUSY" });
+    await expect(harness.run.postUserMessage(new AgentInputUserMessage("second"))).resolves.toMatchObject({
+      accepted: true,
+    });
+
+    harness.setSnapshot({ availability: "active", phase: "idle", currentTurn: { kind: "NONE" } });
+    await harness.getSourceListener()?.([
+      event(harness.run.runId, AgentRunEventType.TURN_INTERRUPTED, { turn_id: "turn-active" }),
+    ]);
+    await vi.waitFor(() => expect(harness.backend.dispatchUserInput).toHaveBeenCalledTimes(1));
+    expect((harness.backend.dispatchUserInput.mock.calls[0]?.[0] as AgentRunBackendInputDispatch).message.content)
+      .toBe("queued");
+  });
+
+  it("waits for a claimed dispatch before accepted termination and cancels the queued tail", async () => {
+    const dispatch = createDeferred<AgentRunBackendInputDispatchResult>();
+    const firstLifecycle: AgentRunInputLifecycle[] = [];
+    const secondLifecycle: AgentRunInputLifecycle[] = [];
+    const terminate = vi.fn().mockResolvedValue({ accepted: true });
+    const harness = createHarness({
+      dispatchUserInput: vi.fn().mockReturnValue(dispatch.promise),
+      terminate,
+    });
+    await harness.run.postUserMessage(new AgentInputUserMessage("claimed"), {
+      lifecycleObserver: (fact) => firstLifecycle.push(fact),
+    });
+    await harness.run.postUserMessage(new AgentInputUserMessage("queued"), {
+      lifecycleObserver: (fact) => secondLifecycle.push(fact),
+    });
+
+    const termination = harness.run.terminate();
+    await Promise.resolve();
+    expect(terminate).not.toHaveBeenCalled();
+    dispatch.resolve({ forwarded: true, turnId: "turn-1" });
+    await expect(termination).resolves.toEqual({ accepted: true });
+
+    expect(terminate).toHaveBeenCalledOnce();
+    expect(firstLifecycle).toContainEqual({
+      kind: "interrupted",
+      turnId: "turn-1",
+    });
+    expect(secondLifecycle).toEqual([
+      { kind: "admitted" },
+      { kind: "cancelled", code: "AGENT_RUN_TERMINATED_BEFORE_INPUT_FORWARD" },
+    ]);
+  });
+
+  it("fails retained input once and closes admission on a runtime-global terminal error", async () => {
+    const lifecycle: AgentRunInputLifecycle[] = [];
+    const harness = createHarness({
+      snapshot: {
+        availability: "active",
+        phase: "running",
+        currentTurn: { kind: "IDENTIFIED", turnId: "turn-active" },
+      },
+    });
+    await harness.run.postUserMessage(new AgentInputUserMessage("queued"), {
+      lifecycleObserver: (fact) => lifecycle.push(fact),
+    });
+
+    harness.setSnapshot({ availability: "offline", phase: "error", currentTurn: { kind: "NONE" } });
+    await harness.getSourceListener()?.([
+      event(harness.run.runId, AgentRunEventType.ERROR, {
+        code: "CLAUDE_SESSION_FAILED",
+        message: "session failed",
+        error_scope: "runtime",
+        error_effect: "terminal",
+      }),
+    ]);
+
+    expect(lifecycle).toEqual([
+      { kind: "admitted" },
+      {
+        kind: "failed",
+        code: "RUNTIME_GLOBAL_FAILURE",
+        message: "session failed",
+        turnId: null,
+      },
+    ]);
+    await expect(harness.run.postUserMessage(new AgentInputUserMessage("late"))).resolves.toMatchObject({
+      accepted: false,
+      code: "AGENT_RUN_NOT_ACCEPTING_INPUT",
+    });
+    expect(harness.backend.dispatchUserInput).not.toHaveBeenCalled();
+  });
+
+  it("rejects input while the runtime is offline", async () => {
+    const harness = createHarness({
+      snapshot: {
+        availability: "offline",
+        phase: "idle",
+        currentTurn: { kind: "NONE" },
+      },
+    });
+    await expect(harness.run.postUserMessage(new AgentInputUserMessage("offline"))).resolves.toMatchObject({
+      accepted: false,
+      code: "AGENT_RUN_NOT_ACCEPTING_INPUT",
+    });
+    expect(harness.backend.dispatchUserInput).not.toHaveBeenCalled();
+  });
+
+  it("rejects invalid typed input without provider effect", async () => {
+    const harness = createHarness();
+    await expect(harness.run.postUserMessage({ content: "" } as AgentInputUserMessage)).resolves.toEqual({
+      accepted: false,
+      code: "AGENT_RUN_INPUT_INVALID",
+      message: "AgentRun input content must be a non-empty string.",
+    });
+    expect(harness.backend.dispatchUserInput).not.toHaveBeenCalled();
+  });
+
+  it("preserves source callback order and rejects cross-run publication", async () => {
+    const harness = createHarness({ runId: "agent-run-events" });
+    const observed: AgentRunEvent[] = [];
+    harness.run.subscribeToEvents((item) => observed.push(item));
+    const source = harness.getSourceListener();
+    const started = source?.([
       event(harness.run.runId, AgentRunEventType.TURN_STARTED, { turn_id: "turn-1" }),
     ]);
-
-    expect(harness.run.getStatusSnapshot()).toEqual({
-      status: "running",
-      agent_id: "agent-run-1",
-    });
-    expect(observedStatuses(observedEvents)).toEqual([
-      "initializing",
-      "initializing",
-      "running",
-    ]);
-  });
-
-  it("restores the prior status when command admission is rejected", async () => {
-    const harness = createHarness({
-      runId: "agent-run-rejected",
-      postUserMessage: vi.fn().mockResolvedValue({ accepted: false, code: "REJECTED" }),
-    });
-    const observedEvents: AgentRunEvent[] = [];
-    harness.run.subscribeToEvents((item) => observedEvents.push(item));
-
-    await harness.run.postUserMessage({ text: "start" } as never);
-
-    expect(observedStatuses(observedEvents)).toEqual(["initializing", "idle"]);
-    expect(harness.run.getStatusSnapshot()).toEqual({
-      status: "idle",
-      agent_id: "agent-run-rejected",
-    });
-  });
-
-  it("keeps a command failure as terminal error across a fresh empty runtime read", async () => {
-    const harness = createHarness({
-      runId: "agent-run-error",
-      postUserMessage: vi.fn().mockRejectedValue(new Error("startup failed")),
-    });
-    const observedEvents: AgentRunEvent[] = [];
-    harness.run.subscribeToEvents((item) => observedEvents.push(item));
-
-    await expect(harness.run.postUserMessage({ text: "start" } as never))
-      .rejects.toThrow("startup failed");
-
-    expect(observedStatuses(observedEvents)).toEqual(["initializing", "error"]);
-    expect(harness.run.getStatusSnapshot()).toEqual({
-      status: "error",
-      agent_id: "agent-run-error",
-    });
-  });
-
-  it("publishes a status companion for local diagnostic events without making hints authoritative", async () => {
-    const harness = createHarness({ runId: "agent-run-hints" });
-    const observedEvents: AgentRunEvent[] = [];
-    harness.run.subscribeToEvents((item) => observedEvents.push(item));
-
-    await harness.run.publishEvent({
-      ...event(harness.run.runId, AgentRunEventType.ERROR, { message: "diagnostic" }),
-      statusHint: "ERROR",
-    });
-
-    expect(observedEvents.map((item) => item.eventType)).toEqual([
-      AgentRunEventType.ERROR,
-      AgentRunEventType.AGENT_STATUS,
-    ]);
-    expect(observedStatuses(observedEvents)).toEqual(["idle"]);
-    expect(harness.run.getStatusSnapshot().status).toBe("idle");
-  });
-
-  it("preserves source callback order when two runtime batches arrive concurrently", async () => {
-    const harness = createHarness({ runId: "agent-run-ordering" });
-    const observedEvents: AgentRunEvent[] = [];
-    harness.run.subscribeToEvents((item) => observedEvents.push(item));
-    const sourceListener = harness.getSourceListener();
-    expect(sourceListener).not.toBeNull();
-
-    const started = sourceListener?.([
-      event(harness.run.runId, AgentRunEventType.TURN_STARTED, { turn_id: "turn-1" }),
-    ]);
-    const completed = sourceListener?.([
+    const completed = source?.([
       event(harness.run.runId, AgentRunEventType.TURN_COMPLETED, { turn_id: "turn-1" }),
     ]);
     await Promise.all([started, completed]);
-
-    expect(observedEvents.map((item) => item.eventType)).toEqual([
+    expect(observed.map((item) => item.eventType)).toEqual([
       AgentRunEventType.AGENT_STATUS,
       AgentRunEventType.TURN_STARTED,
       AgentRunEventType.TURN_COMPLETED,
       AgentRunEventType.AGENT_STATUS,
     ]);
-    expect(observedStatuses(observedEvents)).toEqual(["running", "idle"]);
-  });
-
-  it("rejects local publication for a different run id", async () => {
-    const harness = createHarness();
-
     await expect(harness.run.publishEvent(
       event("another-run", AgentRunEventType.SEGMENT_CONTENT, { delta: "nope" }),
     )).rejects.toThrow("another-run");

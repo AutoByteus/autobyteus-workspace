@@ -55,14 +55,21 @@ describe("AutoByteusAgentRunBackend", () => {
   it("delegates send and approval commands to the native agent", async () => {
     const { backend, agent, context } = createBackend();
 
-    const sendResult = await backend.postUserMessage(new AgentInputUserMessage("hello backend"));
+    const sendResult = await backend.dispatchUserInput({
+      kind: "start_turn",
+      message: new AgentInputUserMessage("hello backend"),
+    });
     const approveResult = await backend.approveToolInvocation("invoke-1", true, "approved");
 
     expect(agent.postUserMessage).toHaveBeenCalledWith(
       expect.objectContaining({ content: "hello backend" }),
     );
     expect(agent.postToolExecutionApproval).toHaveBeenCalledWith("invoke-1", true, "approved");
-    expect(sendResult).toEqual({ accepted: true });
+    expect(sendResult).toEqual({
+      forwarded: true,
+      turnId: null,
+      platformAgentRunId: "agent-1",
+    });
     expect(approveResult).toEqual({
       accepted: true,
       code: "posted",
@@ -78,7 +85,7 @@ describe("AutoByteusAgentRunBackend", () => {
     expect(backend.getContext()).toBe(context);
   });
 
-  it("keeps dispatch enqueue-oriented even when the native runtime already has an active turn", async () => {
+  it("declares next-turn-only mechanics and has no append path", async () => {
     const { backend } = createBackend({
       agent: {
         context: {
@@ -91,9 +98,14 @@ describe("AutoByteusAgentRunBackend", () => {
       },
     });
 
-    const result = await backend.postUserMessage(new AgentInputUserMessage("hello backend"));
+    const result = await backend.dispatchUserInput({
+      kind: "append_to_active_turn",
+      turnId: "turn-1",
+      message: new AgentInputUserMessage("hello backend"),
+    });
 
-    expect(result).toEqual({ accepted: true });
+    expect(result).toMatchObject({ forwarded: false, code: "UNSUPPORTED_RUNTIME_COMMAND" });
+    expect(backend.inputCapabilities).toEqual({ activeTurnAppend: "unsupported" });
   });
 
   it("interrupts the active native run through native interrupt()", async () => {
@@ -176,14 +188,18 @@ describe("AutoByteusAgentRunBackend", () => {
 
     const firstTerminate = backend.terminate();
     const secondTerminate = backend.terminate();
-    const sendWhileTerminating = await backend.postUserMessage(new AgentInputUserMessage("late"));
+    const sendWhileTerminating = await backend.dispatchUserInput({
+      kind: "start_turn",
+      message: new AgentInputUserMessage("late"),
+    });
 
     expect(removeAgent).toHaveBeenCalledTimes(1);
     expect(agent.postUserMessage).not.toHaveBeenCalledWith(expect.objectContaining({ content: "late" }));
     expect(sendWhileTerminating).toEqual({
-      accepted: false,
+      forwarded: false,
       code: "RUN_NOT_FOUND",
       message: "Run 'agent-1' is not active.",
+      turnId: null,
     });
 
     resolveRemove?.(true);
@@ -203,10 +219,14 @@ describe("AutoByteusAgentRunBackend", () => {
       code: "RUNTIME_COMMAND_FAILED",
       message: "Failed to terminate run: Error: stop failed",
     });
-    await expect(backend.postUserMessage(new AgentInputUserMessage("late"))).resolves.toEqual({
-      accepted: false,
+    await expect(backend.dispatchUserInput({
+      kind: "start_turn",
+      message: new AgentInputUserMessage("late"),
+    })).resolves.toEqual({
+      forwarded: false,
       code: "RUN_NOT_FOUND",
       message: "Run 'agent-1' is not active.",
+      turnId: null,
     });
   });
 
@@ -215,18 +235,20 @@ describe("AutoByteusAgentRunBackend", () => {
       isActive: () => false,
     });
 
-    const sendResult = await backend.postUserMessage(
-      new AgentInputUserMessage("hello inactive run"),
-    );
+    const sendResult = await backend.dispatchUserInput({
+      kind: "start_turn",
+      message: new AgentInputUserMessage("hello inactive run"),
+    });
     const interruptResult = await backend.interrupt();
 
     expect(agent.postUserMessage).not.toHaveBeenCalled();
     expect(agent.interrupt).not.toHaveBeenCalled();
     expect(agent.stop).not.toHaveBeenCalled();
     expect(sendResult).toEqual({
-      accepted: false,
+      forwarded: false,
       code: "RUN_NOT_FOUND",
       message: "Run 'agent-1' is not active.",
+      turnId: null,
     });
     expect(interruptResult).toEqual({
       accepted: false,

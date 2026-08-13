@@ -1,16 +1,20 @@
-import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../../domain/agent-operation-result.js";
 import type { AgentRunBackend, AgentRunSourceEventBatchListener } from "../../agent-run-backend.js";
 import type { ClaudeSession } from "../session/claude-session.js";
 import { ClaudeSessionEventConverter } from "../events/claude-session-event-converter.js";
 import type { ClaudeRunContext } from "./claude-agent-run-context.js";
 import { projectClaudeAgentLifecycleSnapshot } from "../events/claude-status-projector.js";
+import type {
+  AgentRunBackendInputDispatch,
+  AgentRunBackendInputDispatchResult,
+} from "../../../input/agent-run-input-contract.js";
 
 const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
 export class ClaudeAgentRunBackend implements AgentRunBackend {
+  readonly inputCapabilities = { activeTurnAppend: "unsupported" } as const;
   private readonly context: ClaudeRunContext;
   private readonly session: ClaudeSession;
   private readonly sourceListeners = new Set<AgentRunSourceEventBatchListener>();
@@ -69,19 +73,30 @@ export class ClaudeAgentRunBackend implements AgentRunBackend {
     });
   }
 
-  async postUserMessage(message: AgentInputUserMessage): Promise<AgentOperationResult> {
-    try {
-      const result = await this.session.sendTurn(message);
+  async dispatchUserInput(
+    dispatch: AgentRunBackendInputDispatch,
+  ): Promise<AgentRunBackendInputDispatchResult> {
+    if (dispatch.kind !== "start_turn") {
       return {
-        accepted: true,
+        forwarded: false,
+        code: "UNSUPPORTED_RUNTIME_COMMAND",
+        message: "Claude Agent SDK does not support active-turn input append.",
+        turnId: null,
+      };
+    }
+    try {
+      const result = await this.session.startTurn(dispatch.message);
+      return {
+        forwarded: true,
         turnId: result.turnId,
         platformAgentRunId: this.getPlatformAgentRunId(),
       };
     } catch (error) {
       return {
-        accepted: false,
+        forwarded: false,
         code: "RUNTIME_COMMAND_FAILED",
         message: `Failed to send user input for runtime 'claude_agent_sdk': ${String(error)}`,
+        turnId: null,
       };
     }
   }

@@ -119,4 +119,30 @@ describe("CompactionRunOutputCollector", () => {
 
     await expect(output).rejects.toThrow(/without a final assistant output/);
   });
+
+  it("fails a pending waiter immediately when input dispatch fails", async () => {
+    const collector = new CompactionRunOutputCollector({ runId: "compaction-run-1" });
+    const output = collector.waitForFinalOutput(10_000);
+
+    collector.observeInputLifecycle({
+      kind: "failed",
+      code: "RUNTIME_COMMAND_FAILED",
+      message: "provider rejected input",
+      turnId: null,
+    });
+
+    await expect(output).rejects.toThrow(/input dispatch failed: provider rejected input/);
+  });
+
+  it("fails a pending waiter immediately when admitted input is cancelled", async () => {
+    const collector = new CompactionRunOutputCollector({ runId: "compaction-run-1" });
+    const output = collector.waitForFinalOutput(10_000);
+
+    collector.observeInputLifecycle({
+      kind: "cancelled",
+      code: "AGENT_RUN_TERMINATED_BEFORE_INPUT_FORWARD",
+    });
+
+    await expect(output).rejects.toThrow(/terminated before input forwarding/);
+  });
 });

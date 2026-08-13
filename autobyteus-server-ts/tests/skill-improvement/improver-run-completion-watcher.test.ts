@@ -73,4 +73,32 @@ describe("ImproverRunCompletionWatcher", () => {
 
     await expect(pending).resolves.toBe("improved");
   });
+
+  it("rejects promptly when the admitted input fails before canonical completion", async () => {
+    const watcher = new ImproverRunCompletionWatcher("improver-run-1");
+    const pending = watcher.waitForCompletion(10_000);
+
+    watcher.observeInputLifecycle({
+      kind: "failed",
+      code: "RUNTIME_COMMAND_FAILED",
+      message: "provider rejected input",
+      turnId: null,
+    });
+
+    await expectRejectsBeforeDelay(pending);
+    await expect(pending).rejects.toThrow(/input dispatch failed: provider rejected input/);
+  });
+
+  it("rejects promptly when the admitted input is cancelled before forwarding", async () => {
+    const watcher = new ImproverRunCompletionWatcher("improver-run-1");
+    const pending = watcher.waitForCompletion(10_000);
+
+    watcher.observeInputLifecycle({
+      kind: "cancelled",
+      code: "AGENT_RUN_TERMINATED_BEFORE_INPUT_FORWARD",
+    });
+
+    await expectRejectsBeforeDelay(pending);
+    await expect(pending).rejects.toThrow(/terminated before input forwarding/);
+  });
 });

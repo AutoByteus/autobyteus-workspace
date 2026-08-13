@@ -10,6 +10,7 @@ import {
   type AgentRunEvent,
 } from "../../../../src/agent-execution/domain/agent-run-event.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
+import type { AgentRunInputOptions } from "../../../../src/agent-execution/input/agent-run-input-contract.js";
 
 const createEvent = (
   eventType: AgentRunEventType,
@@ -48,8 +49,17 @@ class FakeRun {
     };
   }
 
-  async postUserMessage(message: AgentInputUserMessage) {
+  async postUserMessage(
+    message: AgentInputUserMessage,
+    options: AgentRunInputOptions = {},
+  ) {
     this.postedMessage = message;
+    options.lifecycleObserver?.({ kind: "admitted" });
+    options.lifecycleObserver?.({
+      kind: "forwarded",
+      dispatchKind: "start_turn",
+      turnId: "turn-1",
+    });
     for (const event of this.emittedEvents) {
       for (const listener of this.listeners) {
         listener(event);
@@ -164,6 +174,7 @@ describe("ServerCompactionAgentRunner", () => {
     const run = new FakeRun([
       createEvent(AgentRunEventType.SEGMENT_CONTENT, {
         id: "message-1",
+        turn_id: "turn-1",
         segment_type: "text",
         delta: '{"episodes":[{"summary":"ok"}]}',
       }),

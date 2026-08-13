@@ -155,7 +155,6 @@ const createSession = (input: {
   contextFileLocalPathResolver?: { resolve: (uri: string) => string | null };
 } = {}) => {
   const sessionMessageCache = new ClaudeSessionMessageCache();
-  const interruptQuery = vi.fn(async () => undefined);
   const queryQueue = [...(input.queries ?? (input.query ? [input.query] : []))];
   const defaultStartQueryTurn = async (_options: ClaudeSdkStartQueryTurnOptions) =>
     queryQueue.shift() ?? createResultQuery();
@@ -206,7 +205,6 @@ const createSession = (input: {
       sessionMessageCache,
       sdkClient: {
         startQueryTurn,
-        interruptQuery,
         closeQuery,
       } as never,
       activeQueriesByRunId,
@@ -222,7 +220,6 @@ const createSession = (input: {
     session,
     sessionMessageCache,
     startQueryTurn,
-    interruptQuery,
     closeQuery,
     terminateRunSession,
     clearPendingToolApprovals,
@@ -231,11 +228,11 @@ const createSession = (input: {
 };
 
 describe("ClaudeSession", () => {
-  it("rejects sending a new turn while another turn is already active", async () => {
+  it("defensively rejects an impossible explicit start while another turn is active", async () => {
     const { session } = createSession({ activeTurnId: "run-1:turn:active" });
 
-    await expect(session.sendTurn(new AgentInputUserMessage("hello"))).rejects.toThrow(
-      "Claude runtime turn is already active for run 'run-1'.",
+    await expect(session.startTurn(new AgentInputUserMessage("hello"))).rejects.toThrow(
+      "Claude start_turn invariant failed because turn 'run-1:turn:active' is active for run 'run-1'.",
     );
   });
 
@@ -254,7 +251,7 @@ describe("ClaudeSession", () => {
       query: createResultQuery("run-1"),
     });
 
-    await session.sendTurn(
+    await session.startTurn(
       new AgentInputUserMessage("inspect this", undefined, [
         new ContextFile("/abs/proof.png", ContextFileType.IMAGE),
       ]),
@@ -283,7 +280,7 @@ describe("ClaudeSession", () => {
       contextFileLocalPathResolver: { resolve },
     });
 
-    await session.sendTurn(
+    await session.startTurn(
       new AgentInputUserMessage("inspect this", undefined, [
         new ContextFile(
           "/rest/runs/run-1/context-files/proof.png",
@@ -322,7 +319,7 @@ describe("ClaudeSession", () => {
       });
     });
 
-    await session.sendTurn(new AgentInputUserMessage("complete normally"));
+    await session.startTurn(new AgentInputUserMessage("complete normally"));
     await waitFor(
       () => events.some((event) => event.method === ClaudeSessionEventName.TURN_COMPLETED),
       "Claude normal turn completion",
@@ -410,7 +407,7 @@ describe("ClaudeSession", () => {
       const events: Array<{ method: string; params?: Record<string, unknown> }> = [];
       session.subscribeRuntimeEvents((event) => events.push(event));
 
-      await session.sendTurn(new AgentInputUserMessage("exercise permission harness"));
+      await session.startTurn(new AgentInputUserMessage("exercise permission harness"));
       await waitFor(
         () => events.some((event) => event.method === ClaudeSessionEventName.TURN_COMPLETED),
         "auto permission harness completion",
@@ -468,7 +465,7 @@ describe("ClaudeSession", () => {
       const events: Array<{ method: string; params?: Record<string, unknown> }> = [];
       session.subscribeRuntimeEvents((event) => events.push(event));
 
-      await session.sendTurn(new AgentInputUserMessage("manual outside scratch request"));
+      await session.startTurn(new AgentInputUserMessage("manual outside scratch request"));
       await waitFor(
         () =>
           events.some(
@@ -508,7 +505,7 @@ describe("ClaudeSession", () => {
     const events: Array<{ method: string; params?: Record<string, unknown> }> = [];
     session.subscribeRuntimeEvents((event) => events.push(event));
 
-    await session.sendTurn(new AgentInputUserMessage("start claude"));
+    await session.startTurn(new AgentInputUserMessage("start claude"));
     await waitFor(
       () => events.some((event) => event.method === ClaudeSessionEventName.ERROR),
       "diagnostic error event",
@@ -545,7 +542,7 @@ describe("ClaudeSession", () => {
     const events: Array<{ method: string; params?: Record<string, unknown> }> = [];
     session.subscribeRuntimeEvents((event) => events.push(event));
 
-    await session.sendTurn(new AgentInputUserMessage("hello unauthenticated claude"));
+    await session.startTurn(new AgentInputUserMessage("hello unauthenticated claude"));
     await waitFor(
       () => events.some((event) => event.method === ClaudeSessionEventName.ERROR),
       "auth result error event",
@@ -568,7 +565,6 @@ describe("ClaudeSession", () => {
       session,
       sessionMessageCache,
       startQueryTurn,
-      interruptQuery,
       closeQuery,
       clearPendingToolApprovals,
       activeQueriesByRunId,
@@ -576,15 +572,22 @@ describe("ClaudeSession", () => {
       query: controlledQuery.query,
     });
 
-    const events: Array<{ method: string; activeTurnId: string | null }> = [];
+    const events: Array<{
+      method: string;
+      activeTurnId: string | null;
+      queryRegistered: boolean;
+      queryCloseCount: number;
+    }> = [];
     session.subscribeRuntimeEvents((event) => {
       events.push({
         method: event.method,
         activeTurnId: session.activeTurnId,
+        queryRegistered: activeQueriesByRunId.has("run-1"),
+        queryCloseCount: closeQuery.mock.calls.length,
       });
     });
 
-    const { turnId } = await session.sendTurn(new AgentInputUserMessage("hello"));
+    const { turnId } = await session.startTurn(new AgentInputUserMessage("hello"));
     await waitFor(
       () => activeQueriesByRunId.get("run-1") === controlledQuery.query,
       "active Claude query registration",
@@ -608,7 +611,7 @@ describe("ClaudeSession", () => {
       "run-1",
       "Tool approval interrupted.",
     );
-    expect(interruptQuery).not.toHaveBeenCalled();
+    expect(controlledQuery.query.interrupt).not.toHaveBeenCalled();
     expect(events.some((event) => event.method === ClaudeSessionEventName.TURN_INTERRUPTED)).toBe(
       false,
     );
@@ -627,11 +630,15 @@ describe("ClaudeSession", () => {
       events.find((event) => event.method === ClaudeSessionEventName.TURN_INTERRUPTED)
         ?.activeTurnId,
     ).toBeNull();
+    expect(
+      events.find((event) => event.method === ClaudeSessionEventName.TURN_INTERRUPTED),
+    ).toMatchObject({ queryRegistered: false, queryCloseCount: 1 });
     expect(session.activeAbortController).toBe(null);
     expect(session.activeTurnId).toBeNull();
     expect(session.hasCompletedTurn).toBe(false);
     expect(activeQueriesByRunId.has("run-1")).toBe(false);
-    expect(closeQuery).not.toHaveBeenCalled();
+    expect(closeQuery).toHaveBeenCalledTimes(1);
+    expect(closeQuery).toHaveBeenCalledWith(controlledQuery.query);
     expect(sessionMessageCache.getCachedMessages("run-1")).toEqual([
       expect.objectContaining({
         role: "user",
@@ -641,7 +648,7 @@ describe("ClaudeSession", () => {
   });
 
   it("treats interrupt without an active turn execution as an idempotent cleanup no-op", async () => {
-    const { session, interruptQuery, clearPendingToolApprovals } = createSession({
+    const { session, clearPendingToolApprovals } = createSession({
       activeTurnId: "run-1:turn:stale",
     });
     const abortController = new AbortController();
@@ -659,7 +666,6 @@ describe("ClaudeSession", () => {
       "run-1",
       "Tool approval interrupted.",
     );
-    expect(interruptQuery).not.toHaveBeenCalled();
     expect(events).not.toContain(ClaudeSessionEventName.TURN_INTERRUPTED);
     expect(session.activeAbortController).toBe(null);
     expect(session.activeTurnId).toBeNull();
@@ -702,7 +708,7 @@ describe("ClaudeSession", () => {
       queries: [firstQuery.query, createResultQuery(providerSessionId)],
     });
 
-    await session.sendTurn(new AgentInputUserMessage("start long work"));
+    await session.startTurn(new AgentInputUserMessage("start long work"));
     await waitFor(() => session.sessionId === providerSessionId, "provider session adoption");
 
     const firstOptions = startQueryTurn.mock.calls[0]?.[0] as { sessionId?: string | null };
@@ -720,7 +726,7 @@ describe("ClaudeSession", () => {
 
     expect(session.hasCompletedTurn).toBe(false);
 
-    await session.sendTurn(new AgentInputUserMessage("continue with that context"));
+    await session.startTurn(new AgentInputUserMessage("continue with that context"));
     await waitFor(() => startQueryTurn.mock.calls.length === 2, "follow-up query start");
 
     const secondOptions = startQueryTurn.mock.calls[1]?.[0] as { sessionId?: string | null };
@@ -734,7 +740,7 @@ describe("ClaudeSession", () => {
       queries: [firstQuery.query, createResultQuery("claude-session-after-placeholder")],
     });
 
-    await session.sendTurn(new AgentInputUserMessage("start before provider id"));
+    await session.startTurn(new AgentInputUserMessage("start before provider id"));
     await waitFor(() => startQueryTurn.mock.calls.length === 1, "initial query start");
 
     const interruptPromise = session.interrupt();
@@ -749,7 +755,7 @@ describe("ClaudeSession", () => {
     expect(session.sessionId).toBe("run-1");
     expect(session.hasCompletedTurn).toBe(false);
 
-    await session.sendTurn(new AgentInputUserMessage("follow up without provider id"));
+    await session.startTurn(new AgentInputUserMessage("follow up without provider id"));
     await waitFor(() => startQueryTurn.mock.calls.length === 2, "placeholder follow-up query start");
 
     const secondOptions = startQueryTurn.mock.calls[1]?.[0] as { sessionId?: string | null };
@@ -763,13 +769,13 @@ describe("ClaudeSession", () => {
       queries: [createResultQuery(providerSessionId), createResultQuery(providerSessionId)],
     });
 
-    await session.sendTurn(new AgentInputUserMessage("first turn"));
+    await session.startTurn(new AgentInputUserMessage("first turn"));
     await waitFor(() => session.hasCompletedTurn, "first turn completion");
 
     const firstOptions = startQueryTurn.mock.calls[0]?.[0] as { sessionId?: string | null };
     expect(firstOptions.sessionId).toBeNull();
 
-    await session.sendTurn(new AgentInputUserMessage("second turn"));
+    await session.startTurn(new AgentInputUserMessage("second turn"));
     await waitFor(() => startQueryTurn.mock.calls.length === 2, "completed follow-up query start");
 
     const secondOptions = startQueryTurn.mock.calls[1]?.[0] as { sessionId?: string | null };
@@ -784,7 +790,7 @@ describe("ClaudeSession", () => {
       queries: [createResultQuery(restoredSessionId)],
     });
 
-    await session.sendTurn(new AgentInputUserMessage("restored follow up"));
+    await session.startTurn(new AgentInputUserMessage("restored follow up"));
     await waitFor(() => startQueryTurn.mock.calls.length === 1, "restored query start");
 
     const options = startQueryTurn.mock.calls[0]?.[0] as { sessionId?: string | null };
@@ -860,7 +866,7 @@ describe("ClaudeSession", () => {
       events.push(event);
     });
 
-    const { turnId } = await session.sendTurn(new AgentInputUserMessage("where am I?"));
+    const { turnId } = await session.startTurn(new AgentInputUserMessage("where am I?"));
     const activeTurnId = turnId ?? "";
     await waitFor(
       () => events.some((event) => event.method === ClaudeSessionEventName.TURN_COMPLETED),
@@ -1011,7 +1017,7 @@ describe("ClaudeSession", () => {
       events.push(event);
     });
 
-    const { turnId } = await session.sendTurn(new AgentInputUserMessage("stream please"));
+    const { turnId } = await session.startTurn(new AgentInputUserMessage("stream please"));
     const activeTurnId = turnId ?? "";
     await waitFor(
       () => events.some((event) => event.method === ClaudeSessionEventName.TURN_COMPLETED),

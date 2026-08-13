@@ -856,7 +856,7 @@ describe("CodexThread turn payload", () => {
       const { thread, client } = createThread(false, { reasoningEffort });
       thread.markStartupReady();
 
-      await thread.submitInput(new AgentInputUserMessage("hello reasoning codex"));
+      await thread.startInput(new AgentInputUserMessage("hello reasoning codex"));
 
       expect(client.request).toHaveBeenCalledWith(
         "turn/start",
@@ -871,7 +871,7 @@ describe("CodexThread turn payload", () => {
     const { thread, client } = createThread(false, { reasoningEffort: null });
     thread.markStartupReady();
 
-    await thread.submitInput(new AgentInputUserMessage("hello default codex"));
+    await thread.startInput(new AgentInputUserMessage("hello default codex"));
 
     expect(client.request).toHaveBeenCalledWith(
       "turn/start",
@@ -885,7 +885,7 @@ describe("CodexThread turn payload", () => {
     const { thread, client } = createThread(false, { serviceTier: "fast" });
     thread.markStartupReady();
 
-    await thread.submitInput(new AgentInputUserMessage("hello fast codex"));
+    await thread.startInput(new AgentInputUserMessage("hello fast codex"));
 
     expect(client.request).toHaveBeenCalledWith(
       "turn/start",
@@ -908,7 +908,7 @@ describe("CodexThread input submission policy", () => {
     const { thread, client } = createThread(false);
     thread.markStartupReady();
 
-    await expect(thread.submitInput(new AgentInputUserMessage("start work"))).resolves.toEqual({
+    await expect(thread.startInput(new AgentInputUserMessage("start work"))).resolves.toEqual({
       kind: "started",
       turnId: "turn-1",
     });
@@ -922,7 +922,7 @@ describe("CodexThread input submission policy", () => {
     thread.markStartupReady();
     client.request.mockResolvedValueOnce({ turn: {} });
 
-    await expect(thread.submitInput(new AgentInputUserMessage("bad response"))).rejects.toMatchObject({
+    await expect(thread.startInput(new AgentInputUserMessage("bad response"))).rejects.toMatchObject({
       code: "CODEX_TURN_START_RESPONSE_INVALID",
     });
     expect(thread.activeTurnId).toBeNull();
@@ -935,7 +935,10 @@ describe("CodexThread input submission policy", () => {
     thread.markTurnStarted("turn-A");
     client.request.mockResolvedValueOnce({ turnId: "turn-A" });
 
-    await expect(thread.submitInput(new AgentInputUserMessage("continue A"))).resolves.toEqual({
+    await expect(thread.appendInput(
+      new AgentInputUserMessage("continue A"),
+      "turn-A",
+    )).resolves.toEqual({
       kind: "steered",
       turnId: "turn-A",
     });
@@ -953,39 +956,22 @@ describe("CodexThread input submission policy", () => {
     expect(thread.getStatusSnapshotSource()).toEqual({ currentStatus: "IDLE", activeTurnId: null });
   });
 
-  it("serializes concurrent idle submissions so the second observes the first active turn", async () => {
-    const { thread, client } = createThread(false);
-    thread.markStartupReady();
-    let resolveStart!: (value: unknown) => void;
-    client.request.mockImplementation((method: string) => {
-      if (method === "turn/start") {
-        return new Promise((resolve) => { resolveStart = resolve; });
-      }
-      return Promise.resolve({ turnId: "turn-A" });
-    });
-
-    const first = thread.submitInput(new AgentInputUserMessage("first"));
-    const second = thread.submitInput(new AgentInputUserMessage("second"));
-    await Promise.resolve();
-    await Promise.resolve();
-    expect(client.request).toHaveBeenCalledTimes(1);
-    resolveStart({ turn: { id: "turn-A" } });
-
-    await expect(first).resolves.toEqual({ kind: "started", turnId: "turn-A" });
-    await expect(second).resolves.toEqual({ kind: "steered", turnId: "turn-A" });
-    expect(client.request.mock.calls.map(([method]) => method)).toEqual(["turn/start", "turn/steer"]);
-  });
-
   it("preserves active identity on steer rejection and mismatch without start fallback", async () => {
     const { thread, client } = createThread(false);
     thread.markStartupReady();
     thread.markTurnStarted("turn-A");
     client.request.mockRejectedValueOnce(new Error("turn is not steerable"));
-    await expect(thread.submitInput(new AgentInputUserMessage("rejected"))).rejects.toMatchObject({
+    await expect(thread.appendInput(
+      new AgentInputUserMessage("rejected"),
+      "turn-A",
+    )).rejects.toMatchObject({
       code: "CODEX_TURN_STEER_REJECTED",
     });
     client.request.mockResolvedValueOnce({ turnId: "turn-B" });
-    await expect(thread.submitInput(new AgentInputUserMessage("mismatch"))).rejects.toMatchObject({
+    await expect(thread.appendInput(
+      new AgentInputUserMessage("mismatch"),
+      "turn-A",
+    )).rejects.toMatchObject({
       code: "CODEX_TURN_STEER_ID_MISMATCH",
     });
     expect(thread.activeTurnId).toBe("turn-A");
@@ -998,7 +984,10 @@ describe("CodexThread input submission policy", () => {
     thread.markTurnStarted("turn-A");
     client.request.mockResolvedValueOnce({ turn: { id: "turn-A" } });
 
-    await expect(thread.submitInput(new AgentInputUserMessage("malformed steer"))).rejects.toMatchObject({
+    await expect(thread.appendInput(
+      new AgentInputUserMessage("malformed steer"),
+      "turn-A",
+    )).rejects.toMatchObject({
       code: "CODEX_TURN_STEER_RESPONSE_INVALID",
     });
     expect(thread.activeTurnId).toBe("turn-A");
@@ -1019,7 +1008,7 @@ describe("CodexThread input submission policy", () => {
       return { turn: { id: "turn-race" } };
     });
 
-    await expect(thread.submitInput(new AgentInputUserMessage("race"))).resolves.toEqual({
+    await expect(thread.startInput(new AgentInputUserMessage("race"))).resolves.toEqual({
       kind: "started", turnId: "turn-race",
     });
     expect(thread.activeTurnId).toBeNull();
@@ -1035,7 +1024,7 @@ describe("CodexThread input submission policy", () => {
       return { turn: { id: "turn-start-response" } };
     });
 
-    await expect(thread.submitInput(new AgentInputUserMessage("identity race"))).rejects.toMatchObject({
+    await expect(thread.startInput(new AgentInputUserMessage("identity race"))).rejects.toMatchObject({
       code: "CODEX_TURN_START_IDENTITY_CONFLICT",
     });
     expect(thread.activeTurnId).toBe("turn-newer");

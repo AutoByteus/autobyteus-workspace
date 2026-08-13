@@ -128,9 +128,10 @@ describe("CodexAgentRunBackend", () => {
   it("returns the accepted platform run id from the codex thread", async () => {
     const { backend, codexThread } = createBackend();
 
-    const result = await backend.postUserMessage(
-      new AgentInputUserMessage("hello codex"),
-    );
+    const result = await backend.dispatchUserInput({
+      kind: "start_turn",
+      message: new AgentInputUserMessage("hello codex"),
+    });
 
     expect((codexThread.client as any).request).toHaveBeenCalledWith(
       "turn/start",
@@ -144,7 +145,7 @@ describe("CodexAgentRunBackend", () => {
       }),
     );
     expect(result).toEqual({
-      accepted: true,
+      forwarded: true,
       turnId: "turn-1",
       platformAgentRunId: "thread-1",
     });
@@ -159,11 +160,12 @@ describe("CodexAgentRunBackend", () => {
       },
     });
 
-    const result = await backend.postUserMessage(
-      new AgentInputUserMessage("hello failing codex"),
-    );
+    const result = await backend.dispatchUserInput({
+      kind: "start_turn",
+      message: new AgentInputUserMessage("hello failing codex"),
+    });
 
-    expect(result.accepted).toBe(false);
+    expect(result.forwarded).toBe(false);
     expect(result.code).toBe("RUNTIME_COMMAND_FAILED");
     expect(result.message).toContain("Failed to send user input");
   });
@@ -177,13 +179,33 @@ describe("CodexAgentRunBackend", () => {
       },
     });
 
-    const result = await backend.postUserMessage(new AgentInputUserMessage("invalid start"));
+    const result = await backend.dispatchUserInput({
+      kind: "start_turn",
+      message: new AgentInputUserMessage("invalid start"),
+    });
 
     expect(result).toMatchObject({
-      accepted: false,
+      forwarded: false,
       code: "CODEX_TURN_START_RESPONSE_INVALID",
       message: expect.stringContaining("turn.id"),
     });
+  });
+
+  it("maps the explicit append command to exact turn/steer", async () => {
+    const { backend, codexThread } = createBackend();
+    codexThread.markTurnStarted("turn-active");
+    (codexThread.client as any).request.mockResolvedValue({ turnId: "turn-active" });
+
+    await expect(backend.dispatchUserInput({
+      kind: "append_to_active_turn",
+      turnId: "turn-active",
+      message: new AgentInputUserMessage("append"),
+    })).resolves.toMatchObject({ forwarded: true, turnId: "turn-active" });
+    expect((codexThread.client as any).request).toHaveBeenCalledWith(
+      "turn/steer",
+      expect.objectContaining({ expectedTurnId: "turn-active" }),
+    );
+    expect(backend.inputCapabilities).toEqual({ activeTurnAppend: "supported" });
   });
 
   it("dispatches idle lifecycle events even when token usage updates were observed earlier", async () => {

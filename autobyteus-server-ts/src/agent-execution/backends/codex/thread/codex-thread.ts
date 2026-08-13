@@ -82,7 +82,6 @@ export class CodexThread {
   readonly listeners: Set<(message: CodexThreadEventMessage) => void>;
   readonly unbindHandlers: Array<() => void>;
   lastTerminalTurnId: string | null;
-  private inputSubmissionTail: Promise<void> = Promise.resolve();
 
   constructor(input: {
     runContext: CodexRunContext;
@@ -201,18 +200,7 @@ export class CodexThread {
     this.pendingTokenUsageUpdates.delete(idempotencyKey);
   }
 
-  submitInput(message: AgentInputUserMessage): Promise<CodexInputSubmissionResult> {
-    const submission = this.inputSubmissionTail.then(() => this.performInputSubmission(message));
-    this.inputSubmissionTail = submission.then(
-      () => undefined,
-      () => undefined,
-    );
-    return submission;
-  }
-
-  private async performInputSubmission(
-    message: AgentInputUserMessage,
-  ): Promise<CodexInputSubmissionResult> {
+  async startInput(message: AgentInputUserMessage): Promise<CodexInputSubmissionResult> {
     if (isRuntimeRawEventDebugEnabled) {
       console.log("[CodexSendTurnStart]", {
         runId: this.runId,
@@ -224,14 +212,12 @@ export class CodexThread {
     }
 
     await this.awaitStartupReady();
-    const activeTurnId = this.activeTurnId;
-    if (activeTurnId) {
-      return this.steerInput(message, activeTurnId);
+    if (this.activeTurnId) {
+      throw new CodexInputSubmissionError(
+        "CODEX_TURN_START_IDENTITY_CONFLICT",
+        `Codex turn/start cannot run while exact turn '${this.activeTurnId}' is active.`,
+      );
     }
-    return this.startInput(message);
-  }
-
-  private async startInput(message: AgentInputUserMessage): Promise<CodexInputSubmissionResult> {
     const payload = await this.client.request<unknown>("turn/start", {
       threadId: this.threadId,
       input: toCodexUserInput(message),
@@ -269,10 +255,17 @@ export class CodexThread {
     return { kind: "started", turnId };
   }
 
-  private async steerInput(
+  async appendInput(
     message: AgentInputUserMessage,
     expectedTurnId: string,
   ): Promise<CodexInputSubmissionResult> {
+    await this.awaitStartupReady();
+    if (this.activeTurnId !== expectedTurnId) {
+      throw new CodexInputSubmissionError(
+        "CODEX_TURN_STEER_ID_MISMATCH",
+        `Codex turn/steer expected active turn '${expectedTurnId}' but '${this.activeTurnId ?? "none"}' is current.`,
+      );
+    }
     let payload: unknown;
     try {
       payload = await this.client.request<unknown>("turn/steer", {

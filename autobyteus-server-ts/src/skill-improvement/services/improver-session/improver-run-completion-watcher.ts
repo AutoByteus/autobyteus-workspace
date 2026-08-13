@@ -1,5 +1,6 @@
 import { AgentRunEventType, isAgentRunEvent, type AgentRunEvent } from "../../../agent-execution/domain/agent-run-event.js";
 import { AgentRunCanonicalFailureObserver } from "../../../agent-execution/events/agent-run-canonical-failure-observer.js";
+import type { AgentRunInputLifecycle } from "../../../agent-execution/input/agent-run-input-contract.js";
 
 type CompletionWaiter = {
   resolve: (value: string) => void;
@@ -33,6 +34,23 @@ export class ImproverRunCompletionWatcher {
       this.terminal = true;
     }
     this.notifyWaiters();
+  }
+
+  observeInputLifecycle(fact: AgentRunInputLifecycle): void {
+    if (this.failure || this.terminal) return;
+    if (fact.kind === "failed") {
+      this.fail(new Error(
+        `Retrospective Skill Improver run '${this.runId}' input dispatch failed: ${fact.message}`,
+      ));
+    } else if (fact.kind === "cancelled") {
+      this.fail(new Error(
+        `Retrospective Skill Improver run '${this.runId}' terminated before input forwarding.`,
+      ));
+    } else if (fact.kind === "interrupted") {
+      this.fail(new Error(
+        `Retrospective Skill Improver run '${this.runId}' input was interrupted.`,
+      ));
+    }
   }
 
   waitForCompletion(timeoutMs: number): Promise<string> {

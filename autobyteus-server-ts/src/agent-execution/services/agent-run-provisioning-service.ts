@@ -186,7 +186,7 @@ export class AgentRunProvisioningService {
 
   async cancelPreparedAgentRun(runId: string): Promise<CancelPreparedAgentRunResult> {
     const normalizedRunId = normalizeRequiredRunId(runId);
-    if (getAgentRunCommandRegistry().hasInFlightCommand(normalizedRunId)) {
+    if (getAgentRunCommandRegistry().hasOutstandingCommands(normalizedRunId)) {
       return {
         success: false,
         message: "Prepared run has a command in progress.",
@@ -209,7 +209,7 @@ export class AgentRunProvisioningService {
       if (!metadata || !metadata.preparedAt || metadata.startedAt) {
         continue;
       }
-      if (this.agentRunManager.hasActiveRun(runId) || getAgentRunCommandRegistry().hasInFlightCommand(runId)) {
+      if (this.agentRunManager.hasActiveRun(runId) || getAgentRunCommandRegistry().hasOutstandingCommands(runId)) {
         continue;
       }
       const expiresAt = metadata.preparedExpiresAt ? Date.parse(metadata.preparedExpiresAt) : NaN;

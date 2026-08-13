@@ -271,6 +271,10 @@ export class AgentTurnLifecycleState {
     return this.lastStatus;
   }
 
+  get hasPendingCommand(): boolean {
+    return this.pendingCommand !== null;
+  }
+
   private openIdentifiedTurn(turnId: string): void {
     if (this.retiredTurnIds.has(turnId)) {
       return;

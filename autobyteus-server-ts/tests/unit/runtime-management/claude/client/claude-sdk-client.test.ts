@@ -336,14 +336,13 @@ describe("ClaudeSdkClient", () => {
     expect(secondCall.options?.canUseTool).not.toBe(explicitCanUseTool);
   });
 
-  it("wraps interrupt and close on the returned query object", async () => {
+  it("closes the returned one-string query without exposing product interrupt control", () => {
     const client = new ClaudeSdkClient();
     const queryMock = createMockQuery();
 
-    await client.interruptQuery(queryMock);
     client.closeQuery(queryMock);
 
-    expect(queryMock.interrupt).toHaveBeenCalledTimes(1);
+    expect(queryMock.interrupt).not.toHaveBeenCalled();
     expect(queryMock.close).toHaveBeenCalledTimes(1);
   });
 

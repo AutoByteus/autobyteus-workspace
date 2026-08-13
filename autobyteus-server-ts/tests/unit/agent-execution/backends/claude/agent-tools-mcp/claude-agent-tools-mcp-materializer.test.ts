@@ -29,6 +29,7 @@ describe("claude-agent-tools-mcp-materializer", () => {
         headers: {
           Authorization: "Bearer unit-test-token",
         },
+        alwaysLoad: true,
       },
     });
     expect(result.autobyteus_agent_tools).not.toHaveProperty("enabledTools");

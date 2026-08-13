@@ -16,7 +16,7 @@ const createBackend = (overrides: Record<string, unknown> = {}) => {
       listener({ method: "turn/completed", params: {} });
       return () => {};
     }),
-    sendTurn: vi.fn().mockResolvedValue({
+    startTurn: vi.fn().mockResolvedValue({
       turnId: "turn-1",
     }),
     approveTool: vi.fn().mockResolvedValue(undefined),
@@ -44,21 +44,24 @@ describe("ClaudeAgentRunBackend", () => {
     const listener = vi.fn();
 
     const unsubscribe = backend.subscribeToSourceEventBatches(listener);
-    const sendResult = await backend.postUserMessage(new AgentInputUserMessage("hello claude"));
+    const sendResult = await backend.dispatchUserInput({
+      kind: "start_turn",
+      message: new AgentInputUserMessage("hello claude"),
+    });
     const approveResult = await backend.approveToolInvocation("invoke-1", true);
     const interruptResult = await backend.interrupt();
     const terminateResult = await backend.terminate();
 
     expect(typeof unsubscribe).toBe("function");
     expect(listener).toHaveBeenCalled();
-    expect(session.sendTurn).toHaveBeenCalledWith(
+    expect(session.startTurn).toHaveBeenCalledWith(
       expect.objectContaining({ content: "hello claude" }),
     );
     expect(session.approveTool).toHaveBeenCalledWith("invoke-1", true, null);
     expect(session.interrupt).toHaveBeenCalledTimes(1);
     expect(session.terminate).toHaveBeenCalledTimes(1);
     expect(sendResult).toEqual({
-      accepted: true,
+      forwarded: true,
       turnId: "turn-1",
       platformAgentRunId: "claude-session-1",
     });
@@ -73,17 +76,29 @@ describe("ClaudeAgentRunBackend", () => {
     });
   });
 
-  it("returns a runtime command failure when session sendTurn throws", async () => {
+  it("returns a runtime command failure when explicit session start throws", async () => {
     const { backend } = createBackend({
-      sendTurn: vi.fn().mockRejectedValue(new Error("boom")),
+      startTurn: vi.fn().mockRejectedValue(new Error("boom")),
     });
 
-    const result = await backend.postUserMessage(
-      new AgentInputUserMessage("hello failing claude"),
-    );
+    const result = await backend.dispatchUserInput({
+      kind: "start_turn",
+      message: new AgentInputUserMessage("hello failing claude"),
+    });
 
-    expect(result.accepted).toBe(false);
+    expect(result.forwarded).toBe(false);
     expect(result.code).toBe("RUNTIME_COMMAND_FAILED");
     expect(result.message).toContain("Failed to send user input");
+  });
+
+  it("declares next-turn-only input mechanics and rejects append without session effect", async () => {
+    const { backend, session } = createBackend();
+    expect(backend.inputCapabilities).toEqual({ activeTurnAppend: "unsupported" });
+    await expect(backend.dispatchUserInput({
+      kind: "append_to_active_turn",
+      turnId: "turn-active",
+      message: new AgentInputUserMessage("no append"),
+    })).resolves.toMatchObject({ forwarded: false, code: "UNSUPPORTED_RUNTIME_COMMAND" });
+    expect(session.startTurn).not.toHaveBeenCalled();
   });
 });

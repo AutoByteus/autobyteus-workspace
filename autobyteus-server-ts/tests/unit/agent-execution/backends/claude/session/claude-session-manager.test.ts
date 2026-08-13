@@ -210,7 +210,7 @@ describe("ClaudeSessionManager", () => {
     (manager as any).toolingCoordinator.clearPendingToolApprovals =
       clearPendingToolApprovals;
 
-    const { turnId } = await session.sendTurn(new AgentInputUserMessage("hello"));
+    const { turnId } = await session.startTurn(new AgentInputUserMessage("hello"));
     await waitFor(
       () =>
         (manager as any).activeQueriesByRunId.get("run-active-terminate") ===
@@ -253,6 +253,8 @@ describe("ClaudeSessionManager", () => {
         ?.activeTurnId,
     ).toBeNull();
     expect(manager.hasRunSession("run-active-terminate")).toBe(false);
-    expect(closeQuery).not.toHaveBeenCalled();
+    expect(closeQuery).toHaveBeenCalledTimes(1);
+    expect(closeQuery).toHaveBeenCalledWith(controlledQuery.query);
+    expect(controlledQuery.query.interrupt).not.toHaveBeenCalled();
   });
 });

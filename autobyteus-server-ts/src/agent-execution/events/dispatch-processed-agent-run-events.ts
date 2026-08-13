@@ -17,6 +17,7 @@ export const dispatchProcessedAgentRunEvents = async (input: {
   lifecycleState: AgentTurnLifecycleState;
   segmentLifecycleState: AgentSegmentLifecycleState;
   getRuntimeLifecycleSnapshot: () => AgentRuntimeLifecycleSnapshot;
+  onCanonicalEventsDispatched?: (events: readonly AgentRunEvent[]) => void;
   onListenerError?: (error: unknown) => void;
 }): Promise<void> => {
   if (input.events.length === 0) {
@@ -42,6 +43,7 @@ export const dispatchProcessedAgentRunEvents = async (input: {
           onListenerError: input.onListenerError,
         });
       }
+      input.onCanonicalEventsDispatched?.(finalEvents);
     },
   );
 };

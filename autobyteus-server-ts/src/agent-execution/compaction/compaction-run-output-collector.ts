@@ -4,6 +4,7 @@ import {
   type AgentRunEvent,
 } from "../domain/agent-run-event.js";
 import { AgentRunCanonicalFailureObserver } from "../events/agent-run-canonical-failure-observer.js";
+import type { AgentRunInputLifecycle } from "../input/agent-run-input-contract.js";
 
 export type CompactionRunOutputCollectorOptions = {
   runId: string;
@@ -89,6 +90,21 @@ export class CompactionRunOutputCollector {
     }
 
     this.notifyWaiters();
+  }
+
+  observeInputLifecycle(fact: AgentRunInputLifecycle): void {
+    if (this.failure || this.terminal) return;
+    if (fact.kind === "failed") {
+      this.fail(new Error(
+        `Compactor agent run '${this.runId}' input dispatch failed: ${fact.message}`,
+      ));
+    } else if (fact.kind === "cancelled") {
+      this.fail(new Error(
+        `Compactor agent run '${this.runId}' terminated before input forwarding.`,
+      ));
+    } else if (fact.kind === "interrupted") {
+      this.fail(new Error(`Compactor agent run '${this.runId}' input was interrupted.`));
+    }
   }
 
   waitForFinalOutput(timeoutMs: number): Promise<string> {

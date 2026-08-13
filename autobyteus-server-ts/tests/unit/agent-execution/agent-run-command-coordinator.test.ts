@@ -1,566 +1,206 @@
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { describe, expect, it, vi } from "vitest";
-import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
-import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import type { AgentRunInputLifecycle, AgentRunInputLifecycleObserver } from "../../../src/agent-execution/input/agent-run-input-contract.js";
 import { AgentRunCommandCoordinator } from "../../../src/agent-execution/services/agent-run-command-coordinator.js";
 import { AgentRunCommandRegistry } from "../../../src/agent-execution/services/agent-run-command-registry.js";
 import { AgentRunCommandStatusOverlayStore } from "../../../src/agent-execution/services/agent-run-command-status-overlay-store.js";
-import { AgentRunStatusProjectionService } from "../../../src/agent-execution/services/agent-run-status-projection-service.js";
-import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
 
-const metadata: AgentRunMetadata = {
-  runId: "run-1",
-  agentDefinitionId: "agent-def-1",
-  workspaceRootPath: "/tmp/workspace",
-  memoryDir: "/tmp/memory/agents/run-1",
-  llmModelIdentifier: "model-1",
-  llmConfig: null,
-  autoExecuteTools: false,
-  skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
-  runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-  platformAgentRunId: "thread-1",
-  preparedAt: "2026-05-17T00:00:00.000Z",
-  preparedExpiresAt: "2026-05-18T00:00:00.000Z",
-  startedAt: "2026-05-17T00:05:00.000Z",
+const createDeferred = <T>() => {
+  let resolve!: (value: T) => void;
+  const promise = new Promise<T>((settle) => { resolve = settle; });
+  return { promise, resolve };
 };
 
-const createFakeRun = (options: {
-  status?: "initializing" | "running" | "idle" | "error";
-  statusAfterPostBegins?: "initializing" | "running" | "idle" | "error";
-  accepted?: boolean;
-  rejectMessage?: string;
-  resultTurnId?: string | null;
-} = {}) => {
-  const listeners = new Set<(event: unknown) => void>();
-  let status = options.status ?? "idle";
-  return {
+const createFakeRun = (input: { accepted?: boolean; active?: boolean } = {}) => {
+  const observers = new Map<string, AgentRunInputLifecycleObserver>();
+  const run = {
     runId: "run-1",
-    postUserMessage: vi.fn(async () => {
-      status = options.statusAfterPostBegins ?? status;
-      const accepted = options.accepted ?? true;
-      const turnId = accepted
-        ? options.resultTurnId === undefined ? "turn-1" : options.resultTurnId
-        : null;
-      if (accepted && turnId) {
-        status = "running";
-      }
-      return {
-        accepted,
-        turnId,
-        message: options.rejectMessage,
-      };
+    postUserMessage: vi.fn(async (message, options) => {
+      const messageId = String(message.metadata.message_id);
+      observers.set(messageId, options.lifecycleObserver);
+      options.lifecycleObserver({ kind: "admitted" });
+      return input.accepted === false
+        ? { accepted: false, code: "BUSY", message: "runtime busy", turnId: null }
+        : { accepted: true, turnId: null };
     }),
-    subscribeToEvents: vi.fn((listener: (event: unknown) => void) => {
-      listeners.add(listener);
-      return () => listeners.delete(listener);
-    }),
-    getStatusSnapshot: () => ({
-      status,
-      agent_id: "run-1",
-    }),
-    emitStatus(nextStatus: "initializing" | "running" | "idle" | "error") {
-      status = nextStatus;
-      const event: AgentRunEvent = {
-        eventType: AgentRunEventType.AGENT_STATUS,
-        runId: "run-1",
-        payload: { status: nextStatus, agent_id: "run-1" },
-        statusHint: nextStatus === "running" ? "ACTIVE" : nextStatus === "error" ? "ERROR" : "IDLE",
-      };
-      listeners.forEach((listener) => listener(event));
-    },
-    emitTurnStarted(turnId = "turn-1") {
-      const event: AgentRunEvent = {
-        eventType: AgentRunEventType.TURN_STARTED,
-        runId: "run-1",
-        payload: { turn_id: turnId },
-        statusHint: "ACTIVE",
-      };
-      listeners.forEach((listener) => listener(event));
-    },
-    emitTurnTerminal(turnId: string | null = "turn-1") {
-      const event: AgentRunEvent = {
-        eventType: AgentRunEventType.TURN_COMPLETED,
-        runId: "run-1",
-        payload: turnId ? { turn_id: turnId } : {},
-        statusHint: "IDLE",
-      };
-      listeners.forEach((listener) => listener(event));
-    },
-    emitError(input: {
-      scope: "turn" | "runtime";
-      effect: "diagnostic" | "terminal";
-      turnId?: string;
-    }) {
-      const event: AgentRunEvent = {
-        eventType: AgentRunEventType.ERROR,
-        runId: "run-1",
-        payload: {
-          code: "RUNTIME_ERROR",
-          message: "runtime event",
-          error_scope: input.scope,
-          error_effect: input.effect,
-          ...(input.turnId ? { turn_id: input.turnId } : {}),
-        },
-        statusHint: input.effect === "terminal" ? "ERROR" : null,
-      };
-      listeners.forEach((listener) => listener(event));
+    getStatusSnapshot: () => ({ status: "running", agent_id: "run-1" }),
+    emit(messageId: string, fact: AgentRunInputLifecycle) {
+      observers.get(messageId)?.(fact);
     },
   };
+  return run;
 };
 
-const flushAsync = () => new Promise((resolve) => setTimeout(resolve, 0));
-
-const publishedStatusPayloads = (published: string[]) =>
-  published
-    .map((raw) => JSON.parse(raw))
-    .filter((message) => message.type === "AGENT_STATUS")
-    .map((message) => message.payload);
-
-const buildCoordinator = (options: {
-  restorePromise: Promise<{ run: ReturnType<typeof createFakeRun> }>;
+const buildCoordinator = (input: {
   activeRun?: ReturnType<typeof createFakeRun> | null;
-}) => {
+  restoredRun?: ReturnType<typeof createFakeRun>;
+  restoreError?: Error;
+  restoreAgentRun?: () => Promise<{ run: ReturnType<typeof createFakeRun> }>;
+} = {}) => {
   const registry = new AgentRunCommandRegistry();
   const overlayStore = new AgentRunCommandStatusOverlayStore();
   const published: string[] = [];
+  const restoredRun = input.restoredRun ?? createFakeRun();
   const agentRunService = {
-    getAgentRun: vi.fn(() => options.activeRun ?? null),
-    getRunMetadata: vi.fn(async () => metadata),
-    restoreAgentRun: vi.fn(() => options.restorePromise),
+    getAgentRun: vi.fn(() => input.activeRun ?? null),
+    getRunMetadata: vi.fn(async () => ({ startedAt: "2026-08-13T00:00:00Z" })),
+    restoreAgentRun: vi.fn(input.restoreAgentRun ?? (async () => {
+      if (input.restoreError) throw input.restoreError;
+      return { run: restoredRun };
+    })),
     activatePreparedRun: vi.fn(),
     recordRunActivity: vi.fn(async () => undefined),
-  } as any;
-  const projectionService = new AgentRunStatusProjectionService({
-    agentRunManager: { getActiveRun: vi.fn(() => options.activeRun ?? null) } as any,
-    metadataService: { readMetadata: vi.fn(async () => metadata) } as any,
-    overlayStore,
-    commandRegistry: registry,
-  });
+  };
+  const projectionService = {
+    getRunStatusProjection: vi.fn(async () => ({
+      statusPayload: { status: "running", agent_id: "run-1" },
+    })),
+  };
   const coordinator = new AgentRunCommandCoordinator({
-    agentRunService,
+    agentRunService: agentRunService as never,
     registry,
     overlayStore,
-    projectionService,
+    projectionService: projectionService as never,
     broadcaster: {
       publishToRun: vi.fn((_runId, message) => {
         published.push(message.toJson());
         return 1;
       }),
-    } as any,
+    } as never,
   });
-  return { coordinator, registry, overlayStore, published, agentRunService };
+  return { coordinator, registry, overlayStore, published, agentRunService, restoredRun };
 };
 
+const command = (messageId: string) => ({
+  runId: "run-1",
+  messageId,
+  dedupeKey: `dedupe-${messageId}`,
+  message: new AgentInputUserMessage(`message ${messageId}`),
+});
+
 describe("AgentRunCommandCoordinator", () => {
-  it("uses the AgentRun-owned accepted turn status without a synthetic replacement event", async () => {
-    const fakeRun = createFakeRun({ status: "initializing" });
-    let resolveRestore!: (value: { run: ReturnType<typeof createFakeRun> }) => void;
-    const restorePromise = new Promise<{ run: ReturnType<typeof createFakeRun> }>((resolve) => {
-      resolveRestore = resolve;
-    });
-    const { coordinator, published, agentRunService } = buildCoordinator({ restorePromise });
+  it("registers the typed lifecycle observer before admission and never subscribes to raw events", async () => {
+    const run = createFakeRun();
+    const { coordinator, registry } = buildCoordinator({ activeRun: run });
 
-    const pending = coordinator.postUserMessage({
-      runId: "run-1",
-      messageId: "msg-1",
-      dedupeKey: "dedupe-1",
-      message: new AgentInputUserMessage("hello"),
-    });
+    const result = await coordinator.postUserMessage(command("msg-1"));
+    expect(result.ack).toMatchObject({ state: "accepted", accepted: true, duplicate: false });
+    expect(registry.getRecord("run-1", "msg-1")?.state).toBe("ADMITTED");
+    expect(run.postUserMessage).toHaveBeenCalledWith(
+      expect.objectContaining({ metadata: expect.objectContaining({ message_id: "msg-1" }) }),
+      expect.objectContaining({ lifecycleObserver: expect.any(Function) }),
+    );
 
-    await Promise.resolve();
-    expect(published.map((raw) => JSON.parse(raw))).toContainEqual({
-      type: "AGENT_STATUS",
-      payload: { status: "initializing", agent_id: "run-1" },
+    run.emit("msg-1", {
+      kind: "forwarded",
+      dispatchKind: "start_turn",
+      turnId: null,
     });
-    expect(agentRunService.restoreAgentRun).toHaveBeenCalledWith("run-1");
-
-    resolveRestore({ run: fakeRun });
-    const result = await pending;
-
-    expect(result.ack).toMatchObject({
-      state: "accepted",
-      accepted: true,
-      duplicate: false,
-      message_id: "msg-1",
-      status: { status: "running", agent_id: "run-1" },
-    });
-    expect([
-      ...publishedStatusPayloads(published).map((payload) => payload.status),
-      result.ack.status?.status,
-    ]).toEqual(["initializing", "running"]);
-    expect(fakeRun.postUserMessage).toHaveBeenCalledOnce();
-    expect(fakeRun.postUserMessage.mock.calls[0][0].metadata).toMatchObject({
-      message_id: "msg-1",
-      dedupe_key: "dedupe-1",
+    run.emit("msg-1", { kind: "turn_associated", turnId: "turn-1" });
+    run.emit("msg-1", { kind: "completed", turnId: "turn-1" });
+    expect(registry.getRecord("run-1", "msg-1")).toMatchObject({
+      state: "COMPLETED",
+      turnId: "turn-1",
     });
   });
 
-  it("does not downgrade an already-running active runtime to initializing", async () => {
-    const fakeRun = createFakeRun({ status: "running" });
-    const { coordinator, overlayStore, published, agentRunService } = buildCoordinator({
-      restorePromise: Promise.resolve({ run: fakeRun }),
-      activeRun: fakeRun,
+  it("admits distinct commands concurrently while preserving duplicate replay", async () => {
+    const run = createFakeRun();
+    const { coordinator, registry } = buildCoordinator({ activeRun: run });
+
+    const first = await coordinator.postUserMessage(command("msg-1"));
+    const duplicate = await coordinator.postUserMessage(command("msg-1"));
+    const second = await coordinator.postUserMessage(command("msg-2"));
+
+    expect(first.ack.state).toBe("accepted");
+    expect(duplicate.ack).toMatchObject({ state: "duplicate_in_progress", duplicate: true });
+    expect(second.ack).toMatchObject({ state: "accepted", accepted: true });
+    expect(run.postUserMessage).toHaveBeenCalledTimes(2);
+    expect(registry.getOutstandingRecords("run-1")).toHaveLength(2);
+  });
+
+  it("settles dispatch failure and cancellation from the entry-bound lifecycle", async () => {
+    const run = createFakeRun();
+    const { coordinator, registry } = buildCoordinator({ activeRun: run });
+    await coordinator.postUserMessage(command("msg-fail"));
+    await coordinator.postUserMessage(command("msg-cancel"));
+
+    run.emit("msg-fail", {
+      kind: "failed",
+      code: "RUNTIME_COMMAND_FAILED",
+      message: "provider rejected",
+      turnId: null,
+    });
+    run.emit("msg-cancel", {
+      kind: "cancelled",
+      code: "AGENT_RUN_TERMINATED_BEFORE_INPUT_FORWARD",
     });
 
-    const result = await coordinator.postUserMessage({
-      runId: "run-1",
-      messageId: "msg-1",
-      dedupeKey: "dedupe-1",
-      message: new AgentInputUserMessage("hello"),
+    expect(registry.getRecord("run-1", "msg-fail")).toMatchObject({
+      state: "FAILED",
+      code: "RUNTIME_REJECTED",
+      message: "provider rejected",
+    });
+    expect(registry.getRecord("run-1", "msg-cancel")).toMatchObject({
+      state: "CANCELLED",
+      code: "AGENT_RUN_TERMINATED_BEFORE_INPUT_FORWARD",
+    });
+  });
+
+  it("shares one inactive-run activation across concurrent distinct commands", async () => {
+    const run = createFakeRun();
+    const restored = createDeferred<{ run: typeof run }>();
+    const { coordinator, agentRunService } = buildCoordinator({
+      restoredRun: run,
+      restoreAgentRun: () => restored.promise,
     });
 
-    expect(agentRunService.restoreAgentRun).not.toHaveBeenCalled();
+    const first = coordinator.postUserMessage(command("msg-1"));
+    const second = coordinator.postUserMessage(command("msg-2"));
+    await vi.waitFor(() => expect(agentRunService.restoreAgentRun).toHaveBeenCalledOnce());
+
+    restored.resolve({ run });
+
+    await expect(Promise.all([first, second])).resolves.toEqual([
+      expect.objectContaining({ ack: expect.objectContaining({ state: "accepted" }) }),
+      expect.objectContaining({ ack: expect.objectContaining({ state: "accepted" }) }),
+    ]);
+    expect(run.postUserMessage).toHaveBeenCalledTimes(2);
+    expect(agentRunService.restoreAgentRun).toHaveBeenCalledOnce();
+  });
+
+  it("keeps activation-only status overlay and clears it before live admission", async () => {
+    const run = createFakeRun();
+    const { coordinator, overlayStore, published } = buildCoordinator({ restoredRun: run });
+
+    await coordinator.postUserMessage(command("msg-restore"));
+
+    expect(published.map((raw) => JSON.parse(raw).payload.status)).toEqual(["initializing"]);
     expect(overlayStore.getOverlay("run-1")).toBeNull();
-    expect(published.map((raw) => JSON.parse(raw))).not.toContainEqual({
-      type: "AGENT_STATUS",
-      payload: { status: "initializing", agent_id: "run-1" },
-    });
-    expect(result.ack).toMatchObject({
-      state: "accepted",
-      accepted: true,
-      status: { status: "running", agent_id: "run-1" },
-    });
   });
 
-  it("does not replace an active run status from accepted command metadata", async () => {
-    const fakeRun = createFakeRun({
-      status: "idle",
-      statusAfterPostBegins: "initializing",
+  it("keeps activation failure as one failed record and error overlay", async () => {
+    const { coordinator, registry, overlayStore } = buildCoordinator({
+      restoreError: new Error("restore failed"),
     });
-    const { coordinator, published } = buildCoordinator({
-      restorePromise: Promise.resolve({ run: fakeRun }),
-      activeRun: fakeRun,
-    });
+    const result = await coordinator.postUserMessage(command("msg-restore"));
 
-    const result = await coordinator.postUserMessage({
-      runId: "run-1",
-      messageId: "msg-1",
-      dedupeKey: "dedupe-1",
-      message: new AgentInputUserMessage("hello"),
-    });
-
-    expect([
-      ...publishedStatusPayloads(published).map((payload) => payload.status),
-      result.ack.status?.status,
-    ]).toEqual(["running"]);
-    expect(result.ack.status).toEqual({
-      status: "running",
-      agent_id: "run-1",
-    });
+    expect(result.ack).toMatchObject({ state: "failed", accepted: false, code: "ACTIVATION_FAILED" });
+    expect(registry.getRecord("run-1", "msg-restore")?.state).toBe("FAILED");
+    expect(overlayStore.getOverlay("run-1")?.status).toBe("error");
   });
 
-  it("keeps active-runtime command rejection ACK status consistent without publishing lifecycle error", async () => {
-    const fakeRun = createFakeRun({
-      status: "running",
-      accepted: false,
-      rejectMessage: "runtime busy",
-    });
-    const { coordinator, overlayStore, published } = buildCoordinator({
-      restorePromise: Promise.resolve({ run: fakeRun }),
-      activeRun: fakeRun,
-    });
+  it("returns a rejected ACK when AgentRun refuses admission", async () => {
+    const run = createFakeRun({ accepted: false });
+    const { coordinator, registry } = buildCoordinator({ activeRun: run });
+    const result = await coordinator.postUserMessage(command("msg-reject"));
 
-    const result = await coordinator.postUserMessage({
-      runId: "run-1",
-      messageId: "msg-1",
-      dedupeKey: "dedupe-1",
-      message: new AgentInputUserMessage("hello"),
-    });
-
-    expect(overlayStore.getOverlay("run-1")).toBeNull();
-    expect(published.map((raw) => JSON.parse(raw))).not.toContainEqual({
-      type: "AGENT_STATUS",
-      payload: { status: "error", agent_id: "run-1" },
-    });
     expect(result.ack).toMatchObject({
-      state: "failed",
+      state: "rejected",
       accepted: false,
       code: "RUNTIME_REJECTED",
       message: "runtime busy",
-      status: { status: "running", agent_id: "run-1" },
     });
-  });
-
-  it("deduplicates same command id and rejects different id while command is in progress", async () => {
-    const fakeRun = createFakeRun();
-    const { coordinator, agentRunService } = buildCoordinator({
-      restorePromise: Promise.resolve({ run: fakeRun }),
-    });
-    fakeRun.postUserMessage.mockImplementationOnce(async () => new Promise(() => undefined));
-
-    void coordinator.postUserMessage({
-      runId: "run-1",
-      messageId: "msg-1",
-      dedupeKey: "dedupe-1",
-      message: new AgentInputUserMessage("hello"),
-    });
-    await Promise.resolve();
-    await Promise.resolve();
-
-    const duplicate = await coordinator.postUserMessage({
-      runId: "run-1",
-      messageId: "msg-1",
-      dedupeKey: "dedupe-1",
-      message: new AgentInputUserMessage("hello"),
-    });
-    const rejected = await coordinator.postUserMessage({
-      runId: "run-1",
-      messageId: "msg-2",
-      dedupeKey: "dedupe-2",
-      message: new AgentInputUserMessage("next"),
-    });
-
-    expect(duplicate.ack).toMatchObject({ state: "duplicate_in_progress", accepted: true, duplicate: true });
-    expect(rejected.ack).toMatchObject({ state: "rejected", accepted: false, code: "RUN_COMMAND_IN_PROGRESS" });
-    expect(agentRunService.restoreAgentRun).toHaveBeenCalledTimes(1);
-    expect(fakeRun.postUserMessage).toHaveBeenCalledTimes(1);
-  });
-
-  it("clears the pre-runtime command overlay as soon as the AgentRun binds", async () => {
-    const fakeRun = createFakeRun({ resultTurnId: null });
-    const { coordinator, overlayStore } = buildCoordinator({
-      restorePromise: Promise.resolve({ run: fakeRun }),
-    });
-
-    await coordinator.postUserMessage({
-      runId: "run-1",
-      messageId: "msg-1",
-      dedupeKey: "dedupe-1",
-      message: new AgentInputUserMessage("hello"),
-    });
-    expect(overlayStore.getOverlay("run-1")).toBeNull();
-
-    fakeRun.emitStatus("running");
-    expect(overlayStore.getOverlay("run-1")).toBeNull();
-  });
-
-  it("does not let delayed terminal A settle identified command B before or after result capture", async () => {
-    const fakeRun = createFakeRun();
-    let resolvePost!: (value: { accepted: true; turnId: string }) => void;
-    fakeRun.postUserMessage.mockImplementationOnce(() => new Promise((resolve) => {
-      resolvePost = resolve;
-    }));
-    const { coordinator, registry } = buildCoordinator({
-      restorePromise: Promise.resolve({ run: fakeRun }),
-      activeRun: fakeRun,
-    });
-
-    const pending = coordinator.postUserMessage({
-      runId: "run-1",
-      messageId: "msg-b",
-      dedupeKey: "dedupe-b",
-      message: new AgentInputUserMessage("B"),
-    });
-    await flushAsync();
-    fakeRun.emitTurnTerminal("turn-a");
-    fakeRun.emitTurnStarted("turn-b");
-    resolvePost({ accepted: true, turnId: "turn-b" });
-    await pending;
-
-    expect(registry.getRecord("run-1", "msg-b")).toMatchObject({
-      state: "FORWARDED",
-      association: { kind: "IDENTIFIED", turnId: "turn-b" },
-    });
-    fakeRun.emitTurnTerminal("turn-a");
-    expect(registry.getRecord("run-1", "msg-b")?.state).toBe("FORWARDED");
-    fakeRun.emitTurnTerminal("turn-b");
-    expect(registry.getRecord("run-1", "msg-b")?.state).toBe("COMPLETED");
-  });
-
-  it("ignores diagnostics but fails once on matching turn-terminal evidence", async () => {
-    const fakeRun = createFakeRun({ status: "running" });
-    const { coordinator, registry } = buildCoordinator({
-      restorePromise: Promise.resolve({ run: fakeRun }),
-      activeRun: fakeRun,
-    });
-    await coordinator.postUserMessage({
-      runId: "run-1",
-      messageId: "msg-1",
-      dedupeKey: "dedupe-1",
-      message: new AgentInputUserMessage("hello"),
-    });
-
-    fakeRun.emitError({ scope: "turn", effect: "diagnostic", turnId: "turn-1" });
-    expect(registry.getRecord("run-1", "msg-1")?.state).toBe("FORWARDED");
-    fakeRun.emitError({ scope: "turn", effect: "terminal", turnId: "turn-1" });
-    expect(registry.getRecord("run-1", "msg-1")).toMatchObject({
-      state: "FAILED",
-      code: "RUNTIME_REJECTED",
-    });
-    fakeRun.emitTurnTerminal("turn-1");
-    expect(registry.getRecord("run-1", "msg-1")?.state).toBe("FAILED");
-  });
-
-  it("replays a fast matching turn-terminal only after accepted result identity", async () => {
-    const fakeRun = createFakeRun();
-    let resolvePost!: (value: { accepted: true; turnId: string }) => void;
-    fakeRun.postUserMessage.mockImplementationOnce(() => new Promise((resolve) => {
-      resolvePost = resolve;
-    }));
-    const { coordinator, registry } = buildCoordinator({
-      restorePromise: Promise.resolve({ run: fakeRun }),
-      activeRun: fakeRun,
-    });
-    const pending = coordinator.postUserMessage({
-      runId: "run-1",
-      messageId: "msg-1",
-      dedupeKey: "dedupe-1",
-      message: new AgentInputUserMessage("hello"),
-    });
-    await flushAsync();
-    fakeRun.emitError({ scope: "turn", effect: "terminal", turnId: "turn-1" });
-    expect(registry.getRecord("run-1", "msg-1")?.state).toBe("FORWARDED");
-
-    resolvePost({ accepted: true, turnId: "turn-1" });
-    const result = await pending;
-    expect(result.ack).toMatchObject({ state: "failed", accepted: false });
-    expect(registry.getRecord("run-1", "msg-1")?.state).toBe("FAILED");
-  });
-
-  it("does not reopen running when canonical completion wins before the accepted result", async () => {
-    const fakeRun = createFakeRun({ status: "idle" });
-    let resolvePost!: (value: { accepted: true; turnId: string }) => void;
-    fakeRun.postUserMessage.mockImplementationOnce(() => new Promise((resolve) => {
-      resolvePost = resolve;
-    }));
-    const canonicalStatuses: string[] = [];
-    fakeRun.subscribeToEvents((input) => {
-      const event = input as AgentRunEvent;
-      if (event.eventType === AgentRunEventType.AGENT_STATUS) {
-        canonicalStatuses.push(`status:${event.payload.status}`);
-      }
-    });
-    const { coordinator, published, registry } = buildCoordinator({
-      restorePromise: Promise.resolve({ run: fakeRun }),
-      activeRun: fakeRun,
-    });
-
-    const pending = coordinator.postUserMessage({
-      runId: "run-1",
-      messageId: "msg-1",
-      dedupeKey: "dedupe-1",
-      message: new AgentInputUserMessage("hello"),
-    });
-    await flushAsync();
-    fakeRun.emitStatus("initializing");
-    fakeRun.emitTurnStarted("turn-1");
-    fakeRun.emitStatus("running");
-    fakeRun.emitTurnTerminal("turn-1");
-    fakeRun.emitStatus("idle");
-    resolvePost({ accepted: true, turnId: "turn-1" });
-
-    const result = await pending;
-    expect(publishedStatusPayloads(published)).toEqual([]);
-    expect([
-      ...canonicalStatuses,
-      ...publishedStatusPayloads(published).map((payload) => `synthetic:${payload.status}`),
-      `ack:${result.ack.status?.status}`,
-    ]).toEqual(["status:initializing", "status:running", "status:idle", "ack:idle"]);
-    expect(registry.getRecord("run-1", "msg-1")?.state).toBe("COMPLETED");
-  });
-
-  it("lets explicit runtime-global failure settle pending identity without result resurrection", async () => {
-    const fakeRun = createFakeRun();
-    let resolvePost!: (value: { accepted: true; turnId: string }) => void;
-    fakeRun.postUserMessage.mockImplementationOnce(() => new Promise((resolve) => {
-      resolvePost = resolve;
-    }));
-    const { coordinator, registry } = buildCoordinator({
-      restorePromise: Promise.resolve({ run: fakeRun }),
-      activeRun: fakeRun,
-    });
-    const pending = coordinator.postUserMessage({
-      runId: "run-1",
-      messageId: "msg-1",
-      dedupeKey: "dedupe-1",
-      message: new AgentInputUserMessage("hello"),
-    });
-    await flushAsync();
-    fakeRun.emitError({ scope: "runtime", effect: "terminal" });
-    expect(registry.getRecord("run-1", "msg-1")?.state).toBe("FAILED");
-
-    resolvePost({ accepted: true, turnId: "turn-1" });
-    const result = await pending;
-    expect(result.ack).toMatchObject({ state: "failed", accepted: false });
-    expect(registry.getRecord("run-1", "msg-1")?.association.kind).toBe("PENDING_IDENTITY");
-  });
-
-  it("arms an accepted anonymous command only on later positive active evidence", async () => {
-    const fakeRun = createFakeRun({ resultTurnId: null });
-    const { coordinator, registry } = buildCoordinator({
-      restorePromise: Promise.resolve({ run: fakeRun }),
-      activeRun: fakeRun,
-    });
-    await coordinator.postUserMessage({
-      runId: "run-1",
-      messageId: "msg-1",
-      dedupeKey: "dedupe-1",
-      message: new AgentInputUserMessage("hello"),
-    });
-    expect(registry.getRecord("run-1", "msg-1")?.association.kind)
-      .toBe("AWAITING_ANONYMOUS_START");
-
-    fakeRun.emitTurnTerminal(null);
-    expect(registry.getRecord("run-1", "msg-1")?.state).toBe("FORWARDED");
-    fakeRun.emitTurnStarted("");
-    expect(registry.getRecord("run-1", "msg-1")?.association.kind).toBe("ANONYMOUS_ARMED");
-    fakeRun.emitTurnTerminal(null);
-    expect(registry.getRecord("run-1", "msg-1")?.state).toBe("COMPLETED");
-  });
-
-  it("keeps restored running snapshot internal until command-correlated execution event", async () => {
-    const fakeRun = createFakeRun({ status: "running" });
-    let resolveRestore!: (value: { run: ReturnType<typeof createFakeRun> }) => void;
-    let resolvePost!: (value: { accepted: true; turnId: string }) => void;
-    const restorePromise = new Promise<{ run: ReturnType<typeof createFakeRun> }>((resolve) => {
-      resolveRestore = resolve;
-    });
-    fakeRun.postUserMessage.mockImplementationOnce(async () =>
-      new Promise((resolve) => {
-        resolvePost = resolve;
-      }),
-    );
-    const { coordinator, overlayStore, published } = buildCoordinator({ restorePromise });
-
-    const pending = coordinator.postUserMessage({
-      runId: "run-1",
-      messageId: "msg-1",
-      dedupeKey: "dedupe-1",
-      message: new AgentInputUserMessage("hello"),
-    });
-
-    await Promise.resolve();
-    expect(publishedStatusPayloads(published).map((payload) => payload.status)).toEqual([
-      "initializing",
-    ]);
-
-    resolveRestore({ run: fakeRun });
-    await flushAsync();
-
-    expect(fakeRun.postUserMessage).toHaveBeenCalledOnce();
-    expect(overlayStore.getOverlay("run-1")).toBeNull();
-    expect(publishedStatusPayloads(published).map((payload) => payload.status)).toEqual([
-      "initializing",
-    ]);
-
-    fakeRun.emitTurnStarted("turn-1");
-
-    expect(overlayStore.getOverlay("run-1")).toBeNull();
-    expect(publishedStatusPayloads(published).map((payload) => payload.status)).toEqual([
-      "initializing",
-    ]);
-
-    resolvePost({ accepted: true, turnId: "turn-1" });
-    const result = await pending;
-    expect(overlayStore.getOverlay("run-1")).toBeNull();
-    expect(publishedStatusPayloads(published)).toEqual([
-      { status: "initializing", agent_id: "run-1" },
-    ]);
-    expect(result.ack).toMatchObject({
-      state: "accepted",
-      accepted: true,
-      message_id: "msg-1",
-    });
+    expect(registry.getRecord("run-1", "msg-reject")?.state).toBe("REJECTED");
   });
 });

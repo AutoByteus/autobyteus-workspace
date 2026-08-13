@@ -267,13 +267,6 @@ export class ClaudeSdkClient {
     );
   }
 
-  async interruptQuery(query: ClaudeSdkQueryLike | null): Promise<void> {
-    if (!query) {
-      return;
-    }
-    await query.interrupt();
-  }
-
   closeQuery(query: ClaudeSdkQueryLike | null): void {
     if (!query) {
       return;

@@ -1,14 +1,7 @@
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import {
-  resolveAgentRunErrorEvidence,
-} from "../domain/agent-run-error-evidence.js";
-import { resolveAgentRunEventTurnId } from "../domain/agent-run-event-turn-id.js";
-import { AgentRunEventType, isAgentRunEvent, type AgentRunEvent } from "../domain/agent-run-event.js";
 import type { AgentRun } from "../domain/agent-run.js";
-import {
-  type AgentApiStatus,
-  type AgentStatusPayload,
-} from "../domain/agent-status-payload.js";
+import type { AgentStatusPayload } from "../domain/agent-status-payload.js";
+import type { AgentRunInputLifecycle } from "../input/agent-run-input-contract.js";
 import { AgentRunService, getAgentRunService } from "./agent-run-service.js";
 import {
   AgentRunCommandRegistry,
@@ -36,27 +29,13 @@ import type {
 } from "./agent-run-command-types.js";
 
 type ValidatedCommandIdentity = { runId: string; messageId: string; dedupeKey: string };
-type CommandEvidence =
-  | { kind: "START_IDENTIFIED"; sequence: number; turnId: string }
-  | { kind: "START_ANONYMOUS"; sequence: number }
-  | { kind: "TERMINAL_IDENTIFIED"; sequence: number; turnId: string }
-  | { kind: "TERMINAL_ANONYMOUS"; sequence: number }
-  | { kind: "TURN_TERMINAL"; sequence: number; turnId: string }
-  | { kind: "STATUS"; sequence: number; status: AgentApiStatus }
-  | { kind: "RUNTIME_GLOBAL"; sequence: number };
-
-type CommandObservation = {
-  unsubscribe: () => void;
-  reconcileAcceptedResult: (turnId: string | null) => AgentStatusPayload | null;
-};
-
 const logger = { warn: (...args: unknown[]) => console.warn(...args) };
 const toMessage = (error: unknown): string =>
   error instanceof Error && error.message ? error.message : String(error);
-const isInFlight = (record: AgentRunCommandRecord): boolean =>
-  record.state === "STARTING" || record.state === "FORWARDED";
 
 export class AgentRunCommandCoordinator {
+  private readonly activationByRunId = new Map<string, Promise<AgentRun>>();
+
   constructor(private readonly deps: {
     agentRunService?: AgentRunService;
     registry?: AgentRunCommandRegistry;
@@ -73,279 +52,110 @@ export class AgentRunCommandCoordinator {
 
     const begin = this.registry.begin(identity.value);
     if (begin.kind === "duplicate") return this.duplicateResult(begin.record);
-    if (begin.kind === "busy") return this.recordResult(begin.record, "rejected", false, false);
 
     const record = begin.record;
     const activeRunAtStart = this.agentRunService.getAgentRun(record.runId);
-    const startedFromInactiveIdentity = !activeRunAtStart;
-    if (startedFromInactiveIdentity) {
+    const requiresActivation = !activeRunAtStart;
+    if (requiresActivation) {
       this.publishStatus(record.runId, this.overlayStore.publishInitializing({
         runId: record.runId,
         messageId: record.messageId,
       }));
     }
 
-    let observation: CommandObservation | null = null;
     try {
       const activeRun = activeRunAtStart ?? await this.resolveRuntimeForCommand(record.runId);
       this.clearOverlayForCommand(record);
-      let messageHandoffStarted = false;
-      observation = this.observeRuntimeCommand(activeRun, record, () => messageHandoffStarted);
       input.onActiveRunReady?.(activeRun);
-      this.registry.markForwarded({ runId: record.runId, messageId: record.messageId });
-      messageHandoffStarted = true;
 
-      const result = await activeRun.postUserMessage(this.withCommandMetadata(input.message, record));
-      if (!result.accepted) {
-        observation.unsubscribe();
-        return this.failCommand(
-          this.latestRecord(record),
-          "RUNTIME_REJECTED",
-          result.message ?? "Runtime rejected the command.",
-          { publishErrorStatus: false },
-        );
-      }
-
-      const acceptedStatus = observation.reconcileAcceptedResult(result.turnId ?? null);
-      await this.agentRunService.recordRunActivity(activeRun, {
-        summary: input.summary ?? input.message.content,
-      });
-      const latest = this.latestRecord(record);
-      if (latest.state === "FAILED" || latest.state === "REJECTED") {
-        return this.recordResult(latest, "failed", false, false);
-      }
-      return this.recordResult(
-        latest, "accepted", true, false,
-        isInFlight(latest) ? acceptedStatus ?? undefined : undefined,
+      const result = await activeRun.postUserMessage(
+        this.withCommandMetadata(input.message, record),
+        {
+          lifecycleObserver: (fact) => this.applyInputLifecycle(record, fact),
+        },
       );
+      if (!result.accepted) {
+        this.registry.markRejected({
+          runId: record.runId,
+          messageId: record.messageId,
+          code: "RUNTIME_REJECTED",
+          message: result.message ?? "Runtime rejected the command.",
+        });
+        return this.recordResult(this.latestRecord(record), "rejected", false, false);
+      }
+
+      void this.agentRunService.recordRunActivity(activeRun, {
+        summary: input.summary ?? input.message.content,
+      }).catch((error) => {
+        logger.warn(`Failed to record activity for run '${record.runId}': ${String(error)}`);
+      });
+      return this.recordResult(this.latestRecord(record), "accepted", true, false);
     } catch (error) {
-      observation?.unsubscribe();
       const code = this.isMissingRunError(error) ? "RUN_NOT_FOUND" : "ACTIVATION_FAILED";
       return this.failCommand(this.latestRecord(record), code, toMessage(error), {
-        publishErrorStatus: startedFromInactiveIdentity && !this.agentRunService.getAgentRun(record.runId),
+        publishErrorStatus: requiresActivation && !this.agentRunService.getAgentRun(record.runId),
       });
     }
   }
 
-  private observeRuntimeCommand(
-    activeRun: AgentRun,
+  private applyInputLifecycle(
     originalRecord: AgentRunCommandRecord,
-    isMessageHandoffStarted: () => boolean,
-  ): CommandObservation {
-    let sequence = 0;
-    let bufferedEvidence: CommandEvidence[] = [];
-    let unsubscribe: () => void = () => {};
-    const scheduleUnsubscribe = () => queueMicrotask(() => unsubscribe());
-
-    const settleCompleted = (turnId: string | null) => {
-      const current = this.currentRecord(originalRecord);
-      if (!current) return;
-      this.registry.markCompleted({
-        runId: current.runId,
-        messageId: current.messageId,
-        turnId,
-      });
-      this.clearOverlayForCommand(current);
-      bufferedEvidence = [];
-      scheduleUnsubscribe();
-    };
-    const settleFailed = (turnId: string | null) => {
-      const current = this.currentRecord(originalRecord);
-      if (!current) return;
-      this.registry.markFailed({
-        runId: current.runId,
-        messageId: current.messageId,
-        turnId,
-        code: "RUNTIME_REJECTED",
-        message: "Runtime reported an error while handling the command.",
-      });
-      this.clearOverlayForCommand(current);
-      bufferedEvidence = [];
-      scheduleUnsubscribe();
-    };
-
-    const applyEvidence = (evidence: CommandEvidence, replaying = false): void => {
-      const current = this.currentRecord(originalRecord);
-      if (!current) {
-        scheduleUnsubscribe();
+    fact: AgentRunInputLifecycle,
+  ): void {
+    const identity = { runId: originalRecord.runId, messageId: originalRecord.messageId };
+    switch (fact.kind) {
+      case "admitted":
+        this.registry.markAdmitted(identity);
         return;
-      }
-      if (evidence.kind === "RUNTIME_GLOBAL") {
-        settleFailed(current.turnId ?? null);
+      case "forwarded":
+        this.registry.markForwarded({ ...identity, turnId: fact.turnId });
         return;
-      }
-
-      const association = current.association;
-      if (association.kind === "PENDING_IDENTITY") {
-        if (!replaying) bufferedEvidence.push(evidence);
+      case "turn_associated":
+        this.registry.associateIdentified({ ...identity, turnId: fact.turnId });
         return;
-      }
-      if (association.kind === "IDENTIFIED") {
-        if (
-          evidence.kind === "TERMINAL_IDENTIFIED" &&
-          evidence.turnId === association.turnId
-        ) {
-          settleCompleted(association.turnId);
-        } else if (
-          evidence.kind === "TURN_TERMINAL" &&
-          evidence.turnId === association.turnId
-        ) {
-          settleFailed(association.turnId);
-        }
+      case "completed":
+        this.registry.markCompleted({ ...identity, turnId: fact.turnId });
         return;
-      }
-      if (association.kind === "AWAITING_ANONYMOUS_START") {
-        if (evidence.kind === "START_IDENTIFIED") {
-          this.registry.associateIdentified({
-            runId: current.runId,
-            messageId: current.messageId,
-            turnId: evidence.turnId,
-          });
-        } else if (
-          evidence.kind === "START_ANONYMOUS" ||
-          (evidence.kind === "STATUS" && evidence.status === "running")
-        ) {
-          this.registry.armAnonymous({
-            runId: current.runId,
-            messageId: current.messageId,
-            armedAtSequence: evidence.sequence,
-          });
-        }
-        return;
-      }
-
-      if (evidence.kind === "START_IDENTIFIED") {
-        this.registry.associateIdentified({
-          runId: current.runId,
-          messageId: current.messageId,
-          turnId: evidence.turnId,
+      case "interrupted":
+        this.registry.markFailed({
+          ...identity,
+          turnId: fact.turnId,
+          code: "RUNTIME_REJECTED",
+          message: "Runtime input was interrupted.",
         });
         return;
-      }
-      if (evidence.sequence <= association.armedAtSequence) return;
-      if (evidence.kind === "TERMINAL_ANONYMOUS") {
-        settleCompleted(null);
-      } else if (evidence.kind === "STATUS" && evidence.status === "idle") {
-        settleCompleted(null);
-      }
-    };
-
-    unsubscribe = activeRun.subscribeToEvents((event) => {
-      if (!isMessageHandoffStarted() || !isAgentRunEvent(event)) return;
-      const evidence = this.resolveCommandEvidence(event, ++sequence);
-      if (evidence) applyEvidence(evidence);
-    });
-
-    const reconcileAcceptedResult = (turnId: string | null): AgentStatusPayload | null => {
-      const current = this.currentRecord(originalRecord);
-      if (!current) return null;
-      let shouldPublishRunning = false;
-
-      if (turnId) {
-        this.registry.associateIdentified({
-          runId: current.runId,
-          messageId: current.messageId,
-          turnId,
+      case "failed":
+        this.registry.markFailed({
+          ...identity,
+          turnId: fact.turnId,
+          code: "RUNTIME_REJECTED",
+          message: fact.message,
         });
-        shouldPublishRunning = true;
-      } else {
-        const identifiedStart = bufferedEvidence
-          .filter((item): item is Extract<CommandEvidence, { kind: "START_IDENTIFIED" }> =>
-            item.kind === "START_IDENTIFIED")
-          .at(-1);
-        const anonymousStart = bufferedEvidence.find((item) =>
-          item.kind === "START_ANONYMOUS" ||
-          (item.kind === "STATUS" && item.status === "running"));
-        if (identifiedStart) {
-          this.registry.associateIdentified({
-            runId: current.runId,
-            messageId: current.messageId,
-            turnId: identifiedStart.turnId,
-          });
-          shouldPublishRunning = true;
-        } else if (anonymousStart) {
-          this.registry.armAnonymous({
-            runId: current.runId,
-            messageId: current.messageId,
-            armedAtSequence: anonymousStart.sequence,
-          });
-          shouldPublishRunning = true;
-        } else {
-          this.registry.awaitAnonymousStart({
-            runId: current.runId,
-            messageId: current.messageId,
-          });
-        }
-      }
-
-      const replay = bufferedEvidence;
-      bufferedEvidence = [];
-      for (const evidence of replay) {
-        if (!this.currentRecord(originalRecord)) break;
-        applyEvidence(evidence, true);
-      }
-      const remaining = this.currentRecord(originalRecord);
-      return shouldPublishRunning && remaining ? activeRun.getStatusSnapshot() : null;
-    };
-
-    return { unsubscribe: () => unsubscribe(), reconcileAcceptedResult };
-  }
-
-  private resolveCommandEvidence(event: AgentRunEvent, sequence: number): CommandEvidence | null {
-    if (event.eventType === AgentRunEventType.ERROR) {
-      const evidence = resolveAgentRunErrorEvidence(event);
-      if (evidence?.kind === "RUNTIME_GLOBAL") return { kind: "RUNTIME_GLOBAL", sequence };
-      return evidence?.kind === "TURN_TERMINAL"
-        ? { kind: "TURN_TERMINAL", sequence, turnId: evidence.turnId }
-        : null;
+        return;
+      case "cancelled":
+        this.registry.markCancelled(identity);
+        return;
     }
-    if (event.eventType === AgentRunEventType.AGENT_STATUS) {
-      const status = event.payload.status;
-      if (
-        status !== "offline" && status !== "initializing" && status !== "idle" &&
-        status !== "running" && status !== "error"
-      ) return null;
-      return status === "offline"
-        ? { kind: "RUNTIME_GLOBAL", sequence }
-        : { kind: "STATUS", sequence, status };
-    }
-    if (event.eventType === AgentRunEventType.TURN_STARTED) {
-      const turnId = resolveAgentRunEventTurnId(event);
-      return turnId
-        ? { kind: "START_IDENTIFIED", sequence, turnId }
-        : { kind: "START_ANONYMOUS", sequence };
-    }
-    if (
-      event.eventType === AgentRunEventType.TURN_COMPLETED ||
-      event.eventType === AgentRunEventType.TURN_INTERRUPTED
-    ) {
-      const turnId = resolveAgentRunEventTurnId(event);
-      return turnId
-        ? { kind: "TERMINAL_IDENTIFIED", sequence, turnId }
-        : { kind: "TERMINAL_ANONYMOUS", sequence };
-    }
-    return null;
-  }
-
-  private currentRecord(original: AgentRunCommandRecord): AgentRunCommandRecord | null {
-    const latest = this.registry.getRecord(original.runId, original.messageId);
-    const inFlight = this.registry.getInFlightRecord(original.runId);
-    return latest && isInFlight(latest) && inFlight?.messageId === original.messageId
-      ? latest
-      : null;
-  }
-
-  private latestRecord(record: AgentRunCommandRecord): AgentRunCommandRecord {
-    return this.registry.getRecord(record.runId, record.messageId) ?? record;
-  }
-
-  private clearOverlayForCommand(record: AgentRunCommandRecord): void {
-    const overlay = this.overlayStore.getOverlay(record.runId);
-    if (overlay && overlay.messageId !== record.messageId) return;
-    if (overlay) this.overlayStore.clear(record.runId);
   }
 
   private async resolveRuntimeForCommand(runId: string): Promise<AgentRun> {
+    const activeRun = this.agentRunService.getAgentRun(runId);
+    if (activeRun) return activeRun;
+    const existingActivation = this.activationByRunId.get(runId);
+    if (existingActivation) return existingActivation;
+
+    const activation = this.activateRuntimeForCommand(runId);
+    this.activationByRunId.set(runId, activation);
+    try {
+      return await activation;
+    } finally {
+      if (this.activationByRunId.get(runId) === activation) {
+        this.activationByRunId.delete(runId);
+      }
+    }
+  }
+
+  private async activateRuntimeForCommand(runId: string): Promise<AgentRun> {
     const activeRun = this.agentRunService.getAgentRun(runId);
     if (activeRun) return activeRun;
     const metadata = await this.agentRunService.getRunMetadata(runId);
@@ -380,6 +190,7 @@ export class AgentRunCommandCoordinator {
     const state = record.state === "COMPLETED" ? "duplicate_completed"
       : record.state === "FAILED" ? "duplicate_failed"
       : record.state === "REJECTED" ? "duplicate_rejected"
+      : record.state === "CANCELLED" ? "duplicate_cancelled"
       : "duplicate_in_progress";
     return this.recordResult(
       record,
@@ -412,7 +223,7 @@ export class AgentRunCommandCoordinator {
         ...(record.message ? { message: record.message } : {}),
         status: statusPayloadOverride ?? projection!.statusPayload,
       },
-      turnId: record.turnId ?? null,
+      turnId: record.turnId,
     };
   }
 
@@ -448,6 +259,15 @@ export class AgentRunCommandCoordinator {
       message_id: record.messageId,
       dedupe_key: record.dedupeKey,
     });
+  }
+
+  private clearOverlayForCommand(record: AgentRunCommandRecord): void {
+    const overlay = this.overlayStore.getOverlay(record.runId);
+    if (overlay?.messageId === record.messageId) this.overlayStore.clear(record.runId);
+  }
+
+  private latestRecord(record: AgentRunCommandRecord): AgentRunCommandRecord {
+    return this.registry.getRecord(record.runId, record.messageId) ?? record;
   }
 
   private publishStatus(runId: string, payload: AgentStatusPayload): void {
@@ -498,8 +318,6 @@ export class AgentRunCommandCoordinator {
 
 let cachedAgentRunCommandCoordinator: AgentRunCommandCoordinator | null = null;
 export const getAgentRunCommandCoordinator = (): AgentRunCommandCoordinator => {
-  if (!cachedAgentRunCommandCoordinator) {
-    cachedAgentRunCommandCoordinator = new AgentRunCommandCoordinator();
-  }
+  cachedAgentRunCommandCoordinator ??= new AgentRunCommandCoordinator();
   return cachedAgentRunCommandCoordinator;
 };
