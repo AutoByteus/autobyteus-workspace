@@ -30,95 +30,115 @@
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Cumulative SR-028 AgentRun input-admission and Claude SDK correction`
-- Current implementation revision: `IR-046`
-- Reviewed design authority: cumulative `SR-001`–`SR-028`; `ARCH-REV-021` Pass
-- Triggering source finding: `CR-F-048` / `API-F-025`, originating `CRR-085`
-- Source basis: `42e42a9471c251075af07c3e0805d43858246e67`
-- Implementation source/test/package commit: `1e7837929622fd12d539ce4f5b6f9f3abd71cd6a`
-- Downstream state: API/E2E and delivery remain paused pending focused and full cumulative source review
+- Implementation cycle: `Rework`
+- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/implementation-revision-record.md`
+- Current implementation revision ID: `IR-047`
+- Related solution revisions: cumulative `SR-001`–`SR-028`
+- Related architecture review: `ARCH-REV-021` Pass
+- Related code review: `CRR-087` Fail — Local Fix
+- Related API/E2E: originating `API-REV-039`; post-fix execution remains paused
+- Related delivery: `DR-009`; delivery remains paused
+- Triggering findings: `CR-F-049`, `CR-F-050`
+- Source basis: `18e6a3793da75ab44cfe2a538680ddb94066cadc`
+- Source/test commit: `2271692485276d8930fef11be8a65bc3e85e0d73`
 
-IR-046 implements one non-persisted `AgentRunInputAdmissionState` behind `AgentRun.postUserMessage()`. Public `accepted:true` now acknowledges exact FIFO ownership and returns without awaiting provider forwarding. AgentRun alone serializes admission, start-versus-exact-append-versus-wait selection, typed per-entry lifecycle, canonical turn association/terminal reconciliation, interrupt continuation, termination quiescence/cancellation, and next-entry drain. Provider I/O runs outside the existing AgentRun event-queue critical section, and no provider queue, Team retry, durable inbox, frontend queue, or second policy was added.
+IR-047 completes the run-owned boundary that IR-046 established for ordinary input. `AgentRun.interrupt()` no longer forwards directly to a provider. It now reserves one canonical active-turn interrupt decision through the existing per-run dispatch queue, invokes exact provider mechanics outside that queue, and applies the result through the queue. No-ID standalone and Team Stop callers capture the same canonical active turn, duplicate requests share one provider call, explicit mismatches fail before provider I/O, waiting FIFO entries remain intact, and only the matching canonical terminal releases the reservation and permits normal input drain.
 
-Codex declares exact active-turn append and translates only the AgentRun-selected `append_to_active_turn` to `turn/steer(expectedTurnId)`. Claude and AutoByteus declare append unsupported and receive a later `start_turn` only after the canonical active turn is terminal. The real task-peer composition now admits one active Claude reply immediately, then starts one later Claude query exactly once.
+Codex and Claude no longer select their own active turn for product interruption. They require the exact identified turn captured by AgentRun and validate it at their runtime boundary. AutoByteus receives AgentRun's exact identified or anonymous value unchanged. The reviewed Claude AbortController settlement sequence is preserved.
 
-Claude uses one string query per turn and the reviewed dependency graph. Product interruption clears and flushes pending approvals, aborts the exact active query through its supplied `AbortController`, awaits the exact execution and registered query/reference cleanup, clears active state, then emits canonical `TURN_INTERRUPTED`; product code does not call `Query.interrupt()`. The intrinsic Agent Tools HTTP MCP descriptor is the sole `alwaysLoad:true` owner.
+The command/memory observer vocabulary now truthfully describes the existing one-time provider-forwarding fact: `AgentRunUserMessageForwardedPayload`, `forwardedAt`, `onUserMessageForwarded`, `recordForwardedUserMessage`, and `extractForwardedMessageMedia`. This is naming/contract correction only; public admission still occurs at FIFO ownership, while memory still records once only after provider forwarding.
 
-The SR-025 prompt update remains present and unchanged: one `## AgentTeam Addressing` section followed by one `## AgentTeam Collaboration` section, no `## Team Runtime` wrapper, and only canonical member-address substitution. Focused prompt/provider parity remains passing.
+The cumulative SR-028 implementation, exact dependency graph, intrinsic MCP behavior, strict rooted Team contracts, and SR-025 prompt copy remain unchanged. The prompt still contains exactly one `## AgentTeam Addressing` section followed by one `## AgentTeam Collaboration` section and no `## Team Runtime` wrapper.
 
 ## Reviewed Behavior Implementation Trace
 
-| Contract | Outcome | Production ownership |
-| --- | --- | --- |
-| `BEH-020`, `DS-018A`, `INP-001`; idle input | The validated entry is admitted under the AgentRun queue, public acceptance returns immediately, one explicit `start_turn` is claimed, and typed forwarding/association/terminal facts settle it. | `AgentRun` + `AgentRunInputAdmissionState` |
-| `DS-018B`, `INP-002`; exact Codex append | Only an identified exact active turn plus declared Codex capability selects `append_to_active_turn`; Codex verifies the expected turn for `turn/steer`, with no retry-as-start. | AgentRun selection; Codex backend/thread mechanics |
-| `DS-018C`, `INP-003`, `CR-F-048`, `API-F-025`; active Claude/AutoByteus | Unsupported append leaves the FIFO head pending. Canonical terminal processing drains it into one later start, while Team communication accepts once at admission. | AgentRun admission/terminal owner; unchanged common router |
-| `DS-018D`, `INP-004`; FIFO and at-most-once | One run-local queue considers only its head, permits at most one provider invocation, and settles every entry once. Multiple standalone commands share one inactive-run activation. | AgentRun input state; command coordinator activation single-flight |
-| `DS-018E`, `INP-005`; command/memory/completion observers | Per-entry typed lifecycle replaces command busy/raw-event inference; distinct message records coexist. Memory records only the forwarded fact. Compaction and skill-improvement settle dispatch failure/cancellation promptly. | Command registry/coordinator, AgentRun command observer, completion owners |
-| `DS-018F`–`DS-018I`, `INP-006`–`INP-009`; interrupt, termination, failure, restore | Interrupt drain waits for canonical terminal. Termination quiesces, waits a claimed dispatch, cancels undispatched entries on success, or reopens unchanged FIFO on rejection. Runtime-global failure settles retained entries. Restore starts with an empty live FIFO and exact lifecycle snapshot. | AgentRun + provider lifecycle snapshots/events |
-| `DS-019A`–`DS-019H`; Claude current SDK boundary | Exact packages are Claude Agent SDK `0.3.231`, Anthropic SDK `0.116.0`, MCP SDK `1.30.0`, and Zod `^4.3.6`; one string query preserves env/resume/executable; interruption uses the supplied abort controller and established cleanup. | Package/lock owners, Claude SDK client/session/backend |
-| SR-025 exact prompt copy | Exact Addressing/Collaboration sibling sections, ordering, one-copy Team-only behavior, old-wrapper absence, and AutoByteus/Codex/Claude prompt parity remain unchanged. | Shared Team instruction renderer and prompt composer |
+| Behavior / Contract | Approved or Preserved Outcome | Implemented Production Path | Result / Notes |
+| --- | --- | --- | --- |
+| `R-057`, `AC-052`, `INP-001`–`INP-005` | Public acceptance means run-owned FIFO admission; provider forwarding is a later typed fact. | `AgentRun` -> `AgentRunInputAdmissionState` -> exact backend dispatch -> command/memory observers | Preserved from IR-046; forwarding observer names now match the actual lifecycle fact. |
+| `INP-006`, `DS-018F`, `DS-019D`, `CR-F-049` | The exact AgentRun serializes and owns interruption; provider I/O stays outside the queue; canonical terminal alone settles/drains. | standalone/Team Stop -> `AgentRun.interrupt()` -> queued reservation -> exact backend interrupt -> queued result -> canonical event pipeline | Corrected. No provider active-turn fallback or caller retry/second owner remains. |
+| `INP-004`, `INP-006` | Waiting entries remain ordered during interruption and forwarded entries are never replayed. | interrupt reservation is separate from `AgentRunInputAdmissionState`; only canonical `TURN_INTERRUPTED`/terminal observation affects input state | Corrected and covered for terminal/result ordering. |
+| `CR-F-050`, `AC-052` | Memory and internal user trace observe one provider-forwarded fact, not public admission. | `AgentRunCommandObserver.onUserMessageForwarded()` -> `AgentRunMemoryRecorder` -> `RuntimeMemoryEventAccumulator.recordForwardedUserMessage()` | Corrected naming with unchanged once-only behavior. |
+| `DS-019A`–`DS-019H` | Claude one-string query, exact dependency graph, AbortController interruption, and intrinsic MCP readiness remain authoritative. | AgentRun -> Claude backend -> exact `ClaudeSession.interrupt(turnId)` -> active execution validation/abort/cleanup | Preserved. |
+| SR-025 prompt copy | Exact Addressing then Collaboration sibling sections; one copy; Team-only; no old wrapper. | shared Team instruction renderer -> AutoByteus system prompt / Codex baseInstructions / Claude systemPrompt | Preserved; focused parity remains passing. |
 
-## Changed Areas And Ownership
+## Key Files Or Areas
 
-- Added `agent-execution/input/agent-run-input-contract.ts` for the closed capability/dispatch/lifecycle vocabulary.
-- Added `agent-execution/input/agent-run-input-admission-state.ts` for FIFO entries, claims, associations, terminal facts, quiesce/cancel/reopen, and exact observer notification.
-- Refactored `AgentRun`, its lifecycle state/event callback seam, and the backend interface so selection and reconciliation are run-owned while provider I/O is outside the serialized queue.
-- Replaced provider-selected input policy in AutoByteus, Codex, and Claude backends with explicit mechanics. Removed Codex `inputSubmissionTail` and Claude public active-input rejection policy; retained only the defensive impossible explicit-start assertion.
-- Updated command registry/coordinator/status/provisioning ownership for multiple records, typed lifecycle, activation single-flight, forwarded-only memory, and no busy/raw-event inference.
-- Updated compaction and skill-improvement completion owners to observe entry-bound failure/cancellation before admission.
-- Updated Claude session/query cleanup, exact package manifests/lock, SDK client surface, and intrinsic MCP `alwaysLoad` behavior.
-- Added implementation-owned AgentRun/backend/command/completion/Claude tests and an actual `InterAgentMessageRouter -> AgentRun -> ClaudeAgentRunBackend -> ClaudeSession` task-peer composition test.
-- Application orchestration continues to return after AgentRun admission and its established Agent stream remains the public failure observation path; no provider branch or second stream was added.
-- Existing mixed Team member status logic was verified to publish its overlay only when no exact AgentRun exists; active-run queued input does not manufacture an initializing/error overlay.
+- `autobyteus-server-ts/src/agent-execution/domain/agent-run.ts`: canonical interrupt reservation, exact-turn validation, provider-result application, terminal release, and forwarded observer notification.
+- `autobyteus-server-ts/src/agent-execution/backends/agent-run-backend.ts`: exact non-optional interrupt identity contract.
+- AutoByteus, Codex, and Claude backend/runtime files: exact mechanics only; no provider turn selection or fallback.
+- `autobyteus-server-ts/src/agent-execution/domain/agent-run-command-observer.ts` and memory services: forwarding vocabulary.
+- Implementation-owned unit tests: AgentRun/no-ID Team and standalone interruption, duplicate/mismatch/terminal ordering, provider exact identity, Claude foreign-turn rejection, and forwarding-only memory behavior.
 
-## Task Design Health Assessment
+## Important Assumptions
 
-- Change posture: `Boundary/ownership correction plus dependency upgrade`
-- Root cause classification: `Duplicated policy or coordination` and `missing invariant`, resolved by the reviewed AgentRun-owned FIFO/admission state
-- Refactor needed now: `Yes, completed`; provider/caller competition was removed rather than wrapped
-- Design impact discovered during implementation: `None`; cumulative SR-028 / ARCH-REV-021 was adequate
-- Persisted-data result: `Not Affected`; admission/FIFO/observer state is explicitly live and non-persisted
+- `AgentTurnLifecycleState` is the canonical live turn source reconciled under the existing `AgentRunEventDispatchQueue`.
+- Identified Codex/Claude turns must be interrupted by their exact ID. Anonymous active turns remain supported only through the exact backend contract where the runtime supports them; no ID is fabricated.
+- An accepted provider interrupt result is not a terminal fact and does not itself drain input.
 
-## Local Implementation Checks
+## Known Risks
 
-### Passing
+- Fresh checked-disposable runtime/browser proof remains downstream-owned after source Pass; implementation checks are not API/E2E acceptance.
+- The repository's generic `tsconfig.json` still includes tests outside its configured `rootDir`; production `tsconfig.build.json` and the full production build are the applicable passing TypeScript gates.
+- Operational database repair, rollback, and credential rotation remain outside implementation scope.
 
-- Focused cumulative AgentRun/backend/command/completion/Claude selection: Pass, `17` files / `153` tests. `/tmp/ir046-sr028-focused-tests-final.log`
-- Actual active task-peer composition: Pass, `1/1`; real router, AgentRun, Claude backend, and ClaudeSession accept once during an active turn and issue one later query after terminal, with no SDK interrupt. `/tmp/ir046-sr028-router-claude-composition.log`
-- Command coordinator activation/FIFO proof: Pass, `7/7`, including one shared inactive-run activation for concurrent distinct commands. `/tmp/ir046-sr028-command-coordinator.log`
-- Exact SR-025 prompt/provider parity: Pass, `2` files / `10` tests; exact headings/order/one-copy/Team-only and old-wrapper absence remain intact. `/tmp/ir046-sr028-prompt-parity-tests.log`
-- `autobyteus-ts` production build/runtime-dependency verification: Pass. `/tmp/ir046-sr028-autobyteus-ts-build-final.log`
-- Server production TypeScript: Pass, `pnpm exec tsc -p tsconfig.build.json --noEmit`. `/tmp/ir046-sr028-server-production-typecheck-final.log`
-- Server full production build, Prisma generation, shared packages, and sanitized built-in bootstrap: Pass without `DATABASE_URL`. `/tmp/ir046-sr028-server-build-final.log`
-- Frozen offline workspace install/lock validation: Pass; lockfile was current and no resolution changed. `/tmp/ir046-sr028-frozen-lock-install.log`
-- Exact dependency list: Pass; installed direct versions match the reviewed manifests. `/tmp/ir046-sr028-dependency-list.log`
-- Source/removal audit: Pass; no provider queue/busy/priority/stream-input/`interruptQuery` symbol, product `Query.interrupt()` call, or extra `alwaysLoad` owner; prompt wrapper remains absent. `/tmp/ir046-sr028-source-audit-final.log`
-- Source size/diff guardrails: Pass; every changed implementation source file is below `500` effective non-empty lines (maximum `492`); `git diff --check` passes. `/tmp/ir046-sr028-source-size-final.log`, `/tmp/ir046-sr028-source-delta-signal.log`
+## Task Design Health Assessment Implementation Check
 
-### Retained coverage limitations
+- Reviewed change posture: bounded ownership/contract correction within cumulative SR-028.
+- Reviewed root-cause classification: boundary bypass for interrupt plus inaccurate observer vocabulary.
+- Reviewed refactor decision: `Refactor Needed Now`, bounded to the existing AgentRun owner.
+- Implementation matched the reviewed assessment: `Yes`.
+- Routed as Design Impact: `N/A`; ARCH-REV-021 was adequate.
+- Evidence: AgentRun is now the only policy owner; providers translate exact mechanics and observers describe forwarding without changing behavior.
 
-- One exploratory four-file retained selection did not reach a Vitest result summary before the runner ended; its clean fixtures are from pre-SR-018/SR-028 contracts. Prior observation in the same implementation round showed the mixed-member fixtures constructing removed route/path Team config, the application fixture importing the removed `team-run-member-identity` owner, and the external-channel fake omitting the new entry-bound lifecycle seam. Production was not weakened and those API/E2E-owned currentization decisions remain downstream work. Partial log: `/tmp/ir046-sr028-retained-stale-tests.log`.
-- Local implementation checks are not API/E2E acceptance. No live provider, browser, configured server, or broader environment matrix was run.
+## Legacy / Compatibility Removal Check
 
-## Environment And Safety
+- Backward-compatibility mechanisms introduced: `None`.
+- Legacy old-behavior retained in scope: `No`; direct AgentRun-to-backend interrupt and provider active-turn fallback were removed.
+- Dead/obsolete names removed in scope: `Yes`; all accepted-named forwarding observer/payload/helper symbols were renamed.
+- Shared structures remain tight: `Yes`; interrupt reservation is private to AgentRun and no new public queue/state owner exists.
+- Canonical shared design guidance reapplied: `Yes`.
+- Source size guardrails: `Yes`; all changed production files remain below `500` effective non-empty lines. Maximum is CodexThread `496`, followed by ClaudeSession `492` and AgentRun `456`.
 
-- Focused Vitest reset only the test-owned SQLite database at `autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db`.
-- `/Users/normy/.autobyteus/server-data/db/production.db` was not accessed, inspected, copied, repaired, migrated, or modified.
-- The protected user stack at `127.0.0.1:60004` and `127.0.0.1:31004` was not repointed, stopped, inspected, or cleaned.
-- No configured server, retained API/E2E, external provider, or external browser was started.
-- API/E2E-owned `CR-F-043` residue and the protected dirty evidence package were not inspected, removed, edited, or staged.
-- All recorded delivery stashes, the delivery backup, both operational-database incident disclosures, and no-rollback/no-repair state remain untouched.
-- The prior private-output inherited-environment disclosure remains active; any potentially exposed credential should be rotated by the operator. No credential was written to implementation artifacts.
+## Persisted Data Transition Check
+
+- Approved decision: `Not Affected`.
+- Implementation follows the decision: `Yes`.
+- No durable inbox, interrupt record, schema, migration, token, Team history/task/communication, or application V5 persistence change was introduced.
+
+## Environment Or Dependency Notes
+
+- Exact reviewed dependencies remain unchanged: Claude Agent SDK `0.3.231`, Anthropic SDK `0.116.0`, MCP SDK `1.30.0`, and compatible Zod `4.3.6` in the existing lock graph.
+- Focused Vitest used only the repository-owned test SQLite target.
+- No configured server, browser, provider, migration-capable process, or downstream API/E2E environment was started.
+
+## Local Implementation Checks Run
+
+- Expanded current AgentRun/provider/command/memory/Team interrupt/Claude composition selection: Pass, `21` files / `210` tests. `/tmp/ir047-sr028-focused-tests.log`
+- Focused interrupt/forwarding selection: Pass, `8` files / `90` tests. `/tmp/ir047-interrupt-forwarding-focused.log`
+- Server production TypeScript: Pass, `pnpm exec tsc -p tsconfig.build.json --noEmit`. `/tmp/ir047-server-production-typecheck.log`
+- Full server production build, Prisma/shared package build, and sanitized bootstrap without `DATABASE_URL`: Pass. `/tmp/ir047-server-build-full.log`
+- Exact SR-025 prompt/provider parity: Pass, `2` files / `10` tests. `/tmp/ir047-prompt-parity-tests.log`
+- Source/removal/size/diff audit: Pass; obsolete forwarding names and optional/fallback interrupt signatures absent, exact owner present, prompt counts `1/1/0`, changed production files <=500 effective lines, and `git diff --check` clean. `/tmp/ir047-source-audit.log`
 
 ## Frontend Rendered-Result Check
 
-- Not Applicable for IR-046: this round changes server-owned admission, provider mechanics, package boundaries, and tests. It does not change browser markup, styling, layout, labels, navigation, or interaction design.
-- The previously implemented prompt text is server-side provider instruction content, not a rendered frontend surface; exact prompt seams remain covered by focused tests.
+Not Applicable. IR-047 changes server-side run coordination, provider mechanics, internal observer vocabulary, and unit tests. It changes no browser markup, styling, layout, label, navigation, or interaction design. SR-025 prompt text is provider instruction content and its exact seams remain covered by focused parity tests.
 
-## Known Risks And Next Route
+## Environment And Safety
 
-- Fresh checked-disposable AutoByteus/Codex/Claude Team, task-peer, standalone, restore/reconnect, mobile, and browser execution remains API/E2E-owned after source Pass.
-- API/E2E must adjudicate and currentize retained durable fixtures, including the incomplete protected package, without treating implementation checks as acceptance.
-- The operational database and protected user stack remain out of scope; no automatic repair or rollback is authorized.
-- Next recipient: `code_reviewer` for focused `CR-F-048` review and full cumulative SR-028 source/structural review. API/E2E and delivery remain paused until source Pass.
+- `/Users/normy/.autobyteus/server-data/db/production.db` was not accessed, inspected, copied, repaired, migrated, or modified.
+- The protected user stack at `127.0.0.1:60004` and `127.0.0.1:31004` was not inspected, stopped, repointed, or cleaned.
+- API/E2E-owned CR-F-043 residue and the protected dirty evidence package were not inspected, removed, edited, or staged.
+- All recorded stashes/backups, incident disclosures, and no-rollback/no-repair state remain untouched.
+- The inherited-environment private-output disclosure remains active; the operator should rotate any potentially exposed credential. No credential was written to implementation artifacts.
+
+## Downstream Coverage Hints / Suggested Scenarios
+
+- Re-run no-ID Stop through standalone and Team surfaces while an identified turn is active; confirm one exact provider interrupt and canonical terminal before next FIFO input.
+- Exercise duplicate Stop requests, waiting input, provider-result/terminal reordering, and rejected explicit mismatch without retry or duplicate forwarding.
+- Re-run the checked-disposable Claude nested task-peer row and complete the AutoByteus/Codex/Claude matrix after source Pass.
+- Confirm memory records one forwarded input and does not record queue admission alone.
+
+## API / E2E / Executable Coverage Investigation And Execution Still Required
+
+Yes. API/E2E and delivery remain paused. Next recipient is `code_reviewer` for focused `CR-F-049`/`CR-F-050` and full cumulative SR-028 source review. Only after source Pass may `api_e2e_engineer` resume checked-disposable execution and durable coverage adjudication.
