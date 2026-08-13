@@ -1150,3 +1150,30 @@ None for proportional test code. `CR-019`–`CR-021` were design-impact findings
 - Material score or classification changes: implementation result improves from `Fail — Local Fix` to `Pass / 98`; every category is `>=9.6`. CR-026 remains pending real API/E2E confirmation only.
 - Recommended recipient: `api_e2e_engineer`
 - Remaining risks or uncertainty: rerun the exact failed Studio same-data restart first, then the retained current-base matrix. The API/E2E-owned dirty team-lifecycle WebSocket test remains pending proportional review after a successful execution round.
+
+### CRR-042 — API-REV-015 durable recovery and realtime coverage passes proportional review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-test-review-report.md`
+- Review entry point and round: `Proportional API/E2E Test-Code Review`, round `42` overall / sixth proportional review
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `API-REV-015`, resolved `APIE2E-STUDIO-RESTART-014` / `APIE2E-F009` / `CR-026`
+- Relevant solution revision IDs: `SR-018`; retained architecture baseline `SR-016` / `SR-013`
+- Relevant architecture-review revision IDs: `ARCH-REV-016`; retained baseline `ARCH-REV-014` / `ARCH-REV-011`
+- Relevant implementation revision IDs: `IR-023`; retained current-base integration `IR-022`
+- Relevant API/E2E revision IDs: `API-REV-015`; prior failure `API-REV-014`
+- Relevant delivery revision IDs: `DR-009`
+- Prior authoritative result: `CRR-041 Pass / 98` in implementation source; prior proportional `CRR-038 Pass` with no unresolved finding
+- Current authoritative result: `Pass`
+- What changed in the review result and why: reviewed one added Brief startup-catch-up test and two updated tests. The catch-up test drives the actual application `onStart` against real Brief migrations, proves the retained researcher/final mismatch is not read or projected, and proves valid research/writer-final history reaches the exact recovered binding/run and `in_review` database state. The semantic-path test proves the new nullable eligibility lookup while retaining strict live rejection. The cumulative WebSocket update removes only a stale second byte-identical `running` expectation governed by the current exact-repeat filter, while preserving scoped identity, live stream, command acknowledgement, reconnect, refused/accepted termination, and binary root-liveness assertions. API-REV-015 passes the focused `41`- and `33`-test gates, current checkpoint `177` server tests, real Studio same-data recovery/remount, real standalone recovery, route separation, exact `73/73` parity, and cleanup.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-026` / `APIE2E-F009` | Resolved in IR-023 source; API/E2E confirmation pending | Execution-confirmed resolved | `API-REV-014`, `CRR-040`, `IR-023`, `CRR-041`, `API-REV-015`, `CRR-042` | Real supported researcher publication recreates the ineligible durable history; same-root Studio restart returns ready, preserves correct projection/history, and remounts exactly once. |
+| API-REV-014 WebSocket fixture mismatch | API/E2E-owned update pending successful proportional review | Resolved | `API-REV-014`, `API-REV-015`, `CRR-042` | Updated sequence matches the explicit exact-repeat status filter; focused `2 files / 33 tests` and checkpoint `39 files / 177 tests` pass while the lifecycle/identity assertions remain. |
+| `APIE2E-REPO-005` | Historical `Unclear` / unattributed | Remains separate and unchanged | prior API/E2E/review records through `API-REV-015` | No supported connection to IR-023 or these durable tests; it is neither a finding nor Pass evidence. |
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: no source scorecard or API/E2E confidence recomputation. The proportional test-code result is `Pass`; `API-REV-015` remains `Pass / 98.7%` and `CRR-041` remains source `Pass / 98`.
+- Recommended recipient: `delivery_engineer`
+- Remaining risks or uncertainty: no requirement-linked durable-test defect remains. Historical `APIE2E-REPO-005` remains separate diagnostic debt. Delivery must still perform its latest-base integrated-state, documentation, handoff, and in-scope Electron/release gates.
