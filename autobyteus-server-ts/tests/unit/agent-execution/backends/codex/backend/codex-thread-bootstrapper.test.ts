@@ -293,9 +293,21 @@ describe("CodexThreadBootstrapper", () => {
 
     expect(createdRunContext.runtimeContext.codexThreadConfig.approvalPolicy).toBe("never");
     expect(createdRunContext.runtimeContext.codexThreadConfig.sandbox).toBe("danger-full-access");
+    expect(createdRunContext.runtimeContext.codexThreadConfig.baseInstructions).toContain(
+      "## AgentTeam Addressing",
+    );
+    expect(createdRunContext.runtimeContext.codexThreadConfig.baseInstructions).toContain(
+      "## AgentTeam Collaboration",
+    );
+    expect(createdRunContext.runtimeContext.codexThreadConfig.baseInstructions).not.toContain(
+      "## Team Runtime",
+    );
     expect(restoredRunContext.runtimeContext.threadId).toBe("thread-existing");
     expect(restoredRunContext.runtimeContext.codexThreadConfig.approvalPolicy).toBe("never");
     expect(restoredRunContext.runtimeContext.codexThreadConfig.sandbox).toBe("danger-full-access");
+    expect(restoredRunContext.runtimeContext.codexThreadConfig.baseInstructions).toBe(
+      createdRunContext.runtimeContext.codexThreadConfig.baseInstructions,
+    );
   });
 
   it("keeps configured approval and sandbox settings for Codex team-member manual mode", async () => {

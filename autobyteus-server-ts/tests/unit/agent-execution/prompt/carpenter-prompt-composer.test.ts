@@ -47,7 +47,7 @@ describe("composeCarpenterPrompt", () => {
     expect(prompt).not.toContain("## Skills");
   });
 
-  it("renders team instruction and fixed team runtime from context only", () => {
+  it("renders the authored Team instruction before the exact sibling AgentTeam sections", () => {
     const prompt = composeCarpenterPrompt({
       agentDefinition: definition(),
       workspaceRootPath: "/tmp/carpenter-workspace",
@@ -55,10 +55,16 @@ describe("composeCarpenterPrompt", () => {
     });
 
     expect(prompt).toContain("## Team Instruction\n\n### Coordination");
-    expect(prompt).toContain("## Team Runtime\n\nYou are working as a member of an AgentTeam");
-    expect(prompt).toContain("Your address in the AgentTeam is:\n\n/worker");
-    expect(prompt).toContain("Bare member names, `../`, and backslashes are not valid addresses.");
-    expect(prompt).toContain("`delegate_task.recipient_address` uses the same logical-address grammar");
+    expect(prompt).toContain("## AgentTeam Addressing\n\nAgentTeams use filesystem-like logical addresses.");
+    expect(prompt).toContain("Within this structure, your address is:\n\n/worker");
+    expect(prompt).toContain("Bare names, `../`, and backslashes are invalid.");
+    expect(prompt).toContain("## AgentTeam Collaboration\n\nUse `send_message_to` with `recipient_address`");
+    expect(prompt.indexOf("## Team Instruction")).toBeLessThan(prompt.indexOf("## AgentTeam Addressing"));
+    expect(prompt.indexOf("## AgentTeam Addressing")).toBeLessThan(prompt.indexOf("## AgentTeam Collaboration"));
+    expect(prompt.indexOf("## AgentTeam Collaboration")).toBeLessThan(prompt.indexOf("## Working Environment"));
+    expect(prompt.match(/^## AgentTeam Addressing$/gm)).toHaveLength(1);
+    expect(prompt.match(/^## AgentTeam Collaboration$/gm)).toHaveLength(1);
+    expect(prompt).not.toContain("## Team Runtime");
     expect(prompt).not.toContain("recipient_name");
     expect(prompt).not.toContain("You can message:");
     expect(prompt).not.toContain("submit_task_result");
@@ -74,7 +80,9 @@ describe("composeCarpenterPrompt", () => {
     expect(prompt).not.toContain("- Description:");
     expect(prompt).not.toContain("### Responsibilities and Boundaries");
     expect(prompt).not.toContain("## Team Instruction");
-    expect(prompt).toContain("## Team Runtime");
+    expect(prompt).toContain("## AgentTeam Addressing");
+    expect(prompt).toContain("## AgentTeam Collaboration");
+    expect(prompt).not.toContain("## Team Runtime");
   });
 
   it("fails required scalars and unresolved placeholders before provider projection", () => {

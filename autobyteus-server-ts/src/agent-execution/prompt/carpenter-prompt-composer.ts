@@ -37,7 +37,7 @@ export const composeCarpenterPrompt = (input: CarpenterPromptComposerInput): str
     if (teamInstruction) {
       sections.push(teamInstruction);
     }
-    sections.push(`## Team Runtime\n\n${renderTeamRuntimeInstruction(input.memberTeamContext)}`);
+    sections.push(renderTeamRuntimeInstruction(input.memberTeamContext));
   }
   sections.push(
     renderWorkingEnvironmentSection(workspaceRootPath),

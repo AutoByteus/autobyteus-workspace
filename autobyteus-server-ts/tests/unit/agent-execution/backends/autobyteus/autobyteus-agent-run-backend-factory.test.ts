@@ -239,7 +239,9 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     ]);
     expect(built.agentConfig.systemPrompt).toContain("## Agent Identity");
     expect(built.agentConfig.systemPrompt).toContain("## Team Instruction");
-    expect(built.agentConfig.systemPrompt).toContain("## Team Runtime");
+    expect(built.agentConfig.systemPrompt).toContain("## AgentTeam Addressing");
+    expect(built.agentConfig.systemPrompt).toContain("## AgentTeam Collaboration");
+    expect(built.agentConfig.systemPrompt).not.toContain("## Team Runtime");
     expect(built.agentConfig.systemPrompt).toContain("## Working Environment");
     expect(built.agentConfig.initialCustomData?.teamContext).toEqual(
       expect.objectContaining({
@@ -319,7 +321,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     expect(built.agentConfig.systemPrompt).toContain("filesystem-like logical addresses");
     expect(built.agentConfig.systemPrompt).toContain("\n/professor\n");
     expect(built.agentConfig.systemPrompt).toContain("`./architecture_reviewer`");
-    expect(built.agentConfig.systemPrompt).toContain("Bare member names, `../`, and backslashes are not valid addresses");
+    expect(built.agentConfig.systemPrompt).toContain("Bare names, `../`, and backslashes are invalid.");
     expect(JSON.stringify(built.agentConfig.tools[0]?.definition)).toContain("target_agent_run_id");
     expect(built.agentConfig.systemPrompt).not.toContain("roster recipients");
   });

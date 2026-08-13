@@ -1,27 +1,40 @@
 import type { MemberLogicalAddressContext } from "../domain/member-logical-address-context.js";
 
-export const renderMemberCollaborationInstruction = (input: {
-  addressing: MemberLogicalAddressContext;
-}): string => [
-  "You are working as a member of an AgentTeam. Agents and AgentTeams use filesystem-like logical addresses to communicate. These addresses identify Team members; they are not real filesystem paths.",
+const MEMBER_ADDRESS_PLACEHOLDER = "{{member_address}}";
+
+const AGENT_TEAM_COLLABORATION_INSTRUCTION_TEMPLATE = [
+  "## AgentTeam Addressing",
   "",
-  "Your address in the AgentTeam is:",
+  "AgentTeams use filesystem-like logical addresses. Think of an AgentTeam as a directory, an Agent inside it as a file, and a nested AgentTeam as a subdirectory. This analogy describes the Team structure and addressing model only; the addresses are not real filesystem paths.",
   "",
-  input.addressing.memberAddress,
+  "An address beginning with `/` starts from the root AgentTeam. An address beginning with `./` starts from your immediate AgentTeam—the Team that directly contains you. Bare names, `../`, and backslashes are invalid.",
   "",
-  "Addresses beginning with `/` start from the root AgentTeam. Addresses beginning with `./` start from your current AgentTeam, similar to relative filesystem paths.",
+  "Within this structure, your address is:",
+  "",
+  MEMBER_ADDRESS_PLACEHOLDER,
   "",
   "For example:",
   "",
-  "- `./architecture_reviewer` addresses a member named `architecture_reviewer` in your current AgentTeam.",
-  "- `./implementation_team` addresses a child AgentTeam named `implementation_team`.",
-  "- `/requirements_engineering/requirements_lead` is an absolute address from the root AgentTeam.",
+  "- `./architecture_reviewer` identifies an Agent in your immediate AgentTeam.",
+  "- `./implementation_team` identifies a nested AgentTeam in your immediate AgentTeam.",
+  "- `/requirements_engineering/requirements_lead` identifies an Agent using an absolute address from the root AgentTeam.",
   "",
-  "Sending a message to an AgentTeam address delivers it to that Team's configured coordinator. Bare member names, `../`, and backslashes are not valid addresses.",
+  "An AgentTeam address identifies the Team itself. Sending a message to that address delivers it to the Team's configured coordinator.",
   "",
-  "When you finish your work or are blocked, call `get_handoff_rules` to check your configured handoff rules. Each returned rule tells you when a handoff applies and provides the `recipient_address` to notify.",
+  "## AgentTeam Collaboration",
   "",
-  "If a rule applies, use `send_message_to` to notify that Agent or AgentTeam. If several applicable rules have the same recipient, send one message that combines the relevant reasons. Follow distinct recipients in the order they first appear. If no rule applies, finish normally.",
+  "Use `send_message_to` with `recipient_address` to send a message to an Agent or AgentTeam.",
   "",
-  "Do not say that you completed a handoff unless `send_message_to` confirms that the message was delivered.",
+  "`delegate_task` uses the same address format, but its recipient must be a direct Agent or AgentTeam child of your immediate AgentTeam. Message delivery may address deeper or cross-branch recipients.",
+  "",
+  "When you finish your work or are blocked, call `get_handoff_rules`. If a returned rule applies, notify its `recipient_address` using `send_message_to`. Combine applicable reasons for the same recipient and follow distinct recipients in their returned order. If no rule applies, finish normally.",
+  "",
+  "Do not claim that a handoff was completed unless `send_message_to` confirms delivery.",
 ].join("\n");
+
+export const renderMemberCollaborationInstruction = (input: {
+  addressing: MemberLogicalAddressContext;
+}): string => AGENT_TEAM_COLLABORATION_INSTRUCTION_TEMPLATE.replace(
+  MEMBER_ADDRESS_PLACEHOLDER,
+  () => input.addressing.memberAddress,
+);

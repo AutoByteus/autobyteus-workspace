@@ -172,7 +172,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
     expect(startQueryTurn).toHaveBeenCalledWith(
       expect.objectContaining({
         prompt: "hello",
-        systemPrompt: expect.not.stringContaining("## Team Runtime"),
+        systemPrompt: expect.not.stringContaining("## AgentTeam Addressing"),
         allowedTools: ["read_page", "mcp__autobyteus_agent_tools__read_page"],
       }),
     );
@@ -208,7 +208,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
       expect.objectContaining({
         prompt: "hello",
         systemPrompt: expect.stringContaining(
-          "You are working as a member of an AgentTeam",
+          "## AgentTeam Addressing",
         ),
         allowedTools: expect.arrayContaining([
           "send_message_to",
@@ -249,7 +249,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
       expect.objectContaining({
         prompt: "hello",
         systemPrompt: expect.stringContaining(
-          "Bare member names, `../`, and backslashes are not valid addresses.",
+          "Bare names, `../`, and backslashes are invalid.",
         ),
         allowedTools: [
           "get_handoff_rules",
@@ -464,7 +464,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
       expect.objectContaining({
         prompt: "hello",
         systemPrompt: expect.stringContaining(
-          "`delegate_task.recipient_address` uses the same logical-address grammar",
+          "`delegate_task` uses the same address format",
         ),
         allowedTools: [
           "delegate_task",
