@@ -24,7 +24,7 @@
 
 ### API-REV-001 — Initial dual-host coverage baseline exposes repeated Studio reload failure
 
-- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; API/E2E round 1.
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`; API/E2E round 1.
 - Triggering finding or scenario IDs: reviewer residuals 1–4; `APIE2E-001` through `APIE2E-007`; new failure `APIE2E-F001` under `APIE2E-007` / AC-011.
 - Related solution, architecture-review, implementation, code-review, or delivery revision IDs: solution initial baseline; architecture-review initial baseline; `IR-002`; `CRR-002`; delivery `N/A`.
 - Why this baseline or coverage/execution revision was recorded: first completed API/E2E result after source review Pass.
@@ -37,9 +37,9 @@
 None.
 
 - Canonical artifacts and sections updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-coverage-investigation.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-revision-record.md`
 - Prior result and confidence: `N/A`
 - Current result and confidence: `Fail / 89%`
 - New or remaining failure IDs: `APIE2E-F001` (`APIE2E-007`, AC-011): duplicate local-package import prevents every repeated Studio dev rebuild/reload.
@@ -48,7 +48,7 @@ None.
 
 ### API-REV-002 — Existing-package refresh passes; live Studio bundle definition gate fails
 
-- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; API/E2E round 2 after `CRR-004` source-review Pass.
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`; API/E2E round 2 after `CRR-004` source-review Pass.
 - Triggering finding or scenario IDs: prior `APIE2E-007` / `APIE2E-F001`; new `APIE2E-STUDIO-001` / `APIE2E-F002`.
 - Related solution, architecture-review, implementation, code-review, or delivery revision IDs: `SR-003`; `ARCH-REV-003`; `IR-003`; `CRR-003`; `CRR-004`; `API-REV-001`; delivery `N/A`.
 - Why this coverage/execution revision was recorded: rechecked the prior failure first, resumed broad repository and live coverage, and recorded the newly discovered critical Studio setup/definition-authority mismatch.
@@ -63,9 +63,9 @@ None.
 | `APIE2E-007` / `APIE2E-F001` / `CR-003` | `Local Fix`, implementation-owned duplicate-root import | **Resolved**: absent root imports once; existing root invokes package refresh; current identity resolves; backend reload follows; no duplicate import | `api-rev-002-devkit-regression.log` (19/19), `api-rev-002-brief-dev-studio.log` (initial plus two successful reload generations), `api-rev-002-studio-identity-digest.log` |
 
 - Canonical artifacts and sections updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-coverage-investigation.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-revision-record.md`
 - Prior result and confidence: `Fail / 89%`
 - Current result and confidence: `Fail / 88%`
 - New or remaining failure IDs: `APIE2E-STUDIO-001` / `APIE2E-F002`: exact bundle team is READY and present in available resources but absent from Studio global GraphQL definitions; setup reports it missing, disables `Enter application`, and creates no iframe.
@@ -74,7 +74,7 @@ None.
 
 ### API-REV-003 — Studio entry/remount passes; real package team member allocation fails
 
-- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; API/E2E round 3 after `CRR-006` source-review Pass.
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`; API/E2E round 3 after `CRR-006` source-review Pass.
 - Triggering finding or scenario IDs: prior `APIE2E-STUDIO-001` / `APIE2E-F002`; new `APIE2E-BRIEF-002` / `APIE2E-F003`.
 - Related solution, architecture-review, implementation, code-review, or delivery revision IDs: `IR-004`; `CRR-005`; `CRR-006`; `API-REV-002`; delivery `N/A`.
 - Why this coverage/execution revision was recorded: rechecked the prior Studio definition-authority failure first, proved the repaired setup/entry/remount boundary, and recorded the newly exposed critical real team-member identity allocation failure.
@@ -89,9 +89,9 @@ None.
 | `APIE2E-STUDIO-001` / `APIE2E-F002` / `CR-004` | `Local Fix`, implementation-owned Studio GraphQL definition-authority mismatch | **Resolved**: exact package-owned Brief team appears among 29 Studio definitions; setup saves; Enter enables; iframe mounts; explicit reload replaces it with a fresh single iframe | `api-rev-003-definition-catalog-refresh.log`, `api-rev-003-studio-gate-remount.log`, entry/remount screenshots |
 
 - Canonical artifacts and sections updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-coverage-investigation.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-revision-record.md`
 - Prior result and confidence: `Fail / 88%`
 - Current result and confidence: `Fail / 88%`
 - New or remaining failure IDs: `APIE2E-BRIEF-002` / `APIE2E-F003`: a real Studio Brief draft request becomes `blocked`; no binding/run/artifact is created because the package-owned `researcher` AgentDefinition cannot be loaded for agent-run identity allocation.
@@ -100,7 +100,7 @@ None.
 
 ### API-REV-004 — Studio real team completes; clean standalone lacks a usable launch profile
 
-- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; API/E2E round 4 after `CRR-008` source-review Pass.
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`; API/E2E round 4 after `CRR-008` source-review Pass.
 - Triggering finding or scenario IDs: prior `APIE2E-BRIEF-002` / `APIE2E-F003`; new `APIE2E-BRIEF-003` / `APIE2E-F004`.
 - Related solution, architecture-review, implementation, code-review, or delivery revision IDs: `IR-005`; `CRR-007`; `CRR-008`; `API-REV-003`; delivery `N/A`.
 - Why this coverage/execution revision was recorded: rechecked the prior graph-local allocator failure first, proved the repaired Studio provider/event/notification/artifact journey, continued to the required real standalone journey, and recorded the newly exposed standalone launch-configuration gap.
@@ -115,9 +115,9 @@ None.
 | `APIE2E-BRIEF-002` / `APIE2E-F003` / `CR-005` | `Local Fix`, implementation-owned graph-local allocator omission | **Resolved**: binding and team run allocate, both exact package members use `LMStudioLLM`, researcher and writer artifacts publish, the brief reaches `in_review`, and browser notifications `brief.created` / `brief.draft_run_started` are observed | `api-rev-004-allocator-authority.log`, `api-rev-004-brief-real-team-run.log`, `api-rev-004-brief-real-team-completion.log`, completion API/PNG, provider excerpt |
 
 - Canonical artifacts and sections updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-coverage-investigation.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-revision-record.md`
 - Prior result and confidence: `Fail / 88%`.
 - Current result and confidence: `Fail / 89%`.
 - New or remaining failure IDs: `APIE2E-BRIEF-003` / `APIE2E-F004`: the documented clean standalone flow serves Brief Studio and persists a brief, but Generate draft becomes `blocked` with `latestBindingStatus=FAILED`, no binding/run/artifacts, and `llmModelIdentifier is required.` The clean standalone resource-configuration table has no launch-profile row, and no supported standalone setup or CLI input was found; see `api-rev-004-standalone-launch-profile-surface.log`.
@@ -126,7 +126,7 @@ None.
 
 ### API-REV-005 — Package defaults launch; standalone Agent Tools MCP route is absent
 
-- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; API/E2E round 5 after `CRR-014` source-review Pass for `IR-009`.
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`; API/E2E round 5 after `CRR-014` source-review Pass for `IR-009`.
 - Triggering finding or scenario IDs: prior `APIE2E-BRIEF-003` / `APIE2E-F004`; current `APIE2E-BRIEF-003` / `APIE2E-F005`; exact route regression `APIE2E-STANDALONE-MCP-001`; secondary broad-suite diagnostic `APIE2E-REPO-005`.
 - Related solution, architecture-review, implementation, code-review, or delivery revision IDs: `SR-005`; `SR-006`; `ARCH-REV-005`; `ARCH-REV-006`; `IR-006`–`IR-009`; `CRR-009`–`CRR-014`; `API-REV-004`; delivery `N/A`.
 - Why this coverage/execution revision was recorded: reconciled the portable launch-policy and selected-resource requirements introduced through SR-005/SR-006, rechecked the prior clean-standalone failure first, proved that package-owned Codex/Luna defaults now launch, and recorded the newly exposed critical standalone configured-tool route failure.
@@ -141,9 +141,9 @@ None.
 | `APIE2E-BRIEF-003` / `APIE2E-F004` | `Design Impact`: no supported clean-standalone launch profile | **Resolved at the launch boundary**: a clean package-owned Codex/Luna baseline creates an attached binding and real team run; both exact Brief members use `codex_app_server` / `gpt-5.6-luna`; no missing-model/profile error occurs | `api-rev-005-brief-standalone-stall-api.json`, `api-rev-005-brief-standalone-tool-exposure.json`, `api-rev-005-brief-standalone-real-team.log` |
 
 - Canonical artifacts and sections updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-coverage-investigation.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-revision-record.md`
 - Prior result and confidence: `Fail / 89%`.
 - Current result and confidence: `Fail / 87%`.
 - New or remaining failure IDs:
@@ -155,7 +155,7 @@ None.
 
 ### API-REV-006 — Standalone route mounts; package Codex descriptor still loses graph-local definition authority
 
-- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; API/E2E round 6 after `CRR-017` source-review Pass for `IR-010`.
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`; API/E2E round 6 after `CRR-017` source-review Pass for `IR-010`.
 - Triggering finding or scenario IDs: prior `APIE2E-STANDALONE-MCP-001` and `APIE2E-BRIEF-003` / `APIE2E-F005`; new `APIE2E-STANDALONE-MCP-002` / `APIE2E-F006` and durable `APIE2E-CODEX-AUTH-001`; independent `APIE2E-REPO-005` remains `Unclear`.
 - Related solution, architecture-review, implementation, code-review, or delivery revision IDs: `SR-008`; `SR-009`; `ARCH-REV-007` withdrawn/superseded; `IR-010`; `CRR-015`–`CRR-017`; `API-REV-005`; delivery `N/A`.
 - Why this revision was recorded: rechecked the exact standalone route first, then used the actual package-owned run descriptor/tool inventory as required. The route fix passes, but the real run has no Agent Tools descriptor because the Codex bootstrapper resolves package configuration through a process-global agent-definition service.
@@ -182,7 +182,7 @@ None.
 
 ### API-REV-007 — Graph-local Codex descriptor and handoff pass; default publication authority loses graph-local member runs
 
-- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; API/E2E round 7 after `CRR-019` source-review Pass for `IR-011`.
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`; API/E2E round 7 after `CRR-019` source-review Pass for `IR-011`.
 - Triggering finding or scenario IDs: prior `APIE2E-STANDALONE-MCP-002` / `APIE2E-F006` / `APIE2E-CODEX-AUTH-001`; new `APIE2E-STANDALONE-MCP-003` / `APIE2E-F007`; independent `APIE2E-REPO-005` remains `Unclear`.
 - Related solution, architecture-review, implementation, code-review, or delivery revision IDs: `IR-011`; `CRR-018`; `CRR-019`; `API-REV-006`; delivery `N/A`.
 - Why this revision was recorded: rechecked the exact graph-local Codex authority failure first, then required the actual package member descriptor/tool inventory, real eligible publication and communication calls, writer handoff/run, and app-owned projection. IR-011 resolves the descriptor/tool-list boundary, but the now-reachable publication adapter rejects both exact graph-local members as inactive.
@@ -207,7 +207,7 @@ None.
 
 ### API-REV-008 — Graph-owned publication and shutdown pass in both real hosts
 
-- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; API/E2E round 8 after `CRR-022` source-review Pass for `IR-013` and cumulative `IR-012` publication authority.
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`; API/E2E round 8 after `CRR-022` source-review Pass for `IR-013` and cumulative `IR-012` publication authority.
 - Triggering finding or scenario IDs: prior `APIE2E-STANDALONE-MCP-003` / `APIE2E-F007`; graph shutdown/lifecycle acceptance from `CR-015` / `CR-016`.
 - Related revision IDs: `SR-010`; `ARCH-REV-008`; `IR-012`; `IR-013`; `CRR-020`–`CRR-022`; `API-REV-007`; delivery `N/A`.
 - Why recorded: rechecked the prior critical publication failure first, reconciled explicit dependency/lifecycle fixtures, proved the exact process/application scope and shutdown boundaries, and completed the retained real dual-host validation matrix.
@@ -231,7 +231,7 @@ None.
 
 ### API-REV-009 — Integrated lifecycle passes; atomic development package metadata mutates
 
-- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; delivery re-entry from `DR-001`; API/E2E round 9 after `CRR-024` source-review Pass for `IR-014`.
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`; delivery re-entry from `DR-001`; API/E2E round 9 after `CRR-024` source-review Pass for `IR-014`.
 - Triggering finding or scenario IDs: `DR-001`; new `APIE2E-PARITY-005` / `APIE2E-F008`; historical `APIE2E-REPO-005` remains separate `Unclear`.
 - Related revision IDs: `IR-014`; `CRR-024`; `API-REV-008`; `CRR-023`; `DR-001`.
 - Why recorded: performed mandatory post-integration execution of the latest-base event-pipeline lifecycle, the supported same-process standalone watch restart, proportional real dual-host journeys, maintained commands, cleanup, and package-integrity gates.
@@ -255,7 +255,7 @@ None.
 
 ### API-REV-010 — Canonical atomic metadata restores exact dual-host package parity
 
-- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; API/E2E round 10 after `CRR-026` source-review Pass for `IR-015`.
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`; API/E2E round 10 after `CRR-026` source-review Pass for `IR-015`.
 - Triggering finding or scenario IDs: prior `APIE2E-PARITY-005` / `APIE2E-F008` against AC-001/AC-011; historical `APIE2E-REPO-005` remains separate `Unclear`.
 - Related revision IDs: `API-REV-009`; `CRR-025`; `IR-015`; `CRR-026`; delivery `DR-001` remains execution-confirmed resolved.
 - Why recorded: rechecked the exact atomic metadata failure first, then proved the canonical/final root distinction through the real maintained standalone and Studio development pack loops, proportional normal/failure probes, and final cleanup.
@@ -279,7 +279,7 @@ None.
 
 ### API-REV-011 — Corrected framework vocabulary preserves complete real dual-host behavior
 
-- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; API/E2E round 11 after `CRR-029` source-review Pass for `IR-016`.
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`; API/E2E round 11 after `CRR-029` source-review Pass for `IR-016`.
 - Triggering finding or scenario IDs: `CR-018`; new validation IDs `APIE2E-RENAME-001`, `APIE2E-EXPORT-001`, `APIE2E-ROUTE-011`, `APIE2E-STANDALONE-011`, `APIE2E-STANDALONE-RESTART-011`, `APIE2E-STUDIO-011`, `APIE2E-STUDIO-REMOUNT-011`, `APIE2E-STUDIO-RECOVERY-011`, `APIE2E-PARITY-011`, and `APIE2E-CLEANUP-011`. Historical `APIE2E-REPO-005` remains separate `Unclear`.
 - Related revision IDs: `SR-011`; `ARCH-REV-009`; `IR-016`; `CRR-028`–`CRR-029`; `API-REV-010`; delivery artifacts retained but no new delivery re-entry finding.
 - Why recorded: reconciled every IR-016 durable test rename/update, verified the strengthened zero-run runtime-build assertion, and performed the architecture-required proportionate executable proof across both production hosts, internal/external MCP separation, real publication/handoff, restart/recovery, parity and cleanup.
@@ -304,7 +304,7 @@ No prior API/E2E failure was open. `CR-018` was source-resolved by IR-016 and is
 
 ### API-REV-012 — Acyclic narrow owners preserve worker recovery, exact cleanup, and real dual-host behavior
 
-- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; API/E2E round 12 after `CRR-033` source-review Pass for `IR-018`.
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`; API/E2E round 12 after `CRR-033` source-review Pass for `IR-018`.
 - Triggering finding or scenario IDs: SR-013 / `AC-019`–`AC-023`; `CR-019`–`CR-022`; new validation IDs `APIE2E-REPO-012`, `APIE2E-WORKER-012`, `APIE2E-STANDALONE-012`, `APIE2E-STUDIO-012`, `APIE2E-ROUTES-012`, `APIE2E-PARITY-012`, and `APIE2E-CLEANUP-012`. Historical `APIE2E-REPO-005` remains separate and unattributed.
 - Related revision IDs: `SR-013`; `ARCH-REV-010`–`ARCH-REV-011`; `IR-017`–`IR-018`; `CRR-030`–`CRR-033`; `API-REV-011`.
 - Why recorded: reconciled the stale durable fixtures left by the clean removal of `ApplicationEngineHostService`, executed the IR-018 stop-all continuation gate, and proved the complete SR-013 behavior-neutral architecture through current repository coverage and real standalone/Studio execution.
@@ -328,7 +328,7 @@ No prior API/E2E failure was open. `CR-022` was source-resolved by IR-018 and is
 
 ### API-REV-013 — Executable external-script boundaries preserve current dual-host behavior
 
-- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; API/E2E round 13 after `CRR-037` source-review Pass for `IR-021`.
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`; API/E2E round 13 after `CRR-037` source-review Pass for `IR-021`.
 - Triggering finding or scenario IDs: resolved `CR-025`, retained resolved `CR-023`/`CR-024`; new validation IDs `APIE2E-ARCH-013`, `APIE2E-REPO-013`, `APIE2E-STANDALONE-013`, `APIE2E-STANDALONE-RESTART-013`, `APIE2E-STUDIO-013`, `APIE2E-STUDIO-REMOUNT-013`, `APIE2E-ROUTES-013`, `APIE2E-PARITY-013`, and `APIE2E-CLEANUP-013`.
 - Related revision IDs: `SR-016`; `ARCH-REV-012`–`ARCH-REV-014`; `IR-019`–`IR-021`; `CRR-035`–`CRR-037`; `API-REV-012`; delivery re-entry artifacts retained.
 - Why recorded: confirmed the completed `AFB-001`–`AFB-005` checker, the exact IR-021 Vue external-target correction, its test/dependency integration, and proportional preservation of the authoritative API-REV-012 real dual-host baseline.
@@ -356,7 +356,7 @@ No prior API/E2E failure was open. `CR-022` was source-resolved by IR-018 and is
 
 ### API-REV-014 — Current-base dual-host execution exposes persisted Studio restart failure
 
-- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; API/E2E round 14 after `CRR-039` source-review Pass for `IR-022`.
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`; API/E2E round 14 after `CRR-039` source-review Pass for `IR-022`.
 - Triggering finding or scenario IDs: `AC-025`; new scenarios `APIE2E-REPO-014`, `APIE2E-STANDALONE-014`, `APIE2E-STANDALONE-WORKER-014`, `APIE2E-STANDALONE-RESTART-014`, `APIE2E-STUDIO-014`, `APIE2E-STUDIO-REMOUNT-014`, `APIE2E-STUDIO-RESTART-014`, `APIE2E-ROUTES-014`, `APIE2E-PARITY-014`, and `APIE2E-CLEANUP-014`; new failure `APIE2E-F009`.
 - Related revision IDs: `DS-017`; `IR-022`; `CRR-039`; semantic merge `4b905d0ce660c7093580779f53f59d6aaf5dfe75`; checkpoint `42d43674d8215c3987d8a6e265a2648c754bf6de`; v1.4.50 base `54890a07f74e941a7a12b6daaa26364f4c927b72`; `API-REV-013`.
 - Why recorded: performed the complete current-base coverage investigation and repository/live matrix required by AC-025 after v1.4.50 semantic integration, reconciled one stale existing WebSocket fixture, and discovered a reproducible critical same-data Studio restart failure.
@@ -383,7 +383,7 @@ No prior API/E2E failure was open. API-REV-013's proportional current-tree resul
 
 ### API-REV-015 — Brief startup catch-up restores same-data Studio restart and dual-host parity
 
-- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; API/E2E round 15 after `CRR-041` source-review Pass for `IR-023`.
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`; API/E2E round 15 after `CRR-041` source-review Pass for `IR-023`.
 - Triggering finding or scenario IDs: prior `APIE2E-STUDIO-RESTART-014` / `APIE2E-F009` / `CR-026`; current scenarios `APIE2E-REPO-015`, `APIE2E-STUDIO-BUSINESS-015`, `APIE2E-STUDIO-RESTART-015`, `APIE2E-STUDIO-REMOUNT-015`, `APIE2E-STANDALONE-BUSINESS-015`, `APIE2E-STANDALONE-RESTART-015`, `APIE2E-ROUTES-015`, `APIE2E-PARITY-015`, and `APIE2E-CLEANUP-015`.
 - Related revision IDs: `IR-023`; `CRR-040`–`CRR-041`; `API-REV-014`; retained `DS-017`/`AC-025` current-base package.
 - Why recorded: rechecked the exact prior real same-data Studio failure first, proved that startup now ignores only Brief-ineligible retained generic publication histories, and completed the retained repository, standalone, Studio, route, integrity, and cleanup matrix.

@@ -32,7 +32,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 ### IR-001 — Universal application dual-host implementation baseline
 
-- Triggering role, report path, and round: architecture reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`; architecture round 3.
+- Triggering role, report path, and round: architecture reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/design-review-report.md`; architecture round 3.
 - Triggering finding IDs: `N/A`
 - Classification: `Initial Baseline`
 - Prior authoritative result: `N/A`
@@ -52,7 +52,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 ### IR-002 — Deterministic development reload and current project-state refresh
 
-- Triggering role, report path, and round: code reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; source-review round `CRR-001`.
+- Triggering role, report path, and round: code reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`; source-review round `CRR-001`.
 - Triggering finding IDs: `CR-001`, `CR-002`
 - Classification: `Local Fix`
 - Prior authoritative result: `Ready for source review` (`IR-001`); triggering source-review result `Fail — Local Fix` (`CRR-001`).
@@ -72,7 +72,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 ### IR-003 — Reuse and refresh registered Studio packages on repeated edits
 
-- Triggering role, report path, and round: code reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; focused failure-origin review `CRR-003`, triggered by API/E2E round `API-REV-001`.
+- Triggering role, report path, and round: code reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`; focused failure-origin review `CRR-003`, triggered by API/E2E round `API-REV-001`.
 - Triggering finding IDs: `CR-003`, `APIE2E-007`, `APIE2E-F001`
 - Classification: `Local Fix`
 - Prior authoritative result: `Ready for source re-review` (`IR-002`); source review subsequently passed in `CRR-002`, then API/E2E produced `Fail / 89%` (`API-REV-001`) and focused review classified `Fail — Local Fix` (`CRR-003`).
@@ -92,7 +92,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 ### IR-004 — Align Studio GraphQL with composition-owned definition authorities
 
-- Triggering role, report path, and round: code reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; focused failure-origin review `CRR-005`, triggered by API/E2E round `API-REV-002`.
+- Triggering role, report path, and round: code reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`; focused failure-origin review `CRR-005`, triggered by API/E2E round `API-REV-002`.
 - Triggering finding IDs: `CR-004`, `APIE2E-STUDIO-001`, `APIE2E-F002`
 - Classification: `Local Fix`
 - Prior authoritative result: `Ready for source re-review` (`IR-003`); source review passed in `CRR-004`, then `API-REV-002` confirmed `CR-003` resolved but produced `Fail / 88%` on the Studio definition gate, and `CRR-005` classified the new failure `Fail — Local Fix`.
@@ -112,7 +112,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 ### IR-005 — Keep application run identity allocation graph-local
 
-- Triggering role, report path, and round: code reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; focused failure-origin review `CRR-007`, triggered by API/E2E round `API-REV-003`.
+- Triggering role, report path, and round: code reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`; focused failure-origin review `CRR-007`, triggered by API/E2E round `API-REV-003`.
 - Triggering finding IDs: `CR-005`, `APIE2E-BRIEF-002`, `APIE2E-F003`
 - Classification: `Local Fix`
 - Prior authoritative result: `Ready for source re-review` (`IR-004`); source review passed in `CRR-006`, then `API-REV-003` confirmed `CR-004` resolved but produced `Fail / 88%` when the real Brief team member allocator could not load the package-owned `researcher`; `CRR-007` classified that failure `Fail — Local Fix`.
@@ -132,7 +132,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 ### IR-006 — Make package launch configuration portable and authoritative
 
-- Triggering role, report path, and round: architecture reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`; architecture round 5 / `ARCH-REV-005`, following the `CRR-010` design-impact classification and `API-REV-004`.
+- Triggering role, report path, and round: architecture reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/design-review-report.md`; architecture round 5 / `ARCH-REV-005`, following the `CRR-010` design-impact classification and `API-REV-004`.
 - Triggering finding IDs: `CR-006`, `CR-007`, `CR-008`, `APIE2E-BRIEF-003`, `APIE2E-F004`, and architecture correction `AR-007`
 - Classification: `Design Impact`
 - Prior authoritative result: `Ready for source re-review` (`IR-005`); source review passed in `CRR-008`, API/E2E then produced `Fail / 89%` (`API-REV-004`), `CRR-009`/`CRR-010` routed the configuration/readiness/prompt gaps as design impact, and `SR-005` passed in `ARCH-REV-005`.
@@ -152,7 +152,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 ### IR-007 — Correct portable tuning and Studio sparse/stale override presentation
 
-- Triggering role, report path, and round: code reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; source-review round `CRR-011`.
+- Triggering role, report path, and round: code reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`; source-review round `CRR-011`.
 - Triggering finding IDs: `CR-009`, `CR-010`, `CR-011`
 - Classification: `Local Fix`
 - Prior authoritative result: `Ready for source re-review` (`IR-006`); triggering source-review result `Fail — Local Fix` (`CRR-011`, `89/100`).
@@ -172,7 +172,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 ### IR-008 — Add selected-resource previews and recursive portable package policy
 
-- Triggering role, report path, and round: architecture reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`; architecture round 6 / `ARCH-REV-006`, following the `CRR-012` design-impact classification.
+- Triggering role, report path, and round: architecture reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/design-review-report.md`; architecture round 6 / `ARCH-REV-006`, following the `CRR-012` design-impact classification.
 - Triggering finding IDs: `CR-009` (remaining recursive policy gap), `CR-012`
 - Classification: `Design Impact`
 - Prior authoritative result: `Ready for source re-review` (`IR-007`); triggering source review superseded `CRR-011` with `Fail — Design Impact` (`CRR-012`, `88/100`), then `SR-006` passed architecture review as `ARCH-REV-006`.
@@ -192,7 +192,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 ### IR-009 — Reject endpoint and credential semantic aliases in portable package data
 
-- Triggering role, report path, and round: code reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; source-review round `CRR-013`.
+- Triggering role, report path, and round: code reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`; source-review round `CRR-013`.
 - Triggering finding IDs: `CR-009`
 - Classification: `Local Fix`
 - Prior authoritative result: `Ready for source re-review` (`IR-008`); triggering source-review result `Fail — Local Fix` (`CRR-013`, `93/100`). `CR-012` passed and remains resolved.
@@ -212,7 +212,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 ### IR-010 — Mount the existing Agent Tools MCP route in standalone
 
-- Triggering role, report path, and round: solution designer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/solution-revision-record.md`; authoritative `SR-009`, following corrective focused review `CRR-016` and API/E2E round `API-REV-005`.
+- Triggering role, report path, and round: solution designer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/solution-revision-record.md`; authoritative `SR-009`, following corrective focused review `CRR-016` and API/E2E round `API-REV-005`.
 - Triggering finding IDs: `CR-013`, `APIE2E-F005`, `APIE2E-STANDALONE-MCP-001`
 - Classification: `Local Fix`
 - Prior authoritative result: `Ready for source re-review` (`IR-009`); source review passed in `CRR-014`, then `API-REV-005` reached the advertised run-scoped Agent Tools URL in standalone and received the generic/static `404`. `CRR-016` superseded the withdrawn `CRR-015` design-impact classification and identified the missing existing registrar call as the only source defect.
@@ -233,7 +233,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 ### IR-011 — Inject graph-local agent definitions into application Codex bootstrap
 
-- Triggering role, report path, and round: code reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; focused failure-origin review `CRR-018`, triggered by API/E2E round `API-REV-006`.
+- Triggering role, report path, and round: code reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`; focused failure-origin review `CRR-018`, triggered by API/E2E round `API-REV-006`.
 - Triggering finding IDs: `CR-014`, `APIE2E-STANDALONE-MCP-002`, `APIE2E-F006`, `APIE2E-CODEX-AUTH-001`
 - Classification: `Local Fix`
 - Prior authoritative result: `Ready for source re-review` (`IR-010`); source review passed in `CRR-017`, and `API-REV-006` confirmed `CR-013` closed before exposing an application-path Codex definition-authority bypass. `CRR-018` classified the bypass as implementation-owned Local Fix.
@@ -253,7 +253,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 ### IR-012 — Bind application publication to the issuing Agent Tools session scope
 
-- Triggering role, report path, and round: architecture reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`; `ARCH-REV-008` Pass for `SR-010`, following focused failure-origin review `CRR-020` and API/E2E round `API-REV-007`.
+- Triggering role, report path, and round: architecture reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/design-review-report.md`; `ARCH-REV-008` Pass for `SR-010`, following focused failure-origin review `CRR-020` and API/E2E round `API-REV-007`.
 - Triggering finding IDs: `CR-015`, `APIE2E-STANDALONE-MCP-003`, `APIE2E-F007`
 - Classification: `Design Impact`
 - Prior authoritative result: `Ready for source re-review` (`IR-011`); source review passed in `CRR-019`, then `API-REV-007` confirmed descriptor/auth/tool-list/recipient messaging while exposing the default publication adapter's process-global authority bypass. `CRR-020` routed the construction-cycle/ownership gap through solution and architecture review.
@@ -273,7 +273,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 ### IR-013 — Stop graph-owned runs before application scope disposal
 
-- Triggering role, report path, and round: code reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; implementation-source review `CRR-021`.
+- Triggering role, report path, and round: code reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`; implementation-source review `CRR-021`.
 - Triggering finding IDs: `CR-016`
 - Classification: `Local Fix`
 - Prior authoritative result: `Ready for source re-review` (`IR-012`); `CRR-021` confirmed `CR-015` resolved in source but returned `Fail — Local Fix` because graceful application stop did not retain or invoke graph-local run/member shutdown.
@@ -293,7 +293,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 ### IR-014 — Preserve quiescent event-pipeline stop after latest-base integration
 
-- Triggering role, report path, and round: delivery engineer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/delivery-revision-record.md`; initial delivery integrated-state check `DR-001` after `API-REV-008` and `CRR-023` passed.
+- Triggering role, report path, and round: delivery engineer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/delivery-revision-record.md`; initial delivery integrated-state check `DR-001` after `API-REV-008` and `CRR-023` passed.
 - Triggering finding IDs: `N/A`; exact failing scope is the `DR-001` default event-pipeline lifecycle integration regression.
 - Classification: `Local Fix`
 - Prior authoritative result: `Ready for source re-review` (`IR-013`) subsequently passed source review as `CRR-022`, API/E2E as `API-REV-008` (`97.3%`), and proportional test review as `CRR-023`; delivery then merged latest tracked `origin/personal` and classified the resulting semantic incompatibility as implementation-owned Local Fix.
@@ -313,7 +313,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 ### IR-015 — Keep atomic package metadata canonical across staging
 
-- Triggering role, report path, and round: code reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; focused API/E2E failure-origin review `CRR-025`, triggered by `API-REV-009`.
+- Triggering role, report path, and round: code reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`; focused API/E2E failure-origin review `CRR-025`, triggered by `API-REV-009`.
 - Triggering finding IDs: `CR-017`, `APIE2E-PARITY-005`, `APIE2E-F008`
 - Classification: `Local Fix`
 - Prior authoritative result: `Ready for source re-review` (`IR-014`) subsequently passed source review as `CRR-024`; `API-REV-009` confirmed the DR-001 lifecycle correction in execution, then failed package parity at 94% because atomic Studio development serialized a random staging root into the canonical package README.
@@ -333,7 +333,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 ### IR-016 — Replace opaque framework labels with concrete runtime roles
 
-- Triggering role, report path, and round: architecture reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`; `ARCH-REV-009` Pass for `SR-011`, following code-review Design Impact `CRR-028`.
+- Triggering role, report path, and round: architecture reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/design-review-report.md`; `ARCH-REV-009` Pass for `SR-011`, following code-review Design Impact `CRR-028`.
 - Triggering finding IDs: `CR-018`
 - Classification: `Design Impact`
 - Prior authoritative result: `IR-015` passed source review in `CRR-026`, API/E2E in `API-REV-010` at 98.3%, and proportional test review in `CRR-027`; `CRR-028` then returned only the cross-cutting framework-vocabulary issue for design.
@@ -353,7 +353,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 ### IR-017 — Make the application runtime narrow, acyclic, and exact-cleanup owned
 
-- Triggering role, report path, and round: architecture reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`; authoritative `ARCH-REV-011` Pass for `SR-013`, following the fresh design-principles audit `CRR-031` and returned `ARCH-REV-010`.
+- Triggering role, report path, and round: architecture reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/design-review-report.md`; authoritative `ARCH-REV-011` Pass for `SR-013`, following the fresh design-principles audit `CRR-031` and returned `ARCH-REV-010`.
 - Triggering finding IDs: `CR-019`, `CR-020`, `CR-021`, `AR-008`, `AR-009`
 - Classification: `Design Impact`
 - Prior authoritative result: `IR-016` passed source review in `CRR-029`, API/E2E in `API-REV-011` at 98.9%, and proportional test review in `CRR-030`; `CRR-031` then returned the remaining behavior-neutral boundary/ownership complexity for design, and `ARCH-REV-010` returned the worker-ensure and exact-cleanup edges.
@@ -373,7 +373,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 ### IR-018 — Continue stop-all after inactive-run cleanup failures
 
-- Triggering role, report path, and round: code reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; complete IR-017 source review `CRR-032`.
+- Triggering role, report path, and round: code reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`; complete IR-017 source review `CRR-032`.
 - Triggering finding IDs: `CR-022`
 - Classification: `Local Fix`
 - Prior authoritative result: `Ready for source re-review` (`IR-017`); `CRR-032` passed `CR-019`, `CR-020`, `CR-021`, `AR-008`, and most of `AR-009`, then returned one bounded stop-all continuation defect as `Fail — Local Fix`.
@@ -393,7 +393,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 ### IR-019 — Enforce the reviewed application-framework boundaries
 
-- Triggering role, report path, and round: architecture reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`; authoritative `ARCH-REV-014` Pass for `SR-016`, after rounds 12–13 returned and narrowed the executable-checker gaps.
+- Triggering role, report path, and round: architecture reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/design-review-report.md`; authoritative `ARCH-REV-014` Pass for `SR-016`, after rounds 12–13 returned and narrowed the executable-checker gaps.
 - Triggering finding IDs: `AR-010`, `AR-011`
 - Classification: `Design Impact`
 - Prior authoritative result: `IR-018` passed affected source review in `CRR-033`, the full dual-host/lifecycle round in `API-REV-012` at 96.6%, proportional durable-test review in `CRR-034`, and delivery integration/build through `DR-005`. SR-014 then opened a separate user-requested architecture-hardening audit without reopening that production baseline.
@@ -413,7 +413,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 ### IR-020 — Close architecture direction and Vue external-source gaps
 
-- Triggering role, report path, and round: code reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; complete IR-019 source review `CRR-035`.
+- Triggering role, report path, and round: code reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`; complete IR-019 source review `CRR-035`.
 - Triggering finding IDs: `CR-023`, `CR-024`
 - Classification: `Local Fix`
 - Prior authoritative result: `IR-019` was `Ready for source re-review`; `CRR-035` passed the five-file scope, dependency placement, documentation, AFB-004 obligations, own-manifest checks, and production non-impact, then returned two bounded checker defects as `Fail — Local Fix`.
@@ -433,7 +433,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 ### IR-021 — Govern the resolved Vue external-script target edge
 
-- Triggering role, report path, and round: code reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; complete IR-020 affected source review `CRR-036`.
+- Triggering role, report path, and round: code reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`; complete IR-020 affected source review `CRR-036`.
 - Triggering finding IDs: `CR-025`
 - Classification: `Local Fix`
 - Prior authoritative result: `IR-020` was `Ready for source re-review`; `CRR-036` confirmed `CR-023` and `CR-024` resolved and returned only the external-`src` target edge as `Fail — Local Fix`.
@@ -453,7 +453,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 ### IR-022 — Integrate v1.4.50 at the existing application-framework owners
 
-- Triggering role, report path, and round: architecture reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`; `ARCH-REV-016` Pass for `SR-018`, following the paused DR-009 latest-base merge and bounded AR-012 proof correction.
+- Triggering role, report path, and round: architecture reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/design-review-report.md`; `ARCH-REV-016` Pass for `SR-018`, following the paused DR-009 latest-base merge and bounded AR-012 proof correction.
 - Triggering finding IDs: `AR-012`; v1.4.50 semantic integration conflict report.
 - Classification: `Design Impact — Base Evolution`, resolved through reviewed bounded implementation.
 - Prior authoritative result: `ARCH-REV-016: Pass`. It retained ARCH-REV-015's four production decisions and approved the current-owner prompt/runtime test transitions, with no new architecture finding.
@@ -473,7 +473,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 ### IR-023 — Keep app-ineligible Brief history from poisoning startup catch-up
 
-- Triggering role, report path, and round: code reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; focused `CRR-040` failure-origin review after `API-REV-014` same-data Studio restart failure.
+- Triggering role, report path, and round: code reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`; focused `CRR-040` failure-origin review after `API-REV-014` same-data Studio restart failure.
 - Triggering finding IDs: `CR-026`, `APIE2E-F009`, `APIE2E-STUDIO-RESTART-014`.
 - Classification: `Local Fix`.
 - Prior authoritative result: `CRR-039` passed IR-022 source at `97/100`, but `CRR-040` superseded its readiness decision after the real API-REV-014 restart path showed retained application-ineligible platform history aborting Brief worker `onStart`.

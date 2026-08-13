@@ -15,8 +15,8 @@ This is the separate proportional review of the durable test changes exercised b
 - Original Code Review Report: `code-review-report.md`; authoritative source result `CRR-041 Pass / 98`
 - Code Review Revision Record: `code-review-revision-record.md`
 - Current Code Review Revision ID: `CRR-042`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-coverage-investigation.md`
-- Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-coverage-investigation.md`
+- Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`
 - API/E2E Revision Record Reviewed As Context: `API-REV-015`
 - Delivery Revision Record Reviewed As Context: `DR-009`
 - API/E2E Result: `Pass`

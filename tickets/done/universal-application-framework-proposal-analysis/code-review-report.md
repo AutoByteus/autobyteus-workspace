@@ -3,16 +3,16 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/requirements.md`
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-spec.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/requirements.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/design-spec.md`
 - Supplemental Task Artifacts Reviewed As Context: `application-framework-architecture-simplification.md`, `application-framework-hardening-evaluation.md`, `latest-base-integration-design-analysis.md`, proposal/validation artifacts, and API-REV-014 failure evidence
 - Relevant Solution Revision IDs: `SR-018`; retained `SR-016`, `SR-013`
 - Relevant Architecture Review Revision IDs: `ARCH-REV-016`; retained `ARCH-REV-014`, `ARCH-REV-011`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`
-- Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-revision-record.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/implementation-handoff.md`
+- Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/implementation-revision-record.md`
 - Relevant Implementation Revision IDs: `IR-023`; retained `IR-022` and production baseline `IR-017`–`IR-021`
-- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-revision-record.md`
+- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-revision-record.md`
 - Current Code Review Revision ID: `CRR-041`
 - Current Review Round: `41`
 - Trigger: focused implementation-source re-review of `IR-023` at artifact HEAD `e205daf351fd28c9e4cc4f75cc49d3ac95264181`, source/test/package commit `e56b81ad638aa50d0585af63c866d8aaea6e9b8b`, closing `CR-026`
@@ -29,7 +29,7 @@
   - imported Brief package integration — Pass, `1` file / `3` tests;
   - application-framework architecture gate — Pass, `1` file / `14` tests;
   - exact changed-path `git diff --check`, source-size, package/source cleanliness, and owner-scope audits — Pass.
-- Failure Evidence Paths: retained API-REV-014 evidence and `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/evidence/code-review/crr-040-failure-origin-focused.log`
+- Failure Evidence Paths: retained API-REV-014 evidence and `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/evidence/code-review/crr-040-failure-origin-focused.log`
 
 ## Review Scope
 

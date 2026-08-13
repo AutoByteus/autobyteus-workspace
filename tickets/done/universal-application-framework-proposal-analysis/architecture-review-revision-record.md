@@ -27,7 +27,7 @@ The latest [design-review-report.md](design-review-report.md) is authoritative. 
 
 ### ARCH-REV-001 — Initial architecture-review baseline
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/design-review-report.md`
 - Review round and trigger: Round 1; initial architecture review requested after the approved solution package was produced.
 - Triggering role, report path, and finding IDs: `solution_designer`; initial package with no prior design-review report; finding IDs `N/A` at trigger.
 - Relevant solution revision IDs: `SR-001`
@@ -46,9 +46,9 @@ None.
 
 ### ARCH-REV-002 — SR-002 architecture re-review
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/design-review-report.md`
 - Review round and trigger: Round 2; `SR-002` rework after AR-001–AR-004, native command refinements, and refresh to `origin/personal` / task `HEAD` `6caf809303294252c109420b238588f0c68aca6a`.
-- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/solution-revision-record.md`; AR-001–AR-004.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/solution-revision-record.md`; AR-001–AR-004.
 - Relevant solution revision IDs: `SR-002`
 - Prior authoritative decision: `Fail — Design Impact`
 - Current authoritative decision: `Fail — Design Impact`
@@ -70,9 +70,9 @@ None.
 
 ### ARCH-REV-003 — SR-003 implementation-ready architecture pass
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/design-review-report.md`
 - Review round and trigger: Round 3; `SR-003` bounded correction after AR-001, AR-005, and AR-006.
-- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/solution-revision-record.md`; AR-001, AR-005, AR-006.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/solution-revision-record.md`; AR-001, AR-005, AR-006.
 - Relevant solution revision IDs: `SR-003`
 - Prior authoritative decision: `Fail — Design Impact`
 - Current authoritative decision: `Pass`
@@ -93,9 +93,9 @@ None.
 
 ### ARCH-REV-004 — SR-004 effective-configuration correction requires one bounded design repair
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/design-review-report.md`
 - Review round and trigger: Round 4; upstream re-entry after `CRR-010` retained `Fail — Design Impact` for `CR-006`/`CR-007`, carried bounded `CR-008`, and the user established package-owned standalone runtime/model defaults with optional Studio overrides.
-- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/solution-revision-record.md`; `CR-006`, `CR-007`, `CR-008`, `APIE2E-BRIEF-003`, `APIE2E-F004`.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/solution-revision-record.md`; `CR-006`, `CR-007`, `CR-008`, `APIE2E-BRIEF-003`, `APIE2E-F004`.
 - Relevant solution revision IDs: `SR-004`
 - Prior authoritative decision: `Pass`
 - Current authoritative decision: `Fail — Design Impact`
@@ -117,9 +117,9 @@ None.
 
 ### ARCH-REV-005 — SR-005 resolves invalid host override semantics and passes
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/design-review-report.md`
 - Review round and trigger: Round 5; `SR-005` rework after AR-007, plus the user-confirmed `codex_app_server` / `gpt-5.6-luna` maintained defaults.
-- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/solution-revision-record.md`; `AR-007`, with `CR-006`–`CR-008` retained as the downstream re-entry basis.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/solution-revision-record.md`; `AR-007`, with `CR-006`–`CR-008` retained as the downstream re-entry basis.
 - Relevant solution revision IDs: `SR-005`
 - Prior authoritative decision: `Fail — Design Impact`
 - Current authoritative decision: `Pass`
@@ -142,9 +142,9 @@ None.
 
 ### ARCH-REV-006 — SR-006 restores authoritative sparse editing and portable package policy
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/design-review-report.md`
 - Review round and trigger: Round 6; upstream re-entry after implementation-source review `CRR-012` returned `Fail — Design Impact` for `CR-012` and retained the bounded portable-policy defect `CR-009`.
-- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/solution-revision-record.md`; `CR-009`, `CR-012`.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/solution-revision-record.md`; `CR-009`, `CR-012`.
 - Relevant solution revision IDs: `SR-006`
 - Prior authoritative decision: architecture `Pass` at `ARCH-REV-005`, followed by downstream `CRR-012` `Fail — Design Impact`
 - Current authoritative decision: `Pass`
@@ -169,9 +169,9 @@ None.
 
 > This entry corrects and retracts the architecture pass originally issued on 2026-07-29. `CRR-016` supersedes the CRR-015 tool-exposure premise. No architecture decision exists for the withdrawn SR-007 content, and the implementation handoff based on it is retracted.
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/design-review-report.md`
 - Review round and trigger: Round 7 withdrawal after `CRR-016` established that Codex/Claude native file tools stay native, the existing Studio Agent Tools route/subsystem is working, and standalone omits only the existing registrar. The CRR-015 Design Impact premise was superseded.
-- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/solution-revision-record.md`; `CR-013`, `APIE2E-F005`, `APIE2E-STANDALONE-MCP-001`.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/solution-revision-record.md`; `CR-013`, `APIE2E-F005`, `APIE2E-STANDALONE-MCP-001`.
 - Relevant solution revision IDs: `SR-007` (withdrawn); `SR-006` remains the latest valid architecture-reviewed solution
 - Prior authoritative decision: `ARCH-REV-006` / SR-006 `Pass`; an erroneous SR-007 pass was briefly issued from the superseded CRR-015 premise
 - Current authoritative decision: `Withdrawn — No Decision`; `ARCH-REV-006` remains latest valid
@@ -193,9 +193,9 @@ None.
 
 ### ARCH-REV-008 — SR-010 graph-local Agent Tools publication authority passes
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/design-review-report.md`
 - Review round and trigger: Round 8; `SR-010` Design Impact re-entry after real API/E2E `API-REV-007` and focused failure-origin review `CRR-020` / `CR-015` proved that the default publish adapter uses the process-global manager rather than the active application graph.
-- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/solution-revision-record.md`; `CR-015`, `APIE2E-STANDALONE-MCP-003`, `APIE2E-F007`.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/solution-revision-record.md`; `CR-015`, `APIE2E-STANDALONE-MCP-003`, `APIE2E-F007`.
 - Relevant solution revision IDs: `SR-010`; `SR-008`/`SR-009` retained as implemented current-state context; `SR-007` remains withdrawn.
 - Prior authoritative decision: `ARCH-REV-006` / `SR-006` `Pass`; `ARCH-REV-007` was withdrawn with no decision; the downstream current result was `CRR-020 Fail — Design Impact`.
 - Current authoritative decision: `Pass`
@@ -217,9 +217,9 @@ None.
 
 ### ARCH-REV-009 — SR-011 behavior-neutral framework vocabulary passes
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/design-review-report.md`
 - Review round and trigger: Round 9; `SR-011` Design Impact re-entry after the user-requested developer-comprehension audit `CRR-028` / `CR-018`, following the functional source, API/E2E, and proportional test-review passes through `CRR-027`.
-- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/solution-revision-record.md`; `CR-018`.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/solution-revision-record.md`; `CR-018`.
 - Relevant solution revision IDs: `SR-011`; `SR-010` remains the functional architecture basis.
 - Prior authoritative decision: `ARCH-REV-008` / `SR-010` `Pass`, followed by downstream `CRR-028 Fail — Design Impact` for naming/readability only.
 - Current authoritative decision: `Pass`
@@ -241,9 +241,9 @@ None.
 
 ### ARCH-REV-010 — SR-012 resolves runtime/package ownership but leaves two central cycle corrections incomplete
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/design-review-report.md`
 - Review round and trigger: Round 10; `SR-012` Design Impact re-entry after the fresh architecture audit `CRR-031` / `CR-019`–`CR-021`, following the source, real API/E2E, and proportional test-review passes through `CRR-030`.
-- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/solution-revision-record.md`; `CR-019`, `CR-020`, `CR-021`.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/solution-revision-record.md`; `CR-019`, `CR-020`, `CR-021`.
 - Relevant solution revision IDs: `SR-012`; `SR-011` remains the passed naming baseline and `SR-010` remains the passed functional publication basis.
 - Prior authoritative decision: `ARCH-REV-009` / `SR-011` `Pass`, followed by downstream `CRR-031 Fail — Design Impact` for boundary leakage, mixed package ownership, and construction cycles.
 - Current authoritative decision: `Fail — Design Impact`
@@ -267,9 +267,9 @@ None.
 
 ### ARCH-REV-011 — SR-013 preserves artifact delivery and exact run cleanup in an acyclic target
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/design-review-report.md`
 - Review round and trigger: Round 11; `SR-013` bounded Design Impact rework after `ARCH-REV-010` returned `AR-008` and `AR-009` against the SR-012 construction-cycle correction.
-- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/solution-revision-record.md`; `AR-008`, `AR-009`, with `CR-021` as the downstream architecture finding being completed.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/solution-revision-record.md`; `AR-008`, `AR-009`, with `CR-021` as the downstream architecture finding being completed.
 - Relevant solution revision IDs: `SR-013`; `SR-012` retained for the approved four-projection and package-owner baseline; `SR-011` and `SR-010` retained as the passed naming and functional baselines.
 - Prior authoritative decision: `ARCH-REV-010` / `SR-012` `Fail — Design Impact`
 - Current authoritative decision: `Pass`
@@ -295,9 +295,9 @@ None.
 
 ### ARCH-REV-012 — SR-014 hardening direction is sound but the executable boundary contract is incomplete
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/design-review-report.md`
 - Review round and trigger: Round 12; `SR-014` user-requested eight-candidate architecture-hardening audit after the SR-013 source, dual-host API/E2E, and durable-test baseline passed through `CRR-034`.
-- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/solution-revision-record.md`; no open trigger finding, with new review findings `AR-010` and `AR-011`.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/solution-revision-record.md`; no open trigger finding, with new review findings `AR-010` and `AR-011`.
 - Relevant solution revision IDs: `SR-014`; `SR-013` remains the fixed functional architecture baseline.
 - Prior authoritative decision: `ARCH-REV-011` / `SR-013` `Pass`; current downstream implementation and test baseline also passes through `CRR-034`.
 - Current authoritative decision: `Fail — Design Impact`
@@ -318,9 +318,9 @@ None.
 
 ### ARCH-REV-013 — SR-015 resolves heterogeneous-source checking but leaves one nested provider omission
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/design-review-report.md`
 - Review round and trigger: Round 13; `SR-015` bounded correction after `ARCH-REV-012` returned `AR-010` and `AR-011` against the SR-014 architecture-checker design.
-- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/solution-revision-record.md`; `AR-010`, `AR-011`, `MP-ARCH-012-001`, and `MP-ARCH-012-002`.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/solution-revision-record.md`; `AR-010`, `AR-011`, `MP-ARCH-012-001`, and `MP-ARCH-012-002`.
 - Relevant solution revision IDs: `SR-015`; `SR-014` retains the accepted hardening candidate decision; `SR-013` remains the passed production architecture baseline.
 - Prior authoritative decision: `ARCH-REV-012` / `SR-014` `Fail — Design Impact`.
 - Current authoritative decision: `Fail — Design Impact`
@@ -343,9 +343,9 @@ None.
 
 ### ARCH-REV-014 — SR-016 completes the executable application-framework boundary contract
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/design-review-report.md`
 - Review round and trigger: Round 14; `SR-016` final bounded correction after `ARCH-REV-013` left only nested Codex/Claude backend-factory omission under `AR-010`.
-- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/solution-revision-record.md`; `AR-010` / `MP-ARCH-012-001`, with resolved `AR-011` preserved.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/solution-revision-record.md`; `AR-010` / `MP-ARCH-012-001`, with resolved `AR-011` preserved.
 - Relevant solution revision IDs: `SR-016`; `SR-015` retains the accepted SFC/project solution; `SR-014` retains the accepted hardening candidate decision; `SR-013` remains the fixed passed production architecture baseline.
 - Prior authoritative decision: `ARCH-REV-013` / `SR-015` `Fail — Design Impact`.
 - Current authoritative decision: `Pass`
@@ -368,9 +368,9 @@ None.
 
 ### ARCH-REV-015 — SR-017 production reconciliation is sound but its durable-proof transition is incomplete
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/design-review-report.md`
 - Review round and trigger: Round 15; `SR-017` Design Impact re-entry after delivery paused the required merge of protected checkpoint `42d43674d8215c3987d8a6e265a2648c754bf6de` with `origin/personal@54890a07f74e941a7a12b6daaa26364f4c927b72` (`v1.4.50`) on three semantic conflicts.
-- Triggering role, report path, and finding IDs: `solution_designer`, based on `delivery_engineer` DR-009; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/latest-base-integration-conflict-report.md`; no prior open architecture finding; new `AR-012`.
+- Triggering role, report path, and finding IDs: `solution_designer`, based on `delivery_engineer` DR-009; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/latest-base-integration-conflict-report.md`; no prior open architecture finding; new `AR-012`.
 - Relevant solution revision IDs: `SR-017`; `SR-016` remains the passed executable-boundary baseline; `SR-013` remains the passed production architecture baseline.
 - Prior authoritative decision: `ARCH-REV-014` / `SR-016` `Pass`, followed by passed implementation/source/API-E2E through `CRR-038`; delivery integration then exposed required base evolution.
 - Current authoritative decision: `Fail — Design Impact`.
@@ -391,9 +391,9 @@ None.
 
 ### ARCH-REV-016 — SR-018 closes the latest-base durable-proof transition
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/design-review-report.md`
 - Review round and trigger: Round 16; `SR-018` bounded rework after `ARCH-REV-015` returned only `AR-012` against SR-017's v1.4.50 integration inventory and proof mapping.
-- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/solution-revision-record.md`; `AR-012` / `MP-ARCH-015-001`.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/solution-revision-record.md`; `AR-012` / `MP-ARCH-015-001`.
 - Relevant solution revision IDs: `SR-018`; `SR-017` retains the four accepted production reconciliation decisions; `SR-016` and `SR-013` retain the passed checker and production architecture baselines.
 - Prior authoritative decision: `ARCH-REV-015` / `SR-017` `Fail — Design Impact`.
 - Current authoritative decision: `Pass`.

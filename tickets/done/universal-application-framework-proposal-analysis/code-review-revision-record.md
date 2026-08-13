@@ -4,51 +4,51 @@
 
 | Revision ID | Canonical Review Report | Entry Point / Trigger | Prior Result | Current Result | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
-| `CRR-001` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-001` | `N/A` | `Fail — Local Fix` | `CR-001`, `CR-002` |
-| `CRR-002` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-002` | `Fail — Local Fix` | `Pass` | `CR-001`, `CR-002` |
-| `CRR-003` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-001` | `Pass` | `Fail — Local Fix` | `CR-003`, `APIE2E-F001` |
-| `CRR-004` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-003` | `Fail — Local Fix` | `Pass` | `CR-003`, `APIE2E-F001` |
-| `CRR-005` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-002` | `Pass` | `Fail — Local Fix` | `CR-004`, `APIE2E-F002` |
-| `CRR-006` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-004` | `Fail — Local Fix` | `Pass` | `CR-004`, `APIE2E-F002` |
-| `CRR-007` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-003` | `Pass` | `Fail — Local Fix` | `CR-005`, `APIE2E-F003` |
-| `CRR-008` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-005` | `Fail — Local Fix` | `Pass` | `CR-005`, `APIE2E-F003` |
-| `CRR-009` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Fresh Implementation Review / `API-REV-004` + user-requested full audit | `Pass` | `Fail — Design Impact` | `CR-006`, `CR-007`, `CR-008`, `APIE2E-F004` |
-| `CRR-010` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Review clarification / user-confirmed package-default contract | `Fail — Design Impact` | `Fail — Design Impact` | `CR-006`, `CR-007`, `CR-008`, `APIE2E-F004` |
-| `CRR-011` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-006` | `Fail — Design Impact` | `Fail — Local Fix` | `CR-009`, `CR-010`, `CR-011` |
-| `CRR-012` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-007` | `Fail — Local Fix` | `Fail — Design Impact` | `CR-009`, `CR-010`, `CR-011`, `CR-012` |
-| `CRR-013` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-008` | `Fail — Design Impact` | `Fail — Local Fix` | `CR-009`, `CR-010`, `CR-011`, `CR-012` |
-| `CRR-014` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-009` | `Fail — Local Fix` | `Pass` | `CR-009` |
-| `CRR-015` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-005` | `Pass` | `Fail — Design Impact` | `CR-013`, `APIE2E-F005` |
-| `CRR-016` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Clarification / user-confirmed tool projection | `Fail — Design Impact` | `Fail — Local Fix` | `CR-013`, `APIE2E-F005` |
-| `CRR-017` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-010` | `Fail — Local Fix` | `Pass` | `CR-013`, `APIE2E-F005` |
-| `CRR-018` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-006` | `Pass` | `Fail — Local Fix` | `CR-014`, `APIE2E-F006` |
-| `CRR-019` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-011` | `Fail — Local Fix` | `Pass` | `CR-014`, `APIE2E-F006` |
-| `CRR-020` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-007` | `Pass` | `Fail — Design Impact` | `CR-015`, `APIE2E-F007` |
-| `CRR-021` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-012` | `Fail — Design Impact` | `Fail — Local Fix` | `CR-015`, `CR-016`, `APIE2E-F007` |
-| `CRR-022` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-013` | `Fail — Local Fix` | `Pass` | `CR-016`, `APIE2E-F007` |
-| `CRR-023` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-test-review-report.md` | Proportional API/E2E Test-Code Review / `API-REV-008` | `N/A` | `Pass` | `N/A` |
-| `CRR-024` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-014` after `DR-001` | `Pass` (`CRR-022` source; `CRR-023` test review) | `Pass` | `DR-001`; retained `CR-015`, `CR-016` |
-| `CRR-025` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-009` | `Pass` | `Fail — Local Fix` | `CR-017`, `APIE2E-F008` |
-| `CRR-026` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-015` | `Fail — Local Fix` | `Pass` | `CR-017`, `APIE2E-F008` |
-| `CRR-027` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-test-review-report.md` | Proportional API/E2E Test-Code Review / `API-REV-010` | `N/A` | `Pass` | `N/A` |
-| `CRR-028` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Fresh Implementation Review / user-requested framework naming audit | `Pass` (`CRR-026` source; `CRR-027` test review) | `Fail — Design Impact` | `CR-018` |
-| `CRR-029` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-016` | `Fail — Design Impact` | `Pass` | `CR-018` |
-| `CRR-030` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-test-review-report.md` | Proportional API/E2E Test-Code Review / `API-REV-011` | `N/A` | `Pass` | `N/A` |
-| `CRR-031` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Fresh Implementation Review / user-requested behavior-neutral architecture simplification audit | `Pass` (`CRR-029` source; `API-REV-011`; `CRR-030` test review) | `Fail — Design Impact` | `CR-019`, `CR-020`, `CR-021` |
-| `CRR-032` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-017` | `Fail — Design Impact` | `Fail — Local Fix` | `CR-022` |
-| `CRR-033` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-018` | `Fail — Local Fix` | `Pass` | `CR-022` |
-| `CRR-034` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-test-review-report.md` | Proportional API/E2E Test-Code Review / `API-REV-012` | `N/A` | `Pass` | `N/A` |
-| `CRR-035` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-019` | `Pass` (`CRR-033` source; `API-REV-012`; `CRR-034` test review) | `Fail — Local Fix` | `CR-023`, `CR-024` |
-| `CRR-036` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-020` | `Fail — Local Fix / 94` | `Fail — Local Fix / 95` | `CR-023`, `CR-024`, `CR-025` |
-| `CRR-037` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-021` | `Fail — Local Fix / 95` | `Pass / 98` | `CR-025`; retained `CR-023`, `CR-024` |
+| `CRR-001` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-001` | `N/A` | `Fail — Local Fix` | `CR-001`, `CR-002` |
+| `CRR-002` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-002` | `Fail — Local Fix` | `Pass` | `CR-001`, `CR-002` |
+| `CRR-003` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-001` | `Pass` | `Fail — Local Fix` | `CR-003`, `APIE2E-F001` |
+| `CRR-004` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-003` | `Fail — Local Fix` | `Pass` | `CR-003`, `APIE2E-F001` |
+| `CRR-005` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-002` | `Pass` | `Fail — Local Fix` | `CR-004`, `APIE2E-F002` |
+| `CRR-006` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-004` | `Fail — Local Fix` | `Pass` | `CR-004`, `APIE2E-F002` |
+| `CRR-007` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-003` | `Pass` | `Fail — Local Fix` | `CR-005`, `APIE2E-F003` |
+| `CRR-008` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-005` | `Fail — Local Fix` | `Pass` | `CR-005`, `APIE2E-F003` |
+| `CRR-009` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md` | Fresh Implementation Review / `API-REV-004` + user-requested full audit | `Pass` | `Fail — Design Impact` | `CR-006`, `CR-007`, `CR-008`, `APIE2E-F004` |
+| `CRR-010` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md` | Review clarification / user-confirmed package-default contract | `Fail — Design Impact` | `Fail — Design Impact` | `CR-006`, `CR-007`, `CR-008`, `APIE2E-F004` |
+| `CRR-011` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-006` | `Fail — Design Impact` | `Fail — Local Fix` | `CR-009`, `CR-010`, `CR-011` |
+| `CRR-012` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-007` | `Fail — Local Fix` | `Fail — Design Impact` | `CR-009`, `CR-010`, `CR-011`, `CR-012` |
+| `CRR-013` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-008` | `Fail — Design Impact` | `Fail — Local Fix` | `CR-009`, `CR-010`, `CR-011`, `CR-012` |
+| `CRR-014` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-009` | `Fail — Local Fix` | `Pass` | `CR-009` |
+| `CRR-015` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-005` | `Pass` | `Fail — Design Impact` | `CR-013`, `APIE2E-F005` |
+| `CRR-016` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Clarification / user-confirmed tool projection | `Fail — Design Impact` | `Fail — Local Fix` | `CR-013`, `APIE2E-F005` |
+| `CRR-017` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-010` | `Fail — Local Fix` | `Pass` | `CR-013`, `APIE2E-F005` |
+| `CRR-018` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-006` | `Pass` | `Fail — Local Fix` | `CR-014`, `APIE2E-F006` |
+| `CRR-019` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-011` | `Fail — Local Fix` | `Pass` | `CR-014`, `APIE2E-F006` |
+| `CRR-020` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-007` | `Pass` | `Fail — Design Impact` | `CR-015`, `APIE2E-F007` |
+| `CRR-021` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-012` | `Fail — Design Impact` | `Fail — Local Fix` | `CR-015`, `CR-016`, `APIE2E-F007` |
+| `CRR-022` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-013` | `Fail — Local Fix` | `Pass` | `CR-016`, `APIE2E-F007` |
+| `CRR-023` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-test-review-report.md` | Proportional API/E2E Test-Code Review / `API-REV-008` | `N/A` | `Pass` | `N/A` |
+| `CRR-024` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-014` after `DR-001` | `Pass` (`CRR-022` source; `CRR-023` test review) | `Pass` | `DR-001`; retained `CR-015`, `CR-016` |
+| `CRR-025` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-009` | `Pass` | `Fail — Local Fix` | `CR-017`, `APIE2E-F008` |
+| `CRR-026` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-015` | `Fail — Local Fix` | `Pass` | `CR-017`, `APIE2E-F008` |
+| `CRR-027` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-test-review-report.md` | Proportional API/E2E Test-Code Review / `API-REV-010` | `N/A` | `Pass` | `N/A` |
+| `CRR-028` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md` | Fresh Implementation Review / user-requested framework naming audit | `Pass` (`CRR-026` source; `CRR-027` test review) | `Fail — Design Impact` | `CR-018` |
+| `CRR-029` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-016` | `Fail — Design Impact` | `Pass` | `CR-018` |
+| `CRR-030` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-test-review-report.md` | Proportional API/E2E Test-Code Review / `API-REV-011` | `N/A` | `Pass` | `N/A` |
+| `CRR-031` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md` | Fresh Implementation Review / user-requested behavior-neutral architecture simplification audit | `Pass` (`CRR-029` source; `API-REV-011`; `CRR-030` test review) | `Fail — Design Impact` | `CR-019`, `CR-020`, `CR-021` |
+| `CRR-032` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-017` | `Fail — Design Impact` | `Fail — Local Fix` | `CR-022` |
+| `CRR-033` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-018` | `Fail — Local Fix` | `Pass` | `CR-022` |
+| `CRR-034` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-test-review-report.md` | Proportional API/E2E Test-Code Review / `API-REV-012` | `N/A` | `Pass` | `N/A` |
+| `CRR-035` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-019` | `Pass` (`CRR-033` source; `API-REV-012`; `CRR-034` test review) | `Fail — Local Fix` | `CR-023`, `CR-024` |
+| `CRR-036` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-020` | `Fail — Local Fix / 94` | `Fail — Local Fix / 95` | `CR-023`, `CR-024`, `CR-025` |
+| `CRR-037` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-021` | `Fail — Local Fix / 95` | `Pass / 98` | `CR-025`; retained `CR-023`, `CR-024` |
 
 ## Revision Entries
 
 ### CRR-001 — Initial implementation-source review baseline
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round `1`
-- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`; new findings `CR-001`, `CR-002`; scenario IDs `N/A`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/implementation-handoff.md`; new findings `CR-001`, `CR-002`; scenario IDs `N/A`
 - Relevant solution revision IDs: `SR-003`
 - Relevant architecture-review revision IDs: `ARCH-REV-003`
 - Relevant implementation revision IDs: `IR-001`
@@ -69,9 +69,9 @@ None.
 
 ### CRR-002 — Development lifecycle findings resolved
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round `2`
-- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`; `CR-001`, `CR-002`; scenario IDs `N/A`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/implementation-handoff.md`; `CR-001`, `CR-002`; scenario IDs `N/A`
 - Relevant solution revision IDs: `SR-003`
 - Relevant architecture-review revision IDs: `ARCH-REV-003`
 - Relevant implementation revision IDs: `IR-002`
@@ -95,9 +95,9 @@ None.
 
 ### CRR-003 — API/E2E exposes duplicate-import source defect
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`
 - Review entry point and round: `API/E2E Failure-Origin Review`, round `3`
-- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `APIE2E-007`, `APIE2E-F001`, new source finding `CR-003`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `APIE2E-007`, `APIE2E-F001`, new source finding `CR-003`
 - Relevant solution revision IDs: `SR-003`
 - Relevant architecture-review revision IDs: `ARCH-REV-003`
 - Relevant implementation revision IDs: `IR-002`
@@ -121,9 +121,9 @@ None.
 
 ### CRR-004 — Studio existing-package refresh source fix passes re-review
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round `4`
-- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`; `CR-003`, `APIE2E-007`, `APIE2E-F001`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/implementation-handoff.md`; `CR-003`, `APIE2E-007`, `APIE2E-F001`
 - Relevant solution revision IDs: `SR-003`
 - Relevant architecture-review revision IDs: `ARCH-REV-003`
 - Relevant implementation revision IDs: `IR-003`
@@ -148,9 +148,9 @@ None.
 
 ### CRR-005 — API/E2E exposes Studio definition-authority split
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`
 - Review entry point and round: `API/E2E Failure-Origin Review`, round `5`
-- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `APIE2E-STUDIO-001`, `APIE2E-F002`, new source finding `CR-004`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `APIE2E-STUDIO-001`, `APIE2E-F002`, new source finding `CR-004`
 - Relevant solution revision IDs: `SR-003`
 - Relevant architecture-review revision IDs: `ARCH-REV-003`
 - Relevant implementation revision IDs: `IR-003`
@@ -175,9 +175,9 @@ None.
 
 ### CRR-006 — Studio definition-authority source correction passes re-review
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round `6`
-- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`; `CR-004`, `APIE2E-STUDIO-001`, `APIE2E-F002`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/implementation-handoff.md`; `CR-004`, `APIE2E-STUDIO-001`, `APIE2E-F002`
 - Relevant solution revision IDs: `SR-003`
 - Relevant architecture-review revision IDs: `ARCH-REV-003`
 - Relevant implementation revision IDs: `IR-004`
@@ -203,9 +203,9 @@ None.
 
 ### CRR-007 — API/E2E exposes team-member identity allocator authority bypass
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`
 - Review entry point and round: `API/E2E Failure-Origin Review`, round `7`
-- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `APIE2E-BRIEF-002`, `APIE2E-F003`, new source finding `CR-005`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `APIE2E-BRIEF-002`, `APIE2E-F003`, new source finding `CR-005`
 - Relevant solution revision IDs: `SR-003`
 - Relevant architecture-review revision IDs: `ARCH-REV-003`
 - Relevant implementation revision IDs: `IR-004`
@@ -231,9 +231,9 @@ None.
 
 ### CRR-008 — Graph-local run identity correction passes source re-review
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round `8`
-- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`; `CR-005`, `APIE2E-BRIEF-002`, `APIE2E-F003`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/implementation-handoff.md`; `CR-005`, `APIE2E-BRIEF-002`, `APIE2E-F003`
 - Relevant solution revision IDs: `SR-003`
 - Relevant architecture-review revision IDs: `ARCH-REV-003`
 - Relevant implementation revision IDs: `IR-005`
@@ -260,9 +260,9 @@ None.
 
 ### CRR-009 — Fresh full review exposes missing standalone configuration spine and prompt-authority bypass
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round `9` (explicit full refresh rather than bounded failure-origin only)
-- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `APIE2E-BRIEF-003`, `APIE2E-F004`; explicit user request to reload the design principles and repeat the complete review; new findings `CR-006`, `CR-007`, `CR-008`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `APIE2E-BRIEF-003`, `APIE2E-F004`; explicit user request to reload the design principles and repeat the complete review; new findings `CR-006`, `CR-007`, `CR-008`
 - Relevant solution revision IDs: `SR-003`
 - Relevant architecture-review revision IDs: `ARCH-REV-003`
 - Relevant implementation revision IDs: `IR-001`–`IR-005`
@@ -289,7 +289,7 @@ None.
 
 ### CRR-010 — User clarification simplifies the standalone configuration remedy
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`
 - Review entry point and round: `Implementation Review Clarification`, round `10`
 - Triggering role, report path, and finding or scenario IDs: user clarification after the `CRR-009` fresh review; `CR-006`, `CR-007`, `CR-008`, `APIE2E-BRIEF-003`, `APIE2E-F004`
 - Relevant solution revision IDs: `SR-003` (revision by `solution_designer` pending)
@@ -316,9 +316,9 @@ None.
 
 ### CRR-011 — SR-005 implementation re-review finds three bounded package/Studio defects
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round `11`
-- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-006`, prior `CR-006`–`CR-008`, new `CR-009`–`CR-011`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-006`, prior `CR-006`–`CR-008`, new `CR-009`–`CR-011`
 - Relevant solution revision IDs: `SR-005`
 - Relevant architecture-review revision IDs: `ARCH-REV-005`
 - Relevant implementation revision IDs: `IR-006`
@@ -344,9 +344,9 @@ None.
 
 ### CRR-012 — IR-007 resolves default-resource editing but exposes an alternate-resource authority gap
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round `12`
-- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-007`; prior `CR-009`–`CR-011`; new `CR-012`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-007`; prior `CR-009`–`CR-011`; new `CR-012`
 - Relevant solution revision IDs: `SR-005`
 - Relevant architecture-review revision IDs: `ARCH-REV-005`
 - Relevant implementation revision IDs: `IR-007`
@@ -372,9 +372,9 @@ None.
 
 ### CRR-013 — IR-008 restores the selected-resource authority; one portable-policy under-match remains
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round `13`
-- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-008`; prior `CR-009`–`CR-012`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-008`; prior `CR-009`–`CR-012`
 - Relevant solution revision IDs: `SR-006`
 - Relevant architecture-review revision IDs: `ARCH-REV-006`
 - Relevant implementation revision IDs: `IR-008`
@@ -402,9 +402,9 @@ None.
 
 ### CRR-014 — IR-009 closes the portable host-alias gap
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round `14`
-- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-009`; `CR-009`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-009`; `CR-009`
 - Relevant solution revision IDs: `SR-006`
 - Relevant architecture-review revision IDs: `ARCH-REV-006`
 - Relevant implementation revision IDs: `IR-009`
@@ -429,9 +429,9 @@ None.
 
 ### CRR-015 — standalone Agent Tools transport exposes an incomplete reviewed route boundary
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`
 - Review entry point and round: `API/E2E Failure-Origin Review`, round `15`
-- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `APIE2E-BRIEF-003`, `APIE2E-F005`, `APIE2E-STANDALONE-MCP-001`; new finding `CR-013`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `APIE2E-BRIEF-003`, `APIE2E-F005`, `APIE2E-STANDALONE-MCP-001`; new finding `CR-013`
 - Relevant solution revision IDs: `SR-006`
 - Relevant architecture-review revision IDs: `ARCH-REV-006`
 - Relevant implementation revision IDs: `IR-001`–`IR-009`
@@ -455,7 +455,7 @@ None.
 
 ### CRR-016 — user clarification restores the native/server tool boundary and narrows CR-013
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`
 - Review entry point and round: `API/E2E Failure-Origin Clarification`, round `16`
 - Triggering role, report path, and finding or scenario IDs: user correction after CRR-015; `API-REV-005`; `CR-013`, `APIE2E-F005`, `APIE2E-STANDALONE-MCP-001`
 - Relevant solution revision IDs: `SR-006`; in-progress unapproved `SR-007` must be reconsidered
@@ -480,9 +480,9 @@ None.
 
 ### CRR-017 — IR-010 mounts the established standalone Agent Tools route
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round `17`
-- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-010`; `CR-013`, `APIE2E-F005`, `APIE2E-STANDALONE-MCP-001`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-010`; `CR-013`, `APIE2E-F005`, `APIE2E-STANDALONE-MCP-001`
 - Relevant solution revision IDs: `SR-009` clarification and `SR-008` bounded correction basis; `SR-007` withdrawn
 - Relevant architecture-review revision IDs: `ARCH-REV-006`; `ARCH-REV-007` withdrawn with no decision
 - Relevant implementation revision IDs: `IR-010`
@@ -506,9 +506,9 @@ None.
 
 ### CRR-018 — real Codex bootstrap escapes the application definition graph
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`
 - Review entry point and round: `API/E2E Failure-Origin Review`, round `18`
-- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `API-REV-006`; `APIE2E-STANDALONE-MCP-002`, `APIE2E-F006`, `APIE2E-CODEX-AUTH-001`; new finding `CR-014`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `API-REV-006`; `APIE2E-STANDALONE-MCP-002`, `APIE2E-F006`, `APIE2E-CODEX-AUTH-001`; new finding `CR-014`
 - Relevant solution revision IDs: `SR-009` and `SR-008`; `SR-007` withdrawn
 - Relevant architecture-review revision IDs: `ARCH-REV-006`; `ARCH-REV-007` withdrawn with no decision
 - Relevant implementation revision IDs: `IR-010` and cumulative `IR-001`–`IR-009`
@@ -533,9 +533,9 @@ None.
 
 ### CRR-019 — IR-011 restores graph-local Codex definition authority
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round `19`
-- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-011`; `CR-014`, `APIE2E-STANDALONE-MCP-002`, `APIE2E-F006`, `APIE2E-CODEX-AUTH-001`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-011`; `CR-014`, `APIE2E-STANDALONE-MCP-002`, `APIE2E-F006`, `APIE2E-CODEX-AUTH-001`
 - Relevant solution revision IDs: `SR-009` and `SR-008`; `SR-007` withdrawn
 - Relevant architecture-review revision IDs: `ARCH-REV-006`; `ARCH-REV-007` withdrawn with no decision
 - Relevant implementation revision IDs: `IR-011`
@@ -560,9 +560,9 @@ None.
 
 ### CRR-020 — default publication execution escapes the application graph
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`
 - Review entry point and round: `API/E2E Failure-Origin Review`, round `20`
-- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `API-REV-007`; `APIE2E-STANDALONE-MCP-003`, `APIE2E-F007`; new finding `CR-015`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `API-REV-007`; `APIE2E-STANDALONE-MCP-003`, `APIE2E-F007`; new finding `CR-015`
 - Relevant solution revision IDs: `SR-009` and `SR-008`; `SR-007` withdrawn
 - Relevant architecture-review revision IDs: `ARCH-REV-006`; `ARCH-REV-007` withdrawn with no decision
 - Relevant implementation revision IDs: cumulative `IR-001`–`IR-011`
@@ -587,9 +587,9 @@ None.
 
 ### CRR-021 — IR-012 fixes publication authority but omits graph-run shutdown
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round `21`
-- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-012`; `CR-015`, new `CR-016`, `APIE2E-F007`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-012`; `CR-015`, new `CR-016`, `APIE2E-F007`
 - Relevant solution revision IDs: `SR-010`; retained `SR-006`
 - Relevant architecture-review revision IDs: `ARCH-REV-008`; retained `ARCH-REV-006`
 - Relevant implementation revision IDs: `IR-012`
@@ -614,9 +614,9 @@ None.
 
 ### CRR-022 — IR-013 completes graph-owned run shutdown
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round `22`
-- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-013`; `CR-016`; retained `APIE2E-STANDALONE-MCP-003` / `APIE2E-F007`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-013`; `CR-016`; retained `APIE2E-STANDALONE-MCP-003` / `APIE2E-F007`
 - Relevant solution revision IDs: `SR-010`; retained `SR-006`
 - Relevant architecture-review revision IDs: `ARCH-REV-008`; retained `ARCH-REV-006`
 - Relevant implementation revision IDs: `IR-013`
@@ -641,9 +641,9 @@ None.
 
 ### CRR-023 — API-REV-008 durable test package passes proportional review
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-test-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-test-review-report.md`
 - Review entry point and round: `Proportional API/E2E Test-Code Review`, first successful test-review round; revision `CRR-023`
-- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `API-REV-008`; resolved `APIE2E-STANDALONE-MCP-003` / `APIE2E-F007`; `CR-015`, `CR-016`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `API-REV-008`; resolved `APIE2E-STANDALONE-MCP-003` / `APIE2E-F007`; `CR-015`, `CR-016`
 - Relevant solution revision IDs: `SR-010`; retained `SR-006`
 - Relevant architecture-review revision IDs: `ARCH-REV-008`; retained `ARCH-REV-006`
 - Relevant implementation revision IDs: `IR-012`, `IR-013`; cumulative prior revisions
@@ -664,9 +664,9 @@ None.
 
 ### CRR-024 — Latest-base event-pipeline lifecycle reconciliation passes source review
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round `24`
-- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`; delivery failure `DR-001`; finding/scenario IDs `N/A`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/implementation-handoff.md`; delivery failure `DR-001`; finding/scenario IDs `N/A`
 - Relevant solution revision IDs: `SR-010`; retained `SR-006`
 - Relevant architecture-review revision IDs: `ARCH-REV-008`; retained `ARCH-REV-006`
 - Relevant implementation revision IDs: `IR-014`; retained `IR-012`, `IR-013`
@@ -690,9 +690,9 @@ None.
 
 ### CRR-025 — Atomic development pack metadata failure classified as implementation Local Fix
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`
 - Review entry point and round: `API/E2E Failure-Origin Review`, round `25`
-- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `API-REV-009`; `APIE2E-PARITY-005` / `APIE2E-F008`; new source finding `CR-017`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `API-REV-009`; `APIE2E-PARITY-005` / `APIE2E-F008`; new source finding `CR-017`
 - Relevant solution revision IDs: `SR-010`; retained `SR-006`
 - Relevant architecture-review revision IDs: `ARCH-REV-008`; retained `ARCH-REV-006`
 - Relevant implementation revision IDs: `IR-014`; original atomic-pack implementation `IR-001`
@@ -716,9 +716,9 @@ None.
 
 ### CRR-026 — Canonical atomic package metadata correction passes source review
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round `26`
-- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-015`; `CR-017`, `APIE2E-PARITY-005`, `APIE2E-F008`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-015`; `CR-017`, `APIE2E-PARITY-005`, `APIE2E-F008`
 - Relevant solution revision IDs: `SR-010`; retained `SR-006`
 - Relevant architecture-review revision IDs: `ARCH-REV-008`; retained `ARCH-REV-006`
 - Relevant implementation revision IDs: `IR-015`; retained `IR-014`, `IR-012`, `IR-013`
@@ -744,9 +744,9 @@ None.
 
 ### CRR-027 — API-REV-010 atomic metadata durable-test delta passes proportional review
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-test-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-test-review-report.md`
 - Review entry point and round: `Proportional API/E2E Test-Code Review`, round `27` overall / second proportional review
-- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `API-REV-010`; resolved `APIE2E-PARITY-005` / `APIE2E-F008`; durable `APIE2E-PACK-002`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `API-REV-010`; resolved `APIE2E-PARITY-005` / `APIE2E-F008`; durable `APIE2E-PACK-002`
 - Relevant solution revision IDs: `SR-010`; retained `SR-006`
 - Relevant architecture-review revision IDs: `ARCH-REV-008`; retained `ARCH-REV-006`
 - Relevant implementation revision IDs: `IR-015`; cumulative prior revisions retained
@@ -768,7 +768,7 @@ None. `CRR-023` had no unresolved proportional test-review finding; `CR-017` is 
 
 ### CRR-028 — Core framework vocabulary requires design-led readability correction
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`
 - Review entry point and round: `Implementation Review` (fresh cross-cutting framework naming and responsibility audit), round `28`
 - Triggering role, report path, and finding or scenario IDs: user-requested developer-comprehension review after the final runtime/test passes; `code-review-report.md`; new finding `CR-018`; scenario IDs `N/A`
 - Relevant solution revision IDs: `SR-010`; retained `SR-006`
@@ -794,9 +794,9 @@ None. `CRR-023` had no unresolved proportional test-review finding; `CR-017` is 
 
 ### CRR-029 — Behavior-neutral framework vocabulary correction passes source review
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round `29`
-- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-016`; `CR-018`; scenario IDs `N/A`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-016`; `CR-018`; scenario IDs `N/A`
 - Relevant solution revision IDs: `SR-011`; retained functional basis `SR-010`, `SR-006`
 - Relevant architecture-review revision IDs: `ARCH-REV-009`; retained functional basis `ARCH-REV-008`, `ARCH-REV-006`
 - Relevant implementation revision IDs: `IR-016`; cumulative functional implementation through `IR-015`
@@ -821,9 +821,9 @@ None. `CRR-023` had no unresolved proportional test-review finding; `CR-017` is 
 
 ### CRR-030 — API-REV-011 framework-vocabulary durable-test delta passes proportional review
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-test-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-test-review-report.md`
 - Review entry point and round: `Proportional API/E2E Test-Code Review`, round `30` overall / third proportional review
-- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `API-REV-011`; resolved `CR-018`; scenarios `APIE2E-RENAME-001`, `APIE2E-STANDALONE-011`, `APIE2E-STUDIO-011`, `APIE2E-STUDIO-REMOUNT-011`, `APIE2E-STUDIO-RECOVERY-011`, and `APIE2E-PARITY-011`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `API-REV-011`; resolved `CR-018`; scenarios `APIE2E-RENAME-001`, `APIE2E-STANDALONE-011`, `APIE2E-STUDIO-011`, `APIE2E-STUDIO-REMOUNT-011`, `APIE2E-STUDIO-RECOVERY-011`, and `APIE2E-PARITY-011`
 - Relevant solution revision IDs: `SR-011`; retained functional basis `SR-010`, `SR-006`
 - Relevant architecture-review revision IDs: `ARCH-REV-009`; retained functional basis `ARCH-REV-008`, `ARCH-REV-006`
 - Relevant implementation revision IDs: `IR-016`; cumulative functional implementation through `IR-015`
@@ -844,7 +844,7 @@ None. `CRR-023` and `CRR-027` had no unresolved proportional test-review finding
 
 ### CRR-031 — Remaining accidental application-framework complexity requires design-led simplification
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`
 - Review entry point and round: `Implementation Review` (fresh behavior-neutral architecture simplification audit), round `31`
 - Triggering role, report path, and finding or scenario IDs: user-requested design-principles audit after `CRR-029`, `API-REV-011`, and `CRR-030`; `code-review-report.md`; new findings `CR-019`, `CR-020`, `CR-021`; runtime failure IDs `N/A`
 - Relevant solution revision IDs: `SR-011`; retained functional basis `SR-010`, `SR-006`
@@ -871,9 +871,9 @@ None. `CRR-023` and `CRR-027` had no unresolved proportional test-review finding
 
 ### CRR-032 — IR-017 narrow/acyclic runtime requires one bounded stop-all continuation fix
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round `32`
-- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-017`; new finding `CR-022`; scenario IDs `N/A`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-017`; new finding `CR-022`; scenario IDs `N/A`
 - Relevant solution revision IDs: `SR-013`; retained `SR-011`, `SR-010`, `SR-006`
 - Relevant architecture-review revision IDs: `ARCH-REV-011`; triggering `ARCH-REV-010`; retained `ARCH-REV-009`, `ARCH-REV-008`, `ARCH-REV-006`
 - Relevant implementation revision IDs: `IR-017`; cumulative behavior through `IR-016`
@@ -902,9 +902,9 @@ None. `CRR-023` and `CRR-027` had no unresolved proportional test-review finding
 
 ### CRR-033 — IR-018 stop-all continuation correction passes affected source review
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round `33`
-- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-018`; `CR-022`; scenario IDs `N/A`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-018`; `CR-022`; scenario IDs `N/A`
 - Relevant solution revision IDs: `SR-013`; retained `SR-011`, `SR-010`, `SR-006`
 - Relevant architecture-review revision IDs: `ARCH-REV-011`; retained `ARCH-REV-010`, `ARCH-REV-009`, `ARCH-REV-008`, `ARCH-REV-006`
 - Relevant implementation revision IDs: `IR-018`; underlying architecture implementation `IR-017`
@@ -931,9 +931,9 @@ None. `CRR-023` and `CRR-027` had no unresolved proportional test-review finding
 
 ### CRR-034 — API-REV-012 narrow-runtime durable-test migration passes proportional review
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-test-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-test-review-report.md`
 - Review entry point and round: `Proportional API/E2E Test-Code Review`, round `34` overall / fourth proportional review
-- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `API-REV-012`; execution scenarios `APIE2E-REPO-012`, `APIE2E-WORKER-012`, `APIE2E-STANDALONE-012`, `APIE2E-STUDIO-012`, `APIE2E-ROUTES-012`, `APIE2E-PARITY-012`, and `APIE2E-CLEANUP-012`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `API-REV-012`; execution scenarios `APIE2E-REPO-012`, `APIE2E-WORKER-012`, `APIE2E-STANDALONE-012`, `APIE2E-STUDIO-012`, `APIE2E-ROUTES-012`, `APIE2E-PARITY-012`, and `APIE2E-CLEANUP-012`
 - Relevant solution revision IDs: `SR-013`; retained prior functional basis
 - Relevant architecture-review revision IDs: `ARCH-REV-011`; retained `ARCH-REV-010`
 - Relevant implementation revision IDs: `IR-017`, `IR-018`
@@ -954,9 +954,9 @@ None for proportional test code. `CR-019`–`CR-021` were design-impact findings
 
 ### CRR-035 — IR-019 executable boundary checker requires two bounded correctness fixes
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round `35`
-- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-019`; new findings `CR-023`, `CR-024`; runtime scenario IDs `N/A`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-019`; new findings `CR-023`, `CR-024`; runtime scenario IDs `N/A`
 - Relevant solution revision IDs: `SR-016`; retained `SR-015`, `SR-014`, and production baseline `SR-013`
 - Relevant architecture-review revision IDs: `ARCH-REV-014`; retained `ARCH-REV-013`, `ARCH-REV-012`, and production baseline `ARCH-REV-011`
 - Relevant implementation revision IDs: `IR-019`; retained production implementation `IR-017`, `IR-018`
@@ -982,9 +982,9 @@ None for proportional test code. `CR-019`–`CR-021` were design-impact findings
 
 ### CRR-036 — IR-020 resolves prior gaps but external script targets still bypass policy
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round `36`
-- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-020`; prior `CR-023`, `CR-024`; new `CR-025`; runtime scenario IDs `N/A`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-020`; prior `CR-023`, `CR-024`; new `CR-025`; runtime scenario IDs `N/A`
 - Relevant solution revision IDs: `SR-016`; retained `SR-015`, `SR-014`, and production baseline `SR-013`
 - Relevant architecture-review revision IDs: `ARCH-REV-014`; retained `ARCH-REV-013`, `ARCH-REV-012`, and production baseline `ARCH-REV-011`
 - Relevant implementation revision IDs: `IR-020`; underlying hardening `IR-019`; retained production `IR-017`, `IR-018`
@@ -1011,9 +1011,9 @@ None for proportional test code. `CR-019`–`CR-021` were design-impact findings
 
 ### CRR-037 — IR-021 external-script target correction passes source review
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round `37`
-- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-021`; `CR-025`; scenario IDs `N/A`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-021`; `CR-025`; scenario IDs `N/A`
 - Relevant solution revision IDs: `SR-016`; retained `SR-015`, `SR-014`, and production baseline `SR-013`
 - Relevant architecture-review revision IDs: `ARCH-REV-014`; retained `ARCH-REV-013`, `ARCH-REV-012`, and production baseline `ARCH-REV-011`
 - Relevant implementation revision IDs: `IR-021`; underlying `IR-019`, `IR-020`; retained production `IR-017`, `IR-018`
@@ -1041,9 +1041,9 @@ None for proportional test code. `CR-019`–`CR-021` were design-impact findings
 
 ### CRR-038 — API-REV-013 executable-boundary coverage passes proportional review
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-test-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-test-review-report.md`
 - Review entry point and round: `Proportional API/E2E Test-Code Review`, round `38` overall / fifth proportional review
-- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `API-REV-013`; `AFB-001`–`AFB-005`, `BEH-011`, `REQ-011`, `AC-024`, `UC-028`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `API-REV-013`; `AFB-001`–`AFB-005`, `BEH-011`, `REQ-011`, `AC-024`, `UC-028`
 - Relevant solution revision IDs: `SR-016`; retained production baseline `SR-013`
 - Relevant architecture-review revision IDs: `ARCH-REV-014`; retained production baseline `ARCH-REV-011`
 - Relevant implementation revision IDs: `IR-019`, `IR-020`, `IR-021`; retained production `IR-017`, `IR-018`
@@ -1069,9 +1069,9 @@ None for proportional test code. `CR-019`–`CR-021` were design-impact findings
 
 ### CRR-039 — IR-022 v1.4.50 semantic integration passes complete source review
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round `39`
-- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-022`; `AR-012` / `MP-ARCH-015-001`; runtime scenario IDs `N/A`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-022`; `AR-012` / `MP-ARCH-015-001`; runtime scenario IDs `N/A`
 - Relevant solution revision IDs: `SR-018`; retained `SR-017`, `SR-016`, and `SR-013`
 - Relevant architecture-review revision IDs: `ARCH-REV-016`; retained `ARCH-REV-015`, `ARCH-REV-014`, and `ARCH-REV-011`
 - Relevant implementation revision IDs: `IR-022`; retained production `IR-017`/`IR-018` and hardening `IR-019`–`IR-021`
@@ -1097,9 +1097,9 @@ None for proportional test code. `CR-019`–`CR-021` were design-impact findings
 
 ### CRR-040 — API-REV-014 Studio same-data restart failure is a bounded Brief catch-up defect
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`
 - Review entry point and round: `API/E2E Failure-Origin Review`, round `40`
-- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `API-REV-014`, `APIE2E-STUDIO-RESTART-014`, `APIE2E-F009`, new `CR-026`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `API-REV-014`, `APIE2E-STUDIO-RESTART-014`, `APIE2E-F009`, new `CR-026`
 - Relevant solution revision IDs: `SR-018`; retained `SR-016`, `SR-013`
 - Relevant architecture-review revision IDs: `ARCH-REV-016`; retained `ARCH-REV-014`, `ARCH-REV-011`
 - Relevant implementation revision IDs: `IR-022`; retained `IR-017`–`IR-021`
@@ -1125,9 +1125,9 @@ None for proportional test code. `CR-019`–`CR-021` were design-impact findings
 
 ### CRR-041 — IR-023 resolves Brief startup catch-up continuation in source
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round `41`
-- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-023`, `CR-026`, `APIE2E-STUDIO-RESTART-014`, `APIE2E-F009`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-023`, `CR-026`, `APIE2E-STUDIO-RESTART-014`, `APIE2E-F009`
 - Relevant solution revision IDs: `SR-018`; retained `SR-016`, `SR-013`
 - Relevant architecture-review revision IDs: `ARCH-REV-016`; retained `ARCH-REV-014`, `ARCH-REV-011`
 - Relevant implementation revision IDs: `IR-023`; retained `IR-022`, `IR-017`–`IR-021`
@@ -1153,9 +1153,9 @@ None for proportional test code. `CR-019`–`CR-021` were design-impact findings
 
 ### CRR-042 — API-REV-015 durable recovery and realtime coverage passes proportional review
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-test-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-test-review-report.md`
 - Review entry point and round: `Proportional API/E2E Test-Code Review`, round `42` overall / sixth proportional review
-- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `API-REV-015`, resolved `APIE2E-STUDIO-RESTART-014` / `APIE2E-F009` / `CR-026`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `API-REV-015`, resolved `APIE2E-STUDIO-RESTART-014` / `APIE2E-F009` / `CR-026`
 - Relevant solution revision IDs: `SR-018`; retained architecture baseline `SR-016` / `SR-013`
 - Relevant architecture-review revision IDs: `ARCH-REV-016`; retained baseline `ARCH-REV-014` / `ARCH-REV-011`
 - Relevant implementation revision IDs: `IR-023`; retained current-base integration `IR-022`

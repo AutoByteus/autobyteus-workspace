@@ -24,7 +24,7 @@
 
 Evidence:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/evidence/delivery/dr-009-base-refresh-and-integration.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/done/universal-application-framework-proposal-analysis/evidence/delivery/dr-009-base-refresh-and-integration.log`
 
 ## Semantic Conflict Areas
 

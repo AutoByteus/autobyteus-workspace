@@ -15,6 +15,17 @@ It demonstrates:
 - application-owned runs that keep automatic tool execution enabled for the publishing workflow
 - app-owned schema and generated frontend client artifacts that stay inside the application workspace
 - durable `publish_artifacts` artifact publication and lifecycle projection back into `app.sqlite`
+- restart catch-up that ignores retained platform publications outside Brief's producer/path rules while preserving strict rejection for unsupported live delivery
+
+Artifact recovery is application-owned. On startup, Brief resolves the saved run
+binding and replays only publications whose producer and semantic path are
+eligible for Brief projection. Retained generic platform history that is not
+eligible is left intact and skipped without reading or mutating Brief state, so
+later eligible researcher and writer history can still recover the exact brief
+and reach its projected lifecycle state. Live artifact delivery remains strict:
+an unsupported producer/path combination is rejected rather than silently
+accepted. Unknown bindings, unreadable eligible revisions, transaction failures,
+and notification failures remain startup errors.
 
 Authoring roots:
 
