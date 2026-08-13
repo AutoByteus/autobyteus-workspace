@@ -1,0 +1,9 @@
+{
+  "checkedAt": "2026-08-13T11:12:46.019Z",
+  "title": "API REV 015 Studio restart 1786619122929",
+  "stages": [],
+  "consoleErrors": [],
+  "requestFailures": [],
+  "error": "Error: exact setup identity missing\n    at file:///private/tmp/api-rev015-studio-restart-browser.mjs:7:396",
+  "finishedAt": "2026-08-13T11:12:48.488Z"
+}

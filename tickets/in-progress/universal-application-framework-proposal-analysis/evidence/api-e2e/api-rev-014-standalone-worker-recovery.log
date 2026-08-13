@@ -1,0 +1,11 @@
+data=/tmp/api-rev014-standalone-data-1786615807
+host_pid=54316
+old_worker_pid=57377
+before={"state":"ready","ready":true,"startedAt":"2026-08-13T10:10:44.843Z","lastFailure":null}
+kill_at=2026-08-13T10:11:39Z
+old_worker_gone=true
+worker_before_next_request=none
+host_http=200
+new_worker_pid=63326
+after={"state":"ready","ready":true,"startedAt":"2026-08-13T10:12:02.378Z","lastFailure":null}
+business_path_pass=true

@@ -1,5 +1,12 @@
 # Docs Sync Report
 
+> **DR-009 current authority:** docs sync is blocked because the merge of
+> `origin/personal@54890a07f74e941a7a12b6daaa26364f4c927b72` is paused on three
+> semantic conflicts. The DR-008 integrated-state statements below are retained
+> as the protected pre-refresh snapshot, not as a current handoff. No new
+> long-lived documentation decision will be made before Solution Designer
+> analysis. See `latest-base-integration-conflict-report.md`.
+
 ## Scope
 
 - Ticket: `universal-application-framework-proposal-analysis`
@@ -29,7 +36,7 @@ IR-020 and IR-021 correct checker completeness for direction categories, externa
 | `autobyteus-server-ts/docs/modules/application_backend_api_gateway.md` | Retained; delivery-verified | Gateway depends on narrow application runtime owners and remains consistent with AFB-001/AFB-002. |
 | Prior server/web/devkit/external-authoring docs from DR-002 through DR-005 | No additional change | Dual-host behavior, portable packages, Studio overrides, publication/handoff, deterministic shutdown, and atomic packaging remain accurate. |
 | v1.4.35 base docs | No application-framework conflict | Current-only compaction lineage/provenance, strict v5 native snapshot migration, external-runtime snapshot removal, memory/run-history/work-trace docs, and v1.4.34/v1.4.35 release history are independently complete. |
-| Electron packaging docs | No policy change | DR-008 followed the existing documented personal macOS ARM64 build path and packages the current v1.4.35 server/migration owners. |
+| Electron packaging docs | Prior DR-008 result retained | DR-008 followed the documented personal macOS ARM64 build path, but that v1.4.35 package is no longer a current verification input. |
 
 ## Durable Design / Runtime Knowledge Promoted
 
@@ -67,18 +74,18 @@ IR-020 and IR-021 correct checker completeness for direction categories, externa
 - Retired broad-host and bind-once source paths remain absent; current controller, launcher, runtime, and projection-contract owners remain present.
 - The 29 newly integrated commits carry independently reviewed/released v1.4.34/v1.4.35 memory lineage, natural compaction, external-runtime snapshot removal, strict v5 migration, documentation, and release history; the merge retained the application AFB pointer without conflict.
 - The integrated full server build and exact architecture/runtime matrix pass `32` files / `130` tests against the new memory/runtime base.
-- The local Electron build changes no durable packaging policy; `electron-test-build-report.md` records the current v1.4.35 artifact and packaged migration owners.
+- The prior local Electron build changed no durable packaging policy; `electron-test-build-report.md` preserves its v1.4.35 artifact and packaged migration-owner evidence as a superseded snapshot.
 
 Evidence: `evidence/delivery/dr-008-delivery-audit.log`.
 
 ## Delivery Continuation
 
-- Result: `Pass — updated and audited on the integrated state`
-- Next action: user to test the current v1.4.35 macOS ARM64 Electron package for candidate `9987c2c10fdc74416b55baa8bd123ab31afe3285` and provide explicit approval/completion or a concrete issue.
-- Finalization state: held. No ticket archival, final ticket commit, push, target merge, release, deployment, or cleanup may occur before explicit user verification.
+- Result: `Blocked — DR-009 latest-base merge unresolved; no current integrated state exists for docs sync`
+- Next action: Solution Designer to analyze the v1.4.50-base semantic conflicts and return revised design artifacts or an evidence-backed no-design-change decision with precise resolution guidance.
+- Finalization state: held. No user verification, Electron rebuild, ticket archival, final ticket commit, push, target merge, release, deployment, or cleanup may occur before integration and the required downstream gates complete.
 
 ## Blocked Or Escalated Follow-Up
 
-- Classification: `N/A`
-- Recommended recipient: `N/A`
-- Documentation blocker: `N/A`
+- Classification: `Unclear / Design Impact`
+- Recommended recipient: `solution_designer` — message delivered successfully
+- Documentation blocker: unresolved latest-base merge; long-lived docs cannot be synchronized truthfully before the combined behavior is decided

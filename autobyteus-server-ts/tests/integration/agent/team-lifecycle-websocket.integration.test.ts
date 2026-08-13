@@ -424,17 +424,15 @@ describe("Team lifecycle and nested task-team WebSocket integration", () => {
           delta: "streamed through every boundary",
         }),
       ]);
-      await waitForMessageCount(primary.messages, 7);
+      await waitForMessageCount(primary.messages, 6);
       const live = primary.messages.slice(3);
       expect(live.map((message) => message.type)).toEqual([
         "AGENT_STATUS",
         "TURN_STARTED",
-        "AGENT_STATUS",
         "SEGMENT_CONTENT",
       ]);
       for (const message of live) expectScopedLeafIdentity(message.payload);
       expect(live[0]?.payload.status).toBe("running");
-      expect(live[2]?.payload.status).toBe("running");
 
       primary.socket.send(JSON.stringify({
         type: "INTERRUPT_GENERATION",
@@ -450,8 +448,8 @@ describe("Team lifecycle and nested task-team WebSocket integration", () => {
           MEMBER_RUN_ID,
         );
       });
-      await waitForMessageCount(primary.messages, 8);
-      expect(primary.messages[7]).toEqual({
+      await waitForMessageCount(primary.messages, 7);
+      expect(primary.messages[6]).toEqual({
         type: "AGENT_COMMAND_ACK",
         payload: {
           command_type: "INTERRUPT_GENERATION",

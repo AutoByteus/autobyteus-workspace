@@ -1,0 +1,131 @@
+{
+  "dataRoot": "/tmp/api-rev014-studio-isolated-1786616773",
+  "appProjectionBeforeRestart": {
+    "artifacts": [
+      {
+        "artifact_kind": "researcher",
+        "publication_kind": "research",
+        "revision_id": "5a139c61-1dd7-40dd-b015-870a6f323f6d",
+        "path": "/private/tmp/api-rev014-studio-isolated-1786616773/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md",
+        "producer_member_route_key": "researcher"
+      },
+      {
+        "artifact_kind": "writer",
+        "publication_kind": "final",
+        "revision_id": "9aef3b2b-ece3-42ea-8fc8-c46c22885746",
+        "path": "/private/tmp/api-rev014-studio-isolated-1786616773/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+        "producer_member_route_key": "writer"
+      }
+    ],
+    "revisions": [
+      {
+        "artifact_kind": "researcher",
+        "publication_kind": "research",
+        "revision_id": "5a139c61-1dd7-40dd-b015-870a6f323f6d",
+        "run_id": "brief_studio_researcher_28b4ed53da974f438d902189d7816775",
+        "path": "/private/tmp/api-rev014-studio-isolated-1786616773/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md",
+        "producer_member_route_key": "researcher"
+      },
+      {
+        "artifact_kind": "writer",
+        "publication_kind": "final",
+        "revision_id": "9aef3b2b-ece3-42ea-8fc8-c46c22885746",
+        "run_id": "brief_studio_writer_c1d98f41338548eab0639c64121c9abc",
+        "path": "/private/tmp/api-rev014-studio-isolated-1786616773/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+        "producer_member_route_key": "writer"
+      }
+    ]
+  },
+  "persistedPublishedArtifactProjection": {
+    "researcher": {
+      "summaries": [
+        {
+          "id": "brief_studio_researcher_28b4ed53da974f438d902189d7816775:/private/tmp/api-rev014-studio-isolated-1786616773/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md",
+          "runId": "brief_studio_researcher_28b4ed53da974f438d902189d7816775",
+          "path": "/private/tmp/api-rev014-studio-isolated-1786616773/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md",
+          "type": "file",
+          "status": "available",
+          "description": "Concise research checkpoint for the API REV 014 Studio brief.",
+          "revisionId": "5a139c61-1dd7-40dd-b015-870a6f323f6d",
+          "createdAt": "2026-08-13T10:27:44.427Z",
+          "updatedAt": "2026-08-13T10:27:44.427Z"
+        },
+        {
+          "id": "brief_studio_researcher_28b4ed53da974f438d902189d7816775:/private/tmp/api-rev014-studio-isolated-1786616773/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+          "runId": "brief_studio_researcher_28b4ed53da974f438d902189d7816775",
+          "path": "/private/tmp/api-rev014-studio-isolated-1786616773/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+          "type": "file",
+          "status": "available",
+          "description": "Concise reviewable Brief Studio brief for API REV 014.",
+          "revisionId": "a0cc91e9-498a-4ca3-b466-742c2c65b374",
+          "createdAt": "2026-08-13T10:29:22.339Z",
+          "updatedAt": "2026-08-13T10:29:22.339Z"
+        }
+      ],
+      "revisions": [
+        {
+          "revisionId": "5a139c61-1dd7-40dd-b015-870a6f323f6d",
+          "artifactId": "brief_studio_researcher_28b4ed53da974f438d902189d7816775:/private/tmp/api-rev014-studio-isolated-1786616773/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md",
+          "runId": "brief_studio_researcher_28b4ed53da974f438d902189d7816775",
+          "path": "/private/tmp/api-rev014-studio-isolated-1786616773/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md",
+          "type": "file",
+          "description": "Concise research checkpoint for the API REV 014 Studio brief.",
+          "createdAt": "2026-08-13T10:27:44.427Z",
+          "snapshotRelativePath": "published_artifacts/revisions/5a139c61-1dd7-40dd-b015-870a6f323f6d/research.md",
+          "sourceFileName": "research.md"
+        },
+        {
+          "revisionId": "a0cc91e9-498a-4ca3-b466-742c2c65b374",
+          "artifactId": "brief_studio_researcher_28b4ed53da974f438d902189d7816775:/private/tmp/api-rev014-studio-isolated-1786616773/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+          "runId": "brief_studio_researcher_28b4ed53da974f438d902189d7816775",
+          "path": "/private/tmp/api-rev014-studio-isolated-1786616773/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+          "type": "file",
+          "description": "Concise reviewable Brief Studio brief for API REV 014.",
+          "createdAt": "2026-08-13T10:29:22.339Z",
+          "snapshotRelativePath": "published_artifacts/revisions/a0cc91e9-498a-4ca3-b466-742c2c65b374/final-brief.md",
+          "sourceFileName": "final-brief.md"
+        }
+      ]
+    },
+    "writer": {
+      "summaries": [
+        {
+          "id": "brief_studio_writer_c1d98f41338548eab0639c64121c9abc:/private/tmp/api-rev014-studio-isolated-1786616773/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+          "runId": "brief_studio_writer_c1d98f41338548eab0639c64121c9abc",
+          "path": "/private/tmp/api-rev014-studio-isolated-1786616773/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+          "type": "file",
+          "status": "available",
+          "description": "Concise reviewable writer checkpoint for API REV 014 Studio.",
+          "revisionId": "9aef3b2b-ece3-42ea-8fc8-c46c22885746",
+          "createdAt": "2026-08-13T10:28:52.124Z",
+          "updatedAt": "2026-08-13T10:28:52.124Z"
+        }
+      ],
+      "revisions": [
+        {
+          "revisionId": "9aef3b2b-ece3-42ea-8fc8-c46c22885746",
+          "artifactId": "brief_studio_writer_c1d98f41338548eab0639c64121c9abc:/private/tmp/api-rev014-studio-isolated-1786616773/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+          "runId": "brief_studio_writer_c1d98f41338548eab0639c64121c9abc",
+          "path": "/private/tmp/api-rev014-studio-isolated-1786616773/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+          "type": "file",
+          "description": "Concise reviewable writer checkpoint for API REV 014 Studio.",
+          "createdAt": "2026-08-13T10:28:52.124Z",
+          "snapshotRelativePath": "published_artifacts/revisions/9aef3b2b-ece3-42ea-8fc8-c46c22885746/final-brief.md",
+          "sourceFileName": "final-brief.md"
+        }
+      ]
+    }
+  },
+  "restartFailure": {
+    "checkedAt": "2026-08-13T10:34:53Z",
+    "url": "/rest/applications/bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f/backend/ensure-ready",
+    "status": 500,
+    "body": {
+      "detail": "Unexpected Brief Studio artifact path '/private/tmp/api-rev014-studio-isolated-1786616773/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md' for producer 'researcher'."
+    },
+    "devkitRefresh": "Studio package ready after existing-root refresh",
+    "expected": "200 and ready worker after same-root Studio restart",
+    "observed": "500 artifact path rejected for researcher"
+  },
+  "preliminaryCorrelation": "The app DB correctly projects research to researcher and final to writer, but the researcher run persisted projection also contains a distinct final-brief revision. Startup catch-up enumerates that researcher projection and rejects the writer-only final path before the application worker becomes ready."
+}

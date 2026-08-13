@@ -20,6 +20,8 @@ The latest [design-review-report.md](design-review-report.md) is authoritative. 
 | ARCH-REV-012 | Round 12 / SR-014 evidence-backed hardening audit | SR-014 | `Pass` | `Fail — Design Impact` | AR-010, AR-011 |
 | ARCH-REV-013 | Round 13 / SR-015 bounded ARCH-REV-012 correction | SR-015 | `Fail — Design Impact` | `Fail — Design Impact` | AR-010, AR-011 |
 | ARCH-REV-014 | Round 14 / SR-016 final ARCH-REV-013 correction | SR-016 | `Fail — Design Impact` | `Pass` | AR-010, AR-011 |
+| ARCH-REV-015 | Round 15 / SR-017 required v1.4.50 semantic integration | SR-017 | `Pass` | `Fail — Design Impact` | AR-012 |
+| ARCH-REV-016 | Round 16 / SR-018 bounded AR-012 correction | SR-018 | `Fail — Design Impact` | `Pass` | AR-012 |
 
 ## Revision Entries
 
@@ -363,3 +365,50 @@ None.
 - Material classification changes: `Fail — Design Impact` -> `Pass`; AR-010 resolves and AR-011 remains resolved. The SR-014 Adopt/Defer/Reject decision and SR-013 production architecture remain unchanged.
 - Recommended recipient: `implementation_engineer`
 - Remaining risks or uncertainty: Implementation must preserve the exact five-file, no-production-source scope; use direct SFC extraction and deterministic project/manifest resolution; implement one exact binding/shape evaluator with current-tree and synthetic proof; keep process-scoped Codex positions 0/2 and the two general-process assembly exemptions exact; synchronize docs; and rerun the proportional full passed baseline including `73/73` package parity. Delivery retains tracked-base integration ownership, and `APIE2E-REPO-005` remains separately `Unclear`.
+
+### ARCH-REV-015 — SR-017 production reconciliation is sound but its durable-proof transition is incomplete
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`
+- Review round and trigger: Round 15; `SR-017` Design Impact re-entry after delivery paused the required merge of protected checkpoint `42d43674d8215c3987d8a6e265a2648c754bf6de` with `origin/personal@54890a07f74e941a7a12b6daaa26364f4c927b72` (`v1.4.50`) on three semantic conflicts.
+- Triggering role, report path, and finding IDs: `solution_designer`, based on `delivery_engineer` DR-009; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/latest-base-integration-conflict-report.md`; no prior open architecture finding; new `AR-012`.
+- Relevant solution revision IDs: `SR-017`; `SR-016` remains the passed executable-boundary baseline; `SR-013` remains the passed production architecture baseline.
+- Prior authoritative decision: `ARCH-REV-014` / `SR-016` `Pass`, followed by passed implementation/source/API-E2E through `CRR-038`; delivery integration then exposed required base evolution.
+- Current authoritative decision: `Fail — Design Impact`.
+- What changed in the review result or what baseline was established: Verified the four production integration decisions. Studio preserves its explicit server/lifecycle and gates the base-owned readable-provider migration before builder/listen with resource unwind; publication preserves snapshot/projection commit and awaits `run.publishEvent` without post-commit rollback; launch editing combines sparse inheritance with unavailable effective-model retention/warning/blocking; Codex application/general-process session-manager injection and AFB-004 move cleanly from removed position 7 to current position 5 while application definitions stay at position 2. The exact integration inventory is nevertheless incomplete: two checkpoint-owned durable tests import production seams deleted by v1.4.50, are absent from the 23 common-path list, and are not named for modification. The mandatory focused/full proof therefore cannot run as designed, and the Brief prompt assertion currently targets a retired strategy rather than the current production prompt path.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001–AR-011 | Resolved | Remain resolved in the target architecture | SR-002–SR-017; ARCH-REV-002–ARCH-REV-014 | SR-017 preserves the passed hosts, package/readiness/editing owners, four runtime projections, scoped session/publication identity, worker recovery, run cleanup, prompt authority, and AFB policies. The new finding concerns latest-base proof transition, not those target ownership decisions. |
+| CR-001–CR-021 | Resolved in prior design/source/test rounds | Remain resolved as mandatory baseline | cumulative through CRR-037, API-REV-013, CRR-038; SR-017/AC-025 | The full behavior and exact `73/73` package parity must be re-proved on v1.4.50. |
+| APIE2E-REPO-005 | Unclear / unattributed | Remains separate; no architecture consequence | prior API/E2E and review records | No supported origin connects it to SR-017. |
+
+- New or remaining finding IDs: `AR-012`.
+- Material classification changes: prior `Pass` -> bounded `Fail — Design Impact` for the latest-base durable-test transition. The four production merge decisions themselves pass architecture review.
+- Recommended recipient: `solution_designer`.
+- Remaining risks or uncertainty: Rework must explicitly migrate `brief-package-team-prompt.integration.test.ts` to the current final-prompt path and `agent-tools-mcp-runtime.test.ts` to current runtime tool exposure, preserve their graph-local/session-scope assertions, and complete a bounded checkpoint-added test audit. It must not restore removed strategy/exposure files, add aliases/compatibility paths, or reopen the passed platform architecture. After correction, all common overlaps, complete current tests, real dual-host behavior, `73/73` parity, and Electron packaging remain mandatory on the integrated candidate; `APIE2E-REPO-005` stays separate and `Unclear`.
+
+### ARCH-REV-016 — SR-018 closes the latest-base durable-proof transition
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`
+- Review round and trigger: Round 16; `SR-018` bounded rework after `ARCH-REV-015` returned only `AR-012` against SR-017's v1.4.50 integration inventory and proof mapping.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/solution-revision-record.md`; `AR-012` / `MP-ARCH-015-001`.
+- Relevant solution revision IDs: `SR-018`; `SR-017` retains the four accepted production reconciliation decisions; `SR-016` and `SR-013` retain the passed checker and production architecture baselines.
+- Prior authoritative decision: `ARCH-REV-015` / `SR-017` `Fail — Design Impact`.
+- Current authoritative decision: `Pass`.
+- What changed in the review result or what baseline was established: Verified both checkpoint-only tests are explicit Modify entries. The Brief proof now follows actual package/application definition and member-context construction through `CodexThreadBootstrapper.bootstrapForCreate(...)`, whose current implementation calls `composeCarpenterPrompt(...)`, and asserts the final runtime base instructions plus no process-global definition lookup. The MCP runtime proof now uses `buildRuntimeAgentToolExposure` / `runtimeExposure` while retaining distinct publishers, scope-only revocation, general-session survival, idempotent close, process clear, and closed-runtime rejection. Verified the three common exposure tests already use the current owner and that the complete affected import set contains the same five base-deleted seams. No removed source, alias, wrapper, direct-composer substitute, or new production owner is restored.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001–AR-011 | Resolved | Remain resolved | SR-002–SR-018; ARCH-REV-002–ARCH-REV-015 | SR-018 changes only durable-test transition inventory/proof and preserves every accepted production, package, lifecycle, session, publication, prompt, and checker decision. |
+| AR-012 | Open — Design Impact | Resolved in design | ARCH-REV-015, SR-018, corrected DS-017/SV-020 | Both paths are explicit; their current-owner spines, assertions, and forbidden compatibility shapes are exact; all five affected imports have a current disposition. |
+| CR-001–CR-021 | Resolved in prior design/source/test rounds | Remain resolved as mandatory baseline | CRR-037, API-REV-013, CRR-038; AC-025 | Full dual-host behavior and `73/73` package parity remain mandatory on v1.4.50. |
+| APIE2E-REPO-005 | Unclear / unattributed | Remains separate; no architecture consequence | prior API/E2E and review records | No supported origin connects it to SR-018. |
+
+- New or remaining finding IDs: None.
+- Material classification changes: `Fail — Design Impact` -> `Pass`; AR-012 resolves. The four production decisions accepted in ARCH-REV-015 remain approved without change.
+- Recommended recipient: `implementation_engineer`.
+- Remaining risks or uncertainty: Implementation must resolve the three semantic conflicts and both test transitions exactly, update Codex callers/AFB positions, preserve migration/event/editor semantics, and avoid compatibility restoration. Source/API-E2E/test review must run all common overlaps and the complete current suite, real Studio/standalone journeys, `73/73` parity, and Electron packaging. Independent review found 50 checkpoint-changed test paths rather than the supplement's stated 44-target audit; the six additional web specs import surviving files and add no transition, but remain part of the full gate. `APIE2E-REPO-005` remains separate and `Unclear`.

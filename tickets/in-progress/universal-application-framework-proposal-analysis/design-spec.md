@@ -2,23 +2,18 @@
 
 ## Current-State Read
 
-The Universal Application Dual-Host Foundation, the SR-011 naming correction, and the SR-013 architecture simplification are functionally passed:
+The Universal Application Dual-Host Foundation, SR-011 naming correction, SR-013 architecture simplification, and SR-016 executable boundary are functionally passed:
 
-- architecture approval is recorded through `ARCH-REV-011`;
-- implementation is current through `IR-017` / `IR-018`;
-- source behavior passes at 97 in `CRR-033`;
-- real Studio/standalone publication, recipient-name handoff, worker-exit restart, projection, restart/recovery, remount, cleanup, and exact `73/73` package parity pass at 96.6% in `API-REV-012`;
-- proportional durable-test review passes in `CRR-034`.
+- architecture approval is recorded through `ARCH-REV-014`;
+- cumulative source and durable-test review pass through `CRR-037` and `CRR-038`;
+- real Studio/standalone publication, recipient-name handoff, worker-exit restart, projection, restart/recovery, remount, cleanup, and exact `73/73` package parity pass through `API-REV-013`;
+- delivery protected that v1.4.35 state at `42d43674d8215c3987d8a6e265a2648c754bf6de`.
 
-`CRR-031` and `ARCH-REV-010` are resolved history. The current runtime exposes four projections, uses split package owners, constructs run/publication/session and engine/delivery owners acyclically, restarts a failed worker before artifact invocation, and releases exact run resources while continuing stop-all cleanup.
+The required delivery refresh to `origin/personal@54890a07f74e941a7a12b6daaa26364f4c927b72` (v1.4.50) is paused on three semantic conflicts after 231 upstream commits. Source analysis also finds a non-conflicting semantic break: v1.4.50 removed two `CodexThreadBootstrapper` parameters, while both ticket callers and AFB-004 still pass/check the application/process Agent Tools session manager at obsolete argument 7. JavaScript ignores it and the constructor can select a process default.
 
-The new eight-candidate audit finds no further runtime design defect. It finds one missing enforceable invariant: the current source follows the reviewed dependency directions, but TypeScript resolves representative forbidden imports and the standard suite has no architecture import/call check. Existing docs explain the architecture but do not publish one exact dependency table linked to enforcement.
+SR-017 added DS-017 as `Design Impact — Base Evolution`. SR-018 closes the bounded AR-012 transition-inventory gap without changing that production design: two checkpoint-owned tests must use the current v1.4.50 prompt-bootstrap and runtime-tool-exposure owners, while three other deleted-exposure imports are already correctly reconciled inside the 23 common auto-merged paths. DS-017 preserves the complete passed architecture and combines four current base contracts: mandatory readable-provider migration gating before Studio listen, awaited active-run event publication after durable artifact projection, retention/blocking of unavailable explicit-or-inherited effective models, and the current six-argument Codex bootstrapper with session manager at argument 5. The complete conflict/overlap/inventory/verification proof is in [latest-base-integration-design-analysis.md](latest-base-integration-design-analysis.md).
 
-`ARCH-REV-013` accepts the bounded direction, the complete Vue/project correction, and the five-file inventory. It finds one remaining AFB-004 false-pass: the present parent run-manager properties can construct nested Codex/Claude backend factories without their graph-local bootstrap/session arguments. SR-016 adds only those exact positional obligations and fixtures. It still adds one architecture test and two documentation updates, plus a direct test-only Vue parser declaration and lockfile entry. It does not change production source, a public API, host conformance abstraction, lifecycle model, directory/suffix layout, observability correlation, route, schema, package output, data, or runtime behavior. The complete proof and rejected/deferred alternatives are in [application-framework-hardening-evaluation.md](application-framework-hardening-evaluation.md).
-
-All earlier DS-014/SR-010/SR-011 references to bind-once cycle breakers describe the implemented and passed pre-SR-012 baseline only. DS-015 supersedes those construction mechanics. Their security, publisher identity, scoped revocation, exact cleanup, ensure/restart, and functional behavior remain mandatory; their proxy types/files do not.
-
-DS-016 does not supersede DS-015. It makes selected DS-015/AC-007 dependency directions executable and discoverable while preserving the passed source unchanged.
+This is a bounded semantic integration, not a new platform refactor. All earlier DS-014/SR-010/SR-011 bind-once descriptions remain historical; DS-015 remains the runtime authority; DS-016 remains the executable boundary with its one updated position fact. No broad facade, shared server mode, compatibility overload, new lifecycle, package/schema change, or process-global application fallback is introduced.
 
 ## Intended Change
 
@@ -35,7 +30,7 @@ The first slice keeps manifest v4 and the current package layout unchanged. Host
 
 The application package is assembled once and is a read-only runtime input in both hosts. Studio import/selection and standalone configured selection consume the same package bytes; every mutable database, log, migration-ledger, runtime-status, and orchestration write goes under the host's configured application-data root.
 
-The final hardening layer is development-time only: standard tests parse/resolve critical production/application imports and scoped-global call sites, reject forbidden directions, and point contributors to the exact documented correction. It does not execute inside either host.
+The executable hardening layer is development-time only: standard tests parse/resolve critical production/application imports and scoped-global call sites, reject forbidden directions, and point contributors to the exact documented correction. DS-017 updates its Codex session-manager position fact from 7 to 5 while reconciling v1.4.50 production behavior at the existing owners.
 
 
 A standalone-capable application also owns its portable launch baseline. Its source-only devkit config declares `standalone.enabled: true`; each required slot has a bundled manifest default and every effective leaf resolves package-owned `runtimeKind` plus `llmModelIdentifier`. Studio may store an override overlay under its data root, but it never mutates the package. A fresh standalone data root contains no override row and normally runs directly from package defaults.
@@ -144,6 +139,17 @@ The same design is exposed as a native application-folder workflow:
 | `AR-011` / `MP-ARCH-012-002` | DS-016 SFC extraction, seven project profiles, manifest/unresolved rules, parser dependency/file inventory, SFC/cross-project fixtures, hardening supplement, SV-019 | Governs all eleven Vue SFCs and every server/web/Brief/Socratic/template source with deterministic parsing and ownership. Adds one test-only direct dev dependency and lockfile entry; no generated `.nuxt` or runtime dependency. |
 | `AR-010` remaining in `ARCH-REV-013` | DS-016 nested-parent audit plus Codex/Claude backend-factory rows/fixtures, hardening supplement, SV-019/SV-C60 | Requires the exact graph-local provider bootstrap/session objects inside the present parent factory properties; preserves deliberately process-scoped Codex manager/cleanup and adds no recursive constructor rule. |
 
+### Latest-Base v1.4.50 Integration Resolution Map
+
+| Base Change / Conflict | Resolution Location | Scope Effect |
+| --- | --- | --- |
+| Mandatory readable-provider migration gate versus explicit Studio builder/lifecycle | DS-017 startup spine; process-resource failure/unwind rules; SV-020 | Run/check the base-owned migration after Prisma/vault and before `buildStudioServer`/listen; retain standalone's generalized required-migration gate and all explicit assembly |
+| Awaited `run.publishEvent` versus application-scoped publication durability | DS-017 publication spine; DS-004/DS-015 preservation; SV-020 | Retain exact application dependencies and snapshot/projection atomicity; await the current run pipeline after commit and never delete committed state on later failure |
+| Unavailable-selector retention versus sparse inherited editing | DS-017 editor spine; DS-012 preservation; SV-020 | Compute availability from explicit-or-inherited effective model, retain/warn/block, and preserve package baseline/override/reset authority |
+| Six-argument Codex bootstrapper versus obsolete application/process argument 7 | DS-017 construction table; corrected DS-016 AFB-004 row; SV-020 | Move the session manager to current argument 5 in both callers/checker; retain application definition service argument 2; no compatibility overload |
+| Twenty-three auto-merged common paths | DS-017 overlap disposition and verification matrix | Preserve application-scoped identity and adopt current base lifecycle/prompt/session behavior through focused plus full dual-host proof, not textual merge confidence |
+| `AR-012` / checkpoint tests importing v1.4.50-removed seams | DS-017 exact durable-test inventory; checkpoint transition audit; SV-020/SV-C67–SV-C68 | Move Brief prompt proof through current `CodexThreadBootstrapper -> composeCarpenterPrompt` and MCP runtime proof through `RuntimeAgentToolExposure`; restore no deleted module or compatibility wrapper |
+
 ### Discussion-Stage Self-Validation Resolution Map
 
 The use-case, canonical-principles, refreshed-base, and downstream consistency audit is retained in [design-self-validation.md](design-self-validation.md). It produced nineteen bounded corrections across discussion and downstream rework; SV-019 now includes the ARCH-REV-012/013 checker-completeness correction:
@@ -169,6 +175,7 @@ The use-case, canonical-principles, refreshed-base, and downstream consistency a
 | SV-017 | Initial narrow outward runtime contracts, explicit package refresh ownership, and proposed acyclic run/publication/engine/event construction | Resolves CR-019/CR-020; superseded for the two CR-021 lifecycle edges by SV-018 after ARCH-REV-010 |
 | SV-018 | Ensure-before-artifact delivery and exact acyclic run-resource cleanup | Resolves AR-008/AR-009 through a closed artifact-delivery queue/service and early session-scope/resource/registry chain while retaining every passed behavior and avoiding generic deferred machinery |
 | SV-019 | Eight-candidate proof and executable boundary policy, corrected through ARCH-REV-013 | Adopts only one architecture test plus matching existing-doc table; adds complete application-construction obligations and heterogeneous TS/JS/Vue project resolution; defers/rejects unsupported abstractions and preserves all passed production behavior |
+| SV-020 | Required v1.4.50 semantic integration | Combines the provider migration gate, awaited run event, unavailable effective model, and current Codex constructor with the passed dual-host/application-scoped architecture; proves all common overlaps without broadening |
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
@@ -185,6 +192,7 @@ The use-case, canonical-principles, refreshed-base, and downstream consistency a
 | BEH-009 | Developer / Contract | REQ-009 / AC-018 | Contributor follows either server construction into the application runtime, Agent Tools session handling, run lifecycle, and cleanup | IR-016; CRR-029; API-REV-011; CRR-030 | Preserve the implemented responsibility vocabulary while removing the two superseded bind-once implementations | Cross-cutting vocabulary over DS-001–DS-005, DS-014, and DS-015 |
 | BEH-010 | Developer / Contract | REQ-010 / AC-019–AC-023 | Contributor changes a route, package command/refresh flow, run cleanup/publication, event/artifact delivery, or engine lifecycle | CRR-031; ARCH-REV-010; MP-ARCH-010-001/002 | Follow the four projections, package owners, exact session-scope/resource/registry chain, and ensure-before-invoke delivery without private access, callbacks, globals, or deferred binding | DS-015 plus unchanged DS-001–DS-014 product spines |
 | BEH-011 | Developer / Contract | REQ-011 / AC-024 | Contributor changes an application transport, package/bundle dependency, runtime/scoped publication dependency, or maintained application import | Current import/call scan; TypeScript resolution probe; hardening evaluation | Fail a forbidden dependency in the standard suite with exact AFB diagnostic; keep every permitted direction and production behavior unchanged | DS-016 development-time check over DS-001–DS-015 ownership boundaries |
+| BEH-012 | Operational / System / Developer | REQ-012 / AC-025 | Operator starts upgraded host, agent publishes, Studio edits an unavailable effective model, or contributor integrates current Codex constructor | Paused v1.4.50 merge; three stage conflicts; constructor-source/AFB probe; latest-base supplement | Combine both approved behavior sets at their existing owners; reject whole-side selection, obsolete arguments, global fallback, and new subsystem | DS-017 over DS-005 startup, DS-004 publication, DS-012 editing, DS-014/DS-016 scoped construction |
 
 The behavior map defines the real behavior this design serves. The spines below show how the target structure carries it.
 
@@ -221,7 +229,11 @@ The authoritative reachable use-case inventory is in [requirements.md](requireme
 | UC-025 | DS-015 narrow route/package/run/engine ownership | DS-001–DS-014 unchanged request/return/recovery/shutdown behavior | Complete and passed through API-REV-012 |
 | UC-026 | DS-014 publication, then DS-015 artifact delivery | Worker-exit -> queue lease -> launcher ensure/restart -> controller artifact invoke -> projection | Complete and passed through API-REV-012 |
 | UC-027 | DS-015 exact active-run removal | Inactive discovery/replacement/terminate/stop-all -> resource release -> result | Complete and passed through CRR-033/API-REV-012 |
-| UC-028 | DS-016 contributor boundary check | Policy diagnostic -> replace private/global dependency with contract/SDK/injected dependency -> re-run | Complete at design level; architecture-test implementation required |
+| UC-028 | DS-016 contributor boundary check | Policy diagnostic -> replace private/global dependency with contract/SDK/injected dependency -> re-run | Complete and passed through CRR-037/API-REV-013 |
+| UC-029 | DS-017 Studio migration gate, then DS-005 | Required migration result -> continue or pre-builder/listen failure -> resource unwind | Complete at design level; latest-base implementation/test required |
+| UC-030 | DS-017 publication, then DS-004/DS-015 delivery | Commit -> awaited run pipeline -> queue/ensure/invoke; post-commit failure preserves durable state | Complete at design level; latest-base implementation/test required |
+| UC-031 | DS-017 effective model editing, retaining DS-012 | Explicit-or-inherited selector -> availability warning/block -> valid choice or Reset | Complete at design level; latest-base implementation/test required |
+| UC-032 | DS-017 constructor reconciliation plus corrected DS-016 | Current argument 2/5 injection -> application/process session identity -> AFB proof | Complete at design level; latest-base implementation/test required |
 
 ## Relevant Supplemental Task Artifacts
 
@@ -229,20 +241,21 @@ The authoritative reachable use-case inventory is in [requirements.md](requireme
 | --- | --- | --- | --- | --- |
 | [sources/autobyteus-vertical-application-developer-experience-proposal.md](sources/autobyteus-vertical-application-developer-experience-proposal.md) | Original universal-application vision | REQ-001–REQ-010 / AC-001–AC-023 | Product-direction input; illustrative contracts are not copied directly | Input source; approval `N/A` |
 | [proposal-critical-analysis.md](proposal-critical-analysis.md) | Repository-backed readiness assessment and bounded recommendation | REQ-001–REQ-010 / AC-001–AC-023 | Supplies the accepted/revised/deferred decisions that constrain this design | Approved/refined through 2026-07-30; implemented foundation baseline |
-| [design-self-validation.md](design-self-validation.md) | Use-case simulation, reachability classification, spine coverage, canonical design-principles audit, and latest-base reconciliation | REQ-001–REQ-011 / AC-001–AC-024 | Validates this design and records SV-001–SV-019 corrections through downstream rework and the hardening audit | Complete validation evidence; approval `N/A` |
+| [design-self-validation.md](design-self-validation.md) | Use-case simulation, reachability classification, spine coverage, canonical design-principles audit, and latest-base reconciliation | REQ-001–REQ-012 / AC-001–AC-025 | Validates this design and records SV-001–SV-020 through downstream rework, hardening, and v1.4.50 integration | Complete validation evidence; approval `N/A` |
 | [application-framework-architecture-simplification.md](application-framework-architecture-simplification.md) | Exact CRR-031/ARCH-REV-010 contracts, owners, spines, lifecycle, file inventory, sequence, and evidence | REQ-010 / AC-019–AC-023 | Defines the implemented behavior-neutral SR-013 architecture | Approved in ARCH-REV-011; implemented and passed through CRR-033/API-REV-012/CRR-034 |
-| [application-framework-hardening-evaluation.md](application-framework-hardening-evaluation.md) | Eight-candidate source/reachability/proportionality proof and exact AFB dependency policy | REQ-011 / AC-024 | Defines DS-016 and records why the other six candidates do not justify source architecture change | Revised in SR-016 for ARCH-REV-013; adopted test/docs/dev-dependency scope requires architecture approval; evidence classifications `N/A` |
+| [application-framework-hardening-evaluation.md](application-framework-hardening-evaluation.md) | Eight-candidate source/reachability/proportionality proof and exact AFB dependency policy | REQ-011 / AC-024 | Defines DS-016 and records why the other six candidates do not justify source architecture change | Architecture-approved and passed through ARCH-REV-014/CRR-037/API-REV-013/CRR-038; DS-017 updates one position fact |
+| [latest-base-integration-design-analysis.md](latest-base-integration-design-analysis.md) | v1.4.50 conflict, overlap, checkpoint-test transition, inventory, verification, and principles analysis | REQ-012 / AC-025 | Defines DS-017 combined behavior and current-owner proof without reopening the platform architecture | Corrected through SR-018; requires architecture approval |
 
 ## Task Design Health Assessment (Mandatory)
 
-- Change posture: `Passed dual-host foundation plus bounded behavior-neutral architecture hardening`
-- Current design issue found: `Yes, but not a production-runtime design defect`
-- Root cause classification: `Missing Enforceable Invariant` plus `Documentation Discoverability`
-- Refactor needed now: `No production refactor; add one architecture test, one direct test-only SFC parser declaration/lock entry, and update two existing architecture documents`
-- Evidence: CRR-033, API-REV-012, and CRR-034 prove the SR-013 runtime, package, run/publication/session, engine/event, recovery, shutdown, and dual-host behavior. The current tree obeys those owners, but TypeScript successfully resolves representative forbidden imports and the standard suite has no architecture rule that prevents transport-to-private-runtime, package-to-presentation, application-to-host-internal, or application-scope-to-process-global regressions. Existing module documentation explains the runtime but does not publish the exact permitted and forbidden directions.
-- Design response: retain every current production file and owner; add DS-016 as one source-only architecture test with five closed policy IDs, direct test-only Vue parsing, deterministic project/manifest resolution, and exact graph-sensitive injection obligations, then publish the identical policy/obligation guidance in existing server documentation. The test reports the profile, importer, source location, resolved dependency or constructor, missing property when applicable, policy ID, and corrective contract/SDK/declared-library/injected-dependency direction.
-- Proportionality: candidates for a public facade, shared host test harness, common lifecycle state machine, directory moves, suffix churn, and correlation infrastructure do not cross the current evidence threshold. They are rejected or deferred behind named production evidence gaps rather than used to justify another architecture refactor.
-- Intentional deferrals and residual risk: deliberate external/public API narrowing waits for a supported external consumer or bypass; shared contract-test extraction waits for duplicated same-layer assertions; cross-boundary correlation waits for a demonstrated diagnosis dead-end. Manifest/release vNext, packaged/versioned skill/tool dependencies, marketplace execution, optimized distribution, unrelated singleton cleanup, and `APIE2E-REPO-005` remain out of this bounded hardening.
+- Change posture: `Passed architecture plus bounded v1.4.50 semantic integration`
+- Current design issue found: `Yes — Base Evolution`
+- Root cause classification: `Tracked-Base Contract Change / Semantic Merge`
+- Refactor needed now: `No new subsystem; reconcile five existing production files/call sites, current tests, and one AFB position fact`
+- Evidence: the required base adds a mandatory provider-identity startup gate, awaited run-event publication, unavailable-selector retention, and a shorter Codex constructor. Three conflict paths combine separately approved behavior, while the auto-merged obsolete argument 7 silently discards the intended session manager.
+- Design response: DS-017 keeps explicit builders, four projections, application-scoped authorities, durability, sparse inheritance, and route/package/schema behavior while adopting current base contracts at their existing owners. The detailed resolution and verification delta are in the latest-base supplement.
+- Proportionality: no new framework, facade, server-mode builder, migration owner, event path, UI configuration authority, compatibility overload, or broad refactor. The earlier eight-candidate decisions remain closed.
+- Intentional deferrals and residual risk: all prior public API/shared harness/correlation and marketplace/distribution gaps remain unchanged. Auto-merged common paths are regression scope, not grounds for speculative redesign.
 
 ## Terminology
 
@@ -302,7 +315,7 @@ This design proceeds from the two verified coupling points to the host-neutral s
 - Normal reader/writer behavior and representative evidence: `ApplicationStorageLifecycleService` prepares the two per-app databases; the worker receives only app storage context; orchestration stores own reserved platform state. See application storage/orchestration docs in investigation notes.
 - Required semantics and invariants under direct use: Current stored launch-profile rows are read as sparse host overrides. Valid rows select a resource and overlay its current computed definition baseline. Invalid/unresolvable or topology-stale rows remain stored, are projected with `HOST_OVERRIDE` issues, and block launch; they are neither auto-deleted nor bypassed. No row means the manifest package baseline. Selected baselines/previews are never stored. Explicit Reset deletes the row. Studio canonical application identity and storage root remain unchanged. Standalone uses a separate data root and a stable current-format canonical identity derived from package ID `standalone` plus the configured local application ID. Standalone recovery activates only `persistedKnownApplicationIds ∩ {selection.applicationId}`; dormant state for another previously selected local application is preserved but is never recovered or exposed.
 - Physical-store, privacy/security, disposal/rebuild, and operational constraints: Standalone and Studio installations do not silently share live databases. Agent Tools session IDs/token hashes are ephemeral process memory, revoked/cleared at stop, and never added to these stores. Copy/import of business data is a separate future feature.
-- Decision: `Directly Usable — No Migration`
+- Decision: `Directly Usable — No Ticket-Owned Migration`; required tracked-base migrations still gate host readiness
 - Decision rationale: Current stored fields map directly to the override DTO and existing complete rows remain valid. Package defaults are read from immutable definition files and are never seeded into the database. Rewriting databases would provide no semantic benefit and would add corruption, I/O, recovery, and rollout risk.
 - Acceptance criteria or design constraints supported: AC-006, AC-010, and AC-012.
 
@@ -957,7 +970,7 @@ type ApplicationPublishedArtifactDeliveryCommand = Readonly<{
 }>;
 ```
 
-`ApplicationPublishedArtifactDeliveryQueue` is created early and owns FIFO within one run, independent progress across run lanes, one completion promise per accepted command, lease settlement, `stopAccepting`, and `awaitDrained`. It has no arbitrary topic, subscriber, callback, or handler-binding API. The relay awaits enqueue internally. The active-run event listener still invokes relay fire-and-forget and logs failure; the fallback no-active-run publication path still awaits relay completion. Delivery failure does not roll back the already persisted artifact snapshot/projection.
+`ApplicationPublishedArtifactDeliveryQueue` is created early and owns FIFO within one run, independent progress across run lanes, one completion promise per accepted command, lease settlement, `stopAccepting`, and `awaitDrained`. It has no arbitrary topic, subscriber, callback, or handler-binding API. The relay awaits enqueue internally. DS-017 first awaits the active run event pipeline after durable projection; its application artifact listener may still enqueue delivery without making worker delivery part of the publication transaction. The fallback no-active-run publication path awaits relay completion. Event or delivery failure does not roll back or delete the already persisted artifact snapshot/projection.
 
 `ApplicationPublishedArtifactDeliveryService` is constructed after launcher/controller and consumes the queue:
 
@@ -1082,7 +1095,7 @@ The checker resolves constructor imports to the exact source module/export, scan
 | Session / provider scope | `new AutoByteusAgentRunBackendFactory(...)` | argument 0: `agentDefinitionService` |
 | Session / provider scope | `new CodexAgentRunBackendFactory(...)` | positional argument 1: application `codexThreadBootstrapper`; positional arguments 0 (`threadManager`) and 2 (`threadCleanup`) may remain omitted/`undefined` because they are deliberately process-scoped under the approved one-server-per-process runtime inventory |
 | Session / provider scope | `new ClaudeAgentRunBackendFactory(...)` | positional argument 0: application `claudeSessionManager`; positional argument 1: application `claudeSessionBootstrapper` |
-| Session / provider scope | `new CodexThreadBootstrapper(...)` | argument 2 `agentDefinitionService`; argument 7 application `agentToolsSessionManager` |
+| Session / provider scope | `new CodexThreadBootstrapper(...)` | argument 2 `agentDefinitionService`; current argument 5 application `agentToolsSessionManager` |
 | Session / provider scope | `new ClaudeSessionManager(...)` | argument 2 application `agentToolsSessionManager` |
 | Session / provider scope | `new ClaudeSessionBootstrapper(...)` | argument 2 `agentDefinitionService` |
 | Team / context scope | `new MemberTeamContextBuilder(...)` | argument 0 `agentTeamDefinitionService` |
@@ -1154,6 +1167,76 @@ This is a development/CI spine only. No checker, registry, middleware, or policy
 | Production source change | None | Preserve the already-passed runtime and dual-host implementation exactly |
 
 Required proof is: every synthetic forbidden fixture fails only its intended AFB policy; every allowed fixture passes; all required omission variants fail; all eleven SFCs and the complete governed tree pass; diagnostics are asserted; dependency installation and the focused test work without pre-generated `.nuxt`; the existing affected server matrix and complete API-REV-012 dual-host characterization remain green; package parity remains `73/73`; and `git diff` confirms no production-source, runtime dependency, schema, package output, or generated-artifact change. No compatibility alias or data migration applies.
+### DS-017 — Integrate v1.4.50 without weakening dual-host ownership
+
+DS-017 is the bounded SR-017 base-evolution target, corrected by SR-018 for the exact durable-test transition inventory. It does not supersede DS-001–DS-016; it reconciles current base contracts at four existing owners and moves checkpoint proof to current v1.4.50 production seams without adding a fifth production owner.
+
+#### Startup spine
+
+```text
+Studio start
+  -> schema/protected-path/Prisma/vault initialization
+  -> run pending base-owned app-data migrations
+  -> require readable-provider migration SUCCEEDED or SUCCEEDED_WITH_WARNINGS
+  -> buildStudioServer -> lifecycle.prepareBeforeListen -> listen -> recover
+```
+
+Missing/nonterminal result or runner exception fails before builder/listen and unwinds vault/Prisma. Ordinary non-required Studio migration results keep their current warning policy. Standalone continues to enforce every `requiredOnStartup` migration through its existing generalized gate; no duplicate special service is added.
+
+#### Publication spine
+
+```text
+exact application publisher
+  -> snapshot file
+  -> write projection referencing revision
+     failure: delete new unreferenced snapshot
+  -> await active run.publishEvent(ARTIFACT_PERSISTED)
+     or await permitted fallback emitter/relay
+  -> existing queue-backed application delivery -> ensureReady -> invoke -> UI
+```
+
+The application `activeRunReader`, relay, projection/snapshot stores, publisher contract, session capability, and fallback context remain injected. Post-commit run-pipeline or fallback-relay rejection may surface; active listener/delivery failure retains its logged/contained policy. Neither can delete the snapshot/projection. No `emitLocalEvent` compatibility branch or global application publisher is retained.
+
+#### Effective launch-editor spine
+
+```text
+selected-resource/package baseline + sparse draft
+  -> effective runtime/model
+  -> host catalog availability
+     available: normal readiness
+     unavailable: retain identifier + warning + block
+     missing: required-model diagnostic + block
+  -> explicit valid override or Reset/delete
+```
+
+The editor consumes `inheritedProfile` and never reconstructs server precedence. Availability uses the effective explicit-or-inherited model. Blank override fields remain inheritance; unavailable values are never auto-cleared or silently replaced; `llmConfig` retains its current support/runtime sanitization.
+
+#### Current Codex construction contract
+
+| Constructor input | Position | Application rule |
+| --- | --- | --- |
+| Workspace skill materializer | 0 | approved process default |
+| Workspace resolver | 1 | approved process default |
+| Agent definition service | 2 | exact application service required |
+| Skill service | 3 | approved process default |
+| Client manager | 4 | approved process default |
+| Agent Tools session manager | 5 | exact application manager required |
+
+`create-application-run-services.ts` and `general-process-run-supervisor.ts` use argument 5. Corrected DS-016 AFB-004 requires application arguments 2/5 and exercises omission/null/undefined at current positions. The old eight-argument call shape and position-7 rule are removed cleanly.
+
+#### Exact integration inventory
+
+| Disposition | Paths / owners |
+| --- | --- |
+| Modify — production | the three conflict paths; `create-application-run-services.ts`; `general-process-run-supervisor.ts` |
+| Modify — durable tests | architecture boundary, Studio migration gate, publication service, agent launch editor, `brief-package-team-prompt.integration.test.ts`, and `agent-tools-mcp-runtime.test.ts`; only failing common-overlap owner tests after classification |
+| Retain | explicit server builders, four runtime projections, package owners, DS-012 launch service, DS-014 session route/runtime, DS-015 queues/cleanup, immutable packages, all routes/schemas/capabilities |
+| Add / Remove / Rename / Move | no production module and no compatibility artifact beyond upstream's already-landed removals |
+
+#### Verification
+
+Architecture test with current argument positions, startup gate/unwind matrix, projection/event durability matrix, explicit/inherited unavailable-model matrix, current-path Brief prompt proof, current-shape Agent Tools runtime lifecycle proof, no-removed-test-seam scan, common agent/team/MCP/prompt/tool-readiness suites, server build, full source review, complete real Studio/standalone v1.4.50 Brief journey, worker restart/recovery/remount/cleanup, exact `73/73` parity, and latest-base Electron packaging are mandatory. Textual auto-merge is not evidence.
+
 ## Spine Actors / Main-Line Nodes
 
 - `startApplication` — thin public SDK entry.
@@ -1626,7 +1709,7 @@ The prose rules below remain the design explanation. DS-016 makes the critical s
 | `AgentRunResourceManager.release(runId, expectedRun)` | One exact application agent run | Remove resource ownership, revoke run sessions, detach all recorded observers, and aggregate failures exactly once | Run ID + exact expected object | Repeated release is `already_released`; no callback to run manager |
 | `ActiveAgentRunRegistry.removeIfCurrent(...)` | One exact application agent run | Identity-delete and synchronously release its four resource categories | `{runId, expectedRun, reason}` | Returns removed/not-found/identity-mismatch; stale completion cannot remove replacement |
 | `ApplicationPublishedArtifactDeliveryQueue.accept(command)` | One accepted artifact relay command | Enqueue complete mapped event with per-run FIFO and return its completion | `{runId, applicationId, bindingId, revisionId, event}` | Rejects after intake stop; no topic/subscriber/handler API |
-| `ApplicationPublishedArtifactDeliveryService` | Accepted artifact delivery commands | Consume, call `launcher.ensureReady(applicationId)`, then controller artifact-handler invoke and settle completion | Queue lease + complete command | Drained before engine stop; active listener remains fire-and-forget while fallback awaits |
+| `ApplicationPublishedArtifactDeliveryService` | Accepted artifact delivery commands | Consume, call `launcher.ensureReady(applicationId)`, then controller artifact-handler invoke and settle completion | Queue lease + complete command | Drained before engine stop; publication awaits the run pipeline, downstream listener enqueue remains non-transactional, and fallback awaits |
 | `buildStudioServer()` | Studio server | Full existing platform + app surface | Multi-app catalog | Current product server |
 | `buildStandaloneApplicationServer(config)` | Standalone server | Selected app browser surface plus existing Agent Tools callback only | Package root + local app ID | Calls existing registrar before static wildcard; no Studio/admin registries or external MCP gateway |
 | `validateStandaloneApplicationPackage(input)` | One standalone artifact | Pure package baseline completeness and recursive portable-field validation | Package root + local app ID | Existing bundle/definition parser plus `ApplicationPortableLaunchConfigPolicy`; no host state |
@@ -2327,6 +2410,16 @@ The layering is derived from the spines. It is not a request to move every curre
 5. Update `docs/modules/applications.md` with the exact policy, obligation-family, project/manifest, and remediation tables, then add the short pointer in `docs/ARCHITECTURE.md`. Assert policy IDs and links remain aligned.
 6. Run dependency installation/focused architecture test without generated `.nuxt`, the affected server test matrix, TypeScript checks, and the full API-REV-012 dual-host characterization baseline. Verify exact `73/73` package parity and inspect the change set for zero production-source/runtime-dependency/schema/package-output/generated-output changes.
 
+### Sequence 12 — Resolve the v1.4.50 semantic merge
+
+1. Keep delivery's paused merge and protected checkpoint; resolve no production conflict until corrected SR-018 passes architecture review.
+2. Combine Studio process-resource initialization with the base-owned readable-provider terminal gate before `buildStudioServer`; align startup tests with builder/lifecycle and unwind boundaries.
+3. Combine the exact application publisher dependencies with post-projection awaited `run.publishEvent`; add pre-commit deletion and post-commit preservation proofs.
+4. Combine sparse inherited editor behavior with effective-selector unavailable retention/warning/blocking; align explicit and inherited fixtures.
+5. Move application and general-process Codex session-manager arguments to current position 5; update AFB-004/current-tree/omission fixtures and documentation; retain application definition service position 2.
+6. Move `brief-package-team-prompt.integration.test.ts` through the current `CodexThreadBootstrapper.bootstrapForCreate -> composeCarpenterPrompt` path and `agent-tools-mcp-runtime.test.ts` to `buildRuntimeAgentToolExposure` / `runtimeExposure`; assert no checkpoint durable test retains either deleted seam.
+7. Run focused common-overlap tests, full build/review/API-E2E/Electron verification, then return to delivery for integrated-state finalization. Do not add compatibility or select a complete conflict side.
+
 ## Key Tradeoffs
 
 - **Keep manifest v4 versus design vNext now:** Keeping v4 minimizes variables and proves the host boundary first. It does not solve immutable release/version metadata, which remains a later program.
@@ -2398,6 +2491,8 @@ The layering is derived from the spines. It is not a request to move every curre
 37. **Run cleanup/identity regression:** an active-run registry could detach file/artifact/memory/session cleanup from terminate, inactive discovery/replacement, stop-all, rollback, or stale duplicate removal. Mitigation: `removeIfCurrent` identity results plus `AgentRunResourceManager.release`; delete ownership before attempting all four cleanup categories, never callback into a later manager, and test exact-once cleanup with deliberately distinct general/application scopes.
 38. **Artifact relay restart regression:** a controller-only relay could fail after a worker exits even though the current path restarts it. Mitigation: every accepted artifact command passes through `ApplicationPublishedArtifactDeliveryService -> ApplicationEngineLauncher.ensureReady -> ApplicationEngineController.invokeApplicationArtifactHandler`; lifecycle drains accepted commands before engine stop and SV-C52 proves the worker-exit witness.
 39. **Architecture-check false confidence or false positive:** a substring scan could miss aliased/resolved imports, or an over-broad rule could block legitimate domain dependencies and invite suppression. Mitigation: parse and resolve imports against TypeScript configuration, govern only AFB-001–AFB-005 source families, prove positive and negative synthetic fixtures, report corrective direction, and require architecture review for policy/exception changes.
+40. **Latest-base semantic loss:** whole-side conflict selection can drop either required provider migration/event/model behavior or the reviewed builders/durability/inheritance/scoped owners. Mitigation: implement DS-017 owner-by-owner and execute the exact focused/full matrix.
+41. **Silent Codex session fallback after signature change:** obsolete extra argument 7 is ignored, activating the constructor default. Mitigation: move both callers and AFB to argument 5, retain application argument 2, and require current-tree/omission plus real scoped-session proof.
 
 ## Guidance For Implementation
 
@@ -2442,7 +2537,7 @@ The layering is derived from the spines. It is not a request to move every curre
 - Construct `ApplicationEngineController` and both closed queues before run/publication services, then construct `ApplicationEngineLauncher`, the artifact delivery service, and event dispatcher after orchestration/streaming. Event ingress appends the journal before its application-ID wakeup; artifact relay enqueues the complete artifact command. Both consumers call launcher ensure before controller invoke; only the event dispatcher acknowledges/retries the journal.
 - Keep internal `/mcp/agent-tools/:sessionId` and external `/mcp/gateway` separate. Standalone registers only the former and adds no alias/proxy.
 - Implementation proves exact process-family identity, session-bound publisher dispatch, missing/wrong-scope/revoked-session negatives, the existing route's 401/404 gates, and external-gateway absence. API/E2E inspects descriptor/`tools/list` and proves application-runtime-scoped `publish_artifacts`, recipient-name `send_message_to`, handoff, journal, and application projection in standalone and Studio.
-- Do not change application storage schemas or create a data migration.
+- Do not change application storage schemas or create a ticket-owned data migration. Run and gate every required base-owned migration, including readable-provider identity, before serving either host.
 - Do not add package-vNext, marketplace, or identity/account concerns to this implementation.
 - Preserve exact current Studio behavior through tests and use Brief Studio as the real cross-host proof.
 - Apply the exact framework-name map as a clean internal rename. Do not retain old exports, wrappers, re-export aliases, duplicate files, or deprecated names.
@@ -2451,4 +2546,5 @@ The layering is derived from the spines. It is not a request to move every curre
 - Implement DS-016 only as the exact test, test-dev-dependency/lockfile, and two-doc change. Do not edit production source to satisfy the new check unless a real current violation is independently proven and rerouted as design impact.
 - Resolve each governed importer with its DS-016 server/web/Brief/Socratic/template profile and owning manifest. Use `@vue/compiler-sfc` for SFC script blocks and TypeScript for TS/JS AST; cover static import/export, `ImportTypeNode`, and literal `require`/dynamic import. Fail unresolved governed local/alias paths; do not use broad text matching or scan `dist`/`.build`.
 - Keep AFB-001–AFB-005, the exact catalog-reconciliation seam, the two named general-process assembly call sites, and every AFB-004 injection obligation closed. A new exception or obligation change requires an owner, reachable production rationale, updated design/docs/test, and architecture review.
-- Run the complete existing behavior baseline after the architecture test even though no runtime change is intended; preserve exact Studio/standalone outputs and `73/73` package parity.
+- For v1.4.50, implement DS-017 rather than selecting whole conflict sides. Use current Codex argument 5 in both callers and AFB; await `run.publishEvent` only after durable projection; compute editor availability from the effective inherited-or-explicit model; gate Studio on the base migration before builder/listen.
+- Run the complete existing behavior baseline after the focused latest-base matrix; preserve exact Studio/standalone outputs and `73/73` package parity, then rebuild Electron before delivery resumes.

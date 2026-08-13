@@ -1,0 +1,47 @@
+# DR-009 Latest-Base Refresh And Integration
+started_utc=2026-08-13T08:15:02Z
+prior_candidate=9987c2c10fdc74416b55baa8bd123ab31afe3285
+dr008_checkpoint=42d43674d8215c3987d8a6e265a2648c754bf6de
+prior_integrated_base=8b8ae4c304928b391bdd5466b2262f87d43cf272
+latest_fetched_base=54890a07f74e941a7a12b6daaa26364f4c927b72
+new_base_commits=231
+pre_merge_divergence=101/231
+
+## merge origin/personal into ticket branch
+Auto-merging autobyteus-server-ts/docs/ARCHITECTURE.md
+Auto-merging autobyteus-server-ts/src/agent-definition/providers/file-agent-definition-provider.ts
+Auto-merging autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts
+Auto-merging autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts
+Auto-merging autobyteus-server-ts/src/agent-execution/events/default-agent-run-event-pipeline.ts
+Auto-merging autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts
+Auto-merging autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+Auto-merging autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-persistent-member-registry.ts
+Auto-merging autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-task-agent-instance-registry.ts
+Auto-merging autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts
+Auto-merging autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+Auto-merging autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts
+Auto-merging autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-registry.ts
+Auto-merging autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-service.ts
+Auto-merging autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session.ts
+Auto-merging autobyteus-server-ts/src/api/graphql/types/agent-definition.ts
+Auto-merging autobyteus-server-ts/src/server-runtime.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/src/server-runtime.ts
+Auto-merging autobyteus-server-ts/src/services/published-artifacts/published-artifact-publication-service.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/src/services/published-artifacts/published-artifact-publication-service.ts
+Auto-merging autobyteus-server-ts/src/startup/agent-tool-loader.ts
+Auto-merging autobyteus-server-ts/tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/agent-execution/agent-run-manager.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-agent-tools-mcp-cleanup.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/services/published-artifacts/published-artifact-publication-service.test.ts
+Auto-merging autobyteus-web/components/applications/setup/ApplicationAgentLaunchProfileEditor.vue
+CONFLICT (content): Merge conflict in autobyteus-web/components/applications/setup/ApplicationAgentLaunchProfileEditor.vue
+Auto-merging autobyteus-web/localization/messages/en/applications.ts
+Auto-merging autobyteus-web/localization/messages/zh-CN/applications.ts
+Automatic merge failed; fix conflicts and then commit the result.
+merge_exit=1
+MERGE_RESULT=CONFLICT
+unmerged_paths:
+autobyteus-server-ts/src/server-runtime.ts
+autobyteus-server-ts/src/services/published-artifacts/published-artifact-publication-service.ts
+autobyteus-web/components/applications/setup/ApplicationAgentLaunchProfileEditor.vue
+completed_utc=2026-08-13T08:15:04Z

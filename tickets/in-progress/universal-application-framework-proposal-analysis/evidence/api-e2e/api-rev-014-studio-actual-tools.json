@@ -1,0 +1,128 @@
+{
+  "source": "actual raw traces; bearer/session descriptors excluded",
+  "events": [
+    {
+      "ts": 1786616864.425,
+      "seq": 6,
+      "trace_type": "tool_call",
+      "source_event": "TOOL_EXECUTION_STARTED",
+      "tool_name": "publish_artifacts",
+      "tool_call_id": "exec-2ea6b00e-e0dc-485f-87a2-5b1ef56032b0",
+      "tool_args": {
+        "artifacts": [
+          {
+            "path": "/private/tmp/api-rev014-studio-isolated-1786616773/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md",
+            "description": "Concise research checkpoint for the API REV 014 Studio brief."
+          }
+        ]
+      },
+      "tool_result": null,
+      "tool_error": null,
+      "member_run_id": "brief_studio_researcher_28b4ed53da974f438d902189d7816775"
+    },
+    {
+      "ts": 1786616864.431,
+      "seq": 7,
+      "trace_type": "tool_result",
+      "source_event": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "publish_artifacts",
+      "tool_call_id": "exec-2ea6b00e-e0dc-485f-87a2-5b1ef56032b0",
+      "tool_args": null,
+      "tool_result": {
+        "success": true,
+        "artifacts": [
+          {
+            "id": "brief_studio_researcher_28b4ed53da974f438d902189d7816775:/private/tmp/api-rev014-studio-isolated-1786616773/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md",
+            "runId": "brief_studio_researcher_28b4ed53da974f438d902189d7816775",
+            "path": "/private/tmp/api-rev014-studio-isolated-1786616773/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md",
+            "type": "file",
+            "status": "available",
+            "description": "Concise research checkpoint for the API REV 014 Studio brief.",
+            "revisionId": "5a139c61-1dd7-40dd-b015-870a6f323f6d",
+            "createdAt": "2026-08-13T10:27:44.427Z",
+            "updatedAt": "2026-08-13T10:27:44.427Z"
+          }
+        ]
+      },
+      "tool_error": null,
+      "member_run_id": "brief_studio_researcher_28b4ed53da974f438d902189d7816775"
+    },
+    {
+      "ts": 1786616871.352,
+      "seq": 8,
+      "trace_type": "tool_call",
+      "source_event": "TOOL_EXECUTION_STARTED",
+      "tool_name": "send_message_to",
+      "tool_call_id": "exec-943949c4-e6d9-40bb-a625-18c8d1e67ee7",
+      "tool_args": {
+        "recipient_name": "writer",
+        "message_type": "handoff",
+        "content": "Research is ready at /private/tmp/api-rev014-studio-isolated-1786616773/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md. Key findings: frame API REV 014 as a current-base snapshot; treat the numeric suffix as a run/snapshot identifier; keep the brief centered on user need, core Studio workflow, and review decisions; clearly label assumptions because no canonical API/product source, audience, metrics, or scope were supplied. Risks include ambiguity over what “API REV 014” denotes and missing baseline/owner/timeline. Please review the file, draft the concise reviewable brief, write and publish the writer checkpoint, then report the exact published path.",
+        "reference_files": [
+          "/private/tmp/api-rev014-studio-isolated-1786616773/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md"
+        ]
+      },
+      "tool_result": null,
+      "tool_error": null,
+      "member_run_id": "brief_studio_researcher_28b4ed53da974f438d902189d7816775"
+    },
+    {
+      "ts": 1786616871.784,
+      "seq": 9,
+      "trace_type": "tool_result",
+      "source_event": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "send_message_to",
+      "tool_call_id": "exec-943949c4-e6d9-40bb-a625-18c8d1e67ee7",
+      "tool_args": null,
+      "tool_result": "Delivered message to writer.",
+      "tool_error": null,
+      "member_run_id": "brief_studio_researcher_28b4ed53da974f438d902189d7816775"
+    },
+    {
+      "ts": 1786616932.123,
+      "seq": 12,
+      "trace_type": "tool_call",
+      "source_event": "TOOL_EXECUTION_STARTED",
+      "tool_name": "publish_artifacts",
+      "tool_call_id": "exec-e32f909c-ad59-45cf-af94-818a3acc0d28",
+      "tool_args": {
+        "artifacts": [
+          {
+            "path": "/private/tmp/api-rev014-studio-isolated-1786616773/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+            "description": "Concise reviewable writer checkpoint for API REV 014 Studio."
+          }
+        ]
+      },
+      "tool_result": null,
+      "tool_error": null,
+      "member_run_id": "brief_studio_writer_c1d98f41338548eab0639c64121c9abc"
+    },
+    {
+      "ts": 1786616932.128,
+      "seq": 13,
+      "trace_type": "tool_result",
+      "source_event": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "publish_artifacts",
+      "tool_call_id": "exec-e32f909c-ad59-45cf-af94-818a3acc0d28",
+      "tool_args": null,
+      "tool_result": {
+        "success": true,
+        "artifacts": [
+          {
+            "id": "brief_studio_writer_c1d98f41338548eab0639c64121c9abc:/private/tmp/api-rev014-studio-isolated-1786616773/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+            "runId": "brief_studio_writer_c1d98f41338548eab0639c64121c9abc",
+            "path": "/private/tmp/api-rev014-studio-isolated-1786616773/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+            "type": "file",
+            "status": "available",
+            "description": "Concise reviewable writer checkpoint for API REV 014 Studio.",
+            "revisionId": "9aef3b2b-ece3-42ea-8fc8-c46c22885746",
+            "createdAt": "2026-08-13T10:28:52.124Z",
+            "updatedAt": "2026-08-13T10:28:52.124Z"
+          }
+        ]
+      },
+      "tool_error": null,
+      "member_run_id": "brief_studio_writer_c1d98f41338548eab0639c64121c9abc"
+    }
+  ]
+}

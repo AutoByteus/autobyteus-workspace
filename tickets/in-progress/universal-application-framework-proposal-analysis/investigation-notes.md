@@ -3,11 +3,11 @@
 ## Investigation Status
 
 - Bootstrap Status: Complete
-- Current Status: The complete dual-host and behavior-neutral SR-013 architecture passes `ARCH-REV-011`, `IR-017` / `IR-018`, source `CRR-033` Pass / 97, `API-REV-012` Pass / 96.6%, and proportional durable-test review `CRR-034` Pass. The eight-candidate audit found no new runtime defect and adopted only one architecture test plus matching existing-doc guidance. `ARCH-REV-013` accepts the SFC/project correction and five-file inventory; SR-016 closes the one remaining AFB-004 false-pass by requiring the graph-local Codex bootstrapper and both Claude session dependencies inside their present parent backend-factory properties. Implementation and delivery remain paused for architecture re-review.
+- Current Status: The dual-host architecture and executable boundary are approved and passed through `ARCH-REV-014`, `CRR-037`, `API-REV-013`, and `CRR-038`. Delivery then paused the required v1.4.50 merge at three semantic conflicts. SR-017 proved a bounded `Design Impact — Base Evolution`; `ARCH-REV-015` accepts all four production reconciliation decisions and returns only `AR-012`, an exact durable-test transition-inventory gap. SR-018 adds the two checkpoint-only test transitions, records the complete removed-source import audit, and requires architecture re-review before implementation resolves the merge.
 - Investigation Goal: Test the supplied universal application framework proposal against current production code and derive a reliable decision and sequence.
 - Scope Classification: `Large`
 - Scope Classification Rationale: The proposal spans application SDK contracts, frontend/backend SDKs, devkit, Studio host, server runtime/orchestration, packaging, persistence, isolation/security, standalone deployment, developer tooling, and a future marketplace.
-- Scope Summary: Preserve every passed dual-host, package-default, route/session, publication/messaging, gateway-separation, runtime identity, lifecycle, storage, recovery/remount, shutdown, and exact `73/73` package-parity behavior. Add no production source refactor. Enforce the existing transport/runtime, package/presentation, application/host-internal, and application-scope/process-global directions—including optional injection omission—in one standard TS/JS/Vue architecture test, declare its SFC parser test-only, and publish the same policy/obligation guidance in existing docs. Defer or reject the other candidate mechanisms unless their named evidence gaps are later satisfied.
+- Scope Summary: Preserve every passed dual-host, package-default, route/session, publication/messaging, gateway-separation, runtime identity, lifecycle, storage, recovery/remount, shutdown, AFB, and exact `73/73` package-parity behavior. Reconcile only the v1.4.50 startup, publication, launch-editor, Codex-construction, focused test, and auto-merged overlap contracts defined by DS-017. Add no new subsystem, compatibility path, schema/package change, or broad refactor.
 - Primary Questions Resolved:
   1. Which proposal claims are already implemented, partial, absent, or inaccurate?
   2. What are the actual application lifecycle and communication spines today?
@@ -29,6 +29,7 @@
   18. How do inactive discovery, replacement, explicit termination, stop-all, observer detach, and session revocation remain exact-once without a registry-to-manager callback?
   19. Which of eight proposed follow-up hardening mechanisms is supported by current source, reachable development paths, measurable benefit, and proportional ownership—and which must be deferred or rejected?
   20. How must the adopted checker catch fallback-by-omission and truthfully parse/resolve the server, eleven Vue SFCs, Brief/Socratic sources, and devkit templates without relying on transitive/generated tooling or another project's manifest?
+  21. How must the passed architecture combine v1.4.50 provider migration, run-event, unavailable-model, and Codex-constructor behavior without losing explicit dual-host assembly, durability, sparse inheritance, or application-scoped session identity?
 
 ## Request Context
 
@@ -43,7 +44,7 @@ The user asked to analyse `/Users/normy/Downloads/autobyteus-vertical-applicatio
 - Current Branch: `codex/universal-application-framework-proposal-analysis`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis`
 - Bootstrap Base Branch: `origin/personal`
-- Remote Refresh Result: Task branch was created from `origin/personal` at `d6983612c5a77fb94d9266df85a9d03fe2d1c68b` on 2026-07-26 and refreshed repeatedly during implementation/delivery. At SR-014 investigation start, HEAD `f25a9646e` reported `0 83` against `origin/personal`, so the design began from the current tracked remote state. During artifact completion, `origin/personal` advanced by five commits to `44d0e3de0`; post-commit comparison reports `5 84`. The only changed path inside an AFB-governed family is `autobyteus-server-ts/src/api/graphql/types/llm-provider.ts`, whose new imports remain within LLM-management/domain contracts and do not touch application-runtime private owners. Other remote changes are media/model metadata, release files, and an unrelated completed ticket. Delivery-owned reports/evidence and devkit outputs remain dirty/untracked, so solution design did not merge or alter them. Delivery owns the final post-hardening refresh/integration.
+- Remote Refresh Result: The branch was repeatedly refreshed through delivery. DR-008 integrated v1.4.35. On 2026-08-13 delivery protected checkpoint `42d43674d8215c3987d8a6e265a2648c754bf6de`, fetched `origin/personal@54890a07f74e941a7a12b6daaa26364f4c927b72` (v1.4.50), and paused the merge on three semantic conflicts after 231 upstream commits. Solution design analyzed stages and auto-merged overlaps without staging production source; delivery remains merge owner.
 - Task Branch: `codex/universal-application-framework-proposal-analysis`
 - Expected Base Branch: `origin/personal`
 - Expected Finalization Target: `personal`
@@ -57,9 +58,10 @@ The user asked to analyse `/Users/normy/Downloads/autobyteus-vertical-applicatio
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/sources/autobyteus-vertical-application-developer-experience-proposal.md` | Stable snapshot of user-supplied proposal | Proposed product, package, host, SDK, composition, security, and marketplace claims | All | REQ-001–REQ-010 / AC-001–AC-023 | Retained input | Source input; approval `N/A`; not accepted as implementation basis | Keep with cumulative package |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/proposal-critical-analysis.md` | Detailed claim/evidence/readiness matrix and critique | Executive verdict, current spines, risks, corrected language, MVP scope/exit criteria, staged roadmap, accept/revise/defer/reject decisions | Requirements; design spec | REQ-001–REQ-010 / AC-001–AC-023 | Complete foundation baseline | Approved/refined through 2026-07-30; implemented dual-host foundation | Keep aligned with dual-host design |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-self-validation.md` | Discussion-stage architecture validation | Reachable case matrix, spine sufficiency, principles audit, SV-001–SV-019 corrections including ARCH-REV-012/013, and residual risks | Requirements; investigation notes; design spec | REQ-001–REQ-011 / AC-001–AC-024 | Complete through corrected SV-019 / SR-016 | Validation evidence; approval `N/A`; no new requirements authority | Keep aligned and include in cumulative handoff |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-self-validation.md` | Discussion-stage architecture validation | Reachable case matrix, spine sufficiency, principles audit, SV-001–SV-020 corrections including latest-base reconciliation, and residual risks | Requirements; investigation notes; design spec | REQ-001–REQ-012 / AC-001–AC-025 | Complete through SV-020 / SR-018 | Validation evidence; approval `N/A`; no new requirements authority | Keep aligned and include in cumulative handoff |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/application-framework-architecture-simplification.md` | Exact CRR-031/ARCH-REV-010 architecture supplement | Fixed behavior, current/target spines, four projections, package refresh ownership, artifact delivery, run cleanup, construction, file/remove/sequence/validation maps | Requirements; investigation notes; design spec | REQ-010 / AC-019–AC-023 | Architecture-approved and implemented | Approved in ARCH-REV-011; passed through CRR-033/API-REV-012/CRR-034 | Keep as current architecture context |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/application-framework-hardening-evaluation.md` | Eight-candidate architecture-hardening proof matrix | Current source/probe evidence, reachability, exact AFB-001–AFB-005 policy, AFB-004 injection obligations, TS/JS/Vue project/manifest resolution, inventory, and named deferral/rejection grounds | Requirements; investigation notes; design spec | REQ-011 / AC-024 | Revised in SR-016 for ARCH-REV-013 | Evidence classifications `N/A`; adopted test/dev-dependency/docs behavior requires architecture approval | Keep with cumulative package through the bounded review/implementation loop |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/application-framework-hardening-evaluation.md` | Eight-candidate architecture-hardening proof matrix | Current source/probe evidence, reachability, exact AFB-001–AFB-005 policy, AFB-004 injection obligations, TS/JS/Vue project/manifest resolution, inventory, and named deferral/rejection grounds | Requirements; investigation notes; design spec | REQ-011 / AC-024 | Architecture-approved/implemented | Passed through ARCH-REV-014/CRR-037/API-REV-013/CRR-038; SR-017 updates only current Codex position fact | Keep with cumulative package |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/latest-base-integration-design-analysis.md` | v1.4.50 semantic integration analysis | Conflict/overlap evidence, checkpoint durable-test transition audit, combined behavior, exact inventory, design-principles proof, and verification delta | Requirements; investigation notes; design spec | REQ-012 / AC-025 | Corrected in SR-018 after ARCH-REV-015 | Intended behavior requires architecture approval | Route with cumulative package before merge resolution |
 
 ## Source Log
 
@@ -562,9 +564,9 @@ This subsection records the repository state when the proposal was first assesse
 - Deferred: Application-owned MCP resource declaration/provisioning/scoping, optional standalone override CLI/config adapter, future `.abapp`, packaged/versioned skill/tool dependency policy, optimized host distribution, and broader deployment/security programs.
 - Implementation detail requiring care, not product ambiguity: runtime-specific credential checks must use current provider/runtime capability owners behind a narrow host-validation adapter; do not infer secrets from package fields.
 
-## Notes For Design-Impact Reroute
+## Prior SR-016 Design-Impact Reroute (Historical)
 
-SR-016 is the bounded ARCH-REV-013 completion over a fully passed runtime baseline:
+SR-016 was the bounded ARCH-REV-013 completion over a fully passed runtime baseline:
 
 - use [application-framework-hardening-evaluation.md](application-framework-hardening-evaluation.md) and corrected DS-016 as the exact target;
 - add one architecture test; modify server `package.json`, `pnpm-lock.yaml`, and two existing docs; do not change production source;
@@ -577,3 +579,71 @@ SR-016 is the bounded ARCH-REV-013 completion over a fully passed runtime baseli
 - cover every AFB policy with current-tree, TS/JS/Vue/cross-project positive and negative fixtures using the same machinery;
 - do not add a facade, dependency container, service locator, event bus, shared host harness, generic lifecycle, public export map, generated-doc system, compatibility path, or migration;
 - preserve other roles' dirty reports/evidence and devkit output. Delivery owns the later base refresh/integration.
+
+## Latest-Base v1.4.50 Integration Investigation
+
+### Trigger And Repository State
+
+Delivery protected the fully passed v1.4.35 state at `42d43674d8215c3987d8a6e265a2648c754bf6de`, fetched `origin/personal@54890a07f74e941a7a12b6daaa26364f4c927b72`, and paused the merge on three content conflicts. The base advanced 231 commits and spans releases v1.4.36 through v1.4.50. The unresolved main worktree is intentional; solution design did not stage or resolve production source.
+
+The three conflicts are:
+
+- `autobyteus-server-ts/src/server-runtime.ts`;
+- `autobyteus-server-ts/src/services/published-artifacts/published-artifact-publication-service.ts`;
+- `autobyteus-web/components/applications/setup/ApplicationAgentLaunchProfileEditor.vue`.
+
+Twenty-six paths changed on both sides of the merge base, including the three conflicts. The other twenty-three cover definitions, run/team lifecycle, Agent Tools sessions, prompt context, tool loading, GraphQL access, durable tests, architecture docs, and localization.
+
+### Source-Grounded Findings
+
+1. **Studio startup gate:** v1.4.50's `CUSTOM_PROVIDER_READABLE_ID_APP_DATA_MIGRATION_ID` is `requiredOnStartup`. Upstream Studio blocks unless the returned status is `SUCCEEDED` or `SUCCEEDED_WITH_WARNINGS`. The ticket side has the reviewed `buildStudioServer`/lifecycle/resource-unwind architecture but warns and continues on every app-data migration result. The valid combination runs and checks the base migration inside `initializeStudioProcessResources()` before server construction/listen and retains the ticket unwind path. Standalone already gates every `requiredOnStartup` migration and needs no special duplicate branch.
+2. **Artifact event authority:** v1.4.50 changes active-run artifact notification from `emitLocalEvent()` to awaited `run.publishEvent()`, after projection commit. The ticket side supplies the correct application-scoped active-run reader, relay, projection/snapshot stores, publisher interface, and fallback context. The valid combination retains those dependencies, limits snapshot deletion to pre-projection failure, and awaits the current run-event pipeline after durable commit.
+3. **Unavailable effective models:** v1.4.50 retains an unavailable saved selector, renders a warning, and blocks readiness. The ticket side supplies the authoritative inherited baseline, blank sparse override semantics, effective runtime, no default-runtime fallback, and supported `llmConfig` policy. The valid combination checks availability against the explicit-or-inherited effective model and never auto-clears either source.
+4. **Hidden auto-merge break:** v1.4.50 removes two Codex bootstrap strategy parameters. `CodexThreadBootstrapper` now accepts six arguments, with Agent Tools session manager at position 5. Auto-merged ticket application and general-process callers still pass it at removed position 7, and AFB-004 still enforces position 7. JavaScript ignores extra arguments, so application Codex execution can silently choose `getAgentToolMcpSessionService()` despite clean compilation. Both call sites and AFB must move to position 5; application definition service remains position 2.
+5. **Common-path preservation:** current merged definitions still carry package defaults and injected `AppConfig`/bundle services; GraphQL still uses injected Studio definition services; tool readiness retains the fail-closed required groups; run/team managers retain exact active-registry/resource/session/team-context dependencies; Codex/Claude session state retains scoped execution capabilities. These source observations reduce but do not replace executable proof.
+6. **Package parity:** the v1.4.50 base changes no Brief or Socratic package source relative to v1.4.35. The existing exact `73/73` package contract therefore remains a required regression, not a migration target.
+
+### Isolated Diagnostic Probe
+
+A disposable detached worktree combined the three intended conflict resolutions and changed the Codex session-manager argument from 7 to 5 in both callers and the architecture guard. It did not alter the paused main merge.
+
+- Architecture boundary suite: `14/14` passed.
+- Publication service unit suite: `15/15` passed.
+- Existing agent-editor suite passed after its fixture supplied the now-required inherited profile and mocked effective runtime; this confirms a test alignment need, not sufficient semantic coverage.
+- Studio migration-gate suite reached the real new `buildStudioServer` path and failed because its older mocks stop at the former monolithic boundary. The test must mock/assert the explicit builder/lifecycle path and resource unwind.
+- A clean server no-emit attempt was inconclusive because the disposable worktree lacked built workspace dependency declarations for `autobyteus-ts`; it is not used as pass/fail evidence. The integrated implementation must run the normal repository install/generate/build workflow.
+
+### Decision
+
+The evidence supports `Design Impact — Base Evolution`, bounded to DS-017 / REQ-012 / AC-025. It does not justify a broad runtime refactor. Whole-side conflict selection, compatibility overloads, global application fallback, a second migration owner, UI-side configuration precedence, and old/new publication paths are rejected.
+
+### ARCH-REV-015 durable-test transition audit
+
+`ARCH-REV-015` accepts the Studio migration gate, awaited publication event, unavailable effective-model behavior, and current Codex argument correction. Its single `AR-012` finding is a bounded proof-inventory defect: two checkpoint-owned tests were not common-changed paths and still import production seams deleted in v1.4.50.
+
+The audit compared every checkpoint-added or checkpoint-modified non-deleted durable test target from `8b8ae4c304928b391bdd5466b2262f87d43cf272` to `42d43674d8215c3987d8a6e265a2648c754bf6de`, then resolved every quoted relative source module against required base `54890a07f74e941a7a12b6daaa26364f4c927b72`. It covered **44 test targets, 254 relative imports, and literal `require`/dynamic-import/test-mock module strings**. Exactly five references target source removed by the base:
+
+1. `agent-tools-mcp-routes.integration.test.ts` -> removed `configured-agent-tool-exposure.ts`;
+2. `agent-run-manager.test.ts` -> the same removed exposure owner;
+3. `mixed-agent-member-handle-agent-tools-mcp-cleanup.test.ts` -> the same removed exposure owner;
+4. `brief-package-team-prompt.integration.test.ts` -> removed `TeamMemberCodexThreadBootstrapStrategy`;
+5. `agent-tools-mcp-runtime.test.ts` -> removed `configured-agent-tool-exposure.ts`.
+
+The first three were already among the 23 common-changed paths and the paused merge currently uses the base's `buildRuntimeAgentToolExposure(...)` plus `runtimeExposure` shape. They remain focused regression scope but need no separately planned manual edit unless execution finds a semantic mismatch. The last two are checkpoint-only and therefore require explicit Modify inventory:
+
+- Brief prompt coverage must retain package validation and exact application definition services, build `MemberTeamContext` through the injected team service, call the current `CodexThreadBootstrapper.bootstrapForCreate(...)` with exact application definition/session dependencies, and assert its returned `codexThreadConfig.baseInstructions`. This reaches `composeCarpenterPrompt(...)` through production rather than importing the deleted strategy or duplicating the composer. Exact package `team.md`, researcher instruction, Team Runtime/member identity, and no-global-definition lookup remain the proof.
+- Agent Tools runtime coverage must import `buildRuntimeAgentToolExposure`, supply `runtimeExposure`, and retain distinct general/application publisher identity, scoped revocation, idempotent application/process close, general-session survival after application close, process clear, and closed-runtime rejection.
+
+No other checkpoint durable-test module reference targets v1.4.50-removed source. Compile/focused/full execution remains mandatory for APIs that changed without file removal; this audit is not a substitute for the verification matrix.
+
+Material commands/evidence used for this correction:
+
+```bash
+git diff --name-status 8b8ae4c304928b391bdd5466b2262f87d43cf272 42d43674d8215c3987d8a6e265a2648c754bf6de -- '*/tests/**' 'applications/**/tests/**'
+git ls-tree -r --name-only <merge-base|checkpoint|required-base>
+git show 54890a07f74e941a7a12b6daaa26364f4c927b72:autobyteus-server-ts/src/agent-execution/shared/runtime-agent-tool-exposure.ts
+git show 54890a07f74e941a7a12b6daaa26364f4c927b72:autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts
+git grep -n 'buildRuntimeAgentToolExposure' 54890a07f74e941a7a12b6daaa26364f4c927b72 -- 'autobyteus-server-ts/tests/**'
+```
+
+The authoritative detailed conflict, overlap, test-transition, inventory, and verification contract is [latest-base-integration-design-analysis.md](latest-base-integration-design-analysis.md). Architecture review must pass corrected SR-018 before implementation resolves the production merge.

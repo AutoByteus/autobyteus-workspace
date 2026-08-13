@@ -2,13 +2,17 @@
 
 ## Status And Purpose
 
-- **Evaluation status:** Complete for `SR-016`; ARCH-REV-013 final nested provider-factory correction incorporated.
-- **Approval applicability:** The evidence and rejected/deferred classifications are `N/A`; the two adopted, behavior-neutral hardening items require architecture approval as part of the revised solution package.
-- **Baseline:** `SR-013` / `ARCH-REV-011`, `IR-017` / `IR-018`, `CRR-033` Pass / 97, `API-REV-012` Pass / 96.6%, and `CRR-034` Pass.
+- **Evaluation status:** Architecture-approved and implemented through `ARCH-REV-014` / `CRR-037` / `API-REV-013` / `CRR-038`; SR-017 updates one base-evolved constructor-position fact.
+- **Approval applicability:** Evidence and rejected/deferred classifications are `N/A`; the adopted hardening passed architecture review in ARCH-REV-014 and is implemented. SR-017 changes only its current Codex position fact and requires review through DS-017.
+- **Baseline:** runtime architecture `SR-013` / `ARCH-REV-011`; executable hardening `SR-016` / `ARCH-REV-014`; cumulative passes `CRR-037`, `API-REV-013`, and `CRR-038` before the v1.4.50 integration.
 - **Scope:** Prove, narrow, defer, or reject eight proposed architecture improvements without changing the already-passed Studio or standalone product behavior.
 - **Governing principles:** production reality, Product-Reachability Gate, authoritative boundaries, spine-span sufficiency, ownership, proportionality, no empty indirection, and clean-cut change without compatibility machinery.
 
 This supplement is linked from [requirements.md](requirements.md), [investigation-notes.md](investigation-notes.md), and [design-spec.md](design-spec.md). It complements rather than replaces those artifacts.
+
+## v1.4.50 Position-Fact Update
+
+The hardening decision and all AFB meanings remain unchanged. Required base v1.4.50 removes two `CodexThreadBootstrapper` strategy parameters, so Agent Tools session manager moves from obsolete argument 7 to current argument 5. AFB-004, current-tree occurrence checks, and omission/null/undefined fixtures must require application arguments 2 (`agentDefinitionService`) and 5 (`agentToolsSessionManager`). Both production callers move to current argument 5 with no compatibility overload. This is governed by DS-017 and [latest-base-integration-design-analysis.md](latest-base-integration-design-analysis.md).
 
 ## Decision Summary
 
@@ -214,7 +218,7 @@ AFB-004 additionally resolves the exact constructors/factory method used by `cre
 | --- | --- |
 | Publication / resource | `AgentRunResourceManager[0]`: `sessionScope`, `runFileChangeService`, `publishedArtifactRelayService`, `memoryRecorder`; `PublishedArtifactPublicationService[0]`: `activeRunReader`, `publishedArtifactRelayService`, `projectionStore`, `snapshotStore`; `PublishedArtifactProjectionService[0]`: `activeRunReader`, `metadataService`, `projectionStore`, `snapshotStore` |
 | Run | `AgentRunManager[0]`: all three backend factories, `activeRunRegistry`, `memoryRecorder`; `AgentRunIdentityAllocator[0]`: definitions, run manager, both metadata services, `memoryDir`; `AgentRunService[1]`: run manager, metadata service, identity allocator |
-| Session / provider | `createApplicationSessionManager[0]`: `scope`, `executionCapabilities.publishedArtifactPublisher`, readiness assertion; AutoByteus factory definition service; Codex bootstrapper arguments 2/7; Claude session manager argument 2; Claude bootstrapper argument 2 |
+| Session / provider | `createApplicationSessionManager[0]`: `scope`, `executionCapabilities.publishedArtifactPublisher`, readiness assertion; AutoByteus factory definition service; Codex bootstrapper arguments 2/5; Claude session manager argument 2; Claude bootstrapper argument 2 |
 | Session / provider — nested backend factories | `CodexAgentRunBackendFactory[1]`: graph-local Codex bootstrapper, with `[0]`/`[2]` deliberately process-scoped; `ClaudeAgentRunBackendFactory[0]`/`[1]`: graph-local session manager/bootstrapper |
 | Team / context | Member context builder argument 0; mixed backend factory `memberTeamContextBuilder`/`createTeamManager`; mixed manager subteam/run/session/context inputs; team run manager factory/communication/file inputs; team history manager input; team run service manager/definition/metadata/identity/history/memory inputs |
 

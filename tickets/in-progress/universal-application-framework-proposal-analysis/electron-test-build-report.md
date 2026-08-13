@@ -1,5 +1,12 @@
 # Electron Test Build Report
 
+> **Superseded for current verification by DR-009.** This report preserves the
+> validated pre-refresh v1.4.35 package. `origin/personal` has advanced to
+> `54890a07f74e941a7a12b6daaa26364f4c927b72` (v1.4.50), and its merge is
+> unresolved. Do not treat the package below as the current integrated build.
+> No replacement Electron build will run until solution analysis and integration
+> complete.
+
 ## Purpose
 
 Produce a fresh local macOS ARM64 Electron package from the current integrated, reviewed Universal Application Dual-Host Foundation candidate so the user can manually verify it before ticket archival and repository finalization.

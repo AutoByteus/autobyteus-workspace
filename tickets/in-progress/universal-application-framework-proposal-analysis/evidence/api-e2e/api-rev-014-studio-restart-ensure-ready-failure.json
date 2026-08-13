@@ -1,0 +1,11 @@
+{
+  "checkedAt": "2026-08-13T10:34:53Z",
+  "url": "/rest/applications/bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f/backend/ensure-ready",
+  "status": 500,
+  "body": {
+    "detail": "Unexpected Brief Studio artifact path '/private/tmp/api-rev014-studio-isolated-1786616773/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md' for producer 'researcher'."
+  },
+  "devkitRefresh": "Studio package ready after existing-root refresh",
+  "expected": "200 and ready worker after same-root Studio restart",
+  "observed": "500 artifact path rejected for researcher"
+}

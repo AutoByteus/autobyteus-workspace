@@ -1,171 +1,136 @@
 # API/E2E Coverage Investigation
 
-- Task: Universal Application Dual-Host Architecture
-- Current API/E2E revision: `API-REV-013`
-- Current reviewed implementation: `IR-021` (cumulative `IR-019`–`IR-021` SR-016 hardening)
-- Source-review gate: `CRR-037` Pass / 98
-- Reviewed HEAD: `53eb73795c616148f01c2f6e0207f6b410410e24`
-- Investigation status: Complete
-- Execution outcome: Pass
-- Final confidence: `98%` (`98.3%` unrounded)
+- Task: Universal Application Dual-Host Architecture — Brief Startup Catch-up Revalidation
+- Current API/E2E revision: `API-REV-015`
+- Reviewed implementation: `IR-023`
+- Source-review gate: `CRR-041` Pass / 98
+- Reviewed HEAD: `05518682df4d34c583877a0b816907458061431a`
+- Investigation status: **Complete**
+- Execution outcome: **Pass**
+- Final confidence: **99%** (`98.7%` unrounded)
 
-## Investigation Meta
+## Revalidation Trigger And Priority
 
-- Trigger: `code_reviewer` requested the reopened proportional API/E2E stage after IR-021 closed `CR-025`.
-- Requirement basis: `BEH-011`, `REQ-011`, `AC-024`, `UC-028`, DS-016, and `application-framework-hardening-evaluation.md`.
-- Preserved runtime basis: `BEH-001`–`BEH-010`, `AC-001`–`AC-023`, and the authoritative `API-REV-012` Pass / 97% baseline.
-- Supplemental artifacts: `application-framework-architecture-simplification.md` and `application-framework-hardening-evaluation.md`.
-- Historical `APIE2E-REPO-005`: remains separate, `Unclear`, unattributed, and unused as Pass evidence.
+`API-REV-014` failed `APIE2E-STUDIO-RESTART-014` / `APIE2E-F009`: a real same-data Studio restart enumerated a researcher-owned generic `final-brief.md` history that is ineligible for Brief projection and failed application worker startup. `IR-023` changes the existing Brief startup reconciliation rule owner so startup skips only ineligible producer/path histories while preserving the strict live-delivery resolver and all generic durable history.
 
-## Current Requirement And Changed Boundary
-
-SR-016 adds a contributor-time architecture gate, not production behavior. The current checker must:
-
-1. parse governed TypeScript, JavaScript, and Vue SFC inputs;
-2. apply exact server, Studio-web, Brief, Socratic, and template project/config/manifest profiles;
-3. enforce `AFB-001`–`AFB-005`, including the closed AFB-004 injection obligations;
-4. treat a resolved Vue external `<script src>` as an SFC-owned dependency edge before reading the target;
-5. reject forbidden AFB-002/005 external targets with the standard SFC-owned diagnostic;
-6. allow local external targets, then resolve their imports from the external file;
-7. preserve the existing dual-host routes, execution, publication, recovery, remount, package bytes, and developer commands.
-
-IR-021 changes only `autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts`. The three executable hardening commits have zero production `src/**` delta. Other integrated-base release/model updates since API-REV-012 are independently present and were covered by the broader build/runtime matrix; they are not attributed to SR-016.
+The required first check was therefore the exact real failure path, not a mock-only or clean-data substitute. Broader validation remained **Required** after that path passed because `AC-025` also requires current-base dual-host publication, recipient-name handoff, projection, remount/restart, route separation, package integrity, and cleanup.
 
 ## Changed Surface And Boundary Classification
 
-| Surface | Classification | Required Evidence |
+| Surface | Classification | Required evidence |
 | --- | --- | --- |
-| Vue external `script src` | Test-owned parser/resolver boundary | Direct allowed and rejected AFB-002/005 fixtures through the real checker |
-| Architecture policy | Repository contributor gate | Complete current-tree `AFB-001`–`AFB-005` execution and exact diagnostics |
-| Project dependency declarations | Test-only development dependency/lock | Frozen/current install validity, build TypeScript, full architecture execution |
-| Runtime/API behavior | Behavior-preservation boundary | Retained 31-file API/runtime matrix on current HEAD |
-| Standalone host | Real browser/process boundary | Start, real Brief team run, publication/handoff/projection, same-data restart |
-| Studio host | Nuxt/GraphQL/iframe/browser boundary | Exact package team/Luna defaults, real run, one-iframe explicit remount |
-| MCP route separation | API/security boundary | Both internal routes 401 unauthenticated; standalone gateway 404; Studio gateway initialize 200 |
-| Package integrity | Read-only dual-host package boundary | Exact 73-path SHA-256 equality before and after both hosts |
-| Cleanup | Process/filesystem boundary | Owned ports/processes clear; no atomic staging/previous residue |
+| Brief startup catch-up | Application backend / persisted-history lifecycle | Direct durable catch-up test plus real mixed eligible/ineligible same-data Studio restart |
+| Live Brief publication | Strict semantic-path boundary | Existing strict resolver/imported-package tests and real dual-host publication |
+| Generic publication history | Platform persistence | Existing post-commit test and proof that ineligible history remains retained across restart |
+| Studio restart/remount | Process, worker, GraphQL, iframe | Graceful same-root restart, `ensure-ready`, restored projection, explicit one-iframe remount |
+| Standalone parity | CLI, worker, browser, persisted state | Real package-owned team run, tools, projection, graceful same-root restart |
+| Agent Tools/gateway | API/security routing | Internal unauthenticated 401; standalone gateway absent; Studio gateway initializes |
+| Package integrity | Generated/authoring bytes | Exact pre/post SHA-256 equality for the retained 73-path set |
+| Cleanup | Processes/data/scratch | Owned ports and temporary roots clear; no atomic-pack residue |
 
 ## Project Execution Discovery
 
-Authoritative execution sources retained and rechecked:
+Authoritative workspace package scripts and existing API-REV-014 evidence remain applicable:
 
-- root `package.json` and pnpm workspace lock;
-- `autobyteus-server-ts/package.json`, Vitest configuration, build scripts, and architecture test;
-- `autobyteus-application-devkit/package.json`;
-- `autobyteus-web/package.json` and `nuxt.config.ts`;
-- `applications/brief-studio/package.json`;
-- `applications/socratic-math-teacher/package.json`;
-- API-REV-012 canonical reports and real-host evidence.
+- Node 22 and pnpm workspace scripts are the supported execution path.
+- The linked local `@autobyteus/application-devkit` must be built before application scripts can consume `dist/cli.js`; the devkit test command performs that build. Published-package users receive built artifacts.
+- Server TypeScript validation uses `tsconfig.build.json --noEmit`; the generic test-inclusive config is not a valid whole-tree substitute.
+- Real browser validation used installed Google Chrome through repository Playwright Core.
+- Studio used isolated data, backend `127.0.0.1:8013`, Nuxt `127.0.0.1:3013`, and real Brief `dev:studio`.
+- Standalone used isolated data and `127.0.0.1:43129`.
+- No secret or bearer value is retained in evidence.
 
-Execution constraints:
+## Persisted Data Decision
 
-- Node 22 and pnpm workspace scripts are authoritative.
-- The linked devkit is built before local authoring commands consume `dist/cli.js`; published-package users receive built package output.
-- System Chrome was available at `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome` and driven with repository Playwright Core.
-- Standalone used port 43127 and a unique `/tmp/api-rev013-standalone-data-*` root.
-- Studio used isolated backend 8011, Nuxt 3011, and a unique `/tmp/api-rev013-studio-data-*` root with explicit data/database/log/memory/workspace variables.
-- No user-owned listener or data root was stopped or reused.
+- Universal application package/data baseline: `Directly Usable — No Migration`.
+- The existing readable-provider migration remains the current-base Studio startup gate.
+- `IR-023` adds no schema or compatibility migration. Existing generic publication history remains durable; only Brief startup catch-up eligibility changes.
+- The exact same isolated Studio root was stopped and restarted with eligible Brief projections plus a deliberately retained ineligible researcher/final history. The restarted worker became ready without mutating either history class.
 
-## Existing Durable Coverage Validity Decisions
+## Durable Coverage Inventory And Validity
 
-| Coverage | Decision | Current Result |
+| Coverage path | Decision | API-REV-015 result |
 | --- | --- | --- |
-| `tests/architecture/application-framework-boundaries.test.ts` | **Updated by IR-021, Still Valid** | 14/14 Pass; current tree and external-script target fixtures execute |
-| IR-020 external-script resolution-origin fixture | **Still Valid** | Allowed target resolves imports from external file and preserves SFC/source diagnostic identity |
-| AFB-002 Studio external-target fixtures | **Still Valid** | Studio-local target allowed; server application-engine target rejected before target parse |
-| AFB-005 Brief external-target fixtures | **Still Valid** | Brief-local target allowed; host-runtime project escape rejected before target parse |
-| API-REV-012 31-file runtime/API selection | **Still Valid** | Re-executed with architecture test: 32 files / 130 tests Pass |
-| Devkit atomic pack/watch/browser tests | **Still Valid** | 20/20 Pass |
-| Maintained Brief/Socratic build/validate/typecheck | **Still Valid** | Pass for both applications |
-| Prior real dual-host scenarios | **Retained; proportional rerun required** | Current standalone and Studio real journeys Pass |
+| `tests/unit/application-backend/brief-artifact-startup-catchup.test.ts` | **Added by IR-023, Still Valid** | Pass; actual Brief `onStart` skips ineligible history and processes eligible history in order |
+| `tests/unit/application-backend/app-published-artifact-semantic-path-resolvers.test.ts` | **Updated by IR-023, Still Valid** | Pass; nullable eligibility lookup plus strict live resolver |
+| `tests/unit/services/published-artifacts/published-artifact-publication-service.test.ts` | **Still Valid** | Pass; generic committed history behavior unchanged |
+| `tests/integration/application-backend/brief-studio-imported-package.integration.test.ts` | **Still Valid** | Pass; package-owned live projection stays strict |
+| `tests/architecture/application-framework-boundaries.test.ts` | **Still Valid** | Pass; 14 architecture assertions |
+| `tests/integration/agent/team-lifecycle-websocket.integration.test.ts` | **API/E2E-owned update from API-REV-014, Still Valid** | Focused 2 files / 33 tests and current checkpoint Pass |
+| Current checkpoint server selection | **Still Valid** | 39 files / 177 tests Pass |
+| Current web selection | **Still Valid** | 7 files / 21 tests Pass |
+| Devkit / frontend SDK / contracts | **Still Valid** | 20/20, 12/12 plus type proof, and 6/6 Pass |
+| API-REV-014 dual-host matrix | **Still Valid; critical failing path required first rerun** | Rerun Pass on current HEAD |
 
-No current assertion was stale, removed, skipped, weakened, or replaced by a compatibility path.
+### Durable Coverage Change Decision
 
-## Durable Coverage Delta
+No new API/E2E-owned durable test was added, updated, or removed in API-REV-015. The cumulative API/E2E-owned update remains:
 
-### Added / Updated For This Requirement
+- `autobyteus-server-ts/tests/integration/agent/team-lifecycle-websocket.integration.test.ts`
 
-- Cumulative SR-016 durable path: `autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts`.
-- IR-021 update: external Vue `src` is modeled as an SFC-owned `ImportEdge`; four direct allow/reject fixtures cover Studio and Brief targets.
-- Test-only dependency/declaration scope: `autobyteus-server-ts/package.json` and `pnpm-lock.yaml`; synchronized documentation remains in the upstream implementation package.
+It removes only the stale expectation for a byte-identical repeated scoped-leaf `running` event suppressed by the current status transition filter. Identity, lifecycle, stream, command, reconnect, termination, and liveness assertions remain. This cumulative durable delta must receive proportional code review after this Pass.
 
-### API/E2E-Owned Durable Changes In This Round
+IR-023 itself adds/updates the two Brief unit tests listed above. They were reconciled and executed as part of the current test-review surface.
 
-None. The reviewed IR-021 architecture test already provides the correct durable boundary. API/E2E added only temporary execution harnesses and evidence; all temporary harnesses were removed.
+## Repository Execution Result
 
-## Repository Execution Plan And Results
-
-| Order | Check | Result | Evidence |
-| --- | --- | --- | --- |
-| 1 | Architecture test first gate | 1 file / 14 tests Pass | `api-rev-013-architecture-first-gate.log` |
-| 2 | Server build-config TypeScript no-emit | Pass | `api-rev-013-architecture-first-gate.log` |
-| 3 | Architecture plus retained API-REV-012 runtime/API matrix | 32 files / 130 tests Pass | `api-rev-013-architecture-runtime-matrix.log` |
-| 4 | Full server build | Pass, including sanitized built-in bootstrap smoke | `api-rev-013-build-maintained-app-matrix.log` |
-| 5 | Devkit full suite | 20/20 Pass | `api-rev-013-build-maintained-app-matrix.log` |
-| 6 | Brief build, validate, backend typecheck | Pass | `api-rev-013-build-maintained-app-matrix.log` |
-| 7 | Socratic build, validate, backend typecheck | Pass | `api-rev-013-build-maintained-app-matrix.log` |
-| 8 | Commit/scope/diff audit | SR-016 executable commits have zero production-source delta; `git diff --check` Pass | `api-rev-013-scope-audit.log` |
-
-## Post-Repository Confidence Scorecard
-
-| Category | Score | Basis | Remaining Repository-Only Gap |
-| --- | ---: | --- | --- |
-| Requirement and acceptance proof | 99% | Exact current-tree and external-target fixtures Pass | No real-host preservation yet in this round |
-| Changed-boundary directness | 100% | The real checker executes its own approved fixtures and current tree | None for the checker |
-| Cross-boundary realism/mock gap | 96% | Retained real SQLite/API/runtime selection Pass | Browser/provider hosts still to confirm |
-| Environment/configuration/identity fidelity | 96% | Current lock, TypeScript, builds, maintained packages | Live host setup still to confirm |
-| Failure/edge/lifecycle/recovery | 95% | Forbidden targets, unresolved paths, injection obligations, retained lifecycle matrix | Same-data restart/remount still to confirm |
-| User-surface/browser confidence | 90% | No user code changed; builds pass | Proportional real dual-host confirmation required by handoff |
-| Durable regression quality/relevance | 99% | One closed test owner, direct positive/negative fixtures, no production helper | Proportional test-code review pending |
-
-- Repository-only confidence: `96%` (`96.4%` unrounded).
-- Broader validation decision: **Required**, despite the clean test-only scope, because the reopened delivery flow explicitly requires API-REV-012-equivalent dual-host, route, and package-integrity preservation evidence on current HEAD.
-
-## Broader Validation Plan And Result
-
-| Scenario | Selected Evidence | Result |
+| Gate | Result | Evidence |
 | --- | --- | --- |
-| `APIE2E-ARCH-013` | Current architecture test and scope audit | Pass |
-| `APIE2E-STANDALONE-013` | Real Chrome Brief create/generate; Codex/Luna team; raw Agent Tools traces; SQLite projection | Pass |
-| `APIE2E-STANDALONE-RESTART-013` | Stop/start same data root and browser state check | Pass |
-| `APIE2E-STUDIO-013` | Real Nuxt setup, exact package team/Luna defaults, iframe business run, raw traces, SQLite projection | Pass |
-| `APIE2E-STUDIO-REMOUNT-013` | Open host controls and explicit reload | Pass: launch 1 -> 2, one iframe, completed record retained |
-| `APIE2E-ROUTES-013` | Direct HTTP requests | Pass: internal 401 both hosts; standalone gateway 404; Studio gateway initialize 200 |
-| `APIE2E-PARITY-013` | Exact pre/post SHA-256 over retained 73-path set | Pass: 73/73 byte-identical |
-| `APIE2E-CLEANUP-013` | Listener/process/scratch audit | Pass |
+| IR-023 focused selection | 5 files / 41 tests Pass | `api-rev-015-ir023-focused.log` |
+| API/E2E WebSocket reconciliation | 2 files / 33 tests Pass | `api-rev-015-team-lifecycle-durable-update.log` |
+| Adjacent current-base selection | 18 files / 97 tests Pass | `api-rev-015-adjacent-current-base.log` |
+| Current checkpoint server selection | 39 files / 177 tests Pass | `api-rev-015-current-checkpoint-server.log` |
+| Current web selection | 7 files / 21 tests Pass | `api-rev-015-current-checkpoint-web.log` |
+| Devkit / frontend SDK / contracts | 20/20, 12/12 plus type proof, 6/6 Pass | `api-rev-015-current-checkpoint-packages.log` |
+| Production builds | Server no-emit/full build/bootstrap and Nuxt production/static build Pass | `api-rev-015-production-builds.log` |
+| Maintained applications | Brief and Socratic build, validate, backend typecheck Pass | `api-rev-015-maintained-apps.log` |
+| Repository hygiene | `git diff --check` Pass | `api-rev-015-diff-check.log` |
 
-The first combined Studio temporary harness entered and completed the real business run, but its readiness snapshot was early and its parent-page polling attempted cross-origin iframe DOM access. A focused corrected harness waited semantically inside the Playwright frame, confirmed the completed run, and passed explicit remount. This was temporary harness logic only; production and durable tests were unchanged.
+## Exact Prior-Failure Resolution
+
+`APIE2E-STUDIO-RESTART-014` / `APIE2E-F009` is **Resolved**.
+
+1. A real Studio Brief completed through the package-owned researcher/writer Codex/Luna team.
+2. Actual researcher `publish_artifacts`, recipient-name `send_message_to(writer)`, and writer `publish_artifacts` succeeded.
+3. Through the supported real application agent-communication WebSocket, the live researcher performed an additional actual `publish_artifacts` call for `final-brief.md`, creating the exact retained ineligible generic history without direct file or SQLite manipulation.
+4. Pre-restart state proved two eligible Brief projections and the extra generic researcher/final history.
+5. The backend was gracefully stopped and restarted on the same isolated data root while the frontend and devkit session remained.
+6. The exact application `ensure-ready` endpoint returned 200 with `ready: true` and no failure.
+7. Browser state restored the completed Brief; explicit Studio reload changed launch ID 1 → 2 while keeping exactly one iframe.
+8. Post-restart state was byte/row-equivalent for eligible Brief projection and retained the generic ineligible history.
+
+Canonical evidence: `api-rev-015-studio-retained-ineligible-publication.json`, `api-rev-015-studio-prerestart-state.json`, `api-rev-015-studio-restart.log`, `api-rev-015-studio-restart-ensure-ready.json`, `api-rev-015-studio-restart-remount.json`, and `api-rev-015-studio-postrestart-state.json`.
+
+## Broader Validation Result
+
+- **Studio:** Pass. Real business publication/handoff/projection, exact mixed-history restart, worker readiness, restored state, and explicit one-iframe remount all succeeded.
+- **Standalone:** Pass. Real package-owned business run, actual publication/named handoff/writer publication, application/platform projection, graceful same-root restart, and restored state succeeded.
+- **Route separation:** Pass. Both internal Agent Tools routes returned 401 without bearer; standalone `/mcp/gateway` returned 404; Studio gateway negotiated initialize at 200.
+- **Package parity:** Pass. All 73 retained package/authoring SHA-256 rows remained identical after both hosts and maintained application builds.
+- **Cleanup:** Pass. Ports 8013, 3013, and 43129 are free; API-REV-015 temporary roots and atomic scratch are absent; maintained applications have no tracked build delta.
+
+One first post-restart browser probe sampled setup before asynchronous identity data settled and is retained as a temporary harness timing attempt. The corrected semantic wait passed and is canonical. Standalone Chrome logged only the expected missing-favicon 404; there were no request failures or business errors.
 
 ## Final Confidence Scorecard
 
-| Category | Score | Final Basis |
+| Category | Score | Basis |
 | --- | ---: | --- |
-| Requirement and acceptance-criteria proof | 99% | AC-024 checker behavior plus preserved dual-host acceptance directly executed |
-| Changed-boundary execution directness | 100% | Exact production checker/current-tree/fixture path executed |
-| Cross-boundary integration realism and mock gap | 98% | 130 repository tests plus real provider/browser/SQLite paths in both hosts |
-| Environment, configuration, identity, and fixture fidelity | 98% | Current HEAD, current lock/builds, exact Brief team and Luna defaults, isolated data |
-| Failure, edge-case, lifecycle, and recovery evidence | 96% | Forbidden-before-parse fixtures, standalone same-data restart, Studio remount, retained API-REV-012 lifecycle matrix |
-| User-surface/browser and desktop-shell confidence | 98% | Real Chrome standalone and Nuxt Studio iframe journeys; no shell-specific source changed |
-| Durable regression coverage quality and relevance | 99% | Closed AFB test owner and direct positive/negative fixtures; no broad allow-list or production helper |
+| Requirement and acceptance-criteria proof | 99% | Exact prior critical failure plus retained AC-025 matrix pass |
+| Changed-boundary execution directness | 100% | Actual Brief `onStart` unit path and exact same-data real Studio reproduction |
+| Cross-boundary integration realism and mock gap | 99% | Real Codex/Luna, tools, WebSocket, SQLite, worker, REST/GraphQL, browser/iframe |
+| Environment/configuration/identity fidelity | 99% | Current reviewed HEAD, isolated real hosts, exact package team/model identities |
+| Failure/edge/lifecycle/recovery evidence | 99% | Eligible/ineligible histories, graceful restarts, remount, route denial, cleanup |
+| User-surface/browser/desktop-shell confidence | 98% | Real Chrome web-equivalent Studio/standalone; Electron shell remains downstream-owned |
+| Durable regression coverage quality/relevance | 97% | Direct IR-023 tests plus cumulative narrow WebSocket update; proportional review pending |
 
-- Final confidence: `98%` (`98.3%` unrounded).
-- Every applicable category is at least 90%; all critical current-scope criteria have direct evidence.
-- No new failure ID or blocker exists.
-
-## Not Tested / Residual Scope
-
-| Boundary | Decision | Residual Risk |
-| --- | --- | --- |
-| Historical `APIE2E-REPO-005` | Not rerun or reattributed | Separate historical uncertainty; no supported SR-016/IR-021 connection |
-| Electron shell | Not applicable | No preload, IPC, window, signing, packaging, or native integration changed |
-| Multi-node/public gateway deployment | Outside approved local-first scope | None for AC-024 or preserved local dual-host behavior |
-| Full API-REV-012 worker-kill/multi-run failure injection | Retained, not repeated | Production source unchanged; current runtime matrix plus proportional restart/remount closes current risk |
+Arithmetic overall: `98.7%`, reported as **99%**. No applicable category is below 90%, every critical criterion has direct proof, and no material execution gap remains.
 
 ## Investigation Decision
 
-- Result: `Pass`.
-- Final confidence: `98%`.
-- Broader validation: `Required — completed`.
-- API/E2E-owned durable changes: none.
-- Durable review surface: cumulative SR-016 `application-framework-boundaries.test.ts` and its test-only declaration/lock integration.
-- Recommended recipient: `code_reviewer` for the separate proportional durable-test review before delivery resumes.
+- Result: **Pass**.
+- Final confidence: **99%**.
+- Broader validation: **Required — completed**.
+- Current failure IDs: none.
+- `APIE2E-F009`: resolved and execution-confirmed.
+- Historical `APIE2E-REPO-005`: remains separate `Unclear`, unattributed, and unused as Pass evidence.
+- Next recipient: `code_reviewer` for the required proportional durable-test review; do not route directly to delivery.

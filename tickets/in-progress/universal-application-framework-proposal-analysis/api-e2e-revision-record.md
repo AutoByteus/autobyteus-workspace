@@ -17,6 +17,8 @@
 | API-REV-011 | `code_reviewer` `CRR-029`; API/E2E round 11 | `SR-011`; `ARCH-REV-009`; `IR-016`; `CRR-028`–`CRR-029`; `API-REV-010` | **Pass / 98%** | **Pass / 99%** |
 | API-REV-012 | `code_reviewer` `CRR-033`; API/E2E round 12 | `SR-013`; `ARCH-REV-010`–`ARCH-REV-011`; `IR-017`–`IR-018`; `CRR-030`–`CRR-033`; `API-REV-011` | **Pass / 99%** | **Pass / 97%** |
 | API-REV-013 | `code_reviewer` `CRR-037`; API/E2E round 13 | `SR-016`; `ARCH-REV-012`–`ARCH-REV-014`; `IR-019`–`IR-021`; `CRR-035`–`CRR-037`; `API-REV-012` | **Pass / 97%** | **Pass / 98%** |
+| API-REV-014 | `code_reviewer` `CRR-039`; API/E2E round 14 | `DS-017`; `IR-022`; `CRR-039`; semantic merge `4b905d0ce`; `API-REV-013` | **Pass / 98%** | **Fail / 85%** |
+| API-REV-015 | `code_reviewer` `CRR-041`; API/E2E round 15 | `IR-023`; `CRR-040`–`CRR-041`; `API-REV-014` | **Fail / 85%** | **Pass / 99%** |
 
 ## Revision Entries
 
@@ -351,3 +353,56 @@ No prior API/E2E failure was open. `CR-022` was source-resolved by IR-018 and is
 - New or remaining failure IDs: none for SR-016/IR-021. Historical `APIE2E-REPO-005` remains separate `Unclear`, unattributed, and unused as Pass evidence.
 - Residual risk: the complete API-REV-012 worker-kill and active multi-run failure injection was retained rather than repeated because SR-016 has zero production-source delta; current 130-test coverage, real same-data restart, real Studio remount, route checks, and exact parity provide proportional current-HEAD confirmation.
 - Recommended recipient: `code_reviewer` for the separate proportional review of the cumulative SR-016 durable architecture test before delivery resumes.
+
+### API-REV-014 — Current-base dual-host execution exposes persisted Studio restart failure
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; API/E2E round 14 after `CRR-039` source-review Pass for `IR-022`.
+- Triggering finding or scenario IDs: `AC-025`; new scenarios `APIE2E-REPO-014`, `APIE2E-STANDALONE-014`, `APIE2E-STANDALONE-WORKER-014`, `APIE2E-STANDALONE-RESTART-014`, `APIE2E-STUDIO-014`, `APIE2E-STUDIO-REMOUNT-014`, `APIE2E-STUDIO-RESTART-014`, `APIE2E-ROUTES-014`, `APIE2E-PARITY-014`, and `APIE2E-CLEANUP-014`; new failure `APIE2E-F009`.
+- Related revision IDs: `DS-017`; `IR-022`; `CRR-039`; semantic merge `4b905d0ce660c7093580779f53f59d6aaf5dfe75`; checkpoint `42d43674d8215c3987d8a6e265a2648c754bf6de`; v1.4.50 base `54890a07f74e941a7a12b6daaa26364f4c927b72`; `API-REV-013`.
+- Why recorded: performed the complete current-base coverage investigation and repository/live matrix required by AC-025 after v1.4.50 semantic integration, reconciled one stale existing WebSocket fixture, and discovered a reproducible critical same-data Studio restart failure.
+- Durable coverage delta: updated `autobyteus-server-ts/tests/integration/agent/team-lifecycle-websocket.integration.test.ts` to reflect current exact-repeat suppression of a second byte-identical scoped-leaf `running` status. The narrow update adjusts the live sequence/count and subsequent command-ack index while retaining identity, transition, stream, command, reconnect, termination, and liveness assertions. Focused 2 files / 33 tests and adjacent 18 files / 97 tests pass. No test was added or removed.
+- Repository execution: merge/frozen-lock audit Pass; current checkpoint server 39 files / 177 tests; web 7 files / 21 tests; devkit 20/20; frontend SDK 12/12 plus type tests; SDK contracts 6/6; current constructor 4 Pass / 14 environment-gated Skip; server no-emit/full build/bootstrap; Nuxt production/static build; and Brief/Socratic build/validate/backend typecheck all Pass.
+- Real standalone execution: exact package Codex/Luna team completes a real Brief after controlled worker exit and request-driven recovery. Researcher/writer `publish_artifacts`, recipient-name `send_message_to(writer)`, attached projection, route separation, graceful stop, and same-data restoration all pass.
+- Real Studio execution before restart: isolated readable-provider migration succeeds; exact package team/Luna defaults are valid; one iframe completes a real Brief with actual publication/handoff/projection; explicit remount changes launch ID 1 to 2 while preserving one iframe and completed state.
+- Critical failure: after graceful Studio backend stop/start on the same isolated data root, setup restores the exact package team but the iframe never remounts. Repeated application `ensure-ready` returns 500, including after successful existing-package refresh: `Unexpected Brief Studio artifact path '.../final-brief.md' for producer 'researcher'.`
+- Direct correlation: the application DB correctly projects research to researcher and final to writer, while the researcher's persisted artifact projection additionally contains a distinct final-brief revision attributed to the researcher. Startup catch-up rejects that writer-only path before worker readiness. Exact implementation origin is left to focused code review.
+- Route/parity/cleanup: internal routes return 401 in both hosts; standalone external gateway is 404 and Studio gateway initializes 200; all 73 package/authoring SHA-256 rows are byte-identical; owned ports/processes/temp roots/browser state and pack scratch are clear; `git diff --check` passes.
+
+#### Prior Failure Resolution
+
+No prior API/E2E failure was open. API-REV-013's proportional current-tree result remains historically valid for IR-021, but its earlier Studio restart evidence is superseded for the v1.4.50 current base by the reproducible API-REV-014 failure.
+
+- Canonical artifacts updated: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, and this revision record.
+- Prior result and confidence: `Pass / 98%` (`98.3%`, API-REV-013).
+- Current result and confidence: **Fail / 85%** (`84.9%`).
+- Broader validation: **Required — executed; critical failure discovered**.
+- New or remaining failure IDs: `APIE2E-STUDIO-RESTART-014` / `APIE2E-F009` against `AC-025`. Historical `APIE2E-REPO-005` remains separately `Unclear`, unattributed, and unused as evidence.
+- Preliminary classification: reproducible implementation/runtime or persisted-projection interaction; exact origin requires focused code review and is not attributed specifically to IR-022 without that analysis.
+- Recommended recipient: `code_reviewer` for focused failure-origin review of the complete cumulative package and the API/E2E-owned durable test delta.
+- Remaining risk / blocked scope: current-base Studio same-data restart/recovery is broken; delivery and Electron gates remain blocked until resolution, source review, and a rerun of the failed scenario followed by the retained matrix.
+
+### API-REV-015 — Brief startup catch-up restores same-data Studio restart and dual-host parity
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; API/E2E round 15 after `CRR-041` source-review Pass for `IR-023`.
+- Triggering finding or scenario IDs: prior `APIE2E-STUDIO-RESTART-014` / `APIE2E-F009` / `CR-026`; current scenarios `APIE2E-REPO-015`, `APIE2E-STUDIO-BUSINESS-015`, `APIE2E-STUDIO-RESTART-015`, `APIE2E-STUDIO-REMOUNT-015`, `APIE2E-STANDALONE-BUSINESS-015`, `APIE2E-STANDALONE-RESTART-015`, `APIE2E-ROUTES-015`, `APIE2E-PARITY-015`, and `APIE2E-CLEANUP-015`.
+- Related revision IDs: `IR-023`; `CRR-040`–`CRR-041`; `API-REV-014`; retained `DS-017`/`AC-025` current-base package.
+- Why recorded: rechecked the exact prior real same-data Studio failure first, proved that startup now ignores only Brief-ineligible retained generic publication histories, and completed the retained repository, standalone, Studio, route, integrity, and cleanup matrix.
+- Durable coverage delta: no new API/E2E-owned edit in this round. IR-023 adds `tests/unit/application-backend/brief-artifact-startup-catchup.test.ts` and updates `tests/unit/application-backend/app-published-artifact-semantic-path-resolvers.test.ts`. The cumulative API/E2E-owned update to `tests/integration/agent/team-lifecycle-websocket.integration.test.ts` remains preserved, passes focused/current checkpoint coverage, and is included in the required proportional review.
+- Repository execution: IR-023 5 files / 41 tests; API/E2E WebSocket reconciliation 2 files / 33 tests; adjacent 18 files / 97 tests; checkpoint server 39 files / 177 tests; web 7 files / 21 tests; devkit 20/20; frontend SDK 12/12 plus types; contracts 6/6; server no-emit/full build/bootstrap; Nuxt build; maintained Brief/Socratic build/validate/backend typecheck all Pass.
+- Exact Studio prior-failure execution: real package researcher/writer publication and recipient-name handoff completed. A supported live WebSocket instruction caused the researcher to perform a real additional `publish_artifacts` for `final-brief.md`, recreating the exact ineligible generic history without direct file/SQLite manipulation. After graceful same-root backend restart, `ensure-ready` returned 200/ready, eligible projection remained unchanged, the ineligible generic history remained durable, and explicit reload advanced iframe launch ID 1 → 2 while retaining one iframe and completed state.
+- Real standalone execution: the package-owned Codex/Luna team completed a real Brief; actual researcher and writer publications plus recipient-name handoff succeeded; application/platform projection passed; graceful same-root restart restored the completed record.
+- Route/parity/cleanup: internal unauthenticated Agent Tools returned 401 in both hosts; standalone external gateway returned 404 and Studio gateway initialized 200. Exact 73/73 pre/post package/authoring hashes matched. Ports 8013/3013/43129, API-REV-015 temporary roots, and atomic scratch are clear; maintained app outputs have no tracked delta and `git diff --check` passes.
+
+#### Prior Failure Resolution
+
+| Prior Scenario / Finding | Previous State | Current Resolution | Evidence |
+| --- | --- | --- | --- |
+| `APIE2E-STUDIO-RESTART-014` / `APIE2E-F009` / `CR-026` | **Fail**: retained researcher-owned generic final path aborted Brief startup catch-up and worker readiness | **Resolved and execution-confirmed**: ineligible history is retained generically but skipped by Brief startup catch-up; worker readiness, state restoration, and explicit remount pass | `api-rev-015-studio-retained-ineligible-publication.json`, `api-rev-015-studio-prerestart-state.json`, `api-rev-015-studio-restart.log`, `api-rev-015-studio-restart-ensure-ready.json`, `api-rev-015-studio-restart-remount.json`, `api-rev-015-studio-postrestart-state.json` |
+
+- Canonical artifacts updated: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, and this revision record.
+- Prior result and confidence: `Fail / 85%` (`84.9%`, API-REV-014).
+- Current result and confidence: **Pass / 99%** (`98.7%`).
+- Broader validation: **Required — completed** with real isolated standalone and Studio browser/API/process journeys.
+- New or remaining current failure IDs: none. Historical `APIE2E-REPO-005` remains separately `Unclear`, unattributed, and unused as Pass evidence.
+- Residual risk: Electron-shell packaging is downstream-owned; a superseded Studio browser attempt sampled async setup too early, while the corrected canonical semantic wait passed. Neither is a product blocker.
+- Recommended recipient: `code_reviewer` for the separate proportional review of the IR-023 durable tests and preserved API/E2E-owned WebSocket test delta before delivery resumes.
