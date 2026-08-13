@@ -1,0 +1,84 @@
+{
+  "teamRunId": "nested_classroom_test_team_b9e8b3c5ea94440f9f420fafd6ce4c2c",
+  "records": [
+    {
+      "taskId": "task_0001",
+      "status": "accepted",
+      "senderAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_b9e8b3c5ea94440f9f420fafd6ce4c2c",
+        "taskTeamRunIds": [],
+        "memberAddress": "/Teacher",
+        "taskAgentRunId": null
+      },
+      "receiverAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_b9e8b3c5ea94440f9f420fafd6ce4c2c",
+        "taskTeamRunIds": [
+          "team_local_team_nested_classroom_test_student_st_f44be177bb984fb087924b321c44852e"
+        ],
+        "memberAddress": "/StudentStudyGroup/student_one",
+        "taskAgentRunId": null
+      },
+      "receiverTargetKind": "agent_team",
+      "content": "Complete exactly this bounded task. As student_one, first use send_message_to to send exactly TASK_PEER_AUTOBYTEUS to ./student_two. Wait for the peer reply. After receiving the peer reply, submit exactly NESTED_CLASSROOM_OK_AUTOBYTEUS as the task result using submit_task_result. Do not submit any other result or token, and do not delegate another task.",
+      "referenceFiles": [],
+      "taskRun": {
+        "address": {
+          "rootTeamRunId": "nested_classroom_test_team_b9e8b3c5ea94440f9f420fafd6ce4c2c",
+          "taskTeamRunIds": [
+            "team_local_team_nested_classroom_test_student_st_f44be177bb984fb087924b321c44852e"
+          ],
+          "memberAddress": "/StudentStudyGroup",
+          "taskAgentRunId": null
+        },
+        "startedAt": "2026-08-13T02:11:35.958Z"
+      },
+      "updates": [
+        {
+          "kind": "submission",
+          "submissionId": "task_0001_submission_0001",
+          "senderAddress": {
+            "rootTeamRunId": "nested_classroom_test_team_b9e8b3c5ea94440f9f420fafd6ce4c2c",
+            "taskTeamRunIds": [
+              "team_local_team_nested_classroom_test_student_st_f44be177bb984fb087924b321c44852e"
+            ],
+            "memberAddress": "/StudentStudyGroup",
+            "taskAgentRunId": null
+          },
+          "receiverAddress": {
+            "rootTeamRunId": "nested_classroom_test_team_b9e8b3c5ea94440f9f420fafd6ce4c2c",
+            "taskTeamRunIds": [],
+            "memberAddress": "/Teacher",
+            "taskAgentRunId": null
+          },
+          "content": "NESTED_CLASSROOM_OK_AUTOBYTEUS",
+          "referenceFiles": [],
+          "createdAt": "2026-08-13T02:12:08.237Z"
+        },
+        {
+          "kind": "review",
+          "reviewId": "task_0001_review_0001",
+          "senderAddress": {
+            "rootTeamRunId": "nested_classroom_test_team_b9e8b3c5ea94440f9f420fafd6ce4c2c",
+            "taskTeamRunIds": [],
+            "memberAddress": "/Teacher",
+            "taskAgentRunId": null
+          },
+          "receiverAddress": {
+            "rootTeamRunId": "nested_classroom_test_team_b9e8b3c5ea94440f9f420fafd6ce4c2c",
+            "taskTeamRunIds": [
+              "team_local_team_nested_classroom_test_student_st_f44be177bb984fb087924b321c44852e"
+            ],
+            "memberAddress": "/StudentStudyGroup",
+            "taskAgentRunId": null
+          },
+          "reviewedSubmissionId": "task_0001_submission_0001",
+          "decision": "accept",
+          "content": "Accepted because the submitted task result is the exact required token NESTED_CLASSROOM_OK_AUTOBYTEUS.",
+          "referenceFiles": [],
+          "createdAt": "2026-08-13T02:12:24.034Z"
+        }
+      ],
+      "createdAt": "2026-08-13T02:11:35.954Z"
+    }
+  ]
+}

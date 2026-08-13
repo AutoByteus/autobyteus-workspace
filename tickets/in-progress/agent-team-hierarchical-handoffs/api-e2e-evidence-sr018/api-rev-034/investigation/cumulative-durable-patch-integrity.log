@@ -1,0 +1,7 @@
+base=66cfe11e9057b0276c95cb5e9a01784d74b07499
+reverse_apply_check=PASS
+inventory_vs_diff_path_check=PASS
+inventory_status_vs_diff_status_check=PASS
+inventory_rows=94
+status_counts=A:3,D:6,M:85
+scope_counts=server:40,web:54

@@ -1,0 +1,97 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+
+stderr | services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts (22 tests | 3 failed) 28ms
+   ✓ segmentHandler > handleSegmentStart > creates a tool_call conversation segment and seeds Activity state from metadata 5ms
+   ✓ segmentHandler > handleSegmentStart > hydrates tool_call arguments from metadata.arguments/query fields 1ms
+   ✓ segmentHandler > handleSegmentStart > hydrates tool_call arguments when metadata.arguments is serialized JSON 1ms
+   ✓ segmentHandler > handleSegmentStart > does not treat missing tool_name as an Activity-store backend bug 1ms
+   ✓ segmentHandler > handleSegmentStart > replaces unknown_tool when a later SEGMENT_START provides the concrete tool name 1ms
+   ✓ segmentHandler > handleSegmentStart > creates write_file/edit_file/run_bash transcript segments from metadata 3ms
+   ✓ segmentHandler > handleSegmentStart > deduplicates repeated SEGMENT_START with same id 1ms
+   ✓ segmentHandler > handleSegmentStart > deduplicates cross-type start collisions and keeps a single segment 1ms
+   ✓ segmentHandler > handleSegmentContent > appends adjacent reasoning updates with one normalized id to one think segment 1ms
+   ✓ segmentHandler > handleSegmentContent > streams write_file content into the segment state 0ms
+   × segmentHandler > handleSegmentContent > creates a synthetic text segment when content arrives before segment start 4ms
+     → Unsupported canonical segment type: undefined
+   × segmentHandler > handleSegmentContent > creates separate reasoning and tool segments when ids are reused across types 3ms
+     → expected [ { type: 'think', …(2) } ] to have a length of 2 but got 1
+   ✓ segmentHandler > handleSegmentContent > preserves text-tool-text order when text segment ids differ around a tool 1ms
+   × segmentHandler > handleSegmentEnd > marks a non-empty reasoning segment presentation-complete through the generic end contract 0ms
+     → Cannot read properties of null (reading '_streamSegmentIdentity')
+   ✓ segmentHandler > handleSegmentEnd > retains write_file content when the segment ends 0ms
+   ✓ segmentHandler > handleSegmentEnd > removes empty think segment on end 0ms
+   ✓ segmentHandler > handleSegmentEnd > applies end metadata path/patch to edit_file segment only 0ms
+   ✓ segmentHandler > handleSegmentEnd > applies end metadata command to run_bash segment only 0ms
+   ✓ segmentHandler > handleSegmentEnd > applies end metadata arguments to tool_call segment only 0ms
+   ✓ segmentHandler > handleSegmentEnd > does not downgrade an already-approved tool segment back to parsed on end 0ms
+   ✓ segmentHandler > handleSegmentEnd > marks tool segment interrupted from segment-end interruption metadata 0ms
+   ✓ segmentHandler > handleSegmentEnd > marks partial tool segment failed from segment-end failure metadata 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts > segmentHandler > handleSegmentContent > creates a synthetic text segment when content arrives before segment start
+Error: Unsupported canonical segment type: undefined
+ ❯ createSegmentFromPayload services/agentStreaming/protocol/segmentTypes.ts:52:13
+     50| 
+     51|     default:
+     52|       throw new Error(`Unsupported canonical segment type: ${String(se…
+       |             ^
+     53|   }
+     54| }
+ ❯ createSyntheticSegmentFromContent services/agentStreaming/handlers/segmentHandler.ts:357:19
+ ❯ handleSegmentContent services/agentStreaming/handlers/segmentHandler.ts:201:15
+ ❯ services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts:364:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts > segmentHandler > handleSegmentContent > creates separate reasoning and tool segments when ids are reused across types
+AssertionError: expected [ { type: 'think', …(2) } ] to have a length of 2 but got 1
+
+- Expected
++ Received
+
+- 2
++ 1
+
+ ❯ services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts:402:34
+    400| 
+    401|       const aiMessage = mockContext.conversation.messages[0] as any;
+    402|       expect(aiMessage.segments).toHaveLength(2);
+       |                                  ^
+    403|       expect(aiMessage.segments[0].type).toBe('think');
+    404|       expect(aiMessage.segments[0].content).toBe('reasoning burst');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts > segmentHandler > handleSegmentEnd > marks a non-empty reasoning segment presentation-complete through the generic end contract
+TypeError: Cannot read properties of null (reading '_streamSegmentIdentity')
+ ❯ getStreamSegmentIdentity services/agentStreaming/handlers/segmentIdentity.ts:18:51
+     16| 
+     17| export function getStreamSegmentIdentity(segment: AIResponseSegment): …
+     18|   return (segment as IdentifiedAIResponseSegment)._streamSegmentIdenti…
+       |                                                   ^
+     19| }
+     20| 
+ ❯ services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts:487:14
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 19 passed (22)
+   Start at  03:42:05
+   Duration  12.49s (transform 7.15s, setup 11.48s, collect 102ms, tests 28ms, environment 236ms, prepare 252ms)
+

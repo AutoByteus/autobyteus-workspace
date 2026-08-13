@@ -789,3 +789,55 @@ None. API-REV-016 had no unresolved failure. Its backend/runtime and three-provi
 - Prior result/confidence: `Pass / 98%` (`API-REV-032`; test-only correction retaining API-REV-031 real-system proof).
 - Current result/confidence: **Pass / 98%**.
 - Recommended recipient: `code_reviewer` for proportional review of the corrected/currentized complete `92`-path durable package before delivery.
+
+### API-REV-034 — Integrated IR-039 AutoByteus Team live segment admission fails
+
+- Triggering role/report/round: `code_reviewer`; canonical `code-review-report.md`; fresh integrated round after `CRR-073 Pass / 94.1%`.
+- Triggering source: `IR-039`; integrated merge `80830b9a70922364b45cd897ed062f41a25cdef9`; docs/current HEAD `817956ba4b097d1e9792a264ec7df839fc81a461`.
+- New finding/scenario: `API-F-023` / `API-LIVE-034-AUTOBYTEUS-TEAM-SEGMENT-001`.
+- Why recorded: repository/build coverage and the functional AutoByteus collaboration lifecycle pass, but the fresh checked-target real browser shows repeated user-visible Team stream admission errors. A built-code probe proves a current source contract mismatch between AutoByteus segment conversion and strict Team admission.
+- Coverage decisions/durable paths changed: updated `autobyteus-server-ts/tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts` and `autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts`; no added/removed path this round. The cumulative unreviewed package is exactly `94` paths (`3 added / 85 updated / 6 removed`; `40 server / 54 web`).
+- Repository results: configured-MCP `11/11`; currentized Claude deterministic `4/4` plus one explicit live gate excluded; integrated prompt/exposure `78/78`; core shared prompt `12/12`; integrated current server `376/376` with nine declared gates/skips excluded from live proof; integrated current web `425/425`; server `build:full`; Nuxt production build/15 routes. Generic TS6059 and pre-diagnostic `nuxi typecheck` toolchain failures remain disclosed and are not Passes.
+- Real execution: exact absent disposable target; configuration-only preflight; Prisma migration; actual interactive `pnpm secrets:import` from the requested source into the disposable vault; checked built-server launcher; PID `lsof`; staged fixture import; real Chrome and AutoByteus `gpt-5.6-luna`.
+- Functional AutoByteus evidence: exact rooted Team, handoff rule call, persistent reference send/reply, nested task Team, task peer request/reply, one exact submission, accepted review, restore, and termination passed.
+- New failure: the live browser rendered repeated `Rejected SEGMENT_CONTENT: segment_id is required` and `Rejected SEGMENT_END: segment_id is required`. `AutoByteusStreamEventConverter` emits `payload.id`; standalone serialization accepts it; `TeamAgentEventAdapter` requires `segment_id`/`segmentId` and rejects it. Preliminary owner is implementation source; no production edit was made.
+- Stop decision: Codex/Claude Team, all three standalone, mobile, and remaining retained lifecycle rows are **Not Tested** this round. External-provider execution stopped because the critical AutoByteus Team failure already prevents Pass.
+- Cleanup: owned ports closed; provider traces copied; owned runtime/database/vault removed; staged source fixture byte-integrity passed. Operational database action none; protected `60004/31004`, delivery stash, backup, and automatic rollback action none; both historical incident disclosures preserved.
+- Canonical artifacts updated: `api-e2e-coverage-investigation.md`; `api-e2e-execution-coverage-report.md`; this record; `api-e2e-evidence-sr018/api-rev-034/failure-api-f023-autobyteus-team-segment-admission-analysis.md`.
+- Prior result/confidence: `Pass / 98%` (`API-REV-033`, pre-merge).
+- Current result/confidence: **Fail / 78%**.
+- Recommended recipient: `code_reviewer` for focused failure-origin review, not proportional successful-test review.
+
+### API-REV-035 — IR-040 canonical ID passes, actual AutoByteus content type admission fails
+
+- Triggering role/report/round: `code_reviewer`; canonical `code-review-report.md`; round 35 after `CRR-075 Pass / 94.1%`.
+- Triggering source/findings: `IR-040`; prior `API-F-023 / CR-F-041` canonical segment-ID failure resolved in source; new `API-F-024 / API-LIVE-035-AUTOBYTEUS-TEAM-SEGMENT-TYPE-001`.
+- Related revision IDs: `SR-018`; `ARCH-REV-011`; `IR-040`; `CRR-075`.
+- Why recorded: API-REV-035 proves IR-040 removed the former `segment_id`/end rejections at the real browser boundary, then exposes a separate actual-native-sequence mismatch: content events do not repeat `segment_type`, but strict Team admission requires it per content event.
+- Durable paths changed this round: added `autobyteus-server-ts/tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts`; updated `autobyteus-server-ts/tests/unit/services/agent-streaming/team-runtime-snapshot-service.test.ts`; removed obsolete pre-SR-018 `autobyteus-server-ts/tests/integration/agent/agent-team-websocket.integration.test.ts` and `autobyteus-server-ts/tests/integration/agent/team-lifecycle-websocket.integration.test.ts`. The new segment test passes but is now adjudicated `Needs Update after source-origin review` because it fabricates `segment_type` on every native content event. The cumulative package remains incomplete/unreviewed.
+- Repository results: snapshot/segment `6/6`; focused current boundaries `184/184` with one declared live gate excluded; integrated server `497/497` with one suite/nine declared cases excluded; integrated web `425/425`; server full production build/bootstrap; Nuxt production build/15 routes.
+- Safe environment: configuration-only absent-target preflight, ambient DB selector removal, exact intended worktree SQLite target, actual TTY `pnpm secrets:import` from the requested source into the disposable vault, checked server launcher, PID lsof, real Chrome, public package import, exact cleanup. A first Prisma command created a second owned disposable nested path, which was removed before server use; it never matched or touched the operational database and is disclosed in `prisma-target-correction.log`.
+- Real AutoByteus result: full rooted collaboration/task/peer/submission/review/restore/termination lifecycle passes with zero browser console errors; critical Team UI fails because repeated red `Rejected SEGMENT_CONTENT: segment_type is required` cards remain.
+- Deterministic reproduction: current built converter produces `{id, turn_id, delta}` from the actual native content shape; current Team adapter rejects due to missing per-content `segment_type`. No production edit or compatibility relaxation was made.
+- Stopped / Not Tested: fresh Codex/Claude Team, all standalone providers, mobile, and remaining retained live rows. Historical rows are not substituted.
+- Canonical artifacts updated: `api-e2e-coverage-investigation.md`; `api-e2e-execution-coverage-report.md`; this record; `api-e2e-evidence-sr018/api-rev-035/failure-api-f024-autobyteus-team-segment-type-admission-analysis.md`.
+- Prior result/confidence: `Fail / 78%` (`API-REV-034`).
+- Current result/confidence: **Fail / 80%**.
+- Recommended recipient: `code_reviewer` for focused failure-origin review, not proportional successful-test review.
+- Cleanup/safety correction: owned ports closed, source fixture byte-identical, and the main owned resources were removed, but CR-F-043 later proved one owned nested SQLite journal residue remained; API-REV-036 verified and removed only that residue before any new live execution; operational database action/inspection none; protected `60004/31004`, four stashes, delivery backup, and automatic rollback untouched; both historical incident disclosures preserved.
+
+### API-REV-036 — SR-020 exact segment lifecycle passes repository and fresh real six-runtime browser matrix
+
+- Triggering role/report/round: `code_reviewer`; `CRR-078 Pass / 92.5%`; SR-020 / IR-042 post-fix round.
+- Related findings: resolves API/E2E `API-F-024` downstream and environment `CR-F-043`; source findings `CR-F-044` and `CR-F-045` were resolved by IR-042.
+- Current state: HEAD `6b578235917700584a6b559cd58763bd3bba9b38`; production correction `50ae8244872502623b3ab19e5ab81bd5e06875c9`.
+- Prerequisite cleanup: verified and removed only the API/E2E-owned API-REV-035 disposable journal residue before configured/live execution. Operational database action/inspection remained none.
+- Durable changes: lifecycle-faithful converter -> AgentRun -> Team/standalone/application integration; provider converter and Codex reasoning lifecycle currentization; canonical memory/compaction/external/WebSocket consumers; browser typed-lifecycle and strict tool-address parsing; stale standalone-mapper Team cases replaced at the Team owner; two already-adjudicated obsolete pre-SR-018 integration files remain removed.
+- Cumulative durable package: `109` paths (`4 added / 97 updated / 8 removed`; `53 server / 56 web`), `101` active paths, exact inventory/patch equality, reverse-apply Pass, zero missing relative imports, zero active `.skip/.only/.todo`, clean diff.
+- Repository results: focused selections pass `22`, `9`, `115`, `61`, `21`, `16`, `11`, `291`, and `86` tests respectively; current server `622 passed / 9 declared capability-gated skipped`; current web `540/540`; server `build:full`; Nuxt production build/15 routes.
+- Real execution: checked absent disposable SQLite target; actual TTY secret import into only its vault; checked server launcher/PID lsof; public staged fixture import; fresh Chrome Team and standalone rows for AutoByteus, Codex, and Claude; active/persisted desktop and paired-mobile reference journeys.
+- Real result: all required rows pass. Each Team runtime observes exact root/task/peer/submission/acceptance/restore/termination with no segment rejection or console error. Each standalone runtime passes exact live/persisted output and resume. Active/persisted mobile reference and selected-Team read-only configuration pass.
+- Cleanup: owned ports closed; runtime/database/vault/key/sidecars removed; fixture source unchanged. Operational DB and protected stack actions none; four stashes and delivery backup preserved; incident disclosures retained.
+- Prior result/confidence: `Fail / 80%` (`API-REV-035`).
+- Current result/confidence: **Pass / 98%**.
+- Recommended recipient: `code_reviewer` for proportional review of the complete `109`-path durable package before delivery.

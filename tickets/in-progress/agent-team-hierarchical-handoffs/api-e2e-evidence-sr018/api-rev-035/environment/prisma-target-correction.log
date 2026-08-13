@@ -1,0 +1,8 @@
+initial_command_target=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/autobyteus-server-ts/db/api-rev-035-live-20260812-1.db
+intended_target=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-035-live-20260812-1.db
+operational_target_match=false
+server_started=false
+action=removed owned disposable mismatch before server; reran exact intended target
+correct_target_exists=true
+wrong_owned_target_exists=false
+operational_action=NONE

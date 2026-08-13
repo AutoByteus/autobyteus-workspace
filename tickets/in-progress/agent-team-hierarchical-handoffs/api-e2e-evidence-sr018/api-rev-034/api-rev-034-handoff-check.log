@@ -1,0 +1,44 @@
+API-REV-034 final handoff check
+head=817956ba4b097d1e9792a264ec7df839fc81a461
+required_artifacts:
+PASS tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-coverage-investigation.md
+PASS tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md
+PASS tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-revision-record.md
+PASS tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr018/api-rev-034/failure-api-f023-autobyteus-team-segment-admission-analysis.md
+PASS tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr018/api-rev-034/investigation/cumulative-durable-coverage-inventory.tsv
+PASS tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr018/api-rev-034/investigation/cumulative-durable-diff.patch
+PASS tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr018/api-rev-034/failure/api-f023-autobyteus-team-segment-errors.png
+PASS tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr018/api-rev-034/live/api-f023-autobyteus-segment-admission-probe.log
+PASS tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr018/api-rev-034/environment/final-cleanup-verification.log
+canonical_latest_revision:
+793:### API-REV-034 — Integrated IR-039 AutoByteus Team live segment admission fails
+canonical_current_result:
+11:- Current result: **Fail / 78%**
+141:- Authoritative result: **Fail / 78%**.
+durable_integrity:
+base=66cfe11e9057b0276c95cb5e9a01784d74b07499
+reverse_apply_check=PASS
+inventory_vs_diff_path_check=PASS
+inventory_status_vs_diff_status_check=PASS
+inventory_rows=94
+status_counts=A:3,D:6,M:85
+scope_counts=server:40,web:54
+cleanup:
+API-REV-034 final cleanup verification
+status=PASS
+owned_server_port_60234_listener_after_stop=ABSENT
+owned_frontend_port_31234_listener_after_stop=ABSENT
+owned_runtime=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-034-live-20260812-1
+owned_runtime_exists_after_cleanup=NO
+owned_database_prefix=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-034-live-20260812-1.db
+owned_database_matches_after_cleanup=0
+provider_traces_copied_before_cleanup=YES
+source_fixture_final_integrity=PASS
+operational_database_action=NONE
+protected_127.0.0.1_60004_31004_action=NONE
+delivery_stash_action=NONE
+delivery_backup_action=NONE
+automatic_rollback_action=NONE
+historical_incident_disclosures=PRESERVED
+git_diff_check:
+PASS

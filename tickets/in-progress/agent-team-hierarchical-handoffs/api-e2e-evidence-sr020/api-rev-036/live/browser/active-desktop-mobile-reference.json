@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "passed": true,
+  "rootTeamRunId": "nested_classroom_test_team_fe1502c057ce45f5b337738e08aacabd",
+  "conditions": {
+    "freshActiveTeam": true,
+    "referencedMessagePresent": true,
+    "exactReplyReceivedOnce": true,
+    "exactRootOnAllRecords": true,
+    "desktopActiveReference": true,
+    "selectedTeamConfigReadOnly": true,
+    "mobileActiveReference": true,
+    "noBrowserConsoleErrors": true
+  },
+  "desktopActive": {
+    "messageCount": 2,
+    "exactReferencePathVisible": true,
+    "exactReferenceContentVisible": true,
+    "messageDetailRestoredAfterReference": true
+  },
+  "mobileActive": {
+    "phoneAccessEnabled": true,
+    "pairedCredentialIssued": true,
+    "messageSummary": "2 messages; open details for full text.",
+    "messageCount": 2,
+    "exactReferencePathVisible": true,
+    "exactReferenceContentVisible": true,
+    "referenceRowRestoredAfterBack": true
+  },
+  "selectedTeamConfig": {
+    "titleVisible": true,
+    "readOnlyNoticeVisible": true,
+    "runtimeMatches": true,
+    "runtimeDisabled": true,
+    "autoApproveDisabled": true,
+    "runButtonAbsent": true
+  },
+  "communications": [
+    {
+      "messageId": "teammsg_BwmfPdrbB1DX2-xNsm8FCuQgJR5L2hjB",
+      "content": "Please ask your coordinator to reply to /Teacher with exactly API36_REFERENCE_REPLY_AUTOBYTEUS. This is an ordinary classroom message; please use the referenced file as context if needed.",
+      "senderAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_fe1502c057ce45f5b337738e08aacabd",
+        "taskTeamRunIds": [],
+        "memberAddress": "/Teacher",
+        "taskAgentRunId": null
+      },
+      "receiverAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_fe1502c057ce45f5b337738e08aacabd",
+        "taskTeamRunIds": [],
+        "memberAddress": "/StudentStudyGroup/student_one",
+        "taskAgentRunId": null
+      },
+      "referenceFiles": [
+        {
+          "referenceId": "teamref_dpw9BXbPM_nSoYtPquSw4RwJGewe2Ga0",
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr020/api-rev-036/live/api36-mobile-desktop-reference.txt",
+          "type": "file"
+        }
+      ]
+    },
+    {
+      "messageId": "teammsg_qRpK4xjndJigGSqgYnr4Se6gcxzUM9un",
+      "content": "API36_REFERENCE_REPLY_AUTOBYTEUS",
+      "senderAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_fe1502c057ce45f5b337738e08aacabd",
+        "taskTeamRunIds": [],
+        "memberAddress": "/StudentStudyGroup/student_one",
+        "taskAgentRunId": null
+      },
+      "receiverAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_fe1502c057ce45f5b337738e08aacabd",
+        "taskTeamRunIds": [],
+        "memberAddress": "/Teacher",
+        "taskAgentRunId": null
+      },
+      "referenceFiles": [
+        {
+          "referenceId": "teamref_QxZdMRWA1K671nOZeU7_x2CZzChe6Zb3",
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr020/api-rev-036/live/api36-mobile-desktop-reference.txt",
+          "type": "file"
+        }
+      ]
+    }
+  ],
+  "consoleEvents": [],
+  "termination": {
+    "success": true,
+    "message": "Agent team run terminated successfully."
+  }
+}

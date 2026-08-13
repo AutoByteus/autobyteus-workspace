@@ -1,0 +1,85 @@
+API-F-023 source-boundary audit
+AutoByteus converter segment payload owner:
+    90	
+    91	  convert(event: StreamEvent): AgentRunEvent | null {
+    92	    const payload = serializePayload(event.data);
+    93	    const errorEvidence = event.event_type === StreamEventType.ERROR_EVENT
+    94	      ? this.resolveErrorEvidence(payload)
+    95	      : null;
+    96	    const status =
+    97	      event.event_type === StreamEventType.AGENT_STATUS
+    98	        ? this.projectExplicitStatus(payload.status, "idle")
+    99	        : undefined;
+   100	    const statusHint = resolveStatusHint(event.event_type, status, errorEvidence);
+   101	
+   102	    if (event.event_type === StreamEventType.SEGMENT_EVENT) {
+   103	      const eventType = resolveSegmentEventType(payload);
+   104	      if (!eventType) {
+   105	        return null;
+   106	      }
+   107	      const turnId =
+   108	        typeof payload.turn_id === "string" && payload.turn_id.length > 0
+   109	          ? payload.turn_id
+   110	          : null;
+   111	      if (!turnId) {
+   112	        return null;
+   113	      }
+   114	      const nestedPayload =
+   115	        payload.payload &&
+   116	        typeof payload.payload === "object" &&
+   117	        !Array.isArray(payload.payload)
+   118	          ? (payload.payload as Record<string, unknown>)
+   119	          : {};
+   120	      const {
+   121	        turnId: _nestedCamelTurnId,
+   122	        turn_id: _nestedTurnId,
+   123	        ...canonicalNestedPayload
+   124	      } = nestedPayload;
+   125	      return {
+   126	        eventType,
+   127	        runId: this.runId,
+   128	        payload: {
+   129	          id:
+   130	            typeof payload.segment_id === "string" && payload.segment_id.length > 0
+   131	              ? payload.segment_id
+   132	              : "",
+
+Team admission segment requirement:
+   132	        return correlated({ eventType: "TURN_STARTED", details: { turnId: text(raw(p, "turn_id", "turnId")) }, statusHint: hint });
+   133	      case AgentRunEventType.TURN_COMPLETED:
+   134	        return correlated({ eventType: "TURN_COMPLETED", details: { turnId: text(raw(p, "turn_id", "turnId")), reason: text(p.reason) }, statusHint: hint });
+   135	      case AgentRunEventType.TURN_INTERRUPTED:
+   136	        return correlated({ eventType: "TURN_INTERRUPTED", details: { turnId: text(raw(p, "turn_id", "turnId")), reason: text(p.reason) }, statusHint: hint });
+   137	      case AgentRunEventType.SEGMENT_START:
+   138	        return correlated({ eventType: "SEGMENT_START", details: { segmentId: required(raw(p, "segment_id", "segmentId"), "segment_id"), turnId: text(raw(p, "turn_id", "turnId")), segmentType: required(raw(p, "segment_type", "segmentType"), "segment_type"), metadata: json(p.metadata) }, statusHint: hint });
+   139	      case AgentRunEventType.SEGMENT_CONTENT:
+   140	        return correlated({ eventType: "SEGMENT_CONTENT", details: { segmentId: required(raw(p, "segment_id", "segmentId"), "segment_id"), turnId: text(raw(p, "turn_id", "turnId")), segmentType: required(raw(p, "segment_type", "segmentType"), "segment_type"), delta: stringValue(p.delta) }, statusHint: hint });
+   141	      case AgentRunEventType.SEGMENT_END:
+   142	        return correlated({ eventType: "SEGMENT_END", details: { segmentId: required(raw(p, "segment_id", "segmentId"), "segment_id"), turnId: text(raw(p, "turn_id", "turnId")), metadata: json(p.metadata), interrupted: boolean(p.interrupted) ?? false, reason: text(p.reason), failed: boolean(p.failed) ?? false, error: text(p.error) }, statusHint: hint });
+   143	      case AgentRunEventType.AGENT_STATUS:
+   144	        return correlated({ eventType: "AGENT_STATUS", details: createTeamAgentStatusDetails({ status: p.status, trigger: p.trigger, toolName: raw(p, "tool_name", "toolName"), errorMessage: raw(p, "error_message", "errorMessage"), errorDetails: raw(p, "error_details", "errorDetails") }), statusHint: hint });
+   145	      case AgentRunEventType.COMPACTION_STATUS:
+   146	        return correlated({ eventType: "COMPACTION_STATUS", details: {
+
+Standalone mapper preserves converter payload:
+    72	export class AgentRunEventMessageMapper {
+    73	  map(event: AgentRunEvent): ServerMessage {
+    74	    const payload = serializePayload(event.payload);
+    75	
+    76	    switch (event.eventType) {
+    77	      case AgentRunEventType.TURN_STARTED:
+    78	        return new ServerMessage(ServerMessageType.TURN_STARTED, normalizeTurnPayload(payload));
+    79	      case AgentRunEventType.TURN_COMPLETED:
+    80	        return new ServerMessage(ServerMessageType.TURN_COMPLETED, normalizeTurnPayload(payload));
+    81	      case AgentRunEventType.TURN_INTERRUPTED:
+    82	        return new ServerMessage(ServerMessageType.TURN_INTERRUPTED, normalizeTurnPayload(payload));
+    83	      case AgentRunEventType.SEGMENT_START:
+    84	        return new ServerMessage(ServerMessageType.SEGMENT_START, normalizeSegmentPayload(payload));
+    85	      case AgentRunEventType.SEGMENT_CONTENT:
+    86	        return new ServerMessage(ServerMessageType.SEGMENT_CONTENT, normalizeSegmentPayload(payload));
+    87	      case AgentRunEventType.SEGMENT_END:
+    88	        return new ServerMessage(ServerMessageType.SEGMENT_END, normalizeSegmentPayload(payload));
+    89	      case AgentRunEventType.AGENT_STATUS:
+    90	        return new ServerMessage(ServerMessageType.AGENT_STATUS, normalizeStatusPayload(payload));
+    91	      case AgentRunEventType.COMPACTION_STATUS:
+    92	        return new ServerMessage(ServerMessageType.COMPACTION_STATUS, normalizeCompactionPayload(payload));

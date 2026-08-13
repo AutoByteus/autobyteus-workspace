@@ -20,8 +20,7 @@ const parsedEvent = (input: {
   errorEvidence: input.errorEvidence ?? null,
   agentRunId: "agent-run-1",
   teamRunId: null,
-  memberName: null,
-  memberRunId: null,
+  executionAddress: null,
   turnId: input.turnId ?? "turn-1",
   text: input.text ?? null,
   textKind: input.textKind ?? null,
@@ -127,7 +126,7 @@ describe("ChannelRunOutputEventCollector", () => {
     expect(final?.replyText).toBe("Glad you liked it!");
   });
 
-  it("uses final text snapshots before accumulated stream fragments", () => {
+  it("ignores segment-end payload text and retains only admitted stream content", () => {
     const collector = new ChannelRunOutputEventCollector();
     collector.processEvent({
       deliveryKey: "delivery-1",
@@ -142,7 +141,7 @@ describe("ChannelRunOutputEventCollector", () => {
       event: parsedEvent({
         eventType: AgentRunEventType.SEGMENT_END,
         text: "clean final reply",
-        textKind: "FINAL_TEXT",
+        textKind: null,
       }),
     });
 
@@ -151,7 +150,7 @@ describe("ChannelRunOutputEventCollector", () => {
       event: parsedEvent({ eventType: AgentRunEventType.TURN_COMPLETED }),
     });
 
-    expect(final?.replyText).toBe("clean final reply");
+    expect(final?.replyText).toBe("noisy partial");
   });
 
   it("preserves collected output across recoverable diagnostic errors", () => {

@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "passed": true,
+  "rootTeamRunId": "nested_classroom_test_team_fe1502c057ce45f5b337738e08aacabd",
+  "conditions": {
+    "exactRunTerminalAndLatest": true,
+    "exactPersistedRecords": true,
+    "desktopPersistedReference": true,
+    "mobilePersistedReference": true,
+    "noBrowserConsoleErrors": true
+  },
+  "exactRun": {
+    "teamRunId": "nested_classroom_test_team_fe1502c057ce45f5b337738e08aacabd",
+    "createdAt": "2026-08-13T02:20:05.268Z",
+    "isActive": false,
+    "terminatedAt": "2026-08-13T02:20:14.302Z",
+    "coordinatorAddress": "/Teacher"
+  },
+  "communications": [
+    {
+      "messageId": "teammsg_BwmfPdrbB1DX2-xNsm8FCuQgJR5L2hjB",
+      "content": "Please ask your coordinator to reply to /Teacher with exactly API36_REFERENCE_REPLY_AUTOBYTEUS. This is an ordinary classroom message; please use the referenced file as context if needed.",
+      "senderAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_fe1502c057ce45f5b337738e08aacabd",
+        "taskTeamRunIds": [],
+        "memberAddress": "/Teacher",
+        "taskAgentRunId": null
+      },
+      "receiverAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_fe1502c057ce45f5b337738e08aacabd",
+        "taskTeamRunIds": [],
+        "memberAddress": "/StudentStudyGroup/student_one",
+        "taskAgentRunId": null
+      },
+      "referenceFiles": [
+        {
+          "referenceId": "teamref_dpw9BXbPM_nSoYtPquSw4RwJGewe2Ga0",
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr020/api-rev-036/live/api36-mobile-desktop-reference.txt",
+          "type": "file"
+        }
+      ]
+    },
+    {
+      "messageId": "teammsg_qRpK4xjndJigGSqgYnr4Se6gcxzUM9un",
+      "content": "API36_REFERENCE_REPLY_AUTOBYTEUS",
+      "senderAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_fe1502c057ce45f5b337738e08aacabd",
+        "taskTeamRunIds": [],
+        "memberAddress": "/StudentStudyGroup/student_one",
+        "taskAgentRunId": null
+      },
+      "receiverAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_fe1502c057ce45f5b337738e08aacabd",
+        "taskTeamRunIds": [],
+        "memberAddress": "/Teacher",
+        "taskAgentRunId": null
+      },
+      "referenceFiles": [
+        {
+          "referenceId": "teamref_QxZdMRWA1K671nOZeU7_x2CZzChe6Zb3",
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr020/api-rev-036/live/api36-mobile-desktop-reference.txt",
+          "type": "file"
+        }
+      ]
+    }
+  ],
+  "desktopEvidence": {
+    "exactPersistedRunSelected": true,
+    "messageCount": 2,
+    "exactReferencePathVisible": true,
+    "exactReferenceContentVisible": true,
+    "messageDetailRestoredAfterReference": true
+  },
+  "mobileEvidence": {
+    "latestHistoryRunMatchesExactRoot": true,
+    "recentText": "Nested Classroom Test Team\nUse send_message_to exactly once to send an ordinary message to ./StudentStudyGroup with referenc...\nInactive · temp_workspace",
+    "recentMarkup": "<button type=\"button\" class=\"w-full rounded-2xl border p-4 text-left shadow-sm transition hover:border-blue-200 hover:bg-blue-50 border-slate-200 bg-white\" data-testid=\"mobile-readable-work-row\"><span class=\"block min-w-0\"><span class=\"block break-words text-base font-semibold leading-6 text-slate-950\" data-testid=\"mobile-work-row-title\">Nested Classroom Test Team</span><span class=\"mt-1 block break-words text-sm leading-5 text-slate-600\" data-testid=\"mobile-work-row-detail\">Use send_message_to exactly once to send an ordinary message to ./StudentStudyGroup with referenc...</span><span class=\"mt-3 inline-flex max-w-full rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold leading-4 text-slate-600\" data-testid=\"mobile-work-row-meta\"><span class=\"truncate\">Inactive · temp_workspace</span></span></span></button>",
+    "messageSummary": "2 messages; open details for full text.",
+    "messageCount": 2,
+    "exactReferencePathVisible": true,
+    "exactReferenceContentVisible": true,
+    "referenceRowRestoredAfterBack": true
+  },
+  "consoleEvents": []
+}

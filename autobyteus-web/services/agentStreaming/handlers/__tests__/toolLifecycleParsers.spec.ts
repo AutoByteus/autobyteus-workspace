@@ -7,6 +7,7 @@ import {
   parseToolExecutionStartedPayload,
   parseToolExecutionSucceededPayload,
   parseToolLogPayload,
+  parseToolApprovalTarget,
 } from '../toolLifecycleParsers';
 
 describe('toolLifecycleParsers', () => {
@@ -134,45 +135,49 @@ describe('toolLifecycleParsers', () => {
     });
   });
 
-  it('parses approval source selectors from nested team payloads', () => {
+  it('parses only an exact current Team execution address as an approval target', () => {
     expect(
-      parseToolApprovalRequestedPayload({
-        invocation_id: 'inv-nested',
-        tool_name: 'run_bash',
-        turn_id: null,
-        arguments: { command: 'pnpm test' },
-        source_path: ['BuildSquad', 'review_lead'],
-        member_path: ['BuildSquad', 'review_lead'],
-      } as any),
-    )?.toMatchObject({
-      invocationId: 'inv-nested',
-      approvalTarget: {
-        memberRouteKey: 'BuildSquad/review_lead',
-        memberPath: ['BuildSquad', 'review_lead'],
-        sourceRouteKey: 'BuildSquad/review_lead',
-        sourcePath: ['BuildSquad', 'review_lead'],
+      parseToolApprovalTarget({
+        execution_address: {
+          rootTeamRunId: 'root-team-run-1',
+          taskTeamRunIds: ['task-team-outer', 'task-team-inner'],
+          memberAddress: '/BuildSquad/review_lead',
+          taskAgentRunId: null,
+        },
+      }),
+    ).toEqual({
+      executionAddress: {
+        rootTeamRunId: 'root-team-run-1',
+        taskTeamRunIds: ['task-team-outer', 'task-team-inner'],
+        memberAddress: '/BuildSquad/review_lead',
+        taskAgentRunId: null,
       },
     });
   });
 
-  it('parses task-agent run identity from approval payloads', () => {
+  it('does not reconstruct approval identity from retired route or task-run selectors', () => {
     expect(
       parseToolApprovalRequestedPayload({
-        invocation_id: 'inv-task-agent',
+        invocation_id: 'inv-legacy',
         tool_name: 'run_bash',
         turn_id: null,
         arguments: { command: 'pwd' },
         member_route_key: 'worker',
         source_route_key: 'worker',
         task_agent_run_id: 'task-agent-run-1',
-      }),
-    )?.toMatchObject({
-      invocationId: 'inv-task-agent',
-      approvalTarget: {
-        memberRouteKey: 'worker',
-        sourceRouteKey: 'worker',
-        taskAgentRunId: 'task-agent-run-1',
-      },
+      } as any),
+    ).toMatchObject({
+      invocationId: 'inv-legacy',
+      approvalTarget: null,
     });
+    expect(parseToolApprovalTarget({
+      execution_address: {
+        rootTeamRunId: 'root-team-run-1',
+        taskTeamRunIds: [],
+        memberAddress: '/worker',
+        taskAgentRunId: 'task-agent-run-1',
+        memberRouteKey: 'worker',
+      },
+    })).toBeNull();
   });
 });

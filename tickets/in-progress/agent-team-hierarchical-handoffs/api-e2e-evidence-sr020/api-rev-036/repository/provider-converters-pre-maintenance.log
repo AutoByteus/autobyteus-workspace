@@ -1,0 +1,473 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts (57 tests | 2 failed) 26ms
+     ✓ projects authoritative command arguments for a result-first completed command 3ms
+     ✓ preserves explicit empty arguments for a result-first dynamic terminal 1ms
+     ✓ omits arguments for a genuinely argument-absent dynamic terminal 0ms
+     ✓ ignores codex-prefixed internal events at the dispatcher boundary 0ms
+     ✓ does not map token-usage telemetry into AGENT_STATUS 0ms
+     ✓ normalizes thread/compacted into provider compaction boundary status 1ms
+     ✓ normalizes contextCompaction item start into a non-rotating provider compaction status 0ms
+     ✓ normalizes contextCompaction item completion into a rotating provider compaction boundary 0ms
+     ✓ does not let contextCompaction start suppress the later completed boundary 1ms
+     ✓ normalizes raw context_compaction items into provider compaction boundaries 0ms
+     ✓ dedupes completed contextCompaction and raw context_compaction surfaces for the same item 0ms
+     ✓ ignores compaction_trigger items as non-boundary signals 0ms
+     ✓ dedupes raw compaction items when thread/compacted already reported the boundary 0ms
+     ✓ dedupes raw no-stable compaction items when thread/compacted already reported the boundary 0ms
+     ✓ dedupes later thread/compacted when a raw no-stable compaction item arrived first 0ms
+     ✓ dedupes repeated raw no-stable compaction items in the same converter window 0ms
+     ✓ dedupes stable-id compaction boundaries when the raw item arrives before thread/compacted 0ms
+     ✓ keeps raw compaction items with a distinct stable id after thread/compacted in the same window 0ms
+     ✓ keeps thread/compacted with a distinct stable id after a raw compaction item in the same window 0ms
+     ✓ emits thread status changes as neutral lifecycle facts 0ms
+     ✓ emits only neutral explicit turn lifecycle events 0ms
+     ✓ emits effect-aware Codex errors without a backend status companion 0ms
+     ✓ keeps unclassified Codex errors as content without a guessed status 0ms
+     ✓ does not emit a status companion for a terminal error rejected by native turn guards 0ms
+     ✓ maps local MCP tool approval requests into TOOL_APPROVAL_REQUESTED 0ms
+     ✓ maps local Agent Tools MCP approval requests into TOOL_APPROVAL_REQUESTED with canonical arguments 1ms
+     ✓ maps local permission approval requests into TOOL_APPROVAL_REQUESTED with requested profile context 0ms
+     ✓ fans out mcpToolCall starts into tool_call segment and lifecycle start 0ms
+     ✓ maps local MCP completion events into TOOL_EXECUTION_SUCCEEDED with arguments 0ms
+     ✓ normalizes observed local MCP open_tab completion envelopes into direct browser results 1ms
+     ✓ normalizes Agent Tools MCP delegate_task completion envelopes into direct task results 0ms
+     ✓ normalizes Agent Tools MCP review_task_result completion envelopes into direct task results 0ms
+     ✓ projects generic Codex MCP JSON text envelopes into parsed results 0ms
+     ✓ projects generic Codex MCP plain text envelopes into text results 0ms
+     ✓ projects generic Codex MCP structuredContent before text fallback 0ms
+     ✓ projects generic Codex MCP multi-text envelopes with deterministic separators 0ms
+     ✓ projects generic Codex MCP rich content envelopes into sanitized items 0ms
+     ✓ maps Codex MCP isError result envelopes into failure events without result 0ms
+     ✓ does not project exact envelope-shaped non-MCP Codex dynamic tool results 0ms
+     ✓ normalizes aliased Browser MCP completion results without circular placeholders 0ms
+     ✓ maps failed local MCP completion events into TOOL_EXECUTION_FAILED with arguments 0ms
+     ✓ fans out webSearch starts into tool_call segment and lifecycle start 0ms
+     ✓ omits arguments from the captured hosted webSearch placeholder start 0ms
+     ✓ emits card-capable identity and name without inventing arguments for an unseen webSearch terminal 0ms
+     ✓ fans out successful webSearch completions into terminal success and segment end 0ms
+     ✓ fans out failed webSearch completions into terminal failure and segment end 0ms
+     × fans out Agent Tools MCP send_message_to starts into tool_call segment and canonical lifecycle start 7ms
+     ✓ maps successful Agent Tools MCP send_message_to completions into canonical terminal success 0ms
+     ✓ normalizes non-send Agent Tools MCP completions into canonical tool lifecycle events 0ms
+     ✓ redacts prefixed free-form text and raw secret fields in Agent Tools MCP payloads 0ms
+     ✓ maps failed Agent Tools MCP send_message_to completions into canonical terminal failure 0ms
+     × sanitizes Agent Tools MCP ITEM_COMPLETED segment-end payloads 1ms
+     ✓ maps generic dynamic tool completions into terminal success and segment end 0ms
+     ✓ parses generic dynamic tool JSON text results from contentItems 0ms
+     ✓ fans out fileChange start into segment and lifecycle events 0ms
+     ✓ fans out fileChange completion into success and segment end 0ms
+     ✓ preserves edit_file metadata when converting file-change segments 0ms
+ ❯ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts (31 tests | 5 failed) 15ms
+     × converts normal Claude tool segment lane metadata with arguments 7ms
+     ✓ converts a normal Claude tool lifecycle into TOOL_* events 0ms
+     × normalizes Agent Tools MCP send_message_to segment and lifecycle events 1ms
+     × passes canonical send_message_to segment and started lifecycle events 1ms
+     ✓ passes canonical send_message_to success and failure lifecycle events with arguments 0ms
+     ✓ normalizes browser MCP tool names to canonical browser tool names 0ms
+     ✓ normalizes Agent Tools MCP task-delegation envelopes to canonical task results 1ms
+     ✓ projects generic Claude MCP JSON text envelopes into parsed results 0ms
+     ✓ projects generic Claude MCP plain text envelopes into text results 0ms
+     ✓ projects generic Claude MCP structuredContent before text fallback 0ms
+     ✓ projects generic Claude MCP multi-text envelopes with deterministic separators 0ms
+     ✓ projects generic Claude MCP rich content envelopes into sanitized items 0ms
+     ✓ maps Claude MCP isError result envelopes into failure events without result 0ms
+     ✓ does not project exact envelope-shaped non-MCP Claude results 0ms
+     ✓ normalizes browser MCP content-block results to canonical browser result objects 0ms
+     ✓ normalizes browser MCP content-envelope results to canonical browser result objects 1ms
+     ✓ normalizes media MCP tool names and content envelopes to canonical generated-output results 0ms
+     ✓ strips the Agent Tools MCP provider from unknown migrated-provider names 0ms
+     ✓ preserves non-Autobyteus MCP tools with browser-like suffixes and results 0ms
+     × normalizes browser MCP tool names in segment start metadata and top-level payload 1ms
+     × normalizes browser MCP tool names in provided segment end metadata 0ms
+     ✓ preserves arguments on failed Claude tool completion events 0ms
+     ✓ preserves arguments on denied Claude tool lifecycle events 0ms
+     ✓ emits only the neutral explicit turn-completed event 0ms
+     ✓ emits only the neutral explicit turn-started event 0ms
+     ✓ emits classified terminal error without a backend status companion 0ms
+     ✓ keeps unclassified Claude errors as content without a guessed status 0ms
+     ✓ maps Claude token usage session events to TOKEN_USAGE_UPDATED agent-run events 0ms
+     ✓ normalizes compacting status without rotation eligibility 0ms
+     ✓ normalizes compact_boundary as rotation eligible 0ms
+     ✓ keeps compacting status and compact boundary keys distinct when provider uuid matches 0ms
+stdout | tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts (27 tests | 2 failed) 10ms
+     ✓ maps turn_started to TURN_STARTED 1ms
+     ✓ maps turn_completed to TURN_COMPLETED 0ms
+     ✓ maps agent_status to AGENT_STATUS 0ms
+     ✓ maps compaction_status to COMPACTION_STATUS 0ms
+     ✓ maps assistant_complete_response to ASSISTANT_COMPLETE 0ms
+     ✓ maps tool_approval_requested to TOOL_APPROVAL_REQUESTED 0ms
+     ✓ maps tool_approved to TOOL_APPROVED 0ms
+     ✓ maps tool_denied to TOOL_DENIED 0ms
+     ✓ maps tool_execution_started to TOOL_EXECUTION_STARTED 0ms
+     ✓ maps tool_execution_succeeded to TOOL_EXECUTION_SUCCEEDED 0ms
+     ✓ maps tool_execution_failed to TOOL_EXECUTION_FAILED 0ms
+     ✓ maps tool_interaction_log_entry to TOOL_LOG 0ms
+     ✓ maps system_task_notification to SYSTEM_TASK_NOTIFICATION 0ms
+     ✓ maps inter_agent_message to INTER_AGENT_MESSAGE 0ms
+     ✓ maps artifact_persisted to ARTIFACT_PERSISTED 0ms
+     ✓ maps error_event to ERROR 0ms
+     ✓ preserves effect-aware errors without owning lifecycle state 0ms
+     ✓ does not grant status or lifecycle authority to malformed terminal error payloads 0ms
+     ✓ uses explicit current status payloads before stale snapshots 0ms
+     ✓ normalizes explicit fine-grained native statuses through the AutoByteus status projector 0ms
+     ✓ preserves semantic compaction operation identity from native compaction statuses 0ms
+     ✓ keeps raw conversion stateless so run-owned reconciliation decides active status 0ms
+     ✓ ignores deprecated artifact_updated stream events 0ms
+     × maps segment events into start, content, and end events 4ms
+     ✓ canonicalizes native segment payloads to turn_id for all segment event variants 1ms
+     × drops unknown segment types 0ms
+     ✓ keeps native turn lifecycle payloads intact 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts > AutoByteusStreamEventConverter > maps segment events into start, content, and end events
+AssertionError: expected { eventType: 'SEGMENT_START', …(3) } to deeply equal { eventType: 'SEGMENT_START', …(3) }
+
+- Expected
++ Received
+
+@@ -1,9 +1,8 @@
+  {
+    "eventType": "SEGMENT_START",
+    "payload": {
+-     "content": "hello",
+      "id": "seg-1",
+      "segment_type": "assistant_text",
+      "turn_id": "turn-1",
+    },
+    "runId": "run-1",
+
+ ❯ tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts:246:7
+    244|         },
+    245|       } as any),
+    246|     ).toEqual({
+       |       ^
+    247|       eventType: AgentRunEventType.SEGMENT_START,
+    248|       runId: "run-1",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts > AutoByteusStreamEventConverter > drops unknown segment types
+AssertionError: expected { eventType: 'SEGMENT_START', …(3) } to be null
+
+- Expected: 
+null
+
++ Received: 
+{
+  "eventType": "SEGMENT_START",
+  "payload": {
+    "id": "seg-5",
+    "segment_type": undefined,
+    "turn_id": undefined,
+  },
+  "runId": "run-1",
+  "statusHint": null,
+}
+
+ ❯ tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts:363:7
+    361|         data: { event_type: "start", segment_id: "seg-5" },
+    362|       } as any),
+    363|     ).toBeNull();
+       |       ^
+    364|   });
+    365| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > converts normal Claude tool segment lane metadata with arguments
+AssertionError: expected { eventType: 'SEGMENT_END', …(3) } to match object { eventType: 'SEGMENT_END', …(1) }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+@@ -8,9 +8,8 @@
+        },
+        "result": "workspace
+  ",
+        "tool_name": "Bash",
+      },
+-     "segment_type": "tool_call",
+      "turn_id": "turn-1",
+    },
+  }
+
+ ❯ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts:56:24
+     54|       },
+     55|     });
+     56|     expect(segmentEnd).toMatchObject({
+       |                        ^
+     57|       eventType: AgentRunEventType.SEGMENT_END,
+     58|       payload: {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > normalizes Agent Tools MCP send_message_to segment and lifecycle events
+AssertionError: expected { eventType: 'SEGMENT_START', …(3) } to match object { eventType: 'SEGMENT_START', …(1) }
+(5 matching properties omitted from actual)
+
+- Expected
++ Received
+
+@@ -7,8 +7,7 @@
+          "message_type": "roundtrip_ping",
+          "recipient_address": "pong",
+        },
+        "tool_name": "send_message_to",
+      },
+-     "tool_name": "send_message_to",
+    },
+  }
+
+ ❯ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts:179:26
+    177|     });
+    178| 
+    179|     expect(segmentStart).toMatchObject({
+       |                          ^
+    180|       eventType: AgentRunEventType.SEGMENT_START,
+    181|       payload: {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > passes canonical send_message_to segment and started lifecycle events
+AssertionError: expected { eventType: 'SEGMENT_START', …(3) } to match object { eventType: 'SEGMENT_START', …(1) }
+(3 matching properties omitted from actual)
+
+- Expected
++ Received
+
+@@ -9,8 +9,7 @@
+          "recipient_address": "pong",
+        },
+        "tool_name": "send_message_to",
+      },
+      "segment_type": "tool_call",
+-     "tool_name": "send_message_to",
+    },
+  }
+
+ ❯ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts:259:26
+    257|     });
+    258| 
+    259|     expect(segmentStart).toMatchObject({
+       |                          ^
+    260|       eventType: AgentRunEventType.SEGMENT_START,
+    261|       payload: {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > normalizes browser MCP tool names in segment start metadata and top-level payload
+AssertionError: expected { eventType: 'SEGMENT_START', …(3) } to match object { eventType: 'SEGMENT_START', …(1) }
+(3 matching properties omitted from actual)
+
+- Expected
++ Received
+
+@@ -7,8 +7,7 @@
+          "url": "http://localhost:3000",
+        },
+        "tool_name": "open_tab",
+      },
+      "segment_type": "tool_call",
+-     "tool_name": "open_tab",
+    },
+  }
+
+ ❯ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts:799:26
+    797|     });
+    798| 
+    799|     expect(segmentStart).toMatchObject({
+       |                          ^
+    800|       eventType: AgentRunEventType.SEGMENT_START,
+    801|       payload: {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/9]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > normalizes browser MCP tool names in provided segment end metadata
+AssertionError: expected { eventType: 'SEGMENT_END', …(3) } to match object { eventType: 'SEGMENT_END', …(1) }
+(3 matching properties omitted from actual)
+
+- Expected
++ Received
+
+@@ -7,9 +7,7 @@
+          "status": "opened",
+          "tab_id": "browser-1",
+        },
+        "tool_name": "open_tab",
+      },
+-     "segment_type": "tool_call",
+-     "tool_name": "open_tab",
+    },
+  }
+
+ ❯ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts:836:24
+    834|     });
+    835| 
+    836|     expect(segmentEnd).toMatchObject({
+       |                        ^
+    837|       eventType: AgentRunEventType.SEGMENT_END,
+    838|       payload: {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/9]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > fans out Agent Tools MCP send_message_to starts into tool_call segment and canonical lifecycle start
+AssertionError: expected { eventType: 'SEGMENT_START', …(3) } to match object { runId: 'run-1', payload: { …(4) } }
+(3 matching properties omitted from actual)
+
+- Expected
++ Received
+
+@@ -1,11 +1,8 @@
+  {
+    "payload": {
+      "id": "call_send_message",
+-     "item": {
+-       "tool": "send_message_to",
+-     },
+      "metadata": {
+        "arguments": {
+          "content": "hello",
+          "recipient_address": "pong",
+        },
+
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts:1653:26
+    1651|     ]);
+    1652|     expectNoAgentToolsProviderMarkers(converted.map((event) => event.p…
+    1653|     expect(converted[0]).toMatchObject({
+       |                          ^
+    1654|       runId: "run-1",
+    1655|       payload: {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/9]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > sanitizes Agent Tools MCP ITEM_COMPLETED segment-end payloads
+AssertionError: expected { eventType: 'SEGMENT_END', …(3) } to match object { runId: 'run-1', payload: { …(3) } }
+(3 matching properties omitted from actual)
+
+- Expected
++ Received
+
+@@ -1,17 +1,8 @@
+  {
+    "payload": {
+      "id": "call_send_message_segment_end",
+-     "item": {
+-       "contentItems": [
+-         {
+-           "text": "Delivered message to pong.",
+-           "type": "inputText",
+-         },
+-       ],
+-       "tool": "send_message_to",
+-     },
+      "metadata": {
+        "arguments": {
+          "content": "hello",
+          "recipient_address": "pong",
+        },
+
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts:1972:26
+    1970|     ]);
+    1971|     expectNoAgentToolsProviderMarkers(converted.map((event) => event.p…
+    1972|     expect(converted[0]).toMatchObject({
+       |                          ^
+    1973|       runId: "run-1",
+    1974|       payload: {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/9]⎯
+
+
+ Test Files  3 failed (3)
+      Tests  9 failed | 106 passed (115)
+   Start at  03:47:41
+   Duration  2.23s (transform 1.08s, setup 15ms, import 1.60s, tests 51ms, environment 0ms)
+

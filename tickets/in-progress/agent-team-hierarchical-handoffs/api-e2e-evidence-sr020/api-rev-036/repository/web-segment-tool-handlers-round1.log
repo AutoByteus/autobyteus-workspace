@@ -1,0 +1,175 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web
+
+stderr | services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/handlers/__tests__/fileChangeHandler.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/handlers/__tests__/todoHandler.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/handlers/__tests__/memberInputMessageHandler.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/handlers/__tests__/toolLifecycleOrdering.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/handlers/__tests__/toolLifecycleParsers.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/handlers/__tests__/toolLifecycleState.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentStreaming/handlers/__tests__/toolLifecycleState.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/handlers/__tests__/memberInputMessageHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/handlers/__tests__/toolLifecycleParsers.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/handlers/__tests__/fileChangeHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/handlers/__tests__/todoHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/handlers/__tests__/toolLifecycleOrdering.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentStreaming/handlers/__tests__/fileChangeHandler.spec.ts (2 tests) 3ms
+ ✓ services/agentStreaming/handlers/__tests__/toolLifecycleState.spec.ts (7 tests) 3ms
+ ✓ services/agentStreaming/handlers/__tests__/todoHandler.spec.ts (1 test) 3ms
+ ✓ services/agentStreaming/handlers/__tests__/memberInputMessageHandler.spec.ts (5 tests) 5ms
+ ❯ services/agentStreaming/handlers/__tests__/toolLifecycleParsers.spec.ts (5 tests | 2 failed) 10ms
+   ✓ toolLifecycleParsers > parses valid lifecycle payloads 2ms
+   ✓ toolLifecycleParsers > rejects malformed payloads 0ms
+   ✓ toolLifecycleParsers > parses lifecycle arguments when payload.arguments is serialized JSON 0ms
+   × toolLifecycleParsers > parses approval source selectors from nested team payloads 6ms
+     → expected { invocationId: 'inv-nested', …(4) } to match object { invocationId: 'inv-nested', …(1) }
+(4 matching properties omitted from actual)
+   × toolLifecycleParsers > parses task-agent run identity from approval payloads 1ms
+     → expected { Object (invocationId, toolName, ...) } to match object { Object (invocationId, approvalTarget) }
+(4 matching properties omitted from actual)
+ ✓ services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts (22 tests) 14ms
+ ✓ services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts (20 tests) 9ms
+stderr | services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts > toolLifecycleHandler > drops malformed denied payload without state mutation
+[toolLifecycleHandler] Dropping malformed TOOL_DENIED payload {
+  invocation_id: 'tool-4',
+  tool_name: 'delete_file',
+  reason: null,
+  error: null
+}
+
+ ✓ services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts (12 tests) 15ms
+ ✓ services/agentStreaming/handlers/__tests__/toolLifecycleOrdering.spec.ts (11 tests) 23ms
+stderr | services/agentStreaming/handlers/__tests__/systemTaskNotificationHandler.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentStreaming/handlers/__tests__/systemTaskNotificationHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentStreaming/handlers/__tests__/systemTaskNotificationHandler.spec.ts (1 test) 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  services/agentStreaming/handlers/__tests__/toolLifecycleParsers.spec.ts > toolLifecycleParsers > parses approval source selectors from nested team payloads
+AssertionError: expected { invocationId: 'inv-nested', …(4) } to match object { invocationId: 'inv-nested', …(1) }
+(4 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "approvalTarget": {
+-     "memberPath": [
+-       "BuildSquad",
+-       "review_lead",
+-     ],
+-     "memberRouteKey": "BuildSquad/review_lead",
+-     "sourcePath": [
+-       "BuildSquad",
+-       "review_lead",
+-     ],
+-     "sourceRouteKey": "BuildSquad/review_lead",
+-   },
++   "approvalTarget": null,
+    "invocationId": "inv-nested",
+  }
+
+ ❯ services/agentStreaming/handlers/__tests__/toolLifecycleParsers.spec.ts:147:8
+    145|         member_path: ['BuildSquad', 'review_lead'],
+    146|       } as any),
+    147|     )?.toMatchObject({
+       |        ^
+    148|       invocationId: 'inv-nested',
+    149|       approvalTarget: {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  services/agentStreaming/handlers/__tests__/toolLifecycleParsers.spec.ts > toolLifecycleParsers > parses task-agent run identity from approval payloads
+AssertionError: expected { Object (invocationId, toolName, ...) } to match object { Object (invocationId, approvalTarget) }
+(4 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "approvalTarget": {
+-     "memberRouteKey": "worker",
+-     "sourceRouteKey": "worker",
+-     "taskAgentRunId": "task-agent-run-1",
+-   },
++   "approvalTarget": null,
+    "invocationId": "inv-task-agent",
+  }
+
+ ❯ services/agentStreaming/handlers/__tests__/toolLifecycleParsers.spec.ts:169:8
+    167|         task_agent_run_id: 'task-agent-run-1',
+    168|       }),
+    169|     )?.toMatchObject({
+       |        ^
+    170|       invocationId: 'inv-task-agent',
+    171|       approvalTarget: {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 9 passed (10)
+      Tests  2 failed | 84 passed (86)
+   Start at  03:59:17
+   Duration  6.50s (transform 2.80s, setup 42.34s, collect 550ms, tests 86ms, environment 2.25s, prepare 1.70s)
+

@@ -5,12 +5,13 @@
 - Canonical path: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/nested-classroom-live-validation-contract.md`
 - Purpose: Define the required later live API/E2E validation fixture, runtime/model matrix, secret-import isolation, observable assertions, and evidence standard for the comprehensive AgentTeam refactor.
 - Scope: Downstream API/E2E investigation and execution after implementation and source review; no live provider call is part of solution design.
-- Status: `Refined — SR-018 package aligned with the complete Team event/initial-status/pre-run-status stream and concrete-execution projection contract`
-- Approval applicability: This supplement defines intended verification behavior. The user explicitly required one imported nested-classroom example AgentTeam and live coverage across AutoByteus, Codex App Server, and Claude Agent SDK, including the stated GPT-5.6 Luna selections and use of `$HOME/.autobyteus/server-data/.env` through the repository secret importer. SR-016 adds proof that live events cross the exact strict Team stream boundary and materialize only valid concrete frontend executions. SR-017 changes only the unused application's rollout policy. SR-018 adds proof that real initial connection/open/restore status and pre-run send/delegation status use the same binding/wire/frontend status transition; it does not change the approved runtime matrix.
-- Related requirements: R-021, R-044–R-052
-- Related acceptance criteria: AC-019, AC-040–AC-048
+- Status: `Refined — SR-020 package aligned with complete canonical consumer/diagnostic proof plus the Team stream/concrete-execution contract`
+- Approval applicability: This supplement defines intended verification behavior. The user explicitly required one imported nested-classroom example AgentTeam and live coverage across AutoByteus, Codex App Server, and Claude Agent SDK, including the stated GPT-5.6 Luna selections and use of `$HOME/.autobyteus/server-data/.env` through the repository secret importer. SR-019 adds real provider lifecycle proof; SR-020 adds complete deterministic consumer/diagnostic proof and requires the live matrix to contain no unexpected lifecycle diagnostic. It does not change the approved runtime/model/secret matrix.
+- Related requirements: R-021, R-044–R-056
+- Related acceptance criteria: AC-019, AC-040–AC-051
 - Exact system-instruction copy: [agent-team-collaboration-system-instruction.md](./agent-team-collaboration-system-instruction.md)
 - Exact Team stream/execution projection contract: [team-stream-execution-projection-contract.md](./team-stream-execution-projection-contract.md)
+- Exact Agent segment lifecycle contract: [agent-segment-lifecycle-contract.md](./agent-segment-lifecycle-contract.md)
 
 ## 1. Purpose And Ownership
 
@@ -40,7 +41,7 @@ The test must create an isolated Agent package root, copy the `nested-classroom-
 
 The source package is read-only test input. The test must not edit, register mutable state inside, or write generated output to `/Users/normy/autobyteus_org/autobyteus-private-agents`.
 
-The current fixture prose still describes the superseded `{target:{kind,name}}` task selector and its configs contain no handoffs. Therefore the isolated staged copy may receive only these test-owned compatibility updates before import:
+The current fixture prose still describes the superseded `{target:{kind,name}}` task selector and its configs contain no handoffs. Therefore the isolated staged copy may receive only these test-owned target-contract updates before import:
 
 1. replace old task-tool examples with `delegate_task({recipient_address:"./StudentStudyGroup", ...})`;
 2. add a small deterministic handoff graph needed to exercise non-empty `{when,recipient_address}` projection; and
@@ -141,6 +142,7 @@ isolated app-data root + isolated secrets database
   -> exercise intrinsic get_handoff_rules and send_message_to
   -> exercise recipient_address AgentTeam coordinator routing
   -> exercise delegate_task recipient_address and task-Team lifecycle
+  -> observe real provider START(type) -> CONTENT(no type) -> END(no type) through AgentRun canonical enrichment
   -> observe the exact validated Team WebSocket event sequence and concrete frontend executions
   -> terminate and restore the root TeamRun where the supported live harness permits
   -> collect redacted provider/runtime/events/history evidence
@@ -171,7 +173,9 @@ Each live row must establish all applicable observations through public/runtime-
 16. application-level Team stream readiness follows exact post-binding `CONNECTED {session_id}`, while `TEAM_RUN_LIFECYCLE {is_active}` updates the already-bound root persistent-Team execution; neither control message repeats a TeamRun identity; and
 17. task activation/result/status/token observations correlate by root-TeamRun-scoped task ID plus exact execution address, with no synthetic task Agent/Team instance ID, copied owner/parent/run/time bundle, generic `task_context`, separate activation run-ID result, or current token root/member/task-run identity field. Two independently launched classroom roots may both allocate `task_0001` without collision because cross-root inspection uses `{rootTeamRunId,taskId}` and concrete projection uses the address. Root-scoped token history remains queryable through `token_usage_ledger_events_execution_root_observed_at_idx` after canonical schema contraction;
 18. initial Team connection/open/restore status for persistent `/Teacher`, a task Agent where exercised, and `/StudentStudyGroup/student_one` inside a task AgentTeam uses the same exact `agent_execution` and Agent-status DTO as a live status. The task-Team Agent carries its genuine member AgentRun ID exactly once; no TeamRun ID, Agent name/runtime/raw-ID, task alias, second execution address, generic Team message, or fabricated TeamRun event is observed; and
-19. send/delegation to an unmaterialized persistent/task/task-Team Agent produces exact initializing or error feedback through the same Agent-status browser transition, preserves activation-before-child ordering, and the first matching real Agent status replaces the temporary overlay. A different execution at the same logical member address is not cleared or overwritten.
+19. send/delegation to an unmaterialized persistent/task/task-Team Agent produces exact initializing or error feedback through the same Agent-status browser transition, preserves activation-before-child ordering, and the first matching real Agent status replaces the temporary overlay. A different execution at the same logical member address is not cleared or overwritten; and
+20. ordinary provider text and at least one applicable non-text/tool/reasoning segment are observed from real provider/native source through the common AgentRun lifecycle and complete consumer fan-out. Source content/end omits `segment_type`; canonical Team content contains the start-owned type; browser rendering has no protocol-error card/guessed text/unexpected lifecycle diagnostic; repeated identical deltas remain repeated; and standalone/Team application text projection agrees where exposed. A fabricated per-content source type does not satisfy this assertion.
+21. deterministic pre-live coverage proves file-change start/content/end without end type preserves accumulated content and cleanup, memory/history/compaction/skill/external consumers accept exact canonical input only, and explicit-turn versus missing-turn malformed candidates produce visible non-terminal turn/runtime diagnostics through exact Team/standalone wire and browser/application behavior. The normal live row must not manufacture malformed input merely to satisfy this negative seam.
 
 Deterministic API/E2E coverage remains responsible for exact negative cases, migration failures, UI state, and exhaustive field-removal assertions. The live matrix is additive evidence that the same contract survives real provider tool/prompt lifecycles.
 
@@ -185,6 +189,7 @@ The execution coverage report must contain one row per runtime with:
 - canonical address and execution-address observations;
 - intrinsic tool exposure and provider instruction evidence;
 - handoff-result shape, message delivery, task lifecycle, initial-status binding observations, pre-run status/replacement observations, and terminate/restore outcomes;
+- provider-source versus canonical segment observations, including explicit start, untyped source content/end, canonical enriched type, complete consumer proof references, browser/application result, and absence of protocol rejection/defaulting/unexpected diagnostic;
 - command/test identifier, timestamps, duration, and exit/result classification; and
 - redacted log/evidence paths.
 
@@ -194,6 +199,7 @@ Overall live-matrix status is `Pass` only when all three required rows pass. A p
 
 Required cleanup:
 
+- before any new live run, remove only the API/E2E-owned disposable journal identified by CR-F-043, correct the prior cleanup evidence, and repeat the protected-target audit; solution/implementation reviewers do not inspect or delete it;
 - terminate every root/task run and provider process started by the scenario;
 - remove the staged package, isolated application-data root, and isolated database after evidence capture unless failure preservation is explicitly needed;
 - if failure state is retained, record its path and redact/copy only non-secret evidence; and
@@ -207,6 +213,8 @@ Forbidden shortcuts:
 - reusing one provider's result as evidence for another runtime;
 - calling private service constructors instead of importing and launching through supported surfaces;
 - replacing live rows with adapter mocks;
+- fabricating `segment_type` on provider-source content/end or bypassing AgentRun lifecycle while claiming provider-boundary coverage;
+- treating a deliberate turn/runtime diagnostic seam as live-provider evidence, or accepting diagnostic terminalization/evidence loss in deterministic coverage;
 - weakening the Codex model or reasoning effort from `gpt-5.6-luna` / `medium`;
 - using a non-Luna AutoByteus model; or
 - reporting unavailable or skipped live coverage as passed.

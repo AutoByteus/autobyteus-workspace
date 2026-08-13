@@ -1,0 +1,4 @@
+status=PASS
+source=/Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/nested-classroom-test
+source_mutation=NONE
+before_final_hash_lists=IDENTICAL

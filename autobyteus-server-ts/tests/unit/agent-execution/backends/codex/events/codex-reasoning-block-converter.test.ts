@@ -6,7 +6,8 @@ import { AgentRunEventType } from "../../../../../../src/agent-execution/domain/
 
 const isReasoningEnd = (event: { eventType: AgentRunEventType; payload: Record<string, unknown> }) =>
   event.eventType === AgentRunEventType.SEGMENT_END &&
-  event.payload.segment_type === "reasoning";
+  typeof event.payload.id === "string" &&
+  event.payload.id.startsWith("reasoning-block:");
 
 const emitCompletedReasoning = (
   converter: CodexThreadEventConverter,
@@ -21,8 +22,19 @@ const emitCompletedReasoning = (
       item: { type: "reasoning", id: providerItemId, summary: [{ text }] },
     },
   });
-  expect(events).toHaveLength(1);
-  return events[0]!;
+  expect(events.map((event) => event.eventType)).toEqual(
+    events.length === 2
+      ? [AgentRunEventType.SEGMENT_START, AgentRunEventType.SEGMENT_CONTENT]
+      : [AgentRunEventType.SEGMENT_CONTENT],
+  );
+  if (events.length === 2) {
+    expect(events[0]!.payload).toMatchObject({
+      id: events[1]!.payload.id,
+      turn_id: turnId,
+      segment_type: "reasoning",
+    });
+  }
+  return events.find((event) => event.eventType === AgentRunEventType.SEGMENT_CONTENT)!;
 };
 
 const expectBoundaryDisposition = (
@@ -42,14 +54,12 @@ const expectBoundaryDisposition = (
       payload: {
         id: before.payload.id,
         turn_id: "turn-1",
-        segment_type: "reasoning",
       },
     });
     expect(boundaryEvents.filter(isReasoningEnd))
       .toHaveLength(1);
     expect(Object.keys(boundaryEvents[0]!.payload).sort()).toEqual([
       "id",
-      "segment_type",
       "turn_id",
     ]);
     expect(after.payload.id).not.toBe(before.payload.id);
@@ -96,15 +106,12 @@ describe("Codex reasoning block conversion", () => {
     expect(first.payload.id).toEqual(expect.stringMatching(/^reasoning-block:[^:]+:1$/));
     expect(first.payload.id).not.toBe("provider-a");
     expect(first.payload).toMatchObject({
-      turnId: "turn-1",
-      item: { type: "reasoning", id: "provider-a", summary: [{ text: "first" }] },
+      turn_id: "turn-1",
       delta: "first",
-      segment_type: "reasoning",
     });
     expect(second.payload).toMatchObject({
       id: first.payload.id,
       delta: "\n\nsecond",
-      segment_type: "reasoning",
     });
     expect(repeated).toEqual([]);
   });
@@ -120,19 +127,22 @@ describe("Codex reasoning block conversion", () => {
     });
 
     expect(events.map((event) => event.eventType)).toEqual([
+      AgentRunEventType.SEGMENT_START,
       AgentRunEventType.SEGMENT_CONTENT,
       AgentRunEventType.SEGMENT_END,
     ]);
-    expect(events[0]!.payload).toMatchObject({
+    expect(events[0]!.payload).toEqual({
       id: events[1]!.payload.id,
-      timestamp: 123,
-      delta: "first",
-      segment_type: "reasoning",
-    });
-    expect(events[1]!.payload).toEqual({
-      id: events[0]!.payload.id,
       turn_id: null,
       segment_type: "reasoning",
+    });
+    expect(events[1]!.payload).toMatchObject({
+      id: events[2]!.payload.id,
+      delta: "first",
+    });
+    expect(events[2]!.payload).toEqual({
+      id: events[1]!.payload.id,
+      turn_id: null,
     });
     expect(converter.convert({
       method: CodexThreadEventName.TURN_COMPLETED,
@@ -173,7 +183,7 @@ describe("Codex reasoning block conversion", () => {
     const emitWithoutProviderId = (text: string) => converter.convert({
       method: CodexThreadEventName.ITEM_COMPLETED,
       params: { turnId: "turn-1", item: { type: "reasoning", summary: [{ text }] } },
-    })[0]!;
+    }).find((event) => event.eventType === AgentRunEventType.SEGMENT_CONTENT)!;
 
     const first = emitWithoutProviderId("first");
     const second = emitWithoutProviderId("second");
@@ -342,7 +352,7 @@ describe("Codex reasoning block conversion", () => {
     const afterBoundary = emitCompletedReasoning(converter, "turn-1", "provider-c", "C");
 
     expect(reasoningB.payload).toMatchObject({ id: reasoningA.payload.id, delta: "\n\nB" });
-    expect(matchingResult.some((event) => event.eventType === AgentRunEventType.SEGMENT_END))
+    expect(matchingResult.some(isReasoningEnd))
       .toBe(false);
     expect(nextTool[0]).toMatchObject({
       eventType: AgentRunEventType.SEGMENT_END,

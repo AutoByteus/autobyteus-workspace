@@ -250,7 +250,6 @@ describe("AutoByteusStreamEventConverter", () => {
         id: "seg-1",
         turn_id: "turn-1",
         segment_type: "assistant_text",
-        content: "hello",
       },
       statusHint: null,
     });
@@ -262,7 +261,7 @@ describe("AutoByteusStreamEventConverter", () => {
           event_type: "content",
           segment_id: "seg-2",
           turn_id: "turn-2",
-          payload: { text: "chunk" },
+          payload: { delta: "chunk" },
         },
       } as any),
     )?.toMatchObject({
@@ -270,7 +269,7 @@ describe("AutoByteusStreamEventConverter", () => {
       payload: {
         id: "seg-2",
         turn_id: "turn-2",
-        text: "chunk",
+        delta: "chunk",
       },
     });
 
@@ -346,7 +345,7 @@ describe("AutoByteusStreamEventConverter", () => {
     });
   });
 
-  it("drops unknown segment types", () => {
+  it("drops unknown segment variants and preserves missing identity for run-owned validation", () => {
     const converter = new AutoByteusStreamEventConverter("run-1");
     expect(
       converter.convert({
@@ -355,12 +354,18 @@ describe("AutoByteusStreamEventConverter", () => {
       } as any),
     ).toBeNull();
 
-    expect(
-      converter.convert({
-        event_type: StreamEventType.SEGMENT_EVENT,
-        data: { event_type: "start", segment_id: "seg-5" },
-      } as any),
-    ).toBeNull();
+    const missingIdentity = converter.convert({
+      event_type: StreamEventType.SEGMENT_EVENT,
+      data: { event_type: "start", segment_id: "seg-5" },
+    } as any);
+    expect(missingIdentity).toMatchObject({
+      eventType: AgentRunEventType.SEGMENT_START,
+      runId: "run-1",
+      payload: { id: "seg-5" },
+    });
+    expect(missingIdentity?.payload.turn_id).toBeUndefined();
+    expect(missingIdentity?.payload.segment_type).toBeUndefined();
+    expect(JSON.stringify(missingIdentity)).not.toContain("runtime-segment");
   });
 
   it("keeps native turn lifecycle payloads intact", () => {

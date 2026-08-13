@@ -1,0 +1,253 @@
+diff --git a/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts b/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts
+index 85571761644ad4a9d25b9884e7410cab2616abb6..919c67ddcc4633a380d68c4517d86df97b75e772 100644
+--- a/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts
++++ b/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts
+@@ -24,11 +24,10 @@ import { MixedTeamRunBackend } from "../../../src/agent-team-execution/backends/
+ import { MixedAgentMemberContext, MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
+ import type { TeamManager } from "../../../src/agent-team-execution/backends/team-manager.js";
+ import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
+-import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
+ import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
+ import { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
+-import { selectorToRouteKey } from "../../../src/agent-team-execution/domain/team-run-member-identity.js";
+ import type { TeamRunEventListener } from "../../../src/agent-team-execution/domain/team-run-event.js";
++import { createTeamExecutionAddress } from "../../../src/agent-team-execution/domain/team-execution-address.js";
+ import { AgentStreamHandler } from "../../../src/services/agent-streaming/agent-stream-handler.js";
+ import { AgentTeamStreamHandler } from "../../../src/services/agent-streaming/agent-team-stream-handler.js";
+ import { AgentSessionManager } from "../../../src/services/agent-streaming/agent-session-manager.js";
+@@ -39,6 +38,11 @@ import {
+ } from "../../../src/runtime-management/claude/client/claude-sdk-client.js";
+ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+ import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
++import {
++  address as teamAddress,
++  testAgentNode,
++  testTeamRunConfig,
++} from "../../fixtures/current-team-run-fixtures.js";
+ 
+ type SdkQueryCall = {
+   prompt?: unknown;
+@@ -534,96 +538,61 @@ const createClaudeTeamWebSocketHarness = async (input: {
+     skillAccessMode: SkillAccessMode.NONE,
+     runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+   });
++  const memberAddress = teamAddress(`/${input.memberName}`);
++  const memberExecutionAddress = createTeamExecutionAddress({
++    rootTeamRunId: input.teamRunId,
++    memberAddress,
++  });
+   const memberContext = new MixedAgentMemberContext({
+-    memberName: input.memberName,
+-    memberPath: [input.memberName],
+-    memberRouteKey: input.memberName,
+-    memberRunId: input.memberRunId,
++    address: memberAddress,
++    agentRunId: input.memberRunId,
+     runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+     platformAgentRunId: null,
+   });
++  const config = testTeamRunConfig({
++    rootTeamRunId: input.teamRunId,
++    rootTeamDefinitionId: "team-claude-ws",
++    coordinatorAddress: memberAddress,
++    children: [testAgentNode(memberAddress, {
++      agentDefinitionId: memberConfig.agentDefinitionId,
++      agentRunId: input.memberRunId,
++      llmModelIdentifier: memberConfig.llmModelIdentifier,
++      autoExecuteTools: memberConfig.autoExecuteTools,
++      skillAccessMode: memberConfig.skillAccessMode,
++      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
++    })],
++  });
+   const teamContext = new TeamRunContext({
+-    runId: input.teamRunId,
++    teamRunId: input.teamRunId,
++    teamAddress: teamAddress("/"),
+     teamBackendKind: TeamBackendKind.MIXED,
+-    coordinatorMemberName: input.memberName,
+-    config: new TeamRunConfig({
+-      teamDefinitionId: "team-claude-ws",
+-      teamBackendKind: TeamBackendKind.MIXED,
+-      coordinatorMemberName: input.memberName,
+-      memberConfigs: [
+-        {
+-          memberName: input.memberName,
+-          memberRouteKey: input.memberName,
+-          memberRunId: input.memberRunId,
+-          agentDefinitionId: "agent-claude-team-ws",
+-          llmModelIdentifier: "claude-test-model",
+-          autoExecuteTools: false,
+-          skillAccessMode: SkillAccessMode.NONE,
+-          runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+-        },
+-      ],
+-    }),
++    config,
+     runtimeContext: new MixedTeamRunContext({
+-      coordinatorMemberRouteKey: input.memberName,
+       memberContexts: [memberContext],
++      teamExecutionAddress: createTeamExecutionAddress({
++        rootTeamRunId: input.teamRunId,
++        memberAddress: "/",
++      }),
+     }),
+   });
+   const fakeTeamManager: TeamManager = {
+     hasActiveMembers: () => true,
+-    getLeafAgentStatusSnapshots: () => [{
+-      scopeKind: "ordinary_member",
+-      teamRunId: input.teamRunId,
+-      payload: {
+-        ...agentRun.getStatusSnapshot(),
+-        agent_id: input.memberRunId,
+-        agent_name: input.memberName,
+-        member_route_key: input.memberName,
+-        member_path: [input.memberName],
+-        source_route_key: input.memberName,
+-        source_path: [input.memberName],
+-      },
+-    }],
++    getLeafAgentStatusSnapshots: () => [],
+     hasOpenExecutionWork: () => true,
+-    postMessage: async (message, targetMemberSelector) => {
+-      expect(selectorToRouteKey(targetMemberSelector)).toBe(input.memberName);
+-      const result = await agentRun.postUserMessage(message);
+-      memberContext.platformAgentRunId = agentRun.getPlatformAgentRunId() ?? memberContext.platformAgentRunId;
+-      return {
+-        ...result,
+-        memberRunId: input.memberRunId,
+-        memberName: input.memberName,
+-      };
+-    },
+-    postMessageToConversationTarget: async (message, address) => {
+-      const [segment, ...remainingSegments] = address.segments;
+-      expect(remainingSegments).toHaveLength(0);
+-      expect(segment?.kind).toBe("member");
+-      const targetRouteKey = segment?.kind === "member"
+-        ? segment.memberRouteKey ?? segment.memberPath?.join("/")
+-        : null;
+-      expect(targetRouteKey).toBe(input.memberName);
+-      const result = await agentRun.postUserMessage(message);
+-      memberContext.platformAgentRunId = agentRun.getPlatformAgentRunId() ?? memberContext.platformAgentRunId;
+-      return {
+-        ...result,
+-        memberRunId: input.memberRunId,
+-        memberName: input.memberName,
+-      };
+-    },
+-    deliverInterAgentMessage: async () => ({ accepted: true }),
+-    approveToolInvocation: async () => ({ accepted: true }),
+-    interruptMember: async (targetMemberRouteKey, targetMemberRunId) => {
+-      expect(targetMemberRouteKey).toBe(input.memberName);
+-      expect(targetMemberRunId).toBe(input.memberRunId);
+-      return agentRun.interrupt();
++    executeMemberCommand: async (executionAddress, command) => {
++      expect(executionAddress).toEqual(memberExecutionAddress);
++      if (command.kind === "interrupt") return agentRun.interrupt();
++      if (command.kind !== "post_message") {
++        return { accepted: false, code: "UNSUPPORTED_TEST_COMMAND" };
++      }
++      const result = await agentRun.postUserMessage(command.message);
++      memberContext.platformAgentRunId = agentRun.getPlatformAgentRunId()
++        ?? memberContext.platformAgentRunId;
++      return result;
+     },
+-    settleMember: async () => agentRun.terminate(),
+-    startTaskAgentInstance: async () => ({ accepted: false, code: "UNSUPPORTED_TEST_FAKE" }),
+-    settleTaskAgentInstance: async () => ({ accepted: false, code: "UNSUPPORTED_TEST_FAKE" }),
+     terminate: async () => agentRun.terminate(),
+-    publishEvent: () => {},
+     subscribeToEvents: (_listener: TeamRunEventListener) => () => {},
+-  };
++  } as unknown as TeamManager;
+   const teamRun = new TeamRun({
+     context: teamContext,
+     backend: new MixedTeamRunBackend(teamContext, fakeTeamManager),
+@@ -656,12 +625,10 @@ const createClaudeTeamWebSocketHarness = async (input: {
+   await waitForOpen(socket);
+   const connectedMessage = JSON.parse(await connectedPromise) as {
+     type: string;
+-    payload: { team_id?: string };
++    payload: { session_id?: string };
+   };
+-  expect(connectedMessage).toMatchObject({
+-    type: "CONNECTED",
+-    payload: { team_id: input.teamRunId },
+-  });
++  expect(connectedMessage.type).toBe("CONNECTED");
++  expect(connectedMessage.payload.session_id).toEqual(expect.any(String));
+ 
+   return {
+     app,
+@@ -830,9 +797,16 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
+ 
+     try {
+       sendE2eSendMessageCommand(harness.socket, {
+-            content: "start team member work",
+-            target_member_route_key: memberName,
+-          });
++        content: "start team member work",
++        context_file_paths: [],
++        image_urls: [],
++        execution_address: {
++          root_team_run_id: teamRunId,
++          task_team_run_ids: [],
++          member_address: `/${memberName}`,
++          task_agent_run_id: null,
++        },
++      });
+ 
+       await waitForCondition(
+         () =>
+@@ -847,8 +821,12 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
+           type: "INTERRUPT_GENERATION",
+           payload: {
+             command_id: "client_interrupt_claude_team_member",
+-            target_member_route_key: memberName,
+-            target_member_run_id: memberRunId,
++            execution_address: {
++              root_team_run_id: teamRunId,
++              task_team_run_ids: [],
++              member_address: `/${memberName}`,
++              task_agent_run_id: null,
++            },
+           },
+         }),
+       );
+@@ -860,9 +838,16 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
+       );
+ 
+       sendE2eSendMessageCommand(harness.socket, {
+-            content: "continue team member work",
+-            target_member_route_key: memberName,
+-          });
++        content: "continue team member work",
++        context_file_paths: [],
++        image_urls: [],
++        execution_address: {
++          root_team_run_id: teamRunId,
++          task_team_run_ids: [],
++          member_address: `/${memberName}`,
++          task_agent_run_id: null,
++        },
++      });
+ 
+       await waitForCondition(
+         () => harness.sdkCalls.length === 2,
+diff --git a/autobyteus-server-ts/tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts b/autobyteus-server-ts/tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts
+index e65f40b0db205a0d3508f6658359332d2ecf27fe..9d20767600d9aa20fbb2818cc261df7bf5881514 100644
+--- a/autobyteus-server-ts/tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts
++++ b/autobyteus-server-ts/tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts
+@@ -322,7 +322,11 @@ describe("Agent Tools MCP route configured MCP integration", () => {
+       getInternalBaseUrl: () => `http://127.0.0.1:${address.port}`,
+     });
+     const created = sessionService.createAgentToolMcpSession({
+-      owner: { runId: "run-configured-mcp", memberRunId: "member-configured-mcp" },
++      owner: {
++        runId: "run-configured-mcp",
++        memberRunId: "member-configured-mcp",
++        agentRunId: "member-configured-mcp",
++      },
+       sender,
+       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+       runtimeExposure: buildRuntimeAgentToolExposure(["db_query"]),

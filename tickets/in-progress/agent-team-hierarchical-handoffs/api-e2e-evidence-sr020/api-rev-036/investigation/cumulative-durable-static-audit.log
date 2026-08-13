@@ -1,0 +1,11 @@
+API-REV-036 cumulative durable static audit
+active_paths=101
+missing_active_paths=0
+active_explicit_skip_only_todo_calls=0
+intentional_no-generated-identity_assertions:
+autobyteus-server-ts/tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts:275:    expect(JSON.stringify(observed)).not.toContain("runtime-segment");
+autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts:368:    expect(JSON.stringify(missingIdentity)).not.toContain("runtime-segment");
+deleted_instance_identity_residue:
+focused_diff_check=PASS
+operational_database_action=NONE
+operational_database_inspection=NONE

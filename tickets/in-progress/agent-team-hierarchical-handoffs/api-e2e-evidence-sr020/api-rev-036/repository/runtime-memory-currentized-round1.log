@@ -1,0 +1,143 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists run-owned reasoning closure exactly once before the next tool
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-ESdin4/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > rejects segment lifecycle without an exact turn instead of inventing a fallback turn
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-nZqAF1/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-nZqAF1/raw_traces_active.jsonl
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists one trace for adjacent reasoning deltas and a new trace after a tool boundary
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-OmFHd6/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > tolerates lifecycle-before-command ordering and flushes text and reasoning on turn completion
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-0XuZHA/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists open reasoning before a following tool call without duplicating later flushes
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-S0CSMq/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists open reasoning before an inferred tool call from a terminal tool result
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-wKD0z1/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > keeps reasoning open across a matching result and flushes one trace at the next tool
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-1DxxnB/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > preserves post-card reasoning when authoritative call arguments arrive only at result
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-adfHdm/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > keeps reasoning open across matching TOOL_EXECUTION_FAILED updates
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-6aZ4pc/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > keeps reasoning open across matching TOOL_DENIED updates
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-aoPsIz/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists open reasoning before assistant text without requiring turn completion
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-7H0Fo4/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists open reasoning before assistant complete output
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-P2jGA6/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > does not substitute an active turn when an accepted command lacks its exact turn identity
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-HPsIgH/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-HPsIgH/raw_traces_active.jsonl
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > records tool traces once from lifecycle events when matching tool segments are present
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-jmQYie/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > preserves assistant-tool-assistant raw trace order from distinct text segment ids
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-nItVVr/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > does not create a fallback turn for a segment without exact turn identity
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-jlmhAM/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-jlmhAM/raw_traces_active.jsonl
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > ignores provider compaction/status payloads without local raw-trace pruning
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-zTu5b7/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > writes provider compaction markers and rotates settled active traces into segmented archives
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-UgTz0x/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > dedupes replayed provider boundaries without dropping post-boundary active records
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-Wc9Ahe/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > retries rotation from an existing provider boundary marker when no complete segment exists
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-MRMwBn/working_context_snapshot.json
+
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts (21 tests) 38ms
+
+ Test Files  1 passed (1)
+      Tests  21 passed (21)
+   Start at  03:55:06
+   Duration  674ms (transform 165ms, setup 9ms, import 215ms, tests 38ms, environment 0ms)
+

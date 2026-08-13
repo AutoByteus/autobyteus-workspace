@@ -3,13 +3,13 @@
 ## Artifact Metadata
 
 - Canonical path: `tickets/in-progress/agent-team-hierarchical-handoffs/team-stream-execution-projection-contract.md`
-- Purpose: make the complete SR-018 Team Agent/event/wire boundary and frontend concrete-execution ownership executable without reopening canonical backend addressing, released-data migration, provider, storage, or the direct forward-only application-SDK design.
+- Purpose: make the complete Team Agent/event/wire boundary and frontend concrete-execution ownership executable, and align its segment/error variants with the SR-020 run-owned canonical lifecycle and diagnostic projection, without reopening canonical backend addressing, released-data migration, storage, or the direct forward-only application-SDK design.
 - Scope: current TeamRun domain events, initial connection/open/restore Agent-status snapshots, pre-run send/delegation status overlays, the `/ws/agent-team` server/client protocol, exact application producer binding at Team AgentRun construction, frontend rooted topology, concrete execution projection, task lifecycle, focus/open/history/navigation, and clean-cut removal evidence.
-- Status: `Refined — SR-018 complete architecture-review input for DR-005/DR-006; prior CR-F-028/029/030 structure preserved`.
-- Related requirements: `R-036`, `R-039`, `R-043`, `R-049`–`R-052`.
-- Related acceptance criteria: `AC-029`, `AC-035`, `AC-036`, `AC-038`, `AC-039`, `AC-045`–`AC-048`.
-- Approval applicability: `N/A — design supplement for already-approved preserved behavior; SR-018 closes reachable status producers and adds no new product capability, while SR-017's removal of speculative application compatibility/migration machinery remains unchanged`.
-- Relationship to core artifacts: requirements own observable outcomes; investigation notes own current evidence; design spec owns system allocation and sequencing; this file owns the exact SR-018 boundary shapes, eighteen case spines, invariants, and removal inventory.
+- Status: `Refined — SR-020 exact diagnostic projection aligned for DR-007/DR-008 architecture re-review; prior Team status/event/frontend structure preserved`.
+- Related requirements: `R-036`, `R-039`, `R-043`, `R-049`–`R-056`.
+- Related acceptance criteria: `AC-029`, `AC-035`, `AC-036`, `AC-038`, `AC-039`, `AC-045`–`AC-051`.
+- Approval applicability: `N/A — design supplement for already-approved preserved behavior; SR-020 closes only the canonical consumer/diagnostic cut and adds no new product capability, while SR-017's direct target-only application rule and SR-018's status producers remain unchanged`.
+- Relationship to core artifacts: requirements own observable outcomes; investigation notes own current evidence; design spec owns system allocation and sequencing; this file owns the exact Team boundary shapes, nineteen case spines, invariants, and removal inventory. [agent-segment-lifecycle-contract.md](./agent-segment-lifecycle-contract.md) exclusively owns provider-source admission and AgentRun segment lifecycle.
 
 ## 1. Decision Summary
 
@@ -21,6 +21,7 @@ SR-016 closes two boundaries rather than adding more local fixes:
 4. **Application producer identity is bound at execution construction.** The existing server Team Agent handle validates a persistent Agent's producer address and rebinds a task Agent/task-Team-Agent producer address before `AgentRunConfig` exists. The frontend then projects the persisted assignment into the same exact concrete-execution invariant. Published-artifact or application-stream consumers never repair producer identity after the fact.
 5. **Task activation is published before its execution can speak or work.** One short per-TeamRun activation sequencer, one closed runtime work gate, and one bounded exact-subtree TeamRun publication barrier make durable activation the parent event. Success publishes activation, drains initialization FIFO, then opens work; any pre-publication failure removes the fresh execution and every held event. Transport/frontend code has no reorder buffer or missing-parent inference.
 6. **Every Agent-status producer uses one binding and one status value.** Live Agent events, non-event initial connection/open/restore snapshots, pre-run initializing/error overlays, and run-history list projection all consume the same domain-owned `TeamAgentExecutionBinding` constructor and immutable `TeamAgentStatusSnapshot`. Connection snapshots call the exact status projector directly; overlays publish through one correlated status-event constructor and are replaced by the first matching real status. No fake connection event, second binding parser/model, generic Team status payload, or identity fallback exists.
+7. **Team consumes, but never owns, segment lifecycle or error classification.** Every provider segment candidate first crosses the run-owned lifecycle behind `AgentRunEventDispatchQueue`. The Team bridge receives only canonical start/content/end or exact `AgentRunErrorEvidence`. `TeamAgentEventAdapter` remains stateless; canonical content is self-contained for late subscribers, and exact turn/runtime diagnostic evidence survives Team wire/browser projection without terminal effects.
 
 The backend `AgentTeamAddress` and `TeamExecutionAddress` meanings remain authoritative. The transport package owns their exact JSON representation at one process boundary; it does not resolve logical recipients, task eligibility, or topology.
 
@@ -37,6 +38,7 @@ The backend `AgentTeamAddress` and `TeamExecutionAddress` meanings remain author
 - Concrete execution attribution is established at the construction source, not repaired at an event, artifact, or browser consumer.
 - Current runtime has one spelling and one schema. Historical knowledge remains migration-only.
 - Live and restored state use the same transition owner and invariants.
+- The first common serialized runtime boundary owns lifecycle correlation; transport/application/browser layers project admitted facts only.
 
 ## 3. Native Terminology
 
@@ -54,6 +56,7 @@ The backend `AgentTeamAddress` and `TeamExecutionAddress` meanings remain author
 | `TeamExecutionNavigationRow` | Derived display/focus row returned by the aggregate | Authoritative topology or task record |
 | `TeamExecutionAddressKey` | Private canonical serialization used inside the aggregate | A value exposed to callers or UI text |
 | `TeamLaunchDraft` | Pre-launch config, logical member-address focus, and pending input | A copied definition topology, TeamRun, AgentRun, execution address, history record, or stream subject |
+| `AgentSegmentLifecycleState` | AgentRun-owned non-persisted start/content/end correlation and canonical content enrichment | TeamRun state, WebSocket session state, browser fallback, or provider-specific Team logic |
 
 ## 4. Correlated TeamRun Domain Events
 
@@ -132,7 +135,7 @@ type TeamAgentEvent =
   | Readonly<{ eventType: "ERROR"; details: TeamAgentErrorDetails; statusHint: AgentRunStatusHint }>;
 ```
 
-The member-handle event bridge receives the established generic standalone `AgentRunEvent`, requires its `runId` to equal the handle's real AgentRun binding, obtains the exact execution address from that already-bound handle, and calls the sole domain `createTeamAgentExecutionBinding({executionAddress,agentRunId:raw.runId})` constructor before passing the event through one `TeamAgentEventAdapter`. The constructor classifies by address shape: persistent Agent uses `persistent_agent`; task Agent uses `task_agent` and requires `executionAddress.taskAgentRunId === agentRunId`; Agent inside a task AgentTeam uses `task_team_agent` and retains that verified AgentRun ID because `TeamExecutionAddress` deliberately does not encode member AgentRun IDs inside a task Team. The adapter is exhaustive over the Agent event enum, validates and maps each raw payload into the correlated domain variant above, normalizes absent supported facts to explicit `null`/empty arrays, and removes raw `runId` from the event details. Its `AGENT_STATUS` arm calls the same `createTeamAgentStatusDetails(...)` constructor used by connection snapshots and pre-run overlays. Where a payload carries a distinct sender run ID, the adapter receives only a narrow `resolveExecutionAddressByAgentRunId(runId)` capability backed by the accepted root execution directory; it does not import the mixed manager or perform logical routing. Therefore generic standalone payloads stop at the Team ingress adapter; neither `TeamRunEvent` nor Team egress contains `Record<string,unknown>`.
+The member-handle event bridge receives the canonical post-pipeline standalone `AgentRunEvent`, requires its `runId` to equal the handle's real AgentRun binding, obtains the exact execution address from that already-bound handle, and calls the sole domain `createTeamAgentExecutionBinding({executionAddress,agentRunId:raw.runId})` constructor before passing the event through one `TeamAgentEventAdapter`. The constructor classifies by address shape: persistent Agent uses `persistent_agent`; task Agent uses `task_agent` and requires `executionAddress.taskAgentRunId === agentRunId`; Agent inside a task AgentTeam uses `task_team_agent` and retains that verified AgentRun ID because `TeamExecutionAddress` deliberately does not encode member AgentRun IDs inside a task Team. The adapter is exhaustive over the canonical Agent event enum, validates and maps each admitted payload into the correlated domain variant above, normalizes absent supported non-segment facts to explicit `null`/empty arrays, and removes raw `runId` from the event details. For segment events it requires the already-admitted finite type and non-empty turn; it performs no start/content/end correlation. Its `AGENT_STATUS` arm calls the same `createTeamAgentStatusDetails(...)` constructor used by connection snapshots and pre-run overlays. Where a payload carries a distinct sender run ID, the adapter receives only a narrow `resolveExecutionAddressByAgentRunId(runId)` capability backed by the accepted root execution directory; it does not import the mixed manager or perform logical routing. Therefore generic provider candidates stop at the AgentRun lifecycle transformer, canonical standalone events stop at the Team ingress adapter, and neither `TeamRunEvent` nor Team egress contains `Record<string,unknown>`.
 
 `AgentRunEventType.INTER_AGENT_MESSAGE` and `.TEAM_COMMUNICATION_MESSAGE` are deliberately not Team Agent variants. Team collaboration already has two authoritative events: `COMMUNICATION` updates the Team communication projection and `MEMBER_INPUT` updates the exact recipient transcript. Re-emitting derived Agent collaboration events would create a second path and duplicate identity. The Team member bridge filters those two derived events; `TeamCommunicationService` consumes only the correlated `COMMUNICATION` variant. Standalone Agent streaming may retain its independent events. Refactoring the standalone Agent event subsystem is otherwise outside this ticket.
 
@@ -147,9 +150,9 @@ The following table is exhaustive for `TeamAgentEvent`. Fields are camel-case do
 | `TURN_STARTED` | `turnId:string|null` |
 | `TURN_COMPLETED` | `turnId:string|null`, `reason:string|null` |
 | `TURN_INTERRUPTED` | `turnId:string|null`, `reason:string|null` |
-| `SEGMENT_START` | `segmentId:string`, `turnId:string|null`, `segmentType:SegmentType`, `metadata:JsonValue|null` |
-| `SEGMENT_CONTENT` | `segmentId:string`, `turnId:string|null`, `segmentType:SegmentType`, `delta:string` |
-| `SEGMENT_END` | `segmentId:string`, `turnId:string|null`, `metadata:JsonValue|null`, `interrupted:boolean`, `reason:string|null`, `failed:boolean`, `error:string|null` |
+| `SEGMENT_START` | `segmentId:string`, `turnId:string`, `segmentType:AgentSegmentType`, `metadata:JsonValue|null` |
+| `SEGMENT_CONTENT` | `segmentId:string`, `turnId:string`, `segmentType:AgentSegmentType`, `delta:string` |
+| `SEGMENT_END` | `segmentId:string`, `turnId:string`, `metadata:JsonValue|null`, `interrupted:boolean`, `reason:string|null`, `failed:boolean`, `error:string|null` |
 | `AGENT_STATUS` | `status:AgentRuntimeStatus`, `trigger:string|null`, `toolName:string|null`, `errorMessage:string|null`, `errorDetails:string|null` |
 | `COMPACTION_STATUS` | `phase:CompactionPhase|null`, `kind:string|null`, `status:string|null`, `turnId:string|null`, `compactionOperationId:string|null`, `requestedTurnId:string|null`, `executionTurnId:string|null`, `selectedBlockCount:number|null`, `compactedBlockCount:number|null`, `rawTraceCount:number|null`, `semanticFactCount:number|null`, `compactionAgentDefinitionId:string|null`, `compactionAgentName:string|null`, `compactionRuntimeKind:string|null`, `compactionModelIdentifier:string|null`, `compactionRunId:string|null`, `compactionTaskId:string|null`, `errorMessage:string|null`, `provider:string|null`, `sourceSurface:string|null`, `boundaryKey:string|null`, `providerEventId:string|null`, `providerSessionId:string|null`, `providerThreadId:string|null`, `providerTimestamp:number|null`, `trigger:string|null`, `preTokens:number|null`, `rotationEligible:boolean|null` |
 | `TOKEN_USAGE_UPDATED` | `TeamTokenUsageDetails` below |
@@ -166,11 +169,15 @@ The following table is exhaustive for `TeamAgentEvent`. Fields are camel-case do
 | `SYSTEM_TASK_NOTIFICATION` | `sender:{kind:"system"}|{kind:"execution",executionAddress:TeamExecutionAddress}`, `content:string` |
 | `ARTIFACT_PERSISTED` | `artifactId:string`, `path:string`, `artifactType:ArtifactType`, `status:"available"`, `description:string|null`, `revisionId:string`, `createdAt:string`, `updatedAt:string` |
 | `FILE_CHANGE` | `fileChangeId:string`, `path:string`, `fileType:ArtifactType`, `status:FileChangeStatus`, `sourceTool:FileChangeSourceTool`, `sourceInvocationId:string|null`, `content:string|null`, `createdAt:string`, `updatedAt:string` |
-| `ERROR` | `code:string`, `message:string` |
+| `ERROR` | `code:string`, `message:string`, `evidence:AgentRunErrorEvidence|null`; exact four-variant evidence is already resolved at the AgentRun domain boundary |
+
+`AgentSegmentType` is closed to `text | tool_call | write_file | edit_file | run_bash | reasoning | media`. The server Agent domain owns the semantic value. The browser-safe `@autobyteus/team-stream-contracts` package owns the exact wire mirror as `agentSegmentTypeSchema` plus its inferred DTO type; `SEGMENT_START` and `SEGMENT_CONTENT` use that schema rather than `nonEmptyStringSchema`, and their `turn_id` uses non-null `nonEmptyStringSchema` rather than the generic nullable turn schema. One exhaustive domain-to-wire projector and package parity tests guard drift. The wire mirror does not own segment lifecycle or correlation.
 
 `TeamTokenUsageDetails` contains exactly these non-execution facts: `usageEventId`, `idempotencyKey`, `observedAt`, `turnId`, `llmCallId`, `modelProvider`, `modelIdentifier`, `modelValue`, `usageScope`, `inputTokenSemantic`, `standardInputTokens`, `cacheMissInputTokens`, `cacheReadInputTokens`, `cacheCreationInputTokens`, `cacheCreation5mInputTokens`, `cacheCreation1hInputTokens`, `cacheState`, `reasoningOutputTokens`, `billableOutputTokens`, `meterDeltaInputTokens`, `meterDeltaOutputTokens`, `meterDeltaTotalTokens`; price fields `inputPricePerMillion`, `outputPricePerMillion`, `cachedInputReadPricePerMillion`, `cachedInputWritePricePerMillion`, `cachedInputWrite5mPricePerMillion`, `cachedInputWrite1hPricePerMillion`; cost fields `estimatedApiInputCost`, `estimatedApiStandardInputCost`, `estimatedApiCacheReadInputCost`, `estimatedApiCacheCreationInputCost`, `estimatedApiCacheCreation5mInputCost`, `estimatedApiCacheCreation1hInputCost`, `estimatedApiOutputCost`, `estimatedApiReasoningOutputCost`, `estimatedApiTotalCost`; and `currency`, `apiCostStatus`, `missingPriceDimensions`, `pricingPolicyKey`, `selectedPricingTierId`, `latestPromptTokens`, `effectiveContextWindowTokens`, `contextWindowUsagePercent`, and `qualityFlags`. The contract package uses finite unions for categorical fields and exact non-empty/nullable primitives for open provider/model/correlation values; it does not weaken an enum with `| string` or admit surplus fields. `runId`, `rootTeamRunId`, `executionAddress`, `memberAgentRunId`, `agentDefinitionId`, `workspaceId`, and duplicate `runtimeKind` are excluded because the outer Team Agent event plus topology own them.
 
 The adapter does not spread the raw payload. Each switch arm reads only the fields in its row and rejects malformed required fields. For `SYSTEM_TASK_NOTIFICATION`, the literal system sentinel maps to `{kind:"system"}`; any run-valued sender must resolve through the root mixed execution directory to one exact `TeamExecutionAddress` before publication, otherwise the event is rejected. Raw sender run IDs never enter the Team domain/wire. `TEAM_COMMUNICATION_MESSAGE`, `INTER_AGENT_MESSAGE`, and any unknown future Agent event produce no Team Agent variant; an unknown future enum value is a compile/exhaustiveness failure rather than an `ERROR` fallback.
+
+For `ERROR`, the adapter calls the sole `resolveAgentRunErrorEvidence(event)` domain function and stores its exact semantic result. The allowed evidence variants are `TURN_DIAGNOSTIC(turnId)`, `RUNTIME_DIAGNOSTIC`, `TURN_TERMINAL(turnId)`, and `RUNTIME_GLOBAL`; an established unclassified error uses explicit `null`. The adapter never reads an active turn, reclassifies from status hint, or treats runtime scope alone as terminal.
 
 Its result is correlated and explicit: `{kind:"publish",event}`, `{kind:"filtered_collaboration_duplicate"}`, or `{kind:"rejected",code:"TEAM_AGENT_EVENT_ADMISSION_FAILED",message}`. The bridge logs a filtered duplicate and publishes nothing for it. For a malformed known event, the bridge publishes the exact Team Agent `ERROR` variant under the same verified outer execution address, using that stable code and an actionable redacted message; it never forwards any partial raw payload. A newly added compile-time Agent enum member must be implemented in the adapter before build passes.
 
@@ -359,7 +366,7 @@ The strict schema also enforces the discriminator/address-shape rules below; it 
 | task delegation | required concrete task-root `execution_address` + one of the three `event_type`/details pairs | only the minimal task details in §4; no delivery-receiver/Team/root/target/execution duplicate |
 | Team communication | `sender_address` + `receiver_address` | exact message/reference/timestamp fields; no outer universal execution address |
 | member input / external user input | required receiver `execution_address` once | exact origin/content/context/sender/correlation fields; no `recipient_address` |
-| connection/protocol or Agent error | `code`, `message`, and `agent_execution: TeamAgentExecutionBindingDto | null` | Agent-origin error retains the same correlated binding needed for task-Team-Agent materialization; connection/protocol error uses explicit null rather than an optional identity mixin |
+| connection/protocol or Agent error | `code`, `message`, required nullable `error_scope`, `error_effect`, `turn_id`, and `agent_execution: TeamAgentExecutionBindingDto | null` | Agent-origin error retains exact binding/evidence; connection/protocol or unclassified error uses explicit null evidence rather than optional fields or inferred semantics |
 
 Semantically opaque tool/provider values are typed as recursive `JsonValue` only in the specifically named `metadata`, `arguments`, `result`, or usage fields. That does not permit surplus top-level or task fields. `any`, generic `Record<string,unknown>`, and object spread into a wire variant are forbidden.
 
@@ -375,7 +382,7 @@ The exact server variants are:
 | `TEAM_COMMUNICATION_MESSAGE` | `{message_id,sender_address,receiver_address,content,message_type,reference_files,created_at}`; each reference is exactly `{reference_id,path,type,created_at,updated_at}`; emitting TeamRun scope replaces duplicate `team_run_id` |
 | `MEMBER_INPUT_MESSAGE` | `{execution_address,message_id,dedupe_key,content,input_origin,received_at,context_file_paths,sender_address,parent_communication_message_id}`; nullable fields are explicit and each context file is `{path,type}` |
 | `EXTERNAL_USER_MESSAGE` | `{execution_address,content,received_at,provider,transport,account_id,peer_id,thread_id,external_message_id,context_file_paths}`; there is no `agent_id`/`agent_name` identity duplicate |
-| `ERROR` | correlated pair: Agent-origin `{code,message,agent_execution:TeamAgentExecutionBindingDto}` or connection/protocol `{code,message,agent_execution:null}` |
+| `ERROR` | correlated pair with required evidence fields: Agent-origin `{code,message,error_scope,error_effect,turn_id,agent_execution:TeamAgentExecutionBindingDto}` or connection/protocol `{code,message,error_scope:null,error_effect:null,turn_id:null,agent_execution:null}`; an unclassified Agent error also projects three evidence nulls without losing its binding |
 
 `agent_execution` is a strict discriminated union; `agent_run_id` is forbidden for persistent/task-Agent bindings and required for a task-Team Agent. Its address must match the discriminator: empty task-Team chain/null task-Agent ID for persistent, non-null task-Agent ID for task Agent, and non-empty task-Team chain/null task-Agent ID for task-Team Agent. Agent definition presentation, runtime launch facts, and task association derive from the immutable topology plus the concrete execution graph selected by `agent_execution.execution_address`; the stream does not repeat `agent_name`, `runtime_kind`, `task_id`, or a synthetic task-instance ID on every Agent event. `SEND_MESSAGE` has no Team success acknowledgement today, so the target does not invent one. The only produced Team `AGENT_COMMAND_ACK` is interrupt acknowledgement and therefore has only the interrupt variant above. `INTER_AGENT_MESSAGE` is absent from the Team server union; `COMMUNICATION` plus `MEMBER_INPUT_MESSAGE` are the non-duplicated collaboration path.
 
@@ -1136,6 +1143,38 @@ send_message_to/delegate_task -> exact unmaterialized mixed Agent handle
 
 The overlay never accepts or stores TeamRun ID, display name, runtime kind, raw Agent ID, task instance, or another execution representation. Failed `ensureReady()` may publish exact error details through the same constructor; a subsequent retry or real status cannot clear a different same-logical-address execution because the full execution address is the private key.
 
+### 13.19 Canonical segment lifecycle into Team/browser/application consumers
+
+```text
+provider emits START(type) -> CONTENT(no type) -> END(no type)
+  -> AgentRunEventDispatchQueue
+  -> first AgentSegmentLifecycleEventTransformer + run-owned state
+  -> canonical CONTENT(type derived from matching start)
+  -> member bridge verifies AgentRun binding
+  -> stateless TeamAgentEventAdapter maps exact turn/id/type/delta
+  -> correlated Team event -> strict Team DTO/serializer/parser
+  -> TeamExecutionState resolves exact AgentContext
+  -> browser lookup by {turnId,segmentId}, stored type must agree
+  -> append once, or create the exact typed segment when a late subscriber missed start
+  -> same canonical Team content may feed the shared pure application text-delta projector
+```
+
+Same-type active start is dropped at the AgentRun lifecycle owner; the Team bridge never sees a replay start and therefore never owns reset/metadata-merge policy.
+
+Missing start, unknown/conflicting type, retired turn, content after end, malformed/surplus source fields, and other lifecycle violations become `AGENT_SEGMENT_LIFECYCLE_INVALID` before the Team bridge. The transformer uses the candidate's own explicit turn when present; otherwise it emits runtime diagnostic with null turn:
+
+```text
+AgentRun TURN_DIAGNOSTIC(turnId) OR RUNTIME_DIAGNOSTIC
+  -> TeamAgentEventAdapter retains exact AgentRunErrorEvidence
+  -> Team projector emits required error_scope/error_effect/turn_id fields
+  -> strict Team serializer/parser -> Team DTO adapter
+  -> AgentContext error handler appends one visible diagnostic row
+  -> no open message/segment/tool completion and no Agent-status mutation
+  -> application Team projector emits no failure for either diagnostic
+```
+
+The standalone Agent wire uses the same required nullable evidence fields and the same browser behavior. Unclassified/connection errors use explicit evidence nulls and preserve their existing behavior. The browser has no optional type, `"text"` default, unknown-to-text factory, type-plus-ID serialized key, ID-only lookup/removal, evidence-dropping Team adapter, or lifecycle correlation. Complete processor/listener, replay/order/cleanup, and diagnostic semantics belong only to [agent-segment-lifecycle-contract.md](./agent-segment-lifecycle-contract.md).
+
 ## 14. Authoritative Boundary Rules
 
 Allowed:
@@ -1153,6 +1192,7 @@ TeamRun publication -> TaskActivationEventBarrier
 mixed Agent handle/config owner -> createTeamAgentExecutionBinding -> TeamAgentStatusSnapshot
 TeamRuntimeSnapshotService -> projectTeamAgentStatusMessage
 MemberCommandStatusOverlayStore -> createTeamAgentStatusEvent(snapshot)
+AgentRun canonical segment event -> stateless TeamAgentEventAdapter
 ```
 
 Forbidden:
@@ -1172,6 +1212,7 @@ WebSocket/frontend -> activation reorder buffer or missing-parent inference
 TeamRuntimeSnapshotService -> fake TeamRunEvent or generic ServerMessage
 status snapshot/overlay/history mapper -> second binding parser/model or root/local fallback
 MemberCommandStatusOverlayStore -> mixed manager/config/display/runtime/task-instance identity
+TeamAgentEventAdapter/TeamRun/WebSocket/application/browser -> provider-source segment correlation or inferred/default type
 ```
 
 The task-activation lease is deliberately task-specific. `TaskDelegationService` first enters one FIFO activation sequencer per TeamRun and asks the activation coordinator to prepare and bind a discriminated task Agent or task AgentTeam execution without releasing work. That makes the exact `taskRun.address` available. TeamRun publication then opens its single lease for that address. The service starts the prepared runtime far enough to accept/enqueue the work packet behind the closed execution gate and waits for the preparation-quiescent acknowledgement. It then requires the lease to remain within both limits, constructs and durably writes the active record through an activation-specific throwing persistence method, synchronously commits the ledger/directory, and commits the lease with the matching typed `TASK_DELEGATION_ACTIVATED` event. Lease commit publishes that event first, drains held related events FIFO (including reentrant related publications appended during drain), and closes. The coordinator then opens work execution and the service releases the sequencer. Abort closes the work gate without execution, discards the event queue, settles/unregisters the prepared execution, discards the starting/staged ledger entry, and releases the sequencer.
@@ -1204,8 +1245,10 @@ The barrier decides relationship only through typed execution-address subtree co
 
 ### Modify
 
+- `AgentRun` event/error pipeline boundary and the files owned by [agent-segment-lifecycle-contract.md](./agent-segment-lifecycle-contract.md) — guarantee every Team listener receives only canonical segments or exact four-variant error evidence. Team code imports neither private segment state nor lifecycle status.
+- `autobyteus-team-stream-contracts/src/team-agent-message-dtos.ts` — retain the finite segment schema/non-null segment turns and add required nullable `error_scope`, `error_effect`, and `turn_id` to both strict error arms; do not make evidence optional.
 - `team-run-event.ts` — correlated variants and singular identity fields.
-- mixed Agent member event bridge + `TeamAgentEventAdapter` — verify raw AgentRun ID once, call the shared binding constructor, map to the exact correlated Team Agent subtype, call the shared status-details constructor for `AGENT_STATUS`, retain the ID only for `task_team_agent` materialization, remove it from event details, and filter duplicate Agent collaboration events.
+- mixed Agent member event bridge + `TeamAgentEventAdapter` — verify AgentRun ID once, map canonical segments without state, call the sole error-evidence resolver for `ERROR`, preserve its exact semantic variant/null, call shared status construction, retain run ID only for task-Team binding, and filter duplicate collaboration events.
 - `TeamRun.getLeafAgentStatusSnapshots`, Team manager/backend interfaces, `mixed-team-run-backend.ts`, `mixed-team-manager.ts`, and persistent/task/subteam/task-Team handles — return only `TeamAgentStatusSnapshot`; construct it from each owning context/node's exact address and allocated AgentRun ID; include config-backed offline persistent Agents and forward child/task Team snapshots without prefix/rebase/reparse.
 - `member-command-status-overlay-store.ts` — accept an already-built binding, store exact details by private full execution-address key, publish via `createTeamAgentStatusEvent(snapshot)`, expose `clearAcceptedLiveStatus(binding)`, and clear only after the first matching typed real status is successfully published, without cast.
 - `team-runtime-snapshot-service.ts` + `agent-team-stream-handler.ts` — after exact `CONNECTED`, project each snapshot directly through the shared status projector and send exact contract messages before scoped lifecycle; no fake event or generic Team message.
@@ -1215,11 +1258,14 @@ The barrier decides relationship only through typed execution-address subtree co
 - `team-run.ts`, backend interfaces, and mixed Team publication owner — expose one task-specific activation-publication lease while keeping the barrier queue/listeners private; all ordinary `publishEvent` calls pass through the barrier.
 - `task-delegation-event-publisher.ts` — construct direct typed variants, no unknown publisher; activation uses the exact persisted base/timestamps once and commits through the matching lease, while later variants contain transition/correlation facts only.
 - `team-run-event-websocket-message-mapper.ts` — exhaustively route the narrowed TeamRun variants and delegate the already-correlated Agent arm only to `team-agent-event-websocket-projector.ts`; the standalone `agent-run-event-message-mapper.ts` remains independently owned by `/ws/agent` and cannot enter Team egress.
+- `team-agent-event-websocket-projector.ts`, standalone `agent-run-event-message-mapper.ts`, browser `messageTypes.ts`/strict parser/`teamStreamDtoAdapters.ts`, `agentStatusHandler.ts`, and application projector — map exact error evidence to required fields, preserve both diagnostics as visible/non-terminal, suppress diagnostic application failure, and retain established terminal/unclassified behavior.
 - `autobyteus-application-sdk-contracts/src/application-agent-bindings.ts` / `index.ts` — export the one exact `ApplicationExecutionContext` type beside `ApplicationExecutionProducer`; no address resolver is added to the SDK package.
 - server application-orchestration domain context value functions + `team-run-metadata-schema.ts` — alias the SDK type; exactly clone/validate context fields with the server canonical address capability; expose persistent assertion and task rebind values without a generic record.
 - `mixed-agent-member-handle.ts` — derive the exact execution address once at AgentRun construction; require a persistent application producer address to match, or replace the producer address for task/task-Team-Agent execution before building `AgentRunConfig`; preserve stable application/binding/display/runtime facts.
 - Team broadcaster/egress/handler — exact Team message types and strict client parse.
 - frontend protocol entrypoint — import shared DTOs/parser; remove mirrored loose Team types.
+- browser segment DTO/identity/handler/type-factory modules — require canonical content type; lookup by exact turn+segment with stored-type verification; allow typed late-subscription creation; remove optional/default/arbitrary type, serialized type+ID key, and ID-only lookup/removal.
+- `application-agent-stream-event-projector.ts` — standalone and Team canonical content use one pure exact-text-delta projection; no lifecycle map or type inference.
 - `TeamToolApprovalTracker.ts` — rename to `TeamToolApprovalTargetTracker.ts`; retain only invocation-to-execution-address association and remove token storage/access/casts.
 - `AgentTeamContext.ts` — composition record with only immutable `TeamTopologySnapshot` plus `executions` owner; no duplicate root/config/lifecycle/hydration/session field or public topology/execution map.
 - `AgentContext.ts` plus standalone/Team streaming session owners — keep Agent-local configuration/conversation/status/tool/composer state on the context, but move connection readiness/unsubscribe ownership out to the relevant transport session. Team contexts are constructed once with permanent run identity and never use ID promotion/reconciliation.
@@ -1261,6 +1307,8 @@ The barrier decides relationship only through typed execution-address subtree co
 - `agent-team-execution/services/team-member-command-start-status-events.ts` and its generic payload/event builders.
 - `forwardMixedTeamLeafAgentStatusSnapshot` (and its file when no other real responsibility remains); exact snapshots cross child boundaries unchanged.
 - temporary TeamRun/AgentRun IDs, draft `AgentContext`/conversation IDs, and draft-to-execution key rebasing.
+- optional/arbitrary `SEGMENT_CONTENT.segment_type`, `payload.segment_type ?? "text"`, unknown-segment-to-text factories, type-plus-ID `lookupKey`, ID-only segment lookup/removal, Team/application/browser segment lifecycle maps, and durable provider fixtures that fabricate type on source content/end.
+- Team/standalone error evidence loss, optional scope/effect/turn fields, browser all-errors-terminal handling, and application diagnostic-to-failure projection.
 
 File removal may be implemented as deletion or complete absorption into the named owner; no forwarding wrapper remains.
 
@@ -1287,7 +1335,9 @@ A repository scan must fail current production code on:
 - Team `approval_token`/`ToolApprovalTokenPayload`, which have no server producer or consumer.
 - derived Agent collaboration event types in the Team event/stream path (they may remain on the standalone Agent stream only).
 - `CONNECTED.team_id`/`CONNECTED.team_run_id` and `TEAM_RUN_LIFECYCLE.team_run_id` in current Team server/browser DTO, builder, parser, handler, or durable-current fixtures.
+- Agent-bound Team/standalone `ERROR` projection that omits required `error_scope`/`error_effect`/`turn_id`, treats runtime scope alone as terminal, or borrows an active turn for missing-turn input.
 - synthetic task Agent/Team instance identity, generic Team `task_context`, separate task activation run-ID results, or redundant token `root_team_run_id`/`member_agent_run_id`/`task_agent_instance_id`/`task_agent_run_id` in current domain/runtime/store/wire code.
+- provider-source `SEGMENT_CONTENT`/`SEGMENT_END` carrying `segment_type`; optional canonical content type; `?? "text"`; unknown-type-to-text; browser type-plus-ID `lookupKey`; ID-only segment mutation; or any segment lifecycle registry outside run-owned `AgentSegmentLifecycleState`.
 
 The legacy Team identity-token production scan has this exact allowlist and no directory wildcard:
 
@@ -1315,6 +1365,7 @@ Non-current application version literals are allowed only in narrow ordinary par
 - Adding an event/task variant breaks exhaustive mapping until implemented.
 - a raw Agent event whose run ID disagrees with its member handle binding—or with `executionAddress.taskAgentRunId` for a task Agent—is rejected before Team event publication; persistent/task-Agent bindings contain no second run ID, while a task-Team-Agent binding contains exactly that one genuine ID and materializes/validates its frontend execution;
 - persistent/task/task-Team live, initial, and pre-run producers all call the same binding constructor; construction rejects address/allocated-ID disagreement before event or snapshot projection, and no other binding classifier exists;
+- Team segment variants accept only canonical post-AgentRun events: start/content/end require a non-empty turn, start/content require the finite shared type, content type must be the state-derived start type, and no Team class has lifecycle state or runtime-kind branching;
 
 ### 17.2 Producer-to-browser contract
 
@@ -1349,6 +1400,10 @@ The initial seam proves deterministic `CONNECTED -> Agent status snapshots -> ro
 Pre-run coverage uses real persistent Agent, task Agent, and Agent-inside-task-AgentTeam handles with no materialized AgentRun. It proves initializing/error construction uses the shared binding/status snapshot and `createTeamAgentStatusEvent`, task activation ordering/barrier remains intact, the exact event reaches the same serializer/parser/status consumer, and the first matching live status removes the overlay while a different same-logical-address execution does not.
 
 Agent producer coverage includes all three bindings. Persistent/task-Agent output forbids `agent_run_id`; task-Team-Agent output requires the verified non-empty ID, strict parsing preserves it once, and the real aggregate materializes the exact missing `task_team_agent` or rejects a kind/address/ID mismatch with zero mutation.
+
+Segment producer coverage begins at the actual provider/native source, not the Team mapper. AutoByteus supplies `start(type) -> content(no type) -> end(no type)` through converter, AgentRun queue/first transformer, complete processor/listener fan-out, Team bridge, strict serializer/parser, and browser AgentContext transition. Codex reasoning and Claude text/tool paths prove one explicit start and minimal later facts. Assertions include exact type enrichment, typed late subscription, two identical deltas retained, active repeated start swallowed, start/end replay, turn/interruption/runtime cleanup, file content not reset and end without type, and zero Team/application/browser lifecycle state.
+
+Diagnostic coverage begins with two malformed provider candidates: one with an explicit turn and one without/empty turn. It proves exact `TURN_DIAGNOSTIC` versus `RUNTIME_DIAGNOSTIC`, unchanged lifecycle status, exact required nullable Team and standalone wire evidence, browser-visible row without message/segment/tool/status terminalization, no application error projection, and no external/compaction/skill/command/lifecycle failure. A fixture that inserts `segment_type` directly on source content is rejected as surplus and cannot satisfy this seam.
 
 Activation-order coverage uses the real task service, activation coordinator, synchronous initializing Agent producer/task-Team child forwarding, Team mapper/serializer, browser parser, and aggregate. It proves: activation is observed before every event from the prepared subtree and before the work packet/task-originated command can execute; unrelated Team events bypass while the lease is open; two concurrent activations on one TeamRun serialize their short critical sections without serializing later task work; related reentrant events retain FIFO order; matching repeated publications remain subject to normal downstream idempotence; and forced runtime-start rejection, activation-write rejection, count overflow, or byte overflow publishes neither activation nor held child events, exposes no starting entry through active resolution, leaves no active ledger/directory entry, and settles/removes the fresh runtime.
 
@@ -1403,6 +1458,8 @@ Valid control coverage admits exactly `CONNECTED {session_id}` and `TEAM_RUN_LIF
 - `MEMBER_INPUT` real delivery reaches the exact recipient transcript once;
 - latest base behavior: repeated member addresses across sibling TeamRuns mark a row current only for the selected TeamRun and exact focused execution;
 - provider/imported nested-classroom matrix from the existing validation supplement.
+- ordinary AutoByteus/Codex/Claude text/tool/reasoning segment output renders without protocol rejection/default text; application text deltas agree between standalone and Team paths; late subscription remains correctly typed.
+- both lifecycle diagnostic branches remain visible and non-terminal through Team/standalone browser state, while real terminal/unclassified errors preserve established behavior.
 
 ### 17.7 Removal proof
 
@@ -1410,6 +1467,7 @@ Valid control coverage admits exactly `CONNECTED {session_id}` and `TEAM_RUN_LIF
 - exact six-path production-source allowlist scan plus proof that no application migration/predecessor/compatibility/fallback path remains;
 - current token schema/domain/repository/result/event scan proves no parallel root/member/task-run/task-instance identity fields, while migration transaction coverage proves address conversion, obsolete-column/index removal, JSON-root expression-index use, total rollback, and idempotent retry;
 - no durable test continues to manufacture removed aliases/placeholders/raw keys;
+- no provider source content/end repeats type; no Team/application/browser lifecycle map, optional content type, text fallback, serialized type+ID key, ID-only mutation, evidence-dropping error adapter, all-errors-terminal branch, or fabricated per-content-type boundary fixture remains;
 - full source review occurs before paused API/E2E resumes.
 
 ## 18. Change Sequence
@@ -1426,8 +1484,9 @@ Valid control coverage admits exactly `CONNECTED {session_id}` and `TEAM_RUN_LIF
 10. Cut the launch path to construct the canonical topology/execution context only after server allocation and transfer pending focus/input once; remove the old temporary TeamRun/AgentRun draft execution path.
 11. Cut terminal cleanup to the aggregate.
 12. Delete old task projection/tree modules, copied task snapshots/separate history/stored labels, task-instance identity modules/factories/fields, legacy Team leaf-status snapshot/generic initial-status mapper/generic command-start event builder/redundant snapshot bridge, raw map/key consumers, duplicate fields, provisional execution IDs/rebase code, dormant route helpers, redundant current token identity fields/cleanup definitions, and obsolete tests.
-13. Run the exact live-event, connection/open/restore snapshot, pre-run overlay/replacement producer-to-browser seams, application-producer cases, draft launch/failure cases, aggregate state cases, source allowlist, affected/full builds, then full cumulative source review.
-14. Resume the paused API/E2E round only after source review Pass.
+13. Establish the run-owned segment lifecycle and error-evidence variants before Team ingress; cut provider source to explicit starts/minimal content/end and the complete post-pipeline consumer set to canonical input. Make active repeated start an owner no-op. Cut Team/standalone error DTOs/projectors/parser/browser/application atomically to exact evidence and non-terminal diagnostics.
+14. Replace fabricated Team segment/error fixtures with actual provider -> AgentRun -> processors/listeners -> Team/standalone wire -> browser/application seams. Run the exact live-event, connection/open/restore snapshot, pre-run overlay/replacement, segment/diagnostic, application-producer, draft launch/failure, aggregate, source allowlist, and affected/full build seams, then full cumulative source review.
+15. Resume the paused API/E2E round only after source review Pass and after API/E2E resolves its CR-F-043 owned cleanup/evidence prerequisite.
 
 No dual runtime period is designed. Steps may be compiled in checkpoints, but production is switched in one clean cut before review.
 
@@ -1446,6 +1505,8 @@ No dual runtime period is designed. Steps may be compiled in checkpoints, but pr
 - Producer-side activation ordering adds one bounded transient queue, but prevents both browser inference and lost synchronous runtime events. Exact-subtree matching lets unrelated Team traffic continue; count/byte overflow fails and cleans the attempt rather than degrading into partial publication.
 - Later task events no longer update timeline immediately from incomplete payloads; they schedule the already-required complete durable refresh. This small refresh latency buys one complete task authority, removes repeated event fields, and makes live/restore/history converge without a transient overlay.
 - Append-only task reconciliation retains a known row missing from a concurrently older full response. That is deliberate monotonic merge, not a compatibility fallback: the durable store has no supported record deletion meaning, while equal-time contradiction and terminal-descendant uncertainty still reject atomically.
+- Requiring canonical type on every Team content event repeats one derived fact across the wire, but that self-contained projection is intentional: Team/application/browser subscribers can join mid-segment without replaying server state. The authoritative fact is still established once in `AgentRun`; Team transport does not become a lifecycle owner.
+- Required nullable error-evidence fields add three values to every error wire payload, but remove ambiguity: null is an explicit unclassified/protocol fact, diagnostics are not inferred from message/code/status, and Team/standalone browser behavior stays identical.
 
 ## 20. Forbidden Shortcuts
 
@@ -1475,7 +1536,9 @@ No dual runtime period is designed. Steps may be compiled in checkpoints, but pr
 - Render a serialized key as fallback presentation.
 - Allow route-key production code through a broad source allowlist.
 - Retain writable token root/member/task-run identity beside canonical execution JSON, perform semantic conversion and column cleanup in separate transactions, or drop predecessor columns through Prisma before app-data planning.
+- Put segment correlation in `TeamAgentEventAdapter`, TeamRun, WebSocket sessions, application projectors, or browser transport; add a provider-specific Team branch; put type back on provider content/end; guess text/type/turn from defaults or IDs; accept dual source/canonical shapes; buffer/reorder missing starts; or deduplicate equal deltas.
+- Drop Agent error evidence in Team/standalone projection; make error evidence optional; borrow the active turn for a malformed candidate; treat `RUNTIME_DIAGNOSTIC` as runtime terminal; or close browser/application/external/command/output state for either diagnostic.
 
 ## 21. Guidance For Implementation
 
-Implement from the spines outward. First create the one Team Agent execution binding and status snapshot, bind every live/initial/pre-run producer to them, bind every Team Agent runtime application producer to the execution being constructed, and make the wire contract impossible to misconstruct or misparse; then make concrete frontend execution state impossible to represent partially. Keep connection status as a direct snapshot projection, pre-run status as a correlated event, pre-launch draft state outside execution identity, task storage as the durable record owner, and the frontend aggregate as the concrete projection owner. Preserve the current canonical backend resolver, released-data migration/startup gates, direct exact-V5 application target, provider tool protocol, storage layout, and exact execution-address semantics. Do not revive any legacy route, provisional run identity, status payload/mapper, compatibility alias, application migration/fallback, or consumer-side producer repair to ease the cut.
+Implement from the spines outward. First establish the one AgentRun segment lifecycle and exact four-variant error evidence, then cut every processor/listener to canonical input before Team ingress. Team adaptation stays stateless and projects required nullable evidence; diagnostics stay visible/non-terminal. Then create/use the one Team Agent execution binding/status snapshot, bind every live/initial/pre-run producer, bind runtime application producers at execution construction, and make the wire/aggregate impossible to misconstruct. Preserve the canonical backend resolver, released-data migration/startup gates, direct V5 application target, provider tool protocol, storage layout, and exact execution-address semantics. Do not revive legacy routes, provisional identity, segment/status defaults, evidence loss, compatibility aliases, application migration/fallback, or consumer-side repair.

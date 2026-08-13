@@ -1,0 +1,84 @@
+{
+  "teamRunId": "nested_classroom_test_team_2db16cc4486647a09f2d59f40cc44a68",
+  "records": [
+    {
+      "taskId": "task_0001",
+      "status": "accepted",
+      "senderAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_2db16cc4486647a09f2d59f40cc44a68",
+        "taskTeamRunIds": [],
+        "memberAddress": "/Teacher",
+        "taskAgentRunId": null
+      },
+      "receiverAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_2db16cc4486647a09f2d59f40cc44a68",
+        "taskTeamRunIds": [
+          "team_local_team_nested_classroom_test_student_st_9c9b21ab716740e5b812b940ddb0af37"
+        ],
+        "memberAddress": "/StudentStudyGroup/student_one",
+        "taskAgentRunId": null
+      },
+      "receiverTargetKind": "agent_team",
+      "content": "Complete exactly this bounded task. As student_one, use send_message_to with recipient_address './student_two' and message content exactly TASK_PEER_CODEX (the message body must be exactly that token). Wait for the peer reply. After the peer replies, submit the task result using submit_task_result with result exactly NESTED_CLASSROOM_OK_CODEX. Do not submit any other result text and do not delegate any additional tasks.",
+      "referenceFiles": [],
+      "taskRun": {
+        "address": {
+          "rootTeamRunId": "nested_classroom_test_team_2db16cc4486647a09f2d59f40cc44a68",
+          "taskTeamRunIds": [
+            "team_local_team_nested_classroom_test_student_st_9c9b21ab716740e5b812b940ddb0af37"
+          ],
+          "memberAddress": "/StudentStudyGroup",
+          "taskAgentRunId": null
+        },
+        "startedAt": "2026-08-13T02:13:03.495Z"
+      },
+      "updates": [
+        {
+          "kind": "submission",
+          "submissionId": "task_0001_submission_0001",
+          "senderAddress": {
+            "rootTeamRunId": "nested_classroom_test_team_2db16cc4486647a09f2d59f40cc44a68",
+            "taskTeamRunIds": [
+              "team_local_team_nested_classroom_test_student_st_9c9b21ab716740e5b812b940ddb0af37"
+            ],
+            "memberAddress": "/StudentStudyGroup",
+            "taskAgentRunId": null
+          },
+          "receiverAddress": {
+            "rootTeamRunId": "nested_classroom_test_team_2db16cc4486647a09f2d59f40cc44a68",
+            "taskTeamRunIds": [],
+            "memberAddress": "/Teacher",
+            "taskAgentRunId": null
+          },
+          "content": "NESTED_CLASSROOM_OK_CODEX",
+          "referenceFiles": [],
+          "createdAt": "2026-08-13T02:13:22.098Z"
+        },
+        {
+          "kind": "review",
+          "reviewId": "task_0001_review_0001",
+          "senderAddress": {
+            "rootTeamRunId": "nested_classroom_test_team_2db16cc4486647a09f2d59f40cc44a68",
+            "taskTeamRunIds": [],
+            "memberAddress": "/Teacher",
+            "taskAgentRunId": null
+          },
+          "receiverAddress": {
+            "rootTeamRunId": "nested_classroom_test_team_2db16cc4486647a09f2d59f40cc44a68",
+            "taskTeamRunIds": [
+              "team_local_team_nested_classroom_test_student_st_9c9b21ab716740e5b812b940ddb0af37"
+            ],
+            "memberAddress": "/StudentStudyGroup",
+            "taskAgentRunId": null
+          },
+          "reviewedSubmissionId": "task_0001_submission_0001",
+          "decision": "accept",
+          "content": null,
+          "referenceFiles": [],
+          "createdAt": "2026-08-13T02:13:26.405Z"
+        }
+      ],
+      "createdAt": "2026-08-13T02:13:03.491Z"
+    }
+  ]
+}

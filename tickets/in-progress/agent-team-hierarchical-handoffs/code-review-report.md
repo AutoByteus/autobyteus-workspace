@@ -6,186 +6,205 @@
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/requirements.md`
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/design-spec.md`
-- Supplemental Task Artifacts Reviewed As Context: `agent-team-addressing-handoff-contract.md`; `agent-team-collaboration-system-instruction.md`; `team-run-canonical-identity-refactor.md`; `team-stream-execution-projection-contract.md`; `nested-classroom-live-validation-contract.md`
-- Solution Revision Record Reviewed As Context: `solution-revision-record.md`
-- Relevant Solution Revision IDs: current `SR-018`; cumulative `SR-001` through `SR-018`
-- Design Review Report Reviewed As Context: `design-review-report.md`
-- Architecture Review Revision Record Reviewed As Context: `architecture-review-revision-record.md`
-- Relevant Architecture Review Revision IDs: current `ARCH-REV-011`; cumulative `ARCH-REV-001` through `ARCH-REV-011`
+- Supplemental Task Artifacts Reviewed As Context: `agent-team-addressing-handoff-contract.md`; `agent-team-collaboration-system-instruction.md`; `team-run-canonical-identity-refactor.md`; `team-stream-execution-projection-contract.md`; `agent-segment-lifecycle-contract.md`; `nested-classroom-live-validation-contract.md`
+- Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/solution-revision-record.md`
+- Relevant Solution Revision IDs: cumulative `SR-001`–`SR-020`; current `SR-020`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/design-review-report.md`
+- Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/architecture-review-revision-record.md`
+- Relevant Architecture Review Revision IDs: current `ARCH-REV-013 Pass`
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/implementation-revision-record.md`
-- Relevant Implementation Revision IDs: current `IR-038`; cumulative `IR-028` through `IR-038`; earlier lineage where still relevant
+- Relevant Implementation Revision IDs: current `IR-042`; preceding full cut `IR-041`; integrated basis `IR-039`
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-071`
-- Current Review Round: `54`
-- Trigger: `IR-038` focused cumulative source re-review of `CR-F-040` exact Team launch admission and terminal promotion ownership
-- Prior Review Round Reviewed: `CRR-070 Fail — Local Fix`, `9.1/10` (`90.5/100`)
-- Latest Authoritative Round: `CRR-071`
-- Relevant API/E2E Revision IDs: authoritative pre-IR-038 `API-REV-031` and `API-REV-032 Pass / 98%`; both remain historical evidence for unaffected paths
-- Relevant Delivery Revision IDs: paused pre-integration `DR-006`; its pre-pause merge attempt was aborted after 21 conflicts
-- Finding Under Re-review: `CR-F-040`; material premise `CR-PREM-036`
-- Current Ticket HEAD: `8475924fd28c4091824308b24a716d80f672fb5c`
-- Current Production Source Commit: `9e05920d226c19259f404de18acc057a0ed747f2`
-- Reviewer Evidence: `/tmp/crr071-ir038-source-audit.log`; `/tmp/crr071-launch-admission-probe.log`; `/tmp/crr071-web-current.log`; implementation evidence `/tmp/ir038-team-launch-owner-probe.log`, `/tmp/ir038-run-config-panel-render-probe.log`, `/tmp/ir038-web-focused-final.log`, `/tmp/ir038-web-retained-final.log`, `/tmp/ir038-web-build-final.log`
+- Current Code Review Revision ID: `CRR-078`
+- Current Review Round: `61`
+- Trigger: `implementation_engineer` requested focused cumulative SR-020 re-review of the `CR-F-044` and `CR-F-045` corrections
+- Prior Review Round Reviewed: `CRR-077 Fail — Local Fix / 8.6`
+- Latest Authoritative Round: `CRR-078`
+- Relevant API/E2E Revision IDs: paused `API-REV-035`; preceding `API-REV-034`
+- Relevant Delivery Revision IDs: integrated `DR-007`; delivery remains paused
+- Current Ticket HEAD: `6b578235917700584a6b559cd58763bd3bba9b38`
+- Current Production Commit: `50ae8244872502623b3ab19e5ab81bd5e06875c9`
+- Production Basis: `a0a1073cb94dc89ec2fa64a751ee717e5292f752`
+- Reviewer Commands / Evidence: source/diff/size audit `/tmp/crr078-source-audit.log`; Codex converter-to-lifecycle probe `/tmp/crr078-codex-segment-identity-probe.log`; browser identity/type probe `/tmp/crr078-browser-segment-type-probe.log`; retained-test and readiness audit `/tmp/crr078-verification-readiness-audit.log`; implementation evidence `/tmp/ir042-*.log`; preserved full cumulative review evidence `/tmp/crr077-full-source-audit.log` and `/tmp/crr077-source-size.tsv`
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: IR-038's exact selected-draft admission before allocation; immutable draft/config/focus/input/workspace and run-selection locking; duplicate launch rejection; one success-only hydrate/register/select/input-transfer/removal sequence; failure release/preservation; desktop, mobile, and first-send presentation/caller behavior; removal of the abandoned post-allocation mismatch and dormant flag.
-- Files / areas reviewed: all seven IR-038 production paths plus the canonical launch callers and directly governing stores: `teamRunConfigStore.ts`, `agentTeamRunStore.ts`, `agentSelectionStore.ts`, `RunConfigPanel.vue`, `MobileRunSetup.vue`, `useMobileRunSetupController.ts`, and `useMobileRunLaunchCoordinator.ts`.
-- Explicit exclusions: no second full audit of unaffected SR-018 source; no proportional review of the pre-IR-038 92-path durable package; no live server/browser/provider/database execution; no latest-base integration. Unchanged structural conclusions from CRR-070 were retained only after confirming IR-038 does not disturb them.
+- Changed implementation and behavior reviewed: IR-042's two bounded corrections inside the already-reviewed SR-020 provider-normalization and browser-presentation owners, plus revalidation that the cumulative AgentRun lifecycle owner and canonical fan-out remain intact.
+- Files / areas reviewed: all six changed production paths; the Codex item parser/converters/source normalizer-to-lifecycle path; browser `StreamSegmentIdentity`, start/content/end handlers, typed late creation, and tool-lifecycle identity callers; source size, forbidden fallback/key scans, retained failures, build evidence, and cumulative ownership invariants.
+- Explicit exclusions: no proportional review or edit of API/E2E's incomplete dirty durable package; no configured server, provider, external browser, migration, operational database, protected user stack, or `CR-F-043` residue inspection/removal.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: identity-free immutable Team launch drafts; no provisional execution identity; one canonical launch owner; server-allocated identity only; success-only canonical context construction/input transfer; exact failure preservation; strict current-contract behavior.
-- Design-spec behavior map verified against the implementation: IR-038 now enforces the previously missing in-flight segment of the approved `TeamLaunchDraft -> launch owner -> canonical TeamRun context` spine.
-- Design review report and round confirmed: `ARCH-REV-011` remains adequate. No requirement, addressing, topology, or broader design change is needed.
-- Behavior-basis status: `Confirmed`
-- Changed or newly discovered behavior, if any: none. IR-038 corrects already-approved Team launch behavior.
-- Remaining material ambiguity, if any: none.
+- Approved requirements basis understood: `BEH-019`, `R-053`–`R-056`, and `AC-049`–`AC-051` require one AgentRun-owned lifecycle, truthfully minimal provider facts, exact canonical projection, no invented ID/type/default, exact browser compound identity with stored-type agreement, and mutation-free malformed/mismatched input.
+- Design-spec behavior map verified against the implementation: confirmed. IR-042 corrects the two CRR-077 contradictions without changing the central owner, data-flow spine, dependency direction, or cumulative rooted Team architecture.
+- Design review report and round confirmed: `ARCH-REV-013 Pass` remains the applicable complete SR-020 authority.
+- Behavior-basis status: `Confirmed`.
+- Changed or newly discovered behavior: none.
+- Remaining material ambiguity: none.
 
 | Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence |
 | --- | --- | --- | --- |
-| `BEH-016`, `R-039`, `AC-036`, `AC-042` | `Confirmed` | Exact selected immutable draft -> synchronous `admitDraftLaunch()` -> validation/allocation/hydration -> exact focus/input transfer -> context registration -> owner-only selection promotion -> draft completion -> admission release. Duplicate launch and draft/selection mutations reject before changing the admitted snapshot. | None. |
-| `BEH-016` desktop/mobile/first-send launch | `Confirmed` | Desktop pre-admission workspace preparation uses local presentation state, then derives pending/read-only state from the owner; mobile combines request preparation with exact owner state and makes the form inert; first-send calls the same `launchDraft()` owner with no second launch flag. | None. |
-| `R-043`, `AC-048` clean cut | `Confirmed` | The old global `isLaunching` and post-allocation draft-mismatch branch are absent. No provisional identity, fallback, alias, retry policy, relaxed parser, or compatibility path was added. | None. |
+| `BEH-019`, `R-053`, `R-054`, `AC-049` | `Confirmed` | Supported Codex runtime notification -> `CodexThreadEventConverter` -> nullable `resolveSegmentId()` -> minimal source payload -> first AgentRun lifecycle transformer. Missing identity stays `null`, produces the established turn/runtime diagnostic, and does not mutate segment state; a later real ID admits normally. | None. |
+| `R-055`, `AC-050` | `Confirmed` | Strict Team/standalone message -> browser parser/projector -> compound `{turnId,id}` lookup -> stored `segmentType` agreement -> presentation mutation. Start and typed late creation store the exact type; conflicting start/content returns no effect; end remains type-less. | None. |
+| `R-043`, `R-056`, `AC-045`, `AC-046`, `AC-051` | `Confirmed` | Provider source -> serialized AgentRun queue -> first lifecycle transformer -> processors/listeners -> exact Team/standalone/application/browser consumers. | None. |
+| Cumulative `BEH-001`–`BEH-018`, `R-001`–`R-052` | `Confirmed, unaffected` | Rooted TeamRun identity, filesystem-like addressing, collaboration tools, task execution, launch admission, migration/token, topology/execution aggregate, stream projection, hydration, desktop/mobile, and provider composition remain on their reviewed owners. | None. |
+
+## Data-Flow Spine Inventory
+
+| Spine | Start | End | Governing Owner | Review Result |
+| --- | --- | --- | --- | --- |
+| `S-SEG-1` normal provider lifecycle | AutoByteus/Codex/Claude runtime event | Canonical processors/listeners and Team/standalone/browser presentation | `AgentRun` plus run-owned `AgentSegmentLifecycleState` behind its serialized queue | Pass; provider adapters provide source facts and do not own correlation. |
+| `S-SEG-2` malformed lifecycle | Malformed provider segment candidate | Visible non-terminal turn/runtime diagnostic with no segment mutation | First `AgentSegmentLifecycleEventTransformer` | Pass; Codex absence now reaches this owner truthfully. |
+| `S-SEG-3` file-operation projection | Admitted write/edit start | Tool terminal/turn/run cleanup and file projection | `FileChangeEventProcessor` plus exact invocation context | Preserved from CRR-077. |
+| `S-SEG-4` wire/presentation | Canonical AgentRun event | Strict Team/standalone wire, parser, AgentContext transcript | Stateless transport plus browser presentation state | Pass; compound identity remains the selector and stored type is only an invariant. |
+| `S-CUM-1` rooted Team behavior | Supported desktop/mobile Team action or intrinsic collaboration tool | Canonical execution/task/message/history result | Existing Team launch, execution aggregate, address resolver, task, stream, and hydration owners | Preserved. |
 
 ## Structural / Design Checks
 
 | Check | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | `Pass` | IR-038 responds to CRR-070's `Duplicated Policy Or Coordination` plus `Missing Invariant` classification with one bounded owner refactor. | None. |
-| Implementation matches approved behavior-defining supplemental artifacts | `Pass` | The launch contract now preserves an exact draft through failure and replaces it only after canonical success. | None. |
-| Data-flow spine inventory clarity and preservation under shared principles | `Pass` | The launch spine has one explicit admission before the first await and one synchronous terminal commit/release sequence. | None. |
-| Ownership boundary preservation and clarity | `Pass` | Draft state owns the exact admission lease, the Team-run store owns orchestration/promotion, and selection exposes one guarded owner-only promotion seam. | None. |
-| Off-spine concern clarity | `Pass` | Desktop/mobile request-preparation state is presentation-only and hands off to the same canonical owner before allocation. | None. |
-| Existing capability/subsystem reuse check | `Pass` | Existing draft, selection, context, hydration, and Team-run stores are strengthened rather than duplicated. | None. |
-| Reusable owned structures check | `Pass` | The same immutable `TeamLaunchDraft` object is referenced as the admission token; no copied launch identity or parallel config is introduced. | None. |
-| Shared-structure/data-model tightness check | `Pass` | `inFlightDrafts` holds the exact admitted draft reference and no run/execution identity. | None. |
-| Repeated coordination ownership check | `Pass` | Desktop, mobile, and first-send all enter `agentTeamRunStore.launchDraft()`; duplicate admission is rejected before allocation. | None. |
-| Empty indirection check | `Pass` | Derived pending queries expose the owner state required by UI callers; lifecycle methods validate/admit/commit/release rather than merely forwarding. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | `Pass` | Draft mutation guards remain in the draft owner, promotion sequencing in the run owner, and rendering/inertness in surface components/controllers. | None. |
-| Ownership-driven dependency check | `Pass` | Selection consults the draft admission boundary and only the run owner invokes the special promotion seam. No forbidden lower-level bypass was found. | None. |
-| Authoritative Boundary Rule check | `Pass` | All allocation paths use `launchDraft()` and cannot independently register/select/remove the draft. The removed mobile `clearConfig()` eliminates the former post-owner bypass. | None. |
-| File placement check | `Pass` | All seven changes remain within their existing owning frontend capabilities. | None. |
-| Flat-vs-over-split layout judgment | `Pass` | The bounded seven-file change follows real store/surface responsibilities without creating a new module hierarchy. | None. |
-| Interface/API/query/command/service-method boundary clarity | `Pass` | Admission, exact per-draft status, promotion, completion, and release have singular subjects and explicit draft/root IDs. | None. |
-| Naming quality and naming-to-responsibility alignment check | `Pass` | `isRunPreparationPending`, `isDraftLaunchPending`, `admitDraftLaunch`, `promoteTeamDraftLaunch`, `completeDraftLaunch`, and `releaseDraftLaunch` distinguish presentation, admission, and terminal ownership. | None. |
-| No unjustified duplication of code / repeated structures in changed scope | `Pass` | One owner state replaces desktop/mobile/first-send launch-policy duplication. | None. |
-| Patch-on-patch complexity control | `Pass` | IR-038 removes the late mismatch patch and consolidates the lifecycle instead of adding another caller-specific guard. | None. |
-| Dead/obsolete code cleanup completeness in changed scope | `Pass` | The dormant global flag, obsolete mismatch text, and duplicate mobile clear are absent; temporary probes were removed. | None. |
-| Relevant test scenarios and assertions are clear and requirement-aligned | `Pass` | Actual-owner and mounted-component probes cover pending mutation/selection/input, duplicate rejection, one allocation/promotion, read-only rendering, failure preservation, and unlock. Reviewer store-boundary probe independently passes `2/2`. | API/E2E must currentize repository-resident durable coverage. |
-| Test fixtures/helpers are reasonably reusable and test structure remains coherent | `Pass` | Implementation probes use the real Pinia/store/component seams; no source-only fake owner was used for the claimed invariant. | Preserve this seam in durable coverage. |
-| No stale, duplicated, or compatibility-only tests are retained in changed scope | `Pass` for implementation source; downstream maintenance required | The pre-IR-038 durable package has two expected stale seams: a manually unregistered launch draft and a RunConfigPanel fake without the new owner query. They are test maintenance, not production-source contradictions. | API/E2E must update these exact fixtures without weakening admission. |
-| API/E2E readiness for the next workflow stage | `Pass` | Source/build and owner/component probes are green; the known current-test failures are precisely attributable to pre-change fixtures. | Resume fresh coverage investigation/execution for desktop/mobile/first-send launch. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | `Pass` | SR-020/ARCH-REV-013 identified the global lifecycle owner; IR-042 is correctly a local invariant correction. | None. |
+| Implementation matches approved behavior-defining supplemental artifacts | `Pass` | Nullable provider identity and exact browser stored type match lifecycle-contract §§3–6 and requirements AC-049/050. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | `Pass` | Provider -> AgentRun queue/lifecycle -> canonical fan-out remains explicit and complete. | None. |
+| Ownership boundary preservation and clarity | `Pass` | AgentRun owns lifecycle; Codex normalizes source facts; browser owns presentation identity/type agreement. | None. |
+| Off-spine concern clarity | `Pass` | Provider parsing, transport, file context, and browser presentation serve their existing owners. | None. |
+| Existing capability/subsystem reuse check | `Pass` | Existing nullable parsing, lifecycle diagnostic, and browser identity mechanisms were tightened; no parallel service was added. | None. |
+| Reusable owned structures check | `Pass` | One `StreamSegmentIdentity` carries the singular local identity/invariant facts for all browser callers. | None. |
+| Shared-structure/data-model tightness check | `Pass` | `{turnId,id,segmentType,presentationComplete}` has singular meanings; type is not part of lookup and no `lookupKey` exists. | None. |
+| Repeated coordination ownership check | `Pass` | Server correlation remains only in AgentRun lifecycle; browser only validates canonical projection state. | None. |
+| Empty indirection check | `Pass` | Parser, source normalizer, lifecycle transformer, and presentation identity each own real translation/invariant work. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | `Pass` | Six changed paths remain within provider conversion or browser segment presentation. | None. |
+| Ownership-driven dependency check | `Pass` | Codex has no Team dependency; browser does not read AgentRun lifecycle state. | None. |
+| Authoritative Boundary Rule check | `Pass` | No caller combines the AgentRun lifecycle boundary with its internal state map; presentation callers use one identity boundary. | None. |
+| File placement check | `Pass` | Provider parsing/conversion and browser handlers remain under their owning subsystems. | None. |
+| Flat-vs-over-split layout judgment | `Pass` | Existing split remains readable and avoids a new generic helper layer. | None. |
+| Interface/API/query/command/service-method boundary clarity | `Pass` | `resolveSegmentId(payload): string | null` states absence explicitly; `setStreamSegmentIdentity` requires the exact finite type. | None. |
+| Naming quality and naming-to-responsibility alignment check | `Pass` | `segmentType`, `matchesStreamSegmentType`, and nullable resolver semantics are direct. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | `Pass` | One browser type predicate and one Codex resolver contract are reused by all affected callers. | None. |
+| Patch-on-patch complexity control | `Pass` | IR-042 deletes fallback behavior and restores one invariant; no retry, alias, compatibility reader, or second owner. | None. |
+| Dead/obsolete code cleanup completeness in changed source scope | `Pass` | Production scans find zero `runtime-segment`, `lookupKey`, or `buildStreamSegmentLookupKey`; temporary probes are absent. | API/E2E separately owns `CR-F-043`. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | `Pass` | Reviewer `1/1` server and `2/2` browser probes prove exact negative/positive paths; implementation probes independently pass. | API/E2E must make these durable/current. |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | `Pass` | No implementation-owned test fixture was added; the three disclosed retained failures are precisely classifiable against the current contract. | API/E2E currentizes its owned package. |
+| No stale, duplicated, or compatibility-only tests are retained in implementation-owned changed scope | `Pass` | IR-042 changes production only. The known stale browser cases remain explicitly downstream-owned and are not presented as acceptance. | Remove/update them in coverage maintenance. |
+| API/E2E readiness for the next workflow stage | `Pass` | Source blockers are resolved; production TypeScript/full server build and Nuxt build pass; exact reviewer probes pass. | API/E2E must first resolve CR-F-043, then investigate/currentize/run. |
 
 ## Source File Size And Structure Audit
 
-All seven IR-038 production files remain below `500` effective non-empty/non-comment lines. No IR-038 source delta exceeds `220` changed lines.
+Full cumulative basis: `/tmp/crr077-source-size.tsv`; IR-042 delta: `/tmp/crr078-source-audit.log`. No changed implementation file exceeds `500` effective non-empty lines.
 
 | Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
 | --- | ---: | --- | --- | --- | --- | --- | --- |
-| `autobyteus-web/stores/teamRunConfigStore.ts` | `318` | `Pass` | `71`, Pass | One immutable draft/admission/mutation owner | `Pass` | `Pass` | None. |
-| `autobyteus-web/stores/agentTeamRunStore.ts` | `266` | `Pass` | `89`, Pass | One Team-run orchestration/promotion owner | `Pass` | `Pass` | None. |
-| `autobyteus-web/stores/agentSelectionStore.ts` | `65` | `Pass` | `21`, Pass | One discriminated selection plus guarded promotion concern | `Pass` | `Pass` | None. |
-| `autobyteus-web/components/workspace/config/RunConfigPanel.vue` | `373` | `Pass` | `22`, Pass | Desktop configuration rendering/preparation only | `Pass` | `Pass` | None. |
-| `autobyteus-web/composables/mobile/useMobileRunSetupController.ts` | `371` | `Pass` | `29`, Pass | Mobile setup/presentation state only | `Pass` | `Pass` | None. |
-| `autobyteus-web/composables/mobile/useMobileRunLaunchCoordinator.ts` | `217` | `Pass` | `1`, Pass | Mobile calls the canonical owner without duplicate cleanup | `Pass` | `Pass` | None. |
-| `autobyteus-web/components/mobile/MobileRunSetup.vue` | `163` | `Pass` | `2`, Pass | Mobile form presentation/inertness only | `Pass` | `Pass` | None. |
+| `codex-thread-event-converter.ts` | `499` | Pass | Review | Cohesive provider dispatcher; item conversion/parsing/normalization are extracted. | Pass | Pass with structural watch | Do not add unrelated policy. |
+| `codex-item-event-converter.ts` | `494` | Pass | Review | Cohesive item-family conversion; nullable identity is delegated to parser context. | Pass | Pass with structural watch | Keep future concerns extracted. |
+| `toolLifecycleHandler.ts` | `440` | Pass | Review | Cohesive browser tool-presentation lifecycle; only identity call signature changed. | Pass | Pass with structural watch | No unrelated growth. |
+| `segmentHandler.ts` | `421` | Pass | Review | One browser segment-presentation concern; exact type agreement is now local and explicit. | Pass | Pass | No split required. |
+| `codex-item-event-payload-parser.ts` | `280` | Pass | Review | One provider parsing concern; absence is truthful and no fallback remains. | Pass | Pass | None. |
+| `segmentIdentity.ts` | `48` | Pass | Pass | Tight browser presentation identity and invariant record. | Pass | Pass | None. |
+| Remaining cumulative SR-020 changed implementation paths | See CRR-077 inventory | Pass | Previously reviewed | Central lifecycle, consumers, transport, diagnostics, and cumulative Team owners are unaffected by IR-042. | Pass | Pass | Preserve current ownership. |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | `Pass` | No fallback, retry-as-policy, alternate selector, alias, relaxed parser, or compatibility branch. |
-| No legacy old-behavior retention in changed scope | `Pass` | Late draft mismatch and duplicate mobile cleanup are removed. |
-| Dead/obsolete code cleanup completeness in changed scope | `Pass` | Obsolete global flag and temporary reviewer/implementation probes are absent. |
-| Approved persisted-data transition decision is followed without unnecessary migration work | `Pass` | IR-038 changes only ephemeral frontend launch ownership. |
-| No version-specific dual reads/writes or request-time old-shape fallback exists | `Pass` | No persistence or wire-shape change. |
-| Approved transition mechanics match the reviewed design | `Pass` | Identity-free draft remains exact until one canonical server-ID promotion. |
+| No backward-compatibility mechanisms in changed scope | `Pass` | No dual reader, alias, fallback, retry, or compatibility branch exists. |
+| No legacy old-behavior retention in changed scope | `Pass` | `runtime-segment` and serialized browser key behavior are absent. |
+| Dead/obsolete code cleanup completeness in changed source scope | `Pass` | Source and temporary-probe audits are clean; CR-F-043 is explicitly a later API/E2E-owned workflow item. |
+| Approved persisted-data transition decision is followed without unnecessary migration work | `Pass` | Segment lifecycle remains non-persisted; no migration is required. |
+| No version-specific dual reads/writes or request-time old-shape fallback exists | `Pass` | Current runtime uses one contract. |
+| Approved transition mechanics match the reviewed design | `Pass` | No persisted-data transition is in scope. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal
 
-None in IR-038 production source.
+| Item / Path | Type | Evidence | Why It Must Be Removed | Required Action |
+| --- | --- | --- | --- | --- |
+| API/E2E-owned disposable journal recorded as `CR-F-043` | `ObsoleteFile` | Preserved CRR-076/077 finding and AC-050 prerequisite; neither implementation nor reviewer inspected/modified it. | It contradicts the preceding API/E2E cleanup report and must not remain before a new live run. | `api_e2e_engineer` verifies/removes only its owned residue and corrects evidence before execution; protected data remains untouched. |
 
 ## Docs-Impact Verdict
 
-- Docs impact: `Yes — retained cumulative ticket impact`
-- Why: maintained web documentation still describes removed temporary Team promotion behavior. IR-038 does not add a new user-facing contract, but documentation must describe the final canonical launch owner after integrated source is authoritative.
-- Files or areas likely affected: `autobyteus-web/docs/agent_teams.md`, `autobyteus-web/docs/agent_execution_architecture.md`, `autobyteus-web/docs/settings.md`; delivery remains the owner after source/API/integration gates.
+- Docs impact: `No` additional implementation documentation change.
+- Why: IR-042 already updates the implementation handoff and chronological record to the reviewed target. Canonical code-review artifacts are updated by CRR-078; later coverage/execution artifacts remain API/E2E-owned.
+- Files or areas likely affected: API/E2E coverage investigation, execution report, revision record, and durable segment coverage in the next stage.
 
 ## Material Premise Validation
 
 ### Upstream Design-Review Material-Premise Decisions
 
-No upstream premise is reclassified.
+| Premise ID | Current Status | Changed Evidence / Reason |
+| --- | --- | --- |
+| `MP-008` | `Confirmed` | Complete affected-consumer fan-out remains implemented and relevant. |
+| `MP-009` | `Confirmed` | Missing/empty-turn malformed candidates retain the distinct runtime diagnostic. |
+| `CR-PREM-037` | `Confirmed` | Normal Team-bound provider segments remain user reachable and use the common lifecycle. |
+| `CR-PREM-038` | `Confirmed and satisfied` | Supported Codex notifications with absent identity now remain malformed through source normalization and become lifecycle diagnostics without state mutation. Reviewer provider-to-lifecycle probe passes. |
+| `CR-PREM-039` | `Confirmed and satisfied` | Supported Team/standalone browser projection now stores admitted type and rejects exact compound-identity type disagreement without transcript mutation. Reviewer browser probe passes. |
 
-### `CR-PREM-036` — a desktop user can replace the selected Team draft while its real TeamRun allocation/hydration is pending
-
-- Origin: retained from `CRR-070`
-- Related approved requirement or established contract: `BEH-016`; `R-039`; `AC-036`; `AC-042`; identity-free draft and success-only promotion contract
-- Relevant behavior ID(s): `BEH-016`
-- Initiating basis kind: `User`
-- Independent product-supported initiating trigger or applicable governing contract: the desktop Team configuration surface permits Run and ordinary configuration edits.
-- Support evidence: CRR-070 established this path; IR-038 mounted-component evidence confirms the surface now becomes read-only while owner admission is pending.
-- Forward current production caller/event path: Run button -> pre-admission workspace preparation -> `launchDraft()` synchronously admits exact selected draft -> every draft/selection mutation boundary rejects -> server allocation/hydration -> synchronous registration/promotion/completion -> release.
-- Lifecycle preconditions and material consequence at the claimed point: an exact launch-ready selected draft and pending server request. The prior material consequence is eliminated: the admitted immutable object cannot be replaced and the late post-allocation mismatch branch no longer exists.
-- Reachability: `Reachable`, now satisfied by the implementation
-- Review consequence / proportionate response: `CR-F-040` is resolved in source. Downstream durable and real affected-surface validation remains required.
+No new or reclassified material premise arose in CRR-078.
 
 ## Review Scorecard
 
-- Overall score (`/10`): `9.4`
-- Overall score (`/100`): `93.9`
-- Score calculation note: simple average of the ten categories. Every category is at least the clean-pass target of `9.0`.
+- Overall score (`/10`): `9.3`
+- Overall score (`/100`): `92.5`
+- Score calculation note: simple average of the ten mandatory categories; every category is at or above the `9.0` clean-pass threshold.
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | `9.5` | Launch now has explicit pre-await admission and one terminal commit/release sequence. | Downstream live evidence predates IR-038. | Re-execute affected launch spines. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | `9.4` | Draft, run, selection, and surface responsibilities are explicit and mutually guarded. | The coordination necessarily crosses three Pinia stores. | Keep the special lifecycle seams owner-only. |
-| `3` | `API / Interface / Query / Command Clarity` | `9.3` | Admission/pending/promotion/completion/release APIs have exact subjects and identity. | Durable fakes do not yet implement the new query seam. | Currentize tests, not production API. |
-| `4` | `Separation of Concerns and File Placement` | `9.2` | Policy is in stores; desktop/mobile retain presentation/preparation concerns. | RunConfigPanel and mobile controller remain moderately large. | Avoid adding unrelated policy to either file. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | `9.5` | One exact immutable draft reference is both state and admission token; no parallel identity/config. | None material. | Preserve the exact-reference invariant. |
-| `6` | `Naming Quality and Local Readability` | `9.4` | Names clearly distinguish preparation, owner pending state, promotion, completion, and release. | Cross-store terminal order still requires careful reading. | Keep ordering covered by owner-bound tests. |
-| `7` | `API/E2E Readiness` | `9.0` | Actual-owner/component probes and production build pass. | Pre-IR-038 durable fixtures fail at exactly two changed seams and live evidence is not post-fix. | Refresh coverage and run affected safe-target journeys. |
-| `8` | `Runtime Correctness And Behavioral Fidelity` | `9.3` | Mutation/selection/duplicate guards and one success/failure lifecycle are independently verified. | No post-IR-038 real browser/provider result yet. | Validate desktop/mobile/first-send interleavings. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | `9.8` | Clean-cut constraints remain intact. | None. | Do not weaken admission for stale fixtures. |
-| `10` | `Cleanup Completeness` | `9.5` | Dormant flag, late mismatch, duplicate mobile cleanup, and temporary probes are removed. | Maintained docs remain delivery-pending. | Delivery currentizes docs after integration. |
+| `1` | Data-Flow Spine Inventory and Clarity | `9.4` | Provider-to-AgentRun-to-consumer and malformed-diagnostic spines are explicit and preserved. | The cumulative change is broad. | Keep future changes traced through the same owner. |
+| `2` | Ownership Clarity and Boundary Encapsulation | `9.4` | One server lifecycle owner and one distinct browser presentation owner enforce their own invariants. | Browser presentation necessarily retains local non-authoritative state. | Keep it projection-only. |
+| `3` | API / Interface / Query / Command Clarity | `9.3` | Nullable provider identity and required finite browser type are explicit. | Provider parsers still normalize several real Codex surfaces. | Keep every normalization tied to provider evidence. |
+| `4` | Separation of Concerns and File Placement | `9.2` | Changed files map to provider conversion or browser presentation with no mixed Team policy. | Two converter files are near `500` lines. | Extract only when a real new concern appears. |
+| `5` | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | `9.3` | Compound identity and canonical type have singular, non-overlapping meanings. | Browser identity also carries presentation completion. | Preserve that narrow presentation responsibility. |
+| `6` | Naming Quality and Local Readability | `9.2` | Resolver and predicate names now state exact semantics. | Large converter dispatchers require careful navigation. | Avoid unrelated growth. |
+| `7` | API/E2E Readiness | `9.0` | Source, focused probes, production builds, and owner scans are ready for downstream validation. | CR-F-043, stale durable expectations, and the stopped live matrix remain downstream work. | Resolve cleanup first, currentize coverage, run the full checked-disposable matrix. |
+| `8` | Runtime Correctness And Behavioral Fidelity | `9.3` | Missing identity diagnoses without mutation; mismatched browser type cannot mutate; valid/late/end paths remain exact. | Fresh real provider/browser acceptance has not yet rerun after IR-042. | Prove it downstream across all required runtimes/surfaces. |
+| `9` | No Backward-Compatibility / No Legacy Retention | `9.4` | No synthetic ID, alias, lookup key, default, or dual path remains. | Durable tests still mention retired behavior outside implementation ownership. | Remove/currentize those tests in API/E2E. |
+| `10` | Cleanup Completeness | `9.0` | Implementation source/diff and temporary probes are clean; known external residue is explicitly owned. | CR-F-043 and stale API/E2E coverage remain. | Complete those prerequisites before delivery. |
 
 ## Findings
 
-No open implementation-source findings.
+No blocking implementation-source finding remains.
 
-`CR-F-040` is resolved in source. IR-038 admits the exact selected immutable draft before allocation, blocks every owner-governed mutation and duplicate launch, performs one success-only canonical promotion, preserves the exact draft on failure, removes the abandoned post-allocation mismatch and dormant flag, and makes desktop/mobile/first-send use the same owner.
+### `CR-F-043` — API/E2E-owned disposable residue/report correction remains open
 
-The reviewer current durable selection produced `66 passed / 13 failed` across seven files. The failures are bounded stale pre-IR-038 test seams, not product-source defects:
+- Severity: `Non-product blocking workflow defect`.
+- Classification: `Local Fix -> api_e2e_engineer`.
+- Status: unchanged; deliberately not inspected or modified by IR-042 or CRR-078.
+- Required correction: before any fresh live run, verify/remove only the owned disposable journal, correct cleanup/protected-target evidence, and preserve the operational database, protected stack, stashes, backup, and incident disclosures.
 
-1. `agentTeamRunStore.spec.ts` manually constructs an unregistered draft, which the new exact selected-snapshot contract correctly rejects before allocation.
-2. `RunConfigPanel.spec.ts` provides a fake Team-run store without `isDraftLaunchPending`, so render fails before testing current production behavior.
+## Prior-Finding And Merge-Origin Adjudication
 
-These belong to API/E2E coverage investigation/currentization. They must not be fixed by weakening source admission or adding compatibility behavior.
+- `CR-F-044`: `Resolved in source`. `resolveSegmentId()` and `resolveSegmentStartId()` truthfully return `string | null`; callers pass absence through minimal source normalization; the common lifecycle emits a non-terminal diagnostic and leaves state available for a later real segment. Reviewer `1/1` provider-to-lifecycle proof passes.
+- `CR-F-045`: `Resolved in source`. `StreamSegmentIdentity` retains readonly canonical `segmentType`; existing start/content require agreement; typed late creation records the exact type; end remains selected only by `{turnId,id}`. Reviewer `2/2` browser proof passes.
+- `CR-F-042` / `API-F-024`: remains resolved at design and implementation level; fresh downstream acceptance is still required.
+- `CR-F-041` / `API-F-023`: remains resolved; internal `payload.id` is still projected to Team wire `segment_id` only at the strict projector.
+- Earlier `CR-F-028`–`CR-F-040`: remain resolved; no rooted-address, execution-aggregate, task, launch, egress, hydration, or merge-owner regression was found.
+- Design-health assessment: `No new design issue`. IR-042 corrects two local contract violations in the right owners; another global redesign or refactor would be disproportionate.
 
 ## Classification
 
-`Pass` — no failure classification applies.
+`Pass`. No failure classification applies.
 
 ## Recommended Recipient
 
-- `api_e2e_engineer`
-- Refresh the coverage investigation for IR-038, currentize the exact stale launch fixtures, and execute affected desktop/mobile/first-send pending-edit/selection/duplicate/success/failure journeys on the checked safe target. Return any durable test add/update/remove package for proportional review before delivery.
+- `api_e2e_engineer`.
+- First resolve `CR-F-043` and correct its cleanup evidence before any configured/live execution.
+- Refresh the SR-020 coverage investigation; currentize/remove stale provider/lifecycle/browser/consumer fixtures without weakening the clean-cut contract; make the actual native/provider -> AgentRun -> Team/standalone/browser/application boundaries durable.
+- Then run the required checked-disposable AutoByteus/Codex/Claude Team and standalone, browser mismatch/late subscription, mobile, restore, and retained regression matrix.
+- Return every repository-resident durable coverage addition, update, or removal for proportional test-code review before delivery.
 
 ## Residual Risks
 
-- API-REV-031/API-REV-032 remain valid only for unaffected behavior; their 92-path durable package predates IR-038.
-- Frontend `nuxi typecheck` remains non-operational before project diagnostics because the downloaded `vue-tsc` imports a non-exported TypeScript subpath; no typecheck Pass is claimed. Nuxt production build and 15-route prerender pass.
-- The current result applies to pre-integration ticket source. Delivery's latest-base merge remains aborted after 21 conflicts and must not resume until source/API gates are complete.
-- Preserve both historical operational-database incident disclosures, the protected `60004/31004` constraint, delivery stashes/backup, and no-rollback state.
+- The disclosed retained `segmentHandler.spec.ts` result is `19/22`: missing required content type, type-plus-ID splitting, and a tool-only lookup used for reasoning end are stale expectations, not current source acceptance. API/E2E must adjudicate them.
+- The broader pre-IR-042 retained selection still contains removed pre-SR-020 shapes and is not acceptance evidence until coverage is currentized.
+- API-REV-035 remains an incomplete failed round; fresh AutoByteus/Codex/Claude Team/standalone/mobile/restore execution is required and cannot be inferred from local probes.
+- Web `nuxi typecheck` remains blocked before project diagnostics by the inherited vue-tsc/TypeScript export incompatibility; production Nuxt build passes.
+- Preserve the operational database, protected `60004/31004`, all protected stashes/backup, both incident disclosures, and no automatic rollback/repair.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Review Entry Point: `Implementation Review`
-- Material-Premise Gate: `Pass` (`CR-PREM-036` is reachable and satisfied)
-- Score Summary: `9.4/10` (`93.9/100`); every category is `>=9.0`
-- Failure Origin: `N/A`; `CR-F-040` resolved in source
+- Review Entry Point: `Implementation Review` — focused cumulative SR-020 / IR-042 source re-review
+- Material-Premise Gate: `Pass` (`CR-PREM-038` and `CR-PREM-039` remain reachable governing-contract cases and are now satisfied)
+- Score Summary: `9.3/10` (`92.5/100`); every category is `>=9.0`
+- Failure Origin: N/A; `CR-F-044` and `CR-F-045` are resolved without a new design issue
 - Recommended Recipient: `api_e2e_engineer`
-- Notes: reviewer admission probe passes `2/2`; implementation actual-owner probe passes `2/2`; mounted desktop probe passes `17/17`; IR-038 focused/retained selections pass `49/49` and `30/30`; Nuxt production build passes. Reviewer evidence hashes: source audit `be4da1820cc207fc69d60671bca7887b77a1b34fbbf800f879a582cc1a47dabd`; admission probe `6b62b0ea985c7f5faf058e3a23c61ce6726328b68c40cc1cb48cd63fb342f517`; current durable selection `bb340ee04189386dde285d63fcf1e713981bc4f0d64205e9a60805ce95fb0176`; actual-owner probe `1e7e0f50c412cd9c92299866adad7104c8fbba1ffb50f1aee90fc93c2941f1be`; mounted probe `1ebdee90d6ed87ddff061b672a7df6ef9058908d18bd86653ea621d2df909432`; production build `d0b3831c6df5fd4ca446f33ff607013c92e26add84339f70a3ba5861bf0d2a2c`.
+- Notes: temporary reviewer probes were deleted. `CR-F-043` remains API/E2E-owned and is a mandatory pre-live prerequisite; delivery remains paused.

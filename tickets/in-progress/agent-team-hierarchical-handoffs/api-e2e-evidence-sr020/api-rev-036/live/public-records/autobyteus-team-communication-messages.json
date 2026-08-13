@@ -1,0 +1,97 @@
+{
+  "teamRunId": "nested_classroom_test_team_b9e8b3c5ea94440f9f420fafd6ce4c2c",
+  "messages": [
+    {
+      "messageId": "teammsg_EC6-UZ5N8N0LgkiaxbKAmzPGgfiM65Af",
+      "senderAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_b9e8b3c5ea94440f9f420fafd6ce4c2c",
+        "taskTeamRunIds": [],
+        "memberAddress": "/Teacher",
+        "taskAgentRunId": null
+      },
+      "receiverAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_b9e8b3c5ea94440f9f420fafd6ce4c2c",
+        "taskTeamRunIds": [],
+        "memberAddress": "/StudentStudyGroup/student_one",
+        "taskAgentRunId": null
+      },
+      "content": "Please have your coordinator reply to /Teacher with exactly CLASSROOM_REPLY_AUTOBYTEUS. This is an ordinary classroom message; please use the referenced file as requested context.",
+      "messageType": "classroom_handoff",
+      "createdAt": "2026-08-13T02:11:29.387Z",
+      "referenceFiles": [
+        {
+          "referenceId": "teamref_VzDmZxsgOTChDdsA8v5t9yGtpO-TrzSh",
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr020/api-rev-036/live/autobyteus-reference.txt",
+          "type": "file",
+          "createdAt": "2026-08-13T02:11:29.387Z",
+          "updatedAt": "2026-08-13T02:11:29.387Z"
+        }
+      ]
+    },
+    {
+      "messageId": "teammsg_kIfc282yIshgWjPlLmecQvgIppejPypv",
+      "senderAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_b9e8b3c5ea94440f9f420fafd6ce4c2c",
+        "taskTeamRunIds": [],
+        "memberAddress": "/StudentStudyGroup/student_one",
+        "taskAgentRunId": null
+      },
+      "receiverAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_b9e8b3c5ea94440f9f420fafd6ce4c2c",
+        "taskTeamRunIds": [],
+        "memberAddress": "/Teacher",
+        "taskAgentRunId": null
+      },
+      "content": "CLASSROOM_REPLY_AUTOBYTEUS",
+      "messageType": "classroom_reply",
+      "createdAt": "2026-08-13T02:11:33.811Z",
+      "referenceFiles": []
+    },
+    {
+      "messageId": "teammsg_9IX_fRqyXZq8wNvVq8c-wmCDAQHdV3t4",
+      "senderAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_b9e8b3c5ea94440f9f420fafd6ce4c2c",
+        "taskTeamRunIds": [
+          "team_local_team_nested_classroom_test_student_st_f44be177bb984fb087924b321c44852e"
+        ],
+        "memberAddress": "/StudentStudyGroup/student_one",
+        "taskAgentRunId": null
+      },
+      "receiverAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_b9e8b3c5ea94440f9f420fafd6ce4c2c",
+        "taskTeamRunIds": [
+          "team_local_team_nested_classroom_test_student_st_f44be177bb984fb087924b321c44852e"
+        ],
+        "memberAddress": "/StudentStudyGroup/student_two",
+        "taskAgentRunId": null
+      },
+      "content": "TASK_PEER_AUTOBYTEUS",
+      "messageType": "peer_request",
+      "createdAt": "2026-08-13T02:11:37.293Z",
+      "referenceFiles": []
+    },
+    {
+      "messageId": "teammsg_7WfT05hUFtoz2W5K2QN_cYKbmzFAtQsP",
+      "senderAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_b9e8b3c5ea94440f9f420fafd6ce4c2c",
+        "taskTeamRunIds": [
+          "team_local_team_nested_classroom_test_student_st_f44be177bb984fb087924b321c44852e"
+        ],
+        "memberAddress": "/StudentStudyGroup/student_two",
+        "taskAgentRunId": null
+      },
+      "receiverAddress": {
+        "rootTeamRunId": "nested_classroom_test_team_b9e8b3c5ea94440f9f420fafd6ce4c2c",
+        "taskTeamRunIds": [
+          "team_local_team_nested_classroom_test_student_st_f44be177bb984fb087924b321c44852e"
+        ],
+        "memberAddress": "/StudentStudyGroup/student_one",
+        "taskAgentRunId": null
+      },
+      "content": "TASK_PEER_AUTOBYTEUS",
+      "messageType": "task_result",
+      "createdAt": "2026-08-13T02:11:38.957Z",
+      "referenceFiles": []
+    }
+  ]
+}

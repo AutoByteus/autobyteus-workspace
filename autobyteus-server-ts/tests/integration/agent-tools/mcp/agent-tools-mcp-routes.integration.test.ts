@@ -322,7 +322,11 @@ describe("Agent Tools MCP route configured MCP integration", () => {
       getInternalBaseUrl: () => `http://127.0.0.1:${address.port}`,
     });
     const created = sessionService.createAgentToolMcpSession({
-      owner: { runId: "run-configured-mcp", memberRunId: "member-configured-mcp" },
+      owner: {
+        runId: "run-configured-mcp",
+        memberRunId: "member-configured-mcp",
+        agentRunId: "member-configured-mcp",
+      },
       sender,
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       runtimeExposure: buildRuntimeAgentToolExposure(["db_query"]),

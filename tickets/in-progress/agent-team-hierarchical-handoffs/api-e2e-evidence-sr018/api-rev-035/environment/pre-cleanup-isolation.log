@@ -1,0 +1,4 @@
+source_fixture_byte_identical=true
+operational_database_action=NONE
+protected_stack_action=NONE
+segment_rejection_lines=0

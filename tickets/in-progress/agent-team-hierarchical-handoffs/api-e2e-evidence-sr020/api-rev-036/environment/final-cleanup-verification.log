@@ -1,0 +1,14 @@
+API-REV-036 final cleanup verification
+2026-08-13T02:22:13Z
+owned_port_closed=true port=60236
+owned_port_closed=true port=31236
+owned_runtime_removed=true
+owned_database_artifact_removed=true path=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-036-live-20260813-1.db
+owned_database_artifact_removed=true path=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-036-live-20260813-1.db-wal
+owned_database_artifact_removed=true path=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-036-live-20260813-1.db-shm
+owned_database_artifact_removed=true path=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-036-live-20260813-1.db-journal
+owned_database_artifact_removed=true path=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-036-live-20260813-1.db.secret.key
+protected_port_metadata_only:
+operational_database_action=NONE
+operational_database_inspection=NONE
+source_fixture_unchanged=true

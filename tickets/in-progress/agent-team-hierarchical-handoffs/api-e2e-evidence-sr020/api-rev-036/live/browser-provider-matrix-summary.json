@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "sourceHead": "6b578235917700584a6b559cd58763bd3bba9b38",
+  "team": {
+    "autobyteus": {
+      "passed": true,
+      "runtime": "autobyteus",
+      "model": "gpt-5.6-luna",
+      "rootTeamRunId": "nested_classroom_test_team_b9e8b3c5ea94440f9f420fafd6ce4c2c",
+      "observedStatuses": [
+        "none",
+        "active",
+        "awaiting_review",
+        "accepted"
+      ],
+      "taskCount": 1,
+      "communicationCount": 4,
+      "noTeamProtocolErrors": true,
+      "noBrowserConsoleErrors": true,
+      "termination": true
+    },
+    "codex": {
+      "passed": true,
+      "runtime": "codex_app_server",
+      "model": "gpt-5.6-luna",
+      "rootTeamRunId": "nested_classroom_test_team_2db16cc4486647a09f2d59f40cc44a68",
+      "observedStatuses": [
+        "none",
+        "active",
+        "awaiting_review",
+        "accepted"
+      ],
+      "taskCount": 1,
+      "communicationCount": 4,
+      "noTeamProtocolErrors": true,
+      "noBrowserConsoleErrors": true,
+      "termination": true
+    },
+    "claude": {
+      "passed": true,
+      "runtime": "claude_agent_sdk",
+      "model": "sonnet",
+      "rootTeamRunId": "nested_classroom_test_team_16794ce8f3a144ca8478c403887907fe",
+      "observedStatuses": [
+        "none",
+        "active",
+        "awaiting_review",
+        "accepted"
+      ],
+      "taskCount": 1,
+      "communicationCount": 4,
+      "noTeamProtocolErrors": true,
+      "noBrowserConsoleErrors": true,
+      "termination": true
+    }
+  },
+  "standalone": {
+    "autobyteus": {
+      "passed": true,
+      "runtime": "autobyteus",
+      "model": "gpt-5.6-luna",
+      "runId": "api_rev_036_browser_agent_32158cc391b64ac1be21f889b2e9d132",
+      "liveAndRestoredExactOutput": true,
+      "resumeRuntimeMatches": true,
+      "noBrowserConsoleErrors": true,
+      "termination": true
+    },
+    "codex": {
+      "passed": true,
+      "runtime": "codex_app_server",
+      "model": "gpt-5.6-luna",
+      "runId": "api_rev_036_browser_agent_270a584d0b214871b1a767eb852642d0",
+      "liveAndRestoredExactOutput": true,
+      "resumeRuntimeMatches": true,
+      "noBrowserConsoleErrors": true,
+      "termination": true
+    },
+    "claude": {
+      "passed": true,
+      "runtime": "claude_agent_sdk",
+      "model": "sonnet",
+      "runId": "api_rev_036_browser_agent_d4599420f6cb4cf7a7422dafc1143fec",
+      "liveAndRestoredExactOutput": true,
+      "resumeRuntimeMatches": true,
+      "noBrowserConsoleErrors": true,
+      "termination": true
+    }
+  },
+  "mobileAndRestore": {
+    "active": {
+      "passed": true,
+      "rootTeamRunId": "nested_classroom_test_team_fe1502c057ce45f5b337738e08aacabd",
+      "conditions": {
+        "freshActiveTeam": true,
+        "referencedMessagePresent": true,
+        "exactReplyReceivedOnce": true,
+        "exactRootOnAllRecords": true,
+        "desktopActiveReference": true,
+        "selectedTeamConfigReadOnly": true,
+        "mobileActiveReference": true,
+        "noBrowserConsoleErrors": true
+      }
+    },
+    "persisted": {
+      "passed": true,
+      "rootTeamRunId": "nested_classroom_test_team_fe1502c057ce45f5b337738e08aacabd",
+      "conditions": {
+        "exactRunTerminalAndLatest": true,
+        "exactPersistedRecords": true,
+        "desktopPersistedReference": true,
+        "mobilePersistedReference": true,
+        "noBrowserConsoleErrors": true
+      }
+    }
+  },
+  "allRequiredRowsPass": true,
+  "serverSegmentRejectionCount": 0,
+  "operationalDatabaseAction": "NONE",
+  "operationalDatabaseInspection": "NONE",
+  "protectedStackAction": "NONE"
+}

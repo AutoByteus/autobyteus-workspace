@@ -33,16 +33,19 @@ describe("CompactionRunOutputCollector", () => {
 
     collector.observe(event(AgentRunEventType.SEGMENT_CONTENT, {
       id: "reasoning-1",
+      turn_id: "turn-1",
       segment_type: "reasoning",
       delta: "thinking",
     }));
     collector.observe(event(AgentRunEventType.SEGMENT_CONTENT, {
       id: "message-1",
+      turn_id: "turn-1",
       segment_type: "text",
       delta: '{"episodes":[{"sum',
     }));
     collector.observe(event(AgentRunEventType.SEGMENT_CONTENT, {
       id: "message-1",
+      turn_id: "turn-1",
       segment_type: "text",
       delta: 'mary":"codex"}]}',
     }));
@@ -57,6 +60,7 @@ describe("CompactionRunOutputCollector", () => {
 
     collector.observe(event(AgentRunEventType.SEGMENT_CONTENT, {
       id: "msg-1",
+      turn_id: "turn-1",
       segment_type: "text",
       delta: '{"episodes":[{"summary":"claude"}]}',
     }));

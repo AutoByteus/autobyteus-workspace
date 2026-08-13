@@ -1653,9 +1653,6 @@ describe("CodexThreadEventConverter", () => {
     expect(converted[0]).toMatchObject({
       runId: "run-1",
       payload: {
-        item: {
-          tool: "send_message_to",
-        },
         id: "call_send_message",
         segment_type: "tool_call",
         metadata: {
@@ -1667,11 +1664,7 @@ describe("CodexThreadEventConverter", () => {
         },
       },
     });
-    expect(converted[0].payload).toMatchObject({
-      item: expect.not.objectContaining({
-        server: expect.anything(),
-      }),
-    });
+    expect(converted[0].payload).not.toHaveProperty("item");
     expect(converted[1]).toMatchObject({
       runId: "run-1",
       payload: {
@@ -1972,15 +1965,6 @@ describe("CodexThreadEventConverter", () => {
     expect(converted[0]).toMatchObject({
       runId: "run-1",
       payload: {
-        item: {
-          tool: "send_message_to",
-          contentItems: [
-            {
-              type: "inputText",
-              text: "Delivered message to pong.",
-            },
-          ],
-        },
         id: "call_send_message_segment_end",
         metadata: {
           tool_name: "send_message_to",
@@ -1991,6 +1975,7 @@ describe("CodexThreadEventConverter", () => {
         },
       },
     });
+    expect(converted[0].payload).not.toHaveProperty("item");
   });
 
   it("maps generic dynamic tool completions into terminal success and segment end", () => {
