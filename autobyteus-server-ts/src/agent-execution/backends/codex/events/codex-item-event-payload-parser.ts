@@ -97,7 +97,7 @@ export class CodexItemEventPayloadParser {
   public resolveSegmentStartId(
     payload: Record<string, unknown>,
     segmentType: AgentSegmentType | null,
-  ): string {
+  ): string | null {
     const invocationAware =
       segmentType === "tool_call" || segmentType === "run_bash" || segmentType === "edit_file";
     return invocationAware
@@ -162,8 +162,7 @@ export class CodexItemEventPayloadParser {
 
   public resolveSegmentId(
     payload: Record<string, unknown>,
-    fallback = "runtime-segment",
-  ): string {
+  ): string | null {
     const item = asObject(payload.item);
     const candidate =
       payload.segment_id ??
@@ -171,7 +170,7 @@ export class CodexItemEventPayloadParser {
       payload.itemId ??
       item.id ??
       payload.id;
-    return typeof candidate === "string" && candidate.length > 0 ? candidate : fallback;
+    return typeof candidate === "string" && candidate.length > 0 ? candidate : null;
   }
 
   public resolveCompletedReasoningSnapshot(

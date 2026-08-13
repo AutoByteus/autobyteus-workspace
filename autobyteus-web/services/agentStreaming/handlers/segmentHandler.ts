@@ -13,6 +13,7 @@ import { createSegmentFromPayload, toSegmentMetadataRecord } from '../protocol/s
 import {
   markStreamSegmentPresentationComplete,
   matchesStreamSegmentIdentity,
+  matchesStreamSegmentType,
   setStreamSegmentIdentity,
 } from './segmentIdentity';
 import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
@@ -67,6 +68,7 @@ export function handleSegmentStart(
   if (typeof payload.turn_id !== 'string' || payload.turn_id.trim().length === 0) return 'NONE';
   const existingSegment = findStreamSegment(context, payload.turn_id, payload.id);
   if (existingSegment) {
+    if (!matchesStreamSegmentType(existingSegment, payload.segment_type)) return 'NONE';
     const changed = mergeSegmentStartMetadata(existingSegment, payload);
     if (isProjectableToolSegment(existingSegment)) {
       upsertActivityFromToolSegment(context, payload.id, existingSegment);
@@ -76,7 +78,7 @@ export function handleSegmentStart(
   const aiMessage = findOrCreateAIMessage(context);
   const segment = createSegmentFromPayload(payload);
 
-  setStreamSegmentIdentity(segment, payload.turn_id, payload.id);
+  setStreamSegmentIdentity(segment, payload.turn_id, payload.id, payload.segment_type);
   mergeSegmentStartMetadata(segment, payload);
 
   aiMessage.segments.push(segment);
@@ -192,6 +194,9 @@ export function handleSegmentContent(
   }
   let segment = findStreamSegment(context, payload.turn_id, payload.id);
   let segmentCreated = false;
+  if (segment && !matchesStreamSegmentType(segment, payload.segment_type)) {
+    return 'NONE';
+  }
   if (!segment) {
     segment = createSyntheticSegmentFromContent(payload.id, payload.turn_id, payload.segment_type, context);
     segmentCreated = true;
@@ -354,7 +359,7 @@ function createSyntheticSegmentFromContent(
     turn_id: turnId,
     segment_type: segmentType,
   });
-  setStreamSegmentIdentity(segment, turnId, segmentId);
+  setStreamSegmentIdentity(segment, turnId, segmentId, segmentType);
   aiMessage.segments.push(segment);
   return segment;
 }

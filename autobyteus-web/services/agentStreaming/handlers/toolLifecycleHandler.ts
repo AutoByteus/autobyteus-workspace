@@ -111,13 +111,13 @@ const createSyntheticToolSegment = (
       error: null,
       rawContent: '',
     };
-    if (turnId) setStreamSegmentIdentity(fallback, turnId, invocationId);
+    if (turnId) setStreamSegmentIdentity(fallback, turnId, invocationId, 'tool_call');
     const aiMessage = findOrCreateAIMessage(context);
     aiMessage.segments.push(fallback);
     return fallback;
   }
 
-  if (turnId) setStreamSegmentIdentity(segment, turnId, invocationId);
+  if (turnId) setStreamSegmentIdentity(segment, turnId, invocationId, segmentType);
   segment.invocationId = invocationId;
   segment.toolName = toolName;
   segment.arguments = { ...segment.arguments, ...argumentsPayload };

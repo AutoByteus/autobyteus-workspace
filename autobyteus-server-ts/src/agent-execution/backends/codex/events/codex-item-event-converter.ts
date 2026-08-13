@@ -39,10 +39,10 @@ export type CodexItemEventConverterContext = CodexItemCompactionEventConverterCo
   resolveWebSearchResult: (payload: JsonObject) => unknown;
   resolveWebSearchError: (payload: JsonObject) => string;
   resolveTurnId: (payload: JsonObject) => string | null;
-  resolveSegmentStartId: (payload: JsonObject, segmentType: AgentSegmentType | null) => string;
+  resolveSegmentStartId: (payload: JsonObject, segmentType: AgentSegmentType | null) => string | null;
   resolveSegmentType: (payload: JsonObject) => AgentSegmentType | null;
   resolveSegmentMetadata: (payload: JsonObject) => Record<string, unknown> | undefined;
-  resolveSegmentId: (payload: JsonObject, fallback?: string) => string;
+  resolveSegmentId: (payload: JsonObject) => string | null;
   resolveInvocationId: (payload: JsonObject) => string | null;
   resolveToolName: (
     payload: JsonObject,

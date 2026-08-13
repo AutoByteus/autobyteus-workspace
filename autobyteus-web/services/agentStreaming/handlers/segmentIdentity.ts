@@ -1,8 +1,10 @@
 import type { AIResponseSegment } from '~/types/segments';
+import type { SegmentType } from '../protocol/messageTypes';
 
 export interface StreamSegmentIdentity {
-  turnId: string;
-  id: string;
+  readonly turnId: string;
+  readonly id: string;
+  readonly segmentType: SegmentType;
   presentationComplete: boolean;
 }
 
@@ -20,10 +22,12 @@ export function setStreamSegmentIdentity(
   segment: AIResponseSegment,
   turnId: string,
   segmentId: string,
+  segmentType: SegmentType,
 ): void {
   (segment as IdentifiedAIResponseSegment)._streamSegmentIdentity = {
     turnId,
     id: segmentId,
+    segmentType,
     presentationComplete: false,
   };
 }
@@ -42,4 +46,11 @@ export function matchesStreamSegmentIdentity(
 ): boolean {
   const identity = getStreamSegmentIdentity(segment);
   return identity?.turnId === turnId && identity.id === segmentId;
+}
+
+export function matchesStreamSegmentType(
+  segment: AIResponseSegment,
+  segmentType: SegmentType,
+): boolean {
+  return getStreamSegmentIdentity(segment)?.segmentType === segmentType;
 }

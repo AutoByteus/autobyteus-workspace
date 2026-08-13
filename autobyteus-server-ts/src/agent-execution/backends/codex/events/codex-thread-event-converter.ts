@@ -144,8 +144,8 @@ export class CodexThreadEventConverter {
     resolveSegmentType: (payload) => this.itemEventPayloadParser.resolveSegmentType(payload),
     resolveSegmentMetadata: (payload) =>
       this.itemEventPayloadParser.resolveSegmentMetadata(payload),
-    resolveSegmentId: (payload, fallback) =>
-      this.itemEventPayloadParser.resolveSegmentId(payload, fallback),
+    resolveSegmentId: (payload) =>
+      this.itemEventPayloadParser.resolveSegmentId(payload),
     resolveInvocationId: (payload) => this.itemEventPayloadParser.resolveInvocationId(payload),
     resolveToolName: (payload, fallback) =>
       this.itemEventPayloadParser.resolveToolName(payload, fallback),
