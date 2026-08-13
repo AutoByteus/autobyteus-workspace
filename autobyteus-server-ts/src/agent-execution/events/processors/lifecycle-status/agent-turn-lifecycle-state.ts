@@ -203,11 +203,7 @@ export class AgentTurnLifecycleState {
   }
 
   observeError(evidence: AgentRunErrorEvidence | null): void {
-    if (
-      !evidence ||
-      evidence.kind === "TURN_DIAGNOSTIC" ||
-      evidence.kind === "RUNTIME_DIAGNOSTIC"
-    ) {
+    if (!evidence || evidence.kind === "TURN_DIAGNOSTIC") {
       return;
     }
     if (evidence.kind === "RUNTIME_GLOBAL") {

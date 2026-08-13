@@ -239,13 +239,11 @@ export interface FileChangePayload {
   updatedAt: string;
 }
 
-export interface ErrorPayload {
-  code: string;
-  message: string;
-  error_scope: 'turn' | 'runtime' | null;
-  error_effect: 'diagnostic' | 'terminal' | null;
-  turn_id: string | null;
-}
+export type ErrorPayload = Readonly<{ code: string; message: string }> & (
+  | Readonly<{ error_scope: 'turn'; error_effect: 'diagnostic' | 'terminal'; turn_id: string }>
+  | Readonly<{ error_scope: 'runtime'; error_effect: 'terminal'; turn_id: null }>
+  | Readonly<{ error_scope: null; error_effect: null; turn_id: null }>
+);
 
 
 export type TokenUsageUpdatedPayload = TokenUsageUpdatedPayloadBase;

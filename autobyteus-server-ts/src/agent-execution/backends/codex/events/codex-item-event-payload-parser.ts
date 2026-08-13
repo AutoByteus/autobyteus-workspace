@@ -170,7 +170,9 @@ export class CodexItemEventPayloadParser {
       payload.itemId ??
       item.id ??
       payload.id;
-    return typeof candidate === "string" && candidate.length > 0 ? candidate : null;
+    return typeof candidate === "string" && candidate.trim().length > 0
+      ? candidate.trim()
+      : null;
   }
 
   public resolveCompletedReasoningSnapshot(

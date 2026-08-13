@@ -3,7 +3,6 @@ import { resolveAgentRunEventTurnId } from "./agent-run-event-turn-id.js";
 
 export type AgentRunErrorEvidence =
   | { kind: "TURN_DIAGNOSTIC"; turnId: string }
-  | { kind: "RUNTIME_DIAGNOSTIC" }
   | { kind: "TURN_TERMINAL"; turnId: string }
   | { kind: "RUNTIME_GLOBAL" };
 
@@ -20,9 +19,6 @@ export const resolveAgentRunErrorEvidence = (
 
   if (scope === "turn" && effect === "diagnostic" && turnId) {
     return { kind: "TURN_DIAGNOSTIC", turnId };
-  }
-  if (scope === "runtime" && effect === "diagnostic" && !turnId) {
-    return { kind: "RUNTIME_DIAGNOSTIC" };
   }
   if (scope === "turn" && effect === "terminal" && turnId) {
     return { kind: "TURN_TERMINAL", turnId };

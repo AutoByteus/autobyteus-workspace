@@ -12,6 +12,11 @@ import { serializeCodexItemEventPayload } from "../agent-tools-mcp/codex-agent-t
 import { createTerminalToolExecutionEvent } from "./codex-terminal-tool-execution-event.js";
 import type { CodexToolLifecyclePlacement } from "./codex-ordered-tool-boundary-tracker.js";
 import type { AgentSegmentType } from "../../../domain/agent-segment.js";
+import {
+  projectCodexWebSearchCompletedEvents,
+  projectCodexWebSearchStartedEvents,
+  type CodexWebSearchItemEventProjectorContext,
+} from "./codex-web-search-item-event-projector.js";
 
 export type CodexItemEventConverterContext = CodexItemCompactionEventConverterContext & {
   createEvent: (
@@ -63,8 +68,40 @@ export type CodexItemEventConverterContext = CodexItemCompactionEventConverterCo
   resolveExecutionStatus: (payload: JsonObject) => string | null;
 };
 
+const webSearchProjectorContext = (
+  context: CodexItemEventConverterContext,
+): CodexWebSearchItemEventProjectorContext => ({
+  createEvent: context.createEvent,
+  serializeItemPayload: serializeCodexItemEventPayload,
+  resolveSegmentStartId: (payload) => context.resolveSegmentStartId(payload, "tool_call"),
+  resolveSegmentId: context.resolveSegmentId,
+  resolveSegmentMetadata: context.resolveWebSearchMetadata,
+  resolveInvocationId: context.resolveInvocationId,
+  resolveTurnId: context.resolveTurnId,
+  resolveArguments: context.resolveWebSearchArguments,
+  resolveResult: context.resolveWebSearchResult,
+  resolveError: context.resolveWebSearchError,
+  isExecutionFailure: context.isExecutionFailure,
+});
+
+const codexItemEventNames = new Set<string>([
+  CodexThreadEventName.ITEM_STARTED,
+  CodexThreadEventName.ITEM_COMPLETED,
+  CodexThreadEventName.ITEM_AGENT_MESSAGE_DELTA,
+  CodexThreadEventName.ITEM_REASONING_DELTA,
+  CodexThreadEventName.ITEM_REASONING_SUMMARY_PART_ADDED,
+  CodexThreadEventName.ITEM_REASONING_SUMMARY_TEXT_DELTA,
+  CodexThreadEventName.ITEM_REASONING_COMPLETED,
+  CodexThreadEventName.ITEM_PLAN_DELTA,
+  CodexThreadEventName.ITEM_COMMAND_EXECUTION_REQUEST_APPROVAL,
+  CodexThreadEventName.ITEM_TOOL_CALL,
+  CodexThreadEventName.ITEM_PERMISSIONS_REQUEST_APPROVAL,
+  CodexThreadEventName.ITEM_FILE_CHANGE_OUTPUT_DELTA,
+  CodexThreadEventName.ITEM_FILE_CHANGE_REQUEST_APPROVAL,
+]);
+
 export const isCodexItemEventName = (codexEventName: string): boolean =>
-  codexEventName.startsWith("item/");
+  codexItemEventNames.has(codexEventName);
 
 const createDynamicToolSegmentStartEvent = (
   context: CodexItemEventConverterContext,
@@ -112,77 +149,6 @@ const createSegmentEndEvent = (
     ...(metadata ? { metadata } : {}),
   });
 };
-
-const createWebSearchSegmentStartEvent = (
-  context: CodexItemEventConverterContext,
-  codexEventName: string,
-  payload: JsonObject,
-): AgentRunEvent =>
-  context.createEvent(codexEventName, AgentRunEventType.SEGMENT_START, {
-    ...serializeCodexItemEventPayload(payload),
-    id: context.resolveSegmentStartId(payload, "tool_call"),
-    segment_type: "tool_call",
-    metadata: context.resolveWebSearchMetadata(payload),
-  });
-
-const createWebSearchLifecycleStartedEvent = (
-  context: CodexItemEventConverterContext,
-  codexEventName: string,
-  payload: JsonObject,
-): AgentRunEvent => {
-  const invocationId = context.resolveInvocationId(payload);
-  const turnId = context.resolveTurnId(payload);
-  const toolArguments = context.resolveWebSearchArguments(payload);
-  const hasToolArguments = Object.keys(toolArguments).length > 0;
-  return context.createEvent(codexEventName, AgentRunEventType.TOOL_EXECUTION_STARTED, {
-    ...serializeCodexItemEventPayload(payload),
-    ...(invocationId ? { invocation_id: invocationId } : {}),
-    ...(turnId ? { turn_id: turnId } : {}),
-    tool_name: "search_web",
-    ...(hasToolArguments ? { arguments: toolArguments } : {}),
-  });
-};
-
-const createWebSearchTerminalLifecycleEvent = (
-  context: CodexItemEventConverterContext,
-  codexEventName: string,
-  payload: JsonObject,
-): AgentRunEvent => {
-  const invocationId = context.resolveInvocationId(payload);
-  const turnId = context.resolveTurnId(payload);
-  const toolArguments = context.resolveWebSearchArguments(payload);
-  const hasToolArguments = Object.keys(toolArguments).length > 0;
-  const basePayload = {
-    ...serializeCodexItemEventPayload(payload),
-    ...(invocationId ? { invocation_id: invocationId } : {}),
-    ...(turnId ? { turn_id: turnId } : {}),
-    tool_name: "search_web",
-    ...(hasToolArguments ? { arguments: toolArguments } : {}),
-  };
-
-  if (context.isExecutionFailure(payload)) {
-    return context.createEvent(codexEventName, AgentRunEventType.TOOL_EXECUTION_FAILED, {
-      ...basePayload,
-      error: context.resolveWebSearchError(payload),
-    });
-  }
-
-  return context.createEvent(codexEventName, AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
-    ...basePayload,
-    result: context.resolveWebSearchResult(payload),
-  });
-};
-
-const createWebSearchSegmentEndEvent = (
-  context: CodexItemEventConverterContext,
-  codexEventName: string,
-  payload: JsonObject,
-): AgentRunEvent =>
-  context.createEvent(codexEventName, AgentRunEventType.SEGMENT_END, {
-    ...serializeCodexItemEventPayload(payload),
-    id: context.resolveSegmentId(payload),
-    metadata: context.resolveWebSearchMetadata(payload),
-  });
 
 const createFileChangeSegmentStartEvent = (
   context: CodexItemEventConverterContext,
@@ -288,8 +254,11 @@ export const convertCodexItemEvent = (
         const reasoningEnds = applyToolLifecyclePlacement(context, codexEventName, payload);
         return [
           ...reasoningEnds,
-          createWebSearchSegmentStartEvent(context, codexEventName, payload),
-          createWebSearchLifecycleStartedEvent(context, codexEventName, payload),
+          ...projectCodexWebSearchStartedEvents(
+            webSearchProjectorContext(context),
+            codexEventName,
+            payload,
+          ),
         ];
       }
       if (itemFamily === "file_change") {
@@ -309,6 +278,7 @@ export const convertCodexItemEvent = (
         ];
       }
       const segmentType = context.resolveSegmentType(payload);
+      if (!segmentType) return [];
       const reasoningEnds = (
         segmentType === "tool_call" ||
         segmentType === "run_bash" ||
@@ -419,10 +389,14 @@ export const convertCodexItemEvent = (
         const reasoningEnds = applyToolLifecyclePlacement(context, codexEventName, payload);
         return [
           ...reasoningEnds,
-          createWebSearchTerminalLifecycleEvent(context, codexEventName, payload),
-          createWebSearchSegmentEndEvent(context, codexEventName, payload),
+          ...projectCodexWebSearchCompletedEvents(
+            webSearchProjectorContext(context),
+            codexEventName,
+            payload,
+          ),
         ];
       }
+      if (!context.resolveSegmentType(payload)) return [];
       return [
         createSegmentEndEvent(context, codexEventName, payload),
       ];

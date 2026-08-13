@@ -8,7 +8,7 @@ import type { AgentOperationResult } from "../../../domain/agent-operation-resul
 import type { AgentRunBackend, AgentRunSourceEventBatchListener } from "../../agent-run-backend.js";
 import type { CodexRunContext } from "./codex-agent-run-context.js";
 import { projectCodexAgentLifecycleSnapshot } from "../events/codex-status-projector.js";
-import type { CodexAppServerMessage } from "../thread/codex-app-server-message.js";
+import type { CodexThreadEventMessage } from "../thread/codex-thread.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../domain/agent-run-event.js";
 import { CodexInputSubmissionError } from "../thread/codex-input-submission-error.js";
 
@@ -173,7 +173,7 @@ export class CodexAgentRunBackend implements AgentRunBackend {
     return platformAgentRunId;
   }
 
-  private async handleAppServerMessage(event: CodexAppServerMessage): Promise<void> {
+  private async handleAppServerMessage(event: CodexThreadEventMessage): Promise<void> {
     const convertedEvents = this.eventConverter.convert(event);
     const tokenUsageEvents = this.consumeReadyTokenUsageEvents();
     const events = [...convertedEvents, ...tokenUsageEvents];

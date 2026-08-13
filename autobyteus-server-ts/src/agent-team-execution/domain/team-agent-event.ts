@@ -10,6 +10,13 @@ type Correlated<T extends string, D> = Readonly<{
   statusHint: AgentRunStatusHint;
 }>;
 
+type TeamAgentErrorEvidence =
+  | Readonly<{ errorScope: "turn"; errorEffect: "diagnostic" | "terminal"; turnId: string }>
+  | Readonly<{ errorScope: "runtime"; errorEffect: "terminal"; turnId: null }>
+  | Readonly<{ errorScope: null; errorEffect: null; turnId: null }>;
+
+type TeamAgentErrorDetails = Readonly<{ code: string; message: string }> & TeamAgentErrorEvidence;
+
 export type TeamTokenUsageDetails = Readonly<{
   usageEventId: string;
   idempotencyKey: string;
@@ -91,10 +98,4 @@ export type TeamAgentEvent =
   | Correlated<"SYSTEM_TASK_NOTIFICATION", { sender: Readonly<{ kind: "system" }> | Readonly<{ kind: "execution"; executionAddress: TeamExecutionAddress }>; content: string }>
   | Correlated<"ARTIFACT_PERSISTED", { artifactId: string; path: string; artifactType: string; status: "available"; description: string | null; revisionId: string; createdAt: string; updatedAt: string }>
   | Correlated<"FILE_CHANGE", { fileChangeId: string; path: string; fileType: string; status: string; sourceTool: string; sourceInvocationId: string | null; content: string | null; createdAt: string; updatedAt: string }>
-  | Correlated<"ERROR", {
-      code: string;
-      message: string;
-      errorScope: "turn" | "runtime" | null;
-      errorEffect: "diagnostic" | "terminal" | null;
-      turnId: string | null;
-    }>;
+  | Correlated<"ERROR", TeamAgentErrorDetails>;

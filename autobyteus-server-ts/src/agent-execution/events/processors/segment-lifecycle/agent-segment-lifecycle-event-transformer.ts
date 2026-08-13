@@ -76,7 +76,7 @@ export class AgentSegmentLifecycleEventTransformer implements AgentRunEventTrans
           !isAgentSegmentType(type) ||
           !validOptionalMetadata(event.payload)
         ) {
-          output.push(this.diagnostic(event));
+          output.push(...this.diagnostic(event));
           continue;
         }
         const result = state.start(parsedIdentity, type, turnState);
@@ -93,7 +93,7 @@ export class AgentSegmentLifecycleEventTransformer implements AgentRunEventTrans
             },
           });
         }
-        else if (result.kind === "REJECTED") output.push(this.diagnostic(event));
+        else if (result.kind === "REJECTED") output.push(...this.diagnostic(event));
         continue;
       }
 
@@ -104,12 +104,12 @@ export class AgentSegmentLifecycleEventTransformer implements AgentRunEventTrans
           !exactKeys(event.payload, CONTENT_KEYS) ||
           typeof event.payload.delta !== "string"
         ) {
-          output.push(this.diagnostic(event));
+          output.push(...this.diagnostic(event));
           continue;
         }
         const result = state.content(parsedIdentity);
         if (result.kind !== "ACCEPTED") {
-          output.push(this.diagnostic(event));
+          output.push(...this.diagnostic(event));
           continue;
         }
         output.push({
@@ -135,7 +135,7 @@ export class AgentSegmentLifecycleEventTransformer implements AgentRunEventTrans
           !validOptionalBoolean(event.payload, "failed") ||
           !validOptionalString(event.payload, "error")
         ) {
-          output.push(this.diagnostic(event));
+          output.push(...this.diagnostic(event));
           continue;
         }
         const result = state.end(parsedIdentity);
@@ -163,7 +163,7 @@ export class AgentSegmentLifecycleEventTransformer implements AgentRunEventTrans
             },
           });
         }
-        else if (result.kind === "REJECTED") output.push(this.diagnostic(event));
+        else if (result.kind === "REJECTED") output.push(...this.diagnostic(event));
         continue;
       }
 
@@ -201,19 +201,20 @@ export class AgentSegmentLifecycleEventTransformer implements AgentRunEventTrans
     return output;
   }
 
-  private diagnostic(event: AgentRunEvent): AgentRunEvent {
+  private diagnostic(event: AgentRunEvent): AgentRunEvent[] {
     const turnId = nonEmpty(event.payload.turn_id);
-    return {
+    if (!turnId) return [];
+    return [{
       eventType: AgentRunEventType.ERROR,
       runId: event.runId,
       payload: {
         code: "AGENT_SEGMENT_LIFECYCLE_INVALID",
         message: "A runtime segment event violated the canonical lifecycle contract.",
-        error_scope: turnId ? "turn" : "runtime",
+        error_scope: "turn",
         error_effect: "diagnostic",
         turn_id: turnId,
       },
       statusHint: null,
-    };
+    }];
   }
 }

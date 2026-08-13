@@ -68,11 +68,13 @@ export const parseTeamChannelOutputEvent = (
       ? payload.details.errorEffect === "diagnostic"
         ? payload.details.errorScope === "turn" && payload.details.turnId
           ? { kind: "TURN_DIAGNOSTIC", turnId: payload.details.turnId }
-          : { kind: "RUNTIME_DIAGNOSTIC" }
+          : null
         : payload.details.errorEffect === "terminal"
           ? payload.details.errorScope === "turn" && payload.details.turnId
             ? { kind: "TURN_TERMINAL", turnId: payload.details.turnId }
-            : { kind: "RUNTIME_GLOBAL" }
+            : payload.details.errorScope === "runtime" && payload.details.turnId === null
+              ? { kind: "RUNTIME_GLOBAL" }
+              : null
           : null
       : null,
     agentRunId: event.execution.kind === "task_team_agent"

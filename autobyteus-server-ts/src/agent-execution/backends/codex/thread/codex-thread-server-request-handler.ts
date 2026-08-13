@@ -1,5 +1,5 @@
 import type { JsonObject } from "../codex-app-server-json.js";
-import type { CodexAppServerMessage } from "./codex-app-server-message.js";
+import type { CodexLocalDerivedEventInput } from "./codex-app-server-message.js";
 import {
   handleCodexToolApprovalRequest,
 } from "./codex-tool-approval-coordinator.js";
@@ -10,7 +10,7 @@ type AppServerRequest = {
   requestId: string | number;
   method: string;
   params: JsonObject;
-  emitEvent: (codexThread: CodexThread, event: CodexAppServerMessage) => void;
+  emitEvent: (codexThread: CodexThread, event: CodexLocalDerivedEventInput) => void;
 };
 
 export const handleAppServerRequest = async ({

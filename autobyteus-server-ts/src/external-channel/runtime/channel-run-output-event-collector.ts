@@ -28,10 +28,7 @@ export class ChannelRunOutputEventCollector {
       return null;
     }
 
-    if (
-      input.event.errorEvidence?.kind === "TURN_DIAGNOSTIC" ||
-      input.event.errorEvidence?.kind === "RUNTIME_DIAGNOSTIC"
-    ) {
+    if (input.event.errorEvidence?.kind === "TURN_DIAGNOSTIC") {
       return null;
     }
 

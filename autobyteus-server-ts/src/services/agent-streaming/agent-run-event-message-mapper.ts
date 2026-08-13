@@ -52,7 +52,6 @@ const normalizeTurnPayload = (payload: Record<string, unknown>): Record<string, 
 const projectErrorEvidence = (event: AgentRunEvent) => {
   switch (resolveAgentRunErrorEvidence(event)?.kind) {
     case "TURN_DIAGNOSTIC": return { error_scope: "turn", error_effect: "diagnostic", turn_id: event.payload.turn_id };
-    case "RUNTIME_DIAGNOSTIC": return { error_scope: "runtime", error_effect: "diagnostic", turn_id: null };
     case "TURN_TERMINAL": return { error_scope: "turn", error_effect: "terminal", turn_id: event.payload.turn_id };
     case "RUNTIME_GLOBAL": return { error_scope: "runtime", error_effect: "terminal", turn_id: null };
     default: return { error_scope: null, error_effect: null, turn_id: null };

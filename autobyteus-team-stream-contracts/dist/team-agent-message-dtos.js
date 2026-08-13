@@ -130,22 +130,32 @@ export const teamAgentPayloadSchemas = {
     ARTIFACT_PERSISTED: withExecution({ artifact_id: nonEmptyStringSchema, path: nonEmptyStringSchema, artifact_type: nonEmptyStringSchema, status: z.literal("available"), description: z.string().nullable(), revision_id: nonEmptyStringSchema, created_at: nonEmptyStringSchema, updated_at: nonEmptyStringSchema }),
     FILE_CHANGE: withExecution({ file_change_id: nonEmptyStringSchema, path: nonEmptyStringSchema, file_type: nonEmptyStringSchema, status: nonEmptyStringSchema, source_tool: nonEmptyStringSchema, source_invocation_id: nullableNonEmptyStringSchema, content: z.string().nullable(), created_at: nonEmptyStringSchema, updated_at: nonEmptyStringSchema }),
 };
+const errorAgentExecutionSchema = z.union([teamAgentExecutionBindingDtoSchema, z.null()]);
+const errorCore = {
+    code: nonEmptyStringSchema,
+    message: z.string(),
+    agent_execution: errorAgentExecutionSchema,
+};
 export const teamAgentErrorPayloadSchema = z.union([
-    z.object({ code: nonEmptyStringSchema, message: z.string(), agent_execution: teamAgentExecutionBindingDtoSchema, error_scope: z.enum(["turn", "runtime"]).nullable(), error_effect: z.enum(["diagnostic", "terminal"]).nullable(), turn_id: nullableNonEmptyStringSchema }).strict(),
-    z.object({ code: nonEmptyStringSchema, message: z.string(), agent_execution: z.null(), error_scope: z.enum(["turn", "runtime"]).nullable(), error_effect: z.enum(["diagnostic", "terminal"]).nullable(), turn_id: nullableNonEmptyStringSchema }).strict(),
-]).superRefine((payload, context) => {
-    const evidenceIsAbsent = payload.error_scope === null && payload.error_effect === null;
-    const evidenceIsComplete = payload.error_scope !== null && payload.error_effect !== null;
-    const turnIsConsistent = payload.error_scope === "turn"
-        ? payload.turn_id !== null
-        : payload.turn_id === null;
-    if ((!evidenceIsAbsent && !evidenceIsComplete) || !turnIsConsistent) {
-        context.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "ERROR evidence must be complete and carry a turn only for turn scope.",
-        });
-    }
-});
+    z.object({
+        ...errorCore,
+        error_scope: z.null(),
+        error_effect: z.null(),
+        turn_id: z.null(),
+    }).strict(),
+    z.object({
+        ...errorCore,
+        error_scope: z.literal("turn"),
+        error_effect: z.enum(["diagnostic", "terminal"]),
+        turn_id: nonEmptyStringSchema,
+    }).strict(),
+    z.object({
+        ...errorCore,
+        error_scope: z.literal("runtime"),
+        error_effect: z.literal("terminal"),
+        turn_id: z.null(),
+    }).strict(),
+]);
 export const teamInterruptCommandAckPayloadSchema = z.union([
     z.object({ command_type: z.literal("INTERRUPT_GENERATION"), command_id: nonEmptyStringSchema, state: z.literal("accepted"), execution_address: teamExecutionAddressDtoSchema }).strict(),
     z.object({ command_type: z.literal("INTERRUPT_GENERATION"), command_id: nonEmptyStringSchema, state: z.enum(["rejected", "failed"]), code: nonEmptyStringSchema, message: z.string(), execution_address: teamExecutionAddressDtoSchema }).strict(),

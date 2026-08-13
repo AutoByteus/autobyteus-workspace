@@ -61,12 +61,16 @@ const validateCanonicalBoundary = (type: string, payload: unknown): void => {
   } else if (type === 'ERROR') {
     if (!exactKeys(payload, ['code', 'message', 'error_scope', 'error_effect', 'turn_id']) ||
       !nonEmpty(payload.code) || typeof payload.message !== 'string' ||
-      !(payload.error_scope === null || payload.error_scope === 'turn' || payload.error_scope === 'runtime') ||
-      !(payload.error_effect === null || payload.error_effect === 'diagnostic' || payload.error_effect === 'terminal') ||
       !(payload.turn_id === null || nonEmpty(payload.turn_id)) ||
-      (payload.error_scope === 'turn' && !nonEmpty(payload.turn_id)) ||
-      (payload.error_scope === 'runtime' && payload.turn_id !== null) ||
-      ((payload.error_scope === null) !== (payload.error_effect === null))) {
+      !(
+        (payload.error_scope === null && payload.error_effect === null && payload.turn_id === null) ||
+        (payload.error_scope === 'turn' &&
+          (payload.error_effect === 'diagnostic' || payload.error_effect === 'terminal') &&
+          nonEmpty(payload.turn_id)) ||
+        (payload.error_scope === 'runtime' &&
+          payload.error_effect === 'terminal' &&
+          payload.turn_id === null)
+      )) {
       throw new Error('Invalid canonical ERROR payload');
     }
   }

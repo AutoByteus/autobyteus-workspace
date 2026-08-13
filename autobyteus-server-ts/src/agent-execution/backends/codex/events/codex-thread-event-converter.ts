@@ -4,8 +4,7 @@ import { AgentRunEventType } from "../../../domain/agent-run-event.js";
 import { RuntimeKind } from "../../../../runtime-management/runtime-kind-enum.js";
 import { serializePayload } from "../../../../services/agent-streaming/payload-serialization.js";
 import type { JsonObject } from "../codex-app-server-json.js";
-import type { CodexAppServerMessage } from "../thread/codex-app-server-message.js";
-import type { CodexThread } from "../thread/codex-thread.js";
+import type { CodexThread, CodexThreadEventMessage } from "../thread/codex-thread.js";
 import { CodexItemEventPayloadParser } from "./codex-item-event-payload-parser.js";
 import {
   convertCodexItemEvent,
@@ -36,7 +35,14 @@ import {
   deriveCodexAgentRunStatusHint,
   resolveCodexAgentRunEventStatusHint,
 } from "./codex-status-projector.js";
-import { normalizeCodexSegmentSourcePayload } from "./codex-segment-source-payload-normalizer.js";
+import {
+  CodexSegmentSourcePayloadRejected,
+  normalizeCodexSegmentSourcePayload,
+} from "./codex-segment-source-payload-normalizer.js";
+import {
+  CodexProviderCompactionStatusProjector,
+  type CodexCompactionSourceSurface,
+} from "./codex-provider-compaction-status-projector.js";
 
 type RuntimeRunReference = {
   runtimeKind: RuntimeKind;
@@ -44,23 +50,6 @@ type RuntimeRunReference = {
   threadId: string | null;
   metadata: Record<string, unknown> | null;
 };
-
-type CodexCompactionSourceSurface =
-  | "codex.thread_compacted"
-  | "codex.raw_response_compaction_item"
-  | "codex.context_compaction_started"
-  | "codex.context_compaction_completed";
-
-const asObject = (value: unknown): Record<string, unknown> | null =>
-  value && typeof value === "object" && !Array.isArray(value)
-    ? (value as Record<string, unknown>)
-    : null;
-
-const asString = (value: unknown): string | null =>
-  typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
-
-const asNumber = (value: unknown): number | null =>
-  typeof value === "number" && Number.isFinite(value) ? value : null;
 
 export const buildCodexAgentRunRuntimeReference = (
   runId: string,
@@ -86,11 +75,8 @@ export const buildCodexAgentRunRuntimeReference = (
 export class CodexThreadEventConverter {
   private readonly itemEventPayloadParser = new CodexItemEventPayloadParser();
   private readonly orderedToolBoundaryTracker = new CodexOrderedToolBoundaryTracker();
+  private readonly compactionStatusProjector = new CodexProviderCompactionStatusProjector();
   private rawCodexEventSequence = 0;
-  private providerBoundarySequence = 0;
-  private readonly emittedBoundaryKeys: string[] = [];
-  private readonly emittedBoundaryWindowKeys: string[] = [];
-  private readonly emittedNoStableIdBoundaryWindowKeys: string[] = [];
 
   private readonly turnEventConverterContext: CodexTurnEventConverterContext = {
     createEvent: (codexEventName, eventType, payload) =>
@@ -208,12 +194,21 @@ export class CodexThreadEventConverter {
   ) {
   }
 
-  public convert(event: CodexAppServerMessage): AgentRunEvent[] {
+  public convert(event: CodexThreadEventMessage): AgentRunEvent[] {
     const codexEventName = event.method.trim();
     const payload = event.params;
     this.rawCodexEventSequence += 1;
     logRawCodexThreadEventDetails(this.runId, this.rawCodexEventSequence, event);
 
+    try {
+      return this.convertAdmittedEvent(codexEventName, payload);
+    } catch (error) {
+      if (error instanceof CodexSegmentSourcePayloadRejected) return [];
+      throw error;
+    }
+  }
+
+  private convertAdmittedEvent(codexEventName: string, payload: Readonly<JsonObject>): AgentRunEvent[] {
     if (codexEventName.startsWith("codex/event/")) {
       return [];
     }
@@ -363,173 +358,17 @@ export class CodexThreadEventConverter {
     status: "compacting" | "compacted",
     rotationEligible: boolean,
   ): AgentRunEvent | null {
-    const boundary = this.buildCodexCompactionStatusPayload(
+    const projection = this.compactionStatusProjector.project(
       sourceSurface,
       payload,
       status,
       rotationEligible,
     );
-    if (!boundary) {
-      return null;
-    }
-    const boundaryKey = asString(boundary.boundary_key);
-    if (!boundaryKey) {
-      return null;
-    }
-
-    if (rotationEligible && this.hasEmittedCompletedBoundary(boundaryKey, boundary)) {
-      return null;
-    }
-    if (rotationEligible) {
-      this.rememberCompletedBoundary(boundaryKey, boundary);
-    }
-
+    if (!projection) return null;
     return this.createEvent(
-      this.resolveCompactionCodexEventName(sourceSurface),
+      projection.codexEventName,
       AgentRunEventType.COMPACTION_STATUS,
-      boundary,
+      projection.payload,
     );
-  }
-
-  private buildCodexCompactionStatusPayload(
-    sourceSurface: CodexCompactionSourceSurface,
-    payload: JsonObject,
-    status: "compacting" | "compacted",
-    rotationEligible: boolean,
-  ): Record<string, unknown> | null {
-    this.providerBoundarySequence += 1;
-    const item = asObject(payload.item);
-    const stableId =
-      asString(payload.compaction_id) ??
-      asString(payload.compactionId) ??
-      asString(payload.event_id) ??
-      asString(payload.eventId) ??
-      asString(payload.id) ??
-      asString(item?.id) ??
-      asString(item?.compaction_id) ??
-      asString(item?.response_id);
-    const threadId =
-      asString(payload.thread_id) ??
-      asString(payload.threadId) ??
-      asString(item?.thread_id) ??
-      asString(item?.threadId);
-    const responseId =
-      asString(payload.response_id) ??
-      asString(payload.responseId) ??
-      asString(item?.response_id) ??
-      asString(item?.responseId);
-    const turnId =
-      asString(payload.turn_id) ??
-      asString(payload.turnId) ??
-      asString(item?.turn_id) ??
-      asString(item?.turnId);
-    const boundaryKeyParts = stableId
-      ? [
-          "codex",
-          threadId ?? "thread",
-          stableId,
-          ...(rotationEligible ? [] : [status]),
-        ]
-      : ["codex", threadId ?? "thread", sourceSurface, turnId ?? "turn", String(this.providerBoundarySequence)];
-    return {
-      kind: "provider_compaction_boundary",
-      runtime_kind: "CODEX",
-      provider: "codex",
-      source_surface: sourceSurface,
-      boundary_key: boundaryKeyParts.join(":"),
-      provider_thread_id: threadId,
-      provider_event_id: stableId,
-      provider_response_id: responseId,
-      provider_timestamp: asNumber(payload.ts) ?? asNumber(payload.timestamp) ?? null,
-      turn_id: turnId,
-      trigger: asString(payload.trigger) ?? asString(item?.trigger) ?? "auto",
-      status,
-      pre_tokens: asNumber(payload.pre_tokens) ?? asNumber(item?.pre_tokens) ?? null,
-      rotation_eligible: rotationEligible,
-      semantic_compaction: false,
-      raw: serializePayload(payload),
-    };
-  }
-
-  private resolveCompactionCodexEventName(
-    sourceSurface: CodexCompactionSourceSurface,
-  ): CodexThreadEventName {
-    switch (sourceSurface) {
-      case "codex.thread_compacted":
-        return CodexThreadEventName.THREAD_COMPACTED;
-      case "codex.context_compaction_started":
-        return CodexThreadEventName.ITEM_STARTED;
-      case "codex.context_compaction_completed":
-        return CodexThreadEventName.ITEM_COMPLETED;
-      case "codex.raw_response_compaction_item":
-        return CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED;
-    }
-  }
-
-  private hasEmittedCompletedBoundary(
-    boundaryKey: string,
-    boundary: Record<string, unknown>,
-  ): boolean {
-    if (this.hasEmittedBoundaryKey(boundaryKey)) {
-      return true;
-    }
-    const stableId = asString(boundary.provider_event_id);
-    const boundaryWindowKey = this.buildBoundaryWindowKey(boundary);
-    if (!stableId && this.hasEmittedBoundaryWindowKey(boundaryWindowKey)) {
-      return true;
-    }
-    if (stableId && this.hasEmittedNoStableIdBoundaryWindowKey(boundaryWindowKey)) {
-      return true;
-    }
-    return false;
-  }
-
-  private rememberCompletedBoundary(
-    boundaryKey: string,
-    boundary: Record<string, unknown>,
-  ): void {
-    this.rememberBoundaryKey(boundaryKey);
-    const boundaryWindowKey = this.buildBoundaryWindowKey(boundary);
-    this.rememberBoundaryWindowKey(boundaryWindowKey);
-    if (!asString(boundary.provider_event_id)) {
-      this.rememberNoStableIdBoundaryWindowKey(boundaryWindowKey);
-    }
-  }
-
-  private hasEmittedBoundaryKey(key: string): boolean {
-    return this.emittedBoundaryKeys.includes(key);
-  }
-
-  private rememberBoundaryKey(key: string): void {
-    this.emittedBoundaryKeys.push(key);
-    if (this.emittedBoundaryKeys.length > 100) this.emittedBoundaryKeys.shift();
-  }
-
-  private buildBoundaryWindowKey(boundary: Record<string, unknown>): string {
-    return [
-      "codex",
-      asString(boundary.provider_thread_id) ?? "thread",
-      asString(boundary.turn_id) ?? asString(boundary.provider_response_id) ?? "turn",
-    ].join(":");
-  }
-
-  private hasEmittedBoundaryWindowKey(key: string): boolean {
-    return this.emittedBoundaryWindowKeys.includes(key);
-  }
-
-  private rememberBoundaryWindowKey(key: string): void {
-    this.emittedBoundaryWindowKeys.push(key);
-    if (this.emittedBoundaryWindowKeys.length > 100) this.emittedBoundaryWindowKeys.shift();
-  }
-
-  private hasEmittedNoStableIdBoundaryWindowKey(key: string): boolean {
-    return this.emittedNoStableIdBoundaryWindowKeys.includes(key);
-  }
-
-  private rememberNoStableIdBoundaryWindowKey(key: string): void {
-    this.emittedNoStableIdBoundaryWindowKeys.push(key);
-    if (this.emittedNoStableIdBoundaryWindowKeys.length > 100) {
-      this.emittedNoStableIdBoundaryWindowKeys.shift();
-    }
   }
 }

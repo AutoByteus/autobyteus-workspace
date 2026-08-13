@@ -1059,9 +1059,12 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
 }, z.core.$strict>, z.ZodObject<{
     type: z.ZodLiteral<"ERROR">;
     payload: z.ZodUnion<readonly [z.ZodObject<{
+        error_scope: z.ZodNull;
+        error_effect: z.ZodNull;
+        turn_id: z.ZodNull;
         code: z.ZodString;
         message: z.ZodString;
-        agent_execution: z.ZodUnion<readonly [z.ZodObject<{
+        agent_execution: z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodObject<{
             kind: z.ZodLiteral<"persistent_agent">;
             execution_address: z.ZodObject<{
                 root_team_run_id: z.ZodString;
@@ -1086,29 +1089,74 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
                 task_agent_run_id: z.ZodNullable<z.ZodString>;
             }, z.core.$strict>;
             agent_run_id: z.ZodString;
-        }, z.core.$strict>]>;
-        error_scope: z.ZodNullable<z.ZodEnum<{
-            turn: "turn";
-            runtime: "runtime";
-        }>>;
-        error_effect: z.ZodNullable<z.ZodEnum<{
+        }, z.core.$strict>]>, z.ZodNull]>;
+    }, z.core.$strict>, z.ZodObject<{
+        error_scope: z.ZodLiteral<"turn">;
+        error_effect: z.ZodEnum<{
             diagnostic: "diagnostic";
             terminal: "terminal";
-        }>>;
-        turn_id: z.ZodNullable<z.ZodString>;
-    }, z.core.$strict>, z.ZodObject<{
+        }>;
+        turn_id: z.ZodString;
         code: z.ZodString;
         message: z.ZodString;
-        agent_execution: z.ZodNull;
-        error_scope: z.ZodNullable<z.ZodEnum<{
-            turn: "turn";
-            runtime: "runtime";
-        }>>;
-        error_effect: z.ZodNullable<z.ZodEnum<{
-            diagnostic: "diagnostic";
-            terminal: "terminal";
-        }>>;
-        turn_id: z.ZodNullable<z.ZodString>;
+        agent_execution: z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodObject<{
+            kind: z.ZodLiteral<"persistent_agent">;
+            execution_address: z.ZodObject<{
+                root_team_run_id: z.ZodString;
+                task_team_run_ids: z.ZodArray<z.ZodString>;
+                member_address: z.ZodString;
+                task_agent_run_id: z.ZodNullable<z.ZodString>;
+            }, z.core.$strict>;
+        }, z.core.$strict>, z.ZodObject<{
+            kind: z.ZodLiteral<"task_agent">;
+            execution_address: z.ZodObject<{
+                root_team_run_id: z.ZodString;
+                task_team_run_ids: z.ZodArray<z.ZodString>;
+                member_address: z.ZodString;
+                task_agent_run_id: z.ZodNullable<z.ZodString>;
+            }, z.core.$strict>;
+        }, z.core.$strict>, z.ZodObject<{
+            kind: z.ZodLiteral<"task_team_agent">;
+            execution_address: z.ZodObject<{
+                root_team_run_id: z.ZodString;
+                task_team_run_ids: z.ZodArray<z.ZodString>;
+                member_address: z.ZodString;
+                task_agent_run_id: z.ZodNullable<z.ZodString>;
+            }, z.core.$strict>;
+            agent_run_id: z.ZodString;
+        }, z.core.$strict>]>, z.ZodNull]>;
+    }, z.core.$strict>, z.ZodObject<{
+        error_scope: z.ZodLiteral<"runtime">;
+        error_effect: z.ZodLiteral<"terminal">;
+        turn_id: z.ZodNull;
+        code: z.ZodString;
+        message: z.ZodString;
+        agent_execution: z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodObject<{
+            kind: z.ZodLiteral<"persistent_agent">;
+            execution_address: z.ZodObject<{
+                root_team_run_id: z.ZodString;
+                task_team_run_ids: z.ZodArray<z.ZodString>;
+                member_address: z.ZodString;
+                task_agent_run_id: z.ZodNullable<z.ZodString>;
+            }, z.core.$strict>;
+        }, z.core.$strict>, z.ZodObject<{
+            kind: z.ZodLiteral<"task_agent">;
+            execution_address: z.ZodObject<{
+                root_team_run_id: z.ZodString;
+                task_team_run_ids: z.ZodArray<z.ZodString>;
+                member_address: z.ZodString;
+                task_agent_run_id: z.ZodNullable<z.ZodString>;
+            }, z.core.$strict>;
+        }, z.core.$strict>, z.ZodObject<{
+            kind: z.ZodLiteral<"task_team_agent">;
+            execution_address: z.ZodObject<{
+                root_team_run_id: z.ZodString;
+                task_team_run_ids: z.ZodArray<z.ZodString>;
+                member_address: z.ZodString;
+                task_agent_run_id: z.ZodNullable<z.ZodString>;
+            }, z.core.$strict>;
+            agent_run_id: z.ZodString;
+        }, z.core.$strict>]>, z.ZodNull]>;
     }, z.core.$strict>]>;
 }, z.core.$strict>], "type">;
 type TeamAgentServerMessage = {

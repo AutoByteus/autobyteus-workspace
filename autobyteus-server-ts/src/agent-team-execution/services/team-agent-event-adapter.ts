@@ -62,7 +62,6 @@ const errorEvidence = (event: AgentRunEvent) => {
   const evidence = resolveAgentRunErrorEvidence(event);
   switch (evidence?.kind) {
     case "TURN_DIAGNOSTIC": return { errorScope: "turn" as const, errorEffect: "diagnostic" as const, turnId: evidence.turnId };
-    case "RUNTIME_DIAGNOSTIC": return { errorScope: "runtime" as const, errorEffect: "diagnostic" as const, turnId: null };
     case "TURN_TERMINAL": return { errorScope: "turn" as const, errorEffect: "terminal" as const, turnId: evidence.turnId };
     case "RUNTIME_GLOBAL": return { errorScope: "runtime" as const, errorEffect: "terminal" as const, turnId: null };
     default: return { errorScope: null, errorEffect: null, turnId: null };

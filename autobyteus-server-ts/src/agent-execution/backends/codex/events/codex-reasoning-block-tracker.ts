@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import { debugCodexThreadEvent } from "./codex-thread-event-debug.js";
 
 export type CodexReasoningBlockInput = {
-  turnId: string | null;
+  turnId: string;
   providerItemId: string | null;
   snapshot: string;
 };
@@ -11,18 +11,18 @@ export type CodexReasoningLifecycleAction =
   | {
       kind: "start";
       segmentId: string;
-      turnId: string | null;
+      turnId: string;
     }
   | {
       kind: "content";
       segmentId: string;
-      turnId: string | null;
+      turnId: string;
       delta: string;
     }
   | {
       kind: "end";
       segmentId: string;
-      turnId: string | null;
+      turnId: string;
     };
 
 type ActiveReasoningBlock = {
@@ -39,9 +39,7 @@ export class CodexReasoningBlockTracker {
   constructor(private readonly instanceNonce = randomUUID()) {}
 
   public append(input: CodexReasoningBlockInput): CodexReasoningLifecycleAction[] {
-    const activeBlock = input.turnId
-      ? this.activeBlockByTurnId.get(input.turnId)
-      : undefined;
+    const activeBlock = this.activeBlockByTurnId.get(input.turnId);
     const repeatedKnownProviderItem =
       Boolean(activeBlock) &&
       input.providerItemId !== null &&
@@ -54,7 +52,7 @@ export class CodexReasoningBlockTracker {
 
     block.currentProviderItemId = input.providerItemId;
     block.hasContent = true;
-    if (input.turnId && !activeBlock) {
+    if (!activeBlock) {
       this.rememberActiveBlock(input.turnId, block);
     }
 
@@ -69,9 +67,10 @@ export class CodexReasoningBlockTracker {
       segmentId: block.segmentId,
       turnId: input.turnId,
     };
-    const actions: CodexReasoningLifecycleAction[] = input.turnId
-      ? [...(!activeBlock ? [start] : []), content]
-      : [start, content, { kind: "end", segmentId: block.segmentId, turnId: null }];
+    const actions: CodexReasoningLifecycleAction[] = [
+      ...(!activeBlock ? [start] : []),
+      content,
+    ];
     debugCodexThreadEvent("Resolved reasoning block lifecycle actions", {
       segmentId: block.segmentId,
       turnId: input.turnId,

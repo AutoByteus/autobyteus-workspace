@@ -51,6 +51,6 @@ export class ApplicationAgentStreamEventProjector {
   }
 
   private isDiagnostic(kind: string | undefined): boolean {
-    return kind === "TURN_DIAGNOSTIC" || kind === "RUNTIME_DIAGNOSTIC";
+    return kind === "TURN_DIAGNOSTIC";
   }
 }
