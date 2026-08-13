@@ -3,14 +3,14 @@
 ## Current Status
 
 - Delivery status: **Current macOS ARM64 Electron package ready; explicit user verification pending**
-- Current delivery revision: `DR-007`
+- Current delivery revision: `DR-008`
 - Ticket branch: `codex/universal-application-framework-proposal-analysis`
-- Integrated candidate: `fe7147cb7abd764ed5781cbf0febdb1b0e1af5a2`
+- Integrated candidate: `9987c2c10fdc74416b55baa8bd123ab31afe3285`
 - Reviewed handoff anchor: `5071b429672e0bf3108f45c30d6747a2ae6331b6` (`CRR-038`)
 - Reviewed solution/architecture: `SR-016` / `ARCH-REV-014`
 - Reviewed implementation: `IR-019`–`IR-021`; retained production implementation `IR-017` / `IR-018`
-- Latest tracked base included: `origin/personal@ea6d6b011035d71dc9594d61ad035470985fca8e`
-- Candidate form: integrated commit plus uncommitted DR-006/DR-007 delivery evidence and current canonical records; ignored Electron output and generated devkit output remain preserved
+- Latest tracked base included: `origin/personal@8b8ae4c304928b391bdd5466b2262f87d43cf272`
+- Candidate form: integrated commit plus uncommitted DR-008 delivery evidence and current canonical records; ignored Electron output and generated devkit output remain preserved
 
 ## Authoritative Gates
 
@@ -23,44 +23,44 @@
 
 ## Latest-Base Integration
 
-- Delivery protected the complete CRR-038 package in local checkpoint `981a9a393f643e35d77daa0ca7e1a864edb54f66`.
-- `origin/personal` had advanced six commits beyond the DR-005 base to `ea6d6b011035d71dc9594d61ad035470985fca8e`.
-- Those commits carry an independently completed v1.4.33 release and Daily Assistant LLM/media-recovery work; they are not part of this ticket's implementation or release claim.
-- The base merged without textual conflict as `fe7147cb7abd764ed5781cbf0febdb1b0e1af5a2`.
-- Post-merge branch/base divergence is `98/0`; no tracked base commit is missing.
+- Delivery protected the complete DR-007 package in local checkpoint `a1bd2018d419a977b90c236061555b33df9bafd9`.
+- `origin/personal` had advanced 29 commits beyond the DR-006/DR-007 base to `8b8ae4c304928b391bdd5466b2262f87d43cf272`.
+- Those commits carry independently completed v1.4.34/v1.4.35 memory-lineage, natural-compaction, external-runtime snapshot removal, strict-v5 migration, documentation, and release work; they are not part of this ticket's implementation or release claim.
+- The base merged without textual conflict as `9987c2c10fdc74416b55baa8bd123ab31afe3285`.
+- Post-merge branch/base divergence is `100/0`; no tracked base commit is missing.
 - Integrated full server build passed.
-- The exact API-REV-013 architecture/runtime selection passed `32` files / `130` tests.
+- The exact API-REV-013 architecture/runtime selection passed `32` files / `130` tests on the new runtime/migration base.
 
 Evidence:
 
-- `evidence/delivery/dr-006-base-refresh-and-integration.log`
-- `evidence/delivery/dr-006-post-integration-check.log`
-- `evidence/delivery/dr-006-delivery-audit.log`
+- `evidence/delivery/dr-008-base-refresh-and-integration.log`
+- `evidence/delivery/dr-008-post-integration-check.log`
+- `evidence/delivery/dr-008-delivery-audit.log`
 
 ## Current Electron Test Package
 
 The current integrated candidate was rebuilt according to the repository Electron instructions:
 
-- **DMG:** `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.33.dmg`
-- **ZIP:** `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.33.zip`
+- **DMG:** `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.35.dmg`
+- **ZIP:** `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.35.zip`
 - **Unpacked app:** `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
 - **Build report:** `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/electron-test-build-report.md`
 
-A fresh README-driven DR-007 build and validation are **Pass** for Electron `42.4.1`, desktop version `1.4.33`, ARM64. The source candidate and tracked base remained unchanged.
+The post-integration DR-008 build and validation are **Pass** for Electron `42.4.1`, desktop version `1.4.35`, ARM64. It includes the latest-base memory/migration owners and the current application framework.
 
 | Artifact | Exact Size | SHA-256 |
 | --- | ---: | --- |
-| DMG | `405257693` bytes | `3b59f15063801ba96d0c90e68324e1c8d8a1d21954bfb6d83e2591ad0a7f0bc8` |
-| ZIP | `401376716` bytes | `21c82995f1670c47373895c9e9a6686c4b5ff4b1286ce8bbc7daa16f74e80217` |
+| DMG | `405388039` bytes | `9bf086cf85f2c5a4b2c6887d6d4378a9a1b1d0a3020cbbaaafa25ea4384031ce` |
+| ZIP | `401509654` bytes | `cfd14eb5287290a5ed2349bcd0eff520ceeb2089e07f8781e838a099f897e1c7` |
 
 The app metadata/architecture, embedded current narrow runtime owners, absence of the retired broad host/bind-once files, real packaged terminal spawn, DMG checksum, ZIP integrity, and process/mount hygiene pass.
 
-This package is unsigned and not notarized. It is a local verification artifact, not a release. Prior v1.4.31/v1.4.32 packages and the overwritten DR-006 v1.4.33 bytes are superseded; use only the current DR-007 paths and hashes.
+This package is unsigned and not notarized. It is a local verification artifact, not a release. All v1.4.31–v1.4.33 verification packages are superseded; use only the current DR-008 v1.4.35 paths and hashes.
 
 Evidence:
 
-- `evidence/delivery/dr-007-electron-macos-arm64-build.log`
-- `evidence/delivery/dr-007-electron-macos-arm64-verification.log`
+- `evidence/delivery/dr-008-electron-macos-arm64-build.log`
+- `evidence/delivery/dr-008-electron-macos-arm64-verification.log`
 
 ## Delivered Behavior
 
@@ -75,7 +75,7 @@ Evidence:
 
 ## Documentation Sync
 
-`autobyteus-server-ts/docs/ARCHITECTURE.md` and `autobyteus-server-ts/docs/modules/applications.md` now contain the durable executable architecture-policy contract. Existing application runtime/engine/orchestration/session/gateway docs remain accurate. IR-020/IR-021 correct the checker to match the documented policy without changing policy meaning. The integrated v1.4.33 LLM/media-recovery and browser-session docs are independently complete and do not conflict with this framework.
+`autobyteus-server-ts/docs/ARCHITECTURE.md` and `autobyteus-server-ts/docs/modules/applications.md` now contain the durable executable architecture-policy contract. Existing application runtime/engine/orchestration/session/gateway docs remain accurate. IR-020/IR-021 correct the checker to match the documented policy without changing policy meaning. The integrated v1.4.35 memory-lineage/provenance, compaction, migration, run-history, and work-trace docs are independently complete and do not conflict with this framework.
 
 Canonical report:
 
@@ -84,7 +84,7 @@ Canonical report:
 ## Suggested User Verification
 
 1. Quit any existing AutoByteus desktop instance.
-2. Open the **v1.4.33 DMG** listed above. Because it is unsigned, macOS may require **Control-click → Open**.
+2. Open the **v1.4.35 DMG** listed above. Because it is unsigned, macOS may require **Control-click → Open**.
 3. Back up `~/.autobyteus/server-data` first if testing must not modify current local state.
 4. In Studio, load a maintained package and verify defaults, selection preview/save/reset, application launch, real artifact publication, recipient-name writer handoff, projection, and explicit **Reload application**.
 5. If practical, interrupt/reload an application worker and confirm a later artifact delivery recovers the worker and reaches projection.

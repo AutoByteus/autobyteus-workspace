@@ -1,0 +1,107 @@
+# DR-008 Integrated Electron macOS ARM64 Verification — Corrected Path Check
+started_utc=2026-08-01T04:42:56Z
+prior_attempt=local verifier used a nonexistent migration path; package failure not indicated
+candidate=9987c2c10fdc74416b55baa8bd123ab31afe3285
+integrated_base=8b8ae4c304928b391bdd5466b2262f87d43cf272
+node=v22.23.1
+pnpm=10.28.2
+electron=42.4.1
+desktop_package_version=1.4.35
+
+## Artifacts, metadata, and architecture
+  "CFBundleDisplayName" => "AutoByteus"
+  "CFBundleExecutable" => "AutoByteus"
+  "CFBundleIdentifier" => "com.autobyteus.app"
+  "CFBundleShortVersionString" => "1.4.35"
+  "CFBundleVersion" => "1.4.35"
+  "LSMinimumSystemVersion" => "12.0"
+/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+Non-fat file: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus is architecture: arm64
+/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/pty.node: Mach-O 64-bit bundle arm64
+/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper: Mach-O 64-bit executable arm64
+PASS: current artifacts, v1.4.35 metadata, and ARM64 native runtime
+
+## Packaged application framework
+PASS present: dist/compositions/build-studio-server.js
+PASS present: dist/compositions/build-standalone-application-server.js
+PASS present: dist/application-platform/runtime/application-platform-runtime.js
+PASS present: dist/application-platform/runtime/application-platform-runtime-contracts.js
+PASS present: dist/application-engine/services/application-engine-controller.js
+PASS present: dist/application-engine/services/application-engine-launcher.js
+PASS absent: dist/application-engine/services/application-engine-host-service.js
+PASS absent: dist/application-platform/runtime/bind-once-published-artifact-publisher.js
+PASS absent: dist/application-platform/runtime/bind-once-application-engine-event-handler.js
+
+## Packaged latest-base memory/migration owners
+PASS present: dist/agent-memory/services/runtime-memory-location-classifier.js
+PASS present: dist/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5-migration.js
+PASS present: dist/app-data-migrations/migrations/remove-external-runtime-working-context-snapshots-migration.js
+
+## Packaged terminal runtime
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+PASS: packaged terminal guard and real spawn probe
+
+## Local signing posture (informational)
+Executable=/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+Identifier=Electron
+Format=app bundle with Mach-O thin (arm64)
+CodeDirectory v=20400 size=392 flags=0x20002(adhoc,linker-signed) hashes=9+0 location=embedded
+VersionPlatform=1
+VersionMin=786432
+VersionSDK=1704448
+Hash type=sha256 size=32
+CandidateCDHash sha256=183bce38eb383b21f21c2cdedcf6cd8781b11cdd
+CandidateCDHashFull sha256=183bce38eb383b21f21c2cdedcf6cd8781b11cdd090f942c4eacd6c09b1112f7
+Hash choices=sha256
+CMSDigest=183bce38eb383b21f21c2cdedcf6cd8781b11cdd090f942c4eacd6c09b1112f7
+CMSDigestType=2
+Executable Segment base=0
+Executable Segment limit=16384
+Executable Segment flags=0x1
+Page size=4096
+CDHash=183bce38eb383b21f21c2cdedcf6cd8781b11cdd
+Signature=adhoc
+Info.plist=not bound
+TeamIdentifier=not set
+Sealed Resources=none
+Internal requirements=none
+/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app: code has no resources but signature indicates they must be present
+codesign_display_exit=0
+codesign_verify_exit=1
+INFO: local package intentionally unsigned/unnotarized; not release-signing evidence.
+
+## Archive integrity
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $082B8B0E
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $A020FF3A
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $8FDE713B
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $F7E1CA3F
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $8FDE713B
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $FC2C0124
+Die überprüfte CRC32-Prüfsumme ist $A79C7D9D
+hdiutil: verify: checksum of "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.35.dmg" is VALID
+No errors detected in compressed data of /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.35.zip.
+PASS: DMG checksum and ZIP archive integrity
+
+## Sizes and SHA-256
+/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.35.dmg 405388039 bytes
+/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.35.zip 401509654 bytes
+9bf086cf85f2c5a4b2c6887d6d4378a9a1b1d0a3020cbbaaafa25ea4384031ce  /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.35.dmg
+cfd14eb5287290a5ed2349bcd0eff520ceeb2089e07f8781e838a099f897e1c7  /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.35.zip
+
+## Hygiene
+PASS: candidate/base unchanged; output ignored; app not launched; DMG not mounted
+completed_utc=2026-08-01T04:43:18Z
+FINAL=PASS

@@ -4,12 +4,12 @@
 
 - Ticket: `universal-application-framework-proposal-analysis`
 - Trigger: `CRR-038` proportional durable-test review Pass following `SR-016`, `ARCH-REV-014`, `IR-019`–`IR-021`, `CRR-037`, and `API-REV-013`
-- Prior integrated base: `origin/personal@80d6693c1b0df5abdfd2c3dc0ec01ff885425847`
-- Current integrated base: `origin/personal@ea6d6b011035d71dc9594d61ad035470985fca8e`
+- Prior integrated base: `origin/personal@ea6d6b011035d71dc9594d61ad035470985fca8e`
+- Current integrated base: `origin/personal@8b8ae4c304928b391bdd5466b2262f87d43cf272`
 - Reviewed handoff anchor: `5071b429672e0bf3108f45c30d6747a2ae6331b6`
-- Delivery safety checkpoint: `981a9a393f643e35d77daa0ca7e1a864edb54f66`
-- Current integrated candidate: `fe7147cb7abd764ed5781cbf0febdb1b0e1af5a2`
-- Integration/check evidence: `evidence/delivery/dr-006-base-refresh-and-integration.log`, `evidence/delivery/dr-006-post-integration-check.log`, and `evidence/delivery/dr-006-delivery-audit.log`
+- Delivery safety checkpoint: `a1bd2018d419a977b90c236061555b33df9bafd9`
+- Current integrated candidate: `9987c2c10fdc74416b55baa8bd123ab31afe3285`
+- Integration/check evidence: `evidence/delivery/dr-008-base-refresh-and-integration.log`, `evidence/delivery/dr-008-post-integration-check.log`, and `evidence/delivery/dr-008-delivery-audit.log`
 
 ## Why Docs Were Updated
 
@@ -28,8 +28,8 @@ IR-020 and IR-021 correct checker completeness for direction categories, externa
 | `autobyteus-server-ts/docs/modules/application_sessions.md` | Retained; delivery-verified | Application session scope, shutdown, and exact resource cleanup remain current. |
 | `autobyteus-server-ts/docs/modules/application_backend_api_gateway.md` | Retained; delivery-verified | Gateway depends on narrow application runtime owners and remains consistent with AFB-001/AFB-002. |
 | Prior server/web/devkit/external-authoring docs from DR-002 through DR-005 | No additional change | Dual-host behavior, portable packages, Studio overrides, publication/handoff, deterministic shutdown, and atomic packaging remain accurate. |
-| v1.4.33 base docs | No application-framework change | `autobyteus-ts` LLM/media-recovery docs, provider catalog docs, `autobyteus-web/docs/browser_sessions.md`, and release history are independently complete. |
-| Electron packaging docs | No policy change | DR-006 followed the existing documented personal macOS ARM64 build path; only the concrete verification artifact changed. |
+| v1.4.35 base docs | No application-framework conflict | Current-only compaction lineage/provenance, strict v5 native snapshot migration, external-runtime snapshot removal, memory/run-history/work-trace docs, and v1.4.34/v1.4.35 release history are independently complete. |
+| Electron packaging docs | No policy change | DR-008 followed the existing documented personal macOS ARM64 build path and packages the current v1.4.35 server/migration owners. |
 
 ## Durable Design / Runtime Knowledge Promoted
 
@@ -65,16 +65,16 @@ IR-020 and IR-021 correct checker completeness for direction categories, externa
 - The Applications module records project/manifest resolution, Vue external scripts, the AFB-004 injection families, exact process exceptions, and corrective guidance.
 - The executable policy contains nineteen construction owners and uses the direct test-only Vue parser declared in the server manifest and lockfile.
 - Retired broad-host and bind-once source paths remain absent; current controller, launcher, runtime, and projection-contract owners remain present.
-- The integrated full server build and exact architecture/runtime matrix pass `32` files / `130` tests.
-- The six newly integrated base commits change independent v1.4.33 LLM/media-recovery, browser-session, release, and ticket-history documentation; they introduce no application-framework contract conflict.
-- The local Electron build changes no durable packaging policy; `electron-test-build-report.md` records the current v1.4.33 artifact.
+- The 29 newly integrated commits carry independently reviewed/released v1.4.34/v1.4.35 memory lineage, natural compaction, external-runtime snapshot removal, strict v5 migration, documentation, and release history; the merge retained the application AFB pointer without conflict.
+- The integrated full server build and exact architecture/runtime matrix pass `32` files / `130` tests against the new memory/runtime base.
+- The local Electron build changes no durable packaging policy; `electron-test-build-report.md` records the current v1.4.35 artifact and packaged migration owners.
 
-Evidence: `evidence/delivery/dr-006-delivery-audit.log`.
+Evidence: `evidence/delivery/dr-008-delivery-audit.log`.
 
 ## Delivery Continuation
 
 - Result: `Pass — updated and audited on the integrated state`
-- Next action: user to test the current v1.4.33 macOS ARM64 Electron package for candidate `fe7147cb7abd764ed5781cbf0febdb1b0e1af5a2` and provide explicit approval/completion or a concrete issue.
+- Next action: user to test the current v1.4.35 macOS ARM64 Electron package for candidate `9987c2c10fdc74416b55baa8bd123ab31afe3285` and provide explicit approval/completion or a concrete issue.
 - Finalization state: held. No ticket archival, final ticket commit, push, target merge, release, deployment, or cleanup may occur before explicit user verification.
 
 ## Blocked Or Escalated Follow-Up
