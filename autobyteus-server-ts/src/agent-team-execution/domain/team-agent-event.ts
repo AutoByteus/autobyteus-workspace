@@ -2,6 +2,7 @@ import type { JsonValue } from "@autobyteus/team-stream-contracts";
 import type { AgentRunStatusHint } from "../../agent-execution/domain/agent-run-event.js";
 import type { TeamExecutionAddress } from "./team-execution-address.js";
 import type { TeamAgentStatusDetails } from "./team-agent-status.js";
+import type { AgentSegmentType } from "../../agent-execution/domain/agent-segment.js";
 
 type Correlated<T extends string, D> = Readonly<{
   eventType: T;
@@ -62,9 +63,9 @@ export type TeamAgentEvent =
   | Correlated<"TURN_STARTED", { turnId: string | null }>
   | Correlated<"TURN_COMPLETED", { turnId: string | null; reason: string | null }>
   | Correlated<"TURN_INTERRUPTED", { turnId: string | null; reason: string | null }>
-  | Correlated<"SEGMENT_START", { segmentId: string; turnId: string | null; segmentType: string; metadata: JsonValue | null }>
-  | Correlated<"SEGMENT_CONTENT", { segmentId: string; turnId: string | null; segmentType: string; delta: string }>
-  | Correlated<"SEGMENT_END", { segmentId: string; turnId: string | null; metadata: JsonValue | null; interrupted: boolean; reason: string | null; failed: boolean; error: string | null }>
+  | Correlated<"SEGMENT_START", { segmentId: string; turnId: string; segmentType: AgentSegmentType; metadata: JsonValue | null }>
+  | Correlated<"SEGMENT_CONTENT", { segmentId: string; turnId: string; segmentType: AgentSegmentType; delta: string }>
+  | Correlated<"SEGMENT_END", { segmentId: string; turnId: string; metadata: JsonValue | null; interrupted: boolean; reason: string | null; failed: boolean; error: string | null }>
   | Correlated<"AGENT_STATUS", TeamAgentStatusDetails>
   | Correlated<"COMPACTION_STATUS", {
       phase: string | null; kind: string | null; status: string | null; turnId: string | null;
@@ -90,4 +91,10 @@ export type TeamAgentEvent =
   | Correlated<"SYSTEM_TASK_NOTIFICATION", { sender: Readonly<{ kind: "system" }> | Readonly<{ kind: "execution"; executionAddress: TeamExecutionAddress }>; content: string }>
   | Correlated<"ARTIFACT_PERSISTED", { artifactId: string; path: string; artifactType: string; status: "available"; description: string | null; revisionId: string; createdAt: string; updatedAt: string }>
   | Correlated<"FILE_CHANGE", { fileChangeId: string; path: string; fileType: string; status: string; sourceTool: string; sourceInvocationId: string | null; content: string | null; createdAt: string; updatedAt: string }>
-  | Correlated<"ERROR", { code: string; message: string }>;
+  | Correlated<"ERROR", {
+      code: string;
+      message: string;
+      errorScope: "turn" | "runtime" | null;
+      errorEffect: "diagnostic" | "terminal" | null;
+      turnId: string | null;
+    }>;

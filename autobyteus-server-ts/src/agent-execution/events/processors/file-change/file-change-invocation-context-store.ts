@@ -4,6 +4,8 @@ import type {
 } from "../../../domain/agent-run-file-change.js";
 
 export interface FileChangeInvocationContext {
+  turnId?: string | null;
+  segmentId?: string | null;
   toolName: string | null;
   arguments: Record<string, unknown>;
   sourceTool: AgentRunFileChangeSourceTool | null;
@@ -18,13 +20,22 @@ export type FileChangeInvocationContextInput = FileChangeInvocationContext;
 export class FileChangeInvocationContextStore {
   private readonly contextsByRunId = new Map<string, Map<string, FileChangeInvocationContext>>();
 
-  record(runId: string, invocationId: string, input: FileChangeInvocationContextInput): void {
+  insert(runId: string, invocationId: string, input: FileChangeInvocationContextInput): boolean {
     if (!invocationId) {
-      return;
+      return false;
     }
 
     const runContexts = this.ensureRunContexts(runId);
+    if (runContexts.has(invocationId)) {
+      return false;
+    }
     runContexts.set(invocationId, { ...input });
+    return true;
+  }
+
+  record(runId: string, invocationId: string, input: FileChangeInvocationContextInput): void {
+    if (!invocationId) return;
+    this.ensureRunContexts(runId).set(invocationId, { ...input });
   }
 
   consume(runId: string, invocationId: string | null | undefined): FileChangeInvocationContext | null {
@@ -52,6 +63,20 @@ export class FileChangeInvocationContextStore {
     }
 
     return runContexts.get(invocationId) ?? null;
+  }
+
+  clearTurn(runId: string, turnId: string | null | undefined): void {
+    if (!turnId) return;
+    const runContexts = this.contextsByRunId.get(runId);
+    if (!runContexts) return;
+    for (const [invocationId, context] of runContexts) {
+      if (context.turnId === turnId) runContexts.delete(invocationId);
+    }
+    if (runContexts.size === 0) this.contextsByRunId.delete(runId);
+  }
+
+  clearRun(runId: string): void {
+    this.contextsByRunId.delete(runId);
   }
 
   private delete(runId: string, invocationId: string): void {

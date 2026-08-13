@@ -9,6 +9,12 @@ const payloadWithoutDelta = (message: StreamEgressMessage): Record<string, unkno
 
 export const isCoalescibleStreamContent = (message: StreamEgressMessage): boolean =>
   message.type === ServerMessageType.SEGMENT_CONTENT &&
+  typeof message.payload.id === "string" &&
+  message.payload.id.length > 0 &&
+  typeof message.payload.turn_id === "string" &&
+  message.payload.turn_id.length > 0 &&
+  typeof message.payload.segment_type === "string" &&
+  message.payload.segment_type.length > 0 &&
   typeof message.payload.delta === "string";
 
 export const cloneStreamContentMessage = (

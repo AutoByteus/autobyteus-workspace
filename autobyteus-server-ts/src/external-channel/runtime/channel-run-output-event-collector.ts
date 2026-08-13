@@ -2,7 +2,6 @@ import { AgentRunEventType } from "../../agent-execution/domain/agent-run-event.
 import type { ParsedChannelOutputEvent } from "./channel-output-event-parser.js";
 import {
   appendOutputTextFragment,
-  chooseFinalOutputText,
 } from "./channel-output-text-assembler.js";
 
 export type ChannelRunOutputCollectedFinal = {
@@ -15,7 +14,6 @@ type PendingTurn = {
   deliveryKey: string;
   turnId: string;
   assistantText: string;
-  finalText: string | null;
 };
 
 export class ChannelRunOutputEventCollector {
@@ -27,6 +25,13 @@ export class ChannelRunOutputEventCollector {
   }): ChannelRunOutputCollectedFinal | null {
     const turnId = normalizeOptionalString(input.event.turnId);
     if (!turnId) {
+      return null;
+    }
+
+    if (
+      input.event.errorEvidence?.kind === "TURN_DIAGNOSTIC" ||
+      input.event.errorEvidence?.kind === "RUNTIME_DIAGNOSTIC"
+    ) {
       return null;
     }
 
@@ -54,18 +59,6 @@ export class ChannelRunOutputEventCollector {
       return null;
     }
 
-    if (
-      input.event.eventType === AgentRunEventType.SEGMENT_END &&
-      input.event.textKind === "FINAL_TEXT" &&
-      input.event.text
-    ) {
-      pending.finalText = chooseFinalOutputText(
-        pending.finalText,
-        input.event.text,
-      );
-      return null;
-    }
-
     if (input.event.eventType !== AgentRunEventType.TURN_COMPLETED) {
       return null;
     }
@@ -74,9 +67,7 @@ export class ChannelRunOutputEventCollector {
     return {
       deliveryKey: input.deliveryKey,
       turnId,
-      replyText:
-        normalizeOptionalString(pending.finalText) ??
-        normalizeOptionalString(pending.assistantText),
+      replyText: normalizeOptionalString(pending.assistantText),
     };
   }
 
@@ -93,7 +84,6 @@ export class ChannelRunOutputEventCollector {
       deliveryKey,
       turnId,
       assistantText: "",
-      finalText: null,
     };
     this.pendingTurns.set(deliveryKey, created);
     return created;

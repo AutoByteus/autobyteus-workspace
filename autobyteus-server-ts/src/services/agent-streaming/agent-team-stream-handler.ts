@@ -56,7 +56,7 @@ class AgentTeamSession extends AgentSession {
 const errorMessage = (code: string, message: string): TeamStreamServerMessage =>
   parseTeamStreamServerMessage({
     type: "ERROR",
-    payload: { code, message, agent_execution: null },
+    payload: { code, message, agent_execution: null, error_scope: null, error_effect: null, turn_id: null },
   });
 
 export class AgentTeamStreamHandler {

@@ -132,6 +132,9 @@ const dispatchToHandler = (
         const eventMonitor = handleError({
           code: message.payload.code ?? 'AGENT_COMMAND_REJECTED',
           message: message.payload.message ?? 'Agent command was not accepted.',
+          error_scope: null,
+          error_effect: null,
+          turn_id: null,
         }, context);
         effects = mergeAgentStreamMutationEffects(
           effects,

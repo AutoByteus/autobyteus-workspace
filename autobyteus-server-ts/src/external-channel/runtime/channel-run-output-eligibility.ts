@@ -6,7 +6,6 @@ import type { ParsedChannelOutputEvent } from "./channel-output-event-parser.js"
 const OBSERVABLE_OUTPUT_EVENT_TYPES = new Set<AgentRunEventType>([
   AgentRunEventType.TURN_STARTED,
   AgentRunEventType.SEGMENT_CONTENT,
-  AgentRunEventType.SEGMENT_END,
   AgentRunEventType.TURN_COMPLETED,
   AgentRunEventType.ERROR,
 ]);

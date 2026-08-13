@@ -23,7 +23,8 @@ import type {
  * @returns A new segment object initialized with default values
  */
 export function createSegmentFromPayload(payload: SegmentStartPayload): AIResponseSegment {
-  const { id, segment_type, metadata } = payload;
+  const { id, segment_type } = payload;
+  const metadata = toSegmentMetadataRecord(payload.metadata);
 
   switch (segment_type) {
     case 'text':
@@ -48,10 +49,14 @@ export function createSegmentFromPayload(payload: SegmentStartPayload): AIRespon
       return createMediaSegment(metadata);
 
     default:
-      // Fallback to text for unknown types
-      console.warn(`Unknown segment type: ${segment_type}, falling back to text`);
-      return createTextSegment();
+      throw new Error(`Unsupported canonical segment type: ${String(segment_type)}`);
   }
+}
+
+export function toSegmentMetadataRecord(value: unknown): Record<string, any> | null {
+  return value && typeof value === 'object' && !Array.isArray(value)
+    ? value as Record<string, any>
+    : null;
 }
 
 function createTextSegment(): AIResponseTextSegment {
@@ -63,7 +68,7 @@ function createTextSegment(): AIResponseTextSegment {
 
 function createToolCallSegment(
   invocationId: string, 
-  metadata?: Record<string, any>
+  metadata?: Record<string, any> | null
 ): ToolCallSegment {
   const parseArgumentsCandidate = (value: unknown): Record<string, any> => {
     if (value && typeof value === 'object' && !Array.isArray(value)) {
@@ -111,7 +116,7 @@ function createToolCallSegment(
   };
 }
 
-function createWriteFileSegment(invocationId: string, metadata?: Record<string, any>): WriteFileSegment {
+function createWriteFileSegment(invocationId: string, metadata?: Record<string, any> | null): WriteFileSegment {
   const path = metadata?.path || '';
   return {
     type: 'write_file',
@@ -143,7 +148,7 @@ function createTerminalCommandSegment(invocationId: string): TerminalCommandSegm
   };
 }
 
-function createEditFileSegment(invocationId: string, metadata?: Record<string, any>): EditFileSegment {
+function createEditFileSegment(invocationId: string, metadata?: Record<string, any> | null): EditFileSegment {
   const path = metadata?.path || '';
   return {
     type: 'edit_file',
@@ -167,7 +172,7 @@ function createThinkSegment(): ThinkSegment {
   };
 }
 
-function createMediaSegment(metadata?: Record<string, any>): MediaSegment {
+function createMediaSegment(metadata?: Record<string, any> | null): MediaSegment {
   const rawType = metadata?.media_type;
   const mediaType =
     rawType === 'audio' || rawType === 'video' || rawType === 'image' ? rawType : 'image';

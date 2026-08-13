@@ -2,6 +2,7 @@ import type { AgentRunContext, RuntimeAgentRunContext } from "../domain/agent-ru
 import type { AgentRunEvent } from "../domain/agent-run-event.js";
 import type { AgentRuntimeLifecycleSnapshot } from "../domain/agent-runtime-lifecycle-snapshot.js";
 import type { AgentTurnLifecycleState } from "./processors/lifecycle-status/agent-turn-lifecycle-state.js";
+import type { AgentSegmentLifecycleState } from "./processors/segment-lifecycle/agent-segment-lifecycle-state.js";
 import type { AgentRunEventProcessor } from "./agent-run-event-processor.js";
 import type { AgentRunEventTransformer } from "./agent-run-event-transformer.js";
 
@@ -16,6 +17,7 @@ export class AgentRunEventPipeline {
     runContext: AgentRunContext<RuntimeAgentRunContext>;
     events: readonly AgentRunEvent[];
     lifecycleState?: AgentTurnLifecycleState;
+    segmentLifecycleState?: AgentSegmentLifecycleState;
     runtimeLifecycleSnapshot?: AgentRuntimeLifecycleSnapshot;
   }): Promise<AgentRunEvent[]> {
     let accumulated = [...input.events];
@@ -25,6 +27,7 @@ export class AgentRunEventPipeline {
         runContext: input.runContext,
         events: accumulated,
         lifecycleState: input.lifecycleState,
+        segmentLifecycleState: input.segmentLifecycleState,
         runtimeLifecycleSnapshot: input.runtimeLifecycleSnapshot,
       });
     }
@@ -46,10 +49,17 @@ export class AgentRunEventPipeline {
         runContext: input.runContext,
         events: accumulated,
         lifecycleState: input.lifecycleState,
+        segmentLifecycleState: input.segmentLifecycleState,
         runtimeLifecycleSnapshot: input.runtimeLifecycleSnapshot,
       });
     }
 
     return accumulated;
+  }
+
+  async releaseRun(runId: string): Promise<void> {
+    for (const processor of this.processors) {
+      await processor.releaseRun?.(runId);
+    }
   }
 }

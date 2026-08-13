@@ -36,6 +36,7 @@ import {
   deriveCodexAgentRunStatusHint,
   resolveCodexAgentRunEventStatusHint,
 } from "./codex-status-projector.js";
+import { normalizeCodexSegmentSourcePayload } from "./codex-segment-source-payload-normalizer.js";
 
 type RuntimeRunReference = {
   runtimeKind: RuntimeKind;
@@ -280,18 +281,23 @@ export class CodexThreadEventConverter {
     sourcePayload: JsonObject,
     actions: CodexReasoningLifecycleAction[],
   ): AgentRunEvent[] {
-    return actions.map((action) => action.kind === "content"
-      ? this.createEvent(codexEventName, AgentRunEventType.SEGMENT_CONTENT, {
-          ...serializeCodexItemEventPayload(sourcePayload),
-          id: action.segmentId,
-          delta: action.delta,
-          segment_type: "reasoning",
-        }, null)
-      : this.createEvent(codexEventName, AgentRunEventType.SEGMENT_END, {
+    return actions.map((action) => action.kind === "start"
+      ? this.createEvent(codexEventName, AgentRunEventType.SEGMENT_START, {
           id: action.segmentId,
           turn_id: action.turnId,
           segment_type: "reasoning",
-        }, null));
+        }, null)
+      : action.kind === "content"
+        ? this.createEvent(codexEventName, AgentRunEventType.SEGMENT_CONTENT, {
+            ...serializeCodexItemEventPayload(sourcePayload),
+            id: action.segmentId,
+            turn_id: action.turnId,
+            delta: action.delta,
+          }, null)
+        : this.createEvent(codexEventName, AgentRunEventType.SEGMENT_END, {
+            id: action.segmentId,
+            turn_id: action.turnId,
+          }, null));
   }
 
   private createTextSegmentContentEvent(
@@ -307,7 +313,6 @@ export class CodexThreadEventConverter {
         ...serializePayload(payload),
         id: this.itemEventPayloadParser.resolveSegmentId(payload),
         delta,
-        segment_type: "text",
       },
     );
   }
@@ -330,14 +335,18 @@ export class CodexThreadEventConverter {
     payload: Record<string, unknown>,
     statusHint: AgentRunEvent["statusHint"] = deriveCodexAgentRunStatusHint(codexEventName),
   ): AgentRunEvent {
-    const normalizedPayload =
-      eventType === AgentRunEventType.ARTIFACT_PERSISTED
+    const segmentPayload = normalizeCodexSegmentSourcePayload(
+      eventType,
+      payload,
+      (candidate) => this.itemEventPayloadParser.resolveTurnId(candidate),
+    );
+    const normalizedPayload = segmentPayload ?? (eventType === AgentRunEventType.ARTIFACT_PERSISTED
         ? {
             agent_id: this.runId,
             ...(this.workspaceRoot ? { workspace_root: this.workspaceRoot } : {}),
             ...payload,
           }
-        : payload;
+        : payload);
     const event: AgentRunEvent = {
       eventType,
       runId: this.runId,

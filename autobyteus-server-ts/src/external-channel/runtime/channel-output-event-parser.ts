@@ -7,6 +7,7 @@ import {
   resolveAgentRunErrorEvidence,
   type AgentRunErrorEvidence,
 } from "../../agent-execution/domain/agent-run-error-evidence.js";
+import { resolveAgentRunEventTurnId } from "../../agent-execution/domain/agent-run-event-turn-id.js";
 import {
   TeamRunEventSourceType,
   type TeamRunEvent,
@@ -25,7 +26,7 @@ export type ParsedChannelOutputEvent = {
   textKind: ChannelOutputEventTextKind | null;
 };
 
-export type ChannelOutputEventTextKind = "STREAM_FRAGMENT" | "FINAL_TEXT";
+export type ChannelOutputEventTextKind = "STREAM_FRAGMENT";
 
 export const parseDirectChannelOutputEvent = (
   event: unknown,
@@ -41,7 +42,7 @@ export const parseDirectChannelOutputEvent = (
     agentRunId: event.runId,
     teamRunId: null,
     executionAddress: null,
-    turnId: resolveTurnIdFromPayload(event.payload),
+    turnId: resolveAgentRunEventTurnId(event),
     text: text.text,
     textKind: text.kind,
   };
@@ -56,15 +57,24 @@ export const parseTeamChannelOutputEvent = (
   const payload = event.payload;
   const address = event.execution.executionAddress;
   const text = payload.eventType === "SEGMENT_CONTENT"
+    && payload.details.segmentType === "text"
     ? { text: payload.details.delta, kind: "STREAM_FRAGMENT" as const }
-    : payload.eventType === "ASSISTANT_COMPLETE"
-      ? { text: payload.details.content, kind: "FINAL_TEXT" as const }
-      : { text: null, kind: null };
+    : { text: null, kind: null };
   const turnId = "turnId" in payload.details ? payload.details.turnId : null;
   return {
     eventType: payload.eventType as AgentRunEventType,
     statusHint: payload.statusHint,
-    errorEvidence: null,
+    errorEvidence: payload.eventType === "ERROR"
+      ? payload.details.errorEffect === "diagnostic"
+        ? payload.details.errorScope === "turn" && payload.details.turnId
+          ? { kind: "TURN_DIAGNOSTIC", turnId: payload.details.turnId }
+          : { kind: "RUNTIME_DIAGNOSTIC" }
+        : payload.details.errorEffect === "terminal"
+          ? payload.details.errorScope === "turn" && payload.details.turnId
+            ? { kind: "TURN_TERMINAL", turnId: payload.details.turnId }
+            : { kind: "RUNTIME_GLOBAL" }
+          : null
+      : null,
     agentRunId: event.execution.kind === "task_team_agent"
       ? event.execution.agentRunId
       : address.taskAgentRunId ?? address.memberAddress,
@@ -94,21 +104,6 @@ const isTeamAgentEvent = (
     !!candidate.payload && typeof candidate.payload === "object";
 };
 
-const resolveTurnIdFromPayload = (
-  params: Record<string, unknown>,
-): string | null => {
-  const turn = asObject(params.turn);
-  const item = asObject(params.item);
-  return (
-    asNonEmptyString(params.turnId) ??
-    asNonEmptyString(params.turn_id) ??
-    asNonEmptyString(turn?.id) ??
-    asNonEmptyString(item?.turnId) ??
-    asNonEmptyString(item?.turn_id) ??
-    null
-  );
-};
-
 const resolveAgentRunEventText = (
   eventType: AgentRunEventType,
   payload: Record<string, unknown>,
@@ -118,25 +113,7 @@ const resolveAgentRunEventText = (
     if (segmentType !== "text") {
       return noText();
     }
-    return parsedText(
-      asNonEmptyRawString(payload.delta) ??
-        asNonEmptyRawString(payload.text) ??
-        extractAssistantText(payload),
-      "STREAM_FRAGMENT",
-    );
-  }
-
-  if (eventType === AgentRunEventType.SEGMENT_END) {
-    if (segmentType && segmentType !== "text") {
-      return noText();
-    }
-    const assistantText = extractAssistantText(payload);
-    return parsedText(
-      (segmentType === "text" ? asNonEmptyRawString(payload.text) : null) ??
-        assistantText ??
-        (segmentType === "text" ? asNonEmptyRawString(payload.delta) : null),
-      "FINAL_TEXT",
-    );
+    return parsedText(asNonEmptyRawString(payload.delta), "STREAM_FRAGMENT");
   }
 
   return noText();
@@ -154,71 +131,6 @@ const parsedText = (
 };
 
 const noText = (): { text: null; kind: null } => ({ text: null, kind: null });
-
-const extractAssistantText = (
-  params: Record<string, unknown>,
-): string | null => {
-  const item = asObject(params.item) ?? params;
-  const kind = normalizeItemKind(item);
-  if (
-    !kind.includes("outputtext") &&
-    !kind.includes("assistant") &&
-    !kind.includes("agentmessage")
-  ) {
-    return null;
-  }
-
-  const fragments = [
-    asNonEmptyRawString(item.text),
-    asNonEmptyRawString(item.delta),
-    asNonEmptyRawString(item.value),
-    ...collectTextFragments(item.content),
-  ].filter((value): value is string => Boolean(value));
-
-  if (fragments.length === 0) {
-    return null;
-  }
-
-  return normalizeOptionalRawString(fragments.join("\n"));
-};
-
-const normalizeItemKind = (value: Record<string, unknown>): string =>
-  (
-    asNonEmptyString(value.type) ??
-    asNonEmptyString(value.method) ??
-    asNonEmptyString(value.kind) ??
-    ""
-  )
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "");
-
-const collectTextFragments = (value: unknown, depth = 0): string[] => {
-  if (depth > 4 || value === null || value === undefined) {
-    return [];
-  }
-  if (typeof value === "string") {
-    return value.trim() ? [value] : [];
-  }
-  if (Array.isArray(value)) {
-    return value.flatMap((entry) => collectTextFragments(entry, depth + 1));
-  }
-  const objectValue = asObject(value);
-  if (!objectValue) {
-    return [];
-  }
-  return [
-    objectValue.text,
-    objectValue.content,
-    objectValue.value,
-    objectValue.delta,
-    objectValue.summary,
-  ].flatMap((entry) => collectTextFragments(entry, depth + 1));
-};
-
-const asObject = (value: unknown): Record<string, unknown> | null =>
-  value && typeof value === "object" && !Array.isArray(value)
-    ? (value as Record<string, unknown>)
-    : null;
 
 const asNonEmptyString = (value: unknown): string | null =>
   typeof value === "string" && value.trim().length > 0 ? value.trim() : null;

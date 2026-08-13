@@ -13,6 +13,7 @@ import type {
 import {
   normalizeCodexAgentToolsToolNameForEvent,
 } from "../agent-tools-mcp/codex-agent-tools-mcp-materializer.js";
+import { isAgentSegmentType, type AgentSegmentType } from "../../../domain/agent-segment.js";
 
 const asObject = (value: unknown): Record<string, unknown> =>
   value && typeof value === "object" && !Array.isArray(value)
@@ -25,9 +26,9 @@ const asString = (value: unknown): string | null =>
 const normalizeSegmentTypeToken = (value: string): string =>
   value.toLowerCase().replace(/[^a-z0-9]+/g, "");
 
-const asSegmentType = (value: string | null): string => {
+const asSegmentType = (value: string | null): AgentSegmentType | null => {
   if (!value) {
-    return "text";
+    return null;
   }
   const family = resolveCodexToolItemFamily(value);
   if (family === "dynamic_tool_call" || family === "mcp_tool_call" || family === "web_search") {
@@ -58,7 +59,7 @@ const asSegmentType = (value: string | null): string => {
   if (token === "media" || token === "image" || token === "audio" || token === "video") {
     return "media";
   }
-  return "text";
+  return isAgentSegmentType(value) ? value : null;
 };
 
 export class CodexItemEventPayloadParser {
@@ -68,7 +69,7 @@ export class CodexItemEventPayloadParser {
     this.fileChangePayloadHelper,
   );
 
-  public resolveSegmentType(payload: Record<string, unknown>): string {
+  public resolveSegmentType(payload: Record<string, unknown>): AgentSegmentType | null {
     const explicitType = asString(payload.segment_type);
     if (explicitType) {
       return asSegmentType(explicitType);
@@ -90,10 +91,13 @@ export class CodexItemEventPayloadParser {
       return "edit_file";
     }
 
-    return "text";
+    return null;
   }
 
-  public resolveSegmentStartId(payload: Record<string, unknown>, segmentType: string): string {
+  public resolveSegmentStartId(
+    payload: Record<string, unknown>,
+    segmentType: AgentSegmentType | null,
+  ): string {
     const invocationAware =
       segmentType === "tool_call" || segmentType === "run_bash" || segmentType === "edit_file";
     return invocationAware

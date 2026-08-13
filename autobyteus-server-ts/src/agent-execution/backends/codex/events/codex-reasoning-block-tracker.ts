@@ -9,6 +9,11 @@ export type CodexReasoningBlockInput = {
 
 export type CodexReasoningLifecycleAction =
   | {
+      kind: "start";
+      segmentId: string;
+      turnId: string | null;
+    }
+  | {
       kind: "content";
       segmentId: string;
       turnId: string | null;
@@ -59,9 +64,14 @@ export class CodexReasoningBlockTracker {
       turnId: input.turnId,
       delta,
     };
+    const start: CodexReasoningLifecycleAction = {
+      kind: "start",
+      segmentId: block.segmentId,
+      turnId: input.turnId,
+    };
     const actions: CodexReasoningLifecycleAction[] = input.turnId
-      ? [content]
-      : [content, { kind: "end", segmentId: block.segmentId, turnId: null }];
+      ? [...(!activeBlock ? [start] : []), content]
+      : [start, content, { kind: "end", segmentId: block.segmentId, turnId: null }];
     debugCodexThreadEvent("Resolved reasoning block lifecycle actions", {
       segmentId: block.segmentId,
       turnId: input.turnId,

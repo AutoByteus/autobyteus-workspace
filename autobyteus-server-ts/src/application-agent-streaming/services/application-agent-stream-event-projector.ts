@@ -2,6 +2,7 @@ import type { ApplicationAgentStreamEvent } from "@autobyteus/application-sdk-co
 import { AgentRunEventType, type AgentRunEvent } from "../../agent-execution/domain/agent-run-event.js";
 import { APPLICATION_AGENT_EVENT_TEXT_LIMIT } from "../domain/application-agent-streaming-models.js";
 import type { TeamAgentEvent } from "../../agent-team-execution/domain/team-agent-event.js";
+import { resolveAgentRunErrorEvidence } from "../../agent-execution/domain/agent-run-error-evidence.js";
 
 export class ApplicationAgentStreamProjectionError extends Error {}
 
@@ -17,7 +18,9 @@ export class ApplicationAgentStreamEventProjector {
       case AgentRunEventType.TURN_INTERRUPTED:
         return { type: "TURN_INTERRUPTED" };
       case AgentRunEventType.ERROR:
-        return { type: "ERROR", message: "The agent response failed." };
+        return this.isDiagnostic(resolveAgentRunErrorEvidence(event)?.kind)
+          ? null
+          : { type: "ERROR", message: "The agent response failed." };
       default:
         return null;
     }
@@ -31,7 +34,9 @@ export class ApplicationAgentStreamEventProjector {
         : null;
       case "TURN_COMPLETED": return { type: "TURN_COMPLETED" };
       case "TURN_INTERRUPTED": return { type: "TURN_INTERRUPTED" };
-      case "ERROR": return { type: "ERROR", message: "The agent response failed." };
+      case "ERROR": return event.details.errorEffect === "diagnostic"
+        ? null
+        : { type: "ERROR", message: "The agent response failed." };
       default: return null;
     }
   }
@@ -43,5 +48,9 @@ export class ApplicationAgentStreamEventProjector {
       throw new ApplicationAgentStreamProjectionError("Invalid text delta.");
     }
     return delta.length > 0 ? { type: "TEXT_DELTA", delta } : null;
+  }
+
+  private isDiagnostic(kind: string | undefined): boolean {
+    return kind === "TURN_DIAGNOSTIC" || kind === "RUNTIME_DIAGNOSTIC";
   }
 }

@@ -11,6 +11,7 @@ import { isCodexAgentToolsSendMessageToolName, normalizeCodexAgentToolsToolNameF
 import { serializeCodexItemEventPayload } from "../agent-tools-mcp/codex-agent-tools-mcp-event-payload.js";
 import { createTerminalToolExecutionEvent } from "./codex-terminal-tool-execution-event.js";
 import type { CodexToolLifecyclePlacement } from "./codex-ordered-tool-boundary-tracker.js";
+import type { AgentSegmentType } from "../../../domain/agent-segment.js";
 
 export type CodexItemEventConverterContext = CodexItemCompactionEventConverterContext & {
   createEvent: (
@@ -38,8 +39,8 @@ export type CodexItemEventConverterContext = CodexItemCompactionEventConverterCo
   resolveWebSearchResult: (payload: JsonObject) => unknown;
   resolveWebSearchError: (payload: JsonObject) => string;
   resolveTurnId: (payload: JsonObject) => string | null;
-  resolveSegmentStartId: (payload: JsonObject, segmentType: string) => string;
-  resolveSegmentType: (payload: JsonObject) => string;
+  resolveSegmentStartId: (payload: JsonObject, segmentType: AgentSegmentType | null) => string;
+  resolveSegmentType: (payload: JsonObject) => AgentSegmentType | null;
   resolveSegmentMetadata: (payload: JsonObject) => Record<string, unknown> | undefined;
   resolveSegmentId: (payload: JsonObject, fallback?: string) => string;
   resolveInvocationId: (payload: JsonObject) => string | null;
@@ -262,8 +263,19 @@ export const convertCodexItemEvent = (
           return [];
         }
         const reasoningEnds = applyToolLifecyclePlacement(context, codexEventName, payload);
+        const metadata = context.resolveSegmentMetadata(payload) ?? {};
         return [
           ...reasoningEnds,
+          context.createEvent(codexEventName, AgentRunEventType.SEGMENT_START, {
+            id: context.resolveSegmentStartId(payload, "run_bash"),
+            turn_id: context.resolveTurnId(payload),
+            segment_type: "run_bash",
+            metadata: {
+              ...(toolName ? { tool_name: toolName } : {}),
+              ...(commandValue ? { command: commandValue } : {}),
+              ...metadata,
+            },
+          }),
           context.createEvent(codexEventName, AgentRunEventType.TOOL_EXECUTION_STARTED, {
             ...serializeCodexItemEventPayload(payload),
             ...(invocationId ? { invocation_id: invocationId } : {}),
@@ -351,6 +363,7 @@ export const convertCodexItemEvent = (
         return [
           ...reasoningEnds,
           createTerminalToolExecutionEvent(context, codexEventName, payload, "run_bash"),
+          createSegmentEndEvent(context, codexEventName, payload),
         ];
       }
       if (itemFamily === "file_change") {

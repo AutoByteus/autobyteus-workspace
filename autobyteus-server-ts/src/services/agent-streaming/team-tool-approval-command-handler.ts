@@ -48,6 +48,9 @@ export const handleTeamToolApprovalCommand = async (input: {
         code: TEAM_COMMAND_INVALID_TARGET_CODE,
         message: TEAM_COMMAND_INVALID_TARGET_MESSAGE,
         agent_execution: null,
+        error_scope: null,
+        error_effect: null,
+        turn_id: null,
       },
     }));
     return;

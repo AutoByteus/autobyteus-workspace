@@ -7,6 +7,8 @@ import {
 import type { TeamAgentEvent, TeamTokenUsageDetails } from "../domain/team-agent-event.js";
 import { createTeamAgentStatusDetails } from "../domain/team-agent-status.js";
 import type { TeamExecutionAddress } from "../domain/team-execution-address.js";
+import { isAgentSegmentType } from "../../agent-execution/domain/agent-segment.js";
+import { resolveAgentRunErrorEvidence } from "../../agent-execution/domain/agent-run-error-evidence.js";
 
 export type TeamAgentEventAdaptationResult =
   | Readonly<{ kind: "publish"; event: TeamAgentEvent }>
@@ -36,6 +38,35 @@ const required = (value: unknown, field: string): string => {
   const result = text(value);
   if (!result) throw new Error(`${field} is required`);
   return result;
+};
+const exactKeys = (payload: Record<string, unknown>, allowed: readonly string[]): void => {
+  if (Object.keys(payload).some((key) => !allowed.includes(key))) {
+    throw new Error("segment payload contains unsupported fields");
+  }
+};
+const optionalBoolean = (payload: Record<string, unknown>, key: string): void => {
+  if (Object.prototype.hasOwnProperty.call(payload, key) && typeof payload[key] !== "boolean") {
+    throw new Error(`${key} is invalid`);
+  }
+};
+const optionalString = (payload: Record<string, unknown>, key: string): void => {
+  if (Object.prototype.hasOwnProperty.call(payload, key) && typeof payload[key] !== "string") {
+    throw new Error(`${key} is invalid`);
+  }
+};
+const segmentType = (value: unknown) => {
+  if (!isAgentSegmentType(value)) throw new Error("segment_type is invalid");
+  return value;
+};
+const errorEvidence = (event: AgentRunEvent) => {
+  const evidence = resolveAgentRunErrorEvidence(event);
+  switch (evidence?.kind) {
+    case "TURN_DIAGNOSTIC": return { errorScope: "turn" as const, errorEffect: "diagnostic" as const, turnId: evidence.turnId };
+    case "RUNTIME_DIAGNOSTIC": return { errorScope: "runtime" as const, errorEffect: "diagnostic" as const, turnId: null };
+    case "TURN_TERMINAL": return { errorScope: "turn" as const, errorEffect: "terminal" as const, turnId: evidence.turnId };
+    case "RUNTIME_GLOBAL": return { errorScope: "runtime" as const, errorEffect: "terminal" as const, turnId: null };
+    default: return { errorScope: null, errorEffect: null, turnId: null };
+  }
 };
 const statusHint = (event: AgentRunEvent): AgentRunStatusHint => event.statusHint ?? null;
 const correlated = <T extends TeamAgentEvent>(event: T): Readonly<{ kind: "publish"; event: T }> =>
@@ -134,12 +165,23 @@ export class TeamAgentEventAdapter {
         return correlated({ eventType: "TURN_COMPLETED", details: { turnId: text(raw(p, "turn_id", "turnId")), reason: text(p.reason) }, statusHint: hint });
       case AgentRunEventType.TURN_INTERRUPTED:
         return correlated({ eventType: "TURN_INTERRUPTED", details: { turnId: text(raw(p, "turn_id", "turnId")), reason: text(p.reason) }, statusHint: hint });
-      case AgentRunEventType.SEGMENT_START:
-        return correlated({ eventType: "SEGMENT_START", details: { segmentId: required(p.id, "id"), turnId: text(raw(p, "turn_id", "turnId")), segmentType: required(raw(p, "segment_type", "segmentType"), "segment_type"), metadata: json(p.metadata) }, statusHint: hint });
-      case AgentRunEventType.SEGMENT_CONTENT:
-        return correlated({ eventType: "SEGMENT_CONTENT", details: { segmentId: required(p.id, "id"), turnId: text(raw(p, "turn_id", "turnId")), segmentType: required(raw(p, "segment_type", "segmentType"), "segment_type"), delta: stringValue(p.delta) }, statusHint: hint });
-      case AgentRunEventType.SEGMENT_END:
-        return correlated({ eventType: "SEGMENT_END", details: { segmentId: required(p.id, "id"), turnId: text(raw(p, "turn_id", "turnId")), metadata: json(p.metadata), interrupted: boolean(p.interrupted) ?? false, reason: text(p.reason), failed: boolean(p.failed) ?? false, error: text(p.error) }, statusHint: hint });
+      case AgentRunEventType.SEGMENT_START: {
+        exactKeys(p, ["id", "turn_id", "segment_type", "metadata"]);
+        return correlated({ eventType: "SEGMENT_START", details: { segmentId: required(p.id, "id"), turnId: required(p.turn_id, "turn_id"), segmentType: segmentType(p.segment_type), metadata: json(p.metadata) }, statusHint: hint });
+      }
+      case AgentRunEventType.SEGMENT_CONTENT: {
+        exactKeys(p, ["id", "turn_id", "segment_type", "delta"]);
+        if (typeof p.delta !== "string") throw new Error("delta is invalid");
+        return correlated({ eventType: "SEGMENT_CONTENT", details: { segmentId: required(p.id, "id"), turnId: required(p.turn_id, "turn_id"), segmentType: segmentType(p.segment_type), delta: stringValue(p.delta) }, statusHint: hint });
+      }
+      case AgentRunEventType.SEGMENT_END: {
+        exactKeys(p, ["id", "turn_id", "metadata", "interrupted", "reason", "failed", "error"]);
+        optionalBoolean(p, "interrupted");
+        optionalString(p, "reason");
+        optionalBoolean(p, "failed");
+        optionalString(p, "error");
+        return correlated({ eventType: "SEGMENT_END", details: { segmentId: required(p.id, "id"), turnId: required(p.turn_id, "turn_id"), metadata: json(p.metadata), interrupted: boolean(p.interrupted) ?? false, reason: text(p.reason), failed: boolean(p.failed) ?? false, error: text(p.error) }, statusHint: hint });
+      }
       case AgentRunEventType.AGENT_STATUS:
         return correlated({ eventType: "AGENT_STATUS", details: createTeamAgentStatusDetails({ status: p.status, trigger: p.trigger, toolName: raw(p, "tool_name", "toolName"), errorMessage: raw(p, "error_message", "errorMessage"), errorDetails: raw(p, "error_details", "errorDetails") }), statusHint: hint });
       case AgentRunEventType.COMPACTION_STATUS:
@@ -193,7 +235,7 @@ export class TeamAgentEventAdapter {
       case AgentRunEventType.FILE_CHANGE:
         return correlated({ eventType: "FILE_CHANGE", details: { fileChangeId: required(raw(p, "file_change_id", "fileChangeId"), "file_change_id"), path: required(p.path, "path"), fileType: required(raw(p, "file_type", "fileType"), "file_type"), status: required(p.status, "status"), sourceTool: required(raw(p, "source_tool", "sourceTool"), "source_tool"), sourceInvocationId: text(raw(p, "source_invocation_id", "sourceInvocationId")), content: typeof p.content === "string" ? p.content : null, createdAt: required(raw(p, "created_at", "createdAt"), "created_at"), updatedAt: required(raw(p, "updated_at", "updatedAt"), "updated_at") }, statusHint: hint });
       case AgentRunEventType.ERROR:
-        return correlated({ eventType: "ERROR", details: { code: required(p.code, "code"), message: stringValue(p.message) }, statusHint: hint });
+        return correlated({ eventType: "ERROR", details: { code: required(p.code, "code"), message: stringValue(p.message), ...errorEvidence(event) }, statusHint: hint });
       case AgentRunEventType.INTER_AGENT_MESSAGE:
       case AgentRunEventType.TEAM_COMMUNICATION_MESSAGE:
         return Object.freeze({ kind: "filtered_collaboration_duplicate" });

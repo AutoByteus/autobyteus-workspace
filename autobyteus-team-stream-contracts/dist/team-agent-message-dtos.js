@@ -2,6 +2,16 @@ import { z } from "zod";
 import { jsonValueSchema, nonEmptyStringSchema, nullableFiniteNumberSchema, nullableNonEmptyStringSchema, } from "./schema-helpers.js";
 import { teamAgentExecutionBindingDtoSchema, teamExecutionAddressDtoSchema } from "./team-execution-address-dto.js";
 const turnId = nullableNonEmptyStringSchema;
+export const teamAgentSegmentTypeSchema = z.enum([
+    "text",
+    "tool_call",
+    "write_file",
+    "edit_file",
+    "run_bash",
+    "reasoning",
+    "media",
+]);
+const segmentTurnId = nonEmptyStringSchema;
 const withExecution = (shape) => z.object({
     agent_execution: teamAgentExecutionBindingDtoSchema,
     ...shape,
@@ -100,9 +110,9 @@ export const teamAgentPayloadSchemas = {
     TURN_STARTED: withExecution({ turn_id: turnId }),
     TURN_COMPLETED: withExecution({ turn_id: turnId, reason: nullableNonEmptyStringSchema }),
     TURN_INTERRUPTED: withExecution({ turn_id: turnId, reason: nullableNonEmptyStringSchema }),
-    SEGMENT_START: withExecution({ segment_id: nonEmptyStringSchema, turn_id: turnId, segment_type: nonEmptyStringSchema, metadata: jsonValueSchema.nullable() }),
-    SEGMENT_CONTENT: withExecution({ segment_id: nonEmptyStringSchema, turn_id: turnId, segment_type: nonEmptyStringSchema, delta: z.string() }),
-    SEGMENT_END: withExecution({ segment_id: nonEmptyStringSchema, turn_id: turnId, metadata: jsonValueSchema.nullable(), interrupted: z.boolean(), reason: nullableNonEmptyStringSchema, failed: z.boolean(), error: nullableNonEmptyStringSchema }),
+    SEGMENT_START: withExecution({ segment_id: nonEmptyStringSchema, turn_id: segmentTurnId, segment_type: teamAgentSegmentTypeSchema, metadata: jsonValueSchema.nullable() }),
+    SEGMENT_CONTENT: withExecution({ segment_id: nonEmptyStringSchema, turn_id: segmentTurnId, segment_type: teamAgentSegmentTypeSchema, delta: z.string() }),
+    SEGMENT_END: withExecution({ segment_id: nonEmptyStringSchema, turn_id: segmentTurnId, metadata: jsonValueSchema.nullable(), interrupted: z.boolean(), reason: nullableNonEmptyStringSchema, failed: z.boolean(), error: nullableNonEmptyStringSchema }),
     AGENT_STATUS: withExecution(statusDetails),
     COMPACTION_STATUS: withExecution(compactionDetails),
     TOKEN_USAGE_UPDATED: withExecution(tokenUsageDetails),
@@ -121,9 +131,21 @@ export const teamAgentPayloadSchemas = {
     FILE_CHANGE: withExecution({ file_change_id: nonEmptyStringSchema, path: nonEmptyStringSchema, file_type: nonEmptyStringSchema, status: nonEmptyStringSchema, source_tool: nonEmptyStringSchema, source_invocation_id: nullableNonEmptyStringSchema, content: z.string().nullable(), created_at: nonEmptyStringSchema, updated_at: nonEmptyStringSchema }),
 };
 export const teamAgentErrorPayloadSchema = z.union([
-    z.object({ code: nonEmptyStringSchema, message: z.string(), agent_execution: teamAgentExecutionBindingDtoSchema }).strict(),
-    z.object({ code: nonEmptyStringSchema, message: z.string(), agent_execution: z.null() }).strict(),
-]);
+    z.object({ code: nonEmptyStringSchema, message: z.string(), agent_execution: teamAgentExecutionBindingDtoSchema, error_scope: z.enum(["turn", "runtime"]).nullable(), error_effect: z.enum(["diagnostic", "terminal"]).nullable(), turn_id: nullableNonEmptyStringSchema }).strict(),
+    z.object({ code: nonEmptyStringSchema, message: z.string(), agent_execution: z.null(), error_scope: z.enum(["turn", "runtime"]).nullable(), error_effect: z.enum(["diagnostic", "terminal"]).nullable(), turn_id: nullableNonEmptyStringSchema }).strict(),
+]).superRefine((payload, context) => {
+    const evidenceIsAbsent = payload.error_scope === null && payload.error_effect === null;
+    const evidenceIsComplete = payload.error_scope !== null && payload.error_effect !== null;
+    const turnIsConsistent = payload.error_scope === "turn"
+        ? payload.turn_id !== null
+        : payload.turn_id === null;
+    if ((!evidenceIsAbsent && !evidenceIsComplete) || !turnIsConsistent) {
+        context.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "ERROR evidence must be complete and carry a turn only for turn scope.",
+        });
+    }
+});
 export const teamInterruptCommandAckPayloadSchema = z.union([
     z.object({ command_type: z.literal("INTERRUPT_GENERATION"), command_id: nonEmptyStringSchema, state: z.literal("accepted"), execution_address: teamExecutionAddressDtoSchema }).strict(),
     z.object({ command_type: z.literal("INTERRUPT_GENERATION"), command_id: nonEmptyStringSchema, state: z.enum(["rejected", "failed"]), code: nonEmptyStringSchema, message: z.string(), execution_address: teamExecutionAddressDtoSchema }).strict(),

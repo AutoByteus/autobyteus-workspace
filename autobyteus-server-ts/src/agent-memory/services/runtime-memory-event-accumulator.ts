@@ -8,7 +8,6 @@ import {
   asString,
   extractAcceptedMessageMedia,
   extractContentDelta,
-  extractSegmentId,
   extractTimestamp,
   extractTurnId,
 } from "./runtime-memory-event-payload.js";
@@ -25,8 +24,6 @@ type SegmentState = {
 
 export class RuntimeMemoryEventAccumulator {
   private activeTurnId: string | null = null;
-  private fallbackTurnIndex = 0;
-  private currentFallbackTurnId: string | null = null;
   private readonly segments = new Map<string, SegmentState>();
   private readonly providerCompactionBoundaryRecorder: ProviderCompactionBoundaryRecorder;
   private readonly toolTraceSequencer: RuntimeToolTraceSequencer;
@@ -46,12 +43,13 @@ export class RuntimeMemoryEventAccumulator {
     });
     this.providerCompactionBoundaryRecorder = new ProviderCompactionBoundaryRecorder({
       writer: input.writer,
-      resolveTurnId: (candidate) => this.resolveTurnId(candidate),
+      resolveTurnId: (candidate) => this.requireTurnId(candidate),
     });
   }
 
   recordAcceptedUserMessage(payload: AgentRunUserMessageAcceptedPayload): void {
-    const turnId = this.resolveTurnId(payload.result.turnId);
+    const turnId = asString(payload.result.turnId);
+    if (!turnId) return;
     const media = extractAcceptedMessageMedia(payload.message);
     this.input.writer.appendRawTrace({
       traceType: "user",
@@ -66,7 +64,7 @@ export class RuntimeMemoryEventAccumulator {
   recordRunEvent(event: AgentRunEvent): void {
     switch (event.eventType) {
       case AgentRunEventType.TURN_STARTED:
-        this.activeTurnId = this.resolveTurnId(extractTurnId(event.payload));
+        this.activeTurnId = extractTurnId(event.payload);
         return;
       case AgentRunEventType.SEGMENT_START:
         this.startSegment(event);
@@ -106,12 +104,14 @@ export class RuntimeMemoryEventAccumulator {
   }
 
   private startSegment(event: AgentRunEvent): void {
-    const turnId = this.resolveTurnId(extractTurnId(event.payload));
-    const type = this.resolveSegmentType(event.payload);
+    const turnId = asString(event.payload.turn_id);
+    const type = asString(event.payload.segment_type);
     if (type !== "text" && type !== "reasoning") return;
-    const id = this.resolveSegmentId(event.payload, type, turnId);
-    this.segments.set(id, {
-      id,
+    const id = asString(event.payload.id);
+    if (!turnId || !id) return;
+    const key = this.segmentKey(turnId, id);
+    this.segments.set(key, {
+      id: key,
       type,
       turnId,
       parts: [],
@@ -121,42 +121,32 @@ export class RuntimeMemoryEventAccumulator {
   }
 
   private appendSegmentContent(event: AgentRunEvent): void {
-    const type = this.resolveSegmentType(event.payload);
+    const type = asString(event.payload.segment_type);
     if (type !== "text" && type !== "reasoning") return;
-    const turnId = this.resolveTurnId(extractTurnId(event.payload));
-    const id = this.resolveSegmentId(event.payload, type, turnId);
-    const segment = this.segments.get(id) ?? {
-      id,
-      type,
-      turnId,
-      parts: [],
-      sourceEvent: event.eventType,
-      ts: extractTimestamp(event.payload),
-    };
-    const delta = extractContentDelta(event.payload);
+    const turnId = asString(event.payload.turn_id);
+    const id = asString(event.payload.id);
+    if (!turnId || !id) return;
+    const key = this.segmentKey(turnId, id);
+    const segment = this.segments.get(key);
+    if (!segment || segment.type !== type) return;
+    const delta = typeof event.payload.delta === "string" ? event.payload.delta : null;
     if (delta) {
       segment.parts.push(delta);
     }
     segment.sourceEvent = event.eventType;
     segment.ts = segment.ts ?? extractTimestamp(event.payload);
-    this.segments.set(id, segment);
+    this.segments.set(key, segment);
   }
 
   private endSegment(event: AgentRunEvent): void {
-    const type = this.resolveSegmentType(event.payload);
-    const turnId = this.resolveTurnId(extractTurnId(event.payload));
-    const explicitId = extractSegmentId(event.payload);
-    if (explicitId) {
-      this.flushSegment(explicitId, event.eventType);
-      return;
-    }
-    if (type === "text" || type === "reasoning") {
-      this.flushSegment(this.resolveSegmentId(event.payload, type, turnId), event.eventType);
-    }
+    const turnId = asString(event.payload.turn_id);
+    const id = asString(event.payload.id);
+    if (turnId && id) this.flushSegment(this.segmentKey(turnId, id), event.eventType);
   }
 
   private completeTurn(event: AgentRunEvent): void {
-    const turnId = this.resolveTurnId(extractTurnId(event.payload));
+    const turnId = extractTurnId(event.payload);
+    if (!turnId) return;
     for (const segment of [...this.segments.values()]) {
       if (segment.turnId === turnId) {
         this.flushSegment(segment.id, event.eventType);
@@ -164,11 +154,10 @@ export class RuntimeMemoryEventAccumulator {
     }
     this.toolTraceSequencer.completeTurn(turnId);
     if (this.activeTurnId === turnId) this.activeTurnId = null;
-    if (this.currentFallbackTurnId === turnId) this.currentFallbackTurnId = null;
   }
 
   private interruptTurn(event: AgentRunEvent): void {
-    const turnId = extractTurnId(event.payload) ?? this.activeTurnId;
+    const turnId = extractTurnId(event.payload);
     if (!turnId) {
       console.warn("[RuntimeMemoryEventAccumulator] skipped TURN_INTERRUPTED without a turn identity.");
       return;
@@ -182,7 +171,8 @@ export class RuntimeMemoryEventAccumulator {
     if (!content) {
       return;
     }
-    const turnId = this.resolveTurnId(extractTurnId(event.payload));
+    const turnId = extractTurnId(event.payload);
+    if (!turnId) return;
     this.writeAssistantTrace(turnId, content, event.eventType, extractTimestamp(event.payload));
   }
 
@@ -244,27 +234,7 @@ export class RuntimeMemoryEventAccumulator {
     if (outcome.resolvedTurnId) this.activeTurnId = outcome.resolvedTurnId;
   }
 
-  private resolveSegmentId(
-    payload: Record<string, unknown>,
-    type: "text" | "reasoning",
-    turnId: string,
-  ): string {
-    return extractSegmentId(payload) ?? `${turnId}:${type}`;
-  }
-
-  private resolveSegmentType(payload: Record<string, unknown>): string | null {
-    const explicit = asString(payload["segment_type"]);
-    if (explicit === "reasoning") {
-      return "reasoning";
-    }
-    if (explicit === "text" || explicit === "assistant") {
-      return "text";
-    }
-    const id = extractSegmentId(payload);
-    return id ? this.segments.get(id)?.type ?? "text" : "text";
-  }
-
-  private resolveTurnId(candidate: unknown): string {
+  private requireTurnId(candidate: unknown): string {
     const explicit = asString(candidate);
     if (explicit) {
       this.activeTurnId = explicit;
@@ -273,11 +243,11 @@ export class RuntimeMemoryEventAccumulator {
     if (this.activeTurnId) {
       return this.activeTurnId;
     }
-    if (!this.currentFallbackTurnId) {
-      this.currentFallbackTurnId = `fallback-turn-${++this.fallbackTurnIndex}`;
-    }
-    this.activeTurnId = this.currentFallbackTurnId;
-    return this.currentFallbackTurnId;
+    throw new Error("Runtime memory event is missing an exact turn identity.");
+  }
+
+  private segmentKey(turnId: string, segmentId: string): string {
+    return JSON.stringify([turnId, segmentId]);
   }
 
 }

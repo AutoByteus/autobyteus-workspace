@@ -6,6 +6,7 @@
  */
 
 import type { AgentCommandAckPayload } from './agentCommandTypes';
+import type { JsonValue } from '@autobyteus/team-stream-contracts';
 export type {
   AgentCommandAckPayload,
   InterruptCommandTarget,
@@ -77,22 +78,22 @@ export interface ConnectedPayload {
 
 export interface SegmentStartPayload {
   id: string;
-  turn_id: string | null;
+  turn_id: string;
   segment_type: SegmentType;
-  metadata?: Record<string, any>;
+  metadata?: JsonValue;
 }
 
 export interface SegmentContentPayload {
   id: string;
-  turn_id: string | null;
+  turn_id: string;
   delta: string;
-  segment_type?: SegmentType;
+  segment_type: SegmentType;
 }
 
 export interface SegmentEndPayload {
   id: string;
-  turn_id: string | null;
-  metadata?: Record<string, any>;
+  turn_id: string;
+  metadata?: JsonValue;
   interrupted?: boolean;
   reason?: string | null;
   failed?: boolean;
@@ -241,6 +242,9 @@ export interface FileChangePayload {
 export interface ErrorPayload {
   code: string;
   message: string;
+  error_scope: 'turn' | 'runtime' | null;
+  error_effect: 'diagnostic' | 'terminal' | null;
+  turn_id: string | null;
 }
 
 

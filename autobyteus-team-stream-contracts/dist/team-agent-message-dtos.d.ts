@@ -1,4 +1,13 @@
 import { z } from "zod";
+export declare const teamAgentSegmentTypeSchema: z.ZodEnum<{
+    text: "text";
+    tool_call: "tool_call";
+    write_file: "write_file";
+    edit_file: "edit_file";
+    run_bash: "run_bash";
+    reasoning: "reasoning";
+    media: "media";
+}>;
 export declare const teamAgentPayloadSchemas: {
     readonly TURN_STARTED: z.ZodObject<{
         agent_execution: z.ZodUnion<readonly [z.ZodObject<{
@@ -117,8 +126,16 @@ export declare const teamAgentPayloadSchemas: {
             agent_run_id: z.ZodString;
         }, z.core.$strict>]>;
         segment_id: z.ZodString;
-        turn_id: z.ZodNullable<z.ZodString>;
-        segment_type: z.ZodString;
+        turn_id: z.ZodString;
+        segment_type: z.ZodEnum<{
+            text: "text";
+            tool_call: "tool_call";
+            write_file: "write_file";
+            edit_file: "edit_file";
+            run_bash: "run_bash";
+            reasoning: "reasoning";
+            media: "media";
+        }>;
         metadata: z.ZodNullable<z.ZodType<import("./schema-helpers.js").JsonValue, unknown, z.core.$ZodTypeInternals<import("./schema-helpers.js").JsonValue, unknown>>>;
     }, z.core.$strict>;
     readonly SEGMENT_CONTENT: z.ZodObject<{
@@ -149,8 +166,16 @@ export declare const teamAgentPayloadSchemas: {
             agent_run_id: z.ZodString;
         }, z.core.$strict>]>;
         segment_id: z.ZodString;
-        turn_id: z.ZodNullable<z.ZodString>;
-        segment_type: z.ZodString;
+        turn_id: z.ZodString;
+        segment_type: z.ZodEnum<{
+            text: "text";
+            tool_call: "tool_call";
+            write_file: "write_file";
+            edit_file: "edit_file";
+            run_bash: "run_bash";
+            reasoning: "reasoning";
+            media: "media";
+        }>;
         delta: z.ZodString;
     }, z.core.$strict>;
     readonly SEGMENT_END: z.ZodObject<{
@@ -181,7 +206,7 @@ export declare const teamAgentPayloadSchemas: {
             agent_run_id: z.ZodString;
         }, z.core.$strict>]>;
         segment_id: z.ZodString;
-        turn_id: z.ZodNullable<z.ZodString>;
+        turn_id: z.ZodString;
         metadata: z.ZodNullable<z.ZodType<import("./schema-helpers.js").JsonValue, unknown, z.core.$ZodTypeInternals<import("./schema-helpers.js").JsonValue, unknown>>>;
         interrupted: z.ZodBoolean;
         reason: z.ZodNullable<z.ZodString>;
@@ -852,10 +877,28 @@ export declare const teamAgentErrorPayloadSchema: z.ZodUnion<readonly [z.ZodObje
         }, z.core.$strict>;
         agent_run_id: z.ZodString;
     }, z.core.$strict>]>;
+    error_scope: z.ZodNullable<z.ZodEnum<{
+        turn: "turn";
+        runtime: "runtime";
+    }>>;
+    error_effect: z.ZodNullable<z.ZodEnum<{
+        diagnostic: "diagnostic";
+        terminal: "terminal";
+    }>>;
+    turn_id: z.ZodNullable<z.ZodString>;
 }, z.core.$strict>, z.ZodObject<{
     code: z.ZodString;
     message: z.ZodString;
     agent_execution: z.ZodNull;
+    error_scope: z.ZodNullable<z.ZodEnum<{
+        turn: "turn";
+        runtime: "runtime";
+    }>>;
+    error_effect: z.ZodNullable<z.ZodEnum<{
+        diagnostic: "diagnostic";
+        terminal: "terminal";
+    }>>;
+    turn_id: z.ZodNullable<z.ZodString>;
 }, z.core.$strict>]>;
 export declare const teamInterruptCommandAckPayloadSchema: z.ZodUnion<readonly [z.ZodObject<{
     command_type: z.ZodLiteral<"INTERRUPT_GENERATION">;

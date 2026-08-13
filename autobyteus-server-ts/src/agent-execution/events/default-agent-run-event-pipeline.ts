@@ -1,6 +1,7 @@
 import { AgentRunEventPipeline } from "./agent-run-event-pipeline.js";
 import { FileChangeEventProcessor } from "./processors/file-change/file-change-event-processor.js";
 import { LifecycleStatusEventTransformer } from "./processors/lifecycle-status/lifecycle-status-event-transformer.js";
+import { AgentSegmentLifecycleEventTransformer } from "./processors/segment-lifecycle/agent-segment-lifecycle-event-transformer.js";
 import { TeamCommunicationMessageProcessor } from "./processors/team-communication/team-communication-message-event-processor.js";
 import { TokenUsageEventEnrichmentTransformer } from "./processors/token-usage/token-usage-event-enrichment-transformer.js";
 import { TokenUsageEventPersistenceProcessor } from "./processors/token-usage/token-usage-event-persistence-processor.js";
@@ -25,6 +26,7 @@ export const getDefaultAgentRunEventPipeline = (): AgentRunEventPipeline => {
         ? [cachedTokenUsagePersistenceProcessor]
         : []),
     ], [
+      new AgentSegmentLifecycleEventTransformer(),
       ...(cachedTokenUsageEnrichmentTransformer
         ? [cachedTokenUsageEnrichmentTransformer]
         : []),

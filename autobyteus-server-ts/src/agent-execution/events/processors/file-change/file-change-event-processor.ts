@@ -20,7 +20,9 @@ import {
   extractSegmentType,
   extractToolArguments,
   extractToolName,
+  extractTurnId,
 } from "./file-change-event-payload-accessors.js";
+import { resolveAgentRunErrorEvidence } from "../../../domain/agent-run-error-evidence.js";
 import {
   extractExplicitGeneratedOutputPath,
   extractGeneratedOutputPathForKnownTool,
@@ -59,6 +61,10 @@ export class FileChangeEventProcessor implements AgentRunEventProcessor {
     return derivedEvents;
   }
 
+  releaseRun(runId: string): void {
+    this.invocationContexts.clearRun(runId);
+  }
+
   private buildFileChangePayload(
     input: AgentRunEventProcessorInput,
     event: AgentRunEvent,
@@ -76,7 +82,26 @@ export class FileChangeEventProcessor implements AgentRunEventProcessor {
         return this.handleToolExecutionSucceeded(input, event.payload);
       case AgentRunEventType.TOOL_EXECUTION_FAILED:
       case AgentRunEventType.TOOL_DENIED:
+      case AgentRunEventType.TOOL_EXECUTION_INTERRUPTED:
         return this.handleToolExecutionFailure(input, event.payload);
+      case AgentRunEventType.TURN_COMPLETED:
+      case AgentRunEventType.TURN_INTERRUPTED:
+        this.invocationContexts.clearTurn(input.runContext.runId, extractTurnId(event.payload));
+        return null;
+      case AgentRunEventType.ERROR: {
+        const evidence = resolveAgentRunErrorEvidence(event);
+        if (evidence?.kind === "TURN_TERMINAL") {
+          this.invocationContexts.clearTurn(input.runContext.runId, evidence.turnId);
+        } else if (evidence?.kind === "RUNTIME_GLOBAL") {
+          this.invocationContexts.clearRun(input.runContext.runId);
+        }
+        return null;
+      }
+      case AgentRunEventType.AGENT_STATUS:
+        if (event.payload.status === "offline" || event.payload.status === "error") {
+          this.invocationContexts.clearRun(input.runContext.runId);
+        }
+        return null;
       default:
         return null;
     }
@@ -86,7 +111,7 @@ export class FileChangeEventProcessor implements AgentRunEventProcessor {
     input: AgentRunEventProcessorInput,
     payload: Record<string, unknown>,
   ): AgentRunFileChangePayload | null {
-    const sourceTool = normalizeFileMutationTool(extractSegmentType(payload) ?? extractToolName(payload));
+    const sourceTool = normalizeFileMutationTool(extractSegmentType(payload));
     if (!sourceTool) {
       return null;
     }
@@ -94,8 +119,10 @@ export class FileChangeEventProcessor implements AgentRunEventProcessor {
     const invocationId = extractInvocationId(payload);
     const targetPath = extractMutationTargetPath(payload);
     if (invocationId) {
-      this.invocationContexts.record(input.runContext.runId, invocationId, {
-        toolName: extractToolName(payload) ?? extractSegmentType(payload),
+      this.invocationContexts.insert(input.runContext.runId, invocationId, {
+        turnId: extractTurnId(payload),
+        segmentId: invocationId,
+        toolName: sourceTool,
         arguments: extractToolArguments(payload),
         sourceTool,
         targetPath,
@@ -122,8 +149,7 @@ export class FileChangeEventProcessor implements AgentRunEventProcessor {
     input: AgentRunEventProcessorInput,
     payload: Record<string, unknown>,
   ): AgentRunFileChangePayload | null {
-    const sourceTool = normalizeFileMutationTool(extractSegmentType(payload) ?? extractToolName(payload));
-    if (sourceTool !== "write_file") {
+    if (extractSegmentType(payload) !== "write_file") {
       return null;
     }
 
@@ -134,7 +160,12 @@ export class FileChangeEventProcessor implements AgentRunEventProcessor {
     }
 
     const context = this.invocationContexts.find(input.runContext.runId, invocationId);
-    if (!context?.targetPath) {
+    if (
+      context?.sourceTool !== "write_file" ||
+      context.turnId !== extractTurnId(payload) ||
+      context.segmentId !== invocationId ||
+      !context.targetPath
+    ) {
       return null;
     }
 
@@ -154,18 +185,18 @@ export class FileChangeEventProcessor implements AgentRunEventProcessor {
     input: AgentRunEventProcessorInput,
     payload: Record<string, unknown>,
   ): AgentRunFileChangePayload | null {
-    const sourceTool = normalizeFileMutationTool(extractSegmentType(payload) ?? extractToolName(payload));
-    if (sourceTool !== "write_file") {
-      return null;
-    }
-
     const invocationId = extractInvocationId(payload);
     if (!invocationId) {
       return null;
     }
 
     const context = this.invocationContexts.find(input.runContext.runId, invocationId);
-    if (!context?.targetPath) {
+    if (
+      context?.sourceTool !== "write_file" ||
+      context.turnId !== extractTurnId(payload) ||
+      context.segmentId !== invocationId ||
+      !context.targetPath
+    ) {
       return null;
     }
 
@@ -197,15 +228,25 @@ export class FileChangeEventProcessor implements AgentRunEventProcessor {
       ? this.invocationContexts.find(input.runContext.runId, invocationId)
       : null;
 
-    if (invocationId) {
-      this.invocationContexts.record(input.runContext.runId, invocationId, {
+    if (invocationId && existingContext) {
+      const eventTurnId = extractTurnId(payload);
+      if (eventTurnId && existingContext.turnId === eventTurnId) {
+        existingContext.toolName = toolName ?? existingContext.toolName;
+        if (Object.keys(toolArguments).length > 0) existingContext.arguments = toolArguments;
+        existingContext.sourceTool ??=
+          sourceTool ?? (isGeneratedOutputTool(toolName) ? "generated_output" : null);
+        existingContext.targetPath ??= targetPath;
+        existingContext.generatedOutputPath ??= generatedOutputPath;
+      }
+    } else if (invocationId && isGeneratedOutputTool(toolName)) {
+      this.invocationContexts.insert(input.runContext.runId, invocationId, {
+        turnId: extractTurnId(payload),
+        segmentId: null,
         toolName,
         arguments: toolArguments,
         sourceTool: sourceTool ?? (isGeneratedOutputTool(toolName) ? "generated_output" : null),
-        targetPath: targetPath ?? existingContext?.targetPath ?? null,
+        targetPath,
         generatedOutputPath,
-        content: existingContext?.content,
-        status: existingContext?.status,
       });
     }
 

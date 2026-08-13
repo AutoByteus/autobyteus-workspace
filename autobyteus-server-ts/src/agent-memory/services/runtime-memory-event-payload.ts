@@ -27,9 +27,6 @@ const normalizeTimestampSeconds = (value: unknown): number | null => {
 export const extractTurnId = (payload: Record<string, unknown>): string | null =>
   asString(payload["turnId"]) ?? asString(payload["turn_id"]);
 
-export const extractSegmentId = (payload: Record<string, unknown>): string | null =>
-  asString(payload["id"]) ?? asString(payload["segment_id"]);
-
 export const extractContentDelta = (payload: Record<string, unknown>): string | null =>
   asContentString(payload["delta"]) ??
   asContentString(payload["content"]) ??

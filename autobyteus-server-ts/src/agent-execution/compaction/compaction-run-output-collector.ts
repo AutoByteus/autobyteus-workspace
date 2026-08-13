@@ -18,30 +18,6 @@ type Waiter = {
 const asString = (value: unknown): string | null =>
   typeof value === "string" && value.length > 0 ? value : null;
 
-const normalizeSegmentType = (value: unknown): string | null => {
-  const raw = asString(value);
-  if (!raw) {
-    return null;
-  }
-  return raw.trim().toLowerCase().replace(/[^a-z0-9]+/g, "_");
-};
-
-const extractPayloadText = (payload: Record<string, unknown>): string | null => {
-  for (const key of ["content", "text", "delta", "message"] as const) {
-    const value = asString(payload[key]);
-    if (value) {
-      return value;
-    }
-  }
-
-  const output = payload.output;
-  if (output && typeof output === "object" && !Array.isArray(output)) {
-    return extractPayloadText(output as Record<string, unknown>);
-  }
-
-  return null;
-};
-
 const extractErrorMessage = (event: AgentRunEvent): string => {
   for (const key of ["message", "error_message", "error", "code"] as const) {
     const value = asString(event.payload[key]);
@@ -96,9 +72,6 @@ export class CompactionRunOutputCollector {
       case AgentRunEventType.SEGMENT_CONTENT:
         this.captureSegmentContent(event.payload);
         break;
-      case AgentRunEventType.SEGMENT_END:
-        this.captureSegmentEnd(event.payload);
-        break;
       case AgentRunEventType.TOOL_APPROVAL_REQUESTED:
         this.fail(new Error(this.buildToolApprovalError(event.payload)));
         return;
@@ -147,7 +120,7 @@ export class CompactionRunOutputCollector {
   }
 
   private captureAssistantComplete(payload: Record<string, unknown>): void {
-    const text = extractPayloadText(payload);
+    const text = asString(payload.content);
     if (text) {
       this.assistantCompleteText = text;
     }
@@ -157,33 +130,18 @@ export class CompactionRunOutputCollector {
     if (!this.isTextSegment(payload)) {
       return;
     }
-    const id = this.resolveSegmentId(payload);
-    const text = extractPayloadText(payload);
-    if (!id || !text) {
+    const segmentId = asString(payload.id);
+    const turnId = asString(payload.turn_id);
+    const text = asString(payload.delta);
+    if (!segmentId || !turnId || !text) {
       return;
     }
+    const id = JSON.stringify([turnId, segmentId]);
     this.segmentTextById.set(id, `${this.segmentTextById.get(id) ?? ""}${text}`);
   }
 
-  private captureSegmentEnd(payload: Record<string, unknown>): void {
-    if (!this.isTextSegment(payload)) {
-      return;
-    }
-    const id = this.resolveSegmentId(payload);
-    const text = extractPayloadText(payload);
-    if (!id || !text || this.segmentTextById.has(id)) {
-      return;
-    }
-    this.segmentTextById.set(id, text);
-  }
-
   private isTextSegment(payload: Record<string, unknown>): boolean {
-    const segmentType = normalizeSegmentType(payload.segment_type ?? payload.segmentType ?? payload.type);
-    return !segmentType || segmentType === "text" || segmentType === "message" || segmentType === "agent_message";
-  }
-
-  private resolveSegmentId(payload: Record<string, unknown>): string | null {
-    return asString(payload.id) ?? asString(payload.segment_id) ?? asString(payload.segmentId);
+    return payload.segment_type === "text";
   }
 
   private buildToolApprovalError(payload: Record<string, unknown>): string {

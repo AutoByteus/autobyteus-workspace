@@ -218,25 +218,17 @@ export class ClaudeSessionEventConverter {
       case ClaudeSessionEventName.ITEM_OUTPUT_TEXT_DELTA: {
         const id = resolveSegmentId(payload);
         const delta = asString(payload.delta);
-        if (!id || !delta) {
-          return [];
-        }
         return [this.createEvent(claudeEventName, AgentRunEventType.SEGMENT_CONTENT, {
           ...serializePayload(payload),
           id,
           delta,
-          segment_type: "text",
         })];
       }
       case ClaudeSessionEventName.ITEM_OUTPUT_TEXT_COMPLETED: {
         const id = resolveSegmentId(payload);
-        if (!id) {
-          return [];
-        }
         return [this.createEvent(claudeEventName, AgentRunEventType.SEGMENT_END, {
           ...serializePayload(payload),
           id,
-          segment_type: "text",
         })];
       }
       case ClaudeSessionEventName.ITEM_ADDED:
@@ -245,9 +237,6 @@ export class ClaudeSessionEventConverter {
         const segmentType = asString(payload.segment_type);
         const toolName = resolveToolName(payload);
         const segmentMetadata = resolveSegmentMetadata(payload);
-        if (!id || !segmentType) {
-          return [];
-        }
         const eventType =
           claudeEventName === ClaudeSessionEventName.ITEM_ADDED
             ? AgentRunEventType.SEGMENT_START
@@ -256,7 +245,6 @@ export class ClaudeSessionEventConverter {
           ...serializePayload(payload),
           id,
           segment_type: segmentType,
-          ...(toolName ? { tool_name: toolName } : {}),
           ...(segmentMetadata ? { metadata: segmentMetadata } : {}),
         })];
       }
@@ -383,10 +371,34 @@ export class ClaudeSessionEventConverter {
     eventType: AgentRunEventType,
     payload: Record<string, unknown>,
   ): AgentRunEvent {
+    const normalizedPayload = eventType === AgentRunEventType.SEGMENT_START
+      ? {
+          id: payload.id,
+          turn_id: resolveTurnId(payload),
+          segment_type: payload.segment_type,
+          ...(payload.metadata !== undefined ? { metadata: payload.metadata } : {}),
+        }
+      : eventType === AgentRunEventType.SEGMENT_CONTENT
+        ? {
+            id: payload.id,
+            turn_id: resolveTurnId(payload),
+            delta: payload.delta,
+          }
+        : eventType === AgentRunEventType.SEGMENT_END
+          ? {
+              id: payload.id,
+              turn_id: resolveTurnId(payload),
+              ...(payload.metadata !== undefined ? { metadata: payload.metadata } : {}),
+              ...(payload.interrupted !== undefined ? { interrupted: payload.interrupted } : {}),
+              ...(payload.reason !== undefined ? { reason: payload.reason } : {}),
+              ...(payload.failed !== undefined ? { failed: payload.failed } : {}),
+              ...(payload.error !== undefined ? { error: payload.error } : {}),
+            }
+          : payload;
     const event: AgentRunEvent = {
       eventType,
       runId: this.runId,
-      payload,
+      payload: normalizedPayload,
       statusHint: null,
     };
     if (eventType !== AgentRunEventType.ERROR) {

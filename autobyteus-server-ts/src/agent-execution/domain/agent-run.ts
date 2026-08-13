@@ -3,6 +3,8 @@ import { dispatchRuntimeEvent } from "../backends/shared/runtime-event-dispatch.
 import { AgentRunEventDispatchQueue } from "../events/agent-run-event-dispatch-queue.js";
 import { dispatchProcessedAgentRunEvents } from "../events/dispatch-processed-agent-run-events.js";
 import { AgentTurnLifecycleState } from "../events/processors/lifecycle-status/agent-turn-lifecycle-state.js";
+import { AgentSegmentLifecycleState } from "../events/processors/segment-lifecycle/agent-segment-lifecycle-state.js";
+import { getDefaultAgentRunEventPipeline } from "../events/default-agent-run-event-pipeline.js";
 import type { AgentRunContext } from "./agent-run-context.js";
 import {
   AgentRunEventType,
@@ -35,6 +37,7 @@ export class AgentRun {
   private readonly listeners = new Set<AgentRunEventListener>();
   private readonly dispatchQueue = new AgentRunEventDispatchQueue();
   private readonly lifecycleState = new AgentTurnLifecycleState();
+  private readonly segmentLifecycleState = new AgentSegmentLifecycleState();
   private readonly unsubscribeFromBackendSource: () => void;
 
   constructor(options: AgentRunOptions) {
@@ -139,7 +142,12 @@ export class AgentRun {
   async terminate() {
     const result = await this.backend.terminate();
     if (result.accepted) {
-      await this.applyLifecycleFact(() => this.lifecycleState.terminate());
+      await this.dispatchQueue.enqueue(this.runId, async () => {
+        this.lifecycleState.terminate();
+        this.segmentLifecycleState.releaseRun();
+        await getDefaultAgentRunEventPipeline().releaseRun(this.runId);
+        this.dispatchCanonicalStatus();
+      });
       this.unsubscribeFromBackendSource();
     }
     return result;
@@ -152,6 +160,7 @@ export class AgentRun {
       events,
       dispatchQueue: this.dispatchQueue,
       lifecycleState: this.lifecycleState,
+      segmentLifecycleState: this.segmentLifecycleState,
       getRuntimeLifecycleSnapshot: () => this.backend.getLifecycleSnapshot(),
       onListenerError: (error) => {
         logger.warn(
@@ -173,7 +182,10 @@ export class AgentRun {
   }
 
   private async applyCommandAccepted(token: number, turnId: string | null): Promise<void> {
-    await this.applyLifecycleFact(() => this.lifecycleState.acceptCommand(token, turnId));
+    await this.applyLifecycleFact(() => {
+      this.lifecycleState.acceptCommand(token, turnId);
+      this.segmentLifecycleState.acceptCommand(turnId);
+    });
   }
 
   private async rollbackCommand(token: number): Promise<void> {

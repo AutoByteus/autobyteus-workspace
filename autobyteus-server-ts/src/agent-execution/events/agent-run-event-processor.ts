@@ -9,4 +9,5 @@ export interface AgentRunEventProcessorInput {
 
 export interface AgentRunEventProcessor {
   process(input: AgentRunEventProcessorInput): AgentRunEvent[] | Promise<AgentRunEvent[]>;
+  releaseRun?(runId: string): void | Promise<void>;
 }

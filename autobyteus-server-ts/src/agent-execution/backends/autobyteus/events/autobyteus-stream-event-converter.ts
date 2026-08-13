@@ -104,36 +104,46 @@ export class AutoByteusStreamEventConverter {
       if (!eventType) {
         return null;
       }
-      const turnId =
-        typeof payload.turn_id === "string" && payload.turn_id.length > 0
-          ? payload.turn_id
-          : null;
-      if (!turnId) {
-        return null;
-      }
+      const turnId = payload.turn_id;
       const nestedPayload =
         payload.payload &&
         typeof payload.payload === "object" &&
         !Array.isArray(payload.payload)
           ? (payload.payload as Record<string, unknown>)
           : {};
-      const {
-        turnId: _nestedCamelTurnId,
-        turn_id: _nestedTurnId,
-        ...canonicalNestedPayload
-      } = nestedPayload;
+      const segmentId = payload.segment_id;
+      const sourcePayload = eventType === AgentRunEventType.SEGMENT_START
+        ? {
+            id: segmentId,
+            turn_id: turnId,
+            segment_type: payload.segment_type,
+            ...(nestedPayload.metadata !== undefined
+              ? { metadata: nestedPayload.metadata }
+              : {}),
+          }
+        : eventType === AgentRunEventType.SEGMENT_CONTENT
+          ? {
+              id: segmentId,
+              turn_id: turnId,
+              delta: nestedPayload.delta,
+            }
+          : {
+              id: segmentId,
+              turn_id: turnId,
+              ...(nestedPayload.metadata !== undefined
+                ? { metadata: nestedPayload.metadata }
+                : {}),
+              ...(nestedPayload.interrupted !== undefined
+                ? { interrupted: nestedPayload.interrupted }
+                : {}),
+              ...(nestedPayload.reason !== undefined ? { reason: nestedPayload.reason } : {}),
+              ...(nestedPayload.failed !== undefined ? { failed: nestedPayload.failed } : {}),
+              ...(nestedPayload.error !== undefined ? { error: nestedPayload.error } : {}),
+            };
       return {
         eventType,
         runId: this.runId,
-        payload: {
-          id:
-            typeof payload.segment_id === "string" && payload.segment_id.length > 0
-              ? payload.segment_id
-              : "",
-          turn_id: turnId,
-          ...(payload.segment_type !== undefined ? { segment_type: payload.segment_type } : {}),
-          ...canonicalNestedPayload,
-        },
+        payload: sourcePayload,
         statusHint,
       };
     }

@@ -15,6 +15,7 @@ type ClaudeTextSegmentSource =
 
 type ClaudeTextSegmentState = {
   text: string;
+  started: boolean;
   completed: boolean;
 };
 
@@ -376,6 +377,19 @@ export class ClaudeTextSegmentProjector {
       return false;
     }
 
+    if (!segment.started) {
+      segment.started = true;
+      this.input.emitEvent({
+        method: ClaudeSessionEventName.ITEM_ADDED,
+        params: {
+          id: segmentId,
+          turnId: this.input.turnId,
+          sessionId: this.input.getSessionId(),
+          segment_type: "text",
+        },
+      });
+    }
+
     segment.text += incrementalDelta;
     this.assistantOutput += incrementalDelta;
     if (source === "partial_stream" || source === "generic_stream") {
@@ -419,6 +433,7 @@ export class ClaudeTextSegmentProjector {
 
     const created: ClaudeTextSegmentState = {
       text: "",
+      started: false,
       completed: false,
     };
     this.segmentsById.set(segmentId, created);

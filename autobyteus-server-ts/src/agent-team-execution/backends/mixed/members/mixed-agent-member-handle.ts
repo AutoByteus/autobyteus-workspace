@@ -280,7 +280,13 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
       if (result.kind === "filtered_collaboration_duplicate") return;
       const payload = result.kind === "publish" ? result.event : {
         eventType: "ERROR" as const,
-        details: Object.freeze({ code: result.code, message: result.message }),
+        details: Object.freeze({
+          code: result.code,
+          message: result.message,
+          errorScope: "runtime" as const,
+          errorEffect: "terminal" as const,
+          turnId: null,
+        }),
         statusHint: "ERROR" as const,
       };
       this.options.publish({ eventSourceType: TeamRunEventSourceType.AGENT, execution, payload });

@@ -23,7 +23,11 @@ export const extractSegmentType = (payload: Record<string, unknown>): string | n
 
 export const extractToolArguments = (
   payload: Record<string, unknown>,
-): Record<string, unknown> => asObject(payload.arguments) ?? {};
+): Record<string, unknown> =>
+  asObject(payload.arguments) ?? asObject(asObject(payload.metadata)?.arguments) ?? {};
+
+export const extractTurnId = (payload: Record<string, unknown>): string | null =>
+  asString(payload.turn_id);
 
 export const extractDelta = (payload: Record<string, unknown>): string | null =>
   typeof payload.delta === "string" ? payload.delta : null;
