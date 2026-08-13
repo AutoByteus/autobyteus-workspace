@@ -41,8 +41,10 @@ Team runs:
 1. Team services create a team run with a generated `<team_definition_name_slug>_<uuid-without-dashes>` `teamRunId`, allocator-backed opaque `memberRunId` values for concrete agent members, and `TeamBackendKind.MIXED`.
 2. `MixedTeamManager` creates/restores one standalone Codex `AgentRun` per Codex team member through `AgentRunManager`.
 3. Codex member bootstrap passes the runtime-neutral `MemberTeamContext` to the
-   shared Carpenter composer for Team Instruction/Team Runtime and automatically
-   adds `send_message_to` plus `delegate_task` to effective tool exposure.
+   shared Carpenter composer for optional Team Instruction followed by the exact
+   AgentTeam Addressing and AgentTeam Collaboration sections, and automatically
+   adds `get_handoff_rules`, `send_message_to`, and `delegate_task` to effective
+   tool exposure.
 4. Team websocket streaming preserves the member domain identity while forwarding Codex member runtime events under the mixed team backend.
 
 Codex App Server client reuse is scoped by canonical workspace `cwd`.

@@ -55,7 +55,8 @@ synthetic representative identities.
 Accepted team-route deliveries are the only `send_message_to` path that creates
 Team Communication projection:
 
-- recipient input is delivered through the resolved member/team handle;
+- recipient input is admitted through the resolved member/team handle into the
+  exact target AgentRun FIFO;
 - accepted `INTER_AGENT_MESSAGE` events carry the team context needed by the Team
   Communication processor to build address-first `senderAddress` and
   `receiverAddress` values;
@@ -63,6 +64,12 @@ Team Communication projection:
   the team run; and
 - frontend Team tab sent/received perspectives hydrate from that projection and
   match the focused execution by exact normalized `TeamExecutionAddress`.
+
+Acceptance means the live AgentRun owns one ordered, at-most-once forwarding
+attempt. It does not mean a provider turn has completed and does not synchronously
+wait for a next-turn-only backend. Team Communication/member-input projection is
+created once at admission; forwarding and terminal lifecycle facts do not
+republish it.
 
 Team-owned internals may still use task-agent/recovery machinery for task
 delegation workflows, but public logical delivery has one rooted address
@@ -123,11 +130,12 @@ preallocated members.
 
 Accepted direct-route deliveries:
 
-- post a model-visible `AgentInputUserMessage` to the active target run;
+- admit one model-visible `AgentInputUserMessage` into the active target run's
+  AgentRun-owned FIFO;
 - include sender run id/name, runtime kind, message type, target run id, and
   `reference_files` in the runtime input metadata;
 - emit a direct `INTER_AGENT_MESSAGE` on the target run only after input
-  acceptance; and
+  admission acceptance, without waiting for provider forwarding; and
 - intentionally omit `team_run_id` and other Team Communication projection
   fields.
 
@@ -187,6 +195,10 @@ They cannot use `recipient_address` unless they are running with an active
 `MemberTeamContext`. Team members use the same shared dispatcher so selector
 semantics stay identical across AutoByteus, Codex, Claude, and the
 server-hosted Agent Tools MCP surface.
+
+All runtime projections end at the same `AgentRun.postUserMessage(...)`
+admission owner. Codex, Claude, AutoByteus, Team routing, external callers, and
+the command registry do not select start/append/wait behavior themselves.
 
 Configured Team members receive `get_handoff_rules` through the same runtime
 projection: a bound AutoByteus local tool or the session-scoped

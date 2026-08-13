@@ -151,8 +151,10 @@ carry no lifecycle authority.
 
 Standalone send carries stable `message_id` and `dedupe_key` and routes through
 `AgentRunCommandCoordinator`. The coordinator owns idempotency, prepared or
-historical activation, command overlay, runtime forwarding, activity recording,
-and `SEND_MESSAGE` acknowledgement.
+historical activation, command overlay, typed command observation, activity
+recording, and `SEND_MESSAGE` acknowledgement. After activation, the exact
+AgentRun owns FIFO admission and provider dispatch selection. Multiple distinct
+commands can be admitted; the transport does not impose a run-busy policy.
 
 ### Team `SEND_MESSAGE`
 
@@ -171,7 +173,9 @@ and `SEND_MESSAGE` acknowledgement.
 ```
 
 The address root must equal the URL TeamRun ID. The server traverses the exact
-execution chain and never retargets a stale/malformed address.
+execution chain and never retargets a stale/malformed address. The exact member
+AgentRun owns admission and may append or retain the entry according to its
+canonical turn and backend capability.
 
 ### Team interrupt and tool decisions
 

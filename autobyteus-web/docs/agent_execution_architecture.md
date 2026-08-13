@@ -124,6 +124,15 @@ affected single run or focused team member in its current sending state until
 `TURN_COMPLETED`, `AGENT_STATUS`, or terminal stream handling clears that state,
 so Stop remains visible until the provider cancellation boundary has settled.
 
+`SEND_MESSAGE` acceptance is likewise admission rather than completion. Once an
+exact live AgentRun exists, the server owns one ordered FIFO and may retain an
+accepted entry while another turn or interrupt is active. The browser does not
+choose provider start/append/wait policy, reject a second backend command as
+"run busy", or infer a new turn id. It continues to correlate acknowledgements
+by command/message identity and renders lifecycle from the later canonical
+status/turn/error stream. Accepted waiting input is not duplicated locally when
+the server later forwards or associates it with a turn.
+
 ### Runtime Status And Interrupt Authority
 
 The frontend lifecycle model deliberately separates leaf status, root liveness,

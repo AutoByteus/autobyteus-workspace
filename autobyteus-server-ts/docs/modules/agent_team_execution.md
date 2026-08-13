@@ -110,7 +110,12 @@ Each executable member handle owns its pending command overlay. It can publish
 `initializing` before slow Agent startup/restore/provider send work and replaces
 or clears that overlay only through matching runtime status, command failure,
 termination, or disposal. AgentRun remains the authoritative turn/status and
-segment-lifecycle owner after command handoff.
+segment-lifecycle owner after command handoff. It also owns ordinary input
+admission: a valid member command or peer delivery can be accepted into the
+exact AgentRun FIFO while another turn is active without a provider-specific
+busy rejection. Codex may append to the exact active turn when AgentRun selects
+that capability; AutoByteus and Claude wait for a later turn. Team managers do
+not own another input queue or infer this policy from provider state.
 
 ## Server-Owned Task Delegation
 
@@ -178,11 +183,15 @@ Each Agent receives one `MemberTeamContext` containing:
 - optional Team instruction; and
 - active delivery/tool service bindings.
 
-The Carpenter prompt renders the canonical member address, `/...` and `./...`
-semantics, Team coordinator ingress rule, `get_handoff_rules` workflow, and task
-direct-child rule. It injects no flat recipient, representative, or delegation
-roster. Runtime exposure automatically includes `get_handoff_rules`,
-`send_message_to`, and `delegate_task` for a valid Team context.
+After optional authored `Team Instruction`, the Carpenter prompt renders one
+`AgentTeam Addressing` section followed by one `AgentTeam Collaboration`
+section, before `Working Environment`. The shared exact renderer supplies the
+canonical member address, logical directory/file analogy, `/...` and `./...`
+semantics, Team coordinator ingress rule, `send_message_to`, the
+`get_handoff_rules` workflow, and the task direct-child rule. It injects no flat
+recipient, representative, or delegation roster. Runtime exposure automatically
+includes `get_handoff_rules`, `send_message_to`, and `delegate_task` for a valid
+Team context, with identical copy across AutoByteus, Codex, and Claude.
 
 `send_message_to.recipient_address` resolves through the root logical placement
 service. An Agent target delivers to that real Agent. An AgentTeam target
@@ -191,6 +200,9 @@ root-bound delivery intent without rewriting the sender/receiver into flat or
 representative identities. Team Communication persists the actual sender and
 receiver as exact `TeamExecutionAddress` values; explicit `reference_files` are
 structured metadata and natural message prose is not scanned for paths.
+An accepted delivery is projected once when the target AgentRun owns the input;
+later provider forwarding or terminal observation does not publish a duplicate
+Team Communication or member-input record.
 
 `target_agent_run_id` remains the separate live-only direct AgentRun route owned
 by `src/agent-communication`; it does not create Team Communication projection.

@@ -1,81 +1,92 @@
-# Canonical Hierarchical AgentTeam Execution
+# Canonical Hierarchical AgentTeam Execution And AgentRun Input Admission
 
-> **Historical draft — not published and not current.** Prepared for the DR-008
-> SR-020 checkpoint. DR-009 withdrew that verification checkpoint after the
-> branch gained an unreviewed SR-025 production/test delta. Do not publish this
-> draft until the current implementation/review/API gates pass and delivery
-> refreshes the notes against the resulting state.
+> **Unpublished draft.** Retained at the DR-011 SR-028 remote-verification
+> checkpoint. The local Electron candidate passed user testing, but the user
+> requested another-machine testing from the ticket branch. Do not publish,
+> tag, merge into `personal`, or treat this as a release until later explicit
+> authorization and a fresh base/tag/version check.
 
 ## What's New
 
 - AgentTeam definitions support rooted hierarchical Agent and Team placements,
   ordered handoff guidance, exact coordinator ingress, and nested task execution
   without flat rosters or synthetic representatives.
-- Team-bound AutoByteus, Codex, and Claude Agents automatically receive the
-  current collaboration instruction and the `get_handoff_rules`,
-  `send_message_to`, and `delegate_task` tools.
-- Team execution identity is canonical across backend and frontend:
+- Team-bound AutoByteus, Codex, and Claude Agents receive the same exact
+  `AgentTeam Addressing` and `AgentTeam Collaboration` guidance plus intrinsic
+  `get_handoff_rules`, `send_message_to`, and `delegate_task` tools.
+- Every ordinary input path now converges on one AgentRun-owned FIFO and explicit
+  provider-dispatch contract. AgentRun, not callers or providers, selects start,
+  exact active-turn append, or later-turn wait.
+- Team execution identity remains canonical across backend and frontend:
   `{rootTeamRunId, taskTeamRunIds, memberAddress, taskAgentRunId}`.
-- Agent streaming now has one AgentRun-owned segment lifecycle that admits
-  provider facts once and publishes exact canonical identity, type, content,
-  terminal state, and diagnostic evidence to every consumer.
 
 ## Improvements
 
-- `send_message_to` and `delegate_task` use explicit `recipient_address`
-  addressing. Nested, sibling, upward, cross-branch, task-Agent, and task-Team
-  collaboration preserves exact sender/receiver identity and fails closed on
-  invalid or out-of-scope addresses.
-- Team launch uses immutable draft admission with one allocation and promotion,
-  failure-preserving retry, exact first-send ownership, and read-only pending
-  configuration presentation across desktop and mobile.
-- Team streams use strict `agent_execution` bindings. Send, interrupt, approval,
-  status, task, token, communication, and history flows use the complete exact
-  execution address rather than route/path/instance aliases.
-- Task records and UI distinguish stable topology from concrete task executions,
-  expose durable task/reference details, and preserve ordered restore, focus,
-  selection, and cleanup behavior.
-- Provider converters, file-change processing, memory/history, compaction,
-  external channels, application projection, WebSocket cadence, and browser
-  segment/tool handlers consume the same canonical lifecycle without generated
-  segment ids, repeated source type, lookup fallback, or downstream identity
-  repair.
-- Turn-scoped and runtime-scoped diagnostics remain observable and non-terminal,
-  preserving later valid output and command/lifecycle state.
+- Multiple distinct commands can be admitted without a second command-registry
+  queue or provider-specific busy policy. Typed command lifecycle tracks
+  admission, forwarding, turn association, completion, failure, rejection, and
+  cancellation.
+- Codex preserves exact active-turn steering. AutoByteus and Claude retain
+  accepted active input for a later turn, resolving the formerly blocked Claude
+  task-peer reverse reply without duplicating provider queues.
+- Stop/interrupt and ordinary input have one ordered AgentRun owner. Waiting
+  input does not steer into a closing turn and drains once after rejection/throw
+  or canonical interrupted terminal.
+- Claude Agent SDK is pinned to `0.3.231` with exact compatible Anthropic/MCP
+  peers. Required intrinsic Team MCP tools load on the first turn, while product
+  interruption keeps the singular AbortController settlement/cleanup path.
+- Team streams, launch, messaging, delegation, approval, status, history,
+  memory, token usage, artifacts, and desktop/mobile navigation retain strict
+  canonical execution identity and fail-closed behavior.
 
 ## Data And Compatibility
 
-- TeamRun metadata is schema-v3 and recursive. Task records, Team Communication,
-  external bindings, Token Usage, and history use current canonical addresses.
-- The required forward-only canonical Team identity migration converts supported
-  historical Team metadata/task/token/binding state and removes legacy identity
-  columns/fields transactionally. Runtime read-time compatibility paths are not
-  retained.
-- Physical Team memory uses the root TeamRun and ancestor TeamRun ids plus the
-  AgentRun id. Logical member addresses are not filesystem paths.
-- Bare recipient names, `recipient_name`, member/source path and route-key
-  identities, task instance ids, generic Team egress identity, generated segment
-  ids, and browser lookup-key compatibility are intentionally unsupported.
+- AgentRun input admission and interrupt reservations are intentionally
+  non-persisted live state. No database migration or compatibility reader is
+  introduced.
+- Existing schema-v3 TeamRun metadata, canonical task/communication/token
+  records, and physical memory lineage are unchanged.
+- Provider-local input queues, retry/fallback between dispatch kinds,
+  `streamInput`/priority scheduling, `Query.interrupt()` product fallback,
+  retired `Team Runtime` copy, and different-command busy rejection are not
+  supported.
 
 ## Validation
 
-- Full source review: CRR-078 Pass, `9.3/10 (92.5/100)`.
-- API/E2E: API-REV-036 Pass, `98%` confidence.
-- Durable test review: CRR-079 Pass with no findings across exactly `109` paths
-  (`4 added / 97 updated / 8 removed`; `53 server / 56 web`; `101 active`).
-- Current repository selections passed `622` server tests with nine explicitly
-  declared capability-gated skips and `540/540` web tests.
-- Server and web production builds passed.
-- Fresh real browser/provider validation passed standalone and imported nested
-  Team journeys for AutoByteus, Codex, and Claude, including desktop/mobile,
-  collaboration, task, restore, read-only configuration, and cleanup checks.
-  Declared capability skips were not counted as passes.
+- Full source review: CRR-089 Pass, `9.5/10 (95.4/100)`.
+- API/E2E: API-REV-040 Pass, `98%` confidence.
+- Durable test review: CRR-090 Pass across exactly five updated server-test
+  paths, with no findings.
+- Currentized focus `18/18`, top-level integration `3/3`, and SR-028 affected
+  selection `223/223` passed.
+- Broad server `620` active tests and broad web `540/540` passed; the declared
+  skipped Claude repository capability suite was excluded from provider proof.
+- Both production builds passed.
+- Checked-disposable real browser/provider validation passed `12/12` across
+  AutoByteus, Codex, and Claude, including exact task-peer reply, configured Stop
+  plus waiting FIFO, standalone, imported Team, public classroom,
+  desktop/mobile/reference, restore, termination, and cleanup paths.
 
 ## Operational Disclosure
 
 Earlier validation rounds accidentally targeted the operational production
 SQLite database twice: API-REV-014 applied one pending Prisma migration and
 recorded a failed canonical migration; API-REV-018 inherited that target on an
-unsafe raw start. No rollback or repair was attempted. Accepted later evidence
-used checked disposable targets, and the operational database and protected user
-stack were not touched by delivery.
+unsafe raw start. No rollback or repair was attempted. API-REV-040 and delivery
+did not inspect or act on that database, used/accepted only checked disposable
+target evidence, and did not touch the protected user stack.
+
+## Packaging Note
+
+A fresh macOS arm64 Electron `1.4.50` DMG/ZIP was built from the current SR-028
+checkpoint for local user verification. Package and archive integrity, bundle
+identity/version/architecture, embedded server, native-helper permissions, and
+symlink integrity passed. The package is not Developer ID signed or notarized,
+was not launched by delivery, and has not been published or released.
+
+The README build completed only after a packaging-only recovery that
+temporarily materialized the already-built `@autobyteus/team-stream-contracts`
+workspace package inside the application root; source and manifests were not
+changed and the original symlink was restored. A durable correction remains a
+release-reproducibility follow-up before treating the clean command as a release
+build.

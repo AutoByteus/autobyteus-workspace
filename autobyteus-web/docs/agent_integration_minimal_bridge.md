@@ -88,9 +88,10 @@ These handlers update the agent context and mark messages complete. In the curre
   as visible overlay replacement; wait for command-correlated `TURN_STARTED`,
   `AGENT_STATUS`, terminal/error, or coordinator failure evidence.
 - `AGENT_COMMAND_ACK` confirms standalone command state. Same-`message_id`
-  retries are idempotent duplicates; a different in-flight command can be
-  rejected with `RUN_COMMAND_IN_PROGRESS`. Rejected or failed acknowledgements
-  should route through the normal error UI.
+  retries are idempotent duplicates. Distinct commands may be admitted together
+  and are ordered by the server-owned AgentRun FIFO; bridges must not add a
+  client-side busy policy or infer provider start/append/wait selection. Rejected
+  or failed acknowledgements should route through the normal error UI.
 - Startup tokens such as `bootstrapping`, `starting`, `startup`,
   `initializing`, and active `uninitialized` should be treated as
   non-interruptible `initializing`, not as `running` or `offline`.

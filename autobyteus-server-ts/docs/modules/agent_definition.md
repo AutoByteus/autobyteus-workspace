@@ -53,8 +53,8 @@ runtime prompt:
 
 Keep the body specific to the agent's responsibilities and boundaries. Do not
 copy the platform-owned Working Environment, Bash Operating Practice, File And
-Directory Practice, Team Runtime rosters/protocols, configured skill bodies, or
-tool schemas into `agent.md`. Authored Markdown headings are deterministically
+Directory Practice, AgentTeam Addressing/Collaboration guidance, configured
+skill bodies, or tool schemas into `agent.md`. Authored Markdown headings are deterministically
 nested below `Responsibilities and Boundaries` during composition.
 
 For example:

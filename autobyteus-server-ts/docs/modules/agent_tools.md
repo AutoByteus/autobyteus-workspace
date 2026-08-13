@@ -46,7 +46,7 @@ valid non-null `MemberTeamContext`, it then automatically unions exactly:
 - `send_message_to`
 - `delegate_task`
 
-This automatic trio is required by the Team Runtime collaboration and
+This automatic trio is required by the AgentTeam Addressing/Collaboration and
 delegation contract and applies even when the agent definition omitted those
 names. Standalone runs receive no automatic Team tools and preserve their
 explicitly configured set. Browser, media, publishing, configured MCP-origin,

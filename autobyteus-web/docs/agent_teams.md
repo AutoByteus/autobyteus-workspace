@@ -260,6 +260,10 @@ starts one local submission for the exact focused Agent context, finalizes its
 attachments, connects the Team stream, and emits `SEND_MESSAGE` with
 `execution_address`, required `message_id`, and required `dedupe_key`. Missing,
 stale, non-Agent, or cross-root addresses fail closed rather than retargeting.
+An accepted server result means the exact member AgentRun owns the input. The
+AgentRun may append it to the identified Codex turn or retain it for a later
+AutoByteus/Claude turn; Team frontend state does not choose that policy or
+create another queue.
 
 The same exact address is the identity for focus, run-open hydration, token usage,
 Team Communication perspectives, tool approval, and interrupt. Team
@@ -295,6 +299,9 @@ root `isActive`; the later canonical member terminal/status event removes the
 interrupt affordance. Rejected/failed acknowledgement or local
 not-connected/send/disconnect completion produces one member-aware localized
 toast without transcript, member-status, root-liveness, or retry side effects.
+Input admitted while Stop is settling remains FIFO-owned on the server and is
+forwarded only after the matching interrupt reservation is rejected/released or
+the accepted interrupt reaches its canonical terminal.
 
 Workspace team history is backed by the server V2 team catalog, not by durable
 live-status fields. `listWorkspaceRunHistory` returns team rows with

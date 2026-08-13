@@ -94,8 +94,9 @@ lifecycle.
 - Standalone WebSocket connection (`/ws/agent/:runId`) binds to the durable run
   identity and projects current status; it does not restore or start a runtime.
   `SEND_MESSAGE` routes through `AgentRunCommandCoordinator`, which owns
-  idempotency, prepared/historical activation, command overlay, forwarding, and
-  activity recording.
+  idempotency, prepared/historical activation, command overlay, typed command
+  lifecycle, and activity recording. The resolved AgentRun—not the coordinator
+  or WebSocket—owns FIFO admission and start/append/wait dispatch selection.
 - Team WebSocket connection (`/ws/agent-team/:teamRunId`) resolves through
   `TeamRunService.resolveTeamRun(...)`, because restore belongs to the Team
   container. It subscribes to events and manager lifecycle before reading a
@@ -107,7 +108,8 @@ lifecycle.
   coordinator, name, path, route key, or generated ID.
 - Team `SEND_MESSAGE` additionally carries content, context paths, image URLs,
   `message_id`, and `dedupe_key`, and dispatches through
-  `TeamRun.executeMemberCommand(...)`.
+  `TeamRun.executeMemberCommand(...)` to the same exact member AgentRun admission
+  owner. Acceptance is input ownership, not provider completion.
 - Team interrupts and tool decisions remain active-only. Interrupt
   acknowledgements echo the client `command_id` and exact execution address;
   the frontend accepts an acknowledgement only when both match its pending

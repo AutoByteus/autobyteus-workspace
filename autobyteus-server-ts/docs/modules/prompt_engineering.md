@@ -43,7 +43,7 @@ Each section has one owner:
 | --- | --- | --- |
 | `Agent Identity` | Selected `AgentDefinition`: required name, optional description, optional `agent.md` body | Always |
 | `Team Instruction` | Exact non-blank selected `team.md` body | Team runs only, when non-blank |
-| `Team Runtime` | Validated `MemberTeamContext` and fixed logical-address, handoff, and task-eligibility renderer | Team runs only |
+| `AgentTeam Addressing` then `AgentTeam Collaboration` | Validated `MemberTeamContext` and one fixed logical-address, collaboration, handoff, and task-eligibility renderer | Team runs only |
 | `Working Environment` | Exact absolute effective workspace selected for the run | Always |
 | `Bash Operating Practice` | Platform-owned fixed Carpenter text | Always |
 | `File And Directory Practice` | Platform-owned fixed Carpenter text | Always |
@@ -146,36 +146,55 @@ The authoritative full fixed text is
 instructions can narrow the work, but agent authors must not replace this
 platform foundation with a second generic advice block.
 
-## Team Instruction And Team Runtime
+## Team Instruction And AgentTeam Collaboration
 
 A team run inserts the exact non-blank `team.md` body under `Team Instruction`
-and then renders `Team Runtime` from the validated current member context.
-`Team Runtime` contains the member's canonical rooted address, the `/...` and
-`./...` grammar, Team-coordinator ingress semantics, `get_handoff_rules` usage,
-delivery confirmation rule, and the direct-child task-delegation eligibility
-rule. It contains no flat recipient or delegation-target roster.
+and then renders two sibling sections from the validated current member context:
+`AgentTeam Addressing` followed by `AgentTeam Collaboration`. They appear before
+`Working Environment`. The first explains the logical directory/file analogy,
+the `/...` and `./...` grammar, invalid forms, the member's exact rooted address,
+examples, and Team-coordinator ingress. The second explains `send_message_to`,
+direct-child eligibility for `delegate_task`, and the ordered
+`get_handoff_rules` completion/blocked workflow plus delivery confirmation. The
+renderer contains no flat recipient or delegation-target roster.
 
 For example, a Team-bound Agent can receive this shape:
 
 ```markdown
-## Team Runtime
+## AgentTeam Addressing
 
-You are working as a member of an AgentTeam. Agents and AgentTeams use filesystem-like logical addresses to communicate.
+AgentTeams use filesystem-like logical addresses. Think of an AgentTeam as a directory, an Agent inside it as a file, and a nested AgentTeam as a subdirectory. This analogy describes the Team structure and addressing model only; the addresses are not real filesystem paths.
 
-Your address in the AgentTeam is:
+An address beginning with `/` starts from the root AgentTeam. An address beginning with `./` starts from your immediate AgentTeam—the Team that directly contains you. Bare names, `../`, and backslashes are invalid.
+
+Within this structure, your address is:
 
 /release_team/release_reviewer
 
-Addresses beginning with `/` start from the root AgentTeam. Addresses beginning with `./` start from your current AgentTeam.
+For example:
 
-When you finish your work or are blocked, call `get_handoff_rules` and use each applicable `recipient_address` with `send_message_to`.
+- `./architecture_reviewer` identifies an Agent in your immediate AgentTeam.
+- `./implementation_team` identifies a nested AgentTeam in your immediate AgentTeam.
+- `/requirements_engineering/requirements_lead` identifies an Agent using an absolute address from the root AgentTeam.
 
-`delegate_task.recipient_address` uses the same grammar, but its target must be a direct Agent or AgentTeam child of your immediate AgentTeam.
+An AgentTeam address identifies the Team itself. Sending a message to that address delivers it to the Team's configured coordinator.
+
+## AgentTeam Collaboration
+
+Use `send_message_to` with `recipient_address` to send a message to an Agent or AgentTeam.
+
+`delegate_task` uses the same address format, but its recipient must be a direct Agent or AgentTeam child of your immediate AgentTeam. Message delivery may address deeper or cross-branch recipients.
+
+When you finish your work or are blocked, call `get_handoff_rules`. If a returned rule applies, notify its `recipient_address` using `send_message_to`. Combine applicable reasons for the same recipient and follow distinct recipients in their returned order. If no rule applies, finish normally.
+
+Do not claim that a handoff was completed unless `send_message_to` confirms delivery.
 ```
 
-The runtime renderer owns the complete exact wording. Agent/team authors should
-not copy dynamic member addresses or tool schemas into `agent.md` or `team.md`.
-Standalone runs render neither Team Instruction nor Team Runtime.
+The runtime renderer owns the complete exact wording and is shared by
+AutoByteus, Codex App Server, and Claude Agent SDK composition. Agent/team
+authors should not copy dynamic member addresses or tool schemas into `agent.md`
+or `team.md`. Standalone runs render neither Team Instruction nor either
+AgentTeam section.
 
 ## Ordinary Configured Skills
 
