@@ -13,7 +13,7 @@ export type ChannelRunOutputCollectedFinal = {
 type PendingTurn = {
   deliveryKey: string;
   turnId: string;
-  assistantText: string;
+  assistantText: string | null;
 };
 
 export class ChannelRunOutputEventCollector {
@@ -47,10 +47,10 @@ export class ChannelRunOutputEventCollector {
     if (
       input.event.eventType === AgentRunEventType.SEGMENT_CONTENT &&
       input.event.textKind === "STREAM_FRAGMENT" &&
-      input.event.text
+      input.event.text !== null
     ) {
       pending.assistantText = appendOutputTextFragment(
-        pending.assistantText,
+        pending.assistantText ?? "",
         input.event.text,
       );
       return null;
@@ -64,7 +64,7 @@ export class ChannelRunOutputEventCollector {
     return {
       deliveryKey: input.deliveryKey,
       turnId,
-      replyText: normalizeOptionalString(pending.assistantText),
+      replyText: pending.assistantText,
     };
   }
 
@@ -80,7 +80,7 @@ export class ChannelRunOutputEventCollector {
     const created: PendingTurn = {
       deliveryKey,
       turnId,
-      assistantText: "",
+      assistantText: null,
     };
     this.pendingTurns.set(deliveryKey, created);
     return created;

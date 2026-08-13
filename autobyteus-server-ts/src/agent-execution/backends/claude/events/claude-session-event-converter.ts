@@ -5,7 +5,12 @@ import {
 import { resolveAgentRunErrorEvidence } from "../../../domain/agent-run-error-evidence.js";
 import type { AgentRuntimeLifecycleSnapshot } from "../../../domain/agent-runtime-lifecycle-snapshot.js";
 import { serializePayload } from "../../../../services/agent-streaming/payload-serialization.js";
-import { asObject, asString, type ClaudeSessionEvent } from "../claude-runtime-shared.js";
+import {
+  asNonEmptyRawString,
+  asObject,
+  asString,
+  type ClaudeSessionEvent,
+} from "../claude-runtime-shared.js";
 import { normalizeClaudeAgentToolsToolNameForEvent } from "../agent-tools-mcp/claude-agent-tools-mcp-tool-name.js";
 import { normalizeClaudeBrowserToolResult } from "./claude-browser-tool-result-normalizer.js";
 import { normalizeClaudeMediaToolResult } from "../media/claude-media-tool-result-normalizer.js";
@@ -246,7 +251,7 @@ export class ClaudeSessionEventConverter {
         )];
       case ClaudeSessionEventName.ITEM_OUTPUT_TEXT_DELTA: {
         const id = resolveSegmentId(payload);
-        const delta = asString(payload.delta);
+        const delta = asNonEmptyRawString(payload.delta);
         return [this.createEvent(claudeEventName, AgentRunEventType.SEGMENT_CONTENT, {
           ...serializePayload(payload),
           id,

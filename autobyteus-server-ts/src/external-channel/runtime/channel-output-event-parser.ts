@@ -115,7 +115,7 @@ const resolveAgentRunEventText = (
     if (segmentType !== "text") {
       return noText();
     }
-    return parsedText(asNonEmptyRawString(payload.delta), "STREAM_FRAGMENT");
+    return parsedText(asRawString(payload.delta), "STREAM_FRAGMENT");
   }
 
   return noText();
@@ -124,27 +124,13 @@ const resolveAgentRunEventText = (
 const parsedText = (
   text: string | null,
   kind: ChannelOutputEventTextKind,
-): { text: string | null; kind: ChannelOutputEventTextKind | null } => {
-  const normalized = normalizeOptionalRawString(text);
-  return {
-    text: normalized,
-    kind: normalized ? kind : null,
-  };
-};
+): { text: string | null; kind: ChannelOutputEventTextKind | null } =>
+  text === null ? noText() : { text, kind };
 
 const noText = (): { text: null; kind: null } => ({ text: null, kind: null });
 
 const asNonEmptyString = (value: unknown): string | null =>
   typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
 
-const asNonEmptyRawString = (value: unknown): string | null =>
-  typeof value === "string" && value.trim().length > 0 ? value : null;
-
-const normalizeOptionalRawString = (
-  value: string | null | undefined,
-): string | null => {
-  if (value === undefined || value === null) {
-    return null;
-  }
-  return value.trim().length > 0 ? value : null;
-};
+const asRawString = (value: unknown): string | null =>
+  typeof value === "string" ? value : null;
