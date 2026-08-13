@@ -1122,3 +1122,31 @@ None for proportional test code. `CR-019`–`CR-021` were design-impact findings
 - Material score or classification changes: no focused-review score recomputation. CRR-039's `97/100` is historical; its source-readiness conclusion is superseded by `Fail — Local Fix`.
 - Recommended recipient: `implementation_engineer`
 - Remaining risks or uncertainty: correction must skip only app-ineligible producer/path input during catch-up while preserving strict live projection and surfacing real binding/revision/storage/transaction failures. Both hosts share this Brief worker code. The API/E2E-owned `team-lifecycle-websocket.integration.test.ts` update remains pending proportional review after a successful rerun.
+
+### CRR-041 — IR-023 resolves Brief startup catch-up continuation in source
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `41`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-023`, `CR-026`, `APIE2E-STUDIO-RESTART-014`, `APIE2E-F009`
+- Relevant solution revision IDs: `SR-018`; retained `SR-016`, `SR-013`
+- Relevant architecture-review revision IDs: `ARCH-REV-016`; retained `ARCH-REV-014`, `ARCH-REV-011`
+- Relevant implementation revision IDs: `IR-023`; retained `IR-022`, `IR-017`–`IR-021`
+- Relevant API/E2E revision IDs: `API-REV-014` failure trigger; retained `API-REV-013`
+- Relevant delivery revision IDs: `DR-009`
+- Prior authoritative result: `CRR-040` `Fail — Local Fix`; open `CR-026`
+- Current authoritative result: `Pass / 98`
+- What changed in the review result and why: IR-023 adds one nullable lookup at the existing Brief producer/path rule owner and uses it only in startup catch-up after binding correlation and before revision read. App-ineligible history is skipped without mutation; eligible summaries retain the same ordered strict resolver, revision read, transaction, and notification path. The live handler still uses the strict resolver. No catch-all, error-string matching, platform special case, data migration, schema, tool, event/relay, or compatibility behavior was added. The regenerated package matches a clean rebuild. Reviewer execution passes actual Brief `onStart` with real app migrations and valid history around the exact researcher/final mismatch, semantic/platform publication tests (`3` files / `24` tests), Brief backend typecheck/build/validate, imported-package integration (`1` file / `3` tests), and the AFB architecture gate (`1` file / `14` tests). Exact diff, size, and package-cleanliness audits pass.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-026` | Open — Local Fix | Resolved in source; API/E2E confirmation pending | `API-REV-014`, `CRR-040`, `IR-023`, `CRR-041` | Actual Brief `onStart` skips the retained researcher/final mismatch before revision read/claim, projects valid researcher/writer history, emits the final notification, and reaches `in_review`; strict live rejection remains passing. |
+| `CR-023`, `CR-024`, `CR-025` | Resolved | Remain resolved | `IR-020`, `IR-021`, `CRR-037`–`CRR-039`, `CRR-041` | Current AFB gate passes 14/14; IR-023 introduces no forbidden dependency or constructor change. |
+| `CR-001`–`CR-022` | Resolved | Remain resolved | cumulative prior records | IR-023 changes only Brief rule/replay source and generated output; API-REV-014 had already passed unaffected current-base behavior before CR-026. |
+| `APIE2E-REPO-005` | Historical `Unclear` / unattributed | Remains separate and unchanged | prior API/E2E/review records | No supported connection to IR-023; not Pass evidence. |
+
+- New or remaining finding IDs: None open in implementation source.
+- Material score or classification changes: implementation result improves from `Fail — Local Fix` to `Pass / 98`; every category is `>=9.6`. CR-026 remains pending real API/E2E confirmation only.
+- Recommended recipient: `api_e2e_engineer`
+- Remaining risks or uncertainty: rerun the exact failed Studio same-data restart first, then the retained current-base matrix. The API/E2E-owned dirty team-lifecycle WebSocket test remains pending proportional review after a successful execution round.
