@@ -1,0 +1,29 @@
+start_utc=2026-08-13T09:06:51Z
+branch=codex/agent-team-hierarchical-handoffs
+head_before=29337af23c13ce3c711f28b73c0c802c5e62e3c2
+reviewed_head=258d18cdba0bf7ae08bde134fe09586a8906870d
+post_review_source_commit=b8798338cfc77c322ebd2dde23b827f6855f6588
+checkpoint=29337af23c13ce3c711f28b73c0c802c5e62e3c2
+origin_personal_before=54890a07f74e941a7a12b6daaa26364f4c927b72
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+origin_personal_after=54890a07f74e941a7a12b6daaa26364f4c927b72
+merge_base=54890a07f74e941a7a12b6daaa26364f4c927b72
+left_right=0/96
+latest_base_ancestor=YES
+unmerged_count=0
+post_review_commit_stat:
+b8798338c refactor(agent-team): render exact collaboration sections
+ .../prompt/carpenter-prompt-composer.ts            |  2 +-
+ .../member-collaboration-instruction-renderer.ts   | 41 +++++++++++-------
+ .../services/team-runtime-instruction-renderer.ts  | 10 ++---
+ .../autobyteus-agent-run-backend-factory.test.ts   |  6 ++-
+ .../backend/claude-session-bootstrapper.test.ts    |  4 +-
+ .../session/claude-session-tool-gating.test.ts     |  8 ++--
+ .../backend/codex-thread-bootstrapper.test.ts      | 12 ++++++
+ .../prompt/carpenter-prompt-composer.test.ts       | 20 ++++++---
+ ...llaboration-instruction-provider-parity.test.ts | 49 ++++++++++++++++++++--
+ 9 files changed, 114 insertions(+), 38 deletions(-)
+review_gap=CRR-083/API-REV-038 are based on 258d18cd; b8798338 changes 3 production and 6 durable test paths after that basis without an implementation revision, source review, coverage investigation, execution, or proportional test review
+integration_action=NONE; base already ancestor; delivery blocked before docs sync by post-review source/test delta
+end_utc=2026-08-13T09:06:53Z

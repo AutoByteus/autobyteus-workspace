@@ -1,0 +1,7 @@
+initial_frontend_attempt=DISCARDED_ENVIRONMENT_CONFIGURATION
+observed=Bound backend is not ready
+cause=development proxy was not assigned BACKEND_NODE_BASE_URL and defaulted to localhost:8000
+team_allocated=false
+correction=restarted only API-owned 31239 frontend with BACKEND_NODE_BASE_URL=http://127.0.0.1:60239
+production_source_change=NONE
+operational_database_action=NONE

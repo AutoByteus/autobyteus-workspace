@@ -1,49 +1,46 @@
 import { describe, expect, it, vi } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { MixedAgentMemberHandle } from "../../../src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.js";
 import { MixedAgentMemberContext, MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
-import { TeamRunConfig, type TeamMemberRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
+import { createTeamExecutionAddress } from "../../../src/agent-team-execution/domain/team-execution-address.js";
+import type { TeamRunAgentNode } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
 
-const buildMemberConfig = (): TeamMemberRunConfig => ({
-  memberKind: "agent",
-  memberName: "worker",
-  memberPath: ["worker"],
-  memberRouteKey: "worker",
-  memberRunId: "worker-run-1",
+const buildMemberConfig = (): TeamRunAgentNode => testAgentNode("/worker", {
+  agentRunId: "worker-run-1",
   agentDefinitionId: "agent-worker",
   llmModelIdentifier: "model-1",
   autoExecuteTools: false,
-  skillAccessMode: SkillAccessMode.NONE,
   runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-  memoryDir: "/tmp/worker-memory",
 });
 
 const buildHandle = (overrides: { platformAgentRunId?: string | null; agentRunManager?: unknown } = {}) => {
   const config = buildMemberConfig();
+  const teamConfig = testTeamRunConfig({
+    rootTeamRunId: "team-run-1",
+    rootTeamDefinitionId: "team-def-1",
+    coordinatorAddress: config.address,
+    children: [config],
+  });
   const memberContext = new MixedAgentMemberContext({
-    memberName: config.memberName,
-    memberPath: config.memberPath,
-    memberRouteKey: config.memberRouteKey,
-    memberRunId: config.memberRunId!,
+    address: config.address,
+    agentRunId: config.agentRunId,
     runtimeKind: config.runtimeKind,
     platformAgentRunId: overrides.platformAgentRunId ?? null,
   });
   const teamContext = new TeamRunContext({
-    runId: "team-run-1",
+    teamRunId: "team-run-1",
+    teamAddress: "/",
     teamBackendKind: TeamBackendKind.MIXED,
-    coordinatorMemberName: config.memberName,
-    coordinatorMemberRouteKey: config.memberRouteKey,
-    config: new TeamRunConfig({
-      teamDefinitionId: "team-def-1",
-      teamBackendKind: TeamBackendKind.MIXED,
-      memberConfigs: [config],
-    }),
+    config: teamConfig,
     runtimeContext: new MixedTeamRunContext({
-      coordinatorMemberRouteKey: config.memberRouteKey,
       memberContexts: [memberContext],
+      teamExecutionAddress: createTeamExecutionAddress({
+        rootTeamRunId: "team-run-1",
+        memberAddress: config.address,
+      }),
     }),
   });
 

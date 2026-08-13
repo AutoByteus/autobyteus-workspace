@@ -1,8 +1,10 @@
 # Canonical Hierarchical AgentTeam Execution
 
-> **Draft — not published.** Prepared for the DR-008 user-verification
-> checkpoint. Version, archive path, and publication remain subject to explicit
-> user authorization and a fresh target/tag check.
+> **Historical draft — not published and not current.** Prepared for the DR-008
+> SR-020 checkpoint. DR-009 withdrew that verification checkpoint after the
+> branch gained an unreviewed SR-025 production/test delta. Do not publish this
+> draft until the current implementation/review/API gates pass and delivery
+> refreshes the notes against the resulting state.
 
 ## What's New
 

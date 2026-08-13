@@ -1,0 +1,29 @@
+API-REV-040 final handoff audit
+2026-08-13T15:31:59Z
+HEAD=632c503188cb9dbb8eecf4422fa174499519ad89
+head=PASS
+present=tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr028/api-rev-040/investigation/cumulative-durable-coverage-inventory.tsv
+present=tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr028/api-rev-040/investigation/cumulative-durable-diff.patch
+present=tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr028/api-rev-040/investigation/cumulative-durable-inventory-audit.log
+present=tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr028/api-rev-040/repository/server-current-broad-final.log
+present=tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr028/api-rev-040/repository/web-current.log
+present=tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr028/api-rev-040/repository/server-build-full.log
+present=tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr028/api-rev-040/repository/web-production-build.log
+present=tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr028/api-rev-040/live/browser-provider-matrix-summary.json
+present=tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr028/api-rev-040/live/provider/api-f025-postfix-resolution.json
+present=tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr028/api-rev-040/live/provider/configured-stop-fifo-claude.json
+present=tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr028/api-rev-040/live/final-active-run-audit.json
+present=tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr028/api-rev-040/cleanup/final-cleanup-verification.log
+matrix=PASS
+api_f025=PASS
+stop_fifo=PASS
+active_runs=ZERO
+owned_ports_closed=PASS
+protected_ports_absent_no_action=PASS
+2241:## API-REV-040 SR-028 / IR-048 AgentRun Input And Interrupt Coverage Investigation (Pre-edit Baseline)
+309:# API-REV-040 — SR-028 / IR-048 AgentRun input, interrupt, and real provider acceptance
+896:### API-REV-040 — SR-028 / IR-048 real Claude reverse reply, FIFO/Stop, and full current matrix pass
+diff_check=PASS
+OPERATIONAL_DATABASE_ACTION=NONE
+PROTECTED_STACK_ACTION=NONE
+STATUS=PASS

@@ -1,18 +1,35 @@
-# User Verification Handoff — Hierarchical AgentTeam Execution
+# Delivery Rework Handoff — SR-025 Post-review Delta
 
 ## Current Status
 
-`Ready for explicit user verification — not finalized or released.`
+`Blocked — source-review and API/E2E gates required before user verification.`
 
 - Date: `2026-08-13`
-- Delivery revision: `DR-008`
-- Lineage: `SR-020; ARCH-REV-013; IR-042; CRR-078; API-REV-036; CRR-079`
+- Delivery revision: `DR-009`
+- Accepted lineage: `SR-024; ARCH-REV-018; IR-044; CRR-081; API-REV-038; CRR-083`
+- Current branch addition: `SR-025` commit `b8798338c` after reviewed HEAD `258d18cd`
 - Source result: `Pass — 9.3/10 (92.5/100)`
 - API/E2E result: `Pass — 98% confidence`
 - Durable-test review: `Pass — no findings`
-- Open source/API/E2E/test-review findings: none
+- Open delivery finding: current source/test state is not covered by the accepted reviews
 - Delivery packaging observation: the local package is valid, but the unmodified
   README command hit a workspace-symlink limitation described below
+
+## Current Blocker And Route
+
+CRR-083 passed the complete API-REV-038 durable package at HEAD `258d18cd`.
+The branch then advanced through `b8798338c`, changing three production prompt
+owners and six unit-test paths for the user-approved SR-025 exact-copy
+refinement. SR-025 did not require another architecture round, but explicitly
+kept implementation checks, source review, and downstream coverage gates.
+
+Delivery protected the complete state in checkpoint `29337af23` and refreshed
+`origin/personal`; the base remains current and there are no conflicts. IR-045
+then recorded the implementation handoff plus focused `6 files / 55 tests`,
+production TypeScript, full build/bootstrap, exact-copy, and source/safety
+checks in `42e42a947`. The required route is now `code_reviewer` for the
+source/test delta, then `api_e2e_engineer` and proportional durable review when
+applicable. Delivery must re-enter afterward.
 
 ## Delivered Behavior
 
@@ -55,14 +72,13 @@
 - Upstream reviewed source head:
   `6b578235917700584a6b559cd58763bd3bba9b38`
 - Delivery safety checkpoint:
-  `0d32ff25502838c28663fc765c3499fc83455eb1`
-- Divergence after checkpoint: ticket branch `90 ahead / 0 behind`
+  `29337af23c13ce3c711f28b73c0c802c5e62e3c2`
+- Current IR-045 HEAD: `42e42a9471c251075af07c3e0805d43858246e67`
+- Divergence at current HEAD: ticket branch `97 ahead / 0 behind`
 - Integration method: already current; base is the merge base and ancestor
 - Conflicts/unmerged paths: none
-- Refresh evidence:
-  `delivery-evidence/delivery-reentry-dr008-refresh.log` and
-  `delivery-evidence/delivery-reentry-dr008-final-refresh.log`; the post-package
-  fetch is `delivery-evidence/delivery-reentry-dr008-post-package-refresh.log`
+- Refresh evidence: `delivery-evidence/delivery-reentry-dr009-refresh.log` and
+  `delivery-evidence/delivery-reentry-dr009-post-ir045-refresh.log`
 
 The earlier DR-007 21-conflict attempt was resolved upstream in merge
 `80830b9a7` and then re-reviewed through IR-039–IR-042, CRR-078,
@@ -151,17 +167,11 @@ Evidence is in `delivery-evidence/delivery-electron-build-dr008.log`,
    non-clean whole-suite baseline disclosures remain preserved in the upstream
    reports.
 
-## Verification Choice Required
+## Rework Required
 
-Please choose one:
-
-1. **Finalize and release a new patch version** — delivery will refresh the
-   target again, confirm the next available version (currently expected to be
-   `v1.4.51`), archive the ticket, finalize the repository, run the documented
-   release command, and verify publication/deployment.
-2. **Finalize without release** — delivery will refresh the target, archive and
-   merge the verified ticket state, but will not tag, publish, or deploy.
-3. **Request changes / further verification** — the ticket stays in progress.
+The prior verification choice is withdrawn. Complete source review, API/E2E,
+and proportional durable review when applicable for the SR-025 delta, then
+return to delivery for a current docs/handoff/package checkpoint.
 
 No archive, terminal delivery commit, branch push, target update, version edit,
 tag, release, deployment, stash/backup cleanup, or worktree cleanup has occurred.

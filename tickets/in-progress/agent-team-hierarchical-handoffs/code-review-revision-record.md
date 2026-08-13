@@ -90,6 +90,16 @@
 
 | `CRR-083` | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-test-review-report.md` | API-REV-038 proportional re-review of corrected ten-path SR-024 durable package | `CRR-082 Fail — Local Fix`; `API-REV-038 Pass / 98%` | `Pass` | `TR-F-006` |
 
+| `CRR-084` | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md` | IR-045 focused and full cumulative SR-024/SR-025 source review | `CRR-081 source Pass`; `CRR-083` durable-test Pass; `DR-009` blocked on SR-025 review | `Pass` (`9.4/10`) | `None` |
+
+| `CRR-085` | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md` | API-REV-039 failure-origin review of Claude active task-Team peer reverse-reply rejection | `CRR-084 Pass 9.4/10`; `API-REV-039 Fail / 88%` | `Fail — Local Fix`; source readiness reopened | `CR-F-048`, `API-F-025` |
+
+| `CRR-086` | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md` | User-requested structural reclassification of API-REV-039 active-turn admission after cross-provider policy comparison | `CRR-085 Fail — Local Fix` | `Fail — Design Impact`; CRR-085 routing superseded | `CR-F-048`, `API-F-025` |
+| `CRR-087` | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md` | IR-046 focused and full cumulative SR-028 implementation review | `CRR-086 Fail — Design Impact`; `ARCH-REV-021 Pass`; `IR-046` ready | `Fail — Local Fix` (`8.7/10`) | `CR-F-048`, `CR-F-049`, `CR-F-050`, `API-F-025` |
+| `CRR-088` | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md` | IR-047 focused CR-F-049/CR-F-050 and full cumulative SR-028 source re-review | `CRR-087 Fail — Local Fix` (`8.7/10`) | `Fail — Local Fix` (`9.1/10`) | `CR-F-049`, `CR-F-050` |
+| `CRR-089` | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md` | IR-048 focused remaining CR-F-049 and full cumulative SR-028 source re-review | `CRR-088 Fail — Local Fix` (`9.1/10`) | `Pass` (`9.5/10`) | `CR-F-049`, `CR-F-050` |
+| `CRR-090` | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-test-review-report.md` | API-REV-040 proportional review of exact five-path SR-028 durable-test package | `CRR-089 source Pass 9.5/10`; `API-REV-040 Pass / 98%`; prior test `CRR-083 Pass` | `Pass` | `None` |
+
 ## Revision Entries
 
 ### CRR-001 — Initial source review finds update atomicity and MCP boundary defects
@@ -2526,3 +2536,217 @@ None. `CR-F-001`, `CR-F-002`, and `TR-F-001` remain resolved. `CR-F-003` and `CR
 - Recommended recipient: `delivery_engineer` with the complete cumulative artifact package.
 - Remaining risks or uncertainty: generic package typecheck retains the disclosed TS6059 repository configuration issue and is not claimed. API-REV-037's fresh `8/8` provider/browser/mobile/restore matrix remains authoritative because the correction is test-only. Delivery must refresh latest tracked base/integrated state before docs/final handoff and preserve operational database, protected `60004/31004`, stashes/backup, incident disclosures, and no rollback/repair action.
 - Reviewer evidence: `/tmp/crr083-api-rev038-test-audit.log` (SHA-256 `28e17e664b6bcfae9f9a4dab76bc534bc72a52b31d4726a513e1b9f491623a29`); inventory `9621e6919e97766d3bcfd53fc2c016dc72235e92d173427309524eb17a38d845`; patch `1aa447531f2c9ac07a67d99e07608feb2151a32afd30d34749c512e61d81659d`; audit `e5f45b06fc26ac1e1d6cd68578546a4898aa4ecc249b7848b7dca4c042bd1903`; focused tests `c49c78baddec773e00def4ecf353e896e7d0d1ddbae3cb095789d5b9ed913fa6`; no-fabrication `db7dca31b85296b8497972d58b25350d9ef5bb194ef27aba3ad7192e44757a40`.
+
+### CRR-084 — IR-045 exact SR-025 AgentTeam prompt copy passes full cumulative source review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`
+- Review entry point and round: `Implementation Review`, overall source round `65`; focused IR-045 plus full cumulative SR-024/SR-025 source/structural review.
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/implementation-handoff.md`; `IR-045`; copy clarification `SR-025`; delivery gate `DR-009`.
+- Relevant solution revision IDs: cumulative `SR-001`–`SR-025`; current exact-copy clarification `SR-025`; cumulative behavior architecture `SR-024`.
+- Relevant architecture-review revision IDs: current cumulative `ARCH-REV-018 Pass`; SR-025 explicitly required no additional architecture round.
+- Relevant implementation revision IDs: current `IR-045`; preserved source basis `IR-043`–`IR-044`; integrated basis `IR-039`.
+- Relevant API/E2E revision IDs: historical pre-SR-025 `API-REV-038 Pass / 98%`; fresh current acceptance pending.
+- Relevant delivery revision IDs: current `DR-009 Blocked — Local Fix`; historical `DR-008` package predates SR-025.
+- Prior authoritative result: source `CRR-081 Pass 9.3/10 (92.5/100)`; API/E2E `API-REV-038 Pass / 98%`; proportional durable-test `CRR-083 Pass`, all before SR-025.
+- Current authoritative result: `Pass 9.4/10 (93.9/100)` for current SR-024/SR-025 implementation source.
+- What changed in the review result and why: IR-045 replaces the old vague wrapper/duplicated prose with the user-approved exact `AgentTeam Addressing` then `AgentTeam Collaboration` template, substitutes only the canonical caller address, and keeps one provider-neutral composer feeding AutoByteus system prompt, Codex `baseInstructions`, and Claude `systemPrompt`. The same Team binding still owns intrinsic collaboration tools; standalone runs remain excluded. From CRR-081's reviewed HEAD to current HEAD, no other implementation source changed, so the prior full cumulative SR-024 conclusions remain valid after current macro-path re-tracing.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-F-046`, `CR-F-047` | `Resolved in source and downstream` | `Remain resolved` | `IR-044`; `CRR-081`–`CRR-084`; `API-REV-037`–`API-REV-038` | Source diff from reviewed `258d18cdb` contains only three prompt owners; provider/external delta paths are unchanged. |
+| `CR-F-043` | `Resolved downstream` | `Remains resolved` | `API-REV-037`; `CRR-082`–`CRR-084` | IR-045 changes no environment/cleanup owner or evidence path. |
+| `TR-F-006` | `Resolved` | `Remains resolved` | `API-REV-038`; `CRR-083`–`CRR-084` | IR-045 does not change the Codex real-thread harness or converter boundary. |
+| `DR-009` | `Blocked — missing post-SR-025 source/API acceptance` | `Source-review portion resolved; API/E2E and delivery remain pending` | `SR-025`; `IR-045`; `DR-009`; `CRR-084` | Current production/test commit receives this full source Pass. Pre-SR-025 API-REV-038 is not reused as current acceptance. |
+
+- New or remaining implementation-source finding IDs: none.
+- Material premises: new `CR-PREM-042` confirms supported desktop/mobile Team create/restore and accepted task delegation reach the shared composer/renderer and the same intrinsic-tool owner across all three providers. New `CR-PREM-043` confirms supported standalone Agent first-send/restore reaches the null-Team path and must remain excluded. Both are `Reachable` and satisfied. MP-009/MP-013 remain Not Reachable/no longer relevant and drive no finding or machinery.
+- Design-health assessment: `No Design Issue Found`. The full cumulative audit re-confirms the SR-024 first-boundary/one-AgentRun-lifecycle refactor; SR-025 is correctly contained in the existing prompt spine and does not create a new cross-cutting owner, fallback, or patch layer.
+- Source-size result: changed production paths are `37`, `12`, and `46` effective non-empty lines, all below `220` and `500`. The preserved cumulative maximum remains `codex-thread.ts` at `496`, already explicitly reviewed.
+- Changed implementation-test result: all six edits are coherent and requirement-aligned; exact independent oracle, order/count, provider create/restore/system seams, intrinsic tools, and standalone absence are covered. No disabled/stale/compatibility-only test was introduced.
+- Validation: reviewer exact built-renderer/artifact equality Pass; reviewer focused `6 files / 55 tests` Pass; reviewer production TypeScript and emit Pass; reviewer source/call-graph/legacy/diff audit Pass. Implementation full production build/bootstrap and its independent exact-copy/source audit pass.
+- Material score or classification changes: source remains Pass and improves from `9.3/10` to `9.4/10` because the prompt copy now has one exact owner and clean provider parity. API/E2E readiness is `9.1`, held below stronger categories because no post-SR-025 coverage investigation or real-provider acceptance exists yet.
+- Recommended recipient: `api_e2e_engineer` for fresh SR-025 coverage investigation and proportionate execution. Every durable repository test add/update/remove must return for proportional review before delivery.
+- Remaining risks or uncertainty: API-REV-038 and DR-008 are historical pre-SR-025 results; generic package typecheck retains the known TS6059 configuration issue; delivery docs/package require later refresh. Operational database, protected `60004/31004`, stashes/backup, incident disclosures, and no-rollback/no-repair state remain protected.
+- Reviewer evidence: `/tmp/crr084-full-source-audit.log` (SHA-256 `bf4343640d89d74d71d52dfab1d4f6b9a5b836de02ed61d800c79cfae87d3151`); `/tmp/crr084-agent-team-prompt-copy-audit.log` (`afcf0965588b5e01fd7b59700b733773ca2706d57b0278309942c588a27ae9d4`); `/tmp/crr084-agent-team-prompt-focused-tests.log` (`d49f98a56befa29f1c6ddc1e57ebd7551d31c4528e5fcbb8a226bec385bf88ee`); `/tmp/crr084-server-production-typecheck.log` (`e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`); `/tmp/ir045-server-production-build.log` (`98fef9105d12e5d5dfeabd0a841a49ad1b6fb22897b75ca83b28d1f83a17e53f`); `/tmp/ir045-agent-team-prompt-source-audit.log` (`5871beecbfda7389c1a9ccac2d01cd980a9aee8e6ee2d65a53fb5bdb7171ed62`).
+
+### CRR-085 — Claude active task-peer reply exposes a base turn-admission regression
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`
+- Review entry point and round: `API/E2E Failure-Origin Review`, overall source/failure round `66`, failure-origin round `24`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md`; `API-REV-039 Fail / 88%`; `API-F-025`; `API-LIVE-039-CLAUDE-TASK-PEER-REPLY-001`; new source finding `CR-F-048`
+- Relevant solution revision IDs: cumulative `SR-001`–`SR-025`; current `SR-025`; cumulative architecture `SR-024`
+- Relevant architecture-review revision IDs: current cumulative `ARCH-REV-018 Pass`; no additional SR-025 architecture round
+- Relevant implementation revision IDs: current `IR-045`; cumulative provider/runtime basis `IR-039`, `IR-043`–`IR-045`; exact task-Team routing `IR-018`
+- Relevant API/E2E revision IDs: current `API-REV-039`; historical `API-REV-037`–`API-REV-038`
+- Relevant delivery revision IDs: `DR-009`; delivery paused
+- Prior authoritative result: `CRR-084 Pass 9.4/10 (93.9/100)`; API-REV-039 then failed at 88%
+- Current authoritative result: `Fail — Local Fix`; current source readiness reopened
+- What changed in the review result and why: the real Claude nested task-Team reaches exact rooted peer routing, but the reverse peer input arrives while `student_one`'s prior Claude turn remains active. The common router reaches the exact AgentRun; `ClaudeSession.sendTurn()` rejects solely on `activeTurnId`, the backend returns `RUNTIME_COMMAND_FAILED`, and the reverse communication/submission/review are absent. AutoByteus/Codex complete the same row, and simpler idle-recipient Claude messaging passes.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-F-018` / `API-F-010` | `Resolved` | `Remains resolved` | `IR-018`; `CRR-030`–`CRR-031`; `API-REV-039`; `CRR-085` | API-REV-039 proves the request reaches the exact task-scoped peer with the complete root/task-Team chain; failure occurs only after reverse routing resolves the correct active AgentRun. |
+| `CR-F-046`, `CR-F-047`; `CR-F-043`; `TR-F-006` | `Resolved` | `Remain resolved` | `CRR-081`–`CRR-084`; `API-REV-037`–`API-REV-039` | API-F-025 concerns Claude input turn admission, not provider segment/delta fidelity, cleanup residue, or Codex opaque-message coverage. |
+| `IR-045` / `SR-025` prompt result | `Passed in CRR-084` | `Remains correct but not sufficient for current acceptance` | `IR-045`; `CRR-084`; `API-REV-039` | Exact prompt/provider `55/55`, built copy/order/count audit, and real provider tool election pass. The new failure is after the peer tool invokes the common delivery route. |
+
+- New or remaining finding IDs: `CR-F-048` / `API-F-025`.
+- Material premise: new `CR-PREM-044` is `Reachable`. The independent trigger is the exposed Team launch plus supported task-Team delegation; real provider execution reaches the exact active-recipient state and consequence.
+- Failure origin: bounded source defect at the Claude session turn-admission owner. Current source replaced predecessor idle-wait/turn scheduling with an unconditional active-turn rejection in base commit `4fb78f8646`, already an ancestor of `54890a07f74e941a7a12b6daaa26364f4c927b72`. It was not introduced by IR-045/SR-025 or the later merge.
+- Earlier review gap: CRR-084's full cumulative review should have cross-composed the approved task-peer reply path with the explicit Claude active-turn rejection. Runtime Correctness and API/E2E Readiness score rationales are reopened; the historical scorecard is not repeated or re-averaged.
+- Classification: `Local Fix` owned by `implementation_engineer`; no design or requirement update is needed because provider parity/exact delivery is explicit and predecessor source establishes provider-local serialization.
+- Recommended recipient: `implementation_engineer`. Preserve the common router, exact task-Team selection, accepted-input publication, and one Claude turn owner; do not add collaboration retry, provider-specific Team delivery, fallback, duplicate communication, or a second lifecycle. Return for source re-review and fresh API/E2E.
+- Remaining risks or uncertainty: API-REV-039 stopped fresh standalone/mobile expansion after the critical failure. Operational database, protected `60004/31004`, stashes/backup, incident disclosures, and no-rollback/no-repair state remain protected.
+- Reviewer evidence: `/tmp/crr085-api-rev039-failure-origin-audit.log`; failure analysis SHA-256 `59fdb0cf5cdc658a5bbf93648037d7bc8c253a5d2add196b018888419132373e`; peer trace `58e12b1383f589277c9a818e21d983b163a656cdc37c30248df69d8ddc52fe78`; public boundary `f97b720bf343c01a4179f122a0dfbd7382b68a0fd47fa5fb255cf6502f7b848f`; focused log `d87e619dba235ee4e2daba651712b34724ad459d3437e9112f2e4a14e450c9af`.
+
+### CRR-086 — Cross-provider active-input policy reclassifies API-F-025 as design impact
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`
+- Review entry point and round: `API/E2E Failure-Origin Review` structural-classification reconsideration, overall source/failure round `67`, failure-origin round `24`.
+- Triggering role, report path, and finding or scenario IDs: user-requested design-health reconsideration of `API-REV-039`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md`; `API-F-025`; `API-LIVE-039-CLAUDE-TASK-PEER-REPLY-001`; `CR-F-048`.
+- Relevant solution revision IDs: cumulative `SR-001`–`SR-025`; current `SR-025`; cumulative architecture `SR-024`.
+- Relevant architecture-review revision IDs: current `ARCH-REV-018 Pass`; the active-input admission policy was not defined by that reviewed design.
+- Relevant implementation revision IDs: current `IR-045`; provider/runtime basis `IR-039`, `IR-043`–`IR-045`; base regression commit `4fb78f8646`.
+- Relevant API/E2E revision IDs: current `API-REV-039 Fail / 88%`; historical pre-SR-025 `API-REV-037`–`API-REV-038`.
+- Relevant delivery revision IDs: `DR-009`; delivery remains paused.
+- Prior authoritative result: `CRR-085 Fail — Local Fix`, routed to `implementation_engineer`.
+- Current authoritative result: `Fail — Design Impact`; CRR-085's Local Fix routing is superseded and withdrawn.
+- What changed in the review result and why: broader provider comparison shows that the same shared `AgentRunBackend.postUserMessage()` boundary has no canonical active-input semantics. `AgentRun` still invokes the backend when its lifecycle refuses a new command token; Codex serializes and steers the active turn; current Claude rejects; predecessor Claude waited for idle; AutoByteus delegates to its runtime. A Claude-only wait queue would make the symptom pass but would locally select observable lifecycle semantics and leave provider policy distributed.
+- Finding status: `CR-F-048` / `API-F-025` remains open. The immediate source manifestation remains the Claude active-turn guard, while the structural origin is a missing AgentRun input-admission invariant and authoritative policy owner.
+- Material premise: `CR-PREM-044` remains `Reachable` through the exposed Team launch/delegation flow and actual provider-bound reverse peer tool call. No hypothetical or Not-Reachable state drives reclassification.
+- Design-health assessment: `Boundary Or Ownership Issue` plus `Duplicated Policy Or Coordination`; refactor/design work is required now. The corrected solution must define acceptance meaning, active-turn behavior, FIFO/exactly-once ordering, and pending-input interruption/termination at one provider-independent AgentRun admission boundary. Provider adapters may translate mechanics but must not independently choose product policy.
+- Earlier review gap: CRR-084 should have compared the shared lifecycle/operation contract with both Codex steering and Claude rejection. CRR-085 correctly found the immediate defect but classified the symptom rather than the structural cause.
+- Material score or classification changes: `Fail — Local Fix` -> `Fail — Design Impact`. No scorecard is repeated; CRR-084's historical `9.4/10` remains reopened and is not current readiness.
+- Recommended recipient: `solution_designer` for corrected cumulative solution and architecture review before implementation resumes. After architecture Pass, require implementation, source re-review, and fresh API/E2E beginning with the failed Claude task-peer row.
+- Remaining risks or uncertainty: the final canonical active-turn policy is not yet approved. A provider-neutral FIFO next-turn policy is the simplest deterministic baseline, while any deliberate in-turn steering policy requires an explicit capability/fallback decision. Implementation, API/E2E, and delivery remain paused; preserve operational database, protected `60004/31004`, stashes/backup, incident disclosures, and no-rollback/no-repair state.
+- Reviewer evidence: `/tmp/crr086-active-input-ownership-audit.log` (SHA-256 `2cef4d38e900d1e2c7ef0097d4a768e12991357f39a4fc06fc66d3f3ff6f8621`) plus the unchanged API-REV-039 evidence cited by CRR-085.
+
+### CRR-087 — IR-046 centralizes ordinary input but leaves interrupt ownership and forwarding names incomplete
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`
+- Review entry point and round: `Implementation Review`, overall source/failure round `68`; focused `CR-F-048` resolution check plus full cumulative SR-028 source/structural review.
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/implementation-handoff.md`; `IR-046`; originating `CR-F-048` / `API-F-025`.
+- Relevant solution revision IDs: cumulative `SR-001`–`SR-028`; current `SR-028`; AgentRun policy `SR-026`; package/capability cut `SR-027`; exact prompt copy `SR-025`.
+- Relevant architecture-review revision IDs: `ARCH-REV-021 Pass`.
+- Relevant implementation revision IDs: current `IR-046`; preserved `IR-039`, `IR-043`–`IR-045`.
+- Relevant API/E2E revision IDs: historical `API-REV-039 Fail / 88%`; post-IR-046 execution `N/A`.
+- Relevant delivery revision IDs: `DR-009`; delivery remains paused.
+- Prior authoritative result: `CRR-086 Fail — Design Impact`; implementation was unauthorized until corrected cumulative architecture passed.
+- Current authoritative result: `Fail — Local Fix`, `8.7/10` (`87.2/100`).
+- What changed in the review result and why: SR-028/ARCH-REV-021 supplies the missing design authority, and IR-046 correctly introduces one non-persisted AgentRun FIFO/entry lifecycle. The prior Claude active-turn rejection and distributed ordinary-input policy are removed. Full review nevertheless found that the supported Stop generation command still passes no turn ID into `AgentRun.interrupt()`, which directly calls the backend outside the AgentRun queue and leaves provider owners to select the active turn. The same review found that forwarding-only memory notification still exposes `onUserMessageAccepted` / `acceptedAt`, conflating the newly distinct admission and forwarding instants.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-F-048` / `API-F-025` | Open — Design Impact and live Claude failure | `Resolved at design and source-review level for ordinary input; downstream re-execution pending` | `CRR-086`; `SR-026`–`SR-028`; `ARCH-REV-019`–`ARCH-REV-021`; `IR-046` | Every ordinary caller ends at one AgentRun FIFO; Claude/AutoByteus are next-turn-only; Codex exact append is run-selected; actual router -> AgentRun -> ClaudeSession composition passes. Reviewer-focused `17 files / 153 tests` pass. |
+| `CR-F-043` | Open — API/E2E-owned residue cleanup/evidence issue | `Unchanged; correctly deferred` | `CRR-076`; `SR-028`; `IR-046` | Implementation and reviewer audits did not inspect, modify, remove, or use the residue as source proof. |
+| Cumulative `CR-F-046`, `CR-F-047`, `TR-F-006`, SR-025 prompt result | Resolved/passed | `Remain resolved` | `CRR-081`–`CRR-084`; `IR-044`–`IR-046` | Exact delta fidelity, Codex opaque first boundary, and one Addressing + one Collaboration prompt section remain intact in source and focused evidence. |
+
+- New or remaining finding IDs: `CR-F-049` (AgentRun interrupt owner/serialization), `CR-F-050` (forwarding observer semantic naming). `API-F-025` requires fresh downstream execution after source Pass.
+- Material premise: new `CR-PREM-045` is `Reachable`. The exposed Stop generation action reaches standalone `activeRun.interrupt(null)` or Team member `agentRun.interrupt()` while a canonical turn is active; provider implementations then select mechanics without an AgentRun-owned queued decision.
+- Material score or classification changes: design authority is no longer blocked, so `Fail — Design Impact` becomes bounded `Fail — Local Fix`; source quality is `8.7/10`, with ownership, interface/naming, API/E2E readiness, runtime fidelity, and cleanup below the clean-pass threshold.
+- Recommended recipient: `implementation_engineer`. Serialize exact canonical-turn interrupt ownership through the existing AgentRun queue with provider I/O outside, and rename the forwarding observer/payload/timestamp/consumer vocabulary. Return for focused source re-review before API/E2E resumes.
+- Remaining risks or uncertainty: no post-IR-046 real provider/browser result exists; downstream-owned stale coverage and CR-F-043 residue remain; the no-skip three-provider/standalone/mobile matrix remains required. Preserve the operational database, protected `60004/31004`, stashes/backup, incident disclosures, and no-rollback/no-repair state.
+- Reviewer evidence: `/tmp/crr087-focused-tests.log` SHA-256 `200a5a968948775a10f01e82153a9225018fe513716720a05c08a94e3672a38a`; `/tmp/crr087-server-production-typecheck.log` SHA-256 `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`; `/tmp/crr087-full-source-audit.log` SHA-256 `0922155c8a998e001b8e638df2d67d5b17e6f07e26e561f27f69c223ee5c5c1d`; implementation full-build log SHA-256 `b223963e49fafd56a52cf8ccde90474d913bd27e2c507c28948c5babe121e345`; router/Claude composition log SHA-256 `531d11c52ff5da4cc55d4450a35dfaa5a6c853569c027dc16f91a44ace058287`.
+
+### CRR-088 — IR-047 fixes exact interrupt targeting and forwarding names but leaves interrupt/FIFO coordination incomplete
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`
+- Review entry point and round: `Implementation Review`, overall source/failure round `69`; focused `CR-F-049` / `CR-F-050` resolution check plus full cumulative SR-028 source/structural re-review.
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/implementation-handoff.md`; `IR-047`; `CR-F-049`; `CR-F-050`.
+- Relevant solution revision IDs: cumulative `SR-001`–`SR-028`; current `SR-028`; AgentRun policy `SR-026`; package/capability cut `SR-027`; exact prompt copy `SR-025`.
+- Relevant architecture-review revision IDs: `ARCH-REV-021 Pass`.
+- Relevant implementation revision IDs: current `IR-047`; basis `IR-046`; preserved `IR-039`, `IR-043`–`IR-045`.
+- Relevant API/E2E revision IDs: historical `API-REV-039 Fail / 88%`; post-IR-047 execution `N/A`.
+- Relevant delivery revision IDs: `DR-009`; delivery remains paused.
+- Prior authoritative result: `CRR-087 Fail — Local Fix`, `8.7/10` (`87.2/100`).
+- Current authoritative result: `Fail — Local Fix`, `9.1/10` (`90.9/100`).
+- What changed in the review result and why: IR-047 correctly makes AgentRun reserve the exact canonical interrupt target under its dispatch queue, runs provider I/O outside the queue, deduplicates same-turn calls, rejects explicit mismatch before provider I/O, and waits for the exact terminal before settling/draining. It also completes the forwarding-only naming cleanup. A full cumulative interaction check nevertheless found that `AgentRun.claimNextInput()` does not consult the active interrupt reservation. For append-capable Codex, input admitted after Stop reserves the active turn can still be selected as `append_to_active_turn` and forwarded into the same turn before its canonical terminal, contrary to `INP-006`.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-F-049` | Open — AgentRun interrupt owner/serialization incomplete | `Partially Resolved; Remains Open` | `CRR-087`–`CRR-088`; `IR-046`–`IR-047`; `SR-028`; `ARCH-REV-021` | Exact target capture, same-turn dedupe, mismatch rejection, provider validation, provider-I/O placement, and result/terminal ordering now pass. However, `agent-run.ts:215-231` omits `activeInterruptReservation` when choosing input dispatch, and `agent-run-input-admission-state.ts:104-129` can select Codex append against the reserved turn. Deleted-after-use reviewer probe `/tmp/crr088-interrupt-fifo-probe.log` records the actual premature append. |
+| `CR-F-050` | Open — forwarding-only observer vocabulary uses accepted semantics | `Resolved` | `CRR-087`–`CRR-088`; `IR-047` | `ForwardedPayload`, `forwardedAt`, `onUserMessageForwarded`, recorder, and extraction helper now preserve forwarding semantics end to end; the static audit finds no retired accepted-named symbols. |
+| `CR-F-048` / `API-F-025` | Resolved at design/source level for ordinary input; downstream rerun pending | `Unchanged` | `CRR-086`–`CRR-088`; `SR-028`; `IR-046`–`IR-047` | Shared ordinary-input FIFO ownership remains in AgentRun and the prior active Claude rejection path remains removed. Fresh configured/provider/browser acceptance still waits for source Pass. |
+| `CR-F-043` and cumulative resolved SR-024/SR-025 findings | Deferred/resolved as previously recorded | `Unchanged` | `CRR-076`, `CRR-081`–`CRR-084`, `CRR-087`–`CRR-088` | IR-047 does not inspect or change downstream residue, segment/delta owners, Codex first-boundary branding, or exact prompt copy. |
+
+- New or remaining finding IDs: `CR-F-049` only. `CR-F-050` is resolved. No new design or requirement finding is introduced.
+- Material premise: new `CR-PREM-046` is `Reachable`. `INP-006` independently governs admitted waiting input during interruption. The exposed Stop action reaches exact `AgentRun.interrupt()`, while a supported Team peer `send_message_to` reaches the same run through `InterAgentMessageRouter.deliver()` and `AgentRun.postUserMessage()`. With Codex active-turn append capability, the current owner selects `append_to_active_turn` before the interrupt terminal. The probe reproduces this established path; it does not establish reachability by itself.
+- Design-health assessment: `No New Design Issue Found`. SR-028/ARCH-REV-021 already names AgentRun as the sole interrupt/input owner and requires waiting FIFO entries to remain terminal-gated. The remaining defect is one bounded missing coordination invariant between two run-owned states, not another cross-cutting design gap.
+- Source-size result: no IR-047 production path exceeds the `>220` changed-line signal or `500` effective-line hard limit. The largest changed sources remain cohesive at `496` and `492` effective lines; `agent-run.ts` is `456` effective lines with `125` changed lines.
+- Validation: current IR-047 focused selection `8 files / 92 tests` Pass; production TypeScript Pass; implementation full production build/bootstrap Pass; source/removal/size/diff audit Pass; deleted-after-use exact interrupt/FIFO reviewer probe intentionally fails because one Codex append occurs while interrupt result and terminal are pending.
+- Material score or classification changes: `8.7/10` -> `9.1/10` because exact interrupt targeting/provider ownership and forwarding names are corrected. The result remains `Fail — Local Fix` because Data-Flow, Ownership, API/E2E Readiness, and Runtime Correctness remain below `9.0`.
+- Recommended recipient: `implementation_engineer`. Make the existing AgentRun interrupt reservation participate in input dispatch eligibility; retain FIFO order and resume on rejected/failed interrupt or the exact terminal as applicable. Add append-capable Codex cases for reservation, rejection/failure, terminal-before-result, and duplicate-call exclusion. Do not add a provider queue, collaboration retry, fallback, alias, compatibility route, or second lifecycle.
+- Remaining risks or uncertainty: API/E2E and delivery remain paused; the post-SR-028 real provider/browser matrix has not run; downstream-owned stale coverage and CR-F-043 residue remain outside source acceptance. Operational database, protected `60004/31004`, stashes/backup, incident disclosures, and no-rollback/no-repair state remain protected.
+- Reviewer evidence: `/tmp/crr088-interrupt-fifo-probe.log`; `/tmp/crr088-ir047-focused-rerun.log`; `/tmp/crr088-ir047-production-typecheck.log`; implementation `/tmp/ir047-server-build-full.log`; `/tmp/ir047-source-audit.log`.
+
+### CRR-089 — IR-048 completes run-owned interrupt/FIFO coordination and passes cumulative SR-028 review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`
+- Review entry point and round: `Implementation Review`, overall source/failure round `70`; focused remaining `CR-F-049` resolution check plus full cumulative SR-028 source/structural re-review.
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/implementation-handoff.md`; `IR-048`; remaining `CR-F-049` / `CR-PREM-046`; preserved resolved `CR-F-050`.
+- Relevant solution revision IDs: cumulative `SR-001`–`SR-028`; current `SR-028`; AgentRun policy `SR-026`; package/capability cut `SR-027`; exact prompt copy `SR-025`.
+- Relevant architecture-review revision IDs: `ARCH-REV-021 Pass`.
+- Relevant implementation revision IDs: current `IR-048`; basis `IR-047` / `IR-046`; preserved `IR-039`, `IR-043`–`IR-045`.
+- Relevant API/E2E revision IDs: historical `API-REV-039 Fail / 88%`; post-IR-048 execution `N/A`.
+- Relevant delivery revision IDs: `DR-009`; delivery remains paused.
+- Prior authoritative result: `CRR-088 Fail — Local Fix`, `9.1/10` (`90.9/100`).
+- Current authoritative result: `Pass`, `9.5/10` (`95.4/100`).
+- What changed in the review result and why: `AgentRun.claimNextInput()` is now ineligible whenever the existing interrupt reservation is active, before the FIFO state considers exact active-turn append. Provider rejection and throw clear only the matching reservation under the run dispatch queue and invoke the existing drain. Accepted interruption retains the reservation until the exact canonical terminal. If that terminal arrives before a delayed provider result, it releases/drains once and the later result cannot duplicate interrupt or input dispatch. The correction adds no state owner or provider policy.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-F-049` | Partially resolved; active interrupt reservation did not gate Codex append-capable input | `Resolved` | `CRR-087`–`CRR-089`; `IR-046`–`IR-048`; `SR-028`; `ARCH-REV-021` | `agent-run.ts:215-221` blocks every claim while the reservation exists; `agent-run.ts:381-416` releases and drains only for matching throw/rejection while accepted results stay terminal-gated. Exact implementation suite `21/21` covers accepted, rejected, thrown, terminal-before-result, append-capable, and duplicate-call cases; reviewer focus `47/47` passes. |
+| `CR-F-050` | Resolved in IR-047 | `Remains Resolved` | `CRR-087`–`CRR-089`; `IR-047`–`IR-048` | Forwarded payload/timestamp/observer/recorder vocabulary remains exact; reviewer static audit finds no retired accepted-named symbols. |
+| `CR-F-048` / `API-F-025` | Resolved at design/source level for ordinary input; downstream rerun pending | `Source Pass; downstream rerun still required` | `CRR-086`–`CRR-089`; `SR-028`; `IR-046`–`IR-048` | One AgentRun FIFO remains authoritative and Claude/AutoByteus remain next-turn-only. Source is now ready for fresh real Claude task-peer and equivalent provider validation. |
+| `CR-F-043` and cumulative resolved SR-024/SR-025 findings | Deferred/resolved as previously recorded | `Unchanged` | `CRR-076`, `CRR-081`–`CRR-084`, `CRR-087`–`CRR-089` | IR-048 changes only AgentRun and its implementation-owned unit suite; segment/delta, Codex first-boundary, prompt, cleanup-residue, migration, frontend, and rooted Team owners are unchanged. |
+
+- New or remaining implementation-source finding IDs: none.
+- Material premise: `CR-PREM-046` remains `Reachable` and is now satisfied. Exposed Stop reserves the canonical Codex turn; an independently supported Team peer delivery reaches the same AgentRun; admission returns truthful ownership while input claim is gated. Rejection/failure reopens exact append, while accepted interrupt waits for the matching terminal and drains the retained head afterward. The production witness remains independent of the unit proof.
+- Design-health assessment: `No Design Issue Found`. The complete review confirms SR-028's one AgentRun admission/interrupt owner. IR-048 completes the previously omitted local interaction without a provider queue, retry, fallback, alias, compatibility path, or second lifecycle.
+- Source-size result: the only current production path is `agent-run.ts` at `464` effective non-empty lines, with `11` additions / `3` deletions. It remains below `500`, the delta remains below `220`, and responsibility/placement are cohesive. Preserved near-limit provider owners are unchanged.
+- Changed implementation-test result: the prior accepted-interrupt test is strengthened for append-capable Codex; bounded cases cover rejected and thrown interruption plus terminal-before-result/no-duplicate ordering. The existing harness is reused and no stale/disabled/compatibility test is added.
+- Validation: reviewer current focus `6 files / 47 tests` Pass; reviewer production TypeScript Pass; reviewer diff/source/legacy/size audit Pass. Implementation exact AgentRun `21/21`, expanded SR-028 `205/205`, prompt parity `10/10`, production TypeScript, and full production build/bootstrap all Pass.
+- Material score or classification changes: `Fail — Local Fix 9.1/10` -> `Pass 9.5/10`. Every score category is at least `9.2`; the prior spine, ownership, readiness, and runtime deductions are resolved.
+- Recommended recipient: `api_e2e_engineer` for a fresh current-state coverage investigation and checked-disposable SR-028 execution. Begin with the failed Claude nested task-peer row, then prove equivalent AutoByteus/Codex input behavior, Stop/FIFO semantics, standalone/Team/mobile/restore, cleanup, and safety. Any durable repository test addition/update/removal must return for proportional review before delivery.
+- Remaining risks or uncertainty: no post-IR-048 configured provider/browser result exists; the API/E2E-owned stale/durable package and `CR-F-043` residue still require downstream adjudication; generic root typecheck retains the disclosed TS6059 baseline while production TypeScript/build pass. Operational database, protected `60004/31004`, stashes/backup, incident disclosures, and no-rollback/no-repair state remain protected.
+- Reviewer evidence: `/tmp/crr089-ir048-focused-rerun.log`; `/tmp/crr089-ir048-production-typecheck.log`; `/tmp/crr089-ir048-source-audit.log`; implementation `/tmp/ir048-agent-run-interrupt-fifo-tests.log`; `/tmp/ir048-sr028-focused-tests.log`; `/tmp/ir048-server-build-full.log`; `/tmp/ir048-prompt-parity-tests.log`.
+
+### CRR-090 — API-REV-040 exact five-path SR-028 durable-test package passes proportional review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-test-review-report.md`
+- Review entry point and round: `Successful API/E2E Test-Code Review`, proportional round `15`; API-REV-040 exact five-path durable server-test package.
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md`; `API-REV-040`; resolved downstream `API-F-025`.
+- Relevant solution revision IDs: cumulative `SR-001`–`SR-028`; current `SR-028`; preserved exact prompt copy `SR-025`.
+- Relevant architecture-review revision IDs: current `ARCH-REV-021 Pass`.
+- Relevant implementation revision IDs: current `IR-048`; cumulative AgentRun admission basis `IR-046`–`IR-048`.
+- Relevant API/E2E revision IDs: current `API-REV-040 Pass / 98%`; prior failing scenario `API-REV-039 Fail / 88%` is resolved downstream.
+- Relevant delivery revision IDs: `DR-009`; delivery paused pending this result.
+- Prior authoritative result: source `CRR-089 Pass 9.5/10`; prior proportional test result `CRR-083 Pass`; API/E2E `API-REV-040 Pass / 98%`.
+- Current authoritative result: `Pass` for the proportional durable-test review. Source remains `Pass 9.5/10`; API/E2E remains `Pass / 98%`.
+- What changed in the review result and why: API-REV-040 currentizes exactly five maintained server tests to the reviewed AgentRun input-capability/dispatch, canonical Team execution-address/configuration, application binding, termination, and authoritative turn-capture contracts. No production source changed. The exact current binary diff equals the supplied patch and reconciles to `5 updated / 0 added / 0 removed`.
+
+#### Proportional Review Decisions
+
+| Durable Path / Group | Decision | Verification Evidence |
+| --- | --- | --- |
+| Top-level runtime-selection integration | `Accepted` | Explicit backend input capability/dispatch plus authoritative turn start preserves three distinct standalone/same-Team/mixed-Team GraphQL-WebSocket scenarios; `3/3` pass. |
+| Mixed-member task-notification and termination suites | `Accepted` | Current Team config/address/AgentRun fixtures prove three projection and two termination invariants without retired flat identity or duplicate projection. |
+| Application orchestration host suite | `Accepted` | Current schema-v3 bindings and exact member-address routing retain six coherent host-boundary cases; the legacy target-name scenario proves rejection only. |
+| External-channel AgentRun facade suite | `Accepted` | Real AgentRun harness and explicit dispatch preserve seven coherent admission, attachment, failure-isolation, subscription-order, and turn-capture scenarios. |
+
+- Proportional checks: scenario naming/grouping, requirement-focused assertions, fixture/helper reuse, isolation/determinism, large-file coherence, stale/duplicate/disabled/compatibility cleanup, and inventory/evidence agreement all `Pass`.
+- Durable execution evidence: currentized focus `18/18`; top-level integration `3/3`; SR-028 selection `223/223`; prompt parity `10/10`; broad server `620` active tests; broad web `540/540`; server/Nuxt production builds pass.
+- Configured evidence: required provider/browser aggregate `12/12` passes. The former Claude active-recipient rejection is absent; exact same-root/same-chain peer request/reverse reply proceeds once through submission, accepted review, refresh, cleanup, and termination. Configured Claude Stop plus waiting FIFO also passes exact terminal-before-next-start and once-only forwarding.
+- New or remaining proportional test-review finding IDs: none. `TR-F-006` and earlier test findings remain resolved. `API-F-025` is resolved downstream.
+- Material score or classification changes: none. The successful-test report intentionally does not reopen CRR-089 source scoring.
+- Recommended recipient: `delivery_engineer`. Resume only through normal latest-base refresh/integrated-state verification, documentation/handoff work, and explicit user completion gates. Preserve all operational-database, protected `60004/31004`, stash/backup, incident-disclosure, no-rollback, and no-repair controls.
+- Reviewer evidence: `/tmp/crr090-api-rev040-test-audit.log` (SHA-256 `fed1c690c5cdf3584c355f32fd2fb62ec4aa9bb9118a2fb803023a2dfa0a8a16`); inventory SHA-256 `bb6b78a475ff53b17bc6bc1044b9f2b32b28b31486f2726ece6d924f3aefa182`; exact patch SHA-256 `0ed1b1006299dcfb51b00b748f9a3ec05b5f4d6cdb3936a9616eea0b3a4ceb7b`.

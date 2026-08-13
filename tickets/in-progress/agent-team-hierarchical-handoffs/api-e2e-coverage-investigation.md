@@ -1,5 +1,70 @@
 # API/E2E Coverage Investigation
 
+## API-REV-039 — SR-025 Exact AgentTeam Prompt Copy and Retained Collaboration Lifecycle
+
+### Investigation meta
+
+- Date: `2026-08-13`
+- Current HEAD: `42e42a9471c251075af07c3e0805d43858246e67`
+- Production/focused-test commit: `b8798338cfc77c322ebd2dde23b827f6855f6588`
+- Current authority: `SR-025` / preserved `ARCH-REV-018` / `IR-045` / `CRR-084 Pass 9.4/10`
+- Trigger: fresh post-SR-025 API/E2E acceptance; `API-REV-038` is historical pre-copy evidence only
+- Changed production boundary: one shared AgentTeam prompt renderer composed by the existing Carpenter prompt owner into AutoByteus system prompt, Codex `baseInstructions` create/restore, and Claude `systemPrompt`
+- Persisted-data/migration impact: none; the copy is derived at AgentRun composition time and changes no schema or stored identity
+- Planned durable coverage delta: **none**. The six IR-045 repository tests are current, reviewed implementation-owned coverage; this round will re-execute and supplement them with temporary executable and checked-disposable live evidence rather than duplicate them.
+
+### Requirement-to-validation map
+
+| Required behavior | Boundary | Planned evidence |
+| --- | --- | --- |
+| Render the exact authoritative `AgentTeam Addressing` then `AgentTeam Collaboration` copy, substituting only the canonical caller `memberAddress` | Shared renderer and Carpenter composer | Exact artifact/oracle audit; `member-collaboration-instruction-provider-parity.test.ts`; `carpenter-prompt-composer.test.ts`; production build |
+| Insert after optional Team instruction and before Working Environment; headings exactly once; no `Team Runtime` wrapper or duplicate delegation prose | Prompt composition ordering/count | Composer and provider-parity tests plus static built-output audit |
+| Inject unchanged semantics at all three provider seams | AutoByteus system prompt, Codex create/restore `baseInstructions`, Claude `systemPrompt` | Six-file focused selection; fresh configured Team rows for all three providers; provider trace/request audit where the runtime exposes the prompt envelope |
+| Use canonical addresses for persistent/restored/task-Agent/task-AgentTeam bindings | MemberTeamContext construction into shared composer | Current provider/context fixtures; temporary context-composition probe for exact address variants; live rooted Nested Classroom persistent coordinator plus task-Team/task-Agent execution and active refresh |
+| Intrinsically expose `get_handoff_rules`, `send_message_to`, and `delegate_task` wherever the block is present | Team tool binding/catalog and provider adapters | Focused provider tests; fresh real Team rows must call rules, send exact persistent and task-peer messages, delegate one task, submit/review, and restore |
+| Exclude Team block and intrinsic Team tools from standalone Agents | Null Team-context provider path | Provider gating/parity tests plus fresh standalone first-send/restore rows for AutoByteus, Codex, and Claude; no claim that separately configured ordinary standalone tools are removed |
+
+### Existing coverage validity decisions
+
+| Coverage | Decision | Reason / planned action |
+| --- | --- | --- |
+| `autobyteus-agent-run-backend-factory.test.ts` | **Still Valid / Revalidate** | Exercises the real AutoByteus backend factory, exact headings/address, intrinsic three-tool binding, and standalone path. Re-run unchanged. |
+| `claude-session-bootstrapper.test.ts` and `claude-session-tool-gating.test.ts` | **Still Valid / Revalidate** | Exercise Claude system-prompt injection, exact Team-tool MCP exposure, and standalone absence. Re-run unchanged. |
+| `codex-thread-bootstrapper.test.ts` | **Still Valid / Revalidate** | Exercises Codex create/restore `baseInstructions` and current Agent Tools MCP descriptors. Re-run unchanged. |
+| `carpenter-prompt-composer.test.ts` | **Still Valid / Revalidate** | Directly proves order, exactly-one counts, and removed wrapper at the sole composer. Re-run unchanged. |
+| `member-collaboration-instruction-provider-parity.test.ts` | **Still Valid / Revalidate** | Independent exact-copy oracle, task-scoped current address, provider-neutral parity, three intrinsic tools, and standalone absence. Re-run unchanged. |
+| Current context-builder, task-delegation, restore, and provider selections | **Still Valid / Targeted Revalidate** | These prove current binding/address construction and tool ownership surrounding the changed prompt. Select only requirement-linked current files; do not restore retired aliases or identity fixtures. |
+| `API-REV-037` real browser/provider matrix and `API-REV-038` test correction | **Historical / Setup and regression reference only** | They prove the pre-SR-025 product lifecycle and safe launcher, not the new exact prompt copy. Reuse only checked setup/scripts after copying them into this round; execute fresh current-state rows. |
+| New durable prompt tests | **Not Needed** | The reviewed six-file package already directly covers the changed owner and provider seams. Duplicate API-owned tests would add maintenance without closing a new gap. |
+
+### Execution plan and fail-closed rules
+
+1. Re-run the six exact changed tests, then requirement-linked MemberTeamContext/tool/provider selections, production TypeScript/full server build/bootstrap, and any frontend build needed by real browser execution.
+2. Use a temporary executable audit to compare the built renderer with the authoritative artifact, exact heading/order/count, caller-address substitution, and removed wrapper/duplicate prose; do not add a second runtime copy or compatibility test owner.
+3. Before live work, allocate a new absent absolute SQLite target under the worktree and a disposable runtime/vault. Exclude ambient `DATABASE_URL` and `DATABASE_URL_TEST`; run configuration-only preflight; launch only through `test-support/live-e2e/test-runtime-bootstrap.mjs`; verify the serving PID's exact database path with `lsof`.
+4. Import `/Users/normy/.autobyteus/server-data/.env` only as the secret source using actual interactive `pnpm secrets:import` into the disposable runtime. Never log values and fail closed if the destination is not exact.
+5. Execute fresh real Chrome/provider rows for AutoByteus, Codex, and Claude using the imported Nested Classroom Team. Each row must prove `get_handoff_rules`, persistent `send_message_to`, direct-child `delegate_task`, task-Team/task-Agent peer messaging, submit/review, exact rooted records, active refresh, and clean termination. Run corresponding standalone first-send/restore rows to prove ordinary runtime functionality without asserting Team prompt/tool presence from UI alone.
+6. Correlate provider/server traces with exact prompt copy/tool exposure when the runtime makes that boundary observable. Deterministic composition tests remain the authoritative byte-level proof; model tool-election variance is nonblocking only when the exact capability is separately invoked and succeeds.
+7. On any current critical boundary failure, stop later live expansion, preserve exact evidence, clean only owned resources, and route through `code_reviewer`. Do not inspect, target, copy, repair, roll back, or delete the operational database; do not touch protected `127.0.0.1:60004/31004`, stashes, or delivery backup.
+
+### Pre-execution confidence and broader-validation decision
+
+Repository/source-review evidence is strong but post-SR-025 live provider acceptance is absent. Pre-execution confidence is **91%**: exact deterministic copy and provider seams are directly covered, while configured runtime/provider delivery, live Team tool availability, and current standalone exclusion remain unexecuted at the changed HEAD. Broader validation is therefore **Required**, using the checked disposable browser/provider surface described above.
+
+### Completed investigation and coverage adjudication
+
+- Repository and exact built-prompt coverage remains **Still Valid**. The six SR-025 files pass `55/55`; context/tool boundaries pass `69/69`; production server and Nuxt builds pass; the temporary built renderer audit proves exact artifact bytes, heading order/count, four canonical address variants, no old wrapper, and no placeholder leakage.
+- No repository-resident durable test was added, updated, or removed in API-REV-039. Evidence-only scripts and browser rows live under `api-e2e-evidence-sr025/api-rev-039/`.
+- Actual interactive `pnpm secrets:import` used `/Users/normy/.autobyteus/server-data/.env` only as the source and configured nine identifiers into the checked disposable target.
+- The requested `/Users/normy/autobyteus_org/autobyteus-agents` package was imported directly. Its `Classroom Simulation Team` passes real Chrome file-backed professor/student request/reply/reference journeys for AutoByteus, Codex, and Claude with exact persistent rooted addresses, visible completion, no console errors, and clean termination. Source hashes are unchanged.
+- The stricter imported Nested Classroom row passes AutoByteus and Codex completely. Claude passes rule/tool exposure, persistent send/reply/reference, exact task-Team allocation, and the outgoing task-peer request, but the exact reverse reply is rejected because the target `student_one` Claude turn remains active. This is a concrete production adapter/runtime result, not probabilistic failure to call a tool.
+- Coverage decision for `API-LIVE-039-CLAUDE-TASK-PEER-REPLY-001`: **Fail / Escalate** as `API-F-025`. The task stays active with no submission/review. Later standalone and mobile expansion is **Not Tested** in this round because the critical retained lifecycle failure already blocks Pass.
+- Preliminary source boundary: `InterAgentMessageRouter` -> `AgentRun.postUserMessage()` -> `ClaudeSession.sendTurn()` active-turn rejection. Focused `3 files / 29 tests` pass separately and expose the missing cross-boundary composition; no production change, retry, fallback, alias, compatibility route, or test weakening was introduced.
+
+### Final confidence and broader-validation result
+
+Broader validation was **Required and executed until critical failure**. Final overall confidence is **88%**: prompt copy, tool exposure, basic three-provider classroom messaging, AutoByteus/Codex nested collaboration, builds, and environment fidelity have strong direct evidence, but Claude cannot complete the supported active task-peer reverse-reply/submission/review lifecycle. This failing critical criterion prevents Pass regardless of aggregate score.
+
 ## Investigation Meta
 
 - Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/requirements.md`
@@ -16,11 +81,11 @@
 - Delivery Revision Record (lineage context only): `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/delivery-revision-record.md`
 - Relevant Delivery Revision IDs: `DR-003`, `DR-004`; `DR-004` was resolved by `SR-012` / `ARCH-REV-007` / `IR-005` and is not a current API/E2E blocker.
 - API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-036` (`Pass / 98%`; SR-020 exact segment lifecycle and retained SR-018 surfaces pass downstream).
-- Current Investigation Round: `36` (CRR-078 post-source-review durable maintenance, repository/build validation, and checked safe-target real browser/provider execution).
-- Trigger: `CRR-078` passes IR-042 source and requires CR-F-043 cleanup, SR-020 durable lifecycle currentization, complete affected repository/build validation, and fresh Team/standalone/mobile/restore execution for AutoByteus, Codex, and Claude.
+- Current API/E2E Revision ID: `API-REV-039` (`Fail / 88%`; SR-025 prompt copy and basic three-provider classroom messaging pass, but Claude active task-peer reverse reply fails).
+- Current Investigation Round: `39` (CRR-084 post-SR-025 repository/build validation and checked safe-target real browser/provider execution).
+- Trigger: `CRR-084` passes IR-045 source and requires fresh exact-copy/order/count, canonical context, intrinsic-tool, standalone-exclusion, and all-provider validation.
 - Prior Investigation Reviewed: round 4 / `API-REV-004`, which proves `SR-006` only. It is historical context, not SR-012 evidence.
-- Latest Authoritative Investigation: this file. API-REV-036 is the latest completed result; API-REV-035 and earlier rounds are historical evidence for unchanged boundaries only.
+- Latest Authoritative Investigation: this file. API-REV-039 is the latest completed result; API-REV-038 and earlier rounds are historical evidence for unchanged boundaries only.
 - User execution clarification (2026-08-09): real provider testing is mandatory. Use the repository `pnpm secrets:import` flow to import `/Users/normy/.autobyteus/server-data/.env` into an absolute disposable test environment before the live matrix; never print secret values or mutate the user's operational environment.
 - User real-browser clarification (2026-08-09): do not limit validation to repository/API probes. Through the real frontend, create standalone Agents and AgentTeams, launch and interact with them, and verify the Agent/Team hierarchy, runtime selection, execution, messaging/task/history-visible behavior, and absence of material browser errors for AutoByteus, Codex App Server, and Claude Agent SDK. This is additive to the imported nested-classroom three-runtime contract, not a replacement for it.
 
@@ -2172,3 +2237,96 @@ Starting confidence for the product/runtime remains 98%; durable regression cove
 Focused evidence passes `3 files / 147 tests`. Focused changed-test TypeScript and production TypeScript both pass. Static audit proves zero direct converter construction/import or structural `.convert({ ... })` in the two suites, zero opaque-message/brand/cast workaround across fixture/suites, three real thread-boundary entry sites, and clean diff hygiene.
 
 The corrected exact package is `10` paths = `1 added / 9 updated / 0 removed`; path/status inventory equals the binary patch, reverse application passes, active paths exist, and diff hygiene passes. Product source/runtime configuration/live state did not change; API-REV-037's `8/8` functional browser/provider evidence remains authoritative. Final API-REV-038 result is **Pass / 98%** and the corrected package requires proportional re-review.
+
+## API-REV-040 SR-028 / IR-048 AgentRun Input And Interrupt Coverage Investigation (Pre-edit Baseline)
+
+This baseline is recorded before any API-REV-040 durable test edit, repository test execution, configured secret import, database initialization, server/frontend launch, or browser/provider execution. `API-REV-039 Fail / 88%` remains the authoritative pre-fix result and is scenario-discovery evidence only; it cannot accept IR-048.
+
+### Trigger, authority, and changed boundaries
+
+- Current HEAD: `632c503188cb9dbb8eecf4422fa174499519ad89`; production/test commit: `be0ecc1ed0ff1f65c86b8a8ab9da8afba084113f`.
+- Authority: cumulative `SR-028`; `ARCH-REV-021 Pass`; `IR-048`; `CRR-089 Pass / 95.4%`; `agent-run-input-admission-contract.md`; `claude-agent-sdk-upgrade-contract.md`; retained rooted Team, prompt-copy, segment, and live-validation contracts.
+- Critical downstream rerun: `API-F-025 / API-LIVE-039-CLAUDE-TASK-PEER-REPLY-001`. The previous real Claude task-peer reverse reply reached the exact active recipient AgentRun and was rejected by the old provider-local active-turn policy.
+- Current reviewed behavior: one non-persisted AgentRun FIFO owns public input admission, once-only dispatch, exact Codex active-turn append, AutoByteus/Claude next-turn waiting, typed forwarding observation, interrupt reservation, canonical-terminal release, failure, termination, and restore-empty state. Providers translate mechanics only.
+- IR-048 adds the final interaction: while an interrupt reservation exists, no waiting entry may be claimed, including Codex append-capable input. Rejected/thrown interruption clears only the matching reservation and resumes the existing FIFO; accepted interruption remains terminal-gated; terminal-before-result drains once.
+
+| Required behavior | Surface classification | Required direct evidence |
+| --- | --- | --- |
+| Active task-peer request/reverse reply | Team routing -> exact recipient AgentRun -> provider input -> communication record/browser | Fresh Claude-first real bound nested task-Team request/reply; equivalent AutoByteus/Codex rows; exact root, ordered nonempty task-Team chain, task AgentRuns, once-only content, no persistent substitution/fallback. |
+| Provider capability policy | AgentRun domain -> backend dispatch | Durable AgentRun/start/append/wait cases plus real providers: Codex may append only to the exact selected active turn; AutoByteus/Claude wait for the next turn. |
+| Stop and waiting FIFO | Browser/API command -> AgentRun interrupt reservation -> provider terminal -> FIFO drain | Deterministic accepted/rejected/thrown/terminal-before-result/duplicate proof; configured Stop journey with input arriving while interruption is reserved; one interrupt, canonical terminal before next start, no premature/duplicate forwarding. |
+| Forwarding-only observation | AgentRun -> command/memory observers | Durable once-only forwarding records; queue admission without forwarding is not recorded, and forwarded messages are not replayed. |
+| Standalone, Team, mobile, restore | WebSocket/browser/persistence/responsive renderer | Fresh standalone and Team provider rows, refresh/restore, mobile communication/reference surfaces, and termination/cleanup. Restore must start with an empty live FIFO/reservation while persisted history remains coherent. |
+| SR-025 prompt and tool exposure | Shared Team prompt/provider system instruction/MCP | Exact Addressing then Collaboration copy, one copy, canonical caller address, intrinsic Team tools for all three providers, and standalone absence. |
+| Environment isolation | Process/config/database/vault | Checked disposable launcher, ambient database variables removed, exact absent absolute SQLite target, configuration-only preflight, actual interactive secret import from the requested home `.env` into only the disposable vault, PID exact-path lsof, cleanup and protected-state non-action. |
+
+### Existing durable coverage validity decisions before edits
+
+| Existing coverage | Decision | Reason and API-REV-040 action |
+| --- | --- | --- |
+| `tests/unit/agent-execution/agent-run.test.ts` and IR-048 focused provider/observer suites | `Still Valid / Mandatory Recheck` | Directly cover the reviewed FIFO/interrupt owner, including append-capable accepted/rejected/thrown/terminal-before-result ordering. Re-run current exact and expanded selections; source-review logs are not downstream acceptance. |
+| SR-025 prompt/provider parity suites | `Still Valid / Mandatory Recheck` | Production prompt spine is unchanged but remains a required preserved behavior. Re-run exact copy/order/count/exposure selection. |
+| `tests/unit/external-channel/runtime/channel-agent-run-facade.test.ts` | `Needs Update` | The current fake AgentRun returns provider results without publishing the canonical lifecycle fact expected by the new run-owned coordinator, so seven valid external-input scenarios time out. Currentize the fake to drive the real AgentRun forwarding/turn lifecycle rather than bypass it; retain attachment, admission, authoritative turn capture, rejection, and live-publish failure assertions. |
+| `tests/unit/agent-team-execution/mixed-agent-member-handle-task-notification-projection.test.ts` | `Needs Update` | The scenarios remain valid, but the fixture constructs removed flat `memberConfigs/memberPath/memberRouteKey` TeamRun input. Rebuild it with the current rooted immutable TeamRun config and exact member address; do not restore flat compatibility. |
+| `tests/unit/agent-team-execution/mixed-agent-member-handle-termination.test.ts` | `Needs Update` | Termination behavior remains valid, but its Team fixture uses the same removed flat config. Currentize to the rooted config and current AgentRun surface. |
+| `tests/unit/application-orchestration/application-orchestration-host-service.test.ts` | `Needs Update` | The application host is active and its scenarios remain relevant, but the suite imports the deleted route-key helper and manufactures retired `runId/memberRouteKey/memberPath/teamPath/targetRouteKey` contracts. Replace with current `agentRunId/teamRunId/memberAddress`, current rooted metadata, and exact member-address targeting; no compatibility helper or old selector is allowed. |
+| API-REV-039 temporary browser/provider scripts | `Temporary Evidence / Reuse Structure Only` | Copy/adapt into the new evidence directory only. Prior rows are historical; every critical row must execute at current HEAD. |
+| `CR-F-043` cleanup evidence | `Resolved / Fresh Metadata Verification` | The named API-REV-035 journal is already absent and API-REV-037 removed its two exact owned keys. Before live work, publish a fresh metadata-only proof of absence and explicitly leave unrelated historical SR-015 disposable artifacts, repository test databases, and all operational data untouched. |
+| Current repository tests outside the changed spine | `Investigate By Affected Selection` | Run the current SR-028 server selection, active web/runtime/lifecycle selections, production builds, and static no-skip/no-compatibility audits. A stale assertion is not a product defect until adjudicated against current contracts. |
+
+### Execution order and fail-closed rules
+
+1. Currentize only the four explicitly stale durable suites above, run them narrowly, and update this investigation if evidence changes any validity decision. No production source edit is authorized.
+2. Run the exact AgentRun interrupt/FIFO suite, expanded SR-028 selection, prompt parity, affected server/web selections, production TypeScript/full server build, and Nuxt production build. Record generic tooling baselines truthfully.
+3. Verify `CR-F-043` named residue absence and protected-state non-action using path metadata only. Do not open or inspect any database content.
+4. Create a fresh exact absent disposable runtime/database/vault on owned ports distinct from `60004/31004`; sanitize ambient selectors; use only the checked launcher and PID-path guard.
+5. Execute the failed Claude nested task-peer reverse-reply row first. A concrete rejection/misroute stops the round and routes to `code_reviewer`; model tool-election variance alone does not.
+6. If the common path passes, execute equivalent AutoByteus/Codex nested input behavior, Stop plus waiting FIFO, user-requested public Classroom Simulation Team from `/Users/normy/autobyteus_org/autobyteus-agents`, standalone AutoByteus/Codex/Claude, restore/reconnect, real mobile/reference, prompt/tool exposure, and termination.
+7. Copy provider/browser evidence, stop only owned processes, remove only the exact API-REV-040 runtime/database/vault/key/sidecars, verify sources unchanged and protected state untouched, then update the canonical reports/revision record.
+
+### Starting confidence and broader-validation gate
+
+Starting confidence is **86%**. CRR-089 provides strong direct source/unit evidence, but the prior critical Claude real boundary has not run post-fix; four maintained suites are stale; no current configured Stop/FIFO, standalone/Team, mobile, or restore row exists. Broader validation is **Required**. `Pass` requires overall confidence at least 95%, every applicable category at least 90%, direct post-fix proof of all critical rows, no critical Not Tested result, and complete safe-target cleanup.
+
+### API-REV-040 repository-evidence update — current AgentRun seams and top-level integration fixture
+
+- The four preclassified stale suites were currentized without production edits. The focused selection now passes `4 files / 18 tests`; the expanded current SR-028 selection including those suites passes `24 files / 223 tests`. Prompt/provider parity passes `2 files / 10 tests`.
+- `channel-agent-run-facade.test.ts` now drives the actual `AgentRun` admission/lifecycle seam through a current backend dispatch and canonical turn start rather than fabricating the retired acceptance result.
+- Both `MixedAgentMemberHandle` suites now use rooted immutable TeamRun fixtures, exact `/worker` address identity, current input dispatch, and current Team Agent execution/event projection. The application-host suite now uses `agentRunId`, `teamRunId`, rooted schema-v3 Team metadata, and exact `memberAddress`; deleted route-key/path selectors are absent.
+- Fresh metadata-only `CR-F-043` verification proves the exact named API-REV-035 journal absent. Operational database action/inspection, historical SR-015 artifact action, protected-port action, rollback, and repair remain `NONE`.
+- The broader retained server selection passes `66` files and `617` tests, skips one declared capability-gated file (`9` tests), but exposes three stale scenarios in `tests/integration/api/runtime-selection-top-level.integration.test.ts`. Its fake mixed member run manager still treats provider dispatch acceptance as immediate user-input visibility and never emits the canonical run-owned forwarding/turn lifecycle; therefore standalone and Team waits time out and the mixed-Team message ledger remains empty.
+- Validity decision: `runtime-selection-top-level.integration.test.ts` is **Needs Update**, not a product failure. Preserve its real GraphQL/WebSocket/top-level runtime selection assertions, but currentize only the fake AgentRun backend so `dispatchUserInput` records the current dispatch and emits the canonical lifecycle/forwarding fact consumed by `AgentRun`. Do not bypass `AgentRun`, restore retired `{accepted}` semantics, add compatibility behavior, or weaken time/order assertions. Re-run this file narrowly and then the full retained server selection.
+
+### API-REV-040 completion update — IR-048 closes the real Claude task-peer rejection and preserves the full SR-028 system
+
+#### Durable coverage adjudication
+
+- The five current API/E2E-owned paths classified above were currentized; production source was not changed. `channel-agent-run-facade.test.ts` now crosses the actual `AgentRun` dispatch/lifecycle seam. Both mixed-member suites use rooted immutable Team configuration and exact `/worker` placement. The application host suite uses current run/root/member-address identity. The top-level integration fake now emits the canonical forwarding/turn-start facts after `dispatchUserInput` rather than treating provider dispatch acceptance as immediate visibility.
+- Focused currentization passes `4 files / 18 tests`; top-level integration passes `1 file / 3 tests`; the expanded SR-028 selection passes `24 files / 223 tests`; prompt parity passes `2 files / 10 tests`.
+- The exact durable package is `5 updated / 0 added / 0 removed`, all server test paths. Inventory/path equality, reverse application, active-file existence, no active skip/only/todo, retired identity-residue scan, and diff hygiene pass. Evidence: `api-e2e-evidence-sr028/api-rev-040/investigation/cumulative-durable-coverage-inventory.tsv`, `cumulative-durable-diff.patch`, and `cumulative-durable-inventory-audit.log`.
+
+#### Repository and build coverage
+
+- Current broad server selection: `67` files passed plus one declared capability-gated Claude integration file skipped; `620 passed / 9 skipped`. The skipped file is not counted as configured provider proof.
+- Current broad web selection: `73 files / 540 tests` passed.
+- Production server TypeScript, full build, managed assets, and sanitized no-database bootstrap passed. Nuxt production build and fifteen-route prerender passed.
+- Fresh `CR-F-043` metadata-only audit proved the named API-owned residue absent. Operational database action/inspection, protected-port action, rollback, repair, and historical SR-015 artifact action were `NONE`.
+
+#### Checked-disposable browser/provider coverage
+
+- Configuration-only preflight excluded ambient `DATABASE_URL` and `DATABASE_URL_TEST`, resolved the exact absent absolute target `autobyteus-server-ts/db/api-rev-040-live-20260813-1.db`, and performed no database initialization. Prisma applied all twenty migrations only there.
+- Actual interactive `pnpm secrets:import` used `/Users/normy/.autobyteus/server-data/.env` only as the source and configured nine identifiers only in the disposable vault; no secret values were recorded. The checked launcher served `127.0.0.1:60240`; PID `lsof` proved the exact disposable database. Nuxt served `127.0.0.1:31240` only against that server.
+- The private Nested Classroom fixture was copied and overlaid only inside the disposable runtime; source before/after hashes are identical. The user-requested `/Users/normy/autobyteus_org/autobyteus-agents` package was imported through the public API without source mutation; `Classroom Simulation Team` was directly exercised.
+- Imported Nested Classroom Team rows pass for AutoByteus `gpt-5.6-luna`, Codex App Server `gpt-5.6-luna`/`medium`, and Claude Agent SDK `haiku`. Each has a distinct canonical root, exact persistent send/reply/reference, one nested task Team, exact same-chain peer request/reverse reply, one submission, accepted review, completion, refresh/restore evidence, terminal cleanup, no protocol/browser-console error, and clean termination.
+- `API-F-025` is resolved downstream. The fresh Claude row records exactly one `student_one -> student_two` request and one reverse reply on the identical nonempty ordered task-Team chain and exact root, followed by one submission and accepted review. There is no `RUNTIME_COMMAND_FAILED`. Evidence: `live/provider/api-f025-postfix-resolution.json` and `live/browser/claude-browser-row.json`.
+- The user-requested public Classroom Simulation Team passes AutoByteus, Codex, and Claude: exact professor/student file-backed request, exact once-only reply, exact reference, completion marker, rooted persistent addresses, zero console errors, and termination.
+- Standalone AutoByteus, Codex, and Claude each pass first send, exact live output, reload/restore, exact resume runtime/model, zero console errors, and termination.
+- Configured Claude Stop/FIFO passes with a real browser-created run and raw current WebSocket commands: the waiting follow-up is accepted while the interrupt is outstanding, the interrupt is accepted, `TURN_INTERRUPTED` precedes the next `TURN_STARTED`, the follow-up is forwarded/rendered exactly once, and the run terminates. The first temporary script execution reached all correct product events but timed out because its final-idle predicate inspected the wrong object; the corrected rerun is authoritative and passed. This was an evidence-script assertion error, not a product failure.
+- Active and persisted desktop/paired-mobile communication/reference journeys pass exact message counts, rooted records, path/content open/back behavior, selected-Team read-only topology configuration, exact persisted history selection, zero console errors, and termination.
+- Aggregate: `12/12` required configured rows pass in `live/browser-provider-matrix-summary.json`. No active Agent or Team run remained before shutdown.
+
+#### Cleanup, safety, and final confidence
+
+Owned server/frontend processes stopped; `60240/31240` and protected `60004/31004` are closed. Strict cleanup removed only the exact API-REV-040 runtime, disposable database, vault key, and possible SQLite sidecars; all are absent. Operational database action and inspection were **NONE**. Protected-stack action, stash/backup action, repair, and rollback were **NONE**. Both historical operational-database incident disclosures remain preserved.
+
+Final confidence is **98%**; every applicable category is at least `97%`. Broader validation is complete and no critical row is Not Tested. `API-REV-040` result: **Pass**. Because five repository-resident durable tests changed, the complete package must return to `code_reviewer` for proportional test-code review before delivery.

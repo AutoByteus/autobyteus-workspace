@@ -1,6 +1,6 @@
 # AgentTeam Hierarchical Communication And Handoffs — Design Specification
 
-Status: `Refined — SR-024 ready for complete architecture re-review of DR-012`.
+Status: `Refined — SR-028 corrects ARCH-REV-020 DR-013/DR-014 for complete architecture re-review`.
 
 ## Current-State Read
 
@@ -28,7 +28,7 @@ CRR-025 exposes the analogous token rollout gap after IR-014. The pre-ticket `20
 
 CRR-050 is the current full-ticket structural result. It preserves the backend canonical identity/routing, migrations/startup, V5 application admission, providers, storage, and safe-launcher work, but finds two remaining authoritative-boundary failures. First, `TeamRunEvent` pairs an independent discriminator with an independent data union, task events erase exact domain types to `unknown`, the server mapper casts into generic `Record<string,unknown>`, and the browser checks only that `type` is a string. Member input also repeats one receiving execution as both `execution_address` and `recipient_address`. Second, frontend `TeamRunNodeBase` mixes immutable topology, concrete task execution, task lifecycle, presentation, and relationship facts; task Team materialization clones source topology with empty run-ID placeholders; thirty production callers reach into `agentExecutionsByKey`, including eleven raw-key parsers; and streaming, GraphQL restore, focus, history/navigation, status/timeline, and cleanup coordinate by shared mutation. Reachable API-F-012 through API-F-015 are consequences of these shapes, not separate local defects.
 
-Before SR-016 design, the ticket branch was fetch/merge-refreshed onto the then-current personal base and preserved the distinction between workspace selection and execution focus: current-row presentation requires the selected root TeamRun and exact focused `TeamExecutionAddress`. On 2026-08-13 the solution designer freshly verified current HEAD `0d32ff25502838c28663fc765c3499fc83455eb1` against `origin/personal@54890a07f74e941a7a12b6daaa26364f4c927b72`; it is 90 commits ahead, zero behind, and has that remote tip as merge base. No new base refresh is required for SR-024.
+Before SR-016 design, the ticket branch was fetch/merge-refreshed onto the then-current personal base and preserved the distinction between workspace selection and execution focus: current-row presentation requires the selected root TeamRun and exact focused `TeamExecutionAddress`. On 2026-08-13 the solution designer verified current reviewed source HEAD `42e42a9471c251075af07c3e0805d43858246e67` against `origin/personal@54890a07f74e941a7a12b6daaa26364f4c927b72`; it is 97 commits ahead, zero behind, and has that remote tip as merge base. The implementation engineer reset the superseded Claude-only experiment, so source and tests remain unchanged while downstream evidence and documentation remain preserved.
 
 ARCH-REV-010 then completed a full cumulative review of SR-017. It passed the rooted TeamRun aggregate, logical/concrete address ownership, shared message/task resolver, provider protocol, released-data migration and token transaction, task activation, frontend execution aggregate, cleanup inventory, and direct forward-only V5 application cut. It resolved CR-F-029/CR-F-030 at design level and left only DR-005/DR-006. DR-005 proves two supported Agent-status production paths were absent from the exact stream boundary: `AgentTeamStreamHandler.sendInitialStatusSnapshot()` projects persistent/task/task-Team Agent statuses directly through generic `ServerMessage`, and `MemberCommandStatusOverlayStore` manufactures initializing/error Team Agent events before AgentRun materialization through a generic builder. DR-006 identifies only a stale UC-019 sentence; the governing application outcome remains discard/rebuild. SR-018 closes these exact gaps and does not reopen accepted structure.
 
@@ -39,6 +39,12 @@ ARCH-REV-012 accepts that single owner and every cumulative ARCH-REV-011 boundar
 ARCH-REV-016 completes a full cumulative SR-022 review. It resolves DR-009/DR-010 and preserves DR-007/DR-008 plus every earlier rooted identity, collaboration, migration/token, direct V5 application, Team stream/status/frontend, task, storage, AgentRun lifecycle, and complete-consumer boundary. DR-011 finds one remaining ownership-placement defect. The actual production path is client router -> `CodexThread.handleAppServerNotification()` -> `codex-thread-notification-handler.ts` -> backend listener -> `CodexThreadEventConverter`. Before the converter-local SR-022 call, MCP start/completion can add/remove pending state and emit `LOCAL_MCP_TOOL_EXECUTION_COMPLETED`; then converter raw debug can persist the complete candidate before conversion. The exact policy remains correct, but it must be invoked at the first per-thread boundary and its admitted immutable value must be the only message allowed downstream.
 
 ARCH-REV-017 resolves DR-011 and every prior design finding. It accepts the first per-thread owner, rejection ordering, opaque admitted/derived value, valid MCP ordering, and admitted-only debug. DR-012 identifies one overreach introduced in SR-023: current source has exactly four segment-producing native names, while the proposed unknown-`item/*` branch and nine-name exemption registry are driven only by Not-Reachable MP-013. SR-024 removes that machinery. The exact four-name set is both production applicability and omission-inheritance authority; every other current native fact continues through its operation-owned route without segment admission or a second registry.
+
+ARCH-REV-018 passed the complete cumulative SR-024 package. SR-025 then changed only the exact Agent-facing collaboration copy and was implemented as IR-045 without reopening architecture; CRR-084 passed the resulting source. API-REV-039 subsequently exercised the real imported Nested Classroom task-Team reverse-reply path: `student_two` resolved the exact still-active Claude `student_one` AgentRun, but Claude rejected the valid message solely because its turn was active. CRR-086 supersedes the earlier local-fix classification. The cause is provider-independent: `AgentRun.postUserMessage()` invokes a backend even when `AgentTurnLifecycleState.beginCommand()` returns no new token, Codex privately serializes/selects `turn/steer`, Claude privately rejects, AutoByteus privately queues, and the command registry separately rejects a distinct in-flight command. SR-026 closes that one boundary by making AgentRun the sole input-admission/sequencing owner. ARCH-REV-019 passed that complete cumulative design. All ARCH-REV-018 identity, collaboration, task, stream, migration, application, provider-output, and frontend boundaries remain unchanged.
+
+At the user's request, SR-027 then reopens only the Claude dependency and verified capability boundary before SR-026 implementation. The project previously resolved Claude Agent SDK `0.2.71`, Anthropic SDK `0.78.0`, and MCP SDK `1.25.x`/`1.26.x`. Official changelog/API/type inspection, the installed latest packages, focused build/type/test checks, and isolated live probes establish the exact mutually compatible current set as Claude Agent SDK `0.3.231`, Anthropic SDK `0.116.0`, MCP SDK `1.30.0`, and existing Zod `^4.3.6`. The current SDK adds provider streaming-input priorities and queue/interrupt receipts but no public exact-active-turn selector: `priority:"now"` interrupts current work and `priority:"next"` queues later work. Claude therefore remains `activeTurnAppend:"unsupported"` behind the accepted AgentRun FIFO. The only product adaptation is `alwaysLoad:true` on the server-owned intrinsic Agent Tools MCP entry so mandatory Team tools remain available on turn 1 after the SDK's background-MCP change. The exact package, runtime, file, removal, and proof contract is normative in `claude-agent-sdk-upgrade-contract.md`.
+
+ARCH-REV-020 accepted those package, capability, FIFO, and intrinsic-MCP boundaries but found one incorrect interrupt prescription plus stale navigation. SR-028 preserves the current supported active Claude interruption mechanism rather than adopting an SDK streaming control: the one-string query receives `Options.abortController`; `ClaudeSession` clears/flushes pending approvals, calls `AbortController.abort()`, awaits the exact active execution, completes established query-reference cleanup, clears active state, emits canonical `TURN_INTERRUPTED`, and only then allows the AgentRun terminal/drain sequence. `Query.interrupt()`, SDK interrupt receipts, streaming input, and priority scheduling are absent from this product path. SR-028 also aligns the revision index and live-validation R-058/AC-053 metadata. No data-flow, provider capability, public result, persisted-data, or dependency decision changes.
 
 ## Intended Change
 
@@ -93,6 +99,10 @@ SR-023 keeps that exact resolver and moves only its invocation/accepted-value co
 
 SR-024 applies the product-reachability rule to that accepted structure. It removes the rejected nine-name exemption registry, unknown-event governed branch, future-event rationale, and synthetic unknown-event coverage. The exact four-name constant alone decides whether the resolver runs. The resolver retains its previously accepted four reason values, but the unlisted-omission reason is only a pure-policy misuse guard; it does not establish a supported runtime event class or downstream proof requirement.
 
+SR-026 introduces one non-persisted `AgentRunInputAdmissionState` at the already-common `AgentRun.postUserMessage()` boundary. Public `accepted:true` means the exact live AgentRun has accepted sole responsibility for one FIFO, at-most-once provider forwarding attempt; it does not mean provider or model completion. AgentRun alone reads canonical turn lifecycle, admits/orders entries, chooses `start_turn`, exact `append_to_active_turn`, or wait-for-next-turn, and settles pending input through interrupt, failure, restore, and termination. Backends expose only `activeTurnAppend: supported | unsupported` plus an explicit dispatch command. Codex preserves its live-proven exact-turn `turn/steer`; Claude and AutoByteus are next-turn-only and receive no input until the canonical active turn terminates. One per-entry internal lifecycle observer replaces raw-event command inference. Team/global/application/external callers still end at the exact AgentRun and publish their operation result once. No provider queue/policy, command busy gate, collaboration retry, fallback, durable inbox, compatibility path, or second admission owner remains. The focused state machine and nine case spines are normative in `agent-run-input-admission-contract.md`.
+
+SR-027 upgrades the real Claude boundary without changing that ownership. Workspace manifests and the lockfile pin one reviewed set: `@anthropic-ai/claude-agent-sdk@0.3.231`, `@anthropic-ai/sdk@0.116.0`, and `@modelcontextprotocol/sdk@1.30.0`, with existing `zod@^4.3.6`. `ClaudeSdkClient` retains one string-prompt `query()` per explicit `start_turn`, full environment construction, configured executable selection, and `options.resume`; `ClaudeSession` retains one active turn and translates interrupt/output/tool mechanics only. The SDK's streaming input and `priority` queue are not adopted because they neither accept the AgentRun exact active turn ID nor improve the one-owner design. The intrinsic Agent Tools HTTP MCP descriptor alone gains `alwaysLoad:true` to preserve turn-1 Team collaboration after the upstream background-connection change. No V2 adapter, provider queue, old/new version branch, event alias, `TodoWrite` mapper, application migration, or durable schema change is introduced. Eight dependency/runtime/proof spines are normative in `claude-agent-sdk-upgrade-contract.md`.
+
 Frontend state is split by real subject without changing the one recursive disk aggregate. `TeamLaunchDraft` owns pre-launch configuration, logical member focus, and pending input without any copied definition topology or run/execution/conversation identity; the existing definition catalog supplies its read-only definition view. V5 `@autobyteus/application-sdk-contracts` owns the one exact `ApplicationExecutionContext` compile-time shape; the server aliases it, and server/browser metadata boundaries map and validate it through their existing canonical execution-address capabilities rather than casting a generic record. One `TeamRunFrontendProjectionBuilder` atomically projects a closed launch/open input—validated canonical metadata, exact root lifecycle, logical Agent focus, and one discriminated fresh/loaded/historical-unloaded identity-free Agent seed per metadata Agent—into run-ID-free immutable `TeamTopologySnapshot` (logical placement plus node-local effective launch configuration) and a paired `TeamExecutionState` (all concrete run/application bindings and lifecycle). Lifecycle is therefore supplied by its actual launch/resume owner rather than inferred from metadata, while seeds carry only workspace/dynamic hydration facts and cannot repeat metadata-owned run/config/application identity. Because `ApplicationExecutionContext.producer.executionAddress` is execution identity, the builder consumes it into concrete Agent executions rather than topology; task Agent variants preserve the stable application assignment while rebinding the producer to their exact task address. The server enforces the same invariant earlier at the existing AgentRun-construction boundary so task Agent runtime, published-artifact, and application-stream attribution are correct at source rather than repaired by the browser. `AgentTeamContext` is only `{topology,executions}`: it does not repeat root TeamRun ID/lifecycle, mutable launched config, hydration, or stream-session state. The execution aggregate's private index stores only five valid variants—persistent Team, persistent Agent, task Agent, task AgentTeam root, and real Agent inside a task AgentTeam—and every applicable run ID is server-allocated and non-empty. The root/task Team IDs derive from their execution addresses; only a child persistent Team stores its distinct child binding. Each task execution stores only its task ID; one private one-entry-per-task projection index supplies active status/timeline and derived history, so there is no copied task snapshot or second mutable history archive. Durable-confirmed activation may seed that projection, while later live result signals request a complete record refresh and never manufacture partial timeline state. Complete GraphQL snapshots enter one staged monotonic reconciliation with immutable base facts, append-only retention, and atomic terminal cleanup. The aggregate alone owns root lifecycle, Agent-context association, task graph/projection, focus, and cleanup; established AgentContext/projector ownership remains the one source of Agent-local conversation/status/tool state, which typed Team views read without copying. The aggregate returns typed external effects and subject-specific immutable views, never its concrete union/map, and does not fetch GraphQL or mutate navigation/token stores. The launch owner constructs a fresh paired context only after success, transfers logical focus/pending input once, and atomically replaces the draft; failure leaves the draft unchanged. Active configuration/relaunch views derive from immutable topology; all Agent/Team WebSocket connection state remains transport-owned rather than living on contexts. The `services/teamExecution/` capability owns this model, while streaming remains a thin typed transport adapter. Private pure transition/navigation-projector modules keep the lifecycle owner cohesive without creating alternate public coordinators.
 
 The same tightness rule now applies to backend task execution and token persistence. `taskId` is the only task-management identity **inside its root TeamRun scope** and the activated task record's non-null `taskRun.address` is the concrete execution locator; a cross-root task lookup accepts `{rootTeamRunId,taskId}` rather than pretending IDs are global. `TaskAgentInstanceIdentity`, `TaskTeamInstanceIdentity`, their deterministic `task_agent_${taskId}` / `task_team_${taskId}` aliases, copied owner/parent/run/timestamp fields, generic `task_context`, and separate activation-result run-ID fields are removed. The active ledger may derive one non-persisted correlated `ActiveTaskExecutionBinding {kind,taskId,executionAddress}`; task-bound member context retains only `taskId` beside its already-owned execution address, which supplies root scope. Token storage likewise retains canonical `execution_address_json`, actual Agent `run_id`, task-operation `task_id`, and usage facts, while removing parallel root/member/task-run/task-instance columns. Root-Team queries derive the root from canonical JSON and use one named expression index, not another writable identity field. The exact contract and model are normative in `team-stream-execution-projection-contract.md` and `team-run-canonical-identity-refactor.md`.
@@ -118,6 +128,8 @@ The same tightness rule now applies to backend task execution and token persiste
 | BEH-017 | memory scope name conflates concrete lineage with topology | execution resolver -> storage-private `ancestorTeamRunIds` (`DS-008`) | Physical memory/context paths remain unchanged |
 | BEH-018 | no single required imported nested-Team scenario spans all three live runtimes with fixed test models and isolated secrets | staged package import -> fresh per-runtime TeamRun -> collaboration/task/restore spines -> redacted matrix evidence (`DS-011`) | Real provider lifecycle parity is proved without mutating source packages or operational data; unavailable/skipped is not Pass |
 | BEH-019 | native AutoByteus content omits the start-owned type; provider/consumer paths repeat, default, or recover segment identity/type/text inconsistently; ticket code can mechanically construct a segment without a turn even though supported provider ingress owns an exact turn | provider exact-turn admission/rejection -> minimal source -> run-owned lifecycle admission/enrichment -> complete canonical processor/listener fan-out -> exact turn-diagnostic/transport/presentation (`DS-017A`–`DS-017G`) | Ordinary output and file/history/output projections remain correct without guessed identity/type/end text; unsupported turnless input stops before AgentRun; the real turn diagnostic stays observable and non-terminal; no second lifecycle owner exists |
+| BEH-020 | every ordinary caller reaches AgentRun, but active-input choice is split: AgentRun starts no canonical command token, Codex steers, Claude rejects, AutoByteus queues, and the command registry rejects a second command | caller -> exact AgentRun -> one live FIFO/admission owner -> explicit start or exact active-turn append -> provider mechanics -> typed internal settlement (`DS-018A`–`DS-018I`) | Input acceptance has one truthful meaning; active Claude/AutoByteus input waits centrally for a later turn, Codex retains exact-turn steer, FIFO/at-most-once and interrupt/termination semantics are provider-independent, and no route retries or duplicate Team projection occur |
+| BEH-021 | project resolves Claude Agent SDK `0.2.71` with older direct Anthropic/MCP dependencies; current Agent SDK adds background MCP connection and provider-owned streaming input/priority, while the product requires Team tools in turn 1 and one AgentRun input owner | exact compatible manifests/lock -> retained query/resume/full-env/executable boundary -> intrinsic MCP `alwaysLoad:true` -> one AgentRun-owned later-turn path -> current provider output projection (`DS-019A`–`DS-019H`) | Claude uses the current mutually compatible SDK set and required Team tools remain available immediately; latest provider queue/priority does not become exact append or a second product policy |
 
 ## Relevant Supplemental Task Artifacts
 
@@ -128,15 +140,17 @@ The same tightness rule now applies to backend task execution and token persiste
 | [team-run-canonical-identity-refactor.md](./team-run-canonical-identity-refactor.md) | Normative SR-024-aligned rooted schema, recipient/handoff seam, execution address, corrected TeamRun/token predecessor migration chains, direct forward-only V5 application target, complete status/stream/frontend boundary linkage, storage contract, case spines, and verification seams |
 | [team-stream-execution-projection-contract.md](./team-stream-execution-projection-contract.md) | Normative correlated TeamRun events, shared Agent binding/status snapshot, strict shared Team WebSocket contract, immutable topology/concrete-execution model, `TeamExecutionState` ownership, nineteen case spines, removal inventory, and verification seams |
 | [agent-segment-lifecycle-contract.md](./agent-segment-lifecycle-contract.md) | Normative minimal provider segment facts, sole run-owned lifecycle state, canonical content enrichment, exact order/replay/cleanup behavior, one downstream exact-turn diagnostic branch, exhaustive Codex provider-local turn admission, removals, and actual-boundary proof seams |
+| [agent-run-input-admission-contract.md](./agent-run-input-admission-contract.md) | Normative SR-026 AgentRun input admission, acceptance/FIFO semantics, explicit provider start/append commands, active-turn/next-turn behavior, internal command observation, interruption/termination settlement, removal inventory, nine case spines, and proof matrix |
+| [claude-agent-sdk-upgrade-contract.md](./claude-agent-sdk-upgrade-contract.md) | Normative SR-027 exact compatible Claude/Anthropic/MCP package set, verified active-input capability conclusion, retained query/resume/env/executable contract, intrinsic turn-1 MCP adaptation, eight case spines, removals, and focused/live proof |
 | [nested-classroom-live-validation-contract.md](./nested-classroom-live-validation-contract.md) | Normative downstream fixture staging/import, isolated-secret preparation, three-runtime/model matrix, live assertions, evidence, result classification, and cleanup |
 
-Requirements remain authoritative if wording conflicts. ARCH-REV-017 resolves DR-001–DR-011 and reconfirms every cumulative accepted boundary. DR-012 is the current bounded Design Impact trigger; SR-024 removes only the product-unreachable unknown-event policy/exemption machinery while preserving the exact four-family first-boundary resolver, sole downstream diagnostic, opaque message, valid MCP ordering, and admitted-only debug. Rooted identity, migration, direct V5 application, Team status/event/wire, frontend execution, task activation, provider tool, storage, and the exact Agent-facing copy remain unchanged.
+Requirements remain authoritative if wording conflicts. ARCH-REV-019 is the complete cumulative Pass for SR-026; SR-025 remains an implemented copy-only clarification. SR-027 pins and verifies the exact current compatible Claude boundary while preserving SR-026's common AgentRun admission owner and every rooted identity, addressing, task-eligibility, migration, direct V5 application, Team status/event/wire, frontend execution, task activation, segment lifecycle, provider output, storage, and Agent-facing copy boundary. ARCH-REV-020 accepted those boundaries but returned the bounded DR-013/DR-014 corrections. SR-028 is current: it preserves AbortController-owned one-string-query interruption and repairs navigation without changing any accepted architecture.
 
 ## Task Design Health Assessment (Mandatory)
 
 - Change posture: `Comprehensive Refactor`.
 - Design issue signal: `Yes`.
-- Root causes: parallel identity authorities, kind-ambiguous run fields, root/nested shape asymmetry, copied/localized child state, duplicated execution locators, synthetic task-instance objects that restate a root-scoped task record/execution address, token columns that restate canonical JSON identity, prior migration/application boundary omissions already corrected, the corrected Team stream/frontend ownership gaps, and a segment-lifecycle cut that originally omitted current processors/listeners while admitting a mechanically constructible but product-unreachable turnless segment shape.
+- Root causes: parallel identity authorities, kind-ambiguous run fields, root/nested shape asymmetry, copied/localized child state, duplicated execution locators, synthetic task-instance objects that restate a root-scoped task record/execution address, token columns that restate canonical JSON identity, prior migration/application boundary omissions already corrected, the corrected Team stream/frontend ownership gaps, a segment-lifecycle cut that originally omitted current processors/listeners while admitting a mechanically constructible but product-unreachable turnless segment shape, and active-input admission/sequencing policy split between AgentRun, three providers, and the command registry. The SR-027 dependency upgrade itself is `No Design Issue Found`: the existing Claude adapter boundary can absorb it with one exact package cut and one required-MCP flag while leaving input policy at AgentRun.
 - Design-principle response:
   - one authority per meaning;
   - preserve genuine facts and useful locality;
@@ -163,7 +177,10 @@ Requirements remain authoritative if wording conflicts. ARCH-REV-017 resolves DR
   - start establishes segment type once, canonical content carries the derived fact for late consumers, and no consumer guesses or reparses it;
   - tool output contains only facts needed for the Agent's next decision;
   - Team-owned protocol capabilities are materialized by Team runtime rather than duplicated in package configuration;
-  - thin adapters preserve operation-specific domain values; and
+  - thin adapters preserve operation-specific domain values;
+  - one exact AgentRun boundary owns admission, FIFO, active-turn choice, and pending-input settlement; provider adapters expose explicit mechanics rather than product policy;
+  - acceptance names live run-owned forwarding responsibility rather than provider/model completion, preventing next-turn collaboration deadlock;
+  - upstream capabilities are adopted only when they fit the existing owner: the latest Claude query/resume/output mechanism is retained, turn-1 MCP readiness is explicit, and provider queue/priority is rejected because it would duplicate AgentRun policy without exact-turn append; and
   - physical storage ownership is not confused with logical address.
 - Why the refactor is proportionate: the user explicitly selected the comprehensive clean state and accepts migration/API/frontend work; leaving any project-owned path/route boundary would recreate the competing authority.
 
@@ -185,6 +202,8 @@ Requirements remain authoritative if wording conflicts. ARCH-REV-017 resolves DR
 | compiled handoff | Authored edge rebased/validated against the mounted root and persisted in `handoffs` |
 | `HandoffInstruction` | Model-facing `{when,recipient_address}` decision row projected from one authored edge rule |
 | application SDK contract V5 | Exact current semantic version for application backend definitions and frontend SDK identity shapes; independent of unchanged manifest/bundle/iframe envelope versions |
+| `AgentRunInputAdmissionState` | One non-persisted per-AgentRun FIFO/state machine that owns input admission, sequence, explicit provider dispatch choice, turn association, and undispatched-input settlement |
+| Claude exact dependency cut | Claude Agent SDK `0.3.231`, Anthropic SDK `0.116.0`, MCP SDK `1.30.0`, and existing compatible Zod 4 resolved once in the workspace lockfile |
 
 Target code and public contracts do not introduce `recipient_name`, `recipient_path`, `ingressAddress`, `CanonicalTeamPlacementAddress`, `MountedTeamTopology`, `TeamAgentLaunchProfile`, `TeamRunBindingSet`, `definitionSnapshot`, `effectiveHandoffs`, or `persistentBindings`.
 
@@ -206,6 +225,10 @@ Remove rather than deprecate current production uses of:
 - package `toolNames` as a prerequisite for Team collaboration protocol tools; and
 - current V4 backend-definition/frontend-SDK exports, declarations, manifests, definitions, or generated/vendored project artifacts; non-target literals may exist only in strict-parser tests, never production compatibility code.
 
+- provider-owned active-input selection, Codex `inputSubmissionTail`, Claude active-turn product rejection, command-registry `RUN_COMMAND_IN_PROGRESS` policy, and per-command raw-event turn association;
+- collaboration/Team/browser/application retry or provider-specific queueing introduced for active input; and
+- any persisted input inbox, start/append fallback, or active-input compatibility alias.
+
 Legacy shapes remain only in migration input modules/fixtures under a narrow explicit source allowlist. Definition-local `memberName`, unrelated filesystem paths, address-derived storage encoding, and opaque provider payload keys are not active mounted identity and may remain.
 
 ## Persisted Data / State Transition Decision (Mandatory When Persisted Data May Be Affected)
@@ -223,6 +246,8 @@ Legacy shapes remain only in migration input modules/fixtures under a narrow exp
 | Agent memory directories | Directly usable | Concrete run-ID lineage remains truthful |
 | Final context files/locators | Directly usable | Derive same storage segments from address |
 | Opaque provider raw payloads | Directly usable | Historical display data, never routing input |
+| AgentRun input-admission FIFO/sequence/observer state | `Not Affected` | Live-process coordination only; starts empty on restore and is never serialized |
+| Claude/Anthropic/MCP dependency versions and capability-probe output | `Not Affected` | Manifests, lockfile, runtime adapter configuration, and redacted evidence change; domain/provider-session schemas do not. Existing Claude session IDs continue through `options.resume` |
 
 ### Migration Plan
 
@@ -262,6 +287,8 @@ For TeamRun metadata, route/path are the sole duplicated structural pair. Histor
 | DS-015A–G | Draft launch/failure plus fresh/live/restored/focused/terminal frontend Team execution | Identity-free launch draft, immutable topology, one valid concrete execution state, and typed UI views | launch owner + frontend `TeamExecutionState` aggregate + private transitions/navigation projector |
 | DS-016A–B | Persistent or task-scoped Team AgentRun is constructed with an application assignment | `AgentRunConfig` contains a producer address equal to that exact concrete execution, or construction fails before the run exists | existing `MixedAgentMemberHandle` AgentRun-construction boundary |
 | DS-017A–G | Provider segment, provider turn-admission failure, exact-turn lifecycle violation, file/history/output consumer, late subscription, or turn/run cleanup | Valid provider input becomes one exact-turn source and then one canonical event consumed by the complete fan-out; invalid turn identity stops before AgentRun; admitted lifecycle violations may become the existing non-terminal turn diagnostic | provider session/converter ingress + run-owned lifecycle/first transformer + consumer-specific projection owners + strict transports |
+| DS-018A–I | Idle input, exact active-turn append, next-turn-only runtime, concurrent input, command observation, interrupt, termination, restore, or runtime failure | Every supported caller receives one truthful admission result while one AgentRun FIFO selects and attempts one explicit provider dispatch per admitted entry and settles it exactly once | AgentRun + `AgentRunInputAdmissionState`; provider backends translate mechanics only |
+| DS-019A–H | Exact dependency install, Claude start/active input/interrupt/resume, turn-1 intrinsic MCP, provider event projection, or compatibility verification | One compatible package graph is installed; Claude retains one-string start/resume/output semantics and later-turn AgentRun policy; intrinsic Team tools are ready on turn 1; package and live evidence pass without a second input owner | workspace package manifests/lock + Claude client/session adapter + intrinsic Agent Tools MCP materializer + focused/API-E2E verification |
 
 ## Primary Execution Spine(s)
 
@@ -1003,6 +1030,222 @@ AgentRun ERROR + AgentRunErrorEvidence
 
 `AgentRunErrorEvidence` remains the sole semantic authority and has exactly `TURN_DIAGNOSTIC`, `TURN_TERMINAL`, and `RUNTIME_GLOBAL`. Unclassified existing errors project explicit null evidence fields and retain their established behavior rather than being silently reclassified. Runtime scope plus diagnostic effect is invalid. The Team external-channel parser carries real evidence instead of setting it to null; turn-diagnostic handling returns before any pending-turn creation or deletion.
 
+### DS-018 — One AgentRun input-admission boundary
+
+#### Governing values and owner
+
+```ts
+type AgentRunBackendInputCapabilities = Readonly<{
+  activeTurnAppend: "supported" | "unsupported";
+}>;
+
+type AgentRunBackendInputDispatch =
+  | Readonly<{ kind: "start_turn"; message: AgentInputUserMessage }>
+  | Readonly<{ kind: "append_to_active_turn"; turnId: string; message: AgentInputUserMessage }>;
+
+type AgentRunInputRejectionCode =
+  | "AGENT_RUN_INPUT_INVALID"
+  | "AGENT_RUN_NOT_ACCEPTING_INPUT";
+
+// AgentRun.postUserMessage() continues to return the existing
+// AgentOperationResult; no parallel public result DTO is introduced.
+```
+
+`AgentRun.postUserMessage()` is the thin public entry. One private `AgentRunInputAdmissionState` is the governing owner. Admission returns after the validated entry is committed to that live run's queue; `postUserMessage()` schedules the owner drain but does not await provider dispatch. The existing `AgentOperationResult` remains the public return. AgentRun adds no success code; the caller operation retains its established success code/message, including `send_message_to`'s `DELIVERED`. A private sequence, entry lifecycle, and optional per-entry observer never become a public ID, Team event, WebSocket DTO, or persisted field. AgentRun reads but does not duplicate `AgentTurnLifecycleState`; state selection and provider result application are serialized through the existing AgentRun dispatch queue, while provider I/O runs outside its critical section. The exact state/event types and transition table are normative in `agent-run-input-admission-contract.md`.
+
+`postUserMessage(message,{lifecycleObserver?})` registers the optional internal observer as part of admission before provider invocation; it exposes no queue handle or entry ID. Its result has a non-null `turnId` only when that exact entry is atomically the FIFO head and claimed for append to the exact active turn; idle, pending-start, queued-behind-another-entry, anonymous, and next-turn admissions return null and learn association only through the private lifecycle. This ordering is required because Claude synchronously emits `TURN_STARTED` before its start promise returns. A claimed append retains its exact target turn, while a claimed start may retain an observed canonical turn/terminal until the dispatch result re-enters the queue; either claim may retain a fast terminal before result settlement. A null/equal result ID commits ordered `forwarded -> turn_associated -> terminal` facts; a conflicting ID or rejected result after an observed start is one sanitized provider-protocol invariant failure, with no retry, new turn, or rollback of canonical events. The next FIFO head cannot dispatch while the claim remains unsettled.
+
+#### DS-018A — Idle input
+
+```text
+supported caller
+  -> exact AgentRun.postUserMessage
+  -> admit FIFO entry N and return accepted:true with no new success code
+  -> canonical turn state is idle
+  -> select explicit start_turn
+  -> backend performs one provider start
+  -> AgentRun associates the canonical turn and settles N from ordered events
+```
+
+Only the claim calls `beginCommand()`. Provider rejection/throw fails N once; it is not retried or converted to append.
+
+#### DS-018B — Codex exact active-turn append
+
+```text
+caller -> AgentRun FIFO head
+  -> identified active turn A + capability supported
+  -> append_to_active_turn(A)
+  -> Codex maps exactly to turn/steer(expectedTurnId=A)
+  -> forwarded input remains associated with A
+  -> A terminal settles it once
+```
+
+AgentRun selects append. `CodexThread` owns only the provider call and retains neither a submission tail nor start/steer selection policy. A failed steer is not retried as a new turn.
+
+#### DS-018C — Claude/AutoByteus active next-turn input (API-F-025)
+
+```text
+task peer / browser / other caller
+  -> exact active AgentRun
+  -> admit N and return accepted immediately
+  -> append capability unsupported: no provider call
+  -> canonical active turn terminal is published
+  -> drain selects start_turn for N
+  -> Claude/AutoByteus starts one later turn
+```
+
+Immediate run-owned acceptance prevents a collaboration deadlock. Team `COMMUNICATION` and `MEMBER_INPUT` publish once from that result, not again at forwarding or completion.
+
+#### DS-018D — Concurrent FIFO and at-most-once forwarding
+
+```text
+N, N+1, N+2 -> one run-local FIFO
+  -> consider heads only in admission order
+  -> at most one backend invocation in flight
+  -> each head receives one start or append attempt
+  -> each reaches one completed/interrupted/failed/cancelled terminal disposition
+```
+
+Existing outer message IDs retain replay protection; AgentRun creates no second persisted dedupe authority.
+
+#### DS-018E — Browser/external command observation
+
+```text
+command coordinator -> activation single-flight -> exact AgentRun admission
+  -> per-entry typed lifecycle observer
+  -> command record/status/ACK projection
+```
+
+The registry may track multiple distinct messages through `STARTING -> ADMITTED -> FORWARDED -> COMPLETED | FAILED | REJECTED | CANCELLED`. `ADMITTED` and `FORWARDED` retain duplicate-in-progress semantics for the same message identity. It no longer rejects a different command as `RUN_COMMAND_IN_PROGRESS`, assumes one in-flight record, or subscribes per command to raw Agent events to guess turn association. Provisioning/cleanup queries outstanding records rather than a singular current record. Memory/user-trace recording occurs on the one `forwarded` fact, not on queue admission. Completion-driven compaction and skill-improvement callers likewise register a per-entry observer before admission so dispatch failure/cancellation rejects their existing wait rather than timing out; canonical output/turn terminal still owns successful completion. A mixed member publishes its pre-run initializing overlay only when activation is genuinely required, not around input to an already-active run.
+
+#### DS-018F — Interrupt
+
+```text
+interrupt active turn -> backend interrupt -> canonical TURN_INTERRUPTED
+  -> forwarded entries for that turn settle interrupted with no replay
+  -> waiting entries retain order
+  -> next-turn head drains only after the terminal fact
+```
+
+Rejected interrupt changes no admission state.
+
+#### DS-018G — Termination
+
+```text
+terminate request -> AgentRun quiesces input and rejects new admission
+  -> an already-claimed provider call settles once
+  -> accepted termination cancels each undispatched entry once and releases state
+  OR rejected termination reopens admission and resumes the unchanged FIFO head
+```
+
+The public admission result already returned for a queued input is never rewritten; its internal observer receives cancellation when applicable.
+
+#### DS-018H — Provider/runtime failure
+
+An explicit provider rejection/throw fails only the claimed entry once and permits normal consideration of the next head if the run remains accepting. A runtime-global terminal failure quiesces input, settles associated forwarded entries as failed, and settles every claimed or retained entry as failed once with sanitized runtime evidence (`turnId:null` while unassociated). Neither path retries, falls back between dispatch kinds, reroutes through collaboration, or republishes delivery.
+
+#### DS-018I — Restore
+
+A restored AgentRun starts with an empty, non-persisted admission FIFO and reconciles the established provider lifecycle snapshot. A new input may append only when the restored turn is exact and the backend declares support; otherwise it waits for the canonical terminal. The ticket adds no crash-recovery inbox or migration.
+
+### DS-019 — Exact compatible Claude dependency and capability cut
+
+The package set is exact and atomic: `@anthropic-ai/claude-agent-sdk@0.3.231` in `autobyteus-server-ts`, `@anthropic-ai/sdk@0.116.0` and `@modelcontextprotocol/sdk@1.30.0` in their existing server/core owners, existing compatible `zod@^4.3.6`, and one `pnpm-lock.yaml` resolution. The Agent SDK declares Claude Code parity `2.1.231`; validation records the selected executable version rather than adding a second executable-selection policy. `ClaudeSdkClient` continues to call `query({prompt:string,options})`, passes the complete effective environment, uses `options.resume` when restoring a provider session, and exposes no provider input queue. Claude remains `{activeTurnAppend:"unsupported"}` because the latest public API has no exact-active-turn identifier. The full types, impact matrix, and forbidden shortcuts are normative in `claude-agent-sdk-upgrade-contract.md`.
+
+#### DS-019A — Install and lock resolution
+
+```text
+exact workspace manifests
+  -> pnpm resolves one SDK/peer/platform package graph
+  -> root export/import smoke
+  -> core build + server production typecheck
+```
+
+The lockfile is part of the same change as both manifests. No version range, old/new package branch, or runtime version sniffing selects behavior.
+
+#### DS-019B — Idle AgentRun starts one Claude turn
+
+```text
+supported caller -> exact AgentRun admission -> start_turn
+  -> Claude backend/session -> ClaudeSdkClient.query(prompt:string, options)
+  -> native SDK stream -> existing Claude event translation
+  -> canonical AgentRun pipeline and consumers
+```
+
+AgentRun owns admission. ClaudeSession owns one provider turn. The SDK is only the provider mechanism.
+
+#### DS-019C — Input while Claude is active
+
+```text
+supported caller -> exact active Claude AgentRun
+  -> AgentRun FIFO accepts with turnId:null
+  -> no Claude SDK input call
+  -> canonical current-turn terminal
+  -> AgentRun claims start_turn -> one later query(prompt:string)
+```
+
+`streamInput`, `priority:"now"`, and `priority:"next"` do not enter the product path. The first interrupts current work and the second creates a provider-owned later queue; neither is exact append.
+
+#### DS-019D — Interrupt with waiting input
+
+```text
+explicit interrupt -> AgentRun interruption owner -> ClaudeSession active execution
+  -> clear and flush pending tool-approval responses
+  -> active Options.abortController.abort()
+  -> await the exact active query execution settlement
+  -> established query-reference cleanup + clear active session state
+  -> canonical TURN_INTERRUPTED/terminal fact
+  -> AgentRun settles forwarded input, retains undispatched FIFO order,
+     and post-terminal drain starts the next entry once
+```
+
+`ClaudeSession` owns this provider translation. It does not invoke `Query.interrupt()`, consume an SDK interrupt receipt, create a streaming-input control session, or emit the canonical terminal fact before the aborted execution has settled and its registered query/reference has been released. Any existing `Query.interrupt()` use in unrelated SDK-control cleanup is not an AgentRun/session interrupt path and cannot be called as a fallback.
+
+#### DS-019E — Resume
+
+```text
+restored AgentRun/provider binding -> ClaudeSession.startTurn
+  -> query options.resume + complete env + selected executable
+  -> resumed native stream -> canonical AgentRun output
+```
+
+No removed V2 session API or compatibility adapter is introduced.
+
+#### DS-019F — Intrinsic Team tools are ready on turn 1
+
+```text
+Team-bound Claude Agent launch -> composed intrinsic Team tool exposure
+  -> Agent Tools MCP session descriptor
+  -> Claude HTTP MCP materializer {alwaysLoad:true}
+  -> query options.mcpServers
+  -> SDK waits for required server
+  -> turn-1 get_handoff_rules/send_message_to/delegate_task availability
+```
+
+Only the server-owned intrinsic Agent Tools MCP entry owns this required flag. Arbitrary external MCP servers retain their existing independent configuration.
+
+#### DS-019G — Provider event/tool projection
+
+```text
+latest admitted native SDK message/tool frame
+  -> ClaudeSession ordered processors/converter
+  -> supported ClaudeSessionEvent
+  -> canonical segment/tool/error lifecycle
+  -> standalone/Team/application transport and strict consumer
+```
+
+Expanded unrelated SDK variants are ignored at the external boundary rather than cast, aliased, or guessed into existing domain events. Existing output semantics remain the authority.
+
+#### DS-019H — Compatibility and package verification
+
+```text
+manifest/lock audit -> import smoke -> build/type/focused tests
+  -> isolated redacted now/next capability probes
+  -> imported Nested Classroom latest-Claude row
+```
+
+Implementation checks prove package and adapter compatibility. Later API/E2E owns the no-skip product path, exact dependency/executable evidence, secret redaction, and cleanup.
+
 ## Spine Narratives (Mandatory)
 
 - **Root launch:** definition composition and launch inputs meet once in the TeamRun-tree compiler. Persisted output is already the executable aggregate; no later table join is required.
@@ -1018,6 +1261,8 @@ AgentRun ERROR + AgentRunErrorEvidence
 - **Initial Agent status:** a bound TeamRun enumerates one immutable status snapshot per concrete/offline Agent through mixed runtime owners; the snapshot enters the exact Agent-status projector directly because connection state is not a domain event.
 - **Pre-run Agent status:** an unmaterialized mixed handle constructs the same execution binding from its already allocated identity, lets the overlay own only temporary details, publishes one correlated status event, and removes the overlay when real Agent status arrives.
 - **Segment lifecycle and fan-out:** providers emit only explicit semantic facts; the first common serialized AgentRun transformer owns structural admission, correlation, derived content type, replay, cleanup, and diagnostic classification. Same-type active replay stops there. Default processors and every listener then consume only canonical facts; their file/transcript/output/presentation state remains subject-specific and cannot become lifecycle authority.
+- **Agent input admission:** every ordinary caller ends at the exact AgentRun. One live FIFO acknowledges ownership, selects explicit start/append/wait from canonical turn state and declared capability, then reports per-entry forwarding/turn/terminal facts to internal observers. Provider mechanics, command presentation, and Team delivery stay downstream/off-spine and cannot choose policy or retry.
+- **Latest Claude boundary:** exact manifests/lock select one mutually compatible SDK/peer graph. AgentRun still chooses when a Claude `start_turn` occurs; Claude client/session retain one string query, resume, full environment, selected executable, interrupt, and output translation. Intrinsic MCP readiness is explicit at its descriptor, while provider streaming input/priority remains outside the product path because it supplies no exact-turn append and would duplicate input ownership.
 - **Migration:** the runner owns ID ordering/terminal skips; one migration-only decoder owns flat semantics; stable `20260517...` owns its pending flat-to-predecessor record transition; pending `20260801...` owns final v3 replacement from predecessor or terminal-warning residual flat input. Display-name divergence is accepted, structural contradiction blocks before source mutation, and legacy decoding ends before current repositories start.
 - **Handoff completion:** Team runtime guarantees both tools and the instruction. Retrieval is deterministic projection; only the Agent evaluates natural language and decides applicability. Delivery remains owned by `send_message_to`, so retrieval never claims that a handoff occurred.
 - **Live validation:** API/E2E owns staging/import, secret isolation, one fresh run per runtime, public observation, redaction, failure classification, and cleanup. The production design does not acquire a test-only package or credential owner.
@@ -1054,6 +1299,12 @@ AgentRun ERROR + AgentRunErrorEvidence
 | `TeamAgentExecutionBinding` constructor | Classify and validate persistent/task/task-Team Agent identity from one exact execution address plus the runtime/config owner's allocated AgentRun ID | Tree lookup, route guessing, status details, transport serialization |
 | `TeamAgentStatusSnapshot` + status-details constructor | One immutable status projection shared by live events, initial snapshots, overlays, and typed run-list mapping | Event publication, stream session, frontend status storage |
 | `TeamAgentEventAdapter` at the member bridge | Verify AgentRun binding and exhaustively adapt/filter/reject standalone Agent events before Team publication | Generic Team payload admission, logical routing, or mixed-manager access |
+| `AgentRunInputAdmissionState` behind `AgentRun.postUserMessage()` | Validate/admit input, own FIFO and dispatch claims, select start/append/wait from canonical turn state, associate turns, quiesce/reopen/cancel, and emit per-entry lifecycle facts | Provider mechanics, routing, task eligibility, durable inbox, public event stream, or retry |
+| AgentRun backend input adapter | Declare exact active-turn append capability and translate one explicit start/append command to provider mechanics | Active-state policy, queueing, fallback, public acceptance, or Team routing |
+| input lifecycle observers on command/compaction/skill owners | Translate one entry's typed admitted/forwarded/associated/terminal facts into their existing status/completion concern | Admission order, active-turn choice, raw-event inference, provider retry, or public event protocol |
+| workspace package manifests + pnpm lock | Select and reproduce the exact reviewed Claude/Anthropic/MCP dependency graph | Runtime input policy, feature inference, compatibility branching, or provider event translation |
+| Claude SDK client/session adapter | Own one provider query/resume/interrupt/output lifecycle and full provider process options | AgentRun admission/FIFO, SDK user-message queue/priority policy, Team routing, or application migration |
+| intrinsic Agent Tools MCP materializer | Mark the server-owned mandatory Team tool server `alwaysLoad:true` for turn-1 readiness | Generic external-MCP policy, provider input lifecycle, or tool selection |
 | provider segment normalizers | Translate explicit provider/native semantics into minimal generic AgentRun start/content/end candidates | Segment correlation, inferred type, Team/runtime branching, or downstream contract padding |
 | `AgentSegmentLifecycleState` + first pipeline transformer | Strictly parse segment candidates, own turn-scoped start/content/end correlation, derive canonical content type, replay decisions, cleanup, and safe diagnostic replacement | Provider decoding, Team/application/browser projection, persistence, reordering, or content deduplication |
 | `AgentRunErrorEvidence` | Classify the real turn-diagnostic, turn-terminal, and runtime-global semantics once for every Agent-bound consumer | Runtime diagnostic invention, active-turn borrowing, transport/presentation policy, or unclassified-error reclassification |
@@ -1103,6 +1354,13 @@ AgentRun ERROR + AgentRunErrorEvidence
 | Flat-v1 interpretation | one pure migration-only prerequisite decoder reused by both migration definitions |
 | Predecessor-memberTree interpretation and canonicalization | `20260801...` canonical converter only |
 | Target token semantic conversion record/result | `20260801...` canonical aggregate token item |
+| Ordinary input admission, FIFO, active-turn selection, and undispatched settlement | run-owned non-persisted `AgentRunInputAdmissionState` behind `AgentRun.postUserMessage()` |
+| Public input acceptance meaning | AgentRun admission result: ownership of one ordered at-most-once forwarding attempt, not provider/model completion |
+| Provider input mechanics | explicit backend capability plus `start_turn | append_to_active_turn`; provider cannot choose policy or fallback |
+| Claude dependency compatibility | exact workspace manifests plus `pnpm-lock.yaml`; package peer declarations and build/type/import proof validate the set |
+| Claude provider session mechanics | existing Claude SDK client/session boundary using one string `query`, `resume`, complete `env`, selected executable, and canonical interrupt/output translation |
+| Required turn-1 Agent Tools MCP readiness | Claude Agent Tools HTTP MCP materializer's intrinsic descriptor with `alwaysLoad:true`; not a global MCP default |
+| Per-command input/turn association | AgentRun's per-entry typed lifecycle observer; registry remains a presentation/replay owner |
 | Segment lifecycle identity/type/order | run-owned `AgentSegmentLifecycleState` at the first common serialized AgentRun pipeline boundary |
 | Canonical segment transport projection | admitted canonical AgentRun segment event; downstream mappers may rename fields but not correlate or infer them |
 | Agent error scope/effect/turn classification | original `AgentRunErrorEvidence` with `TURN_DIAGNOSTIC`, `TURN_TERMINAL`, and `RUNTIME_GLOBAL`; provider turn-admission rejection is not an Agent error |
@@ -1144,7 +1402,15 @@ AgentRun ERROR + AgentRunErrorEvidence
 - Backend definition loading checks exact V5 before exposures, hooks, or handlers become callable; adapters do not convert old exports.
 - Application project build/test setup regenerates every source/dist/vendor/importable artifact and target-schema fixture/database together; canonical migration does not enumerate application state.
 
+`AgentRun.postUserMessage()` remains the sole public input facade. It validates the request and delegates all admission/sequence/dispatch-selection/settlement state to `AgentRunInputAdmissionState`; callers never receive or mutate the queue. Provider backends are thin mechanical adapters over one explicit dispatch value. `AgentRunCommandCoordinator` is a command identity/activation/presentation bridge, not an admission owner.
+
+`ClaudeSdkClient` remains a thin external-SDK facade. It constructs the complete options value, dynamically loads the established root SDK API, creates one query for one explicit `start_turn`, and translates provider failures/interrupt settlement into the existing Claude session contract. It does not expose `Query.streamInput`, SDK priorities, command lifecycle, queued-message receipts, or version negotiation to AgentRun or Team code.
+
 ## Removal / Decommission Plan (Mandatory)
+
+SR-026 additionally removes provider-owned active-input selection, Codex `inputSubmissionTail`, Claude active-turn product rejection, dependence on AutoByteus internal queueing as cross-provider policy, the command registry different-command `RUN_COMMAND_IN_PROGRESS` gate, singular in-flight assumptions, per-command raw-event turn inference, active-run caller-manufactured initializing/error around mixed-member input, and any collaboration/provider-specific retry or queue added for API-F-025. No forwarding compatibility wrappers remain.
+
+SR-027 additionally removes stale direct/lock resolutions for Claude Agent SDK `0.2.71`, Anthropic SDK `0.78.0`, and MCP SDK `1.25.x`/`1.26.x`. It forbids removed V2 session adapters, parallel old/new SDK clients, provider-owned user-message queues, priority mapping, command-lifecycle input ownership, `TodoWrite` adaptation, the legacy MCP blocking environment switch, and fallback parsing for newly observed SDK variants. The only new runtime option is `alwaysLoad:true` on the intrinsic Agent Tools MCP descriptor. SR-028 additionally removes any product active-turn call to `Query.interrupt()`, interrupt-receipt mapper, or fallback between Query control and `AbortController`; the existing AbortController/settlement/cleanup sequence remains singular.
 
 1. Preserve accepted rooted backend/migration/V5/provider/storage behavior with characterization coverage.
 2. Add strict Team stream DTO/schema package and real producer-to-parser tests without a production dual path.
@@ -1161,6 +1427,7 @@ AgentRun ERROR + AgentRunErrorEvidence
 13. Cut the complete downstream fan-out atomically: file change, lifecycle/error observers, memory/history, compaction, skill improvement, external channel, application, Team/standalone egress/coalescing, and browser. Remove end-type/end-text recovery, segment aliases/defaults/derived identity, repeated-start overwrite, evidence loss, and all-errors-terminal handling.
 14. Preserve the original three-variant error-evidence owner and strict required-nullable wire projection; reject unsupported turn identity before AgentRun, prove the existing turn diagnostic is observable but mutation-free outside its visible row, and prove terminal/unclassified behavior is unchanged.
 15. Enforce the exact-path current-production allowlist and full cumulative source review before API/E2E resumes.
+16. Pin the exact compatible Claude/Anthropic/MCP graph; keep the existing one-string query/resume/full-env/selected-executable seam and `Options.abortController` interruption; await settlement and established query-reference cleanup before canonical interruption/drain; mark only the intrinsic Agent Tools MCP server `alwaysLoad:true`; and add current-SDK import/build/type/focused/live proof. Delete stale resolutions and add no product `Query.interrupt()`, interrupt receipt, SDK queue, priority, V2, compatibility, or migration path.
 
 Do not retain an old-field compatibility DTO, dual writer, route-key adapter, or localized-child fallback “temporarily.”
 
@@ -1180,7 +1447,16 @@ Do not retain an old-field compatibility DTO, dual writer, route-key adapter, or
 - Historical task records store sufficient concrete identity to converge through the same transition owner without reading live handles.
 - Non-target application manifest/backend/definition input returns no application execution result through ordinary strict validation. Exact V5 acceptance proceeds normally; no compatibility status or application migration result exists.
 
+- **Input admission result:** AgentRun admission -> operation-owned caller result -> existing ACK or once-only Team communication/member-input projection. Provider adapters never manufacture public acceptance, and AgentRun does not replace operation-owned success codes.
+- **Internal input lifecycle:** explicit backend result + canonical turn events -> per-entry `AgentRunInputLifecycle` observer -> command status/memory-forwarding owners. This remains in-process and is not a second domain/event stream.
+- **Claude SDK return/event seam:** one `query()` async stream, AbortController signal, settlement, and cleanup remain internal to `ClaudeSession`; only established translated session events reach AgentRun. SDK command-lifecycle/queue receipts never become public acceptance, Team events, or a second input lifecycle.
+
 ## Bounded Local / Internal Spines (If Applicable)
+
+- **AgentRun input drain:** under the existing dispatch queue, admit/claim/apply provider result/advance on canonical terminal; execute provider I/O outside the critical section; maintain one in-flight claim and FIFO head discipline.
+- **Input quiesce:** mark not-accepting before terminate, settle any claim, then cancel retained entries on accepted terminate or reopen unchanged order on rejected terminate.
+- **Input dispatch/event reconciliation:** claim plus observer registration precede provider I/O; synchronous source start/terminal facts may attach to that claim before its result; exact result agreement releases ordered lifecycle facts and disagreement fails once without retry.
+- **Claude turn adapter loop:** one explicit AgentRun `start_turn` creates one SDK query; the session consumes that stream in order, translates only supported provider facts, and closes/interrupts through its existing lifecycle. It neither reads nor drains the AgentRun FIFO and never calls SDK streaming-input APIs.
 
 - `TeamRunTreeIndex` build: DFS validate uniqueness -> populate address/node/run/coordinator/direct-child maps -> freeze.
 - Handoff binding/projection: context builder alone filters top-level `handoffs` where `from === caller.memberAddress`; guidance projector preserves bound edge order, flattens each `rules` item in order, and emits `{when,recipient_address:to}`.
@@ -1204,6 +1480,10 @@ Do not retain an old-field compatibility DTO, dual writer, route-key adapter, or
 - Transcript/output consumers: canonical content -> exact compound-identity memory/compaction/skill/external accumulation -> established turn/output terminal. End contributes no recovered type/text and diagnostics contribute no terminal transition.
 
 ## Off-Spine Concerns Around The Spine
+
+- Backend capability declarations and command translation serve AgentRun admission but own no product policy.
+- Command lifecycle observers serve existing command status/ACK/memory concerns without becoming an input queue or raw-event association owner.
+- Package metadata/lock resolution, native platform package selection, and provider parity/version evidence serve the Claude adapter but do not own runtime behavior. The existing configured executable boundary remains authoritative; SR-027 records its version instead of inventing bundled-versus-external selection logic.
 
 - Provider prompt timing differs, but the same mandatory filesystem-like completion protocol is composed at each provider's established system-instruction seam.
 - Definition cache refresh affects only new runs.
@@ -1240,6 +1520,10 @@ Do not retain an old-field compatibility DTO, dual writer, route-key adapter, or
 21. `AgentRun` owns segment lifecycle state and the existing dispatch queue owns its order. Provider normalizers and every post-pipeline processor/listener may consume canonical facts but may not own lifecycle correlation/defaults. File, transcript, output, and presentation accumulators own only their distinct projection subject.
 22. `AgentRunErrorEvidence` alone classifies the real Agent error scope/effect/turn states. Team/standalone/application/external/browser/command/lifecycle consumers translate or act on the original three variants but cannot invent runtime diagnostic, borrow a turn, or drop evidence. Provider turn-admission rejection remains provider-local and emits no Agent error.
 
+23. All ordinary input callers stop at `AgentRun.postUserMessage()`. Only AgentRun may admit/order/select start-or-append/wait/settle; no caller or backend may inspect active state to choose product behavior.
+24. `AgentTurnLifecycleState` remains the sole turn-state authority. Input admission reads it through AgentRun and stores only entry-to-turn association; it must not copy `activeTurnId`.
+25. The command coordinator may observe one entry through the typed lifecycle callback but may not subscribe to raw events for association or reject valid input because another command exists.
+
 ## Boundary Encapsulation Map
 
 | Boundary | Allowed crossing value | Forbidden crossing value |
@@ -1262,6 +1546,9 @@ Do not retain an old-field compatibility DTO, dual writer, route-key adapter, or
 | TeamRun -> initial Team stream | immutable `TeamAgentStatusSnapshot` values + root lifecycle; direct shared status-projector call | fake TeamRun event, legacy `TeamLeafAgentStatusSnapshot`, generic `ServerMessage`, duplicate Agent/Team identity |
 | unmaterialized handle -> pre-run status overlay | already-constructed binding + initializing/error facts | raw config/handle, display name, runtime kind, task instance, alternate identity parser |
 | status overlay -> Team event domain | `createTeamAgentStatusEvent(snapshot)` and matching typed live-status replacement | generic event builder, cast, status-owned execution identity |
+| Caller -> AgentRun input boundary | Validated user message plus optional internal per-entry observer | Provider session/thread/runtime, active-turn policy, queue mutation, or completion promise |
+| AgentRun -> backend input adapter | One explicit start/append command selected by AgentRun | Generic message requiring provider selection, queueing, retry, or fallback |
+| AgentRun -> command/memory observer | Typed per-entry admitted/forwarded/associated/terminal fact | Raw AgentRun event subscription or inferred turn association |
 | provider converter -> AgentRun pipeline | generic AgentRun segment candidate containing only explicit start/content/end source facts | asserted canonical type on untrusted input, provider state map, guessed/defaulted type, Team branch |
 | AgentRun segment lifecycle -> listeners | strict canonical start/content/end; content is `{id,turn_id,segment_type,delta}` | raw/minimal content, lifecycle state, replay buffer, alternate source shape |
 | canonical segment -> file/memory/output consumers | exact canonical identity plus consumer-owned projection facts | end type/text recovery, provider aliases, derived turn/ID/type, access to lifecycle state |
@@ -1277,6 +1564,14 @@ Do not retain an old-field compatibility DTO, dual writer, route-key adapter, or
 | persisted application context -> AgentRun construction | exact shared type with persistent match or task-address rebind | generic object cast or consumer-side producer repair |
 
 ## Dependency Rules
+
+- Every Team/global/browser/external/application/compaction/skill input path depends on AgentRun, never directly on a provider backend or admission state.
+- AgentRun input state may read canonical turn lifecycle and call the backend interface; turn lifecycle and backends do not depend on the input state or collaboration.
+- Provider adapters depend on the explicit input contract and may not import Team routing, command registry, or AgentRun admission implementation.
+- Command coordination depends on AgentRun admission plus the typed observer; AgentRun does not depend on command registry/status projection.
+- The server package depends on exact Claude Agent SDK `0.3.231`, Anthropic SDK `0.116.0`, MCP SDK `1.30.0`, and compatible Zod 4; the core package depends on the same exact Anthropic/MCP versions where already owned. One workspace lockfile resolves them. No runtime code branches on package version.
+- Claude client/session code may import the SDK's established query/resume/output types and pass `Options.abortController`. The active one-string-query product interrupt may not call `Query.interrupt()` or consume SDK interrupt receipts; AgentRun, Team routing, command coordination, and application code may not import `Query.streamInput`, message priority, queue receipts, command lifecycle, or SDK-specific active-input types.
+- The intrinsic Claude Agent Tools MCP materializer may set `alwaysLoad:true` on its own server descriptor. Generic MCP configuration and arbitrary external servers do not depend on or inherit that choice.
 
 - `agent-collaboration` address domain has no dependency on TeamRun execution, providers, task delegation, or storage.
 - TeamRun execution may depend on address/handoff domain and definition graph, never on frontend/transport.
@@ -1325,6 +1620,13 @@ Do not retain an old-field compatibility DTO, dual writer, route-key adapter, or
 | initial Team Agent status projection | `TeamAgentStatusSnapshot -> projectTeamAgentStatusMessage -> exact AGENT_STATUS TeamStreamServerMessage`; no TeamRun event |
 | pre-run Team Agent status event | `createTeamAgentStatusEvent(snapshot) -> correlated TeamRun AGENT/AGENT_STATUS variant` |
 | accepted-live status replacement | member bridge calls `MemberCommandStatusOverlayStore.clearAcceptedLiveStatus(binding)` only after successful correlated `AGENT_STATUS` publication; exact binding equality selects only that overlay |
+| `AgentRun.postUserMessage` | Returns exact admission result after queue ownership; optional internal observer is entry-bound and not public transport |
+| `AgentRunBackend.inputCapabilities` | Immutable `{activeTurnAppend:"supported"|"unsupported"}` mechanics declaration |
+| `AgentRunBackend.dispatchInput` | Accepts exactly `start_turn` or `append_to_active_turn {turnId}`; returns one forwarding result and cannot change kind |
+| `AgentRunInputLifecycleObserver` | In-process admitted/forwarded/turn-associated/completed/interrupted/failed/cancelled facts for one entry |
+| Claude package boundary | Exact SDK `0.3.231` + Anthropic `0.116.0` + MCP `1.30.0` + existing compatible Zod 4, resolved once; no public/runtime version union |
+| Claude turn invocation | One `query({prompt:string,options:{resume?,env,pathToClaudeCodeExecutable,mcpServers,...}})` per explicit AgentRun `start_turn`; no `streamInput` or priority |
+| intrinsic Claude Agent Tools MCP | Existing HTTP MCP descriptor plus `alwaysLoad:true`; the flag is absent from arbitrary external MCP policy |
 | provider segment candidate | generic `AgentRunEvent` envelope whose start has `id/turn_id/segment_type/metadata?`, content has `id/turn_id/delta`, and end has `id/turn_id/terminal facts`; all values remain untrusted until the first transformer |
 | canonical segment content | `{id:string,turn_id:string,segment_type:AgentSegmentType,delta:string}` after run-owned lifecycle admission/enrichment |
 | segment lifecycle diagnostic with candidate turn | normal `ERROR` with code `AGENT_SEGMENT_LIFECYCLE_INVALID`, safe message, `error_scope:"turn"`, `error_effect:"diagnostic"`, exact candidate `turn_id`; `TURN_DIAGNOSTIC` evidence |
@@ -1427,6 +1729,8 @@ Every SDK `memberAddress` is the serialized canonical domain `AgentTeamAddress`;
 - Model-facing handoff output has one condition and one directly reusable destination per row; it exposes no transport acknowledgement or redundant caller/source identity.
 - Application semantic and envelope/transport versions name distinct current contract layers; V5 is not copied mechanically onto unchanged envelope types.
 - Non-target package rejection is ordinary current validation, not a compatibility or migration result.
+- The latest Claude dependency adds no alternate public input API or result shape; exact append remains a declared backend capability, not inferred from SDK priority vocabulary.
+- Required first-turn MCP readiness is expressed at the one intrinsic server descriptor rather than through a global environment switch or provider bootstrap branch.
 
 ## Main Domain Subject Naming Check
 
@@ -1442,6 +1746,12 @@ Every SDK `memberAddress` is the serialized canonical domain `AgentTeamAddress`;
 ## Existing Capability / Subsystem Reuse Check
 
 Reuse and tighten:
+
+- the existing `AgentRun.postUserMessage()` boundary and `AgentRunEventDispatchQueue` as the public and serialized owner seams; add one focused run-local input state rather than another top-level service;
+- the established `AgentTurnLifecycleState` for active/pending/terminal facts, read without duplicating its active-turn field;
+- the provider backend interface, narrowing generic message submission into explicit commands/capability; and
+- command activation/message-ID replay/status projection, replacing only their conflicting busy/raw-event policy.
+- the existing Claude SDK client/session, configured-executable resolver, runtime availability probe, and Agent Tools MCP materializer; upgrade their package/type/configuration seam rather than create a streaming-input or executable-selection subsystem;
 
 - existing Agent collaboration address/handoff capability;
 - `TeamDefinitionGraphResolver`;
@@ -1469,6 +1779,8 @@ Do not add a new provider-neutral topology service or a persisted profile/bindin
 | `agent-team-execution/domain` | rooted node types, metadata aggregate, execution address, one Team Agent execution binding constructor, one exact status-details/snapshot value, and one correlated status-event constructor |
 | `agent-team-execution/services` | tree compiler/index, recipient resolver, execution resolver |
 | `agent-execution/shared` + Team member instruction composition | intrinsic Team tool exposure, canonical name de-duplication, provider-neutral filesystem-like completion protocol |
+| `agent-execution/input` behind `AgentRun` | non-persisted FIFO/admission state, narrow backend capability/dispatch contract, and per-entry lifecycle observer; no public queue or provider policy |
+| workspace manifests/lock + Claude runtime adapter | exact compatible provider dependency graph, one query/resume/full-env/selected-executable turn seam, one intrinsic MCP readiness flag, and current package/build/type evidence; no input-policy owner |
 | `agent-execution/domain` + event pipeline | finite segment vocabulary, run-owned segment lifecycle state, first strict transformer, canonical self-contained events, original three-variant error evidence, and processor run-release lifecycle |
 | provider Agent execution backends | explicit provider/native semantic conversion to minimal segment candidates; no lifecycle correlation or downstream padding |
 | AgentRun default processors | file-change derives exact file-operation projection from canonical facts; Team communication/token remain event-selective |
@@ -1490,12 +1802,27 @@ Do not add a new provider-neutral topology service or a persisted profile/bindin
 | memory/context storage | physical lineage and stable locator derivation |
 | API/E2E live harness | staged package import, isolated secret DB/app data, required runtime/model matrix, public assertions, redacted evidence, cleanup |
 
+- `agent-execution/input/`: one AgentRun-owned bounded capability for input types and private state transitions. It is not a shared/common queue, collaboration subsystem, or provider module.
+- Existing backend-specific folders: mechanical mappings only; no policy state or extra queue.
+- Existing command coordinator/registry: command identity, activation, presentation, and replay only.
+
 ## Draft File Responsibility Mapping
 
 Proposed names may adapt to repository conventions, but ownership must remain:
 
 | File/capability | Change |
 | --- | --- |
+| `autobyteus-server-ts/package.json`, `autobyteus-ts/package.json`, `pnpm-lock.yaml` | Pin Claude Agent SDK `0.3.231`, Anthropic SDK `0.116.0`, and MCP SDK `1.30.0` in their existing owners; retain compatible Zod 4; resolve one exact reviewed graph and remove stale direct/lock resolutions |
+| `runtime-management/claude/client/claude-sdk-client.ts` + Claude session/backend | Retain one string-prompt query, optional resume, complete environment, configured executable, interrupt, and established output translation; type-adjust only where latest official returns require it; expose no stream-input/priority/queue policy |
+| `agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-materializer.ts` | Set `alwaysLoad:true` only on the server-owned intrinsic Agent Tools HTTP MCP descriptor so Team tools are ready in turn 1 |
+| focused Claude client/session/MCP tests + package checks | Prove exact installed versions/peers/root exports, query/resume/env/executable options, one turn/query, intrinsic-only `alwaysLoad`, current event translation, and absence of provider input queue/policy |
+| new `agent-execution/input/agent-run-input-contract.ts` | Own closed capability, explicit dispatch, stable admission code/result, and internal lifecycle-observer types |
+| new `agent-execution/input/agent-run-input-admission-state.ts` | Own private FIFO entries/sequence/claims, dispatch selection, turn association, quiesce/cancel/reopen, and terminal disposition |
+| `agent-execution/domain/agent-run.ts` + event queue/lifecycle seam | Make every input enter the state; serialize claim/result/lifecycle transitions; invoke provider outside the queue; return admission result |
+| `agent-execution/backends/agent-run-backend.ts` + AutoByteus/Codex/Claude adapters | Replace generic provider-selected input with declared capability and explicit start/append mechanics; remove provider product policy |
+| AgentRun command coordinator/registry/types/status/memory observer | Support multiple admitted commands, retain replay identity, consume typed entry lifecycle, record only on forwarding, remove busy/raw-event inference |
+| mixed Agent member handle + status overlay | Limit temporary initializing to genuine pre-materialization activation; active-run input uses AgentRun lifecycle and publishes member input once from admission |
+| application orchestration + compaction/skill completion owners | Attach any required observer before admission; surface later dispatch failure/cancellation through their existing operation/completion concern without provider branches |
 | `agent-collaboration/domain/agent-team-address.ts` | Own branded absolute address and derivation helpers |
 | `agent-collaboration/domain/recipient-address-expression.ts` | Define opaque `RecipientAddressExpression`, own its sole strict parser/factory, and resolve `/...` / `./...` into `AgentTeamAddress` |
 | send/task tool parameter schemas, input parsers, and manifests | Replace current logical selector with `recipient_address`; reject `recipient_name` and `recipient_path` |
@@ -1594,7 +1921,7 @@ Proposed names may adapt to repository conventions, but ownership must remain:
 
 ## Reusable Owned Structures Check
 
-`AgentTeamAddress`, `ResolvedTeamRecipient`, `HandoffInstruction`, `GetHandoffRulesResult`, `TeamExecutionAddress`, the rooted node union, finite Agent segment vocabulary/canonical segment variants, exact Team transport DTOs, and the concrete execution union are reusable because multiple independent consumers need exactly the same semantics. They remain deliberately narrow. The send delivery envelope is operation-specific rather than a shared base for read-only guidance. `TeamRunTreeIndex`, active task execution tree, provider handles, run-owned segment state, and storage scope are owned internal views and are not promoted into public shared contracts.
+`AgentTeamAddress`, `ResolvedTeamRecipient`, `HandoffInstruction`, `GetHandoffRulesResult`, `TeamExecutionAddress`, the rooted node union, finite Agent segment vocabulary/canonical segment variants, exact Team transport DTOs, the concrete execution union, and the narrow AgentRun backend-input/lifecycle contracts are reusable because multiple independent consumers need exactly the same semantics. They remain deliberately narrow. The send delivery envelope is operation-specific rather than a shared base for read-only guidance. `TeamRunTreeIndex`, active task execution tree, provider handles, run-owned segment state, `AgentRunInputAdmissionState`, its private sequence/entries, and storage scope are owned internal views and are not promoted into public shared contracts.
 
 ## Shared Structure / Data Model Tightness Check
 
@@ -1626,6 +1953,8 @@ Proposed names may adapt to repository conventions, but ownership must remain:
 - Backend task management stores `taskId` once on the task record and concrete execution once as `taskRun.address`. The active binding is a derived discriminated view, not a persisted identity object; member context adds only nullable task ID to its already-owned execution address.
 - Token rows store canonical execution JSON, actual Agent run ID, optional task-operation ID, and usage facts. Root/member/task run components are derived; the root expression index is query acceleration, not a writable identity field.
 - Serialized execution keys repeat identity only privately for lookup and never become a consumer-facing structure or presentation fallback.
+- Input admission stores one private sequence plus the message and entry state; it does not duplicate active-turn state, routing identity, task identity, or provider session state. The explicit backend dispatch has only the fields required by that one mechanical operation.
+- Public acceptance is one operation result, while later per-entry lifecycle is an internal observer; they are not forced into a broad optional envelope or duplicate public event.
 
 ## Final File Responsibility Mapping
 
@@ -1643,9 +1972,10 @@ Implementation should prefer modifying the existing owners above. New files are 
 10. one focused `task-activation-event-barrier.ts` because synchronous task runtime events must be ordered behind durable activation at the existing TeamRun publication boundary; it is not a general event bus, retry queue, or task state owner.
 11. one `team-agent-execution-binding.ts` because live events, connection snapshots, overlays, history, and frontend materialization require the same exact three-way execution identity invariant.
 12. one `team-agent-status.ts` because status details/snapshot construction is reused by live, initial, overlay, and history producers while event/transport owners remain separate.
-13. one focused Agent segment domain plus one run-owned lifecycle state/transformer pair because every provider and every standalone/Team/application/history/browser listener shares the same real start/content/end lifecycle invariant.
+13. one focused Agent segment domain plus one run-owned lifecycle state/transformer pair because every provider and every standalone/Team/application/history/browser listener shares the same real start/content/end lifecycle invariant; and
+14. one focused AgentRun input contract/state pair because every caller/provider/command bridge shares one admission, FIFO, explicit-dispatch, and settlement invariant.
 
-No new broad topology service, compatibility facade, generic state repository, or empty forwarding layer is designed. The Team Agent and Agent segment domain files own real reused invariants rather than forwarding; the contract package owns only transport; the draft owns no execution; the aggregate owns only browser concrete-execution state.
+The Claude dependency cut requires no new production owner or file: exact manifests/lock, the existing Claude client/session, and the existing intrinsic MCP materializer already own the affected concerns. No new broad topology service, compatibility facade, generic state repository, persistent inbox, provider queue, or empty forwarding layer is designed. The Team Agent and Agent segment domain files own real reused invariants rather than forwarding; the contract package owns only transport; the draft owns no execution; the aggregate owns only browser concrete-execution state.
 
 ## Applied Patterns (If Any)
 
@@ -1658,7 +1988,9 @@ No new broad topology service, compatibility facade, generic state repository, o
 - **Correlated protocol union:** source discriminator, exact payload, and runtime schema stay one variant from server mapping through browser admission.
 - **Aggregate/state machine:** `TeamExecutionState` owns concrete execution transitions and invariants; private pure reducers/projectors support it.
 - **Action-oriented projection:** LLM tools expose the smallest next-decision shape instead of internal service metadata.
-- **Run-owned state machine:** one serialized aggregate owner correlates minimal lifecycle facts and emits stateless self-contained projections.
+- **Run-owned state machines:** AgentRun separately owns segment output lifecycle and input admission lifecycle because they govern different subjects; each is serialized through the existing queue, neither copies turn authority, and providers/transports remain stateless policy adapters.
+- **FIFO command queue:** one bounded non-persisted input state orders accepted entries and selects one explicit provider operation; it is not a durable job queue or cross-run scheduler.
+- **External adapter upgrade:** exact dependency selection and one provider-required MCP option extend the established Claude adapter; no second adapter, policy registry, or compatibility layer is created.
 
 ## Target Subsystem / Folder / File Mapping
 
@@ -1667,7 +1999,9 @@ The detailed repository inventory and target seams are recorded in [investigatio
 - `autobyteus-server-ts/src/agent-collaboration/`
 - `autobyteus-server-ts/src/agent-team-definition/`
 - `autobyteus-server-ts/src/agent-team-execution/`
-- `autobyteus-server-ts/src/agent-execution/domain/` and `events/processors/segment-lifecycle/`, plus the existing AutoByteus/Codex/Claude normalizers;
+- `autobyteus-server-ts/package.json`, `autobyteus-ts/package.json`, and `pnpm-lock.yaml` for the exact compatible Claude/Anthropic/MCP graph;
+- `autobyteus-server-ts/src/runtime-management/claude/client/` and `autobyteus-server-ts/src/agent-execution/backends/claude/`, including the intrinsic Agent Tools MCP materializer and focused tests;
+- `autobyteus-server-ts/src/agent-execution/domain/`, new `agent-execution/input/`, and `events/processors/segment-lifecycle/`, plus the existing AgentRun backend contract and AutoByteus/Codex/Claude adapters;
 - `autobyteus-server-ts/src/agent-execution/events/processors/file-change/`, lifecycle-status/error observers, `agent-memory/services/`, `agent-execution/compaction/`, `skill-improvement/services/`, `external-channel/runtime/`, application streaming, and standalone/Team streaming egress;
 - `autobyteus-server-ts/src/run-history/`
 - `autobyteus-server-ts/src/agent-team-execution/task-delegation/` and Agent task tools
@@ -1684,7 +2018,7 @@ The detailed repository inventory and target seams are recorded in [investigatio
 
 ## Folder Boundary Check
 
-The target follows capability ownership rather than placing domain state under transport. Address is collaboration-shared; rooted execution is AgentTeam execution/run history; tasks remain task-owned; migration remains store-owned/coordinated. The new Team stream package exists because a real process boundary needs one runtime-valid contract; it owns no business policy. New `autobyteus-web/services/teamExecution/` owns the immutable topology projection, all-or-nothing metadata projection builder, concrete execution aggregate, and its private pure reducers/projector. `services/agentStreaming/` owns only connection/session orchestration, strict message admission/routing, and exact client-command construction; it depends inward on the execution aggregate, never the reverse. Hydration/open/history/navigation consume the aggregate's public query/transition boundary and cannot import its private reducers. No folder exists only to rename or forward another subsystem's value.
+The target follows capability ownership rather than placing domain state under transport. Address is collaboration-shared; rooted execution is AgentTeam execution/run history; tasks remain task-owned; migration remains store-owned/coordinated. The new Team stream package exists because a real process boundary needs one runtime-valid contract; it owns no business policy. New `autobyteus-web/services/teamExecution/` owns the immutable topology projection, all-or-nothing metadata projection builder, concrete execution aggregate, and its private pure reducers/projector. `services/agentStreaming/` owns only connection/session orchestration, strict message admission/routing, and exact client-command construction; it depends inward on the execution aggregate, never the reverse. Hydration/open/history/navigation consume the aggregate's public query/transition boundary and cannot import its private reducers. No folder exists only to rename or forward another subsystem's value. `agent-execution/input/` is a focused private capability under AgentRun because it owns real FIFO/state transitions and shared backend command types; callers cannot import its state implementation, and provider-specific folders contain only mechanical translation. The Claude SDK upgrade remains inside its existing provider/client/session/MCP folders and workspace manifests; creating a generic provider-dependency or streaming-input folder would obscure rather than improve ownership.
 
 ## Concrete Examples / Shape Guidance (Mandatory When Needed)
 
@@ -1734,7 +2068,7 @@ rootTeam.address   = /
 rootTeam.teamRunId = <rootTeamRunId directory identity>
 ```
 
-A full representative persisted JSON and the migration/runtime identity case spines are normative in [team-run-canonical-identity-refactor.md](./team-run-canonical-identity-refactor.md) §§5 and 10. Exact Team event/status/frontend execution/application-producer models and the Team case spines are normative in [team-stream-execution-projection-contract.md](./team-stream-execution-projection-contract.md) §§4–13. Exact segment source/canonical shapes, state transitions, replay/cleanup behavior, complete consumer inventory, the sole downstream exact-turn diagnostic branch, and actual-boundary examples are normative in [agent-segment-lifecycle-contract.md](./agent-segment-lifecycle-contract.md) §§2–9.
+A full representative persisted JSON and the migration/runtime identity case spines are normative in [team-run-canonical-identity-refactor.md](./team-run-canonical-identity-refactor.md) §§5 and 10. Exact Team event/status/frontend execution/application-producer models and the Team case spines are normative in [team-stream-execution-projection-contract.md](./team-stream-execution-projection-contract.md) §§4–13. Exact segment source/canonical shapes, state transitions, replay/cleanup behavior, complete consumer inventory, the sole downstream exact-turn diagnostic branch, and actual-boundary examples are normative in [agent-segment-lifecycle-contract.md](./agent-segment-lifecycle-contract.md) §§2–9. Exact input acceptance, FIFO/dispatch state, provider matrix, interrupt/termination behavior, and nine case spines are normative in [agent-run-input-admission-contract.md](./agent-run-input-admission-contract.md) §§2–9. Exact Claude/Anthropic/MCP versions, latest-SDK impact, eight adapter/capability spines, and proof obligations are normative in [claude-agent-sdk-upgrade-contract.md](./claude-agent-sdk-upgrade-contract.md) §§1–9.
 
 ## Backward-Compatibility Rejection Log (Mandatory)
 
@@ -1779,6 +2113,18 @@ A full representative persisted JSON and the migration/runtime identity case spi
 | create missing task-Team children with empty IDs | represents an execution that does not exist and breaks focus/history invariants |
 | make `TeamExecutionState` fetch GraphQL or mutate navigation directly | turns the aggregate into an orchestration blob; return only true external-work effects and derive navigation through its query boundary |
 | reuse `AgentTeamContext`/`AgentContext` for a pre-launch draft | creates synthetic run/conversation identities and a cross-index promotion transaction; keep `TeamLaunchDraft` identity-free and construct execution after success |
+| fix active Claude input with a Claude-only queue | leaves product admission/ordering policy provider-specific and fails the common AgentRun boundary |
+| let each provider choose start/steer/queue/reject | preserves the exact policy split that produced API-F-025 |
+| wait for next-turn forwarding before returning accepted | can deadlock two active collaborating Agents and misstates the existing AutoByteus admission contract |
+| retry/fallback append as start or start as append | can duplicate one accepted input and makes provider behavior nondeterministic |
+| persist the AgentRun input queue | introduces an unsupported inbox/recovery product and migration surface; live run ownership is sufficient |
+| retain command `RUN_COMMAND_IN_PROGRESS` or raw-event association | creates a second admission/turn-correlation owner beside AgentRun |
+| keep both Claude Agent SDK `0.2.71` and `0.3.231` adapters | creates a runtime compatibility policy for a direct dependency cut; pin one exact reviewed graph instead |
+| map SDK `priority:"now"` to exact active-turn append | live proof shows it interrupts/aborts current work and supplies no exact target turn |
+| map SDK `priority:"next"` or `streamInput` to AgentRun forwarding | creates a second provider-owned queue and still supplies no exact active-turn selector |
+| restore first-turn MCP by global legacy environment switch | hides required-tool ownership and changes arbitrary MCP behavior; set `alwaysLoad:true` only on the intrinsic descriptor |
+| add a bundled-versus-external Claude executable selector in this upgrade | the supported configured executable boundary already works and is probed; a second policy solves no established problem |
+| migrate application or durable runtime data for the SDK upgrade | package/runtime mechanics change no stored domain or provider-session schema |
 
 ## Derived Layering (If Useful)
 
@@ -1787,6 +2133,7 @@ Address/handoff domain
   <- definition mounting + TeamRun-tree compilation
   <- metadata/current store + derived index
   <- persistent/task runtime and recipient/execution resolvers
+  <- exact AgentRun input admission -> explicit provider mechanics
   <- communication/task/events/history/storage
   <- API/SDK/integrations/frontend
 ```
@@ -1815,9 +2162,11 @@ Migration runs alongside store ownership before the current-store layer becomes 
 18. Delete old task projection/tree/router/restore files, public topology/execution maps and raw-key parsers, frontend-topology run bindings, duplicate context root/lifecycle/config/hydration/subscription fields, AgentContext connection ownership, copied task snapshots/separate mutable history, stored task labels, duplicate task-status event, legacy `TeamLeafAgentStatusSnapshot`, generic initial-status mapper, generic command-start status builder, redundant snapshot-prefix/pass-through symbol, synthetic task identities/context/result fields, redundant current token identity columns, provisional/empty identities and rebase code, mixed topology fields, wire aliases/duplicate identity, dormant route branches, dead route results, and the application database migrator; enforce the exact six-path released-data migration-only legacy allowlist plus existing V5 constraints.
 19. Add the finite Agent segment domain, one run-owned state, and first pipeline transformer; preserve the original three-variant error evidence; synchronize command-turn/termination facts and processor run release through the existing queue. Cut AutoByteus/Claude to their required exact turns. Add the one Codex thread-owned pure `resolveCodexSegmentTurnAdmission` plus the exact four-name production-applicability/inheritance set; invoke the resolver only for those four names in `CodexThread.handleAppServerNotification()` before the handler, while every other current event keeps its operation-owned route. Replace generic listener/converter input with the opaque thread-branded admitted-native/local-derived union and private constructors. Prove governed rejection precedes pending-MCP mutation/derived emission/raw capture and valid MCP/non-segment/debug behavior remains. Then cut Codex conversion to exact current-family routing over the admitted turn without broad-prefix segment construction, re-resolution, or raw fallback; cut all three providers to explicit starts and minimal content/end; and make same-type active start a transformer-owned no-op.
 20. Atomically cut the complete canonical fan-out: file change, lifecycle/failure/command observers, memory/history, compaction, skill improvement, external channel, application, standalone/Team/error/coalescing, and browser. Delete repeated/defaulted source type, file end-type/repeated-start overwrite, segment aliases/derived identity/end-text recovery, evidence loss, consumer lifecycle/defaults, serialized/ID-only browser identity, all-errors-terminal handling, and fabricated provider-type fixtures. Implement DS-017A–G and the complete supplement matrix, including one test per exact governed Codex name plus explicit-location agreement, blank/non-string, conflict, inactive, reasoning-tracker, sanitized-log, and no-raw-fallthrough seams. Do not add a synthetic unknown-name case.
-21. Run implementation and full cumulative source review, including all retained migration/application/provider/storage evidence plus DS-014A–J/DS-015/DS-016/DS-017A–G. Keep API/E2E paused until Pass.
-22. API/E2E first resolves CR-F-043 by removing only its owned disposable residue, correcting cleanup evidence, and repeating the protected-target audit; then resume affected/deterministic/API/browser/imported three-runtime execution through the existing coverage and live-validation contracts with no skip-based Pass.
-23. Reconcile durable documentation.
+21. Add the AgentRun input contract and one non-persisted admission state; make `postUserMessage()` the only admission facade; integrate claim/result/terminal drain through the existing dispatch queue while provider I/O remains outside it. Replace backend generic submission with explicit capability plus `start_turn | append_to_active_turn`; preserve Codex exact-turn steer and make Claude/AutoByteus next-turn-only. Replace command busy/raw-event inference with per-entry typed lifecycle, register completion-driven observers before provider I/O, record memory on forwarding, restrict mixed initializing overlay to real activation, and delete every provider/caller second policy. Implement DS-018A–I and the supplement proof matrix, including exact API-F-025 behavior.
+22. Atomically pin the exact Claude/Anthropic/MCP versions in both existing package owners and `pnpm-lock.yaml`; remove stale resolutions; preserve the string-query/resume/full-env/configured-executable adapter; set `alwaysLoad:true` only on the intrinsic Agent Tools HTTP MCP descriptor; and implement DS-019A–H package/import/build/type/client/session/MCP/current-event proof. Do not adopt SDK streaming input, priority scheduling, command lifecycle, a second queue, V2/old-version adaptation, bundled/external executable selection, or data migration.
+23. Run implementation and full cumulative source review, including all retained migration/application/provider/storage evidence plus DS-014A–J/DS-015/DS-016/DS-017A–G/DS-018A–I/DS-019A–H. Keep API/E2E paused until Pass.
+24. API/E2E first resolves CR-F-043 by removing only its owned disposable residue, correcting cleanup evidence, and repeating the protected-target audit; then resume affected/deterministic/API/browser/imported three-runtime execution through the existing coverage and live-validation contracts with no skip-based Pass. Record exact Claude SDK/peer/executable versions and prove latest-SDK turn-1 tools plus AgentRun-owned API-F-025 later-turn delivery.
+25. Reconcile durable documentation.
 
 ## Key Tradeoffs
 
@@ -1833,6 +2182,13 @@ Migration runs alongside store ownership before the current-store layer becomes 
 - One frontend execution aggregate centralizes lifecycle authority; private pure reducers/projectors preserve separation of concerns without exposing alternate owners.
 - One small per-AgentRun segment state is accepted because type is established once but required by independent later consumers. Keeping it at the first common serialized boundary is smaller than repeating state/defaults in three providers, Team, application, and browser layers.
 - Consumer-specific file/transcript/output state remains because it models different subjects and outcomes; exact canonical input plus owner-level replay rejection is preferred over erasing valid projection state or giving it segment-lifecycle policy.
+
+- Run-owned FIFO acceptance is chosen over waiting for provider forwarding because collaboration calls can form active-turn wait cycles; later failure is represented internally rather than rewriting an already truthful ownership acknowledgement.
+- Explicit Codex append capability preserves a verified same-turn user behavior, while Claude and AutoByteus use the simpler deterministic next-turn baseline. One common always-next-turn policy would be simpler but would unnecessarily remove established Codex behavior.
+- The queue is deliberately non-persisted. Process-crash inbox recovery is not a supported behavior in this ticket and would add delivery guarantees, migration, and replay identity beyond the proven problem.
+- Exact provider dependency pins are preferred over ranges because package resolution changes the external runtime boundary and must match reviewed lock/test/live evidence. The small maintenance cost is preferable to silently installing an unreviewed SDK behavior.
+- The latest Claude streaming-input API is deliberately not adopted. Its priorities can interrupt or queue, but they do not target the exact AgentRun active turn and would duplicate the accepted FIFO; retaining one string query per start is the smaller, truthful design.
+- `alwaysLoad:true` is scoped to intrinsic Agent Tools rather than all MCP servers. Mandatory turn-1 Team capability justifies synchronous readiness; unrelated external MCP startup remains independently owned.
 
 ## Risks
 
@@ -1879,11 +2235,21 @@ Migration runs alongside store ownership before the current-store layer becomes 
 - a converter-local Codex gate could let the notification handler mutate pending MCP/emit a local completion and let converter debug persist the raw candidate before rejection; a generic listener/converter input or fabricated branded value could also bypass the first-boundary decision; and
 - byte-equality deduplication could drop legitimate repeated deltas, while unbounded reorder buffering would conceal provider defects and leak state.
 
-Mitigation is semantic-role-aware predecessor validators, one independently pending `20260801...` released-data owner, fresh/terminal TeamRun DS-009 and token DS-013 chain coverage, fail-not-guess planning, byte/row-stable rejection, one verified token row+schema transaction with forced post-update/post-DDL rollback proof, provider-before-canonical order and fresh-install coverage, canonical root-query/index-plan proof, idempotence, task-identity contraction scans, exact three-level persistent/restored/task coverage, one execution serializer, one Agent binding/status constructor set, real connection/open/restore plus pre-run/replacement DS-014I/J seams, exact six-path source allowlist enforcement, exact V5 target validation, source-to-generated/vendor/importable/fresh-database consistency and application no-migration scans, canonical application launch/binding/event round trips plus DS-016 persistent/task published-artifact and application-stream producer proof, byte/path storage preservation tests for supported released data, exact handoff projection/order tests, provider prompt snapshots, intrinsic-exposure tests, independent send-envelope regression coverage, all real producer/projection-to-serializer-to-strict-parser-to-consumer DS-014A–J seams, activation-base/post-activation-refresh contract tests, monotonic staged task reconciliation with concurrent-query/terminal-descendant proof, identity-free draft success/failure plus valid/live-restore/focus/cleanup DS-015 seams, DS-017A–G actual provider-to-complete-consumer seams, file context replay/end/cleanup proof, memory/compaction/skill/external exact-input proof, exact four-event first-boundary Codex admission with pending-MCP/local-event/raw-debug no-effect rejection and admitted MCP/debug controls, plus original three-variant error wire/presentation proof, explicit queue/order/snapshot/command/termination/replay proof, no-default/no-end-recovery/no-fabricated-type scans, exact-path removal scans, and the isolated/redacted/no-skip DS-011 live matrix after API-owned cleanup.
+- returning acceptance only after next-turn provider forwarding can deadlock reciprocal Agent tool calls, while returning it before AgentRun ownership would permit loss;
+- an AgentRun queue that copies `activeTurnId`, runs provider I/O inside the event queue, or drains before the terminal event is visible would create a second lifecycle authority or deadlock/reorder events;
+- synchronous provider start/terminal events can precede the dispatch promise result; registering observation too late or not reconciling exact IDs would orphan a command or dispatch the next input early;
+- provider dispatch fallback/retry or a surviving Codex/Claude/AutoByteus policy queue could duplicate/reorder input; and
+- command status or memory could confuse admission with forwarding/completion unless it consumes the typed per-entry lifecycle.
+- a partial manifest/lock upgrade could leave incompatible peers or multiple stale resolutions, while a caret on this external boundary could admit unreviewed runtime behavior;
+- adopting SDK `priority:"now"` as append could abort active work, while `priority:"next"`/`streamInput` could create a second queue and duplicate or reorder AgentRun-owned input;
+- latest background MCP connection could make intrinsic Team tools unavailable on the first Claude turn unless the one required descriptor is marked `alwaysLoad:true`; and
+- a sparse `options.env`, removed V2/session adaptation, or unverified executable drift could break otherwise-compatible launch/resume behavior.
+
+Mitigation is semantic-role-aware predecessor validators, one independently pending `20260801...` released-data owner, fresh/terminal TeamRun DS-009 and token DS-013 chain coverage, fail-not-guess planning, byte/row-stable rejection, one verified token row+schema transaction with forced post-update/post-DDL rollback proof, provider-before-canonical order and fresh-install coverage, canonical root-query/index-plan proof, idempotence, task-identity contraction scans, exact three-level persistent/restored/task coverage, one execution serializer, one Agent binding/status constructor set, real connection/open/restore plus pre-run/replacement DS-014I/J seams, exact six-path source allowlist enforcement, exact V5 target validation, source-to-generated/vendor/importable/fresh-database consistency and application no-migration scans, canonical application launch/binding/event round trips plus DS-016 persistent/task published-artifact and application-stream producer proof, byte/path storage preservation tests for supported released data, exact handoff projection/order tests, provider prompt snapshots, intrinsic-exposure tests, independent send-envelope regression coverage, all real producer/projection-to-serializer-to-strict-parser-to-consumer DS-014A–J seams, activation-base/post-activation-refresh contract tests, monotonic staged task reconciliation with concurrent-query/terminal-descendant proof, identity-free draft success/failure plus valid/live-restore/focus/cleanup DS-015 seams, DS-017A–G actual provider-to-complete-consumer seams, file context replay/end/cleanup proof, memory/compaction/skill/external exact-input proof, exact four-event first-boundary Codex admission with pending-MCP/local-event/raw-debug no-effect rejection and admitted MCP/debug controls, plus original three-variant error wire/presentation proof, explicit segment queue/order/snapshot/command/termination/replay proof, DS-018 FIFO/admission/deadlock/provider-capability/interrupt/termination/command-observer proof, DS-019 exact package/peer/import/build/type/option/turn-1-MCP/current-event/live-capability proof, no-default/no-end-recovery/no-fabricated-type scans, exact-path removal scans, and the isolated/redacted/no-skip DS-011 live matrix after API-owned cleanup.
 
 ## Guidance For Implementation
 
-- Treat requirements and all six supplements as normative; this specification supplies ownership and sequence.
+- Treat requirements and all eight supplements as normative; this specification supplies ownership and sequence.
 - Build target validators before migration converters.
 - Preserve genuine Agent fields byte/semantic-equivalently.
 - Make root and nested AgentTeam nodes one type.
@@ -1897,6 +2263,13 @@ Mitigation is semantic-role-aware predecessor validators, one independently pend
 - Keep provider handles, runtime configs, nodes, and lifecycle IDs private behind operation owners.
 - Use one `TeamExecutionAddress` serializer everywhere.
 - Implement the correlated TeamRun/task event unions before mapper cleanup; use exhaustive narrowing and `assertNever`, never casts.
+- Implement the AgentRun input contract and non-persisted admission state at `AgentRun.postUserMessage()`. Return accepted after queue ownership, not provider completion. Serialize admission/claim/result/terminal drain through the existing queue, call provider I/O outside it, and keep `AgentTurnLifecycleState` as the sole active-turn authority.
+- Give backends only declared append capability plus explicit start/append commands. Preserve Codex exact-turn steer; do not add provider selection/queue/fallback. Claude and AutoByteus receive a later start only after canonical terminal.
+- Route command coordination through the per-entry lifecycle observer; admit multiple distinct commands, preserve existing duplicate-ID semantics, and record the user trace only on forwarding. Delete busy/raw-event inference and any caller/provider second queue or retry.
+- Register every observer before leaving the admission boundary. Reconcile synchronous start/terminal-before-result against the one claim with exact turn equality and ordered facts. Let compaction/skill callers fail promptly on dispatch failure/cancellation, and do not manufacture active-run initializing status in the mixed handle.
+- Pin Claude Agent SDK `0.3.231`, Anthropic SDK `0.116.0`, and MCP SDK `1.30.0` exactly in their existing owning manifests and one lockfile; retain compatible Zod 4. Verify root exports, peer resolution, core build, and server production typecheck. Do not retain stale direct/lock resolutions or add runtime version negotiation.
+- Keep Claude on one string `query()` per explicit AgentRun `start_turn`, optional `options.resume`, complete effective `options.env`, and the established configured executable. Do not call `streamInput`, map SDK priorities, consume provider command lifecycle as input authority, or expose a second queue. Claude remains `activeTurnAppend:"unsupported"`.
+- Set `alwaysLoad:true` only when the Claude Agent Tools MCP materializer constructs the intrinsic Team tool server. Do not restore global blocking through a legacy environment switch or impose the flag on arbitrary external MCP servers.
 - Implement the finite segment domain and run-owned lifecycle state before cutting any segment consumer. Pass that state through the existing queue/pipeline input; keep the cached pipeline stateless and make segment admission the first transformer.
 - Providers emit only explicit semantic starts and minimal content/end. Preserve native AutoByteus content without type, add missing Codex reasoning/Claude text starts at their current creation owners, and reject unknown types rather than defaulting. Do not introduce a provider-specific Team branch.
 - Treat every post-transform processor/listener as one clean canonical cut. File change uses non-replacing segment initialization, content-preserving matching tool enrichment, exact file context, and no end type; memory/history, compaction, skill, and external output use exact compound identity/content and no aliases/derived identity/end text. None reads the segment state.
@@ -1929,4 +2302,4 @@ Mitigation is semantic-role-aware predecessor validators, one independently pend
 - Do not discover or migrate application platform DBs. Recreate project fixtures/databases directly in current schema and prove `20260801...` has no application item.
 - Regenerate, do not selectively patch, SDK dist/vendor/importable outputs and fail consistency coverage on any stale V4 semantic declaration.
 - Do not alter delivery-owned dirty documentation/finalization files during solution design.
-- Do not run live provider tests during design. SR-023 changes solution artifacts only; implementation and API/E2E execution remain paused until architecture and focused/full source review pass. API/E2E owns CR-F-043 cleanup before any resumed live run.
+- The user explicitly authorized manifest/lock updates and isolated redacted capability probes during SR-027 investigation. No product source change or product live matrix is authorized during design. Implementation and API/E2E remain paused until complete architecture and focused/full source review pass; API/E2E owns CR-F-043 cleanup before any resumed live run.

@@ -1,0 +1,235 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "head": "632c503188cb9dbb8eecf4422fa174499519ad89",
+  "safeTarget": {
+    "server": "127.0.0.1:60240",
+    "frontend": "127.0.0.1:31240",
+    "database": "autobyteus-server-ts/db/api-rev-040-live-20260813-1.db"
+  },
+  "rows": {
+    "nestedAuto": {
+      "path": "browser/autobyteus-browser-row.json",
+      "passed": true,
+      "rootTeamRunId": null,
+      "runId": null,
+      "conditions": null,
+      "termination": {
+        "success": true,
+        "message": "Agent team run terminated successfully."
+      }
+    },
+    "nestedCodex": {
+      "path": "browser/codex-browser-row.json",
+      "passed": true,
+      "rootTeamRunId": null,
+      "runId": null,
+      "conditions": null,
+      "termination": {
+        "success": true,
+        "message": "Agent team run terminated successfully."
+      }
+    },
+    "nestedClaude": {
+      "path": "browser/claude-browser-row.json",
+      "passed": true,
+      "rootTeamRunId": null,
+      "runId": null,
+      "conditions": null,
+      "termination": {
+        "success": true,
+        "message": "Agent team run terminated successfully."
+      }
+    },
+    "classroomAuto": {
+      "path": "browser/classroom-autobyteus.json",
+      "passed": true,
+      "rootTeamRunId": "classroom_simulation_team_89a0f2ed4c054673a04360480c3b0a39",
+      "runId": null,
+      "conditions": {
+        "freshRun": true,
+        "rootedTopology": true,
+        "effectiveRuntime": true,
+        "effectiveReasoning": true,
+        "exactOneProfessorRequest": true,
+        "requestHasReference": true,
+        "exactOneStudentReply": true,
+        "replyHasReference": true,
+        "exactPersistentAddresses": true,
+        "completionVisible": true,
+        "noConsoleErrors": true
+      },
+      "termination": {
+        "success": true,
+        "message": "Agent team run terminated successfully."
+      }
+    },
+    "classroomCodex": {
+      "path": "browser/classroom-codex.json",
+      "passed": true,
+      "rootTeamRunId": "classroom_simulation_team_3cf13d5cf1ce493e80fedfab5d2996e7",
+      "runId": null,
+      "conditions": {
+        "freshRun": true,
+        "rootedTopology": true,
+        "effectiveRuntime": true,
+        "effectiveReasoning": true,
+        "exactOneProfessorRequest": true,
+        "requestHasReference": true,
+        "exactOneStudentReply": true,
+        "replyHasReference": true,
+        "exactPersistentAddresses": true,
+        "completionVisible": true,
+        "noConsoleErrors": true
+      },
+      "termination": {
+        "success": true,
+        "message": "Agent team run terminated successfully."
+      }
+    },
+    "classroomClaude": {
+      "path": "browser/classroom-claude.json",
+      "passed": true,
+      "rootTeamRunId": "classroom_simulation_team_58c6f1ad83044c8dbe17972a1d349989",
+      "runId": null,
+      "conditions": {
+        "freshRun": true,
+        "rootedTopology": true,
+        "effectiveRuntime": true,
+        "effectiveReasoning": true,
+        "exactOneProfessorRequest": true,
+        "requestHasReference": true,
+        "exactOneStudentReply": true,
+        "replyHasReference": true,
+        "exactPersistentAddresses": true,
+        "completionVisible": true,
+        "noConsoleErrors": true
+      },
+      "termination": {
+        "success": true,
+        "message": "Agent team run terminated successfully."
+      }
+    },
+    "standaloneAuto": {
+      "path": "browser/standalone-autobyteus.json",
+      "passed": true,
+      "rootTeamRunId": null,
+      "runId": "api_rev_040_browser_agent_7411bddc389141e29e433f793e9d222d",
+      "conditions": {
+        "freshRun": true,
+        "effectiveRuntime": true,
+        "effectiveReasoning": true,
+        "exactTokenBeforeRefresh": true,
+        "exactTokenAfterRefresh": true,
+        "resumeRunMatches": true,
+        "resumeActive": true,
+        "resumeRuntimeMatches": true,
+        "resumeModelMatches": true,
+        "noBrowserConsoleErrors": true
+      },
+      "termination": {
+        "success": true,
+        "message": "Agent run terminated successfully."
+      }
+    },
+    "standaloneCodex": {
+      "path": "browser/standalone-codex.json",
+      "passed": true,
+      "rootTeamRunId": null,
+      "runId": "api_rev_040_browser_agent_27c60b5f0f224cabaf2b7602101247df",
+      "conditions": {
+        "freshRun": true,
+        "effectiveRuntime": true,
+        "effectiveReasoning": true,
+        "exactTokenBeforeRefresh": true,
+        "exactTokenAfterRefresh": true,
+        "resumeRunMatches": true,
+        "resumeActive": true,
+        "resumeRuntimeMatches": true,
+        "resumeModelMatches": true,
+        "noBrowserConsoleErrors": true
+      },
+      "termination": {
+        "success": true,
+        "message": "Agent run terminated successfully."
+      }
+    },
+    "standaloneClaude": {
+      "path": "browser/standalone-claude.json",
+      "passed": true,
+      "rootTeamRunId": null,
+      "runId": "api_rev_040_browser_agent_31cb1a6a41dd4e97b6e3bf0f2233258f",
+      "conditions": {
+        "freshRun": true,
+        "effectiveRuntime": true,
+        "effectiveReasoning": true,
+        "exactTokenBeforeRefresh": true,
+        "exactTokenAfterRefresh": true,
+        "resumeRunMatches": true,
+        "resumeActive": true,
+        "resumeRuntimeMatches": true,
+        "resumeModelMatches": true,
+        "noBrowserConsoleErrors": true
+      },
+      "termination": {
+        "success": true,
+        "message": "Agent run terminated successfully."
+      }
+    },
+    "stopFifoClaude": {
+      "path": "provider/configured-stop-fifo-claude.json",
+      "passed": true,
+      "rootTeamRunId": null,
+      "runId": "api_rev_040_claude_stop_fifo_agent_ba6dce81bd8e4c388d79da49dc8a39ee",
+      "conditions": {
+        "exactClaudeRuntimeConfigured": true,
+        "interruptSentBeforeFollowup": true,
+        "followupAdmittedWhileInterruptOutstanding": true,
+        "interruptAccepted": true,
+        "followupAcceptedOnce": true,
+        "terminalBeforeNextStart": true,
+        "exactTokenRenderedOnce": true,
+        "exactTokenOnWireOnce": true,
+        "noBrowserConsoleErrors": true
+      },
+      "termination": {
+        "success": true,
+        "message": "Agent run terminated successfully."
+      }
+    },
+    "activeMobile": {
+      "path": "browser/active-desktop-mobile-reference.json",
+      "passed": true,
+      "rootTeamRunId": "nested_classroom_test_team_52b9b2f7dd964f8cade636c11d39b060",
+      "runId": null,
+      "conditions": {
+        "freshActiveTeam": true,
+        "referencedMessagePresent": true,
+        "exactReplyReceivedOnce": true,
+        "exactRootOnAllRecords": true,
+        "desktopActiveReference": true,
+        "selectedTeamConfigReadOnly": true,
+        "mobileActiveReference": true,
+        "noBrowserConsoleErrors": true
+      },
+      "termination": {
+        "success": true,
+        "message": "Agent team run terminated successfully."
+      }
+    },
+    "persistedMobile": {
+      "path": "browser/persisted-desktop-mobile-reference.json",
+      "passed": true,
+      "rootTeamRunId": "nested_classroom_test_team_52b9b2f7dd964f8cade636c11d39b060",
+      "runId": null,
+      "conditions": {
+        "exactRunTerminalAndLatest": true,
+        "exactPersistedRecords": true,
+        "desktopPersistedReference": true,
+        "mobilePersistedReference": true,
+        "noBrowserConsoleErrors": true
+      },
+      "termination": null
+    }
+  }
+}

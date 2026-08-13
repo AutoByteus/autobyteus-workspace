@@ -1,0 +1,21 @@
+API-REV-040 final live target verification
+2026-08-13T15:27:32Z
+HEAD=632c503188cb9dbb8eecf4422fa174499519ad89
+-- safe listeners
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    27747 normy   30u  IPv4 0x218870e68ee36922      0t0  TCP 127.0.0.1:60240 (LISTEN)
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    28721 normy   17u  IPv4 0xa07099e23a090833      0t0  TCP 127.0.0.1:31240 (LISTEN)
+-- server exact open SQLite files
+node    27747 normy   19u      REG               1,13    671744           345013651 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-040-live-20260813-1.db
+node    27747 normy   20u      REG               1,13    671744           345013651 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-040-live-20260813-1.db
+node    27747 normy   21u      REG               1,13    671744           345013651 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-040-live-20260813-1.db
+node    27747 normy   22u      REG               1,13    671744           345013651 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-040-live-20260813-1.db
+node    27747 normy   24u      REG               1,13    671744           345013651 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-040-live-20260813-1.db
+node    27747 normy   25u      REG               1,13    671744           345013651 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-040-live-20260813-1.db
+node    27747 normy   26u      REG               1,13    671744           345013651 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-040-live-20260813-1.db
+node    27747 normy   27u      REG               1,13    671744           345013651 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-040-live-20260813-1.db
+node    27747 normy   28u      REG               1,13    671744           345013651 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-040-live-20260813-1.db
+-- protected listeners (expect none; no action)
+OPERATIONAL_DATABASE_ACTION=NONE
+PROTECTED_STACK_ACTION=NONE

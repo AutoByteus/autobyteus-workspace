@@ -1,0 +1,24 @@
+{
+  "slug": "claude",
+  "runtime": "claude_agent_sdk",
+  "passed": true,
+  "rootTeamRunId": "classroom_simulation_team_58c6f1ad83044c8dbe17972a1d349989",
+  "conditions": {
+    "freshRun": true,
+    "rootedTopology": true,
+    "effectiveRuntime": true,
+    "effectiveReasoning": true,
+    "exactOneProfessorRequest": true,
+    "requestHasReference": true,
+    "exactOneStudentReply": true,
+    "replyHasReference": true,
+    "exactPersistentAddresses": true,
+    "completionVisible": true,
+    "noConsoleErrors": true
+  },
+  "fatalError": null,
+  "termination": {
+    "success": true,
+    "message": "Agent team run terminated successfully."
+  }
+}

@@ -1,0 +1,40 @@
+utc=2026-08-13T09:11:01Z
+branch=codex/agent-team-hierarchical-handoffs
+head=42e42a9471c251075af07c3e0805d43858246e67
+reviewed_head=258d18cdba0bf7ae08bde134fe09586a8906870d
+ir045_source_commit=b8798338cfc77c322ebd2dde23b827f6855f6588
+ir045_handoff_commit=42e42a9471c251075af07c3e0805d43858246e67
+delivery_checkpoint=29337af23c13ce3c711f28b73c0c802c5e62e3c2
+origin_personal=54890a07f74e941a7a12b6daaa26364f4c927b72
+merge_base=54890a07f74e941a7a12b6daaa26364f4c927b72
+left_right=0/97
+latest_base_ancestor=YES
+unmerged_count=0
+--- post-review path inventory ---
+M	autobyteus-server-ts/src/agent-execution/prompt/carpenter-prompt-composer.ts
+M	autobyteus-server-ts/src/agent-team-execution/services/member-collaboration-instruction-renderer.ts
+M	autobyteus-server-ts/src/agent-team-execution/services/team-runtime-instruction-renderer.ts
+M	autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts
+M	autobyteus-server-ts/tests/unit/agent-execution/backends/claude/backend/claude-session-bootstrapper.test.ts
+M	autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts
+M	autobyteus-server-ts/tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts
+M	autobyteus-server-ts/tests/unit/agent-execution/prompt/carpenter-prompt-composer.test.ts
+M	autobyteus-server-ts/tests/unit/agent-team-execution/member-collaboration-instruction-provider-parity.test.ts
+post_review_paths=9
+post_review_production_paths=3
+post_review_durable_test_paths=6
+1017:### IR-045 — Render the approved exact AgentTeam Addressing and Collaboration sections
+- Current implementation revision: `IR-045`
+ir045_artifacts=PASS
+current_source_review_for_b879=ABSENT_EXPECTED_BLOCKER
+crr083_audit_sha256=28e17e664b6bcfae9f9a4dab76bc534bc72a52b31d4726a513e1b9f491623a29
+delivery_artifacts=PASS
+git_diff_check=PASS
+backup_sha256=da300460f02c1d95965118fbe2ed8f68d549836d9f18d36bf23cdc418103a8d6
+protected_state=PASS
+operational_database_action=NONE
+protected_60004_31004_action=NONE
+archive_push_release_deploy_action=NONE
+blocker_classification=Local Fix
+recommended_recipient=code_reviewer
+dr009_blocker_audit=PASS

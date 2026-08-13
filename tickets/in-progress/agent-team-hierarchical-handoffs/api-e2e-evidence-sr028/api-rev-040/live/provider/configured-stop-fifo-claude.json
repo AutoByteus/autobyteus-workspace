@@ -1,0 +1,402 @@
+{
+  "schemaVersion": 1,
+  "passed": true,
+  "startedAt": "2026-08-13T15:21:38.902Z",
+  "completedAt": "2026-08-13T15:21:46.262Z",
+  "agentDefinitionId": "api-rev-040-claude-stop-fifo-agent",
+  "runId": "api_rev_040_claude_stop_fifo_agent_ba6dce81bd8e4c388d79da49dc8a39ee",
+  "expectedToken": "API40_FIFO_AFTER_STOP_8787ec18_4986_4eac_b5c4_a22983058da3",
+  "interruptCommandId": "client_interrupt_aa2a781c-bf8c-4fae-975a-ae9518592c41",
+  "followupMessageId": "client_followup_b86ea91b-1d1e-4e66-8426-79531c2c1dbd",
+  "interruptSentAtMs": 1786634501393,
+  "followupSentAtMs": 1786634501399,
+  "conditions": {
+    "exactClaudeRuntimeConfigured": true,
+    "interruptSentBeforeFollowup": true,
+    "followupAdmittedWhileInterruptOutstanding": true,
+    "interruptAccepted": true,
+    "followupAcceptedOnce": true,
+    "terminalBeforeNextStart": true,
+    "exactTokenRenderedOnce": true,
+    "exactTokenOnWireOnce": true,
+    "noBrowserConsoleErrors": true
+  },
+  "records": [
+    {
+      "at": "2026-08-13T15:21:41.366Z",
+      "receivedAtMs": 1786634501366,
+      "message": {
+        "type": "CONNECTED",
+        "payload": {
+          "agent_id": "api_rev_040_claude_stop_fifo_agent_ba6dce81bd8e4c388d79da49dc8a39ee",
+          "session_id": "6cde7a44-e055-4ce1-98f6-8196dd14c9f2"
+        }
+      }
+    },
+    {
+      "at": "2026-08-13T15:21:41.367Z",
+      "receivedAtMs": 1786634501367,
+      "message": {
+        "type": "AGENT_STATUS",
+        "payload": {
+          "status": "running",
+          "agent_id": "api_rev_040_claude_stop_fifo_agent_ba6dce81bd8e4c388d79da49dc8a39ee"
+        }
+      }
+    },
+    {
+      "at": "2026-08-13T15:21:41.400Z",
+      "receivedAtMs": 1786634501400,
+      "message": {
+        "type": "AGENT_COMMAND_ACK",
+        "payload": {
+          "command_type": "SEND_MESSAGE",
+          "run_id": "api_rev_040_claude_stop_fifo_agent_ba6dce81bd8e4c388d79da49dc8a39ee",
+          "message_id": "client_followup_b86ea91b-1d1e-4e66-8426-79531c2c1dbd",
+          "dedupe_key": "agent_run_input:e2e:client_followup_b86ea91b-1d1e-4e66-8426-79531c2c1dbd",
+          "state": "accepted",
+          "accepted": true,
+          "duplicate": false,
+          "status": {
+            "status": "running",
+            "agent_id": "api_rev_040_claude_stop_fifo_agent_ba6dce81bd8e4c388d79da49dc8a39ee"
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-08-13T15:21:43.398Z",
+      "receivedAtMs": 1786634503398,
+      "message": {
+        "type": "TURN_INTERRUPTED",
+        "payload": {
+          "turnId": "api_rev_040_claude_stop_fifo_agent_ba6dce81bd8e4c388d79da49dc8a39ee:turn:1786634501195",
+          "turn_id": "api_rev_040_claude_stop_fifo_agent_ba6dce81bd8e4c388d79da49dc8a39ee:turn:1786634501195"
+        }
+      }
+    },
+    {
+      "at": "2026-08-13T15:21:43.398Z",
+      "receivedAtMs": 1786634503398,
+      "message": {
+        "type": "AGENT_STATUS",
+        "payload": {
+          "status": "idle",
+          "agent_id": "api_rev_040_claude_stop_fifo_agent_ba6dce81bd8e4c388d79da49dc8a39ee"
+        }
+      }
+    },
+    {
+      "at": "2026-08-13T15:21:43.398Z",
+      "receivedAtMs": 1786634503398,
+      "message": {
+        "type": "AGENT_STATUS",
+        "payload": {
+          "status": "initializing",
+          "agent_id": "api_rev_040_claude_stop_fifo_agent_ba6dce81bd8e4c388d79da49dc8a39ee"
+        }
+      }
+    },
+    {
+      "at": "2026-08-13T15:21:43.398Z",
+      "receivedAtMs": 1786634503398,
+      "message": {
+        "type": "AGENT_COMMAND_ACK",
+        "payload": {
+          "command_type": "INTERRUPT_GENERATION",
+          "command_id": "client_interrupt_aa2a781c-bf8c-4fae-975a-ae9518592c41",
+          "target": {
+            "target_kind": "standalone_run",
+            "run_id": "api_rev_040_claude_stop_fifo_agent_ba6dce81bd8e4c388d79da49dc8a39ee"
+          },
+          "state": "accepted"
+        }
+      }
+    },
+    {
+      "at": "2026-08-13T15:21:43.400Z",
+      "receivedAtMs": 1786634503400,
+      "message": {
+        "type": "AGENT_STATUS",
+        "payload": {
+          "status": "running",
+          "agent_id": "api_rev_040_claude_stop_fifo_agent_ba6dce81bd8e4c388d79da49dc8a39ee"
+        }
+      }
+    },
+    {
+      "at": "2026-08-13T15:21:43.400Z",
+      "receivedAtMs": 1786634503400,
+      "message": {
+        "type": "TURN_STARTED",
+        "payload": {
+          "turnId": "api_rev_040_claude_stop_fifo_agent_ba6dce81bd8e4c388d79da49dc8a39ee:turn:1786634503398",
+          "turn_id": "api_rev_040_claude_stop_fifo_agent_ba6dce81bd8e4c388d79da49dc8a39ee:turn:1786634503398"
+        }
+      }
+    },
+    {
+      "at": "2026-08-13T15:21:45.774Z",
+      "receivedAtMs": 1786634505774,
+      "message": {
+        "type": "SEGMENT_START",
+        "payload": {
+          "id": "api_rev_040_claude_stop_fifo_agent_ba6dce81bd8e4c388d79da49dc8a39ee:turn:1786634503398:claude-text:1dfb89d8-473e-4ee0-a9da-5357e0eb2989:0",
+          "turn_id": "api_rev_040_claude_stop_fifo_agent_ba6dce81bd8e4c388d79da49dc8a39ee:turn:1786634503398",
+          "segment_type": "text",
+          "metadata": null
+        }
+      }
+    },
+    {
+      "at": "2026-08-13T15:21:45.774Z",
+      "receivedAtMs": 1786634505774,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "api_rev_040_claude_stop_fifo_agent_ba6dce81bd8e4c388d79da49dc8a39ee:turn:1786634503398:claude-text:1dfb89d8-473e-4ee0-a9da-5357e0eb2989:0",
+          "turn_id": "api_rev_040_claude_stop_fifo_agent_ba6dce81bd8e4c388d79da49dc8a39ee:turn:1786634503398",
+          "segment_type": "text",
+          "delta": "API40_FIFO_AFTER_STOP_8787ec18_4986_4eac_b5c4_a22983058da3"
+        }
+      }
+    },
+    {
+      "at": "2026-08-13T15:21:45.775Z",
+      "receivedAtMs": 1786634505775,
+      "message": {
+        "type": "SEGMENT_END",
+        "payload": {
+          "id": "api_rev_040_claude_stop_fifo_agent_ba6dce81bd8e4c388d79da49dc8a39ee:turn:1786634503398:claude-text:1dfb89d8-473e-4ee0-a9da-5357e0eb2989:0",
+          "turn_id": "api_rev_040_claude_stop_fifo_agent_ba6dce81bd8e4c388d79da49dc8a39ee:turn:1786634503398",
+          "metadata": null,
+          "interrupted": false,
+          "reason": null,
+          "failed": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "at": "2026-08-13T15:21:45.781Z",
+      "receivedAtMs": 1786634505781,
+      "message": {
+        "type": "TOKEN_USAGE_UPDATED",
+        "payload": {
+          "usage_event_id": "0273b0da-864d-4144-805a-c3a7e0232b6d",
+          "idempotency_key": "claude_sdk_usage:api_rev_040_claude_stop_fifo_agent_ba6dce81bd8e4c388d79da49dc8a39ee:94932304-9204-4a7d-b455-af0c7d7b3d4a:api_rev_040_claude_stop_fifo_agent_ba6dce81bd8e4c388d79da49dc8a39ee:turn:1786634503398:deepseek-v4-flash:25304:33:25337",
+          "observed_at": "2026-08-13T15:21:45.780Z",
+          "run_id": "api_rev_040_claude_stop_fifo_agent_ba6dce81bd8e4c388d79da49dc8a39ee",
+          "turn_id": "api_rev_040_claude_stop_fifo_agent_ba6dce81bd8e4c388d79da49dc8a39ee:turn:1786634503398",
+          "llm_call_id": null,
+          "call_sequence": null,
+          "execution_address": null,
+          "agent_definition_id": "api-rev-040-claude-stop-fifo-agent",
+          "workspace_id": "temp_ws_default",
+          "task_id": null,
+          "team_name": null,
+          "agent_name": null,
+          "run_summary": null,
+          "run_created_at": null,
+          "member_display_name": null,
+          "runtime_kind": "claude_agent_sdk",
+          "model_provider": "ANTHROPIC",
+          "provider_name": null,
+          "model_identifier": "deepseek-v4-flash",
+          "model_value": "deepseek-v4-flash",
+          "ingestion_kind": "claude_sdk_result",
+          "usage_scope": "per_turn",
+          "snapshot_series_key": null,
+          "previous_snapshot_event_id": null,
+          "input_token_semantic": "base_excludes_cache",
+          "reported_input_tokens": 25304,
+          "reported_output_tokens": 33,
+          "reported_total_tokens": 25337,
+          "accounting_input_tokens": 25304,
+          "accounting_output_tokens": 33,
+          "accounting_total_tokens": 25337,
+          "standard_input_tokens": 25304,
+          "cache_miss_input_tokens": 25304,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "cache_state": "zero_reported",
+          "reasoning_output_tokens": 0,
+          "billable_input_tokens": 25304,
+          "billable_output_tokens": 33,
+          "cost_basis": null,
+          "currency": null,
+          "input_price_per_million": null,
+          "output_price_per_million": null,
+          "cached_input_read_price_per_million": null,
+          "cached_input_write_price_per_million": null,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "pricing_source": null,
+          "pricing_status": "missing",
+          "pricing_missing_reason": "model_not_found",
+          "pricing_snapshot_json": {
+            "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:deepseek-v4-flash",
+            "price_config_id": null,
+            "model_provider": "ANTHROPIC",
+            "model_identifier": "deepseek-v4-flash",
+            "model_value": "deepseek-v4-flash",
+            "canonical_name": null,
+            "currency": null,
+            "input_price_per_million": null,
+            "output_price_per_million": null,
+            "cached_input_read_price_per_million": null,
+            "cached_input_write_price_per_million": null,
+            "cached_input_write_5m_price_per_million": null,
+            "cached_input_write_1h_price_per_million": null,
+            "input_price_tiers": [],
+            "pricing_status": "missing",
+            "trusted_dimensions": {
+              "input": false,
+              "output": false,
+              "cached_input_read": false,
+              "cached_input_write": false,
+              "cached_input_write_5m": false,
+              "cached_input_write_1h": false
+            },
+            "missing_reason": "model_not_found",
+            "source": null,
+            "effective_from": null,
+            "effective_to": null,
+            "version": null
+          },
+          "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:deepseek-v4-flash",
+          "selected_pricing_tier_id": null,
+          "missing_price_dimensions": [
+            "model_not_found"
+          ],
+          "estimated_api_input_cost": null,
+          "estimated_api_standard_input_cost": null,
+          "estimated_api_cache_read_input_cost": null,
+          "estimated_api_cache_creation_input_cost": null,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": null,
+          "estimated_api_reasoning_output_cost": null,
+          "estimated_api_total_cost": null,
+          "api_cost_status": "price_missing",
+          "meter_delta_input_tokens": 25304,
+          "meter_delta_output_tokens": 33,
+          "meter_delta_total_tokens": 25337,
+          "run_summary_after_event": null,
+          "latest_prompt_tokens": 25304,
+          "effective_context_window_tokens": 200000,
+          "context_window_usage_percent": 12.652,
+          "raw_usage_json": {
+            "input_tokens": 25304,
+            "cache_creation_input_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "output_tokens": 33,
+            "output_tokens_details": {
+              "thinking_tokens": 0
+            },
+            "server_tool_use": {
+              "web_search_requests": 0,
+              "web_fetch_requests": 0
+            },
+            "service_tier": "standard",
+            "cache_creation": {
+              "ephemeral_1h_input_tokens": 0,
+              "ephemeral_5m_input_tokens": 0
+            },
+            "inference_geo": "",
+            "iterations": [],
+            "speed": "standard"
+          },
+          "raw_event_json": {
+            "is_error": false,
+            "duration_api_ms": 1934,
+            "num_turns": 1,
+            "stop_reason": "end_turn",
+            "session_id": "94932304-9204-4a7d-b455-af0c7d7b3d4a",
+            "total_cost_usd": 0.12734499999999999,
+            "usage": {
+              "input_tokens": 25304,
+              "cache_creation_input_tokens": 0,
+              "cache_read_input_tokens": 0,
+              "output_tokens": 33,
+              "output_tokens_details": {
+                "thinking_tokens": 0
+              },
+              "server_tool_use": {
+                "web_search_requests": 0,
+                "web_fetch_requests": 0
+              },
+              "service_tier": "standard",
+              "cache_creation": {
+                "ephemeral_1h_input_tokens": 0,
+                "ephemeral_5m_input_tokens": 0
+              },
+              "inference_geo": "",
+              "iterations": [],
+              "speed": "standard"
+            },
+            "modelUsage": {
+              "deepseek-v4-flash": {
+                "inputTokens": 25304,
+                "outputTokens": 33,
+                "cacheReadInputTokens": 0,
+                "cacheCreationInputTokens": 0,
+                "webSearchRequests": 0,
+                "costUSD": 0.12734499999999999,
+                "contextWindow": 200000,
+                "maxOutputTokens": 32000,
+                "canonicalModel": "deepseek-v4-flash",
+                "provider": "firstParty"
+              }
+            },
+            "permission_denials": [],
+            "terminal_reason": "completed",
+            "fast_mode_state": "off",
+            "fast_mode_disabled_reason": "sdk_opt_in_required",
+            "subtype": "success",
+            "api_error_status": null,
+            "result": "API40_FIFO_AFTER_STOP_8787ec18_4986_4eac_b5c4_a22983058da3",
+            "ttft_ms": 1872,
+            "ttft_stream_ms": 701,
+            "time_to_request_ms": 39,
+            "type": "result",
+            "duration_ms": 1975,
+            "uuid": "35eafc82-eb24-4797-ac8d-cf9662d04f48"
+          },
+          "quality_flags": [
+            "model_identifier_differs_from_run_context"
+          ]
+        }
+      }
+    },
+    {
+      "at": "2026-08-13T15:21:46.074Z",
+      "receivedAtMs": 1786634506074,
+      "message": {
+        "type": "TURN_COMPLETED",
+        "payload": {
+          "turnId": "api_rev_040_claude_stop_fifo_agent_ba6dce81bd8e4c388d79da49dc8a39ee:turn:1786634503398",
+          "turn_id": "api_rev_040_claude_stop_fifo_agent_ba6dce81bd8e4c388d79da49dc8a39ee:turn:1786634503398"
+        }
+      }
+    },
+    {
+      "at": "2026-08-13T15:21:46.074Z",
+      "receivedAtMs": 1786634506074,
+      "message": {
+        "type": "AGENT_STATUS",
+        "payload": {
+          "status": "idle",
+          "agent_id": "api_rev_040_claude_stop_fifo_agent_ba6dce81bd8e4c388d79da49dc8a39ee"
+        }
+      }
+    }
+  ],
+  "consoleEvents": [],
+  "termination": {
+    "success": true,
+    "message": "Agent run terminated successfully."
+  }
+}

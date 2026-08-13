@@ -1,0 +1,15 @@
+start_utc=2026-08-13T09:09:29Z
+branch=codex/agent-team-hierarchical-handoffs
+head=42e42a9471c251075af07c3e0805d43858246e67
+ir045_commit=42e42a947
+origin_personal_before=54890a07f74e941a7a12b6daaa26364f4c927b72
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+origin_personal_after=54890a07f74e941a7a12b6daaa26364f4c927b72
+merge_base=54890a07f74e941a7a12b6daaa26364f4c927b72
+left_right=0/97
+latest_base_ancestor=YES
+unmerged_count=0
+ir045_authority=1017:### IR-045 — Render the approved exact AgentTeam Addressing and Collaboration sections
+review_state=IR-045 implementation handoff/checks are current; source review and downstream API/E2E gates remain absent
+end_utc=2026-08-13T09:09:31Z

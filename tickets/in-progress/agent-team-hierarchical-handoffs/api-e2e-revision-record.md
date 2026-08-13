@@ -873,3 +873,37 @@ None. API-REV-016 had no unresolved failure. Its backend/runtime and three-provi
 - Current result/confidence: **Pass / 98%**.
 - Safety: no server, frontend, browser, provider, vault, migration, database, protected-port, stash, backup, repair, or rollback action. Operational database action/inspection none; incident disclosures preserved.
 - Recommended recipient: `code_reviewer` for proportional re-review of the corrected complete ten-path delta before delivery.
+
+### API-REV-039 — SR-025 exact prompt copy passes; Claude active task-peer reverse reply fails
+
+- Triggering role/report/round: `code_reviewer`; `CRR-084 Pass / 93.9%`; fresh post-SR-025 API/E2E round.
+- Related authority: `SR-025`; preserved `ARCH-REV-018`; `IR-045`; `CRR-084`; current HEAD `42e42a9471c251075af07c3e0805d43858246e67`.
+- New finding/scenario: `API-F-025` / `API-LIVE-039-CLAUDE-TASK-PEER-REPLY-001`.
+- Why recorded: exact SR-025 prompt copy/order/count and all provider seams pass, as does the user-requested public Classroom Simulation Team across all three runtimes, but the retained real Claude task-Team peer reverse-reply boundary returns a concrete active-turn runtime rejection.
+- Durable coverage changed: none. API-REV-039 added only temporary evidence scripts/rows under the ticket evidence directory.
+- Repository results: SR-025 prompt/provider `55/55`; context/tool/MCP/delegation `69/69`; Claude active-turn and Team delivery/routing `29/29`; exact built prompt audit; server `build:full`; Nuxt production build/fifteen routes.
+- Checked environment: exact absent disposable SQLite/runtime, sanitized ambient DB selectors, configuration-only preflight, Prisma migration, actual interactive `pnpm secrets:import` from `/Users/normy/.autobyteus/server-data/.env` into only the disposable vault, checked server launcher, PID lsof exact path, and owned browser/frontend ports.
+- User-requested package: `/Users/normy/autobyteus_org/autobyteus-agents` imported directly; `classroom-simulation-team` passes AutoByteus, Codex, and Claude real Chrome file-backed professor/student request/reply/reference/completion/termination with zero browser console errors. Source hashes remain unchanged.
+- Nested result: AutoByteus and Codex pass exact rules, persistent send/reply/reference, nested task Team, task-peer request/reply, exact submission, accepted review, refresh, and termination. Claude routes the request and invokes the reverse `send_message_to`, but returns `RUNTIME_COMMAND_FAILED` because the target `student_one` Claude turn is already active. Reverse communication, submission, and review are absent; the task remains active.
+- Preliminary classification: implementation source at the `InterAgentMessageRouter` -> `AgentRun.postUserMessage()` -> `ClaudeSession.sendTurn()` active-turn boundary. This is not model tool-election variance and no API/E2E product edit was made.
+- Stop decision: later fresh standalone and mobile expansion is Not Tested after the critical failure; passing deterministic standalone exclusion coverage is retained without claiming a fresh live Pass.
+- Cleanup: all owned Teams terminated; `60239/31239` closed; exact runtime/database/vault key removed; both package sources byte-identical. Operational DB action/inspection none; protected `60004/31004`, stashes, delivery backup, repair, rollback, and incident disclosures preserved.
+- Canonical evidence: `api-e2e-evidence-sr025/api-rev-039/failure-api-f025-claude-active-task-peer-reply-analysis.md`, `live/provider/claude-task-peer-reply-trace.json`, three public classroom rows, three nested rows, repository logs, environment proof, and cleanup verification.
+- Prior result/confidence: `Pass / 98%` (`API-REV-038`; test-only SR-024 correction, historical pre-SR-025).
+- Current result/confidence: **Fail / 88%**.
+- Recommended recipient: `code_reviewer` for focused failure-origin review, not proportional successful-test review.
+
+### API-REV-040 — SR-028 / IR-048 real Claude reverse reply, FIFO/Stop, and full current matrix pass
+
+- Trigger: `CRR-089 Pass / 95.4%` for cumulative `SR-028` / `IR-048` at HEAD `632c503188cb9dbb8eecf4422fa174499519ad89`.
+- Prior result: `API-REV-039 Fail / 88%`; Claude reverse task-peer delivery reached an already-active recipient and returned `RUNTIME_COMMAND_FAILED`.
+- Coverage investigation: refreshed before edits/execution. Five stale current-test seams were classified `Needs Update`; `CR-F-043` residue required fresh metadata-only absence proof; broader configured execution was mandatory.
+- Durable changes: exactly `5 updated / 0 added / 0 removed` server test paths. Focused currentization `18/18`, top-level integration `3/3`, affected SR-028 `223/223`, prompt parity `10/10`, broad server `620 active tests`, broad web `540/540`, production server and Nuxt builds pass. Exact inventory/patch/reverse-apply/no-skip/no-retired-identity/diff audit passes.
+- Safe environment: absent disposable database/runtime; ambient DB selectors sanitized; configuration-only preflight; twenty migrations; actual interactive `pnpm secrets:import` from the requested home `.env` into only the disposable vault; checked launcher; exact PID lsof; no operational target action.
+- Real configured result: Nested Classroom AutoByteus/Codex/Claude pass; the Claude same-chain request/reverse reply now succeeds once and continues through one submission/accepted review with no runtime command failure. Public Classroom Simulation AutoByteus/Codex/Claude pass. Standalone AutoByteus/Codex/Claude first-send/restore pass. Configured Claude Stop plus waiting FIFO passes terminal-before-next-start and once-only forwarding. Active/persisted desktop/mobile communication/reference/config journeys pass. Aggregate `12/12`.
+- Temporary evidence authoring: one initial Claude nested selector and one initial Stop/FIFO final-idle predicate were wrong in temporary scripts; neither represented a product failure. Corrected fresh reruns pass and the failed authoring evidence is retained transparently.
+- Cleanup: no active runs; owned processes stopped; owned ports closed; exact runtime/database/vault/key/sidecars removed. Operational DB action/inspection none; protected stack/stash/backup/repair/rollback action none; incident disclosures preserved.
+- Prior confidence/result: `Fail / 88%`.
+- Current confidence/result: **Pass / 98%**.
+- Finding disposition: `API-F-025` resolved downstream.
+- Next recipient: `code_reviewer` for proportional review of the exact five-path durable package; delivery remains blocked until that Pass.

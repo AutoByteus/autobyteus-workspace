@@ -4,11 +4,11 @@
 
 - Canonical path: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/agent-team-addressing-handoff-contract.md`
 - Type: Intended-behavior contract supplement
-- Scope: Ticket 1 collaboration protocol with the SR-025 exact Agent-facing prompt copy
-- Status: `Refined — SR-025 user-approved two-section implementation copy; no architecture impact`
-- Approval applicability: The user approved the AgentTeam-first split, filesystem-like addressing, unchanged authored `from`/`to` handoff endpoints, sender-only rule retrieval, AgentTeam-as-coordinator targeting, clean removal of synthetic child-Team representatives, the same canonical `recipient_address` for `send_message_to` and `delegate_task`, the minimal SR-006 caller/recipient values, and the SR-010 LLM contract. SR-011 additionally requires later three-runtime live proof through an imported nested-classroom Team. SR-012 changed only the separate application SDK compatibility design, and SR-013 changes only the persisted predecessor migration interpretation and sequencing. SR-014 introduced one exact natural Agent-facing renderer template; SR-025 refines only that copy and presentation into two naturally ordered sibling sections without changing protocol behavior.
-- Related requirements: R-001 through R-031, R-043, and R-047
-- Related acceptance criteria: AC-001 through AC-025, AC-039, and AC-043
+- Scope: Ticket 1 collaboration protocol with the SR-025 exact Agent-facing prompt copy and SR-026 AgentRun input-admission linkage
+- Status: `Refined — SR-026 input-admission linkage aligned; addressing and handoff protocol unchanged`
+- Approval applicability: The user approved the AgentTeam-first split, filesystem-like addressing, unchanged authored `from`/`to` handoff endpoints, sender-only rule retrieval, AgentTeam-as-coordinator targeting, clean removal of synthetic child-Team representatives, the same canonical `recipient_address` for `send_message_to` and `delegate_task`, the minimal SR-006 caller/recipient values, and the SR-010 LLM contract. SR-011 additionally requires later three-runtime live proof through an imported nested-classroom Team. SR-012 changed only the separate application SDK compatibility design, and SR-013 changes only the persisted predecessor migration interpretation and sequencing. SR-014 introduced one exact natural Agent-facing renderer template; SR-025 refines only that copy and presentation into two naturally ordered sibling sections without changing protocol behavior. SR-026 keeps the same address/resolver/delivery path and assigns post-resolution active-input acceptance/sequencing solely to AgentRun.
+- Related requirements: R-001 through R-031, R-043, R-047, and R-057
+- Related acceptance criteria: AC-001 through AC-025, AC-039, AC-043, and AC-052
 - Related comprehensive identity supplement: [team-run-canonical-identity-refactor.md](./team-run-canonical-identity-refactor.md)
 - Related live-validation supplement: [nested-classroom-live-validation-contract.md](./nested-classroom-live-validation-contract.md)
 - Exact system-instruction copy: [agent-team-collaboration-system-instruction.md](./agent-team-collaboration-system-instruction.md)
@@ -661,8 +661,15 @@ This matrix states the minimum end-to-end span that the solution and downstream 
 | UC-018 Structured restore migration | Server starts against legacy TeamRun/history/task records | Required migration gate -> store-owned validation/conversion -> backup/transaction -> completion record -> strict current reader | Equivalent identity becomes canonical address/execution address; contradictions block startup with actionable evidence. |
 | UC-019 Production contract round trip | Web/SDK client launches or hydrates persistent/task execution | GraphQL/REST/WebSocket -> project SDK -> address-keyed topology plus execution-address-keyed runtime state -> command/event return | No route/path compatibility map; same logical address may retain distinct concrete executions. |
 | UC-023 Imported three-runtime live proof | API/E2E imports the staged nested-classroom package and launches a fresh TeamRun for each runtime row | public package import -> runtime/model launch -> intrinsic tool/prompt -> message/task/restore spines -> redacted evidence | AutoByteus, Codex, and Claude prove the same canonical collaboration contract under the required live matrix; no skipped row is Pass. |
+| UC-029 Active exact-recipient input | Any supported caller reaches an idle or active exact AgentRun through `recipient_address`, `target_agent_run_id`, browser/external command, application, compaction, or skill input | caller-owned validation/routing -> exact AgentRun admission -> one run-local FIFO -> explicit provider start/append mechanics -> typed internal settlement -> operation-owned result/event projection | The caller receives one truthful admission result without waiting for next-turn forwarding; the message is attempted at most once in FIFO order, and Team delivery projects once without retry. |
 
-## 14. Explicit Non-Goals
+## 14. SR-026 Post-Resolution Input Admission
+
+Addressing ends when the shared resolver identifies the exact recipient AgentRun. Both logical `recipient_address` and exact `target_agent_run_id` delivery then call the same `AgentRun.postUserMessage()` boundary. The collaboration layer does not inspect active turns, queue, retry, or choose a provider operation.
+
+For a valid live recipient, `accepted:true` means that AgentRun owns one FIFO, at-most-once forwarding attempt. `send_message_to` preserves its established `DELIVERED` success code/message; AgentRun adds no competing success code. Team `COMMUNICATION` and `MEMBER_INPUT` publish once from that admission result. If the recipient runtime cannot append to its current turn, the call still returns without waiting for that turn to complete, and AgentRun starts one later turn after canonical terminal. Later forwarding or terminal facts do not republish delivery or retry through another route. The exact owner/state/provider contract is [agent-run-input-admission-contract.md](./agent-run-input-admission-contract.md).
+
+## 15. Explicit Non-Goals
 
 - AgentOrg domain definitions, runs, APIs, visualization, or dynamic refresh
 - automatic file-system watching

@@ -5,9 +5,9 @@
 - Canonical path: `tickets/in-progress/agent-team-hierarchical-handoffs/agent-segment-lifecycle-contract.md`
 - Purpose: close CR-F-042 / API-F-024 by assigning segment correlation to one `AgentRun`-owned lifecycle and making every downstream content event truthful and self-contained.
 - Scope: AutoByteus, Codex App Server, and Claude Agent SDK source normalization; the common AgentRun event pipeline; standalone and Team stream projection; application-agent streaming; browser segment identity and mutation; lifecycle/error behavior; and durable/live validation.
-- Status: `Refined — SR-024 exact-four-family first-native-boundary Codex admission architecture-review input`.
-- Related requirements: `R-043`, `R-053`–`R-056`.
-- Related acceptance criteria: `AC-045`, `AC-046`, `AC-048`–`AC-051`.
+- Status: `Accepted by ARCH-REV-018; SR-026 input-drain and terminal-order linkage aligned`.
+- Related requirements: `R-043`, `R-053`–`R-057`.
+- Related acceptance criteria: `AC-045`, `AC-046`, `AC-048`–`AC-052`.
 - Approval applicability: `N/A — structural design supplement for already-approved live Agent response behavior; no new product capability or compatibility path`.
 - Relationship to core artifacts: requirements own observable behavior; investigation notes own current-path evidence; `design-spec.md` owns system allocation and sequencing; this supplement owns exact segment source/canonical shapes, the bounded lifecycle state machine, per-consumer responsibilities, and test seams. `team-stream-execution-projection-contract.md` remains authoritative for Team correlation and consumes only the admitted canonical AgentRun segment events defined here.
 
@@ -159,7 +159,7 @@ For each `AgentSegmentIdentity`, the run-owned state is one of `absent`, `active
 
 ### 4.1 Turn boundaries
 
-- A successful `AgentRun.postUserMessage()` command result with a non-empty `turnId` opens that turn in both run-owned lifecycle states inside the existing dispatch queue. `TURN_STARTED(turnId)` opens or confirms the same exact turn. Repeating the same start is idempotent and does not clear active segments.
+- A successful explicit backend `start_turn` dispatch result with a non-empty `turnId` opens that turn in both run-owned lifecycle states inside the existing dispatch queue. The public `AgentRun.postUserMessage()` admission result does not open a turn. `TURN_STARTED(turnId)` opens or confirms the same exact turn; an `append_to_active_turn` claim already names that open turn. Repeating the same start is idempotent and does not clear active segments.
 - Starting a different turn retires the previously active turn and clears its segment entries before opening the new turn. It does not synthesize `SEGMENT_END`.
 - `TURN_COMPLETED(turnId)`, `TURN_INTERRUPTED(turnId)`, or a turn-terminal error retires that turn and clears every active/ended segment entry for it after all earlier events in the same queue order have been processed.
 - A runtime-global terminal error, an admitted offline/terminated runtime fact, or accepted `AgentRun.terminate()` clears all segment state. At batch entry, reconciliation may confirm/open an identified active turn from the existing runtime lifecycle snapshot, but it never invents a segment start and never pre-clears an identified turn merely because the snapshot has already become idle/error while ordered terminal events are still in the batch. Explicit batch facts are applied in order; an offline/error snapshot cleanup, if still needed, occurs after those facts.
@@ -514,6 +514,12 @@ The strict schema admits only `{turn,diagnostic,exact turn}`, `{turn,terminal,ex
 
 No compatibility period, dual source shape, or fallback reader is designed.
 
-## 12. Guidance For Implementation
+## 12. SR-026 Input-Drain Interaction
+
+`AgentSegmentLifecycleState` and `AgentRunInputAdmissionState` are separate because they govern output segments and input entries. Neither copies `AgentTurnLifecycleState`. Both are coordinated only by `AgentRun` through the existing event dispatch queue.
+
+For next-turn input, the canonical `TURN_COMPLETED`, `TURN_INTERRUPTED`, or runtime-terminal event is fully processed and published before AgentRun re-enters input drain. Segment/file/processor state for the old turn is therefore settled before one later `start_turn` is forwarded. An appended Codex input associates with the exact existing turn and is never replayed after that turn terminates. Accepted termination releases segment/pipeline state and cancels undispatched input under the same AgentRun-owned sequence. Provider I/O occurs outside the dispatch-queue critical section; provider completion cannot block canonical event processing. No segment transformer/listener may inspect the input FIFO or trigger a drain directly.
+
+## 13. Guidance For Implementation
 
 Implement provider-owned exact-turn admission first—including the one exhaustive Codex resolver at `CodexThread.handleAppServerNotification()` and the closed admitted-native/local-derived message path—then implement the bounded state machine at the common AgentRun owner and treat the pipeline as an atomic source-to-canonical cut: no processor or listener may remain on a source/fallback interpretation. Provider adapters should become simpler, not stateful copies of Team requirements. Downstream state is allowed only when it owns a different subject—file operation, transcript, reply aggregation, or browser presentation—and it must use exact canonical identity. If a supported provider path cannot supply its authoritative turn or explicit start, correct that provider's existing session/normalization owner; never compensate with a new Agent error category or in Team, application, browser, history, or output collectors.

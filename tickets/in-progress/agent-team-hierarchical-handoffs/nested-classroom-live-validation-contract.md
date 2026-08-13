@@ -5,13 +5,14 @@
 - Canonical path: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/nested-classroom-live-validation-contract.md`
 - Purpose: Define the required later live API/E2E validation fixture, runtime/model matrix, secret-import isolation, observable assertions, and evidence standard for the comprehensive AgentTeam refactor.
 - Scope: Downstream API/E2E investigation and execution after implementation and source review; no live provider call is part of solution design.
-- Status: `Refined — SR-024 package aligned with exact-four-family first-native-boundary Codex admission, rejection no-effect proof, sole downstream diagnostic, complete canonical consumer proof, and the Team stream/concrete-execution contract`
-- Approval applicability: This supplement defines intended verification behavior. The user explicitly required one imported nested-classroom example AgentTeam and live coverage across AutoByteus, Codex App Server, and Claude Agent SDK, including the stated GPT-5.6 Luna selections and use of `$HOME/.autobyteus/server-data/.env` through the repository secret importer. SR-019 adds real provider lifecycle proof; SR-020 adds complete deterministic consumer proof; SR-021 restores the original three error variants; SR-022 fixes the sole downstream diagnostic wording and exact four-event Codex omission policy; SR-023 moves its single invocation before pending-MCP/local-event/raw-debug effects and adds admitted controls; SR-024 removes the unreachable unknown-event/exemption machinery and keeps coverage on the four real families. The live matrix must contain no unexpected lifecycle diagnostic. This does not change the approved runtime/model/secret matrix.
-- Related requirements: R-021, R-044–R-056
-- Related acceptance criteria: AC-019, AC-040–AC-051
+- Status: `Refined — SR-028 preserves the exact latest compatible Claude proof and corrects explicit-interrupt evidence`
+- Approval applicability: This supplement defines intended verification behavior. The user explicitly required one imported nested-classroom example AgentTeam and live coverage across AutoByteus, Codex App Server, and Claude Agent SDK, including the stated GPT-5.6 Luna selections and use of `$HOME/.autobyteus/server-data/.env` through the repository secret importer. SR-019 adds real provider lifecycle proof; SR-020 adds complete deterministic consumer proof; SR-021 restores the original three error variants; SR-022 fixes the sole downstream diagnostic wording and exact four-event Codex omission policy; SR-023 moves its single invocation before pending-MCP/local-event/raw-debug effects and adds admitted controls; SR-024 removes the unreachable unknown-event/exemption machinery and keeps coverage on the four real families. The live matrix must contain no unexpected lifecycle diagnostic. SR-026 additionally requires the real task-peer reverse-reply and FIFO/active-turn matrix. SR-027 preserves that matrix, pins the exact compatible current Claude dependency set, and requires truthful proof that the latest SDK still provides interruption/later-turn queueing rather than exact active-turn append. SR-028 additionally requires the supported explicit product interrupt to prove AbortController abort, exact execution settlement, established query-reference cleanup, canonical interruption, and later FIFO drain without `Query.interrupt()` or an SDK receipt.
+- Related requirements: R-021, R-044–R-058
+- Related acceptance criteria: AC-019, AC-040–AC-053
 - Exact system-instruction copy: [agent-team-collaboration-system-instruction.md](./agent-team-collaboration-system-instruction.md)
 - Exact Team stream/execution projection contract: [team-stream-execution-projection-contract.md](./team-stream-execution-projection-contract.md)
 - Exact Agent segment lifecycle contract: [agent-segment-lifecycle-contract.md](./agent-segment-lifecycle-contract.md)
+- Exact AgentRun input-admission contract: [agent-run-input-admission-contract.md](./agent-run-input-admission-contract.md)
 
 ## 1. Purpose And Ownership
 
@@ -127,6 +128,8 @@ Every member in a scenario—`Teacher`, `student_one`, and `student_two`, includ
 
 The user fixed the GPT-5.6 Luna choices for AutoByteus and Codex but did not fix a Claude model identifier. Hard-coding a guessed Claude identifier would make the test less truthful than selecting from the authenticated runtime catalog.
 
+The Claude row must additionally record the exact installed dependency and selected executable versions. The SR-027 target is Agent SDK `0.3.231`, Anthropic SDK `0.116.0`, MCP SDK `1.30.0`, and selected Claude Code executable `2.1.231` in the validated environment. Manifest/lock/import proof belongs to implementation/source review; the live row proves that this exact provider path launches, resumes, interrupts, exposes intrinsic Team tools in turn 1, and completes the product scenario.
+
 ## 5. Fresh-Run Scenario Spine
 
 For each matrix row:
@@ -179,13 +182,30 @@ Each live row must establish all applicable observations through public/runtime-
 
 Deterministic API/E2E coverage remains responsible for exact negative cases, migration failures, UI state, and exhaustive field-removal assertions. The live matrix is additive evidence that the same contract survives real provider tool/prompt lifecycles.
 
-## 7. Evidence And Result Classification
+## 7. SR-026 Active-Input Matrix
+
+After the implementation and full source-review gates pass, the imported Nested Classroom scenario must reproduce the original reverse-reply topology for each runtime: task-Team `student_one` sends to `student_two`; while `student_one` is still active, `student_two` invokes its bound `send_message_to` back to that exact AgentRun. Required evidence is:
+
+| Runtime | Admission and provider outcome | Required observable result |
+| --- | --- | --- |
+| Claude Agent SDK | reverse reply returns accepted before the current turn terminates; no early Claude call; one later `start_turn` after canonical terminal | one `DELIVERED` tool result, one Team communication/member input, later-turn consumption, successful task submit/review |
+| AutoByteus | same AgentRun-owned next-turn behavior; server does not rely on an extra runtime queue | one delivery projection, one later turn, no duplicate input or communication |
+| Codex App Server | AgentRun selects `append_to_active_turn` for the exact active turn and adapter issues one `turn/steer` | unchanged canonical turn ID, both user traces on that turn, no fabricated second turn |
+
+The matrix also sends several ordered inputs to each runtime and proves AgentRun FIFO to provider invocation/transcript order; exercises interrupt with a waiting input; and exercises accepted plus rejected termination with waiting input. The Claude interrupt row must prove its one-string query was created with `Options.abortController`, that the explicit product interrupt calls `AbortController.abort()` and waits for the exact active execution plus established registered-query/reference cleanup before canonical `TURN_INTERRUPTED` and FIFO drain, and that `Query.interrupt()`/SDK interrupt receipts are not used. Evidence must distinguish admission time, provider forwarding time, canonical turn association, and terminal disposition. No skipped runtime is Pass. No Team/collaboration retry, provider-specific route, duplicated delivery, or persistent queue is permitted.
+
+For Claude, product-path evidence must show one-string `query()` starts only after the AgentRun owner dispatches `start_turn`; no `streamInput`, SDK `priority`, or provider-owned message queue is used. A separate disposable/redacted SDK capability control must show that `priority:"now"` interrupts/aborts active work and `priority:"next"` queues later work, while neither accepts an exact active turn ID. This control supports the `activeTurnAppend:"unsupported"` classification; it is not a substitute for the imported Team scenario.
+
+API/E2E still owns CR-F-043 cleanup before any resumed live run and must preserve every operational-database, protected-stack, stash/backup, incident, and no-rollback/no-repair constraint already recorded.
+
+## 8. Evidence And Result Classification
 
 The execution coverage report must contain one row per runtime with:
 
 - package import source kind and staged-package content digest;
 - created root TeamRun ID and relevant task TeamRun/AgentRun IDs;
 - runtime kind, exact model identifier, and effective non-secret model configuration;
+- for the Claude row, exact Agent SDK/Anthropic SDK/MCP SDK/selected Claude executable versions plus intrinsic Agent Tools MCP turn-1 readiness;
 - canonical address and execution-address observations;
 - intrinsic tool exposure and provider instruction evidence;
 - handoff-result shape, message delivery, task lifecycle, initial-status binding observations, pre-run status/replacement observations, and terminate/restore outcomes;
@@ -195,7 +215,7 @@ The execution coverage report must contain one row per runtime with:
 
 Overall live-matrix status is `Pass` only when all three required rows pass. A provider not configured, credential missing, model absent, rate-limited run, runtime spawn failure, or scenario timeout must be reported truthfully as `Blocked` or `Fail` with retained diagnostics; it must not be converted to a skip-based pass.
 
-## 8. Cleanup And Forbidden Shortcuts
+## 9. Cleanup And Forbidden Shortcuts
 
 Required cleanup:
 
@@ -215,6 +235,7 @@ Forbidden shortcuts:
 - replacing live rows with adapter mocks;
 - fabricating `segment_type` on provider-source content/end or bypassing AgentRun lifecycle while claiming provider-boundary coverage;
 - treating a deliberate provider-turn rejection or exact-turn lifecycle-diagnostic seam as live-provider evidence, admitting runtime/diagnostic, or accepting turn-diagnostic terminalization/evidence loss in deterministic coverage;
+- treating Claude SDK streaming input, `priority:"now"`, or `priority:"next"` as exact active-turn append, or running both the SDK queue and the AgentRun FIFO;
 - weakening the Codex model or reasoning effort from `gpt-5.6-luna` / `medium`;
 - using a non-Luna AutoByteus model; or
 - reporting unavailable or skipped live coverage as passed.

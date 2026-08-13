@@ -1,5 +1,125 @@
 # API/E2E Execution Coverage Report
 
+## API-REV-039 Execution Round Meta
+
+- Date: `2026-08-13`
+- Current HEAD: `42e42a9471c251075af07c3e0805d43858246e67`
+- Production/focused-test commit: `b8798338cfc77c322ebd2dde23b827f6855f6588`
+- Authority: `SR-025` / preserved `ARCH-REV-018` / `IR-045` / `CRR-084 Pass 9.4/10`
+- Result: **Fail**
+- Finding: `API-F-025` / `API-LIVE-039-CLAUDE-TASK-PEER-REPLY-001`
+- Final confidence: **88%**
+- Broader-validation decision: **Required; executed until the critical Claude task-peer reverse-reply failure, then stopped and cleaned**
+- Durable coverage delta: **none**
+
+## API-REV-039 Result
+
+The exact SR-025 prompt copy and its three provider injection seams pass deterministic repository/build evidence. The user-requested public `Classroom Simulation Team` also passes real browser/provider execution for AutoByteus, Codex, and Claude. However, the stricter retained Nested Classroom lifecycle fails on the Claude task-Team peer reverse reply: `student_two` invokes its real bound `send_message_to`, and production rejects delivery because `student_one`'s Claude turn is still active. The task cannot submit or reach accepted review. This concrete critical failure prevents API/E2E Pass.
+
+### Repository, prompt, and build evidence
+
+| Selection | Result | Evidence |
+| --- | --- | --- |
+| Six exact IR-045 prompt/provider files | `6 files / 55 tests` Pass | `api-e2e-evidence-sr025/api-rev-039/repository/sr025-focused-six.log` |
+| MemberTeamContext, tool exposure, delegation, MCP, and collaboration boundaries | `10 files / 69 tests` Pass | `repository/sr025-context-tools-affected.log` |
+| Focused Claude active-turn plus task routing/delivery owners | `3 files / 29 tests` Pass | `repository/claude-active-reply-boundary-focused.log` |
+| Built exact-copy/order/count/address audit | Pass | `repository/sr025-built-prompt-audit.log` |
+| Server `build:full` | Pass: production TypeScript, emit, assets, sanitized bootstrap | `repository/server-build-full.log` |
+| Nuxt production build | Pass; fifteen routes prerendered | `repository/web-production-build.log` |
+
+The built audit compares the production renderer with the authoritative SR-025 artifact for persistent, restored, task-Agent, and task-AgentTeam member addresses. It proves exact `AgentTeam Addressing` then `AgentTeam Collaboration` copy, exactly-one headings, unchanged caller-address substitution, no old `Team Runtime` wrapper, and no placeholder leakage. The six provider tests prove AutoByteus system prompt, Codex create/restore `baseInstructions`, Claude `systemPrompt`, intrinsic `get_handoff_rules` / `send_message_to` / `delegate_task`, and standalone null-Team exclusion.
+
+### Checked disposable environment
+
+- Exact DB: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-039-live-20260813-1.db`.
+- Exact runtime: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-039-live-20260813-1`.
+- Configuration-only preflight excluded ambient `DATABASE_URL` and `DATABASE_URL_TEST`, named the exact absent target, and performed no database initialization.
+- Prisma migration targeted only that disposable DB.
+- Actual interactive `pnpm secrets:import` used `/Users/normy/.autobyteus/server-data/.env` only as source, accepted explicit `IMPORT`, and configured nine identifiers in the disposable vault. No secret values were logged.
+- Server startup used `test-runtime-bootstrap.mjs` / `startBuiltTestServer`; PID `58029` `lsof` proved the exact disposable database. Nuxt used only owned `60239/31239`.
+- An initial Nuxt launch used an insufficient proxy environment name and was discarded before Team allocation. The owned frontend was stopped and restarted with exact `BACKEND_NODE_BASE_URL=http://127.0.0.1:60239`; proxy health and warmed routes passed. This environment correction did not touch product source or operational data.
+
+Evidence: `environment/safe-target-preflight.log`, `environment/secret-import-summary.log`, `environment/server-pid-lsof.log`, `environment/frontend-proxy-correction.log`, and `environment/pre-cleanup-owned-process-and-db.log`.
+
+### User-requested public classroom simulation
+
+`/Users/normy/autobyteus_org/autobyteus-agents` was imported directly into the disposable catalog. The exact `classroom-simulation-team` definition has `/professor` and `/student`. The real browser asked the professor to create a file-backed homework under the current workspace, send it to the student with a reference, wait for the student's exact file-backed reverse reply, and show an exact completion token.
+
+| Runtime / model | Result | Direct checks |
+| --- | --- | --- |
+| AutoByteus / `gpt-5.6-luna` | Pass | fresh rooted Team; exactly one professor request and student reply; both references; exact persistent addresses; completion visible; zero console errors; termination |
+| Codex App Server / `gpt-5.6-luna` medium | Pass | same complete real browser/file/reference/message lifecycle on a distinct root |
+| Claude Agent SDK / `sonnet` | Pass | same complete real browser/file/reference/message lifecycle on a distinct root |
+
+Evidence: `live/requested-classroom-package-import.json`, `live/browser/classroom-{autobyteus,codex,claude}.json`, screenshots, and source-integrity hashes. The package source was not edited.
+
+### Retained Nested Classroom matrix
+
+| Runtime / model | Result | Direct checks |
+| --- | --- | --- |
+| AutoByteus / `gpt-5.6-luna` | Pass | exact rooted hierarchy; rules; persistent send/reply/reference; one nested task Team; task-peer request/reply; exact submission; accepted review; refresh; termination |
+| Codex App Server / `gpt-5.6-luna` medium | Pass | same complete lifecycle on a distinct root |
+| Claude Agent SDK / `sonnet` | **Fail** | rules, persistent reply/reference, task allocation, and outgoing task-peer request succeed; reverse peer reply is rejected; no submission/review |
+
+Claude root: `nested_classroom_test_team_94632c1f5a46474280e349e2adab2811`.
+
+Expected reverse delivery:
+
+- sender `/StudentStudyGroup/student_two`;
+- receiver `/StudentStudyGroup/student_one`;
+- same nonempty ordered task-Team chain;
+- exact content `TASK_PEER_CLAUDE`;
+- once-only public communication followed by exact submission and accepted review.
+
+Observed production tool result:
+
+```text
+accepted=false
+code=RUNTIME_COMMAND_FAILED
+Failed to send user input for runtime 'claude_agent_sdk':
+Error: Claude runtime turn is already active for run 'student_one_167e0644221e4c90962f4f6b37e4401a'.
+```
+
+The tool call was genuinely elected and invoked, so this is not prompt/model behavior variance. The request exists publicly with exact identity; the reply does not. The task remains active without submission or review. Browser console errors and Team protocol parsing errors remain zero, and termination succeeds.
+
+Preliminary boundary: `InterAgentMessageRouter.deliver()` posts an inter-agent input through `AgentRun.postUserMessage()`. The Claude backend reaches `ClaudeSession.sendTurn()`, which rejects a new turn while `activeTurnId` is set. The task sender is still in its active turn waiting for the peer reply. API/E2E made no production change and requests focused source-origin review.
+
+Canonical failure analysis: `api-e2e-evidence-sr025/api-rev-039/failure-api-f025-claude-active-task-peer-reply-analysis.md`.
+
+### Not Tested after stop
+
+Fresh standalone browser rows and the remaining mobile expansion were not run at API-REV-039 after the current critical failure. Exact standalone Team-copy/tool absence is nevertheless directly covered by the passing current provider tests, and previous live rows remain historical only. They are not substituted for a complete current API/E2E Pass.
+
+### Cleanup and safety
+
+- All owned Team runs terminated; owned server/frontend stopped; `60239/31239` have zero listeners.
+- Only the exact API-REV-039 disposable runtime, database, and vault key were removed.
+- Both classroom package sources remain byte-identical.
+- Operational database action/inspection: **NONE**.
+- Protected `60004/31004` action: **NONE**.
+- Stash, delivery backup, rollback, and repair action: **NONE**.
+- Both historical operational-database incident disclosures remain preserved.
+
+Evidence: `environment/final-cleanup-verification.log`, package/source integrity diffs, and `environment/safe-server-output.log`.
+
+### Confidence scorecard
+
+| Category | Score | Evidence |
+| --- | ---: | --- |
+| Requirement and acceptance-criteria proof | 90% | Exact prompt copy and basic all-provider collaboration pass; one critical retained Claude nested reply criterion fails. |
+| Changed-boundary execution directness | 96% | Exact built/provider seams plus real bound provider tools and real browser runs. |
+| Cross-boundary integration realism and mock gap | 98% | Real Chrome, GraphQL, WebSocket, persistence, imported packages, files, and configured providers. |
+| Environment, configuration, identity, and fixture fidelity | 98% | Checked disposable target, actual vault import, PID DB proof, canonical roots/addresses, exact cleanup. |
+| Failure, edge-case, lifecycle, and recovery evidence | 55% | Claude active task-peer reverse reply is a critical failing lifecycle; task cannot submit/review. |
+| User-surface, browser, and desktop-shell confidence | 84% | All-provider public classroom UI passes and AutoByteus/Codex nested UI passes; Claude nested UI cannot complete; no shell-specific claim. |
+| Durable regression coverage quality and relevance | 94% | Current reviewed prompt/provider tests are strong; the active-Claude nested reverse-reply composition is missing. |
+
+Simple average: `87.9%`, reported as **88%**. The failing critical criterion blocks Pass regardless of score.
+
+## Outcome and routing
+
+API-REV-039 result: **Fail / 88%**. No repository-resident durable test changed. Route the complete failure package to `code_reviewer` for focused failure-origin review of `API-F-025`, not proportional successful-test review.
+
 ## Execution Round Meta
 
 - Current revision: `API-REV-038`
@@ -185,3 +305,56 @@ Overall simple average: **98%**. No critical criterion is missing or failing, an
 ## Outcome And Routing
 
 API-REV-037 result: **Pass / 98%**. Broader validation was required and completed. Because nine repository-resident durable tests were updated, route the complete cumulative artifact package plus the exact API-REV-037 delta to `code_reviewer` for proportional test-code review before delivery.
+
+# API-REV-040 — SR-028 / IR-048 AgentRun input, interrupt, and real provider acceptance
+
+## Result
+
+- **Outcome:** Pass
+- **Confidence:** 98%
+- **Current HEAD:** `632c503188cb9dbb8eecf4422fa174499519ad89`
+- **Authority:** `SR-028`, `ARCH-REV-021`, `IR-048`, `CRR-089`
+- **Downstream finding:** `API-F-025` resolved
+- **Durable delta:** `5 updated / 0 added / 0 removed`; proportional review required before delivery
+
+## Executed evidence
+
+| Boundary | Result | Evidence |
+| --- | --- | --- |
+| Currentized stale suites | `4 files / 18 tests` Pass | `api-e2e-evidence-sr028/api-rev-040/repository/stale-currentization-final.log` |
+| Top-level runtime selection | `1 file / 3 tests` Pass | `repository/runtime-selection-top-level-currentization.log` |
+| SR-028 affected selection | `24 files / 223 tests` Pass | `repository/sr028-current-selection.log` |
+| Prompt/tool parity | `2 files / 10 tests` Pass | `repository/prompt-parity.log` |
+| Broad server | `67 files / 620 active tests` Pass; one declared file/nine cases skipped and excluded from provider proof | `repository/server-current-broad-final.log` |
+| Broad web | `73 files / 540 tests` Pass | `repository/web-current.log` |
+| Production builds | Server production TypeScript/full build/bootstrap and Nuxt build/15 routes Pass | `repository/server-production-typecheck.log`, `server-build-full.log`, `web-production-build.log` |
+| Nested Team matrix | AutoByteus, Codex, Claude Pass | `live/browser/{autobyteus,codex,claude}-browser-row.json` |
+| `API-F-025` Claude reverse reply | Pass: once-only same-root, same nonempty task-Team chain request/reply; submit/review/terminate | `live/provider/api-f025-postfix-resolution.json` |
+| Public Classroom Simulation | AutoByteus, Codex, Claude Pass | `live/browser/classroom-{autobyteus,codex,claude}.json` |
+| Standalone | AutoByteus, Codex, Claude first-send/restore Pass | `live/browser/standalone-{autobyteus,codex,claude}.json` |
+| Configured Stop plus waiting FIFO | Claude Pass; terminal before next start and once-only follow-up | `live/provider/configured-stop-fifo-claude.json` |
+| Desktop/mobile/restore | Active and persisted communication/reference/config journeys Pass | `live/browser/active-desktop-mobile-reference.json`, `persisted-desktop-mobile-reference.json` |
+| Aggregate matrix | `12/12` Pass | `live/browser-provider-matrix-summary.json` |
+| Environment and cleanup | Exact disposable target/PID proof, real secret import, no active runs, exact cleanup Pass | `environment/`, `live/final-active-run-audit.json`, `cleanup/final-cleanup-verification.log` |
+
+## Confidence scorecard
+
+| Category | Score | Basis |
+| --- | ---: | --- |
+| Requirement and acceptance-criteria proof | 98% | Critical Claude reverse reply, FIFO/Stop, all runtimes, standalone, mobile, restore, prompt/tool exposure directly proven. |
+| Changed-boundary execution directness | 99% | Real bound provider seams plus WebSocket interrupt/input and exact current AgentRun deterministic selection. |
+| Cross-boundary integration realism and mock gap | 98% | Public GraphQL/WebSocket, checked server, actual providers, real Chrome, persisted history, and paired-mobile path. |
+| Environment, configuration, identity, and fixture fidelity | 99% | Absent exact target, sanitized selectors, actual vault import, PID lsof, rooted records, source hashes, and cleanup. |
+| Failure, edge-case, lifecycle, and recovery evidence | 98% | Accepted/rejected/thrown/terminal ordering in durable coverage; real accepted interrupt/FIFO; restore and termination. |
+| User-surface, browser, and desktop-equivalent confidence | 97% | Real Chrome desktop/responsive mobile, current Team/standalone/config/reference UI, refresh/restore; no Electron-only claim. |
+| Durable regression coverage quality and relevance | 97% | Five exact current-contract paths, broad green selections, exact inventory/patch and clean audit; proportional review pending. |
+
+Overall: `686 / 7 = 98.0%`. No critical row is Not Tested. The declared skipped Claude repository suite is excluded from proof and replaced by current configured Claude execution.
+
+## Safety and disclosures
+
+The operational database was not inspected, targeted, opened, copied, migrated, repaired, rolled back, deleted, or otherwise acted on. The requested home `.env` was used only as a secret source for an explicit import into the disposable target. Protected `60004/31004`, delivery stashes/backup, and automatic rollback/repair were untouched. Both prior operational-database incidents remain disclosed; this round performed no operational action.
+
+## Routing
+
+Return the exact five-path durable package, this report, the investigation, revision record, and complete evidence to `code_reviewer` for proportional test-code review. Delivery remains blocked until that review passes.

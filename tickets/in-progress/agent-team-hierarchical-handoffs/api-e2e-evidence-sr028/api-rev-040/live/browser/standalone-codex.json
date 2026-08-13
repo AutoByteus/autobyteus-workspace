@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "slug": "codex",
+  "runtime": "codex_app_server",
+  "model": "gpt-5.6-luna",
+  "agentDefinitionId": "api-rev-040-browser-agent",
+  "runId": "api_rev_040_browser_agent_27c60b5f0f224cabaf2b7602101247df",
+  "expectedToken": "STANDALONE_CODEX_OK",
+  "startedAt": "2026-08-13T15:25:21.801Z",
+  "completedAt": "2026-08-13T15:25:29.447Z",
+  "passed": true,
+  "conditions": {
+    "freshRun": true,
+    "effectiveRuntime": true,
+    "effectiveReasoning": true,
+    "exactTokenBeforeRefresh": true,
+    "exactTokenAfterRefresh": true,
+    "resumeRunMatches": true,
+    "resumeActive": true,
+    "resumeRuntimeMatches": true,
+    "resumeModelMatches": true,
+    "noBrowserConsoleErrors": true
+  },
+  "effective": {
+    "runtimeKind": "codex_app_server",
+    "model": "gpt-5.6-luna",
+    "reasoningEffort": "medium",
+    "autoExecuteClass": "relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-blue-600"
+  },
+  "resume": {
+    "runId": "api_rev_040_browser_agent_27c60b5f0f224cabaf2b7602101247df",
+    "isActive": true,
+    "metadataConfig": {
+      "runtimeKind": "codex_app_server",
+      "llmModelIdentifier": "gpt-5.6-luna"
+    }
+  },
+  "consoleEvents": [],
+  "termination": {
+    "success": true,
+    "message": "Agent run terminated successfully."
+  }
+}

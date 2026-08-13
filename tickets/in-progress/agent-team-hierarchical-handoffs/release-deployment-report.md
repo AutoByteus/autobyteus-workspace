@@ -2,12 +2,13 @@
 
 ## Current Result
 
-- Delivery revision: `DR-008`
-- Integrated/docs-synchronized result: `Pass`
-- User verification: `Pending`
+- Delivery revision: `DR-009`
+- Integrated result: `Pass — latest base is an ancestor; no conflicts`
+- Docs/handoff result: `Blocked — post-review SR-025 source/test delta`
+- User verification: `Withdrawn pending renewed gates`
 - Repository finalization: `Held`
 - Release/publication/deployment: `Held — not authorized`
-- Current verification blocker: explicit user verification/completion only
+- Current blocker: commit `b8798338c` is newer than CRR-083's reviewed HEAD
 - Release-packaging observation: the unmodified README command needs a durable
   workspace-dependency materialization fix before release reproducibility is
   claimed
@@ -16,31 +17,34 @@
 
 - Finalization target: `origin/personal`
 - Latest fetched base: `54890a07f74e941a7a12b6daaa26364f4c927b72`
-- Reviewed source head before delivery checkpoint:
-  `6b578235917700584a6b559cd58763bd3bba9b38`
-- Delivery checkpoint: `0d32ff25502838c28663fc765c3499fc83455eb1`
+- CRR-083 reviewed head: `258d18cdba0bf7ae08bde134fe09586a8906870d`
+- Post-review source/test commit: `b8798338cfc77c322ebd2dde23b827f6855f6588`
+- Delivery checkpoint: `29337af23c13ce3c711f28b73c0c802c5e62e3c2`
+- Current IR-045 HEAD: `42e42a9471c251075af07c3e0805d43858246e67`
 - Merge base: latest fetched base
-- Divergence: ticket branch `90 ahead / 0 behind`
+- Divergence: ticket branch `97 ahead / 0 behind`
 - Integration method/result: already current; no merge/rebase and no conflicts
-- Evidence: `delivery-evidence/delivery-reentry-dr008-refresh.log` and final
-  pre-verification refresh `delivery-evidence/delivery-reentry-dr008-final-refresh.log`;
-  the post-package refresh is
-  `delivery-evidence/delivery-reentry-dr008-post-package-refresh.log`
+- Evidence: `delivery-evidence/delivery-reentry-dr009-refresh.log` and
+  `delivery-evidence/delivery-reentry-dr009-post-ir045-refresh.log`
 
-No executable rerun was required during delivery because the fetched base was
-unchanged and no integration modified source, tests, fixtures, or coverage. The
-checkpoint merely persisted the already-reviewed API-REV-036 durable package and
-evidence beside the CRR-078-reviewed source lineage.
+No merge or integration rerun was required because the base is unchanged and
+already an ancestor. Delivery nevertheless stopped before docs/final handoff:
+the branch contains three production and six unit-test changes after the
+explicit CRR-083 reviewed HEAD.
 
 ## Documentation And Handoff
 
-- Docs sync: `Pass`; see `docs-sync-report.md`.
-- User-verification handoff: prepared at `handoff-summary.md`.
+- Docs sync: `Blocked`; see `docs-sync-report.md`.
+- Current handoff: rework route at `handoff-summary.md`.
 - Release notes: prepared at `release-notes.md` but not used or published.
-- Delivery blocker record: DR-007 blocker marked resolved in
+- Delivery blocker record: DR-009 post-review delta at
   `delivery-integration-blocker.md`.
 
-## Local Electron Verification Build
+## Historical DR-008 Local Electron Verification Build
+
+The following package predates the SR-025 source/test commit and is not the
+current delivery candidate. It remains available only as historical DR-008
+verification evidence.
 
 - User-requested local build: completed for macOS arm64, app version `1.4.50`.
 - DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.50.dmg`
@@ -111,5 +115,6 @@ verification and the applicable review gates.
 
 ## Next Action
 
-Wait for the user's explicit choice: finalize and release, finalize without
-release, or request changes/further verification.
+IR-045 implementation artifacts/checks are complete. Route to `code_reviewer`,
+then through API/E2E and proportional durable review when applicable. Delivery
+resumes only after those gates pass.

@@ -5,24 +5,24 @@
 - Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/requirements.md`
 - Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/investigation-notes.md`
 - Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/design-spec.md`
-- Supplemental Task Artifacts Reviewed: `agent-team-addressing-handoff-contract.md`; `agent-team-collaboration-system-instruction.md`; `team-run-canonical-identity-refactor.md`; `team-stream-execution-projection-contract.md`; `agent-segment-lifecycle-contract.md`; `nested-classroom-live-validation-contract.md`
+- Supplemental Task Artifacts Reviewed: `agent-team-addressing-handoff-contract.md`; `agent-team-collaboration-system-instruction.md`; `team-run-canonical-identity-refactor.md`; `team-stream-execution-projection-contract.md`; `agent-segment-lifecycle-contract.md`; `agent-run-input-admission-contract.md`; `claude-agent-sdk-upgrade-contract.md`; `nested-classroom-live-validation-contract.md`
 - Solution Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/solution-revision-record.md`
-- Relevant Solution Revision IDs: cumulative `SR-001`–`SR-024`; current authority `SR-024`
+- Relevant Solution Revision IDs: cumulative `SR-001`–`SR-028`; current authority `SR-028`; `SR-025` remains an exact-copy clarification only, SR-026 remains the accepted common AgentRun input owner, and SR-027's dependency/capability cut is preserved
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-018`
-- Current Review Round: `18`
-- Trigger: complete cumulative SR-024 architecture re-review after ARCH-REV-017 returned `DR-012`.
-- Prior Review Round Reviewed: `ARCH-REV-017` / `Fail`
-- Latest Authoritative Round: `18`
-- Current-State Evidence Basis: current requirements, investigation, design, all six supplements, and solution/review lineage; direct inspection of the actual Codex event-name inventory, thread/notification-handler/pending-MCP path, backend listener, item/reasoning converters, segment normalizer, raw-debug boundary, and AgentRun pipeline/consumer path; and cumulative revalidation of the rooted TeamRun, collaboration, task, migration/token, Team stream/status/frontend, application, storage, provider, and live-validation boundaries. Worktree HEAD `0d32ff25502838c28663fc765c3499fc83455eb1` is 90 ahead / 0 behind `origin/personal@54890a07f74e941a7a12b6daaa26364f4c927b72`, with that tip as merge base. No implementation or runtime result is inferred from SR-024.
+- Current Architecture Review Revision ID: `ARCH-REV-021`
+- Current Review Round: `21`
+- Trigger: complete cumulative SR-028 architecture re-review after ARCH-REV-020 returned `DR-013` / `DR-014` against the Claude one-string-query interrupt spine and current-authority navigation.
+- Prior Review Round Reviewed: `ARCH-REV-020` / `Fail`
+- Latest Authoritative Round: `21`
+- Current-State Evidence Basis: current requirements, investigation, design, all eight supplements, solution/review lineage, `CRR-086`, API-REV-039's real Claude task-peer failure analysis/trace, the installed `@anthropic-ai/claude-agent-sdk@0.3.231` package metadata and public `sdk.d.ts`, the official upstream changelog, npm registry metadata, exact workspace manifests/lockfile, and direct inspection of the current Claude SDK client/session/MCP materializer plus the complete previously accepted cumulative production paths. The installed graph independently confirms Agent SDK `0.3.231`, Anthropic SDK `0.116.0`, MCP SDK `1.30.0`, Zod `4.3.6`, Claude Code parity `2.1.231`, the public `priority`/`streamInput` shapes without an exact active-turn selector, the `alwaysLoad` first-turn effect, and `Options.abortController`. Current source confirms the supported one-string query is interrupted by `AbortController.abort()`, exact execution settlement, registered-query/reference cleanup, active-state clear, and canonical interruption; `Query.interrupt()` belongs to the excluded streaming-control surface. The exact pins, peers, one lock resolution, root imports, ID continuity, supplement links/status, and 97-ahead/0-behind branch relationship to `origin/personal@54890a07f74e941a7a12b6daaa26364f4c927b72` were rechecked. Existing dirty SR-026 source/tests and downstream evidence were treated as protected state, not as proof that SR-028 is implemented.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Overall Basis Status (`Confirmed`/`Contradicted`/`Blocked`): `Confirmed`. SR-024 retains the supported four-family first-boundary path and removes the product-unreachable unknown-event/exemption machinery. The complete cumulative target is coherent and grounded in approved behavior and current production paths.
-- Approved requirements / intended behavior understood: `Yes`. The target is one rooted TeamRun aggregate; canonical logical and concrete execution identity; shared recipient resolution with operation-owned message/task behavior; intrinsic Team collaboration tools/instruction; correlated Team status/event/wire/frontend ownership; current-only V5 application artifacts; isolated released-data migration; and one AgentRun segment lifecycle preceded by exact provider-local turn admission for the four actual Codex segment-producing event families.
-- Relevant existing behavior and evidence confirmed: `Yes`. AutoByteus and Claude own exact turns before server segment construction. Codex owns `activeTurnId`; exactly four current native event names directly create segment facts, while every other current item/non-item notification has an established operation-owned route. `CodexThread.handleAppServerNotification()` is the first per-thread boundary before pending-MCP mutation, local emission, listeners, conversion, and raw capture.
-- Approved change, preserved behavior, and outside scope understood: `Yes`. Valid provider behavior, exact task/execution identity, status semantics, storage lineage, and supported released data remain preserved. AgentOrg, external Agent package mutation, application predecessor preservation, turnless post-ingress segments, and hypothetical future provider protocol policy remain outside scope.
-- Remaining material ambiguity, if any: None.
+- Overall Basis Status (`Confirmed`/`Contradicted`/`Blocked`): `Confirmed`. SR-028 preserves the approved dependency/capability intent, the accepted AgentRun owner, the exact supported one-string-query interrupt, and coherent current-authority navigation.
+- Approved requirements / intended behavior understood: `Yes`. The user approved the exact current mutually compatible packages while preserving the SR-026 AgentRun FIFO, Claude next-turn-only mechanics, one-string `query()`/resume/full-env/configured executable, canonical interrupt/output/tool meaning, and turn-1 intrinsic Team tools. No provider queue, exact-append fiction, compatibility branch, or data migration is approved.
+- Relevant existing behavior and evidence confirmed: `Yes`. The latest public input type has `priority` but no exact active-turn ID; the solution's isolated probe records `now` as interruption and `next` as later queueing. The current product's supported interrupt path passes an `AbortController` in query options and calls `abort()` from `ClaudeSession`, then waits for settlement and emits canonical interruption. `Query.interrupt()` is an SDK control request documented in the installed type under the streaming-input/output control section and is not the current session mechanism. The latest SDK also backgrounds MCP connection unless the required descriptor uses `alwaysLoad:true`.
+- Approved change, preserved behavior, and outside scope understood: `Yes`. Exact dependency pins and intrinsic-only `alwaysLoad:true` are bounded and coherent. AgentRun remains the only acceptance/FIFO/next-turn owner; provider streaming input, priority scheduling, SDK queue lifecycle, V2 compatibility, application/data migration, bundled-versus-external executable policy, and unrelated new SDK features remain outside scope.
+- Remaining material ambiguity, if any: None. The explicit product interrupt has one owner and one mechanism; unrelated SDK streaming controls cannot act as a second path or fallback.
 
 | Behavior ID | Kind | Design Alignment With Approved Intent (`Pass`/`Fail`) | Approved Trigger / Contract And Current-State Evidence (`Pass`/`Fail`/`Unclear`) | Target Outcome / Path / Spine Coherence (`Pass`/`Fail`/`Unclear`) | Status (`Confirmed`/`Needs Correction`/`Unclear`) | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -45,6 +45,8 @@
 | `BEH-017` | Physical storage lineage encapsulation | Pass | Pass | Pass | Confirmed | None. |
 | `BEH-018` | Imported no-skip three-runtime live validation | Pass | Pass | Pass | Confirmed | None. |
 | `BEH-019` | Exact-turn provider admission and one canonical segment fan-out | Pass | Pass | Pass | Confirmed | None. SR-024 limits production admission to the four verified current segment-producing names and preserves every other current route without a second registry. |
+| `BEH-020` | One AgentRun input-admission and active-turn policy owner | Pass | Pass | Pass | Confirmed | None. The supported task-peer trigger reaches the exact live run; AgentRun owns acceptance/FIFO/start-append-wait/settlement, providers translate mechanics only, and result/event projection remains operation-owned. |
+| `BEH-021` | Exact latest compatible Claude dependency and capability cut | Pass | Pass | Pass | Confirmed | None. Exact pins, Claude next-turn-only classification, one-string query/resume/env/executable behavior, intrinsic-only `alwaysLoad:true`, and AbortController-owned interruption are coherent. |
 
 ## Supplemental Artifact Coherence Verdict
 
@@ -55,18 +57,20 @@
 | `team-run-canonical-identity-refactor.md` | Pass | Pass | Pass | Pass | Pass | None. |
 | `team-stream-execution-projection-contract.md` | Pass | Pass | Pass | Pass | Pass | None. |
 | `agent-segment-lifecycle-contract.md` | Pass | Pass | Pass | Pass | Pass | None. It now owns only the exact four-family production policy; the rejected registry/open class/synthetic proof are explicit removals. |
-| `nested-classroom-live-validation-contract.md` | Pass | Pass | Pass | Pass | Pass | None. It proves actual provider families and contains no synthetic future-item prerequisite. |
+| `agent-run-input-admission-contract.md` | Pass | Pass | Pass | Pass | Pass | None. Acceptance timing, FIFO/claim/result/terminal ordering, provider capability split, command observation, interruption/termination, caller/file/removal inventory, and no-persistence decision are explicit. |
+| `claude-agent-sdk-upgrade-contract.md` | Pass | Pass | Pass | Pass | Pass | None. `CLAUDE-SDK-004`, file/removal mapping, and proof all preserve the exact AbortController/settlement/cleanup/canonical-event path and exclude streaming controls. |
+| `nested-classroom-live-validation-contract.md` | Pass | Pass | Pass | Pass | Pass | None. R-058/AC-053 metadata and the exact no-skip Claude interrupt assertion are aligned. |
 
-The investigation inventory, requirements inventory, design authority table, supplement metadata, and current status language are aligned. Historical SR-023 text remains confined to revision/history rationale and does not compete with SR-024 current authority.
+The investigation inventory, requirements inventory, design authority table, supplement metadata, and solution revision title/synopsis/index are aligned to SR-028. Historical SR-027 ready-result wording remains only inside its revision entry and does not compete with current authority.
 
 ## Task Design Health Assessment Verdict
 
 | Assessment Area | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Assessment is present for the current task posture | Pass | The package classifies the cumulative refactor, provider boundary defects, persisted transitions, forward-only application state, and downstream validation. | None. |
-| Root-cause classification is explicit and evidence-backed | Pass | First-boundary dominance is a verified boundary/ownership correction; the unknown-event branch is correctly classified as product-unreachable unnecessary machinery. | None. |
-| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | Current refactors, discarded application predecessor state, and API/E2E-owned CR-F-043 work are separated. | None. |
-| Refactor decision is supported by concrete design sections or residual-risk rationale | Pass | DS-001–DS-017, the six supplements, exact file/removal maps, transition cases, real current-event proof, and no-skip downstream sequence make the target actionable. | None. |
+| Assessment is present for the current task posture | Pass | The package classifies the cumulative refactor, provider-output and provider-input boundary defects, persisted transitions, forward-only application state, and downstream validation. | None. |
+| Root-cause classification is explicit and evidence-backed | Pass | CR-F-048 is correctly classified as a boundary/ownership plus duplicated-policy defect: current AgentRun, three providers, and the command registry choose different active-input behavior. | None. |
+| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | The run-local input refactor is required now; durable inbox/recovery and API/E2E-owned CR-F-043 remain explicitly outside/deferred. | None. |
+| Refactor decision is supported by concrete design sections or residual-risk rationale | Pass | DS-001–DS-019, eight supplements, actual current caller/provider evidence, file/removal maps, input and Claude case spines, state/ordering rules, and no-skip downstream sequence make the cumulative target actionable. | None. |
 
 ## Spine Inventory Verdict
 
@@ -81,8 +85,10 @@ The investigation inventory, requirements inventory, design authority table, sup
 | `DS-011` | Three-runtime live validation | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | `DS-012A`–`DS-012D` | Forward-only V5 project application cut | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | `DS-017A`–`DS-017G` | Provider admission, run lifecycle, fan-out, diagnostics | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| `DS-018A`–`DS-018I`, `INP-R1`–`INP-R2` | AgentRun input acceptance, FIFO, provider dispatch, command observation, interrupt/termination/restore, and result/lifecycle return paths | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| `DS-019A`–`DS-019H` | Exact dependency cut, Claude start/wait/interrupt/resume, turn-1 MCP, event/tool projection, verification | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 
-`DS-017D` now follows the complete supported Codex path: router -> thread first-boundary four-name membership -> exact resolver -> notification handler -> listener -> admitted debug/converter -> AgentRun. The negative branch is ordinary operation-owned routing, not an open unknown-event policy.
+The complete primary path remains readable: browser/external/Team/application/compaction/skill caller -> exact `AgentRun.postUserMessage()` -> run-local admission/FIFO -> canonical turn choice -> explicit backend dispatch -> provider events -> internal entry settlement and operation-owned result/event projection. SR-028's install, start, wait, interrupt, resume, MCP, output/tool, and verification spines preserve that owner. DS-019D now follows the supported explicit interrupt -> AgentRun owner -> ClaudeSession approval flush -> `Options.abortController.abort()` -> exact execution settlement and registered-query/reference cleanup -> active-state clear -> canonical `TURN_INTERRUPTED` -> AgentRun terminal/drain path. No streaming control or fallback competes with it.
 
 ## Boundary Encapsulation Verdict
 
@@ -94,6 +100,8 @@ The investigation inventory, requirements inventory, design authority table, sup
 | Team event/status/stream contract | Pass | Pass | Pass | Pass | One domain status model and one strict wire mapping. |
 | Codex four-family exact-turn admission | Pass | Pass | Pass | Pass | The thread owns membership and first invocation; the opaque thread-emitted value closes downstream bypass. |
 | AgentRun segment lifecycle | Pass | Pass | Pass | Pass | One run-owned state behind the queue and before all processors/listeners. |
+| AgentRun input admission | Pass | Pass | Pass | Pass | `postUserMessage()` is the only public facade; private FIFO/claims/entry lifecycle stay inside AgentRun, while providers and callers cannot choose policy or retry. |
+| Claude dependency/client/session/MCP boundary | Pass | Pass | Pass | Pass | Exact pins and intrinsic MCP ownership are bounded; `ClaudeSession` alone translates AbortController interruption and no streaming-control fallback crosses the boundary. |
 | Migration/startup gate | Pass | Pass | Pass | Pass | Historical schema knowledge stays isolated. |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
@@ -104,6 +112,8 @@ The investigation inventory, requirements inventory, design authority table, sup
 | Caller -> recipient resolver -> message/task operation | Pass | Pass | Pass | Pass | No flat roster or config/handle leak. |
 | Provider source -> first provider gate -> AgentRun lifecycle -> consumers | Pass | Pass | Pass | Pass | No converter-local policy, broad-prefix construction, generic raw bypass, or parallel consumer lifecycle. |
 | AgentRun lifecycle -> canonical processors/listeners | Pass | Pass | Pass | Pass | Consumers cannot read lifecycle state or reconstruct source facts. |
+| Ordinary caller -> AgentRun input admission -> explicit backend mechanics | Pass | Pass | Pass | Pass | Callers stop at AgentRun; AgentRun alone selects start/append/wait; backends cannot queue, inspect active state for policy, fall back, retry, or construct public acceptance. |
+| AgentRun interrupt -> Claude session -> current one-string query | Pass | Pass | Pass | Pass | AgentRun owns interruption/FIFO semantics; ClaudeSession owns the exact AbortController/settlement/cleanup mechanics; streaming input, receipts, priority, and fallbacks are forbidden. |
 | Domain Team event -> strict mapper -> browser aggregate | Pass | Pass | Pass | Pass | No generic Team message or raw-key bypass. |
 | Migration owners -> target-only repositories | Pass | Pass | Pass | Pass | No normal-runtime historical decoder or application compatibility path. |
 
@@ -118,6 +128,10 @@ The investigation inventory, requirements inventory, design authority table, sup
 | `AgentSegmentSourceEvent` / canonical segment event | Pass | Pass | Pass | Low | Pass |
 | Exact four-name set / `resolveCodexSegmentTurnAdmission` | Pass | Pass | Pass | Low | Pass |
 | `CodexThreadEventMessage` | Pass | Pass | Pass | Low | Pass |
+| `AgentRun.postUserMessage(message,{lifecycleObserver?})` | Pass | Pass | Pass | Low | Pass |
+| `AgentRunBackend.inputCapabilities` / `dispatchInput` | Pass | Pass | Pass | Low | Pass |
+| `AgentRunInputLifecycleObserver` | Pass | Pass | Pass | Low | Pass |
+| Claude `query(prompt:string,{abortController,...})` / session interrupt / intrinsic MCP descriptor | Pass | Pass | Pass | Low | Pass |
 | `TokenUsageCanonicalIdentityMigrationStore.applyCanonicalTeamIdentityTransaction` | Pass | Pass | Pass | Low | Pass |
 
 The retained `CODEX_SEGMENT_TURN_OMISSION_UNLISTED` value is a local pure-function precondition/misuse result. It is not a production applicability branch, provider lifecycle state, downstream error, compatibility policy, or synthetic provider proof and therefore does not make MP-013 authoritative.
@@ -132,6 +146,8 @@ The retained `CODEX_SEGMENT_TURN_OMISSION_UNLISTED` value is a local pure-functi
 | Persisted transition | Pass | Pass | N/A | Pass | App-data migration framework is reused with isolated historical owners. |
 | Frontend execution ownership | Pass | Pass | Pass | Pass | One aggregate replaces distributed mutation. |
 | Codex native notification and raw debug facilities | Pass | Pass | N/A | Pass | Pending-MCP coordination and admitted-only raw capture remain behind the exact first boundary. |
+| Ordinary input sequencing and active-turn choice | Pass | Pass | Pass | Pass | Reuses the existing `AgentRun.postUserMessage()`, `AgentTurnLifecycleState`, and `AgentRunEventDispatchQueue`; one small run-local state replaces provider/command coordination rather than adding a top-level service. |
+| Claude one-string query interruption and first-turn intrinsic MCP | Pass | Pass | N/A | Pass | Intrinsic `alwaysLoad:true` reuses the exact materializer; interruption reuses the established AbortController/session path without adopting streaming control. |
 | Future/unknown Codex item policy | Pass | Pass | N/A | Pass | No support subsystem is created; later provider evolution requires a concrete contract. |
 
 ## Subsystem / Capability-Area Allocation Verdict
@@ -141,6 +157,8 @@ The retained `CODEX_SEGMENT_TURN_OMISSION_UNLISTED` value is a local pure-functi
 | AgentTeam definition/execution | Pass | Pass | Pass | Pass | Compiler, snapshot, index, and runtime context are separated. |
 | Collaboration/task delegation | Pass | Pass | Pass | Pass | Shared recipient resolution; operation-specific delivery/eligibility. |
 | Agent execution/provider backends | Pass | Pass | Pass | Pass | Exact provider facts and first-boundary admission feed one common run lifecycle. |
+| Agent execution/input admission | Pass | Pass | Pass | Pass | AgentRun owns input acceptance/FIFO/turn association; backends translate one explicit command and internal callers observe entry facts only. |
+| Claude dependency/client/session/MCP adaptation | Pass | Pass | Pass | Pass | Exact package/client/session/MCP responsibilities support the AgentRun owner without a second provider queue or interrupt policy. |
 | Team stream/frontend | Pass | Pass | Pass | Pass | Exact domain/transport/projection owners. |
 | Migration/token/storage | Pass | Pass | Pass | Pass | One canonical migration and one transaction-owning store. |
 | Application SDK/build | Pass | Pass | Pass | Pass | Forward-only V5 with no predecessor machinery. |
@@ -154,6 +172,8 @@ The retained `CODEX_SEGMENT_TURN_OMISSION_UNLISTED` value is a local pure-functi
 | Team wire DTO/schema | Pass | Pass | Pass | Pass | Transport-only mirror with exhaustive mapping. |
 | Segment finite type/source/canonical values | Pass | Pass | Pass | Pass | Server domain owns semantics. |
 | Codex four-name turn-admission value/predicate | Pass | Pass | Pass | Pass | One provider-owned set governs both production applicability and omission inheritance; no second registry remains. |
+| Backend input capability/dispatch and entry lifecycle values | Pass | Pass | Pass | Pass | Narrow run-owned contracts serve three backends plus command/completion observers without exposing FIFO entries or creating a public result DTO. |
+| Exact Claude/Anthropic/MCP dependency graph and intrinsic MCP descriptor | Pass | Pass | Pass | Pass | One exact compatible graph and one server-owned required descriptor avoid package/version or loading-policy duplication. |
 
 ## Shared Structure / Data Model Tightness Verdict
 
@@ -166,6 +186,9 @@ The retained `CODEX_SEGMENT_TURN_OMISSION_UNLISTED` value is a local pure-functi
 | `AgentRunErrorEvidence` | Pass | Pass | Pass | Pass | Pass | Three real variants only; one downstream non-terminal diagnostic. |
 | Segment source/canonical model | Pass | Pass | Pass | Pass | Pass | Start owns type; run owner enriches content; end stays minimal. |
 | `CodexSegmentTurnAdmission` | Pass | Pass | Pass | Pass | Pass | Exact provider subject, immutable admitted value, no open event class. |
+| `AgentRunBackendInputCapabilities` / `AgentRunBackendInputDispatch` | Pass | Pass | Pass | Pass | Pass | Capability says mechanics only; discriminated dispatch carries exactly start or exact-turn append. |
+| `AgentRunInputLifecycle` | Pass | Pass | Pass | Pass | Pass | One entry-bound in-process lifecycle distinguishes admitted, forwarded, associated, and terminal outcomes without public/persisted identity. |
+| Claude backend capability / query options / interrupt translation | Pass | Pass | Pass | Pass | Pass | Capability remains next-turn-only; one-string query options and AbortController interruption have one meaning and no overlapping product representation. |
 
 ## File Responsibility Mapping Verdict
 
@@ -180,6 +203,12 @@ The retained `CODEX_SEGMENT_TURN_OMISSION_UNLISTED` value is a local pure-functi
 | `codex-thread.ts` / notification handler / backend listener / converter | Pass | Pass | Pass | Pass | First-boundary branded-message cut and valid MCP ordering are explicit. |
 | Codex debug/raw sink files | Pass | Pass | Pass | Pass | Sanitized rejection and admitted-only raw capture are separated. |
 | Post-pipeline consumer files | Pass | Pass | Pass | Pass | Complete canonical-input/removal behavior assigned. |
+| `agent-execution/input/agent-run-input-contract.ts` / `agent-run-input-admission-state.ts` | Pass | Pass | Pass | Pass | Shared narrow values and private state are separated under the AgentRun capability area. |
+| `agent-run.ts` / event queue / turn lifecycle seam | Pass | Pass | Pass | Pass | Public admission, serialized selection/result/terminal ordering, and provider-I/O exclusion are assigned to the actual governing owner. |
+| Backend adapters plus command/memory/completion/mixed-handle consumers | Pass | Pass | Pass | Pass | Mechanics, entry observation, trace timing, and activation-only overlays are assigned without a second policy owner. |
+| `autobyteus-server-ts/package.json`, `autobyteus-ts/package.json`, `pnpm-lock.yaml` | Pass | Pass | N/A | Pass | Exact pins/peer graph and one lock resolution are actionable. |
+| `claude-sdk-client.ts` / `claude-session.ts` / focused interruption tests | Pass | Pass | Pass | Pass | The map preserves complete query options, AbortController abort, exact settlement/reference cleanup, active-state clear, canonical interruption, and negative proof against `Query.interrupt()`/receipts. |
+| `claude-agent-tools-mcp-materializer.ts` | Pass | Pass | N/A | Pass | Only the server-owned intrinsic HTTP MCP entry receives `alwaysLoad:true`. |
 | Migration/transaction/schema files | Pass | Pass | Pass | Pass | Historical decoding, planning, transaction, verification, and gate are separated. |
 
 ## Subsystem / Folder / File Placement Verdict
@@ -188,7 +217,9 @@ The retained `CODEX_SEGMENT_TURN_OMISSION_UNLISTED` value is a local pure-functi
 | --- | --- | --- | --- | --- | --- |
 | AgentTeam domain/execution/collaboration | Pass | Pass | Low | Pass | Ownership-led placement. |
 | Agent execution segment lifecycle | Pass | Pass | Low | Pass | State remains per AgentRun. |
+| Agent execution input admission | Pass | Pass | Low | Pass | A focused `agent-execution/input/` capability groups narrow types/state while `AgentRun` remains the owner/facade. |
 | Provider-local exact-turn admission | Pass | Pass | Low | Pass | Pure policy stays under the Codex thread/provider owner. |
+| Claude runtime client/session and intrinsic MCP materializer | Pass | Pass | Low | Pass | Physical placement and the corrected interrupt/MCP responsibility split are coherent. |
 | Team stream contracts/server/browser | Pass | Pass | Low | Pass | Transport package remains domain-free. |
 | Migration/application/storage | Pass | Pass | Low | Pass | Historical/current concerns are separated. |
 
@@ -203,6 +234,9 @@ The retained `CODEX_SEGMENT_TURN_OMISSION_UNLISTED` value is a local pure-functi
 | `RUNTIME_DIAGNOSTIC` and runtime/diagnostic transport/browser path | Pass | Pass | Pass | Pass | The unreachable fourth variant remains removed. |
 | Converter-local admission, generic raw input, rejected-candidate raw capture | Pass | Pass | Pass | Pass | First-boundary ownership closes these bypasses. |
 | Nine-name runtime exemption registry, open unknown-item branch, synthetic future cases | Pass | N/A | Pass | Pass | SR-024 names and removes them; established current non-segment paths remain operation-owned. |
+| Provider-owned input selection/tails/queues and command busy/raw-event association | Pass | Pass | Pass | Pass | AgentRun input admission replaces Codex `inputSubmissionTail`, Claude active rejection, reliance on AutoByteus queue policy, `RUN_COMMAND_IN_PROGRESS`, singular in-flight assumptions, and raw-event association. |
+| Old Claude/Anthropic/MCP versions and any SDK streaming-input/priority queue owner | Pass | Pass | Pass | Pass | Exact old resolutions and second provider queue policy are explicitly removed/forbidden. |
+| Caller-owned active-run initializing/error and collaboration retry/fallback | Pass | Pass | Pass | Pass | Activation-only status remains; already-active input gets no caller overlay, alternate route, retry, or duplicate Team publication. |
 | Application migration/V4 compatibility | Pass | Pass | Pass | Pass | Direct V5 rebuild only. |
 
 ## Legacy / Backward-Compatibility Verdict
@@ -212,6 +246,8 @@ The retained `CODEX_SEGMENT_TURN_OMISSION_UNLISTED` value is a local pure-functi
 | Runtime logical/execution identity | No | Pass | Pass | Current readers accept canonical values only. |
 | Team collaboration/task tools | No | Pass | Pass | No aliases or flat selectors. |
 | Segment/error/wire/browser contract | No | Pass | Pass | One current source/canonical contract and three evidence variants. |
+| AgentRun input acceptance/provider dispatch | No | Pass | Pass | One current AgentRun queue and explicit backend command; no provider/caller compatibility path, queue, fallback, or dual acceptance meaning. |
+| Claude SDK dependency and provider mechanics | No | Pass | Pass | Exact current pins only; no V2/old-version adapter, stream-input queue, priority mapping, or executable-selection fallback. |
 | Application V5 | No | Pass | Pass | Unsupported predecessor state is rebuilt. |
 | Released persisted data | No runtime compatibility | Pass | Pass | Historical knowledge is migration-local. |
 
@@ -225,6 +261,8 @@ The retained `CODEX_SEGMENT_TURN_OMISSION_UNLISTED` value is a local pure-functi
 | Derived indexes/caches | `Discard or Rebuild` | Pass | Pass | N/A | Pass | Rebuilt from canonical state. |
 | Agent memory/context paths | `Directly Usable — No Migration` | Pass | Pass | N/A | Pass | Physical bytes/locations preserved. |
 | Agent segment lifecycle | `Not Affected` | Pass | Pass | N/A | Pass | State is non-persisted. |
+| AgentRun input FIFO/sequence/observers | `Not Affected` | Pass | Pass | N/A | Pass | Live-process state begins empty on restore and adds no inbox, history, task, TeamRun, application, or frontend field. |
+| Claude dependency/configuration cut | `Not Affected` | Pass | Pass | N/A | Pass | Manifest/lock/runtime option/MCP descriptor changes create no persisted subject or migration obligation. |
 
 ## Change / Refactor Safety Verdict
 
@@ -234,6 +272,8 @@ The retained `CODEX_SEGMENT_TURN_OMISSION_UNLISTED` value is a local pure-functi
 | Team domain/status/wire/frontend aggregate cut | Pass | Pass | Pass | Pass |
 | Exact four-family Codex first-boundary admission -> handler -> converter | Pass | Pass | Pass | Pass |
 | AgentRun lifecycle -> complete consumer cut | Pass | Pass | Pass | Pass |
+| AgentRun input contract -> run-local state -> backend/command/caller cut | Pass | Pass | Pass | Pass |
+| Exact Claude dependency graph -> client/session/type cut -> intrinsic MCP -> tests | Pass | Pass | Pass | Pass |
 | Forward-only application V5 generation | Pass | Pass | Pass | Pass |
 | Downstream code review/API-E2E/live sequence | Pass | Pass | Pass | Pass |
 
@@ -246,6 +286,8 @@ The retained `CODEX_SEGMENT_TURN_OMISSION_UNLISTED` value is a local pure-functi
 | Team status initial/live/overlay/history | Yes | Pass | Pass | Pass | Event and non-event paths are distinguished. |
 | Segment start/content/end and file consumer | Yes | Pass | Pass | Pass | Source/canonical and file-operation examples are clear. |
 | Codex four-event admission and first-boundary ordering | Yes | Pass | Pass | Pass | Exact fields, rejection precedence, pending-MCP effects, opaque handoff, and admitted debug are explicit. |
+| AgentRun active input/FIFO/result-event races/interrupt/termination | Yes | Pass | Pass | Pass | INP-001–INP-009 and INP-R1/R2 distinguish idle start, exact append, later-turn wait, several inputs, command observation, interruption, accepted/rejected termination, restore/failure, public acknowledgement, and private lifecycle. |
+| Claude install/start/active-wait/interrupt/resume/turn-1 MCP/output-tool cut | Yes | Pass | Pass | Pass | Eight cases are clear; the interrupt example exactly preserves the verified AbortController/settlement/cleanup/canonical-event order and excludes the streaming-control alternative. |
 | Unknown/future item provider scenario | No | N/A | Pass | Pass | MP-013 is recorded as Not Reachable and no synthetic case or runtime policy remains. |
 | Persisted transition and rollback/retry | Yes | Pass | Pass | Pass | Fresh/terminal/failure/retry cases are complete. |
 
@@ -323,17 +365,77 @@ The retained `CODEX_SEGMENT_TURN_OMISSION_UNLISTED` value is a local pure-functi
 - Reachability: `Not Reachable`.
 - Review consequence / proportionate response: SR-024 removes the runtime branch, exemption registry, future-event rationale, and synthetic provider cases. The retained pure-function misuse reason does not create a production path or downstream mechanism. MP-013 now drives removal only.
 
+### `MP-014` — A valid task-peer reverse reply can reach a still-active next-turn-only AgentRun, and waiting for provider forwarding can hold the sender's active tool call
+
+- Related approved requirement or established contract: Exact provider-neutral peer delivery under `BEH-002`, `BEH-003`, `BEH-009`, `BEH-011`, `BEH-018`, and `BEH-020`; `R-057`; `AC-052`; Nested Classroom request/reply/submission/review assertions.
+- Relevant behavior ID(s): `BEH-002`, `BEH-003`, `BEH-009`, `BEH-011`, `BEH-018`, `BEH-020`.
+- Initiating basis kind: `User` / `System`.
+- Independent product-supported initiating trigger or applicable governing contract: From the exposed Team workspace, the user launches the imported Nested Classroom Team and delegates to the child AgentTeam; its approved instruction directs `student_one` to message `student_two`, receive the reply, and complete task submission/review.
+- Support evidence: API-REV-039's real Claude provider trace records `student_two` invoking its bound production `send_message_to` back to `./student_one`; rooted resolution reaches the correct task-scoped run while `student_one`'s Claude turn remains active. The tool call currently receives the provider-local active-turn rejection. AutoByteus and Codex complete the same supported row.
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: Team launch -> task delegation -> active task-Team coordinator turn -> peer `send_message_to` -> exact `student_two` AgentRun -> reverse bound `send_message_to` -> rooted resolver -> exact still-active `student_one` AgentRun -> `InterAgentMessageRouter` -> `AgentRun.postUserMessage` -> current Claude active-turn rejection / target AgentRun admission.
+- Lifecycle preconditions and material consequence at the claimed point: The reply sender's tool call needs a prompt result while the recipient has not yet reached terminal. Blocking public acceptance until a next-turn-only backend can forward holds that sender call behind the recipient's terminal and can form the supported collaboration wait cycle; rejecting loses the required reply and prevents task submission/review.
+- Reachability: `Reachable`.
+- Review consequence / proportionate response: AgentRun may truthfully acknowledge only after it owns the in-memory FIFO entry, but must not await next-turn forwarding. One run-local queue with no collaboration retry, provider-specific Team route, or durable inbox is proportionate.
+
+### `MP-015` — A valid provider can emit canonical start/terminal facts before the explicit input-dispatch promise result returns
+
+- Related approved requirement or established contract: Truthful turn association, status, event order, and at-most-once input settlement under `BEH-014`, `BEH-019`, `BEH-020`, `R-054`, `R-057`, and `AC-052`.
+- Relevant behavior ID(s): `BEH-014`, `BEH-019`, `BEH-020`.
+- Initiating basis kind: `User` / `System`.
+- Independent product-supported initiating trigger or applicable governing contract: A supported caller submits ordinary input to an idle Claude AgentRun through any existing input surface.
+- Support evidence: Current `ClaudeSession.sendTurn()` allocates/sets the turn and synchronously emits `TURN_STARTED` before returning its `{turnId}` promise result; the AgentRun backend source listener immediately starts the canonical event-queue path. The design also requires a fast-terminal control for the same ordering boundary.
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: supported input surface -> exact `AgentRun.postUserMessage` -> Claude explicit start primitive -> synchronous session `TURN_STARTED` -> backend converter/source listener -> AgentRun event queue, while the original backend dispatch result is still outstanding.
+- Lifecycle preconditions and material consequence at the claimed point: An admitted FIFO head has been claimed for start; if its observer/claim does not exist before provider I/O, or if event/result applications use different serialization, the command can be orphaned, associated twice, or allow the next FIFO head to dispatch early.
+- Reachability: `Reachable`.
+- Review consequence / proportionate response: Register the entry observer and claim before leaving the queue; apply source events and dispatch result through that same queue; retain early facts and settle once with exact turn equality. No second event buffer or provider-owned state is required.
+
+### `MP-016` — A supported active Claude one-string query can be interrupted through the current product command path
+
+- Related approved requirement or established contract: Preserve Claude session/interruption behavior while upgrading the exact dependency graph under `BEH-020`, `BEH-021`, `R-057`, `R-058`, `AC-052`, and `AC-053`.
+- Relevant behavior ID(s): `BEH-020`, `BEH-021`.
+- Initiating basis kind: `User` / `System`.
+- Independent product-supported initiating trigger or applicable governing contract: A user or supported operational caller issues the existing interrupt command while an AgentRun-owned Claude turn is active.
+- Support evidence: The current production backend delegates to `ClaudeSession.interrupt()`. The session's one-string query was started with `Options.abortController`; interruption calls that controller's `abort()`, awaits the active execution, and emits canonical `TURN_INTERRUPTED`. The installed latest public types retain `Options.abortController`.
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: supported interrupt surface -> AgentRun interruption owner -> Claude backend -> active `ClaudeSession` one-string query -> `AbortController.abort()` -> active query settlement -> canonical terminal/interruption -> AgentRun FIFO drain.
+- Lifecycle preconditions and material consequence at the claimed point: An active Claude turn and zero or more waiting AgentRun FIFO entries exist. Changing to an unproved streaming-control request can fail to terminate the active one-string query or create duplicate interruption ownership, preventing correct terminal/drain behavior.
+- Reachability: `Reachable`.
+- Review consequence / proportionate response: SR-028 preserves the established `AbortController` translation in DS-019D and `CLAUDE-SDK-004`, including exact settlement/cleanup/canonical ordering and negative proof against the streaming-control alternative. `DR-013` is resolved.
+
+### `MP-017` — Latest Claude SDK priority/streaming input can provide exact active-turn append to AgentRun
+
+- Related approved requirement or established contract: Provider mechanics must truthfully implement AgentRun's explicit capability boundary under `BEH-020`, `R-057`, and `AC-052`.
+- Relevant behavior ID(s): `BEH-020`, `BEH-021`.
+- Initiating basis kind: `Contract` / `System`.
+- Independent product-supported initiating trigger or applicable governing contract: None. The latest public `SDKUserMessage` priority shape has no exact active-turn selector or expected-turn precondition.
+- Support evidence: Installed current types expose `priority:"now" | "next" | "later"` and `streamInput`, while the isolated current-version probes show `now` interrupts/redirects and `next` queues later. Neither identifies the AutoByteus active turn.
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: No supported path maps SDK priority/streaming input to exact `append_to_active_turn(expectedTurnId)`.
+- Lifecycle preconditions and material consequence at the claimed point: Treating priority as exact append would either interrupt the active work or introduce a second provider-owned FIFO, contradicting the accepted AgentRun owner.
+- Reachability: `Not Reachable`.
+- Review consequence / proportionate response: Retain Claude `activeTurnAppend:"unsupported"`; do not add `streamInput`, priority scheduling, provider command lifecycle, or another queue. SR-027 is correct on this boundary.
+
+### `MP-018` — A Team-bound Claude first turn can begin before its required intrinsic MCP tools are ready after the SDK upgrade
+
+- Related approved requirement or established contract: Every Team-bound Agent intrinsically receives the collaboration/task tools on its first turn under `BEH-005`, `BEH-009`, `BEH-021`, `R-058`, and `AC-053`.
+- Relevant behavior ID(s): `BEH-005`, `BEH-009`, `BEH-021`.
+- Initiating basis kind: `User` / `Contract`.
+- Independent product-supported initiating trigger or applicable governing contract: A user launches or sends the first prompt to a Team-bound Claude Agent whose server-owned Agent Tools HTTP MCP descriptor supplies required Team tools.
+- Support evidence: The latest SDK documents background MCP loading by default and exposes per-server `alwaysLoad:true` to include required tools in the first-turn prompt and wait for connection. The current materializer lacks that flag.
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: TeamRun launch -> Team-bound Claude AgentRun -> first `start_turn` -> Claude query options with intrinsic Agent Tools MCP descriptor -> provider prompt/tool availability.
+- Lifecycle preconditions and material consequence at the claimed point: Collaboration/task tools are required on turn 1; background connection can make them absent from that prompt.
+- Reachability: `Reachable`.
+- Review consequence / proportionate response: Set `alwaysLoad:true` only on the server-owned intrinsic Agent Tools HTTP MCP descriptor. Do not apply a global policy or legacy environment switch.
+
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
 None.
 
 ## Review Decision
 
-`Pass` — SR-024 resolves `DR-012`, preserves `DR-011`'s first-boundary correction, and leaves every previously accepted cumulative boundary coherent. The complete solution package is ready for corrected implementation and subsequent focused/full cumulative source review.
+`Pass` — SR-028 resolves `DR-013` and `DR-014`. The complete cumulative package has one rooted TeamRun aggregate, canonical logical/concrete identity, operation-neutral recipient resolution, operation-owned task lifecycle, intrinsic collaboration, one Team status/event/wire/frontend model, isolated released-data migration/token transaction, forward-only V5 application cut, one AgentRun segment lifecycle, exact Codex first boundary, one AgentRun input FIFO, and one coherent latest-Claude dependency/session/MCP adapter. Implementation may resume from the cumulative SR-028 authority, subject to focused and full source review before API/E2E.
 
 ## Findings
 
-None.
+None. `DR-013` and `DR-014` are resolved by SR-028.
 
 ## Classification
 
@@ -345,15 +447,22 @@ None.
 
 ## Residual Risks
 
-- Implementation must invoke the Codex resolver only for the exact four-name set while preserving all other current operation-owned event routes.
-- The opaque thread message, valid MCP local-before-original ordering, sanitized rejection, admitted-only raw debug, and no broad-prefix/raw fallback guarantees require focused source proof.
-- The full clean cut still spans providers, the AgentRun lifecycle, every listed processor/listener, strict Team/standalone/application/browser consumers, and removal scans.
+- Implementation must return public input acceptance only after FIFO ownership and before provider forwarding; `turnId` may be non-null only for the same atomically claimed exact-turn append.
+- Claim, provider source events, result application, terminal drain, interrupt, failure, and termination must serialize through the one AgentRun queue while provider I/O remains outside; synchronous start/terminal-before-result controls are mandatory.
+- Codex exact-turn steer, Claude/AutoByteus next-turn dispatch, command replay/multiple records, memory-on-forwarding, activation-only overlays, and caller-specific result codes must survive the removal of all provider/registry competing policies.
+- Claude explicit interruption must use only the one-string query's `Options.abortController`, wait for exact execution and registered-query/reference cleanup before canonical `TURN_INTERRUPTED`, and permit FIFO drain only from the terminal fact; `Query.interrupt()`, receipts, streaming input, and fallback must remain outside the product path.
+- `alwaysLoad:true` must remain limited to the server-owned intrinsic Agent Tools HTTP MCP descriptor; arbitrary external MCP servers must retain their existing loading policy.
+- Input dispatch failure after public admission must remain an internal once-only lifecycle outcome: no retry/fallback, no second Team communication/member input, and no durable/frontend inbox.
+- The already-accepted opaque Codex thread message, valid MCP ordering, sanitized rejection, admitted-only raw debug, segment fan-out, and no broad-prefix/raw fallback guarantees still require focused source proof.
 - The cumulative rooted identity, Team event/status/frontend, migration/token transaction, storage, task activation, provider-tool, and V5 application work remains broad and requires full cumulative source review.
 - `CR-F-043` remains API/E2E-owned and must not drive implementation machinery or be changed before source gates pass.
 - The three-runtime live matrix remains no-skip; external provider unavailability is a truthful blocker/failure, not a Pass.
+- The exact manifest/lock graph, peer satisfaction, root imports, source build/type checks, and focused tests are strong investigation evidence but are not SR-028 product implementation or live-matrix proof.
+- Packaged/desktop server artifacts must be regenerated and verified from the exact dependency graph during implementation/delivery; stale ignored build output is not an accepted compatibility path.
+- The solution designer disclosed that one malformed local inspection command exposed inherited environment values in private tool output. No repository/evidence write was found, but the user/operator should rotate any credential that may have appeared.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass` — `MP-008`, `MP-010`, `MP-011`, and `MP-012` have independent supported/contract/operational witnesses; `MP-009` and `MP-013` are `Not Reachable` and drive no runtime or downstream machinery.
-- Notes: `ARCH-REV-018` is current. `DR-001`–`DR-012` are resolved at design level. Implementation may resume from SR-024; full source review remains mandatory before API/E2E resumes.
+- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass` — `MP-016` and `MP-018` have independent supported user/contract paths; `MP-017` is `Not Reachable` and drives no provider queue or exact-append machinery. Earlier material-premise dispositions remain unchanged.
+- Notes: `ARCH-REV-021` is current. `DR-001`–`DR-014` are resolved, and `CR-F-048` / `API-F-025` remains resolved at design level by SR-026/SR-028. Implementation may resume from the cumulative SR-028 authority; focused and full source review remain mandatory before API/E2E. `CR-F-043` remains API/E2E-owned.

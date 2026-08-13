@@ -3,11 +3,11 @@
 ## Artifact Metadata
 
 - Canonical path: `tickets/in-progress/agent-team-hierarchical-handoffs/team-stream-execution-projection-contract.md`
-- Purpose: make the complete Team Agent/event/wire boundary and frontend concrete-execution ownership executable, and align its segment/error variants with the SR-024 exact-four-family first-native-boundary Codex exact-turn admission, sole downstream `TURN_DIAGNOSTIC`, and run-owned canonical lifecycle, without reopening canonical backend addressing, released-data migration, storage, or the direct forward-only application-SDK design.
+- Purpose: make the complete Team Agent/event/wire boundary and frontend concrete-execution ownership executable, align its segment/error variants with the SR-024 exact-four-family first-native-boundary Codex exact-turn admission, sole downstream `TURN_DIAGNOSTIC`, and run-owned canonical lifecycle, without reopening canonical backend addressing, released-data migration, storage, or the direct forward-only application-SDK design.
 - Scope: current TeamRun domain events, initial connection/open/restore Agent-status snapshots, pre-run send/delegation status overlays, the `/ws/agent-team` server/client protocol, exact application producer binding at Team AgentRun construction, frontend rooted topology, concrete execution projection, task lifecycle, focus/open/history/navigation, and clean-cut removal evidence.
-- Status: `Refined — SR-024 exact-four-family Codex admission linkage aligned for DR-012 architecture re-review; prior Team status/event/frontend structure preserved`.
-- Related requirements: `R-036`, `R-039`, `R-043`, `R-049`–`R-056`.
-- Related acceptance criteria: `AC-029`, `AC-035`, `AC-036`, `AC-038`, `AC-039`, `AC-045`–`AC-051`.
+- Status: `Accepted by ARCH-REV-018 for Team stream/frontend structure; SR-026 once-only input-admission projection aligned`.
+- Related requirements: `R-036`, `R-039`, `R-043`, `R-049`–`R-057`.
+- Related acceptance criteria: `AC-029`, `AC-035`, `AC-036`, `AC-038`, `AC-039`, `AC-045`–`AC-052`.
 - Approval applicability: `N/A — design supplement for already-approved preserved behavior; SR-024 keeps exact-four-family provider-turn rejection before provider mutation and outside Agent/Team transport and preserves the original three error variants, while SR-017's direct target-only application rule and SR-018's status producers remain unchanged`.
 - Relationship to core artifacts: requirements own observable outcomes; investigation notes own current evidence; design spec owns system allocation and sequencing; this file owns the exact Team boundary shapes, nineteen case spines, invariants, and removal inventory. [agent-segment-lifecycle-contract.md](./agent-segment-lifecycle-contract.md) exclusively owns provider-source admission and AgentRun segment lifecycle.
 
@@ -1542,6 +1542,20 @@ No dual runtime period is designed. Steps may be compiled in checkpoints, but pr
 - Put segment correlation in `TeamAgentEventAdapter`, TeamRun, WebSocket sessions, application projectors, or browser transport; add a provider-specific Team branch; put type back on provider content/end; guess text/type/turn from defaults or IDs; accept dual source/canonical shapes; buffer/reorder missing starts; or deduplicate equal deltas.
 - Drop Agent error evidence in Team/standalone projection; make error evidence optional; admit or reconstruct runtime/diagnostic; borrow an unrelated turn for invalid provider input; or close browser/application/external/command/output state for `TURN_DIAGNOSTIC`.
 
-## 21. Guidance For Implementation
+## 21. SR-026 Input Admission And Team Projection
+
+The Team stream remains a consumer of the AgentRun admission result, not an input-admission owner. The exact path is:
+
+```text
+resolved Team recipient
+  -> exact AgentRun.postUserMessage
+  -> run-owned accepted/rejected admission result
+  -> accepted: publish one COMMUNICATION and one MEMBER_INPUT through existing owners
+  -> later forwarded/turn/terminal lifecycle: no second delivery publication
+```
+
+For Claude and AutoByteus, accepted input may be waiting for the next turn; this does not add a Team event state, provisional execution, or frontend queue. Codex append likewise creates no extra Team event. Provider failure after admission may update the recipient's established Agent/command status through the internal typed observer, but it does not mutate the already-published communication, trigger a Team retry, or add wire aliases. `TeamExecutionState` and the browser stream keep no input FIFO. The exact AgentRun state machine is owned by [agent-run-input-admission-contract.md](./agent-run-input-admission-contract.md).
+
+## 22. Guidance For Implementation
 
 Implement from the spines outward. First enforce each provider session's authoritative exact-turn admission, preserve the original three-variant Agent error authority, and establish the one AgentRun segment lifecycle; then cut every processor/listener to canonical input before Team ingress. Team adaptation stays stateless and projects required nullable evidence; `TURN_DIAGNOSTIC` stays visible/non-terminal and runtime/diagnostic is invalid. Then create/use the one Team Agent execution binding/status snapshot, bind every live/initial/pre-run producer, bind runtime application producers at execution construction, and make the wire/aggregate impossible to misconstruct. Preserve the canonical backend resolver, released-data migration/startup gates, direct V5 application target, provider tool protocol, storage layout, and exact execution-address semantics. Do not revive legacy routes, provisional identity, segment/status defaults, evidence loss, compatibility aliases, application migration/fallback, or consumer-side repair.

@@ -2,14 +2,15 @@
 
 ## Current Result
 
-- Delivery revision: `DR-008`
-- Reviewed lineage: `SR-020; ARCH-REV-013; IR-042; CRR-078; API-REV-036; CRR-079`
-- Integrated checkpoint: `0d32ff25502838c28663fc765c3499fc83455eb1`
+- Delivery revision: `DR-009`
+- Reviewed lineage: `SR-024; ARCH-REV-018; IR-044; CRR-081; API-REV-038; CRR-083`
+- Current branch addition: implemented but not source-reviewed `SR-025` / `IR-045` source/test commit `b8798338c`
+- Integrated checkpoint: `29337af23c13ce3c711f28b73c0c802c5e62e3c2`
 - Base: `origin/personal@54890a07f74e941a7a12b6daaa26364f4c927b72`
-- Result: `Pass — updated against the current integrated state`
-- No-impact classification: not applicable
+- Result: `Blocked — current branch is newer than the reviewed package`
+- No-impact classification: not permitted until the SR-025 delta clears review
 
-## Documentation Updated
+## Historical DR-008 Documentation — Not Current Proof
 
 ### Server
 
@@ -41,7 +42,7 @@
 - `autobyteus-web/docs/memory.md`
 - `autobyteus-web/docs/settings.md`
 
-## Authoritative Contract Now Documented
+## Historically Documented Contract
 
 - Rooted logical AgentTeam addresses and exact four-field
   `TeamExecutionAddress` values are the only current Team identity.
@@ -63,7 +64,20 @@
   persisted-data boundary. Physical memory lineage uses root/ancestor TeamRun
   ids; logical addresses are not filesystem paths.
 
-## Verification
+## Current DR-009 Decision
+
+Delivery did not edit long-lived documentation for SR-024/SR-025. Although the
+base is current and conflict-free, commit `b8798338c` changes production prompt
+composition and six durable unit suites after CRR-083's explicit reviewed HEAD.
+Documentation cannot be declared synchronized against that unreviewed state.
+
+The DR-008 documentation below remains useful historical context, but it cannot
+serve as the current delivery result. IR-045 has completed implementation
+handoff/checks; the current source/test delta must now route through source
+review, API/E2E coverage investigation/execution, and proportional durable
+review when applicable.
+
+## Historical Verification
 
 Delivery documentation checks cover:
 
@@ -81,6 +95,6 @@ Evidence is recorded under
 
 ## Finalization Hold
 
-Documentation is synchronized, but the ticket remains in progress. Explicit user
-verification/completion is required before archival, repository finalization,
-release, deployment, or cleanup.
+Documentation synchronization is blocked. The ticket remains in progress, and
+the former DR-008 verification request is superseded. No archival, repository
+finalization, release, deployment, or cleanup is permitted.

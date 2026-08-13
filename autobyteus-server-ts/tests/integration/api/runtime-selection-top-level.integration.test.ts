@@ -14,6 +14,7 @@ import { AgentRun } from "../../../src/agent-execution/domain/agent-run.js";
 import type { AgentRunSourceEventBatchListener } from "../../../src/agent-execution/backends/agent-run-backend.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
+import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { AgentRunMetadataService } from "../../../src/run-history/services/agent-run-metadata-service.js";
 import { AgentRunStatusProjectionService } from "../../../src/agent-execution/services/agent-run-status-projection-service.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
@@ -224,6 +225,11 @@ const buildAgentRun = (input: {
   const backend = {
     runId: input.runId,
     runtimeKind: input.config.runtimeKind,
+    inputCapabilities: {
+      activeTurnAppend: input.config.runtimeKind === RuntimeKind.CODEX_APP_SERVER
+        ? "supported" as const
+        : "unsupported" as const,
+    },
     getContext: () => context,
     isActive: () => active,
     getPlatformAgentRunId: () => input.platformAgentRunId,
@@ -238,20 +244,32 @@ const buildAgentRun = (input: {
         listeners.delete(listener);
       };
     },
-    postUserMessage: vi.fn(async (message: { content: string; contextFiles?: unknown[] | null }) => {
+    dispatchUserInput: vi.fn(async (dispatch: {
+      message: { content: string; contextFiles?: unknown[] | null };
+    }) => {
       turnCounter += 1;
+      const turnId = `turn-${input.runId}-${turnCounter}`;
       input.messages.push({
         runId: input.runId,
         runtimeKind: input.config.runtimeKind,
-        content: message.content,
-        contextFileCount: message.contextFiles?.length ?? 0,
+        content: dispatch.message.content,
+        contextFileCount: dispatch.message.contextFiles?.length ?? 0,
         source: input.source,
       });
+      queueMicrotask(() => {
+        const events = [{
+          eventType: AgentRunEventType.TURN_STARTED,
+          runId: input.runId,
+          payload: { turn_id: turnId },
+          statusHint: "ACTIVE" as const,
+        }];
+        for (const listener of listeners) {
+          void listener(events);
+        }
+      });
       return {
-        accepted: true,
-        code: null,
-        message: null,
-        turnId: `turn-${input.runId}-${turnCounter}`,
+        forwarded: true,
+        turnId,
       };
     }),
     approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),

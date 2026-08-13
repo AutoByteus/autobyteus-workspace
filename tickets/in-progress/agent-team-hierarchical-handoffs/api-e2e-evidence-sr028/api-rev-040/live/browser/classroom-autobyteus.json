@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "slug": "autobyteus",
+  "runtime": "autobyteus",
+  "model": "gpt-5.6-luna",
+  "startedAt": "2026-08-13T15:22:12.735Z",
+  "completedAt": "2026-08-13T15:22:38.084Z",
+  "passed": true,
+  "rootTeamRunId": "classroom_simulation_team_89a0f2ed4c054673a04360480c3b0a39",
+  "conditions": {
+    "freshRun": true,
+    "rootedTopology": true,
+    "effectiveRuntime": true,
+    "effectiveReasoning": true,
+    "exactOneProfessorRequest": true,
+    "requestHasReference": true,
+    "exactOneStudentReply": true,
+    "replyHasReference": true,
+    "exactPersistentAddresses": true,
+    "completionVisible": true,
+    "noConsoleErrors": true
+  },
+  "effective": {
+    "runtimeKind": "autobyteus",
+    "reasoningEffort": "medium"
+  },
+  "messages": [
+    {
+      "messageId": "teammsg_cHu8NQ7sNldbiOEeO0f93u9TfgZzJ1lo",
+      "content": "Homework is ready at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-040-live-20260813-1/temp_workspace/classroom-runs/api-rev-040-autobyteus/homework.md. Read it, solve 6 * 7, write your answer file in that classroom-run directory, and reply to /professor with the exact required token and your answer file attached.",
+      "referenceFiles": [
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-040-live-20260813-1/temp_workspace/classroom-runs/api-rev-040-autobyteus/homework.md",
+          "type": "file"
+        }
+      ],
+      "senderAddress": {
+        "rootTeamRunId": "classroom_simulation_team_89a0f2ed4c054673a04360480c3b0a39",
+        "taskTeamRunIds": [],
+        "memberAddress": "/professor",
+        "taskAgentRunId": null
+      },
+      "receiverAddress": {
+        "rootTeamRunId": "classroom_simulation_team_89a0f2ed4c054673a04360480c3b0a39",
+        "taskTeamRunIds": [],
+        "memberAddress": "/student",
+        "taskAgentRunId": null
+      }
+    },
+    {
+      "messageId": "teammsg_s3Aaq94DPGItab2abYirdNZ-DzCu4GjC",
+      "content": "CLASSROOM_STUDENT_REPLY_AUTOBYTEUS — 6 × 7 = 42. My answer is written in /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-040-live-20260813-1/temp_workspace/classroom-runs/api-rev-040-autobyteus/student-answer.md.",
+      "referenceFiles": [
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-040-live-20260813-1/temp_workspace/classroom-runs/api-rev-040-autobyteus/student-answer.md",
+          "type": "file"
+        }
+      ],
+      "senderAddress": {
+        "rootTeamRunId": "classroom_simulation_team_89a0f2ed4c054673a04360480c3b0a39",
+        "taskTeamRunIds": [],
+        "memberAddress": "/student",
+        "taskAgentRunId": null
+      },
+      "receiverAddress": {
+        "rootTeamRunId": "classroom_simulation_team_89a0f2ed4c054673a04360480c3b0a39",
+        "taskTeamRunIds": [],
+        "memberAddress": "/professor",
+        "taskAgentRunId": null
+      }
+    }
+  ],
+  "consoleEvents": [],
+  "termination": {
+    "success": true,
+    "message": "Agent team run terminated successfully."
+  }
+}
