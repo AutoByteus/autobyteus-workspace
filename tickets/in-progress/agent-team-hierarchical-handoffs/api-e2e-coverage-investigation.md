@@ -2058,3 +2058,117 @@ Starting confidence is **42%**: reviewed source and temporary reviewer probes st
 Owned `60236/31236` processes stopped; the disposable runtime/database/vault/key/sidecars were removed through the checked cleanup helper; source-fixture hashes still match. Operational database action/inspection: **NONE**. Protected `60004/31004`, four stashes, delivery backup, rollback, and repair action: **NONE**. Both historical incident disclosures remain preserved.
 
 Final confidence is **98%**, every applicable category is at least `97%`, and broader validation is complete. `API-REV-036` result: **Pass**. Because repository-resident durable coverage changed, return the complete `109`-path package to `code_reviewer` for proportional test-code review before delivery.
+
+## API-REV-037 SR-024 / IR-044 Exact-Delta-Fidelity Coverage Investigation (Pre-edit Baseline)
+
+- Trigger: `CRR-081 Pass / 92.5%` at HEAD `258d18cdba0bf7ae08bde134fe09586a8906870d` for cumulative `SR-024` / `ARCH-REV-018` / `IR-044`.
+- Prior downstream evidence: `API-REV-036 Pass / 98%` and `CRR-079` proportional-test Pass are historical pre-withdrawal SR-020 evidence. They remain useful for scenario discovery and harness safety, but they do not prove the corrected SR-024 provider-admission and exact-delta behavior at current HEAD.
+- Required ordering: resolve only API/E2E-owned `CR-F-043` cleanup/evidence residue; currentize stale durable provider/lifecycle/external expectations; run repository/build checks; then execute a fresh checked-disposable browser/provider matrix.
+- Safety boundary: operational database `/Users/normy/.autobyteus/server-data/db/production.db` action and inspection are forbidden. Protected `127.0.0.1:60004/31004`, stashes, delivery backup, and historical incident disclosures remain untouched. The requested home `.env` may be used only as the secret source for an actual interactive import into a freshly checked disposable SQLite/vault target.
+
+### Changed Surfaces And Required Proof
+
+| Surface | Current reviewed behavior | Coverage decision before edit |
+| --- | --- | --- |
+| Claude native `ITEM_OUTPUT_TEXT_DELTA` | A present non-empty raw string preserves leading/trailing whitespace, whitespace-only content, and newlines byte-for-byte. | `Needs Update`: retained Claude converter coverage has two retired assertions and must be currentized without trimming or compatibility behavior. |
+| Canonical direct and Team external output | Every accepted canonical string delta is appended exactly once; equality, prefix, suffix, overlap, and final-output reconciliation are absent. | `Needs Update`: retained external collector coverage has five retired cumulative-snapshot/reconciliation assertions. Add or extend lifecycle-faithful direct/Team proof for exact bytes. |
+| Provider admission and AgentRun lifecycle | Only current exact provider families enter the one run-owned lifecycle; canonical consumers receive the same already-admitted segment facts. | `Still Valid / Revalidate`: prior 109-path package and `team-agent-segment-admission.integration.test.ts` remain candidate current coverage, subject to current HEAD execution and static audit. |
+| Browser transcript lifecycle | Canonical segment type is retained while lookup stays `{turnId,id}`; typed-late and mismatch rejection remain strict. | `Still Valid / Revalidate`: current web segment/tool selections and production build must pass at current HEAD. |
+| Team, standalone, mobile, restore/reconnect | All three runtimes must preserve exact visible provider output and the retained rooted Team/task/communication/reference lifecycle. | `Broader Validation Required`: fresh real Chrome rows for AutoByteus, Codex, Claude Team and standalone plus mobile and restore are required because the source correction crosses provider, WebSocket, browser, persistence, and external-output boundaries. |
+| API/E2E cleanup truth (`CR-F-043`) | Only owned disposable residue may be removed; evidence must prove absence before configured/live execution. | `Local Fix`: fresh metadata-only verification will cover the named API-REV-035 journal and all discovered old `api-rev-*` disposable secret-key residues. Only verified regular, unheld, worktree-owned API/E2E paths may be removed. The unrelated test-runtime journal and operational database are out of scope and will not be touched. |
+
+### Planned Repository Evidence
+
+1. Reproduce and adjudicate the exact current Claude and external collector failures against SR-024 before editing.
+2. Currentize only stale assertions/fixtures; preserve direct exact-byte expectations for `[' hello ',' ','\n','foo\n','x','x','ab','bc']` and resulting `" hello  \nfoo\nxxabbc"` across standalone/direct and Team paths.
+3. Execute focused provider converter, AgentRun lifecycle, Team/standalone/application/external collector, browser segment/tool, and current durable selections.
+4. Execute server `build:full` and Nuxt production build. Generic toolchain failures may be disclosed only if they fail before project diagnostics; they are never counted as a Pass.
+5. Refresh the exact cumulative durable inventory/patch and audit active files for missing imports, skip/only/todo, reverse application, and whitespace.
+
+### Initial Confidence And Broader-Validation Gate
+
+- Repository-only confidence is intentionally below the clean target because real provider/browser exact-delta rendering at current SR-024 HEAD is not yet executed.
+- Broader-validation decision: **Required**. Expected evidence gain is direct validation of provider-native deltas through AgentRun, Team/standalone WebSocket, browser rendering, persisted restore, mobile reference surfaces, and cleanup on a checked disposable target.
+- A missing or failing critical real path blocks `Pass` regardless of aggregate percentage.
+
+## API-REV-037 Final Coverage Decisions And Execution Outcome
+
+### CR-F-043 prerequisite
+
+Before configured/live execution, API/E2E verified the named API-REV-035 disposable journal was absent and removed only two exact old worktree-owned API/E2E vault keys (`api-rev-029-live-20260812-1.db.secret.key` and `api-rev-035-live-20260812-1.db.secret.key`). The unrelated test-runtime journal remained untouched. Operational database action and inspection were both `NONE`. Evidence: `api-e2e-evidence-sr024/api-rev-037/environment/cr-f-043-owned-residue-{pre,post}-removal.log`.
+
+### Final validity decisions
+
+| Coverage / boundary | Final decision | Outcome |
+| --- | --- | --- |
+| Claude converter raw `ITEM_OUTPUT_TEXT_DELTA` | `Needs Update -> Currentized / Still Valid` | Direct exact-byte coverage now preserves `[' hello ',' ','\n','foo\n','x','x','ab','bc']` without trimming, dropping whitespace-only deltas, or reconciliation. |
+| Direct and Team canonical delta assembly | `Needs Update -> Currentized / Still Valid` | Lifecycle-faithful Claude native -> AgentRun -> direct and nested Team plus external collector produce exactly `" hello  \nfoo\nxxabbc"`, appending each accepted delta exactly once. |
+| AutoByteus and Codex provider/lifecycle fixtures | `Partially Stale -> Currentized / Still Valid` | Missing identity, reasoning turn identity, governed event turn IDs, and active-turn MCP completion now use only current clean-cut identity. |
+| External-channel Team delivery | `Retired overlap expectation -> Currentized / Still Valid` | The real boundary now proves exact direct/no-new-inbound coordinator deltas rather than cumulative-snapshot overlap reconciliation. |
+| Browser segment/tool and current SR-024 consumers | `Still Valid / Revalidated` | Current web selection passes `73/73 files, 540/540 tests`; server affected/current selections and production builds pass. |
+| Real imported Team AutoByteus/Codex/Claude | `Mandatory -> Completed` | `3/3` pass exact rooted task/message/reference/request/reply/submission/acceptance/refresh/termination; no `SEGMENT_START/CONTENT/END` admission rejection or browser console error. |
+| Real standalone AutoByteus/Codex/Claude | `Mandatory -> Completed` | `3/3` pass first-send, exact visible token, persisted restore, exact runtime/model resume, zero console errors, and termination. |
+| Active/persisted desktop and paired-mobile references | `Mandatory -> Completed` | Both active and persisted exact-root count/content/open/back/read-only-config journeys pass. |
+| Checked disposable environment | `Fail-Closed Gate -> Completed` | Absent-target preflight, ambient DB sanitization, exact migration, actual TTY secret import, checked launcher, PID lsof, exact cleanup, protected-state non-action all pass. |
+
+### Repository and durable result
+
+API-REV-037 updates exactly nine server test paths (`0 added / 9 updated / 0 removed`). Inventory/patch path-status equality, reverse application, no missing imports, no explicit active skip/only/todo, and diff hygiene pass. The prior API-REV-036 `109`-path package is already in the committed baseline and passed CRR-079; only the exact nine-path SR-024 delta requires fresh proportional review.
+
+Repository evidence passes:
+
+- exact IR-044 delta fidelity: `3 files / 48 tests`;
+- SR-024 affected provider/lifecycle/consumer aggregate: `12 files / 256 tests`;
+- external channel: `1/1`;
+- current server: `67 passed files / 1 declared capability-gated skipped`, `620 passed / 9 skipped`;
+- current web: `73 files / 540 tests`;
+- server production build/bootstrap;
+- Nuxt production build with fifteen prerendered routes.
+
+### Real browser/provider interpretation
+
+The required functional browser matrix is `8/8`: three Team rows, three standalone rows, active desktop/mobile, and persisted desktop/mobile. The initial AutoByteus attempt is excluded because Nuxt dependency optimization reloaded the dev server during navigation and returned `504 Outdated Optimize Dep`; the stable warmed-server rerun passed.
+
+The authoritative AutoByteus row retains generic error cards for one rejected provider-generated tool attempt before the later exact peer exchange and one duplicate review after the task was already accepted. Under CR-PREM-032 this is a nonblocking model/tool-election observation, not a source failure: the current bound peer capability delivered the exact once-only public request/reply, the exact submission was accepted, restore/termination succeeded, and no segment admission rejection occurred. Codex and Claude rows had no such generic error cards.
+
+### Final outcome
+
+Broader validation was required and completed. Final result: **Pass / 98%**. Every applicable confidence category is at least 97%, no critical path is Not Tested, cleanup is complete, and the exact nine-path durable delta must return to `code_reviewer` for proportional review before delivery.
+
+## API-REV-038 CRR-082 / TR-F-006 Durable Codex Boundary Investigation (Pre-edit Baseline)
+
+- Trigger: `CRR-082 Fail — Local Fix` from proportional review of the exact API-REV-037 nine-path server-test delta at unchanged production/runtime HEAD `258d18cdba0bf7ae08bde134fe09586a8906870d`.
+- Retained authority: API-REV-037 product/runtime result remains **Pass / 98%** and CRR-081 production-source result remains **Pass / 92.5%**. No production source, runtime configuration, disposable environment, or retained live evidence changed, so a browser/provider rerun is **Not Required** for this bounded durable-test correction.
+- Safety: this round performs no server, browser, vault import, migration, database, port, stash, backup, or rollback action. Operational database action/inspection remains **NONE** and the protected `60004/31004` stack remains untouched.
+
+### Coverage validity decisions before edit
+
+| Durable coverage | Current finding | Decision |
+| --- | --- | --- |
+| `codex-reasoning-block-converter.test.ts` | Fifteen cases structurally manufacture listener-shaped `{method,params}` values and call `CodexThreadEventConverter.convert()` directly. The newly currentized missing-turn case therefore bypasses the exact first-boundary rejection it purports to prove. | `Needs Update`: drive retained native cases through a real `CodexThread.handleAppServerNotification()` and consume only the actual thread-emitted opaque listener message. Prove missing-turn rejection at the thread boundary with zero listener/converter effect. |
+| `codex-thread-event-converter.test.ts` | Sixty-seven cases retain direct structural converter input, including seven API-REV-037 governed-event updates. This is green transpilation over a forbidden nominal boundary, not current R-053 / AC-049 proof. | `Needs Update`: currentize the suite consistently. Native events enter through the real thread with exact active turn; locally derived approval/MCP-completion facts enter only through the supported thread request/notification operations that materialize them. |
+| `codex-thread.test.ts` | Already contains real thread construction and admission/rejection coverage; API-REV-037 added current active-turn MCP completion evidence. | `Still Valid / Revalidate`: retain as the thread-boundary companion selection and use its production-owned lifecycle patterns; do not add casts, brands, or compatibility helpers. |
+| Remaining seven API-REV-037 durable paths | CRR-082 accepted their current identity/delta changes. | `Still Valid / No Edit`: preserve their repository and live evidence; no unrelated rerun is required. |
+
+### Planned focused evidence
+
+1. Use a test-owned real-thread driver backed by the actual `CodexThread`, `CodexAppServerClient`, run context, startup gate, listener, and converter. It may submit native provider/request facts to public thread operations, but it shall never construct, cast, export, or fake `CodexThreadEventMessage` or its private brand.
+2. Currentize all direct converter calls in the two affected suites, not only the eight newly changed assertions, so the retained suites consistently prove the current nominal boundary.
+3. Prove the missing-turn reasoning notification yields zero thread listener messages and zero converted events before any downstream reasoning/provider state can be observed.
+4. Run the two currentized suites plus `codex-thread.test.ts`, production TypeScript, and a static audit proving zero direct structural converter calls, zero brand/fake/cast workaround, and real thread entry for governed facts.
+5. Refresh the exact cumulative durable inventory/patch and canonical reports. If focused evidence passes, preserve API-REV-037 live evidence and return the corrected complete delta for proportional re-review.
+
+### Starting confidence and broader-validation gate
+
+Starting confidence for the product/runtime remains 98%; durable regression coverage quality is temporarily below the clean target because two maintained suites bypass the required nominal ingress. Broader validation is **Not Required**: the unresolved uncertainty is entirely in test construction, and a real-thread focused repository selection directly closes it without changing or re-exercising production runtime configuration.
+
+### API-REV-038 final validity and execution update
+
+- `codex-reasoning-block-converter.test.ts`: `Needs Update -> Currentized / Still Valid`. All retained cases now enter through a real `CodexThread`; missing-turn reasoning is rejected before listener/converter effect, with listener and converted-event counts unchanged. Two impossible synthetic local events were removed/replaced with supported real thread-owned request/completion operations, and the governed no-turn case now asserts the current exact-active-turn inheritance behavior.
+- `codex-thread-event-converter.test.ts`: `Needs Update -> Currentized / Still Valid`. All 57 cases use the shared real-thread driver. Governed native events use exact active-turn admission; MCP completions arise from pending-call plus native completion; approval events arise from real app-server request handling. The suite directly constructs no converter and fabricates no listener value.
+- `codex-thread-event-harness.ts`: `Add Durable Coverage`. One reusable test fixture owns real run context, `CodexAppServerClient`, `CodexThread`, startup gate, listener, lifecycle snapshot, and converter composition. It submits only public native/request facts and filters actual thread-emitted batches for the test under observation; it contains no opaque message import, private brand, cast, or compatibility path.
+- `codex-thread.test.ts`: revalidated unchanged as the production boundary companion.
+
+Focused evidence passes `3 files / 147 tests`. Focused changed-test TypeScript and production TypeScript both pass. Static audit proves zero direct converter construction/import or structural `.convert({ ... })` in the two suites, zero opaque-message/brand/cast workaround across fixture/suites, three real thread-boundary entry sites, and clean diff hygiene.
+
+The corrected exact package is `10` paths = `1 added / 9 updated / 0 removed`; path/status inventory equals the binary patch, reverse application passes, active paths exist, and diff hygiene passes. Product source/runtime configuration/live state did not change; API-REV-037's `8/8` functional browser/provider evidence remains authoritative. Final API-REV-038 result is **Pass / 98%** and the corrected package requires proportional re-review.

@@ -91,7 +91,7 @@ keeps its provider result shape.
 Family semantics still come from the shared server-owned services:
 
 - `send_message_to` selector semantics come from the shared
-  `src/agent-communication` dispatcher: `recipient_name` requires a team member
+  `src/agent-communication` dispatcher: `recipient_address` requires a team member
   context, while `target_agent_run_id` can be used by an explicitly configured
   standalone or automatically enabled team-member Codex run to reach an exact
   currently active `AgentRun.runId`.
@@ -200,7 +200,12 @@ unsupported model.
 Codex runtime runs now receive server-owned durable memory in addition to Codex-native thread history.
 
 - Standalone Codex runs write under `memory/agents/<runId>/...`.
-- Codex team members write under their resolved team-member `memoryDir`: direct members use `memory/agent_teams/<rootTeamRunId>/<memberRunId>/...`, nested members use `memory/agent_teams/<rootTeamRunId>/<childTeamRunId>/<memberRunId>/...` with deeper child team ids appended, and task-agent runs use `memory/agent_teams/<rootTeamRunId>/<...teamRunPath>/<taskAgentRunId>/...`.
+- Codex Team members write under their resolved canonical `memoryDir`: direct
+  members use `memory/agent_teams/<rootTeamRunId>/<memberRunId>/...`, nested
+  members append physical ancestor TeamRun ids before the AgentRun id, and
+  task-Agent runs append the task AgentRun id within the same resolved physical
+  Team scope. Callers use `AgentMemoryLocationService`; they do not derive a
+  directory from the logical member address.
 - `AgentRunManager` attaches the raw-trace-only `AgentRunMemoryRecorder`; the recorder captures accepted `AgentRun.postUserMessage(...)` commands plus normalized assistant, reasoning, and tool `AgentRunEvent`s.
 - `ExternalRuntimeMemoryWriter` writes shared `RawTraceItem` rows through the `autobyteus-ts` `RunMemoryFileStore` primitives and restores sequencing/tool lifecycle from active plus complete rotated traces. It never loads or persists a WorkingContext snapshot; Codex thread state owns continuation.
 
@@ -351,7 +356,7 @@ This keeps Codex skill loading aligned with the Codex filesystem contract instea
 
 Normal Codex UI history uses the same local application-owned replay trace as
 all other runtimes. `getRunProjection(runId)` and
-`getTeamMemberRunProjection(teamRunId, memberRouteKey)` do not call, fallback
+`getTeamMemberRunProjection(teamRunId, memberAddress)` do not call, fallback
 to, or merge with Codex native `thread/read` history for display. If local
 replay traces are absent or incomplete, focused Codex UI history may be empty
 or incomplete. That is the accepted display boundary.

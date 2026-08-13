@@ -19,6 +19,11 @@ The latest `design-review-report.md` remains authoritative. This record indexes 
 | ARCH-REV-011 | Round 11 / complete SR-018 re-review of corrected status and application boundaries | `SR-018`, preserving cumulative `SR-001`–`SR-017` authority | `Fail` | `Pass` | `DR-005`, `DR-006`, `CR-F-028`, `CR-F-029`, `CR-F-030` |
 | ARCH-REV-012 | Round 12 / complete SR-019 segment-lifecycle review after CRR-076 | `SR-019`, preserving cumulative `SR-001`–`SR-018` authority | `Pass` | `Fail` | `DR-007`, `DR-008`, `CR-F-042`, `API-F-024` |
 | ARCH-REV-013 | Round 13 / complete SR-020 consumer and diagnostic re-review | `SR-020`, preserving cumulative `SR-001`–`SR-019` authority | `Fail` | `Pass` | `DR-007`, `DR-008`, `CR-F-042`, `API-F-024` |
+| ARCH-REV-014 | Round 14 / SR-020 withdrawn during MP-009 reachability re-audit | `SR-020` superseded; corrected revision pending | `Pass` | `Blocked` | `MP-009` |
+| ARCH-REV-015 | Round 15 / complete cumulative SR-021 reachability-grounded re-review | `SR-021`, preserving cumulative `SR-001`–`SR-020` lineage | `Blocked` | `Fail` | `DR-007`, `DR-008`, `DR-009`, `DR-010`, `MP-009`, `MP-010` |
+| ARCH-REV-016 | Round 16 / complete cumulative SR-022 re-review | `SR-022`, preserving cumulative `SR-001`–`SR-021` authority | `Fail` | `Fail` | `DR-009`, `DR-010`, `DR-011`, `MP-011`, `MP-012` |
+| ARCH-REV-017 | Round 17 / complete cumulative SR-023 first-boundary re-review | `SR-023`, preserving cumulative `SR-001`–`SR-022` authority | `Fail` | `Fail` | `DR-011`, `DR-012`, `MP-013` |
+| ARCH-REV-018 | Round 18 / complete cumulative SR-024 reachability-contraction re-review | `SR-024`, preserving cumulative `SR-001`–`SR-023` authority | `Fail` | `Pass` | `DR-012`, `MP-013` |
 
 ## Revision Entries
 
@@ -328,3 +333,124 @@ The latest `design-review-report.md` remains authoritative. This record indexes 
 - Material classification changes: `DR-007` and `DR-008` are resolved. The authoritative decision changes from `Fail` to `Pass`; no Requirement Gap or Unclear item applies.
 - Recommended recipient: `implementation_engineer`.
 - Remaining risks or uncertainty: Implementation must keep state per AgentRun rather than in the cached pipeline or consumers; preserve queue order and final content before cleanup; implement exact file-context enrichment/release; atomically remove consumer aliases/defaults/end-text recovery; retain strict error evidence across both transports; and preserve all previously accepted rooted identity, Team status/event, task, frontend, migration/token, V5, and provider-tool work. Full cumulative source review remains mandatory. API/E2E must later correct CR-F-043 before executing the imported no-skip three-runtime matrix.
+
+### ARCH-REV-014 — Upstream withdrawal blocks implementation pending corrected reachability-grounded design
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/design-review-report.md`
+- Review round and trigger: Round 14; `solution_designer` withdrew SR-020 after the user challenged whether a turnless segment has a supported production trigger and renewed source inspection found valid provider segment output to be turn-owned.
+- Triggering role, report path, and finding IDs: `solution_designer`; SR-020 package and `MP-009`; no new finding is issued against the pending replacement.
+- Relevant solution revision IDs: `SR-020` is superseded/in rework; corrected cumulative revision pending.
+- Prior authoritative decision: `Pass` (`ARCH-REV-013`).
+- Current authoritative decision: `Blocked`; no current implementation authorization.
+- What changed in the review result or what baseline was established: The solution owner retracted the package before it could remain implementation authority. The malformed turnless object was introduced by later implementation and does not independently prove a supported production path. Under the product-reachability and simplicity invariant, its `RUNTIME_DIAGNOSTIC`, nullable-turn transport/browser projection, and consumer-exclusion machinery cannot be accepted without an independent supported trigger. ARCH-REV-013 remains historical lineage only; a new complete cumulative review is required after the solution owner delivers the corrected design.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `DR-001`–`DR-007` | Resolved | Not reopened by this administrative block | `ARCH-REV-004`–`ARCH-REV-013` | The solution withdrawal targets only the missing-turn premise; the next complete review must still revalidate all cumulative boundaries. |
+| `DR-008` / `MP-009` | Resolved in withdrawn SR-020 by `RUNTIME_DIAGNOSTIC` | Superseded; reachability and replacement design pending | `ARCH-REV-012`; `ARCH-REV-013`; `ARCH-REV-014` | Renewed source audit says valid provider segment output is turn-owned. The malformed object was created by later implementation, so the downstream diagnostic cannot establish its own initiating basis. |
+| `CR-F-043` | Open — API/E2E cleanup/evidence issue | Unchanged; remains API/E2E-owned | `CRR-076`; `SR-019`; withdrawn `SR-020` | No solution or architecture action is authorized against the residue. |
+
+- New or remaining finding IDs: None against the pending corrected design. `MP-009` is unresolved review input.
+- Material classification changes: Prior Pass is superseded by `Blocked`. The premise is `Unclear` pending the solution audit; if no independent trigger exists, it must become `Not Reachable` and drive no machinery.
+- Recommended recipient: `solution_designer`.
+- Remaining risks or uncertainty: Implementation must not start or continue from SR-020. The corrected package must state the exact provider-ingress contract, error-evidence vocabulary, wire/browser shape, removals, and affected-consumer proof, then undergo another complete cumulative review. Previously accepted cumulative architecture is not reopened by implication, but it must be revalidated in that review.
+
+### ARCH-REV-015 — SR-021 removes the unreachable diagnostic but leaves two executable contract seams
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/design-review-report.md`
+- Review round and trigger: Round 15; `solution_designer` returned the complete cumulative SR-021 package after the user required the product-reachability rule to be applied to SR-020's turnless post-ingress premise. The review was complete and cumulative, not delta-only.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/solution-revision-record.md`; prior `DR-007`, `DR-008`, and `MP-009`, preserving originating `CR-F-042` / `API-F-024` from the current code/API evidence package.
+- Relevant solution revision IDs: `SR-021`, preserving the cumulative target through `SR-020` while superseding only SR-020's runtime-diagnostic response.
+- Prior authoritative decision: `Blocked` (`ARCH-REV-014`).
+- Current authoritative decision: `Fail` (`Design Impact`).
+- What changed in the review result or what baseline was established: The complete review reconfirms the cumulative rooted TeamRun, canonical address/execution, shared recipient, operation-owned task lifecycle, intrinsic collaboration, correlated Team event/status/wire, one frontend execution aggregate, isolated released-data migration/token transaction, forward-only V5 application, physical storage, and no-skip live-validation architecture. SR-021 also correctly classifies a turnless segment after supported provider ingress as `Not Reachable`: AutoByteus and Claude own exact turns at construction, while Codex owns an exact active thread turn. The original `TURN_DIAGNOSTIC | TURN_TERMINAL | RUNTIME_GLOBAL` union is therefore the right shared error model, and provider missing/inactive/conflicting turn rejection must stay local with zero AgentRun/Team/browser events. Two bounded design seams remain. Current authoritative summaries and one Team supplement still prescribe two downstream diagnostic branches, and the exact Codex native family allowed to inherit an omitted repeated turn is not exhaustively specified.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `DR-001`–`DR-006` | Resolved | Remain Resolved | `ARCH-REV-004`–`ARCH-REV-014`; cumulative `SR-021` | Rooted topology, minimal shared recipient, provider result parity, forward-only V5 application, one Team Agent status model, and the supported-data migration boundary remain current and coherent. |
+| `DR-007` | Resolved in SR-020; pending cumulative revalidation after withdrawal | Resolved | `ARCH-REV-012`–`ARCH-REV-015`; `SR-020`; `SR-021`; DS-017F | The complete consumer matrix remains: repeated start stops before fan-out; file change owns non-replacing exact file context; memory/history/compaction/skill/external/application/Team/standalone/browser consumers receive canonical facts and explicit removals/verification. |
+| `DR-008` / `MP-009` | Superseded / under reachability audit | Resolved by corrected design; premise classified `Not Reachable` | `ARCH-REV-012`–`ARCH-REV-015`; `SR-021`; DS-017D/G | Direct provider-source inspection establishes exact turn ownership before AgentRun. The malformed post-ingress object lacks an independent supported trigger, so SR-021 removes the fourth error variant and rejects invalid turn candidates at provider ingress without shared machinery. |
+| `CR-F-042` / `API-F-024` | Design correction in progress | Structurally resolved except for new `DR-009`/`DR-010`; implementation/evidence pending | `CRR-076`; `SR-019`–`SR-021`; `ARCH-REV-015` | The single AgentRun lifecycle and complete fan-out solve the original AutoByteus start-owned-type issue, but the current package is not yet executable because of contradictory diagnostic authority and the incomplete Codex omission rule. |
+| `CR-F-043` | Open — API/E2E-owned cleanup/evidence issue | Unchanged; correctly deferred | `CRR-076`; `SR-021` | No solution or architecture machinery is introduced for the residue. |
+
+- New or remaining finding IDs: `DR-009`, `DR-010`, both `Design Impact`.
+- Material classification changes: `MP-009` changes from `Unclear` in the administrative block to `Not Reachable`, so it cannot justify `RUNTIME_DIAGNOSTIC` or downstream nullable-runtime diagnostic machinery. `MP-010` is `Reachable` through supported Codex turns and therefore requires an exact provider-local admission rule. The authoritative decision moves from `Blocked` to completed `Fail`, not `Pass`.
+- Recommended recipient: `solution_designer`.
+- Remaining risks or uncertainty: After the two bounded corrections, implementation must execute the complete provider-to-consumer cut and all preserved cumulative refactors, followed by full cumulative source review. API/E2E must later own CR-F-043 cleanup before the no-skip three-runtime matrix; prior pre-pause evidence is not authoritative.
+
+### ARCH-REV-016 — Exact Codex rule is sound but starts after current provider effects
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/design-review-report.md`
+- Review round and trigger: Round 16; `solution_designer` returned SR-022 after ARCH-REV-015 identified contradictory two-diagnostic current authority (`DR-009`) and a non-exhaustive Codex omitted-turn rule (`DR-010`). The requested review was complete and cumulative, not delta-only.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/solution-revision-record.md`; prior `DR-009`, `DR-010`, and `MP-010`, preserving originating `CR-F-042` / `API-F-024` and API/E2E-owned `CR-F-043` lineage.
+- Relevant solution revision IDs: `SR-022`, preserving cumulative `SR-001`–`SR-021` authority.
+- Prior authoritative decision: `Fail` (`ARCH-REV-015`).
+- Current authoritative decision: `Fail` (`Design Impact`).
+- What changed in the review result or what baseline was established: The complete review reconfirms the rooted TeamRun, canonical logical/concrete identity, shared recipient and operation-owned task lifecycle, intrinsic collaboration, correlated Team status/event/wire, one frontend execution owner, released-data migration/token transaction, forward-only V5 application, physical storage, single AgentRun lifecycle, complete canonical consumer cut, and no-skip validation boundaries. DR-009 is resolved: every current authority now states that provider turn rejection is sanitized/internal only and `TURN_DIAGNOSTIC` is the sole downstream non-terminal diagnostic. DR-010 is resolved: the one pure provider-local resolver has an exact four-event omission set, five-field inspection, all-present equality, deterministic reasons, and no raw/generic fallback. A new complete-path finding remains. Current Codex native notifications traverse a stateful notification handler and, later, raw-event capture before the designed converter-local resolver. The resolver therefore does not yet dominate pending-MCP mutation, derived local completion emission, or raw rejected-candidate capture and cannot guarantee the approved zero-effect/sanitized-only result.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `DR-001`–`DR-008` | Resolved | Remain Resolved | `ARCH-REV-004`–`ARCH-REV-015`; cumulative `SR-022` | All previously accepted rooted identity, recipient, provider-result, application, Team status/event/frontend, migration, segment-owner, consumer-cut, and product-reachability decisions remain current. |
+| `DR-009` | Open — High Design Impact | Resolved | `ARCH-REV-015`; `SR-022`; current requirements/design/Team stream/segment/live supplements | Current inventories and normative paths now distinguish internal provider rejection from the sole downstream exact-turn `TURN_DIAGNOSTIC`; no current authority preserves runtime/diagnostic or a second branch. |
+| `DR-010` / `MP-010` | Open — Medium Design Impact | Resolved | `ARCH-REV-015`; `SR-022`; DS-017D; segment supplement §5.2 | The pure resolver, exact four event names, five candidate locations, equality/active-turn rules, rejection precedence, reason codes, pre-reasoning-tracker rule, and focused allowed/rejected seams are explicit. |
+| `CR-F-042` / `API-F-024` | Structurally resolved except for DR-009/DR-010 | Structurally resolved except for new `DR-011`; implementation/evidence pending | `CRR-076`; `SR-019`–`SR-022`; `ARCH-REV-016` | The common lifecycle and complete fan-out remain correct, but the provider admission must move ahead of all current native-notification effects. |
+| `CR-F-043` | Open — API/E2E-owned cleanup/evidence issue | Unchanged; correctly deferred | `CRR-076`; `SR-022` | No solution or architecture machinery is introduced for the residue. |
+
+- New or remaining finding IDs: `DR-011` (`Design Impact`).
+- Material classification changes: `MP-011` is `Reachable` under the approved external-provider admission contract because `codex-thread-notification-handler.ts` always precedes the backend converter and can mutate/emit for the governed item families. `MP-012` is `Reachable` through the documented raw-log/debug operational action and the same admission contract. Decision remains `Fail` rather than returning to implementation.
+- Recommended recipient: `solution_designer`.
+- Remaining risks or uncertainty: The correction should preserve one resolver and valid MCP coordination while moving admission ahead of notification state and rejected-candidate raw capture. After a complete Pass, implementation must perform the full source cut and full cumulative source review before API/E2E owns CR-F-043 cleanup and reruns the no-skip provider matrix.
+
+### ARCH-REV-017 — SR-023 fixes first-boundary dominance but retains an unreachable future-item policy
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/design-review-report.md`
+- Review round and trigger: Round 17; `solution_designer` returned SR-023 after ARCH-REV-016 found the correct Codex turn policy was invoked after pending-MCP/local-event/raw-debug effects. The requested review was complete and cumulative, not delta-only.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/solution-revision-record.md`; prior `DR-011`, `MP-011`, and `MP-012`, preserving originating `CR-F-042` / `API-F-024` and API/E2E-owned `CR-F-043` lineage.
+- Relevant solution revision IDs: `SR-023`, preserving cumulative `SR-001`–`SR-022` authority.
+- Prior authoritative decision: `Fail` (`ARCH-REV-016`).
+- Current authoritative decision: `Fail` (`Design Impact`).
+- What changed in the review result or what baseline was established: The complete review again reconfirms the rooted TeamRun, canonical logical/concrete identity, shared recipient and operation-owned task lifecycle, intrinsic collaboration, correlated Team status/event/wire, one frontend execution owner, released-data migration/token transaction, forward-only V5 application, physical storage, one AgentRun segment lifecycle, complete canonical consumer cut, and no-skip validation boundaries. DR-011 is resolved: `CodexThread.handleAppServerNotification()` now owns the first per-thread decision, returns before every rejected-candidate effect, and forwards only a privately constructed branded admitted/derived message; valid MCP ordering and admitted raw debug remain. A new product-reachability finding remains. The design treats every otherwise-unlisted `item/*` name as a current segment-turn candidate, makes the nine known non-segment names runtime exemptions, and adds synthetic unknown-item proof solely to prevent a future event from acquiring semantics. Current source has no such event, no supported compatibility/evolution contract establishes one, and the same design removes broad-prefix segment construction so an admitted unknown creates no segment. That premise is `Not Reachable` and cannot drive current machinery.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `DR-001`–`DR-010` | Resolved | Remain Resolved | `ARCH-REV-004`–`ARCH-REV-016`; cumulative `SR-023` | All previously accepted rooted identity, recipient, provider-result, application, Team status/event/frontend, migration, segment-owner, complete consumer-cut, error-evidence, and exact four-family admission decisions remain current and coherent. |
+| `DR-011` / `MP-011` / `MP-012` | Open — High Design Impact / reachable premises | Resolved | `ARCH-REV-016`; `SR-023`; DS-017D; `agent-segment-lifecycle-contract.md` §§2, 5, 8–11 | The supported router -> thread -> handler -> listener -> converter/debug spine is explicit. The thread invokes the sole policy before the handler, rejection returns before pending-MCP/local/original/AgentRun/raw effects, and only an opaque privately constructed admitted/derived value crosses downstream. Valid admitted MCP and debug controls are preserved. |
+| `CR-F-042` / `API-F-024` | Structurally resolved except for DR-011 | Structurally resolved except for new `DR-012`; implementation/evidence pending | `CRR-076`; `SR-019`–`SR-023`; `ARCH-REV-017` | The common lifecycle, complete fan-out, sole downstream diagnostic, exact current four-family admission, and first-boundary dominance are correct; the unsupported unknown-item scope must be removed before implementation. |
+| `CR-F-043` | Open — API/E2E-owned cleanup/evidence issue | Unchanged; correctly deferred | `CRR-076`; `SR-023` | No solution or architecture machinery is introduced for the residue. |
+
+- New or remaining finding IDs: `DR-012` (`Design Impact`).
+- Material classification changes: `MP-011` and `MP-012` remain `Reachable` and are now satisfied by the target. New `MP-013` is `Not Reachable`: neither current source nor an approved provider compatibility/evolution contract produces an otherwise-unlisted `item/*` family, so it cannot justify a runtime exemption registry, unknown default, or synthetic proof matrix. Decision remains `Fail`.
+- Recommended recipient: `solution_designer`.
+- Remaining risks or uncertainty: Contract the first-boundary policy to the exact four established segment-producing names while retaining all of SR-023's dominance, opaque-message, valid-MCP, and admitted-debug behavior. After a complete Pass, implementation must perform the full source cut and full cumulative source review before API/E2E owns CR-F-043 cleanup and reruns the no-skip provider matrix.
+
+### ARCH-REV-018 — SR-024 removes unreachable provider-policy machinery and passes complete review
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/design-review-report.md`
+- Review round and trigger: Round 18; `solution_designer` returned SR-024 after ARCH-REV-017 found that the otherwise-correct first-boundary design still made a Not-Reachable future/unknown Codex event class drive runtime admission, a nine-name exemption registry, and synthetic proof. The requested review was complete and cumulative, not delta-only.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/solution-revision-record.md`; prior `DR-012` and `MP-013`, preserving originating `CR-F-042` / `API-F-024` and API/E2E-owned `CR-F-043` lineage.
+- Relevant solution revision IDs: `SR-024`, preserving cumulative `SR-001`–`SR-023` authority.
+- Prior authoritative decision: `Fail` (`ARCH-REV-017`).
+- Current authoritative decision: `Pass`.
+- What changed in the review result or what baseline was established: The complete review reconfirms the rooted TeamRun, canonical logical/concrete identity, shared recipient and operation-owned task lifecycle, intrinsic collaboration, correlated Team status/event/wire, one frontend execution owner, released-data migration/token transaction, forward-only V5 application, physical storage, one AgentRun segment lifecycle, complete canonical consumer cut, exact provider admission, and no-skip validation boundaries. SR-024 makes the same exact four current segment-producing names the sole production-applicability and active-turn-inheritance set. `CodexThread.handleAppServerNotification()` invokes the resolver only for those names; every other current event keeps its operation-owned route. The nine-name exemption authority, open unknown-event branch, future-event rationale, and synthetic unknown cases are removed. SR-023's first-boundary dominance, five-field equality, stable rejection vocabulary, sanitized no-effect rejection, opaque admitted/derived message, valid MCP ordering, and admitted-only raw debug remain intact. The retained unlisted-omission value is only a pure-function misuse guard and has no production caller, provider test scenario, lifecycle state, or downstream projection.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `DR-001`–`DR-011` | Resolved | Remain Resolved | `ARCH-REV-004`–`ARCH-REV-017`; cumulative `SR-024` | All previously accepted rooted identity, recipient, provider-result, application, Team status/event/frontend, migration, segment-owner, complete consumer-cut, error-evidence, exact four-family policy, and first-boundary dominance decisions remain current and coherent. |
+| `DR-012` / `MP-013` | Open — Medium Design Impact / Not Reachable | Resolved | `ARCH-REV-017`; `SR-024`; current R-053 / AC-049; DS-017D; `agent-segment-lifecycle-contract.md` §§5, 8–11 | The exact four-name set now solely controls production applicability and inheritance. Every other current event stays operation-owned; no runtime exemption registry, open unknown branch, future rationale, or synthetic provider case remains. MP-013 is still recorded Not Reachable and drives removal only. |
+| `CR-F-042` / `API-F-024` | Structurally resolved except for DR-012 | Resolved at design level; corrected implementation and fresh evidence pending | `CRR-076`; `SR-019`–`SR-024`; `ARCH-REV-018` | One run-owned lifecycle, complete fan-out, sole downstream diagnostic, exact provider admission, and real first-boundary ordering now form one coherent current-path target. |
+| `CR-F-043` | Open — API/E2E-owned cleanup/evidence issue | Unchanged; correctly deferred | `CRR-076`; `SR-024` | No solution or architecture machinery is introduced for the residue. |
+
+- New or remaining finding IDs: `None` at architecture/design level.
+- Material classification changes: `DR-012` is resolved. `MP-013` remains `Not Reachable` and now correctly drives no current runtime/test/downstream machinery. The authoritative decision changes from `Fail` to `Pass`; no Requirement Gap or Unclear item remains.
+- Recommended recipient: `implementation_engineer`.
+- Remaining risks or uncertainty: Implementation must preserve exact-four dispatch, the opaque thread boundary, valid MCP sequencing, admitted-only raw debug, and current non-governed routes while completing the broad cumulative clean cut. Focused and full cumulative source review are mandatory. API/E2E must later own CR-F-043 cleanup before the no-skip three-runtime matrix.

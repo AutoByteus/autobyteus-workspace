@@ -47,7 +47,7 @@ afterEach(async () => {
 });
 
 describe("external channel team open delivery e2e", () => {
-  it("delivers deduped direct and no-new-inbound coordinator outputs from one team run without leaking worker output", async () => {
+  it("delivers exact direct and no-new-inbound coordinator deltas from one team run without leaking worker output", async () => {
     const bindingFilePath = tempJsonPath("channel-bindings");
     const receiptFilePath = tempJsonPath("channel-receipts");
     const outputDeliveryFilePath = tempJsonPath("channel-output-deliveries");
@@ -267,16 +267,16 @@ class DeterministicTeamRunBackend implements TeamRunBackend {
   async postMessage(_message: AgentInputUserMessage, target: import("../../../src/agent-collaboration/domain/agent-team-address.js").AgentTeamAddress | null): Promise<AgentOperationResult> {
     expect(target).toBe("/coordinator");
     setTimeout(() => {
-      this.emitOverlappingStreamTurn("coordinator", "run-coordinator", "turn-direct", [
-        "Sent the",
-        " the student",
-        " student a",
-        " a hard",
-        " hard cyclic",
-        " cyclic inequality",
-        " inequality problem",
-        " problem to",
-        " to solve",
+      this.emitFragmentTurn("coordinator", "run-coordinator", "turn-direct", [
+        "Sent",
+        " the",
+        " student",
+        " a",
+        " hard",
+        " cyclic",
+        " inequality",
+        " problem",
+        " to",
         " solve.",
       ]);
     }, 5).unref?.();
@@ -292,7 +292,7 @@ class DeterministicTeamRunBackend implements TeamRunBackend {
         "coordinator",
         "run-coordinator",
         "turn-follow-up-1",
-        ["noisy partial", " partial duplicate"],
+        ["noisy partial", " duplicate"],
       );
       this.emitTextTurn("coordinator", "run-coordinator", "turn-follow-up-2", secondFollowUp);
     }, 5).unref?.();
@@ -312,19 +312,6 @@ class DeterministicTeamRunBackend implements TeamRunBackend {
 
   private emitTextTurn(memberName: string, memberRunId: string, turnId: string, text: string): void {
     this.emitFragmentTurn(memberName, memberRunId, turnId, [text]);
-  }
-
-  private emitOverlappingStreamTurn(memberName: string, memberRunId: string, turnId: string, fragments: string[]): void {
-    const events: TeamAgentEvent[] = [
-      { eventType: "TURN_STARTED", details: { turnId }, statusHint: "ACTIVE" },
-      ...fragments.map((fragment, index): TeamAgentEvent => ({
-        eventType: "SEGMENT_CONTENT",
-        details: { segmentId: `segment-${index}`, turnId, segmentType: "text", delta: fragment },
-        statusHint: "ACTIVE",
-      })),
-      { eventType: "TURN_COMPLETED", details: { turnId, reason: null }, statusHint: "IDLE" },
-    ];
-    this.emitEvents(memberName, memberRunId, events);
   }
 
   private emitFragmentTurn(

@@ -43,7 +43,7 @@ Each section has one owner:
 | --- | --- | --- |
 | `Agent Identity` | Selected `AgentDefinition`: required name, optional description, optional `agent.md` body | Always |
 | `Team Instruction` | Exact non-blank selected `team.md` body | Team runs only, when non-blank |
-| `Team Runtime` | Validated `MemberTeamContext`, fixed communication/delegation renderer, and current rosters | Team runs only |
+| `Team Runtime` | Validated `MemberTeamContext` and fixed logical-address, handoff, and task-eligibility renderer | Team runs only |
 | `Working Environment` | Exact absolute effective workspace selected for the run | Always |
 | `Bash Operating Practice` | Platform-owned fixed Carpenter text | Always |
 | `File And Directory Practice` | Platform-owned fixed Carpenter text | Always |
@@ -150,34 +150,31 @@ platform foundation with a second generic advice block.
 
 A team run inserts the exact non-blank `team.md` body under `Team Instruction`
 and then renders `Team Runtime` from the validated current member context.
-`Team Runtime` contains only:
+`Team Runtime` contains the member's canonical rooted address, the `/...` and
+`./...` grammar, Team-coordinator ingress semantics, `get_handoff_rules` usage,
+delivery confirmation rule, and the direct-child task-delegation eligibility
+rule. It contains no flat recipient or delegation-target roster.
 
-- the current team member alias;
-- the fixed `send_message_to` selector and delivery rules plus the allowed
-  logical recipient roster; and
-- the fixed `delegate_task` assignment protocol plus the allowed member/team
-  target roster.
-
-For example, a member named `release_reviewer` can receive this shape:
+For example, a Team-bound Agent can receive this shape:
 
 ```markdown
 ## Team Runtime
 
-Current team member: release_reviewer
+You are working as a member of an AgentTeam. Agents and AgentTeams use filesystem-like logical addresses to communicate.
 
-If you use `send_message_to`, choose exactly one target selector.
-Set `recipient_name` to one allowed roster name for a logical teammate.
-Set `target_agent_run_id` to an exact currently active AgentRun id supplied by runtime context when that exact live run is required.
+Your address in the AgentTeam is:
 
-Team membership roster
-- release_manager
+/release_team/release_reviewer
 
-Delegation target roster
-- member: release_manager
+Addresses beginning with `/` start from the root AgentTeam. Addresses beginning with `./` start from your current AgentTeam.
+
+When you finish your work or are blocked, call `get_handoff_rules` and use each applicable `recipient_address` with `send_message_to`.
+
+`delegate_task.recipient_address` uses the same grammar, but its target must be a direct Agent or AgentTeam child of your immediate AgentTeam.
 ```
 
 The runtime renderer owns the complete exact wording. Agent/team authors should
-not copy these dynamic rosters or schemas into `agent.md` or `team.md`.
+not copy dynamic member addresses or tool schemas into `agent.md` or `team.md`.
 Standalone runs render neither Team Instruction nor Team Runtime.
 
 ## Ordinary Configured Skills
@@ -221,9 +218,9 @@ rules, and result shape.
 
 - A standalone run receives its explicitly configured effective tool set.
 - Every valid team member context automatically unions exactly
-  `send_message_to` and `delegate_task` into runtime exposure, even when the
-  selected agent definition omitted both names. Duplicate configured names are
-  normalized and deduplicated.
+  `get_handoff_rules`, `send_message_to`, and `delegate_task` into runtime
+  exposure, even when the selected agent definition omitted those names.
+  Duplicate configured names are normalized and deduplicated.
 - Other task lifecycle tools such as `submit_task_result` and
   `review_task_result`, and browser/media/publishing/configured MCP tools, remain
   explicitly configured and availability-gated.
@@ -231,16 +228,18 @@ rules, and result shape.
 Concrete team tool calls still follow their out-of-band schemas:
 
 ```text
-send_message_to({ recipient_name: "release_manager", content: "Checks passed." })
+get_handoff_rules({})
+
+send_message_to({ recipient_address: "./release_manager", content: "Checks passed." })
 
 delegate_task({
-  target: { kind: "member", name: "release_manager" },
+  recipient_address: "./release_manager",
   description: "Verify the release notes against the tested change and report mismatches.",
   reference_files: ["/work/releases/release-notes.md"]
 })
 ```
 
-`send_message_to` accepts exactly one of `recipient_name` or an exact currently
+`send_message_to` accepts exactly one of `recipient_address` or an exact currently
 active `target_agent_run_id`. Delegation references are absolute local paths.
 The runtime exposes native AutoByteus schemas locally and routes Codex/Claude
 through the session-scoped `autobyteus_agent_tools` MCP descriptor. Provider

@@ -1,0 +1,12 @@
+API-REV-037 listener preflight
+2026-08-13T08:13:49Z
+protected_ports_metadata_only:
+port=60004
+port=31004
+owned_ports_must_be_free:
+port=60237
+FREE=60237
+port=31237
+FREE=31237
+operational_database_action=NONE
+operational_database_inspection=NONE

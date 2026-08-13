@@ -1,0 +1,66 @@
+CRR-033 API-REV-015 proportional re-review audit
+2026-08-09T15:49:11Z
+## current inventory
+current_delta_total=53
+current_added=4
+current_removed=2
+current_updated=47
+component_live-e2e_support=2
+component_server=49
+component_web=2
+restored_out_of_delta=9
+inventory_rows_total=62
+## current status/inventory agreement
+status_count=53
+inventory_current_count=53
+PASS exact 53-path current delta
+## restored paths
+restored_current_diff_count=0
+restored_zero_diff_rows=9
+PASS nine restored paths are outside delta
+## execution
+ Test Files  46 passed (46)
+      Tests  298 passed (298)
+ Test Files  2 passed (2)
+      Tests  34 passed (34)
+{
+  "result": "PASS",
+  "matchingExplicitDatabaseAccepted": true,
+  "mismatchedExplicitDatabaseRejectedBeforeScenario": true,
+  "mismatchCode": "LIVE_E2E_DATABASE_TARGET_MISMATCH",
+  "operationalDatabaseReferenced": false,
+  "acceptedSummary": "Test Files  1 passed (1)",
+  "rejectedStatus": 1
+}
+## harness ownership/shape
+10	2	test-support/live-e2e/live-e2e-harness.ts
+1	0	test-support/live-e2e/run-live-e2e.mjs
+test-support/live-e2e/live-e2e-harness.ts:353:  const value = process.env.AUTOBYTEUS_TEST_DATABASE_URL?.trim();
+test-support/live-e2e/live-e2e-harness.ts:990:        throw new Error('LIVE_E2E_DATABASE_TARGET_MISMATCH');
+test-support/live-e2e/run-live-e2e.mjs:45:      AUTOBYTEUS_TEST_DATABASE_URL: server.database.databaseUrl,
+PASS explicit target propagation and fail-closed mismatch
+## patch/inventory
+patch_paths=53
+## stale/disabled added-line scan
+added_skip_todo_only_lines=0
+PASS no disabled current-delta scenarios added
+## evidence integrity
+./api-rev-015-handoff-check.log: OK
+./canonical-artifact-manifest.sha256: OK
+./changed-server-test-files.txt: OK
+./changed-server-tests-final.log: OK
+./cumulative-durable-coverage-inventory-summary.log: OK
+./cumulative-durable-coverage-inventory.tsv: OK
+./cumulative-durable-diff.patch: OK
+./durable-delta-status-initial.log: OK
+./final-audit.log: OK
+./handoff-reference-files.txt: OK
+./harness-build.log: OK
+./live-harness-isolation-final.log: OK
+./live-harness-static-final.log: OK
+./production-typecheck-final.log: OK
+./restored-stale-paths-before.log: OK
+./restored-stale-paths-final.log: OK
+./web-affected-final.log: OK
+## diff hygiene
+PASS

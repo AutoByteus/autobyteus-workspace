@@ -1,0 +1,1723 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1
+AppConfig instance created.
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/.env
+[dotenv@17.3.1] injecting env (4) from tests/.tmp/api-rev-037-live-20260813-1/.env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:60237
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:60237
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "api-rev-037-live-20260813-1.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/db/api-rev-037-live-20260813-1.db"
+
+20 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:45687) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 20 predefined settings
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+Populating agent definition cache for the first time...
+Agent definition cache populated with 2 items.
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+AgentRunManager initialized.
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+[2026-08-13T08:17:45.015Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+{"level":30,"time":1786609065087,"pid":45687,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:60237"}
+[2026-08-13T08:17:45.088Z] [INFO] [server.runtime] Server listening on 127.0.0.1:60237
+[2026-08-13T08:17:45.089Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:60237
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+CachedVideoModelProvider initialized.
+VideoModelService initialized.
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Background task 'Memory Sync Worker' completed successfully.
+Pre-loaded 2 agent definitions into cache.
+[2026-08-13T08:17:45.109Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Loaded tool group: Agent Communication Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+[2026-08-13T08:17:45.123Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Pre-loaded 0 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Populating LLM models cache for the first time...
+Fetching list of available LLM models from LLMFactory...
+Discovering Ollama models from host: http://localhost:11434
+Discovering LM Studio models from host: http://localhost:1234
+Finished LM Studio discovery. Total models registered: 14
+Successfully fetched 45 models from LLMFactory.
+LLM models cache populated with 45 items.
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+Pre-loaded 45 LLM models into cache.
+Populating Image models cache for the first time...
+Fetching list of available Image models from ImageClientFactory...
+Successfully fetched 7 image models from ImageClientFactory.
+Image models by provider: OPENAI=2, GEMINI=5
+Image models by runtime: api=7
+Image models cache populated with 7 items.
+Pre-loaded 7 image models into cache.
+Populating Audio models cache for the first time...
+Fetching list of available Audio models from AudioClientFactory...
+Successfully fetched 4 audio models from AudioClientFactory.
+Audio models by provider: OPENAI=1, GEMINI=3
+Audio models by runtime: api=4
+Audio models cache populated with 4 items.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Added new custom server setting: AUTOBYTEUS_AGENT_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+Populating agent definition cache for the first time...
+Agent definition cache populated with 2 items.
+[2026-08-13T08:18:41.670Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-13T08:18:41.673Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+Populating agent definition cache for the first time...
+Agent definition cache populated with 2 items.
+[2026-08-13T08:18:41.682Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-13T08:18:41.683Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+Populating Video models cache for the first time...
+Fetching list of available Video models from VideoClientFactory...
+Successfully fetched 1 video models from VideoClientFactory.
+Video models by provider: GEMINI=1
+Video models by runtime: api=1
+Video models cache populated with 1 items.
+Created WorkspaceFileExplorer for temp_ws_default (graphql-folder-children).
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 6915ee5f-5423-4ef5-9f74-255d01f9b333 for workspace temp_ws_default
+Created file explorer session 6915ee5f-5423-4ef5-9f74-255d01f9b333 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 6915ee5f-5423-4ef5-9f74-255d01f9b333 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Resolved configured temp workspace root to TempWorkspace.
+Successfully created mixed team run 'nested_classroom_test_team_62d7ad970db9467887a652b3b0d7f8ba'.
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/memory/agent_teams/nested_classroom_test_team_62d7ad970db9467887a652b3b0d7f8ba/test_teacher_c9f79ed9121d498d8f7d701aac3143ba/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/memory/agent_teams/nested_classroom_test_team_62d7ad970db9467887a652b3b0d7f8ba/student_study_group_08ffd3bc6706470782708083ff687fca/student_one_730147cc58224be8a3d10ec9497582a1/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/memory/agent_teams/nested_classroom_test_team_62d7ad970db9467887a652b3b0d7f8ba/student_study_group_08ffd3bc6706470782708083ff687fca/student_two_d7fe0d1591944e14b77c9ef7f111e788/raw_traces_active.jsonl
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace
+FileExplorerSession closed: 6915ee5f-5423-4ef5-9f74-255d01f9b333
+Closed file explorer session 6915ee5f-5423-4ef5-9f74-255d01f9b333. Active sessions: 0
+File explorer WebSocket disconnected: 6915ee5f-5423-4ef5-9f74-255d01f9b333
+Agent team websocket attached for team run nested_classroom_test_team_62d7ad970db9467887a652b3b0d7f8ba
+Created agent session 6a732b10-c9ec-4801-b081-52d5768a3c19 for run nested_classroom_test_team_62d7ad970db9467887a652b3b0d7f8ba
+Agent Team WebSocket connected: session=6a732b10-c9ec-4801-b081-52d5768a3c19, run=nested_classroom_test_team_62d7ad970db9467887a652b3b0d7f8ba
+Workspace with ID agent_ws_03ad8c6e4a1ed70f7bc7bee7b1015ea944fa07029cfbd61c3ae975a078a68e2c not found. Falling back to temp workspace.
+Using temp workspace (ID: temp_ws_default) for agent.
+MediaStorageService initialized. Media root: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/media
+AgentRuntimeState initialized for agent_id 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba': LLM instance 'OpenAILLM' and 5 tools prepared and stored in state.
+AgentContext composed for agent_id 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba' with config: 'Test Teacher'.
+AgentWorker initialized for agent_id 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba'.
+Registered AgentContext for agent_id 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba'. Context registered.
+Agent facade initialized for agent_id 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba'.
+Agent 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba' created and stored successfully.
+Agent 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba' requesting runtime to start.
+AgentRuntime for 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba': Starting worker.
+AgentWorker 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba': Starting...
+AgentWorker 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba' asyncRun(): Starting.
+Agent 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba': Runtime init completed (event store initialized).
+Agent 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba': Runtime init completed (status deriver initialized).
+Agent 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba': Runtime init completed (AgentEventInbox initialized).
+Agent 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba' to become idle (timeout: 30s)...
+AgentEventStream (ID: 2486f48e-6b0e-48c9-81f2-febcc5e3ccd6) initialized for agent_id 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba'. Subscribed to notifier.
+Agent 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba': Bootstrapper starting direct lifecycle execution.
+Agent 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba': Executing McpServerPrewarmingStep.
+Agent 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba': Executing SystemPromptProcessingStep.
+Agent 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba': No configured skills. Skipping skill catalog.
+Agent 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba': Final processed system prompt configured on LLM instance. Final length: 7425.
+Agent 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba': Final processed system prompt:
+---
+## Agent Identity
+
+- Name: Test Teacher
+- Description: Top-level teacher coordinator for nested task-team delegation tests.
+
+### Responsibilities and Boundaries
+
+You are `Teacher`, the coordinator of a tiny classroom test team.
+
+Your main purpose is to test nested team delegation. The nested team target is exactly named `StudentStudyGroup`.
+
+#### Mandatory Nested-Team Delegation Behavior
+
+When the user asks you to test nested delegation, delegate one bounded task to the nested team by calling:
+
+`delegate_task({"recipient_address":"./StudentStudyGroup","task":"..."})`
+
+The task description should be complete and should tell the students what exact answer or token to return.
+
+After the task-team submits a result:
+
+- If the result satisfies the user's requested answer/token, call `review_task_result` with `decision: "accept"`.
+- If the result is missing or incorrect, call `review_task_result` with `decision: "request_revision"` and a short correction message.
+- After acceptance, reply briefly to the user with what happened.
+
+#### Tool Rules
+
+- Use `delegate_task` only with the exact `recipient_address` string.
+- For this fixture, use `recipient_address: "./StudentStudyGroup"`.
+- Use `review_task_result` for accepting or requesting revision of task results.
+- Do not use `send_message_to` for task result submission, revision requests, acceptance, or finalization.
+- Use `send_message_to` only for ordinary non-lifecycle classroom communication if needed.
+
+## Team Instruction
+
+This is a deliberately tiny nested-team package for validating task-team delegation.
+
+### Members
+
+- `Teacher` is the top-level coordinator.
+- `StudentStudyGroup` is a nested agent team with two students.
+  - Its coordinator is `student_one`.
+  - `student_two` is available for ordinary teammate communication inside the nested team.
+
+### Intended Test Flow
+
+Use a prompt like:
+
+> Please test nested team delegation. Delegate one task to StudentStudyGroup and ask the students to return exactly NESTED_CLASSROOM_OK. Accept the result if it matches.
+
+Expected behavior:
+
+1. `Teacher` calls `delegate_task` with an explicit team target:
+   `delegate_task({"recipient_address":"./StudentStudyGroup","task":"..."})`.
+2. The runtime creates a task-team execution for `StudentStudyGroup`.
+3. `student_one`, as the nested team coordinator, submits the result with `submit_task_result`.
+4. `Teacher` reviews the result with `review_task_result` and accepts it when the expected token is present.
+
+### Tool Contract Notes
+
+- `Teacher` has `delegate_task`, `review_task_result`, and `send_message_to`.
+- `student_one` has `submit_task_result` and `send_message_to`.
+- `student_two` has `send_message_to` only.
+- Do not use `send_message_to` for task result submission, revision requests, acceptance, or finalization. Task lifecycle must use `delegate_task`, `submit_task_result`, and `review_task_result`.
+
+## Team Runtime
+
+You are working as a member of an AgentTeam. Agents and AgentTeams use filesystem-like logical addresses to communicate. These addresses identify Team members; they are not real filesystem paths.
+
+Your address in the AgentTeam is:
+
+/Teacher
+
+Addresses beginning with `/` start from the root AgentTeam. Addresses beginning with `./` start from your current AgentTeam, similar to relative filesystem paths.
+
+For example:
+
+- `./architecture_reviewer` addresses a member named `architecture_reviewer` in your current AgentTeam.
+- `./implementation_team` addresses a child AgentTeam named `implementation_team`.
+- `/requirements_engineering/requirements_lead` is an absolute address from the root AgentTeam.
+
+Sending a message to an AgentTeam address delivers it to that Team's configured coordinator. Bare member names, `../`, and backslashes are not valid addresses.
+
+When you finish your work or are blocked, call `get_handoff_rules` to check your configured handoff rules. Each returned rule tells you when a handoff applies and provides the `recipient_address` to notify.
+
+If a rule applies, use `send_message_to` to notify that Agent or AgentTeam. If several applicable rules have the same recipient, send one message that combines the relevant reasons. Follow distinct recipients in the order they first appear. If no rule applies, finish normally.
+
+Do not say that you completed a handoff unless `send_message_to` confirms that the message was delivered.
+
+`delegate_task.recipient_address` uses the same logical-address grammar. A task target must be a direct Agent or AgentTeam child of your immediate AgentTeam; deeper and cross-branch addresses remain valid for message delivery but are not task-eligible.
+
+## Working Environment
+
+- Agent workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace`
+- Use skills from their skill package directories to work on tasks in the agent workspace.
+- A skill package directory contains the skill's instructions and bundled assets. It is not the agent workspace, and reading the skill does not change the agent workspace.
+- Resolve skill-package references from the skill package directory. Resolve task and project locations from the agent workspace unless an explicit target says otherwise.
+- Do not modify a skill package unless the task explicitly targets that skill package.
+- With no working-directory override, `pwd` returns the agent workspace. An explicit working directory changes only that command's location; it does not redefine the workspace.
+
+## Bash Operating Practice
+
+- Use Bash as the primary interface for performing work in the agent workspace. Use it for workspace navigation, search, file reading, writing and editing, repository operations, processes, network operations, and project commands.
+- Prefer deterministic, non-interactive, small, composable commands.
+- Prefer project-native commands and format-aware tools such as `git`, `npm`, `pnpm`, `pytest`, `jq`, and project scripts when applicable.
+- Use another provided tool when Bash cannot achieve the purpose.
+
+## File And Directory Practice
+
+- Locate files and directories by intent instead of broadly listing them. For content, use targeted searches such as `rg -n "term" path`. For file names, use `rg --files path | rg "pattern"`. Use constrained `find` commands only when filesystem traversal or metadata is the better fit.
+- Read only the relevant content. Use `cat` for a complete small file, `wc -l` before a potentially broad read, `sed -n '40,120p' file` for an exact window, and `nl -ba file | sed -n '40,120p'` when line numbers matter. Prefer format-aware readers such as `jq` for structured data.
+- Choose the narrowest deterministic edit that matches the file format and change shape. Prefer exact anchors for text, parser-aware tools for structured files, and quoted heredocs for new content. Replace important files through a temporary file when a direct in-place edit is not safely verifiable.
+- Use explicit quoted paths and preserve unrelated content and existing changes. Before copying, moving, or deleting, verify the source and destination. Delete only when the task requires it and the target has been verified.
+- Keep inspection, modification, and verification as separate commands when a failure would need diagnosis. Verify changes with a fitting check such as `git diff -- path`, targeted `rg`, a format parser, or a project-native test or validator.
+---
+Agent 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba' initialized successfully. Entering main event scheduler loop.
+Agent 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba' has become idle.
+AgentEventStream (ID: 2486f48e-6b0e-48c9-81f2-febcc5e3ccd6) for 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: 2ca52e3f-e591-456a-953e-9d1fbeb0a36c) initialized for agent_id 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba'. Subscribed to notifier.
+Successfully created autobyteus agent run 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba'.
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba': UserInputContextBuildingProcessor completed. Final content length: 939
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Agent run 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba': UserInputContextBuildingProcessor completed. Final content length: 83
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Workspace with ID agent_ws_03ad8c6e4a1ed70f7bc7bee7b1015ea944fa07029cfbd61c3ae975a078a68e2c not found. Falling back to temp workspace.
+Using temp workspace (ID: temp_ws_default) for agent.
+MediaStorageService initialized. Media root: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/media
+AgentRuntimeState initialized for agent_id 'student_one_730147cc58224be8a3d10ec9497582a1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'student_one_730147cc58224be8a3d10ec9497582a1': LLM instance 'OpenAILLM' and 5 tools prepared and stored in state.
+AgentContext composed for agent_id 'student_one_730147cc58224be8a3d10ec9497582a1'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'student_one_730147cc58224be8a3d10ec9497582a1' with config: 'Student One'.
+AgentWorker initialized for agent_id 'student_one_730147cc58224be8a3d10ec9497582a1'.
+Registered AgentContext for agent_id 'student_one_730147cc58224be8a3d10ec9497582a1'. Total registered contexts: 2
+AgentRuntime initialized for agent_id 'student_one_730147cc58224be8a3d10ec9497582a1'. Context registered.
+Agent facade initialized for agent_id 'student_one_730147cc58224be8a3d10ec9497582a1'.
+Agent 'student_one_730147cc58224be8a3d10ec9497582a1' created and stored successfully.
+Agent 'student_one_730147cc58224be8a3d10ec9497582a1' requesting runtime to start.
+AgentRuntime for 'student_one_730147cc58224be8a3d10ec9497582a1': Starting worker.
+AgentWorker 'student_one_730147cc58224be8a3d10ec9497582a1': Starting...
+AgentWorker 'student_one_730147cc58224be8a3d10ec9497582a1' asyncRun(): Starting.
+Agent 'student_one_730147cc58224be8a3d10ec9497582a1': Runtime init completed (event store initialized).
+Agent 'student_one_730147cc58224be8a3d10ec9497582a1': Runtime init completed (status deriver initialized).
+Agent 'student_one_730147cc58224be8a3d10ec9497582a1': Runtime init completed (AgentEventInbox initialized).
+Agent 'student_one_730147cc58224be8a3d10ec9497582a1': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'student_one_730147cc58224be8a3d10ec9497582a1' to become idle (timeout: 30s)...
+AgentEventStream (ID: ac728f77-9b15-41b9-bc3a-b8f53e3dc4fd) initialized for agent_id 'student_one_730147cc58224be8a3d10ec9497582a1'. Subscribed to notifier.
+Agent 'student_one_730147cc58224be8a3d10ec9497582a1': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: 0bd919bb-a3a0-471d-8202-3b45795c4534, AgentID: student_one_730147cc58224be8a3d10ec9497582a1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'student_one_730147cc58224be8a3d10ec9497582a1': Bootstrapper starting direct lifecycle execution.
+Agent 'student_one_730147cc58224be8a3d10ec9497582a1': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'student_one_730147cc58224be8a3d10ec9497582a1': Executing McpServerPrewarmingStep.
+Agent 'student_one_730147cc58224be8a3d10ec9497582a1': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'student_one_730147cc58224be8a3d10ec9497582a1': Executing SystemPromptProcessingStep.
+Agent 'student_one_730147cc58224be8a3d10ec9497582a1': No configured skills. Skipping skill catalog.
+Agent 'student_one_730147cc58224be8a3d10ec9497582a1': Final processed system prompt configured on LLM instance. Final length: 6756.
+Agent 'student_one_730147cc58224be8a3d10ec9497582a1': Final processed system prompt:
+---
+## Agent Identity
+
+- Name: Student One
+- Description: Coordinator student for the nested Student Study Group test team.
+
+### Responsibilities and Boundaries
+
+You are `student_one`, coordinator of the nested `StudentStudyGroup` team.
+
+Your job is to complete delegated classroom test tasks from `Teacher` and submit the final answer through the task lifecycle.
+
+#### Delegated Task Behavior
+
+When you receive a delegated task packet:
+
+1. Read the requested answer format carefully.
+2. If the task asks for an exact token or exact phrase, prepare exactly that token or phrase.
+3. Call `submit_task_result` with a non-empty `message` containing the final result.
+
+For the standard smoke test, if asked to return `NESTED_CLASSROOM_OK`, submit exactly:
+
+`NESTED_CLASSROOM_OK`
+
+#### Collaboration
+
+For this test fixture, when a delegated task asks you to consult `student_two`, the peer exchange is mandatory and must happen before submission.
+
+1. Call `send_message_to` exactly once with `recipient_address: "./student_two"` and the exact requested token as `content`.
+2. Wait until `student_two` replies to your current task-scoped execution.
+3. Only after receiving that reply, call `submit_task_result` exactly once with the exact requested result token.
+
+Do not merely describe the peer exchange, do not skip the tool call, and do not submit before the reply. You remain responsible for the final result.
+
+#### Tool Rules
+
+- Use `submit_task_result` for final task result submission.
+- Do not use `send_message_to` as the task result protocol.
+- Do not accept or reject results; that is `Teacher`'s job through `review_task_result`.
+
+## Team Instruction
+
+This nested team is intentionally simple.
+
+`student_one` coordinates the study group. `student_two` is a supporting student.
+
+When this team receives a delegated task from `Teacher`, `student_one` should complete the task and submit the final result with `submit_task_result`.
+
+If the prompt asks for an exact token, the submitted result message should contain exactly that token unless the task explicitly asks for extra explanation.
+
+Use `send_message_to` only for ordinary teammate discussion. Do not use it for final task result submission.
+
+## Team Runtime
+
+You are working as a member of an AgentTeam. Agents and AgentTeams use filesystem-like logical addresses to communicate. These addresses identify Team members; they are not real filesystem paths.
+
+Your address in the AgentTeam is:
+
+/StudentStudyGroup/student_one
+
+Addresses beginning with `/` start from the root AgentTeam. Addresses beginning with `./` start from your current AgentTeam, similar to relative filesystem paths.
+
+For example:
+
+- `./architecture_reviewer` addresses a member named `architecture_reviewer` in your current AgentTeam.
+- `./implementation_team` addresses a child AgentTeam named `implementation_team`.
+- `/requirements_engineering/requirements_lead` is an absolute address from the root AgentTeam.
+
+Sending a message to an AgentTeam address delivers it to that Team's configured coordinator. Bare member names, `../`, and backslashes are not valid addresses.
+
+When you finish your work or are blocked, call `get_handoff_rules` to check your configured handoff rules. Each returned rule tells you when a handoff applies and provides the `recipient_address` to notify.
+
+If a rule applies, use `send_message_to` to notify that Agent or AgentTeam. If several applicable rules have the same recipient, send one message that combines the relevant reasons. Follow distinct recipients in the order they first appear. If no rule applies, finish normally.
+
+Do not say that you completed a handoff unless `send_message_to` confirms that the message was delivered.
+
+`delegate_task.recipient_address` uses the same logical-address grammar. A task target must be a direct Agent or AgentTeam child of your immediate AgentTeam; deeper and cross-branch addresses remain valid for message delivery but are not task-eligible.
+
+## Working Environment
+
+- Agent workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace`
+- Use skills from their skill package directories to work on tasks in the agent workspace.
+- A skill package directory contains the skill's instructions and bundled assets. It is not the agent workspace, and reading the skill does not change the agent workspace.
+- Resolve skill-package references from the skill package directory. Resolve task and project locations from the agent workspace unless an explicit target says otherwise.
+- Do not modify a skill package unless the task explicitly targets that skill package.
+- With no working-directory override, `pwd` returns the agent workspace. An explicit working directory changes only that command's location; it does not redefine the workspace.
+
+## Bash Operating Practice
+
+- Use Bash as the primary interface for performing work in the agent workspace. Use it for workspace navigation, search, file reading, writing and editing, repository operations, processes, network operations, and project commands.
+- Prefer deterministic, non-interactive, small, composable commands.
+- Prefer project-native commands and format-aware tools such as `git`, `npm`, `pnpm`, `pytest`, `jq`, and project scripts when applicable.
+- Use another provided tool when Bash cannot achieve the purpose.
+
+## File And Directory Practice
+
+- Locate files and directories by intent instead of broadly listing them. For content, use targeted searches such as `rg -n "term" path`. For file names, use `rg --files path | rg "pattern"`. Use constrained `find` commands only when filesystem traversal or metadata is the better fit.
+- Read only the relevant content. Use `cat` for a complete small file, `wc -l` before a potentially broad read, `sed -n '40,120p' file` for an exact window, and `nl -ba file | sed -n '40,120p'` when line numbers matter. Prefer format-aware readers such as `jq` for structured data.
+- Choose the narrowest deterministic edit that matches the file format and change shape. Prefer exact anchors for text, parser-aware tools for structured files, and quoted heredocs for new content. Replace important files through a temporary file when a direct in-place edit is not safely verifiable.
+- Use explicit quoted paths and preserve unrelated content and existing changes. Before copying, moving, or deleting, verify the source and destination. Delete only when the task requires it and the target has been verified.
+- Keep inspection, modification, and verification as separate commands when a failure would need diagnosis. Verify changes with a fitting check such as `git diff -- path`, targeted `rg`, a format parser, or a project-native test or validator.
+---
+Agent 'student_one_730147cc58224be8a3d10ec9497582a1': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: 0bd919bb-a3a0-471d-8202-3b45795c4534, AgentID: student_one_730147cc58224be8a3d10ec9497582a1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'student_one_730147cc58224be8a3d10ec9497582a1' initialized successfully. Entering main event scheduler loop.
+Agent 'student_one_730147cc58224be8a3d10ec9497582a1' has become idle.
+AgentEventStream (ID: ac728f77-9b15-41b9-bc3a-b8f53e3dc4fd) for 'student_one_730147cc58224be8a3d10ec9497582a1': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: 08179de2-6e13-43a6-bcf2-97dc0b7a9465) initialized for agent_id 'student_one_730147cc58224be8a3d10ec9497582a1'. Subscribed to notifier.
+Successfully created autobyteus agent run 'student_one_730147cc58224be8a3d10ec9497582a1'.
+AgentExternalEventNotifier (NotifierID: 0bd919bb-a3a0-471d-8202-3b45795c4534, AgentID: student_one_730147cc58224be8a3d10ec9497582a1) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0bd919bb-a3a0-471d-8202-3b45795c4534, AgentID: student_one_730147cc58224be8a3d10ec9497582a1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'student_one_730147cc58224be8a3d10ec9497582a1': UserInputContextBuildingProcessor completed. Final content length: 448
+AgentExternalEventNotifier (NotifierID: 0bd919bb-a3a0-471d-8202-3b45795c4534, AgentID: student_one_730147cc58224be8a3d10ec9497582a1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Agent run 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba': UserInputContextBuildingProcessor completed. Final content length: 81
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[team-communication] projection inserted teamRunId=nested_classroom_test_team_62d7ad970db9467887a652b3b0d7f8ba messageId=teammsg_TksbjqZ8rVtV-ZhiuiPIyQ8VBpeRxJiO referenceCount=1 projectionPath=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/memory/agent_teams/nested_classroom_test_team_62d7ad970db9467887a652b3b0d7f8ba/team_communication_messages.json
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 0bd919bb-a3a0-471d-8202-3b45795c4534, AgentID: student_one_730147cc58224be8a3d10ec9497582a1) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0bd919bb-a3a0-471d-8202-3b45795c4534, AgentID: student_one_730147cc58224be8a3d10ec9497582a1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0bd919bb-a3a0-471d-8202-3b45795c4534, AgentID: student_one_730147cc58224be8a3d10ec9497582a1) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0bd919bb-a3a0-471d-8202-3b45795c4534, AgentID: student_one_730147cc58224be8a3d10ec9497582a1) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0bd919bb-a3a0-471d-8202-3b45795c4534, AgentID: student_one_730147cc58224be8a3d10ec9497582a1) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0bd919bb-a3a0-471d-8202-3b45795c4534, AgentID: student_one_730147cc58224be8a3d10ec9497582a1) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0bd919bb-a3a0-471d-8202-3b45795c4534, AgentID: student_one_730147cc58224be8a3d10ec9497582a1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0bd919bb-a3a0-471d-8202-3b45795c4534, AgentID: student_one_730147cc58224be8a3d10ec9497582a1) emitted agent_tool_execution_failed. Kwarg keys for emit: agent_id,payload
+Agent run 'student_one_730147cc58224be8a3d10ec9497582a1': UserInputContextBuildingProcessor completed. Final content length: 342
+AgentExternalEventNotifier (NotifierID: 0bd919bb-a3a0-471d-8202-3b45795c4534, AgentID: student_one_730147cc58224be8a3d10ec9497582a1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0bd919bb-a3a0-471d-8202-3b45795c4534, AgentID: student_one_730147cc58224be8a3d10ec9497582a1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 0bd919bb-a3a0-471d-8202-3b45795c4534, AgentID: student_one_730147cc58224be8a3d10ec9497582a1) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0bd919bb-a3a0-471d-8202-3b45795c4534, AgentID: student_one_730147cc58224be8a3d10ec9497582a1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0bd919bb-a3a0-471d-8202-3b45795c4534, AgentID: student_one_730147cc58224be8a3d10ec9497582a1) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0bd919bb-a3a0-471d-8202-3b45795c4534, AgentID: student_one_730147cc58224be8a3d10ec9497582a1) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0bd919bb-a3a0-471d-8202-3b45795c4534, AgentID: student_one_730147cc58224be8a3d10ec9497582a1) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0bd919bb-a3a0-471d-8202-3b45795c4534, AgentID: student_one_730147cc58224be8a3d10ec9497582a1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0bd919bb-a3a0-471d-8202-3b45795c4534, AgentID: student_one_730147cc58224be8a3d10ec9497582a1) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0bd919bb-a3a0-471d-8202-3b45795c4534, AgentID: student_one_730147cc58224be8a3d10ec9497582a1) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Agent run 'student_one_730147cc58224be8a3d10ec9497582a1': UserInputContextBuildingProcessor completed. Final content length: 81
+AgentExternalEventNotifier (NotifierID: 0bd919bb-a3a0-471d-8202-3b45795c4534, AgentID: student_one_730147cc58224be8a3d10ec9497582a1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0bd919bb-a3a0-471d-8202-3b45795c4534, AgentID: student_one_730147cc58224be8a3d10ec9497582a1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[team-communication] projection inserted teamRunId=nested_classroom_test_team_62d7ad970db9467887a652b3b0d7f8ba messageId=teammsg_meEmpccG5AjetFm24rBFK4oHOjfgjbey referenceCount=0 projectionPath=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/memory/agent_teams/nested_classroom_test_team_62d7ad970db9467887a652b3b0d7f8ba/team_communication_messages.json
+AgentExternalEventNotifier (NotifierID: 0bd919bb-a3a0-471d-8202-3b45795c4534, AgentID: student_one_730147cc58224be8a3d10ec9497582a1) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0bd919bb-a3a0-471d-8202-3b45795c4534, AgentID: student_one_730147cc58224be8a3d10ec9497582a1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'student_one_730147cc58224be8a3d10ec9497582a1': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+AgentExternalEventNotifier (NotifierID: 0bd919bb-a3a0-471d-8202-3b45795c4534, AgentID: student_one_730147cc58224be8a3d10ec9497582a1) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0bd919bb-a3a0-471d-8202-3b45795c4534, AgentID: student_one_730147cc58224be8a3d10ec9497582a1) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0bd919bb-a3a0-471d-8202-3b45795c4534, AgentID: student_one_730147cc58224be8a3d10ec9497582a1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Agent run 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba': UserInputContextBuildingProcessor completed. Final content length: 74
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Agent run 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba': UserInputContextBuildingProcessor completed. Final content length: 83
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Agent run 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba': UserInputContextBuildingProcessor completed. Final content length: 79
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Workspace with ID agent_ws_03ad8c6e4a1ed70f7bc7bee7b1015ea944fa07029cfbd61c3ae975a078a68e2c not found. Falling back to temp workspace.
+Using temp workspace (ID: temp_ws_default) for agent.
+MediaStorageService initialized. Media root: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/media
+AgentRuntimeState initialized for agent_id 'student_one_708b1839745647d28ae0e2c65bc0b42e'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'student_one_708b1839745647d28ae0e2c65bc0b42e': LLM instance 'OpenAILLM' and 5 tools prepared and stored in state.
+AgentContext composed for agent_id 'student_one_708b1839745647d28ae0e2c65bc0b42e'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'student_one_708b1839745647d28ae0e2c65bc0b42e' with config: 'Student One'.
+AgentWorker initialized for agent_id 'student_one_708b1839745647d28ae0e2c65bc0b42e'.
+Registered AgentContext for agent_id 'student_one_708b1839745647d28ae0e2c65bc0b42e'. Total registered contexts: 3
+AgentRuntime initialized for agent_id 'student_one_708b1839745647d28ae0e2c65bc0b42e'. Context registered.
+Agent facade initialized for agent_id 'student_one_708b1839745647d28ae0e2c65bc0b42e'.
+Agent 'student_one_708b1839745647d28ae0e2c65bc0b42e' created and stored successfully.
+Agent 'student_one_708b1839745647d28ae0e2c65bc0b42e' requesting runtime to start.
+AgentRuntime for 'student_one_708b1839745647d28ae0e2c65bc0b42e': Starting worker.
+AgentWorker 'student_one_708b1839745647d28ae0e2c65bc0b42e': Starting...
+AgentWorker 'student_one_708b1839745647d28ae0e2c65bc0b42e' asyncRun(): Starting.
+Agent 'student_one_708b1839745647d28ae0e2c65bc0b42e': Runtime init completed (event store initialized).
+Agent 'student_one_708b1839745647d28ae0e2c65bc0b42e': Runtime init completed (status deriver initialized).
+Agent 'student_one_708b1839745647d28ae0e2c65bc0b42e': Runtime init completed (AgentEventInbox initialized).
+Agent 'student_one_708b1839745647d28ae0e2c65bc0b42e': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'student_one_708b1839745647d28ae0e2c65bc0b42e' to become idle (timeout: 30s)...
+AgentEventStream (ID: 83782786-fbaa-49ee-91c6-b6cd478ad348) initialized for agent_id 'student_one_708b1839745647d28ae0e2c65bc0b42e'. Subscribed to notifier.
+Agent 'student_one_708b1839745647d28ae0e2c65bc0b42e': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'student_one_708b1839745647d28ae0e2c65bc0b42e': Bootstrapper starting direct lifecycle execution.
+Agent 'student_one_708b1839745647d28ae0e2c65bc0b42e': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'student_one_708b1839745647d28ae0e2c65bc0b42e': Executing McpServerPrewarmingStep.
+Agent 'student_one_708b1839745647d28ae0e2c65bc0b42e': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'student_one_708b1839745647d28ae0e2c65bc0b42e': Executing SystemPromptProcessingStep.
+Agent 'student_one_708b1839745647d28ae0e2c65bc0b42e': No configured skills. Skipping skill catalog.
+Agent 'student_one_708b1839745647d28ae0e2c65bc0b42e': Final processed system prompt configured on LLM instance. Final length: 6756.
+Agent 'student_one_708b1839745647d28ae0e2c65bc0b42e': Final processed system prompt:
+---
+## Agent Identity
+
+- Name: Student One
+- Description: Coordinator student for the nested Student Study Group test team.
+
+### Responsibilities and Boundaries
+
+You are `student_one`, coordinator of the nested `StudentStudyGroup` team.
+
+Your job is to complete delegated classroom test tasks from `Teacher` and submit the final answer through the task lifecycle.
+
+#### Delegated Task Behavior
+
+When you receive a delegated task packet:
+
+1. Read the requested answer format carefully.
+2. If the task asks for an exact token or exact phrase, prepare exactly that token or phrase.
+3. Call `submit_task_result` with a non-empty `message` containing the final result.
+
+For the standard smoke test, if asked to return `NESTED_CLASSROOM_OK`, submit exactly:
+
+`NESTED_CLASSROOM_OK`
+
+#### Collaboration
+
+For this test fixture, when a delegated task asks you to consult `student_two`, the peer exchange is mandatory and must happen before submission.
+
+1. Call `send_message_to` exactly once with `recipient_address: "./student_two"` and the exact requested token as `content`.
+2. Wait until `student_two` replies to your current task-scoped execution.
+3. Only after receiving that reply, call `submit_task_result` exactly once with the exact requested result token.
+
+Do not merely describe the peer exchange, do not skip the tool call, and do not submit before the reply. You remain responsible for the final result.
+
+#### Tool Rules
+
+- Use `submit_task_result` for final task result submission.
+- Do not use `send_message_to` as the task result protocol.
+- Do not accept or reject results; that is `Teacher`'s job through `review_task_result`.
+
+## Team Instruction
+
+This nested team is intentionally simple.
+
+`student_one` coordinates the study group. `student_two` is a supporting student.
+
+When this team receives a delegated task from `Teacher`, `student_one` should complete the task and submit the final result with `submit_task_result`.
+
+If the prompt asks for an exact token, the submitted result message should contain exactly that token unless the task explicitly asks for extra explanation.
+
+Use `send_message_to` only for ordinary teammate discussion. Do not use it for final task result submission.
+
+## Team Runtime
+
+You are working as a member of an AgentTeam. Agents and AgentTeams use filesystem-like logical addresses to communicate. These addresses identify Team members; they are not real filesystem paths.
+
+Your address in the AgentTeam is:
+
+/StudentStudyGroup/student_one
+
+Addresses beginning with `/` start from the root AgentTeam. Addresses beginning with `./` start from your current AgentTeam, similar to relative filesystem paths.
+
+For example:
+
+- `./architecture_reviewer` addresses a member named `architecture_reviewer` in your current AgentTeam.
+- `./implementation_team` addresses a child AgentTeam named `implementation_team`.
+- `/requirements_engineering/requirements_lead` is an absolute address from the root AgentTeam.
+
+Sending a message to an AgentTeam address delivers it to that Team's configured coordinator. Bare member names, `../`, and backslashes are not valid addresses.
+
+When you finish your work or are blocked, call `get_handoff_rules` to check your configured handoff rules. Each returned rule tells you when a handoff applies and provides the `recipient_address` to notify.
+
+If a rule applies, use `send_message_to` to notify that Agent or AgentTeam. If several applicable rules have the same recipient, send one message that combines the relevant reasons. Follow distinct recipients in the order they first appear. If no rule applies, finish normally.
+
+Do not say that you completed a handoff unless `send_message_to` confirms that the message was delivered.
+
+`delegate_task.recipient_address` uses the same logical-address grammar. A task target must be a direct Agent or AgentTeam child of your immediate AgentTeam; deeper and cross-branch addresses remain valid for message delivery but are not task-eligible.
+
+## Working Environment
+
+- Agent workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace`
+- Use skills from their skill package directories to work on tasks in the agent workspace.
+- A skill package directory contains the skill's instructions and bundled assets. It is not the agent workspace, and reading the skill does not change the agent workspace.
+- Resolve skill-package references from the skill package directory. Resolve task and project locations from the agent workspace unless an explicit target says otherwise.
+- Do not modify a skill package unless the task explicitly targets that skill package.
+- With no working-directory override, `pwd` returns the agent workspace. An explicit working directory changes only that command's location; it does not redefine the workspace.
+
+## Bash Operating Practice
+
+- Use Bash as the primary interface for performing work in the agent workspace. Use it for workspace navigation, search, file reading, writing and editing, repository operations, processes, network operations, and project commands.
+- Prefer deterministic, non-interactive, small, composable commands.
+- Prefer project-native commands and format-aware tools such as `git`, `npm`, `pnpm`, `pytest`, `jq`, and project scripts when applicable.
+- Use another provided tool when Bash cannot achieve the purpose.
+
+## File And Directory Practice
+
+- Locate files and directories by intent instead of broadly listing them. For content, use targeted searches such as `rg -n "term" path`. For file names, use `rg --files path | rg "pattern"`. Use constrained `find` commands only when filesystem traversal or metadata is the better fit.
+- Read only the relevant content. Use `cat` for a complete small file, `wc -l` before a potentially broad read, `sed -n '40,120p' file` for an exact window, and `nl -ba file | sed -n '40,120p'` when line numbers matter. Prefer format-aware readers such as `jq` for structured data.
+- Choose the narrowest deterministic edit that matches the file format and change shape. Prefer exact anchors for text, parser-aware tools for structured files, and quoted heredocs for new content. Replace important files through a temporary file when a direct in-place edit is not safely verifiable.
+- Use explicit quoted paths and preserve unrelated content and existing changes. Before copying, moving, or deleting, verify the source and destination. Delete only when the task requires it and the target has been verified.
+- Keep inspection, modification, and verification as separate commands when a failure would need diagnosis. Verify changes with a fitting check such as `git diff -- path`, targeted `rg`, a format parser, or a project-native test or validator.
+---
+Agent 'student_one_708b1839745647d28ae0e2c65bc0b42e': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'student_one_708b1839745647d28ae0e2c65bc0b42e' initialized successfully. Entering main event scheduler loop.
+Agent 'student_one_708b1839745647d28ae0e2c65bc0b42e' has become idle.
+AgentEventStream (ID: 83782786-fbaa-49ee-91c6-b6cd478ad348) for 'student_one_708b1839745647d28ae0e2c65bc0b42e': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: 326ab08b-9626-4cf4-a00c-18587d641249) initialized for agent_id 'student_one_708b1839745647d28ae0e2c65bc0b42e'. Subscribed to notifier.
+Successfully created autobyteus agent run 'student_one_708b1839745647d28ae0e2c65bc0b42e'.
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'student_one_708b1839745647d28ae0e2c65bc0b42e': UserInputContextBuildingProcessor completed. Final content length: 1679
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Workspace with ID agent_ws_03ad8c6e4a1ed70f7bc7bee7b1015ea944fa07029cfbd61c3ae975a078a68e2c not found. Falling back to temp workspace.
+Using temp workspace (ID: temp_ws_default) for agent.
+MediaStorageService initialized. Media root: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/media
+AgentRuntimeState initialized for agent_id 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d': LLM instance 'OpenAILLM' and 4 tools prepared and stored in state.
+AgentContext composed for agent_id 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d' with config: 'Student Two'.
+AgentWorker initialized for agent_id 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d'.
+Registered AgentContext for agent_id 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d'. Total registered contexts: 4
+AgentRuntime initialized for agent_id 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d'. Context registered.
+Agent facade initialized for agent_id 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d'.
+Agent 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d' created and stored successfully.
+Agent 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d' requesting runtime to start.
+AgentRuntime for 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d': Starting worker.
+AgentWorker 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d': Starting...
+AgentWorker 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d' asyncRun(): Starting.
+Agent 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d': Runtime init completed (event store initialized).
+Agent 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d': Runtime init completed (status deriver initialized).
+Agent 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d': Runtime init completed (AgentEventInbox initialized).
+Agent 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d' to become idle (timeout: 30s)...
+AgentEventStream (ID: f1ce3a72-baea-441e-b7ed-3627da3fc50f) initialized for agent_id 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d'. Subscribed to notifier.
+Agent 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: 673cbd9e-fbba-4bde-9709-804f22e962de, AgentID: student_two_5110f015ba654b7cbdbeeadfda0c2b2d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d': Bootstrapper starting direct lifecycle execution.
+Agent 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d': Executing McpServerPrewarmingStep.
+Agent 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d': Executing SystemPromptProcessingStep.
+Agent 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d': No configured skills. Skipping skill catalog.
+Agent 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d': Final processed system prompt configured on LLM instance. Final length: 5690.
+Agent 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d': Final processed system prompt:
+---
+## Agent Identity
+
+- Name: Student Two
+- Description: Supporting student for the nested Student Study Group test team.
+
+### Responsibilities and Boundaries
+
+You are `student_two`, a supporting member of `StudentStudyGroup`.
+
+When `student_one` asks for help, respond concisely using `send_message_to` back to `student_one`.
+
+For smoke-test tasks involving an exact token such as `NESTED_CLASSROOM_OK`, confirm that the requested token is the answer.
+
+Do not attempt to submit final task results. `student_one` owns `submit_task_result` for this nested team fixture.
+
+## Team Instruction
+
+This nested team is intentionally simple.
+
+`student_one` coordinates the study group. `student_two` is a supporting student.
+
+When this team receives a delegated task from `Teacher`, `student_one` should complete the task and submit the final result with `submit_task_result`.
+
+If the prompt asks for an exact token, the submitted result message should contain exactly that token unless the task explicitly asks for extra explanation.
+
+Use `send_message_to` only for ordinary teammate discussion. Do not use it for final task result submission.
+
+## Team Runtime
+
+You are working as a member of an AgentTeam. Agents and AgentTeams use filesystem-like logical addresses to communicate. These addresses identify Team members; they are not real filesystem paths.
+
+Your address in the AgentTeam is:
+
+/StudentStudyGroup/student_two
+
+Addresses beginning with `/` start from the root AgentTeam. Addresses beginning with `./` start from your current AgentTeam, similar to relative filesystem paths.
+
+For example:
+
+- `./architecture_reviewer` addresses a member named `architecture_reviewer` in your current AgentTeam.
+- `./implementation_team` addresses a child AgentTeam named `implementation_team`.
+- `/requirements_engineering/requirements_lead` is an absolute address from the root AgentTeam.
+
+Sending a message to an AgentTeam address delivers it to that Team's configured coordinator. Bare member names, `../`, and backslashes are not valid addresses.
+
+When you finish your work or are blocked, call `get_handoff_rules` to check your configured handoff rules. Each returned rule tells you when a handoff applies and provides the `recipient_address` to notify.
+
+If a rule applies, use `send_message_to` to notify that Agent or AgentTeam. If several applicable rules have the same recipient, send one message that combines the relevant reasons. Follow distinct recipients in the order they first appear. If no rule applies, finish normally.
+
+Do not say that you completed a handoff unless `send_message_to` confirms that the message was delivered.
+
+`delegate_task.recipient_address` uses the same logical-address grammar. A task target must be a direct Agent or AgentTeam child of your immediate AgentTeam; deeper and cross-branch addresses remain valid for message delivery but are not task-eligible.
+
+## Working Environment
+
+- Agent workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace`
+- Use skills from their skill package directories to work on tasks in the agent workspace.
+- A skill package directory contains the skill's instructions and bundled assets. It is not the agent workspace, and reading the skill does not change the agent workspace.
+- Resolve skill-package references from the skill package directory. Resolve task and project locations from the agent workspace unless an explicit target says otherwise.
+- Do not modify a skill package unless the task explicitly targets that skill package.
+- With no working-directory override, `pwd` returns the agent workspace. An explicit working directory changes only that command's location; it does not redefine the workspace.
+
+## Bash Operating Practice
+
+- Use Bash as the primary interface for performing work in the agent workspace. Use it for workspace navigation, search, file reading, writing and editing, repository operations, processes, network operations, and project commands.
+- Prefer deterministic, non-interactive, small, composable commands.
+- Prefer project-native commands and format-aware tools such as `git`, `npm`, `pnpm`, `pytest`, `jq`, and project scripts when applicable.
+- Use another provided tool when Bash cannot achieve the purpose.
+
+## File And Directory Practice
+
+- Locate files and directories by intent instead of broadly listing them. For content, use targeted searches such as `rg -n "term" path`. For file names, use `rg --files path | rg "pattern"`. Use constrained `find` commands only when filesystem traversal or metadata is the better fit.
+- Read only the relevant content. Use `cat` for a complete small file, `wc -l` before a potentially broad read, `sed -n '40,120p' file` for an exact window, and `nl -ba file | sed -n '40,120p'` when line numbers matter. Prefer format-aware readers such as `jq` for structured data.
+- Choose the narrowest deterministic edit that matches the file format and change shape. Prefer exact anchors for text, parser-aware tools for structured files, and quoted heredocs for new content. Replace important files through a temporary file when a direct in-place edit is not safely verifiable.
+- Use explicit quoted paths and preserve unrelated content and existing changes. Before copying, moving, or deleting, verify the source and destination. Delete only when the task requires it and the target has been verified.
+- Keep inspection, modification, and verification as separate commands when a failure would need diagnosis. Verify changes with a fitting check such as `git diff -- path`, targeted `rg`, a format parser, or a project-native test or validator.
+---
+Agent 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: 673cbd9e-fbba-4bde-9709-804f22e962de, AgentID: student_two_5110f015ba654b7cbdbeeadfda0c2b2d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d' initialized successfully. Entering main event scheduler loop.
+Agent 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d' has become idle.
+AgentEventStream (ID: f1ce3a72-baea-441e-b7ed-3627da3fc50f) for 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: 783aa25e-f3f3-4231-bf54-804b03996ced) initialized for agent_id 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d'. Subscribed to notifier.
+Successfully created autobyteus agent run 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d'.
+AgentExternalEventNotifier (NotifierID: 673cbd9e-fbba-4bde-9709-804f22e962de, AgentID: student_two_5110f015ba654b7cbdbeeadfda0c2b2d) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 673cbd9e-fbba-4bde-9709-804f22e962de, AgentID: student_two_5110f015ba654b7cbdbeeadfda0c2b2d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d': UserInputContextBuildingProcessor completed. Final content length: 164
+AgentExternalEventNotifier (NotifierID: 673cbd9e-fbba-4bde-9709-804f22e962de, AgentID: student_two_5110f015ba654b7cbdbeeadfda0c2b2d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Agent run 'student_one_708b1839745647d28ae0e2c65bc0b42e': UserInputContextBuildingProcessor completed. Final content length: 81
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[team-communication] projection inserted teamRunId=nested_classroom_test_team_62d7ad970db9467887a652b3b0d7f8ba messageId=teammsg_Ozn_bX4XgJ6rlADpP5ODydRMHxesEccK referenceCount=0 projectionPath=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/memory/agent_teams/nested_classroom_test_team_62d7ad970db9467887a652b3b0d7f8ba/team_communication_messages.json
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 673cbd9e-fbba-4bde-9709-804f22e962de, AgentID: student_two_5110f015ba654b7cbdbeeadfda0c2b2d) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 673cbd9e-fbba-4bde-9709-804f22e962de, AgentID: student_two_5110f015ba654b7cbdbeeadfda0c2b2d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 673cbd9e-fbba-4bde-9709-804f22e962de, AgentID: student_two_5110f015ba654b7cbdbeeadfda0c2b2d) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 673cbd9e-fbba-4bde-9709-804f22e962de, AgentID: student_two_5110f015ba654b7cbdbeeadfda0c2b2d) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 673cbd9e-fbba-4bde-9709-804f22e962de, AgentID: student_two_5110f015ba654b7cbdbeeadfda0c2b2d) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 673cbd9e-fbba-4bde-9709-804f22e962de, AgentID: student_two_5110f015ba654b7cbdbeeadfda0c2b2d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 673cbd9e-fbba-4bde-9709-804f22e962de, AgentID: student_two_5110f015ba654b7cbdbeeadfda0c2b2d) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 673cbd9e-fbba-4bde-9709-804f22e962de, AgentID: student_two_5110f015ba654b7cbdbeeadfda0c2b2d) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Agent run 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d': UserInputContextBuildingProcessor completed. Final content length: 81
+AgentExternalEventNotifier (NotifierID: 673cbd9e-fbba-4bde-9709-804f22e962de, AgentID: student_two_5110f015ba654b7cbdbeeadfda0c2b2d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 673cbd9e-fbba-4bde-9709-804f22e962de, AgentID: student_two_5110f015ba654b7cbdbeeadfda0c2b2d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[team-communication] projection inserted teamRunId=nested_classroom_test_team_62d7ad970db9467887a652b3b0d7f8ba messageId=teammsg_Ue4yqCpSs-BkXGwcA21xiXmhkwQGtni5 referenceCount=0 projectionPath=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/memory/agent_teams/nested_classroom_test_team_62d7ad970db9467887a652b3b0d7f8ba/team_communication_messages.json
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'student_one_708b1839745647d28ae0e2c65bc0b42e': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'student_one_708b1839745647d28ae0e2c65bc0b42e': UserInputContextBuildingProcessor completed. Final content length: 164
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 673cbd9e-fbba-4bde-9709-804f22e962de, AgentID: student_two_5110f015ba654b7cbdbeeadfda0c2b2d) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 673cbd9e-fbba-4bde-9709-804f22e962de, AgentID: student_two_5110f015ba654b7cbdbeeadfda0c2b2d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+AgentExternalEventNotifier (NotifierID: 673cbd9e-fbba-4bde-9709-804f22e962de, AgentID: student_two_5110f015ba654b7cbdbeeadfda0c2b2d) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 673cbd9e-fbba-4bde-9709-804f22e962de, AgentID: student_two_5110f015ba654b7cbdbeeadfda0c2b2d) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 673cbd9e-fbba-4bde-9709-804f22e962de, AgentID: student_two_5110f015ba654b7cbdbeeadfda0c2b2d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Agent run 'student_one_708b1839745647d28ae0e2c65bc0b42e': UserInputContextBuildingProcessor completed. Final content length: 84
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Agent run 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba': UserInputContextBuildingProcessor completed. Final content length: 74
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'student_one_708b1839745647d28ae0e2c65bc0b42e': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentEventStream (ID: 326ab08b-9626-4cf4-a00c-18587d641249) for 'student_one_708b1839745647d28ae0e2c65bc0b42e': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'student_one_708b1839745647d28ae0e2c65bc0b42e'. Attempting graceful shutdown.
+Agent 'student_one_708b1839745647d28ae0e2c65bc0b42e' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'student_one_708b1839745647d28ae0e2c65bc0b42e': Stop requested.
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a2439823-761b-4ecc-8379-8e8c218a5d98, AgentID: student_one_708b1839745647d28ae0e2c65bc0b42e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Agent run 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba': UserInputContextBuildingProcessor completed. Final content length: 84
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'student_one_708b1839745647d28ae0e2c65bc0b42e' asyncRun() loop has finished.
+AgentWorker 'student_one_708b1839745647d28ae0e2c65bc0b42e': Running shutdown sequence on worker loop.
+AgentWorker 'student_one_708b1839745647d28ae0e2c65bc0b42e': Shutdown resource cleanup completed successfully.
+AgentWorker 'student_one_708b1839745647d28ae0e2c65bc0b42e': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'student_one_708b1839745647d28ae0e2c65bc0b42e'.
+AgentRuntime for 'student_one_708b1839745647d28ae0e2c65bc0b42e': Context unregistered.
+AgentRuntime for 'student_one_708b1839745647d28ae0e2c65bc0b42e' stop() method completed.
+AgentEventStream (ID: 783aa25e-f3f3-4231-bf54-804b03996ced) for 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d'. Attempting graceful shutdown.
+Agent 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: 673cbd9e-fbba-4bde-9709-804f22e962de, AgentID: student_two_5110f015ba654b7cbdbeeadfda0c2b2d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d': Stop requested.
+AgentExternalEventNotifier (NotifierID: 673cbd9e-fbba-4bde-9709-804f22e962de, AgentID: student_two_5110f015ba654b7cbdbeeadfda0c2b2d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d' asyncRun() loop has finished.
+AgentWorker 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d': Running shutdown sequence on worker loop.
+AgentWorker 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d': Shutdown resource cleanup completed successfully.
+AgentWorker 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d'.
+AgentRuntime for 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d': Context unregistered.
+AgentRuntime for 'student_two_5110f015ba654b7cbdbeeadfda0c2b2d' stop() method completed.
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba': UserInputContextBuildingProcessor completed. Final content length: 170
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba': UserInputContextBuildingProcessor completed. Final content length: 758
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Closed agent session 6a732b10-c9ec-4801-b081-52d5768a3c19
+Agent Team WebSocket disconnected: 6a732b10-c9ec-4801-b081-52d5768a3c19
+Created terminal session 4f1b491b-0173-4d13-b28a-c2594d374115 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 4f1b491b-0173-4d13-b28a-c2594d374115
+Terminal websocket attached for cwd /Users/normy
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_tool_execution_failed. Kwarg keys for emit: agent_id,payload
+Agent run 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba': UserInputContextBuildingProcessor completed. Final content length: 311
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/memory/agent_teams/nested_classroom_test_team_62d7ad970db9467887a652b3b0d7f8ba/student_study_group_08ffd3bc6706470782708083ff687fca/student_two_d7fe0d1591944e14b77c9ef7f111e788/raw_traces_active.jsonl
+Agent team websocket attached for team run nested_classroom_test_team_62d7ad970db9467887a652b3b0d7f8ba
+Created agent session 325cf3b2-4e94-4a25-8aef-b5a12933a69d for run nested_classroom_test_team_62d7ad970db9467887a652b3b0d7f8ba
+Agent Team WebSocket connected: session=325cf3b2-4e94-4a25-8aef-b5a12933a69d, run=nested_classroom_test_team_62d7ad970db9467887a652b3b0d7f8ba
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentEventStream (ID: 2ca52e3f-e591-456a-953e-9d1fbeb0a36c) for 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba'. Attempting graceful shutdown.
+Agent 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba': Stop requested.
+AgentExternalEventNotifier (NotifierID: dcee6da0-8785-40d5-8a61-65696c9c76a5, AgentID: test_teacher_c9f79ed9121d498d8f7d701aac3143ba) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba' asyncRun() loop has finished.
+AgentWorker 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba': Running shutdown sequence on worker loop.
+AgentWorker 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba': Shutdown resource cleanup completed successfully.
+AgentWorker 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba'.
+AgentRuntime for 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba': Context unregistered.
+AgentRuntime for 'test_teacher_c9f79ed9121d498d8f7d701aac3143ba' stop() method completed.
+AgentEventStream (ID: 08179de2-6e13-43a6-bcf2-97dc0b7a9465) for 'student_one_730147cc58224be8a3d10ec9497582a1': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'student_one_730147cc58224be8a3d10ec9497582a1'. Attempting graceful shutdown.
+Agent 'student_one_730147cc58224be8a3d10ec9497582a1' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: 0bd919bb-a3a0-471d-8202-3b45795c4534, AgentID: student_one_730147cc58224be8a3d10ec9497582a1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'student_one_730147cc58224be8a3d10ec9497582a1': Stop requested.
+AgentExternalEventNotifier (NotifierID: 0bd919bb-a3a0-471d-8202-3b45795c4534, AgentID: student_one_730147cc58224be8a3d10ec9497582a1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'student_one_730147cc58224be8a3d10ec9497582a1' asyncRun() loop has finished.
+AgentWorker 'student_one_730147cc58224be8a3d10ec9497582a1': Running shutdown sequence on worker loop.
+AgentWorker 'student_one_730147cc58224be8a3d10ec9497582a1': Shutdown resource cleanup completed successfully.
+AgentWorker 'student_one_730147cc58224be8a3d10ec9497582a1': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'student_one_730147cc58224be8a3d10ec9497582a1'.
+AgentRuntime for 'student_one_730147cc58224be8a3d10ec9497582a1': Context unregistered.
+AgentRuntime for 'student_one_730147cc58224be8a3d10ec9497582a1' stop() method completed.
+Closed agent session 325cf3b2-4e94-4a25-8aef-b5a12933a69d
+Agent Team WebSocket disconnected: 325cf3b2-4e94-4a25-8aef-b5a12933a69d
+Closed PTY session 4f1b491b-0173-4d13-b28a-c2594d374115
+Terminal WebSocket disconnected: 4f1b491b-0173-4d13-b28a-c2594d374115
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 2c77bc2a-d55c-41f4-b0ba-bc790f61a62c for workspace temp_ws_default
+Created file explorer session 2c77bc2a-d55c-41f4-b0ba-bc790f61a62c for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 2c77bc2a-d55c-41f4-b0ba-bc790f61a62c for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Resolved configured temp workspace root to TempWorkspace.
+Successfully created mixed team run 'nested_classroom_test_team_bcdd320342794e92963888e965750047'.
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/memory/agent_teams/nested_classroom_test_team_bcdd320342794e92963888e965750047/test_teacher_e088e617f30e4ad886ed7849c2e46c8c/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/memory/agent_teams/nested_classroom_test_team_bcdd320342794e92963888e965750047/student_study_group_474558ac34184064a8d23c1dab4f2722/student_two_da51a5b22b854428a97ffe7d51e44055/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/memory/agent_teams/nested_classroom_test_team_bcdd320342794e92963888e965750047/student_study_group_474558ac34184064a8d23c1dab4f2722/student_one_8a0c0471ec484e6089c35d5453c6270b/raw_traces_active.jsonl
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace
+FileExplorerSession closed: 2c77bc2a-d55c-41f4-b0ba-bc790f61a62c
+Closed file explorer session 2c77bc2a-d55c-41f4-b0ba-bc790f61a62c. Active sessions: 0
+File explorer WebSocket disconnected: 2c77bc2a-d55c-41f4-b0ba-bc790f61a62c
+Agent team websocket attached for team run nested_classroom_test_team_bcdd320342794e92963888e965750047
+Created agent session 2c3ad78d-fa6b-4cd8-8b29-59f3004294b5 for run nested_classroom_test_team_bcdd320342794e92963888e965750047
+Agent Team WebSocket connected: session=2c3ad78d-fa6b-4cd8-8b29-59f3004294b5, run=nested_classroom_test_team_bcdd320342794e92963888e965750047
+Successfully created codex_app_server agent run 'test_teacher_e088e617f30e4ad886ed7849c2e46c8c'.
+Successfully created codex_app_server agent run 'student_one_8a0c0471ec484e6089c35d5453c6270b'.
+[team-communication] projection inserted teamRunId=nested_classroom_test_team_bcdd320342794e92963888e965750047 messageId=teammsg_EM9YpeC129pW4HS3sAlUnTM9tyXaO47m referenceCount=1 projectionPath=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/memory/agent_teams/nested_classroom_test_team_bcdd320342794e92963888e965750047/team_communication_messages.json
+[team-communication] projection inserted teamRunId=nested_classroom_test_team_bcdd320342794e92963888e965750047 messageId=teammsg__-YvHyqy0ic5Plt44Cy879e532-G4q4C referenceCount=0 projectionPath=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/memory/agent_teams/nested_classroom_test_team_bcdd320342794e92963888e965750047/team_communication_messages.json
+Successfully created codex_app_server agent run 'student_one_0a84610908d74521856a07c0e995bc76'.
+Successfully created codex_app_server agent run 'student_two_bae3ea189d504be89e4c17891068642d'.
+[team-communication] projection inserted teamRunId=nested_classroom_test_team_bcdd320342794e92963888e965750047 messageId=teammsg_RAX-N39sK8b0pS5ZtaCif-QWNxNsaYWE referenceCount=0 projectionPath=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/memory/agent_teams/nested_classroom_test_team_bcdd320342794e92963888e965750047/team_communication_messages.json
+[team-communication] projection inserted teamRunId=nested_classroom_test_team_bcdd320342794e92963888e965750047 messageId=teammsg_0xjKvIp-0NPjQNqfPhypWTlcjBC5B22J referenceCount=0 projectionPath=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/memory/agent_teams/nested_classroom_test_team_bcdd320342794e92963888e965750047/team_communication_messages.json
+Closed agent session 2c3ad78d-fa6b-4cd8-8b29-59f3004294b5
+Agent Team WebSocket disconnected: 2c3ad78d-fa6b-4cd8-8b29-59f3004294b5
+Created terminal session 9400ab9f-7b33-4295-a51b-c91815c83b9e using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 9400ab9f-7b33-4295-a51b-c91815c83b9e
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/memory/agent_teams/nested_classroom_test_team_bcdd320342794e92963888e965750047/student_study_group_474558ac34184064a8d23c1dab4f2722/student_two_da51a5b22b854428a97ffe7d51e44055/raw_traces_active.jsonl
+Agent team websocket attached for team run nested_classroom_test_team_bcdd320342794e92963888e965750047
+Created agent session f42db464-1145-4fc9-b975-501efac049b2 for run nested_classroom_test_team_bcdd320342794e92963888e965750047
+Agent Team WebSocket connected: session=f42db464-1145-4fc9-b975-501efac049b2, run=nested_classroom_test_team_bcdd320342794e92963888e965750047
+Closed agent session f42db464-1145-4fc9-b975-501efac049b2
+Agent Team WebSocket disconnected: f42db464-1145-4fc9-b975-501efac049b2
+Closed PTY session 9400ab9f-7b33-4295-a51b-c91815c83b9e
+Terminal WebSocket disconnected: 9400ab9f-7b33-4295-a51b-c91815c83b9e
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 50f52306-0ff1-455a-889d-c07df5a84145 for workspace temp_ws_default
+Created file explorer session 50f52306-0ff1-455a-889d-c07df5a84145 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 50f52306-0ff1-455a-889d-c07df5a84145 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Resolved configured temp workspace root to TempWorkspace.
+Successfully created mixed team run 'nested_classroom_test_team_c4c0c5b86c1f419db0ab6cd2d00fc71a'.
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/memory/agent_teams/nested_classroom_test_team_c4c0c5b86c1f419db0ab6cd2d00fc71a/test_teacher_fc9570c627684f75ae3237531c0c8f01/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/memory/agent_teams/nested_classroom_test_team_c4c0c5b86c1f419db0ab6cd2d00fc71a/student_study_group_ba6d9ecf7e14482c8eb8ccb1139b7f64/student_one_2350797549a44179ba7cd6163cef1b39/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/memory/agent_teams/nested_classroom_test_team_c4c0c5b86c1f419db0ab6cd2d00fc71a/student_study_group_ba6d9ecf7e14482c8eb8ccb1139b7f64/student_two_290096c19ef049739978b06c561a03eb/raw_traces_active.jsonl
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace
+FileExplorerSession closed: 50f52306-0ff1-455a-889d-c07df5a84145
+Closed file explorer session 50f52306-0ff1-455a-889d-c07df5a84145. Active sessions: 0
+File explorer WebSocket disconnected: 50f52306-0ff1-455a-889d-c07df5a84145
+Agent team websocket attached for team run nested_classroom_test_team_c4c0c5b86c1f419db0ab6cd2d00fc71a
+Created agent session 7fc9e954-62a4-4e2a-87b3-debe5b03cfc5 for run nested_classroom_test_team_c4c0c5b86c1f419db0ab6cd2d00fc71a
+Agent Team WebSocket connected: session=7fc9e954-62a4-4e2a-87b3-debe5b03cfc5, run=nested_classroom_test_team_c4c0c5b86c1f419db0ab6cd2d00fc71a
+Successfully created claude_agent_sdk agent run 'test_teacher_fc9570c627684f75ae3237531c0c8f01'.
+Successfully created claude_agent_sdk agent run 'student_one_2350797549a44179ba7cd6163cef1b39'.
+[team-communication] projection inserted teamRunId=nested_classroom_test_team_c4c0c5b86c1f419db0ab6cd2d00fc71a messageId=teammsg_88NZkm3ZadIcb6TThpx54ddKyYiY-IZq referenceCount=1 projectionPath=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/memory/agent_teams/nested_classroom_test_team_c4c0c5b86c1f419db0ab6cd2d00fc71a/team_communication_messages.json
+[team-communication] projection inserted teamRunId=nested_classroom_test_team_c4c0c5b86c1f419db0ab6cd2d00fc71a messageId=teammsg__aGoE1Qm34P_g1VDKpcVWIsiCW2lUGKi referenceCount=0 projectionPath=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/memory/agent_teams/nested_classroom_test_team_c4c0c5b86c1f419db0ab6cd2d00fc71a/team_communication_messages.json
+Successfully created claude_agent_sdk agent run 'student_one_218598219a5f4d9ba7cda1789e2d18ff'.
+Successfully created claude_agent_sdk agent run 'student_two_d77c2b49118e42e1a952fbe7385a1a7e'.
+[team-communication] projection inserted teamRunId=nested_classroom_test_team_c4c0c5b86c1f419db0ab6cd2d00fc71a messageId=teammsg_FwAgyH8iwOuDs5rGQ2AcBVakgVT8ar79 referenceCount=0 projectionPath=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/memory/agent_teams/nested_classroom_test_team_c4c0c5b86c1f419db0ab6cd2d00fc71a/team_communication_messages.json
+[team-communication] projection inserted teamRunId=nested_classroom_test_team_c4c0c5b86c1f419db0ab6cd2d00fc71a messageId=teammsg_ZlCSZW2OnPybfE-NF_kYvbPAS6KGmshV referenceCount=0 projectionPath=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/memory/agent_teams/nested_classroom_test_team_c4c0c5b86c1f419db0ab6cd2d00fc71a/team_communication_messages.json
+Closed agent session 7fc9e954-62a4-4e2a-87b3-debe5b03cfc5
+Agent Team WebSocket disconnected: 7fc9e954-62a4-4e2a-87b3-debe5b03cfc5
+Created terminal session 95729155-0dfc-4527-9edb-e2fb1becba04 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 95729155-0dfc-4527-9edb-e2fb1becba04
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/memory/agent_teams/nested_classroom_test_team_c4c0c5b86c1f419db0ab6cd2d00fc71a/student_study_group_ba6d9ecf7e14482c8eb8ccb1139b7f64/student_two_290096c19ef049739978b06c561a03eb/raw_traces_active.jsonl
+Agent team websocket attached for team run nested_classroom_test_team_c4c0c5b86c1f419db0ab6cd2d00fc71a
+Created agent session 212884c4-292c-41c4-a2ec-00724c2fa4c3 for run nested_classroom_test_team_c4c0c5b86c1f419db0ab6cd2d00fc71a
+Agent Team WebSocket connected: session=212884c4-292c-41c4-a2ec-00724c2fa4c3, run=nested_classroom_test_team_c4c0c5b86c1f419db0ab6cd2d00fc71a
+Closed agent session 212884c4-292c-41c4-a2ec-00724c2fa4c3
+Agent Team WebSocket disconnected: 212884c4-292c-41c4-a2ec-00724c2fa4c3
+Closed PTY session 95729155-0dfc-4527-9edb-e2fb1becba04
+Terminal WebSocket disconnected: 95729155-0dfc-4527-9edb-e2fb1becba04
+In-memory cache: Added new agent definition with ID api-rev-037-browser-agent.
+Agent Definition created successfully with ID: api-rev-037-browser-agent
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 5e6a51a2-3626-44de-a055-96215664c6de for workspace temp_ws_default
+Created file explorer session 5e6a51a2-3626-44de-a055-96215664c6de for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 5e6a51a2-3626-44de-a055-96215664c6de for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace
+FileExplorerSession closed: 5e6a51a2-3626-44de-a055-96215664c6de
+Closed file explorer session 5e6a51a2-3626-44de-a055-96215664c6de. Active sessions: 0
+File explorer WebSocket disconnected: 5e6a51a2-3626-44de-a055-96215664c6de
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9
+Created agent session 3cc61b73-0ddd-490b-b715-c1792e949c81 for run api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9
+Agent WebSocket connected: session=3cc61b73-0ddd-490b-b715-c1792e949c81, run=api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9
+Resolved configured temp workspace root to TempWorkspace.
+MediaStorageService initialized. Media root: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/media
+AgentRuntimeState initialized for agent_id 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9': No tools provided in config.
+Agent 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9': LLM instance 'OpenAILLM' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9' with config: 'API REV 037 Browser Agent'.
+AgentWorker initialized for agent_id 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9'.
+Registered AgentContext for agent_id 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9'. Context registered.
+Agent facade initialized for agent_id 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9'.
+Agent 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9' created and stored successfully.
+Agent 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9' requesting runtime to start.
+AgentRuntime for 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9': Starting worker.
+AgentWorker 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9': Starting...
+AgentWorker 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9' asyncRun(): Starting.
+Agent 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9': Runtime init completed (event store initialized).
+Agent 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9': Runtime init completed (status deriver initialized).
+Agent 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9': Runtime init completed (AgentEventInbox initialized).
+Agent 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9' to become idle (timeout: 30s)...
+AgentEventStream (ID: 27b0e1ba-6a86-4841-a29f-5685e50bcbab) initialized for agent_id 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9'. Subscribed to notifier.
+Agent 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: 22b9ac88-fb51-45bd-a26f-fc6b0ea22ff5, AgentID: api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9': Bootstrapper starting direct lifecycle execution.
+Agent 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9': Executing McpServerPrewarmingStep.
+Agent 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9': Executing SystemPromptProcessingStep.
+Agent 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9': No configured skills. Skipping skill catalog.
+Agent 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9': Final processed system prompt configured on LLM instance. Final length: 3077.
+Agent 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9': Final processed system prompt:
+---
+## Agent Identity
+
+- Name: API REV 037 Browser Agent
+- Description: Disposable API-REV-037 standalone browser/provider agent.
+
+### Responsibilities and Boundaries
+
+Follow the user request exactly. When asked for an exact token, output that token exactly and nothing else.
+
+## Working Environment
+
+- Agent workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace`
+- Use skills from their skill package directories to work on tasks in the agent workspace.
+- A skill package directory contains the skill's instructions and bundled assets. It is not the agent workspace, and reading the skill does not change the agent workspace.
+- Resolve skill-package references from the skill package directory. Resolve task and project locations from the agent workspace unless an explicit target says otherwise.
+- Do not modify a skill package unless the task explicitly targets that skill package.
+- With no working-directory override, `pwd` returns the agent workspace. An explicit working directory changes only that command's location; it does not redefine the workspace.
+
+## Bash Operating Practice
+
+- Use Bash as the primary interface for performing work in the agent workspace. Use it for workspace navigation, search, file reading, writing and editing, repository operations, processes, network operations, and project commands.
+- Prefer deterministic, non-interactive, small, composable commands.
+- Prefer project-native commands and format-aware tools such as `git`, `npm`, `pnpm`, `pytest`, `jq`, and project scripts when applicable.
+- Use another provided tool when Bash cannot achieve the purpose.
+
+## File And Directory Practice
+
+- Locate files and directories by intent instead of broadly listing them. For content, use targeted searches such as `rg -n "term" path`. For file names, use `rg --files path | rg "pattern"`. Use constrained `find` commands only when filesystem traversal or metadata is the better fit.
+- Read only the relevant content. Use `cat` for a complete small file, `wc -l` before a potentially broad read, `sed -n '40,120p' file` for an exact window, and `nl -ba file | sed -n '40,120p'` when line numbers matter. Prefer format-aware readers such as `jq` for structured data.
+- Choose the narrowest deterministic edit that matches the file format and change shape. Prefer exact anchors for text, parser-aware tools for structured files, and quoted heredocs for new content. Replace important files through a temporary file when a direct in-place edit is not safely verifiable.
+- Use explicit quoted paths and preserve unrelated content and existing changes. Before copying, moving, or deleting, verify the source and destination. Delete only when the task requires it and the target has been verified.
+- Keep inspection, modification, and verification as separate commands when a failure would need diagnosis. Verify changes with a fitting check such as `git diff -- path`, targeted `rg`, a format parser, or a project-native test or validator.
+---
+Agent 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: 22b9ac88-fb51-45bd-a26f-fc6b0ea22ff5, AgentID: api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9' initialized successfully. Entering main event scheduler loop.
+Agent 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9' has become idle.
+AgentEventStream (ID: 27b0e1ba-6a86-4841-a29f-5685e50bcbab) for 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: e9b71f45-3ace-443a-a31e-677b1a5d7164) initialized for agent_id 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9'. Subscribed to notifier.
+Successfully created autobyteus agent run 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9'.
+AgentExternalEventNotifier (NotifierID: 22b9ac88-fb51-45bd-a26f-fc6b0ea22ff5, AgentID: api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 22b9ac88-fb51-45bd-a26f-fc6b0ea22ff5, AgentID: api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9': UserInputContextBuildingProcessor completed. Final content length: 84
+AgentExternalEventNotifier (NotifierID: 22b9ac88-fb51-45bd-a26f-fc6b0ea22ff5, AgentID: api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 22b9ac88-fb51-45bd-a26f-fc6b0ea22ff5, AgentID: api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 22b9ac88-fb51-45bd-a26f-fc6b0ea22ff5, AgentID: api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+AgentExternalEventNotifier (NotifierID: 22b9ac88-fb51-45bd-a26f-fc6b0ea22ff5, AgentID: api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 22b9ac88-fb51-45bd-a26f-fc6b0ea22ff5, AgentID: api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 22b9ac88-fb51-45bd-a26f-fc6b0ea22ff5, AgentID: api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Closed agent session 3cc61b73-0ddd-490b-b715-c1792e949c81
+Agent WebSocket disconnected: 3cc61b73-0ddd-490b-b715-c1792e949c81
+Created terminal session 1e439b1b-7ac3-454d-b156-9b73316f9e6b using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 1e439b1b-7ac3-454d-b156-9b73316f9e6b
+Terminal websocket attached for cwd /Users/normy
+Agent websocket attached for run api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9
+Created agent session b1b0e805-0432-4b72-939c-2f2bb8bd180b for run api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9
+Agent WebSocket connected: session=b1b0e805-0432-4b72-939c-2f2bb8bd180b, run=api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9
+AgentEventStream (ID: e9b71f45-3ace-443a-a31e-677b1a5d7164) for 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9'. Attempting graceful shutdown.
+Agent 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: 22b9ac88-fb51-45bd-a26f-fc6b0ea22ff5, AgentID: api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9': Stop requested.
+AgentExternalEventNotifier (NotifierID: 22b9ac88-fb51-45bd-a26f-fc6b0ea22ff5, AgentID: api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9' asyncRun() loop has finished.
+AgentWorker 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9': Running shutdown sequence on worker loop.
+AgentWorker 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9': Shutdown resource cleanup completed successfully.
+AgentWorker 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9'.
+AgentRuntime for 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9': Context unregistered.
+AgentRuntime for 'api_rev_037_browser_agent_a5680f41634048fe93c76767ea6207e9' stop() method completed.
+Closed agent session b1b0e805-0432-4b72-939c-2f2bb8bd180b
+Agent WebSocket disconnected: b1b0e805-0432-4b72-939c-2f2bb8bd180b
+Closed PTY session 1e439b1b-7ac3-454d-b156-9b73316f9e6b
+Terminal WebSocket disconnected: 1e439b1b-7ac3-454d-b156-9b73316f9e6b
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: c9f94392-8756-4998-a13b-8a4e2ca906e1 for workspace temp_ws_default
+Created file explorer session c9f94392-8756-4998-a13b-8a4e2ca906e1 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: c9f94392-8756-4998-a13b-8a4e2ca906e1 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace
+FileExplorerSession closed: c9f94392-8756-4998-a13b-8a4e2ca906e1
+Closed file explorer session c9f94392-8756-4998-a13b-8a4e2ca906e1. Active sessions: 0
+File explorer WebSocket disconnected: c9f94392-8756-4998-a13b-8a4e2ca906e1
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run api_rev_037_browser_agent_203c6756aed84f69a93a17cccae0eb88
+Created agent session 320eb054-0a8c-4b77-a251-3aabb06fecfb for run api_rev_037_browser_agent_203c6756aed84f69a93a17cccae0eb88
+Agent WebSocket connected: session=320eb054-0a8c-4b77-a251-3aabb06fecfb, run=api_rev_037_browser_agent_203c6756aed84f69a93a17cccae0eb88
+Resolved configured temp workspace root to TempWorkspace.
+Successfully created codex_app_server agent run 'api_rev_037_browser_agent_203c6756aed84f69a93a17cccae0eb88'.
+Closed agent session 320eb054-0a8c-4b77-a251-3aabb06fecfb
+Agent WebSocket disconnected: 320eb054-0a8c-4b77-a251-3aabb06fecfb
+Created terminal session 0cbf6f53-d7a2-4481-a669-623bd1482164 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 0cbf6f53-d7a2-4481-a669-623bd1482164
+Terminal websocket attached for cwd /Users/normy
+Agent websocket attached for run api_rev_037_browser_agent_203c6756aed84f69a93a17cccae0eb88
+Created agent session cf3b06b3-5510-47dc-9fce-8f2afb0eb741 for run api_rev_037_browser_agent_203c6756aed84f69a93a17cccae0eb88
+Agent WebSocket connected: session=cf3b06b3-5510-47dc-9fce-8f2afb0eb741, run=api_rev_037_browser_agent_203c6756aed84f69a93a17cccae0eb88
+Closed agent session cf3b06b3-5510-47dc-9fce-8f2afb0eb741
+Agent WebSocket disconnected: cf3b06b3-5510-47dc-9fce-8f2afb0eb741
+Closed PTY session 0cbf6f53-d7a2-4481-a669-623bd1482164
+Terminal WebSocket disconnected: 0cbf6f53-d7a2-4481-a669-623bd1482164
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 8a648ef2-7f06-4ba6-9ab2-19a97ea3d57b for workspace temp_ws_default
+Created file explorer session 8a648ef2-7f06-4ba6-9ab2-19a97ea3d57b for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 8a648ef2-7f06-4ba6-9ab2-19a97ea3d57b for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace
+FileExplorerSession closed: 8a648ef2-7f06-4ba6-9ab2-19a97ea3d57b
+Closed file explorer session 8a648ef2-7f06-4ba6-9ab2-19a97ea3d57b. Active sessions: 0
+File explorer WebSocket disconnected: 8a648ef2-7f06-4ba6-9ab2-19a97ea3d57b
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run api_rev_037_browser_agent_f7355420b03c49a3983e1d86b3bf74cf
+Created agent session 85e94db8-7838-47c2-98dd-10060de634f5 for run api_rev_037_browser_agent_f7355420b03c49a3983e1d86b3bf74cf
+Agent WebSocket connected: session=85e94db8-7838-47c2-98dd-10060de634f5, run=api_rev_037_browser_agent_f7355420b03c49a3983e1d86b3bf74cf
+Resolved configured temp workspace root to TempWorkspace.
+Successfully created claude_agent_sdk agent run 'api_rev_037_browser_agent_f7355420b03c49a3983e1d86b3bf74cf'.
+Closed agent session 85e94db8-7838-47c2-98dd-10060de634f5
+Agent WebSocket disconnected: 85e94db8-7838-47c2-98dd-10060de634f5
+Created terminal session 709c3e4f-6be6-486d-8e55-aaa0c2fcddf2 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 709c3e4f-6be6-486d-8e55-aaa0c2fcddf2
+Terminal websocket attached for cwd /Users/normy
+Agent websocket attached for run api_rev_037_browser_agent_f7355420b03c49a3983e1d86b3bf74cf
+Created agent session 38704f06-7d40-484d-94f5-7f383b4bd95f for run api_rev_037_browser_agent_f7355420b03c49a3983e1d86b3bf74cf
+Agent WebSocket connected: session=38704f06-7d40-484d-94f5-7f383b4bd95f, run=api_rev_037_browser_agent_f7355420b03c49a3983e1d86b3bf74cf
+Closed agent session 38704f06-7d40-484d-94f5-7f383b4bd95f
+Agent WebSocket disconnected: 38704f06-7d40-484d-94f5-7f383b4bd95f
+Closed PTY session 709c3e4f-6be6-486d-8e55-aaa0c2fcddf2
+Terminal WebSocket disconnected: 709c3e4f-6be6-486d-8e55-aaa0c2fcddf2
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: f758ccfa-c430-4e23-9b2d-d15ae4947439 for workspace temp_ws_default
+Created file explorer session f758ccfa-c430-4e23-9b2d-d15ae4947439 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: f758ccfa-c430-4e23-9b2d-d15ae4947439 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Resolved configured temp workspace root to TempWorkspace.
+Successfully created mixed team run 'nested_classroom_test_team_9d14472d93da4d1eb16c0409b76acded'.
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/memory/agent_teams/nested_classroom_test_team_9d14472d93da4d1eb16c0409b76acded/test_teacher_91c21ce939e64a5880be67c4d291ff6a/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/memory/agent_teams/nested_classroom_test_team_9d14472d93da4d1eb16c0409b76acded/student_study_group_b4dac03f4ce9455cb94f9a173e8d1a05/student_one_0d0357ddde3b4f2c84ae433e33b50613/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/memory/agent_teams/nested_classroom_test_team_9d14472d93da4d1eb16c0409b76acded/student_study_group_b4dac03f4ce9455cb94f9a173e8d1a05/student_two_065fa78ad922423bb80e6e5590db611d/raw_traces_active.jsonl
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace
+FileExplorerSession closed: f758ccfa-c430-4e23-9b2d-d15ae4947439
+Closed file explorer session f758ccfa-c430-4e23-9b2d-d15ae4947439. Active sessions: 0
+File explorer WebSocket disconnected: f758ccfa-c430-4e23-9b2d-d15ae4947439
+Agent team websocket attached for team run nested_classroom_test_team_9d14472d93da4d1eb16c0409b76acded
+Created agent session 066c9e93-2b1b-4007-a145-093f97e13671 for run nested_classroom_test_team_9d14472d93da4d1eb16c0409b76acded
+Agent Team WebSocket connected: session=066c9e93-2b1b-4007-a145-093f97e13671, run=nested_classroom_test_team_9d14472d93da4d1eb16c0409b76acded
+Workspace with ID agent_ws_03ad8c6e4a1ed70f7bc7bee7b1015ea944fa07029cfbd61c3ae975a078a68e2c not found. Falling back to temp workspace.
+Using temp workspace (ID: temp_ws_default) for agent.
+MediaStorageService initialized. Media root: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/media
+AgentRuntimeState initialized for agent_id 'test_teacher_91c21ce939e64a5880be67c4d291ff6a'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'test_teacher_91c21ce939e64a5880be67c4d291ff6a': LLM instance 'OpenAILLM' and 5 tools prepared and stored in state.
+AgentContext composed for agent_id 'test_teacher_91c21ce939e64a5880be67c4d291ff6a'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'test_teacher_91c21ce939e64a5880be67c4d291ff6a' with config: 'Test Teacher'.
+AgentWorker initialized for agent_id 'test_teacher_91c21ce939e64a5880be67c4d291ff6a'.
+Registered AgentContext for agent_id 'test_teacher_91c21ce939e64a5880be67c4d291ff6a'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'test_teacher_91c21ce939e64a5880be67c4d291ff6a'. Context registered.
+Agent facade initialized for agent_id 'test_teacher_91c21ce939e64a5880be67c4d291ff6a'.
+Agent 'test_teacher_91c21ce939e64a5880be67c4d291ff6a' created and stored successfully.
+Agent 'test_teacher_91c21ce939e64a5880be67c4d291ff6a' requesting runtime to start.
+AgentRuntime for 'test_teacher_91c21ce939e64a5880be67c4d291ff6a': Starting worker.
+AgentWorker 'test_teacher_91c21ce939e64a5880be67c4d291ff6a': Starting...
+AgentWorker 'test_teacher_91c21ce939e64a5880be67c4d291ff6a' asyncRun(): Starting.
+Agent 'test_teacher_91c21ce939e64a5880be67c4d291ff6a': Runtime init completed (event store initialized).
+Agent 'test_teacher_91c21ce939e64a5880be67c4d291ff6a': Runtime init completed (status deriver initialized).
+Agent 'test_teacher_91c21ce939e64a5880be67c4d291ff6a': Runtime init completed (AgentEventInbox initialized).
+Agent 'test_teacher_91c21ce939e64a5880be67c4d291ff6a': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'test_teacher_91c21ce939e64a5880be67c4d291ff6a' to become idle (timeout: 30s)...
+AgentEventStream (ID: 713ef6d0-6fe7-4aec-9e6f-65af411908ef) initialized for agent_id 'test_teacher_91c21ce939e64a5880be67c4d291ff6a'. Subscribed to notifier.
+Agent 'test_teacher_91c21ce939e64a5880be67c4d291ff6a': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: 8586684f-0977-4e19-b346-3b3c1ba59b70, AgentID: test_teacher_91c21ce939e64a5880be67c4d291ff6a) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'test_teacher_91c21ce939e64a5880be67c4d291ff6a': Bootstrapper starting direct lifecycle execution.
+Agent 'test_teacher_91c21ce939e64a5880be67c4d291ff6a': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'test_teacher_91c21ce939e64a5880be67c4d291ff6a': Executing McpServerPrewarmingStep.
+Agent 'test_teacher_91c21ce939e64a5880be67c4d291ff6a': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'test_teacher_91c21ce939e64a5880be67c4d291ff6a': Executing SystemPromptProcessingStep.
+Agent 'test_teacher_91c21ce939e64a5880be67c4d291ff6a': No configured skills. Skipping skill catalog.
+Agent 'test_teacher_91c21ce939e64a5880be67c4d291ff6a': Final processed system prompt configured on LLM instance. Final length: 7425.
+Agent 'test_teacher_91c21ce939e64a5880be67c4d291ff6a': Final processed system prompt:
+---
+## Agent Identity
+
+- Name: Test Teacher
+- Description: Top-level teacher coordinator for nested task-team delegation tests.
+
+### Responsibilities and Boundaries
+
+You are `Teacher`, the coordinator of a tiny classroom test team.
+
+Your main purpose is to test nested team delegation. The nested team target is exactly named `StudentStudyGroup`.
+
+#### Mandatory Nested-Team Delegation Behavior
+
+When the user asks you to test nested delegation, delegate one bounded task to the nested team by calling:
+
+`delegate_task({"recipient_address":"./StudentStudyGroup","task":"..."})`
+
+The task description should be complete and should tell the students what exact answer or token to return.
+
+After the task-team submits a result:
+
+- If the result satisfies the user's requested answer/token, call `review_task_result` with `decision: "accept"`.
+- If the result is missing or incorrect, call `review_task_result` with `decision: "request_revision"` and a short correction message.
+- After acceptance, reply briefly to the user with what happened.
+
+#### Tool Rules
+
+- Use `delegate_task` only with the exact `recipient_address` string.
+- For this fixture, use `recipient_address: "./StudentStudyGroup"`.
+- Use `review_task_result` for accepting or requesting revision of task results.
+- Do not use `send_message_to` for task result submission, revision requests, acceptance, or finalization.
+- Use `send_message_to` only for ordinary non-lifecycle classroom communication if needed.
+
+## Team Instruction
+
+This is a deliberately tiny nested-team package for validating task-team delegation.
+
+### Members
+
+- `Teacher` is the top-level coordinator.
+- `StudentStudyGroup` is a nested agent team with two students.
+  - Its coordinator is `student_one`.
+  - `student_two` is available for ordinary teammate communication inside the nested team.
+
+### Intended Test Flow
+
+Use a prompt like:
+
+> Please test nested team delegation. Delegate one task to StudentStudyGroup and ask the students to return exactly NESTED_CLASSROOM_OK. Accept the result if it matches.
+
+Expected behavior:
+
+1. `Teacher` calls `delegate_task` with an explicit team target:
+   `delegate_task({"recipient_address":"./StudentStudyGroup","task":"..."})`.
+2. The runtime creates a task-team execution for `StudentStudyGroup`.
+3. `student_one`, as the nested team coordinator, submits the result with `submit_task_result`.
+4. `Teacher` reviews the result with `review_task_result` and accepts it when the expected token is present.
+
+### Tool Contract Notes
+
+- `Teacher` has `delegate_task`, `review_task_result`, and `send_message_to`.
+- `student_one` has `submit_task_result` and `send_message_to`.
+- `student_two` has `send_message_to` only.
+- Do not use `send_message_to` for task result submission, revision requests, acceptance, or finalization. Task lifecycle must use `delegate_task`, `submit_task_result`, and `review_task_result`.
+
+## Team Runtime
+
+You are working as a member of an AgentTeam. Agents and AgentTeams use filesystem-like logical addresses to communicate. These addresses identify Team members; they are not real filesystem paths.
+
+Your address in the AgentTeam is:
+
+/Teacher
+
+Addresses beginning with `/` start from the root AgentTeam. Addresses beginning with `./` start from your current AgentTeam, similar to relative filesystem paths.
+
+For example:
+
+- `./architecture_reviewer` addresses a member named `architecture_reviewer` in your current AgentTeam.
+- `./implementation_team` addresses a child AgentTeam named `implementation_team`.
+- `/requirements_engineering/requirements_lead` is an absolute address from the root AgentTeam.
+
+Sending a message to an AgentTeam address delivers it to that Team's configured coordinator. Bare member names, `../`, and backslashes are not valid addresses.
+
+When you finish your work or are blocked, call `get_handoff_rules` to check your configured handoff rules. Each returned rule tells you when a handoff applies and provides the `recipient_address` to notify.
+
+If a rule applies, use `send_message_to` to notify that Agent or AgentTeam. If several applicable rules have the same recipient, send one message that combines the relevant reasons. Follow distinct recipients in the order they first appear. If no rule applies, finish normally.
+
+Do not say that you completed a handoff unless `send_message_to` confirms that the message was delivered.
+
+`delegate_task.recipient_address` uses the same logical-address grammar. A task target must be a direct Agent or AgentTeam child of your immediate AgentTeam; deeper and cross-branch addresses remain valid for message delivery but are not task-eligible.
+
+## Working Environment
+
+- Agent workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace`
+- Use skills from their skill package directories to work on tasks in the agent workspace.
+- A skill package directory contains the skill's instructions and bundled assets. It is not the agent workspace, and reading the skill does not change the agent workspace.
+- Resolve skill-package references from the skill package directory. Resolve task and project locations from the agent workspace unless an explicit target says otherwise.
+- Do not modify a skill package unless the task explicitly targets that skill package.
+- With no working-directory override, `pwd` returns the agent workspace. An explicit working directory changes only that command's location; it does not redefine the workspace.
+
+## Bash Operating Practice
+
+- Use Bash as the primary interface for performing work in the agent workspace. Use it for workspace navigation, search, file reading, writing and editing, repository operations, processes, network operations, and project commands.
+- Prefer deterministic, non-interactive, small, composable commands.
+- Prefer project-native commands and format-aware tools such as `git`, `npm`, `pnpm`, `pytest`, `jq`, and project scripts when applicable.
+- Use another provided tool when Bash cannot achieve the purpose.
+
+## File And Directory Practice
+
+- Locate files and directories by intent instead of broadly listing them. For content, use targeted searches such as `rg -n "term" path`. For file names, use `rg --files path | rg "pattern"`. Use constrained `find` commands only when filesystem traversal or metadata is the better fit.
+- Read only the relevant content. Use `cat` for a complete small file, `wc -l` before a potentially broad read, `sed -n '40,120p' file` for an exact window, and `nl -ba file | sed -n '40,120p'` when line numbers matter. Prefer format-aware readers such as `jq` for structured data.
+- Choose the narrowest deterministic edit that matches the file format and change shape. Prefer exact anchors for text, parser-aware tools for structured files, and quoted heredocs for new content. Replace important files through a temporary file when a direct in-place edit is not safely verifiable.
+- Use explicit quoted paths and preserve unrelated content and existing changes. Before copying, moving, or deleting, verify the source and destination. Delete only when the task requires it and the target has been verified.
+- Keep inspection, modification, and verification as separate commands when a failure would need diagnosis. Verify changes with a fitting check such as `git diff -- path`, targeted `rg`, a format parser, or a project-native test or validator.
+---
+Agent 'test_teacher_91c21ce939e64a5880be67c4d291ff6a': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: 8586684f-0977-4e19-b346-3b3c1ba59b70, AgentID: test_teacher_91c21ce939e64a5880be67c4d291ff6a) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'test_teacher_91c21ce939e64a5880be67c4d291ff6a' initialized successfully. Entering main event scheduler loop.
+Agent 'test_teacher_91c21ce939e64a5880be67c4d291ff6a' has become idle.
+AgentEventStream (ID: 713ef6d0-6fe7-4aec-9e6f-65af411908ef) for 'test_teacher_91c21ce939e64a5880be67c4d291ff6a': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: 848cd038-770c-44a4-b8fb-4ce377e280b6) initialized for agent_id 'test_teacher_91c21ce939e64a5880be67c4d291ff6a'. Subscribed to notifier.
+Successfully created autobyteus agent run 'test_teacher_91c21ce939e64a5880be67c4d291ff6a'.
+AgentExternalEventNotifier (NotifierID: 8586684f-0977-4e19-b346-3b3c1ba59b70, AgentID: test_teacher_91c21ce939e64a5880be67c4d291ff6a) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8586684f-0977-4e19-b346-3b3c1ba59b70, AgentID: test_teacher_91c21ce939e64a5880be67c4d291ff6a) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'test_teacher_91c21ce939e64a5880be67c4d291ff6a': UserInputContextBuildingProcessor completed. Final content length: 485
+AgentExternalEventNotifier (NotifierID: 8586684f-0977-4e19-b346-3b3c1ba59b70, AgentID: test_teacher_91c21ce939e64a5880be67c4d291ff6a) emitted agent_status. Kwarg keys for emit: agent_id,payload
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 8586684f-0977-4e19-b346-3b3c1ba59b70, AgentID: test_teacher_91c21ce939e64a5880be67c4d291ff6a) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8586684f-0977-4e19-b346-3b3c1ba59b70, AgentID: test_teacher_91c21ce939e64a5880be67c4d291ff6a) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8586684f-0977-4e19-b346-3b3c1ba59b70, AgentID: test_teacher_91c21ce939e64a5880be67c4d291ff6a) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8586684f-0977-4e19-b346-3b3c1ba59b70, AgentID: test_teacher_91c21ce939e64a5880be67c4d291ff6a) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Workspace with ID agent_ws_03ad8c6e4a1ed70f7bc7bee7b1015ea944fa07029cfbd61c3ae975a078a68e2c not found. Falling back to temp workspace.
+Using temp workspace (ID: temp_ws_default) for agent.
+MediaStorageService initialized. Media root: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/media
+AgentRuntimeState initialized for agent_id 'student_one_0d0357ddde3b4f2c84ae433e33b50613'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'student_one_0d0357ddde3b4f2c84ae433e33b50613': LLM instance 'OpenAILLM' and 5 tools prepared and stored in state.
+AgentContext composed for agent_id 'student_one_0d0357ddde3b4f2c84ae433e33b50613'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'student_one_0d0357ddde3b4f2c84ae433e33b50613' with config: 'Student One'.
+AgentWorker initialized for agent_id 'student_one_0d0357ddde3b4f2c84ae433e33b50613'.
+Registered AgentContext for agent_id 'student_one_0d0357ddde3b4f2c84ae433e33b50613'. Total registered contexts: 2
+AgentRuntime initialized for agent_id 'student_one_0d0357ddde3b4f2c84ae433e33b50613'. Context registered.
+Agent facade initialized for agent_id 'student_one_0d0357ddde3b4f2c84ae433e33b50613'.
+Agent 'student_one_0d0357ddde3b4f2c84ae433e33b50613' created and stored successfully.
+Agent 'student_one_0d0357ddde3b4f2c84ae433e33b50613' requesting runtime to start.
+AgentRuntime for 'student_one_0d0357ddde3b4f2c84ae433e33b50613': Starting worker.
+AgentWorker 'student_one_0d0357ddde3b4f2c84ae433e33b50613': Starting...
+AgentWorker 'student_one_0d0357ddde3b4f2c84ae433e33b50613' asyncRun(): Starting.
+Agent 'student_one_0d0357ddde3b4f2c84ae433e33b50613': Runtime init completed (event store initialized).
+Agent 'student_one_0d0357ddde3b4f2c84ae433e33b50613': Runtime init completed (status deriver initialized).
+Agent 'student_one_0d0357ddde3b4f2c84ae433e33b50613': Runtime init completed (AgentEventInbox initialized).
+Agent 'student_one_0d0357ddde3b4f2c84ae433e33b50613': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'student_one_0d0357ddde3b4f2c84ae433e33b50613' to become idle (timeout: 30s)...
+AgentEventStream (ID: af2b3d52-c288-4755-a80f-5ad23117045c) initialized for agent_id 'student_one_0d0357ddde3b4f2c84ae433e33b50613'. Subscribed to notifier.
+Agent 'student_one_0d0357ddde3b4f2c84ae433e33b50613': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: e7018343-8a65-48fc-903d-60a9f1b94b93, AgentID: student_one_0d0357ddde3b4f2c84ae433e33b50613) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'student_one_0d0357ddde3b4f2c84ae433e33b50613': Bootstrapper starting direct lifecycle execution.
+Agent 'student_one_0d0357ddde3b4f2c84ae433e33b50613': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'student_one_0d0357ddde3b4f2c84ae433e33b50613': Executing McpServerPrewarmingStep.
+Agent 'student_one_0d0357ddde3b4f2c84ae433e33b50613': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'student_one_0d0357ddde3b4f2c84ae433e33b50613': Executing SystemPromptProcessingStep.
+Agent 'student_one_0d0357ddde3b4f2c84ae433e33b50613': No configured skills. Skipping skill catalog.
+Agent 'student_one_0d0357ddde3b4f2c84ae433e33b50613': Final processed system prompt configured on LLM instance. Final length: 6756.
+Agent 'student_one_0d0357ddde3b4f2c84ae433e33b50613': Final processed system prompt:
+---
+## Agent Identity
+
+- Name: Student One
+- Description: Coordinator student for the nested Student Study Group test team.
+
+### Responsibilities and Boundaries
+
+You are `student_one`, coordinator of the nested `StudentStudyGroup` team.
+
+Your job is to complete delegated classroom test tasks from `Teacher` and submit the final answer through the task lifecycle.
+
+#### Delegated Task Behavior
+
+When you receive a delegated task packet:
+
+1. Read the requested answer format carefully.
+2. If the task asks for an exact token or exact phrase, prepare exactly that token or phrase.
+3. Call `submit_task_result` with a non-empty `message` containing the final result.
+
+For the standard smoke test, if asked to return `NESTED_CLASSROOM_OK`, submit exactly:
+
+`NESTED_CLASSROOM_OK`
+
+#### Collaboration
+
+For this test fixture, when a delegated task asks you to consult `student_two`, the peer exchange is mandatory and must happen before submission.
+
+1. Call `send_message_to` exactly once with `recipient_address: "./student_two"` and the exact requested token as `content`.
+2. Wait until `student_two` replies to your current task-scoped execution.
+3. Only after receiving that reply, call `submit_task_result` exactly once with the exact requested result token.
+
+Do not merely describe the peer exchange, do not skip the tool call, and do not submit before the reply. You remain responsible for the final result.
+
+#### Tool Rules
+
+- Use `submit_task_result` for final task result submission.
+- Do not use `send_message_to` as the task result protocol.
+- Do not accept or reject results; that is `Teacher`'s job through `review_task_result`.
+
+## Team Instruction
+
+This nested team is intentionally simple.
+
+`student_one` coordinates the study group. `student_two` is a supporting student.
+
+When this team receives a delegated task from `Teacher`, `student_one` should complete the task and submit the final result with `submit_task_result`.
+
+If the prompt asks for an exact token, the submitted result message should contain exactly that token unless the task explicitly asks for extra explanation.
+
+Use `send_message_to` only for ordinary teammate discussion. Do not use it for final task result submission.
+
+## Team Runtime
+
+You are working as a member of an AgentTeam. Agents and AgentTeams use filesystem-like logical addresses to communicate. These addresses identify Team members; they are not real filesystem paths.
+
+Your address in the AgentTeam is:
+
+/StudentStudyGroup/student_one
+
+Addresses beginning with `/` start from the root AgentTeam. Addresses beginning with `./` start from your current AgentTeam, similar to relative filesystem paths.
+
+For example:
+
+- `./architecture_reviewer` addresses a member named `architecture_reviewer` in your current AgentTeam.
+- `./implementation_team` addresses a child AgentTeam named `implementation_team`.
+- `/requirements_engineering/requirements_lead` is an absolute address from the root AgentTeam.
+
+Sending a message to an AgentTeam address delivers it to that Team's configured coordinator. Bare member names, `../`, and backslashes are not valid addresses.
+
+When you finish your work or are blocked, call `get_handoff_rules` to check your configured handoff rules. Each returned rule tells you when a handoff applies and provides the `recipient_address` to notify.
+
+If a rule applies, use `send_message_to` to notify that Agent or AgentTeam. If several applicable rules have the same recipient, send one message that combines the relevant reasons. Follow distinct recipients in the order they first appear. If no rule applies, finish normally.
+
+Do not say that you completed a handoff unless `send_message_to` confirms that the message was delivered.
+
+`delegate_task.recipient_address` uses the same logical-address grammar. A task target must be a direct Agent or AgentTeam child of your immediate AgentTeam; deeper and cross-branch addresses remain valid for message delivery but are not task-eligible.
+
+## Working Environment
+
+- Agent workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/temp_workspace`
+- Use skills from their skill package directories to work on tasks in the agent workspace.
+- A skill package directory contains the skill's instructions and bundled assets. It is not the agent workspace, and reading the skill does not change the agent workspace.
+- Resolve skill-package references from the skill package directory. Resolve task and project locations from the agent workspace unless an explicit target says otherwise.
+- Do not modify a skill package unless the task explicitly targets that skill package.
+- With no working-directory override, `pwd` returns the agent workspace. An explicit working directory changes only that command's location; it does not redefine the workspace.
+
+## Bash Operating Practice
+
+- Use Bash as the primary interface for performing work in the agent workspace. Use it for workspace navigation, search, file reading, writing and editing, repository operations, processes, network operations, and project commands.
+- Prefer deterministic, non-interactive, small, composable commands.
+- Prefer project-native commands and format-aware tools such as `git`, `npm`, `pnpm`, `pytest`, `jq`, and project scripts when applicable.
+- Use another provided tool when Bash cannot achieve the purpose.
+
+## File And Directory Practice
+
+- Locate files and directories by intent instead of broadly listing them. For content, use targeted searches such as `rg -n "term" path`. For file names, use `rg --files path | rg "pattern"`. Use constrained `find` commands only when filesystem traversal or metadata is the better fit.
+- Read only the relevant content. Use `cat` for a complete small file, `wc -l` before a potentially broad read, `sed -n '40,120p' file` for an exact window, and `nl -ba file | sed -n '40,120p'` when line numbers matter. Prefer format-aware readers such as `jq` for structured data.
+- Choose the narrowest deterministic edit that matches the file format and change shape. Prefer exact anchors for text, parser-aware tools for structured files, and quoted heredocs for new content. Replace important files through a temporary file when a direct in-place edit is not safely verifiable.
+- Use explicit quoted paths and preserve unrelated content and existing changes. Before copying, moving, or deleting, verify the source and destination. Delete only when the task requires it and the target has been verified.
+- Keep inspection, modification, and verification as separate commands when a failure would need diagnosis. Verify changes with a fitting check such as `git diff -- path`, targeted `rg`, a format parser, or a project-native test or validator.
+---
+Agent 'student_one_0d0357ddde3b4f2c84ae433e33b50613': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: e7018343-8a65-48fc-903d-60a9f1b94b93, AgentID: student_one_0d0357ddde3b4f2c84ae433e33b50613) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'student_one_0d0357ddde3b4f2c84ae433e33b50613' initialized successfully. Entering main event scheduler loop.
+Agent 'student_one_0d0357ddde3b4f2c84ae433e33b50613' has become idle.
+AgentEventStream (ID: af2b3d52-c288-4755-a80f-5ad23117045c) for 'student_one_0d0357ddde3b4f2c84ae433e33b50613': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: f0775d1e-e003-47a5-bf82-34beb0f865e1) initialized for agent_id 'student_one_0d0357ddde3b4f2c84ae433e33b50613'. Subscribed to notifier.
+Successfully created autobyteus agent run 'student_one_0d0357ddde3b4f2c84ae433e33b50613'.
+AgentExternalEventNotifier (NotifierID: e7018343-8a65-48fc-903d-60a9f1b94b93, AgentID: student_one_0d0357ddde3b4f2c84ae433e33b50613) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e7018343-8a65-48fc-903d-60a9f1b94b93, AgentID: student_one_0d0357ddde3b4f2c84ae433e33b50613) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'student_one_0d0357ddde3b4f2c84ae433e33b50613': UserInputContextBuildingProcessor completed. Final content length: 466
+AgentExternalEventNotifier (NotifierID: e7018343-8a65-48fc-903d-60a9f1b94b93, AgentID: student_one_0d0357ddde3b4f2c84ae433e33b50613) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8586684f-0977-4e19-b346-3b3c1ba59b70, AgentID: test_teacher_91c21ce939e64a5880be67c4d291ff6a) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8586684f-0977-4e19-b346-3b3c1ba59b70, AgentID: test_teacher_91c21ce939e64a5880be67c4d291ff6a) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8586684f-0977-4e19-b346-3b3c1ba59b70, AgentID: test_teacher_91c21ce939e64a5880be67c4d291ff6a) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8586684f-0977-4e19-b346-3b3c1ba59b70, AgentID: test_teacher_91c21ce939e64a5880be67c4d291ff6a) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Agent run 'test_teacher_91c21ce939e64a5880be67c4d291ff6a': UserInputContextBuildingProcessor completed. Final content length: 81
+AgentExternalEventNotifier (NotifierID: 8586684f-0977-4e19-b346-3b3c1ba59b70, AgentID: test_teacher_91c21ce939e64a5880be67c4d291ff6a) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8586684f-0977-4e19-b346-3b3c1ba59b70, AgentID: test_teacher_91c21ce939e64a5880be67c4d291ff6a) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[team-communication] projection inserted teamRunId=nested_classroom_test_team_9d14472d93da4d1eb16c0409b76acded messageId=teammsg_ph8nCO_3uVJ80uutkvfpYua7FdSFHweR referenceCount=1 projectionPath=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/memory/agent_teams/nested_classroom_test_team_9d14472d93da4d1eb16c0409b76acded/team_communication_messages.json
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: e7018343-8a65-48fc-903d-60a9f1b94b93, AgentID: student_one_0d0357ddde3b4f2c84ae433e33b50613) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e7018343-8a65-48fc-903d-60a9f1b94b93, AgentID: student_one_0d0357ddde3b4f2c84ae433e33b50613) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e7018343-8a65-48fc-903d-60a9f1b94b93, AgentID: student_one_0d0357ddde3b4f2c84ae433e33b50613) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e7018343-8a65-48fc-903d-60a9f1b94b93, AgentID: student_one_0d0357ddde3b4f2c84ae433e33b50613) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e7018343-8a65-48fc-903d-60a9f1b94b93, AgentID: student_one_0d0357ddde3b4f2c84ae433e33b50613) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e7018343-8a65-48fc-903d-60a9f1b94b93, AgentID: student_one_0d0357ddde3b4f2c84ae433e33b50613) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e7018343-8a65-48fc-903d-60a9f1b94b93, AgentID: student_one_0d0357ddde3b4f2c84ae433e33b50613) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e7018343-8a65-48fc-903d-60a9f1b94b93, AgentID: student_one_0d0357ddde3b4f2c84ae433e33b50613) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Agent run 'student_one_0d0357ddde3b4f2c84ae433e33b50613': UserInputContextBuildingProcessor completed. Final content length: 81
+AgentExternalEventNotifier (NotifierID: e7018343-8a65-48fc-903d-60a9f1b94b93, AgentID: student_one_0d0357ddde3b4f2c84ae433e33b50613) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e7018343-8a65-48fc-903d-60a9f1b94b93, AgentID: student_one_0d0357ddde3b4f2c84ae433e33b50613) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[team-communication] projection inserted teamRunId=nested_classroom_test_team_9d14472d93da4d1eb16c0409b76acded messageId=teammsg_wH6qS7hRqfHei_Or0VKXnVYoT6hcUbeD referenceCount=0 projectionPath=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/memory/agent_teams/nested_classroom_test_team_9d14472d93da4d1eb16c0409b76acded/team_communication_messages.json
+Closed agent session 066c9e93-2b1b-4007-a145-093f97e13671
+Agent Team WebSocket disconnected: 066c9e93-2b1b-4007-a145-093f97e13671
+Created terminal session 508a30dd-5f63-4100-961d-051a47448cf1 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 508a30dd-5f63-4100-961d-051a47448cf1
+Terminal websocket attached for cwd /Users/normy
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: e7018343-8a65-48fc-903d-60a9f1b94b93, AgentID: student_one_0d0357ddde3b4f2c84ae433e33b50613) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e7018343-8a65-48fc-903d-60a9f1b94b93, AgentID: student_one_0d0357ddde3b4f2c84ae433e33b50613) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e7018343-8a65-48fc-903d-60a9f1b94b93, AgentID: student_one_0d0357ddde3b4f2c84ae433e33b50613) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e7018343-8a65-48fc-903d-60a9f1b94b93, AgentID: student_one_0d0357ddde3b4f2c84ae433e33b50613) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e7018343-8a65-48fc-903d-60a9f1b94b93, AgentID: student_one_0d0357ddde3b4f2c84ae433e33b50613) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e7018343-8a65-48fc-903d-60a9f1b94b93, AgentID: student_one_0d0357ddde3b4f2c84ae433e33b50613) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e7018343-8a65-48fc-903d-60a9f1b94b93, AgentID: student_one_0d0357ddde3b4f2c84ae433e33b50613) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e7018343-8a65-48fc-903d-60a9f1b94b93, AgentID: student_one_0d0357ddde3b4f2c84ae433e33b50613) emitted agent_tool_execution_failed. Kwarg keys for emit: agent_id,payload
+Agent run 'student_one_0d0357ddde3b4f2c84ae433e33b50613': UserInputContextBuildingProcessor completed. Final content length: 342
+AgentExternalEventNotifier (NotifierID: e7018343-8a65-48fc-903d-60a9f1b94b93, AgentID: student_one_0d0357ddde3b4f2c84ae433e33b50613) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e7018343-8a65-48fc-903d-60a9f1b94b93, AgentID: student_one_0d0357ddde3b4f2c84ae433e33b50613) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/memory/agent_teams/nested_classroom_test_team_9d14472d93da4d1eb16c0409b76acded/student_study_group_b4dac03f4ce9455cb94f9a173e8d1a05/student_two_065fa78ad922423bb80e6e5590db611d/raw_traces_active.jsonl
+Agent team websocket attached for team run nested_classroom_test_team_9d14472d93da4d1eb16c0409b76acded
+Created agent session 6dfd33d5-1eee-4ad4-ad33-6d146de55e91 for run nested_classroom_test_team_9d14472d93da4d1eb16c0409b76acded
+Agent Team WebSocket connected: session=6dfd33d5-1eee-4ad4-ad33-6d146de55e91, run=nested_classroom_test_team_9d14472d93da4d1eb16c0409b76acded
+AgentExternalEventNotifier (NotifierID: e7018343-8a65-48fc-903d-60a9f1b94b93, AgentID: student_one_0d0357ddde3b4f2c84ae433e33b50613) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e7018343-8a65-48fc-903d-60a9f1b94b93, AgentID: student_one_0d0357ddde3b4f2c84ae433e33b50613) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'student_one_0d0357ddde3b4f2c84ae433e33b50613': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+AgentExternalEventNotifier (NotifierID: e7018343-8a65-48fc-903d-60a9f1b94b93, AgentID: student_one_0d0357ddde3b4f2c84ae433e33b50613) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e7018343-8a65-48fc-903d-60a9f1b94b93, AgentID: student_one_0d0357ddde3b4f2c84ae433e33b50613) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e7018343-8a65-48fc-903d-60a9f1b94b93, AgentID: student_one_0d0357ddde3b4f2c84ae433e33b50613) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/memory/agent_teams/nested_classroom_test_team_9d14472d93da4d1eb16c0409b76acded/student_study_group_b4dac03f4ce9455cb94f9a173e8d1a05/student_two_065fa78ad922423bb80e6e5590db611d/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/memory/agent_teams/nested_classroom_test_team_9d14472d93da4d1eb16c0409b76acded/student_study_group_b4dac03f4ce9455cb94f9a173e8d1a05/student_two_065fa78ad922423bb80e6e5590db611d/raw_traces_active.jsonl
+Agent team websocket attached for team run nested_classroom_test_team_9d14472d93da4d1eb16c0409b76acded
+Created agent session f83f4e9f-671c-4dbf-ae63-cda0ee63f2af for run nested_classroom_test_team_9d14472d93da4d1eb16c0409b76acded
+Agent Team WebSocket connected: session=f83f4e9f-671c-4dbf-ae63-cda0ee63f2af, run=nested_classroom_test_team_9d14472d93da4d1eb16c0409b76acded
+Closed agent session f83f4e9f-671c-4dbf-ae63-cda0ee63f2af
+Agent Team WebSocket disconnected: f83f4e9f-671c-4dbf-ae63-cda0ee63f2af
+AgentEventStream (ID: 848cd038-770c-44a4-b8fb-4ce377e280b6) for 'test_teacher_91c21ce939e64a5880be67c4d291ff6a': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'test_teacher_91c21ce939e64a5880be67c4d291ff6a'. Attempting graceful shutdown.
+Agent 'test_teacher_91c21ce939e64a5880be67c4d291ff6a' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: 8586684f-0977-4e19-b346-3b3c1ba59b70, AgentID: test_teacher_91c21ce939e64a5880be67c4d291ff6a) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'test_teacher_91c21ce939e64a5880be67c4d291ff6a': Stop requested.
+AgentExternalEventNotifier (NotifierID: 8586684f-0977-4e19-b346-3b3c1ba59b70, AgentID: test_teacher_91c21ce939e64a5880be67c4d291ff6a) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8586684f-0977-4e19-b346-3b3c1ba59b70, AgentID: test_teacher_91c21ce939e64a5880be67c4d291ff6a) emitted agent_turn_interrupted. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8586684f-0977-4e19-b346-3b3c1ba59b70, AgentID: test_teacher_91c21ce939e64a5880be67c4d291ff6a) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'test_teacher_91c21ce939e64a5880be67c4d291ff6a': Drained 1 queued inbox event(s) during shutdown.
+AgentWorker 'test_teacher_91c21ce939e64a5880be67c4d291ff6a' asyncRun() loop has finished.
+AgentWorker 'test_teacher_91c21ce939e64a5880be67c4d291ff6a': Running shutdown sequence on worker loop.
+AgentWorker 'test_teacher_91c21ce939e64a5880be67c4d291ff6a': Shutdown resource cleanup completed successfully.
+AgentWorker 'test_teacher_91c21ce939e64a5880be67c4d291ff6a': Shutdown sequence completed.
+AgentExternalEventNotifier (NotifierID: 8586684f-0977-4e19-b346-3b3c1ba59b70, AgentID: test_teacher_91c21ce939e64a5880be67c4d291ff6a) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Unregistered AgentContext for agent_id 'test_teacher_91c21ce939e64a5880be67c4d291ff6a'.
+AgentRuntime for 'test_teacher_91c21ce939e64a5880be67c4d291ff6a': Context unregistered.
+AgentRuntime for 'test_teacher_91c21ce939e64a5880be67c4d291ff6a' stop() method completed.
+AgentEventStream (ID: f0775d1e-e003-47a5-bf82-34beb0f865e1) for 'student_one_0d0357ddde3b4f2c84ae433e33b50613': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'student_one_0d0357ddde3b4f2c84ae433e33b50613'. Attempting graceful shutdown.
+Agent 'student_one_0d0357ddde3b4f2c84ae433e33b50613' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: e7018343-8a65-48fc-903d-60a9f1b94b93, AgentID: student_one_0d0357ddde3b4f2c84ae433e33b50613) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'student_one_0d0357ddde3b4f2c84ae433e33b50613': Stop requested.
+AgentExternalEventNotifier (NotifierID: e7018343-8a65-48fc-903d-60a9f1b94b93, AgentID: student_one_0d0357ddde3b4f2c84ae433e33b50613) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'student_one_0d0357ddde3b4f2c84ae433e33b50613' asyncRun() loop has finished.
+AgentWorker 'student_one_0d0357ddde3b4f2c84ae433e33b50613': Running shutdown sequence on worker loop.
+AgentWorker 'student_one_0d0357ddde3b4f2c84ae433e33b50613': Shutdown resource cleanup completed successfully.
+AgentWorker 'student_one_0d0357ddde3b4f2c84ae433e33b50613': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'student_one_0d0357ddde3b4f2c84ae433e33b50613'.
+AgentRuntime for 'student_one_0d0357ddde3b4f2c84ae433e33b50613': Context unregistered.
+AgentRuntime for 'student_one_0d0357ddde3b4f2c84ae433e33b50613' stop() method completed.
+Closed agent session 6dfd33d5-1eee-4ad4-ad33-6d146de55e91
+Agent Team WebSocket disconnected: 6dfd33d5-1eee-4ad4-ad33-6d146de55e91
+Closed PTY session 508a30dd-5f63-4100-961d-051a47448cf1
+Terminal WebSocket disconnected: 508a30dd-5f63-4100-961d-051a47448cf1
+Created terminal session e86f03f3-0e3f-4b20-bbb7-a7b3c0ff900e using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: e86f03f3-0e3f-4b20-bbb7-a7b3c0ff900e
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session e86f03f3-0e3f-4b20-bbb7-a7b3c0ff900e
+Terminal WebSocket disconnected: e86f03f3-0e3f-4b20-bbb7-a7b3c0ff900e

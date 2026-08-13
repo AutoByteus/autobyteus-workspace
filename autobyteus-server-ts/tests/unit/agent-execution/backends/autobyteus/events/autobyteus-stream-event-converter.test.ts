@@ -345,7 +345,7 @@ describe("AutoByteusStreamEventConverter", () => {
     });
   });
 
-  it("drops unknown segment variants and preserves missing identity for run-owned validation", () => {
+  it("drops unknown segment variants and rejects missing canonical segment identity at provider ingress", () => {
     const converter = new AutoByteusStreamEventConverter("run-1");
     expect(
       converter.convert({
@@ -354,18 +354,10 @@ describe("AutoByteusStreamEventConverter", () => {
       } as any),
     ).toBeNull();
 
-    const missingIdentity = converter.convert({
+    expect(converter.convert({
       event_type: StreamEventType.SEGMENT_EVENT,
       data: { event_type: "start", segment_id: "seg-5" },
-    } as any);
-    expect(missingIdentity).toMatchObject({
-      eventType: AgentRunEventType.SEGMENT_START,
-      runId: "run-1",
-      payload: { id: "seg-5" },
-    });
-    expect(missingIdentity?.payload.turn_id).toBeUndefined();
-    expect(missingIdentity?.payload.segment_type).toBeUndefined();
-    expect(JSON.stringify(missingIdentity)).not.toContain("runtime-segment");
+    } as any)).toBeNull();
   });
 
   it("keeps native turn lifecycle payloads intact", () => {

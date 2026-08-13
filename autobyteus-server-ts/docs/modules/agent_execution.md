@@ -26,8 +26,9 @@ Before creating any native AutoByteus, Codex, or Claude backend, the runtime
 resolves the selected agent definition and exact absolute effective workspace,
 then calls the shared `composeCarpenterPrompt(...)` boundary. A team run also
 supplies its validated `MemberTeamContext` so the same composition includes the
-exact selected team instruction, current member identity, communication roster,
-and delegation target roster.
+exact selected Team instruction, canonical member address, collaboration
+addressing guidance, and configured handoff/task guidance. No flat
+communication or delegation roster is injected.
 
 The stable semantic order is Agent Identity, optional Team Instruction and Team
 Runtime, Working Environment, Bash Operating Practice, File And Directory
@@ -225,6 +226,7 @@ Canonical `ERROR` payloads add structured lifecycle evidence:
 ```ts
 type AgentErrorLifecycleEvidence =
   | { error_scope: "turn"; error_effect: "diagnostic"; turn_id: string }
+  | { error_scope: "runtime"; error_effect: "diagnostic" }
   | { error_scope: "turn"; error_effect: "terminal"; turn_id: string }
   | { error_scope: "runtime"; error_effect: "terminal" };
 ```
@@ -242,12 +244,23 @@ identified command by itself.
 
 ## Runtime Segment Identity And Ordering
 
-Provider adapters own the stream segment identities they emit. Text segments must
-use provider message/content-block identity when it is available, and may fall
-back to runtime-generated identities only for genuinely anonymous stream text.
-They must not use the whole turn id as the text segment id for all assistant
-text in a turn, because clients intentionally coalesce later content into an
-existing rendered segment when `segment_type` and `id` match.
+The provider boundary supplies truthful source identity, while `AgentRun` owns
+canonical segment admission. A source start must carry non-empty `id`,
+`turn_id`, and one finite segment type. Source content/end carry only their
+non-empty ID and turn plus content/terminal facts; they do not repeat type.
+Missing provider identity remains missing and becomes a non-terminal
+`AGENT_SEGMENT_LIFECYCLE_INVALID` diagnostic. No provider or consumer may
+generate a fallback identity, use the turn as segment ID, infer a type, or
+synthesize a missing start.
+
+Each `AgentRun` owns one non-persisted lifecycle map keyed by exact
+`{turnId,segmentId}`. The first pipeline transformer admits valid starts,
+derives their type onto canonical content, preserves a type-less canonical end,
+and rejects conflicting/replayed/retired lifecycle mutations as specified by
+the common state machine. Browser and transport coalescing also require exact
+turn, segment, and type agreement; equal deltas remain distinct events unless
+the presentation egress joins adjacent messages with every other payload field
+equal.
 
 Adapters also own the ordering boundary between assistant text and tool
 lifecycles. If a provider emits `assistant text -> tool_use/tool_result ->
@@ -264,7 +277,9 @@ Provider adapters must keep tool calls on two runtime-neutral lanes:
 - `TOOL_APPROVAL_*` and `TOOL_EXECUTION_*` owns execution/approval status, terminal result/error, logs, argument hydration, and durable tool traces.
 
 Provider-specific tool identities and result envelopes must be canonicalized at
-the runtime event-converter boundary before they become `AgentRunEvent`s.
+the runtime event-converter boundary before they become post-pipeline
+`AgentRunEvent`s. Tool source events still cross the common segment lifecycle
+when they use the segment lane.
 Frontend streaming handlers, Activity rows, and conversation tool cards consume
 the backend-provided tool name and result shape; they must not infer provider
 wire protocols such as MCP prefixes.
@@ -390,7 +405,7 @@ MCP protocol result envelopes into application-facing result/error payloads.
 Family-specific execution ownership stays below the Agent Tools MCP adapter:
 
 - `send_message_to` still runs through the shared
-  `src/agent-communication` dispatcher, so `recipient_name` stays a
+  `src/agent-communication` dispatcher, so `recipient_address` stays a
   team-context route and `target_agent_run_id` remains the global live-only exact
   active-run route.
 - Browser tools use the shared browser service and normalize successful results

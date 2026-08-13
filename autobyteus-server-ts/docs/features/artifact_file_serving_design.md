@@ -25,22 +25,23 @@ metadata and do not create Team Communication reference rows.
    and updates the run projection. Team-member projections remain scoped to the
    member run id.
 5. Metadata-only state persists to `<run-memory-dir>/file_changes.json`;
-   team-member runs use the resolved root-hierarchical member directory, for example
-   `agent_teams/<rootTeamRunId>/<...teamRunPath>/<memberRunId>/file_changes.json`.
+   team-member runs use the canonical memory location resolved from the root
+   TeamRun id, physical ancestor TeamRun ids, rooted member address, and AgentRun
+   id. Physical directory lineage is not a logical address encoding.
 6. The frontend hydrates rows through `getRunFileChanges(runId)` and applies live
    `FILE_CHANGE` updates through `runFileChangesStore`.
 7. The viewer fetches `/runs/:runId/file-change-content?path=...`.
 
 ## Team Communication Reference Flow
 
-1. `send_message_to(recipient_name=...)` accepts natural `content` plus optional
+1. `send_message_to(recipient_address=...)` accepts natural `content` plus optional
    explicit `reference_files` absolute local paths.
 2. Accepted team-route delivery emits one `INTER_AGENT_MESSAGE` payload with
    message id, address-first sender/receiver identity, content, message type,
-   team projection fields, and structured reference metadata. Nested static
-   members, task-team executions, and task-agent executions use canonical
-   `ConversationTargetAddress` segments in `senderAddress` and
-   `receiverAddress` rather than flat participant fields.
+   team projection fields, and structured reference metadata. Structural,
+   task-Team, and task-Agent senders/receivers use the exact four-field
+   `TeamExecutionAddress` (`rootTeamRunId`, ordered `taskTeamRunIds`, rooted
+   `memberAddress`, and nullable `taskAgentRunId`).
 3. `TeamCommunicationMessageProcessor` converts accepted `INTER_AGENT_MESSAGE`
    events into one normalized `TEAM_COMMUNICATION_MESSAGE` per message.
 4. `TeamCommunicationService` observes derived `TEAM_COMMUNICATION_MESSAGE`
@@ -67,7 +68,7 @@ intentionally omit the team projection fields consumed by this flow.
 | Team communication projection | `src/services/team-communication/*` | Message-first projection, identity, normalization, and content resolution. |
 | Team communication API | `src/api/graphql/types/team-communication.ts`, `src/api/rest/team-communication.ts` | Hydrate messages and stream child reference content. |
 | Mixed team member event bridge | `src/agent-team-execution/backends/mixed/**` plus runtime AgentRun event converters | Converts/enriches member runtime events once before team fan-out. |
-| Mixed nested team event bridge | `src/agent-team-execution/backends/mixed/events/mixed-team-event-bridge.ts` | Prefixes child team event `sourcePath` with the parent subteam path before projection/fan-out. |
+| Team Agent event projection | `src/services/agent-streaming/team-agent-event-websocket-projector.ts` | Projects canonical Agent events with one strict `agent_execution` binding before WebSocket fan-out. |
 
 ## Storage
 

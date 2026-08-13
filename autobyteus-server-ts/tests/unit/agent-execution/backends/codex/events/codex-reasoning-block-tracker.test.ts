@@ -3,7 +3,7 @@ import { CodexReasoningBlockTracker } from "../../../../../../src/agent-executio
 
 const appendCompleted = (
   tracker: CodexReasoningBlockTracker,
-  turnId: string | null,
+  turnId: string,
   providerItemId: string | null,
   snapshot: string,
 ) => tracker.append({ turnId, providerItemId, snapshot });
@@ -74,25 +74,6 @@ describe("CodexReasoningBlockTracker", () => {
     expect(tracker.closeAll()).toEqual([
       { kind: "end", segmentId: first.segmentId, turnId: "turn-a" },
       { kind: "end", segmentId: second.segmentId, turnId: "turn-b" },
-    ]);
-    expect(tracker.closeAll()).toEqual([]);
-  });
-
-  it("emits adjacent content and end for missing turn identity without retaining the block", () => {
-    const tracker = new CodexReasoningBlockTracker("nonce-a");
-
-    const first = appendCompleted(tracker, null, null, "first");
-    const second = appendCompleted(tracker, null, null, "second");
-
-    expect(first).toEqual([
-      { kind: "start", segmentId: "reasoning-block:nonce-a:1", turnId: null },
-      { kind: "content", segmentId: "reasoning-block:nonce-a:1", turnId: null, delta: "first" },
-      { kind: "end", segmentId: "reasoning-block:nonce-a:1", turnId: null },
-    ]);
-    expect(second).toEqual([
-      { kind: "start", segmentId: "reasoning-block:nonce-a:2", turnId: null },
-      { kind: "content", segmentId: "reasoning-block:nonce-a:2", turnId: null, delta: "second" },
-      { kind: "end", segmentId: "reasoning-block:nonce-a:2", turnId: null },
     ]);
     expect(tracker.closeAll()).toEqual([]);
   });

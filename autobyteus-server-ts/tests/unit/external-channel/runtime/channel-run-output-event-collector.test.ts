@@ -36,55 +36,21 @@ describe("channel output text assembly", () => {
     expect(assembled).toBe("Sent the student");
   });
 
-  it("uses the latest cumulative snapshot fragment", () => {
-    const assembled = ["Sent", "Sent the", "Sent the student"].reduce(
-      appendOutputTextFragment,
-      "",
+  it("appends every accepted byte exactly once without snapshot or overlap inference", () => {
+    const deltas = [" hello ", " ", "\n", "foo\n", "x", "x", "ab", "bc"];
+    expect(deltas.reduce(appendOutputTextFragment, "")).toBe(
+      " hello  \nfoo\nxxabbc",
     );
-
-    expect(assembled).toBe("Sent the student");
-  });
-
-  it("dedupes suffix/prefix-overlapping stream fragments", () => {
-    const assembled = [
-      "Sent the",
-      " the student",
-      " student a",
-      " a hard",
-      " hard cyclic",
-      " cyclic inequality",
-      " inequality problem",
-      " problem to",
-      " to solve",
-      " solve.",
-    ].reduce(appendOutputTextFragment, "");
-
-    expect(assembled).toBe(
-      "Sent the student a hard cyclic inequality problem to solve.",
+    expect(appendOutputTextFragment("Yes,", ", I’m here.")).toBe(
+      "Yes,, I’m here.",
     );
-  });
-
-  it("dedupes punctuation overlaps without rewriting one-character word splits", () => {
-    expect(appendOutputTextFragment("Yes,", ", I’m here.")).toBe("Yes, I’m here.");
-    expect(appendOutputTextFragment("cat", "tail")).toBe("cattail");
   });
 });
 
 describe("ChannelRunOutputEventCollector", () => {
-  it("collects overlapping stream fragments without duplicated words", () => {
+  it("collects exact stream fragments without deduplication or reconciliation", () => {
     const collector = new ChannelRunOutputEventCollector();
-    for (const text of [
-      "Sent the",
-      " the student",
-      " student a",
-      " a hard",
-      " hard cyclic",
-      " cyclic inequality",
-      " inequality problem",
-      " problem to",
-      " to solve",
-      " solve.",
-    ]) {
+    for (const text of [" hello ", " ", "\n", "foo\n", "x", "x", "ab", "bc"]) {
       expect(collector.processEvent({
         deliveryKey: "delivery-1",
         event: parsedEvent({
@@ -100,30 +66,7 @@ describe("ChannelRunOutputEventCollector", () => {
       event: parsedEvent({ eventType: AgentRunEventType.TURN_COMPLETED }),
     });
 
-    expect(final?.replyText).toBe(
-      "Sent the student a hard cyclic inequality problem to solve.",
-    );
-  });
-
-  it("keeps cumulative stream snapshots clean", () => {
-    const collector = new ChannelRunOutputEventCollector();
-    for (const text of ["Glad", "Glad you", "Glad you liked it!"]) {
-      collector.processEvent({
-        deliveryKey: "delivery-1",
-        event: parsedEvent({
-          eventType: AgentRunEventType.SEGMENT_CONTENT,
-          text,
-          textKind: "STREAM_FRAGMENT",
-        }),
-      });
-    }
-
-    const final = collector.processEvent({
-      deliveryKey: "delivery-1",
-      event: parsedEvent({ eventType: AgentRunEventType.TURN_COMPLETED }),
-    });
-
-    expect(final?.replyText).toBe("Glad you liked it!");
+    expect(final?.replyText).toBe(" hello  \nfoo\nxxabbc");
   });
 
   it("ignores segment-end payload text and retains only admitted stream content", () => {

@@ -1,0 +1,290 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+
+stderr | tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > normalizes Agent Tools MCP send_message_to segment and lifecycle events
+[ProviderSegmentAdmissionRejected] {
+  runtimeKind: 'claude_agent_sdk',
+  runId: 'run-claude-converter',
+  nativeEventName: 'item/added',
+  reasonCode: 'CLAUDE_SEGMENT_IDENTITY_INVALID'
+}
+[ProviderSegmentAdmissionRejected] {
+  runtimeKind: 'claude_agent_sdk',
+  runId: 'run-claude-converter',
+  nativeEventName: 'item/completed',
+  reasonCode: 'CLAUDE_SEGMENT_IDENTITY_INVALID'
+}
+
+stderr | tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > passes canonical send_message_to segment and started lifecycle events
+[ProviderSegmentAdmissionRejected] {
+  runtimeKind: 'claude_agent_sdk',
+  runId: 'run-claude-converter',
+  nativeEventName: 'item/added',
+  reasonCode: 'CLAUDE_SEGMENT_IDENTITY_INVALID'
+}
+
+ ❯ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts (31 tests | 2 failed) 17ms
+     ✓ converts normal Claude tool segment lane metadata with arguments 2ms
+     ✓ converts a normal Claude tool lifecycle into TOOL_* events 0ms
+     × normalizes Agent Tools MCP send_message_to segment and lifecycle events 6ms
+     × passes canonical send_message_to segment and started lifecycle events 1ms
+     ✓ passes canonical send_message_to success and failure lifecycle events with arguments 1ms
+     ✓ normalizes browser MCP tool names to canonical browser tool names 0ms
+     ✓ normalizes Agent Tools MCP task-delegation envelopes to canonical task results 1ms
+     ✓ projects generic Claude MCP JSON text envelopes into parsed results 0ms
+     ✓ projects generic Claude MCP plain text envelopes into text results 0ms
+     ✓ projects generic Claude MCP structuredContent before text fallback 0ms
+     ✓ projects generic Claude MCP multi-text envelopes with deterministic separators 0ms
+     ✓ projects generic Claude MCP rich content envelopes into sanitized items 0ms
+     ✓ maps Claude MCP isError result envelopes into failure events without result 0ms
+     ✓ does not project exact envelope-shaped non-MCP Claude results 0ms
+     ✓ normalizes browser MCP content-block results to canonical browser result objects 0ms
+     ✓ normalizes browser MCP content-envelope results to canonical browser result objects 0ms
+     ✓ normalizes media MCP tool names and content envelopes to canonical generated-output results 0ms
+     ✓ strips the Agent Tools MCP provider from unknown migrated-provider names 0ms
+     ✓ preserves non-Autobyteus MCP tools with browser-like suffixes and results 0ms
+     ✓ normalizes browser MCP tool names in canonical segment start metadata 0ms
+     ✓ normalizes browser MCP tool names in provided segment end metadata 0ms
+     ✓ preserves arguments on failed Claude tool completion events 0ms
+     ✓ preserves arguments on denied Claude tool lifecycle events 1ms
+     ✓ emits only the neutral explicit turn-completed event 0ms
+     ✓ emits only the neutral explicit turn-started event 0ms
+     ✓ emits classified terminal error without a backend status companion 0ms
+     ✓ keeps unclassified Claude errors as content without a guessed status 0ms
+     ✓ maps Claude token usage session events to TOKEN_USAGE_UPDATED agent-run events 0ms
+     ✓ normalizes compacting status without rotation eligibility 0ms
+     ✓ normalizes compact_boundary as rotation eligible 0ms
+     ✓ keeps compacting status and compact boundary keys distinct when provider uuid matches 0ms
+ ❯ tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts (9 tests | 5 failed) 9ms
+     ✓ appends true delta fragments normally 1ms
+     × uses the latest cumulative snapshot fragment 3ms
+     × dedupes suffix/prefix-overlapping stream fragments 1ms
+     × dedupes punctuation overlaps without rewriting one-character word splits 0ms
+     × collects overlapping stream fragments without duplicated words 1ms
+     × keeps cumulative stream snapshots clean 1ms
+     ✓ ignores segment-end payload text and retains only admitted stream content 0ms
+     ✓ preserves collected output across recoverable diagnostic errors 0ms
+     ✓ does not clear newer-turn output for an older terminal error 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts > channel output text assembly > uses the latest cumulative snapshot fragment
+AssertionError: expected 'SentSent theSent the student' to be 'Sent the student' // Object.is equality
+
+Expected: "Sent the student"
+Received: "SentSent theSent the student"
+
+ ❯ tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts:45:23
+     43|     );
+     44| 
+     45|     expect(assembled).toBe("Sent the student");
+       |                       ^
+     46|   });
+     47| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts > channel output text assembly > dedupes suffix/prefix-overlapping stream fragments
+AssertionError: expected 'Sent the the student student a a hard…' to be 'Sent the student a hard cyclic inequa…' // Object.is equality
+
+Expected: "Sent the student a hard cyclic inequality problem to solve."
+Received: "Sent the the student student a a hard hard cyclic cyclic inequality inequality problem problem to to solve solve."
+
+ ❯ tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts:62:23
+     60|     ].reduce(appendOutputTextFragment, "");
+     61| 
+     62|     expect(assembled).toBe(
+       |                       ^
+     63|       "Sent the student a hard cyclic inequality problem to solve.",
+     64|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts > channel output text assembly > dedupes punctuation overlaps without rewriting one-character word splits
+AssertionError: expected 'Yes,, I’m here.' to be 'Yes, I’m here.' // Object.is equality
+
+Expected: "Yes, I’m here."
+Received: "Yes,, I’m here."
+
+ ❯ tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts:68:61
+     66| 
+     67|   it("dedupes punctuation overlaps without rewriting one-character wor…
+     68|     expect(appendOutputTextFragment("Yes,", ", I’m here.")).toBe("Yes,…
+       |                                                             ^
+     69|     expect(appendOutputTextFragment("cat", "tail")).toBe("cattail");
+     70|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts > ChannelRunOutputEventCollector > collects overlapping stream fragments without duplicated words
+AssertionError: expected 'Sent the the student student a a hard…' to be 'Sent the student a hard cyclic inequa…' // Object.is equality
+
+Expected: "Sent the student a hard cyclic inequality problem to solve."
+Received: "Sent the the student student a a hard hard cyclic cyclic inequality inequality problem problem to to solve solve."
+
+ ❯ tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts:103:30
+    101|     });
+    102| 
+    103|     expect(final?.replyText).toBe(
+       |                              ^
+    104|       "Sent the student a hard cyclic inequality problem to solve.",
+    105|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts > ChannelRunOutputEventCollector > keeps cumulative stream snapshots clean
+AssertionError: expected 'GladGlad youGlad you liked it!' to be 'Glad you liked it!' // Object.is equality
+
+Expected: "Glad you liked it!"
+Received: "GladGlad youGlad you liked it!"
+
+ ❯ tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts:126:30
+    124|     });
+    125| 
+    126|     expect(final?.replyText).toBe("Glad you liked it!");
+       |                              ^
+    127|   });
+    128| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > normalizes Agent Tools MCP send_message_to segment and lifecycle events
+AssertionError: expected undefined to match object { eventType: 'SEGMENT_START', …(1) }
+
+- Expected: 
+{
+  "eventType": "SEGMENT_START",
+  "payload": {
+    "metadata": {
+      "arguments": {
+        "content": "hello",
+        "message_type": "roundtrip_ping",
+        "recipient_address": "pong",
+      },
+      "tool_name": "send_message_to",
+    },
+  },
+}
+
++ Received: 
+undefined
+
+ ❯ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts:178:26
+    176|     });
+    177| 
+    178|     expect(segmentStart).toMatchObject({
+       |                          ^
+    179|       eventType: AgentRunEventType.SEGMENT_START,
+    180|       payload: {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > passes canonical send_message_to segment and started lifecycle events
+AssertionError: expected undefined to match object { eventType: 'SEGMENT_START', …(1) }
+
+- Expected: 
+{
+  "eventType": "SEGMENT_START",
+  "payload": {
+    "id": "invoke-send-message",
+    "metadata": {
+      "arguments": {
+        "content": "hello",
+        "message_type": "roundtrip_ping",
+        "recipient_address": "pong",
+      },
+      "tool_name": "send_message_to",
+    },
+    "segment_type": "tool_call",
+  },
+}
+
++ Received: 
+undefined
+
+ ❯ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts:259:26
+    257|     });
+    258| 
+    259|     expect(segmentStart).toMatchObject({
+       |                          ^
+    260|       eventType: AgentRunEventType.SEGMENT_START,
+    261|       payload: {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  7 failed | 33 passed (40)
+   Start at  09:56:17
+   Duration  853ms (transform 145ms, setup 15ms, import 171ms, tests 26ms, environment 0ms)
+

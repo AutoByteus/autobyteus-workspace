@@ -1,0 +1,8 @@
+source=/Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/nested-classroom-test
+stage=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/api-rev-037-live-20260813-1/staged-package/agent-teams/nested-classroom-test
+copy_status=PASS
+overlay_status=PASS
+source_unchanged=true
+staged_hash_rows=10
+operational_database_action=NONE
+operational_database_inspection=NONE

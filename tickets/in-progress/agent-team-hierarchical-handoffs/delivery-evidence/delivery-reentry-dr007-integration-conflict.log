@@ -1,0 +1,49 @@
+DR-007 integrate origin/personal
+UTC 2026-08-12T17:37:49Z
+HEAD 3dbddf54ddc38e8de0e3a79ad5ad74dd71e63364
+BASE 54890a07f74e941a7a12b6daaa26364f4c927b72
+Auto-merging autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.ts
+CONFLICT (modify/delete): autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-member-system-prompt-composer.ts deleted in origin/personal and modified in HEAD.  Version HEAD of autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-member-system-prompt-composer.ts left in tree.
+Auto-merging autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-mixed-tool-exposure.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-mixed-tool-exposure.ts
+Auto-merging autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts
+Auto-merging autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-tooling-options.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-tooling-options.ts
+CONFLICT (modify/delete): autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-turn-input-builder.ts deleted in origin/personal and modified in HEAD.  Version HEAD of autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-turn-input-builder.ts left in tree.
+Auto-merging autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts
+CONFLICT (modify/delete): autobyteus-server-ts/src/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.ts deleted in origin/personal and modified in HEAD.  Version HEAD of autobyteus-server-ts/src/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.ts left in tree.
+CONFLICT (modify/delete): autobyteus-server-ts/src/agent-execution/shared/configured-agent-tool-exposure.ts deleted in origin/personal and modified in HEAD.  Version HEAD of autobyteus-server-ts/src/agent-execution/shared/configured-agent-tool-exposure.ts left in tree.
+CONFLICT (modify/delete): autobyteus-server-ts/src/agent-team-execution/services/delegation-target-roster-builder.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of autobyteus-server-ts/src/agent-team-execution/services/delegation-target-roster-builder.ts left in tree.
+CONFLICT (modify/delete): autobyteus-server-ts/src/agent-team-execution/services/member-run-instruction-composer.ts deleted in origin/personal and modified in HEAD.  Version HEAD of autobyteus-server-ts/src/agent-team-execution/services/member-run-instruction-composer.ts left in tree.
+Auto-merging autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts
+CONFLICT (modify/delete): autobyteus-server-ts/src/agent-team-execution/services/member-team-roster-manifest.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of autobyteus-server-ts/src/agent-team-execution/services/member-team-roster-manifest.ts left in tree.
+Auto-merging autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-catalog.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-catalog.ts
+Auto-merging autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-registry.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-registry.ts
+Auto-merging autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-service.ts
+Auto-merging autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session.ts
+Auto-merging autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/agent-execution/backends/claude/backend/claude-session-bootstrapper.test.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/unit/agent-execution/backends/claude/backend/claude-session-bootstrapper.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts
+CONFLICT (modify/delete): autobyteus-server-ts/tests/unit/agent-execution/backends/claude/team-communication/team-member-claude-session-bootstrap-strategy.test.ts deleted in origin/personal and modified in HEAD.  Version HEAD of autobyteus-server-ts/tests/unit/agent-execution/backends/claude/team-communication/team-member-claude-session-bootstrap-strategy.test.ts left in tree.
+Auto-merging autobyteus-server-ts/tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts
+CONFLICT (modify/delete): autobyteus-server-ts/tests/unit/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.test.ts deleted in origin/personal and modified in HEAD.  Version HEAD of autobyteus-server-ts/tests/unit/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.test.ts left in tree.
+CONFLICT (modify/delete): autobyteus-server-ts/tests/unit/agent-execution/shared/configured-agent-tool-exposure.test.ts deleted in origin/personal and modified in HEAD.  Version HEAD of autobyteus-server-ts/tests/unit/agent-execution/shared/configured-agent-tool-exposure.test.ts left in tree.
+CONFLICT (modify/delete): autobyteus-server-ts/tests/unit/agent-team-execution/member-run-instruction-composer.test.ts deleted in origin/personal and modified in HEAD.  Version HEAD of autobyteus-server-ts/tests/unit/agent-team-execution/member-run-instruction-composer.test.ts left in tree.
+Auto-merging autobyteus-server-ts/tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts
+Auto-merging autobyteus-web/components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+Auto-merging autobyteus-web/components/mobile/__tests__/MobileUxRefinement.spec.ts
+Auto-merging autobyteus-web/generated/graphql.ts
+Auto-merging autobyteus-web/package.json
+Automatic merge failed; fix conflicts and then commit the result.
+merge-rc 1
+HEAD 3dbddf54ddc38e8de0e3a79ad5ad74dd71e63364
+MERGE_HEAD 54890a07f74e941a7a12b6daaa26364f4c927b72
+unmerged 21

@@ -10,7 +10,7 @@ Team-route `send_message_to.reference_files` are no longer owned by the
 Artifacts tab. They are child rows of Team Communication messages in the Team
 tab. The message body stays natural and self-contained; `reference_files` is the
 structured attachment/reference list used to register previewable files under the
-accepted `recipient_name` message that carried them. Direct exact-run
+accepted `recipient_address` message that carried them. Direct exact-run
 `send_message_to(target_agent_run_id=...)` messages carry their references in
 the target runtime input/event metadata but intentionally do not create Team
 Communication reference rows.
@@ -62,7 +62,7 @@ Rules:
 
 ## Team Communication References
 
-Team Communication owns message references for accepted `recipient_name`
+Team Communication owns message references for accepted `recipient_address`
 deliveries:
 
 ```ts
@@ -71,19 +71,17 @@ interface TeamCommunicationProjection {
   messages: TeamCommunicationMessage[];
 }
 
-interface ConversationTargetAddress {
-  segments: ConversationTargetSegment[];
+interface TeamExecutionAddress {
+  rootTeamRunId: string;
+  taskTeamRunIds: readonly string[];
+  memberAddress: string; // rooted AgentTeam address, for example /BuildSquad/review_lead
+  taskAgentRunId: string | null;
 }
-
-type ConversationTargetSegment =
-  | { kind: 'member'; memberRouteKey?: string; memberPath?: string[] }
-  | { kind: 'task_team'; taskTeamRunId: string }
-  | { kind: 'task_agent'; taskAgentRunId: string };
 
 interface TeamCommunicationMessage {
   messageId: string;
-  senderAddress: ConversationTargetAddress;
-  receiverAddress: ConversationTargetAddress;
+  senderAddress: TeamExecutionAddress;
+  receiverAddress: TeamExecutionAddress;
   content: string;
   messageType: string;
   createdAt: string;
@@ -108,12 +106,13 @@ Rules:
 - The durable projection stores `teamRunId` once at
   `agent_teams/<teamRunId>/team_communication_messages.json`; each message uses
   `senderAddress` and `receiverAddress` instead of duplicating sender/receiver
-  run ids, member paths, route keys, represented-subteam metadata, or
-  task-team-scope wrappers.
+  generated instance ids, legacy member paths/route keys, or compatibility
+  wrappers.
 - Focused Team Messages compare the focused member's normalized
-  `ConversationTargetAddress` with each message's `senderAddress` and
-  `receiverAddress`. Task-agent and task-team executions are represented by
-  explicit `task_agent` / `task_team` segments, not encoded into member labels.
+  `TeamExecutionAddress` with each message's `senderAddress` and
+  `receiverAddress`. Task-Agent and task-Team execution identity is carried by
+  `taskAgentRunId` and the ordered `taskTeamRunIds`; logical topology remains
+  the rooted `memberAddress`.
 - Old flat Team Communication projection files are converted by the registered
   app-data migration before normal runtime reads. Runtime, GraphQL hydration,
   WebSocket payloads, and the frontend store do not keep a read-time legacy

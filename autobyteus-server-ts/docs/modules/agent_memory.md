@@ -12,13 +12,13 @@ Memory files live under the configured memory root:
 
 - Standalone runs: `memory/agents/<runId>/...`
 - Direct team members: `memory/agent_teams/<rootTeamRunId>/<memberRunId>/...`
-- Nested subteam members: `memory/agent_teams/<rootTeamRunId>/<childTeamRunId>/<memberRunId>/...`; deeper nesting appends each child team run id to that root-relative `teamRunPath` before the member id
-- Task-agent runs: `memory/agent_teams/<rootTeamRunId>/<...teamRunPath>/<taskAgentRunId>/...` using the logical member's team memory scope
+- Nested subteam members: `memory/agent_teams/<rootTeamRunId>/<childTeamRunId>/<memberRunId>/...`; deeper nesting appends each physical ancestor TeamRun id before the AgentRun id
+- Task-Agent runs: `memory/agent_teams/<rootTeamRunId>/<...ancestorTeamRunIds>/<taskAgentRunId>/...` using the logical member's physical Team memory scope
 - Imported Memory Sync sources: `memory/imports/<sourceNodeId>/agents/...` and
   `memory/imports/<sourceNodeId>/agent_teams/...`, with source metadata in
   `source-node.json` and sync state in `sync-manifest.json`.
 
-The `runId`, `memberRunId`, `taskAgentRunId`, `teamRunId`, and `teamRunPath`
+The `runId`, `memberRunId`, `taskAgentRunId`, `teamRunId`, and `ancestorTeamRunIds`
 segments are opaque stored identifiers. Readers must not parse generated id
 shapes or derive nested member storage from a flattened member list; they should
 use the resolved `memoryDir` or `AgentMemoryLocationService`.
@@ -296,7 +296,7 @@ Agent explorer summaries include display name, stable ID, run count, latest memo
 
 `TeamMemoryExplorerService` reads team-run metadata and builds member memory targets. It includes a team run only when at least one member target has inspectable memory. Team groups use `teamDefinitionId`; each summary includes the team display name, team-run count, distinct member-memory count, latest memory timestamp, and merged availability.
 
-Team-run summaries include team run metadata, merged availability across member targets, and `memberTargets` containing only members with memory. The backend builds those targets from recursive metadata and `AgentMemoryLocationService`, so nested member availability is resolved from the root-hierarchical `rootTeamRunId + teamRunPath + memberRunId` memory directory rather than from a flattened root-team/member assumption.
+Team-run summaries include TeamRun metadata, merged availability across member targets, and `memberTargets` containing only members with memory. The backend builds those targets from schema-v3 recursive metadata and `AgentMemoryLocationService`: logical selection uses rooted `memberAddress`, while physical lookup uses `rootTeamRunId + ancestorTeamRunIds + agentRunId` rather than a flattened Team/member assumption.
 
 When `AgentMemoryLocationService` is constructed with an explicit `memoryDir`,
 its topology/readback collaborators must use the same memory root. Do not mix a

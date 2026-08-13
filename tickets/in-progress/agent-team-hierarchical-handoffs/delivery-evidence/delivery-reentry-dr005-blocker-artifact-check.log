@@ -1,0 +1,16 @@
+DR-005 blocker artifact check
+UTC 2026-08-10T18:28:42Z
+HEAD 7c6e6e6e1996522f4151407ca9064c28f2acdd4a
+MERGE_HEAD d0bcd0dab2263fa284cf07de8d98214e5d19af73
+origin/personal d0bcd0dab2263fa284cf07de8d98214e5d19af73
+PASS conflict-count=31
+PASS present delivery-integration-blocker.md
+PASS present delivery-revision-record.md
+PASS present docs-sync-report.md
+PASS present handoff-summary.md
+PASS present release-deployment-report.md
+PASS present release-notes.md
+PASS required lineage/integration/reroute/disclosures
+PASS protected-state-and-reviewer-audit
+PASS delivery-artifact-whitespace
+PASS_FOR_BLOCKER_HANDOFF_ONLY

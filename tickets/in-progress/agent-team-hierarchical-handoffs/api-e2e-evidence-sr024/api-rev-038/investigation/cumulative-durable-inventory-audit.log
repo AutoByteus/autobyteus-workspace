@@ -1,0 +1,14 @@
+API-REV-038 exact durable inventory audit
+inventory_rows=10
+patch_paths=10
+added=1
+updated=9
+removed=0
+path_equality=True
+duplicate_inventory=0
+duplicate_patch=0
+missing_active_files=0
+reverse_apply=PASS
+diff_check=PASS
+operational_database_action=NONE
+operational_database_inspection=NONE

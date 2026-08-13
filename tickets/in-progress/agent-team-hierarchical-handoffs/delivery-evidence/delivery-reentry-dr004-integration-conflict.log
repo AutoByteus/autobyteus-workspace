@@ -1,0 +1,28 @@
+DR-004 integration merge
+utc=2026-08-09T15:54:23Z
+pre_merge_HEAD=7e7d6a7b4cd55188f548c9e6a8c616f2e0b4e3bb
+merge_target=3cddeec6b93602da172fec2e7b9a80acc7c05117
+command=git merge --no-edit origin/personal
+CONFLICT (modify/delete): autobyteus-server-ts/src/memory-lineage/services/agent-memory-origin-service.ts deleted in origin/personal and modified in HEAD.  Version HEAD of autobyteus-server-ts/src/memory-lineage/services/agent-memory-origin-service.ts left in tree.
+Auto-merging autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts
+Auto-merging autobyteus-server-ts/src/services/agent-streaming/team-interrupt-generation-command-handler.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/src/services/agent-streaming/team-interrupt-generation-command-handler.ts
+Auto-merging autobyteus-server-ts/src/services/agent-streaming/team-tool-approval-command-handler.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/src/services/agent-streaming/team-tool-approval-command-handler.ts
+Auto-merging autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts
+Auto-merging autobyteus-server-ts/tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts
+Auto-merging autobyteus-web/generated/graphql.ts
+Auto-merging autobyteus-web/localization/messages/en/settings.ts
+Auto-merging autobyteus-web/localization/messages/zh-CN/settings.ts
+Auto-merging autobyteus-web/services/agentStreaming/TeamStreamingService.ts
+CONFLICT (content): Merge conflict in autobyteus-web/services/agentStreaming/TeamStreamingService.ts
+Auto-merging test-support/live-e2e/live-e2e-harness.ts
+CONFLICT (content): Merge conflict in test-support/live-e2e/live-e2e-harness.ts
+Automatic merge failed; fix conflicts and then commit the result.
+merge_rc=1
+post_merge_HEAD=7e7d6a7b4cd55188f548c9e6a8c616f2e0b4e3bb
+post_merge_origin_personal=3cddeec6b93602da172fec2e7b9a80acc7c05117
+post_merge_divergence=36	69
+unmerged_count=7

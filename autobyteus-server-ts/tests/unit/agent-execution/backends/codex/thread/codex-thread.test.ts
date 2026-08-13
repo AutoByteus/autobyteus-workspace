@@ -261,6 +261,7 @@ describe("CodexThread MCP tool approval bridge", () => {
 
   it("emits a local MCP completion event when a pending MCP tool call completes", () => {
     const { thread } = createThread(true);
+    thread.markTurnStarted("turn-1");
     const messages: Array<{ method: string; params: Record<string, unknown> }> = [];
     thread.subscribeAppServerMessages((message) => {
       messages.push(message);
@@ -277,6 +278,7 @@ describe("CodexThread MCP tool approval bridge", () => {
     });
 
     thread.handleAppServerNotification("item/completed", {
+      turnId: "turn-1",
       item: {
         type: "mcpToolCall",
         id: "call_speak_done",

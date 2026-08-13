@@ -1,0 +1,10 @@
+api_revision=API-REV-037
+owned_port_closed=true port=60237
+owned_port_closed=true port=31237
+runtime_root_removed=true
+owned_database_artifacts_removed=true
+source_fixture_unchanged=true
+protected_ports_action=NONE
+operational_database_action=NONE
+operational_database_inspection=NONE
+historical_operational_database_incident_disclosures=preserved

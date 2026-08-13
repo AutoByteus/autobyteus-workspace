@@ -1,0 +1,12 @@
+checked_markdown_files=30
+fence_relative_link_conflict_check=PASS
+dr008=PASS
+electron_dmg=PASS
+electron_zip=PASS
+workspace_limitation=PASS
+no_notarization=PASS
+verification_hold=PASS
+safety_disclosure=PASS
+post_package_refresh=PASS
+docs_audit=PASS
+git_diff_check=PASS

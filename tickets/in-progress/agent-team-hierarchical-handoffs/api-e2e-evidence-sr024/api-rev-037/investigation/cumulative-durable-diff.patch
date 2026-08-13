@@ -1,0 +1,536 @@
+diff --git a/autobyteus-server-ts/tests/e2e/external-channel/external-channel-team-open-delivery.e2e.test.ts b/autobyteus-server-ts/tests/e2e/external-channel/external-channel-team-open-delivery.e2e.test.ts
+index 1a0aa3359..3364773df 100644
+--- a/autobyteus-server-ts/tests/e2e/external-channel/external-channel-team-open-delivery.e2e.test.ts
++++ b/autobyteus-server-ts/tests/e2e/external-channel/external-channel-team-open-delivery.e2e.test.ts
+@@ -47,7 +47,7 @@ afterEach(async () => {
+ });
+ 
+ describe("external channel team open delivery e2e", () => {
+-  it("delivers deduped direct and no-new-inbound coordinator outputs from one team run without leaking worker output", async () => {
++  it("delivers exact direct and no-new-inbound coordinator deltas from one team run without leaking worker output", async () => {
+     const bindingFilePath = tempJsonPath("channel-bindings");
+     const receiptFilePath = tempJsonPath("channel-receipts");
+     const outputDeliveryFilePath = tempJsonPath("channel-output-deliveries");
+@@ -267,16 +267,16 @@ class DeterministicTeamRunBackend implements TeamRunBackend {
+   async postMessage(_message: AgentInputUserMessage, target: import("../../../src/agent-collaboration/domain/agent-team-address.js").AgentTeamAddress | null): Promise<AgentOperationResult> {
+     expect(target).toBe("/coordinator");
+     setTimeout(() => {
+-      this.emitOverlappingStreamTurn("coordinator", "run-coordinator", "turn-direct", [
+-        "Sent the",
+-        " the student",
+-        " student a",
+-        " a hard",
+-        " hard cyclic",
+-        " cyclic inequality",
+-        " inequality problem",
+-        " problem to",
+-        " to solve",
++      this.emitFragmentTurn("coordinator", "run-coordinator", "turn-direct", [
++        "Sent",
++        " the",
++        " student",
++        " a",
++        " hard",
++        " cyclic",
++        " inequality",
++        " problem",
++        " to",
+         " solve.",
+       ]);
+     }, 5).unref?.();
+@@ -292,7 +292,7 @@ class DeterministicTeamRunBackend implements TeamRunBackend {
+         "coordinator",
+         "run-coordinator",
+         "turn-follow-up-1",
+-        ["noisy partial", " partial duplicate"],
++        ["noisy partial", " duplicate"],
+       );
+       this.emitTextTurn("coordinator", "run-coordinator", "turn-follow-up-2", secondFollowUp);
+     }, 5).unref?.();
+@@ -314,19 +314,6 @@ class DeterministicTeamRunBackend implements TeamRunBackend {
+     this.emitFragmentTurn(memberName, memberRunId, turnId, [text]);
+   }
+ 
+-  private emitOverlappingStreamTurn(memberName: string, memberRunId: string, turnId: string, fragments: string[]): void {
+-    const events: TeamAgentEvent[] = [
+-      { eventType: "TURN_STARTED", details: { turnId }, statusHint: "ACTIVE" },
+-      ...fragments.map((fragment, index): TeamAgentEvent => ({
+-        eventType: "SEGMENT_CONTENT",
+-        details: { segmentId: `segment-${index}`, turnId, segmentType: "text", delta: fragment },
+-        statusHint: "ACTIVE",
+-      })),
+-      { eventType: "TURN_COMPLETED", details: { turnId, reason: null }, statusHint: "IDLE" },
+-    ];
+-    this.emitEvents(memberName, memberRunId, events);
+-  }
+-
+   private emitFragmentTurn(
+     memberName: string,
+     memberRunId: string,
+diff --git a/autobyteus-server-ts/tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts b/autobyteus-server-ts/tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts
+index bd06d9849..098d8969e 100644
+--- a/autobyteus-server-ts/tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts
++++ b/autobyteus-server-ts/tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts
+@@ -6,6 +6,8 @@ import type {
+   AgentRunSourceEventBatchListener,
+ } from "../../../src/agent-execution/backends/agent-run-backend.js";
+ import { AutoByteusStreamEventConverter } from "../../../src/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.js";
++import { ClaudeSessionEventConverter } from "../../../src/agent-execution/backends/claude/events/claude-session-event-converter.js";
++import { ClaudeSessionEventName } from "../../../src/agent-execution/backends/claude/events/claude-session-event-name.js";
+ import { AgentRun } from "../../../src/agent-execution/domain/agent-run.js";
+ import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
+ import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
+@@ -16,8 +18,14 @@ import {
+ import type { AgentRuntimeLifecycleSnapshot } from "../../../src/agent-execution/domain/agent-runtime-lifecycle-snapshot.js";
+ import { createTeamAgentExecutionBinding } from "../../../src/agent-team-execution/domain/team-agent-execution-binding.js";
+ import { createTeamExecutionAddress } from "../../../src/agent-team-execution/domain/team-execution-address.js";
++import { TeamRunEventSourceType } from "../../../src/agent-team-execution/domain/team-run-event.js";
+ import { TeamAgentEventAdapter } from "../../../src/agent-team-execution/services/team-agent-event-adapter.js";
+ import { ApplicationAgentStreamEventProjector } from "../../../src/application-agent-streaming/services/application-agent-stream-event-projector.js";
++import {
++  parseDirectChannelOutputEvent,
++  parseTeamChannelOutputEvent,
++} from "../../../src/external-channel/runtime/channel-output-event-parser.js";
++import { ChannelRunOutputEventCollector } from "../../../src/external-channel/runtime/channel-run-output-event-collector.js";
+ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+ import { AgentRunEventMessageMapper } from "../../../src/services/agent-streaming/agent-run-event-message-mapper.js";
+ import { projectTeamAgentEventMessage } from "../../../src/services/agent-streaming/team-agent-event-websocket-projector.js";
+@@ -261,6 +269,88 @@ describe("AgentRun-owned Team segment lifecycle", () => {
+     });
+   });
+ 
++  it("preserves exact Claude delta bytes once through direct and nested Team external collection", async () => {
++    const { backend, observed } = createRunHarness();
++    const converter = new ClaudeSessionEventConverter(runId);
++    const deltas = [" hello ", " ", "\n", "foo\n", "x", "x", "ab", "bc"];
++    const expected = " hello  \nfoo\nxxabbc";
++    const converted = [
++      ...converter.convert({
++        method: ClaudeSessionEventName.ITEM_ADDED,
++        params: {
++          id: "claude-text-1",
++          turn_id: "turn-1",
++          segment_type: "text",
++        },
++      }),
++      ...deltas.flatMap((delta) => converter.convert({
++        method: ClaudeSessionEventName.ITEM_OUTPUT_TEXT_DELTA,
++        params: { id: "claude-text-1", turn_id: "turn-1", delta },
++      })),
++      ...converter.convert({
++        method: ClaudeSessionEventName.ITEM_OUTPUT_TEXT_COMPLETED,
++        params: { id: "claude-text-1", turn_id: "turn-1" },
++      }),
++      ...converter.convert({
++        method: ClaudeSessionEventName.TURN_COMPLETED,
++        params: { turnId: "turn-1" },
++      }),
++    ];
++
++    await backend.emit(converted);
++
++    const directCollector = new ChannelRunOutputEventCollector();
++    const directFinal = observed.reduce<ReturnType<ChannelRunOutputEventCollector["processEvent"]>>(
++      (final, event) => {
++        const parsed = parseDirectChannelOutputEvent(event);
++        if (!parsed) return final;
++        return directCollector.processEvent({ deliveryKey: "direct-delivery", event: parsed }) ?? final;
++      },
++      null,
++    );
++
++    const nestedExecutionAddress = createTeamExecutionAddress({
++      rootTeamRunId: "root-team-run",
++      taskTeamRunIds: ["outer-task-team-run", "inner-task-team-run"],
++      memberAddress: "/StudentStudyGroup/student_one",
++      taskAgentRunId: null,
++    });
++    const nestedAdapter = new TeamAgentEventAdapter(() => nestedExecutionAddress);
++    const nestedExecution = createTeamAgentExecutionBinding({
++      executionAddress: nestedExecutionAddress,
++      agentRunId: runId,
++    });
++    const teamCollector = new ChannelRunOutputEventCollector();
++    const teamFinal = observed.reduce<ReturnType<ChannelRunOutputEventCollector["processEvent"]>>(
++      (final, event) => {
++        const adapted = nestedAdapter.adapt(event);
++        if (adapted.kind !== "publish") return final;
++        const parsed = parseTeamChannelOutputEvent({
++          eventSourceType: TeamRunEventSourceType.AGENT,
++          execution: nestedExecution,
++          payload: adapted.event,
++        });
++        if (!parsed) return final;
++        return teamCollector.processEvent({ deliveryKey: "team-delivery", event: parsed }) ?? final;
++      },
++      null,
++    );
++
++    expect(segmentEvents(observed).filter((event) =>
++      event.eventType === AgentRunEventType.SEGMENT_CONTENT
++    ).map((event) => event.payload.delta)).toEqual(deltas);
++    expect(directFinal).toEqual({
++      deliveryKey: "direct-delivery",
++      turnId: "turn-1",
++      replyText: expected,
++    });
++    expect(teamFinal).toEqual({
++      deliveryKey: "team-delivery",
++      turnId: "turn-1",
++      replyText: expected,
++    });
++  });
++
+   it("emits a diagnostic for missing identity and accepts a later valid sequence without generated identity", async () => {
+     const { backend, observed } = createRunHarness();
+     await backend.emit([
+diff --git a/autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts b/autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts
+index 5d3176b7f..ec0bf3cf2 100644
+--- a/autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts
++++ b/autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts
+@@ -345,7 +345,7 @@ describe("AutoByteusStreamEventConverter", () => {
+     });
+   });
+ 
+-  it("drops unknown segment variants and preserves missing identity for run-owned validation", () => {
++  it("drops unknown segment variants and rejects missing canonical segment identity at provider ingress", () => {
+     const converter = new AutoByteusStreamEventConverter("run-1");
+     expect(
+       converter.convert({
+@@ -354,18 +354,10 @@ describe("AutoByteusStreamEventConverter", () => {
+       } as any),
+     ).toBeNull();
+ 
+-    const missingIdentity = converter.convert({
++    expect(converter.convert({
+       event_type: StreamEventType.SEGMENT_EVENT,
+       data: { event_type: "start", segment_id: "seg-5" },
+-    } as any);
+-    expect(missingIdentity).toMatchObject({
+-      eventType: AgentRunEventType.SEGMENT_START,
+-      runId: "run-1",
+-      payload: { id: "seg-5" },
+-    });
+-    expect(missingIdentity?.payload.turn_id).toBeUndefined();
+-    expect(missingIdentity?.payload.segment_type).toBeUndefined();
+-    expect(JSON.stringify(missingIdentity)).not.toContain("runtime-segment");
++    } as any)).toBeNull();
+   });
+ 
+   it("keeps native turn lifecycle payloads intact", () => {
+diff --git a/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts b/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts
+index d88a9c7d7..73a41ecc7 100644
+--- a/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts
++++ b/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts
+@@ -134,6 +134,7 @@ describe("ClaudeSessionEventConverter", () => {
+       method: ClaudeSessionEventName.ITEM_ADDED,
+       params: {
+         id: "invoke-send-message",
++        turn_id: "turn-1",
+         segment_type: "tool_call",
+         tool_name: "mcp__autobyteus_agent_tools__send_message_to",
+         arguments: {
+@@ -166,6 +167,7 @@ describe("ClaudeSessionEventConverter", () => {
+       method: ClaudeSessionEventName.ITEM_COMPLETED,
+       params: {
+         id: "invoke-send-message",
++        turn_id: "turn-1",
+         segment_type: "tool_call",
+         tool_name: "mcp__autobyteus_agent_tools__send_message_to",
+         arguments: {
+@@ -234,6 +236,7 @@ describe("ClaudeSessionEventConverter", () => {
+       method: ClaudeSessionEventName.ITEM_ADDED,
+       params: {
+         id: "invoke-send-message",
++        turn_id: "turn-1",
+         segment_type: "tool_call",
+         tool_name: "send_message_to",
+         arguments: {
+@@ -286,6 +289,25 @@ describe("ClaudeSessionEventConverter", () => {
+     });
+   });
+ 
++  it("preserves every non-empty native text delta byte without trimming", () => {
++    const converter = new ClaudeSessionEventConverter("run-claude-converter");
++    const deltas = [" hello ", " ", "\n", "foo\n", "x", "x", "ab", "bc"];
++
++    const projected = deltas.map((delta) => {
++      const [event] = converter.convert({
++        method: ClaudeSessionEventName.ITEM_OUTPUT_TEXT_DELTA,
++        params: {
++          id: "claude-text-1",
++          turn_id: "turn-1",
++          delta,
++        },
++      });
++      return event;
++    });
++
++    expect(projected.map((event) => event?.payload.delta)).toEqual(deltas);
++  });
++
+   it("passes canonical send_message_to success and failure lifecycle events with arguments", () => {
+     const converter = new ClaudeSessionEventConverter("run-claude-converter");
+ 
+diff --git a/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts b/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts
+index b3e452c91..fe10f2b76 100644
+--- a/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts
++++ b/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts
+@@ -116,7 +116,7 @@ describe("Codex reasoning block conversion", () => {
+     expect(repeated).toEqual([]);
+   });
+ 
+-  it("emits adjacent content and end with one identity when a completed snapshot has no turn", () => {
++  it("rejects a completed reasoning snapshot without exact turn identity", () => {
+     const converter = new CodexThreadEventConverter("run-1");
+     const events = converter.convert({
+       method: CodexThreadEventName.ITEM_COMPLETED,
+@@ -126,28 +126,7 @@ describe("Codex reasoning block conversion", () => {
+       },
+     });
+ 
+-    expect(events.map((event) => event.eventType)).toEqual([
+-      AgentRunEventType.SEGMENT_START,
+-      AgentRunEventType.SEGMENT_CONTENT,
+-      AgentRunEventType.SEGMENT_END,
+-    ]);
+-    expect(events[0]!.payload).toEqual({
+-      id: events[1]!.payload.id,
+-      turn_id: null,
+-      segment_type: "reasoning",
+-    });
+-    expect(events[1]!.payload).toMatchObject({
+-      id: events[2]!.payload.id,
+-      delta: "first",
+-    });
+-    expect(events[2]!.payload).toEqual({
+-      id: events[1]!.payload.id,
+-      turn_id: null,
+-    });
+-    expect(converter.convert({
+-      method: CodexThreadEventName.TURN_COMPLETED,
+-      params: {},
+-    }).filter((event) => event.eventType === AgentRunEventType.SEGMENT_END)).toEqual([]);
++    expect(events).toEqual([]);
+   });
+ 
+   it("treats current and legacy reasoning text deltas as permanent state-free no-ops", () => {
+diff --git a/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-tracker.test.ts b/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-tracker.test.ts
+index 282804ec1..341c0a7dd 100644
+--- a/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-tracker.test.ts
++++ b/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-tracker.test.ts
+@@ -3,7 +3,7 @@ import { CodexReasoningBlockTracker } from "../../../../../../src/agent-executio
+ 
+ const appendCompleted = (
+   tracker: CodexReasoningBlockTracker,
+-  turnId: string | null,
++  turnId: string,
+   providerItemId: string | null,
+   snapshot: string,
+ ) => tracker.append({ turnId, providerItemId, snapshot });
+@@ -78,25 +78,6 @@ describe("CodexReasoningBlockTracker", () => {
+     expect(tracker.closeAll()).toEqual([]);
+   });
+ 
+-  it("emits adjacent content and end for missing turn identity without retaining the block", () => {
+-    const tracker = new CodexReasoningBlockTracker("nonce-a");
+-
+-    const first = appendCompleted(tracker, null, null, "first");
+-    const second = appendCompleted(tracker, null, null, "second");
+-
+-    expect(first).toEqual([
+-      { kind: "start", segmentId: "reasoning-block:nonce-a:1", turnId: null },
+-      { kind: "content", segmentId: "reasoning-block:nonce-a:1", turnId: null, delta: "first" },
+-      { kind: "end", segmentId: "reasoning-block:nonce-a:1", turnId: null },
+-    ]);
+-    expect(second).toEqual([
+-      { kind: "start", segmentId: "reasoning-block:nonce-a:2", turnId: null },
+-      { kind: "content", segmentId: "reasoning-block:nonce-a:2", turnId: null, delta: "second" },
+-      { kind: "end", segmentId: "reasoning-block:nonce-a:2", turnId: null },
+-    ]);
+-    expect(tracker.closeAll()).toEqual([]);
+-  });
+-
+   it("uses a distinct namespace for each tracker instance", () => {
+     const first = contentAction(appendCompleted(
+       new CodexReasoningBlockTracker("nonce-a"),
+diff --git a/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts b/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts
+index a06627df0..c8b76258c 100644
+--- a/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts
++++ b/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts
+@@ -1266,6 +1266,7 @@ describe("CodexThreadEventConverter", () => {
+     const converted = converter.convert({
+       method: CodexThreadEventName.ITEM_COMPLETED,
+       params: {
++        turnId: "turn-non-mcp-envelope",
+         item: {
+           type: "dynamicToolCall",
+           id: "call_non_mcp_envelope",
+@@ -1937,6 +1938,7 @@ describe("CodexThreadEventConverter", () => {
+     const converted = converter.convert({
+       method: CodexThreadEventName.ITEM_COMPLETED,
+       params: {
++        turnId: "turn-send-message-segment-end",
+         item: {
+           type: "mcpToolCall",
+           id: "call_send_message_segment_end",
+@@ -1984,6 +1986,7 @@ describe("CodexThreadEventConverter", () => {
+     const converted = converter.convert({
+       method: CodexThreadEventName.ITEM_COMPLETED,
+       params: {
++        turnId: "turn-custom-dynamic",
+         item: {
+           type: "dynamicToolCall",
+           id: "call_custom_dynamic",
+@@ -2031,6 +2034,7 @@ describe("CodexThreadEventConverter", () => {
+     const converted = converter.convert({
+       method: CodexThreadEventName.ITEM_COMPLETED,
+       params: {
++        turnId: "turn-custom-dynamic-text",
+         item: {
+           type: "dynamicToolCall",
+           id: "call_custom_dynamic_text",
+@@ -2087,6 +2091,7 @@ describe("CodexThreadEventConverter", () => {
+     const converted = converter.convert({
+       method: CodexThreadEventName.ITEM_STARTED,
+       params: {
++        turnId: "turn-file-change",
+         item: {
+           type: "fileChange",
+           id: "call_1",
+@@ -2130,6 +2135,7 @@ describe("CodexThreadEventConverter", () => {
+     const converted = converter.convert({
+       method: CodexThreadEventName.ITEM_COMPLETED,
+       params: {
++        turnId: "turn-file-change",
+         item: {
+           type: "fileChange",
+           id: "call_1",
+@@ -2167,6 +2173,7 @@ describe("CodexThreadEventConverter", () => {
+     const converted = converter.convert({
+       method: CodexThreadEventName.ITEM_STARTED,
+       params: {
++        turnId: "turn-edit-file",
+         item: {
+           type: "editFile",
+           id: "edit-file-1",
+diff --git a/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts b/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts
+index 46977305e..61c4e52d3 100644
+--- a/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts
++++ b/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts
+@@ -261,6 +261,7 @@ describe("CodexThread MCP tool approval bridge", () => {
+ 
+   it("emits a local MCP completion event when a pending MCP tool call completes", () => {
+     const { thread } = createThread(true);
++    thread.markTurnStarted("turn-1");
+     const messages: Array<{ method: string; params: Record<string, unknown> }> = [];
+     thread.subscribeAppServerMessages((message) => {
+       messages.push(message);
+@@ -277,6 +278,7 @@ describe("CodexThread MCP tool approval bridge", () => {
+     });
+ 
+     thread.handleAppServerNotification("item/completed", {
++      turnId: "turn-1",
+       item: {
+         type: "mcpToolCall",
+         id: "call_speak_done",
+diff --git a/autobyteus-server-ts/tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts b/autobyteus-server-ts/tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts
+index 50b347b3f..a87365958 100644
+--- a/autobyteus-server-ts/tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts
++++ b/autobyteus-server-ts/tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts
+@@ -36,55 +36,21 @@ describe("channel output text assembly", () => {
+     expect(assembled).toBe("Sent the student");
+   });
+ 
+-  it("uses the latest cumulative snapshot fragment", () => {
+-    const assembled = ["Sent", "Sent the", "Sent the student"].reduce(
+-      appendOutputTextFragment,
+-      "",
++  it("appends every accepted byte exactly once without snapshot or overlap inference", () => {
++    const deltas = [" hello ", " ", "\n", "foo\n", "x", "x", "ab", "bc"];
++    expect(deltas.reduce(appendOutputTextFragment, "")).toBe(
++      " hello  \nfoo\nxxabbc",
+     );
+-
+-    expect(assembled).toBe("Sent the student");
+-  });
+-
+-  it("dedupes suffix/prefix-overlapping stream fragments", () => {
+-    const assembled = [
+-      "Sent the",
+-      " the student",
+-      " student a",
+-      " a hard",
+-      " hard cyclic",
+-      " cyclic inequality",
+-      " inequality problem",
+-      " problem to",
+-      " to solve",
+-      " solve.",
+-    ].reduce(appendOutputTextFragment, "");
+-
+-    expect(assembled).toBe(
+-      "Sent the student a hard cyclic inequality problem to solve.",
++    expect(appendOutputTextFragment("Yes,", ", I’m here.")).toBe(
++      "Yes,, I’m here.",
+     );
+   });
+-
+-  it("dedupes punctuation overlaps without rewriting one-character word splits", () => {
+-    expect(appendOutputTextFragment("Yes,", ", I’m here.")).toBe("Yes, I’m here.");
+-    expect(appendOutputTextFragment("cat", "tail")).toBe("cattail");
+-  });
+ });
+ 
+ describe("ChannelRunOutputEventCollector", () => {
+-  it("collects overlapping stream fragments without duplicated words", () => {
++  it("collects exact stream fragments without deduplication or reconciliation", () => {
+     const collector = new ChannelRunOutputEventCollector();
+-    for (const text of [
+-      "Sent the",
+-      " the student",
+-      " student a",
+-      " a hard",
+-      " hard cyclic",
+-      " cyclic inequality",
+-      " inequality problem",
+-      " problem to",
+-      " to solve",
+-      " solve.",
+-    ]) {
++    for (const text of [" hello ", " ", "\n", "foo\n", "x", "x", "ab", "bc"]) {
+       expect(collector.processEvent({
+         deliveryKey: "delivery-1",
+         event: parsedEvent({
+@@ -100,30 +66,7 @@ describe("ChannelRunOutputEventCollector", () => {
+       event: parsedEvent({ eventType: AgentRunEventType.TURN_COMPLETED }),
+     });
+ 
+-    expect(final?.replyText).toBe(
+-      "Sent the student a hard cyclic inequality problem to solve.",
+-    );
+-  });
+-
+-  it("keeps cumulative stream snapshots clean", () => {
+-    const collector = new ChannelRunOutputEventCollector();
+-    for (const text of ["Glad", "Glad you", "Glad you liked it!"]) {
+-      collector.processEvent({
+-        deliveryKey: "delivery-1",
+-        event: parsedEvent({
+-          eventType: AgentRunEventType.SEGMENT_CONTENT,
+-          text,
+-          textKind: "STREAM_FRAGMENT",
+-        }),
+-      });
+-    }
+-
+-    const final = collector.processEvent({
+-      deliveryKey: "delivery-1",
+-      event: parsedEvent({ eventType: AgentRunEventType.TURN_COMPLETED }),
+-    });
+-
+-    expect(final?.replyText).toBe("Glad you liked it!");
++    expect(final?.replyText).toBe(" hello  \nfoo\nxxabbc");
+   });
+ 
+   it("ignores segment-end payload text and retains only admitted stream content", () => {

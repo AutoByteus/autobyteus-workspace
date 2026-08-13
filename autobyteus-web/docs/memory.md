@@ -38,7 +38,7 @@ Agent-team cards are grouped by `teamDefinitionId` from team-run metadata. A tea
 
 Agent detail pages use the selected agent name as the run-list card heading without a separate subject summary card. The list is sorted by latest memory update and exposes run labels, run IDs, workspace paths when available, compact updated timestamps, and memory availability badges. Selecting a run opens the Memory Inspector for that agent run.
 
-Team detail pages use the selected team name as the team-run-list card heading without a separate subject summary card. Team runs are sorted by latest member-memory update, and each team run exposes only member targets that have inspectable memory under the `Members` section. Backend summaries are resolved from recursive team metadata and the server memory-location service, so nested member availability comes from the root-hierarchical `rootTeamRunId + teamRunPath + memberRunId` directory rather than from a flattened root-team/member assumption.
+Team detail pages use the selected team name as the team-run-list card heading without a separate subject summary card. Team runs are sorted by latest member-memory update, and each team run exposes only member targets that have inspectable memory under the `Members` section. Backend summaries are resolved from schema-v3 recursive Team metadata and the server memory-location service. Logical `memberAddress` identifies the Agent placement; physical memory resolution uses `rootTeamRunId + ancestorTeamRunIds + agentRunId` rather than a flattened or address-derived directory.
 
 Search on detail pages uses `Search runs...` and filters only within the selected agent's runs or selected team's team runs/member targets. Subject-level run-count and ID metadata are intentionally not repeated above the list; per-run and per-team-run metadata remains visible inside the list cards.
 
@@ -85,7 +85,7 @@ The previous flat run-list queries (`listRunMemorySnapshots`, `listTeamRunMemory
 Inspector data comes from memory-view queries:
 
 - `getAgentRunMemoryView(runId: String!, source: MemoryExplorerSourceInput)`
-- `getTeamMemberRunMemoryView(teamRunId: String!, memberRunId: String!, source: MemoryExplorerSourceInput)`
+- `getTeamMemberRunMemoryView(teamRunId: String!, agentRunId: String!, source: MemoryExplorerSourceInput)`
 
 Both support include flags for working context, episodic memory, semantic memory, raw traces, raw-trace file metadata, archive inclusion, and `rawTraceLimit`. The raw-trace file selector uses the optional `rawTraceFileName` argument and returns `rawTraceFiles` plus `selectedRawTraceFileName` in the memory view.
 
@@ -100,7 +100,7 @@ Storage is server-owned and identity-opaque:
 - Standalone runs: `memory/agents/<runId>/...`
 - Direct team members: `memory/agent_teams/<rootTeamRunId>/<memberRunId>/...`
 - Nested subteam members: `memory/agent_teams/<rootTeamRunId>/<childTeamRunId>/<memberRunId>/...`, with deeper child team ids appended before the member id
-- Task-agent runs: `memory/agent_teams/<rootTeamRunId>/<...teamRunPath>/<taskAgentRunId>/...`
+- Task-Agent runs: `memory/agent_teams/<rootTeamRunId>/<...ancestorTeamRunIds>/<taskAgentRunId>/...`
 - Imported source memory: `memory/imports/<sourceNodeId>/agents/...` and
   `memory/imports/<sourceNodeId>/agent_teams/...`, plus hub-managed
   `source-node.json` and `sync-manifest.json`.

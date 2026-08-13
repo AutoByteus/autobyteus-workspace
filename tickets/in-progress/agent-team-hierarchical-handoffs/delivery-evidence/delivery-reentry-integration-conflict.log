@@ -1,0 +1,25 @@
+# Delivery re-entry integration conflict evidence
+recorded_at=2026-08-04T07:02:09Z
+trigger=CRR-006 pass over API-REV-003 / SR-006
+command=git fetch origin --prune
+fetch_result=Completed
+bootstrap_base=2a7271c9d78b71b919f7dbfa3b8f97f61c3a2e2b
+latest_origin_personal=ed3aa872303ccef5d8a097acd19876323ff795ab
+bootstrap_vs_latest_base=0	39
+sr006_source_commit=bf268b19fc5e96b810b98fcb5af6d3154388f463
+sr006_reviewed_coverage_checkpoint=a5ef1d5bba271da23cb32db74a68829d1c0c63a8
+protected_dr001_stash=stash@{0}: delivery re-entry protect DR-001 docs and handoff artifacts
+protected_dr001_backup=/tmp/agent-team-hierarchical-handoffs-dr001-protect.bh368u/delivery-protect.tar
+command=git merge --no-edit origin/personal
+merge_result=CONFLICT
+merge_head=ed3aa872303ccef5d8a097acd19876323ff795ab
+unresolved_paths:
+- autobyteus-server-ts/src/agent-team-execution/backends/mixed/delivery/team-member-delivery-coordinator.ts
+- autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-sub-team-member-handle.ts
+- autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts
+- autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts
+- autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts
+classification=Local Fix
+recommended_recipient=implementation_engineer
+delivery_result=BLOCKED
+reason=The latest base advanced by 39 commits and integration produced three production-source conflicts plus two durable-test conflicts. Effective behavior cannot be treated as verified until the source integration is resolved and executable coverage/review is rerun.

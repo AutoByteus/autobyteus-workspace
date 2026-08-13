@@ -1,0 +1,9 @@
+M	autobyteus-server-ts/tests/e2e/external-channel/external-channel-team-open-delivery.e2e.test.ts
+M	autobyteus-server-ts/tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts
+M	autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts
+M	autobyteus-server-ts/tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts
+M	autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts
+M	autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-tracker.test.ts
+M	autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts
+M	autobyteus-server-ts/tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts
+M	autobyteus-server-ts/tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts

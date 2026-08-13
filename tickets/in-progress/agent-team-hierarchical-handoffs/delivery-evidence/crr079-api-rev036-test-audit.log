@@ -1,0 +1,106 @@
+CRR-079 proportional API-REV-036 durable-test audit
+reviewed_head=6b578235917700584a6b559cd58763bd3bba9b38
+
+[artifact hashes]
+0881497cac2d402a5ebc8df2c2c2297de8a66616fa4a6ed224d1a2167850d207  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr020/api-rev-036/investigation/cumulative-durable-coverage-inventory.tsv
+167212b958756558f7731d7c82c9ca46fa62de99204d55dd6ec74d7c856be0dd  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr020/api-rev-036/investigation/cumulative-durable-diff.patch
+54457278755db7d26e9396b38ce2328d57b87f093abbfd2c23b5545a5dfe81df  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr020/api-rev-036/investigation/api-rev-036-working-durable-delta.patch
+28c8273bddaa05c7fb8aad4409c7f0d673af4ce425a3ab0604ca06c486ab1484  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr020/api-rev-036/investigation/cumulative-durable-patch-integrity.log
+8341f8c3839840e5d3854c1128945337759b16b3a6fbd1ff5e556adcbeef10c7  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr020/api-rev-036/investigation/cumulative-durable-static-audit.log
+771d70bbaa0925af7211af28329563f38ef482746143085bc16f2c66b96decb9  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr020/api-rev-036/investigation/cumulative-relative-import-audit.log
+8e14f62aad116c4a0118462b3f16e1959ed23bf535ecf1b54a90280c00e1a66b  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr020/api-rev-036/repository/current-server-selection-final3.log
+6aa52abb6dd632aa2adba2a15271b0f792a7f9a1390748a4cabcfbbec00e1c80  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr020/api-rev-036/repository/current-web-selection.log
+3b477e08c7c21db6111b8c9fbf6be46f09f3ccd8248ce360842289c7de67c1ff  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr020/api-rev-036/repository/server-build-full.log
+4e446b015c061769cac584fb1d092652ab820c8244e1e053bef04a25131e4aa7  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr020/api-rev-036/repository/web-production-build.log
+0aeb4d3478855a0ee1c868adbef1b9ef64f7cc0706c52d3690d0225b075c6f38  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr020/api-rev-036/live/browser-provider-matrix-summary.json
+83f78e37daaa932c6797fb70b46f95f2ce0d74dd0308da6fd9e8d140218c45bf  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr020/api-rev-036/final-evidence-manifest.sha256
+
+[inventory counts]
+     110 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr020/api-rev-036/investigation/cumulative-durable-coverage-inventory.tsv
+active=101
+all=109
+scope.server=53
+scope.web=56
+status.A=4
+status.D=8
+status.M=97
+
+[patch counts]
+files=109
+added_lines=8217
+deleted_lines=17508
+
+[current working delta]
+74	89	autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts
+5	1	autobyteus-server-ts/tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts
+0	1217	autobyteus-server-ts/tests/integration/agent/agent-team-websocket.integration.test.ts
+0	519	autobyteus-server-ts/tests/integration/agent/team-lifecycle-websocket.integration.test.ts
+15	10	autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts
+8	8	autobyteus-server-ts/tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts
+27	17	autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts
+18	8	autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-tracker.test.ts
+2	17	autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts
+4	0	autobyteus-server-ts/tests/unit/agent-execution/compaction/compaction-run-output-collector.test.ts
+201	83	autobyteus-server-ts/tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts
+4	5	autobyteus-server-ts/tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts
+25	334	autobyteus-server-ts/tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts
+163	0	autobyteus-server-ts/tests/unit/services/agent-streaming/team-run-event-websocket-message-mapper.test.ts
+46	87	autobyteus-server-ts/tests/unit/services/agent-streaming/team-runtime-snapshot-service.test.ts
+14	7	autobyteus-web/services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts
+30	25	autobyteus-web/services/agentStreaming/handlers/__tests__/toolLifecycleParsers.spec.ts
+472	0	autobyteus-server-ts/tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts
+
+[new paths since CRR-072 complete 92-path package]
+autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts
+autobyteus-server-ts/tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts
+autobyteus-server-ts/tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts
+autobyteus-server-ts/tests/integration/agent/agent-team-websocket.integration.test.ts
+autobyteus-server-ts/tests/integration/agent/team-lifecycle-websocket.integration.test.ts
+autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts
+autobyteus-server-ts/tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts
+autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts
+autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-tracker.test.ts
+autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts
+autobyteus-server-ts/tests/unit/agent-execution/compaction/compaction-run-output-collector.test.ts
+autobyteus-server-ts/tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts
+autobyteus-server-ts/tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts
+autobyteus-server-ts/tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts
+autobyteus-server-ts/tests/unit/services/agent-streaming/team-runtime-snapshot-service.test.ts
+autobyteus-web/services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts
+autobyteus-web/services/agentStreaming/handlers/__tests__/toolLifecycleParsers.spec.ts
+
+[dropped paths since CRR-072 complete 92-path package]
+
+[status changes on common paths]
+
+[added and removed decisions]
+status	scope	path	decision	evidence
+A	server	autobyteus-server-ts/tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts	Add Durable Coverage / Revalidated	API-REV-036 segment-lifecycle-team-focused-round1.log; current-server-selection-final3.log; six-row real browser/provider matrix
+D	server	autobyteus-server-ts/tests/integration/agent/agent-team-websocket.integration.test.ts	Stale / Remove	API-REV-036 pre-removal decision; replacement team-agent-segment-admission and strict Team mapper coverage; current-server-selection-final3.log
+D	server	autobyteus-server-ts/tests/integration/agent/team-lifecycle-websocket.integration.test.ts	Stale / Remove	API-REV-036 pre-removal decision; replacement current lifecycle and Team segment coverage; current-server-selection-final3.log
+D	server	autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-legacy-path-columns-drop-migration.test.ts	Stale / Remove	API-REV-034 integrated-static-audit.log; CRR-073 deletion authority
+D	web	autobyteus-web/components/workspace/team/__tests__/TeamDelegatedTasksSection.current-contract.spec.ts	Stale / Remove	API-REV-034 integrated-static-audit.log; CRR-073 deletion authority
+D	web	autobyteus-web/components/workspace/team/__tests__/TeamOverviewPanel.current-task-visibility.spec.ts	Stale / Remove	API-REV-034 integrated-static-audit.log; CRR-073 deletion authority
+D	web	autobyteus-web/services/agentStreaming/__tests__/teamTaskExecutionEventRouter.spec.ts	Stale / Remove	API-REV-034 integrated-static-audit.log; CRR-073 deletion authority
+A	web	autobyteus-web/services/runHydration/__tests__/teamCommunicationHydrationService.spec.ts	Add Durable Coverage / Revalidated	API-REV-034 integrated-current-web.log; web-production-build.log; API-REV-036 broad current selection and production build
+D	web	autobyteus-web/services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts	Stale / Remove	API-REV-034 integrated-static-audit.log; CRR-073 deletion authority
+A	web	autobyteus-web/services/teamExecution/__tests__/teamExecutionState.task-lifecycle.spec.ts	Add Durable Coverage / Revalidated	API-REV-034 integrated-current-web.log; web-production-build.log; API-REV-036 broad current selection and production build
+A	web	autobyteus-web/test-support/currentTeamTestFixtures.ts	Add Durable Coverage / Revalidated	API-REV-034 integrated-current-web.log; web-production-build.log; API-REV-036 broad current selection and production build
+D	web	autobyteus-web/utils/__tests__/teamDelegatedTaskLiveVisibility.spec.ts	Stale / Remove	API-REV-034 integrated-static-audit.log; CRR-073 deletion authority
+
+[path-scope validation]
+unexpected_count=0
+
+[active disabled marker validation]
+57:  claudeBinaryReady && liveClaudeTestsEnabled ? describe : describe.skip;
+unconditional_or_only_todo_found=1
+declared_capability_gate=autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:57 conditional describe.skip; excluded from provider proof and separately covered by fresh real Claude browser rows
+
+[review disposition]
+prior_92_path_package=CRR-069/CRR-072 Pass; no common-path status changed
+new_or_reworked_focus=17 new inventory paths plus current strict Team mapper delta
+added_files=reviewed in full
+current_round_delta=reviewed in full
+removed_files=pre-removal decisions and replacement owner coverage verified
+reviewer_rerun=not_required
+result=Pass

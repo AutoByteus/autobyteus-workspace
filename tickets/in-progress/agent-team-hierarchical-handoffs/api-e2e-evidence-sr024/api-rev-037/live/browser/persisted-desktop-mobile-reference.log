@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "rootTeamRunId": "nested_classroom_test_team_9d14472d93da4d1eb16c0409b76acded",
+  "conditions": {
+    "exactRunTerminalAndLatest": true,
+    "exactPersistedRecords": true,
+    "desktopPersistedReference": true,
+    "mobilePersistedReference": true,
+    "noBrowserConsoleErrors": true
+  },
+  "fatalError": null
+}

@@ -1,0 +1,139 @@
+start_utc=2026-08-13T04:16:31Z
+recovery_reason=electron-builder requires production dependency files under app root; workspace symlink resolved outside autobyteus-web
+recovery_scope=temporary node_modules materialization only; no tracked source edit
+source=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-team-stream-contracts
+original_link=../../../autobyteus-team-stream-contracts
+temporary_materialization_backup=/tmp/autobyteus-electron-workspace-materialization.3o5WZk
+materialized_package_files=733
+Building with environment: production
+Using environment file: .env.production
+Resolved build flavor: enterprise
+Artifact base name: AutoByteus_enterprise
+Requested architecture: AUTO
+Updater publish config: [{"provider":"github","owner":"AutoByteus","repo":"autobyteus-workspace"}]
+Generating application icons...
+Generating 16x16 PNG icon...
+Generating 32x32 PNG icon...
+Generating 48x48 PNG icon...
+Generating 64x64 PNG icon...
+Generating 128x128 PNG icon...
+Generating 256x256 PNG icon...
+Generating 512x512 PNG icon...
+Generating 1024x1024 PNG icon...
+Generating Windows ICO icon...
+Generating macOS ICNS icon...
+Icon generation completed successfully
+Starting electron-builder...
+  • electron-builder  version=25.1.8 os=25.5.0
+  • @electron/rebuild already used by electron-builder, please consider to remove excess dependency from devDependencies
+
+To ensure your native dependencies are always matched electron version, simply add script `"postinstall": "electron-builder install-app-deps" to your `package.json`
+  • unresolved deps  unresolved=@mdit/helper@mdit/plugin-texkatex
+                     nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/@mdit+plugin-katex@0.23.2_markdown-it@14.1.1/node_modules
+                     round=0
+  • unresolved deps  unresolved=builder-util-runtimefs-extrajs-yamllazy-vallodash.escaperegexplodash.isequalsemvertiny-typed-emitter
+                     nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/electron-updater@6.8.3/node_modules
+                     round=0
+  • unresolved deps  unresolved=katex nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/markdown-it-katex@2.0.3/node_modules round=0
+  • unresolved deps  unresolved=@braintree/sanitize-url@iconify/utils@mermaid-js/parsercytoscapecytoscape-cose-bilkentcytoscape-fcosed3d3-sankeydagre-d3-esdayjsdompurifykatexkhromalodash-esmarkedroughjsstylists-dedentuuid
+                     nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/mermaid@11.12.3/node_modules
+                     round=0
+  • unresolved deps  unresolved=acornpathepkg-typesufo nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/mlly@1.8.0/node_modules round=0
+  • unresolved deps  unresolved=chevrotainchevrotain-allstarvscode-languageservervscode-languageserver-textdocumentvscode-uri
+                     nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/langium@4.2.1/node_modules
+                     round=0
+  • unresolved deps  unresolved=d3-arrayd3-axisd3-brushd3-chordd3-colord3-contourd3-delaunayd3-dispatchd3-dragd3-dsvd3-eased3-fetchd3-forced3-formatd3-geod3-hierarchyd3-interpolated3-pathd3-polygond3-quadtreed3-randomd3-scaled3-scale-chromaticd3-selectiond3-shaped3-timed3-time-formatd3-timerd3-transitiond3-zoom
+                     nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/d3@7.9.0/node_modules
+                     round=0
+  • unresolved deps  unresolved=d3-dsv nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/d3-fetch@3.0.1/node_modules round=0
+  • unresolved deps  unresolved=@vue/devtools-apivue-demi
+                     nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules
+                     round=0
+  • unresolved deps  unresolved=@napi-rs/canvas-android-arm64@napi-rs/canvas-darwin-x64@napi-rs/canvas-linux-arm-gnueabihf@napi-rs/canvas-linux-arm64-gnu@napi-rs/canvas-linux-arm64-musl@napi-rs/canvas-linux-riscv64-gnu@napi-rs/canvas-linux-x64-gnu@napi-rs/canvas-linux-x64-musl@napi-rs/canvas-win32-arm64-msvc@napi-rs/canvas-win32-x64-msvc
+                     nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/node_modules
+                     round=0
+  • unresolved deps  unresolved=@napi-rs/canvas-android-arm64@napi-rs/canvas-darwin-x64@napi-rs/canvas-linux-arm-gnueabihf@napi-rs/canvas-linux-arm64-gnu@napi-rs/canvas-linux-arm64-musl@napi-rs/canvas-linux-riscv64-gnu@napi-rs/canvas-linux-x64-gnu@napi-rs/canvas-linux-x64-musl@napi-rs/canvas-win32-arm64-msvc@napi-rs/canvas-win32-x64-msvc
+                     nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules
+                     round=1
+  • unresolved deps  unresolved=@napi-rs/canvas-android-arm64@napi-rs/canvas-darwin-x64@napi-rs/canvas-linux-arm-gnueabihf@napi-rs/canvas-linux-arm64-gnu@napi-rs/canvas-linux-arm64-musl@napi-rs/canvas-linux-riscv64-gnu@napi-rs/canvas-linux-x64-gnu@napi-rs/canvas-linux-x64-musl@napi-rs/canvas-win32-arm64-msvc@napi-rs/canvas-win32-x64-msvc
+                     nodeModuleDir=/Users/normy/autobyteus_org/node_modules
+                     round=2
+  • unresolved deps  unresolved=adler-32cfbcodepagecrc-32ssfwmfword
+                     nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/xlsx@0.18.5/node_modules
+                     round=0
+  • unresolved deps  unresolved=adler-32crc-32 nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/cfb@1.2.2/node_modules round=0
+  • executing @electron/rebuild  electronVersion=42.4.1 arch=arm64 buildFromSource=false appDir=./
+  • installing native dependencies  arch=arm64
+  • completed installing native dependencies
+  • packaging       platform=darwin arch=arm64 electron=42.4.1 appOutDir=electron-dist/mac-arm64
+  • map async       taskCount=2
+  • map async       taskCount=1
+  • map async       taskCount=585
+  • unresolved deps  unresolved=@mdit/helper@mdit/plugin-texkatex
+                     nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/@mdit+plugin-katex@0.23.2_markdown-it@14.1.1/node_modules
+                     round=0
+  • unresolved deps  unresolved=builder-util-runtimefs-extrajs-yamllazy-vallodash.escaperegexplodash.isequalsemvertiny-typed-emitter
+                     nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/electron-updater@6.8.3/node_modules
+                     round=0
+  • unresolved deps  unresolved=katex nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/markdown-it-katex@2.0.3/node_modules round=0
+  • unresolved deps  unresolved=@braintree/sanitize-url@iconify/utils@mermaid-js/parsercytoscapecytoscape-cose-bilkentcytoscape-fcosed3d3-sankeydagre-d3-esdayjsdompurifykatexkhromalodash-esmarkedroughjsstylists-dedentuuid
+                     nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/mermaid@11.12.3/node_modules
+                     round=0
+  • unresolved deps  unresolved=acornpathepkg-typesufo nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/mlly@1.8.0/node_modules round=0
+  • unresolved deps  unresolved=chevrotainchevrotain-allstarvscode-languageservervscode-languageserver-textdocumentvscode-uri
+                     nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/langium@4.2.1/node_modules
+                     round=0
+  • unresolved deps  unresolved=d3-arrayd3-axisd3-brushd3-chordd3-colord3-contourd3-delaunayd3-dispatchd3-dragd3-dsvd3-eased3-fetchd3-forced3-formatd3-geod3-hierarchyd3-interpolated3-pathd3-polygond3-quadtreed3-randomd3-scaled3-scale-chromaticd3-selectiond3-shaped3-timed3-time-formatd3-timerd3-transitiond3-zoom
+                     nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/d3@7.9.0/node_modules
+                     round=0
+  • unresolved deps  unresolved=d3-dsv nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/d3-fetch@3.0.1/node_modules round=0
+  • unresolved deps  unresolved=@vue/devtools-apivue-demi
+                     nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules
+                     round=0
+  • unresolved deps  unresolved=@napi-rs/canvas-android-arm64@napi-rs/canvas-darwin-x64@napi-rs/canvas-linux-arm-gnueabihf@napi-rs/canvas-linux-arm64-gnu@napi-rs/canvas-linux-arm64-musl@napi-rs/canvas-linux-riscv64-gnu@napi-rs/canvas-linux-x64-gnu@napi-rs/canvas-linux-x64-musl@napi-rs/canvas-win32-arm64-msvc@napi-rs/canvas-win32-x64-msvc
+                     nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/node_modules
+                     round=0
+  • unresolved deps  unresolved=@napi-rs/canvas-android-arm64@napi-rs/canvas-darwin-x64@napi-rs/canvas-linux-arm-gnueabihf@napi-rs/canvas-linux-arm64-gnu@napi-rs/canvas-linux-arm64-musl@napi-rs/canvas-linux-riscv64-gnu@napi-rs/canvas-linux-x64-gnu@napi-rs/canvas-linux-x64-musl@napi-rs/canvas-win32-arm64-msvc@napi-rs/canvas-win32-x64-msvc
+                     nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules
+                     round=1
+  • unresolved deps  unresolved=@napi-rs/canvas-android-arm64@napi-rs/canvas-darwin-x64@napi-rs/canvas-linux-arm-gnueabihf@napi-rs/canvas-linux-arm64-gnu@napi-rs/canvas-linux-arm64-musl@napi-rs/canvas-linux-riscv64-gnu@napi-rs/canvas-linux-x64-gnu@napi-rs/canvas-linux-x64-musl@napi-rs/canvas-win32-arm64-msvc@napi-rs/canvas-win32-x64-msvc
+                     nodeModuleDir=/Users/normy/autobyteus_org/node_modules
+                     round=2
+  • unresolved deps  unresolved=adler-32cfbcodepagecrc-32ssfwmfword
+                     nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/xlsx@0.18.5/node_modules
+                     round=0
+  • unresolved deps  unresolved=adler-32crc-32 nodeModuleDir=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/cfb@1.2.2/node_modules round=0
+  • map async       taskCount=8
+  • path doesn't exist  path=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/build/build/icons/icon.icns
+  • path resolved   path=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/build/icons/icon.icns outputFormat=icns
+  • map async       taskCount=5
+
+Normalizing packaged terminal native resources...
+  Normalized execute bits on 3 node-pty spawn-helper file(s)
+  • skipped macOS code signing  reason=identity explicitly is set to null
+  • building        target=DMG arch=arm64 file=electron-dist/AutoByteus_enterprise_macos-arm64-1.4.50.dmg
+  • building        target=macOS zip arch=arm64 file=electron-dist/AutoByteus_enterprise_macos-arm64-1.4.50.zip
+  • Detected arm64 process, HFS+ is unavailable. Creating dmg with APFS - supports Mac OSX 10.12+
+  • copy files      from=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/build/icons/icon.icns
+                    to=/Volumes/AutoByteus 1.4.50-arm64/.VolumeIcon.icns
+                    isUseHardLinks=false
+  • copy files      from=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/dmg-builder@25.1.8_electron-builder-squirrel-windows@25.1.8/node_modules/dmg-builder/templates/background.tiff
+                    to=/Volumes/AutoByteus 1.4.50-arm64/.background/background.tiff
+                    isUseHardLinks=false
+  • execute command  command=sips -g pixelHeight -g pixelWidth /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/dmg-builder@25.1.8_electron-builder-squirrel-windows@25.1.8/node_modules/dmg-builder/templates/background.tiff
+                     workingDirectory=
+  • command executed  executable=sips
+                      out=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/node_modules/.pnpm/dmg-builder@25.1.8_electron-builder-squirrel-windows@25.1.8/node_modules/dmg-builder/templates/background.tiff
+      pixelHeight: 380
+      pixelWidth: 540
+    
+  • building block map  blockMapFile=electron-dist/AutoByteus_enterprise_macos-arm64-1.4.50.dmg.blockmap
+  • building block map  blockMapFile=electron-dist/AutoByteus_enterprise_macos-arm64-1.4.50.zip.blockmap
+Build completed: [
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.50.dmg.blockmap',
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.50.dmg',
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.50.zip.blockmap',
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.50.zip'
+]
+packaging_exit=0
+end_utc=2026-08-13T04:19:00Z

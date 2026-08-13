@@ -1,0 +1,13 @@
+# Delivery artifact verification evidence
+recorded_at=2026-08-03T22:01:29Z
+command=git diff --check
+result=PASS
+command=python3 delivery artifact completeness audit (inline)
+canonical_delivery_artifacts=PASS
+delivery_revision_baseline=PASS
+evidence_links=PASS
+cumulative_package_presence=PASS
+result=PASS
+head=c3cafa6a4873224947883d1566ee47978972ae1d
+origin_personal=2a7271c9d78b71b919f7dbfa3b8f97f61c3a2e2b
+status_entries=14

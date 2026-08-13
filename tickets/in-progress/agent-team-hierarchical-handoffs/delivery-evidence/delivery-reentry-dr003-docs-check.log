@@ -1,0 +1,20 @@
+DR-003 integrated documentation check
+date=2026-08-04
+git_diff_check=pass
+required_contract_assertions=pass
+stale_contract_assertions=pass
+autobyteus-server-ts/docs/design/streaming_parsing_architecture.md=pass
+autobyteus-server-ts/docs/features/shared_member_multi_team_membership_future.md=pass
+autobyteus-server-ts/docs/modules/agent_communication.md=pass
+autobyteus-server-ts/docs/modules/agent_team_definition.md=pass
+autobyteus-server-ts/docs/modules/agent_team_execution.md=pass
+autobyteus-server-ts/docs/modules/agent_tools.md=pass
+autobyteus-server-ts/docs/modules/agent_tools_mcp_server.md=pass
+autobyteus-server-ts/docs/modules/run_history.md=pass
+tickets/in-progress/agent-team-hierarchical-handoffs/delivery-integration-blocker.md=pass
+tickets/in-progress/agent-team-hierarchical-handoffs/delivery-revision-record.md=pass
+tickets/in-progress/agent-team-hierarchical-handoffs/docs-sync-report.md=pass
+tickets/in-progress/agent-team-hierarchical-handoffs/handoff-summary.md=pass
+tickets/in-progress/agent-team-hierarchical-handoffs/release-deployment-report.md=pass
+tickets/in-progress/agent-team-hierarchical-handoffs/release-notes.md=pass
+result=PASS

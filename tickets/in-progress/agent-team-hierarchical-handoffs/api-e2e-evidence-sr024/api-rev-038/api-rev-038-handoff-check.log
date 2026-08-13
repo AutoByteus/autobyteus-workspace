@@ -1,0 +1,25 @@
+API-REV-038 handoff check
+HEAD=258d18cdba0bf7ae08bde134fe09586a8906870d
+result=PASS
+confidence=98%
+broader_validation=NOT_REQUIRED_TEST_ONLY
+focused_tests=3_files_147_tests_PASS
+focused_test_typecheck=PASS
+production_typecheck=PASS
+no_fabrication_audit=PASS
+durable_paths=10
+durable_added=1
+durable_updated=9
+durable_removed=0
+inventory_patch_equality=PASS
+reverse_apply=PASS
+diff_check=PASS
+production_source_change=NONE
+browser_provider_rerun=NOT_REQUIRED
+retained_live_matrix=API_REV_037_8_OF_8_PASS
+server_frontend_provider_vault_migration_action=NONE
+operational_database_action=NONE
+operational_database_inspection=NONE
+protected_60004_31004_action=NONE
+stash_backup_rollback_repair_action=NONE
+temporary_focused_tsconfig=ABSENT

@@ -1,0 +1,10 @@
+DR-007 blocker audit
+HEAD 3dbddf54ddc38e8de0e3a79ad5ad74dd71e63364
+MERGE_HEAD 54890a07f74e941a7a12b6daaa26364f4c927b72
+base 54890a07f74e941a7a12b6daaa26364f4c927b72
+PASS conflicts 21/13/8
+PASS artifacts
+PASS integration/safety assertions
+PASS protected state
+PASS whitespace
+PASS_FOR_BLOCKER_HANDOFF_ONLY

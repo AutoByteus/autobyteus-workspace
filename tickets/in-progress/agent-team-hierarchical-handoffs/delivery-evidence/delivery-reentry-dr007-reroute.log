@@ -1,0 +1,8 @@
+DR-007 reroute
+Date: 2026-08-12
+Recipient: implementation_engineer
+Result: Delivered
+Classification: Local Fix
+Reviewed checkpoint: 3dbddf54ddc38e8de0e3a79ad5ad74dd71e63364
+MERGE_HEAD: 54890a07f74e941a7a12b6daaa26364f4c927b72
+Conflicts: 21 (13 production / 8 durable tests)

@@ -1,0 +1,4 @@
+$ pnpm exec tsc -p tests/.tmp/api-rev-038-codex-tests-tsconfig.json --noEmit --pretty false
+exit_code=0
+result=PASS
+temporary_config_removed_after_execution=true

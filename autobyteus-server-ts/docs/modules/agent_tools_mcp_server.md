@@ -150,8 +150,8 @@ route for a selected registry tool.
 Registry definitions with `ToolOrigin.MCP` and `metadata.mcp_server_id` are
 eligible only when the registered tool name is selected by the agent definition.
 Name-overlap behavior is adapter-policy driven: protected first-party
-platform/control adapters such as `send_message_to` reserve their names and
-block configured MCP collisions, while browser static adapters prefer the
+platform/control adapters such as `send_message_to` and `get_handoff_rules`
+reserve their names and block configured MCP collisions, while browser static adapters prefer the
 selected configured MCP-origin route. That lets a Docker/remote BrowserServer
 MCP tool such as `open_tab` route through its configured MCP source even though
 an embedded Electron browser adapter with the same name exists in code. The
@@ -190,14 +190,16 @@ supplies the MCP tool definition, availability gate, and execution delegate for
 one canonical AutoByteus tool name. The default adapter set currently covers:
 
 - `send_message_to`
+- `get_handoff_rules`
 - browser tools from `src/agent-tools/browser`
 - media tools from `src/agent-tools/media`
 - task-delegation tools from `src/agent-tools/task-delegation`
 - `publish_artifacts`
 
-The catalog still filters by the agent's configured tool names first. A tool
-that is supported by an adapter but not configured for the agent is absent from
-`tools/list` and rejected by `tools/call`.
+The catalog filters by the session's resolved effective tool names. That set is
+the configured Agent tool set plus the automatic Team collaboration trio when a
+valid `MemberTeamContext` exists. A supported tool outside that effective set is
+absent from `tools/list` and rejected by `tools/call`.
 
 Configured MCP-origin tools are resolved from the shared `defaultToolRegistry`
 rather than by re-reading persisted MCP config in provider runtime code. The
@@ -211,8 +213,13 @@ Family-specific behavior remains owned by the existing family services and
 manifests:
 
 - `send_message_to` delegates to the shared `SendMessageToDispatcher`.
-  `recipient_name` requires an active `MemberTeamContext`; `target_agent_run_id`
-  is a live-only exact active-run selector.
+  `recipient_address` requires an active `MemberTeamContext` and a rooted `/...` or
+  immediate-Team-relative `./...` logical Agent-or-Team address;
+  `target_agent_run_id` is a live-only exact active-run selector.
+- `get_handoff_rules` delegates to the shared read-only service, takes no
+  arguments, and is available only when the sender has active member
+  collaboration context. It returns only ordered `{ when, recipient_address }`
+  entries for that Agent's outgoing compiled handoffs.
 - Embedded Electron browser static adapters reuse the browser manifest,
   parameter schemas, serialization, and `BrowserToolService`. They are available
   only when `BrowserToolService.isBrowserSupported()` is true, which currently
@@ -240,6 +247,12 @@ may also return raw MCP tool results; their `content`, `isError`,
 `structuredContent`, and `_meta` fields are preserved for the provider runtime.
 This raw envelope behavior is the MCP protocol boundary and must not be changed
 by application-facing result projection.
+
+Agent communication adapters use their dedicated mapper so `send_message_to`
+and `get_handoff_rules` expose the exact same
+`{accepted,code,message,result}` object in MCP text and `structuredContent`.
+Their `isError` flag is `true` only for rejected outcomes, and exact operation
+codes are not collapsed into provider-specific prose.
 
 For Codex App Server and Claude Agent SDK, route-backed Agent Tools MCP
 lifecycle events are normalized to canonical application-facing tool names such

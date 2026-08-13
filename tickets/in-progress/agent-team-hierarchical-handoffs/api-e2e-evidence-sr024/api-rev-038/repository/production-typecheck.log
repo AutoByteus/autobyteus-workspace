@@ -1,0 +1,3 @@
+$ pnpm exec tsc -p tsconfig.build.json --noEmit --pretty false
+exit_code=0
+result=PASS

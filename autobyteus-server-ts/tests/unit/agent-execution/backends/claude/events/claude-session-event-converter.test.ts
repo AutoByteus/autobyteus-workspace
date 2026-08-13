@@ -134,6 +134,7 @@ describe("ClaudeSessionEventConverter", () => {
       method: ClaudeSessionEventName.ITEM_ADDED,
       params: {
         id: "invoke-send-message",
+        turn_id: "turn-1",
         segment_type: "tool_call",
         tool_name: "mcp__autobyteus_agent_tools__send_message_to",
         arguments: {
@@ -166,6 +167,7 @@ describe("ClaudeSessionEventConverter", () => {
       method: ClaudeSessionEventName.ITEM_COMPLETED,
       params: {
         id: "invoke-send-message",
+        turn_id: "turn-1",
         segment_type: "tool_call",
         tool_name: "mcp__autobyteus_agent_tools__send_message_to",
         arguments: {
@@ -234,6 +236,7 @@ describe("ClaudeSessionEventConverter", () => {
       method: ClaudeSessionEventName.ITEM_ADDED,
       params: {
         id: "invoke-send-message",
+        turn_id: "turn-1",
         segment_type: "tool_call",
         tool_name: "send_message_to",
         arguments: {
@@ -284,6 +287,25 @@ describe("ClaudeSessionEventConverter", () => {
         },
       },
     });
+  });
+
+  it("preserves every non-empty native text delta byte without trimming", () => {
+    const converter = new ClaudeSessionEventConverter("run-claude-converter");
+    const deltas = [" hello ", " ", "\n", "foo\n", "x", "x", "ab", "bc"];
+
+    const projected = deltas.map((delta) => {
+      const [event] = converter.convert({
+        method: ClaudeSessionEventName.ITEM_OUTPUT_TEXT_DELTA,
+        params: {
+          id: "claude-text-1",
+          turn_id: "turn-1",
+          delta,
+        },
+      });
+      return event;
+    });
+
+    expect(projected.map((event) => event?.payload.delta)).toEqual(deltas);
   });
 
   it("passes canonical send_message_to success and failure lifecycle events with arguments", () => {

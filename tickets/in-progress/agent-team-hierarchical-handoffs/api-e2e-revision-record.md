@@ -841,3 +841,35 @@ None. API-REV-016 had no unresolved failure. Its backend/runtime and three-provi
 - Prior result/confidence: `Fail / 80%` (`API-REV-035`).
 - Current result/confidence: **Pass / 98%**.
 - Recommended recipient: `code_reviewer` for proportional review of the complete `109`-path durable package before delivery.
+
+### API-REV-037 — SR-024 exact delta fidelity passes repository, browser/provider, mobile, and restore
+
+- Triggering role/report/round: `code_reviewer`; `CRR-081 Pass / 92.5%`; post-IR-044 API/E2E round.
+- Related findings: resolves `CR-F-046` and `CR-F-047` downstream; resolves API/E2E-owned cleanup finding `CR-F-043` before configured/live execution.
+- Current state: HEAD `258d18cdba0bf7ae08bde134fe09586a8906870d`; `SR-024`; `ARCH-REV-018`; `IR-044`.
+- Cleanup prerequisite: verified the named API-REV-035 journal was absent and removed only two verified old worktree-owned API/E2E disposable vault keys. The unrelated test-runtime journal and all operational data were untouched.
+- Durable changes: exactly `9` updated server test paths, with no add/remove. Coverage now proves raw Claude leading/trailing/whitespace-only/newline bytes, exact once-only append of repeated/overlap-shaped deltas through native Claude -> AgentRun -> direct/nested Team and external collectors, and current AutoByteus/Codex identity fixtures.
+- Delta audit: `0 added / 9 updated / 0 removed`; exact path/status inventory and patch, reverse-apply Pass, zero missing files/imports, zero active skip/only/todo, clean diff. The prior API-REV-036 `109`-path package remains in the committed baseline and passed CRR-079.
+- Repository results: exact delta fidelity `48/48`; affected provider/lifecycle/consumer `256/256`; external channel `1/1`; current server `620 passed / 9 declared capability-gated skipped`; current web `540/540`; full server production build/bootstrap; Nuxt production build/fifteen routes.
+- Checked environment: exact absent disposable SQLite target, ambient database variables sanitized, actual TTY `pnpm secrets:import` from the requested home `.env` only into the disposable vault, checked launcher, PID lsof exact path, public staged package import, and exact cleanup.
+- Real browser/provider result: imported Nested Classroom Team rows pass for AutoByteus, Codex, and Claude; standalone first-send/restore rows pass for all three; active and persisted desktop/paired-mobile reference journeys pass. Required functional matrix is `8/8`.
+- Nonblocking observation: the authoritative AutoByteus Team row recorded generic error cards for one rejected provider-generated tool attempt and one duplicate post-accept review attempt. The exact current peer request/reply, exact submission, accepted review, completion, restore, and termination succeeded once, with no `SEGMENT_START/CONTENT/END` rejection. This is retained under CR-PREM-032 as model/tool-election behavior, not hidden.
+- Environment observation: the first AutoByteus browser attempt was excluded because Nuxt dependency optimization reloaded the dev server during navigation (`504 Outdated Optimize Dep`); no Team was allocated and the stable warmed-server rerun passed.
+- Cleanup: owned `60237/31237` processes stopped; disposable runtime/database/vault/key/sidecars removed; source fixture unchanged. Operational database action/inspection none; protected `60004/31004`, stashes, delivery backup, rollback, and repair action none; incident disclosures preserved.
+- Prior result/confidence: `Pass / 98%` (`API-REV-036`, historical pre-SR-024).
+- Current result/confidence: **Pass / 98%**.
+- Recommended recipient: `code_reviewer` for proportional review of the exact nine-path API-REV-037 durable delta before delivery.
+
+### API-REV-038 — CRR-082 Codex durable tests now cross the real thread-owned nominal boundary
+
+- Triggering role/report/round: `code_reviewer`; canonical `api-e2e-test-review-report.md`; bounded round after `CRR-082 Fail — Local Fix` / `TR-F-006`.
+- Related authority: unchanged `SR-024`; `ARCH-REV-018`; `IR-044`; `CRR-081`; API-REV-037 product/runtime Pass retained.
+- Why recorded: CRR-082 found that two green converter suites structurally manufactured `{method,params}` and called the converter directly, bypassing R-053/AC-049's real `CodexThread` admission and opaque listener boundary.
+- Coverage correction: added one shared real-thread fixture; currentized all retained direct calls in `codex-reasoning-block-converter.test.ts` and `codex-thread-event-converter.test.ts`; missing-turn reasoning now rejects before listener/converter effect; MCP completion and approval facts arise only through supported thread operations. No production source changed.
+- Repository result: Codex thread/converter/reasoning `3 files / 147 tests` Pass; focused changed-test TypeScript Pass; production TypeScript Pass; no-fabrication/static/diff audit Pass. Generic `pnpm typecheck` retains the disclosed TS6059 repository configuration failure and is not counted.
+- Corrected durable package: exactly `10` paths (`1 added / 9 updated / 0 removed`); inventory/patch equality, reverse application, active-file existence, and diff hygiene pass.
+- Broader validation: **Not Required**. Product source/runtime/configuration and API-REV-037 live state are unchanged; its functional `8/8` AutoByteus/Codex/Claude Team/standalone plus desktop/mobile/restore matrix remains authoritative.
+- Prior result/confidence: `Pass / 98%` (`API-REV-037`; durable-test review subsequently failed locally).
+- Current result/confidence: **Pass / 98%**.
+- Safety: no server, frontend, browser, provider, vault, migration, database, protected-port, stash, backup, repair, or rollback action. Operational database action/inspection none; incident disclosures preserved.
+- Recommended recipient: `code_reviewer` for proportional re-review of the corrected complete ten-path delta before delivery.

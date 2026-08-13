@@ -2,535 +2,230 @@
 
 ## Scope
 
-Defines runtime behavior for agent and team streaming WebSocket endpoints.
+Defines current standalone and Team WebSocket message ownership after provider
+normalization and canonical `AgentRun` lifecycle admission. It covers transport
+identity, strict Team DTOs, commands, segment/error semantics, presentation
+cadence, and close behavior.
 
 ## Endpoints
 
-- `GET /ws/agent/:runId`
-- `GET /ws/agent-team/:teamRunId`
+- standalone Agent: `/ws/agent/:runId`
+- AgentTeam: `/ws/agent-team/:teamRunId`
+
+A WebSocket session is a transport subscriber. It does not own provider parsing,
+turn/segment lifecycle, persistence, Team topology, task delegation, or runtime
+identity.
 
 ## Core Components
 
-- Agent stream handlers:
-  - `src/services/agent-streaming/agent-stream-handler.ts`
-  - `src/services/agent-streaming/agent-team-stream-handler.ts`
-- WebSocket route bindings:
-  - `src/api/websocket/agent.ts`
-- GraphQL streaming entry points:
-  - `src/api/graphql/types/agent-run.ts`
-  - `src/api/graphql/types/agent-team-run.ts`
+- `src/services/agent-streaming/agent-stream-handler.ts`
+- `src/services/agent-streaming/agent-team-stream-handler.ts`
+- `src/services/agent-streaming/agent-run-event-message-mapper.ts`
+- `src/services/agent-streaming/team-agent-event-websocket-projector.ts`
+- `src/services/agent-streaming/team-run-event-websocket-mapper.ts`
+- `src/services/agent-streaming/team-execution-address-command-parser.ts`
+- `src/services/agent-streaming/websocket-egress`
+- `@autobyteus/team-stream-contracts`
 
-## Event Model
+## Canonical Upstream Boundary
 
-Handlers forward streamed model/tool events from runtime managers to clients and normalize error/completion semantics for transport-safe delivery.
+Provider converters emit source `AgentRunEvent` batches. `AgentRun` serializes
+those batches through `AgentRunEventDispatchQueue`, and the default pipeline
+applies the run-owned segment and turn lifecycle before any WebSocket subscriber
+receives an event. Transport mappers must not accept source-only aliases, infer
+missing lifecycle, or reclassify errors.
 
-### Status Contract
+For Team runs, the concrete member handle verifies the real AgentRun binding and
+supplies one `TeamAgentExecutionBinding`. `TeamAgentEventAdapter` maps the finite
+post-pipeline Agent event into a correlated Team domain event. The strict Team
+projector is then the only server owner of snake-case wire serialization.
 
-The WebSocket status contract is intentionally coarse and transport-owned.
-Provider/native runtimes may keep detailed internal lifecycle states, but
-clients receive only these status messages:
+## Team Execution Identity
 
-```ts
-type AgentStatusPayload = {
-  status: "offline" | "initializing" | "idle" | "running" | "error";
-  can_interrupt: boolean;
-  agent_id?: string;
-  agent_name?: string;
-};
-
-type AgentCommandAckPayload =
-  | {
-      command_type: "SEND_MESSAGE";
-      run_id: string;
-      message_id: string;
-      dedupe_key: string;
-      state:
-        | "accepted"
-        | "duplicate_in_progress"
-        | "duplicate_completed"
-        | "duplicate_failed"
-        | "duplicate_rejected"
-        | "rejected"
-        | "failed";
-      accepted: boolean;
-      duplicate: boolean;
-      code?: string;
-      message?: string;
-      status?: AgentStatusPayload;
-    }
-  | {
-      command_type: "INTERRUPT_GENERATION";
-      command_id: string;
-      state: "accepted" | "rejected" | "failed";
-      code?: string;
-      message?: string;
-      target:
-        | { target_kind: "standalone_run"; run_id: string }
-        | {
-            target_kind: "team_member";
-            team_run_id: string;
-            member_route_key: string;
-            member_run_id: string | null;
-          };
-    };
-
-type TeamStatusPayload = {
-  status: "offline" | "initializing" | "idle" | "running" | "error";
-};
-```
-
-`AGENT_STATUS` is emitted for single-agent runs and for team members. Team
-member messages include `agent_id` and/or `agent_name` when the handler can
-resolve that identity, and member `can_interrupt` is the authority for the
-frontend stop/interrupt affordance. When the status belongs to a delegated
-task-agent execution, the payload also carries explicit task-agent identity:
-`task_agent_instance_id`, `task_agent_run_id`, `task_id`, the logical
-`member_path` / `member_route_key`, and canonical `source_path` /
-`source_route_key`. Clients must key the transient task-agent execution by
-`task_agent_run_id` and must not infer task-agent identity from generated run id
-formats. When the status belongs to a task-team execution, root events carry
-`execution_kind: "task_team"`, `task_team_instance_id`, `task_team_run_id`,
-`task_id`, `team_path`, and `team_route_key`; child-member events inside that
-task-team run additionally carry `task_team_relative_member_path` and, when
-available, `task_team_relative_member_route_key`. Clients must key task-team
-roots and scoped child projections by `task_team_run_id`, not by the structural
-team route alone.
-
-Startup lifecycle tokens such as `bootstrapping`, `starting`, `startup`,
-`initializing`, and active `uninitialized` normalize to `initializing`, not to
-`running` or `offline`. `initializing` is an active but non-interruptible
-startup status, so `can_interrupt` remains `false` until a later `running`
-projection explicitly grants interrupt authority.
-
-Successful single-agent termination publishes a terminal
-`AGENT_STATUS { status: "offline", can_interrupt: false, agent_id }` to
-already-connected WebSocket clients before the run stream is torn down. Clients
-should treat that message as the authoritative live transition from an active
-run to an inactive/offline run; socket close or history reload is not the only
-termination signal.
-
-Root team lifecycle is not a five-state aggregate. The team WebSocket publishes
-`TEAM_RUN_LIFECYCLE { team_run_id, is_active }`, where `is_active` is the exact
-manager-registry fact for that root run. It carries no `can_interrupt`, member
-status, open-work, error, or subscription meaning. Clients keep their
-WebSocket/subscription state separately and drive member rows only from exact
-leaf `AGENT_STATUS` snapshots/events.
-
-For delegated task-team execution cleanup, accepted settlement terminates the
-known child through its lifecycle owner, detaches its delegation service, and
-removes its active directory binding. Live task terminal/review events remove
-the corresponding transient projection; reconnect relies on the settled
-task-team's absence from leaf snapshots. No task-team root status is synthesized.
-
-Status payloads expose only normalized `status` plus documented metadata. Native runtime transition-field names are not part of the server WebSocket status contract.
-
-### Turn Lifecycle And Error Evidence Contract
-
-Agent lifecycle is correlated by turn identity, not inferred from message
-activity or elapsed quiet time:
-
-- `TURN_STARTED` opens an authoritative turn and establishes `running` when no
-  accepted explicit status accompanies the boundary.
-- A matching `TURN_COMPLETED` or `TURN_INTERRUPTED` closes that turn and
-  establishes `idle` for a still-live runtime.
-- Runtime termination remains stronger than turn completion and establishes
-  `offline`.
-- Ordinary `SEGMENT_*`, tool, inter-agent, todo, and system-task events are
-  content/progress events. They cannot establish or reopen a turn.
-- A duplicate or late boundary for retired turn A is a lifecycle no-op and
-  cannot close newer active turn B. Late content for A is still forwarded.
-
-`turn_id` is the canonical transport identity for lifecycle correlation. New
-runtime/provider publishers should use it consistently; server internals may
-tolerate `turnId` while normalizing provider events.
-
-`ERROR` payloads preserve their existing message/source or code/details fields
-and may add this structured evidence:
-
-```ts
-type ErrorLifecycleFields =
-  | {
-      error_scope: "turn";
-      error_effect: "diagnostic" | "terminal";
-      turn_id: string;
-    }
-  | {
-      error_scope: "runtime";
-      error_effect: "terminal";
-    };
-```
-
-The fields are additive for transport consumers. A turn diagnostic is visible
-but does not settle status or a command. A turn-terminal error applies only to
-the matching identified turn. A runtime-terminal error has no `turn_id` and
-applies to the runtime as a whole. Missing/empty identity, a runtime-scoped
-payload that also carries a turn id, or any unsupported scope/effect
-combination is unclassified and has no lifecycle authority. Clients should
-render the error as appropriate but update lifecycle only from canonical
-`AGENT_STATUS`, matching turn boundaries, or valid terminal evidence.
-
-Segment payloads use snake-case `turn_id` as the canonical transport field for
-all `SEGMENT_START`, `SEGMENT_CONTENT`, and `SEGMENT_END` messages. Native
-AutoByteus segment conversion drops outbound camel-case `turnId` aliases from
-segment payloads, while the final WebSocket mapper still tolerates inbound
-legacy aliases and re-emits only `turn_id`.
-
-### Client-Bound Content Cadence
-
-After canonical pipeline publication and message mapping, every standalone and
-team WebSocket session sends through one shared `AgentStreamWebSocketEgress`.
-This egress is the only normal cadence owner: internal run events and all other
-subscribers remain fine-grained, while the wire retains the existing
-`SEGMENT_CONTENT` payload rather than introducing a batch envelope.
-
-- The first pending content message opens a fixed, non-sliding interval read
-  from `AUTOBYTEUS_STREAMING_CONTENT_FLUSH_INTERVAL_MS`. The effective default
-  is 500 ms; persisted values must be whole milliseconds from 100 through
-  2,000, and invalid/absent direct configuration falls back to 500 ms.
-- Content coalesces only while every payload field except `delta` is equal.
-  Delta bytes are concatenated exactly in order; a different identity becomes a
-  separate ordered content group.
-- `CONNECTED`, `AGENT_COMMAND_ACK`, `TOKEN_USAGE_UPDATED`, and non-terminal
-  `AGENT_STATUS initializing/running` remain immediate visible companions and
-  do not flush, seal, reset, or split the pending content lane/timer.
-- Dependent/terminal status, segment/tool/lifecycle boundaries, errors,
-  completion, interruption, and unknown messages flush all earlier content
-  before their own send. This preserves content-before-boundary semantics.
-- A physical socket loss has no replay guarantee. Disposing a closed session
-  cancels the timer and removes pending unsendable connection state.
-
-Stream terminalization is explicit. Interrupted turns end active segments with
-`interrupted: true` / `reason`; non-interrupt LLM stream failures end active
-segments with `failed: true` / `error` before the backend emits the runtime
-error. Failed partial tool segments are not executable invocations and should be
-rendered as terminal error state by clients.
-
-Runtime backends run each base normalized event batch through
-`AgentRunEventPipeline` before any subscriber fan-out. The stream therefore
-already includes derived events such as `FILE_CHANGE` for explicit
-write/edit/generated-output semantics. Clients consume `FILE_CHANGE` for the
-Artifacts tab and must not expect a legacy file-change-update event alias or
-derive artifact rows from arbitrary `file_path` tool arguments.
-
-Native AutoByteus team runs use one backend-owned native event bridge per active
-team backend. The bridge converts and enriches each native member event,
-processes it through the pipeline once, then fans out the processed source and
-derived events to every server subscriber. Multiple websocket/API subscribers
-must therefore observe the same `FILE_CHANGE` sequence without causing duplicate
-processing.
-
-Accepted team-route `INTER_AGENT_MESSAGE` events are processor input for Team
-Communication. When an accepted `recipient_name` message carries explicit
-`payload.reference_files`, the payload also carries message-owned reference
-metadata. `TeamCommunicationMessageProcessor` emits one normalized
-`TEAM_COMMUNICATION_MESSAGE` event for that accepted message. Direct exact-run
-`send_message_to(target_agent_run_id=...)` events intentionally omit the team
-projection fields consumed by this processor. Clients consume
-`TEAM_COMMUNICATION_MESSAGE` into the Team Communication store; they must not
-derive references by parsing rendered chat text, linkifying raw paths, or adding
-those rows to the run-file-changes projection.
-
-Content route ownership stays split:
-
-- Agent Artifact rows use `/runs/:runId/file-change-content?path=...`.
-- Team Communication reference rows use
-  `/team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content`
-  after resolving persisted `teamRunId + messageId + referenceId` identity.
-- Task-delegation reference rows use
-  `/team-runs/:teamRunId/task-delegations/:taskId/references/:referenceId/content`
-  after resolving active task-owned `teamRunId + taskId + referenceId`
-  identity. New task `referenceId` values are route-safe opaque identities; the
-  stored `referenceFiles[].path` carries the normalized absolute local file path
-  used for streaming.
-
-The focused frontend member decides whether a message is shown in the sent or
-received Team Communication perspective by deriving that focused node's
-`ConversationTargetAddress` and comparing normalized address keys against each
-message's `senderAddress` and `receiverAddress`. Sender/receiver identity is
-message metadata, not a receiver-owned route or projection owner. Static nested
-members, task-team roots, members inside task-team executions, and delegated
-task-agent executions are represented by `member`, `task_team`, and
-`task_agent` address segments. Current runtime/API/stream payloads do not expose
-old flat Team Communication participant fields such as sender/receiver run ids,
-member paths/route keys, represented-subteam fields, or task-team-scope
-wrappers; old flat projection files are converted by app-data migration before
-normal runtime reads.
-
-Team events expose path-aware member identity:
-
-- `source_path` is the canonical event source path for nested teams.
-- `source_route_key` is the slash-delimited normalized form of `source_path`.
-- agent-sourced events also carry `member_path` and `member_route_key` for the
-  producing member.
-- delegated task-agent events and member-status overlays also carry
-  `task_agent_instance_id`, `task_agent_run_id`, and `task_id` for the concrete
-  task-scoped child execution under that logical member.
-- delegated task-team root events carry `execution_kind: "task_team"`,
-  `task_team_instance_id`, `task_team_run_id`, `task_id`, `team_path`, and
-  `team_route_key` for the concrete task-scoped child team execution.
-- task-team child events carry `task_team_run_id` plus
-  `task_team_relative_member_path` / `task_team_relative_member_route_key` so
-  clients can route nested status, transcript, and tool lifecycle messages to
-  the scoped child projection without mutating the structural subteam node.
-- `TASK_DELEGATION_EVENT` payloads carry task-owned UI metadata such as
-  task description/status/target, `referenceFiles`, and normalized
-  `taskArguments` so the Team tab Tasks projection does not scrape Team
-  Communication messages or raw tool-call text.
-- `sub_team_node_name` is a deprecated display alias only and must not be used
-  as routing identity.
-
-Team member input is also emitted explicitly. When a user or inter-agent
-delivery is accepted for a concrete leaf member, the backend emits a
-`MEMBER_INPUT` team event and the WebSocket adapter forwards it as
-`MEMBER_INPUT_MESSAGE` for that member. The payload includes `message_id`,
-`dedupe_key`, `input_origin`, recipient member path/route identity, optional
-sender path/route identity, and context-file locators derived from canonical
-context-file references. This keeps local team sends and child team transcripts
-truthful: accepted member input is rendered in the target transcript before the
-assistant reply instead of being reconstructed from Team Communication rows
-after the fact. Backend-supported external-channel ingress remains on
-`EXTERNAL_USER_MESSAGE`; normal team/member accepted-input echoes do not use the
-external-channel message boundary.
-
-Server-owned task-delegation `SenderType.SYSTEM` work packets and lifecycle
-notifications are not normal accepted-input echoes. They are stamped by the
-task-delegation subsystem, delivered to the target runtime/model, and projected
-once as a local `SYSTEM_TASK_NOTIFICATION` for the target conversation using the
-stamped task-centered display content. Activation display content uses the same
-`You have a new task.` template for member and team targets and does not expose
-target kind/name labels. The WebSocket stream must therefore expose the visible
-task-delegation notification through the system-notification surface and must
-not also emit a
-`MEMBER_INPUT_MESSAGE` with the same payload. AutoByteus runtime input receives
-generic system-task-notification suppression metadata for these stamped messages
-so runtime-originated notification conversion cannot create a second live
-notification, while unstamped system notifications remain eligible for the
-normal system-notification path.
-
-## Connection And Command Recovery Contract
-
-Single-agent connection establishment is identity/projection aware, not
-runtime-restoring:
-
-1. The handler asks `AgentRunStatusProjectionService` for the requested `runId`.
-2. If the run identity is missing, the handler emits `AGENT_NOT_FOUND` and
-   closes with `4004`.
-3. Otherwise the handler creates a WebSocket session for that durable run id,
-   registers the connection for command-status fan-out, emits `CONNECTED`, and
-   sends the projected `AGENT_STATUS`.
-4. If an active runtime already exists, the handler also binds the session to
-   that runtime event stream. Prepared, historical inactive, and command-overlay
-   identities can still connect before runtime activation.
-
-Standalone new-run first message uses GraphQL `prepareAgentRun(...)` before the
-WebSocket command. Preparation creates the durable run id, metadata, memory
-directory, and history row without starting runtime. If the user abandons the
-draft before sending, `cancelPreparedAgentRun(...)` can remove the unactivated
-prepared identity.
-
-Standalone `SEND_MESSAGE` is a backend-owned command and must include stable
-identity fields:
+Every concrete Team Agent event and every Team Agent command uses this exact
+address:
 
 ```json
 {
-  "type": "SEND_MESSAGE",
-  "payload": {
-    "content": "...",
-    "message_id": "client-or-external-stable-id",
-    "dedupe_key": "agent_run_input:<runId>:<message_id>",
-    "context_file_paths": [],
-    "image_urls": []
+  "root_team_run_id": "root-run-id",
+  "task_team_run_ids": [],
+  "member_address": "/review_team/reviewer",
+  "task_agent_run_id": null
+}
+```
+
+The root ID identifies the WebSocket-bound collaboration root. The ordered
+task-Team array identifies a concrete nested task-Team chain. The rooted member
+address identifies the Agent placement. The optional task-Agent run ID selects
+one delegated Agent execution.
+
+Agent-originated Team messages wrap that address in one `agent_execution` union:
+
+- `{kind:"persistent_agent",execution_address}`;
+- `{kind:"task_agent",execution_address}` where the task-Agent ID is present and
+  equals the real AgentRun ID; or
+- `{kind:"task_team_agent",execution_address,agent_run_id}` where the address
+  has a non-empty task-Team chain and no task-Agent ID.
+
+No Team wire message or command uses legacy member/source paths, route keys,
+task-instance IDs, represented-subteam fields, execution-kind aliases, generated
+identity, or scalar name/id targets.
+
+## Team Server Messages
+
+`@autobyteus/team-stream-contracts` is the strict DTO authority. Server messages
+include:
+
+- Agent events: turn, segment, Agent status, compaction, token usage, assistant
+  completion, tool lifecycle/log, todo, task notification, artifact, and file
+  change, each with exact `agent_execution`;
+- Team-only events: `TASK_DELEGATION_EVENT`, `TEAM_COMMUNICATION_MESSAGE`,
+  `MEMBER_INPUT_MESSAGE`, and `EXTERNAL_USER_MESSAGE` with their explicit exact
+  execution/participant addresses;
+- control: `CONNECTED`, `TEAM_RUN_LIFECYCLE`, `AGENT_COMMAND_ACK`; and
+- `ERROR`, either correlated to an `agent_execution` or explicitly uncorrelated.
+
+Unknown fields and invalid union combinations are rejected. The browser parses
+the same shared schema before mutating application state.
+
+## Segment Contract
+
+The finite segment type vocabulary is:
+
+```text
+text | tool_call | write_file | edit_file | run_bash | reasoning | media
+```
+
+Team wire shapes are:
+
+```text
+SEGMENT_START   { agent_execution, segment_id, turn_id, segment_type, metadata }
+SEGMENT_CONTENT { agent_execution, segment_id, turn_id, segment_type, delta }
+SEGMENT_END     { agent_execution, segment_id, turn_id, metadata,
+                  interrupted, reason, failed, error }
+```
+
+Standalone transport exposes the equivalent canonical Agent payload. A turn is
+required for every segment event. Type is required on start and content but is
+not repeated on end.
+
+The type on content is derived by the run-owned lifecycle from the admitted
+start. It is not provider padding and cannot be inferred by the Team adapter,
+transport, application projection, memory, or browser. Missing IDs/turns,
+unknown type, content/end without a start, conflicting type, retired-turn input,
+and surplus source fields produce a non-terminal
+`AGENT_SEGMENT_LIFECYCLE_INVALID` diagnostic and no segment mutation.
+
+Browser mutation uses exact turn plus segment ID and retains canonical type.
+Existing-segment content requires type agreement. Canonical typed content may
+create a late-subscriber segment. There is no ID-only lookup/removal,
+type-plus-ID serialized key, missing-type text default, unknown-to-text mapping,
+end-text recovery, or consumer-side missing-start synthesis.
+
+## Turn, Status, And Error Evidence
+
+Visible Agent status is `offline | initializing | idle | running | error`.
+Turn lifecycle and status are owned upstream by `AgentRun`; Team root liveness is
+separately emitted as `TEAM_RUN_LIFECYCLE {is_active}`. Transport connection,
+root liveness, Agent status, task state, and open-work settlement are not
+substitutes for one another.
+
+Every canonical Agent error carries nullable evidence fields:
+
+```text
+error_scope:  "turn" | "runtime" | null
+error_effect: "diagnostic" | "terminal" | null
+turn_id:      string | null
+```
+
+Evidence must be absent together or complete together. Turn scope requires a
+turn ID; runtime scope forbids one. Turn/runtime diagnostics are visible without
+closing an open segment/tool, failing an application, or changing status.
+Turn-terminal evidence can settle only its matching turn. Runtime-terminal
+evidence clears the run-level lifecycle. Unclassified errors remain visible but
+carry no lifecycle authority.
+
+## Client Commands
+
+### Standalone `SEND_MESSAGE`
+
+Standalone send carries stable `message_id` and `dedupe_key` and routes through
+`AgentRunCommandCoordinator`. The coordinator owns idempotency, prepared or
+historical activation, command overlay, runtime forwarding, activity recording,
+and `SEND_MESSAGE` acknowledgement.
+
+### Team `SEND_MESSAGE`
+
+```text
+{
+  type: "SEND_MESSAGE",
+  payload: {
+    content,
+    context_file_paths,
+    image_urls,
+    execution_address,
+    message_id,
+    dedupe_key
   }
 }
 ```
 
-The handler routes the command through `AgentRunCommandCoordinator`. For an
-inactive historical run or prepared identity, the coordinator publishes
-non-interruptible `AGENT_STATUS initializing` before restore/start/activation
-work, then activates/restores the runtime and forwards the message. During an
-inactive-start command, restored runtime readiness is internal and does not
-replace the command overlay. The overlay is replaced only by command-correlated
-post-handoff lifecycle signals: command-start `AGENT_STATUS initializing`,
-explicit `TURN_STARTED`, command-correlated `AGENT_STATUS`, terminal/error
-events after handoff, or coordinator activation/post failure handling. Restored
-runtime snapshots/readiness, WebSocket bind success, `statusHint=ACTIVE` alone,
-persisted metadata, and active runtime snapshot availability do not clear or
-replace the overlay. The handler sends the `SEND_MESSAGE` arm of
-`AGENT_COMMAND_ACK` for accepted, duplicate, rejected, and failed outcomes.
-Retries with the same
-`(runId, message_id)` are idempotent; a different `message_id` while another
-command for the run is `STARTING` or `FORWARDED` is rejected with
-`RUN_COMMAND_IN_PROGRESS` rather than queued.
+The address root must equal the URL TeamRun ID. The server traverses the exact
+execution chain and never retargets a stale/malformed address.
 
-Team connection establishment remains restore-aware through the team service:
+### Team interrupt and tool decisions
 
-1. The handler resolves the requested `teamRunId` through the team domain service.
-2. The service first checks the active in-memory registry.
-3. If no active runtime exists, the service attempts to restore the persisted run.
-4. The handler creates a WebSocket session only after it has a runtime subject.
-5. It binds both the concrete run event stream and manager lifecycle stream,
-   then registers the connection and reads a fresh initial snapshot.
-6. Initial state contains exact leaf `AGENT_STATUS` messages followed by
-   `TEAM_RUN_LIFECYCLE`. Binding before the read closes the transition race; a
-   later create/restore/terminate transition is observed by the lifecycle
-   listener even if it overlaps snapshot construction.
+`INTERRUPT_GENERATION` carries `{command_id,execution_address}`.
+`APPROVE_TOOL` / `DENY_TOOL` carry `{invocation_id,execution_address,reason}`.
+These controls are active-only and never restore stopped work.
 
-For team runs, `SEND_MESSAGE` targets are normalized at the WebSocket edge to a
-`ConversationTargetAddress`, a typed segment path rooted at the WebSocket-bound
-parent team run. The canonical payload is `conversation_target_address` (camel
-alias `conversationTargetAddress` is accepted):
+`AGENT_COMMAND_ACK` for Team interrupt repeats the exact command ID and execution
+address with `accepted`, `rejected`, or `failed`. A client accepts the response
+only when both match its pending command. Acceptance confirms request admission;
+later runtime events own terminal status.
 
-```json
-{
-  "type": "SEND_MESSAGE",
-  "payload": {
-    "content": "Please inspect this result.",
-    "conversation_target_address": {
-      "parent_team_run_id": "optional-parent-team-run-id-guard",
-      "segments": [
-        { "kind": "member", "member_route_key": "research" },
-        { "kind": "task_team", "task_team_run_id": "task-team-run-id" },
-        { "kind": "member", "member_route_key": "writer" },
-        { "kind": "task_agent", "task_agent_run_id": "task-agent-run-id" }
-      ]
-    }
-  }
-}
-```
+## Connection And Restore
 
-Segment rules:
+A standalone connection binds to the durable run ID, emits `CONNECTED`, projects
+current status, and subscribes if a runtime is active. It does not restore or
+start the runtime. A Team connection resolves through
+`TeamRunService.resolveTeamRun(...)`, because the Team container owns supported
+restore. Team event and lifecycle listeners bind before a fresh snapshot is
+read, preventing create/restore/termination races.
 
-- the first segment must be `member`;
-- `member` selects a structural member by `member_route_key` /
-  `memberRouteKey` or `member_path` / `memberPath`;
-- `task_team` selects one concrete delegated task-team execution by
-  `task_team_run_id` / `taskTeamRunId` and must follow a member segment;
-- `task_agent` selects one concrete delegated task-agent execution by
-  `task_agent_run_id` / `taskAgentRunId`, must follow a member segment, and must
-  be terminal.
+If a send materializes or restores a runtime, the existing socket is rebound to
+that stream. Command overlays remain until command-correlated runtime evidence
+or coordinator failure replaces them.
 
-Existing structural payloads remain accepted only as parser-bound compatibility
-input and normalize to a one-segment `member` conversation address:
+## Client-Bound Content Cadence
 
-- `target_member_path` / `targetMemberPath`: array of path segments, for
-  example `["research", "writer"]`
-- `target_member_route_key` / `targetMemberRouteKey`: normalized route key, for
-  example `research/writer`
+Each connection owns one presentation-only egress:
 
-Clients must not mix a nested `conversation_target_address` with flat
-`target_member_*` selectors. Scalar command target aliases are not accepted.
-Payloads containing `target_member_name`, `targetMemberName`,
-`target_agent_name`, `targetAgentName`, command-side `agent_name`,
-command-side `agentName`, command-side `agent_id`, command-side `agentId`, or
-`member_name`/`memberName` as a target must fail with an invalid-target
-response. A stale, inactive, malformed, or mismatched runtime segment also fails
-as an invalid target and must not fall back to a structural member or the
-coordinator.
+- the first pending content message opens a fixed window using
+  `AUTOBYTEUS_STREAMING_CONTENT_FLUSH_INTERVAL_MS` (default 500 ms, range
+  100–2,000 ms);
+- adjacent content coalesces only when every payload field except `delta` is
+  deeply equal, so exact execution/turn/segment/type identity remains distinct;
+- immediate companion messages do not seal/reset pending content; and
+- lifecycle, tool boundaries, errors, terminal status, completion,
+  interruption, and unknown types flush earlier content first.
 
-Control commands remain active-only:
-
-- `INTERRUPT_GENERATION`
-- `APPROVE_TOOL`
-- `DENY_TOOL`
-
-Those commands intentionally require an already-active runtime lookup and do not call the restore path. Clients should not treat interrupt/approval messages as a way to resume a stopped run; standalone stopped-run recovery is owned by backend `SEND_MESSAGE`, while team stopped-run recovery is owned by the team resolve/restore path and team `SEND_MESSAGE`.
-
-Tool approval and denial target the agent that produced the pending approval
-request. Preferred team payload identity is the source identity emitted with the
-event:
-
-- `source_path` / `sourcePath`, `member_path` / `memberPath`, or
-  `target_member_path` / `targetMemberPath`
-- `source_route_key` / `sourceRouteKey`, `member_route_key` /
-  `memberRouteKey`, or `target_member_route_key` / `targetMemberRouteKey`
-
-For a task-team scoped child approval, the payload must also include
-`task_team_run_id` / `taskTeamRunId` and must use the relative child selector
-emitted by the backend: `task_team_relative_member_path` /
-`taskTeamRelativeMemberPath` or `task_team_relative_member_route_key` /
-`taskTeamRelativeMemberRouteKey`. A nested task-agent approval may additionally
-round-trip `task_agent_run_id` / `taskAgentRunId` as the concrete run guard.
-
-Scalar name/id fields (`agent_name`, `agentName`, `member_name`,
-`memberName`, `target_member_name`, `targetMemberName`, `target_agent_name`,
-`targetAgentName`, `agent_id`, and `agentId`) are rejected as approval command
-targets. The client must round-trip the route/path identity emitted with the
-approval request event. An approval request aimed at a subteam member rather
-than a leaf agent is rejected by the runtime unless it is accompanied by the
-required task-team scoped child identity.
-
-Team interrupt uses a stricter command shape than single-agent interrupt. A
-client sending `INTERRUPT_GENERATION` to `/ws/agent-team/:teamRunId` must include
-`payload.target_member_path` / `targetMemberPath` or
-`payload.target_member_route_key` / `targetMemberRouteKey`. It may also include
-`payload.target_member_run_id` / `targetMemberRunId`, but that value is only a
-guard for the expected member run id; it is never the authoritative selector.
-The server rejects missing target selectors and route-key/run-id mismatches
-without invoking a member runtime and without falling back to aggregate team
-interruption. The single-agent `/ws/agent/:runId` command carries only the
-required `command_id` in its payload in addition to the socket-bound run
-identity.
-
-Both handlers retain the originating connection and send one exact
-`AGENT_COMMAND_ACK` interrupt arm when the socket remains writable. The result
-echoes the client command id and an exact standalone/team-member target.
-Missing/inactive targets and provider rejection use `rejected`/`failed` rather
-than lifecycle output. `accepted` means admission only: it does not publish
-idle, change team liveness, or mutate transcript content. A disconnect before
-result delivery is completed by the client as a local transport failure rather
-than by fabricating a server acknowledgement.
-
-Approval commands are active-turn control commands, not queued runtime input.
-For native AutoByteus single-agent runs, `APPROVE_TOOL` / `DENY_TOOL` delegate
-to the active run backend and then to the agent's public
-`postToolExecutionApproval(...)` boundary. For native team runs, the team
-backend resolves the target member and routes the decision through that member
-agent's public approval API via the async team event path. If `task_team_run_id`
-is present, the parent team first resolves that active task-team child run and
-then resolves the relative child selector inside it before invoking the child
-member runtime. The backend may publish approval status/projection events after
-a valid decision, but
-`ToolExecutionApprovalEvent` is not a WebSocket command payload that can start a
-turn, restore a run, or bypass the active member runtime. Stale, inactive,
-no-pending, and interrupted approval attempts are non-restoring failures.
-Native AutoByteus treats only pending approval records as approval authority:
-membership in the active tool invocation batch is not enough for
-`APPROVE_TOOL` / `DENY_TOOL` to succeed. Auto-executing active tools and stale
-client retries therefore reject as no-pending without status mutation.
-
-The accepted `INTERRUPT_GENERATION` acknowledgement is not immediate
-send-readiness. A client should wait for the backend's
-terminal lifecycle/status stream projection for the affected turn before
-enabling a follow-up send. Runtime adapters that own provider processes must
-finish their cancellation boundary first; for Claude Agent SDK sessions this
-means aborting/closing the active query and clearing active turn/query state
-before the interrupted/idle projection is emitted. In the public WebSocket
-contract, that idle projection is an `AGENT_STATUS` payload such as
-`{ status: "idle", can_interrupt: false }`.
-
-Native AutoByteus runtimes follow the same interrupt-vs-stop split:
-single-agent `INTERRUPT_GENERATION` delegates to the active run
-`interrupt(...)` path, while team `INTERRUPT_GENERATION` delegates through the
-active team member `interruptMember(...)` route described above. Terminal
-stop/termination remains the shutdown path. Stale or inactive control commands
-must not restore a stopped run and must not fall back to shutdown cleanup.
-
-Explicit GraphQL termination of an active Claude Agent SDK run follows the same
-provider-settlement invariant before final session termination. The session must
-settle any active turn through the interrupt-safe query closure path first; only
-after that may the manager emit `SESSION_TERMINATED`, close/remove the run
-session, and leave later follow-up recovery to explicit restore plus
-`SEND_MESSAGE`.
+This cadence does not affect runtime listeners, memory, history, file-change
+projection, application output, or Team adaptation.
 
 ## Error And Close Semantics
 
-- Missing single-agent run identities emit `AGENT_NOT_FOUND` and close with `4004`.
-- Missing or unrestorable team runs emit `TEAM_NOT_FOUND` and close with `4004`.
-- Runs that resolve but cannot expose a stream subscription emit `AGENT_STREAM_UNAVAILABLE` or `TEAM_STREAM_UNAVAILABLE` and close with `1011`.
-- Unknown client message types are logged and ignored instead of changing run state.
+- missing/unrestorable run: `AGENT_NOT_FOUND` or `TEAM_NOT_FOUND`, close `4004`;
+- resolved run with unavailable stream: `*_STREAM_UNAVAILABLE`, close `1011`;
+- malformed Team DTO or wrong/missing execution address: reject without
+  compatibility repair;
+- socket loss: dispose connection-local cadence/status filter state; do not
+  claim delivery or replay of unsendable buffered output.
 
-## Operational Notes
+## Related Documentation
 
-- Session lifecycle is tied to socket lifecycle.
-- Errors are logged and emitted as terminal stream events.
-- Managers are singleton-backed and shared across requests. Single-agent stream handlers depend on the status-projection and command-coordinator boundaries for identity/status/activation, while team stream handlers depend on the team run-service boundary for restore and active lookup.
+- [Agent Streaming](../modules/agent_streaming.md)
+- [Agent Execution](../modules/agent_execution.md)
+- [Agent Team Execution](../modules/agent_team_execution.md)
+- [Streaming Parsing Architecture](./streaming_parsing_architecture.md)
+- [Run History](../modules/run_history.md)

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { AgentRunEventType } from "../../../../../../src/agent-execution/domain/agent-run-event.js";
-import { CodexThreadEventConverter } from "../../../../../../src/agent-execution/backends/codex/events/codex-thread-event-converter.js";
+import { createCodexThreadEventHarness } from "../../../../../fixtures/codex-thread-event-harness.js";
 import { CodexThreadEventName } from "../../../../../../src/agent-execution/backends/codex/events/codex-thread-event-name.js";
 
 const expectNoAgentToolsProviderMarkers = (
@@ -26,11 +26,11 @@ const expectNoAgentToolsSecrets = (
   }
 };
 
-describe("CodexThreadEventConverter", () => {
+describe("CodexThreadEventConverter through CodexThread", () => {
   it("projects authoritative command arguments for a result-first completed command", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.ITEM_COMPLETED,
       params: {
         turnId: "turn-result-first",
@@ -60,9 +60,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("preserves explicit empty arguments for a result-first dynamic terminal", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.ITEM_COMPLETED,
       params: {
         turnId: "turn-empty-dynamic",
@@ -93,9 +93,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("omits arguments for a genuinely argument-absent dynamic terminal", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.ITEM_COMPLETED,
       params: {
         turnId: "turn-absent-dynamic",
@@ -122,9 +122,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("ignores codex-prefixed internal events at the dispatcher boundary", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: "codex/event/mcp_startup_update",
       params: {},
     });
@@ -133,9 +133,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("does not map token-usage telemetry into AGENT_STATUS", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.THREAD_TOKEN_USAGE_UPDATED,
       params: {
         usage: {
@@ -149,9 +149,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("normalizes thread/compacted into provider compaction boundary status", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.THREAD_COMPACTED,
       params: {
         thread_id: "thread-1",
@@ -180,9 +180,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("normalizes contextCompaction item start into a non-rotating provider compaction status", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.ITEM_STARTED,
       params: {
         item: {
@@ -214,9 +214,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("normalizes contextCompaction item completion into a rotating provider compaction boundary", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.ITEM_COMPLETED,
       params: {
         item: {
@@ -248,9 +248,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("does not let contextCompaction start suppress the later completed boundary", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    expect(converter.convert({
+    expect(converter.emitThroughThread({
       method: CodexThreadEventName.ITEM_STARTED,
       params: {
         item: {
@@ -262,7 +262,7 @@ describe("CodexThreadEventConverter", () => {
       },
     })).toHaveLength(1);
 
-    const completed = converter.convert({
+    const completed = converter.emitThroughThread({
       method: CodexThreadEventName.ITEM_COMPLETED,
       params: {
         item: {
@@ -287,9 +287,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("normalizes raw context_compaction items into provider compaction boundaries", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED,
       params: {
         item: {
@@ -316,9 +316,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("dedupes completed contextCompaction and raw context_compaction surfaces for the same item", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    expect(converter.convert({
+    expect(converter.emitThroughThread({
       method: CodexThreadEventName.ITEM_COMPLETED,
       params: {
         item: {
@@ -330,7 +330,7 @@ describe("CodexThreadEventConverter", () => {
       },
     })).toHaveLength(1);
 
-    expect(converter.convert({
+    expect(converter.emitThroughThread({
       method: CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED,
       params: {
         item: {
@@ -345,9 +345,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("ignores compaction_trigger items as non-boundary signals", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    expect(converter.convert({
+    expect(converter.emitThroughThread({
       method: CodexThreadEventName.ITEM_STARTED,
       params: {
         item: {
@@ -359,7 +359,7 @@ describe("CodexThreadEventConverter", () => {
       },
     })).toEqual([]);
 
-    expect(converter.convert({
+    expect(converter.emitThroughThread({
       method: CodexThreadEventName.ITEM_COMPLETED,
       params: {
         item: {
@@ -373,9 +373,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("dedupes raw compaction items when thread/compacted already reported the boundary", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    expect(converter.convert({
+    expect(converter.emitThroughThread({
       method: CodexThreadEventName.THREAD_COMPACTED,
       params: {
         thread_id: "thread-1",
@@ -384,7 +384,7 @@ describe("CodexThreadEventConverter", () => {
       },
     })).toHaveLength(1);
 
-    expect(converter.convert({
+    expect(converter.emitThroughThread({
       method: CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED,
       params: {
         item: {
@@ -399,9 +399,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("dedupes raw no-stable compaction items when thread/compacted already reported the boundary", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    expect(converter.convert({
+    expect(converter.emitThroughThread({
       method: CodexThreadEventName.THREAD_COMPACTED,
       params: {
         thread_id: "thread-1",
@@ -409,7 +409,7 @@ describe("CodexThreadEventConverter", () => {
       },
     })).toHaveLength(1);
 
-    expect(converter.convert({
+    expect(converter.emitThroughThread({
       method: CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED,
       params: {
         item: {
@@ -422,9 +422,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("dedupes later thread/compacted when a raw no-stable compaction item arrived first", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    expect(converter.convert({
+    expect(converter.emitThroughThread({
       method: CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED,
       params: {
         item: {
@@ -435,7 +435,7 @@ describe("CodexThreadEventConverter", () => {
       },
     })).toHaveLength(1);
 
-    expect(converter.convert({
+    expect(converter.emitThroughThread({
       method: CodexThreadEventName.THREAD_COMPACTED,
       params: {
         thread_id: "thread-1",
@@ -445,9 +445,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("dedupes repeated raw no-stable compaction items in the same converter window", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    expect(converter.convert({
+    expect(converter.emitThroughThread({
       method: CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED,
       params: {
         item: {
@@ -458,7 +458,7 @@ describe("CodexThreadEventConverter", () => {
       },
     })).toHaveLength(1);
 
-    expect(converter.convert({
+    expect(converter.emitThroughThread({
       method: CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED,
       params: {
         item: {
@@ -471,9 +471,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("dedupes stable-id compaction boundaries when the raw item arrives before thread/compacted", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    expect(converter.convert({
+    expect(converter.emitThroughThread({
       method: CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED,
       params: {
         item: {
@@ -485,7 +485,7 @@ describe("CodexThreadEventConverter", () => {
       },
     })).toHaveLength(1);
 
-    expect(converter.convert({
+    expect(converter.emitThroughThread({
       method: CodexThreadEventName.THREAD_COMPACTED,
       params: {
         thread_id: "thread-1",
@@ -496,9 +496,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("keeps raw compaction items with a distinct stable id after thread/compacted in the same window", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    expect(converter.convert({
+    expect(converter.emitThroughThread({
       method: CodexThreadEventName.THREAD_COMPACTED,
       params: {
         thread_id: "thread-1",
@@ -507,7 +507,7 @@ describe("CodexThreadEventConverter", () => {
       },
     })).toHaveLength(1);
 
-    expect(converter.convert({
+    expect(converter.emitThroughThread({
       method: CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED,
       params: {
         item: {
@@ -522,9 +522,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("keeps thread/compacted with a distinct stable id after a raw compaction item in the same window", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    expect(converter.convert({
+    expect(converter.emitThroughThread({
       method: CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED,
       params: {
         item: {
@@ -537,7 +537,7 @@ describe("CodexThreadEventConverter", () => {
       },
     })).toHaveLength(1);
 
-    expect(converter.convert({
+    expect(converter.emitThroughThread({
       method: CodexThreadEventName.THREAD_COMPACTED,
       params: {
         thread_id: "thread-1",
@@ -548,13 +548,10 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("emits thread status changes as neutral lifecycle facts", () => {
-    const converter = new CodexThreadEventConverter("run-1", null, () => ({
-      availability: "active",
-      phase: "running",
-      currentTurn: { kind: "IDENTIFIED", turnId: "turn-1" },
-    }));
+    const converter = createCodexThreadEventHarness("run-1");
+    converter.thread.markTurnStarted("turn-1");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.THREAD_STATUS_CHANGED,
       params: {
         status: {
@@ -572,9 +569,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("emits only neutral explicit turn lifecycle events", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.TURN_COMPLETED,
       params: {
         turn: {
@@ -595,8 +592,8 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("emits effect-aware Codex errors without a backend status companion", () => {
-    const converter = new CodexThreadEventConverter("run-1");
-    const converted = converter.convert({
+    const converter = createCodexThreadEventHarness("run-1");
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.ERROR,
       params: {
         code: "TURN_FAILED",
@@ -619,8 +616,8 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("keeps unclassified Codex errors as content without a guessed status", () => {
-    const converter = new CodexThreadEventConverter("run-1");
-    const converted = converter.convert({
+    const converter = createCodexThreadEventHarness("run-1");
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.ERROR,
       params: { code: "UNKNOWN", message: "unclassified" },
     });
@@ -631,8 +628,8 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("does not emit a status companion for a terminal error rejected by native turn guards", () => {
-    const converter = new CodexThreadEventConverter("run-1");
-    const converted = converter.convert({
+    const converter = createCodexThreadEventHarness("run-1");
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.ERROR,
       params: {
         code: "TURN_FAILED",
@@ -651,9 +648,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("maps local MCP tool approval requests into TOOL_APPROVAL_REQUESTED", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.LOCAL_TOOL_APPROVAL_REQUESTED,
       params: {
         invocation_id: "call_speak_1",
@@ -681,9 +678,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("maps local Agent Tools MCP approval requests into TOOL_APPROVAL_REQUESTED with canonical arguments", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.LOCAL_TOOL_APPROVAL_REQUESTED,
       params: {
         invocation_id: "call_send_message_approval",
@@ -711,9 +708,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("maps local permission approval requests into TOOL_APPROVAL_REQUESTED with requested profile context", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.LOCAL_TOOL_APPROVAL_REQUESTED,
       params: {
         invocation_id: "perm-request-1",
@@ -757,9 +754,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("fans out mcpToolCall starts into tool_call segment and lifecycle start", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.ITEM_STARTED,
       params: {
         item: {
@@ -810,9 +807,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("maps local MCP completion events into TOOL_EXECUTION_SUCCEEDED with arguments", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
       params: {
         invocation_id: "call_speak_auto",
@@ -858,9 +855,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("normalizes observed local MCP open_tab completion envelopes into direct browser results", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
       params: {
         invocation_id: "call_open_tab",
@@ -920,13 +917,13 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("normalizes Agent Tools MCP delegate_task completion envelopes into direct task results", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
     const taskResult = {
       task_id: "task_0001",
       status: "active",
     };
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
       params: {
         invocation_id: "call_delegate_task",
@@ -985,13 +982,13 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("normalizes Agent Tools MCP review_task_result completion envelopes into direct task results", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
     const reviewResult = {
       task_id: "task_0001",
       status: "accepted",
     };
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
       params: {
         invocation_id: "call_review_task_result",
@@ -1039,9 +1036,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("projects generic Codex MCP JSON text envelopes into parsed results", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
       params: {
         invocation_id: "call_generic_json",
@@ -1081,9 +1078,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("projects generic Codex MCP plain text envelopes into text results", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
       params: {
         invocation_id: "call_generic_text",
@@ -1112,9 +1109,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("projects generic Codex MCP structuredContent before text fallback", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
       params: {
         invocation_id: "call_generic_structured",
@@ -1144,9 +1141,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("projects generic Codex MCP multi-text envelopes with deterministic separators", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
       params: {
         invocation_id: "call_generic_multitext",
@@ -1176,9 +1173,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("projects generic Codex MCP rich content envelopes into sanitized items", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
       params: {
         invocation_id: "call_generic_rich",
@@ -1219,9 +1216,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("maps Codex MCP isError result envelopes into failure events without result", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
       params: {
         invocation_id: "call_generic_error",
@@ -1256,16 +1253,17 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("does not project exact envelope-shaped non-MCP Codex dynamic tool results", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
     const rawEnvelopeLikeResult = {
       content: [{ type: "text", text: JSON.stringify({ should: "stay wrapped" }) }],
       structuredContent: null,
       _meta: { domain: true },
     };
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.ITEM_COMPLETED,
       params: {
+        turnId: "turn-non-mcp-envelope",
         item: {
           type: "dynamicToolCall",
           id: "call_non_mcp_envelope",
@@ -1287,7 +1285,7 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("normalizes aliased Browser MCP completion results without circular placeholders", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
     const browserResultEnvelope = {
       content: [
         {
@@ -1307,7 +1305,7 @@ describe("CodexThreadEventConverter", () => {
       _meta: null,
     };
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
       params: {
         invocation_id: "call_run_script",
@@ -1359,9 +1357,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("maps failed local MCP completion events into TOOL_EXECUTION_FAILED with arguments", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
       params: {
         invocation_id: "call_speak_failed",
@@ -1399,9 +1397,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("fans out webSearch starts into tool_call segment and lifecycle start", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.ITEM_STARTED,
       params: {
         item: {
@@ -1453,9 +1451,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("omits arguments from the captured hosted webSearch placeholder start", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.ITEM_STARTED,
       params: {
         item: {
@@ -1483,9 +1481,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("emits card-capable identity and name without inventing arguments for an unseen webSearch terminal", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.ITEM_COMPLETED,
       params: {
         item: {
@@ -1512,9 +1510,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("fans out successful webSearch completions into terminal success and segment end", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.ITEM_COMPLETED,
       params: {
         item: {
@@ -1572,9 +1570,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("fans out failed webSearch completions into terminal failure and segment end", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.ITEM_COMPLETED,
       params: {
         item: {
@@ -1625,9 +1623,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("fans out Agent Tools MCP send_message_to starts into tool_call segment and canonical lifecycle start", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.ITEM_STARTED,
       params: {
         item: {
@@ -1682,9 +1680,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("maps successful Agent Tools MCP send_message_to completions into canonical terminal success", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
       params: {
         invocation_id: "call_send_message",
@@ -1740,9 +1738,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("normalizes non-send Agent Tools MCP completions into canonical tool lifecycle events", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
       params: {
         invocation_id: "call_generate_image",
@@ -1792,9 +1790,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("redacts prefixed free-form text and raw secret fields in Agent Tools MCP payloads", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
       params: {
         invocation_id: "call_generate_image_secret_probe",
@@ -1874,9 +1872,9 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("maps failed Agent Tools MCP send_message_to completions into canonical terminal failure", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
       params: {
         invocation_id: "call_send_message_failed",
@@ -1932,11 +1930,12 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("sanitizes Agent Tools MCP ITEM_COMPLETED segment-end payloads", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.ITEM_COMPLETED,
       params: {
+        turnId: "turn-send-message-segment-end",
         item: {
           type: "mcpToolCall",
           id: "call_send_message_segment_end",
@@ -1979,11 +1978,12 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("maps generic dynamic tool completions into terminal success and segment end", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.ITEM_COMPLETED,
       params: {
+        turnId: "turn-custom-dynamic",
         item: {
           type: "dynamicToolCall",
           id: "call_custom_dynamic",
@@ -2026,11 +2026,12 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("parses generic dynamic tool JSON text results from contentItems", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.ITEM_COMPLETED,
       params: {
+        turnId: "turn-custom-dynamic-text",
         item: {
           type: "dynamicToolCall",
           id: "call_custom_dynamic_text",
@@ -2082,11 +2083,12 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("fans out fileChange start into segment and lifecycle events", () => {
-    const converter = new CodexThreadEventConverter("run-1", "/tmp/workspace");
+    const converter = createCodexThreadEventHarness("run-1", "/tmp/workspace");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.ITEM_STARTED,
       params: {
+        turnId: "turn-file-change",
         item: {
           type: "fileChange",
           id: "call_1",
@@ -2125,11 +2127,12 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("fans out fileChange completion into success and segment end", () => {
-    const converter = new CodexThreadEventConverter("run-1", "/tmp/workspace");
+    const converter = createCodexThreadEventHarness("run-1", "/tmp/workspace");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.ITEM_COMPLETED,
       params: {
+        turnId: "turn-file-change",
         item: {
           type: "fileChange",
           id: "call_1",
@@ -2162,11 +2165,12 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("preserves edit_file metadata when converting file-change segments", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+    const converter = createCodexThreadEventHarness("run-1");
 
-    const converted = converter.convert({
+    const converted = converter.emitThroughThread({
       method: CodexThreadEventName.ITEM_STARTED,
       params: {
+        turnId: "turn-edit-file",
         item: {
           type: "editFile",
           id: "edit-file-1",

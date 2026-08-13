@@ -1,0 +1,98 @@
+CRR-040 proportional API/E2E durable test-code audit
+timestamp=2026-08-10T18:17:27Z
+workspace=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs
+head=33b9b1e28e1c7f666dffdbcd349d394b2bfef875
+api_revision=API-REV-019
+api_result=Pass
+api_confidence=97%
+
+[exact pending patch]
+reverse_apply_check=PASS
+212	0	autobyteus-web/services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts
+94	72	autobyteus-web/services/agentStreaming/__tests__/teamTaskExecutionEventRouter.spec.ts
+223	188	autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts
+105	0	autobyteus-web/components/workspace/team/__tests__/TeamDelegatedTasksSection.current-contract.spec.ts
+257	0	autobyteus-web/services/agentStreaming/__tests__/currentTaskExecutionFixture.ts
+87	0	autobyteus-web/services/runHydration/__tests__/taskDelegationGraphqlDtoProjection.spec.ts
+patch_file_count=6
+
+[six path hashes]
+0e5001eca75fac42c34e206a3dc56b236be12b1861d6c94bc1adf3ea99f73cec  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/currentTaskExecutionFixture.ts
+0e1105bb7d452c84af11891999f6f3219e595b5653d8fdcf5b332aecbe6f63de  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/runHydration/__tests__/taskDelegationGraphqlDtoProjection.spec.ts
+061f8f1ba432d9db20a14eb4873cf135da114fd0ae355a5633388e13c22af95d  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/team/__tests__/TeamDelegatedTasksSection.current-contract.spec.ts
+bfa8f1c34d6052f5945af9969eaf31b1bf4819bf3834e249a2b885ef7931a500  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskExecutionEventRouter.spec.ts
+ff479117a64b05ac921d985e3ed288f32d89e85cc2b1697cd02266c17c76585a  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts
+dc8c8111d2f82ecf777a95164b67c80ee0a5bd8cc01bad63bd84937a690a50c5  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts
+
+[disabled/stale marker audit]
+disabled_marker_audit=PASS
+
+[legacy/surplus identity references]
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskExecutionEventRouter.spec.ts:96:    malformed.payload.execution_address = { ...address, memberPath: ['Teacher'] };
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/runHydration/__tests__/taskDelegationGraphqlDtoProjection.spec.ts:11:  __typename: 'TaskDelegationTargetAddressObject',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/runHydration/__tests__/taskDelegationGraphqlDtoProjection.spec.ts:19:  __typename: 'TaskDelegationRecordObject',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/runHydration/__tests__/taskDelegationGraphqlDtoProjection.spec.ts:28:    __typename: 'TaskDelegationTaskRunObject',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/runHydration/__tests__/taskDelegationGraphqlDtoProjection.spec.ts:33:    __typename: 'TaskDelegationUpdateObject',
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/runHydration/__tests__/taskDelegationGraphqlDtoProjection.spec.ts:74:    expect(JSON.stringify(records)).not.toContain('__typename');
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/runHydration/__tests__/taskDelegationGraphqlDtoProjection.spec.ts:80:    withRemovedPath.receiverAddress.memberPath = ['StudentStudyGroup'];
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/runHydration/__tests__/taskDelegationGraphqlDtoProjection.spec.ts:82:    withUnknownMetadata.senderAddress.__typename = 'UnexpectedAddressObject';
+legacy_reference_classification=memberPath occurs only in explicit fail-closed negative assertions; __typename is the exact Apollo DTO boundary; no compatibility expectation retained
+
+[inventory reconciliation]
+inventory_rows=61
+pending_rows=6
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/components/workspace/team/__tests__/TeamDelegatedTasksSection.current-contract.spec.ts	web	Added or replaced by API-REV-018 after API-REV-017 failure	yes	Added	durable test	present	Current task count/details/status plus active/awaiting/accepted restore and cleanup UI boundary	/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-019/repository/web-current-affected-final.log
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts	web	API-REV-016 cumulative maintained inventory	yes	Updated	durable test	present	Needs Update resolved — current rootTeam fixture plus exact execution-address behavior	/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-019/repository/web-current-affected-final.log
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/currentTaskExecutionFixture.ts	web	Added or replaced by API-REV-018 after API-REV-017 failure	yes	Added	shared fixture	present	Shared current exact four-field task execution fixture	/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-019/repository/web-current-affected-final.log
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskExecutionEventRouter.spec.ts	web	Added or replaced by API-REV-018 after API-REV-017 failure	yes	Updated	durable test	present	Replace stale route/path fixture — current event materialization, exact nested identities and cleanup	/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-019/repository/web-current-affected-final.log
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts	web	Added or replaced by API-REV-018 after API-REV-017 failure	yes	Updated	durable test	present	Replace stale route/path fixture — current nested task-Team/Agent projection and persistent-tree immutability	/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-019/repository/web-current-affected-final.log
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-web/services/runHydration/__tests__/taskDelegationGraphqlDtoProjection.spec.ts	web	Added or replaced by API-REV-018 after API-REV-017 failure	yes	Added	durable test	present	Apollo DTO metadata projection, hydration, and strict surplus-field rejection	/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-evidence-sr015/api-rev-019/repository/web-current-affected-final.log
+
+[execution evidence]
+ Test Files  5 passed (5)
+      Tests  26 passed (26)
+ Test Files  7 passed (7)
+      Tests  60 passed (60)
+ Test Files  2 passed (2)
+      Tests  43 passed (43)
+
+[API-REV-019 handoff]
+timestamp=2026-08-10T18:12:29Z
+head=33b9b1e28e1c7f666dffdbcd349d394b2bfef875
+expected_head=true
+investigation_current_pass=true
+execution_report_current_pass=true
+revision_index_single_entry=true
+revision_detail_single_entry=true
+inventory_61_rows=true
+inventory_six_pending_delta=true
+pending_patch_six_files=true
+focused_web_5_26=true
+affected_web_7_60=true
+cadence_harness_2_43=true
+safe_server_lsof=true
+config_only_no_database_init=true
+owned_cleanup=true
+owned_target_absent=true
+retained_manifest_110_verified=true
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    71461 normy   26u  IPv4 0xbe9eaf34a35017b1      0t0  TCP 127.0.0.1:60004 (LISTEN)
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    73207 normy   12u  IPv4 0xe0271daf60061249      0t0  TCP 127.0.0.1:31004 (LISTEN)
+owned_server_port_closed=true
+owned_frontend_port_closed=true
+git_diff_check=true
+operational_database_action=none
+incident_disclosures_preserved=true
+
+[review conclusions]
+scenario_grouping=PASS: DTO projection/hydration, panel presentation, task-Agent projection/lifecycle, task-Team projection/restore/tree selection, and TeamStreaming serialization are separated by boundary.
+requirements_assertions=PASS: assertions prove exact four-field addresses, nonempty ordered task-Team chains, distinct transient execution nodes, visible task count/details, focus/restore/cleanup, and fail-closed malformed/surplus input.
+fixture_reuse=PASS: one shared current exact Team/task fixture supplies recurring topology/event builders; table-driven address cases cover four command identities.
+isolation_determinism=PASS: Pinia and WebSocket state are local; timestamps/IDs are fixed; no network/provider/database dependency occurs in these files.
+coherence_navigability=PASS: the larger fixture and projection suite cover one task-execution tree responsibility and remain organized by named scenarios.
+stale_duplicate_disabled=PASS: no disabled markers; removed memberPath is exercised only as rejection; no compatibility-only acceptance.
+coverage_reconciliation=PASS: exact six-file patch, 61-row inventory, 5/26 focused and 7/60 affected web runs, 2/43 cadence/harness, and retained product evidence agree.
+reviewer_rerun=NOT_RUN: skill defaults to existing successful evidence; assertions were judgeable from exact patch and artifacts.
+result=PASS
+findings=none
