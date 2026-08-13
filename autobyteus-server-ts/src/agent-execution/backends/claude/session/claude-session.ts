@@ -211,15 +211,28 @@ export class ClaudeSession {
     );
   }
 
-  async interrupt(): Promise<void> {
-    await this.settleActiveTurnForClosure("Tool approval interrupted.");
+  async interrupt(turnId: string): Promise<void> {
+    await this.settleActiveTurnForClosure("Tool approval interrupted.", turnId);
   }
 
-  async settleActiveTurnForClosure(pendingToolApprovalReason: string): Promise<void> {
+  async settleActiveTurnForClosure(
+    pendingToolApprovalReason: string,
+    expectedTurnId: string | null = null,
+  ): Promise<void> {
     const activeTurn = this.activeTurnExecution;
     if (!activeTurn) {
+      if (expectedTurnId) {
+        throw new Error(
+          `Claude run '${this.runId}' has no active turn '${expectedTurnId}' to interrupt.`,
+        );
+      }
       this.cleanupDanglingActiveInterruptState(pendingToolApprovalReason);
       return;
+    }
+    if (expectedTurnId && activeTurn.turnId !== expectedTurnId) {
+      throw new Error(
+        `Claude active turn is '${activeTurn.turnId}', not '${expectedTurnId}'.`,
+      );
     }
 
     if (!activeTurn.interruptSettlementTask) {

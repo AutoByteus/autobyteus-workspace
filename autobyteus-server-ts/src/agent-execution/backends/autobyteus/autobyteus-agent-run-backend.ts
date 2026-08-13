@@ -178,7 +178,7 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
     }
   }
 
-  async interrupt(turnId?: string | null): Promise<AgentOperationResult> {
+  async interrupt(turnId: string | null): Promise<AgentOperationResult> {
     if (!this.isActive()) {
       return buildRunNotFoundResult(this.runId);
     }
@@ -191,7 +191,7 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
     }
     try {
       const result = await this.agent.interrupt({
-        turnId: turnId ?? null,
+        turnId,
         reason: "user_interrupt",
       });
       return {

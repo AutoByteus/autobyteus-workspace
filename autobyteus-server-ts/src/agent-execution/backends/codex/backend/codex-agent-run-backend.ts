@@ -144,17 +144,24 @@ export class CodexAgentRunBackend implements AgentRunBackend {
     await this.codexThread.approveTool(invocationId, approved);
   }
 
-  async interrupt(turnId?: string | null): Promise<AgentOperationResult> {
+  async interrupt(turnId: string | null): Promise<AgentOperationResult> {
+    if (!turnId) {
+      return {
+        accepted: false,
+        code: "NO_ACTIVE_TURN",
+        message: "Codex interrupt requires the canonical active turn id from AgentRun.",
+      };
+    }
     try {
-      await this.interruptRun(turnId ?? null);
-      return { accepted: true };
+      await this.interruptRun(turnId);
+      return { accepted: true, turnId };
     } catch (error) {
       return buildCommandFailure("interrupt run", error);
     }
   }
 
-  async interruptRun(turnId?: string | null): Promise<void> {
-    await this.codexThread.interrupt(turnId ?? null);
+  async interruptRun(turnId: string): Promise<void> {
+    await this.codexThread.interrupt(turnId);
   }
 
   async terminate(): Promise<AgentOperationResult> {

@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
 import { AgentRun } from "../../../src/agent-execution/domain/agent-run.js";
+import type { AgentOperationResult } from "../../../src/agent-execution/domain/agent-operation-result.js";
 import {
   AgentRunEventType,
   type AgentRunEvent,
@@ -35,6 +36,7 @@ const createHarness = (options: {
   snapshot?: AgentRuntimeLifecycleSnapshot;
   append?: "supported" | "unsupported";
   dispatchUserInput?: ReturnType<typeof vi.fn>;
+  interrupt?: ReturnType<typeof vi.fn>;
   terminate?: ReturnType<typeof vi.fn>;
 } = {}) => {
   const runId = options.runId ?? "agent-run-1";
@@ -78,7 +80,7 @@ const createHarness = (options: {
       turnId: null,
     }),
     approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
-    interrupt: vi.fn().mockResolvedValue({ accepted: true }),
+    interrupt: options.interrupt ?? vi.fn().mockResolvedValue({ accepted: true }),
     terminate: options.terminate ?? vi.fn().mockResolvedValue({ accepted: true }),
   };
   const run = new AgentRun({ context, backend: backend as never });
@@ -326,7 +328,8 @@ describe("AgentRun input admission", () => {
     });
     await harness.run.postUserMessage(new AgentInputUserMessage("after interrupt"));
 
-    await expect(harness.run.interrupt("turn-active")).resolves.toEqual({ accepted: true });
+    await expect(harness.run.interrupt()).resolves.toEqual({ accepted: true });
+    expect(harness.backend.interrupt).toHaveBeenCalledWith("turn-active");
     expect(harness.backend.dispatchUserInput).not.toHaveBeenCalled();
 
     harness.setSnapshot({ availability: "active", phase: "idle", currentTurn: { kind: "NONE" } });
@@ -337,6 +340,70 @@ describe("AgentRun input admission", () => {
       kind: "start_turn",
       message: expect.objectContaining({ content: "after interrupt" }),
     }));
+  });
+
+  it("reserves one no-id interrupt and lets a canonical terminal win provider-result ordering", async () => {
+    const deferred = createDeferred<AgentOperationResult>();
+    const interrupt = vi.fn().mockReturnValue(deferred.promise);
+    const harness = createHarness({
+      interrupt,
+      snapshot: {
+        availability: "active",
+        phase: "running",
+        currentTurn: { kind: "IDENTIFIED", turnId: "turn-active" },
+      },
+    });
+    await harness.run.postUserMessage(new AgentInputUserMessage("after terminal"));
+
+    const standaloneStop = harness.run.interrupt(null);
+    const teamStop = harness.run.interrupt();
+    await vi.waitFor(() => expect(interrupt).toHaveBeenCalledOnce());
+    expect(interrupt).toHaveBeenCalledWith("turn-active");
+
+    harness.setSnapshot({ availability: "active", phase: "idle", currentTurn: { kind: "NONE" } });
+    await harness.getSourceListener()?.([
+      event(harness.run.runId, AgentRunEventType.TURN_INTERRUPTED, { turn_id: "turn-active" }),
+    ]);
+    await vi.waitFor(() => expect(harness.backend.dispatchUserInput).toHaveBeenCalledWith({
+      kind: "start_turn",
+      message: expect.objectContaining({ content: "after terminal" }),
+    }));
+
+    deferred.resolve({ accepted: true, turnId: "turn-active" });
+    await expect(Promise.all([standaloneStop, teamStop])).resolves.toEqual([
+      { accepted: true, turnId: "turn-active" },
+      { accepted: true, turnId: "turn-active" },
+    ]);
+    expect(interrupt).toHaveBeenCalledOnce();
+  });
+
+  it("rejects an interrupt target mismatch before provider I/O", async () => {
+    const harness = createHarness({
+      snapshot: {
+        availability: "active",
+        phase: "running",
+        currentTurn: { kind: "IDENTIFIED", turnId: "turn-active" },
+      },
+    });
+
+    await expect(harness.run.interrupt("turn-foreign")).resolves.toMatchObject({
+      accepted: false,
+      code: "TURN_MISMATCH",
+    });
+    expect(harness.backend.interrupt).not.toHaveBeenCalled();
+  });
+
+  it("passes an anonymous canonical active turn as exact null provider mechanics", async () => {
+    const harness = createHarness({
+      snapshot: {
+        availability: "active",
+        phase: "running",
+        currentTurn: { kind: "ANONYMOUS" },
+      },
+    });
+
+    await expect(harness.run.interrupt()).resolves.toEqual({ accepted: true });
+    expect(harness.backend.interrupt).toHaveBeenCalledWith(null);
   });
 
   it("cancels waiting admitted input once on accepted termination", async () => {

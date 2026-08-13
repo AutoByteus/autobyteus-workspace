@@ -115,10 +115,10 @@ describe("AutoByteusAgentRunBackend", () => {
       },
     });
 
-    const result = await backend.interrupt();
+    const result = await backend.interrupt("turn-1");
 
     expect(agent.interrupt).toHaveBeenCalledWith({
-      turnId: null,
+      turnId: "turn-1",
       reason: "user_interrupt",
     });
     expect(agent.stop).not.toHaveBeenCalled();
@@ -239,7 +239,7 @@ describe("AutoByteusAgentRunBackend", () => {
       kind: "start_turn",
       message: new AgentInputUserMessage("hello inactive run"),
     });
-    const interruptResult = await backend.interrupt();
+    const interruptResult = await backend.interrupt("turn-1");
 
     expect(agent.postUserMessage).not.toHaveBeenCalled();
     expect(agent.interrupt).not.toHaveBeenCalled();
@@ -264,7 +264,7 @@ describe("AutoByteusAgentRunBackend", () => {
       },
     });
 
-    const result = await backend.interrupt();
+    const result = await backend.interrupt("turn-1");
 
     expect(result).toEqual({
       accepted: false,

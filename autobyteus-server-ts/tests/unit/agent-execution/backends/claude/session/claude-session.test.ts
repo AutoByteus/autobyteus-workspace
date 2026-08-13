@@ -600,7 +600,7 @@ describe("ClaudeSession", () => {
     clearPendingToolApprovals.mockImplementation(() => {
       expect(startQueryOptions.abortController?.signal.aborted).toBe(false);
     });
-    const interruptPromise = session.interrupt();
+    const interruptPromise = session.interrupt(turnId as string);
     await waitFor(
       () => startQueryOptions.abortController?.signal.aborted === true,
       "interrupt abort signal",
@@ -647,7 +647,7 @@ describe("ClaudeSession", () => {
     ]);
   });
 
-  it("treats interrupt without an active turn execution as an idempotent cleanup no-op", async () => {
+  it("keeps manager-owned closure cleanup idempotent without an active turn execution", async () => {
     const { session, clearPendingToolApprovals } = createSession({
       activeTurnId: "run-1:turn:stale",
     });
@@ -659,7 +659,7 @@ describe("ClaudeSession", () => {
       events.push(event.method);
     });
 
-    await session.interrupt();
+    await session.settleActiveTurnForClosure("Tool approval interrupted.");
 
     expect(abortController.signal.aborted).toBe(true);
     expect(clearPendingToolApprovals).toHaveBeenCalledWith(
@@ -669,6 +669,25 @@ describe("ClaudeSession", () => {
     expect(events).not.toContain(ClaudeSessionEventName.TURN_INTERRUPTED);
     expect(session.activeAbortController).toBe(null);
     expect(session.activeTurnId).toBeNull();
+  });
+
+  it("rejects a foreign interrupt turn without mutating the active query", async () => {
+    const controlledQuery = createManuallySettledQuery();
+    const { session, startQueryTurn } = createSession({ queries: [controlledQuery.query] });
+    const { turnId } = await session.startTurn(new AgentInputUserMessage("hello"));
+    await waitFor(() => startQueryTurn.mock.calls.length === 1, "active query start");
+    const abortController = (startQueryTurn.mock.calls[0]?.[0] as {
+      abortController?: AbortController;
+    }).abortController;
+
+    await expect(session.interrupt("turn-foreign")).rejects.toThrow(
+      `Claude active turn is '${turnId}', not 'turn-foreign'.`,
+    );
+    expect(abortController?.signal.aborted).toBe(false);
+    expect(session.activeTurnId).toBe(turnId);
+
+    controlledQuery.release();
+    await waitFor(() => session.activeTurnId === null, "active query completion");
   });
 
   it("delegates terminate to the session manager dependency", async () => {
@@ -708,14 +727,14 @@ describe("ClaudeSession", () => {
       queries: [firstQuery.query, createResultQuery(providerSessionId)],
     });
 
-    await session.startTurn(new AgentInputUserMessage("start long work"));
+    const { turnId } = await session.startTurn(new AgentInputUserMessage("start long work"));
     await waitFor(() => session.sessionId === providerSessionId, "provider session adoption");
 
     const firstOptions = startQueryTurn.mock.calls[0]?.[0] as { sessionId?: string | null };
     expect(firstOptions.sessionId).toBeNull();
     expect(session.hasCompletedTurn).toBe(false);
 
-    const interruptPromise = session.interrupt();
+    const interruptPromise = session.interrupt(turnId as string);
     await waitFor(
       () => (startQueryTurn.mock.calls[0]?.[0] as { abortController?: AbortController }).abortController?.signal.aborted === true,
       "interrupt abort signal",
@@ -740,10 +759,10 @@ describe("ClaudeSession", () => {
       queries: [firstQuery.query, createResultQuery("claude-session-after-placeholder")],
     });
 
-    await session.startTurn(new AgentInputUserMessage("start before provider id"));
+    const { turnId } = await session.startTurn(new AgentInputUserMessage("start before provider id"));
     await waitFor(() => startQueryTurn.mock.calls.length === 1, "initial query start");
 
-    const interruptPromise = session.interrupt();
+    const interruptPromise = session.interrupt(turnId as string);
     await waitFor(
       () => (startQueryTurn.mock.calls[0]?.[0] as { abortController?: AbortController }).abortController?.signal.aborted === true,
       "placeholder interrupt abort signal",

@@ -1,4 +1,4 @@
-import type { AgentRunUserMessageAcceptedPayload } from "../../agent-execution/domain/agent-run-command-observer.js";
+import type { AgentRunUserMessageForwardedPayload } from "../../agent-execution/domain/agent-run-command-observer.js";
 import type { AgentRunEvent } from "../../agent-execution/domain/agent-run-event.js";
 import { AgentRunEventType } from "../../agent-execution/domain/agent-run-event.js";
 import type { ExternalRuntimeMemoryWriter } from "../store/external-runtime-memory-writer.js";
@@ -6,7 +6,7 @@ import type { ToolTraceLifecycleGroup } from "autobyteus-ts/memory/tool-trace-li
 import { ProviderCompactionBoundaryRecorder } from "./provider-compaction-boundary-recorder.js";
 import {
   asString,
-  extractAcceptedMessageMedia,
+  extractForwardedMessageMedia,
   extractContentDelta,
   extractTimestamp,
   extractTurnId,
@@ -47,16 +47,16 @@ export class RuntimeMemoryEventAccumulator {
     });
   }
 
-  recordAcceptedUserMessage(payload: AgentRunUserMessageAcceptedPayload): void {
+  recordForwardedUserMessage(payload: AgentRunUserMessageForwardedPayload): void {
     const turnId = asString(payload.result.turnId);
     if (!turnId) return;
-    const media = extractAcceptedMessageMedia(payload.message);
+    const media = extractForwardedMessageMedia(payload.message);
     this.input.writer.appendRawTrace({
       traceType: "user",
       turnId,
       content: payload.message.content,
       sourceEvent: "AgentRun.postUserMessage",
-      ts: payload.acceptedAt.getTime() / 1000,
+      ts: payload.forwardedAt.getTime() / 1000,
       media,
     });
   }

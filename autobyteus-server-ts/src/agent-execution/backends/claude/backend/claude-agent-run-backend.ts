@@ -118,10 +118,17 @@ export class ClaudeAgentRunBackend implements AgentRunBackend {
     }
   }
 
-  async interrupt(): Promise<AgentOperationResult> {
+  async interrupt(turnId: string | null): Promise<AgentOperationResult> {
+    if (!turnId) {
+      return {
+        accepted: false,
+        code: "NO_ACTIVE_TURN",
+        message: "Claude interrupt requires the canonical active turn id from AgentRun.",
+      };
+    }
     try {
-      await this.session.interrupt();
-      return { accepted: true };
+      await this.session.interrupt(turnId);
+      return { accepted: true, turnId };
     } catch (error) {
       return {
         accepted: false,

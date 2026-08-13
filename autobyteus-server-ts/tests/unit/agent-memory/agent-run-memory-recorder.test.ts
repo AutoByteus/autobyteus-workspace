@@ -96,7 +96,7 @@ describe("AgentRunMemoryRecorder", () => {
   it("records forwarded commands and normalized events without a stream subscriber", async () => {
     const memoryDir = await mkTempDir();
     const recorder = new AgentRunMemoryRecorder();
-    const onUserMessageForwarded = vi.spyOn(recorder, "onUserMessageAccepted");
+    const onUserMessageForwarded = vi.spyOn(recorder, "onUserMessageForwarded");
     const { run } = createRun({ runtimeKind: RuntimeKind.CODEX_APP_SERVER, memoryDir, recorder });
     recorder.attachToRun(run);
 

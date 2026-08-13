@@ -1,4 +1,4 @@
-import type { AgentRunUserMessageAcceptedPayload } from "../../agent-execution/domain/agent-run-command-observer.js";
+import type { AgentRunUserMessageForwardedPayload } from "../../agent-execution/domain/agent-run-command-observer.js";
 import type { RawTraceMedia } from "autobyteus-ts/memory/models/raw-trace-item.js";
 
 export const asRecord = (value: unknown): Record<string, unknown> | null =>
@@ -68,8 +68,8 @@ export const asBoolean = (value: unknown): boolean | null =>
 export const asNumber = (value: unknown): number | null =>
   typeof value === "number" && Number.isFinite(value) ? value : null;
 
-export const extractAcceptedMessageMedia = (
-  message: AgentRunUserMessageAcceptedPayload["message"],
+export const extractForwardedMessageMedia = (
+  message: AgentRunUserMessageForwardedPayload["message"],
 ): RawTraceMedia | null => {
   const media: RawTraceMedia = { images: [], audio: [], video: [] };
   for (const file of message.contextFiles ?? []) {

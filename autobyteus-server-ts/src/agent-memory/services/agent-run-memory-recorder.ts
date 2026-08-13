@@ -1,7 +1,7 @@
 import type { AgentRun } from "../../agent-execution/domain/agent-run.js";
 import type {
   AgentRunCommandObserver,
-  AgentRunUserMessageAcceptedPayload,
+  AgentRunUserMessageForwardedPayload,
 } from "../../agent-execution/domain/agent-run-command-observer.js";
 import { isAgentRunEvent } from "../../agent-execution/domain/agent-run-event.js";
 import type { AgentRunConfig } from "../../agent-execution/domain/agent-run-config.js";
@@ -46,12 +46,12 @@ export class AgentRunMemoryRecorder implements AgentRunCommandObserver {
     return () => this.detachRun(run.runId);
   }
 
-  onUserMessageAccepted(payload: AgentRunUserMessageAcceptedPayload): void {
+  onUserMessageForwarded(payload: AgentRunUserMessageForwardedPayload): void {
     if (!this.isRecordable(payload.runId, payload.runtimeKind, payload.config)) {
       return;
     }
     const state = this.getOrCreateState(payload.runId, payload.config);
-    this.enqueue(payload.runId, () => state.accumulator.recordAcceptedUserMessage(payload));
+    this.enqueue(payload.runId, () => state.accumulator.recordForwardedUserMessage(payload));
   }
 
   async waitForIdle(runId?: string | null): Promise<void> {

@@ -35,6 +35,18 @@ type ClaimedInputDispatch = {
   commandToken: number | null;
 };
 
+type AgentRunInterruptReservation = {
+  turnId: string | null;
+  result: Promise<AgentOperationResult>;
+  resolve: (result: AgentOperationResult) => void;
+  reject: (error: unknown) => void;
+};
+
+type AgentRunInterruptDecision =
+  | { kind: "rejected"; result: AgentOperationResult }
+  | { kind: "joined"; reservation: AgentRunInterruptReservation }
+  | { kind: "claimed"; reservation: AgentRunInterruptReservation };
+
 type AgentRunOptions = {
   context: AgentRunContext<unknown | null>;
   backend: AgentRunBackend;
@@ -57,6 +69,7 @@ export class AgentRun {
   private readonly inputAdmissionState = new AgentRunInputAdmissionState();
   private readonly unsubscribeFromBackendSource: () => void;
   private activeInputDispatch: Promise<void> | null = null;
+  private activeInterruptReservation: AgentRunInterruptReservation | null = null;
 
   constructor(options: AgentRunOptions) {
     this.context = options.context;
@@ -142,8 +155,14 @@ export class AgentRun {
     return this.backend.approveToolInvocation(invocationId, approved, reason);
   }
 
-  async interrupt(turnId: string | null = null) {
-    return this.backend.interrupt(turnId);
+  async interrupt(turnId: string | null = null): Promise<AgentOperationResult> {
+    const decision = await this.dispatchQueue.enqueue(this.runId, () => {
+      this.lifecycleState.reconcileRuntimeSnapshot(this.backend.getLifecycleSnapshot());
+      return this.reserveInterrupt(turnId);
+    });
+    if (decision.kind === "rejected") return decision.result;
+    if (decision.kind === "claimed") this.startInterrupt(decision.reservation);
+    return decision.reservation.result;
   }
 
   async terminate() {
@@ -164,6 +183,7 @@ export class AgentRun {
 
     await this.dispatchQueue.enqueue(this.runId, async () => {
       this.inputAdmissionState.settleAcceptedTermination();
+      this.activeInterruptReservation = null;
       this.lifecycleState.terminate();
       this.segmentLifecycleState.releaseRun();
       await getDefaultAgentRunEventPipeline().releaseRun(this.runId);
@@ -267,6 +287,7 @@ export class AgentRun {
         continue;
       }
       if (event.eventType === AgentRunEventType.TURN_COMPLETED) {
+        this.releaseInterruptReservation(resolveAgentRunEventTurnId(event));
         this.inputAdmissionState.observeTurnTerminal({
           kind: "completed",
           turnId: resolveAgentRunEventTurnId(event),
@@ -274,6 +295,7 @@ export class AgentRun {
         continue;
       }
       if (event.eventType === AgentRunEventType.TURN_INTERRUPTED) {
+        this.releaseInterruptReservation(resolveAgentRunEventTurnId(event));
         this.inputAdmissionState.observeTurnTerminal({
           kind: "interrupted",
           turnId: resolveAgentRunEventTurnId(event),
@@ -286,12 +308,14 @@ export class AgentRun {
         ? event.payload.message
         : null;
       if (evidence?.kind === "TURN_TERMINAL") {
+        this.releaseInterruptReservation(evidence.turnId);
         this.inputAdmissionState.observeTurnFailure({
           turnId: evidence.turnId,
           code: "RUNTIME_TURN_FAILED",
           message: errorMessage ?? "Runtime turn failed.",
         });
       } else if (evidence?.kind === "RUNTIME_GLOBAL") {
+        this.activeInterruptReservation = null;
         this.inputAdmissionState.observeRuntimeFailure({
           code: "RUNTIME_GLOBAL_FAILURE",
           message: errorMessage ?? "Runtime failed.",
@@ -307,6 +331,99 @@ export class AgentRun {
     return (fact: AgentRunInputLifecycle): void => {
       if (fact.kind === "forwarded") this.notifyUserMessageForwarded(message, fact.turnId);
       options.lifecycleObserver?.(fact);
+    };
+  }
+
+  private reserveInterrupt(requestedTurnId: string | null): AgentRunInterruptDecision {
+    const existing = this.activeInterruptReservation;
+    if (existing) {
+      if (requestedTurnId !== null && requestedTurnId !== existing.turnId) {
+        return { kind: "rejected", result: this.interruptTurnMismatch(requestedTurnId, existing.turnId) };
+      }
+      return { kind: "joined", reservation: existing };
+    }
+
+    const activeTurn = this.lifecycleState.activeTurn;
+    if (activeTurn.kind === "NONE") {
+      return {
+        kind: "rejected",
+        result: {
+          accepted: false,
+          code: "NO_ACTIVE_TURN",
+          message: `AgentRun '${this.runId}' has no canonical active turn to interrupt.`,
+        },
+      };
+    }
+    const canonicalTurnId = activeTurn.kind === "IDENTIFIED" ? activeTurn.turnId : null;
+    if (requestedTurnId !== null && requestedTurnId !== canonicalTurnId) {
+      return {
+        kind: "rejected",
+        result: this.interruptTurnMismatch(requestedTurnId, canonicalTurnId),
+      };
+    }
+
+    let resolve!: (result: AgentOperationResult) => void;
+    let reject!: (error: unknown) => void;
+    const result = new Promise<AgentOperationResult>((resolveResult, rejectResult) => {
+      resolve = resolveResult;
+      reject = rejectResult;
+    });
+    const reservation = { turnId: canonicalTurnId, result, resolve, reject };
+    this.activeInterruptReservation = reservation;
+    return { kind: "claimed", reservation };
+  }
+
+  private startInterrupt(reservation: AgentRunInterruptReservation): void {
+    void this.executeInterrupt(reservation);
+  }
+
+  private async executeInterrupt(reservation: AgentRunInterruptReservation): Promise<void> {
+    let result: AgentOperationResult;
+    try {
+      result = await this.backend.interrupt(reservation.turnId);
+    } catch (error) {
+      await this.dispatchQueue.enqueue(this.runId, () => {
+        if (this.activeInterruptReservation === reservation) {
+          this.activeInterruptReservation = null;
+        }
+      });
+      reservation.reject(error);
+      return;
+    }
+
+    await this.dispatchQueue.enqueue(this.runId, () => {
+      const providerTurnId = result.turnId;
+      const applied = providerTurnId !== undefined && providerTurnId !== null &&
+        providerTurnId !== reservation.turnId
+        ? {
+            accepted: false,
+            code: "AGENT_RUN_INTERRUPT_PROVIDER_PROTOCOL_VIOLATION",
+            message: `Interrupt result targeted '${providerTurnId}' instead of canonical turn '${reservation.turnId}'.`,
+          }
+        : result;
+      if (this.activeInterruptReservation === reservation && !applied.accepted) {
+        this.activeInterruptReservation = null;
+      }
+      reservation.resolve(applied);
+    });
+  }
+
+  private releaseInterruptReservation(turnId: string | null): void {
+    if (this.activeInterruptReservation?.turnId === turnId) {
+      this.activeInterruptReservation = null;
+    }
+  }
+
+  private interruptTurnMismatch(
+    requestedTurnId: string,
+    canonicalTurnId: string | null,
+  ): AgentOperationResult {
+    return {
+      accepted: false,
+      code: "TURN_MISMATCH",
+      message: canonicalTurnId
+        ? `AgentRun '${this.runId}' active turn is '${canonicalTurnId}', not '${requestedTurnId}'.`
+        : `AgentRun '${this.runId}' has an anonymous active turn, not '${requestedTurnId}'.`,
     };
   }
 
@@ -327,11 +444,11 @@ export class AgentRun {
       platformAgentRunId: this.getPlatformAgentRunId(),
       message,
       result,
-      acceptedAt: new Date(),
+      forwardedAt: new Date(),
     };
     for (const observer of this.commandObservers) {
       try {
-        void Promise.resolve(observer.onUserMessageAccepted(payload)).catch((error: unknown) => {
+        void Promise.resolve(observer.onUserMessageForwarded(payload)).catch((error: unknown) => {
           logger.warn(
             `[AgentRun] command observer failed for run '${this.runId}': ${String(error)}`,
           );

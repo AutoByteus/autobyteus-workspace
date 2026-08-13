@@ -292,14 +292,18 @@ export class CodexThread {
     return { kind: "steered", turnId: expectedTurnId };
   }
 
-  async interrupt(turnId?: string | null): Promise<void> {
-    const activeTurnId = asString(turnId) ?? this.activeTurnId;
-    if (!activeTurnId) {
+  async interrupt(turnId: string): Promise<void> {
+    if (!turnId) {
       throw new Error("No active turn id is available for interruption.");
+    }
+    if (this.activeTurnId !== turnId) {
+      throw new Error(
+        `Codex active turn is '${this.activeTurnId ?? "none"}', not '${turnId}'.`,
+      );
     }
     await this.client.request("turn/interrupt", {
       threadId: this.threadId,
-      turnId: activeTurnId,
+      turnId,
     });
   }
 

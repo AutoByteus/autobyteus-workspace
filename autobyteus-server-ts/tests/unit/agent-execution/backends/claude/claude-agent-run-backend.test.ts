@@ -49,7 +49,7 @@ describe("ClaudeAgentRunBackend", () => {
       message: new AgentInputUserMessage("hello claude"),
     });
     const approveResult = await backend.approveToolInvocation("invoke-1", true);
-    const interruptResult = await backend.interrupt();
+    const interruptResult = await backend.interrupt("turn-1");
     const terminateResult = await backend.terminate();
 
     expect(typeof unsubscribe).toBe("function");
@@ -58,7 +58,7 @@ describe("ClaudeAgentRunBackend", () => {
       expect.objectContaining({ content: "hello claude" }),
     );
     expect(session.approveTool).toHaveBeenCalledWith("invoke-1", true, null);
-    expect(session.interrupt).toHaveBeenCalledTimes(1);
+    expect(session.interrupt).toHaveBeenCalledWith("turn-1");
     expect(session.terminate).toHaveBeenCalledTimes(1);
     expect(sendResult).toEqual({
       forwarded: true,
@@ -66,7 +66,7 @@ describe("ClaudeAgentRunBackend", () => {
       platformAgentRunId: "claude-session-1",
     });
     expect(approveResult).toEqual({ accepted: true });
-    expect(interruptResult).toEqual({ accepted: true });
+    expect(interruptResult).toEqual({ accepted: true, turnId: "turn-1" });
     expect(terminateResult).toEqual({ accepted: true });
     expect(backend.getPlatformAgentRunId()).toBe("claude-session-1");
     expect(backend.getLifecycleSnapshot()).toEqual({

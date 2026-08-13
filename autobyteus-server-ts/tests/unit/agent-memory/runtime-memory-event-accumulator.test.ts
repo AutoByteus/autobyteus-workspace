@@ -611,12 +611,12 @@ describe("RuntimeMemoryEventAccumulator", () => {
   });
 
 
-  it("does not substitute an active turn when an accepted command lacks its exact turn identity", async () => {
+  it("does not substitute an active turn when forwarded input lacks its exact turn identity", async () => {
     const memoryDir = await mkTempDir();
     const accumulator = createAccumulator(memoryDir);
 
     accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-claude" }));
-    accumulator.recordAcceptedUserMessage({
+    accumulator.recordForwardedUserMessage({
       runId: "run-1",
       runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
       config: new AgentRunConfig({
@@ -630,7 +630,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
       platformAgentRunId: "session-1",
       message: new AgentInputUserMessage("hello after lifecycle"),
       result: { accepted: true, turnId: null },
-      acceptedAt: new Date(1000),
+      forwardedAt: new Date(1000),
     });
 
     expect(readView(memoryDir).rawTraces).toEqual([]);

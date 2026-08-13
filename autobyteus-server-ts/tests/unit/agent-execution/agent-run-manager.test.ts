@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRun } from "../../../src/agent-execution/domain/agent-run.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
@@ -291,7 +292,7 @@ describe("AgentRunManager", () => {
       agent_id: "run-native",
     });
 
-    const postResult = await activeRun?.postUserMessage({ text: "hello" } as any);
+    const postResult = await activeRun?.postUserMessage(new AgentInputUserMessage("hello"));
     expect(postResult).toMatchObject({ accepted: true });
     expect(
       (autoByteusBackendFactory.createBackend.mock.results[0]?.value as Promise<any>),
@@ -321,7 +322,7 @@ describe("AgentRunManager", () => {
       } as any,
       memoryRecorder: {
         attachToRun: vi.fn().mockReturnValue(unsubscribeMemory),
-        onUserMessageAccepted: vi.fn(),
+        onUserMessageForwarded: vi.fn(),
       } as any,
     });
     const config = new AgentRunConfig({
@@ -363,7 +364,7 @@ describe("AgentRunManager", () => {
     };
     const memoryRecorder = {
       attachToRun: vi.fn().mockReturnValue(unsubscribeMemory),
-      onUserMessageAccepted: vi.fn(),
+      onUserMessageForwarded: vi.fn(),
     };
     const manager = new AgentRunManager({
       codexBackendFactory: codexBackendFactory as any,

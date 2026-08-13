@@ -34,6 +34,6 @@ export interface AgentRunBackend {
     approved: boolean,
     reason?: string | null,
   ): Promise<AgentOperationResult>;
-  interrupt(turnId?: string | null): Promise<AgentOperationResult>;
+  interrupt(turnId: string | null): Promise<AgentOperationResult>;
   terminate(): Promise<AgentOperationResult>;
 }
