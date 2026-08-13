@@ -26,23 +26,25 @@
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Cumulative SR-024 clean cut`
-- Current implementation revision: `IR-043`
+- Implementation cycle: `Focused SR-024 exact-content correction`
+- Current implementation revision: `IR-044`
 - Reviewed design authority: cumulative `SR-001`–`SR-024`; `ARCH-REV-018` Pass
-- Source basis: `0d32ff25502838c28663fc765c3499fc83455eb1`
-- Production correction: `6a2ac70de7b0f348f025c0cc2c6b4b41c9b1f402`
-- Trigger: `ARCH-REV-018`; resolved design lineage `DR-001`–`DR-012`; originating `CR-F-042` / `API-F-024`
+- Source basis: `9b0bbb11de7b2df3bb1436c994244b1b28f7f493` (`IR-043` handoff)
+- Production correction: `a64bc3b1653c8a7fd9b366bf8ae9656faee7f891`
+- Trigger: `CRR-080` / `CR-F-046` / `CR-F-047`
 
-IR-043 implements the complete SR-024 provider-to-consumer segment cut. AutoByteus, Claude, and Codex now admit only exact provider-owned turn/segment/type facts, emit explicit start plus minimal content/end source events, and reject malformed source candidates with a four-key sanitized log and no downstream mutation. The existing serialized `AgentRun` queue remains the sole lifecycle owner and enriches valid content/end before the established consumers.
+IR-044 completes two exact-content corrections within the SR-024 owners established by IR-043. `ClaudeSessionEventConverter` now uses the existing non-empty raw-string boundary for output deltas, preserving leading, trailing, newline, and whitespace-only bytes emitted by `ClaudeTextSegmentProjector`. It does not use the identifier-normalizing `asString` helper for content.
 
-Codex now performs the exact four-family admission decision at `CodexThread.handleAppServerNotification()` before pending-MCP state, local/original emission, listeners, conversion, raw debug, or `AgentRun` enqueue. Only privately branded `native_admitted | local_derived` messages cross the thread boundary. The exact governed names are `item/started`, `item/agentMessage/delta`, `item/completed`, and `item/reasoning/completed`; all other current notifications preserve their operation-owned routes. Valid MCP local-before-original ordering and admitted-only raw debug are retained. There is no nine-name exemption registry, broad unknown-item policy, or production branch for the pure-policy misuse vocabulary.
+External-channel direct and Team parsing now retains every canonical string delta byte, including whitespace-only content. The collector appends each admitted delta exactly once and preserves the exact final bytes. Aggregate equality/prefix/suffix/overlap inference and final-output trimming are removed; the pending turn's nullable text value distinguishes no admitted content from admitted empty content without adding event IDs or deduplication state.
 
-The withdrawn turnless runtime-diagnostic machinery is removed. Shared evidence is again exactly `TURN_DIAGNOSTIC | TURN_TERMINAL | RUNTIME_GLOBAL`; strict Team/standalone/application/browser projection requires canonical turn identity. Browser IR-042 compound turn/segment/type admission remains intact. No second lifecycle, provider-specific Team policy, identity synthesis, type default, fallback, alias, retry, compatibility branch, or downstream recovery was added.
+The complete IR-043 Codex first boundary, provider admission, one serialized `AgentRun` lifecycle, strict fan-out, diagnostics, Team/standalone/browser contract, and MP-009/MP-013 removal result are preserved. No second lifecycle, event ID, dedup state, fallback, alias, default, retry, compatibility route, or aggregate-replay interpretation was added.
 
 ## Reviewed Behavior Implementation Trace
 
 | Contract | Outcome | Production ownership |
 | --- | --- | --- |
+| `CR-F-046`, `CR-PREM-040`; raw Claude content | Every non-empty SDK text delta is preserved byte-for-byte from projector through converter and the canonical run/consumer path, including whitespace-only content. | Claude text projector and session event converter |
+| `CR-F-047`, `CR-PREM-041`; canonical external deltas | Direct and Team canonical text parsing preserves raw strings. Each accepted arrival is appended exactly once; identical and overlap-looking bytes remain independent delta facts. | Channel output parser, assembler, and collector |
 | `R-053`, `AC-049`, `DS-017D`; Codex first boundary | One pure resolver inspects exactly five candidate locations, applies present-invalid -> inactive -> conflict precedence, and is called only for the four established segment-producing names before any provider effect. | `codex-segment-turn-admission.ts`, `codex-thread.ts` |
 | Opaque admitted provider boundary | Only `CodexThread` constructs branded native-admitted/local-derived values. Notification handler, backend listener, converter, and raw debug require that opaque type. | Codex thread/handler/backend/converter/debug paths |
 | MCP and non-governed routing | Valid local MCP completion precedes original completion. Every non-governed current event retains its existing handler/listener route. | `codex-pending-mcp-tool-call-registry.ts`, notification handler, thread |
@@ -53,37 +55,34 @@ The withdrawn turnless runtime-diagnostic machinery is removed. Shared evidence 
 
 ## Changed Areas And Ownership
 
-- Provider source normalization and sanitized rejection:
-  - AutoByteus and Claude event converters
-  - Codex item/reasoning/source normalizers and converter
-  - shared `provider-segment-admission-debug.ts`
-- Codex first-boundary ownership:
-  - `codex-thread.ts`
-  - `codex-segment-turn-admission.ts`
-  - `codex-pending-mcp-tool-call-registry.ts`
-  - opaque-message notification/request/approval/backend/debug paths
-- Size-bounded extracted owners:
-  - `codex-provider-compaction-status-projector.ts`
-  - `codex-web-search-item-event-projector.ts`
-- Diagnostic and projection clean cut:
-  - AgentRun error/lifecycle processors
-  - Team event/adapter and generated Team stream contract output
-  - application, external-channel, standalone, and browser protocol paths
+- IR-044 bounded correction:
+  - `claude-session-event-converter.ts`
+  - `channel-output-event-parser.ts`
+  - `channel-output-text-assembler.ts`
+  - `channel-run-output-event-collector.ts`
+- IR-043 cumulative owners retained:
+  - provider source normalization and sanitized rejection
+  - Codex first-boundary thread/admission/MCP ownership
+  - size-bounded compaction and web-search projection owners
+  - AgentRun, Team, application, external-channel, standalone, and browser diagnostic/projection clean cut
 - No repository-resident API/E2E durable coverage was edited or staged by implementation. `CR-F-043` residue was not inspected or modified.
 
 ## Task Design Health Assessment
 
-- Change posture: `Complete reviewed refactor`
-- Root cause: provider facts and first-boundary admission were split across provider/converter/downstream owners, while withdrawn runtime-diagnostic machinery contradicted exact-turn reachability
-- Refactor needed now: `Yes, completed` through one first provider boundary plus the existing one-run lifecycle owner
-- Design impact discovered during implementation: `None`; SR-024 / ARCH-REV-018 was implementable as reviewed
+- Change posture: `Bounded local correction within the completed reviewed refactor`
+- Root causes: an identifier-normalizing helper at a raw-content call site and obsolete aggregate/replay inference in the canonical delta consumer
+- Refactor needed now: `Yes, completed locally`; raw content and identifiers use separate semantic boundaries, and external assembly is exact concatenation only
+- Design impact discovered during implementation: `None`; SR-024 / ARCH-REV-018 remains adequate
 
 ## Local Implementation Checks
 
 ### Passing
 
-- Server production TypeScript: Pass, `pnpm exec tsc -p tsconfig.build.json --noEmit --pretty false`. `/tmp/ir043-server-production-typecheck.log`
-- Server full production build/bootstrap smoke: Pass without `DATABASE_URL`. `/tmp/ir043-server-build-full.log`
+- Deleted-after-use lifecycle-faithful byte-fidelity probe: Pass `1/1`; actual Claude projector -> converter -> serialized AgentRun -> strict Team wire preserves eight exact deltas, while direct and nested task-Team external collectors both produce exact `" hello  \nfoo\nxxabbc"`. The inputs include leading/trailing whitespace, whitespace-only space/newline, identical adjacent `x`/`x`, and overlap-looking `ab`/`bc`. `/tmp/ir044-delta-byte-fidelity-probe.log`
+- Server production TypeScript: Pass, `pnpm exec tsc -p tsconfig.build.json --noEmit --pretty false`. `/tmp/ir044-server-production-typecheck.log`
+- Server full production build/bootstrap smoke: Pass without `DATABASE_URL`. `/tmp/ir044-server-build-full.log`
+- Source/removal/diff/size audit: Pass; aggregate/replay helpers and prefix/overlap operations have zero current owner references, the temporary probe was removed, and all four changed production files remain below `500` effective non-empty lines (maximum `472`). `/tmp/ir044-source-audit.log`
+- The cumulative IR-043 package/build/protocol/admission probes remain the implementation basis; IR-044 changes only the four exact-content owners above.
 - `autobyteus-ts` package build: Pass. `/tmp/ir043-autobyteus-ts-build.log`
 - Team stream contracts build/test command: Pass. `/tmp/ir043-team-contracts-test.log`
 - Web Nuxt production build/prerender: Pass. `/tmp/ir043-web-production-build.log`
@@ -95,6 +94,8 @@ The withdrawn turnless runtime-diagnostic machinery is removed. Shared evidence 
 
 ### Non-passing retained coverage and tooling limits
 
+- Focused Claude retained selection: `48/50` Pass. Two failures still construct turnless tool segments and retain the pre-SR-024 provider contract; the actual session/projector coverage passes. `/tmp/ir044-claude-focused-tests.log`
+- Focused external retained selection: `4/9` Pass. Five failures explicitly expect removed cumulative-snapshot/prefix/overlap deduplication. Exact delta behavior is instead proven through the deleted-after-use direct/Team lifecycle probe. `/tmp/ir044-external-retained-tests.log`
 - Existing implementation-scoped server selection: `89` Pass / `7` Fail. Failures retain pre-SR-024 assumptions such as forwarding missing AutoByteus identity, turnless Claude tool segments, and external end-text/route recovery. Production was not weakened and these downstream-owned durable tests were not edited or staged. `/tmp/ir043-server-focused-tests.log`
 - Existing Codex selection: `151` Pass / `10` Fail. Failures directly call converter/tracker seams with turnless reasoning or MCP data and bypass the now-authoritative thread admission boundary. `/tmp/ir043-codex-focused-tests.log`
 - `pnpm exec nuxi typecheck` does not reach project diagnostics because the inherited `vue-tsc`/TypeScript combination rejects package export `./lib/tsc`. Production Nuxt build passes. `/tmp/ir043-web-nuxi-typecheck.log`
@@ -112,9 +113,8 @@ The withdrawn turnless runtime-diagnostic machinery is removed. Shared evidence 
 
 ## Frontend Rendered-Result Check
 
-- Frontend changes are strict protocol admission/removal only; no markup, layout, styling, labels, or navigation changed.
-- Direct browser-projection tests and the production Nuxt render/build pass.
-- Live visual inspection was not performed because the only running user stack is protected; checked-disposable browser/provider validation remains downstream-owned.
+- Not Applicable for IR-044: only server-side content translation/assembly changed; there is no markup, layout, styling, label, navigation, or interaction delta.
+- The cumulative IR-043 browser protocol checks and production Nuxt render/build remain passing evidence. Live browser/provider validation remains downstream-owned on a checked disposable target.
 
 ## Known Risks And Next Route
 
@@ -122,4 +122,4 @@ The withdrawn turnless runtime-diagnostic machinery is removed. Shared evidence 
 - Retained stale tests must be adjudicated/currentized by API/E2E after source Pass; implementation did not modify them.
 - `CR-F-043` remains solely API/E2E-owned and must be resolved before fresh live execution.
 - Fresh checked-disposable AutoByteus/Codex/Claude Team and standalone browser/provider execution remains required.
-- Next recipient: `code_reviewer` for focused and full cumulative SR-024 source review. API/E2E and delivery remain paused until source Pass.
+- Next recipient: `code_reviewer` for focused cumulative `CR-F-046` / `CR-F-047` source re-review. API/E2E and delivery remain paused until source Pass.
