@@ -1,0 +1,36 @@
+$ git rev-parse HEAD
+bb6657c4016fed1550eb8b899e03457b5e1178db
+
+$ active removal search
+ACTIVE_REMOVAL_SEARCH=PASS_NO_MATCHES
+
+$ built dist/package removal search
+DIST_REMOVAL_SEARCH=PASS_NO_MATCHES
+
+$ one-million-line built applyContextPatch probe
+{"line_count":1000000,"duration_ms":135.946,"suffix_ok":true,"length_ok":true}
+
+$ npm pack --dry-run --json (summary)
+node:fs:438
+      path = getValidatedPath(path);
+             ^
+
+TypeError [ERR_INVALID_ARG_TYPE]: The "path" argument must be of type string or an instance of Buffer or URL. Received undefined
+    at Object.readFileSync (node:fs:438:14)
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/autobyteus-ts/[eval1]:3:28
+    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:282:26)
+    at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:278:20)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5) {
+  code: 'ERR_INVALID_ARG_TYPE'
+}
+
+Node.js v22.23.1
+
+$ git diff --check
+GIT_DIFF_CHECK=PASS
+
+$ package dry-run summary retry (corrected local environment variable)
+{"file_count":2131,"removed_artifacts":[],"context_patch_artifacts":["dist/tools/file/context-patch.d.ts","dist/tools/file/context-patch.d.ts.map","dist/tools/file/context-patch.js","dist/tools/file/context-patch.js.map"]}
+PACKAGE_DRY_RUN_SUMMARY=PASS

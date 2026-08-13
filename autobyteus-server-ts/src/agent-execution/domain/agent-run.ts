@@ -1,17 +1,21 @@
 import type { AgentRunBackend } from "../backends/agent-run-backend.js";
+import { dispatchRuntimeEvent } from "../backends/shared/runtime-event-dispatch.js";
+import { AgentRunEventDispatchQueue } from "../events/agent-run-event-dispatch-queue.js";
+import { dispatchProcessedAgentRunEvents } from "../events/dispatch-processed-agent-run-events.js";
+import { AgentTurnLifecycleState } from "../events/processors/lifecycle-status/agent-turn-lifecycle-state.js";
 import type { AgentRunContext } from "./agent-run-context.js";
 import {
   AgentRunEventType,
-  isAgentRunEvent,
   type AgentRunEvent,
 } from "./agent-run-event.js";
 import type { AgentRunCommandObserver } from "./agent-run-command-observer.js";
 import {
   buildAgentStatusPayload,
-  normalizeAgentApiStatus,
   type AgentApiStatus,
   type AgentStatusPayload,
 } from "./agent-status-payload.js";
+
+type AgentRunEventListener = (event: AgentRunEvent) => void;
 
 type AgentRunOptions = {
   context: AgentRunContext<unknown | null>;
@@ -19,17 +23,36 @@ type AgentRunOptions = {
   commandObservers?: AgentRunCommandObserver[];
 };
 
+const logger = {
+  error: (...args: unknown[]) => console.error(...args),
+  warn: (...args: unknown[]) => console.warn(...args),
+};
+
 export class AgentRun {
   readonly context: AgentRunContext<unknown | null>;
   private readonly backend: AgentRunBackend;
   private readonly commandObservers: AgentRunCommandObserver[];
-  private readonly localEventListeners = new Set<Parameters<AgentRunBackend["subscribeToEvents"]>[0]>();
-  private statusOverride: AgentStatusPayload | null = null;
+  private readonly listeners = new Set<AgentRunEventListener>();
+  private readonly dispatchQueue = new AgentRunEventDispatchQueue();
+  private readonly lifecycleState = new AgentTurnLifecycleState();
+  private readonly unsubscribeFromBackendSource: () => void;
 
   constructor(options: AgentRunOptions) {
     this.context = options.context;
     this.backend = options.backend;
     this.commandObservers = [...(options.commandObservers ?? [])];
+    this.lifecycleState.reconcileRuntimeSnapshot(this.backend.getLifecycleSnapshot());
+    this.unsubscribeFromBackendSource = this.backend.subscribeToSourceEventBatches(
+      async (events) => {
+        try {
+          await this.publishSourceEvents(events);
+        } catch (error) {
+          logger.error(
+            `[AgentRun] failed to publish runtime events for run '${this.runId}': ${String(error)}`,
+          );
+        }
+      },
+    );
   }
 
   get runId(): string {
@@ -52,46 +75,48 @@ export class AgentRun {
     return this.backend.getPlatformAgentRunId();
   }
 
-  getStatusSnapshot() {
-    return this.statusOverride ?? this.backend.getStatusSnapshot();
+  getStatusSnapshot(): AgentStatusPayload {
+    this.lifecycleState.reconcileRuntimeSnapshot(this.backend.getLifecycleSnapshot());
+    return buildAgentStatusPayload({
+      status: this.lifecycleState.status,
+      agentId: this.runId,
+    });
   }
 
-  subscribeToEvents(
-    listener: Parameters<AgentRunBackend["subscribeToEvents"]>[0],
-  ): ReturnType<AgentRunBackend["subscribeToEvents"]> {
-    const wrappedListener: Parameters<AgentRunBackend["subscribeToEvents"]>[0] = (event) => {
-      if (isAgentRunEvent(event)) {
-        this.observeBackendEvent(event);
-      }
-      listener(event);
-    };
-    const unsubscribeBackend = this.backend.subscribeToEvents(wrappedListener);
-    this.localEventListeners.add(listener);
+  subscribeToEvents(listener: AgentRunEventListener): () => void {
+    this.listeners.add(listener);
     return () => {
-      unsubscribeBackend();
-      this.localEventListeners.delete(listener);
+      this.listeners.delete(listener);
     };
   }
 
-  emitLocalEvent(event: AgentRunEvent): void {
-    for (const listener of this.localEventListeners) {
-      listener(event);
+  async publishEvent(event: AgentRunEvent): Promise<void> {
+    if (event.runId !== this.runId) {
+      throw new Error(
+        `Cannot publish event for run '${event.runId}' through run '${this.runId}'.`,
+      );
     }
+    await this.publishSourceEvents([event]);
   }
 
   async postUserMessage(message: Parameters<AgentRunBackend["postUserMessage"]>[0]) {
-    const startupStatus = this.applyCommandStartStatus();
+    const commandToken = await this.applyCommandStart();
     let result: Awaited<ReturnType<AgentRunBackend["postUserMessage"]>>;
     try {
       result = await this.backend.postUserMessage(message);
     } catch (error) {
-      if (startupStatus.applied) {
-        this.emitErrorStatus();
+      if (commandToken !== null) {
+        await this.applyCommandFailure(commandToken);
       }
       throw error;
     }
-    if (!result.accepted && startupStatus.applied) {
-      this.emitStatusPayload(startupStatus.previousStatus);
+
+    if (commandToken !== null) {
+      if (result.accepted) {
+        await this.applyCommandAccepted(commandToken, result.turnId ?? null);
+      } else {
+        await this.rollbackCommand(commandToken);
+      }
     }
     if (result.accepted) {
       this.notifyUserMessageAccepted(message, result);
@@ -99,74 +124,96 @@ export class AgentRun {
     return result;
   }
 
-  private applyCommandStartStatus(): {
-    applied: boolean;
-    previousStatus: AgentStatusPayload;
-  } {
-    const previousStatus = this.getStatusSnapshot();
-    const currentStatus = normalizeAgentApiStatus(this.getStatusSnapshot().status);
-    if (currentStatus !== "offline" && currentStatus !== "idle") {
-      return { applied: false, previousStatus };
+  async approveToolInvocation(
+    invocationId: string,
+    approved: boolean,
+    reason: string | null = null,
+  ) {
+    return this.backend.approveToolInvocation(invocationId, approved, reason);
+  }
+
+  async interrupt(turnId: string | null = null) {
+    return this.backend.interrupt(turnId);
+  }
+
+  async terminate() {
+    const result = await this.backend.terminate();
+    if (result.accepted) {
+      await this.applyLifecycleFact(() => this.lifecycleState.terminate());
+      this.unsubscribeFromBackendSource();
     }
+    return result;
+  }
 
-    const payload = buildAgentStatusPayload({
-      status: "initializing",
-      canInterrupt: false,
-      agentId: this.runId,
+  private async publishSourceEvents(events: readonly AgentRunEvent[]): Promise<void> {
+    await dispatchProcessedAgentRunEvents({
+      runContext: this.backend.getContext(),
+      listeners: this.listeners,
+      events,
+      dispatchQueue: this.dispatchQueue,
+      lifecycleState: this.lifecycleState,
+      getRuntimeLifecycleSnapshot: () => this.backend.getLifecycleSnapshot(),
+      onListenerError: (error) => {
+        logger.warn(
+          `[AgentRun] listener failed for run '${this.runId}': ${String(error)}`,
+        );
+      },
     });
-    this.emitStatusPayload(payload);
-    return { applied: true, previousStatus };
   }
 
-  private emitErrorStatus(): void {
-    this.emitStatusPayload(buildAgentStatusPayload({
-      status: "error",
-      canInterrupt: false,
-      agentId: this.runId,
-    }));
+  private async applyCommandStart(): Promise<number | null> {
+    return this.dispatchQueue.enqueue(this.runId, () => {
+      this.lifecycleState.reconcileRuntimeSnapshot(this.backend.getLifecycleSnapshot());
+      const token = this.lifecycleState.beginCommand();
+      if (token !== null) {
+        this.dispatchCanonicalStatus();
+      }
+      return token;
+    });
   }
 
-  private emitStatusPayload(payload: AgentStatusPayload): void {
-    this.statusOverride = payload;
-    this.emitLocalEvent({
-      eventType: AgentRunEventType.AGENT_STATUS,
-      runId: this.runId,
-      payload,
-      statusHint: this.statusHintFor(payload.status),
+  private async applyCommandAccepted(token: number, turnId: string | null): Promise<void> {
+    await this.applyLifecycleFact(() => this.lifecycleState.acceptCommand(token, turnId));
+  }
+
+  private async rollbackCommand(token: number): Promise<void> {
+    await this.applyLifecycleFact(() => this.lifecycleState.rollbackCommand(token));
+  }
+
+  private async applyCommandFailure(token: number): Promise<void> {
+    await this.applyLifecycleFact(() => this.lifecycleState.failCommand(token));
+  }
+
+  private async applyLifecycleFact(apply: () => void): Promise<void> {
+    await this.dispatchQueue.enqueue(this.runId, () => {
+      apply();
+      this.dispatchCanonicalStatus();
+    });
+  }
+
+  private dispatchCanonicalStatus(): void {
+    const status = this.lifecycleState.status;
+    dispatchRuntimeEvent({
+      listeners: this.listeners,
+      event: {
+        eventType: AgentRunEventType.AGENT_STATUS,
+        runId: this.runId,
+        payload: buildAgentStatusPayload({ status, agentId: this.runId }),
+        statusHint: this.statusHintFor(status),
+      },
+      onListenerError: (error) => {
+        logger.warn(
+          `[AgentRun] listener failed for run '${this.runId}': ${String(error)}`,
+        );
+      },
     });
   }
 
   private statusHintFor(status: AgentApiStatus) {
-    if (status === "running") {
-      return "ACTIVE";
-    }
-    if (status === "idle" || status === "offline") {
-      return "IDLE";
-    }
-    if (status === "error") {
-      return "ERROR";
-    }
+    if (status === "running") return "ACTIVE" as const;
+    if (status === "idle" || status === "offline") return "IDLE" as const;
+    if (status === "error") return "ERROR" as const;
     return null;
-  }
-
-  private observeBackendEvent(event: AgentRunEvent): void {
-    if (event.eventType !== AgentRunEventType.AGENT_STATUS) {
-      return;
-    }
-    const status = normalizeAgentApiStatus(event.payload.status);
-    this.statusOverride = buildAgentStatusPayload({
-      status,
-      canInterrupt: status === "running" && event.payload.can_interrupt === true,
-      agentId: typeof event.payload.agent_id === "string" ? event.payload.agent_id : this.runId,
-      agentName: typeof event.payload.agent_name === "string" ? event.payload.agent_name : null,
-      memberRouteKey: typeof event.payload.member_route_key === "string" ? event.payload.member_route_key : null,
-      memberPath: Array.isArray(event.payload.member_path) ? event.payload.member_path as string[] : null,
-      sourceRouteKey: typeof event.payload.source_route_key === "string" ? event.payload.source_route_key : null,
-      sourcePath: Array.isArray(event.payload.source_path) ? event.payload.source_path as string[] : null,
-      taskAgentInstanceId: typeof event.payload.task_agent_instance_id === "string" ? event.payload.task_agent_instance_id : null,
-      taskAgentRunId: typeof event.payload.task_agent_run_id === "string" ? event.payload.task_agent_run_id : null,
-      taskId: typeof event.payload.task_id === "string" ? event.payload.task_id : null,
-    });
   }
 
   private notifyUserMessageAccepted(
@@ -188,50 +235,15 @@ export class AgentRun {
     for (const observer of this.commandObservers) {
       try {
         void Promise.resolve(observer.onUserMessageAccepted(payload)).catch((error: unknown) => {
-          console.warn(
+          logger.warn(
             `[AgentRun] command observer failed for run '${this.runId}': ${String(error)}`,
           );
         });
       } catch (error) {
-        console.warn(
+        logger.warn(
           `[AgentRun] command observer failed for run '${this.runId}': ${String(error)}`,
         );
       }
     }
-  }
-
-  async approveToolInvocation(
-    invocationId: string,
-    approved: boolean,
-    reason: string | null = null,
-  ) {
-    return this.backend.approveToolInvocation(invocationId, approved, reason);
-  }
-
-  async interrupt(turnId: string | null = null) {
-    return this.backend.interrupt(turnId);
-  }
-
-  async terminate() {
-    const result = await this.backend.terminate();
-    if (result.accepted) {
-      this.emitTerminationStatus();
-    }
-    return result;
-  }
-
-  private emitTerminationStatus(): void {
-    const payload = buildAgentStatusPayload({
-      status: "offline",
-      canInterrupt: false,
-      agentId: this.runId,
-    });
-    this.statusOverride = payload;
-    this.emitLocalEvent({
-      eventType: AgentRunEventType.AGENT_STATUS,
-      runId: this.runId,
-      payload,
-      statusHint: "IDLE",
-    });
   }
 }

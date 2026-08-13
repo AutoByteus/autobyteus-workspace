@@ -17,8 +17,15 @@ describe("application agent stream observer activation barrier", () => {
       applicationId: "app-1",
       address: { bindingId: "binding-1", target: { kind: "AGENT_RUN" as const } },
       runtimeSubject: "AGENT_RUN" as const,
-      producer: null,
-      event: { source: "AGENT_TEAM" as const, type: "TEAM_STATUS" as const, data: { status: "IDLE" as const, error: null } },
+      producer: {
+        runId: "run-1",
+        memberRouteKey: "",
+        memberName: null,
+        displayName: null,
+        runtimeKind: "AGENT" as const,
+        teamPath: [],
+      },
+      event: { type: "TEXT_DELTA" as const, delta: "hello" },
     };
     await barrier.emitter.emitEvent(event);
     expect(notify).not.toHaveBeenCalled();

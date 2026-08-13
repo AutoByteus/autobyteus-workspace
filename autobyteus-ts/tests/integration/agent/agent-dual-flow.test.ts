@@ -48,14 +48,11 @@ const resetFactory = () => {
 
 const runIntegration = hasLmstudioConfig() ? describe : describe.skip;
 
-runIntegration('Agent dual-flow integration (LM Studio, api_tool_call)', () => {
+runIntegration('Agent dual-flow integration (LM Studio native tool calling)', () => {
   let tempDirA: string;
   let tempDirB: string;
-  let originalParserEnv: string | undefined;
 
   beforeEach(async () => {
-    originalParserEnv = process.env.AUTOBYTEUS_STREAM_PARSER;
-    process.env.AUTOBYTEUS_STREAM_PARSER = 'api_tool_call';
     SkillRegistry.getInstance().clear();
     resetFactory();
     tempDirA = await fs.mkdtemp(path.join(os.tmpdir(), 'autobyteus-agent-a-'));
@@ -63,11 +60,6 @@ runIntegration('Agent dual-flow integration (LM Studio, api_tool_call)', () => {
   });
 
   afterEach(async () => {
-    if (originalParserEnv === undefined) {
-      delete process.env.AUTOBYTEUS_STREAM_PARSER;
-    } else {
-      process.env.AUTOBYTEUS_STREAM_PARSER = originalParserEnv;
-    }
     SkillRegistry.getInstance().clear();
     resetFactory();
     await fs.rm(tempDirA, { recursive: true, force: true });
@@ -99,7 +91,6 @@ runIntegration('Agent dual-flow integration (LM Studio, api_tool_call)', () => {
       null,
       null,
       null,
-      null,
       tempDirA
     );
 
@@ -111,7 +102,6 @@ runIntegration('Agent dual-flow integration (LM Studio, api_tool_call)', () => {
       null,
       [tool],
       true,
-      null,
       null,
       null,
       null,

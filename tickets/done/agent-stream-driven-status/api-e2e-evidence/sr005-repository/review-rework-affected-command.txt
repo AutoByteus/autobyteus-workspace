@@ -1,0 +1,1 @@
+pnpm -C autobyteus-server-ts exec vitest run tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts tests/integration/agent/team-lifecycle-websocket.integration.test.ts --no-watch --reporter=dot

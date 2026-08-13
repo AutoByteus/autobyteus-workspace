@@ -16,9 +16,13 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  /** DateTime scalar supporting ISO strings and date-only YYYY-MM-DD values */
   DateTime: { input: any; output: any; }
+  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: { input: any; output: any; }
+  /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSONObject: { input: any; output: any; }
+  /** The `SafeInt` scalar type represents non-fractional signed whole numeric values that are considered safe as defined by the ECMAScript specification. */
   SafeInt: { input: number; output: number; }
 };
 
@@ -43,7 +47,6 @@ export type AgentDefinition = {
   ownershipScope: AgentDefinitionOwnershipScope;
   role?: Maybe<Scalars['String']['output']>;
   skillNames: Array<Scalars['String']['output']>;
-  systemPromptProcessorNames: Array<Scalars['String']['output']>;
   toolExecutionResultProcessorNames: Array<Scalars['String']['output']>;
   toolInvocationPreprocessorNames: Array<Scalars['String']['output']>;
   toolNames: Array<Scalars['String']['output']>;
@@ -407,7 +410,6 @@ export type CreateAgentDefinitionInput = {
   name: Scalars['String']['input'];
   role?: InputMaybe<Scalars['String']['input']>;
   skillNames?: InputMaybe<Array<Scalars['String']['input']>>;
-  systemPromptProcessorNames?: InputMaybe<Array<Scalars['String']['input']>>;
   toolExecutionResultProcessorNames?: InputMaybe<Array<Scalars['String']['input']>>;
   toolInvocationPreprocessorNames?: InputMaybe<Array<Scalars['String']['input']>>;
   toolNames?: InputMaybe<Array<Scalars['String']['input']>>;
@@ -1210,6 +1212,7 @@ export type Mutation = {
   saveGeminiVertexProject: GeminiSetupStateObject;
   saveManagedMessagingGatewayProviderConfig: ManagedMessagingGatewayStatusObject;
   saveProviderApiKey: Scalars['Boolean']['output'];
+  saveQwenConfiguration: QwenSetupStatus;
   setApplicationsEnabled: ApplicationsCapability;
   setSearchConfig: Scalars['String']['output'];
   setSkillImprovementEnabled: SkillImprovementCapability;
@@ -1523,6 +1526,11 @@ export type MutationSaveProviderApiKeyArgs = {
 };
 
 
+export type MutationSaveQwenConfigurationArgs = {
+  input: QwenConfigurationInput;
+};
+
+
 export type MutationSetApplicationsEnabledArgs = {
   enabled: Scalars['Boolean']['input'];
 };
@@ -1669,7 +1677,6 @@ export type Query = {
   availableOptionalInputProcessorNames: Array<Scalars['String']['output']>;
   availableOptionalLifecycleProcessorNames: Array<Scalars['String']['output']>;
   availableOptionalLlmResponseProcessorNames: Array<Scalars['String']['output']>;
-  availableOptionalSystemPromptProcessorNames: Array<Scalars['String']['output']>;
   availableOptionalToolExecutionResultProcessorNames: Array<Scalars['String']['output']>;
   availableOptionalToolInvocationPreprocessorNames: Array<Scalars['String']['output']>;
   availableToolNames: Array<Scalars['String']['output']>;
@@ -1684,6 +1691,7 @@ export type Query = {
   getAgentRunSkillImprovementEligibility: GraphqlSkillImprovementEligibility;
   getAgentRunTokenUsageSummary: TokenUsageRunSummaryGraphql;
   getAppDataMigrations: Array<AppDataMigrationRecordObject>;
+  getEffectiveStreamingContentFlushIntervalMs: Scalars['Int']['output'];
   getEffectiveWorkingContextCompactionStrategyId: Scalars['String']['output'];
   getGeminiSetupConfig: GeminiSetupStateObject;
   getMemoryHubConnectionInfo: MemoryHubConnectionInfoGql;
@@ -1721,6 +1729,7 @@ export type Query = {
   mcpServers: Array<McpServerConfigUnion>;
   previewMcpServerTools: Array<ToolDefinitionDetail>;
   providerSettings: Array<ProviderSettingsGroup>;
+  qwenSetupStatus: QwenSetupStatus;
   runtimeAvailabilities: Array<RuntimeAvailabilityObject>;
   searchFiles: Array<Scalars['String']['output']>;
   skill?: Maybe<Skill>;
@@ -2025,6 +2034,23 @@ export type QueryWorkspaceMetadataArgs = {
 export type QueryWorkspaceRunHistoryArgs = {
   limitPerAgent?: Scalars['Int']['input'];
   workspaceId: Scalars['String']['input'];
+};
+
+export type QwenConfigurationInput = {
+  apiKey: Scalars['String']['input'];
+  baseUrl: Scalars['String']['input'];
+};
+
+export enum QwenEndpointSource {
+  Configured = 'CONFIGURED',
+  Default = 'DEFAULT'
+}
+
+export type QwenSetupStatus = {
+  __typename?: 'QwenSetupStatus';
+  apiKeyConfigured: Scalars['Boolean']['output'];
+  effectiveBaseUrl: Scalars['String']['output'];
+  endpointSource: QwenEndpointSource;
 };
 
 export type RawTraceFileSummary = {
@@ -2644,7 +2670,6 @@ export type UpdateAgentDefinitionInput = {
   name?: InputMaybe<Scalars['String']['input']>;
   role?: InputMaybe<Scalars['String']['input']>;
   skillNames?: InputMaybe<Array<Scalars['String']['input']>>;
-  systemPromptProcessorNames?: InputMaybe<Array<Scalars['String']['input']>>;
   toolExecutionResultProcessorNames?: InputMaybe<Array<Scalars['String']['input']>>;
   toolInvocationPreprocessorNames?: InputMaybe<Array<Scalars['String']['input']>>;
   toolNames?: InputMaybe<Array<Scalars['String']['input']>>;
@@ -2747,7 +2772,6 @@ export type WorkspaceHistoryTeamRunItemObject = {
   isActive: Scalars['Boolean']['output'];
   memberTree: Scalars['JSON']['output'];
   members: Array<WorkspaceHistoryTeamRunMemberObject>;
-  status: Scalars['String']['output'];
   summary: Scalars['String']['output'];
   teamDefinitionId: Scalars['String']['output'];
   teamDefinitionName: Scalars['String']['output'];
@@ -2858,21 +2882,21 @@ export type RemoveApplicationPackageMutationVariables = Exact<{
 
 export type RemoveApplicationPackageMutation = { __typename?: 'Mutation', removeApplicationPackage: Array<{ __typename?: 'ApplicationPackage', packageId: string, displayName: string, sourceKind: ApplicationPackageSourceKind, sourceSummary?: string | null, applicationCount: number, isPlatformOwned: boolean, isRemovable: boolean }> };
 
-export type AgentDefinitionMutationFieldsFragment = { __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, systemPromptProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null };
+export type AgentDefinitionMutationFieldsFragment = { __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null };
 
 export type CreateAgentDefinitionMutationVariables = Exact<{
   input: CreateAgentDefinitionInput;
 }>;
 
 
-export type CreateAgentDefinitionMutation = { __typename?: 'Mutation', createAgentDefinition: { __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, systemPromptProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null } };
+export type CreateAgentDefinitionMutation = { __typename?: 'Mutation', createAgentDefinition: { __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null } };
 
 export type UpdateAgentDefinitionMutationVariables = Exact<{
   input: UpdateAgentDefinitionInput;
 }>;
 
 
-export type UpdateAgentDefinitionMutation = { __typename?: 'Mutation', updateAgentDefinition: { __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, systemPromptProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null } };
+export type UpdateAgentDefinitionMutation = { __typename?: 'Mutation', updateAgentDefinition: { __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null } };
 
 export type DeleteAgentDefinitionMutationVariables = Exact<{
   id: Scalars['String']['input'];
@@ -3056,6 +3080,13 @@ export type SaveProviderApiKeyMutationVariables = Exact<{
 
 
 export type SaveProviderApiKeyMutation = { __typename?: 'Mutation', saveProviderApiKey: boolean };
+
+export type SaveQwenConfigurationMutationVariables = Exact<{
+  input: QwenConfigurationInput;
+}>;
+
+
+export type SaveQwenConfigurationMutation = { __typename?: 'Mutation', saveQwenConfiguration: { __typename?: 'QwenSetupStatus', effectiveBaseUrl: string, endpointSource: QwenEndpointSource, apiKeyConfigured: boolean } };
 
 export type ReloadLlmModelsMutationVariables = Exact<{
   runtimeKind?: InputMaybe<Scalars['String']['input']>;
@@ -3301,12 +3332,12 @@ export type RemoveWorkspaceMutation = { __typename?: 'Mutation', removeWorkspace
 export type GetAgentCustomizationOptionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAgentCustomizationOptionsQuery = { __typename?: 'Query', availableToolNames: Array<string>, availableOptionalInputProcessorNames: Array<string>, availableOptionalLlmResponseProcessorNames: Array<string>, availableOptionalSystemPromptProcessorNames: Array<string>, availableOptionalToolExecutionResultProcessorNames: Array<string>, availableOptionalToolInvocationPreprocessorNames: Array<string>, availableOptionalLifecycleProcessorNames: Array<string> };
+export type GetAgentCustomizationOptionsQuery = { __typename?: 'Query', availableToolNames: Array<string>, availableOptionalInputProcessorNames: Array<string>, availableOptionalLlmResponseProcessorNames: Array<string>, availableOptionalToolExecutionResultProcessorNames: Array<string>, availableOptionalToolInvocationPreprocessorNames: Array<string>, availableOptionalLifecycleProcessorNames: Array<string> };
 
 export type GetAgentDefinitionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAgentDefinitionsQuery = { __typename?: 'Query', agentDefinitions: Array<{ __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, systemPromptProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null }> };
+export type GetAgentDefinitionsQuery = { __typename?: 'Query', agentDefinitions: Array<{ __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null }> };
 
 export type GetAgentTeamDefinitionsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3400,6 +3431,11 @@ export type GetGeminiSetupConfigQueryVariables = Exact<{ [key: string]: never; }
 
 
 export type GetGeminiSetupConfigQuery = { __typename?: 'Query', getGeminiSetupConfig: { __typename?: 'GeminiSetupStateObject', activeMode?: GeminiSetupMode | null, aiStudioConfigured?: boolean | null, vertexExpressConfigured?: boolean | null, vertexProject?: { __typename?: 'GeminiVertexProjectObject', project: string, location: string } | null } };
+
+export type GetQwenSetupStatusQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetQwenSetupStatusQuery = { __typename?: 'Query', qwenSetupStatus: { __typename?: 'QwenSetupStatus', effectiveBaseUrl: string, endpointSource: QwenEndpointSource, apiKeyConfigured: boolean } };
 
 export type ManagedMessagingGatewayStatusQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3535,7 +3571,7 @@ export type ListWorkspaceRunHistoryQueryVariables = Exact<{
 }>;
 
 
-export type ListWorkspaceRunHistoryQuery = { __typename?: 'Query', listWorkspaceRunHistory: Array<{ __typename?: 'WorkspaceRunHistoryGroupObject', workspaceRootPath: string, workspaceName: string, agentDefinitions: Array<{ __typename?: 'RunHistoryAgentGroupObject', agentDefinitionId: string, agentName: string, runs: Array<{ __typename?: 'RunHistoryItemObject', runId: string, summary: string, createdAt: string, archivedAt?: string | null, terminatedAt?: string | null, status: string, isActive: boolean, shouldConnectStream: boolean, statusSource: string }> }>, teamDefinitions: Array<{ __typename?: 'WorkspaceHistoryTeamDefinitionObject', teamDefinitionId: string, teamDefinitionName: string, runs: Array<{ __typename?: 'WorkspaceHistoryTeamRunItemObject', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, coordinatorMemberRouteKey: string, workspaceRootPath?: string | null, summary: string, createdAt: string, archivedAt?: string | null, terminatedAt?: string | null, status: string, isActive: boolean, memberTree: any, members: Array<{ __typename?: 'WorkspaceHistoryTeamRunMemberObject', memberRouteKey: string, memberName: string, memberRunId: string, status: string, runtimeKind: string, workspaceRootPath?: string | null }> }> }> }> };
+export type ListWorkspaceRunHistoryQuery = { __typename?: 'Query', listWorkspaceRunHistory: Array<{ __typename?: 'WorkspaceRunHistoryGroupObject', workspaceRootPath: string, workspaceName: string, agentDefinitions: Array<{ __typename?: 'RunHistoryAgentGroupObject', agentDefinitionId: string, agentName: string, runs: Array<{ __typename?: 'RunHistoryItemObject', runId: string, summary: string, createdAt: string, archivedAt?: string | null, terminatedAt?: string | null, status: string, isActive: boolean, shouldConnectStream: boolean, statusSource: string }> }>, teamDefinitions: Array<{ __typename?: 'WorkspaceHistoryTeamDefinitionObject', teamDefinitionId: string, teamDefinitionName: string, runs: Array<{ __typename?: 'WorkspaceHistoryTeamRunItemObject', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, coordinatorMemberRouteKey: string, workspaceRootPath?: string | null, summary: string, createdAt: string, archivedAt?: string | null, terminatedAt?: string | null, isActive: boolean, memberTree: any, members: Array<{ __typename?: 'WorkspaceHistoryTeamRunMemberObject', memberRouteKey: string, memberName: string, memberRunId: string, status: string, runtimeKind: string, workspaceRootPath?: string | null }> }> }> }> };
 
 export type GetWorkspaceRunHistoryQueryVariables = Exact<{
   workspaceId: Scalars['String']['input'];
@@ -3543,7 +3579,7 @@ export type GetWorkspaceRunHistoryQueryVariables = Exact<{
 }>;
 
 
-export type GetWorkspaceRunHistoryQuery = { __typename?: 'Query', workspaceRunHistory: { __typename?: 'WorkspaceRunHistoryGroupObject', workspaceRootPath: string, workspaceName: string, agentDefinitions: Array<{ __typename?: 'RunHistoryAgentGroupObject', agentDefinitionId: string, agentName: string, runs: Array<{ __typename?: 'RunHistoryItemObject', runId: string, summary: string, createdAt: string, archivedAt?: string | null, terminatedAt?: string | null, status: string, isActive: boolean, shouldConnectStream: boolean, statusSource: string }> }>, teamDefinitions: Array<{ __typename?: 'WorkspaceHistoryTeamDefinitionObject', teamDefinitionId: string, teamDefinitionName: string, runs: Array<{ __typename?: 'WorkspaceHistoryTeamRunItemObject', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, coordinatorMemberRouteKey: string, workspaceRootPath?: string | null, summary: string, createdAt: string, archivedAt?: string | null, terminatedAt?: string | null, status: string, isActive: boolean, memberTree: any, members: Array<{ __typename?: 'WorkspaceHistoryTeamRunMemberObject', memberRouteKey: string, memberName: string, memberRunId: string, status: string, runtimeKind: string, workspaceRootPath?: string | null }> }> }> } };
+export type GetWorkspaceRunHistoryQuery = { __typename?: 'Query', workspaceRunHistory: { __typename?: 'WorkspaceRunHistoryGroupObject', workspaceRootPath: string, workspaceName: string, agentDefinitions: Array<{ __typename?: 'RunHistoryAgentGroupObject', agentDefinitionId: string, agentName: string, runs: Array<{ __typename?: 'RunHistoryItemObject', runId: string, summary: string, createdAt: string, archivedAt?: string | null, terminatedAt?: string | null, status: string, isActive: boolean, shouldConnectStream: boolean, statusSource: string }> }>, teamDefinitions: Array<{ __typename?: 'WorkspaceHistoryTeamDefinitionObject', teamDefinitionId: string, teamDefinitionName: string, runs: Array<{ __typename?: 'WorkspaceHistoryTeamRunItemObject', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, coordinatorMemberRouteKey: string, workspaceRootPath?: string | null, summary: string, createdAt: string, archivedAt?: string | null, terminatedAt?: string | null, isActive: boolean, memberTree: any, members: Array<{ __typename?: 'WorkspaceHistoryTeamRunMemberObject', memberRouteKey: string, memberName: string, memberRunId: string, status: string, runtimeKind: string, workspaceRootPath?: string | null }> }> }> } };
 
 export type GetRunProjectionQueryVariables = Exact<{
   runId: Scalars['String']['input'];
@@ -3622,7 +3658,7 @@ export type GetRuntimeAvailabilitiesQuery = { __typename?: 'Query', runtimeAvail
 export type GetServerSettingsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetServerSettingsQuery = { __typename?: 'Query', getEffectiveWorkingContextCompactionStrategyId: string, getServerSettings: Array<{ __typename: 'ServerSetting', key: string, value: string, description: string, isEditable: boolean, isDeletable: boolean }> };
+export type GetServerSettingsQuery = { __typename?: 'Query', getEffectiveWorkingContextCompactionStrategyId: string, getEffectiveStreamingContentFlushIntervalMs: number, getServerSettings: Array<{ __typename: 'ServerSetting', key: string, value: string, description: string, isEditable: boolean, isDeletable: boolean }> };
 
 export type GetSearchConfigQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3911,7 +3947,6 @@ export const AgentDefinitionMutationFieldsFragmentDoc = gql`
   toolNames
   inputProcessorNames
   llmResponseProcessorNames
-  systemPromptProcessorNames
   toolExecutionResultProcessorNames
   toolInvocationPreprocessorNames
   lifecycleProcessorNames
@@ -5487,6 +5522,37 @@ export function useSaveProviderApiKeyMutation(options: VueApolloComposable.UseMu
   return VueApolloComposable.useMutation<SaveProviderApiKeyMutation, SaveProviderApiKeyMutationVariables>(SaveProviderApiKeyDocument, options);
 }
 export type SaveProviderApiKeyMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<SaveProviderApiKeyMutation, SaveProviderApiKeyMutationVariables>;
+export const SaveQwenConfigurationDocument = gql`
+    mutation SaveQwenConfiguration($input: QwenConfigurationInput!) {
+  saveQwenConfiguration(input: $input) {
+    effectiveBaseUrl
+    endpointSource
+    apiKeyConfigured
+  }
+}
+    `;
+
+/**
+ * __useSaveQwenConfigurationMutation__
+ *
+ * To run a mutation, you first call `useSaveQwenConfigurationMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useSaveQwenConfigurationMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useSaveQwenConfigurationMutation({
+ *   variables: {
+ *     input: // value for 'input'
+ *   },
+ * });
+ */
+export function useSaveQwenConfigurationMutation(options: VueApolloComposable.UseMutationOptions<SaveQwenConfigurationMutation, SaveQwenConfigurationMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<SaveQwenConfigurationMutation, SaveQwenConfigurationMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<SaveQwenConfigurationMutation, SaveQwenConfigurationMutationVariables>(SaveQwenConfigurationDocument, options);
+}
+export type SaveQwenConfigurationMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<SaveQwenConfigurationMutation, SaveQwenConfigurationMutationVariables>;
 export const ReloadLlmModelsDocument = gql`
     mutation ReloadLLMModels($runtimeKind: String) {
   reloadLlmModels(runtimeKind: $runtimeKind)
@@ -6606,7 +6672,6 @@ export const GetAgentCustomizationOptionsDocument = gql`
   availableToolNames
   availableOptionalInputProcessorNames
   availableOptionalLlmResponseProcessorNames
-  availableOptionalSystemPromptProcessorNames
   availableOptionalToolExecutionResultProcessorNames
   availableOptionalToolInvocationPreprocessorNames
   availableOptionalLifecycleProcessorNames
@@ -6646,7 +6711,6 @@ export const GetAgentDefinitionsDocument = gql`
     toolNames
     inputProcessorNames
     llmResponseProcessorNames
-    systemPromptProcessorNames
     toolExecutionResultProcessorNames
     toolInvocationPreprocessorNames
     lifecycleProcessorNames
@@ -7278,6 +7342,35 @@ export function useGetGeminiSetupConfigLazyQuery(options: VueApolloComposable.Us
   return VueApolloComposable.useLazyQuery<GetGeminiSetupConfigQuery, GetGeminiSetupConfigQueryVariables>(GetGeminiSetupConfigDocument, {}, options);
 }
 export type GetGeminiSetupConfigQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetGeminiSetupConfigQuery, GetGeminiSetupConfigQueryVariables>;
+export const GetQwenSetupStatusDocument = gql`
+    query GetQwenSetupStatus {
+  qwenSetupStatus {
+    effectiveBaseUrl
+    endpointSource
+    apiKeyConfigured
+  }
+}
+    `;
+
+/**
+ * __useGetQwenSetupStatusQuery__
+ *
+ * To run a query within a Vue component, call `useGetQwenSetupStatusQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetQwenSetupStatusQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetQwenSetupStatusQuery();
+ */
+export function useGetQwenSetupStatusQuery(options: VueApolloComposable.UseQueryOptions<GetQwenSetupStatusQuery, GetQwenSetupStatusQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetQwenSetupStatusQuery, GetQwenSetupStatusQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetQwenSetupStatusQuery, GetQwenSetupStatusQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetQwenSetupStatusQuery, GetQwenSetupStatusQueryVariables>(GetQwenSetupStatusDocument, {}, options);
+}
+export function useGetQwenSetupStatusLazyQuery(options: VueApolloComposable.UseQueryOptions<GetQwenSetupStatusQuery, GetQwenSetupStatusQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetQwenSetupStatusQuery, GetQwenSetupStatusQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetQwenSetupStatusQuery, GetQwenSetupStatusQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetQwenSetupStatusQuery, GetQwenSetupStatusQueryVariables>(GetQwenSetupStatusDocument, {}, options);
+}
+export type GetQwenSetupStatusQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetQwenSetupStatusQuery, GetQwenSetupStatusQueryVariables>;
 export const ManagedMessagingGatewayStatusDocument = gql`
     query ManagedMessagingGatewayStatus {
   managedMessagingGatewayStatus {
@@ -8118,7 +8211,6 @@ export const ListWorkspaceRunHistoryDocument = gql`
         createdAt
         archivedAt
         terminatedAt
-        status
         isActive
         memberTree
         members {
@@ -8190,7 +8282,6 @@ export const GetWorkspaceRunHistoryDocument = gql`
         createdAt
         archivedAt
         terminatedAt
-        status
         isActive
         memberTree
         members {
@@ -8704,6 +8795,7 @@ export const GetServerSettingsDocument = gql`
     isDeletable
   }
   getEffectiveWorkingContextCompactionStrategyId
+  getEffectiveStreamingContentFlushIntervalMs
 }
     `;
 

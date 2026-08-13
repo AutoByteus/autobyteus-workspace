@@ -22,6 +22,11 @@ import {
   getRunFileChangeService,
 } from "../../services/run-file-changes/run-file-change-service.js";
 import { getTaskDelegationRunRegistry } from "../task-delegation/task-delegation-run-registry.js";
+import type {
+  TeamRunLifecycleListener,
+  TeamRunLifecycleSnapshot,
+  TeamRunLifecycleUnsubscribe,
+} from "../domain/team-run-lifecycle.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -51,6 +56,10 @@ export class AgentTeamRunManager {
   private activeRuns = new Map<string, TeamRun>();
   private readonly teamCommunicationUnsubscribers = new Map<string, () => void>();
   private readonly runFileChangeUnsubscribers = new Map<string, () => void>();
+  private readonly lifecycleListenersByRunId = new Map<
+    string,
+    Set<TeamRunLifecycleListener>
+  >();
 
   static getInstance(options: AgentTeamRunManagerOptions = {}): AgentTeamRunManager {
     if (!AgentTeamRunManager.instance) {
@@ -142,12 +151,13 @@ export class AgentTeamRunManager {
   }
 
   getTeamRun(teamRunId: string): TeamRun | null {
-    const activeRun = this.activeRuns.get(teamRunId) ?? null;
+    const normalizedTeamRunId = normalizeRequiredRunId(teamRunId, "teamRunId");
+    const activeRun = this.activeRuns.get(normalizedTeamRunId) ?? null;
     if (!activeRun) {
       return null;
     }
     if (!activeRun.isActive()) {
-      this.unregisterActiveRun(teamRunId);
+      this.unregisterActiveRun(normalizedTeamRunId, activeRun);
       return null;
     }
     return activeRun;
@@ -167,25 +177,106 @@ export class AgentTeamRunManager {
     return activeRunIds;
   }
 
-  private registerActiveRun(run: TeamRun): void {
-    this.unregisterTeamCommunication(run.runId);
-    this.unregisterRunFileChanges(run.runId);
-    this.activeRuns.set(run.runId, run);
-    this.teamCommunicationUnsubscribers.set(
-      run.runId,
-      this.teamCommunicationService.attachToTeamRun(run),
-    );
-    this.runFileChangeUnsubscribers.set(
-      run.runId,
-      this.runFileChangeService.attachToTeamRun(run),
-    );
+  getLifecycleSnapshot(teamRunId: string): TeamRunLifecycleSnapshot {
+    const normalizedTeamRunId = normalizeRequiredRunId(teamRunId, "teamRunId");
+    return {
+      teamRunId: normalizedTeamRunId,
+      isActive: this.getActiveRun(normalizedTeamRunId) !== null,
+    };
   }
 
-  private unregisterActiveRun(teamRunId: string): void {
-    this.activeRuns.delete(teamRunId);
-    this.unregisterTeamCommunication(teamRunId);
-    this.unregisterRunFileChanges(teamRunId);
-    getTaskDelegationRunRegistry().detach(teamRunId);
+  subscribeToLifecycle(
+    teamRunId: string,
+    listener: TeamRunLifecycleListener,
+  ): TeamRunLifecycleUnsubscribe {
+    const normalizedTeamRunId = normalizeRequiredRunId(teamRunId, "teamRunId");
+    let listeners = this.lifecycleListenersByRunId.get(normalizedTeamRunId);
+    if (!listeners) {
+      listeners = new Set<TeamRunLifecycleListener>();
+      this.lifecycleListenersByRunId.set(normalizedTeamRunId, listeners);
+    }
+    listeners.add(listener);
+    return () => {
+      const current = this.lifecycleListenersByRunId.get(normalizedTeamRunId);
+      current?.delete(listener);
+      if (current?.size === 0) {
+        this.lifecycleListenersByRunId.delete(normalizedTeamRunId);
+      }
+    };
+  }
+
+  private registerActiveRun(run: TeamRun): void {
+    if (!run.isActive()) {
+      throw new Error(`Cannot register inactive team run '${run.runId}'.`);
+    }
+    const teamRunId = normalizeRequiredRunId(run.runId, "teamRunId");
+    this.transitionActiveRun({ teamRunId, nextRun: run });
+  }
+
+  private unregisterActiveRun(
+    teamRunId: string,
+    expectedRun: TeamRun | null = null,
+  ): boolean {
+    return this.transitionActiveRun({ teamRunId, nextRun: null, expectedRun });
+  }
+
+  private transitionActiveRun(input: {
+    teamRunId: string;
+    nextRun: TeamRun | null;
+    expectedRun?: TeamRun | null;
+  }): boolean {
+    const current = this.activeRuns.get(input.teamRunId) ?? null;
+    if (input.expectedRun && current !== input.expectedRun) {
+      return false;
+    }
+    if (current === input.nextRun) {
+      return current !== null;
+    }
+    if (!current && !input.nextRun) {
+      return false;
+    }
+
+    const wasActive = current !== null;
+    this.unregisterTeamCommunication(input.teamRunId);
+    this.unregisterRunFileChanges(input.teamRunId);
+    if (current) {
+      getTaskDelegationRunRegistry().detach(input.teamRunId);
+    }
+
+    if (input.nextRun) {
+      this.activeRuns.set(input.teamRunId, input.nextRun);
+      this.teamCommunicationUnsubscribers.set(
+        input.teamRunId,
+        this.teamCommunicationService.attachToTeamRun(input.nextRun),
+      );
+      this.runFileChangeUnsubscribers.set(
+        input.teamRunId,
+        this.runFileChangeService.attachToTeamRun(input.nextRun),
+      );
+    } else {
+      this.activeRuns.delete(input.teamRunId);
+    }
+
+    const isActive = input.nextRun !== null;
+    if (wasActive !== isActive) {
+      this.notifyLifecycle({ teamRunId: input.teamRunId, isActive });
+    }
+    return true;
+  }
+
+  private notifyLifecycle(snapshot: TeamRunLifecycleSnapshot): void {
+    const listeners = [
+      ...(this.lifecycleListenersByRunId.get(snapshot.teamRunId) ?? []),
+    ];
+    for (const listener of listeners) {
+      try {
+        listener({ ...snapshot });
+      } catch (error) {
+        logger.error(
+          `AgentTeamRunManager lifecycle listener failed for '${snapshot.teamRunId}': ${String(error)}`,
+        );
+      }
+    }
   }
 
   private unregisterTeamCommunication(teamRunId: string): void {
@@ -208,14 +299,14 @@ export class AgentTeamRunManager {
 
   async terminateTeamRun(teamRunId: string): Promise<boolean> {
     try {
-      const activeRun = this.getActiveRun(teamRunId);
+      const normalizedTeamRunId = normalizeRequiredRunId(teamRunId, "teamRunId");
+      const activeRun = this.getActiveRun(normalizedTeamRunId);
       if (activeRun) {
         const result = await activeRun.terminate();
         if (!result.accepted) {
           return false;
         }
-        this.unregisterActiveRun(teamRunId);
-        return true;
+        return this.unregisterActiveRun(normalizedTeamRunId, activeRun);
       }
       return false;
     } catch (error) {

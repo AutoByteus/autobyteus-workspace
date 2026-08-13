@@ -1,0 +1,23 @@
+{
+  "result": "PASS",
+  "assertions": {
+    "invalidKeyProbeRejectedWithoutPersistence": true,
+    "browserAcceptedProviderNameBaseUrlAndApiKey": true,
+    "successfulProviderProbePreviewedExactAdvertisedModels": true,
+    "saveCreatedExactReadableProviderId": true,
+    "savedProviderReadyAndConfigured": true,
+    "exactCompositeModelIdentifiers": true,
+    "exactBuiltInCatalogMatchInheritedCuratedMetadata": true,
+    "nearMatchDidNotInheritCuratedMetadata": true,
+    "historicalPreviewFixtureRemainedOpaque": true,
+    "deleteRemovedProviderAndOwnedModels": true,
+    "narrowViewportNoHorizontalOverflow": true,
+    "generatedSecretsAbsentFromOwnedLogsAndEvidence": true
+  },
+  "responsive": {
+    "viewportWidth": 390,
+    "documentClientWidth": 390,
+    "documentScrollWidth": 390,
+    "bodyScrollWidth": 390
+  }
+}

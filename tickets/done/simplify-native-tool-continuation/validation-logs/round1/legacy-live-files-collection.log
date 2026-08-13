@@ -1,0 +1,29 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/autobyteus-ts
+
+---------------stdout | tests/integration/agent/handlers/gemini-tool-call-handler-live.test.ts > LlmStreamingResponseHandler (Gemini live) > processes tool call stream into invocations
+Successfully registered tool definition: 'write_file'
+
+--x-·-----
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent/handlers/gemini-tool-call-handler-live.test.ts > LlmStreamingResponseHandler (Gemini live) > processes tool call stream into invocations
+TypeError: Cannot read properties of undefined (reading 'systemMessage')
+ ❯ new BaseLLM src/llm/base.ts:28:38
+     26|     this.extensionRegistry = new ExtensionRegistry();
+     27|
+     28|     this.systemMessage = this.config.systemMessage || BaseLLM.DEFAULT_…
+       |                                      ^
+     29|   }
+     30|
+ ❯ new GeminiLLM src/llm/api/gemini-llm.ts:55:5
+ ❯ tests/integration/agent/handlers/gemini-tool-call-handler-live.test.ts:42:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed | 6 skipped (8)
+      Tests  1 failed | 1 passed | 23 skipped (25)
+   Start at  13:26:34
+   Duration  830ms (transform 2.16s, setup 131ms, import 4.41s, tests 18ms, environment 1ms)

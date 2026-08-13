@@ -31,7 +31,6 @@ const messages = {
   'agents.components.agents.AgentDetail.optionalProcessor.tools': 'Tools',
   'agents.components.agents.AgentDetail.optionalProcessor.inputProcessors': 'Input Processors',
   'agents.components.agents.AgentDetail.optionalProcessor.llmResponseProcessors': 'LLM Response Processors',
-  'agents.components.agents.AgentDetail.optionalProcessor.systemPromptProcessors': 'System Prompt Processors',
   'agents.components.agents.AgentDetail.optionalProcessor.toolExecutionResultProcessors': 'Tool Result Processors',
   'agents.components.agents.AgentDetail.optionalProcessor.toolInvocationPreprocessors': 'Tool Invocation Preprocessors',
   'agents.components.agents.AgentDetail.optionalProcessor.lifecycleProcessors': 'Lifecycle Processors',
@@ -77,9 +76,6 @@ const messages = {
   'agents.components.agents.AgentDefinitionForm.field.llmResponseProcessors.label': 'LLM Response Processors',
   'agents.components.agents.AgentDefinitionForm.field.llmResponseProcessors.placeholder': 'Add custom processors...',
   'agents.components.agents.AgentDefinitionForm.field.llmResponseProcessors.help': 'Customize processors that interpret LLM responses.',
-  'agents.components.agents.AgentDefinitionForm.field.systemPromptProcessors.label': 'System Prompt Processors',
-  'agents.components.agents.AgentDefinitionForm.field.systemPromptProcessors.placeholder': 'Add custom processors...',
-  'agents.components.agents.AgentDefinitionForm.field.systemPromptProcessors.help': 'Customize processors that build the system prompt.',
   'agents.components.agents.AgentDefinitionForm.field.toolResultProcessors.label': 'Tool Result Processors',
   'agents.components.agents.AgentDefinitionForm.field.toolResultProcessors.placeholder': 'Add custom processors...',
   'agents.components.agents.AgentDefinitionForm.field.toolResultProcessors.help': 'Customize processors that handle tool results.',
@@ -92,6 +88,8 @@ const messages = {
   'agents.components.agents.GroupableTagInput.loading': 'Loading...',
   'agents.components.agents.GroupableTagInput.add': 'Add',
   'agents.components.agents.GroupableTagInput.remove': 'Remove',
+  'agents.store.interrupt.failed': 'Could not stop {{target}}: {{detail}}',
+  'agents.store.interrupt.transportFailed': 'Could not send Stop to {{target}}: {{detail}}',
 } satisfies TranslationCatalog;
 
 export default messages;

@@ -45,6 +45,11 @@
       <p class="mt-1 text-xs text-slate-500">
         {{ $t('applications.components.applications.ApplicationLaunchSetupPanel.modelHelp') }}
       </p>
+      <p v-if="selectedModelUnavailable" class="mt-1 text-xs text-amber-600">
+        {{ $t('applications.components.applications.ApplicationLaunchSetupPanel.unavailableModelBeforeEntry', {
+          model: effectiveModelIdentifier,
+        }) }}
+      </p>
     </div>
 
     <div v-if="supportsWorkspaceRootPath">
@@ -120,6 +125,18 @@ const {
   useDefaultRuntimeFallback: false,
 })
 
+const effectiveModelIdentifier = computed(() => (
+  props.draft.llmModelIdentifier.trim()
+  || props.inheritedProfile?.llmModelIdentifier?.trim()
+  || ''
+))
+
+const selectedModelUnavailable = computed(() => (
+  supportsModelIdentifier.value
+  && effectiveModelIdentifier.value.length > 0
+  && !hasModelIdentifier(effectiveModelIdentifier.value)
+))
+
 watch(
   () => [
     supportsRuntimeKind.value,
@@ -152,30 +169,22 @@ watch(
     props.inheritedProfile?.runtimeKind,
     props.inheritedProfile?.llmModelIdentifier,
     availableProviderGroups.value,
-  ],
+    selectedModelUnavailable.value,
+  ] as const,
   () => {
-    if (
-      props.draft.llmModelIdentifier
-      && availableProviderGroups.value.length > 0
-      && !hasModelIdentifier(props.draft.llmModelIdentifier)
-    ) {
-      emit('update:draft', {
-        ...props.draft,
-        llmModelIdentifier: '',
-      })
-      return
-    }
-
-    const effectiveModelIdentifier = props.draft.llmModelIdentifier.trim()
-      || props.inheritedProfile?.llmModelIdentifier?.trim()
-      || ''
     const hasRuntime = !supportsRuntimeKind.value || Boolean(effectiveRuntimeKind.value)
+    const modelMissing = supportsModelIdentifier.value
+      && effectiveModelIdentifier.value.length === 0
     const isReady = hasRuntime
-      && (!supportsModelIdentifier.value || effectiveModelIdentifier.length > 0)
+      && !modelMissing
+      && !selectedModelUnavailable.value
     emit('readiness-change', {
       isReady,
-      blockingReason:
-        !isReady
+      blockingReason: selectedModelUnavailable.value
+        ? $t('applications.components.applications.ApplicationLaunchSetupPanel.unavailableModelBeforeEntry', {
+          model: effectiveModelIdentifier.value,
+        })
+        : !isReady
           ? $t('applications.components.applications.ApplicationLaunchSetupPanel.requiredModelBeforeEntry', {
             slot: props.slot.name,
           })

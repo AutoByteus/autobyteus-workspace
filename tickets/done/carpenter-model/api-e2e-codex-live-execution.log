@@ -1,0 +1,391 @@
+Carpenter Model real Codex validation round 3
+UTC start: 2026-08-12T10:40:53Z
+HEAD: 7d7574ae3b300ae21ef337cf9c671916d4b0d9bc
+Codex CLI: codex-cli 0.147.0
+Requested model: gpt-5.6-luna
+
+=== LIVE CODEX MODEL CATALOG PREFLIGHT ===
+COMMAND: CodexModelCatalog live model/list exact-ID probe
+undefined
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command "tsx" not found
+PREFLIGHT_EXIT_CODE: 254
+
+=== CORRECTED LIVE CODEX MODEL CATALOG PREFLIGHT ===
+NOTE: repository has no tsx binary; switched to the already-built production modules.
+COMMAND: node --input-type=module exact-ID probe against built CodexModelCatalog
+{"requestedModel":"gpt-5.6-luna","available":true,"configSchema":{"parameters":[{"name":"reasoning_effort","type":"enum","description":"Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.","required":false,"default_value":"medium","enum_values":["low","medium","high","xhigh","max"]},{"name":"service_tier","label":"Fast mode","type":"enum","description":"Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.","required":false,"enum_values":["fast"]}]}}
+CORRECTED_PREFLIGHT_EXIT_CODE: 0
+
+=== REAL CODEX APP-SERVER / AUTOBYTEUS GRAPHQL TWO-TURN E2E ===
+ENV: RUN_CODEX_E2E=1 CODEX_HISTORY_TITLE_E2E_MODEL=gpt-5.6-luna CODEX_E2E_TOOL_MODEL=gpt-5.6-luna
+COMMAND: pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts --no-watch
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:38248) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-history-title-e2e-appdata-gpdt84
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-history-title-e2e-appdata-gpdt84/.env
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime) > keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+CachedVideoModelProvider initialized.
+VideoModelService initialized.
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime) > keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime) > keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites
+Agent Definition created successfully with ID: codex-history-title-3fab375c-b581-4742-b661-1733e79ba148
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime) > keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime) > keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-history-title-workspace-55tRXW
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-history-title-workspace-55tRXW.
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime) > keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites
+Created and registered workspace ID: agent_ws_c52ec5df2fbcbd646c6a7df800f61ebe9e6c9084f6e31f5eb09b215a3138dbfd
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime) > keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime) > keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime) > keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites
+Agent definition cache populated with 48 items.
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime) > keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-history-title-workspace-55tRXW
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-history-title-workspace-55tRXW.
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime) > keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites
+Reusing registered workspace ID: agent_ws_c52ec5df2fbcbd646c6a7df800f61ebe9e6c9084f6e31f5eb09b215a3138dbfd
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime) > keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites
+Successfully created codex_app_server agent run 'codex_history_title_3fab375c_b581_4742_b661_1733_db06803ec9154ba8be059774aaa093a1'.
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime) > keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+[2026-08-12T10:41:28.644Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime) > keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites
+Agent websocket attached for run codex_history_title_3fab375c_b581_4742_b661_1733_db06803ec9154ba8be059774aaa093a1
+Created agent session a570fe07-6372-415d-8fb2-657135c59629 for run codex_history_title_3fab375c_b581_4742_b661_1733_db06803ec9154ba8be059774aaa093a1
+Agent WebSocket connected: session=a570fe07-6372-415d-8fb2-657135c59629, run=codex_history_title_3fab375c_b581_4742_b661_1733_db06803ec9154ba8be059774aaa093a1
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime) > keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime) > keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stderr | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime) > keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime) > keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime) > keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites
+Finished LM Studio discovery. Total models registered: 14
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime) > keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites
+Closed agent session a570fe07-6372-415d-8fb2-657135c59629
+Agent WebSocket disconnected: a570fe07-6372-415d-8fb2-657135c59629
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime) > keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites
+In-memory cache: Removed agent definition with ID codex-history-title-3fab375c-b581-4742-b661-1733e79ba148.
+
+stdout | tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts > Codex single-agent run history title e2e (live runtime) > keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites
+Agent Definition with ID codex-history-title-3fab375c-b581-4742-b661-1733e79ba148 deleted successfully.
+
+ ✓ tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts (1 test) 9053ms
+     ✓ keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites  8979ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  12:41:19
+   Duration  17.92s (transform 5.59s, setup 12ms, import 8.23s, tests 9.05s, environment 0ms)
+
+E2E_EXIT_CODE: 0
+UTC end: 2026-08-12T10:41:37Z
+AUTHORITATIVE_CODEX_LIVE_RESULT: PASS
+
+=== REAL CODEX CONFIGURED-SKILL RUNTIME E2E ===
+ENV: RUN_CODEX_E2E=1 CODEX_E2E_TOOL_MODEL=gpt-5.6-luna
+COMMAND: pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts --no-watch -t applies configured runtime skills
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:49297) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-app-server-runtime-api-e2e-VtVHmW
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-app-server-runtime-api-e2e-VtVHmW/.env
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > applies configured runtime skills over the current websocket API contract
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+CachedVideoModelProvider initialized.
+VideoModelService initialized.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > applies configured runtime skills over the current websocket API contract
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > applies configured runtime skills over the current websocket API contract
+Agent Definition created successfully with ID: codex-app-server-api-e2e-5f1b0eae-c91e-4721-93ec-1257ec741eda
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > applies configured runtime skills over the current websocket API contract
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > applies configured runtime skills over the current websocket API contract
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-skill-workspace-2d5q2m
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-skill-workspace-2d5q2m.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > applies configured runtime skills over the current websocket API contract
+Created and registered workspace ID: agent_ws_33d47c318f24a987e0a76695ef0a9678c17a8af846734bcad198762e7e3b231c
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > applies configured runtime skills over the current websocket API contract
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > applies configured runtime skills over the current websocket API contract
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > applies configured runtime skills over the current websocket API contract
+Agent definition cache populated with 48 items.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > applies configured runtime skills over the current websocket API contract
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-skill-workspace-2d5q2m
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-skill-workspace-2d5q2m.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > applies configured runtime skills over the current websocket API contract
+Reusing registered workspace ID: agent_ws_33d47c318f24a987e0a76695ef0a9678c17a8af846734bcad198762e7e3b231c
+
+stderr | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > applies configured runtime skills over the current websocket API contract
+[CodexAppServerClient] stderr: 2026-08-12T10:43:52.188074Z ERROR codex_app_server: Project-local config, hooks, and exec policies are disabled in the following folders until the project is trusted, but skills still load.
+    1. /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-skill-workspace-2d5q2m/.codex
+       To load project-local config, hooks, and exec policies, add /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-skill-workspace-2d5q2m as a trusted project in /Users/normy/.codex/config.toml.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > applies configured runtime skills over the current websocket API contract
+Successfully created codex_app_server agent run 'codex_app_server_api_e2e_5f1b0eae_c91e_4721_93ec_fc45e7880b70460991883d1608ef7bac'.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > applies configured runtime skills over the current websocket API contract
+Agent websocket attached for run codex_app_server_api_e2e_5f1b0eae_c91e_4721_93ec_fc45e7880b70460991883d1608ef7bac
+Created agent session f936c1a8-7679-4c3b-b34d-7903fe159d3d for run codex_app_server_api_e2e_5f1b0eae_c91e_4721_93ec_fc45e7880b70460991883d1608ef7bac
+Agent WebSocket connected: session=f936c1a8-7679-4c3b-b34d-7903fe159d3d, run=codex_app_server_api_e2e_5f1b0eae_c91e_4721_93ec_fc45e7880b70460991883d1608ef7bac
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > applies configured runtime skills over the current websocket API contract
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > applies configured runtime skills over the current websocket API contract
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > applies configured runtime skills over the current websocket API contract
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stderr | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > applies configured runtime skills over the current websocket API contract
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > applies configured runtime skills over the current websocket API contract
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > applies configured runtime skills over the current websocket API contract
+Finished LM Studio discovery. Total models registered: 14
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > applies configured runtime skills over the current websocket API contract
+Closed agent session f936c1a8-7679-4c3b-b34d-7903fe159d3d
+Agent WebSocket disconnected: f936c1a8-7679-4c3b-b34d-7903fe159d3d
+
+ ✓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts (20 tests | 19 skipped) 4783ms
+     ✓ applies configured runtime skills over the current websocket API contract  4720ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 19 skipped (20)
+   Start at  12:43:43
+   Duration  13.27s (transform 5.03s, setup 12ms, import 7.79s, tests 4.78s, environment 0ms)
+
+CONFIGURED_SKILL_E2E_EXIT_CODE: 0
+UTC configured-skill end: 2026-08-12T10:43:56Z
+AUTHORITATIVE_CODEX_CONFIGURED_SKILL_RESULT: PASS

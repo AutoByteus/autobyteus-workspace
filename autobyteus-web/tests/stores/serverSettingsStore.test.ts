@@ -75,6 +75,7 @@ describe('serverSettings store', () => {
     const queryMock = vi.fn().mockResolvedValue({
       data: {
         getEffectiveWorkingContextCompactionStrategyId: 'structured-json',
+        getEffectiveStreamingContentFlushIntervalMs: 500,
         getServerSettings: [
           {
             key: 'AUTOBYTEUS_SERVER_HOST',
@@ -97,6 +98,7 @@ describe('serverSettings store', () => {
     expect(useWindowNodeContextStore().waitForBoundBackendReady).toHaveBeenCalledOnce()
     expect(queryMock).toHaveBeenCalledTimes(1)
     expect(result).toHaveLength(1)
+    expect(store.effectiveStreamingContentFlushIntervalMs).toBe(500)
   })
 
   it('fails deterministically when the bound backend is not ready', async () => {
@@ -139,6 +141,7 @@ describe('serverSettings store', () => {
       query: vi.fn().mockResolvedValue({
         data: {
           getEffectiveWorkingContextCompactionStrategyId: 'remote-strategy',
+          getEffectiveStreamingContentFlushIntervalMs: 1000,
           getServerSettings: [
             {
               key: 'AUTOBYTEUS_COMPACTION_TRIGGER_RATIO',
@@ -162,11 +165,13 @@ describe('serverSettings store', () => {
     useWindowNodeContextStore().bindNodeContext('remote-node', 'http://127.0.0.1:3900')
     await store.fetchServerSettings()
     expect(store.effectiveWorkingContextCompactionStrategyId).toBe('remote-strategy')
+    expect(store.effectiveStreamingContentFlushIntervalMs).toBe(1000)
     expect(store.settings[0]?.value).toBe('0.6')
 
     oldResponse.reject(new Error('old node rejected'))
     await expect(oldLoad).rejects.toThrow('old node rejected')
     expect(store.effectiveWorkingContextCompactionStrategyId).toBe('remote-strategy')
+    expect(store.effectiveStreamingContentFlushIntervalMs).toBe(1000)
     expect(store.settings[0]?.value).toBe('0.6')
     expect(store.settingsBindingRevision).toBe(1)
     expect(store.error).toBeNull()
@@ -198,6 +203,7 @@ describe('serverSettings store', () => {
     newResponse.resolve({
       data: {
         getEffectiveWorkingContextCompactionStrategyId: 'structured-json',
+        getEffectiveStreamingContentFlushIntervalMs: 500,
         getServerSettings: [],
       },
     })
@@ -212,6 +218,7 @@ describe('serverSettings store', () => {
       .mockResolvedValueOnce({
         data: {
           getEffectiveWorkingContextCompactionStrategyId: 'structured-json',
+        getEffectiveStreamingContentFlushIntervalMs: 500,
         getServerSettings: [
             {
               key: 'AUTOBYTEUS_SERVER_HOST',
@@ -226,6 +233,7 @@ describe('serverSettings store', () => {
       .mockResolvedValueOnce({
         data: {
           getEffectiveWorkingContextCompactionStrategyId: 'structured-json',
+        getEffectiveStreamingContentFlushIntervalMs: 500,
         getServerSettings: [
             {
               key: 'AUTOBYTEUS_SERVER_HOST',
@@ -253,6 +261,7 @@ describe('serverSettings store', () => {
     await nextTick()
 
     expect(store.settings).toEqual([])
+    expect(store.effectiveStreamingContentFlushIntervalMs).toBeNull()
 
     await store.fetchServerSettings()
     expect(queryMock).toHaveBeenCalledTimes(2)
@@ -336,6 +345,7 @@ describe('serverSettings store', () => {
       .mockResolvedValueOnce({
         data: {
           getEffectiveWorkingContextCompactionStrategyId: 'structured-json',
+        getEffectiveStreamingContentFlushIntervalMs: 500,
         getServerSettings: [
             {
               key: 'DEFAULT_SEARCH_PROVIDER',
@@ -383,6 +393,7 @@ describe('serverSettings store', () => {
     const queryMock = vi.fn().mockResolvedValue({
       data: {
         getEffectiveWorkingContextCompactionStrategyId: 'structured-json',
+        getEffectiveStreamingContentFlushIntervalMs: 500,
         getServerSettings: [
           {
             key: 'ENABLE_APPLICATIONS',
@@ -417,6 +428,7 @@ describe('serverSettings store', () => {
     const queryMock = vi.fn().mockResolvedValue({
       data: {
         getEffectiveWorkingContextCompactionStrategyId: 'structured-json',
+        getEffectiveStreamingContentFlushIntervalMs: 500,
         getServerSettings: [
           {
             key: 'AUTOBYTEUS_COMPACTION_TRIGGER_RATIO',

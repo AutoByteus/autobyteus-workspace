@@ -12,7 +12,7 @@ type ConfiguredMcpAgentToolSourceResolverDeps = {
 };
 
 export type ResolveConfiguredMcpAgentToolSourcesInput = {
-  configuredToolNames: Iterable<string>;
+  requestedToolNames: Iterable<string>;
 };
 
 export class ConfiguredMcpAgentToolSourceResolver {
@@ -26,7 +26,7 @@ export class ConfiguredMcpAgentToolSourceResolver {
     const sources: ConfiguredMcpAgentToolSource[] = [];
     const diagnostics: ConfiguredMcpAgentToolSourceDiagnostic[] = [];
 
-    for (const registeredToolName of normalizeNames(input.configuredToolNames)) {
+    for (const registeredToolName of normalizeNames(input.requestedToolNames)) {
       const definition = this.registry.getToolDefinition(registeredToolName);
       if (!definition) {
         diagnostics.push({

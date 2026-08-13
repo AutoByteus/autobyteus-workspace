@@ -1,0 +1,15 @@
+=== pre-cleanup ticket status ===
+## codex/carpenter-model...origin/codex/carpenter-model
+=== remove dedicated worktree ===
+=== delete remote ticket branch ===
+remote:
+remote: GitHub found 808 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 337 high, 385 moderate, 66 low). To find out more, visit:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot
+remote:
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+ - [deleted]             codex/carpenter-model
+=== delete local ticket branch ===
+Deleted branch codex/carpenter-model (was b59cca99a).
+worktree_exists=no
+local_branch_exists=no
+remote_branch=cleanup_result=success

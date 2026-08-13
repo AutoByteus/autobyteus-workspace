@@ -5,7 +5,6 @@ export const GetAgentCustomizationOptions = gql`
     availableToolNames
     availableOptionalInputProcessorNames
     availableOptionalLlmResponseProcessorNames
-    availableOptionalSystemPromptProcessorNames
     availableOptionalToolExecutionResultProcessorNames
     availableOptionalToolInvocationPreprocessorNames
     availableOptionalLifecycleProcessorNames

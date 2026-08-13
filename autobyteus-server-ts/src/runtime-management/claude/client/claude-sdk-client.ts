@@ -57,6 +57,7 @@ type ClaudeApiKeyResolver = () => Promise<SecretValue>;
 
 export type ClaudeSdkStartQueryTurnOptions = {
   prompt: string;
+  systemPrompt: string;
   sessionId?: string | null;
   model: string;
   workingDirectory: string | null;
@@ -396,6 +397,7 @@ export class ClaudeSdkClient {
     }
     return {
       model: options.model,
+      ...(options.systemPrompt ? { systemPrompt: options.systemPrompt } : {}),
       pathToClaudeCodeExecutable,
       permissionMode: options.permissionMode ?? "default",
       ...(options.workingDirectory ? { cwd: options.workingDirectory } : {}),

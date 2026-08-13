@@ -9,6 +9,9 @@ interface ModelSelectionLabelModel {
 const isCustomOpenAiCompatibleModel = (model: ModelSelectionLabelModel): boolean =>
   model.providerType === 'OPENAI_COMPATIBLE'
 
+const isQwenModel = (model: ModelSelectionLabelModel): boolean =>
+  model.providerType === 'QWEN'
+
 export const shouldUseModelIdentifierLabel = (runtimeKind: string | null | undefined): boolean => {
   const normalizedRuntimeKind = runtimeKind?.trim() || DEFAULT_AGENT_RUNTIME_KIND
   return normalizedRuntimeKind === DEFAULT_AGENT_RUNTIME_KIND
@@ -21,6 +24,10 @@ export const getModelSelectionOptionLabel = (
   const normalizedName = model.name?.trim()
 
   if (isCustomOpenAiCompatibleModel(model) && normalizedName) {
+    return normalizedName
+  }
+
+  if (isQwenModel(model) && normalizedName) {
     return normalizedName
   }
 

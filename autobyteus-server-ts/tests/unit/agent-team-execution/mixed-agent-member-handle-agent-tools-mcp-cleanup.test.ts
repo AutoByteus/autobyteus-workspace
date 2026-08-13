@@ -15,7 +15,7 @@ import {
   resetAgentToolMcpSessionServiceForTests,
 } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-service.js";
 import { buildAgentRunMessageSenderContext } from "../../../src/agent-communication/domain/agent-run-message-sender.js";
-import { buildConfiguredAgentToolExposure } from "../../../src/agent-execution/shared/configured-agent-tool-exposure.js";
+import { buildRuntimeAgentToolExposure } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 
 const buildTeamContext = (memberConfig: TeamMemberRunConfig) => {
   const memberContext = new MixedAgentMemberContext({
@@ -93,7 +93,7 @@ describe("MixedAgentMemberHandle Agent Tools MCP cleanup", () => {
         memberName: "worker",
       },
       sender,
-      configuredExposure: buildConfiguredAgentToolExposure([]),
+      runtimeExposure: buildRuntimeAgentToolExposure([]),
       enabledTools: [],
       toolRoutes: {},
     });
@@ -110,7 +110,7 @@ describe("MixedAgentMemberHandle Agent Tools MCP cleanup", () => {
         senderName: "other",
         runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
       }),
-      configuredExposure: buildConfiguredAgentToolExposure([]),
+      runtimeExposure: buildRuntimeAgentToolExposure([]),
       enabledTools: [],
       toolRoutes: {},
     });

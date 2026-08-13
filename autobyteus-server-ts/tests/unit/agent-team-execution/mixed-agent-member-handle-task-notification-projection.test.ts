@@ -7,7 +7,7 @@ import type { AgentOperationResult } from "../../../src/agent-execution/domain/a
 import { AgentRun } from "../../../src/agent-execution/domain/agent-run.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
-import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
+import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { MixedAgentMemberHandle } from "../../../src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.js";
 import {
   MixedAgentMemberContext,
@@ -28,7 +28,7 @@ class FakeAgentRunBackend implements AgentRunBackend {
   readonly runId = "worker-run-1";
   readonly runtimeKind: RuntimeKind;
   readonly postedMessages: AgentInputUserMessage[] = [];
-  private readonly listeners = new Set<(event: unknown) => void>();
+  private readonly listeners = new Set<(events: readonly AgentRunEvent[]) => void | Promise<void>>();
 
   constructor(private readonly config: AgentRunConfig) {
     this.runtimeKind = config.runtimeKind;
@@ -50,11 +50,15 @@ class FakeAgentRunBackend implements AgentRunBackend {
     return null;
   }
 
-  getStatusSnapshot() {
-    return { status: "running" as const, can_interrupt: true };
+  getLifecycleSnapshot() {
+    return {
+      availability: "active" as const,
+      phase: "idle" as const,
+      currentTurn: { kind: "NONE" as const },
+    };
   }
 
-  subscribeToEvents(listener: (event: unknown) => void): () => void {
+  subscribeToSourceEventBatches(listener: (events: readonly AgentRunEvent[]) => void | Promise<void>): () => void {
     this.listeners.add(listener);
     return () => this.listeners.delete(listener);
   }

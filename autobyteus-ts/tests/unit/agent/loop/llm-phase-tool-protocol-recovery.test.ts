@@ -25,6 +25,7 @@ import { MemoryManager } from '../../../../src/memory/memory-manager.js';
 import { WorkingContext } from '../../../../src/memory/working-context.js';
 import { RawTraceItem } from '../../../../src/memory/models/raw-trace-item.js';
 import { FileMemoryStore } from '../../../../src/memory/store/file-store.js';
+import { SYNTHETIC_TOOL_RESULT_ERROR } from '../../../../src/memory/working-context-tool-protocol-repairer.js';
 import { BaseTool } from '../../../../src/tools/base-tool.js';
 import { defaultToolRegistry } from '../../../../src/tools/registry/tool-registry.js';
 import { registerToolClass } from '../../../../src/tools/tool-meta.js';
@@ -51,7 +52,11 @@ class RequestRecoveryTestTool extends BaseTool {
 
 class CapturingResumeLLM extends BaseLLM {
   public readonly _renderer = new OpenAIChatRenderer();
-  public readonly streamCaptures: Array<{ messages: Message[]; renderedPayload: any }> = [];
+  public readonly streamCaptures: Array<{
+    messages: Message[];
+    renderedPayload: any;
+    kwargs: Record<string, unknown>;
+  }> = [];
 
   constructor() {
     super(
@@ -76,10 +81,10 @@ class CapturingResumeLLM extends BaseLLM {
   override async *streamMessages(
     messages: Message[],
     renderedPayload: unknown = null,
-    _kwargs: Record<string, unknown> = {},
+    kwargs: Record<string, unknown> = {},
     _options: LLMInvocationOptions = {},
   ): AsyncGenerator<ChunkResponse, void, unknown> {
-    this.streamCaptures.push({ messages: [...messages], renderedPayload });
+    this.streamCaptures.push({ messages: [...messages], renderedPayload, kwargs });
     yield new ChunkResponse({ content: 'resumed', is_complete: true });
   }
 }
@@ -207,6 +212,47 @@ const makePhaseInput = (turnId: string, content: string) => ({
   llmUserMessage: new LLMUserMessage({ content }),
   turnId,
   sourceEvent: new UserMessageReceivedEvent(new AgentInputUserMessage(content)),
+});
+
+describe('LlmPhase unified streaming setup', () => {
+  it('uses the unified handler path without tool schemas when the turn has no tools', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'llm-phase-no-tools-'));
+    try {
+      const llm = new CapturingResumeLLM();
+      const memoryManager = new MemoryManager({
+        store: new FileMemoryStore(tempDir, 'agent_no_tools'),
+      });
+      const state = new AgentRuntimeState('agent_no_tools');
+      state.llmInstance = llm;
+      state.memoryManager = memoryManager;
+      state.toolInstances = {};
+      const config = new AgentConfig('agent', 'role', 'description', llm, 'System prompt', []);
+      const context = new AgentContext('agent_no_tools', config, state);
+      const turn = new AgentTurn('turn_no_tools');
+
+      const outcome = await new LlmPhase().run(
+        makePhaseInput(turn.turnId, 'reply normally'),
+        context,
+        turn,
+        null,
+      );
+
+      expect(outcome).toMatchObject({
+        kind: 'final',
+        response: { content: 'resumed' },
+      });
+      expect(llm.streamCaptures).toHaveLength(1);
+      expect(llm.streamCaptures[0].kwargs).toEqual({
+        logicalConversationId: 'agent_no_tools',
+      });
+      expect(llm.streamCaptures[0].kwargs).not.toHaveProperty('tools');
+      expect(memoryManager.listRawTracesOrdered().some(({ traceType }) =>
+        traceType === 'tool_call' || traceType === 'tool_result'
+      )).toBe(false);
+    } finally {
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
 });
 
 describe('LlmPhase successful retained-outcome recovery settlement', () => {
@@ -413,7 +459,7 @@ describe('LlmPhase incomplete native tool-call resume recovery', () => {
         tool_call_id: 'call_resume_missing',
       });
       expect(rendered[assistantIndex + 1].content).toContain(
-        'Tool execution was interrupted by runtime shutdown before a result was recorded.'
+        SYNTHETIC_TOOL_RESULT_ERROR('generate_image', 'call_resume_missing')
       );
       expect(rendered[assistantIndex + 2]).toMatchObject({ role: 'user' });
       expect(rendered[assistantIndex + 2].content).toContain('earlier failed continue attempt');

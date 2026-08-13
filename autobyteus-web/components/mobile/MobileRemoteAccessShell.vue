@@ -185,7 +185,7 @@ async function openRunContext(context: MobileWorkContext): Promise<void> {
     } else if (context.kind === 'team-run') {
       if (teamContextsStore.getTeamContextById(context.teamRunId)) {
         selectMobileRun(context.teamRunId, 'team');
-        await teamContextsStore.focusMemberAndEnsureHydrated?.(context.teamRunId, context.focusedMemberRouteKey);
+        await runHistoryStore.focusTeamMemberAndEnsureHydrated(context.teamRunId, context.focusedMemberRouteKey);
       } else {
         await runHistoryStore.openTeamMemberRun(context.teamRunId, context.focusedMemberRouteKey, { selectionMode: 'mobile' });
         selectMobileRun(context.teamRunId, 'team');

@@ -54,8 +54,12 @@ const createRun = (input: {
     getContext: () => context,
     isActive: () => true,
     getPlatformAgentRunId: () => "platform-run-1",
-    getStatusSnapshot: () => ({ status: "idle", can_interrupt: false }),
-    subscribeToEvents: (listener) => {
+    getLifecycleSnapshot: () => ({
+      availability: "active",
+      phase: "idle",
+      currentTurn: { kind: "NONE" },
+    }),
+    subscribeToSourceEventBatches: (listener) => {
       listeners.add(listener);
       return () => listeners.delete(listener);
     },
@@ -66,7 +70,6 @@ const createRun = (input: {
   };
   return {
     run: new AgentRun({ context, backend, commandObservers: [input.recorder] }),
-    listenerCount: () => listeners.size,
   };
 };
 
@@ -93,12 +96,12 @@ describe("AgentRunMemoryRecorder", () => {
     recorder.attachToRun(run);
 
     await run.postUserMessage(new AgentInputUserMessage("hello"));
-    run.emitLocalEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+    await run.publishEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
       id: "text-1",
       segment_type: "text",
       delta: "hi there",
     }));
-    run.emitLocalEvent(event(AgentRunEventType.SEGMENT_END, { id: "text-1" }));
+    await run.publishEvent(event(AgentRunEventType.SEGMENT_END, { id: "text-1" }));
     await recorder.waitForIdle("run-1");
 
     expect(readView(memoryDir).rawTraces?.map((trace) => [trace.traceType, trace.content])).toEqual([
@@ -115,10 +118,11 @@ describe("AgentRunMemoryRecorder", () => {
   ])("skips non-external runtime %s and detaches subscriptions", async (runtimeKind) => {
     const memoryDir = await mkTempDir();
     const recorder = new AgentRunMemoryRecorder();
-    const { run, listenerCount } = createRun({ runtimeKind, memoryDir, recorder });
+    const { run } = createRun({ runtimeKind, memoryDir, recorder });
+    const subscribeToEvents = vi.spyOn(run, "subscribeToEvents");
     const unsubscribe = recorder.attachToRun(run);
 
-    expect(listenerCount()).toBe(0);
+    expect(subscribeToEvents).not.toHaveBeenCalled();
     await run.postUserMessage(new AgentInputUserMessage("hello"));
     unsubscribe();
     await recorder.waitForIdle("run-1");
@@ -129,12 +133,12 @@ describe("AgentRunMemoryRecorder", () => {
   it("detaches event subscriptions for recordable runs", async () => {
     const memoryDir = await mkTempDir();
     const recorder = new AgentRunMemoryRecorder();
-    const { run, listenerCount } = createRun({ runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, memoryDir, recorder });
+    const { run } = createRun({ runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, memoryDir, recorder });
+    const subscribeToEvents = vi.spyOn(run, "subscribeToEvents");
     const unsubscribe = recorder.attachToRun(run);
 
-    expect(listenerCount()).toBe(1);
+    expect(subscribeToEvents).toHaveBeenCalledOnce();
     unsubscribe();
-    expect(listenerCount()).toBe(0);
   });
 
   it("records canonical route-backed send_message_to tool traces with MCP content result shape", async () => {
@@ -143,7 +147,7 @@ describe("AgentRunMemoryRecorder", () => {
     const { run } = createRun({ runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, memoryDir, recorder });
     recorder.attachToRun(run);
 
-    run.emitLocalEvent(event(AgentRunEventType.TOOL_EXECUTION_STARTED, {
+    await run.publishEvent(event(AgentRunEventType.TOOL_EXECUTION_STARTED, {
       invocation_id: "call-send-message-1",
       turn_id: "turn-send-message",
       tool_name: "send_message_to",
@@ -153,7 +157,7 @@ describe("AgentRunMemoryRecorder", () => {
         message_type: "roundtrip_ping",
       },
     }));
-    run.emitLocalEvent(event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+    await run.publishEvent(event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
       invocation_id: "call-send-message-1",
       turn_id: "turn-send-message",
       tool_name: "send_message_to",

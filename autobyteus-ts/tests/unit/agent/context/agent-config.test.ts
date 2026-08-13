@@ -1,7 +1,5 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { AgentConfig } from '../../../../src/agent/context/agent-config.js';
-import { ToolManifestInjectorProcessor } from '../../../../src/agent/system-prompt-processor/tool-manifest-injector-processor.js';
-import { AvailableSkillsProcessor } from '../../../../src/agent/system-prompt-processor/available-skills-processor.js';
 import { BaseLLM } from '../../../../src/llm/base.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
@@ -31,40 +29,27 @@ const makeLLM = () => {
 };
 
 describe('AgentConfig', () => {
-  const originalEnv = process.env.AUTOBYTEUS_STREAM_PARSER;
-
-  beforeEach(() => {
-    process.env.AUTOBYTEUS_STREAM_PARSER = originalEnv;
-  });
-
-  afterEach(() => {
-    if (originalEnv === undefined) {
-      delete process.env.AUTOBYTEUS_STREAM_PARSER;
-    } else {
-      process.env.AUTOBYTEUS_STREAM_PARSER = originalEnv;
-    }
-  });
-
-  it('uses default system prompt processors when not in api_tool_call format', () => {
-    process.env.AUTOBYTEUS_STREAM_PARSER = 'xml';
-    const config = new AgentConfig('name', 'role', 'desc', makeLLM());
-
-    expect(config.systemPromptProcessors.some((p) => p instanceof ToolManifestInjectorProcessor)).toBe(true);
-    expect(config.systemPromptProcessors.some((p) => p instanceof AvailableSkillsProcessor)).toBe(true);
-  });
-
-  it('filters tool manifest injector in api_tool_call format', () => {
-    process.env.AUTOBYTEUS_STREAM_PARSER = 'api_tool_call';
-    const config = new AgentConfig('name', 'role', 'desc', makeLLM());
-
-    expect(config.systemPromptProcessors.some((p) => p instanceof ToolManifestInjectorProcessor)).toBe(false);
-    expect(config.systemPromptProcessors.some((p) => p instanceof AvailableSkillsProcessor)).toBe(true);
-  });
-
   it('copy creates a new config with cloned lists and data', () => {
-    process.env.AUTOBYTEUS_STREAM_PARSER = 'xml';
     const llm = makeLLM();
-    const config = new AgentConfig('name', 'role', 'desc', llm, null, [{ name: 'tool' } as any], true, null, null, null, null, null, null, null, { nested: { value: 1 } }, ['skill-a']);
+    const toolResultProcessor = { process: () => undefined } as any;
+    const toolInvocationPreprocessor = { process: () => undefined } as any;
+    const config = new AgentConfig(
+      'name',
+      'role',
+      'desc',
+      llm,
+      null,
+      [{ name: 'tool' } as any],
+      true,
+      null,
+      null,
+      [toolResultProcessor],
+      [toolInvocationPreprocessor],
+      '/tmp/agent-config',
+      null,
+      { nested: { value: 1 } },
+      ['skill-a']
+    );
 
     const clone = config.copy();
 
@@ -72,6 +57,10 @@ describe('AgentConfig', () => {
     expect(clone.llmInstance).toBe(llm);
     expect(clone.tools).not.toBe(config.tools);
     expect(clone.tools).toEqual(config.tools);
+    expect(clone.toolExecutionResultProcessors).toEqual([toolResultProcessor]);
+    expect(clone.toolInvocationPreprocessors).toEqual([toolInvocationPreprocessor]);
+    expect(clone.workspaceRootPath).toBe('/tmp/agent-config');
+    expect(config).not.toHaveProperty(['system', 'Prompt', 'Processors'].join(''));
 
     (clone.initialCustomData as any).nested.value = 2;
     expect((config.initialCustomData as any).nested.value).toBe(1);
@@ -85,7 +74,7 @@ describe('AgentConfig', () => {
   });
 
   it('defaults skillAccessMode to PRELOADED_ONLY when skills are configured', () => {
-    const config = new AgentConfig('name', 'role', 'desc', makeLLM(), null, null, true, null, null, null, null, null, null, null, null, ['skill-a']);
+    const config = new AgentConfig('name', 'role', 'desc', makeLLM(), null, null, true, null, null, null, null, null, null, null, ['skill-a']);
     expect(config.skillAccessMode).toBe(SkillAccessMode.PRELOADED_ONLY);
   });
 
@@ -95,12 +84,12 @@ describe('AgentConfig', () => {
   });
 
   it('respects explicit skillAccessMode', () => {
-    const config = new AgentConfig('name', 'role', 'desc', makeLLM(), null, null, true, null, null, null, null, null, null, null, null, ['skill-a'], null, SkillAccessMode.NONE);
+    const config = new AgentConfig('name', 'role', 'desc', makeLLM(), null, null, true, null, null, null, null, null, null, null, ['skill-a'], null, SkillAccessMode.NONE);
     expect(config.skillAccessMode).toBe(SkillAccessMode.NONE);
   });
 
   it('rejects unsupported skillAccessMode values', () => {
-    expect(() => new AgentConfig('name', 'role', 'desc', makeLLM(), null, null, true, null, null, null, null, null, null, null, null, [], null, 'GLOBAL_DISCOVERY' as any)).toThrow(
+    expect(() => new AgentConfig('name', 'role', 'desc', makeLLM(), null, null, true, null, null, null, null, null, null, null, [], null, 'GLOBAL_DISCOVERY' as any)).toThrow(
       "Unsupported skill access mode",
     );
   });

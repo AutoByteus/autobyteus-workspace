@@ -3,6 +3,8 @@ import {
   AgentErrorEvent,
   AgentInterruptRequestedEvent,
   AgentTurnInterruptedEvent,
+  AgentTurnRecoveredEvent,
+  AgentRuntimeRecoveredEvent,
   PendingToolInvocationEvent,
   ToolExecutionApprovalEvent,
   ToolResultEvent,
@@ -38,6 +40,14 @@ export function buildStatusUpdateData(
 
   if (newStatus === AgentStatus.IDLE && event instanceof AgentTurnInterruptedEvent) {
     return { turn_id: event.turnId, reason: event.reason, interrupted: true };
+  }
+
+  if (newStatus === AgentStatus.IDLE && event instanceof AgentTurnRecoveredEvent) {
+    return { turn_id: event.turnId, reason: event.reason, recovered: true, recovered_tool_invocation_ids: event.recoveredToolInvocationIds };
+  }
+
+  if (newStatus === AgentStatus.IDLE && event instanceof AgentRuntimeRecoveredEvent) {
+    return { reason: event.reason, recovered: true };
   }
 
   if (newStatus === AgentStatus.PROCESSING_TOOL_RESULT && event instanceof ToolResultEvent) {

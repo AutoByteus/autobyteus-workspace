@@ -1,0 +1,2 @@
+$ node autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs --output-dir <review-rework> --browser-executable <Chrome>
+Interrupt result presentation probe passed. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-evidence/sr008-browser/review-rework/evidence.json

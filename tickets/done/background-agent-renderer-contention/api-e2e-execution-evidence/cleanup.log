@@ -1,0 +1,14 @@
+Cleanup started 2026-08-09T11:43:02.314136+00:00
+Owned port checks before filesystem cleanup:
+PORT_63362=FREE
+PORT_63712=FREE
+PORT_63372=FREE
+PORT_63375=FREE
+User application fixed port (must remain):
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 90967 normy   26u  IPv4 0x99d8536bc248ec86      0t0  TCP *:29695 (LISTEN)
+ELECTRON_RUNTIME_REMOVED=true
+CLASSROOM_RUNTIME_REMOVED=true
+GENERATED_CONFIG_RESTORED=true
+TEMP_FIXTURE_REMOVED=true
+Cleanup completed 2026-08-09T11:43:05.517502+00:00

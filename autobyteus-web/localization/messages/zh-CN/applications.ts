@@ -159,6 +159,7 @@ const applicationMessages = {
   'applications.components.applications.ApplicationLaunchSetupPanel.saveOrResetChangesBeforeEntry': '进入应用前请先保存或重置启动设置更改。',
   'applications.components.applications.ApplicationLaunchSetupPanel.requiredResourceBeforeEntry': '进入应用前，请先为 {{slot}} 选择并保存运行时资源。',
   'applications.components.applications.ApplicationLaunchSetupPanel.requiredModelBeforeEntry': '进入应用前，请先为 {{slot}} 选择并保存默认模型。',
+  'applications.components.applications.ApplicationLaunchSetupPanel.unavailableModelBeforeEntry': '已保存的模型“{{model}}”当前不可用。请使用相同名称重新创建其提供商，或在进入应用前选择其他模型。',
   'applications.components.applications.ApplicationLaunchSetupPanel.noAdditionalDefaults': '此槽位只保存所选运行时资源，没有声明额外的宿主管理启动默认值。',
   'applications.components.applications.ApplicationLaunchSetupPanel.save': '保存设置',
   'applications.components.applications.ApplicationLaunchSetupPanel.saving': '正在保存设置…',

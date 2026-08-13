@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { registerPatchPromptTool } from "../../../../src/agent-tools/prompt-engineering/patch-prompt.js";
-import { PatchApplicationError } from "autobyteus-ts/utils/diff-utils.js";
+import { PatchApplicationError } from "autobyteus-ts/tools/file/edit-file.js";
 
 const mockGetPromptById = vi.fn();
 const mockAddNewPromptRevision = vi.fn();
@@ -26,7 +26,7 @@ describe("patchPromptTool", () => {
     mockAddNewPromptRevision.mockResolvedValue({ id: "new-456" });
 
     const patchContent = [
-      "@@ -1,3 +1,3 @@",
+      "@@",
       " line1",
       "-line2",
       "+line2 updated",
@@ -55,7 +55,7 @@ describe("patchPromptTool", () => {
     mockAddNewPromptRevision.mockResolvedValue({ id: "new-456" });
 
     const patchContent = [
-      "@@ -1,3 +1,3 @@",
+      "@@",
       " 1: line1",
       "-2: line2",
       "+2: line2 updated",
@@ -82,7 +82,7 @@ describe("patchPromptTool", () => {
     await expect(
       tool.execute(
         { agentId: "test-agent" } as any,
-        { prompt_id: "nonexistent", patch: "@@ -1 +1 @@\n-old\n+new\n" },
+        { prompt_id: "nonexistent", patch: "@@\n-old\n+new\n" },
       ),
     ).rejects.toThrow("not found");
   });
@@ -94,7 +94,7 @@ describe("patchPromptTool", () => {
     });
 
     const badPatch = [
-      "@@ -1,3 +1,3 @@",
+      "@@",
       " alpha",
       "-delta",
       "+theta",

@@ -1,0 +1,15 @@
+HEAD 0891e42f0ebdd2db5f0d1b2bd746abdb1e115668
+core node_modules -> /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/node_modules
+IR-002 production delta:
+diff --git a/autobyteus-ts/src/tools/index.ts b/autobyteus-ts/src/tools/index.ts
+index eb2f344ba..c9a821e4c 100644
+--- a/autobyteus-ts/src/tools/index.ts
++++ b/autobyteus-ts/src/tools/index.ts
+@@ -13,6 +13,7 @@ export { registerTools } from './register-tools.js';
+ export { ParameterSchema, ParameterDefinition, ParameterType } from '../utils/parameter-schema.js';
+
+ export type { BaseSchemaFormatter } from './usage/formatters/base-formatter.js';
++export { ToolSchemaProvider } from './usage/providers/tool-schema-provider.js';
+
+
+ export { Search, type SearchExecutor } from './search-tool.js';

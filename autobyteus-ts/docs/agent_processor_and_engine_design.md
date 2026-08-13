@@ -35,7 +35,7 @@ The flow of execution follows a standard pipeline:
     user/inter-agent trigger and delegates the finite LLM/tool loop to
     `AgentTurnRunner`.
 4.  **Phase execution**: The runner invokes typed pipelines and phase services
-    (`AgentInputPipeline`, `LlmTurnPhase`, `ToolPhase`,
+    (`AgentInputPipeline`, `LlmPhase`, `ToolPhase`,
     `ToolResultPipeline`, `LLMResponsePipeline`) rather than routing normal
     LLM/tool/continuation control through legacy handlers.
 
@@ -50,7 +50,9 @@ Processors are the "functional units" of the agent. They intercept data at speci
 All processors share a common architectural pattern:
 
 - **Base Classes**: Each type has an abstract base class (e.g., `BaseLLMResponseProcessor`) defining its contract.
-- **Explicit Registration**: Processors are registered through registries (e.g., `registerSystemPromptProcessors()`), keeping ordering deterministic in Node.js/TypeScript.
+- **Explicit Registration**: Configurable processor categories use their owned
+  registries or composition roots, keeping ordering deterministic in
+  Node.js/TypeScript.
 - **Configuration (`ProcessorOption`)**: Processors are enabled/disabled via `ProcessorOption` objects, which define their name and whether they are `mandatory`.
 - **Ordering**: Processors of the same type run in a specific sequence defined by their `get_order()` method.
 
@@ -64,21 +66,27 @@ All processors share a common architectural pattern:
   - Appending context or instructions dynamically.
   - Expanding macros or shortcuts in user input.
 
-#### B. System Prompt Processors (`src/agent/system-prompt-processor`)
+#### B. Platform-Owned System Instruction Completion
 
-- **Role**: Dynamically construct or modify the system prompt sent to the LLM.
-- **Key Implementation**: `ToolManifestInjectorProcessor`.
-  - This processor is responsible for injecting the descriptions of available tools (the "Manifest") into the system prompt, ensuring the LLM knows what actions it can take.
-  - It appends an "Accessible Tools" section directly at the end of the system prompt.
-- **Execution Timing (Important)**: System prompt processors run **once during bootstrapping** in `SystemPromptProcessingStep`. They are **not** invoked before every LLM call.
+- **Role**: `SystemPromptProcessingStep` owns the closed native completion
+  sequence. It directly appends the configured Skills metadata/path catalog,
+  validates the complete instruction, stores it, and configures the LLM.
+- **Closed boundary**: Agent configuration cannot supply arbitrary system-prompt
+  mutators, ordering, or global defaults. Skills is the one terminal native
+  append.
+- **Tool boundary**: Prompt content does not encode tool definitions, invocation
+  examples, or model-authored tool syntax. `LlmPhase` sends tools only through
+  provider-native request schemas.
+- **Execution timing**: The sequence runs once during native bootstrap, not
+  before every LLM call.
 
 #### C. LLM Response Processors (`src/agent/llm-response-processor`)
 
 - **Role**: Optional post-processing of the `CompleteResponse` received from the LLM.
-- **Tool Parsing Note**: Tool invocation parsing is handled during
-  `LlmTurnPhase` streaming by `StreamingResponseHandlerFactory`, the selected
-  streaming handler, and the `ToolInvocationAdapter`. LLM response processors
-  are no longer required by default.
+- **Tool Note**: Provider adapters normalize structured tool deltas during
+  `LlmPhase` streaming. `LlmStreamingResponseHandler` creates
+  invocations from those native deltas. LLM response processors do not parse
+  assistant text into tools.
 
 #### D. Tool Invocation Preprocessors (`src/agent/tool-invocation-preprocessor`)
 
@@ -99,52 +107,79 @@ All processors share a common architectural pattern:
 
 ## 4. Tooling Subsystem
 
-The tooling subsystem bridges the gap between the LLM's text output and actual code execution.
+The tooling subsystem bridges provider-native structured calls and actual code
+execution. Assistant text is output only and is never an invocation transport.
 
 ### 4.1. Definition and Registry
 
 - **`ToolDefinition`**: The canonical source of truth for a tool, containing its name, description, and schema (arguments structure).
 - **`ToolRegistry`**: Stores all available definitions.
 
-### 4.2. Formatting (Manifest)
+### 4.2. Provider-Native Schemas
 
-The system must tell the LLM how to call tools. This is handled by **Formatters**:
+`ToolSchemaProvider` converts registered definitions to the provider's native
+request schema. Anthropic and Gemini have dedicated native schema formatters;
+the other supported tool-capable paths use the OpenAI-compatible function-tool
+envelope. `LlmPhase` builds these schemas only when tools exist, attaches them
+to the provider request, and configures one `LlmStreamingResponseHandler` with
+the matching explicit tool-call gate. A no-tool turn builds and sends no schema.
 
-- **Provider-Aware**: Different LLMs (OpenAI vs. Anthropic) require different schema formats (JSON Schema vs. XML).
-- **Manifest Generation**: The `ToolManifestProvider` builds the schema and usage examples, which the `ToolManifestInjectorProcessor` (see above) inserts into the prompt.
+The runtime does not inject a tool manifest or usage examples into the system
+prompt. Providers without a normalized native tool channel remain ordinary
+content/media providers rather than receiving a text fallback.
 
-### 4.3. Parsing (Execution)
+### 4.3. Native Streaming and Invocation
 
-When the LLM responds, the system interprets intent during streaming using one of two strategies:
+Provider adapters normalize native SDK events into `ToolCallDelta` records.
+`LlmStreamingResponseHandler` tracks parallel calls when its tool-call gate is
+enabled, emits normalized
+`SegmentEvent`s, and creates each `ToolInvocation` from the final accumulated
+native argument JSON. Assistant text, including XML/JSON/sentinel or
+`[TOOL_CALL]`-looking content, remains a text segment and creates no invocation.
 
-- **Text-Embedded Handlers** (`ParsingStreamingResponseHandler`): Uses FSM-based parser to detect XML/JSON/sentinel tool blocks within text.
-- **API Tool Call Handler** (`ApiToolCallStreamingResponseHandler`): Processes structured tool calls directly from the provider's API stream.
-
-## Both strategies emit normalized `SegmentEvent`s, which are converted by the **`ToolInvocationAdapter`** into `ToolInvocation` objects.
+`write_file` and `edit_file` additionally project decoded file content into
+specialized live segments. That projection is presentation-only; final native
+JSON remains the execution authority.
 
 ## 5. Integration Flow: A Life of a Request
 
 1.  **User Input**: User sends "List files in src".
 2.  **Engine**: Enqueues `UserMessageReceivedEvent`.
 3.  **Input Processor**: Runs (no changes).
-4.  **System Prompt Processor (Bootstrap)**: `ToolManifestInjectorProcessor` has already inserted the schema for `list_directory` into the system prompt during bootstrapping.
-5.  **LLM Call**: Agent sends prompt to LLM.
-6.  **LLM Response**: LLM returns text/JSON requesting `list_directory(path="src")`.
-7.  **Streaming Parser**: `LlmTurnPhase` parses the stream, identifies tool calls, and lets `AgentTurnRunner` apply `PendingToolInvocationEvent` status projections before `ToolPhase` executes the calls.
+4.  **System Instruction Completion (Bootstrap)**: The platform appends the
+    configured Skills catalog and validates the complete instruction once.
+5.  **LLM Call**: `LlmPhase` uses `ToolSchemaProvider` to build the native schema
+    for `list_directory`, supplies it through the provider `tools` field, and
+    enables native deltas on the unified stream handler.
+6.  **LLM Response**: The provider emits a structured native call with
+    `list_directory` and `{ "path": "src" }` arguments.
+7.  **Native Handler**: Provider deltas are normalized; the handler closes the
+    visible tool segment and publishes one `ToolInvocation`. `AgentTurnRunner`
+    applies pending-invocation status projections before `ToolPhase` executes it.
 8.  **Preprocessor**: Checks if `list_directory` is allowed (e.g., within sandbox).
 9.  **Execution**: Tool runs, returns list of files.
 10. **Result Processor**: Formats the file list.
-11. **Context Update**: Result is added to chat history.
-12. **Loop**: Agent waits for next event or generates a final answer.
+11. **Context Update**: After the processed batch is complete,
+    `AgentTurnRunner` calls `MemoryManager.ingestToolResults(...)` once in native
+    call order.
+12. **Continuation**: `ToolContinuationInputBuilder` builds a semantic/context
+    carrier. `AgentInputPipeline` returns `llmUserMessage: null` when no media
+    carrier is required; otherwise it returns the required user/media message.
+13. **Loop**: `LlmPhase` uses the same `LLMRequestAssembler.prepareRequest(...)`
+    path for either value and generates the final answer or another native call.
 
 ---
 
 ## 6. Lifecycle Events vs. Pipeline Processors (Clarifying the Boundaries)
 
-Autobyteus exposes **two** extensibility mechanisms that often occur near the same moments:
+Autobyteus exposes processor and lifecycle extension mechanisms that often
+occur near the same moments:
 
-- **Pipeline processors** (Input, System Prompt, LLM Response, Tool Pre/Post, Tool Result) are invoked by **the owning turn phases, pipelines, or lifecycle handlers**.
+- **Pipeline processors** (Input, LLM Response, Tool Pre/Post, Tool Result) are invoked by **the owning turn phases, pipelines, or lifecycle handlers**.
 - **Lifecycle processors** (`src/agent/lifecycle/`) are invoked by **status transitions** inside `AgentStatusManager`.
+
+Native system-instruction completion is a closed platform bootstrap sequence,
+not an extension mechanism.
 
 ### Lifecycle Event Enum (`src/agent/lifecycle/events.ts`)
 
@@ -161,7 +196,7 @@ The `LifecycleEvent` enum defines user-facing hook points:
 
 ### Ordering Summary (Implemented Behavior)
 
-1. System prompt processors run **once at bootstrap** (not before each LLM call).
+1. Platform-owned system-instruction completion runs **once at bootstrap** (not before each LLM call).
 2. `BEFORE_LLM_CALL` lifecycle processors run when entering `AWAITING_LLM_RESPONSE`, before the LLM request is sent.
 3. `AFTER_LLM_RESPONSE` lifecycle processors run when entering `ANALYZING_LLM_RESPONSE`, before LLM response processors run.
 4. `BEFORE_TOOL_EXECUTE` lifecycle processors run before `ToolPhase` invokes tools.

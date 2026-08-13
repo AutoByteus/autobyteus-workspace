@@ -42,23 +42,32 @@ export class WorkingContextSnapshotBootstrapper {
         `Unsupported working-context snapshot schema '${String(payload.schema_version)}'.`,
       );
     }
-    if (!WorkingContextSnapshotSerializer.validate(payload)) {
-      throw new Error('Working-context v5 snapshot failed strict integrity validation.');
+    if (!WorkingContextSnapshotSerializer.validateEnvelope(payload)) {
+      throw new Error('Working-context v5 snapshot failed safe envelope validation.');
     }
     const { workingContext, metadata } = WorkingContextSnapshotSerializer.deserialize(payload);
     if (metadata.agent_id !== agentId) {
       throw new Error('Working-context v5 snapshot agent identity conflicts with its run.');
     }
-    assertMemoryRegionMatchesLineage(
-      workingContext.buildMessages(),
-      memoryManager.loadCurrentCompactionOutput() !== null,
-    );
+    let hasLineageHead = false;
+    try {
+      hasLineageHead = memoryManager.loadCurrentCompactionOutput() !== null;
+    } catch (error) {
+      if (!String(error).includes('requires a run-local lineage store')) throw error;
+    }
+    assertMemoryRegionMatchesLineage(workingContext.buildMessages(), hasLineageHead);
     memoryManager.installWorkingContextWithoutSnapshot(workingContext);
-    const repair = memoryManager.ensureWorkingContextToolProtocolSafeForNextLlm({
+    memoryManager.ensureWorkingContextToolProtocolSafeForNextLlm({
       recoverySourceEvent: 'WorkingContextSnapshotBootstrapper',
       rawTraceScope: 'active',
     });
-    if (!repair.didRepair) memoryManager.persistWorkingContextSnapshot();
+    const repairedPayload = WorkingContextSnapshotSerializer.serialize(memoryManager.getWorkingContext(), {
+      agent_id: agentId ?? undefined,
+    });
+    if (!WorkingContextSnapshotSerializer.validate(repairedPayload)) {
+      throw new Error('Working-context v5 snapshot failed strict integrity validation after protocol repair.');
+    }
+    memoryManager.persistWorkingContextSnapshot();
   }
 }
 

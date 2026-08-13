@@ -374,7 +374,7 @@ const CONSTRUCTION_OBLIGATIONS: readonly ConstructionObligation[] = [
     kind: "new",
     requiredInputs: [
       { kind: "positional", argumentIndex: 2, label: "agentDefinitionService" },
-      { kind: "positional", argumentIndex: 7, label: "agentToolsSessionManager" },
+      { kind: "positional", argumentIndex: 5, label: "agentToolsSessionManager" },
     ],
   },
   {

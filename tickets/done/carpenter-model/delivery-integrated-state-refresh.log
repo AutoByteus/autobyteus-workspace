@@ -1,0 +1,34 @@
+Carpenter Model — initial delivery integrated-state refresh
+Date: 2026-08-12
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/carpenter-model
+Ticket branch: codex/carpenter-model
+Recorded base/finalization target: origin/personal
+Bootstrap base: 023f4f550b07f27dbf388d55234a10b8eae0e0c7
+
+Reviewed candidate protection:
+- Implementation commit: cc8817fee1047504fea5c87bd69bb48ede287d88
+- Reviewed API/E2E test changes and evidence were uncommitted at delivery entry.
+- Created local delivery-safety checkpoint before remote refresh:
+  7d7574ae3b300ae21ef337cf9c671916d4b0d9bc
+  chore(delivery): checkpoint reviewed carpenter coverage
+- The checkpoint is local only and is not repository finalization.
+
+Refresh commands:
+- git fetch origin --prune
+- git rev-parse HEAD
+- git rev-parse origin/personal
+- git rev-list --count 023f4f550b07f27dbf388d55234a10b8eae0e0c7..origin/personal
+- git rev-list --left-right --count HEAD...origin/personal
+
+Observed results:
+- HEAD after checkpoint: 7d7574ae3b300ae21ef337cf9c671916d4b0d9bc
+- Latest origin/personal: 023f4f550b07f27dbf388d55234a10b8eae0e0c7
+- New base commits since bootstrap: 0
+- Ticket/base divergence: 3 ahead, 0 behind
+- origin/personal is already an ancestor of the ticket branch.
+- Integration method: Already current; no merge or rebase required.
+- Conflicts: None.
+
+Integrated-state result: PASS
+The reviewed candidate was protected, the latest tracked remote base was fetched,
+and the branch already contained that exact base before delivery-owned docs edits.

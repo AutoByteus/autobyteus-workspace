@@ -88,14 +88,6 @@ argumentSchema.addParameter(
 );
 argumentSchema.addParameter(
   new ParameterDefinition({
-    name: "system_prompt_processor_names",
-    type: ParameterType.STRING,
-    description: "A new comma-separated string of system prompt processor names.",
-    required: false,
-  }),
-);
-argumentSchema.addParameter(
-  new ParameterDefinition({
     name: "lifecycle_processor_names",
     type: ParameterType.STRING,
     description: "A new comma-separated string of lifecycle processor names.",
@@ -132,7 +124,6 @@ export async function updateAgentDefinition(
   tool_names?: string | null,
   input_processor_names?: string | null,
   llm_response_processor_names?: string | null,
-  system_prompt_processor_names?: string | null,
   lifecycle_processor_names?: string | null,
 ): Promise<string> {
   const agentRunId = context?.agentId ?? "unknown";
@@ -151,9 +142,6 @@ export async function updateAgentDefinition(
   }
   if (llm_response_processor_names !== null && llm_response_processor_names !== undefined) {
     updateData.llmResponseProcessorNames = parseCsvList(llm_response_processor_names);
-  }
-  if (system_prompt_processor_names !== null && system_prompt_processor_names !== undefined) {
-    updateData.systemPromptProcessorNames = parseCsvList(system_prompt_processor_names);
   }
   if (lifecycle_processor_names !== null && lifecycle_processor_names !== undefined) {
     updateData.lifecycleProcessorNames = parseCsvList(lifecycle_processor_names);

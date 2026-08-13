@@ -1,29 +1,7 @@
 import { AgentContext } from '~/types/agent/AgentContext';
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import type { TeamTreeNode, TeamRunHistoryItem } from '~/stores/runHistoryTypes';
-import { normalizeTeamRuntimeStatus } from '~/services/runHydration/runtimeStatusNormalization';
 import { buildTeamRowsFromContext, buildTeamRowsFromHistoryItem, flattenTeamRows } from '~/stores/runHistoryTeamRows';
-
-export const toHistoryTeamStatus = (
-  team: Pick<TeamRunHistoryItem, 'status'>,
-): AgentTeamStatus => {
-  return normalizeTeamRuntimeStatus(team.status);
-};
-
-export const toTeamRunStatus = (
-  status: AgentTeamStatus,
-): { isActive: boolean; lastKnownStatus: 'ACTIVE' | 'IDLE' | 'ERROR' } => {
-  if (status === AgentTeamStatus.Error) {
-    return { isActive: false, lastKnownStatus: 'ERROR' };
-  }
-
-  if (status === AgentTeamStatus.Offline) {
-    return { isActive: false, lastKnownStatus: 'IDLE' };
-  }
-
-  return { isActive: true, lastKnownStatus: 'ACTIVE' };
-};
 
 const getLeafAgentContextsByRouteKey = (
   teamContext: AgentTeamContext,
@@ -110,12 +88,6 @@ export const buildTeamNodes = (params: {
   resolveWorkspaceRootPathFromContext: (teamContext: AgentTeamContext) => string;
   summarizeTeamDraft: (teamContext: AgentTeamContext) => string;
   resolveTeamLastActivityAt: (teamContext: AgentTeamContext) => string;
-  toHistoryTeamStatus: (
-    team: Pick<TeamRunHistoryItem, 'status'>,
-  ) => AgentTeamStatus;
-  toTeamRunStatus: (
-    status: AgentTeamStatus,
-  ) => { isActive: boolean; lastKnownStatus: 'ACTIVE' | 'IDLE' | 'ERROR' };
   unassignedWorkspaceKey: string;
 }): TeamTreeNode[] => {
   const nodesByTeamRunId = new Map<string, TeamTreeNode>();
@@ -143,21 +115,18 @@ export const buildTeamNodes = (params: {
       workspaceRootPath: normalizedWorkspaceRootPath,
       summary: team.summary,
       lastActivityAt: team.createdAt,
-      lastKnownStatus: params.toTeamRunStatus(params.toHistoryTeamStatus(team)).lastKnownStatus,
       isActive: team.isActive,
-      currentStatus: params.toHistoryTeamStatus(team),
       deleteLifecycle: 'READY' as const,
       focusedMemberRouteKey,
       members: sortedMembers,
       memberTree,
+      executionRows: [],
     });
   }
 
   for (const teamContext of params.teamContexts) {
     const existing = nodesByTeamRunId.get(teamContext.teamRunId);
     const workspaceRootPath = existing?.workspaceRootPath || params.resolveWorkspaceRootPathFromContext(teamContext);
-    const currentStatus = normalizeTeamRuntimeStatus(teamContext.currentStatus);
-    const { isActive, lastKnownStatus } = params.toTeamRunStatus(currentStatus);
     const summary = existing?.summary?.trim() || params.summarizeTeamDraft(teamContext);
     const lastActivityAt = existing?.lastActivityAt || params.resolveTeamLastActivityAt(teamContext);
     const memberTree = buildTeamRowsFromContext(
@@ -167,9 +136,7 @@ export const buildTeamNodes = (params: {
       params.resolveWorkspaceRootPath,
     );
     const members = flattenTeamRows(memberTree);
-    const focusedMemberRouteKey =
-      members.find((member) => member.memberRouteKey === teamContext.focusedMemberRouteKey)?.memberRouteKey ||
-      members[0]?.memberRouteKey || '';
+    const focusedMemberRouteKey = teamContext.focusedMemberRouteKey || members[0]?.memberRouteKey || '';
     const deleteLifecycle = existing?.deleteLifecycle ?? ('READY' as const);
     const teamDefinitionId =
       existing?.teamDefinitionId ||
@@ -183,13 +150,12 @@ export const buildTeamNodes = (params: {
       workspaceRootPath,
       summary,
       lastActivityAt,
-      lastKnownStatus,
-      isActive,
-      currentStatus,
+      isActive: teamContext.isActive,
       deleteLifecycle,
       focusedMemberRouteKey,
       members,
       memberTree,
+      executionRows: [],
     });
   }
 

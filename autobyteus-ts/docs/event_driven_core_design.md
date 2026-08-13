@@ -94,9 +94,9 @@ normal-flow handler chain in the active runtime.
 `AgentTurnRunner` is the only normal owner of one outer agent turn. It uses:
 
 - `AgentInputPipeline` to convert user/inter-agent turn-start events into the
-  LLM-facing input, preserve reference-file metadata, and mark native tool
-  continuations as `tool_history_only` when no context-file media carrier is
-  required.
+  LLM-facing input, preserve reference-file metadata, and return
+  `llmUserMessage: null` for native tool continuations when no context-file
+  media carrier is required.
 - `LlmPhase` to assemble memory-backed requests, pass cancellation signals to
   the LLM, stream segments, parse tool calls, terminalize failed/interrupted
   segments, and publish assistant-side effects only after interruption fences.
@@ -104,10 +104,11 @@ normal-flow handler chain in the active runtime.
   tool invocations under the active `TurnExecutionScope`.
 - `TurnToolInputPort` to receive same-turn approvals and external tool results
   for known invocation ids.
-- `ToolResultPipeline` and `ToolResultContinuationBuilder` to process accepted
-  tool results, build semantic completed-tool continuation text, and build
-  either legacy TOOL-origin continuation input or native
-  `ToolContinuationReadyEvent` / `tool_history_only` continuation.
+- `ToolResultPipeline`, runner-owned `MemoryManager.ingestToolResults(...)`, and
+  the pure `ToolContinuationInputBuilder` to process and commit one ordered
+  result batch, then build semantic/context continuation input. The pipeline's
+  nullable message value selects structured native history or the required
+  media carrier without a continuation mode.
 - `LLMResponsePipeline` and `AgentExternalEventNotifier` to publish final
   assistant output and other semantic external-observable events.
 
@@ -179,10 +180,11 @@ terminal states.
 
 - Add turn-start input behavior with an `AgentInputProcessor` or by extending
   `AgentInputPipeline` semantics.
-- Add LLM streaming behavior in `LlmPhase`, streaming handlers, parsers, or
-  adapters.
+- Add LLM streaming behavior in `LlmPhase`, `LlmStreamingResponseHandler`, or
+  provider adapters.
 - Add tool execution/result behavior in `BaseTool.prepareExecution(...)`,
-  `ToolPhase`, `ToolResultPipeline`, or `ToolResultContinuationBuilder`.
+  `ToolPhase`, `ToolResultPipeline`, `MemoryManager`, or
+  `ToolContinuationInputBuilder` according to the owning responsibility.
 - Add stream outputs through `AgentExternalEventNotifier` and the corresponding
   stream mapping layer.
 - Add runtime lifecycle behavior through `RuntimeLifecycleInboxEventHandler` or the

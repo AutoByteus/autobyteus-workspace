@@ -67,18 +67,15 @@ describe('ModelMetadataResolver', () => {
     expect(metadata).toEqual({
       maxContextTokens: {
         value: 1_000_000,
-        source: 'static_definition',
-        staticProvenance: staticMetadata.provenance,
+        source: { kind: 'static_definition', provenance: staticMetadata.provenance },
       },
       maxInputTokens: {
         value: 900_000,
-        source: 'static_definition',
-        staticProvenance: staticMetadata.provenance,
+        source: { kind: 'static_definition', provenance: staticMetadata.provenance },
       },
       maxOutputTokens: {
         value: 128_000,
-        source: 'static_definition',
-        staticProvenance: staticMetadata.provenance,
+        source: { kind: 'static_definition', provenance: staticMetadata.provenance },
       },
     });
   });
@@ -99,21 +96,20 @@ describe('ModelMetadataResolver', () => {
     );
 
     expect(liveMetadata).toEqual({
-      maxContextTokens: { value: 1_200_000, source: 'live' },
+      maxContextTokens: { value: 1_200_000, source: { kind: 'live' } },
       maxInputTokens: {
         value: 900_000,
-        source: 'static_definition',
-        staticProvenance: staticMetadata.provenance,
+        source: { kind: 'static_definition', provenance: staticMetadata.provenance },
       },
-      maxOutputTokens: { value: 64_000, source: 'live' },
+      maxOutputTokens: { value: 64_000, source: { kind: 'live' } },
     });
     expect(staticFallback.maxContextTokens).toMatchObject({
       value: 1_000_000,
-      source: 'static_definition',
+      source: { kind: 'static_definition' },
     });
     expect(staticFallback.maxOutputTokens).toMatchObject({
       value: 128_000,
-      source: 'static_definition',
+      source: { kind: 'static_definition' },
     });
     expect(loadMetadata).toHaveBeenCalledTimes(1);
   });
@@ -127,7 +123,7 @@ describe('ModelMetadataResolver', () => {
       lookup(LLMProvider.GEMINI, 'gemini-3-flash-preview'),
       staticMetadata,
     )).resolves.toMatchObject({
-      maxContextTokens: { value: 1_000_000, source: 'static_definition' },
+      maxContextTokens: { value: 1_000_000, source: { kind: 'static_definition' } },
     });
 
     const { resolver: unmatchedResolver } = resolverWith(LLMProvider.GEMINI, [[
@@ -138,7 +134,7 @@ describe('ModelMetadataResolver', () => {
       lookup(LLMProvider.GEMINI, 'gemini-3-flash-preview'),
       staticMetadata,
     )).resolves.toMatchObject({
-      maxContextTokens: { value: 1_000_000, source: 'static_definition' },
+      maxContextTokens: { value: 1_000_000, source: { kind: 'static_definition' } },
     });
   });
 
@@ -155,8 +151,8 @@ describe('ModelMetadataResolver', () => {
       lookup(LLMProvider.GEMINI, 'gemini-3-flash-preview'),
       staticMetadata,
     )).resolves.toMatchObject({
-      maxContextTokens: { value: 1_000_000, source: 'static_definition' },
-      maxOutputTokens: { value: 128_000, source: 'static_definition' },
+      maxContextTokens: { value: 1_000_000, source: { kind: 'static_definition' } },
+      maxOutputTokens: { value: 128_000, source: { kind: 'static_definition' } },
     });
   });
 
@@ -180,7 +176,7 @@ describe('ModelMetadataResolver', () => {
     await vi.advanceTimersByTimeAsync(11);
 
     await expect(pending).resolves.toMatchObject({
-      maxContextTokens: { value: 1_000_000, source: 'static_definition' },
+      maxContextTokens: { value: 1_000_000, source: { kind: 'static_definition' } },
     });
   });
 
@@ -196,9 +192,9 @@ describe('ModelMetadataResolver', () => {
 
     await expect(resolver.resolve(lookup(LLMProvider.KIMI, 'kimi-k2.6'), staticMetadata))
       .resolves.toMatchObject({
-        maxContextTokens: { value: 1_000_000, source: 'static_definition' },
-        maxInputTokens: { value: 900_000, source: 'static_definition' },
-        maxOutputTokens: { value: 128_000, source: 'static_definition' },
+        maxContextTokens: { value: 1_000_000, source: { kind: 'static_definition' } },
+        maxInputTokens: { value: 900_000, source: { kind: 'static_definition' } },
+        maxOutputTokens: { value: 128_000, source: { kind: 'static_definition' } },
       });
 
     const { resolver: unknownResolver } = resolverWith(LLMProvider.MISTRAL, [[
@@ -209,9 +205,9 @@ describe('ModelMetadataResolver', () => {
       lookup(LLMProvider.MISTRAL, 'mistral-unknown'),
       unknownStaticMetadata,
     )).resolves.toEqual({
-      maxContextTokens: { value: null, source: 'unknown' },
-      maxInputTokens: { value: null, source: 'unknown' },
-      maxOutputTokens: { value: null, source: 'unknown' },
+      maxContextTokens: { value: null, source: { kind: 'unknown' } },
+      maxInputTokens: { value: null, source: { kind: 'unknown' } },
+      maxOutputTokens: { value: null, source: { kind: 'unknown' } },
     });
   });
 
@@ -226,7 +222,7 @@ describe('ModelMetadataResolver', () => {
       value: 'unmatched-value',
       canonicalName: 'gemini-canonical',
     }, staticMetadata)).resolves.toMatchObject({
-      maxContextTokens: { value: 2_000_000, source: 'live' },
+      maxContextTokens: { value: 2_000_000, source: { kind: 'live' } },
     });
   });
 });

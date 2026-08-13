@@ -19,7 +19,6 @@ import { AutoByteusAgentRunBackendFactory } from "../../../src/agent-execution/b
 import { CodexWorkspaceSkillMaterializer, type MaterializedCodexWorkspaceSkill } from "../../../src/agent-execution/backends/codex/codex-workspace-skill-materializer.js";
 import type { CodexWorkspaceResolver } from "../../../src/agent-execution/backends/codex/codex-workspace-resolver.js";
 import { CodexThreadBootstrapper } from "../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js";
-import { DefaultCodexThreadBootstrapStrategy, type CodexThreadBootstrapStrategy } from "../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrap-strategy.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
@@ -267,20 +266,11 @@ const createCodexBootstrapper = (workingDirectory: string): CodexThreadBootstrap
     })),
     releaseClient: vi.fn(async () => undefined),
   } as unknown as CodexAppServerClientManager;
-  const teamBootstrapStrategy: CodexThreadBootstrapStrategy = {
-    appliesTo: () => false,
-    prepare: () => {
-      throw new Error("team strategy should not be used for shared-agent runtime e2e");
-    },
-  };
-
   return new CodexThreadBootstrapper(
     new CodexWorkspaceSkillMaterializer(),
     workspaceResolver,
     AgentDefinitionService.getInstance(),
     SkillService.getInstance(),
-    new DefaultCodexThreadBootstrapStrategy(),
-    teamBootstrapStrategy,
     clientManager,
   );
 };

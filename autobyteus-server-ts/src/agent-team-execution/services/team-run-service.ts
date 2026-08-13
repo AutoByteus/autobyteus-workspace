@@ -180,24 +180,24 @@ export class TeamRunService {
 
     let terminalPhase: ObservedRunLifecycleEvent["phase"] | null = null;
     const agentFailureObserver = new AgentRunCanonicalFailureObserver();
-    const unsubscribe = run.subscribeToEvents((event) => {
-      if (terminalPhase) {
+    const observeLifecycle = (isActive: boolean): void => {
+      if (terminalPhase || isActive) {
         return;
       }
-
-      if (event.eventSourceType === TeamRunEventSourceType.TEAM) {
-        const payload = event.data as Record<string, unknown>;
-        const status = typeof payload.status === "string" ? payload.status.trim().toLowerCase() : "";
-        if (status === "error") {
-          terminalPhase = "FAILED";
-          listener({
-            runtimeSubject: "TEAM_RUN",
-            runId: run.runId,
-            phase: "FAILED",
-            occurredAt: new Date().toISOString(),
-            errorMessage: typeof payload.error_message === "string" ? payload.error_message : null,
-          });
-        }
+      terminalPhase = "TERMINATED";
+      listener({
+        runtimeSubject: "TEAM_RUN",
+        runId: run.runId,
+        phase: "TERMINATED",
+        occurredAt: new Date().toISOString(),
+      });
+    };
+    const unsubscribeLifecycle = this.agentTeamRunManager.subscribeToLifecycle(
+      run.runId,
+      (snapshot) => observeLifecycle(snapshot.isActive),
+    );
+    const unsubscribeEvents = run.subscribeToEvents((event) => {
+      if (terminalPhase) {
         return;
       }
 
@@ -215,24 +215,13 @@ export class TeamRunService {
         });
       }
     });
-
-    const inactivePollHandle = setInterval(() => {
-      if (terminalPhase || run.isActive()) {
-        return;
-      }
-      terminalPhase = "TERMINATED";
-      listener({
-        runtimeSubject: "TEAM_RUN",
-        runId: run.runId,
-        phase: "TERMINATED",
-        occurredAt: new Date().toISOString(),
-      });
-    }, 1_000);
-    inactivePollHandle.unref?.();
+    observeLifecycle(
+      this.agentTeamRunManager.getLifecycleSnapshot(run.runId).isActive,
+    );
 
     return () => {
-      clearInterval(inactivePollHandle);
-      unsubscribe();
+      unsubscribeEvents();
+      unsubscribeLifecycle();
     };
   }
 

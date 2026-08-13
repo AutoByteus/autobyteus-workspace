@@ -86,6 +86,7 @@ export const toModelInfo = (descriptor: NormalizedModelDescriptor): ModelInfo =>
   active_context_tokens: null,
   max_input_tokens: null,
   max_output_tokens: null,
+  resolved_model_metadata: null,
 });
 
 export type NormalizedModelDescriptor = {

@@ -16,6 +16,7 @@ import type { RunFileChangeArtifact } from '~/stores/runFileChangesStore';
 import { hydrateRunFileChanges } from './runFileChangeHydrationService';
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
 import { createWorkspaceMetadata } from '~/utils/workspaceMetadata';
+import { primeRecentEventMonitorBaseline } from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
 
 export interface RunProjectionPayload {
   runId: string;
@@ -176,7 +177,7 @@ export const hydrateLiveRunContext = async (
   input: LoadRunContextHydrationInput & { currentStatus?: string | null },
 ): Promise<RunContextHydrationPayload> => {
   const payload = await loadRunContextHydrationPayload(input);
-  useAgentContextsStore().upsertProjectionContext({
+  const context = useAgentContextsStore().upsertProjectionContext({
     runId: payload.runId,
     config: payload.config,
     conversation: payload.conversation,
@@ -184,6 +185,7 @@ export const hydrateLiveRunContext = async (
     hasEarlierActiveTraceEvents: payload.hasEarlierActiveTraceEvents,
   });
   hydrateActivitiesFromProjection(payload.runId, payload.activities);
+  primeRecentEventMonitorBaseline(context);
   hydrateRunFileChanges(payload.runId, payload.fileChanges);
   return payload;
 };

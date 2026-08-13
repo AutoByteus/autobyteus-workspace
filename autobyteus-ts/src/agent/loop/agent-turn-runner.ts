@@ -1,6 +1,7 @@
 import {
   AgentErrorEvent,
   AgentTurnInterruptedEvent,
+  AgentTurnRecoveredEvent,
   InterAgentMessageReceivedEvent,
   LLMCompleteResponseReceivedEvent,
   LLMUserMessageReadyEvent,
@@ -13,7 +14,7 @@ import { applyEventAndDeriveStatus } from '../status/status-update-utils.js';
 import { AgentInputPipeline } from '../pipelines/agent-input-pipeline.js';
 import { LLMResponsePipeline } from '../pipelines/llm-response-pipeline.js';
 import { ToolResultPipeline } from '../pipelines/tool-result-pipeline.js';
-import { ToolResultContinuationBuilder } from './tool-result-continuation-builder.js';
+import { ToolContinuationInputBuilder } from './tool-continuation-input-builder.js';
 import { LlmPhase } from './llm-phase.js';
 import { ToolPhase } from './tool-phase.js';
 import { buildToolLifecyclePayloadFromResult } from '../handlers/tool-lifecycle-payload.js';
@@ -32,7 +33,7 @@ export class AgentTurnRunner {
   private readonly toolPhase = new ToolPhase();
   private readonly toolResultPipeline = new ToolResultPipeline();
   private readonly llmResponsePipeline = new LLMResponsePipeline();
-  private readonly continuationBuilder = new ToolResultContinuationBuilder();
+  private readonly continuationInputBuilder = new ToolContinuationInputBuilder();
   private readonly notifier: AgentExternalEventNotifier | null;
 
   constructor(private readonly context: AgentContext, private readonly turn: AgentTurn) {
@@ -104,10 +105,14 @@ export class AgentTurnRunner {
           this.turn.clearActiveToolInvocationBatch(activeBatch);
         }
 
-        const continuationInput = this.continuationBuilder.build(processedResults, {
-          context: this.context,
-          turn: this.turn
+        const memoryManager = this.context.state.memoryManager;
+        if (!memoryManager) {
+          throw new Error(`Agent '${this.context.agentId}' requires a memory manager to ingest tool results.`);
+        }
+        memoryManager.ingestToolResults(processedResults, turnId, {
+          source: 'native_api_ordered_batch'
         });
+        const continuationInput = this.continuationInputBuilder.build(processedResults, turnId);
         nextInput = await this.inputPipeline.processToolContinuation(
           continuationInput,
           this.context,
@@ -153,15 +158,35 @@ export class AgentTurnRunner {
         return { kind: 'interrupted', turnId, reason };
       }
 
-      const errorMessage = `Agent turn '${turnId}' failed: ${String(error)}`;
-      this.notifier?.notifyAgentErrorOutputGeneration({
-        source: 'AgentTurnRunner',
-        message: errorMessage,
-        details: error instanceof Error ? error.stack : String(error),
-        classification: { scope: 'turn', effect: 'terminal', turnId }
-      });
-      await this.applyStatusEvent(new AgentErrorEvent(errorMessage, String(error)));
-      return { kind: 'failed', turnId, error };
+      const errorMessage = `Agent turn '${turnId}' recovered after an execution failure: ${String(error)}`;
+      const memoryManager = this.context.state.memoryManager;
+      try {
+        const repair = memoryManager?.ensureWorkingContextToolProtocolSafeForNextLlm({
+          scope: { kind: 'agent_turn', id: turnId },
+          includeCommittedFacts: true,
+          recoverySourceEvent: 'AgentTurnRecoveredEvent',
+          rawTraceScope: 'active',
+        });
+        const recoveredToolInvocationIds = repair?.repairs.map(({ toolCallId }) => toolCallId) ?? [];
+        this.notifier?.notifyAgentErrorOutputGeneration({
+          source: 'AgentTurnRunner.Recovered',
+          message: errorMessage,
+          details: error instanceof Error ? error.stack : String(error),
+          classification: { scope: 'turn', effect: 'diagnostic', turnId }
+        });
+        await this.applyStatusEvent(new AgentTurnRecoveredEvent(turnId, errorMessage, recoveredToolInvocationIds));
+        return { kind: 'recovered', turnId, reason: errorMessage, recoveredToolInvocationIds };
+      } catch (recoveryError) {
+        const terminalMessage = `Agent turn '${turnId}' recovery failed: ${String(recoveryError)}`;
+        this.notifier?.notifyAgentErrorOutputGeneration({
+          source: 'AgentTurnRunner.RecoveryFailed',
+          message: terminalMessage,
+          details: recoveryError instanceof Error ? recoveryError.stack : String(recoveryError),
+          classification: { scope: 'turn', effect: 'terminal', turnId }
+        });
+        await this.applyStatusEvent(new AgentErrorEvent(terminalMessage, String(recoveryError)));
+        return { kind: 'failed', turnId, error: recoveryError };
+      }
     }
   }
 
@@ -169,7 +194,7 @@ export class AgentTurnRunner {
     input: AgentInputPipelineResult,
     turnId: string
   ): LLMUserMessageReadyEvent | ToolContinuationReadyEvent {
-    if (input.llmRequestMode === 'tool_history_only') {
+    if (input.llmUserMessage === null) {
       return new ToolContinuationReadyEvent(turnId);
     }
     return new LLMUserMessageReadyEvent(input.llmUserMessage, turnId);

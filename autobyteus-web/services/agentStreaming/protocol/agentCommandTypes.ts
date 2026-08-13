@@ -1,6 +1,7 @@
 import type { AgentStatusPayload } from './messageTypes';
+import type { ConnectionState } from '../transport';
 
-export interface AgentCommandAckPayload {
+export interface SendMessageCommandAckPayload {
   command_type: 'SEND_MESSAGE';
   run_id: string;
   message_id: string;
@@ -25,3 +26,50 @@ export interface AgentCommandAckPayload {
   message?: string;
   status?: AgentStatusPayload;
 }
+
+export type InterruptCommandTarget =
+  | { target_kind: 'standalone_run'; run_id: string }
+  | {
+      target_kind: 'team_member';
+      team_run_id: string;
+      member_route_key: string;
+      member_run_id: string | null;
+    };
+
+export type InterruptGenerationCommandAckPayload =
+  | {
+      command_type: 'INTERRUPT_GENERATION';
+      command_id: string;
+      state: 'accepted';
+      target: InterruptCommandTarget;
+    }
+  | {
+      command_type: 'INTERRUPT_GENERATION';
+      command_id: string;
+      state: 'rejected' | 'failed';
+      code: string;
+      message: string;
+      target: InterruptCommandTarget;
+    };
+
+export type AgentCommandAckPayload =
+  | SendMessageCommandAckPayload
+  | InterruptGenerationCommandAckPayload;
+
+export type PendingInterruptCommand = {
+  commandId: string;
+  target: InterruptCommandTarget;
+};
+
+export type InterruptCommandTransportFailure = {
+  commandId: string;
+  target: InterruptCommandTarget;
+  reason: {
+    code:
+      | 'INTERRUPT_TRANSPORT_NOT_CONNECTED'
+      | 'INTERRUPT_TRANSPORT_SEND_FAILED'
+      | 'INTERRUPT_TRANSPORT_DISCONNECTED';
+    connectionState: ConnectionState;
+    message: string;
+  };
+};

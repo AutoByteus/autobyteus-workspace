@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { buildAgentRunMessageSenderContext } from "../../../../src/agent-communication/domain/agent-run-message-sender.js";
-import { buildConfiguredAgentToolExposure } from "../../../../src/agent-execution/shared/configured-agent-tool-exposure.js";
+import { buildRuntimeAgentToolExposure } from "../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import {
   createAgentToolsMcpRuntime,
 } from "../../../../src/agent-tools/mcp/agent-tools-mcp-runtime.js";
@@ -21,7 +21,7 @@ const createSessionInput = (runId: string) => ({
     runtimeKind: RuntimeKind.CODEX_APP_SERVER,
   }),
   runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-  configuredExposure: buildConfiguredAgentToolExposure([]),
+  runtimeExposure: buildRuntimeAgentToolExposure(["publish_artifacts"]),
 });
 
 const bearerToken = (authorization: string): string =>

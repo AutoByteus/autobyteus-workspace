@@ -1,0 +1,17 @@
+DESKTOP BUILD VERIFICATION — SR-002 LATEST BASE
+Integrated HEAD: 2d5f64d65a58e5fd3394f6a8aa5f143e4c732864
+Integrated origin/personal: c6080a4fbee5541c48c898dc1346ac67fcf9c2d6
+Relation (behind ahead): 0	8
+App path: /Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+Bundle identifier: com.autobyteus.app
+Bundle version: 1.4.48
+Executable format: autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+App size: 1.2G
+DMG path: /Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.48.dmg
+DMG SHA-256: 7b6141338b4bee1c9aa164952633ca90fc35a4e4757029ec92e902be596075db
+ZIP path: /Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.48.zip
+ZIP SHA-256: d273adceede3cf36679fd29877213c0f911bfb9b4508484cacb217ceba8f10d7
+Packaged runner: present (autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/compaction/server-compaction-agent-runner.js)
+Packaged default completion timeout 300_000: present
+Packaged collector timeout forwarding: present
+RESULT: PASS

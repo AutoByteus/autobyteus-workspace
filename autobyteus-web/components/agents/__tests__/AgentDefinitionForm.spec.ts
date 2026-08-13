@@ -16,7 +16,6 @@ const {
     fetchAllAvailableOptions: vi.fn(),
     inputProcessors: [] as string[],
     llmResponseProcessors: [] as string[],
-    systemPromptProcessors: [] as string[],
     toolExecutionResultProcessors: [] as string[],
     toolInvocationPreprocessors: [] as string[],
     lifecycleProcessors: [] as string[],

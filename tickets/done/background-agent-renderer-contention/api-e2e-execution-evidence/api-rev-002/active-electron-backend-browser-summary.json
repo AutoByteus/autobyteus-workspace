@@ -1,0 +1,23 @@
+{
+  "scenarioId": "WORKSPACE-BOOT-002",
+  "result": "FAIL",
+  "frontendUrl": "http://127.0.0.1:63901/workspace",
+  "backendUrl": "http://127.0.0.1:29695",
+  "backendOwner": "/Applications/AutoByteus.app",
+  "backendDataDir": "/Users/normy/.autobyteus/server-data",
+  "api": {
+    "workspaceCount": 26,
+    "historyGroupCount": 28,
+    "agentRunCount": 79,
+    "teamRunCount": 184,
+    "errors": []
+  },
+  "ui": {
+    "visibleWorkspaceNames": [],
+    "visibleNoHistory": true,
+    "bodyText": "Workspaces\\nNo run history yet."
+  },
+  "expected": "existing workspaces visible immediately after fresh renderer load",
+  "observed": "zero workspace rows; No run history yet",
+  "screenshot": "branch-frontend-real-data-no-workspaces.png"
+}

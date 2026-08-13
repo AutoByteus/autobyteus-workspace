@@ -8,9 +8,6 @@ import {
   ToolConfig,
   ToolOrigin,
   ToolCategory,
-  ToolFormattingRegistry,
-  ToolFormatterPair,
-  registerToolFormatter,
   registerTools,
   Search,
   ReadMediaFile,
@@ -28,9 +25,6 @@ describe('tools index exports', () => {
     expect(typeof ToolConfig).toBe('function');
     expect(typeof ToolOrigin).toBe('object');
     expect(typeof ToolCategory).toBe('object');
-    expect(typeof ToolFormattingRegistry).toBe('function');
-    expect(typeof ToolFormatterPair).toBe('function');
-    expect(typeof registerToolFormatter).toBe('function');
     expect(typeof registerTools).toBe('function');
   });
 

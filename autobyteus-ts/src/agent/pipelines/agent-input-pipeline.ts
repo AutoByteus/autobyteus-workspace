@@ -2,7 +2,6 @@ import { UserMessageReceivedEvent, InterAgentMessageReceivedEvent } from '../eve
 import { AgentInputUserMessage } from '../message/agent-input-user-message.js';
 import { buildLLMUserMessage } from '../message/multimodal-message-builder.js';
 import { SenderType } from '../sender-type.js';
-import { getToolContinuationMode } from '../message/tool-continuation-metadata.js';
 import { shouldSuppressSystemTaskNotification } from '../message/system-task-notification-metadata.js';
 import { sortProcessors } from './processor-pipeline-runner.js';
 import type { LLMUserMessage } from '../../llm/user-message.js';
@@ -20,13 +19,10 @@ type InputProcessorLike = {
   ) => Promise<AgentInputUserMessage>;
 };
 
-export type LlmRequestMode = 'append_user_message' | 'tool_history_only';
-
 export type AgentInputPipelineResult = {
-  llmUserMessage: LLMUserMessage;
+  llmUserMessage: LLMUserMessage | null;
   turnId: string;
   sourceEvent: UserMessageReceivedEvent;
-  llmRequestMode?: LlmRequestMode;
 };
 
 function isInputProcessor(value: unknown): value is InputProcessorLike {
@@ -123,19 +119,14 @@ export class AgentInputPipeline {
       }
     }
 
-    const originalToolContinuationMode = getToolContinuationMode(originalMessage);
-    const processedToolContinuationMode = getToolContinuationMode(processedMessage) ?? originalToolContinuationMode;
     const hasToolContinuationContextFiles = isToolContinuation && (processedMessage.contextFiles?.length ?? 0) > 0;
-    const llmRequestMode: LlmRequestMode =
-      isToolContinuation && processedToolContinuationMode !== null && !hasToolContinuationContextFiles
-        ? 'tool_history_only'
-        : 'append_user_message';
 
     return {
-      llmUserMessage: buildLLMUserMessage(processedMessage),
+      llmUserMessage: isToolContinuation && !hasToolContinuationContextFiles
+        ? null
+        : buildLLMUserMessage(processedMessage),
       turnId: turn.turnId,
-      sourceEvent: event,
-      llmRequestMode
+      sourceEvent: event
     };
   }
 

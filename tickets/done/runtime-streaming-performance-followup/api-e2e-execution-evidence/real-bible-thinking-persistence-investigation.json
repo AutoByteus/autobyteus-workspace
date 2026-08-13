@@ -1,0 +1,110 @@
+{
+  "scenarioId": "BROWSER-BIBLE-LIVE-001",
+  "failureId": "BIBLE-THINK-HYDRATE-001",
+  "capturedAt": "2026-08-08T07:39:56.146910+00:00",
+  "result": "FAIL",
+  "mode": "read-only inspection; no message/configuration/interrupt/archive/delete operation",
+  "currentServer": {
+    "baseUrl": "http://127.0.0.1:29695",
+    "health": "200 before inspection",
+    "userOwnedProcessModified": false
+  },
+  "bibleStudyGroup": {
+    "teamRunId": "bible_study_group_d97517626c434cb5b0a716e38859613c",
+    "memberRouteKey": "study_leader",
+    "memberRunId": "agent_cd28ee153fca4a45b97fe0a0ece7311e",
+    "runtimeKind": "autobyteus",
+    "modelIdentifier": "openai-compatible:provider_5b8b1ce1baf945c483248bdef87c554e:deepseek-v4-flash-0731",
+    "projection": {
+      "conversationCount": 100,
+      "kindCounts": {
+        "tool_call": 37,
+        "message": 63
+      },
+      "roleCounts": {
+        "null": 37,
+        "assistant": 49,
+        "user": 14
+      },
+      "reasoningEntryCount": 0,
+      "hasEarlierActiveTraceEvents": true
+    },
+    "eventMonitorLatestPage": {
+      "eventCount": 150,
+      "visualCount": 143,
+      "visualTypeCounts": {
+        "EventMonitorAssistantTextVisual": 67,
+        "EventMonitorUserVisual": 16,
+        "EventMonitorToolCardVisual": 60
+      },
+      "thinkingVisualCount": 0,
+      "hasEarlier": true,
+      "cursorStatus": "VALID"
+    },
+    "persistence": {
+      "workingContextSnapshot": {
+        "messageCount": 405,
+        "nonEmptyReasoningMessageCount": 29,
+        "reasoningCharacterCount": 30578,
+        "sha256": "18cccacb5a6eafdc367a651a5069ffa58731a14f2aad3fa274b913882a8a6ff2"
+      },
+      "rawActiveTrace": {
+        "traceCount": 714,
+        "traceTypeCounts": {
+          "user": 51,
+          "assistant": 195,
+          "tool_call": 156,
+          "tool_result": 156,
+          "tool_continuation": 150,
+          "operation_boundary": 4,
+          "llm_request_recovery": 2
+        },
+        "reasoningTraceCount": 0,
+        "sha256": "a0ec3183dec5a4637a2739ace0b01da57f48de4862f011292fb31cc1cc07d8db"
+      }
+    }
+  },
+  "classroomControlPersistenceComparison": {
+    "teamRunId": "classroom_simulation_team_17bae4f9a3ed4ebab523d86e15caf570",
+    "memberRunId": "professor_fb4c9559cd924f3e817dda2c0a8c52ac",
+    "priorLiveTransportReasoningCharacterCount": 226,
+    "priorLiveDomThinkingObserved": true,
+    "projection": {
+      "conversationCount": 2,
+      "kindCounts": {
+        "message": 2
+      },
+      "reasoningEntryCount": 0
+    },
+    "persistence": {
+      "workingContextSnapshot": {
+        "messageCount": 3,
+        "nonEmptyReasoningMessageCount": 1,
+        "reasoningCharacterCount": 226,
+        "sha256": "8643955357cc8f5b42e5b72bb7c0274ec00496caca0cd8643f1a89732d290891"
+      },
+      "rawActiveTrace": {
+        "traceCount": 2,
+        "traceTypeCounts": {
+          "user": 1,
+          "assistant": 1
+        },
+        "reasoningTraceCount": 0,
+        "sha256": "a1a593c0e8051be5893dab3b2b619d4cf30d0128179a5c0247a08fb2d9a0249d"
+      }
+    }
+  },
+  "sourceBoundary": {
+    "producer": "autobyteus-ts/src/agent/loop/llm-phase.ts accumulates CompleteResponse.reasoning and emits live reasoning SegmentEvent frames",
+    "persistenceOmission": "autobyteus-ts/src/memory/memory-manager.ts:389-407 writes only one raw trace of traceType assistant with response.content; response.reasoning is retained only in working_context_snapshot.json",
+    "hydrationContract": "autobyteus-server-ts/src/run-history/projection/transformers/raw-trace-to-historical-replay-events.ts:161-181 creates a reasoning replay event only from a raw trace whose traceType is reasoning"
+  },
+  "classification": {
+    "frontendRelabeledReasoningAsText": false,
+    "ordinaryNarrationWasPersistedAsAssistantContent": true,
+    "trueProviderReasoningPresentInWorkingContext": true,
+    "trueProviderReasoningAbsentFromRawTraceAndGraphqlProjection": true,
+    "firstMissingBoundary": "AutoByteus native MemoryManager raw-trace persistence, before run-history GraphQL hydration",
+    "impact": "Thinking can render during the live WebSocket stream but disappears after reload/reselection/history hydration; ordinary assistant narration remains visible as normal content."
+  }
+}

@@ -1,0 +1,204 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:7709) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > connects to an inactive identity without restore, then publishes initializing before slow restore and SEND_MESSAGE ACK
+Agent websocket attached for run agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > connects to an inactive identity without restore, then publishes initializing before slow restore and SEND_MESSAGE ACK
+Created agent session e99718d3-8152-4dce-a26e-ec93ee0868a8 for run agent-e2e
+Agent WebSocket connected: session=e99718d3-8152-4dce-a26e-ec93ee0868a8, run=agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > does not downgrade an already-running standalone send to initializing
+Closed agent session e99718d3-8152-4dce-a26e-ec93ee0868a8
+Agent WebSocket disconnected: e99718d3-8152-4dce-a26e-ec93ee0868a8
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > does not downgrade an already-running standalone send to initializing
+Agent websocket attached for run agent-e2e
+Created agent session ad1e8e12-17e9-4f39-8f33-b5bf95cf2c73 for run agent-e2e
+Agent WebSocket connected: session=ad1e8e12-17e9-4f39-8f33-b5bf95cf2c73, run=agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > activates a prepared identity through SEND_MESSAGE rather than websocket connect
+Closed agent session ad1e8e12-17e9-4f39-8f33-b5bf95cf2c73
+Agent WebSocket disconnected: ad1e8e12-17e9-4f39-8f33-b5bf95cf2c73
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > activates a prepared identity through SEND_MESSAGE rather than websocket connect
+Agent websocket attached for run agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > activates a prepared identity through SEND_MESSAGE rather than websocket connect
+Created agent session 578c0018-9f83-483a-8331-acd0555c7651 for run agent-e2e
+Agent WebSocket connected: session=578c0018-9f83-483a-8331-acd0555c7651, run=agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns duplicate and busy ACKs for same and different in-flight command ids
+Closed agent session 578c0018-9f83-483a-8331-acd0555c7651
+Agent WebSocket disconnected: 578c0018-9f83-483a-8331-acd0555c7651
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns duplicate and busy ACKs for same and different in-flight command ids
+Agent websocket attached for run agent-e2e
+Created agent session 769c8646-d720-473c-bfdb-9248a08eeb42 for run agent-e2e
+Agent WebSocket connected: session=769c8646-d720-473c-bfdb-9248a08eeb42, run=agent-e2e
+
+x··stderr | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns duplicate and busy ACKs for same and different in-flight command ids
+SEND_MESSAGE command not accepted for agent run agent-e2e: [RUN_COMMAND_IN_PROGRESS] Another command is already in progress for this run.
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails
+Closed agent session 769c8646-d720-473c-bfdb-9248a08eeb42
+Agent WebSocket disconnected: 769c8646-d720-473c-bfdb-9248a08eeb42
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails
+Agent websocket attached for run agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails
+Created agent session dd218566-161c-4e95-a698-cdf62fee0b00 for run agent-e2e
+Agent WebSocket connected: session=dd218566-161c-4e95-a698-cdf62fee0b00, run=agent-e2e
+
+stderr | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails
+SEND_MESSAGE command not accepted for agent run agent-e2e: [ACTIVATION_FAILED] activation exploded
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > keeps non-SEND commands active-only after identity-only connect
+Closed agent session dd218566-161c-4e95-a698-cdf62fee0b00
+Agent WebSocket disconnected: dd218566-161c-4e95-a698-cdf62fee0b00
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > keeps non-SEND commands active-only after identity-only connect
+Agent websocket attached for run agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > keeps non-SEND commands active-only after identity-only connect
+Created agent session dfb6c1af-c3f2-4572-83ec-38d6d6788a1c for run agent-e2e
+Agent WebSocket connected: session=dfb6c1af-c3f2-4572-83ec-38d6d6788a1c, run=agent-e2e
+
+stderr | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > keeps non-SEND commands active-only after identity-only connect
+Agent websocket session 'dfb6c1af-c3f2-4572-83ec-38d6d6788a1c' lost its active run subscription for run 'agent-e2e'.
+
+··stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns SESSION_NOT_READY when command arrives before connect handshake
+Closed agent session dfb6c1af-c3f2-4572-83ec-38d6d6788a1c
+Agent WebSocket disconnected: dfb6c1af-c3f2-4572-83ec-38d6d6788a1c
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns SESSION_NOT_READY when command arrives before connect handshake
+Agent websocket attached for run any-agent
+
+··
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > connects to an inactive identity without restore, then publishes initializing before slow restore and SEND_MESSAGE ACK
+AssertionError: expected { command_type: 'SEND_MESSAGE', …(7) } to match object { command_type: 'SEND_MESSAGE', …(7) }
+
+- Expected
++ Received
+
+@@ -6,8 +6,8 @@
+    "message_id": "msg-restore-1",
+    "run_id": "agent-e2e",
+    "state": "accepted",
+    "status": {
+      "agent_id": "agent-e2e",
+-     "status": "running",
++     "status": "idle",
+    },
+  }
+
+ ❯ tests/integration/agent/agent-websocket.integration.test.ts:334:27
+    332|         2,
+    333|       );
+    334|       expect(ack.payload).toMatchObject({
+       |                           ^
+    335|         command_type: "SEND_MESSAGE",
+    336|         run_id: runId,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 6 passed (7)
+   Start at  07:28:04
+   Duration  6.02s (transform 3.53s, setup 10ms, import 5.12s, tests 267ms, environment 0ms)
+

@@ -1,0 +1,71 @@
+{
+  "scenarioId": "LIVE-STANDALONE-001",
+  "result": "Pass",
+  "runId": "daily_assistant_31b8c9bd94b5424d9bc4e2f803428844",
+  "agent": "Daily Assistant",
+  "model": "DeepSeek / deepseek-v4-pro",
+  "promptMarker": "STANDALONE-PROGRESSIVE-001",
+  "observer": {
+    "distinctSamples": 146,
+    "runningRichRevisions": 118,
+    "thinkingOpenSamples": 143,
+    "firstRichRevisions": [
+      {
+        "tMs": 36971,
+        "textLength": 1385
+      },
+      {
+        "tMs": 37431,
+        "textLength": 1476
+      },
+      {
+        "tMs": 37884,
+        "textLength": 1558
+      },
+      {
+        "tMs": 38448,
+        "textLength": 1710
+      }
+    ],
+    "lastRichRevisions": [
+      {
+        "tMs": 74624,
+        "textLength": 11413
+      },
+      {
+        "tMs": 75086,
+        "textLength": 11525
+      },
+      {
+        "tMs": 75346,
+        "textLength": 11598
+      }
+    ]
+  },
+  "liveFinal": {
+    "status": "Idle",
+    "h1": "Progressive Rendering Witness",
+    "h2": "Understanding the Standalone Progressive Marker Protocol",
+    "strongCount": 47,
+    "codeCount": 71,
+    "listItemCount": 20,
+    "thinkingButtonCount": 1,
+    "thinkingOpenCount": 1,
+    "scrollWidth": 546,
+    "clientWidth": 546,
+    "markerPresent": true
+  },
+  "reloadHydration": {
+    "openedVia": "runHistory.openRun",
+    "h1": "Progressive Rendering Witness",
+    "h2": "Understanding the Standalone Progressive Marker Protocol",
+    "strongCount": 46,
+    "codeCount": 70,
+    "listItemCount": 14,
+    "scrollWidth": 562,
+    "clientWidth": 562,
+    "thinkingButtonCount": 0,
+    "reason": "The user-owned embedded backend started before the separate native-reasoning persistence fix, so its persisted projection contains no reasoning item."
+  },
+  "projectionEvidence": "standalone-run-projection.json"
+}

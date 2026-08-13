@@ -12,66 +12,54 @@ import type {
   AgentRunEventTransformer,
   AgentRunEventTransformerInput,
 } from "../../agent-run-event-transformer.js";
-import { AgentTurnLifecycleState } from "./agent-turn-lifecycle-state.js";
 
-type PendingErrorCompanion = { allowed: boolean } | null;
+const TERMINAL_EVENT_TYPES = new Set<AgentRunEventType>([
+  AgentRunEventType.TURN_COMPLETED,
+  AgentRunEventType.TURN_INTERRUPTED,
+  AgentRunEventType.ERROR,
+]);
 
 export class LifecycleStatusEventTransformer implements AgentRunEventTransformer {
-  private readonly stateByContext = new WeakMap<object, AgentTurnLifecycleState>();
-
   transform(input: AgentRunEventTransformerInput): AgentRunEvent[] {
-    const state = this.getState(input.runContext);
-    let lastOutwardStatus = state.lastStatus;
-    let pendingErrorCompanion: PendingErrorCompanion = null;
-    const output: AgentRunEvent[] = [];
+    const state = input.lifecycleState;
+    if (!state) {
+      throw new Error("LifecycleStatusEventTransformer requires run-owned lifecycle state.");
+    }
+    if (input.runtimeLifecycleSnapshot) {
+      state.reconcileRuntimeSnapshot(input.runtimeLifecycleSnapshot);
+    }
 
+    const output: AgentRunEvent[] = [];
     for (const event of input.events) {
       if (event.eventType === AgentRunEventType.AGENT_STATUS) {
-        const status = normalizeAgentApiStatus(event.payload.status);
-        const accepted = state.observeExplicitStatus(
-          status,
-          pendingErrorCompanion?.allowed ?? null,
-        );
-        pendingErrorCompanion = null;
-        if (accepted) {
-          output.push(event);
-          lastOutwardStatus = status;
-        }
+        state.observeExplicitStatus(normalizeAgentApiStatus(event.payload.status));
+        output.push(this.buildStatusEvent(input.runContext.runId, state.status));
         continue;
       }
 
-      output.push(event);
-      if (event.eventType === AgentRunEventType.ERROR) {
-        const observation = state.observeError(resolveAgentRunErrorEvidence(event));
-        pendingErrorCompanion = { allowed: observation.companionStatusAllowed };
-      } else {
-        pendingErrorCompanion = null;
-        state.observeBoundaryOrActivity(event);
+      if (TERMINAL_EVENT_TYPES.has(event.eventType)) {
+        output.push(event);
+        if (event.eventType === AgentRunEventType.ERROR) {
+          state.observeError(resolveAgentRunErrorEvidence(event));
+        } else {
+          state.observeEvent(event);
+        }
+        output.push(this.buildStatusEvent(input.runContext.runId, state.status));
+        continue;
       }
-    }
 
-    if (state.lastStatus && state.lastStatus !== lastOutwardStatus) {
-      output.push(this.buildDerivedStatusEvent(input.runContext.runId, state.lastStatus));
+      state.observeEvent(event);
+      output.push(this.buildStatusEvent(input.runContext.runId, state.status), event);
     }
     return output;
   }
 
-  private getState(context: object): AgentTurnLifecycleState {
-    let state = this.stateByContext.get(context);
-    if (!state) {
-      state = new AgentTurnLifecycleState();
-      this.stateByContext.set(context, state);
-    }
-    return state;
-  }
-
-  private buildDerivedStatusEvent(runId: string, status: AgentApiStatus): AgentRunEvent {
+  buildStatusEvent(runId: string, status: AgentApiStatus): AgentRunEvent {
     return {
       eventType: AgentRunEventType.AGENT_STATUS,
       runId,
       payload: buildAgentStatusPayload({
         status,
-        canInterrupt: false,
         agentId: runId,
       }),
       statusHint:

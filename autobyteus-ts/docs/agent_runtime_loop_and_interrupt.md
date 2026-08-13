@@ -26,7 +26,8 @@ The important ownership rule is:
    - `AgentEventInbox`
    - `AgentEventScheduler`
 3. `AgentWorker` runs direct bootstrap through `AgentBootstrapper.run(context)`.
-4. `SystemPromptPipeline` applies system-prompt processors during bootstrap.
+4. `SystemPromptProcessingStep` directly appends the platform-owned configured
+   Skills catalog, validates the complete instruction, and configures the LLM.
 5. `AgentReadyEvent` moves the runtime to the ready/idle state.
 6. The worker loop waits for the next dispatchable event entry.
 
@@ -74,8 +75,10 @@ When the worker selects a `UserMessageReceivedEvent` or
 3. runs `new AgentTurnRunner(context, turn).run(trigger)` inside that active
    turn;
 4. observes turn settlement asynchronously;
-5. emits `AgentIdleEvent` after a completed turn and clears the active turn
-   only when the same turn is already settled.
+5. emits `AgentIdleEvent` after a completed or recovered turn and clears the
+   active turn only when the same turn is already settled. A turn whose recovery
+   itself fails remains in the terminal error status, but the settled active-turn
+   slot is still released.
 
 Only one active turn is allowed per runtime.
 
@@ -107,7 +110,7 @@ External tool results use the same active-turn boundary through
 `AgentRuntime.postToolResultEvent(...)`, `ToolResultInboxEventHandler`, and
 `AgentRuntimeState.postToolResultEventToActiveTurn(...)` before waking
 `TurnToolInputPort.postToolResult(...)`. Same-turn TOOL continuations remain
-inside `AgentTurnRunner`/`ToolPhase`/`ToolResultContinuationBuilder` and must not
+inside `AgentTurnRunner`/`ToolPhase`/`ToolContinuationInputBuilder` and must not
 enter the runtime event inbox as `SenderType.TOOL` user input.
 
 ## Turn Execution Ownership
@@ -121,9 +124,9 @@ uses these collaborators:
   - preserves current-turn context-file media payloads and appends a generated
     `Reference files:` block for context files that resolve to local absolute
     paths;
-  - keeps tool-continuation messages in `append_user_message` mode when they
-    carry context-file media, so the next provider request has a valid media
-    carrier;
+  - represents a tool continuation without context-file media as
+    `llmUserMessage: null`, while a continuation with media produces the user/media
+    carrier required by the next provider request;
   - preserves inter-agent metadata such as `sender_agent_id`,
     `original_message_type`, and `reference_files`;
   - adds exactly one generated `Reference files:` block to recipient-visible
@@ -140,7 +143,10 @@ uses these collaborators:
     canonical memory;
   - passes `{ signal, turnId }` into `BaseLLM.streamMessages(...)`;
   - publishes streamed segment facts through `AgentExternalEventNotifier`;
-  - parses text/API tool calls through the streaming response handler factory;
+  - creates one `LlmStreamingResponseHandler` for tool and no-tool streams,
+    builds `ToolSchemaProvider` schemas only when configured tools exist, and
+    normalizes native tool-call deltas only when the handler's explicit gate is
+    enabled; assistant text is never parsed into invocations;
   - checks the `TurnExecutionScope` before starting or consuming LLM streams
     and again after awaited LLM seams before publishing normal assistant
     completion side effects;
@@ -166,22 +172,27 @@ uses these collaborators:
     before the post-tool abort fence so memory can record completed facts and
     repair the next LLM prompt safely, without publishing normal terminal
     success or continuation side effects after an accepted interrupt;
+  - converts an accepted interruption that crosses a registered native tool
+    invocation into one matching terminal `ToolResultEvent` with the original
+    invocation id/name/arguments, `result: null`, and a deterministic non-empty
+    error instead of leaving the invocation pending; and
   - checks for accepted interrupts after awaited tool seams before publishing
     tool terminal success, tool results, or continuation input.
 - `ToolResultPipeline`
   - applies configured tool-result processors to the direct results returned by
     `ToolPhase`; direct tool results are not posted back through the runtime
     event inbox.
-- `ToolResultContinuationBuilder`
-  - builds semantic completed-tool continuation text from the processed tool
-    results, for example `The read_media_file tool call completed successfully.`;
-  - builds the same-turn `SenderType.TOOL` continuation input for legacy
-    text-parser modes;
-  - marks native `api_tool_call` continuations as `tool_history_only` when no
-    context-file media must be carried, causing `AgentTurnRunner` to emit
-    `ToolContinuationReadyEvent` and `LlmPhase` to call
-    `LLMRequestAssembler.prepareToolContinuationRequest(...)` without appending
-    a synthetic provider-visible user message.
+- `MemoryManager` and `ToolContinuationInputBuilder`
+  - receive one runner-owned, ordered `MemoryManager.ingestToolResults(...)`
+    commit after the processed result batch is complete;
+  - build semantic completed-tool continuation text, for example
+    `The read_media_file tool call completed successfully.`, plus any context-file
+    media in a same-turn internal `SenderType.TOOL` carrier;
+  - keep the builder pure: persistence remains owned by `MemoryManager`, while
+    `AgentInputPipeline` returns either `llmUserMessage: null` for text-only
+    native history or an `LLMUserMessage` when a media carrier is required; and
+  - use the single `LLMRequestAssembler.prepareRequest(...)` method in both
+    cases, without a synthetic provider-visible user message for the null case.
 - `LLMResponsePipeline`
   - applies final response processors and publishes assistant output.
 - `AgentExternalEventNotifier`
@@ -193,6 +204,23 @@ The old single-agent `WorkerEventDispatcher`, message-wrapper inbox files,
 and normal-flow handler files are removed. Do not reintroduce them as parallel
 control-flow owners for LLM calls, tool execution, tool results, or inter-agent
 message ingestion.
+
+## Recoverable Execution Failures
+
+Native turn execution distinguishes a failed operation from a dead logical
+agent. When `AgentTurnRunner` catches a non-interrupt execution failure, it asks
+the memory-owned protocol-safety boundary to terminalize any unmatched native
+tool calls for that turn. Successful repair publishes a diagnostic
+`AgentTurnRecoveredEvent`, settles the turn with the `recovered` outcome, and
+allows `AgentWorker` to derive idle and accept the next user message. The
+worker's unexpected outer runner-failure boundary applies the same repair
+before deciding that the runtime is terminal.
+
+If protocol repair or persistence fails, the runtime publishes a terminal
+turn error rather than claiming recovery. This boundary does not retry the
+failed operation, fabricate tool success, or impose a universal wall-clock
+timeout on unrelated tools. Capability owners may still apply their own
+duration policy; server-owned synchronous `generate_image` is one such owner.
 
 ## Tool Approval Spine
 
@@ -325,21 +353,24 @@ context:
 4. `AgentTurnRunner` appends an `operation_boundary` raw trace noting that the
    turn was interrupted before normal completion;
 5. `MemoryManager.projectWorkingContextForNextLlm({ mode: 'llm_safe', fenceIncompleteToolProtocolScope, includeCommittedFacts: true })`
-   runs the memory-owned tool-protocol safety boundary, persists any repaired
-   working-context snapshot, and appends the interruption operation-boundary
-   note for the next prompt.
+   runs the memory-owned tool-protocol safety boundary, commits missing terminal
+   raw results before replacing the repaired working-context snapshot, and
+   appends the interruption operation-boundary note for the next prompt.
 
 Memory, not provider renderers, owns native tool-call protocol repair before the
 next LLM request. Complete assistant tool-call/result groups remain structured
 history. If an assistant native tool-call message is missing one or more
 matching tool-result messages, the safety boundary inserts immediate result
 messages for those missing calls: first from committed raw `tool_result` facts
-when available, otherwise as synthetic interrupted/unknown results. Synthetic
-repairs also get idempotent raw `operation_boundary` recovery markers so future
-inspection can see that an abandoned call was not assumed successful. Follow-up
-turns therefore keep accepted user input, interrupted assistant partial output,
-completed facts, and provider-safe tool-call adjacency without retrying or
-executing abandoned tool calls implicitly.
+when available, otherwise by first appending a canonical synthetic raw
+`tool_result` with the original tool identity/arguments, `tool_result: null`, a
+deterministic `tool_error`, and a compound-identity recovery correlation. The
+working context is then rebuilt from those raw facts and persisted. Repeated
+repair is idempotent by `(turn_id, tool_call_id)`, so a restart cannot add a
+second terminal result for the same call. Follow-up turns therefore keep
+accepted user input, interrupted assistant partial output, completed facts, and
+provider-safe tool-call adjacency without retrying or executing abandoned tool
+calls implicitly.
 
 `TurnToolInputPort` rejects late approvals and external tool results after a
 turn is interrupted or completed. Direct tool execution results remain
@@ -349,8 +380,9 @@ eligible for interrupted-turn memory projection.
 
 Failed LLM streams are not treated as interrupts. Streaming handlers emit
 terminal `SEGMENT_END` events with `failed: true` and an error message for
-open segments; `ToolInvocationAdapter` suppresses failed partial tool segments
-so they do not become invocations, tool results, or same-turn continuations.
+open segments; the provider-native handler clears partial call state without
+publishing invocations, so failed partial calls cannot become tool results or
+same-turn continuations.
 The named LLM-request recovery boundary also restores the pre-request working
 context and compaction flags, persists that restored snapshot, and appends a
 correlated recovery trace. The failure is surfaced as one diagnostic; the

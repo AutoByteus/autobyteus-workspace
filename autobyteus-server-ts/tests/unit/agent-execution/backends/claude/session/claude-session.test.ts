@@ -14,10 +14,8 @@ import { ClaudeSession } from "../../../../../../src/agent-execution/backends/cl
 import { ClaudeSessionMessageCache } from "../../../../../../src/agent-execution/backends/claude/session/claude-session-message-cache.js";
 import { ClaudeSessionToolUseCoordinator } from "../../../../../../src/agent-execution/backends/claude/session/claude-session-tool-use-coordinator.js";
 import { ClaudeSessionEventName } from "../../../../../../src/agent-execution/backends/claude/events/claude-session-event-name.js";
-import { ClaudeSessionEventConverter } from "../../../../../../src/agent-execution/backends/claude/events/claude-session-event-converter.js";
-import { projectClaudeAgentStatus } from "../../../../../../src/agent-execution/backends/claude/events/claude-status-projector.js";
-import { AgentRunEventType } from "../../../../../../src/agent-execution/domain/agent-run-event.js";
-import { buildConfiguredAgentToolExposure } from "../../../../../../src/agent-execution/shared/configured-agent-tool-exposure.js";
+import { projectClaudeAgentLifecycleSnapshot } from "../../../../../../src/agent-execution/backends/claude/events/claude-status-projector.js";
+import { buildRuntimeAgentToolExposure } from "../../../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
 import type {
   ClaudeSdkQueryLike,
@@ -194,7 +192,8 @@ const createSession = (input: {
         permissionMode: "default",
         autoExecuteTools: input.autoExecuteTools ?? false,
       }),
-      configuredToolExposure: buildConfiguredAgentToolExposure([]),
+      carpenterSystemPrompt: "## Agent Identity\n\n- Name: Test agent",
+      runtimeToolExposure: buildRuntimeAgentToolExposure([]),
       sessionId: input.sessionId ?? "run-1",
       hasCompletedTurn: input.hasCompletedTurn ?? false,
       activeTurnId: input.activeTurnId ?? null,
@@ -271,6 +270,7 @@ describe("ClaudeSession", () => {
     ]));
     expect(startQueryTurn.mock.calls[0]?.[0]).toMatchObject({
       prompt: expectedContent,
+      systemPrompt: "## Agent Identity\n\n- Name: Test agent",
     });
   });
 
@@ -310,25 +310,16 @@ describe("ClaudeSession", () => {
     const { session } = createSession({
       query: createResultQuery("claude-session-completed-status"),
     });
-    const converter = new ClaudeSessionEventConverter("run-1", () =>
-      projectClaudeAgentStatus(session.getStatusSnapshotSource()),
-    );
     const events: Array<{
       method: string;
       statusSource: ReturnType<ClaudeSession["getStatusSnapshotSource"]>;
     }> = [];
-    const convertedStatusPayloads: Record<string, unknown>[] = [];
     session.subscribeRuntimeEvents((event) => {
       const statusSource = session.getStatusSnapshotSource();
       events.push({
         method: event.method,
         statusSource,
       });
-      for (const converted of converter.convert(event)) {
-        if (converted.eventType === AgentRunEventType.AGENT_STATUS) {
-          convertedStatusPayloads.push(converted.payload);
-        }
-      }
     });
 
     await session.sendTurn(new AgentInputUserMessage("complete normally"));
@@ -345,9 +336,13 @@ describe("ClaudeSession", () => {
       activeTurnId: null,
       isInterrupting: false,
     });
-    expect(convertedStatusPayloads.at(-1)).toMatchObject({
-      status: "idle",
-      can_interrupt: false,
+    expect(projectClaudeAgentLifecycleSnapshot({
+      ...completionEvent?.statusSource,
+      isActive: true,
+    })).toEqual({
+      availability: "active",
+      phase: "idle",
+      currentTurn: { kind: "NONE" },
     });
     expect(session.hasCompletedTurn).toBe(true);
   });

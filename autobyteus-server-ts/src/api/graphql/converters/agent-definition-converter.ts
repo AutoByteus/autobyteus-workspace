@@ -39,7 +39,6 @@ export class AgentDefinitionConverter {
         toolNames: domainDefinition.toolNames,
         inputProcessorNames: domainDefinition.inputProcessorNames,
         llmResponseProcessorNames: domainDefinition.llmResponseProcessorNames,
-        systemPromptProcessorNames: domainDefinition.systemPromptProcessorNames,
         toolExecutionResultProcessorNames: domainDefinition.toolExecutionResultProcessorNames,
         toolInvocationPreprocessorNames: domainDefinition.toolInvocationPreprocessorNames,
         lifecycleProcessorNames: domainDefinition.lifecycleProcessorNames,

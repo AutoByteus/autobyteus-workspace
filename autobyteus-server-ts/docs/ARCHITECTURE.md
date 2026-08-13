@@ -138,21 +138,23 @@ Native AutoByteus compaction is composed in `autobyteus-ts` as a proposal /
 accept / commit boundary. `PendingCompactionExecutor` captures the manager-owned
 WorkingContext and lineage-head baseline, resolves the configured strategy, and
 requests an ID-less proposal. `MemoryManager` verifies the baseline, assigns
-output identities, builds and validates the finalized candidate, and publishes
-it in this order: exact new-raw archive, episode/semantic rows, append-only
-lineage record, installed WorkingContext, schema-v5 message snapshot, then pending
-clear.
+output identities, builds and validates the complete accepted candidate, and
+publishes it in this order: exact new-raw archive, episode/semantic rows,
+append-only lineage record, installed WorkingContext, schema-v5 message snapshot,
+then pending clear. Raw archiving is an independent command; the archive manager
+owns its descriptor/filename, and neither is copied into the candidate or
+lineage.
 
 The last valid record in `compaction_lineage.jsonl` is the only current-compaction
-authority. It identifies the exact current output rows, the completed raw archive
-for newly selected work, and the optional immediately preceding compaction. There
+authority. It identifies the exact current output rows, the optional immediately
+preceding compaction, and execution/prompt audit metadata. There
 is no mutable current pointer, compaction-state file, compacted-memory manifest,
 or snapshot-level output identity. Recurrent compaction consumes current output
 plus new raw-backed work and produces one complete replacement. The built-in
 Memory Compactor chooses the natural number of episodes and semantic facts
 required for continuation; accepted output requires at least one episode, but
-the parser, normalizer, manager publication, lineage, current projection, and
-origin path do not impose the former fixed total-count limits.
+the parser, normalizer, manager publication, lineage, and current projection do
+not impose the former fixed total-count limits.
 
 The persisted `autobyteus-memory-compactor` system prompt is the sole owner of
 stable task instructions, natural-sizing guidance, and the response schema. The
@@ -165,7 +167,10 @@ bounds, reserved-boundary escaping, and input non-mutation remain enforced.
 New lineage records write `promptContractVersion: 2`. Existing immutable value-1
 records remain directly readable, mixed `1 -> 2` chains remain valid, and any
 unsupported audit value is rejected without compatibility decoding or file
-mutation.
+mutation. Existing schema-v1 stored supersets that include the former
+`rawTraceArchiveFile` field remain directly readable: normalization ignores that
+extra field without rewriting data or introducing a schema branch, and new rows
+omit it.
 
 `AUTOBYTEUS_COMPACTION_STRATEGY` is resolved for each pending operation through
 the default registry. The only production registration is `structured-json`; it
@@ -174,11 +179,12 @@ launch values inherited from the parent run. The removed
 `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` key is inert, and no arbitrary-agent
 fallback exists.
 
-The backend resolves explicit standalone/team-member lineage scopes and composes
-`AgentMemoryOriginService` for internal direct/recursive origin lookup. The core
-resolver validates output membership, completed raw archives, predecessor chains,
-and cycles; unknown episode/semantic IDs return `not_found`, while broken
-current-format state is an integrity error.
+The backend resolves explicit standalone/team-member lineage scopes for native
+memory composition. There is no direct/recursive episode/semantic-to-raw origin
+resolver or server service. `CurrentCompactionOutputLoader` reads only the
+lineage tail and exact output membership; malformed or unsupported lineage and
+missing or misordered output rows remain integrity errors, and current projection
+never opens a raw archive.
 
 Server startup migration `20260731_migrate_native_working_context_snapshots_v5`
 replaces the destructive pre-lineage reset. One exact runtime-location classifier
@@ -209,7 +215,8 @@ provider, model, and runtime execution metadata are retained on successful
 lineage records and lifecycle reporting.
 
 See `autobyteus-ts/docs/agent_memory_design.md` for the full persistence,
-lineage, current-context, restore, presentation, origin, and failure contracts.
+lineage, raw-archive independence, current-context, restore, presentation, and
+failure contracts.
 
 ## Agent Work Trace Projection
 

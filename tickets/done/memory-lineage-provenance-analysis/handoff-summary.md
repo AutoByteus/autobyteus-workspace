@@ -3,17 +3,20 @@
 ## Delivery State
 
 - Ticket: `memory-lineage-provenance-analysis`
-- Status: `User verified; repository finalization and v1.4.35 release in progress`
-- Delivery revision: `DR-009 complete; DR-010 in progress`
+- Status: `Complete — finalized and released as v1.4.35`
+- Delivery revision: `DR-010`
 - Ticket branch: `codex/memory-lineage-provenance-analysis`
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis`
+- Archived workspace: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Implementation commit: `d9753e69c1244bf88c0bc6816306495430047a35`
 - Reviewed API/E2E checkpoint: `89cfd4ebcffac9612d5f64d1fe95d7468ae4101d`
 - Integrated tracked base: `origin/personal@9615dcc88e73f0584e67623a3cfe1f0d2afd4617`
 - Base refresh result: already contained; no merge required; 16 ahead / 0 behind at the finalization refresh
 - Finalization target: `origin/personal` / local `personal`
 - User verification: `Pass — the user explicitly confirmed the ticket is done and the tested Electron behavior is working`
-- Final commit/push/target merge/release/deployment/archive/cleanup: `Authorized and in progress`
+- Ticket archive commit: `9f747dae9c2284225fb549ccdd039a01214c79dc`
+- Target merge commit: `8ffe1735c9054d5543ec938c70897d27381a2dc1`
+- Release commit/tag: `8b8ae4c304928b391bdd5466b2262f87d43cf272` / `v1.4.35`
+- Final commit/push/target merge/release/deployment/archive/cleanup: `Pass`
 
 ## Review Authority
 
@@ -88,19 +91,28 @@ The SR-010 natural Memory Compactor remains unchanged: manager-owned proposal/ac
   - `evidence/delivery/api-rev-009-live-restore-log-audit.log`
   - `evidence/delivery/dr-009-live-verification-base-recheck.log`
 
-## Local Electron Package For Testing
+## Local Electron Package Used For Testing
 
 - README basis: root `README.md` and `autobyteus-web/README.md`; documented local no-notarization macOS command.
 - Build result: Pass on macOS ARM64, Electron `42.4.1`, product version `1.4.34`; embedded backend includes SR-015.
-- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.34.dmg`
-- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.34.zip`
-- Unpacked app: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- Historical local artifacts: the verified 1.4.34 DMG, ZIP, and unpacked app were removed with the ticket worktree after v1.4.35 publication.
 - Validation: DMG valid; native Mach-O ARM64; bundle `com.autobyteus.app`; version `1.4.34`.
 - SHA-256: DMG `dd5220fadcea23fb29486e974018807b32fb586e47b2fabdf4f8571d024d2c8f`; ZIP `49bb172ebbcb399c8f614e0c381ef394df8d85454a7758546aa9720c6c306231`.
 - Signing: ad-hoc/local only; no Apple team identity, notarization, or timestamp. This is not a release artifact.
 - Packaged startup: observed and healthy in DR-009. Electron PID `34832` owns embedded server PID `35437`, which listens on `29695` from the exact built app path.
 - Test residue cleanup: delivery-owned temporary server-test database and journal were removed; the pre-existing AutoByteus process was preserved.
 - Evidence: `evidence/delivery/api-rev-009-electron-macos-1.4.34-build.log`; `api-rev-009-electron-macos-1.4.34-validation.log`.
+
+## Repository Finalization And Release (DR-010)
+
+- The final tracked-base refresh found `origin/personal@9615dcc88e73f0584e67623a3cfe1f0d2afd4617` unchanged and contained, so the verified candidate did not materially change.
+- The ticket was archived and committed at `9f747dae9c2284225fb549ccdd039a01214c79dc`, pushed, merged `--no-ff` into `personal` at `8ffe1735c9054d5543ec938c70897d27381a2dc1`, and pushed.
+- The documented release helper synchronized both package versions and the messaging manifest, created release commit `8b8ae4c304928b391bdd5466b2262f87d43cf272`, created annotated tag `v1.4.35`, and pushed both.
+- [GitHub release v1.4.35](https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.35) is published with curated notes and 21 assets covering desktop, Android, messaging gateway, and updater metadata.
+- Server Docker, Android, desktop, iOS/App Store Connect, and messaging-gateway workflows all completed successfully. Desktop required one infrastructure-only rerun after the first Linux x64 runner hung in `apt-get`; no release input changed.
+- Docker Hub `1.4.35` and `latest` are active AMD64/ARM64 manifests with shared digest `sha256:8c02988f59d4bc2635fb511ed7c331ecab50ee4228f40a8f96332571a4665b3d`.
+- The ticket worktree and local/remote ticket branches were removed after release validation.
+- Authoritative release report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/memory-lineage-provenance-analysis/release-deployment-report.md`.
 
 ## Persisted-Data Operational Caution
 
@@ -110,13 +122,13 @@ SR-015 is a real startup data migration. API/E2E used isolated roots; DR-009 sub
 
 Updated long-lived docs:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-ts/docs/agent_memory_design.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-ts/docs/agent_memory_design_nodejs.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/docs/ARCHITECTURE.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/docs/modules/agent_memory.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/docs/design/startup_initialization_and_lazy_services.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/docs/agent_memory_design.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/docs/agent_memory_design_nodejs.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/ARCHITECTURE.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/modules/agent_memory.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/design/startup_initialization_and_lazy_services.md`
 
-Authoritative report: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/done/memory-lineage-provenance-analysis/docs-sync-report.md`.
+Authoritative report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/memory-lineage-provenance-analysis/docs-sync-report.md`.
 
 ## Residual Risks / Scope Limits
 
@@ -124,7 +136,7 @@ Authoritative report: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-l
 - Truthful omission can reduce old context, including to an empty current message list.
 - A migration filesystem failure remains retryable while the server starts; an affected existing run can still fail strict restore until conversion succeeds.
 - Normal multi-file compaction publication remains non-crash-atomic and has no recovery journal.
-- The local verification package is unsigned/unnotarized; it is not the release artifact.
+- The local verification package was unsigned/unnotarized and has been removed; signed/published outputs are available from v1.4.35.
 - No UI, renderer, preload, IPC, or desktop-shell boundary changed; separate browser/Electron interaction coverage was not applicable.
 
 ## Canonical Artifact Package
@@ -137,8 +149,8 @@ Authoritative report: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-l
 - Delivery: `docs-sync-report.md`; `handoff-summary.md`; `release-deployment-report.md`; `delivery-revision-record.md`
 - Evidence: `evidence/implementation/`; `evidence/code-review/`; `evidence/api-e2e/`; `evidence/delivery/`
 
-All relative ticket paths above are under `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/done/memory-lineage-provenance-analysis/`.
+All relative ticket paths above are under `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/memory-lineage-provenance-analysis/`.
 
 ## Required User Action
 
-None. The user explicitly completed verification and authorized finalization plus a new release. Delivery is archiving the ticket, merging the verified state to `personal`, and releasing `v1.4.35` through the documented release helper. Any release or workflow failure will be recorded here rather than hidden.
+None for repository finalization. The release is complete. App Store review and public release remain external after the successful App Store Connect upload.

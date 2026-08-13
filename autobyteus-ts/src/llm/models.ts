@@ -57,6 +57,7 @@ export interface ModelInfo {
   active_context_tokens: number | null;
   max_input_tokens: number | null;
   max_output_tokens: number | null;
+  resolved_model_metadata: ResolvedModelMetadata | null;
 }
 
 export class LLMModel {
@@ -162,6 +163,7 @@ export class LLMModel {
       active_context_tokens: this.activeContextTokens,
       max_input_tokens: this.maxInputTokens,
       max_output_tokens: this.maxOutputTokens,
+      resolved_model_metadata: this.resolvedModelMetadata,
     };
   }
 }

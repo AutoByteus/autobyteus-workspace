@@ -1,5 +1,11 @@
 import type { MemberTeamContext } from "../domain/member-team-context.js";
 
+const requireLabel = (value: string, label: string): string => {
+  const normalized = value.trim().replace(/\r?\n|\r/g, " ").trim();
+  if (!normalized) throw new Error(`${label} must be non-blank.`);
+  return normalized;
+};
+
 export type DelegationTargetRosterRow =
   | {
       kind: "member";
@@ -38,29 +44,31 @@ export class DelegationTargetRosterBuilder {
         if (member.memberRouteKey === currentRouteKey || member.memberRunId === currentRunId) continue;
         rows.push({
           kind: "member",
-          targetName: member.memberName,
+          targetName: requireLabel(member.memberName, "Delegation member target name"),
           memberRouteKey: member.memberRouteKey,
           memberPath: [...member.memberPath],
           role: member.role ?? null,
           description: member.description ?? null,
-          accountableOwnerName: member.memberName,
+          accountableOwnerName: requireLabel(member.memberName, "Delegation member owner name"),
         });
       } else {
         rows.push({
           kind: "team",
-          targetName: member.memberName,
+          targetName: requireLabel(member.memberName, "Delegation team target name"),
           teamRouteKey: member.memberRouteKey,
           teamPath: [...member.memberPath],
           teamDefinitionId: member.teamDefinitionId,
-          ingressCoordinatorName: member.representative?.memberName ?? null,
+          ingressCoordinatorName: member.representative?.memberName
+            ? requireLabel(member.representative.memberName, "Delegation ingress coordinator name")
+            : null,
           ingressCoordinatorRouteKey: member.representative?.memberRouteKey ?? member.coordinatorMemberRouteKey ?? null,
-          accountableOwnerName: member.memberName,
+          accountableOwnerName: requireLabel(member.memberName, "Delegation team owner name"),
           role: member.role ?? null,
           description: member.description ?? null,
         });
       }
     }
-    return { currentMemberName: context.memberName, rows };
+    return { currentMemberName: requireLabel(context.memberName, "Current team member name"), rows };
   }
 }
 

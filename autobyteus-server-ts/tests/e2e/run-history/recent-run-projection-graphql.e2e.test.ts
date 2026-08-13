@@ -9,7 +9,10 @@ import { performance } from "node:perf_hooks";
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import { CompleteResponse } from "autobyteus-ts/llm/utils/response-types.js";
+import { MemoryManager } from "autobyteus-ts/memory/memory-manager.js";
 import { RAW_TRACES_ACTIVE_MEMORY_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
+import { FileMemoryStore } from "autobyteus-ts/memory/store/file-store.js";
 import { RunMemoryFileStore } from "autobyteus-ts/memory/store/run-memory-file-store.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
@@ -320,6 +323,81 @@ describe("recent run projection GraphQL e2e", () => {
     expect(new Set(visualIds).size).toBe(visualIds.length);
     expect(page.events.every((event) => event.visuals.every((visual) => visual.eventId === event.eventId))).toBe(true);
   };
+
+  const persistNativeReasoningResponse = (
+    runDir: string,
+    reasoning: string,
+    content: string,
+  ): void => {
+    const manager = new MemoryManager({
+      store: new FileMemoryStore(runDir, path.basename(runDir), { agentRootSubdir: "" }),
+    });
+    const turnId = manager.startTurn();
+    manager.ingestAssistantResponse(
+      new CompleteResponse({ reasoning, content }),
+      turnId,
+      "LlmPhase",
+    );
+  };
+
+  it("hydrates native reasoning through standalone and team GraphQL projections", async () => {
+    const standaloneRunId = "native-reasoning-standalone";
+    const standaloneRunDir = path.join(memoryDir, "agents", standaloneRunId);
+    await writeStandaloneMetadata(standaloneRunId, standaloneRunDir);
+    persistNativeReasoningResponse(
+      standaloneRunDir,
+      "standalone private reasoning",
+      "standalone visible answer",
+    );
+
+    const standaloneProjection = (await execGraphql<{
+      getRunProjection: ProjectionPayload;
+    }>(GRAPHQL_QUERY, { runId: standaloneRunId })).getRunProjection;
+    expect(standaloneProjection.conversation).toEqual([
+      expect.objectContaining({ kind: "reasoning", content: "standalone private reasoning" }),
+      expect.objectContaining({ kind: "message", role: "assistant", content: "standalone visible answer" }),
+    ]);
+    const standalonePage = (await execGraphql<{
+      getRunEventMonitorActiveTracePage: ActiveTracePagePayload;
+    }>(STANDALONE_ACTIVE_TRACE_PAGE_QUERY, {
+      runId: standaloneRunId,
+      beforeCursor: null,
+    })).getRunEventMonitorActiveTracePage;
+    expect(standalonePage.events.flatMap((event) => event.visuals)).toEqual([
+      expect.objectContaining({ kind: "thinking", content: "standalone private reasoning" }),
+      expect.objectContaining({ kind: "assistant_text", content: "standalone visible answer" }),
+    ]);
+
+    const teamRunId = "native-reasoning-team";
+    const memberRunId = "native-reasoning-member";
+    const memberRouteKey = "worker";
+    const memberDir = await writeTeamMetadata({ teamRunId, memberRunId, memberRouteKey });
+    persistNativeReasoningResponse(
+      memberDir,
+      "team member private reasoning",
+      "team member visible answer",
+    );
+
+    const teamProjection = (await execGraphql<{
+      getTeamMemberRunProjection: ProjectionPayload;
+    }>(TEAM_GRAPHQL_QUERY, { teamRunId, memberRouteKey })).getTeamMemberRunProjection;
+    expect(teamProjection.agentRunId).toBe(memberRunId);
+    expect(teamProjection.conversation).toEqual([
+      expect.objectContaining({ kind: "reasoning", content: "team member private reasoning" }),
+      expect.objectContaining({ kind: "message", role: "assistant", content: "team member visible answer" }),
+    ]);
+    const teamPage = (await execGraphql<{
+      getTeamMemberEventMonitorActiveTracePage: ActiveTracePagePayload;
+    }>(TEAM_ACTIVE_TRACE_PAGE_QUERY, {
+      teamRunId,
+      memberRouteKey,
+      beforeCursor: null,
+    })).getTeamMemberEventMonitorActiveTracePage;
+    expect(teamPage.events.flatMap((event) => event.visuals)).toEqual([
+      expect.objectContaining({ kind: "thinking", content: "team member private reasoning" }),
+      expect.objectContaining({ kind: "assistant_text", content: "team member visible answer" }),
+    ]);
+  });
 
   it("projects the newest 100 events from a >=5 MB active file without reading or changing its standalone archive", async () => {
     const runId = "recent-window-large-standalone";

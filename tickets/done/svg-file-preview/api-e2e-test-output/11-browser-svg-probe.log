@@ -1,0 +1,45 @@
+{
+  "SVG-BR-001": {
+    "status": "Pass",
+    "description": "Real Chromium loads a valid SVG through the production FileViewer -> ImageViewer path.",
+    "details": {
+      "src": "/api-e2e-valid.svg",
+      "complete": true,
+      "naturalWidth": 150,
+      "naturalHeight": 150
+    }
+  },
+  "SVG-BR-002": {
+    "status": "Pass",
+    "description": "Real Chromium rejects malformed SVG decode while the response retains the SVG MIME boundary.",
+    "details": {
+      "src": "/api-e2e-malformed.svg",
+      "complete": true,
+      "naturalWidth": 0,
+      "naturalHeight": 0
+    }
+  },
+  "SVG-BR-003": {
+    "status": "Pass",
+    "description": "Real Chromium exercises Event Monitor SVG click, Enter, Space, and focus-visible action handoff.",
+    "details": {
+      "actionAttributes": [
+        {
+          "role": "button",
+          "href": "#",
+          "ariaLabel": "Open DIAGRAM.SVG in Files",
+          "title": "/tmp/DIAGRAM.SVG"
+        },
+        {
+          "role": "button",
+          "href": "#",
+          "ariaLabel": "Open second.svg in Files",
+          "title": "/tmp/second.svg"
+        }
+      ],
+      "actionCount": "3",
+      "lastAction": "/tmp/second.svg",
+      "activeElement": "true"
+    }
+  }
+}

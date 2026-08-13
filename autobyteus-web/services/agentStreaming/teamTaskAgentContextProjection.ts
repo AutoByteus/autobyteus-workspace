@@ -12,8 +12,15 @@ import { resolveActiveExecutionFocusedMemberRouteKey } from '~/utils/teamActiveE
 import type { ConversationTargetSegment } from '~/types/agent/ConversationTargetAddress';
 import {
   applyTaskDelegationProjectionDetails,
+  captureTaskExecutionNavigationSnapshot,
+  deriveTaskExecutionProjectionMutation,
+  type TaskExecutionProjectionMutation,
   type TaskDelegationProjectionDetails,
 } from './teamTaskExecutionProjection';
+import {
+  primeRecentEventMonitorBaseline,
+  resetRecentEventMonitorBaseline,
+} from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
 
 export interface TaskAgentStreamIdentity {
   taskAgentRunId: string;
@@ -386,7 +393,8 @@ const restoreTaskAgentNodes = (
 export const restoreTaskAgentContextProjections = (
   teamContext: AgentTeamContext,
   taskAgentNodes: readonly AgentTeamMemberNode[] = [],
-): void => {
+): TaskExecutionProjectionMutation => {
+  const before = captureTaskExecutionNavigationSnapshot(teamContext);
   restoreTaskAgentNodes(teamContext, taskAgentNodes);
 
   for (const context of teamContext.leafAgentContextsByRouteKey.values()) {
@@ -396,18 +404,23 @@ export const restoreTaskAgentContextProjections = (
     }
     ensureTaskAgentNode(teamContext, identity, context);
   }
+  return deriveTaskExecutionProjectionMutation(before, teamContext, 'restore task-agent hierarchy');
 };
 
-export const ensureTaskAgentContext = (
+export const ensureTaskAgentProjection = (
   teamContext: AgentTeamContext,
   identity: TaskAgentStreamIdentity,
-): AgentContext => {
+): { context: AgentContext; mutation: TaskExecutionProjectionMutation } => {
+  const before = captureTaskExecutionNavigationSnapshot(teamContext);
   const existing = teamContext.leafAgentContextsByRouteKey.get(identity.taskAgentRunId) || null;
   if (existing) {
     const mergedIdentity = mergeTaskAgentIdentity(getTaskAgentIdentityFromContext(existing), identity);
     setTaskAgentContextIdentity(existing, mergedIdentity);
     ensureTaskAgentNode(teamContext, mergedIdentity, existing);
-    return existing;
+    return {
+      context: existing,
+      mutation: deriveTaskExecutionProjectionMutation(before, teamContext, 'ensure task-agent hierarchy'),
+    };
   }
 
   const logicalContext = identity.logicalMemberRouteKey
@@ -429,12 +442,16 @@ export const ensureTaskAgentContext = (
     new AgentRunState(identity.taskAgentRunId, conversation),
   );
   context.isSubscribed = true;
+  primeRecentEventMonitorBaseline(context);
   const mergedIdentity = mergeTaskAgentIdentity(null, identity);
   setTaskAgentContextIdentity(context, mergedIdentity);
 
   teamContext.leafAgentContextsByRouteKey = new Map(teamContext.leafAgentContextsByRouteKey).set(identity.taskAgentRunId, context);
   ensureTaskAgentNode(teamContext, mergedIdentity, context);
-  return context;
+  return {
+    context,
+    mutation: deriveTaskExecutionProjectionMutation(before, teamContext, 'create task-agent hierarchy'),
+  };
 };
 
 export const getTaskAgentContextByRunId = (
@@ -449,13 +466,16 @@ export const getTaskAgentContextByRunId = (
 export const removeTaskAgentContext = (
   teamContext: AgentTeamContext,
   identity: TaskAgentStreamIdentity,
-): void => {
+): TaskExecutionProjectionMutation => {
+  const before = captureTaskExecutionNavigationSnapshot(teamContext);
   const node = teamContext.memberNodesByRouteKey?.get(identity.taskAgentRunId) || null;
   if (!node?.isTaskAgentInstance) {
-    return;
+    return deriveTaskExecutionProjectionMutation(before, teamContext, 'remove missing task-agent hierarchy');
   }
 
   const leafContexts = new Map(teamContext.leafAgentContextsByRouteKey);
+  const context = leafContexts.get(identity.taskAgentRunId);
+  if (context) resetRecentEventMonitorBaseline(context);
   leafContexts.delete(identity.taskAgentRunId);
   teamContext.leafAgentContextsByRouteKey = leafContexts;
 
@@ -467,6 +487,7 @@ export const removeTaskAgentContext = (
   if (teamContext.focusedMemberRouteKey === identity.taskAgentRunId) {
     teamContext.focusedMemberRouteKey = resolveActiveExecutionFocusedMemberRouteKey(teamContext);
   }
+  return deriveTaskExecutionProjectionMutation(before, teamContext, 'remove task-agent hierarchy');
 };
 
 export const shouldRemoveTaskAgentAfterMessage = (

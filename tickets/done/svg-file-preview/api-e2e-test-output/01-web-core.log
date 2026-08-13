@@ -1,0 +1,200 @@
+
+> autobyteus@1.4.37 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run utils/fileExplorer/__tests__/fileUtils.test.ts utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts components/fileExplorer/__tests__/FileViewer.spec.ts stores/__tests__/fileExplorerNodeRouting.spec.ts composables/__tests__/useEventMonitorFilePreview.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-web
+
+stderr | utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/fileExplorer/__tests__/fileUtils.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/fileExplorerNodeRouting.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useEventMonitorFilePreview.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/fileExplorer/__tests__/FileViewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/__tests__/useEventMonitorFilePreview.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/fileExplorer/__tests__/FileViewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/fileExplorer/__tests__/fileUtils.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useEventMonitorFilePreview.spec.ts (1 test) 6ms
+ ✓ utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts (46 tests) 8ms
+ ✓ utils/fileExplorer/__tests__/fileUtils.test.ts (24 tests) 17ms
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses bound REST URL for absolute local-looking media paths in remote windows
+[FileExplorer] Opening file: /tmp/diagram.SVG
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses bound REST URL for absolute local-looking media paths in remote windows
+[FileExplorer] Determined file type for "/tmp/diagram.SVG": Image
+[FileExplorer] Pushed new initial file state: {
+  path: '/tmp/diagram.SVG',
+  type: 'Image',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Constructed absolute media URL for "/tmp/diagram.SVG": https://node.example/rest/workspaces/ws-1/content?path=%2Ftmp%2Fdiagram.SVG
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses local-file protocol for embedded window local media paths
+[FileExplorer] Opening file: /tmp/diagram.svg
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses local-file protocol for embedded window local media paths
+[FileExplorer] Determined file type for "/tmp/diagram.svg": Image
+[FileExplorer] Pushed new initial file state: {
+  path: '/tmp/diagram.svg',
+  type: 'Image',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+[FileExplorer] Constructed local media URL: local-file://local/tmp/diagram.svg
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses the bound workspace route for an embedded sentinel without Electron
+[FileExplorer] Opening file: /tmp/notes.md
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses the bound workspace route for an embedded sentinel without Electron
+[FileExplorer] Determined file type for "/tmp/notes.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: '/tmp/notes.md',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "/tmp/notes.md" via GraphQL.
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses the bound workspace route for embedded-sentinel media without Electron
+[FileExplorer] Opening file: /tmp/diagram.svg
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses the bound workspace route for embedded-sentinel media without Electron
+[FileExplorer] Determined file type for "/tmp/diagram.svg": Image
+[FileExplorer] Pushed new initial file state: {
+  path: '/tmp/diagram.svg',
+  type: 'Image',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Constructed absolute media URL for "/tmp/diagram.svg": https://node.example/rest/workspaces/ws-1/content?path=%2Ftmp%2Fdiagram.svg
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > does not read, construct a URL, or fetch workspace content for Unsupported files
+[FileExplorer] Opening file: /tmp/archive.zip
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > does not read, construct a URL, or fetch workspace content for Unsupported files
+[FileExplorer] Determined file type for "/tmp/archive.zip": Unsupported
+[FileExplorer] Pushed new initial file state: {
+  path: '/tmp/archive.zip',
+  type: 'Unsupported',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+stderr | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > does not read, construct a URL, or fetch workspace content for Unsupported files
+[FileExplorer] Unsupported local file type "Unsupported" for "/tmp/archive.zip".
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > routes supported Lua code through the text reader instead of Unsupported
+[FileExplorer] Opening file: /tmp/script.lua
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > routes supported Lua code through the text reader instead of Unsupported
+[FileExplorer] Determined file type for "/tmp/script.lua": Text
+[FileExplorer] Pushed new initial file state: {
+  path: '/tmp/script.lua',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+ ✓ stores/__tests__/fileExplorerNodeRouting.spec.ts (6 tests) 15ms
+ ❯ components/fileExplorer/__tests__/FileViewer.spec.ts (6 tests | 1 failed) 36ms
+   ✓ FileViewer.vue > renders loading state 9ms
+   ✓ FileViewer.vue > renders error state 4ms
+   ✓ FileViewer.vue > renders MonacoEditor for text files in edit mode 6ms
+   × FileViewer.vue > renders ImageViewer for SVG image files 8ms
+     → expected 'http://example.com/diagram.svg' to be 'http://example.com/img.png' // Object.is equality
+   ✓ FileViewer.vue > forwards explicit relative-resource identity to Markdown preview 4ms
+   ✓ FileViewer.vue > forwards explicit relative-resource identity to HTML preview 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/fileExplorer/__tests__/FileViewer.spec.ts > FileViewer.vue > renders ImageViewer for SVG image files
+AssertionError: expected 'http://example.com/diagram.svg' to be 'http://example.com/img.png' // Object.is equality
+
+Expected: "http://example.com/img.png"
+Received: "http://example.com/diagram.svg"
+
+ ❯ components/fileExplorer/__tests__/FileViewer.spec.ts:77:32
+     75|     const image = wrapper.findComponent({ name: 'ImageViewer' });
+     76|     expect(image.exists()).toBe(true);
+     77|     expect(image.props('url')).toBe('http://example.com/img.png');
+       |                                ^
+     78|   });
+     79|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 4 passed (5)
+      Tests  1 failed | 82 passed (83)
+   Start at  08:17:02
+   Duration  7.90s (transform 3.88s, setup 34.16s, collect 446ms, tests 82ms, environment 1.48s, prepare 1.28s)
+
+ ELIFECYCLE  Command failed with exit code 1.

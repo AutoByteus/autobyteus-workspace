@@ -1,7 +1,7 @@
 import type { MemberTeamContext } from "../../../../agent-team-execution/domain/member-team-context.js";
 import { PUBLISH_ARTIFACTS_TOOL_NAME } from "../../../../services/published-artifacts/published-artifact-tool-contract.js";
 import { SEND_MESSAGE_TO_TOOL_NAME } from "../../../../agent-communication/services/send-message-to-tool-contract.js";
-import type { ConfiguredAgentToolExposure } from "../../../shared/configured-agent-tool-exposure.js";
+import type { RuntimeAgentToolExposure } from "../../../shared/runtime-agent-tool-exposure.js";
 import { buildClaudeAgentToolsMcpToolName } from "../agent-tools-mcp/claude-agent-tools-mcp-tool-name.js";
 
 export type ClaudeSessionToolingOptions = {
@@ -17,24 +17,24 @@ export type ClaudeSessionToolingOptions = {
 };
 
 export const resolveClaudeSessionToolingOptions = (input: {
-  configuredToolExposure: ConfiguredAgentToolExposure;
+  runtimeToolExposure: RuntimeAgentToolExposure;
   hasMaterializedSkills: boolean;
   memberTeamContext: MemberTeamContext | null;
   agentToolsMcpEnabledToolNames?: Iterable<string> | null;
 }): ClaudeSessionToolingOptions => {
   const enabledBrowserToolNames = [
-    ...input.configuredToolExposure.enabledBrowserToolNames,
+    ...input.runtimeToolExposure.enabledBrowserToolNames,
   ];
   const enabledMediaToolNames = [
-    ...input.configuredToolExposure.enabledMediaToolNames,
+    ...input.runtimeToolExposure.enabledMediaToolNames,
   ];
   const enabledTaskDelegationToolNames = [
-    ...input.configuredToolExposure.enabledTaskDelegationToolNames,
+    ...input.runtimeToolExposure.enabledTaskDelegationToolNames,
   ];
   const sendMessageToToolingEnabled =
-    input.configuredToolExposure.sendMessageToConfigured;
+    input.runtimeToolExposure.sendMessageToEnabled;
   const publishArtifactsToolingEnabled =
-    input.configuredToolExposure.publishArtifactsConfigured;
+    input.runtimeToolExposure.publishArtifactsEnabled;
   const taskDelegationToolingEnabled =
     Boolean(input.memberTeamContext) && enabledTaskDelegationToolNames.length > 0;
   const configuredAgentToolsMcpToolNames = collectConfiguredAgentToolsMcpToolNames({

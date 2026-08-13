@@ -25,14 +25,12 @@ export const preserveCanonicalAgentStatus = (status: unknown): AgentStatus =>
 export const applyLiveAgentStatusEvent = (
   context: AgentContext,
   payload: AgentStatusPayload,
-): void => {
-  const status = normalizeAgentRuntimeStatus(payload.status);
-  context.state.currentStatus = status;
-  context.state.canInterrupt = status === AgentStatus.Running && payload.can_interrupt === true;
-
-  if (status !== AgentStatus.Running && status !== AgentStatus.Initializing) {
-    context.isSending = false;
-  }
+): boolean => {
+  const nextStatus = normalizeAgentRuntimeStatus(payload.status);
+  const changed = context.state.currentStatus !== nextStatus || context.submissionPending;
+  context.state.currentStatus = nextStatus;
+  context.submissionPending = false;
+  return changed;
 };
 
 export const applyActiveRuntimePlaceholder = (
@@ -42,44 +40,27 @@ export const applyActiveRuntimePlaceholder = (
   if (options.preserveExistingLive === true && context.isSubscribed) {
     return;
   }
-
-  context.state.currentStatus = AgentStatus.Running;
-  context.state.canInterrupt = false;
+  context.state.currentStatus = AgentStatus.Initializing;
 };
 
 export const applyMemberOrHistoryStatusSnapshot = (
   target: RuntimeStatusTarget,
   status: string | AgentStatus | null | undefined,
-  options: {
-    preserveLiveInterrupt?: boolean;
-    preserveCurrentStatus?: boolean;
-  } = {},
+  options: { preserveCurrentStatus?: boolean } = {},
 ): void => {
-  const state = resolveState(target);
-  const normalizedStatus = normalizeAgentRuntimeStatus(status);
-  if (options.preserveCurrentStatus !== true) {
-    state.currentStatus = normalizedStatus;
+  if (options.preserveCurrentStatus === true) {
+    return;
   }
-
-  const isTerminalProjection =
-    normalizedStatus === AgentStatus.Offline ||
-    normalizedStatus === AgentStatus.Initializing ||
-    normalizedStatus === AgentStatus.Error;
-  if (isTerminalProjection || options.preserveLiveInterrupt !== true) {
-    state.canInterrupt = false;
-  }
+  resolveState(target).currentStatus = normalizeAgentRuntimeStatus(status);
 };
 
 export const applyOfflineOrTerminalCleanup = (
   target: RuntimeStatusTarget,
   status: string | AgentStatus | null | undefined = AgentStatus.Offline,
 ): void => {
-  const state = resolveState(target);
-  state.currentStatus = normalizeAgentRuntimeStatus(status, AgentStatus.Offline);
-  state.canInterrupt = false;
-
+  resolveState(target).currentStatus = normalizeAgentRuntimeStatus(status, AgentStatus.Offline);
   if (isAgentContext(target)) {
-    target.isSending = false;
+    target.submissionPending = false;
   }
 };
 
@@ -88,5 +69,4 @@ export const initializeRuntimeStatusState = (
   status: string | AgentStatus | null | undefined = AgentStatus.Offline,
 ): void => {
   state.currentStatus = normalizeAgentRuntimeStatus(status, AgentStatus.Offline);
-  state.canInterrupt = false;
 };

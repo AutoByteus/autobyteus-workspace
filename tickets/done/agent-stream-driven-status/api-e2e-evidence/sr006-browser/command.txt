@@ -1,0 +1,1 @@
+node tests/e2e/team-activity-presentation-probe.mjs --output-dir "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-evidence/sr006-browser"

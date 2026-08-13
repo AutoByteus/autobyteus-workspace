@@ -9,8 +9,6 @@ import { AgentStatus } from '../../../src/agent/status/status-enum.js';
 import { AgentInputUserMessage } from '../../../src/agent/message/agent-input-user-message.js';
 import { registerEditFileTool } from '../../../src/tools/file/edit-file.js';
 import { registerReadFileTool } from '../../../src/tools/file/read-file.js';
-import { registerReplaceInFileTool } from '../../../src/tools/file/replace-in-file.js';
-import { registerInsertInFileTool } from '../../../src/tools/file/insert-in-file.js';
 import { registerWriteFileTool } from '../../../src/tools/file/write-file.js';
 import { SkillRegistry } from '../../../src/skills/registry.js';
 import { EventType } from '../../../src/events/event-types.js';
@@ -34,13 +32,12 @@ const shouldRunDiagnostics =
 
 const runDiagnostics = shouldRunDiagnostics ? describe : describe.skip;
 
-const EDIT_TOOL_NAMES = new Set(['edit_file', 'replace_in_file', 'insert_in_file', 'write_file']);
+const EDIT_TOOL_NAMES = new Set(['edit_file', 'write_file']);
 
 const EDITING_TOOL_GUIDANCE =
   'Use absolute file paths for every tool call. ' +
-  'You may use edit_file for diff-style patches, replace_in_file for exact block replacement, ' +
-  'insert_in_file for exact anchored insertion, and write_file only when rewriting most of a file is simpler. ' +
-  'If one editing tool fails, inspect the error and retry with another editing tool. Preserve unrelated content.';
+  'Use edit_file with bare @@ context hunks for surgical changes, and write_file only when deliberately rewriting most of a file. ' +
+  'If a context patch fails, reread the file and retry with more unique unchanged/removal context. Preserve unrelated content.';
 
 type ScenarioFileSpec = {
   key: string;
@@ -706,7 +703,6 @@ deploy:
 ].map(createScenarioDefinition);
 
 runDiagnostics('edit_file diagnostics integration (LM Studio)', () => {
-  let originalParserEnv: string | undefined;
   const originalConsole = {
     log: console.log,
     info: console.info,
@@ -717,8 +713,6 @@ runDiagnostics('edit_file diagnostics integration (LM Studio)', () => {
     typeof firstArg === 'string' && firstArg.startsWith('[edit_file diagnostics]');
 
   beforeEach(() => {
-    originalParserEnv = process.env.AUTOBYTEUS_STREAM_PARSER;
-    process.env.AUTOBYTEUS_STREAM_PARSER = 'api_tool_call';
     SkillRegistry.getInstance().clear();
     resetFactory();
     console.log = (...args: unknown[]) => {
@@ -744,11 +738,6 @@ runDiagnostics('edit_file diagnostics integration (LM Studio)', () => {
   });
 
   afterEach(() => {
-    if (originalParserEnv === undefined) {
-      delete process.env.AUTOBYTEUS_STREAM_PARSER;
-    } else {
-      process.env.AUTOBYTEUS_STREAM_PARSER = originalParserEnv;
-    }
     SkillRegistry.getInstance().clear();
     resetFactory();
     console.log = originalConsole.log;
@@ -785,12 +774,9 @@ runDiagnostics('edit_file diagnostics integration (LM Studio)', () => {
       [
         registerReadFileTool(),
         registerEditFileTool(),
-        registerReplaceInFileTool(),
-        registerInsertInFileTool(),
         registerWriteFileTool()
       ],
       true,
-      null,
       null,
       null,
       null,

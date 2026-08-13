@@ -30,7 +30,9 @@ Standalone runs:
 2. GraphQL create/continue flows hand runtime selection to the server run services.
 3. `AgentRunManager` resolves the Codex backend factory.
 4. `codex-agent-run-backend-factory.ts` creates a Codex-backed `AgentRun`.
-5. `codex-thread-bootstrapper.ts` prepares the workspace, skills, approvals, and thread config.
+5. `codex-thread-bootstrapper.ts` prepares the workspace, Carpenter
+   `baseInstructions`, configured skills, approvals, effective tools, and thread
+   config.
 6. `CodexAppServerClient` / `CodexAppServerClientManager` speak to the Codex App Server process.
 7. Codex thread notifications are converted into normalized AutoByteus runtime events and streamed to the existing websocket/frontend pipeline.
 
@@ -38,7 +40,9 @@ Team runs:
 
 1. Team services create a team run with a generated `<team_definition_name_slug>_<uuid-without-dashes>` `teamRunId`, allocator-backed opaque `memberRunId` values for concrete agent members, and `TeamBackendKind.MIXED`.
 2. `MixedTeamManager` creates/restores one standalone Codex `AgentRun` per Codex team member through `AgentRunManager`.
-3. Codex member bootstrap consumes a runtime-neutral `MemberTeamContext` for teammate instructions, allowed recipients, `send_message_to` delivery wiring, and task-delegation identity/tool context.
+3. Codex member bootstrap passes the runtime-neutral `MemberTeamContext` to the
+   shared Carpenter composer for Team Instruction/Team Runtime and automatically
+   adds `send_message_to` plus `delegate_task` to effective tool exposure.
 4. Team websocket streaming preserves the member domain identity while forwarding Codex member runtime events under the mixed team backend.
 
 Codex App Server client reuse is scoped by canonical workspace `cwd`.
@@ -55,9 +59,11 @@ be routed among multiple active threads remain server-side diagnostics; server
 requests receive a transport-level error response, but the router must not
 broadcast them or call per-thread runtime-error projection.
 
-Codex exposes in-scope configured backend agent tools through the server-hosted
-Agent Tools MCP surface. When the configured tool set includes at least one
-available supported tool, including selected MCP-origin registry tools,
+Codex exposes in-scope effective backend agent tools through the server-hosted
+Agent Tools MCP surface. Effective exposure is the deduplicated configured set
+plus automatic `send_message_to` and `delegate_task` for a valid team context.
+When that set includes at least one available supported tool, including selected
+MCP-origin registry tools,
 `CodexThreadBootstrapper` creates a live `AgentToolMcpDescriptor`, materializes
 it as thread-scoped `config.mcp_servers.autobyteus_agent_tools`, and passes that
 config to `thread/start` and `thread/resume`. The descriptor must not be written
@@ -86,8 +92,9 @@ Family semantics still come from the shared server-owned services:
 
 - `send_message_to` selector semantics come from the shared
   `src/agent-communication` dispatcher: `recipient_name` requires a team member
-  context, while `target_agent_run_id` can be used by configured standalone or
-  team-member Codex runs to reach an exact currently active `AgentRun.runId`.
+  context, while `target_agent_run_id` can be used by an explicitly configured
+  standalone or automatically enabled team-member Codex run to reach an exact
+  currently active `AgentRun.runId`.
 - Task-delegation tools call `TaskDelegationToolService` with the current
   `MemberTeamContext`, inherit the canonical ready-to-run/no-dependencies
   guidance from the shared manifest/schema, and remain unavailable for
@@ -101,7 +108,7 @@ Family semantics still come from the shared server-owned services:
 The Codex runtime does not mutate task state directly and must not expose the
 removed legacy task-plan names (`create_task`, `create_tasks`,
 `assign_task_to`, `get_my_tasks`, or `get_task_plan_status`). This remains a
-configured-tool boundary: Codex runtime code must not add ticket-specific
+runtime-exposure boundary: Codex runtime code must not add ticket-specific
 provider `tool_choice` overrides, forced-tool dampening, or framework
 auto-review behavior for task results.
 
@@ -122,6 +129,25 @@ path resolver, appends one generated `Reference files:` block to the text item
 for local absolute paths, and keeps eligible images as `localImage` items.
 HTTP(S), data URL, empty, malformed, and unresolved locator values are not
 listed as local reference files.
+
+### Serialized input submission and active-turn steering
+
+`CodexThread.submitInput(...)` is the single owner of Codex input method
+selection and serializes concurrent submissions. After readiness, an idle
+thread sends `turn/start`; a thread with identified active turn A sends only
+`turn/steer` with `expectedTurnId: A`. Callers do not select the method or
+supply their own expected turn, and a rejected/mismatched steer must never fall
+back to `turn/start` and create a phantom B.
+
+Start and steer responses use separate strict response parsers. A start response
+installs its returned turn only when start/terminal notifications have not
+already reconciled it. A successful steer must return A, preserves A for input
+and memory correlation, and performs no new lifecycle transition. Provider
+terminal/interrupt/error notifications remain lifecycle authority; a terminal
+event processed while a request is in flight cannot be undone by its later
+response. Structured submission failures cross the backend operation result so
+command handlers can surface the provider code and message without inventing
+status.
 
 ## Model Catalog, Reasoning Effort, And Fast Mode Configuration
 
@@ -225,9 +251,11 @@ Codex filesystem sandbox behavior is controlled by the Codex-specific server set
   saved full-access setting is off, and runtime command/file/MCP/permission
   requests are auto-accepted or session-granted. Leave auto-approve off when the
   run should remain on visible manual approval gates.
-- Team-member auto-approval does not own team communication routing. Dynamic
-  team tools such as `send_message_to` remain constrained by configured tool
-  exposure, team-owned handlers, and recipient validation.
+- Team-member auto-approval does not own team communication routing. A valid
+  team context automatically adds `send_message_to` and `delegate_task` to
+  effective exposure, while team-owned handlers, current rosters, and recipient
+  or target validation still constrain each call. Other tools remain configured
+  and availability-gated.
 
 Server-side semantics are owned by
 `src/runtime-management/codex/codex-sandbox-mode-setting.ts` so the settings

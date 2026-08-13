@@ -40,6 +40,47 @@ reconstruct `agents/`, `agent-teams/`, or application-owned paths themselves;
 `AgentDefinitionService` and the file providers remain the authoritative source
 for both definition identity and source-path context.
 
+## Runtime Prompt Authoring
+
+The selected definition supplies only the agent-owned portion of the Carpenter
+runtime prompt:
+
+- `name` is required and renders under `Agent Identity`;
+- non-blank `description` renders as the identity description;
+- the non-blank `agent.md` body renders under `Responsibilities and Boundaries`;
+- the optional persisted `role` does not render in Agent Identity; and
+- a blank body remains absent instead of falling back to the description.
+
+Keep the body specific to the agent's responsibilities and boundaries. Do not
+copy the platform-owned Working Environment, Bash Operating Practice, File And
+Directory Practice, Team Runtime rosters/protocols, configured skill bodies, or
+tool schemas into `agent.md`. Authored Markdown headings are deterministically
+nested below `Responsibilities and Boundaries` during composition.
+
+For example:
+
+```markdown
+---
+name: Release Reviewer
+description: Reviews release readiness and rollback evidence.
+category: delivery
+---
+
+Check that the tested candidate, durable documentation, and release notes agree.
+Block publication when required evidence or a rollback path is missing.
+```
+
+`agent-config.json.skillNames` selects ordinary configured lazy skills, while
+`toolNames` selects explicitly configured capabilities. A valid team runtime
+automatically adds `send_message_to` and `delegate_task`; authors do not need to
+duplicate those two names merely to make team membership functional. Other
+tools remain explicitly configured and availability-gated.
+
+Agent definitions contain no prompt-processor selection field, and the
+create/update/read/GraphQL/frontend surfaces must not create a parallel prompt
+mutation option. Runtime prompt structure is the closed platform composition documented in
+[Prompt Engineering And Runtime Instruction Composition](./prompt_engineering.md).
+
 ## Default Launch Config
 
 Agent definitions now persist `defaultLaunchConfig` alongside the rest of the definition metadata.

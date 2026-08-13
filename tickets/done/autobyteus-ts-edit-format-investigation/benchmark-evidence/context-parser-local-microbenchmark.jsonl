@@ -1,0 +1,3 @@
+{"timestamp":"2026-08-02T07:25:48.826Z","node":"v22.23.1","lines":10000,"iterations":100,"total_ms":15.122,"avg_ms":0.151}
+{"timestamp":"2026-08-02T07:25:48.875Z","node":"v22.23.1","lines":100000,"iterations":20,"total_ms":38.946,"avg_ms":1.947}
+{"timestamp":"2026-08-02T07:29:01.355Z","node":"v22.23.1","lines":1000000,"iterations":5,"total_ms":94.048,"avg_ms":18.81}

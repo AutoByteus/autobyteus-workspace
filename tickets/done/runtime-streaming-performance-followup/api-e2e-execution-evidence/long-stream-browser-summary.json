@@ -1,0 +1,1020 @@
+{
+  "startedAt": "2026-08-08T05:57:37.823Z",
+  "topology": "production AgentRun/default lifecycle/handler/WebSocket egress -> real WebSocket -> production WebSocketClient/AgentStreamingService -> production AIMessage/TextSegment live/final renderers",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "durationMs": 601000,
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "ports": {
+    "harnessPort": 62075,
+    "nodeAPort": 62076,
+    "nodeBPort": 62077,
+    "webPort": 62078
+  },
+  "processes": {
+    "harness": {
+      "pid": 83647,
+      "command": "/Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/long-stream-production-harness.mjs --port 62075 --duration-ms 601000",
+      "logPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/long-stream-production-harness.log",
+      "exitCode": 0,
+      "signal": null
+    },
+    "nodeA": {
+      "pid": 83648,
+      "command": "/Users/normy/.hermes/node/bin/node dist/app.js --host 127.0.0.1 --port 62076 --data-dir /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-api-e2e-node-a-BWVbhR",
+      "logPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/long-stream-node-a.log",
+      "exitCode": 0,
+      "signal": null
+    },
+    "nodeB": {
+      "pid": 83649,
+      "command": "/Users/normy/.hermes/node/bin/node dist/app.js --host 127.0.0.1 --port 62077 --data-dir /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-api-e2e-node-b-uP5ejv",
+      "logPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/long-stream-node-b.log",
+      "exitCode": 0,
+      "signal": null
+    },
+    "nuxt": {
+      "pid": 83663,
+      "command": "pnpm exec nuxt dev --host 127.0.0.1 --port 62078",
+      "logPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/long-stream-nuxt.log",
+      "exitCode": null,
+      "signal": "SIGTERM"
+    }
+  },
+  "settings": {
+    "nodeAInitial": 500,
+    "invalid99": {
+      "saveDisabled": true,
+      "alert": "Enter a whole number from 100 through 2,000."
+    },
+    "invalidDecimal": {
+      "saveDisabled": true,
+      "alert": "Enter a whole number from 100 through 2,000."
+    },
+    "nodeAAfterSave": {
+      "effective": 1000,
+      "persisted": {
+        "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-api-e2e-node-a-BWVbhR/.env",
+        "value": "1000"
+      }
+    },
+    "nodeBInitial": 500,
+    "nodeBAfterSave": {
+      "effective": 2000,
+      "persisted": {
+        "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-api-e2e-node-b-uP5ejv/.env",
+        "value": "2000"
+      }
+    },
+    "nodeAAfterRebind": 1000,
+    "nodeAReset": {
+      "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-api-e2e-node-a-BWVbhR/.env",
+      "value": "500"
+    },
+    "nodeBAfterSecondRebind": 2000,
+    "nodeBReset": {
+      "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-api-e2e-node-b-uP5ejv/.env",
+      "value": "500"
+    }
+  },
+  "livePresentation": {
+    "contentLength": 240,
+    "liveRenderers": 1,
+    "richRenderers": 0,
+    "headings": 0,
+    "images": 0,
+    "literalUnsafeMarkupVisible": true,
+    "reasoningLiveRenderers": 1,
+    "reasoningStrong": 0
+  },
+  "performance": {
+    "activeSeconds": 600.999,
+    "internalContentEvents": 24044,
+    "sourceContentEvents": 24044,
+    "internalStatusEvents": 24048,
+    "internalRatePerSecond": 40.00672214096862,
+    "clientMessageCounts": {
+      "total": 25085,
+      "content": 1031,
+      "status": 24049,
+      "other": 5
+    },
+    "contentOutputRatePerSecond": 1.7154770640217372,
+    "contentFrameReductionPercent": 95.7120279487606,
+    "expectedCharacters": 120220,
+    "observedCharacters": 120220,
+    "expectedSha256": "4e5d7aef6b1ca3635dfedd272ebc526de31bc7f66179c7951fa63ab587756807",
+    "observedSha256": "4e5d7aef6b1ca3635dfedd272ebc526de31bc7f66179c7951fa63ab587756807",
+    "rendererDriftMs": {
+      "samples": 12022,
+      "mean": 0.2634752984650618,
+      "p50": 0,
+      "p95": 1.1000001430511475,
+      "max": 9.099999904632568
+    },
+    "websocketReceiptToVisibleMs": {
+      "samples": 1031,
+      "mean": 9.445101846200997,
+      "p50": 9.399999856948853,
+      "p95": 18.09999990463257,
+      "max": 24.700000047683716
+    },
+    "rendererCpuPercentOneCore": {
+      "samples": 580,
+      "mean": 4.835421358874171,
+      "p50": 4.066492193176383,
+      "p95": 10.226257818624308,
+      "max": 18.755878055687425
+    },
+    "backendHealthLatencyMs": {
+      "samples": 581,
+      "mean": 3.804954280549551,
+      "p50": 3.171415999997407,
+      "p95": 7.992084000026807,
+      "max": 18.337416999973357
+    },
+    "backendEventLoopDriftMs": {
+      "samples": 12013,
+      "meanMs": 1.0389154080580048,
+      "p95Ms": 2.257208999944851,
+      "maxMs": 20.82495799998287
+    },
+    "interactions": {
+      "count": 20,
+      "byKind": [
+        "panel",
+        "member",
+        "file",
+        "reference"
+      ],
+      "latencyMs": {
+        "samples": 20,
+        "mean": 39.0437769999975,
+        "p50": 25.186332999990555,
+        "p95": 88.91704099997878,
+        "max": 92.74387500000012
+      }
+    },
+    "host": {
+      "platform": "darwin",
+      "arch": "arm64",
+      "cpus": 10,
+      "model": "Apple M1 Max"
+    }
+  },
+  "finalPresentation": {
+    "richMountCount": 1,
+    "liveRenderers": 0,
+    "richRenderers": 1,
+    "headings": 2,
+    "codeBlocks": 1,
+    "katex": 1,
+    "mermaidContainers": 1,
+    "mermaidSvgs": 2,
+    "images": 1,
+    "unsafeOnErrorAttributes": 0,
+    "xssExecuted": false,
+    "reasoningRichRenderers": 1,
+    "reasoningStrong": 2
+  },
+  "assertions": [
+    {
+      "id": "SETUP-001",
+      "description": "Temporary fixture route does not overwrite an existing page",
+      "pass": true,
+      "details": {
+        "fixturePagePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-web/pages/api-e2e-runtime-streaming-performance.vue"
+      }
+    },
+    {
+      "id": "SET-001",
+      "description": "Absent node A configuration reports effective 500",
+      "pass": true,
+      "details": {
+        "nodeAInitial": 500,
+        "invalid99": {
+          "saveDisabled": true,
+          "alert": "Enter a whole number from 100 through 2,000."
+        },
+        "invalidDecimal": {
+          "saveDisabled": true,
+          "alert": "Enter a whole number from 100 through 2,000."
+        },
+        "nodeAAfterSave": {
+          "effective": 1000,
+          "persisted": {
+            "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-api-e2e-node-a-BWVbhR/.env",
+            "value": "1000"
+          }
+        },
+        "nodeBInitial": 500,
+        "nodeBAfterSave": {
+          "effective": 2000,
+          "persisted": {
+            "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-api-e2e-node-b-uP5ejv/.env",
+            "value": "2000"
+          }
+        },
+        "nodeAAfterRebind": 1000,
+        "nodeAReset": {
+          "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-api-e2e-node-a-BWVbhR/.env",
+          "value": "500"
+        },
+        "nodeBAfterSecondRebind": 2000,
+        "nodeBReset": {
+          "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-api-e2e-node-b-uP5ejv/.env",
+          "value": "500"
+        }
+      }
+    },
+    {
+      "id": "SET-002",
+      "description": "Below-range browser value is rejected",
+      "pass": true,
+      "details": {
+        "saveDisabled": true,
+        "alert": "Enter a whole number from 100 through 2,000."
+      }
+    },
+    {
+      "id": "SET-003",
+      "description": "Non-integer browser value is rejected",
+      "pass": true,
+      "details": {
+        "saveDisabled": true,
+        "alert": "Enter a whole number from 100 through 2,000."
+      }
+    },
+    {
+      "id": "SET-004",
+      "description": "Node A browser save persists 1000 through the real API",
+      "pass": true,
+      "details": {
+        "effective": 1000,
+        "persisted": {
+          "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-api-e2e-node-a-BWVbhR/.env",
+          "value": "1000"
+        }
+      }
+    },
+    {
+      "id": "SET-005",
+      "description": "Rebinding reads node B default without leaking node A state",
+      "pass": true,
+      "details": {
+        "nodeAInitial": 500,
+        "invalid99": {
+          "saveDisabled": true,
+          "alert": "Enter a whole number from 100 through 2,000."
+        },
+        "invalidDecimal": {
+          "saveDisabled": true,
+          "alert": "Enter a whole number from 100 through 2,000."
+        },
+        "nodeAAfterSave": {
+          "effective": 1000,
+          "persisted": {
+            "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-api-e2e-node-a-BWVbhR/.env",
+            "value": "1000"
+          }
+        },
+        "nodeBInitial": 500,
+        "nodeBAfterSave": {
+          "effective": 2000,
+          "persisted": {
+            "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-api-e2e-node-b-uP5ejv/.env",
+            "value": "2000"
+          }
+        },
+        "nodeAAfterRebind": 1000,
+        "nodeAReset": {
+          "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-api-e2e-node-a-BWVbhR/.env",
+          "value": "500"
+        },
+        "nodeBAfterSecondRebind": 2000,
+        "nodeBReset": {
+          "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-api-e2e-node-b-uP5ejv/.env",
+          "value": "500"
+        }
+      }
+    },
+    {
+      "id": "SET-006",
+      "description": "Node B browser save persists 2000 only to node B",
+      "pass": true,
+      "details": {
+        "effective": 2000,
+        "persisted": {
+          "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-api-e2e-node-b-uP5ejv/.env",
+          "value": "2000"
+        }
+      }
+    },
+    {
+      "id": "SET-007",
+      "description": "Rebinding to node A restores node A value",
+      "pass": true,
+      "details": {
+        "nodeAInitial": 500,
+        "invalid99": {
+          "saveDisabled": true,
+          "alert": "Enter a whole number from 100 through 2,000."
+        },
+        "invalidDecimal": {
+          "saveDisabled": true,
+          "alert": "Enter a whole number from 100 through 2,000."
+        },
+        "nodeAAfterSave": {
+          "effective": 1000,
+          "persisted": {
+            "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-api-e2e-node-a-BWVbhR/.env",
+            "value": "1000"
+          }
+        },
+        "nodeBInitial": 500,
+        "nodeBAfterSave": {
+          "effective": 2000,
+          "persisted": {
+            "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-api-e2e-node-b-uP5ejv/.env",
+            "value": "2000"
+          }
+        },
+        "nodeAAfterRebind": 1000,
+        "nodeAReset": {
+          "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-api-e2e-node-a-BWVbhR/.env",
+          "value": "500"
+        },
+        "nodeBAfterSecondRebind": 2000,
+        "nodeBReset": {
+          "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-api-e2e-node-b-uP5ejv/.env",
+          "value": "500"
+        }
+      }
+    },
+    {
+      "id": "SET-008",
+      "description": "Node A reset persists 500",
+      "pass": true,
+      "details": {
+        "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-api-e2e-node-a-BWVbhR/.env",
+        "value": "500"
+      }
+    },
+    {
+      "id": "SET-009",
+      "description": "Node B retains its independent value after node A reset",
+      "pass": true,
+      "details": {
+        "nodeAInitial": 500,
+        "invalid99": {
+          "saveDisabled": true,
+          "alert": "Enter a whole number from 100 through 2,000."
+        },
+        "invalidDecimal": {
+          "saveDisabled": true,
+          "alert": "Enter a whole number from 100 through 2,000."
+        },
+        "nodeAAfterSave": {
+          "effective": 1000,
+          "persisted": {
+            "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-api-e2e-node-a-BWVbhR/.env",
+            "value": "1000"
+          }
+        },
+        "nodeBInitial": 500,
+        "nodeBAfterSave": {
+          "effective": 2000,
+          "persisted": {
+            "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-api-e2e-node-b-uP5ejv/.env",
+            "value": "2000"
+          }
+        },
+        "nodeAAfterRebind": 1000,
+        "nodeAReset": {
+          "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-api-e2e-node-a-BWVbhR/.env",
+          "value": "500"
+        },
+        "nodeBAfterSecondRebind": 2000,
+        "nodeBReset": {
+          "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-api-e2e-node-b-uP5ejv/.env",
+          "value": "500"
+        }
+      }
+    },
+    {
+      "id": "SET-010",
+      "description": "Node B reset persists 500",
+      "pass": true,
+      "details": {
+        "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-api-e2e-node-b-uP5ejv/.env",
+        "value": "500"
+      }
+    },
+    {
+      "id": "PERF-SETUP-001",
+      "description": "Deterministic production-path stream start was accepted",
+      "pass": true,
+      "details": {
+        "status": 202
+      }
+    },
+    {
+      "id": "LIVE-001",
+      "description": "Active streamed text uses only the production live renderer",
+      "pass": true,
+      "details": {
+        "contentLength": 240,
+        "liveRenderers": 1,
+        "richRenderers": 0,
+        "headings": 0,
+        "images": 0,
+        "literalUnsafeMarkupVisible": true,
+        "reasoningLiveRenderers": 1,
+        "reasoningStrong": 0
+      }
+    },
+    {
+      "id": "LIVE-002",
+      "description": "Active Markdown/HTML remains literal and does not mount rich DOM",
+      "pass": true,
+      "details": {
+        "contentLength": 240,
+        "liveRenderers": 1,
+        "richRenderers": 0,
+        "headings": 0,
+        "images": 0,
+        "literalUnsafeMarkupVisible": true,
+        "reasoningLiveRenderers": 1,
+        "reasoningStrong": 0
+      }
+    },
+    {
+      "id": "LIVE-003",
+      "description": "Expanded incomplete reasoning uses escaped live text",
+      "pass": true,
+      "details": {
+        "contentLength": 240,
+        "liveRenderers": 1,
+        "richRenderers": 0,
+        "headings": 0,
+        "images": 0,
+        "literalUnsafeMarkupVisible": true,
+        "reasoningLiveRenderers": 1,
+        "reasoningStrong": 0
+      }
+    },
+    {
+      "id": "PERF-001",
+      "description": "The representative active stream lasts at least 10 minutes",
+      "pass": true,
+      "details": {
+        "activeSeconds": 600.999,
+        "durationMs": 601000
+      }
+    },
+    {
+      "id": "PERF-002",
+      "description": "Every deterministic source content event remains visible to the internal canonical subscriber",
+      "pass": true,
+      "details": {
+        "activeSeconds": 600.999,
+        "internalContentEvents": 24044,
+        "sourceContentEvents": 24044,
+        "internalStatusEvents": 24048,
+        "internalRatePerSecond": 40.00672214096862,
+        "clientMessageCounts": {
+          "total": 25085,
+          "content": 1031,
+          "status": 24049,
+          "other": 5
+        },
+        "contentOutputRatePerSecond": 1.7154770640217372,
+        "contentFrameReductionPercent": 95.7120279487606,
+        "expectedCharacters": 120220,
+        "observedCharacters": 120220,
+        "expectedSha256": "4e5d7aef6b1ca3635dfedd272ebc526de31bc7f66179c7951fa63ab587756807",
+        "observedSha256": "4e5d7aef6b1ca3635dfedd272ebc526de31bc7f66179c7951fa63ab587756807",
+        "rendererDriftMs": {
+          "samples": 12022,
+          "mean": 0.2634752984650618,
+          "p50": 0,
+          "p95": 1.1000001430511475,
+          "max": 9.099999904632568
+        },
+        "websocketReceiptToVisibleMs": {
+          "samples": 1031,
+          "mean": 9.445101846200997,
+          "p50": 9.399999856948853,
+          "p95": 18.09999990463257,
+          "max": 24.700000047683716
+        },
+        "rendererCpuPercentOneCore": {
+          "samples": 580,
+          "mean": 4.835421358874171,
+          "p50": 4.066492193176383,
+          "p95": 10.226257818624308,
+          "max": 18.755878055687425
+        },
+        "backendHealthLatencyMs": {
+          "samples": 581,
+          "mean": 3.804954280549551,
+          "p50": 3.171415999997407,
+          "p95": 7.992084000026807,
+          "max": 18.337416999973357
+        },
+        "backendEventLoopDriftMs": {
+          "samples": 12013,
+          "meanMs": 1.0389154080580048,
+          "p95Ms": 2.257208999944851,
+          "maxMs": 20.82495799998287
+        },
+        "interactions": {
+          "count": 20,
+          "byKind": [
+            "panel",
+            "member",
+            "file",
+            "reference"
+          ],
+          "latencyMs": {
+            "samples": 20,
+            "mean": 39.0437769999975,
+            "p50": 25.186332999990555,
+            "p95": 88.91704099997878,
+            "max": 92.74387500000012
+          }
+        },
+        "host": {
+          "platform": "darwin",
+          "arch": "arm64",
+          "cpus": 10,
+          "model": "Apple M1 Max"
+        }
+      }
+    },
+    {
+      "id": "PERF-003",
+      "description": "Internal content input rate is at least 30 events/s",
+      "pass": true,
+      "details": {
+        "internalRate": 40.00672214096862
+      }
+    },
+    {
+      "id": "PERF-004",
+      "description": "Accumulated browser content is at least 120,000 characters",
+      "pass": true,
+      "details": {
+        "activeSeconds": 600.999,
+        "internalContentEvents": 24044,
+        "sourceContentEvents": 24044,
+        "internalStatusEvents": 24048,
+        "internalRatePerSecond": 40.00672214096862,
+        "clientMessageCounts": {
+          "total": 25085,
+          "content": 1031,
+          "status": 24049,
+          "other": 5
+        },
+        "contentOutputRatePerSecond": 1.7154770640217372,
+        "contentFrameReductionPercent": 95.7120279487606,
+        "expectedCharacters": 120220,
+        "observedCharacters": 120220,
+        "expectedSha256": "4e5d7aef6b1ca3635dfedd272ebc526de31bc7f66179c7951fa63ab587756807",
+        "observedSha256": "4e5d7aef6b1ca3635dfedd272ebc526de31bc7f66179c7951fa63ab587756807",
+        "rendererDriftMs": {
+          "samples": 12022,
+          "mean": 0.2634752984650618,
+          "p50": 0,
+          "p95": 1.1000001430511475,
+          "max": 9.099999904632568
+        },
+        "websocketReceiptToVisibleMs": {
+          "samples": 1031,
+          "mean": 9.445101846200997,
+          "p50": 9.399999856948853,
+          "p95": 18.09999990463257,
+          "max": 24.700000047683716
+        },
+        "rendererCpuPercentOneCore": {
+          "samples": 580,
+          "mean": 4.835421358874171,
+          "p50": 4.066492193176383,
+          "p95": 10.226257818624308,
+          "max": 18.755878055687425
+        },
+        "backendHealthLatencyMs": {
+          "samples": 581,
+          "mean": 3.804954280549551,
+          "p50": 3.171415999997407,
+          "p95": 7.992084000026807,
+          "max": 18.337416999973357
+        },
+        "backendEventLoopDriftMs": {
+          "samples": 12013,
+          "meanMs": 1.0389154080580048,
+          "p95Ms": 2.257208999944851,
+          "maxMs": 20.82495799998287
+        },
+        "interactions": {
+          "count": 20,
+          "byKind": [
+            "panel",
+            "member",
+            "file",
+            "reference"
+          ],
+          "latencyMs": {
+            "samples": 20,
+            "mean": 39.0437769999975,
+            "p50": 25.186332999990555,
+            "p95": 88.91704099997878,
+            "max": 92.74387500000012
+          }
+        },
+        "host": {
+          "platform": "darwin",
+          "arch": "arm64",
+          "cpus": 10,
+          "model": "Apple M1 Max"
+        }
+      }
+    },
+    {
+      "id": "PERF-EXACT-001",
+      "description": "Final browser content length and SHA-256 exactly match deterministic input",
+      "pass": true,
+      "details": {
+        "activeSeconds": 600.999,
+        "internalContentEvents": 24044,
+        "sourceContentEvents": 24044,
+        "internalStatusEvents": 24048,
+        "internalRatePerSecond": 40.00672214096862,
+        "clientMessageCounts": {
+          "total": 25085,
+          "content": 1031,
+          "status": 24049,
+          "other": 5
+        },
+        "contentOutputRatePerSecond": 1.7154770640217372,
+        "contentFrameReductionPercent": 95.7120279487606,
+        "expectedCharacters": 120220,
+        "observedCharacters": 120220,
+        "expectedSha256": "4e5d7aef6b1ca3635dfedd272ebc526de31bc7f66179c7951fa63ab587756807",
+        "observedSha256": "4e5d7aef6b1ca3635dfedd272ebc526de31bc7f66179c7951fa63ab587756807",
+        "rendererDriftMs": {
+          "samples": 12022,
+          "mean": 0.2634752984650618,
+          "p50": 0,
+          "p95": 1.1000001430511475,
+          "max": 9.099999904632568
+        },
+        "websocketReceiptToVisibleMs": {
+          "samples": 1031,
+          "mean": 9.445101846200997,
+          "p50": 9.399999856948853,
+          "p95": 18.09999990463257,
+          "max": 24.700000047683716
+        },
+        "rendererCpuPercentOneCore": {
+          "samples": 580,
+          "mean": 4.835421358874171,
+          "p50": 4.066492193176383,
+          "p95": 10.226257818624308,
+          "max": 18.755878055687425
+        },
+        "backendHealthLatencyMs": {
+          "samples": 581,
+          "mean": 3.804954280549551,
+          "p50": 3.171415999997407,
+          "p95": 7.992084000026807,
+          "max": 18.337416999973357
+        },
+        "backendEventLoopDriftMs": {
+          "samples": 12013,
+          "meanMs": 1.0389154080580048,
+          "p95Ms": 2.257208999944851,
+          "maxMs": 20.82495799998287
+        },
+        "interactions": {
+          "count": 20,
+          "byKind": [
+            "panel",
+            "member",
+            "file",
+            "reference"
+          ],
+          "latencyMs": {
+            "samples": 20,
+            "mean": 39.0437769999975,
+            "p50": 25.186332999990555,
+            "p95": 88.91704099997878,
+            "max": 92.74387500000012
+          }
+        },
+        "host": {
+          "platform": "darwin",
+          "arch": "arm64",
+          "cpus": 10,
+          "model": "Apple M1 Max"
+        }
+      }
+    },
+    {
+      "id": "PERF-005",
+      "description": "Default-window ordinary content output remains no greater than 2.2/s",
+      "pass": true,
+      "details": {
+        "contentOutputRate": 1.7154770640217372
+      }
+    },
+    {
+      "id": "PERF-006",
+      "description": "Client content-frame reduction is at least 90%",
+      "pass": true,
+      "details": {
+        "reductionPercent": 95.7120279487606
+      }
+    },
+    {
+      "id": "PERF-007",
+      "description": "Routine running status companions remain client-visible and undeduplicated",
+      "pass": true,
+      "details": {
+        "clientStatusFrames": 24049,
+        "internalContentEvents": 24044
+      }
+    },
+    {
+      "id": "PERF-008",
+      "description": "50 ms renderer probe meets p95 drift and maximum-stall thresholds",
+      "pass": true,
+      "details": {
+        "samples": 12022,
+        "mean": 0.2634752984650618,
+        "p50": 0,
+        "p95": 1.1000001430511475,
+        "max": 9.099999904632568
+      }
+    },
+    {
+      "id": "PERF-009",
+      "description": "Renderer CPU mean/p95 remain within one-core thresholds",
+      "pass": true,
+      "details": {
+        "samples": 580,
+        "mean": 4.835421358874171,
+        "p50": 4.066492193176383,
+        "p95": 10.226257818624308,
+        "max": 18.755878055687425
+      }
+    },
+    {
+      "id": "PERF-010",
+      "description": "Twenty file/reference/member/panel interactions meet click-to-visible p95",
+      "pass": true,
+      "details": {
+        "values": [
+          25.512332999998762,
+          25.462416999995185,
+          42.347832999992534,
+          92.74387500000012,
+          27.96700000000419,
+          12.35912500001723,
+          23.45837500001653,
+          78.66987499999232,
+          25.186332999990555,
+          19.958082999975886,
+          16.5489579999703,
+          88.91704099997878,
+          22.935166999988724,
+          19.62529200001154,
+          22.09299999999348,
+          88.28137500002049,
+          17.196042000025045,
+          20.801665999984834,
+          30.742749999975786,
+          80.0690000000177
+        ],
+        "summary": {
+          "samples": 20,
+          "mean": 39.0437769999975,
+          "p50": 25.186332999990555,
+          "p95": 88.91704099997878,
+          "max": 92.74387500000012
+        }
+      }
+    },
+    {
+      "id": "PERF-011",
+      "description": "Backend health p95 remains no greater than 20 ms",
+      "pass": true,
+      "details": {
+        "samples": 581,
+        "mean": 3.804954280549551,
+        "p50": 3.171415999997407,
+        "p95": 7.992084000026807,
+        "max": 18.337416999973357
+      }
+    },
+    {
+      "id": "PERF-012",
+      "description": "Frontend adds no stacked cadence; WebSocket receipt-to-visible p95 is no greater than 150 ms",
+      "pass": true,
+      "details": {
+        "samples": 1031,
+        "mean": 9.445101846200997,
+        "p50": 9.399999856948853,
+        "p95": 18.09999990463257,
+        "max": 24.700000047683716
+      }
+    },
+    {
+      "id": "FINAL-001",
+      "description": "Streamed text switches once from live to rich presentation",
+      "pass": true,
+      "details": {
+        "richMountCount": 1,
+        "liveRenderers": 0,
+        "richRenderers": 1,
+        "headings": 2,
+        "codeBlocks": 1,
+        "katex": 1,
+        "mermaidContainers": 1,
+        "mermaidSvgs": 2,
+        "images": 1,
+        "unsafeOnErrorAttributes": 0,
+        "xssExecuted": false,
+        "reasoningRichRenderers": 1,
+        "reasoningStrong": 2
+      }
+    },
+    {
+      "id": "FINAL-002",
+      "description": "Completed output restores headings, highlighted code, math, and Mermaid",
+      "pass": true,
+      "details": {
+        "richMountCount": 1,
+        "liveRenderers": 0,
+        "richRenderers": 1,
+        "headings": 2,
+        "codeBlocks": 1,
+        "katex": 1,
+        "mermaidContainers": 1,
+        "mermaidSvgs": 2,
+        "images": 1,
+        "unsafeOnErrorAttributes": 0,
+        "xssExecuted": false,
+        "reasoningRichRenderers": 1,
+        "reasoningStrong": 2
+      }
+    },
+    {
+      "id": "FINAL-003",
+      "description": "Completed rich output sanitizes authored event-handler markup",
+      "pass": true,
+      "details": {
+        "richMountCount": 1,
+        "liveRenderers": 0,
+        "richRenderers": 1,
+        "headings": 2,
+        "codeBlocks": 1,
+        "katex": 1,
+        "mermaidContainers": 1,
+        "mermaidSvgs": 2,
+        "images": 1,
+        "unsafeOnErrorAttributes": 0,
+        "xssExecuted": false,
+        "reasoningRichRenderers": 1,
+        "reasoningStrong": 2
+      }
+    },
+    {
+      "id": "FINAL-004",
+      "description": "Completed reasoning switches to rich presentation",
+      "pass": true,
+      "details": {
+        "richMountCount": 1,
+        "liveRenderers": 0,
+        "richRenderers": 1,
+        "headings": 2,
+        "codeBlocks": 1,
+        "katex": 1,
+        "mermaidContainers": 1,
+        "mermaidSvgs": 2,
+        "images": 1,
+        "unsafeOnErrorAttributes": 0,
+        "xssExecuted": false,
+        "reasoningRichRenderers": 1,
+        "reasoningStrong": 2
+      }
+    },
+    {
+      "id": "HARNESS-001",
+      "description": "Production-path deterministic harness completed without failure",
+      "pass": true,
+      "details": null
+    }
+  ],
+  "browserEvents": [
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:warning",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A15%2C%22args%22%3A%5B%22getServerSettings%22%2C%22Query%22%2C%22%22%2C%22Query.getServerSettings%22%2C%22%7B%5Cn%20%20%5C%220%5C%22%3A%20%7B%5Cn%20%20%20%20%5C%22__typename%5C%22%3A%20%5C%22ServerSetting%5C%22%2C%5Cn%20%20%20%20%5C%22key%5C%22%3A%20%5C%22APP_ENV%5C%22%2C%5Cn%20%20%20%20%5C%22value%5C%22%3A%20%5C%22production%5C%22%2C%5Cn%20%20%20%20%5C%22description%5C%22%3A%20%5C%22Custom%20user-defined%20setting%5C%22%2C%5Cn%20%20%20%20%5C%22isEditable%5C%22%3A%20true%2C%5Cn%20%20%20%20%5C%22isDeletable%5C%22%3A%20true%5Cn%20%20%7D%2C%5Cn%20%20%5C%221%5C%22%3A%20%7B%5Cn%20%20%20%20%5C%22__typename%5C%22%3A%20%5C%22ServerSetting%5C%22%2C%5Cn%20%20%20%20%5C%22key%5C%22%3A%20%5C%22AUTOBYTEUS_COMPACTION_DEBUG_LOGS%5C%22%2C%5Cn%20%20%20%20%5C%22value%5C%22%3A%20%5C%22true%5C%22%2C%5Cn%20%20%20%20%5C%22description%5C%22%3A%20%5C%22Enable%20detailed%20compaction%20and%20token-budget%20diagnostic%20logs%5C%22%2C%5Cn%20%20%20%20%5C%22isEditable%5C%22%3A%20true%2C%5Cn%20%20%20%20%5C%22isDeletable%5C%22%3A%20false%5Cn%20%20%7D%2C%5Cn%20%20%5C%222%5C%22%3A%20%7B%5Cn%20%20%20%20%5C%22__typename%5C%22%3A%20%5C%22ServerSetting%5C%22%2C%5Cn%20%20%20%20%5C%22key%5C%22%3A%20%5C%22AUTOBYTEUS_COMPACTION_TRIGGER_RATIO%5C%22%2C%5Cn%20%20%20%20%5C%22value%5C%22%3A%20%5C%220.8%5C%22%2C%5Cn%20%20%20%20%5C%22description%5C%22%3A%20%5C%22Decimal%20compaction%20trigger%20ratio%20used%20for%20post-response%20budget%20checks%20(default%200.8)%5C%22%2C%5Cn%20%20%20%20%5C%22isEditable%5C%22%3A%20true%2C%5Cn%20%20%20%20%5C%22isDeletable%5C%22%3A%20false%5Cn%20%20%7D%2C%5Cn%20%20%5C%223%5C%22%3A%20%7B%5Cn%20%20%20%20%5C%22__typename%5C%22%3A%20%5C%22ServerSetting%5C%22%2C%5Cn%20%20%20%20%5C%22key%5C%22%3A%20%5C%22AUTOBYTEUS_FEATURED_CATALOG_ITEMS%5C%22%2C%5Cn%20%20%20%20%5C%22value%5C%22%3A%20%5C%22%7B%5C%5C%5C%22version%5C%5C%5C%22%3A1%2C%5C%5C%5C%22items%5C%5C%5C%22%3A%5B%7B%5C%5C%5C%22resourceKind%5C%5C%5C%22%3A%5C%5C%5C%22AGENT%5C%5C%5C%22%2C%5C%5C%5C%22definitionId%5C%5C%5C%22%3A%5C%5C%5C%22daily-assistant%5C%5C%5C%22%2C%5C%5C%5C%22sortOrder%5C%5C%5C%22%3A10%7D%2C%7B%5C%5C%5C%22resourceKind%5C%5C%5C%22%3A%5C%5C%5C%22AGENT%5C%5C%5C%22%2C%5C%5C%5C%22definitionId%5C%5C%5C%22%3A%5C%5C%5C%22codex%5C%5C%5C%22%2C%5C%5C%5C%22sortOrde%22%2C%22%7B%5Cn%20%20%5C%220%5C%22%3A%20%7B%5Cn%20%20%20%20%5C%22__typename%5C%22%3A%20%5C%22ServerSetting%5C%22%2C%5Cn%20%20%20%20%5C%22key%5C%22%3A%20%5C%22APP_ENV%5C%22%2C%5Cn%20%20%20%20%5C%22value%5C%22%3A%20%5C%22production%5C%22%2C%5Cn%20%20%20%20%5C%22description%5C%22%3A%20%5C%22Custom%20user-defined%20setting%5C%22%2C%5Cn%20%20%20%20%5C%22isEditable%5C%22%3A%20true%2C%5Cn%20%20%20%20%5C%22isDeletable%5C%22%3A%20true%5Cn%20%20%7D%2C%5Cn%20%20%5C%221%5C%22%3A%20%7B%5Cn%20%20%20%20%5C%22__typename%5C%22%3A%20%5C%22ServerSetting%5C%22%2C%5Cn%20%20%20%20%5C%22key%5C%22%3A%20%5C%22AUTOBYTEUS_COMPACTION_DEBUG_LOGS%5C%22%2C%5Cn%20%20%20%20%5C%22value%5C%22%3A%20%5C%22true%5C%22%2C%5Cn%20%20%20%20%5C%22description%5C%22%3A%20%5C%22Enable%20detailed%20compaction%20and%20token-budget%20diagnostic%20logs%5C%22%2C%5Cn%20%20%20%20%5C%22isEditable%5C%22%3A%20true%2C%5Cn%20%20%20%20%5C%22isDeletable%5C%22%3A%20false%5Cn%20%20%7D%2C%5Cn%20%20%5C%222%5C%22%3A%20%7B%5Cn%20%20%20%20%5C%22__typename%5C%22%3A%20%5C%22ServerSetting%5C%22%2C%5Cn%20%20%20%20%5C%22key%5C%22%3A%20%5C%22AUTOBYTEUS_COMPACTION_TRIGGER_RATIO%5C%22%2C%5Cn%20%20%20%20%5C%22value%5C%22%3A%20%5C%220.8%5C%22%2C%5Cn%20%20%20%20%5C%22description%5C%22%3A%20%5C%22Decimal%20compaction%20trigger%20ratio%20used%20for%20post-response%20budget%20checks%20(default%200.8)%5C%22%2C%5Cn%20%20%20%20%5C%22isEditable%5C%22%3A%20true%2C%5Cn%20%20%20%20%5C%22isDeletable%5C%22%3A%20false%5Cn%20%20%7D%2C%5Cn%20%20%5C%223%5C%22%3A%20%7B%5Cn%20%20%20%20%5C%22__typename%5C%22%3A%20%5C%22ServerSetting%5C%22%2C%5Cn%20%20%20%20%5C%22key%5C%22%3A%20%5C%22AUTOBYTEUS_FEATURED_CATALOG_ITEMS%5C%22%2C%5Cn%20%20%20%20%5C%22value%5C%22%3A%20%5C%22%7B%5C%5C%5C%22version%5C%5C%5C%22%3A1%2C%5C%5C%5C%22items%5C%5C%5C%22%3A%5B%7B%5C%5C%5C%22resourceKind%5C%5C%5C%22%3A%5C%5C%5C%22AGENT%5C%5C%5C%22%2C%5C%5C%5C%22definitionId%5C%5C%5C%22%3A%5C%5C%5C%22daily-assistant%5C%5C%5C%22%2C%5C%5C%5C%22sortOrder%5C%5C%5C%22%3A10%7D%2C%7B%5C%5C%5C%22resourceKind%5C%5C%5C%22%3A%5C%5C%5C%22AGENT%5C%5C%5C%22%2C%5C%5C%5C%22definitionId%5C%5C%5C%22%3A%5C%5C%5C%22codex%5C%5C%5C%22%2C%5C%5C%5C%22sortOrde%22%5D%7D"
+    },
+    {
+      "type": "console:log",
+      "text": "Agent WebSocket connected"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Checking server health at /rest/health"
+    },
+    {
+      "type": "response:500",
+      "text": "http://127.0.0.1:62078/rest/health"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
+    },
+    {
+      "type": "console:log",
+      "text": "Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+    }
+  ],
+  "failures": [],
+  "cleanup": {
+    "nodeAAfterSettings": {
+      "pid": 83648,
+      "initialExitCode": null,
+      "initialSignalCode": null,
+      "exitedAfterSigterm": true,
+      "finalExitCode": 0,
+      "finalSignalCode": null,
+      "exited": true
+    },
+    "nodeBAfterSettings": {
+      "pid": 83649,
+      "initialExitCode": null,
+      "initialSignalCode": null,
+      "exitedAfterSigterm": true,
+      "finalExitCode": 0,
+      "finalSignalCode": null,
+      "exited": true
+    },
+    "browser": "closed",
+    "nuxt": {
+      "pid": 83663,
+      "initialExitCode": null,
+      "initialSignalCode": null,
+      "exitedAfterSigterm": true,
+      "finalExitCode": null,
+      "finalSignalCode": "SIGTERM",
+      "exited": true
+    },
+    "nodeA": {
+      "status": "not-started"
+    },
+    "nodeB": {
+      "status": "not-started"
+    },
+    "harness": {
+      "pid": 83647,
+      "initialExitCode": null,
+      "initialSignalCode": null,
+      "exitedAfterSigterm": true,
+      "finalExitCode": 0,
+      "finalSignalCode": null,
+      "exited": true
+    },
+    "fixturePage": "removed",
+    "nodeARoot": "removed",
+    "nodeBRoot": "removed"
+  },
+  "result": "Pass",
+  "completedAt": "2026-08-08T06:07:51.934Z"
+}

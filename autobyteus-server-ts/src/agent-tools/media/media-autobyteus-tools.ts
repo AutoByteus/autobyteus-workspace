@@ -48,9 +48,10 @@ class MediaAutobyteusTool extends BaseTool<
   protected async _execute(
     context: ToolContextLike,
     rawArguments: Record<string, unknown> = {},
+    options: import('autobyteus-ts/tools/base-tool.js').ToolExecutionOptions = {},
   ): Promise<MediaToolResult> {
     const input = this.entry.parseInput(rawArguments);
-    return this.entry.execute(getMediaGenerationService(), context, input);
+    return this.entry.execute(getMediaGenerationService(), context, input, options);
   }
 }
 

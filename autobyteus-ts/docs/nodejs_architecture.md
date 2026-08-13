@@ -21,9 +21,14 @@ Python uses metaclasses to auto-register tools and processors at import time. In
 - Rationale: avoid user manual steps, keep parity with Python auto-registration, and prevent import-order issues by centralizing registration.
 
 ### Processors
-- System prompt processors: `registerSystemPromptProcessors()`.
 - Input processors: explicit registration if used (metaclass removed).
 - Tool invocation preprocessors, tool result processors, LLM response processors, lifecycle processors: follow the same explicit registration pattern.
+
+Native system-instruction completion is not a configurable processor category.
+During bootstrap, `SystemPromptProcessingStep` directly appends the
+platform-owned configured-skill catalog, validates the complete instruction,
+and configures the LLM. Agent configuration cannot inject another prompt
+mutation or reorder that terminal append.
 
 ## 3. Testing Structure
 

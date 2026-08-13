@@ -8,10 +8,6 @@ import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.j
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
 import { CodexThreadBootstrapper } from "../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js";
-import {
-  DefaultCodexThreadBootstrapStrategy,
-  type CodexThreadBootstrapStrategy,
-} from "../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrap-strategy.js";
 import { CodexAppServerClient } from "../../../src/runtime-management/codex/client/codex-app-server-client.js";
 import { CodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
@@ -234,20 +230,11 @@ const createBootstrapper = (input: {
   const skillService = {
     resolveConfiguredSkillsForAgent: () => input.configuredSkills,
   } as unknown as SkillService;
-  const teamStrategy = {
-    appliesTo: () => false,
-    prepare: async () => {
-      throw new Error("team strategy should not be used in this test");
-    },
-  } as CodexThreadBootstrapStrategy;
-
   return new CodexThreadBootstrapper(
     input.materializer,
     workspaceResolver,
     agentDefinitionService,
     skillService,
-    new DefaultCodexThreadBootstrapStrategy(),
-    teamStrategy,
     input.clientManager,
   );
 };

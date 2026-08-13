@@ -27,7 +27,6 @@ type MixedConversationTargetRouterOptions = {
   persistentMembers: PersistentMemberRegistryAccess;
   taskAgentInstances: MixedTaskAgentInstanceRegistry;
   taskTeamInstances: MixedTaskTeamInstanceRegistry;
-  notifyStatusChange: () => void;
 };
 
 type SegmentCursor = {
@@ -94,7 +93,6 @@ export class MixedConversationTargetRouter {
     const next = this.readCursor(remaining);
     if (!next) {
       const result = await this.options.persistentMembers.getOrCreate(resolved).postMessage(message);
-      this.options.notifyStatusChange();
       return result;
     }
 

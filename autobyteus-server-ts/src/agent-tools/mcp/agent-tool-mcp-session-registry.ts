@@ -56,7 +56,7 @@ export class AgentToolMcpSessionRegistry {
       owner: normalizeOwner(input.owner),
       sender: input.sender,
       runtimeKind: input.runtimeKind ?? input.sender.runtimeKind ?? null,
-      configuredExposure: cloneConfiguredExposure(input.configuredExposure),
+      runtimeExposure: cloneRuntimeExposure(input.runtimeExposure),
       executionContext: cloneAgentToolMcpExecutionContext(input.executionContext),
       executionCapabilities: input.executionCapabilities
         ? Object.freeze({ ...input.executionCapabilities })
@@ -159,15 +159,15 @@ const normalizeOwner = (
   return cloneAgentToolMcpSessionOwnerIdentity({ ...owner, runId });
 };
 
-const cloneConfiguredExposure = (
-  exposure: AgentToolMcpCreateSessionInput["configuredExposure"],
-): AgentToolMcpCreateSessionInput["configuredExposure"] => ({
-  configuredToolNames: [...exposure.configuredToolNames],
+const cloneRuntimeExposure = (
+  exposure: AgentToolMcpCreateSessionInput["runtimeExposure"],
+): AgentToolMcpCreateSessionInput["runtimeExposure"] => ({
+  requestedToolNames: [...exposure.requestedToolNames],
   enabledBrowserToolNames: [...exposure.enabledBrowserToolNames],
   enabledMediaToolNames: [...exposure.enabledMediaToolNames],
   enabledTaskDelegationToolNames: [...exposure.enabledTaskDelegationToolNames],
-  sendMessageToConfigured: exposure.sendMessageToConfigured,
-  publishArtifactsConfigured: exposure.publishArtifactsConfigured,
+  sendMessageToEnabled: exposure.sendMessageToEnabled,
+  publishArtifactsEnabled: exposure.publishArtifactsEnabled,
 });
 
 const doesOwnerMatch = (

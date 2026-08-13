@@ -126,7 +126,7 @@ projects as non-interruptible `error`. If a row has `terminatedAt` and no active
 projection, the list response reports `status=offline` and
 `statusSource=TERMINATED_METADATA`.
 
-## Team Status Projection And V2 Catalog Rows
+## Team Live Projection And V2 Catalog Rows
 
 Team workspace history rows also separate durable catalog facts from live
 runtime projection. The team GraphQL history item exposes these catalog facts
@@ -143,9 +143,8 @@ from `memory/team_run_history_index.json`:
 
 It also exposes list-time projection fields:
 
-- `status`: aggregate public team status (`offline`, `initializing`, `idle`,
-  `running`, or `error`).
-- `isActive`: whether the team currently has an active runtime.
+- `isActive`: the manager-owned binary fact that the root team currently has an
+  active runtime.
 - `members`: flat leaf-agent member status snapshots derived from current
   runtime state and metadata.
 - `memberTree`: the persisted recursive topology used for reopening and nested
@@ -156,10 +155,11 @@ Team history rows no longer expose or persist catalog `lastKnownStatus`,
 metadata no longer persists `updatedAt`; stable metadata facts are
 `teamRunId`, `teamDefinitionId`, `teamDefinitionName`,
 `coordinatorMemberRouteKey`, `createdAt`, optional `archivedAt`, and
-`memberTree`. `TeamRunStatusProjectionService` derives aggregate and member
-status from the active team runtime manager at list time. If a team row has no
-active runtime, it projects as `offline`; the catalog remains a durable history
-list, not a status log.
+`memberTree`. `TeamRunLiveProjectionService` derives root `isActive` and exact
+leaf-member status snapshots from the active team runtime manager at list time.
+If a team row has no active runtime, `isActive` is false and its leaf members
+default to `offline`; no root status is calculated. The catalog remains a
+durable history list, not a lifecycle or status log.
 
 Prepared-new run identities are explicit metadata facts, not inferred from a
 missing `platformAgentRunId` and not represented by a persisted

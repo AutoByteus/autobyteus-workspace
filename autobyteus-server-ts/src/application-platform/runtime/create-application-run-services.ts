@@ -89,8 +89,6 @@ export const createApplicationRunServices = (input: {
     input.agentDefinitionService,
     undefined,
     undefined,
-    undefined,
-    undefined,
     agentToolsSessionManager,
   );
   const claudeSessionManager = new ClaudeSessionManager(

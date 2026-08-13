@@ -4,6 +4,14 @@ import { localizationRuntime } from '~/localization/runtime/localizationRuntime'
 import { useActiveContextStore } from '~/stores/activeContextStore';
 import { useExtensionsStore } from '~/stores/extensionsStore';
 import type { AgentContext } from '~/types/agent/AgentContext';
+import {
+  buildMicrophoneAccessError,
+  disposeVoiceCaptureResources,
+  ensureVoiceAudioContextRunning,
+  mergeTranscriptWithDraft,
+  selectVoiceAudioInputDevices,
+  toVoicePermissionState,
+} from '~/utils/voiceInputCapture';
 
 export type VoiceInputRecordingSource = 'composer' | 'settings-test';
 export type VoiceInputResultOutcome = 'idle' | 'recording' | 'transcribing' | 'transcript-ready' | 'no-speech' | 'empty-transcript' | 'error';
@@ -11,13 +19,7 @@ export type VoiceInputPermissionState = 'unknown' | 'prompt' | 'granted' | 'deni
 
 const CAPTURE_START_TIMEOUT_MS = 2500;
 
-function t(key: string, params?: Record<string, string | number>): string {
-  return localizationRuntime.translate(key, params);
-}
-
-function getNoCaptureFramesError(): string {
-  return t('settings.voiceInput.store.noCaptureFrames');
-}
+const t = (key: string, params?: Record<string, string | number>): string => localizationRuntime.translate(key, params);
 
 export interface VoiceInputAudioInputDevice {
   deviceId: string;
@@ -51,6 +53,7 @@ export interface VoiceInputLatestResult {
 interface VoiceInputStoreState {
   initialized: boolean;
   isElectron: boolean;
+  isStarting: boolean;
   isRecording: boolean;
   isTranscribing: boolean;
   recordingSource: VoiceInputRecordingSource | null;
@@ -67,84 +70,14 @@ interface VoiceInputStoreState {
   captureWatchdogTimer: ReturnType<typeof setTimeout> | null;
   hasReceivedCaptureStats: boolean;
   composerTargetContext: AgentContext | null;
-}
-
-function mergeTranscriptWithDraft(currentDraft: string, transcript: string): string {
-  const trimmedTranscript = transcript.trim();
-  if (!trimmedTranscript) {
-    return currentDraft;
-  }
-  if (!currentDraft.trim()) {
-    return trimmedTranscript;
-  }
-  const separator = /\s$/.test(currentDraft) ? '' : ' ';
-  return `${currentDraft}${separator}${trimmedTranscript}`;
-}
-
-function selectAudioInputDevices(devices: MediaDeviceInfo[]): VoiceInputAudioInputDevice[] {
-  const audioInputs = devices.filter((device) => device.kind === 'audioinput');
-  const dedicatedInputs = audioInputs.filter((device) => device.deviceId !== 'default' && device.deviceId !== 'communications');
-  const visibleInputs = dedicatedInputs.length > 0 ? dedicatedInputs : audioInputs;
-
-  return visibleInputs.map((device, index) => ({
-    deviceId: device.deviceId,
-    label: device.label.trim() || t('settings.voiceInput.store.audioInputFallback', { index: index + 1 }),
-  }));
-}
-
-function toPermissionState(state: PermissionState | null): VoiceInputPermissionState {
-  if (state === 'granted' || state === 'prompt' || state === 'denied') {
-    return state;
-  }
-  return 'unknown';
-}
-
-function buildMicrophoneAccessError(error: unknown, selectedDeviceId: string | null): string {
-  const name = typeof error === 'object' && error && 'name' in error ? String((error as { name?: unknown }).name) : '';
-
-  if (name === 'NotAllowedError' || name === 'SecurityError') {
-    return t('settings.voiceInput.store.microphonePermissionDenied');
-  }
-
-  if (name === 'OverconstrainedError') {
-    return t('settings.voiceInput.store.selectedAudioSourceUnavailable');
-  }
-
-  if (name === 'NotFoundError' || name === 'DevicesNotFoundError') {
-    return selectedDeviceId
-      ? t('settings.voiceInput.store.selectedAudioSourceUnavailable')
-      : t('settings.voiceInput.store.noAudioInputDevices');
-  }
-
-  if (name === 'NotReadableError' || name === 'TrackStartError') {
-    return t('settings.voiceInput.store.audioSourceCouldNotBeOpened');
-  }
-
-  return error instanceof Error ? error.message : t('settings.voiceInput.store.failedToAccessMicrophone');
-}
-
-async function ensureAudioContextRunning(audioContext: AudioContext): Promise<void> {
-  const currentState = String(audioContext.state || 'unknown');
-  if (currentState === 'running') {
-    return;
-  }
-
-  if (typeof audioContext.resume === 'function') {
-    await audioContext.resume();
-  }
-
-  const resolvedState = String(audioContext.state || 'unknown');
-  if (resolvedState !== 'running') {
-    throw new Error(
-      t('settings.voiceInput.store.audioEngineStayedState', { state: resolvedState }),
-    );
-  }
+  startupAttemptGeneration: number;
 }
 
 export const useVoiceInputStore = defineStore('voiceInput', {
   state: (): VoiceInputStoreState => ({
     initialized: false,
     isElectron: typeof window !== 'undefined' && Boolean(window.electronAPI),
+    isStarting: false,
     isRecording: false,
     isTranscribing: false,
     recordingSource: null,
@@ -161,6 +94,7 @@ export const useVoiceInputStore = defineStore('voiceInput', {
     captureWatchdogTimer: null,
     hasReceivedCaptureStats: false,
     composerTargetContext: null,
+    startupAttemptGeneration: 0,
   }),
 
   getters: {
@@ -229,7 +163,7 @@ export const useVoiceInputStore = defineStore('voiceInput', {
         return;
       }
 
-      this.error = getNoCaptureFramesError();
+      this.error = t('settings.voiceInput.store.noCaptureFrames');
       this.setLatestResult({
         source,
         outcome: 'error',
@@ -262,7 +196,7 @@ export const useVoiceInputStore = defineStore('voiceInput', {
 
       try {
         const status = await navigator.permissions.query({ name: 'microphone' as PermissionName });
-        return toPermissionState(status.state);
+        return toVoicePermissionState(status.state);
       } catch {
         return 'unknown';
       }
@@ -290,32 +224,59 @@ export const useVoiceInputStore = defineStore('voiceInput', {
 
       try {
         const devices = await navigator.mediaDevices.enumerateDevices();
-        this.audioInputDevices = selectAudioInputDevices(devices);
+        this.audioInputDevices = selectVoiceAudioInputDevices(devices, t);
       } catch {
         this.audioInputDevices = [];
       }
     },
 
     async startRecording(source: VoiceInputRecordingSource = 'composer'): Promise<void> {
-      await this.initialize();
-
-      if (!this.isAvailable) {
-        this.error = t('settings.voiceInput.store.notEnabledYet');
+      if (this.isStarting || this.isRecording || this.isTranscribing) {
         return;
       }
 
-      const selectedDeviceId = this.selectedAudioInputDeviceId;
+      const attemptGeneration = ++this.startupAttemptGeneration;
+      this.isStarting = true;
+      this.recordingSource = source;
+      this.composerTargetContext = source === 'composer'
+        ? useActiveContextStore().activeAgentContext
+        : null;
+      this.error = null;
+      this.liveInputLevel = 0;
+      this.hasReceivedCaptureStats = false;
+
+      let pendingStream: MediaStream | null = null;
+      let pendingAudioContext: AudioContext | null = null;
+      let pendingAudioWorklet: AudioWorkletNode | null = null;
+      const isCurrentAttempt = () => (
+        this.startupAttemptGeneration === attemptGeneration
+        && this.isStarting
+        && this.recordingSource === source
+      );
+      const disposePendingResources = async () => {
+        const stream = pendingStream;
+        const audioContext = pendingAudioContext;
+        const audioWorklet = pendingAudioWorklet;
+        pendingStream = null;
+        pendingAudioContext = null;
+        pendingAudioWorklet = null;
+        await disposeVoiceCaptureResources(stream, audioContext, audioWorklet);
+      };
 
       try {
-        this.error = null;
-        this.recordingSource = source;
-        this.composerTargetContext = source === 'composer'
-          ? useActiveContextStore().activeAgentContext
-          : null;
-        this.liveInputLevel = 0;
-        this.hasReceivedCaptureStats = false;
+        await this.initialize();
+        if (!isCurrentAttempt()) return;
+
+        if (!this.isAvailable) {
+          this.error = t('settings.voiceInput.store.notEnabledYet');
+          await this.cleanup();
+          return;
+        }
+
+        const selectedDeviceId = this.selectedAudioInputDeviceId;
 
         await this.refreshAudioInputDevices();
+        if (!isCurrentAttempt()) return;
 
         if (this.microphonePermissionState === 'denied') {
           throw new Error(t('settings.voiceInput.store.microphonePermissionDenied'));
@@ -337,23 +298,39 @@ export const useVoiceInputStore = defineStore('voiceInput', {
           audioConstraints.deviceId = { exact: selectedDeviceId };
         }
 
-        this.stream = await navigator.mediaDevices.getUserMedia({
+        pendingStream = await navigator.mediaDevices.getUserMedia({
           audio: audioConstraints,
         });
+        if (!isCurrentAttempt()) {
+          await disposePendingResources();
+          return;
+        }
 
         await this.refreshAudioInputDevices();
+        if (!isCurrentAttempt()) {
+          await disposePendingResources();
+          return;
+        }
 
-        this.audioContext = new AudioContext({ latencyHint: 'interactive' });
-        await ensureAudioContextRunning(this.audioContext);
+        pendingAudioContext = new AudioContext({ latencyHint: 'interactive' });
+        await ensureVoiceAudioContextRunning(pendingAudioContext, t);
+        if (!isCurrentAttempt()) {
+          await disposePendingResources();
+          return;
+        }
 
-        await this.audioContext.audioWorklet.addModule(new URL('@/workers/voice-input-recorder.worklet.js', import.meta.url));
+        await pendingAudioContext.audioWorklet.addModule(new URL('@/workers/voice-input-recorder.worklet.js', import.meta.url));
+        if (!isCurrentAttempt()) {
+          await disposePendingResources();
+          return;
+        }
 
-        const mediaSource = this.audioContext.createMediaStreamSource(this.stream);
-        this.audioWorklet = new AudioWorkletNode(this.audioContext, 'voice-input-recorder', {
+        const mediaSource = pendingAudioContext.createMediaStreamSource(pendingStream);
+        pendingAudioWorklet = new AudioWorkletNode(pendingAudioContext, 'voice-input-recorder', {
           processorOptions: {},
         });
 
-        this.audioWorklet.port.onmessage = (event) => {
+        pendingAudioWorklet.port.onmessage = (event) => {
           if (event.data?.type === 'capture-stats') {
             this.hasReceivedCaptureStats = true;
             this.clearCaptureWatchdog();
@@ -379,9 +356,20 @@ export const useVoiceInputStore = defineStore('voiceInput', {
           }
         };
 
-        mediaSource.connect(this.audioWorklet);
-        this.audioWorklet.connect(this.audioContext.destination);
+        mediaSource.connect(pendingAudioWorklet);
+        pendingAudioWorklet.connect(pendingAudioContext.destination);
+        if (!isCurrentAttempt()) {
+          await disposePendingResources();
+          return;
+        }
 
+        this.stream = pendingStream;
+        this.audioContext = pendingAudioContext;
+        this.audioWorklet = pendingAudioWorklet;
+        pendingStream = null;
+        pendingAudioContext = null;
+        pendingAudioWorklet = null;
+        this.isStarting = false;
         this.isRecording = true;
         this.armCaptureWatchdog(source);
         this.setLatestResult({
@@ -393,7 +381,12 @@ export const useVoiceInputStore = defineStore('voiceInput', {
           diagnostics: null,
         });
       } catch (error) {
-        this.error = buildMicrophoneAccessError(error, selectedDeviceId);
+        await disposePendingResources();
+        if (!isCurrentAttempt()) {
+          return;
+        }
+        const selectedDeviceId = this.selectedAudioInputDeviceId;
+        this.error = buildMicrophoneAccessError(error, selectedDeviceId, t);
         if (this.error.includes('permission is denied')) {
           this.microphonePermissionState = 'denied';
         }
@@ -516,11 +509,14 @@ export const useVoiceInputStore = defineStore('voiceInput', {
     },
 
     async toggleRecording(source: VoiceInputRecordingSource = 'composer'): Promise<void> {
-      if (this.isTranscribing) {
+      if (this.isStarting || this.isTranscribing) {
         return;
       }
 
       if (this.isRecording) {
+        if (this.recordingSource !== source) {
+          return;
+        }
         await this.stopRecording();
         return;
       }
@@ -529,8 +525,10 @@ export const useVoiceInputStore = defineStore('voiceInput', {
     },
 
     async resetSettingsTestState(): Promise<void> {
-      await this.cleanup();
-      this.isTranscribing = false;
+      await this.cancelOperationForSource('settings-test');
+      if (this.isTranscribing) {
+        return;
+      }
       this.error = null;
       if (this.latestResult?.source === 'settings-test') {
         this.clearLatestResult();
@@ -538,28 +536,33 @@ export const useVoiceInputStore = defineStore('voiceInput', {
       await this.refreshAudioInputDevices();
     },
 
+    async cancelOperationForSource(source: VoiceInputRecordingSource): Promise<void> {
+      if (
+        this.recordingSource !== source
+        || (!this.isStarting && !this.isRecording)
+      ) {
+        return;
+      }
+      await this.cleanup();
+    },
+
     async cleanup(): Promise<void> {
+      this.startupAttemptGeneration += 1;
       this.clearCaptureWatchdog();
-
-      if (this.stream) {
-        for (const track of this.stream.getTracks()) {
-          track.stop();
-        }
-      }
-
-      if (this.audioContext) {
-        await this.audioContext.close();
-      }
-
+      const stream = this.stream;
+      const audioContext = this.audioContext;
+      const audioWorklet = this.audioWorklet;
       this.audioContext = null;
       this.audioWorklet = null;
       this.stream = null;
       this.flushPromiseResolve = null;
+      this.isStarting = false;
       this.isRecording = false;
       this.recordingSource = null;
       this.composerTargetContext = null;
       this.liveInputLevel = 0;
       this.hasReceivedCaptureStats = false;
+      await disposeVoiceCaptureResources(stream, audioContext, audioWorklet);
     },
   },
 });

@@ -203,7 +203,7 @@ describeCodexThreadManagerIntegration("CodexThreadManager integration (live tran
     const firstThread = await threadManager.createThread(initialContext);
     await waitForStartupReady(firstThread.startup.waitForReady);
 
-    await firstThread.sendTurn(
+    await firstThread.submitInput(
       new AgentInputUserMessage("Reply with the single word READY."),
     );
     await waitForIdle(() => firstThread.getStatusSnapshotSource().currentStatus === "IDLE" || firstThread.getStatusSnapshotSource().currentStatus === "ERROR");
@@ -222,7 +222,7 @@ describeCodexThreadManagerIntegration("CodexThreadManager integration (live tran
 
     expect(restoredThread.threadId).toBe(firstThreadId);
 
-    await restoredThread.sendTurn(
+    await restoredThread.submitInput(
       new AgentInputUserMessage("Reply with the single word RESTORED."),
     );
     await waitForIdle(() => restoredThread.getStatusSnapshotSource().currentStatus === "IDLE" || restoredThread.getStatusSnapshotSource().currentStatus === "ERROR");
@@ -273,12 +273,12 @@ describeCodexThreadManagerIntegration("CodexThreadManager integration (live tran
     expect(threadA.client).toBe(threadB.client);
     expect(threadA.threadId).not.toBe(threadB.threadId);
 
-    await threadA.sendTurn(
+    await threadA.submitInput(
       new AgentInputUserMessage("Reply with the single word ALPHA."),
     );
     await waitForIdle(() => threadA.getStatusSnapshotSource().currentStatus === "IDLE" || threadA.getStatusSnapshotSource().currentStatus === "ERROR");
 
-    await threadB.sendTurn(
+    await threadB.submitInput(
       new AgentInputUserMessage("Reply with the single word BRAVO."),
     );
     await waitForIdle(() => threadB.getStatusSnapshotSource().currentStatus === "IDLE" || threadB.getStatusSnapshotSource().currentStatus === "ERROR");

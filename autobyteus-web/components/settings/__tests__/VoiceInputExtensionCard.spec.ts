@@ -2,12 +2,40 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
 import VoiceInputExtensionCard from '../VoiceInputExtensionCard.vue'
 import { vi } from 'vitest'
+import type { ManagedExtensionState } from '~/electron/extensions/types'
+import type {
+  VoiceInputAudioInputDevice,
+  VoiceInputLatestResult,
+  VoiceInputPermissionState,
+  VoiceInputRecordingSource,
+} from '~/stores/voiceInputStore'
+
+interface VoiceInputStoreMock {
+  initialize: ReturnType<typeof vi.fn>
+  refreshAudioInputDevices: ReturnType<typeof vi.fn>
+  toggleRecording: ReturnType<typeof vi.fn>
+  cancelOperationForSource: ReturnType<typeof vi.fn>
+  resetSettingsTestState: ReturnType<typeof vi.fn>
+  isStarting: boolean
+  isRecording: boolean
+  isTranscribing: boolean
+  recordingSource: VoiceInputRecordingSource | null
+  liveInputLevel: number
+  audioInputDevices: VoiceInputAudioInputDevice[]
+  microphonePermissionState: VoiceInputPermissionState
+  selectedAudioInputUnavailable: boolean
+  selectedAudioInputLabel: string
+  latestResult: VoiceInputLatestResult | null
+}
 
 const { voiceInputStoreMock } = vi.hoisted(() => ({
   voiceInputStoreMock: {
     initialize: vi.fn().mockResolvedValue(undefined),
     refreshAudioInputDevices: vi.fn().mockResolvedValue(undefined),
     toggleRecording: vi.fn().mockResolvedValue(undefined),
+    cancelOperationForSource: vi.fn().mockResolvedValue(undefined),
+    resetSettingsTestState: vi.fn().mockResolvedValue(undefined),
+    isStarting: false,
     isRecording: false,
     isTranscribing: false,
     recordingSource: null,
@@ -17,7 +45,7 @@ const { voiceInputStoreMock } = vi.hoisted(() => ({
     selectedAudioInputUnavailable: false,
     selectedAudioInputLabel: 'System default',
     latestResult: null,
-  },
+  } as VoiceInputStoreMock,
 }))
 
 vi.mock('pinia', async () => {
@@ -35,7 +63,7 @@ vi.mock('~/stores/voiceInputStore', () => ({
   useVoiceInputStore: () => voiceInputStoreMock,
 }))
 
-function makeExtension(overrides: Record<string, unknown> = {}) {
+function makeExtension(overrides: Partial<ManagedExtensionState> = {}): ManagedExtensionState {
   return {
     id: 'voice-input',
     name: 'Voice Input',
@@ -62,6 +90,8 @@ describe('VoiceInputExtensionCard', () => {
     voiceInputStoreMock.initialize.mockClear()
     voiceInputStoreMock.refreshAudioInputDevices.mockClear()
     voiceInputStoreMock.toggleRecording.mockClear()
+    voiceInputStoreMock.cancelOperationForSource.mockClear()
+    voiceInputStoreMock.isStarting = false
     voiceInputStoreMock.isRecording = false
     voiceInputStoreMock.isTranscribing = false
     voiceInputStoreMock.recordingSource = null
@@ -251,5 +281,24 @@ describe('VoiceInputExtensionCard', () => {
     expect(wrapper.text()).toContain('Empty Transcript')
     expect(wrapper.text()).toContain('48000 Hz')
     expect(wrapper.text()).toContain('Language: en')
+  })
+
+  it('renders settings-test startup and source-scoped cancellation on unmount', () => {
+    voiceInputStoreMock.isStarting = true
+    voiceInputStoreMock.recordingSource = 'settings-test'
+    const wrapper = mount(VoiceInputExtensionCard, {
+      props: {
+        busy: false,
+        pendingAction: null,
+        extension: makeExtension({ status: 'installed', enabled: true }),
+      },
+    })
+
+    expect(wrapper.text()).toContain('Starting microphone...')
+    const startButton = wrapper.find('button[aria-busy="true"]')
+    expect(startButton.attributes('disabled')).toBeDefined()
+
+    wrapper.unmount()
+    expect(voiceInputStoreMock.cancelOperationForSource).toHaveBeenCalledWith('settings-test')
   })
 })

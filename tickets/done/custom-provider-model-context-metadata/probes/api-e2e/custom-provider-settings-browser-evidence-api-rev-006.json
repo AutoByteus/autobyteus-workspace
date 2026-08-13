@@ -1,0 +1,216 @@
+{
+  "result": "PASS",
+  "revision": "API-REV-006",
+  "mode": "headless Google Chrome through Nuxt browser-development path and actual built backend",
+  "frontendUrl": "http://127.0.0.1:51256",
+  "backendUrl": "http://127.0.0.1:51253",
+  "providerBaseUrl": "http://127.0.0.1:51252/v1",
+  "assertions": {
+    "invalidKeyProbeRejectedWithoutPersistence": true,
+    "browserAcceptedProviderNameBaseUrlAndApiKey": true,
+    "successfulProviderProbePreviewedExactAdvertisedModels": true,
+    "saveCreatedExactReadableProviderId": true,
+    "savedProviderReadyAndConfigured": true,
+    "exactCompositeModelIdentifiers": true,
+    "exactBuiltInCatalogMatchInheritedCuratedMetadata": true,
+    "nearMatchDidNotInheritCuratedMetadata": true,
+    "historicalPreviewFixtureRemainedOpaque": true,
+    "deleteRemovedProviderAndOwnedModels": true,
+    "narrowViewportNoHorizontalOverflow": true,
+    "generatedSecretsAbsentFromOwnedLogsAndEvidence": true
+  },
+  "advertisedModelIds": [
+    "deepseek-v4-pro",
+    "deepseek-v4-pro-0713",
+    "qwen3.8-max-preview"
+  ],
+  "catalogEvidence": {
+    "provider": {
+      "id": "provider_alibaba_cloud_token_plan",
+      "name": "Alibaba Cloud Token Plan",
+      "baseUrl": "http://127.0.0.1:51252/v1",
+      "status": "READY",
+      "isCustom": true
+    },
+    "models": [
+      {
+        "modelIdentifier": "openai-compatible:provider_alibaba_cloud_token_plan:deepseek-v4-pro",
+        "value": "deepseek-v4-pro",
+        "maxContextTokens": 1000000,
+        "maxInputTokens": null,
+        "maxOutputTokens": 384000,
+        "metadataProvenance": "CURATED_FALLBACK"
+      },
+      {
+        "modelIdentifier": "openai-compatible:provider_alibaba_cloud_token_plan:deepseek-v4-pro-0713",
+        "value": "deepseek-v4-pro-0713",
+        "maxContextTokens": null,
+        "maxInputTokens": null,
+        "maxOutputTokens": null,
+        "metadataProvenance": "CURATED_ONLY"
+      },
+      {
+        "modelIdentifier": "openai-compatible:provider_alibaba_cloud_token_plan:qwen3.8-max-preview",
+        "value": "qwen3.8-max-preview",
+        "maxContextTokens": null,
+        "maxInputTokens": null,
+        "maxOutputTokens": null,
+        "metadataProvenance": "CURATED_ONLY"
+      }
+    ]
+  },
+  "graphqlEvents": [
+    {
+      "operationName": "GetProviderSettings",
+      "method": "POST"
+    },
+    {
+      "operationName": "GetGeminiSetupConfig",
+      "method": "POST"
+    },
+    {
+      "operationName": "GetQwenSetupStatus",
+      "method": "POST"
+    },
+    {
+      "operationName": "ProbeCustomProvider",
+      "method": "POST"
+    },
+    {
+      "operationName": "ProbeCustomProvider",
+      "method": "POST"
+    },
+    {
+      "operationName": "CreateCustomProvider",
+      "method": "POST"
+    },
+    {
+      "operationName": "GetAvailableLLMProvidersWithModels",
+      "method": "POST"
+    },
+    {
+      "operationName": "GetProviderSettings",
+      "method": "POST"
+    },
+    {
+      "operationName": "DeleteCustomProvider",
+      "method": "POST"
+    },
+    {
+      "operationName": "GetAvailableLLMProvidersWithModels",
+      "method": "POST"
+    },
+    {
+      "operationName": "GetProviderSettings",
+      "method": "POST"
+    }
+  ],
+  "providerEvents": [
+    {
+      "method": "GET",
+      "path": "/v1/models",
+      "authorizationPresent": true,
+      "authorized": false
+    },
+    {
+      "method": "GET",
+      "path": "/v1/models",
+      "authorizationPresent": true,
+      "authorized": true
+    },
+    {
+      "method": "GET",
+      "path": "/v1/models",
+      "authorizationPresent": true,
+      "authorized": true
+    },
+    {
+      "method": "GET",
+      "path": "/v1/models",
+      "authorizationPresent": true,
+      "authorized": true
+    }
+  ],
+  "responsive": {
+    "viewportWidth": 390,
+    "documentClientWidth": 390,
+    "documentScrollWidth": 390,
+    "bodyScrollWidth": 390
+  },
+  "consoleEvents": [
+    {
+      "type": "debug",
+      "textExcerpt": "[vite] connecting...",
+      "originalTextSha256": "03eed9e6096e24eb561768b8f2de073a0237c5b25364026a50829ccb07982a38",
+      "expected": true,
+      "classification": "Normal development-path console output."
+    },
+    {
+      "type": "debug",
+      "textExcerpt": "[vite] connected.",
+      "originalTextSha256": "734d6e174e399b737799f1a271151c41f153a19f9a31a81b611c506afbd1ea67",
+      "expected": true,
+      "classification": "Normal development-path console output."
+    },
+    {
+      "type": "log",
+      "textExcerpt": "serverStore: Initializing server config",
+      "originalTextSha256": "e6a139ce05b3f6c206e5b2d62f701b32d5726d9c9cde7e99d8c85b874256fdfa",
+      "expected": true,
+      "classification": "Normal development-path console output."
+    },
+    {
+      "type": "log",
+      "textExcerpt": "serverStore: Not in Electron environment. Skipping server initialization.",
+      "originalTextSha256": "efb01f6b96cbc0f3c00e98fa0172f9789b8bc24d27161b3184ea1712fc70bbe0",
+      "expected": true,
+      "classification": "Normal development-path console output."
+    },
+    {
+      "type": "info",
+      "textExcerpt": "<Suspense> is an experimental feature and its API will likely change.",
+      "originalTextSha256": "bda1910cd7ed929514b01970b5b526ec507c1cbac01f19cc1b0271bd6184fd2d",
+      "expected": true,
+      "classification": "Normal development-path console output."
+    },
+    {
+      "type": "log",
+      "textExcerpt": "ServerLoading: Component mounted with status: running",
+      "originalTextSha256": "ea53d2f0bf0def9545a6b92be66221c6d87377e2c1a2a18c07d3435e218c8869",
+      "expected": true,
+      "classification": "Normal development-path console output."
+    },
+    {
+      "type": "verbose",
+      "textExcerpt": "[DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o",
+      "originalTextSha256": "bedbdc559b23bae34f056266a726c1aaae5cb8e33d4b874fa5702df0d716d100",
+      "expected": true,
+      "classification": "Normal development-path console output."
+    },
+    {
+      "type": "verbose",
+      "textExcerpt": "[DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq)",
+      "originalTextSha256": "d568e560a7db303240c6d1212cf8213f76a70246622f82e7d66f3bb78aef19fc",
+      "expected": true,
+      "classification": "Normal development-path console output."
+    },
+    {
+      "type": "warning",
+      "textExcerpt": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A15%2C%22args%22%3A%5B%22availableLlmProvidersWithModels%22%2C%22Query%22%2C%22%22%2C%22Query.availableLlmProvidersWithModels%22%2C%22%7B%5Cn%20%20%5C%220%5C%22%3A%20%7B%5Cn%20%20%20%20%5C%22__typename%5C%22%3A%20%5C%22…",
+      "originalTextSha256": "b984ec7d158d9fa07397c3e5e1db364985e74db624f984f33a3e83a6c02e43bf",
+      "expected": true,
+      "classification": "Non-blocking Apollo Client development cache-replacement diagnostic during post-mutation refresh; visible state, direct GraphQL state, and cleanup assertions passed."
+    },
+    {
+      "type": "warning",
+      "textExcerpt": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A15%2C%22args%22%3A%5B%22providerSettings%22%2C%22Query%22%2C%22%22%2C%22Query.providerSettings%22%2C%22%7B%5Cn%20%20%5C%220%5C%22%3A%20%7B%5Cn%20%20%20%20%5C%22__typename%5C%22%3A%20%5C%22ProviderSettingsGroup%5C%22%2C…",
+      "originalTextSha256": "bd2a7554ab04da707240f3f8aec3fae1e3faade1ed2476845c8b1a80c26995c9",
+      "expected": true,
+      "classification": "Non-blocking Apollo Client development cache-replacement diagnostic during post-mutation refresh; visible state, direct GraphQL state, and cleanup assertions passed."
+    }
+  ],
+  "screenshots": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/probes/api-e2e/custom-provider-settings-api-rev-006-desktop.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/probes/api-e2e/custom-provider-settings-api-rev-006-narrow.png"
+  ]
+}

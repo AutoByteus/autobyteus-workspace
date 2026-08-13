@@ -1,0 +1,22 @@
+Post-finalization cleanup - compaction-lineage-origin-simplification
+checked_at_utc=2026-08-08T18:32:00Z
+personal=541fb742ea58c75be2470e4d0045269d5f9fa83c
+origin_personal=541fb742ea58c75be2470e4d0045269d5f9fa83c
+ticket_commit=d671b6961374c760bb4416287061843fa4a46f6f
+preconditions=PASS (target pushed, ticket ancestor, worktree clean)
+command=git worktree remove /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-lineage-origin-simplification
+command=git worktree prune
+command=git branch -d codex/compaction-lineage-origin-simplification
+Deleted branch codex/compaction-lineage-origin-simplification (was d671b6961).
+command=git push origin --delete codex/compaction-lineage-origin-simplification
+remote:
+remote: GitHub found 780 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 320 high, 376 moderate, 64 low). To find out more, visit:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot
+remote:
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+ - [deleted]             codex/compaction-lineage-origin-simplification
+worktree_cleanup=PASS
+worktree_prune=PASS
+local_branch_cleanup=PASS
+remote_branch_cleanup=PASS
+result=PASS

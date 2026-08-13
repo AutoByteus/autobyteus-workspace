@@ -20,6 +20,35 @@ Manages runtime agent runs and message execution flow.
 
 Runtime managers compose definitions, prompts, tools, processors, and workspace context.
 
+## Carpenter Runtime Instructions
+
+Before creating any native AutoByteus, Codex, or Claude backend, the runtime
+resolves the selected agent definition and exact absolute effective workspace,
+then calls the shared `composeCarpenterPrompt(...)` boundary. A team run also
+supplies its validated `MemberTeamContext` so the same composition includes the
+exact selected team instruction, current member identity, communication roster,
+and delegation target roster.
+
+The stable semantic order is Agent Identity, optional Team Instruction and Team
+Runtime, Working Environment, Bash Operating Practice, File And Directory
+Practice, and optional configured Skills. Native AutoByteus places the Carpenter
+text in `AgentConfig.systemPrompt` and the core appends its one terminal Skills
+catalog. Codex passes the Carpenter text as thread `baseInstructions`; Claude
+passes it as SDK query `options.systemPrompt`. Codex/Claude configured skills use
+their provider-specific discovery/materialization paths rather than an eager
+prompt body.
+
+The composer fails before provider invocation when a required name/workspace,
+team member/delivery binding, or dynamic value is invalid. It also contains
+authored `agent.md` and `team.md` headings beneath their owning section and
+rejects unresolved Carpenter placeholders. Stable Claude instructions are not
+rebuilt in user turns.
+
+See
+[Prompt Engineering And Runtime Instruction Composition](./prompt_engineering.md)
+for the authoring contract and concrete foundation, Bash, skill, and tool
+examples.
+
 Configured agent skills are resolved before runtime-specific bootstrap through
 `SkillService.resolveConfiguredSkillsForAgent(agentDefinition)`. Native
 AutoByteus, Codex, Claude, and team-member launch paths should consume that
@@ -132,6 +161,28 @@ launch API response field.
 authority once an `AgentRun` exists. Its runtime events are the source that
 replaces command overlays and drives later `running`, `idle`, `offline`, and
 `error` projections.
+
+## Active Input And Interrupt Command Results
+
+Provider input policy remains inside its runtime adapter. In particular,
+`CodexThread.submitInput(...)` serializes submissions: idle sends
+`turn/start`, while identified active turn A sends only
+`turn/steer(expectedTurnId=A)`. A successful steer preserves A without a new
+turn-start transition; a rejected or mismatched steer returns a structured
+failure and never falls back to start. Start/terminal and steer/terminal races
+are reconciled so a late request response cannot reinstall a turn already
+retired by provider lifecycle evidence.
+
+`INTERRUPT_GENERATION` is command-correlated control traffic. Standalone and
+exact team-member requests carry a fresh client `command_id`; the originating
+WebSocket receives one discriminated `AGENT_COMMAND_ACK` with `accepted`,
+`rejected`, or `failed`, the same command id, and the exact standalone-run or
+team-member target. Missing/inactive targets and provider rejection are result
+arms rather than fabricated lifecycle events. Accepted means only that the
+runtime accepted the interrupt request: later `TURN_INTERRUPTED`/terminal
+`AGENT_STATUS` remains responsible for clearing running/Stop state. A closed
+socket cannot receive a server result, so client disconnect completion is a
+separate local transport failure, not a synthetic acknowledgement.
 
 ## Canonical Turn Lifecycle And Failure Authority
 
@@ -271,12 +322,24 @@ user input, interrupted streamed assistant text/reasoning, and completed
 tool-result facts. This is distinct from `stop()`, which remains terminal
 runtime shutdown and runs cleanup.
 
-Claude Agent SDK and Codex App Server expose in-scope configured backend agent
+A non-interrupt native turn failure is also operation-scoped when memory repair
+can complete. `AgentTurnRunner` terminalizes unmatched native calls through the
+memory-owned protocol-safety boundary, publishes a diagnostic recovered event,
+settles the turn as recovered, and lets the still-live worker return to idle for
+a later message. A missing persisted result is represented as one matching raw
+and working-context tool error, never fabricated success. If repair/persistence
+itself fails, the turn remains terminally errored. This recovery rule does not
+add a universal timeout to unrelated native tools.
+
+Claude Agent SDK and Codex App Server expose in-scope effective backend agent
 tools through the unified Agent Tools MCP route, not through runtime-owned
 duplicated tool projections. The enabled set includes selected server-owned
-tool families and selected configured MCP-origin registry tools. When at least
-one configured and available tool is enabled, the runtime materializer creates a
-live `autobyteus_agent_tools` descriptor:
+tool families and selected configured MCP-origin registry tools. A valid team
+context automatically unions `send_message_to` and `delegate_task` into that
+effective set even when the agent definition omitted both; configured duplicate
+names are deduplicated. Other tools remain explicitly configured and
+availability-gated. When at least one effective and available tool is enabled,
+the runtime materializer creates a live `autobyteus_agent_tools` descriptor:
 
 - Codex passes it only as thread-scoped
   `config.mcp_servers.autobyteus_agent_tools` to `thread/start` /
@@ -334,7 +397,14 @@ Family-specific execution ownership stays below the Agent Tools MCP adapter:
   into the standard browser result object before terminal lifecycle events are
   emitted.
 - Media tools return the canonical `{ file_path }` result shape so generated
-  media files continue to project as generated-output file changes.
+  media files continue to project as generated-output file changes. The
+  server-owned `generate_image` capability applies its own validated
+  10,000-3,600,000 ms operation deadline (saved
+  `MEDIA_OPERATION_TIMEOUT_MS`, default 300,000 ms), propagates supported
+  cancellation, stages bytes under a revocable publication lease, and suppresses
+  late provider/download publication. This is media-service policy, not a
+  runtime-wide tool deadline; other media operations retain their existing
+  duration semantics.
 - Task-delegation tools call `TaskDelegationToolService` with the current
   `MemberTeamContext` and inherit the canonical ready-to-run/no-dependencies
   guidance from the shared manifest/schema. AutoByteus native execution

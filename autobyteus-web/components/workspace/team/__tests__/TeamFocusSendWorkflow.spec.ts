@@ -13,7 +13,6 @@ import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useTeamCommunicationStore } from '~/stores/teamCommunicationStore';
 import { useTaskDelegationStore } from '~/stores/taskDelegationStore';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import { AgentContext } from '~/types/agent/AgentContext';
 import { AgentRunState } from '~/types/agent/AgentRunState';
 import type { AgentRunConfig } from '~/types/agent/AgentRunConfig';
@@ -171,7 +170,7 @@ const buildTeamContext = () => {
     ]),
     coordinatorMemberRouteKey: 'coordinator',
     focusedMemberRouteKey: 'coordinator',
-    currentStatus: AgentTeamStatus.Running,
+    isActive: true,
     isSubscribed: false,
     historicalHydration: null,
   };

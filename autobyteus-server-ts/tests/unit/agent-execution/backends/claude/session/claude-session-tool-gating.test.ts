@@ -6,11 +6,13 @@ import { AgentRunContext } from "../../../../../../src/agent-execution/domain/ag
 import { ClaudeAgentRunContext } from "../../../../../../src/agent-execution/backends/claude/backend/claude-agent-run-context.js";
 import { buildClaudeSessionConfig } from "../../../../../../src/agent-execution/backends/claude/session/claude-session-config.js";
 import { ClaudeSession } from "../../../../../../src/agent-execution/backends/claude/session/claude-session.js";
-import { buildConfiguredAgentToolExposure } from "../../../../../../src/agent-execution/shared/configured-agent-tool-exposure.js";
+import { buildRuntimeAgentToolExposure } from "../../../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
 import { MemberTeamContext } from "../../../../../../src/agent-team-execution/domain/member-team-context.js";
 import { TeamBackendKind } from "../../../../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { buildTeamMemberAddress } from "../../../../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
+import { AgentDefinition } from "../../../../../../src/agent-definition/domain/models.js";
+import { composeCarpenterPrompt } from "../../../../../../src/agent-execution/prompt/carpenter-prompt-composer.js";
 
 const {
   buildClaudeSessionMcpServersMock,
@@ -98,14 +100,12 @@ const createMemberTeamContext = (input: {
     deliverInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),
   });
 
-const createSession = (configuredToolNames: string[] = [], input: {
+const createSession = (requestedToolNames: string[] = [], input: {
   memberTeamContext?: MemberTeamContext | null;
 } = {}) => {
   const startQueryTurn = vi.fn(async () => createResultQuery());
   const closeQuery = vi.fn();
-  const memberTeamContext = input.memberTeamContext === undefined
-    ? createMemberTeamContext()
-    : input.memberTeamContext;
+  const memberTeamContext = input.memberTeamContext ?? null;
   const supportedAgentToolsMcpNames = new Set([
     "send_message_to",
     "open_tab",
@@ -118,7 +118,8 @@ const createSession = (configuredToolNames: string[] = [], input: {
     "publish_artifacts",
     "db_query",
   ]);
-  const enabledTools = configuredToolNames.filter((toolName) =>
+  const runtimeToolExposure = buildRuntimeAgentToolExposure(requestedToolNames, memberTeamContext);
+  const enabledTools = runtimeToolExposure.requestedToolNames.filter((toolName) =>
     supportedAgentToolsMcpNames.has(toolName),
   );
   const createAgentToolMcpSession = vi.fn(() => ({
@@ -143,15 +144,24 @@ const createSession = (configuredToolNames: string[] = [], input: {
       memberTeamContext,
     }),
     runtimeContext: new ClaudeAgentRunContext({
+      carpenterSystemPrompt: composeCarpenterPrompt({
+        agentDefinition: new AgentDefinition({
+          name: "Test agent",
+          description: "Tests Claude tooling.",
+          instructions: "Run the requested test.",
+          toolNames: requestedToolNames,
+        }),
+        workspaceRootPath: "/tmp",
+        memberTeamContext,
+      }),
       sessionConfig: buildClaudeSessionConfig({
         model: "haiku",
         workingDirectory: "/tmp",
         permissionMode: "default",
       }),
-      configuredToolExposure: buildConfiguredAgentToolExposure(configuredToolNames),
+      runtimeToolExposure,
       sessionId: "run-1",
       activeTurnId: null,
-      memberTeamContext,
     }),
   });
 
@@ -194,8 +204,10 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
     buildClaudeSessionMcpServersMock.mockResolvedValue(null);
   });
 
-  it("does not enable send_message_to or browser tools that are missing from agent toolNames", async () => {
-    const { session, startQueryTurn, createAgentToolMcpSession } = createSession(["read_page"]);
+  it("preserves configured-only standalone exposure without team defaults", async () => {
+    const { session, startQueryTurn, createAgentToolMcpSession } = createSession(["read_page"], {
+      memberTeamContext: null,
+    });
 
     await (session as any).executeTurn({
       turnId: "turn-1",
@@ -212,21 +224,19 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
     );
     expect(startQueryTurn).toHaveBeenCalledWith(
       expect.objectContaining({
-        prompt: expect.stringContaining(
-          "Do not attempt `send_message_to`; it is not exposed for this run even though teammates exist.",
-        ),
+        prompt: "hello",
+        systemPrompt: expect.not.stringContaining("## Team Runtime"),
         allowedTools: ["read_page", "mcp__autobyteus_agent_tools__read_page"],
       }),
     );
     expect(createAgentToolMcpSession).toHaveBeenCalledTimes(1);
   });
 
-  it("enables send_message_to and only the configured browser tools when toolNames explicitly allow them", async () => {
-    const { session, startQueryTurn } = createSession([
-      "send_message_to",
-      "open_tab",
-      "read_page",
-    ]);
+  it("enables team collaboration defaults and only configured browser tools", async () => {
+    const { session, startQueryTurn } = createSession(
+      ["send_message_to", "open_tab", "read_page"],
+      { memberTeamContext: createMemberTeamContext() },
+    );
 
     await (session as any).executeTurn({
       turnId: "turn-1",
@@ -237,13 +247,14 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
     expect(buildClaudeSessionMcpServersMock).toHaveBeenCalledWith(
       expect.objectContaining({
         agentToolsMcpDescriptor: expect.objectContaining({
-          enabledTools: ["send_message_to", "open_tab", "read_page"],
+          enabledTools: ["send_message_to", "open_tab", "read_page", "delegate_task"],
         }),
       }),
     );
     expect(startQueryTurn).toHaveBeenCalledWith(
       expect.objectContaining({
-        prompt: expect.stringContaining(
+        prompt: "hello",
+        systemPrompt: expect.stringContaining(
           "If you use `send_message_to`, choose exactly one target selector",
         ),
         allowedTools: expect.arrayContaining([
@@ -253,17 +264,19 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
           "read_page",
           "mcp__autobyteus_agent_tools__open_tab",
           "mcp__autobyteus_agent_tools__read_page",
+          "delegate_task",
+          "mcp__autobyteus_agent_tools__delegate_task",
         ]),
       }),
     );
   });
 
-  it("enables send_message_to for exact-run-only contexts with no static recipients", async () => {
+  it("automatically enables team collaboration tools for exact-run-only contexts", async () => {
     const memberTeamContext = createMemberTeamContext({
       communicationRecipients: [],
       allowedRecipientNames: [],
     });
-    const { session, startQueryTurn } = createSession(["send_message_to"], {
+    const { session, startQueryTurn } = createSession([], {
       memberTeamContext,
     });
 
@@ -276,18 +289,21 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
     expect(buildClaudeSessionMcpServersMock).toHaveBeenCalledWith(
       expect.objectContaining({
         agentToolsMcpDescriptor: expect.objectContaining({
-          enabledTools: ["send_message_to"],
+          enabledTools: ["send_message_to", "delegate_task"],
         }),
       }),
     );
     expect(startQueryTurn).toHaveBeenCalledWith(
       expect.objectContaining({
-        prompt: expect.stringContaining(
+        prompt: "hello",
+        systemPrompt: expect.stringContaining(
           "No logical `recipient_name` roster recipients are currently listed for this run.",
         ),
         allowedTools: [
           "send_message_to",
           "mcp__autobyteus_agent_tools__send_message_to",
+          "delegate_task",
+          "mcp__autobyteus_agent_tools__delegate_task",
         ],
       }),
     );
@@ -459,15 +475,18 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
   });
 
   it("enables task delegation tools and their autobyteus_agent_tools MCP names only when configured", async () => {
-    const { session, startQueryTurn } = createSession([
-      "delegate_task",
-      ["mark", "task", "completed"].join("_"),
-      ["mark", "task", "failed"].join("_"),
-      ["accept", "task"].join("_"),
-      "submit_task_result",
-      "review_task_result",
-      "create_task",
-    ]);
+    const { session, startQueryTurn } = createSession(
+      [
+        "delegate_task",
+        ["mark", "task", "completed"].join("_"),
+        ["mark", "task", "failed"].join("_"),
+        ["accept", "task"].join("_"),
+        "submit_task_result",
+        "review_task_result",
+        "create_task",
+      ],
+      { memberTeamContext: createMemberTeamContext() },
+    );
 
     await (session as any).executeTurn({
       turnId: "turn-1",
@@ -482,13 +501,15 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
             "delegate_task",
             "submit_task_result",
             "review_task_result",
+            "send_message_to",
           ],
         }),
       }),
     );
     expect(startQueryTurn).toHaveBeenCalledWith(
       expect.objectContaining({
-        prompt: expect.stringContaining("Task delegation protocol"),
+        prompt: "hello",
+        systemPrompt: expect.stringContaining("Task delegation protocol"),
         allowedTools: [
           "delegate_task",
           "mcp__autobyteus_agent_tools__delegate_task",
@@ -496,6 +517,8 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
           "mcp__autobyteus_agent_tools__submit_task_result",
           "review_task_result",
           "mcp__autobyteus_agent_tools__review_task_result",
+          "send_message_to",
+          "mcp__autobyteus_agent_tools__send_message_to",
         ],
       }),
     );

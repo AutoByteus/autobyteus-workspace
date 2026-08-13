@@ -9,9 +9,8 @@ export const handleExternalUserMessage = (
   payload: ExternalUserMessagePayload,
   context: AgentContext,
 ) => {
-  upsertUserMessageByIdentity({
+  return upsertUserMessageByIdentity({
     context,
     userMessage: buildUserMessageFromProjectionPayload(payload),
   });
-  context.isSending = true;
 };

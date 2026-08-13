@@ -1,0 +1,344 @@
+## git diff --check
+exit=0
+
+## forbidden public interrupt carrier in production (expected no matches)
+autobyteus-web/docs/agent_integration_minimal_bridge.md:70:  `{ status: "offline" | "initializing" | "idle" | "running" | "error", can_interrupt: boolean, agent_id?, agent_name? }`.
+autobyteus-web/docs/agent_integration_minimal_bridge.md:97:- The interrupt/stop affordance should use backend-owned `can_interrupt`. `isSending`
+autobyteus-web/docs/agent_integration_minimal_bridge.md:100:  `initializing/canInterrupt=false` or `running/canInterrupt=true` single run
+autobyteus-web/docs/agent_integration_minimal_bridge.md:102:  `offline` or `error` projections must always clear stale `canInterrupt`, and
+autobyteus-web/docs/agent_integration_minimal_bridge.md:103:  a later live `idle/can_interrupt=false` status should return the composer to
+autobyteus-web/docs/agent_integration_minimal_bridge.md:106:  `{ status: "offline", can_interrupt: false }` `AGENT_STATUS` before stream
+autobyteus-web/docs/agent_integration_minimal_bridge.md:118:- Agent status enum (`offline` / `initializing` / `idle` / `running` / `error`) plus `canInterrupt`
+autobyteus-web/docs/agent_integration_minimal_bridge.md:162:  `canInterrupt`; aggregate `TEAM_STATUS` has payload
+autobyteus-web/docs/agent_integration_minimal_bridge.md:168:- Preserves a focused member's live `initializing/canInterrupt=false` startup
+autobyteus-web/docs/agent_integration_minimal_bridge.md:169:  state or `running/canInterrupt=true` interrupt affordance across
+autobyteus-web/docs/agent_integration_minimal_bridge.md:250:  - Ensure the streaming service sets `isSending = false` only after backend lifecycle/status/error handling indicates the active turn has settled. Use `TURN_COMPLETED` for exact turn completion; a terminal `AGENT_STATUS` payload such as `{ status: "idle", can_interrupt: false }`, `ASSISTANT_COMPLETE`, or `ERROR` can also settle run-level UI state as appropriate.
+autobyteus-web/docs/agent_integration_minimal_bridge.md:252:  - If the red stop/interrupt button appears incorrectly, verify the UI is reading `can_interrupt` / `canInterrupt` from the selected run or team member rather than deriving it from `isSending`.
+autobyteus-web/docs/agent_execution_architecture.md:116:  `{ status: "offline" | "initializing" | "idle" | "running" | "error", can_interrupt: boolean, agent_id?, agent_name? }`;
+autobyteus-web/docs/agent_execution_architecture.md:119:  `AGENT_STATUS.can_interrupt` value, not from aggregate `TEAM_STATUS`; and
+autobyteus-web/docs/agent_execution_architecture.md:126:`can_interrupt` from the runtime-owned active-turn/snapshot source. `isSending`
+autobyteus-web/docs/agent_execution_architecture.md:162:already-live `initializing/canInterrupt=false` or `running/canInterrupt=true`
+autobyteus-web/docs/agent_execution_architecture.md:165:`canInterrupt` even when a caller asks to preserve live interrupt state. A later live
+autobyteus-web/docs/agent_execution_architecture.md:166:`AGENT_STATUS { status: "idle", can_interrupt: false }` likewise revokes the
+autobyteus-web/docs/agent_execution_architecture.md:172:their own member-scoped status, or default to `offline/canInterrupt=false`
+autobyteus-web/docs/agent_execution_architecture.md:285:`AGENT_STATUS { status: "offline", can_interrupt: false }` to the already-open
+autobyteus-web/docs/agent_execution_architecture.md:782:| `AGENT_STATUS`            | `agentStatusHandler.handleAgentStatus`             | Updates run/member status (`offline`, `initializing`, `idle`, `running`, or `error`) and backend-owned `can_interrupt`; no legacy transition-field names. Team payloads with explicit task-agent or task-team identity update the transient task execution projection and remove it after terminal cleanup; projection routing must not depend on generated run-id patterns or structural team names alone. |
+autobyteus-web/docs/settings.md:178:  `{ status: "offline" | "initializing" | "idle" | "running" | "error", can_interrupt: boolean, agent_id?, agent_name? }`;
+autobyteus-web/docs/settings.md:181:  `AGENT_STATUS.can_interrupt` value, not from aggregate `TEAM_STATUS`; and
+autobyteus-web/docs/settings.md:188:`can_interrupt` from the runtime-owned active-turn/snapshot source. `isSending`
+autobyteus-web/docs/settings.md:224:already-live `initializing/canInterrupt=false` or `running/canInterrupt=true`
+autobyteus-web/docs/settings.md:227:`canInterrupt` even when a caller asks to preserve live interrupt state. A later live
+autobyteus-web/docs/settings.md:228:`AGENT_STATUS { status: "idle", can_interrupt: false }` likewise revokes the
+autobyteus-web/docs/settings.md:234:their own member-scoped status, or default to `offline/canInterrupt=false`
+autobyteus-web/docs/settings.md:344:`AGENT_STATUS { status: "offline", can_interrupt: false }` to the already-open
+autobyteus-web/docs/settings.md:801:| `AGENT_STATUS`            | `agentStatusHandler.handleAgentStatus`             | Updates run/member status (`offline`, `initializing`, `idle`, `running`, or `error`) and backend-owned `can_interrupt`; no legacy transition-field names. Team payloads with explicit task-agent or task-team identity update the transient task execution projection and remove it after terminal cleanup; projection routing must not depend on generated run-id patterns or structural team names alone. |
+
+## forbidden team aggregate symbols in production (expected no matches)
+autobyteus-web/docs/agent_integration_minimal_bridge.md:160:- Handles core events: `SEGMENT_*`, `TURN_*`, `AGENT_STATUS`, `ASSISTANT_COMPLETE`, `TEAM_STATUS`, `ERROR`
+autobyteus-web/docs/agent_integration_minimal_bridge.md:162:  `canInterrupt`; aggregate `TEAM_STATUS` has payload
+autobyteus-web/docs/agent_integration_minimal_bridge.md:166:  no-target team commands may surface root `TEAM_STATUS initializing` without a
+autobyteus-web/docs/agent_integration_minimal_bridge.md:188:  - `types/agent/AgentTeamStatus.ts`
+autobyteus-web/docs/agent_teams.md:270:backend may publish root `TEAM_STATUS initializing` without a member event.
+autobyteus-web/docs/agent_execution_architecture.md:117:- aggregate `TEAM_STATUS` payloads are `{ status: "offline" | "initializing" | "idle" | "running" | "error" }`;
+autobyteus-web/docs/agent_execution_architecture.md:119:  `AGENT_STATUS.can_interrupt` value, not from aggregate `TEAM_STATUS`; and
+autobyteus-web/docs/agent_execution_architecture.md:784:| `TEAM_STATUS`             | team streaming aggregate handling                  | Updates aggregate team status (`offline`, `initializing`, `idle`, `running`, or `error`) only; member interrupt authority still comes from member `AGENT_STATUS`. |
+autobyteus-web/docs/agent_execution_architecture.md:973:`AGENT_STATUS` is still run-scoped or team-member state. `TEAM_STATUS` is only
+autobyteus-web/docs/settings.md:179:- aggregate `TEAM_STATUS` payloads are `{ status: "offline" | "initializing" | "idle" | "running" | "error" }`;
+autobyteus-web/docs/settings.md:181:  `AGENT_STATUS.can_interrupt` value, not from aggregate `TEAM_STATUS`; and
+autobyteus-web/docs/settings.md:803:| `TEAM_STATUS`             | team streaming aggregate handling                  | Updates aggregate team status (`offline`, `initializing`, `idle`, `running`, or `error`) only; member interrupt authority still comes from member `AGENT_STATUS`. |
+autobyteus-web/docs/settings.md:943:`AGENT_STATUS` is still run-scoped or team-member state. `TEAM_STATUS` is only
+autobyteus-web/tickets/done/temp-team-selection-metadata-error/investigation-notes.md:31:  - `currentStatus: AgentTeamStatus.Idle`
+
+## currentStatus references in team production surfaces (expected member/agent only, no root team aggregate carrier)
+rg: autobyteus-web/models/agentTeam: No such file or directory (os error 2)
+rg: autobyteus-web/services/agentTeamStreaming: No such file or directory (os error 2)
+autobyteus-server-ts/src/agent-team-execution/services/member-command-status-overlay-store.ts:38:    currentStatus: () => unknown;
+autobyteus-server-ts/src/agent-team-execution/services/member-command-status-overlay-store.ts:42:    if (!this.canPublish(input.status, input.currentStatus)) {
+autobyteus-server-ts/src/agent-team-execution/services/member-command-status-overlay-store.ts:126:    currentStatus: () => unknown,
+autobyteus-server-ts/src/agent-team-execution/services/member-command-status-overlay-store.ts:128:    const normalizedCurrentStatus = normalizeAgentApiStatus(currentStatus());
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts:436:      currentStatus: () => this.getAgentStatusPayload().status,
+
+## approved team lifecycle transport references
+rg: autobyteus-server-ts/src/api/websocket/agent-team: No such file or directory (os error 2)
+rg: autobyteus-web/services/agentTeamStreaming: No such file or directory (os error 2)
+autobyteus-web/stores/agentTeamRunStore.ts:190:        (teamContext && !teamContext.isActive)
+autobyteus-web/stores/agentTeamRunStore.ts:206:          teamContext.isActive = false;
+autobyteus-web/stores/agentTeamRunStore.ts:268:      teamContext.isActive = false;
+autobyteus-web/stores/agentTeamRunStore.ts:394:        } else if (teamResumeConfig && !teamResumeConfig.isActive) {
+autobyteus-web/stores/agentTeamRunStore.ts:424:        finalTeamContext.isActive = true;
+
+## baseline-to-working-tree changed files
+M	autobyteus-server-ts/src/agent-communication/services/global-agent-run-message-router.ts
+M	autobyteus-server-ts/src/agent-execution/backends/agent-run-backend.ts
+M	autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.ts
+M	autobyteus-server-ts/src/agent-execution/backends/autobyteus/events/autobyteus-status-projector.ts
+M	autobyteus-server-ts/src/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.ts
+M	autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-agent-run-backend.ts
+M	autobyteus-server-ts/src/agent-execution/backends/claude/events/claude-session-event-converter.ts
+M	autobyteus-server-ts/src/agent-execution/backends/claude/events/claude-status-projector.ts
+M	autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts
+M	autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-status-projector.ts
+M	autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-thread-event-converter.ts
+M	autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-thread-lifecycle-event-converter.ts
+M	autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-turn-event-converter.ts
+M	autobyteus-server-ts/src/agent-execution/domain/agent-run.ts
+A	autobyteus-server-ts/src/agent-execution/domain/agent-runtime-lifecycle-snapshot.ts
+M	autobyteus-server-ts/src/agent-execution/domain/agent-status-payload.ts
+M	autobyteus-server-ts/src/agent-execution/events/agent-run-event-pipeline.ts
+M	autobyteus-server-ts/src/agent-execution/events/agent-run-event-transformer.ts
+M	autobyteus-server-ts/src/agent-execution/events/default-agent-run-event-pipeline.ts
+M	autobyteus-server-ts/src/agent-execution/events/dispatch-processed-agent-run-events.ts
+M	autobyteus-server-ts/src/agent-execution/events/processors/lifecycle-status/agent-turn-lifecycle-state.ts
+M	autobyteus-server-ts/src/agent-execution/events/processors/lifecycle-status/lifecycle-status-event-transformer.ts
+M	autobyteus-server-ts/src/agent-execution/services/agent-run-command-coordinator.ts
+M	autobyteus-server-ts/src/agent-execution/services/agent-run-command-status-overlay-store.ts
+M	autobyteus-server-ts/src/agent-execution/services/agent-run-status-projection-service.ts
+M	autobyteus-server-ts/src/agent-team-execution/backends/common/server-managed-task-agent-instance-registry.ts
+M	autobyteus-server-ts/src/agent-team-execution/backends/common/team-member-lifecycle-commands.ts
+M	autobyteus-server-ts/src/agent-team-execution/backends/mixed/conversation-target/mixed-conversation-target-router.ts
+M	autobyteus-server-ts/src/agent-team-execution/backends/mixed/delivery/team-member-delivery-coordinator.ts
+M	autobyteus-server-ts/src/agent-team-execution/backends/mixed/events/mixed-team-event-bridge.ts
+M	autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+M	autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-persistent-member-registry.ts
+M	autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-sub-team-member-handle.ts
+M	autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-task-agent-instance-registry.ts
+M	autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-task-team-instance-registry.ts
+M	autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-task-team-member-handle.ts
+M	autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-team-member-handle.ts
+M	autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts
+M	autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend.ts
+M	autobyteus-server-ts/src/agent-team-execution/backends/team-manager.ts
+M	autobyteus-server-ts/src/agent-team-execution/backends/team-run-backend.ts
+A	autobyteus-server-ts/src/agent-team-execution/domain/task-team-stream-scope.ts
+A	autobyteus-server-ts/src/agent-team-execution/domain/team-leaf-agent-status-snapshot.ts
+M	autobyteus-server-ts/src/agent-team-execution/domain/team-run-event.ts
+A	autobyteus-server-ts/src/agent-team-execution/domain/team-run-lifecycle.ts
+M	autobyteus-server-ts/src/agent-team-execution/domain/team-run.ts
+D	autobyteus-server-ts/src/agent-team-execution/domain/team-status-aggregation.ts
+D	autobyteus-server-ts/src/agent-team-execution/domain/team-status-payload.ts
+M	autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+R061	autobyteus-server-ts/src/agent-team-execution/services/team-command-status-overlay-store.ts	autobyteus-server-ts/src/agent-team-execution/services/member-command-status-overlay-store.ts
+M	autobyteus-server-ts/src/agent-team-execution/services/team-member-command-start-status-events.ts
+M	autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts
+M	autobyteus-server-ts/src/agent-team-execution/task-delegation/task-team-settlement-coordinator.ts
+M	autobyteus-server-ts/src/api/graphql/types/run-history.ts
+M	autobyteus-server-ts/src/run-history/domain/team-run-history-index-types.ts
+M	autobyteus-server-ts/src/run-history/services/team-run-history-service.ts
+A	autobyteus-server-ts/src/run-history/services/team-run-live-projection-service.ts
+D	autobyteus-server-ts/src/run-history/services/team-run-status-projection-service.ts
+M	autobyteus-server-ts/src/services/agent-streaming/agent-run-event-message-mapper.ts
+M	autobyteus-server-ts/src/services/agent-streaming/agent-stream-handler.ts
+M	autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts
+M	autobyteus-server-ts/src/services/agent-streaming/models.ts
+M	autobyteus-server-ts/src/services/agent-streaming/team-run-event-websocket-message-mapper.ts
+A	autobyteus-server-ts/src/services/agent-streaming/team-runtime-snapshot-service.ts
+D	autobyteus-server-ts/src/services/agent-streaming/team-runtime-status-snapshot-service.ts
+A	autobyteus-server-ts/src/services/agent-streaming/team-stream-agent-identity-payload.ts
+M	autobyteus-server-ts/src/services/published-artifacts/published-artifact-publication-service.ts
+M	autobyteus-server-ts/src/skill-improvement/services/skill-improvement-target-notification-service.ts
+M	autobyteus-server-ts/tests/e2e/agent/agent-command-correlated-status.e2e.test.ts
+M	autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts
+M	autobyteus-server-ts/tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts
+M	autobyteus-server-ts/tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts
+M	autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts
+M	autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+M	autobyteus-server-ts/tests/integration/agent/agent-status-websocket.integration.test.ts
+M	autobyteus-server-ts/tests/integration/agent/agent-team-websocket.integration.test.ts
+M	autobyteus-server-ts/tests/integration/agent/agent-websocket.integration.test.ts
+M	autobyteus-server-ts/tests/unit/agent-communication/global-agent-run-message-router.test.ts
+M	autobyteus-server-ts/tests/unit/agent-execution/agent-api-status-projectors.test.ts
+M	autobyteus-server-ts/tests/unit/agent-execution/agent-run-command-coordinator.test.ts
+M	autobyteus-server-ts/tests/unit/agent-execution/agent-run-manager.test.ts
+M	autobyteus-server-ts/tests/unit/agent-execution/agent-run-status-projection-service.test.ts
+M	autobyteus-server-ts/tests/unit/agent-execution/agent-run.test.ts
+M	autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts
+M	autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/events/autobyteus-status-projector.test.ts
+M	autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts
+M	autobyteus-server-ts/tests/unit/agent-execution/backends/claude/claude-agent-run-backend.test.ts
+M	autobyteus-server-ts/tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts
+M	autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts
+M	autobyteus-server-ts/tests/unit/agent-execution/backends/codex/codex-agent-run-backend.test.ts
+M	autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts
+M	autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts
+M	autobyteus-server-ts/tests/unit/agent-execution/compaction/compaction-run-output-collector.test.ts
+M	autobyteus-server-ts/tests/unit/agent-execution/events/lifecycle-status-event-transformer.test.ts
+M	autobyteus-server-ts/tests/unit/agent-memory/agent-run-memory-recorder.test.ts
+A	autobyteus-server-ts/tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts
+M	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts
+M	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-task-notification-projection.test.ts
+M	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-termination.test.ts
+M	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-task-team-member-handle-termination.test.ts
+M	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-event-bridge.test.ts
+M	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts
+M	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts
+M	autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-service.test.ts
+M	autobyteus-server-ts/tests/unit/agent-team-execution/task-team-settlement-coordinator.test.ts
+M	autobyteus-server-ts/tests/unit/agent-team-execution/team-command-start-status.test.ts
+M	autobyteus-server-ts/tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts
+M	autobyteus-server-ts/tests/unit/agent-team-execution/team-run-service.test.ts
+M	autobyteus-server-ts/tests/unit/agent-team-execution/team-run.test.ts
+D	autobyteus-server-ts/tests/unit/agent-team-execution/team-status-aggregation.test.ts
+M	autobyteus-server-ts/tests/unit/application-engine/application-agent-stream-observer-activation-barrier.test.ts
+M	autobyteus-server-ts/tests/unit/external-channel/runtime/channel-agent-run-facade.test.ts
+M	autobyteus-server-ts/tests/unit/run-history/services/agent-run-history-service.test.ts
+M	autobyteus-server-ts/tests/unit/run-history/services/run-file-change-projection-service.test.ts
+M	autobyteus-server-ts/tests/unit/run-history/services/team-run-history-service.test.ts
+M	autobyteus-server-ts/tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts
+M	autobyteus-server-ts/tests/unit/services/agent-streaming/agent-stream-handler.test.ts
+M	autobyteus-server-ts/tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts
+A	autobyteus-server-ts/tests/unit/services/agent-streaming/team-runtime-snapshot-service.test.ts
+M	autobyteus-server-ts/tests/unit/services/published-artifacts/published-artifact-publication-service.test.ts
+M	autobyteus-web/components/agentInput/AgentUserInputTextArea.vue
+M	autobyteus-web/components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts
+M	autobyteus-web/components/agentInput/__tests__/AgentUserInputTextArea.spec.ts
+M	autobyteus-web/components/mobile/__tests__/MobileArtifacts.spec.ts
+M	autobyteus-web/components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+M	autobyteus-web/components/mobile/__tests__/MobileTeamMessages.spec.ts
+M	autobyteus-web/components/workspace/agent/__tests__/AgentCompactionLiveFlow.spec.ts
+M	autobyteus-web/components/workspace/common/StatusDot.vue
+M	autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue
+M	autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue
+M	autobyteus-web/components/workspace/history/WorkspaceTransientExecutionRow.vue
+M	autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+M	autobyteus-web/components/workspace/history/workspaceHistorySectionContracts.ts
+M	autobyteus-web/components/workspace/history/workspaceHistoryTeamDefinitionGroups.ts
+M	autobyteus-web/components/workspace/running/RunningTeamRow.vue
+M	autobyteus-web/components/workspace/running/__tests__/RunningTeamGroup.spec.ts
+M	autobyteus-web/components/workspace/running/__tests__/RunningTeamRow.spec.ts
+M	autobyteus-web/components/workspace/team/TeamMembersPanel.vue
+D	autobyteus-web/components/workspace/team/TeamStatusDisplay.vue
+M	autobyteus-web/components/workspace/team/TeamWorkspaceView.vue
+M	autobyteus-web/components/workspace/team/__tests__/TeamDelegatedTaskNavigator.spec.ts
+M	autobyteus-web/components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts
+M	autobyteus-web/components/workspace/team/__tests__/TeamOverviewPanel.spec.ts
+M	autobyteus-web/components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+M	autobyteus-web/components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts
+M	autobyteus-web/composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts
+M	autobyteus-web/composables/__tests__/useWorkspaceHistoryTreeState.spec.ts
+M	autobyteus-web/composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts
+M	autobyteus-web/composables/mobile/__tests__/useMobileWorkCatalog.spec.ts
+M	autobyteus-web/composables/mobile/useMobileWorkCatalog.ts
+D	autobyteus-web/composables/useTeamStatusVisuals.ts
+M	autobyteus-web/composables/useWorkspaceHistoryMutations.ts
+M	autobyteus-web/composables/useWorkspaceHistoryTreeState.ts
+M	autobyteus-web/generated/graphql.ts
+M	autobyteus-web/graphql/queries/runHistoryQueries.ts
+M	autobyteus-web/localization/messages/en/workspace.generated.ts
+M	autobyteus-web/localization/messages/zh-CN/workspace.generated.ts
+M	autobyteus-web/services/agentStreaming/AgentStreamingService.ts
+M	autobyteus-web/services/agentStreaming/TeamStreamingService.ts
+M	autobyteus-web/services/agentStreaming/__tests__/AgentStreamingService.spec.ts
+M	autobyteus-web/services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+M	autobyteus-web/services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts
+M	autobyteus-web/services/agentStreaming/__tests__/teamTaskExecutionEventRouter.spec.ts
+M	autobyteus-web/services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts
+M	autobyteus-web/services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts
+M	autobyteus-web/services/agentStreaming/handlers/__tests__/memberInputMessageHandler.spec.ts
+M	autobyteus-web/services/agentStreaming/handlers/externalUserMessageHandler.ts
+M	autobyteus-web/services/agentStreaming/handlers/index.ts
+M	autobyteus-web/services/agentStreaming/handlers/memberInputMessageHandler.ts
+M	autobyteus-web/services/agentStreaming/handlers/teamHandler.ts
+A	autobyteus-web/services/agentStreaming/presentation/streamContentPresentationFlushPolicy.ts
+M	autobyteus-web/services/agentStreaming/protocol/index.ts
+M	autobyteus-web/services/agentStreaming/protocol/messageTypes.ts
+M	autobyteus-web/services/agentStreaming/teamTaskExecutionEventRouter.ts
+M	autobyteus-web/services/agentStreaming/teamTaskTeamChildProjection.ts
+M	autobyteus-web/services/agentStreaming/teamTaskTeamExecutionProjection.ts
+M	autobyteus-web/services/runHydration/__tests__/runtimeStatusNormalization.spec.ts
+M	autobyteus-web/services/runHydration/runtimeStatusNormalization.ts
+M	autobyteus-web/services/runHydration/teamRunContextHydrationService.ts
+R081	autobyteus-web/services/runHydration/teamRunStatusHydration.ts	autobyteus-web/services/runHydration/teamRunMemberStatusHydration.ts
+M	autobyteus-web/services/runOpen/__tests__/agentRunOpenCoordinator.integration.spec.ts
+M	autobyteus-web/services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts
+M	autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts
+M	autobyteus-web/services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts
+M	autobyteus-web/services/runRecovery/activeRunRecoveryCoordinator.ts
+M	autobyteus-web/services/runStatus/__tests__/agentRuntimeStatusState.spec.ts
+M	autobyteus-web/services/runStatus/agentRuntimeStatusState.ts
+A	autobyteus-web/services/runSubmission/__tests__/agentPrimaryAction.spec.ts
+M	autobyteus-web/services/runSubmission/__tests__/localUserSubmission.spec.ts
+A	autobyteus-web/services/runSubmission/agentPrimaryAction.ts
+M	autobyteus-web/services/runSubmission/localUserSubmission.ts
+M	autobyteus-web/stores/__tests__/activeContextStore.spec.ts
+M	autobyteus-web/stores/__tests__/agentContextsStore.spec.ts
+M	autobyteus-web/stores/__tests__/agentRunStore.spec.ts
+M	autobyteus-web/stores/__tests__/agentTeamContextsStore.spec.ts
+M	autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts
+M	autobyteus-web/stores/__tests__/runHistoryStore.spec.ts
+M	autobyteus-web/stores/__tests__/runHistoryTeamMemberProjectionHydrator.spec.ts
+M	autobyteus-web/stores/__tests__/runHistoryTeamRows.spec.ts
+M	autobyteus-web/stores/activeContextStore.ts
+M	autobyteus-web/stores/agentContextsStore.ts
+M	autobyteus-web/stores/agentTeamContextsStore.ts
+M	autobyteus-web/stores/agentTeamRunStore.ts
+M	autobyteus-web/stores/runHistoryLoadActions.ts
+M	autobyteus-web/stores/runHistoryReadModel.ts
+M	autobyteus-web/stores/runHistoryStore.ts
+M	autobyteus-web/stores/runHistoryTeamHelpers.ts
+M	autobyteus-web/stores/runHistoryTeamMemberProjectionHydrator.ts
+M	autobyteus-web/stores/runHistoryTeamRows.ts
+M	autobyteus-web/stores/runHistoryTypes.ts
+M	autobyteus-web/types/agent/AgentContext.ts
+M	autobyteus-web/types/agent/AgentRunState.ts
+M	autobyteus-web/types/agent/AgentTeamContext.ts
+D	autobyteus-web/types/agent/AgentTeamStatus.ts
+M	autobyteus-web/types/agent/__tests__/AgentContext.spec.ts
+M	autobyteus-web/utils/__tests__/teamActiveExecutionMembers.spec.ts
+M	autobyteus-web/utils/__tests__/teamConversationTargetAddress.spec.ts
+M	autobyteus-web/utils/__tests__/teamDelegatedTaskEntries.spec.ts
+M	autobyteus-web/utils/__tests__/workspaceStatusDotPresentation.spec.ts
+M	autobyteus-web/utils/__tests__/workspaceTeamExecutionDisplayRows.spec.ts
+M	autobyteus-web/utils/teamActiveExecutionMembers.ts
+M	autobyteus-web/utils/teamDelegatedTaskEntries.ts
+M	autobyteus-web/utils/workspaceStatusDotPresentation.ts
+M	autobyteus-web/utils/workspaceTeamExecutionDisplayRows.ts
+A	tickets/in-progress/agent-stream-driven-status/architecture-review-revision-record.md
+A	tickets/in-progress/agent-stream-driven-status/code-review-report.md
+A	tickets/in-progress/agent-stream-driven-status/code-review-revision-record.md
+A	tickets/in-progress/agent-stream-driven-status/design-review-report.md
+A	tickets/in-progress/agent-stream-driven-status/design-spec.md
+A	tickets/in-progress/agent-stream-driven-status/implementation-handoff.md
+A	tickets/in-progress/agent-stream-driven-status/implementation-revision-record.md
+A	tickets/in-progress/agent-stream-driven-status/investigation-notes.md
+A	tickets/in-progress/agent-stream-driven-status/production-trace-evidence.md
+A	tickets/in-progress/agent-stream-driven-status/requirements.md
+A	tickets/in-progress/agent-stream-driven-status/solution-revision-record.md
+
+## working tree status
+ M autobyteus-server-ts/tests/e2e/agent/agent-command-correlated-status.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts
+ M autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+ M autobyteus-server-ts/tests/integration/agent/agent-status-websocket.integration.test.ts
+ M autobyteus-server-ts/tests/integration/agent/agent-team-websocket.integration.test.ts
+ M autobyteus-server-ts/tests/integration/agent/agent-websocket.integration.test.ts
+ M tickets/in-progress/agent-stream-driven-status/architecture-review-revision-record.md
+ M tickets/in-progress/agent-stream-driven-status/design-review-report.md
+ M tickets/in-progress/agent-stream-driven-status/design-spec.md
+ M tickets/in-progress/agent-stream-driven-status/investigation-notes.md
+ M tickets/in-progress/agent-stream-driven-status/requirements.md
+ M tickets/in-progress/agent-stream-driven-status/solution-revision-record.md
+?? autobyteus-server-ts/tests/integration/agent/team-lifecycle-websocket.integration.test.ts
+?? tickets/in-progress/agent-stream-driven-status/api-e2e-coverage-investigation.md
+?? tickets/in-progress/agent-stream-driven-status/api-e2e-evidence/
+?? tickets/in-progress/agent-stream-driven-status/team-status-simplification-evidence.md
+
+## working diff stat
+ .../agent-command-correlated-status.e2e.test.ts    |  111 +-
+ ...de-agent-websocket-interrupt-resume.e2e.test.ts |   16 +-
+ .../archive-run-history-graphql.e2e.test.ts        |   15 +-
+ .../workspace-run-history-graphql.e2e.test.ts      |   12 +-
+ .../agent-team-run-manager.integration.test.ts     |   30 +-
+ ...k-delegation-tool-lifecycle.integration.test.ts |   27 +-
+ .../agent-status-websocket.integration.test.ts     |  999 +++++------------
+ .../agent/agent-team-websocket.integration.test.ts |    8 +-
+ .../agent/agent-websocket.integration.test.ts      |   43 +-
+ .../architecture-review-revision-record.md         |   73 ++
+ .../design-review-report.md                        |  291 ++---
+ .../agent-stream-driven-status/design-spec.md      | 1165 +++++++++++++-------
+ .../investigation-notes.md                         |  183 ++-
+ .../agent-stream-driven-status/requirements.md     |  305 +++--
+ .../solution-revision-record.md                    |  105 ++
+ 15 files changed, 1815 insertions(+), 1568 deletions(-)

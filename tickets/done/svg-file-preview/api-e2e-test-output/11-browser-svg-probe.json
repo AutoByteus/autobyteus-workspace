@@ -1,0 +1,117 @@
+{
+  "startedAt": "2026-08-02T06:32:23.337Z",
+  "routePath": "/api-e2e-svg-preview",
+  "webDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-web",
+  "browser": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "scenarios": {
+    "SVG-BR-001": {
+      "status": "Pass",
+      "description": "Real Chromium loads a valid SVG through the production FileViewer -> ImageViewer path.",
+      "details": {
+        "src": "/api-e2e-valid.svg",
+        "complete": true,
+        "naturalWidth": 150,
+        "naturalHeight": 150
+      }
+    },
+    "SVG-BR-002": {
+      "status": "Pass",
+      "description": "Real Chromium rejects malformed SVG decode while the response retains the SVG MIME boundary.",
+      "details": {
+        "src": "/api-e2e-malformed.svg",
+        "complete": true,
+        "naturalWidth": 0,
+        "naturalHeight": 0
+      }
+    },
+    "SVG-BR-003": {
+      "status": "Pass",
+      "description": "Real Chromium exercises Event Monitor SVG click, Enter, Space, and focus-visible action handoff.",
+      "details": {
+        "actionAttributes": [
+          {
+            "role": "button",
+            "href": "#",
+            "ariaLabel": "Open DIAGRAM.SVG in Files",
+            "title": "/tmp/DIAGRAM.SVG"
+          },
+          {
+            "role": "button",
+            "href": "#",
+            "ariaLabel": "Open second.svg in Files",
+            "title": "/tmp/second.svg"
+          }
+        ],
+        "actionCount": "3",
+        "lastAction": "/tmp/second.svg",
+        "activeElement": "true"
+      }
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "devServer": "terminated",
+    "temporaryFiles": "removed"
+  },
+  "failures": [],
+  "baseUrl": "http://127.0.0.1:52509",
+  "browserEvents": [
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    }
+  ],
+  "finishedAt": "2026-08-02T06:32:38.827Z"
+}

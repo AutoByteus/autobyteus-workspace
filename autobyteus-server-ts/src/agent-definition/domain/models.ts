@@ -20,7 +20,6 @@ export class AgentDefinition {
   toolNames: string[];
   inputProcessorNames: string[];
   llmResponseProcessorNames: string[];
-  systemPromptProcessorNames: string[];
   toolExecutionResultProcessorNames: string[];
   toolInvocationPreprocessorNames: string[];
   lifecycleProcessorNames: string[];
@@ -46,7 +45,6 @@ export class AgentDefinition {
     toolNames?: string[];
     inputProcessorNames?: string[];
     llmResponseProcessorNames?: string[];
-    systemPromptProcessorNames?: string[];
     toolExecutionResultProcessorNames?: string[];
     toolInvocationPreprocessorNames?: string[];
     lifecycleProcessorNames?: string[];
@@ -71,7 +69,6 @@ export class AgentDefinition {
     this.toolNames = options.toolNames ?? [];
     this.inputProcessorNames = options.inputProcessorNames ?? [];
     this.llmResponseProcessorNames = options.llmResponseProcessorNames ?? [];
-    this.systemPromptProcessorNames = options.systemPromptProcessorNames ?? [];
     this.toolExecutionResultProcessorNames = options.toolExecutionResultProcessorNames ?? [];
     this.toolInvocationPreprocessorNames = options.toolInvocationPreprocessorNames ?? [];
     this.lifecycleProcessorNames = options.lifecycleProcessorNames ?? [];
@@ -98,7 +95,6 @@ export type AgentDefinitionUpdate = {
   toolNames?: string[];
   inputProcessorNames?: string[];
   llmResponseProcessorNames?: string[];
-  systemPromptProcessorNames?: string[];
   toolExecutionResultProcessorNames?: string[];
   toolInvocationPreprocessorNames?: string[];
   lifecycleProcessorNames?: string[];

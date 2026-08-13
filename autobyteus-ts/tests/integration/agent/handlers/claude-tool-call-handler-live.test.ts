@@ -3,7 +3,7 @@ import { AnthropicLLM } from '../../../../src/llm/api/anthropic-llm.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMUserMessage } from '../../../../src/llm/user-message.js';
-import { ApiToolCallStreamingResponseHandler } from '../../../../src/agent/streaming/handlers/api-tool-call-streaming-response-handler.js';
+import { LlmStreamingResponseHandler } from '../../../../src/agent/streaming/handlers/llm-streaming-response-handler.js';
 import { defaultToolRegistry, ToolRegistry } from '../../../../src/tools/registry/tool-registry.js';
 import { ToolDefinition } from '../../../../src/tools/registry/tool-definition.js';
 import { registerWriteFileTool } from '../../../../src/tools/file/write-file.js';
@@ -19,7 +19,7 @@ const resetRegistry = () => {
   registerWriteFileTool();
 };
 
-runIntegration('ApiToolCallStreamingResponseHandler (Claude live)', () => {
+runIntegration('LlmStreamingResponseHandler (Claude live)', () => {
   it('processes tool call stream into invocations', async () => {
     resetRegistry();
     const toolDef = defaultToolRegistry.getToolDefinition('write_file');
@@ -35,7 +35,7 @@ runIntegration('ApiToolCallStreamingResponseHandler (Claude live)', () => {
       provider: LLMProvider.ANTHROPIC
     }));
 
-    const handler = new ApiToolCallStreamingResponseHandler({ turnId: TURN_ID });
+    const handler = new LlmStreamingResponseHandler({ turnId: TURN_ID, toolCallsEnabled: true });
 
     const userMessage = new LLMUserMessage({
       content: "Write a python file named anthropic_test.py with content 'print(1)'"

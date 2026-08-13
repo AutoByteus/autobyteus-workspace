@@ -27,10 +27,11 @@ The architecture relies on a **Factory Pattern** combined with a **Registry** to
   Represents the _metadata_ of a model, not the active instance. It contains:
   - **Identifier:** A globally unique string (e.g., `gpt-4o`,
     `llama3:latest:ollama@localhost:11434`,
-    `openai-compatible:provider_1234567890abcdef:custom-chat-model`).
+    `openai-compatible:provider_alibaba_cloud:custom-chat-model`).
   - **Provider Identity:** `providerId`, `providerName`, and `providerType`.
     Built-in providers use stable enum IDs (for example `OPENAI`), while custom
-    OpenAI-compatible providers keep their own generated provider IDs.
+    OpenAI-compatible providers keep immutable provider IDs derived from their
+    normalized user-entered names.
   - **Runtime:** Where the model is hosted (e.g., `API`,
     `OPENAI_COMPATIBLE`, `OLLAMA`).
   - **Config Schema:** A JSON schema defining model-specific configuration parameters (e.g., `thinking_level` for reasoning models).
@@ -38,9 +39,10 @@ The architecture relies on a **Factory Pattern** combined with a **Registry** to
     states (`supported`, `unsupported`, or `unknown`). Built-in definitions
     carry verified states; discovered and unverified models default to unknown.
   - **Resolved metadata:** Numeric context/input/output limits retain per-field
-    provenance (`live`, `static_definition`, or `unknown`) through
-    `resolvedModelMetadata`. `activeContextTokens` remains runtime state and is
-    never taken from static catalog metadata.
+    provenance (`live`, `inferred_builtin`, `static_definition`, or `unknown`)
+    through `resolvedModelMetadata`.
+    `activeContextTokens` remains runtime state and is never taken from static
+    catalog metadata.
   - **Factory Method:** `LLMFactory.createLLM(...)` instantiates the concrete `BaseLLM` for this model.
 
 - **`LLMFactory` (Singleton):**
@@ -62,8 +64,10 @@ A key architectural distinction is made between **provider identity**,
 
 - **Provider Identity:** Which concrete provider record owns the model?
   - Built-ins use fixed IDs such as `OPENAI`, `ANTHROPIC`, or `LMSTUDIO`.
-  - Custom OpenAI-compatible providers use generated stable IDs such as
-    `provider_<uuid>`.
+  - Custom OpenAI-compatible providers use deterministic readable IDs such as
+    `provider_alibaba_cloud`. The ID is derived from the canonical display name
+    at creation, remains immutable, and has no collision suffix. Canonical-name
+    or derived-ID collisions are rejected atomically.
 - **`LLMProvider`:** What kind of provider is it?
   - Examples: `OPENAI`, `ANTHROPIC`, `MISTRAL`, `OPENAI_COMPATIBLE`.
 - **`LLMRuntime`:** Where is the model _running_?
@@ -105,7 +109,7 @@ new built-in enum value for every saved endpoint.
     // or
     const llm = await LLMFactory.createLLM('llama3:latest:ollama@localhost:11434');
     // or
-    const llm = await LLMFactory.createLLM('openai-compatible:provider_1234567890abcdef:custom-chat-model');
+    const llm = await LLMFactory.createLLM('openai-compatible:provider_alibaba_cloud:custom-chat-model');
     ```
 
 3.  **Interaction:**
@@ -254,7 +258,8 @@ business accounting.
 src/llm/
 ├── api/                                # Concrete BaseLLM implementations
 ├── extensions/                         # Optional explicit lifecycle extensions
-├── metadata/                           # Live model metadata resolvers
+├── metadata/                           # Model metadata resolution
+│   └── openai-compatible-endpoint-model-metadata.ts
 ├── transport/                          # Shared transport helpers
 ├── utils/                              # Config, message/usage observation types, pricing models
 ├── base.ts                             # Abstract base class
@@ -363,12 +368,11 @@ OpenAI-compatible caller:
 - `LMStudioLLM` injects that fetch helper and also sets a high finite OpenAI SDK
   timeout (`LOCAL_PROVIDER_SDK_TIMEOUT_MS`, currently `24h`) because the SDK
   default is shorter and `timeout: 0` is not a true disable path there.
-- In native API tool-call mode, `LMStudioLLM` uses `OpenAIChatRenderer` so prior
-  tool calls/results are sent as structured OpenAI-compatible history
-  (`assistant.tool_calls` plus `role: "tool"` messages). The legacy
-  `[TOOL_CALL]` / `[TOOL_RESULT]` text history renderer is scoped to explicit
-  text-parser modes only. Native tool-result continuations do not append an
-  additional aggregate `role: "user"` message containing the same tool results.
+- For tool-capable turns, `LMStudioLLM` uses `OpenAIChatRenderer` so prior tool
+  calls/results are sent as structured OpenAI-compatible history
+  (`assistant.tool_calls` plus `role: "tool"` messages). Tool-result
+  continuations do not append an additional aggregate `role: "user"` message
+  containing the same results. There is no text-history fallback.
 - `OllamaLLM` injects the same shared fetch helper through its adapter.
 - Non-local / cloud OpenAI-compatible providers keep default SDK transport
   behavior unless a separate review explicitly widens that policy.
@@ -377,13 +381,13 @@ This hardening still matters to compaction when the selected visible compactor
 agent uses a local model and sends a large request before the next parent-agent
 LLM leg is allowed to continue.
 
-## 6.2 Native API Tool-Call History Rendering
+## 6.2 Provider-Native Tool-Call History Rendering
 
-In native API tool-call mode, working-context tool history stays semantic until
-the final provider renderer boundary. The runtime stores assistant tool calls as
+Working-context tool history stays semantic until the final provider renderer
+boundary. The runtime stores assistant tool calls as
 `ToolCallPayload` and tool outputs as `ToolResultPayload`; the selected provider
-renderer then maps those entries to provider-native request history instead of
-legacy prompt text.
+renderer then maps those entries to provider-native request history. No global
+format selector or text-history renderer participates in selection.
 
 Current native mappings are:
 
@@ -397,11 +401,8 @@ Current native mappings are:
 | Mistral | assistant `tool_calls` plus `role: "tool"` messages with `tool_call_id` and `name`. |
 | OpenAI Responses | Captured `response.output` items replayed once when available, including required `reasoning` items before `function_call` items, followed by `function_call_output` items keyed by `call_id`. Matching function calls keep provider item metadata but use the final normalized `ToolCallSpec` id/name/arguments. |
 
-Renderer selection is mode-aware. `api_tool_call` selects the native provider
-renderer; `xml`, `json`, and `sentinel` select explicit text-history renderers
-so non-native parser modes continue to emit their configured
-`[TOOL_CALL]` / `[TOOL_RESULT]`-style history. Native text-only tool-result
-continuation does not append an additional aggregate user message such as `The
+Provider constructors select their native renderer directly. Text-only
+tool-result continuation does not append an additional aggregate user message such as `The
 following tool executions have completed...`, legacy `Tool: <name> (ID: ...)`
 lines, or aggregate `Status: Success` markers; the next LLM request is assembled
 from the existing working context and rendered through the provider's native
@@ -409,6 +410,10 @@ channel. If a continuation carries context-file media, the request may append a
 user/media carrier, but its text is limited to semantic completed-tool wording
 such as `The read_media_file tool call completed successfully.` and must not
 include internal continuation labels or generated tool-call formatting guidance.
+
+The AutoByteus conversation renderer is content/media-only because that path
+does not expose a normalized native local-tool channel. It does not emulate
+calls or results as XML, JSON, sentinel, or bracketed assistant text.
 
 OpenAI Responses is stricter than Chat Completions-style history for reasoning
 models. When a streamed Responses turn records `responseOutputItems` on the
@@ -461,6 +466,20 @@ current static Anthropic catalog count until
 `src/llm/supported-model-definitions.ts` is updated.
 
 - Each saved provider is probed independently through its `/models` endpoint.
+- Saved-provider identity is `provider_<name-derived-body>`, produced by
+  `buildCustomProviderId(...)`. ASCII letters/digits are normalized into
+  underscore-delimited words; non-ASCII code points use deterministic `u<hex>`
+  tokens. A name that cannot derive an ID, a canonical-name collision, or an ID
+  collision is rejected rather than receiving a random or numeric suffix.
+- Discovery keeps only normalized model identity plus recognized positive
+  integer metadata aliases; credentials and raw provider payloads do not enter
+  model or persisted-provider projections.
+- Each custom model resolves numeric limits independently with this precedence:
+  endpoint-advertised value (`live`), an exact `SupportedModelDefinition.value`
+  fallback (`inferred_builtin`), then `unknown`. Resolution does not receive or
+  inspect the custom endpoint URL. Suffix stripping, family matching,
+  display-name matching, case folding, wire aliases, and other fuzzy inference
+  are forbidden.
 - Successful providers contribute fresh `OPENAI_COMPATIBLE` runtime models.
 - The synced model set is authoritative to the current saved-provider list, so
   deleting a saved custom provider removes that provider's models from the next

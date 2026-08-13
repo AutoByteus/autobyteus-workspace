@@ -18,20 +18,38 @@ import {
 import type { RawTraceArchiveManifest, RawTraceArchiveSegmentEntry } from './raw-trace-archive-manifest.js';
 import {
   RawTraceArchiveManager,
-  type CompletedRawTraceArchiveDescriptor,
   type RawTraceArchiveBoundaryInput,
   type RawTraceArchiveResult,
 } from './raw-trace-archive-manager.js';
 
 const readJsonl = (filePath: string): Record<string, unknown>[] => {
-  if (!fs.existsSync(filePath)) {
-    return [];
+  if (!fs.existsSync(filePath)) return [];
+  const raw = fs.readFileSync(filePath, 'utf-8');
+  const lines = raw.split('\n');
+  const records: Record<string, unknown>[] = [];
+  let validBytes = 0;
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index]!;
+    const trimmed = line.trim();
+    const isLastPhysicalLine = index === lines.length - 1;
+    if (!trimmed) {
+      validBytes += Buffer.byteLength(line + (isLastPhysicalLine ? '' : '\n'), 'utf8');
+      continue;
+    }
+    try {
+      records.push(JSON.parse(trimmed) as Record<string, unknown>);
+      validBytes += Buffer.byteLength(line + (isLastPhysicalLine ? '' : '\n'), 'utf8');
+    } catch (error) {
+      if (isLastPhysicalLine || index === lines.length - 2 && lines.at(-1) === '') {
+        // A process crash can leave only the final JSONL record incomplete.
+        // Preserve complete prior evidence and truncate the broken tail.
+        fs.writeFileSync(filePath, raw.slice(0, validBytes), 'utf-8');
+        break;
+      }
+      throw error;
+    }
   }
-  return fs.readFileSync(filePath, 'utf-8')
-    .split('\n')
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .map((line) => JSON.parse(line));
+  return records;
 };
 
 const writeJsonl = (filePath: string, items: Record<string, unknown>[]): void => {
@@ -69,6 +87,15 @@ const compareTraceRecords = (a: Record<string, unknown>, b: Record<string, unkno
 
 const hashBoundaryKey = (boundaryKey: string): string =>
   crypto.createHash('sha256').update(boundaryKey).digest('hex').slice(0, 8);
+
+const nativeCompactionSelectionBoundaryKey = (traceIds: readonly string[]): string => {
+  const canonicalSelection = JSON.stringify([...traceIds].sort());
+  const selectionDigest = crypto
+    .createHash('sha256')
+    .update(canonicalSelection, 'utf8')
+    .digest('hex');
+  return `native_compaction_selection:${selectionDigest}`;
+};
 
 export type WorkingContextSnapshotWriteOptions = {
   agentId?: string | null;
@@ -273,10 +300,7 @@ export class RunMemoryFileStore {
     writeJsonl(this.getRawTracesPath(), keep);
   }
 
-  archiveExactRawTraces(
-    traceIds: readonly string[],
-    compactionId: string,
-  ): CompletedRawTraceArchiveDescriptor {
+  archiveExactRawTraces(traceIds: readonly string[]): void {
     const ids = traceIds.map((id) => id.trim()).filter(Boolean);
     if (!ids.length || new Set(ids).size !== ids.length) {
       throw new Error('Exact raw-trace archive requires unique non-empty selected IDs.');
@@ -302,20 +326,12 @@ export class RunMemoryFileStore {
       active.filter((record) => !ids.includes(traceId(record) ?? '')),
       {
         boundaryType: 'native_compaction',
-        boundaryKey: `native_compaction:${compactionId}`,
+        boundaryKey: nativeCompactionSelectionBoundaryKey(ids),
         runtimeKind: 'AUTOBYTEUS',
         sourceEvent: 'native_compaction',
       },
     );
     if (!result) throw new Error('Exact raw-trace archive did not create a completed file.');
-    return {
-      fileName: result.file_name,
-      recordCount: result.record_count,
-      firstTraceId: result.first_trace_id ?? null,
-      lastTraceId: result.last_trace_id ?? null,
-      firstObservedAt: result.first_ts ?? null,
-      lastObservedAt: result.last_ts ?? null,
-    };
   }
 
   workingContextSnapshotExists(): boolean {

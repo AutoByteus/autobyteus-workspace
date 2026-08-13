@@ -111,7 +111,7 @@
             @click="actions.onSelectRun(run)"
           >
             <div class="min-w-0 flex items-center">
-              <StatusDot class="mr-2" kind="agent" :status="run.currentStatus" />
+              <StatusDot class="mr-2" :status="run.currentStatus" />
               <span class="truncate">
                 {{ formatRunLabel(run.summary) }}
               </span>
@@ -158,7 +158,7 @@
                 <Icon icon="heroicons:trash-20-solid" class="h-3.5 w-3.5" />
               </button>
               <span class="text-xs text-gray-400">
-                {{ state.formatRelativeTime(run.lastActivityAt) }}
+                {{ formatRelativeTime(run.lastActivityAt) }}
               </span>
             </div>
           </button>
@@ -189,7 +189,13 @@
               class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform"
               :class="state.isTeamDefinitionExpanded(workspaceNode.workspaceId, group.key) ? 'rotate-0' : '-rotate-90'"
             />
-            <StatusDot class="mr-1.5" kind="team" :status="group.status" />
+            <TeamActivityDot
+              class="mr-1.5"
+              :is-active="group.hasActiveRuns"
+              :label="$t(group.hasActiveRuns
+                ? 'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.active_team_runs'
+                : 'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.no_active_team_runs')"
+            />
             <span
               class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"
             >
@@ -226,7 +232,13 @@
                     :class="state.isTeamExpanded(team.teamRunId) ? 'rotate-0' : '-rotate-90'"
                     data-test="workspace-team-run-disclosure"
                   />
-                  <StatusDot class="mr-1.5" kind="team" :status="team.currentStatus" />
+                  <TeamActivityDot
+                    class="mr-1.5"
+                    :is-active="team.isActive"
+                    :label="$t(team.isActive
+                      ? 'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.active_team_run'
+                      : 'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.inactive_team_run')"
+                  />
                   <span class="truncate font-medium">{{ formatTeamRunLabel(team) }}</span>
                 </button>
 
@@ -242,7 +254,7 @@
                     <Icon icon="heroicons:trash-20-solid" class="h-3.5 w-3.5" />
                   </button>
                   <button
-                    v-else-if="state.canTerminateTeam(team.currentStatus)"
+                    v-else-if="state.canTerminateTeam(team.isActive)"
                     type="button"
                     class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
                     :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.terminate_team')"
@@ -262,7 +274,7 @@
                     <Icon icon="heroicons:archive-box-20-solid" class="h-3.5 w-3.5" />
                   </button>
                   <button
-                    v-if="!team.teamRunId.startsWith('temp-') && !state.canTerminateTeam(team.currentStatus) && team.deleteLifecycle === 'READY'"
+                    v-if="!team.teamRunId.startsWith('temp-') && !state.canTerminateTeam(team.isActive) && team.deleteLifecycle === 'READY'"
                     type="button"
                     class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
                     :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.delete_team_history_permanently')"
@@ -272,7 +284,7 @@
                     <Icon icon="heroicons:trash-20-solid" class="h-3.5 w-3.5" />
                   </button>
                   <span class="text-xs text-gray-400">
-                    {{ state.formatRelativeTime(team.lastActivityAt) }}
+                    {{ formatRelativeTime(team.lastActivityAt) }}
                   </span>
                 </div>
               </div>
@@ -285,10 +297,11 @@
                   <div
                     v-if="displayRow.row.kind === 'stable_member'"
                     class="flex w-full cursor-pointer items-center rounded-md text-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
-                    :class="displayRow.row.memberRouteKey === focusedTeamMemberRouteKey(team) ? 'bg-indigo-50 text-indigo-900' : 'text-gray-600 hover:bg-gray-50'"
+                    :class="isSelectedTeamMember(team, displayRow.row) ? 'bg-indigo-50 text-indigo-900' : 'text-gray-600 hover:bg-gray-50'"
                     :style="teamExecutionRowStyle(displayRow.row)"
                     :data-test="`workspace-team-member-${team.teamRunId}-${displayRow.row.memberRouteKey}`"
                     data-row-kind="stable_member"
+                    :aria-current="isSelectedTeamMember(team, displayRow.row) ? 'true' : undefined"
                     role="button"
                     tabindex="0"
                     @click="activateTeamDisplayRow(team, displayRow.row, displayRow.hasChildren)"
@@ -322,7 +335,7 @@
 
                     <div class="flex min-w-0 flex-1 items-center justify-between py-1 pr-2">
                       <div class="flex min-w-0 items-center">
-                        <StatusDot class="mr-1.5" kind="agent" :status="displayRow.row.row.currentStatus" />
+                        <StatusDot v-if="displayRow.row.row.memberKind === 'agent'" class="mr-1.5" :status="displayRow.row.row.currentStatus" />
                         <span
                           class="mr-1.5 inline-flex h-4 w-4 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.5625rem] font-semibold text-gray-600"
                         >
@@ -350,7 +363,7 @@
                   <WorkspaceTransientExecutionRow
                     v-else
                     :row="displayRow.row"
-                    :focused="displayRow.row.memberRouteKey === focusedTeamMemberRouteKey(team)"
+                    :is-selected="isSelectedTeamMember(team, displayRow.row)"
                     :has-children="displayRow.hasChildren"
                     :expanded="isTeamDisplayRowExpanded(team, displayRow.row)"
                     @select="(row) => selectTeamDisplayRow(team, row)"
@@ -368,9 +381,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { Icon } from '@iconify/vue';
 import StatusDot from '~/components/workspace/common/StatusDot.vue';
+import TeamActivityDot from '~/components/workspace/common/TeamActivityDot.vue';
 import WorkspaceTransientExecutionRow from '~/components/workspace/history/WorkspaceTransientExecutionRow.vue';
 import type {
   WorkspaceHistoryAvatarBindings,
@@ -381,16 +395,15 @@ import {
   buildWorkspaceTeamDefinitionDisplayGroups,
   type WorkspaceHistoryTeamDefinitionDisplayGroup,
 } from '~/components/workspace/history/workspaceHistoryTeamDefinitionGroups';
+import {
+  formatRunLabel,
+  formatTeamRunLabel,
+} from '~/components/workspace/history/workspaceHistoryRunLabels';
 import type {
-  TeamMemberTreeRow,
+  RunHistoryTeamExecutionRow,
   TeamRunHistoryDefinitionGroup,
   TeamTreeNode,
 } from '~/stores/runHistoryTypes';
-import {
-  buildWorkspaceTeamExecutionDisplayRows,
-  type WorkspaceStableMemberDisplayRow,
-  type WorkspaceTeamExecutionDisplayRow,
-} from '~/utils/workspaceTeamExecutionDisplayRows';
 import type { RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
 
 const props = defineProps<{
@@ -409,48 +422,27 @@ const groupedTeamDefinitions = computed<WorkspaceHistoryTeamDefinitionDisplayGro
   ),
 );
 
+const relativeTimeTick = ref(0);
+let relativeTimeTimer: ReturnType<typeof setInterval> | null = null;
+const formatRelativeTime = (isoTime: string): string => {
+  void relativeTimeTick.value;
+  return props.state.formatRelativeTime(isoTime);
+};
+onMounted(() => {
+  relativeTimeTimer = setInterval(() => { relativeTimeTick.value += 1; }, 60_000);
+});
+onBeforeUnmount(() => {
+  if (relativeTimeTimer !== null) clearInterval(relativeTimeTimer);
+});
+
 interface VisibleTeamExecutionRow {
-  row: WorkspaceTeamExecutionDisplayRow;
+  row: RunHistoryTeamExecutionRow;
   hasChildren: boolean;
 }
 
-const rootTeamMembers = (team: TeamTreeNode): readonly TeamMemberTreeRow[] => team.memberTree.length > 0 ? team.memberTree : team.members;
-
-const teamExecutionRowsByTeamRunId = computed(() => new Map(
-  props.workspaceTeams.map((team) => [
-    team.teamRunId,
-    buildWorkspaceTeamExecutionDisplayRows({
-      team,
-      teamContext: props.state.getLiveTeamContext(team.teamRunId),
-    }),
-  ]),
-));
-
-const stableRowHasChildren = (
-  row: WorkspaceTeamExecutionDisplayRow,
-): row is WorkspaceStableMemberDisplayRow => (
-  row.kind === 'stable_member'
-  && row.row.memberKind === 'agent_team'
-  && row.row.children.length > 0
-);
-
-const transientRowHasChildren = (
-  row: WorkspaceTeamExecutionDisplayRow,
-  index: number,
-  rows: readonly WorkspaceTeamExecutionDisplayRow[],
-): boolean => row.kind === 'transient_execution'
-  && row.transientKind === 'task_team'
-  && (rows[index + 1]?.depth ?? -1) > row.depth;
-
-const teamDisplayRowHasChildren = (
-  row: WorkspaceTeamExecutionDisplayRow,
-  index: number,
-  rows: readonly WorkspaceTeamExecutionDisplayRow[],
-): boolean => stableRowHasChildren(row) || transientRowHasChildren(row, index, rows);
-
 const isTeamDisplayRowExpanded = (
   team: TeamTreeNode,
-  row: WorkspaceTeamExecutionDisplayRow,
+  row: RunHistoryTeamExecutionRow,
 ): boolean => props.state.isTeamMemberExpanded(
   props.workspaceNode.workspaceId,
   team.teamRunId,
@@ -459,7 +451,7 @@ const isTeamDisplayRowExpanded = (
 
 const toggleTeamDisplayRow = (
   team: TeamTreeNode,
-  row: WorkspaceTeamExecutionDisplayRow,
+  row: RunHistoryTeamExecutionRow,
 ): void => props.state.toggleTeamMember(
   props.workspaceNode.workspaceId,
   team.teamRunId,
@@ -468,10 +460,10 @@ const toggleTeamDisplayRow = (
 
 const visibleTeamExecutionRows = (team: TeamTreeNode): VisibleTeamExecutionRow[] => {
   const visibleRows: VisibleTeamExecutionRow[] = [];
-  const rows = teamExecutionRowsByTeamRunId.value.get(team.teamRunId) ?? [];
+  const rows = team.executionRows;
   let collapsedDepth: number | null = null;
 
-  for (const [index, row] of rows.entries()) {
+  for (const row of rows) {
     if (collapsedDepth !== null) {
       if (row.depth > collapsedDepth) {
         continue;
@@ -479,7 +471,7 @@ const visibleTeamExecutionRows = (team: TeamTreeNode): VisibleTeamExecutionRow[]
       collapsedDepth = null;
     }
 
-    const hasChildren = teamDisplayRowHasChildren(row, index, rows);
+    const hasChildren = row.hasChildren;
     visibleRows.push({ row, hasChildren });
 
     if (hasChildren && !isTeamDisplayRowExpanded(team, row)) {
@@ -490,45 +482,29 @@ const visibleTeamExecutionRows = (team: TeamTreeNode): VisibleTeamExecutionRow[]
   return visibleRows;
 };
 
-const focusedTeamMemberRouteKey = (team: TeamTreeNode): string => props.state.getLiveTeamContext(team.teamRunId)?.focusedMemberRouteKey || team.focusedMemberRouteKey;
+const isSelectedTeamMember = (
+  team: TeamTreeNode,
+  row: RunHistoryTeamExecutionRow,
+): boolean => props.state.isTeamRunSelected(team.teamRunId)
+  && row.memberRouteKey === team.focusedMemberRouteKey;
 
-const teamExecutionRowStyle = (row: WorkspaceTeamExecutionDisplayRow): Record<string, string> => ({ marginLeft: `${row.depth * 12}px` });
+const teamExecutionRowStyle = (row: RunHistoryTeamExecutionRow): Record<string, string> => ({ marginLeft: `${row.depth * 12}px` });
 
 const selectTeamDisplayRow = (
   team: TeamTreeNode,
-  row: WorkspaceTeamExecutionDisplayRow,
+  row: RunHistoryTeamExecutionRow,
 ): Promise<void> | void => props.actions.onSelectTeamMember(
   row,
   props.workspaceNode.workspaceId,
-  rootTeamMembers(team),
 );
 
 const activateTeamDisplayRow = (
   team: TeamTreeNode,
-  row: WorkspaceTeamExecutionDisplayRow,
+  row: RunHistoryTeamExecutionRow,
   hasChildren: boolean,
 ): Promise<void> | void => {
   if (hasChildren) toggleTeamDisplayRow(team, row);
   return selectTeamDisplayRow(team, row);
 };
 
-const USER_REQUIREMENT_PREFIX = /^\s*(?:\*\*)?\s*(?:\[\s*user requirement\s*\]|user requirement)\s*(?:\*\*)?\s*[:\-]?\s*/i;
-
-const stripSummaryPrefix = (summary: string | null | undefined): string => {
-  const trimmed = summary?.trim() || '';
-  if (!trimmed) {
-    return '';
-  }
-  return trimmed.replace(USER_REQUIREMENT_PREFIX, '').trim();
-};
-
-const formatRunLabel = (summary: string | null | undefined): string => {
-  const cleaned = stripSummaryPrefix(summary);
-  return cleaned.length > 0 ? cleaned : 'Untitled task';
-};
-
-const formatTeamRunLabel = (team: TeamTreeNode): string => {
-  const cleaned = stripSummaryPrefix(team.summary);
-  return cleaned.length > 0 ? cleaned : 'Untitled team run';
-};
 </script>

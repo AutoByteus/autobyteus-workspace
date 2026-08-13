@@ -10,7 +10,7 @@ import { BaseTool } from "autobyteus-ts/tools/base-tool.js";
 import { ToolDefinition } from "autobyteus-ts/tools/registry/tool-definition.js";
 import { ToolOrigin } from "autobyteus-ts/tools/tool-origin.js";
 import { ParameterSchema } from "autobyteus-ts/utils/parameter-schema.js";
-import { buildConfiguredAgentToolExposure } from "../../../../src/agent-execution/shared/configured-agent-tool-exposure.js";
+import { buildRuntimeAgentToolExposure } from "../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { buildAgentRunMessageSenderContext } from "../../../../src/agent-communication/domain/agent-run-message-sender.js";
 import { SEND_MESSAGE_TO_TOOL_NAME } from "../../../../src/agent-communication/services/send-message-to-tool-contract.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
@@ -131,7 +131,7 @@ describe("Agent Tools MCP route publish_artifacts integration", () => {
             memoryDir,
             workspaceId: "workspace-agent-tools-mcp-publish",
           },
-          emitLocalEvent: (event: { eventType: string; payload: Record<string, unknown> }) => {
+          publishEvent: async (event: { eventType: string; payload: Record<string, unknown> }) => {
             localEvents.push(event);
           },
         }),
@@ -160,7 +160,7 @@ describe("Agent Tools MCP route publish_artifacts integration", () => {
       owner: { runId },
       sender,
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-      configuredExposure: buildConfiguredAgentToolExposure([PUBLISH_ARTIFACTS_TOOL_NAME]),
+      runtimeExposure: buildRuntimeAgentToolExposure([PUBLISH_ARTIFACTS_TOOL_NAME]),
       enabledTools: [PUBLISH_ARTIFACTS_TOOL_NAME],
       toolRoutes: {
         [PUBLISH_ARTIFACTS_TOOL_NAME]: {
@@ -328,7 +328,7 @@ describe("Agent Tools MCP route configured MCP integration", () => {
       owner: { runId: "run-configured-mcp", memberRunId: "member-configured-mcp" },
       sender,
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-      configuredExposure: buildConfiguredAgentToolExposure(["db_query"]),
+      runtimeExposure: buildRuntimeAgentToolExposure(["db_query"]),
     });
     const token = created.descriptor.headers.Authorization.replace(/^Bearer\s+/, "");
     const sdkClient = new Client({ name: "autobyteus-configured-mcp-sdk-probe", version: "0.0.1" });
@@ -395,7 +395,7 @@ describe("Agent Tools MCP route configured MCP integration", () => {
         owner: { runId: "run-unconfigured-mcp" },
         sender,
         runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-        configuredExposure: buildConfiguredAgentToolExposure([]),
+        runtimeExposure: buildRuntimeAgentToolExposure([]),
       });
       const unconfiguredToken = unconfigured.descriptor.headers.Authorization.replace(/^Bearer\s+/, "");
       const rejected = await app.inject({
@@ -799,7 +799,7 @@ describe("Agent Tools MCP route", () => {
     const { session, capabilityToken } = registry.createSession({
       owner: { runId: `owner-${enabledTools.join("-") || "none"}` },
       sender,
-      configuredExposure: buildConfiguredAgentToolExposure(enabledTools),
+      runtimeExposure: buildRuntimeAgentToolExposure(enabledTools),
       enabledTools,
       toolRoutes: Object.fromEntries(enabledTools.map((toolName) => [
         toolName,

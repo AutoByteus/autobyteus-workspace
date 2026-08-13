@@ -264,7 +264,6 @@ const componentFields = computed(() => [
   { name: 'tool_names', camelCase: 'toolNames', label: t('agents.components.agents.AgentDefinitionForm.toolsLabel'), placeholder: t('agents.components.agents.AgentDefinitionForm.add_tools'), helpText: t('agents.components.agents.AgentDefinitionForm.select_available_tools_for_the_agent') },
   { name: 'input_processor_names', camelCase: 'inputProcessorNames', label: t('agents.components.agents.AgentDefinitionForm.field.inputProcessors.label'), placeholder: t('agents.components.agents.AgentDefinitionForm.field.inputProcessors.placeholder'), helpText: t('agents.components.agents.AgentDefinitionForm.field.inputProcessors.help') },
   { name: 'llm_response_processor_names', camelCase: 'llmResponseProcessorNames', label: t('agents.components.agents.AgentDefinitionForm.field.llmResponseProcessors.label'), placeholder: t('agents.components.agents.AgentDefinitionForm.field.llmResponseProcessors.placeholder'), helpText: t('agents.components.agents.AgentDefinitionForm.field.llmResponseProcessors.help') },
-  { name: 'system_prompt_processor_names', camelCase: 'systemPromptProcessorNames', label: t('agents.components.agents.AgentDefinitionForm.field.systemPromptProcessors.label'), placeholder: t('agents.components.agents.AgentDefinitionForm.field.systemPromptProcessors.placeholder'), helpText: t('agents.components.agents.AgentDefinitionForm.field.systemPromptProcessors.help') },
   { name: 'tool_execution_result_processor_names', camelCase: 'toolExecutionResultProcessorNames', label: t('agents.components.agents.AgentDefinitionForm.field.toolResultProcessors.label'), placeholder: t('agents.components.agents.AgentDefinitionForm.field.toolResultProcessors.placeholder'), helpText: t('agents.components.agents.AgentDefinitionForm.field.toolResultProcessors.help') },
   { name: 'tool_invocation_preprocessor_names', camelCase: 'toolInvocationPreprocessorNames', label: t('agents.components.agents.AgentDefinitionForm.field.toolInvocationPreprocessors.label'), placeholder: t('agents.components.agents.AgentDefinitionForm.field.toolInvocationPreprocessors.placeholder'), helpText: t('agents.components.agents.AgentDefinitionForm.field.toolInvocationPreprocessors.help') },
   { name: 'lifecycle_processor_names', camelCase: 'lifecycleProcessorNames', label: t('agents.components.agents.AgentDefinitionForm.field.lifecycleProcessors.label'), placeholder: t('agents.components.agents.AgentDefinitionForm.field.lifecycleProcessors.placeholder'), helpText: t('agents.components.agents.AgentDefinitionForm.field.lifecycleProcessors.help') },
@@ -294,7 +293,6 @@ const skillSource = computed((): FlatSource => {
 const processorFieldMap: { [key: string]: keyof typeof optionsStore } = {
   'input_processor_names': 'inputProcessors',
   'llm_response_processor_names': 'llmResponseProcessors',
-  'system_prompt_processor_names': 'systemPromptProcessors',
   'tool_execution_result_processor_names': 'toolExecutionResultProcessors',
   'tool_invocation_preprocessor_names': 'toolInvocationPreprocessors',
   'lifecycle_processor_names': 'lifecycleProcessors',
@@ -448,7 +446,6 @@ const handleSubmit = () => {
     toolNames: formData.tool_names,
     inputProcessorNames: formData.input_processor_names,
     llmResponseProcessorNames: formData.llm_response_processor_names,
-    systemPromptProcessorNames: formData.system_prompt_processor_names,
     toolExecutionResultProcessorNames: formData.tool_execution_result_processor_names,
     toolInvocationPreprocessorNames: formData.tool_invocation_preprocessor_names,
     lifecycleProcessorNames: formData.lifecycle_processor_names,

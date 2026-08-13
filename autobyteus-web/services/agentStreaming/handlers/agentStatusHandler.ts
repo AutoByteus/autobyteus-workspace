@@ -26,6 +26,18 @@ import {
   isTerminalStatus,
   type ToolLifecycleSegment,
 } from './toolLifecycleState';
+import { markStreamSegmentPresentationComplete } from './segmentIdentity';
+import type { RecentEventMonitorEffect } from '../agentStreamMutationEffects';
+
+export interface AgentStatusHandlerResult {
+  statusChanged: boolean;
+  conversationEffect: RecentEventMonitorEffect;
+}
+
+export interface CompactionStatusHandlerResult {
+  conversationChanged: boolean;
+  eventMonitor: RecentEventMonitorEffect;
+}
 
 
 /**
@@ -34,18 +46,19 @@ import {
 export function handleAgentStatus(
   payload: AgentStatusPayload,
   context: AgentContext
-) {
-  applyLiveAgentStatusEvent(context, payload);
+): AgentStatusHandlerResult {
+  const statusChanged = applyLiveAgentStatusEvent(context, payload);
+  let conversationEffect: RecentEventMonitorEffect = 'NONE';
 
   // If status indicates completion, mark the current AI message as complete.
-  if (payload.status === AgentStatus.Idle) {
-    const lastMessage = context.conversation.messages[context.conversation.messages.length - 1];
-    if (lastMessage?.type === 'ai') {
-      if (lastMessage.isComplete) return;
-      lastMessage.isComplete = true;
-      return;
-    }
+  if (
+    payload.status === AgentStatus.Idle ||
+    payload.status === AgentStatus.Offline ||
+    payload.status === AgentStatus.Error
+  ) {
+    conversationEffect = markConversationComplete(context) ? 'STRUCTURAL' : 'NONE';
   }
+  return { statusChanged, conversationEffect };
 }
 
 /**
@@ -55,23 +68,23 @@ export function handleAgentStatus(
 export function handleAssistantComplete(
   _payload: AssistantCompletePayload,
   context: AgentContext
-) {
-  markConversationComplete(context);
+): RecentEventMonitorEffect {
+  return markConversationComplete(context) ? 'STRUCTURAL' : 'NONE';
 }
 
 export function handleTurnCompleted(
   _payload: TurnLifecyclePayload,
   context: AgentContext
-) {
-  markConversationComplete(context);
+): RecentEventMonitorEffect {
+  return markConversationComplete(context) ? 'STRUCTURAL' : 'NONE';
 }
 
 export function handleTurnInterrupted(
   payload: TurnLifecyclePayload,
   context: AgentContext
-) {
-  terminalizeOpenToolSegmentsForInterruptedTurn(payload, context);
-  markConversationComplete(context);
+): RecentEventMonitorEffect {
+  const changed = terminalizeOpenToolSegmentsForInterruptedTurn(payload, context);
+  return markConversationComplete(context) || changed ? 'STRUCTURAL' : 'NONE';
 }
 
 
@@ -79,7 +92,7 @@ export function handleTurnInterrupted(
 export function handleCompactionStatus(
   payload: CompactionStatusPayload,
   context: AgentContext
-) {
+): CompactionStatusHandlerResult {
   const previousStatus = context.state.compactionStatus;
   const projection = projectCompactionStatusToActivity(payload, {
     runId: context.state.runId,
@@ -87,12 +100,20 @@ export function handleCompactionStatus(
   });
   context.state.compactionStatus = projection.status;
 
-  if (shouldCloseCurrentAIMessageForCenterCompaction(projection.status, previousStatus)) {
-    markConversationComplete(context);
-  }
+  const conversationChanged = shouldCloseCurrentAIMessageForCenterCompaction(
+    projection.status,
+    previousStatus,
+  ) && markConversationComplete(context);
 
   const activityStore = useAgentActivityStore();
-  activityStore.upsertCompactionActivity(context.state.runId, projection.activity);
+  const activityChanged = activityStore.upsertCompactionActivity(
+    context.state.runId,
+    projection.activity,
+  );
+  const eventMonitor = conversationChanged || (
+    activityChanged && isCenterFeedCompactionPhase(projection.status.phase)
+  ) ? 'STRUCTURAL' : 'NONE';
+  return { conversationChanged, eventMonitor };
 }
 
 /**
@@ -101,12 +122,11 @@ export function handleCompactionStatus(
 export function handleError(
   payload: ErrorPayload,
   context: AgentContext
-) {
+): RecentEventMonitorEffect {
   const toolErrorInfo = parseToolExecutionError(payload.message);
   if (toolErrorInfo) {
-    applyToolError(toolErrorInfo, context);
-    markConversationComplete(context);
-    return;
+    const changed = applyToolError(toolErrorInfo, context);
+    return markConversationComplete(context) || changed ? 'STRUCTURAL' : 'NONE';
   }
 
   terminalizeOpenToolSegmentsForError(payload, context);
@@ -120,7 +140,8 @@ export function handleError(
   };
 
   aiMessage.segments.push(errorSegment);
-  aiMessage.isComplete = true;
+  markConversationComplete(context);
+  return 'STRUCTURAL';
 }
 
 // ============================================================================
@@ -195,9 +216,15 @@ function applyToolError(info: ToolErrorInfo, context: AgentContext): boolean {
 function markConversationComplete(context: AgentContext): boolean {
   const lastMessage = context.conversation.messages[context.conversation.messages.length - 1];
   if (lastMessage?.type === 'ai') {
-    if (lastMessage.isComplete) return false;
-    lastMessage.isComplete = true;
-    return true;
+    let changed = false;
+    for (const segment of lastMessage.segments ?? []) {
+      changed = markStreamSegmentPresentationComplete(segment) || changed;
+    }
+    if (!lastMessage.isComplete) {
+      lastMessage.isComplete = true;
+      changed = true;
+    }
+    return changed;
   }
   return false;
 }

@@ -1,21 +1,11 @@
 import { BasePromptRenderer } from './base-prompt-renderer.js';
-import {
-  Message,
-  MessageRole,
-  ToolCallPayload,
-  ToolPayload,
-  ToolResultPayload
-} from '../utils/messages.js';
+import { Message, MessageRole } from '../utils/messages.js';
 import {
   assertValidAutobyteusConversationPayload,
   AutobyteusConversationMessage,
   AutobyteusConversationPayload,
   AutobyteusConversationRole
 } from '../api/autobyteus-conversation-payload.js';
-import {
-  buildToolContinuationDisplayText,
-  type CompletedToolContinuationSummary
-} from '../../agent/message/tool-continuation-display-text.js';
 
 const countLabel = (count: number, singular: string): string =>
   `${count} ${singular}${count === 1 ? '' : 's'}`;
@@ -25,138 +15,6 @@ const appendSections = (...sections: Array<string | null | undefined>): string =
     .map((section) => section?.trim() ?? '')
     .filter((section) => section.length > 0)
     .join('\n\n');
-
-const escapeXmlText = (value: string): string =>
-  value
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-
-const escapeXmlAttribute = (value: string): string =>
-  escapeXmlText(value)
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&apos;');
-
-const toStableJsonValue = (value: unknown, seen = new WeakSet<object>()): unknown => {
-  if (value === undefined) {
-    return null;
-  }
-  if (typeof value === 'bigint') {
-    return value.toString();
-  }
-  if (typeof value === 'function' || typeof value === 'symbol') {
-    return String(value);
-  }
-  if (value instanceof Date) {
-    return value.toISOString();
-  }
-  if (!value || typeof value !== 'object') {
-    return value;
-  }
-  if (seen.has(value)) {
-    return String(value);
-  }
-  seen.add(value);
-  try {
-    if (Array.isArray(value)) {
-      return value.map((item) => toStableJsonValue(item, seen));
-    }
-
-    const record = value as Record<string, unknown>;
-    return Object.keys(record)
-      .sort()
-      .reduce<Record<string, unknown>>((acc, key) => {
-        acc[key] = toStableJsonValue(record[key], seen);
-        return acc;
-      }, {});
-  } finally {
-    seen.delete(value);
-  }
-};
-
-const formatStructuredValue = (value: unknown): string => {
-  if (typeof value === 'string') {
-    return value;
-  }
-
-  try {
-    const serialized = JSON.stringify(toStableJsonValue(value));
-    return serialized === undefined ? String(value) : serialized;
-  } catch {
-    return String(value);
-  }
-};
-
-const sentinelMarkers = (argName: string): [string, string] | null => {
-  if (argName === 'content') {
-    return ['__START_CONTENT__', '__END_CONTENT__'];
-  }
-  if (argName === 'patch') {
-    return ['__START_PATCH__', '__END_PATCH__'];
-  }
-  return null;
-};
-
-const renderToolArgumentXml = (argName: string, value: unknown): string[] => {
-  const xmlName = escapeXmlAttribute(argName);
-  const stringValue = escapeXmlText(formatStructuredValue(value));
-  const markers = sentinelMarkers(argName);
-
-  if (markers) {
-    const [startMarker, endMarker] = markers;
-    return [
-      `    <arg name="${xmlName}">`,
-      startMarker,
-      stringValue,
-      endMarker,
-      '    </arg>'
-    ];
-  }
-
-  return [`    <arg name="${xmlName}">${stringValue}</arg>`];
-};
-
-const renderToolCallXml = (toolName: string, args: Record<string, unknown>): string => {
-  const lines = [`<tool name="${escapeXmlAttribute(toolName)}">`];
-  const argNames = Object.keys(args).sort();
-
-  if (argNames.length > 0) {
-    lines.push('  <arguments>');
-    for (const argName of argNames) {
-      lines.push(...renderToolArgumentXml(argName, args[argName]));
-    }
-    lines.push('  </arguments>');
-  }
-
-  lines.push('</tool>');
-  return lines.join('\n');
-};
-
-const renderToolResultRecord = (payload: ToolResultPayload): string => [
-  'Tool result:',
-  `tool_call_id: ${formatStructuredValue(payload.toolCallId)}`,
-  `tool_name: ${formatStructuredValue(payload.toolName)}`,
-  `tool_result: ${formatStructuredValue(payload.toolResult)}`,
-  `tool_error: ${formatStructuredValue(payload.toolError)}`
-].join('\n');
-
-const renderToolPayload = (toolPayload: ToolPayload | null): string | null => {
-  if (!toolPayload) {
-    return null;
-  }
-
-  if (toolPayload instanceof ToolCallPayload) {
-    return toolPayload.toolCalls
-      .map((call) => renderToolCallXml(call.name, call.arguments))
-      .join('\n\n');
-  }
-
-  if (toolPayload instanceof ToolResultPayload) {
-    return renderToolResultRecord(toolPayload);
-  }
-
-  return null;
-};
 
 const renderHistoricalMediaReference = (message: Message): string | null => {
   const mediaReferences = [
@@ -176,28 +34,21 @@ const toAutobyteusRole = (role: MessageRole): AutobyteusConversationRole => role
 
 export class AutobyteusPromptRenderer extends BasePromptRenderer {
   async render(messages: Message[]): Promise<AutobyteusConversationPayload> {
-    const latestUserMessageIndex = this.findLatestUserMessageIndex(messages);
+    const currentMessageIndex = this.findLatestUserMessageIndex(messages);
 
-    if (latestUserMessageIndex < 0) {
+    if (currentMessageIndex < 0) {
       throw new Error('AutobyteusPromptRenderer requires at least one user message.');
     }
 
-    const trailingToolResults = this.collectTrailingToolResults(messages, latestUserMessageIndex);
-    const shouldAppendToolContinuation = trailingToolResults.length > 0;
-    const currentMessageIndex = shouldAppendToolContinuation ? messages.length : latestUserMessageIndex;
-
-    const payload = {
+    const payload: AutobyteusConversationPayload = {
       messages: messages.map((message, index): AutobyteusConversationMessage => {
         const isCurrentMessage = index === currentMessageIndex;
-        const content = appendSections(
-          message.content ?? '',
-          renderToolPayload(message.tool_payload),
-          isCurrentMessage ? null : renderHistoricalMediaReference(message)
-        );
-
         return {
           role: toAutobyteusRole(message.role),
-          content,
+          content: appendSections(
+            message.content ?? '',
+            isCurrentMessage ? null : renderHistoricalMediaReference(message)
+          ),
           image_urls: isCurrentMessage ? [...message.image_urls] : [],
           audio_urls: isCurrentMessage ? [...message.audio_urls] : [],
           video_urls: isCurrentMessage ? [...message.video_urls] : []
@@ -205,10 +56,6 @@ export class AutobyteusPromptRenderer extends BasePromptRenderer {
       }),
       current_message_index: currentMessageIndex
     };
-
-    if (shouldAppendToolContinuation) {
-      payload.messages.push(this.buildSyntheticToolContinuationUserMessage(trailingToolResults));
-    }
 
     assertValidAutobyteusConversationPayload(payload);
     return payload;
@@ -221,44 +68,5 @@ export class AutobyteusPromptRenderer extends BasePromptRenderer {
       }
     }
     return -1;
-  }
-
-  private collectTrailingToolResults(messages: Message[], latestUserMessageIndex: number): ToolResultPayload[] {
-    const results: ToolResultPayload[] = [];
-
-    for (let index = messages.length - 1; index > latestUserMessageIndex; index -= 1) {
-      const payload = messages[index].tool_payload;
-      if (payload instanceof ToolResultPayload) {
-        results.unshift(payload);
-        continue;
-      }
-
-      return results.length > 0 ? results : [];
-    }
-
-    return results;
-  }
-
-  private buildSyntheticToolContinuationUserMessage(
-    toolResults: ToolResultPayload[]
-  ): AutobyteusConversationMessage {
-    return {
-      role: MessageRole.USER,
-      content: this.buildSyntheticToolContinuationContent(toolResults),
-      image_urls: [],
-      audio_urls: [],
-      video_urls: []
-    };
-  }
-
-  private buildSyntheticToolContinuationContent(toolResults: ToolResultPayload[]): string {
-    return buildToolContinuationDisplayText(this.buildDisplayTextSummaries(toolResults));
-  }
-
-  private buildDisplayTextSummaries(toolResults: ToolResultPayload[]): CompletedToolContinuationSummary[] {
-    return toolResults.map((payload) => ({
-      toolName: payload.toolName,
-      error: payload.toolError
-    }));
   }
 }

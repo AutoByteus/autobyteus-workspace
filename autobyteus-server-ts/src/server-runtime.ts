@@ -13,6 +13,7 @@ import {
 import { createServerLogger, initializeServerAppLogger } from "./logging/server-app-logger.js";
 import { runMigrations } from "./startup/migrations.js";
 import { getAppDataMigrationRunner } from "./app-data-migrations/app-data-migration-runner.js";
+import { CUSTOM_PROVIDER_READABLE_ID_APP_DATA_MIGRATION_ID } from "./app-data-migrations/migrations/custom-provider-readable-id-app-data-migration.js";
 import { scheduleStudioBackgroundTasks } from "./startup/background-runner.js";
 import {
   startChannelRunOutputDeliveryRuntime,
@@ -75,18 +76,28 @@ const initializeStudioProcessResources = async (): Promise<{
     await initializePrisma({ datasourceUrl: databaseLocation.databaseUrl });
     vaultInitializationStarted = true;
     await getSecretVaultRuntime().initialize(databaseLocation);
-    try {
-      const migrations = await getAppDataMigrationRunner().runPending();
-      for (const migration of migrations) {
-        if (migration.status === "FAILED" || migration.status === "RUNNING") {
-          logger.warn(
-            `Studio app-data migration '${migration.migrationId}' is ${migration.status}: `
-            + `${migration.errorMessage ?? "no detail"}`,
-          );
-        }
+    const migrations = await getAppDataMigrationRunner().runPending();
+    for (const migration of migrations) {
+      if (migration.status === "FAILED" || migration.status === "RUNNING") {
+        logger.warn(
+          `Studio app-data migration '${migration.migrationId}' is ${migration.status}: `
+          + `${migration.errorMessage ?? "no detail"}`,
+        );
       }
-    } catch (error) {
-      logger.error(`Failed to run Studio app data migrations: ${String(error)}`);
+    }
+    const readableIdentityMigration = migrations.find(
+      ({ migrationId }) =>
+        migrationId === CUSTOM_PROVIDER_READABLE_ID_APP_DATA_MIGRATION_ID,
+    );
+    if (
+      readableIdentityMigration?.status !== "SUCCEEDED"
+      && readableIdentityMigration?.status !== "SUCCEEDED_WITH_WARNINGS"
+    ) {
+      throw new Error([
+        "CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED",
+        readableIdentityMigration?.status ?? "NOT_RUN",
+        readableIdentityMigration?.logPath ?? "NO_LOG",
+      ].join(":"));
     }
     return { loggingConfig };
   } catch (error) {

@@ -230,12 +230,15 @@ until `AGENT_READY` to avoid handling user/tool events before the system is full
 Processors remain as **internal, ordered pipelines** owned by handlers:
 
 - Input processors
-- System prompt processors (bootstrap only)
 - LLM response processors
 - Tool invocation preprocessors
 - Tool execution result processors
 
 **Key rule:** processors do not define lifecycle. They _customize_ how handlers respond to events.
+
+Native system-instruction completion is separate: bootstrap directly appends
+the configured Skills catalog, validates the complete instruction, and
+configures the LLM without a configurable processor pipeline.
 
 ---
 
@@ -322,7 +325,7 @@ message-wrapper inbox are retired.
 3. `TurnStartInboxEventHandler` creates an `AgentTurn` and delegates the whole
    LLM/tool/continuation loop to `AgentTurnRunner`.
 4. `AgentTurnRunner` uses `AgentInputPipeline`, `LlmPhase`, `ToolPhase`,
-   `ToolResultPipeline`, `ToolResultContinuationBuilder`, and
+   `ToolResultPipeline`, `MemoryManager`, `ToolContinuationInputBuilder`, and
    `LLMResponsePipeline` to publish lifecycle/status/data facts through
    `AgentExternalEventNotifier`.
 
@@ -344,10 +347,10 @@ clears the active turn only when the same turn has settled.
 
 | Input / phase | Owner | Emits / publishes | Notes |
 | --- | --- | --- | --- |
-| Parsed tool invocations | `AgentTurnRunner` + `ToolPhase` | tool lifecycle started/pending/terminal events, approval requests, tool results | `BaseTool.prepareExecution(...)` owns agent-id setup, argument coercion/schema/type validation, abort check, and external-result mode resolution before started lifecycle/waiter registration. |
+| Provider-native tool invocations | `LlmStreamingResponseHandler` + `AgentTurnRunner` + `ToolPhase` | tool lifecycle started/pending/terminal events, approval requests, tool results | Only normalized provider-native deltas accepted by the handler's explicit tool-call gate create invocations. `BaseTool.prepareExecution(...)` owns agent-id setup, argument coercion/schema/type validation, abort check, and external-result mode resolution before started lifecycle/waiter registration. |
 | Tool approval command | `Agent.postToolExecutionApproval(...)` -> `AgentRuntime.postToolApprovalEvent(...)` -> active-turn `AgentEventInbox` entry -> `ToolApprovalInboxEventHandler` -> `AgentRuntimeState.postToolApprovalEventToActiveTurn(...)` | `ToolExecutionApprovalEvent` only after accepted approval | Rejected when there is no active turn, stale turn, no pending approval, stopped runtime, or interrupted turn. |
 | External tool result command | `Agent.postToolExecutionResult(...)` -> `AgentRuntime.postToolResultEvent(...)` -> active-turn `AgentEventInbox` entry -> `ToolResultInboxEventHandler` -> `AgentRuntimeState.postToolResultEventToActiveTurn(...)` | accepted result wakes `TurnToolInputPort` | Unknown, duplicate/late, turn-mismatched, no-waiter, closed/interrupted, and stopped cases are explicit rejections. |
-| Tool result continuation | `ToolResultPipeline` + `ToolResultContinuationBuilder` | `ToolContinuationReadyEvent` for native `api_tool_call`, or `SenderType.TOOL` continuation input for legacy text modes | Continuations build semantic completed-tool text. Native text-only mode continues with structured `assistant.tool_calls` / `role: "tool"` history and no synthetic user message; media continuations may append a user/media carrier with that semantic text. |
+| Tool result continuation | `ToolResultPipeline` + `AgentTurnRunner`/`MemoryManager` + `ToolContinuationInputBuilder`/`AgentInputPipeline` | internal native `SenderType.TOOL` carrier followed by `ToolContinuationReadyEvent` when `llmUserMessage` is null | The runner commits ordered results once. The pure builder creates semantic/context input, and the pipeline returns either null for structured provider-native history without a synthetic user message or a required user/media carrier. Both use `LLMRequestAssembler.prepareRequest(...)`. |
 
 #### Inter-Agent Messages
 

@@ -1,0 +1,347 @@
+{
+  "generated_at": "2026-08-02T07:40:36.726Z",
+  "summaries": [
+    {
+      "cohort": "deepseek_current_numeric",
+      "model": "deepseek-v4-flash",
+      "variant": "reported_toolset",
+      "evidence_files": [
+        "flash-thinking-reported-toolset-5x.jsonl"
+      ],
+      "runs": 20,
+      "exact_final_successes": 20,
+      "first_edit_application_successes": 20,
+      "tool_failures": 0,
+      "sentinel_unchanged_runs": 20,
+      "first_edit_tools": {
+        "edit_file": 19,
+        "run_bash": 1
+      },
+      "first_edit_patch_formats": {
+        "numeric_unified": 19,
+        "n/a": 1
+      },
+      "average_duration_ms": 6437,
+      "average_llm_calls": 4.15,
+      "average_input_tokens": 9500,
+      "average_output_tokens": 576,
+      "average_reasoning_tokens": 76
+    },
+    {
+      "cohort": "gemini_current_numeric",
+      "model": "gemini-3.5-flash",
+      "variant": "strict_edit",
+      "evidence_files": [
+        "gemini35-current-numeric-pilot-v2.jsonl",
+        "gemini35-current-numeric-main.jsonl"
+      ],
+      "runs": 20,
+      "exact_final_successes": 20,
+      "first_edit_application_successes": 20,
+      "tool_failures": 0,
+      "sentinel_unchanged_runs": 20,
+      "first_edit_tools": {
+        "edit_file": 20
+      },
+      "first_edit_patch_formats": {
+        "numeric_unified": 20
+      },
+      "average_duration_ms": 7356,
+      "average_llm_calls": 4,
+      "average_input_tokens": 6069,
+      "average_output_tokens": 388,
+      "average_reasoning_tokens": 455
+    },
+    {
+      "cohort": "gpt_current_numeric",
+      "model": "gpt-5.6-sol",
+      "variant": "strict_edit",
+      "evidence_files": [
+        "gpt56sol-current-numeric-pilot.jsonl"
+      ],
+      "runs": 4,
+      "exact_final_successes": 4,
+      "first_edit_application_successes": 4,
+      "tool_failures": 0,
+      "sentinel_unchanged_runs": 4,
+      "first_edit_tools": {
+        "edit_file": 4
+      },
+      "first_edit_patch_formats": {
+        "file_header_diff": 4
+      },
+      "average_duration_ms": 6740,
+      "average_llm_calls": 3,
+      "average_input_tokens": 3252,
+      "average_output_tokens": 274,
+      "average_reasoning_tokens": 19
+    },
+    {
+      "cohort": "context_only_explicit",
+      "model": "deepseek-v4-flash",
+      "variant": "context_edit",
+      "evidence_files": [
+        "cross-provider-context-only-main.jsonl"
+      ],
+      "runs": 20,
+      "exact_final_successes": 20,
+      "first_edit_application_successes": 20,
+      "tool_failures": 0,
+      "sentinel_unchanged_runs": 20,
+      "first_edit_tools": {
+        "edit_file": 20
+      },
+      "first_edit_patch_formats": {
+        "bare_context": 20
+      },
+      "average_duration_ms": 5437,
+      "average_llm_calls": 3.7,
+      "average_input_tokens": 6048,
+      "average_output_tokens": 418,
+      "average_reasoning_tokens": 43
+    },
+    {
+      "cohort": "context_only_explicit",
+      "model": "gemini-3.5-flash",
+      "variant": "context_edit",
+      "evidence_files": [
+        "cross-provider-context-only-main.jsonl"
+      ],
+      "runs": 20,
+      "exact_final_successes": 20,
+      "first_edit_application_successes": 20,
+      "tool_failures": 0,
+      "sentinel_unchanged_runs": 20,
+      "first_edit_tools": {
+        "edit_file": 20
+      },
+      "first_edit_patch_formats": {
+        "bare_context": 20
+      },
+      "average_duration_ms": 6007,
+      "average_llm_calls": 3.95,
+      "average_input_tokens": 5845,
+      "average_output_tokens": 357,
+      "average_reasoning_tokens": 367
+    },
+    {
+      "cohort": "context_only_explicit",
+      "model": "gpt-5.6-sol",
+      "variant": "context_edit",
+      "evidence_files": [
+        "cross-provider-context-only-main.jsonl"
+      ],
+      "runs": 20,
+      "exact_final_successes": 20,
+      "first_edit_application_successes": 20,
+      "tool_failures": 0,
+      "sentinel_unchanged_runs": 20,
+      "first_edit_tools": {
+        "edit_file": 20
+      },
+      "first_edit_patch_formats": {
+        "bare_context": 20
+      },
+      "average_duration_ms": 5762,
+      "average_llm_calls": 3,
+      "average_input_tokens": 3264,
+      "average_output_tokens": 245,
+      "average_reasoning_tokens": 15
+    },
+    {
+      "cohort": "context_only_schema_only",
+      "model": "deepseek-v4-flash",
+      "variant": "context_edit_neutral",
+      "evidence_files": [
+        "cross-provider-context-only-neutral.jsonl"
+      ],
+      "runs": 12,
+      "exact_final_successes": 12,
+      "first_edit_application_successes": 12,
+      "tool_failures": 0,
+      "sentinel_unchanged_runs": 12,
+      "first_edit_tools": {
+        "edit_file": 12
+      },
+      "first_edit_patch_formats": {
+        "bare_context": 12
+      },
+      "average_duration_ms": 5379,
+      "average_llm_calls": 3.67,
+      "average_input_tokens": 5854,
+      "average_output_tokens": 421,
+      "average_reasoning_tokens": 36
+    },
+    {
+      "cohort": "context_only_schema_only",
+      "model": "gemini-3.5-flash",
+      "variant": "context_edit_neutral",
+      "evidence_files": [
+        "cross-provider-context-only-neutral.jsonl"
+      ],
+      "runs": 12,
+      "exact_final_successes": 12,
+      "first_edit_application_successes": 9,
+      "tool_failures": 3,
+      "sentinel_unchanged_runs": 12,
+      "first_edit_tools": {
+        "edit_file": 12
+      },
+      "first_edit_patch_formats": {
+        "bare_context": 9,
+        "numeric_unified": 3
+      },
+      "average_duration_ms": 6648,
+      "average_llm_calls": 4.25,
+      "average_input_tokens": 6408,
+      "average_output_tokens": 428,
+      "average_reasoning_tokens": 354
+    },
+    {
+      "cohort": "context_only_schema_only",
+      "model": "gpt-5.6-sol",
+      "variant": "context_edit_neutral",
+      "evidence_files": [
+        "cross-provider-context-only-neutral.jsonl"
+      ],
+      "runs": 12,
+      "exact_final_successes": 12,
+      "first_edit_application_successes": 12,
+      "tool_failures": 0,
+      "sentinel_unchanged_runs": 12,
+      "first_edit_tools": {
+        "edit_file": 12
+      },
+      "first_edit_patch_formats": {
+        "bare_context": 12
+      },
+      "average_duration_ms": 6201,
+      "average_llm_calls": 3,
+      "average_input_tokens": 3183,
+      "average_output_tokens": 254,
+      "average_reasoning_tokens": 15
+    },
+    {
+      "cohort": "gemini_context_header_normalized_schema_only",
+      "model": "gemini-3.5-flash",
+      "variant": "context_edit_neutral",
+      "evidence_files": [
+        "gemini-context-normalized-neutral.jsonl"
+      ],
+      "runs": 12,
+      "exact_final_successes": 12,
+      "first_edit_application_successes": 12,
+      "tool_failures": 0,
+      "sentinel_unchanged_runs": 12,
+      "first_edit_tools": {
+        "edit_file": 12
+      },
+      "first_edit_patch_formats": {
+        "bare_context": 9,
+        "numeric_unified": 3
+      },
+      "average_duration_ms": 5982,
+      "average_llm_calls": 4,
+      "average_input_tokens": 5715,
+      "average_output_tokens": 394,
+      "average_reasoning_tokens": 311
+    },
+    {
+      "cohort": "gemini_exact_replace",
+      "model": "gemini-3.5-flash",
+      "variant": "replace",
+      "evidence_files": [
+        "gemini35-replace-pilot.jsonl"
+      ],
+      "runs": 12,
+      "exact_final_successes": 12,
+      "first_edit_application_successes": 12,
+      "tool_failures": 0,
+      "sentinel_unchanged_runs": 12,
+      "first_edit_tools": {
+        "replace_in_file": 12
+      },
+      "first_edit_patch_formats": {
+        "n/a": 12
+      },
+      "average_duration_ms": 6161,
+      "average_llm_calls": 4,
+      "average_input_tokens": 6039,
+      "average_output_tokens": 365,
+      "average_reasoning_tokens": 384
+    },
+    {
+      "cohort": "generic_schema_context_parser",
+      "model": "deepseek-v4-flash",
+      "variant": "generic_edit",
+      "evidence_files": [
+        "cross-provider-generic-schema-pilot.jsonl"
+      ],
+      "runs": 4,
+      "exact_final_successes": 4,
+      "first_edit_application_successes": 4,
+      "tool_failures": 0,
+      "sentinel_unchanged_runs": 4,
+      "first_edit_tools": {
+        "edit_file": 4
+      },
+      "first_edit_patch_formats": {
+        "bare_context": 4
+      },
+      "average_duration_ms": 5250,
+      "average_llm_calls": 3.75,
+      "average_input_tokens": 4901,
+      "average_output_tokens": 408,
+      "average_reasoning_tokens": 32
+    },
+    {
+      "cohort": "generic_schema_context_parser",
+      "model": "gemini-3.5-flash",
+      "variant": "generic_edit",
+      "evidence_files": [
+        "cross-provider-generic-schema-pilot.jsonl"
+      ],
+      "runs": 4,
+      "exact_final_successes": 4,
+      "first_edit_application_successes": 1,
+      "tool_failures": 6,
+      "sentinel_unchanged_runs": 4,
+      "first_edit_tools": {
+        "edit_file": 4
+      },
+      "first_edit_patch_formats": {
+        "other": 3,
+        "numeric_unified": 1
+      },
+      "average_duration_ms": 9964,
+      "average_llm_calls": 5.5,
+      "average_input_tokens": 8919,
+      "average_output_tokens": 670,
+      "average_reasoning_tokens": 737
+    },
+    {
+      "cohort": "generic_schema_context_parser",
+      "model": "gpt-5.6-sol",
+      "variant": "generic_edit",
+      "evidence_files": [
+        "cross-provider-generic-schema-pilot.jsonl"
+      ],
+      "runs": 4,
+      "exact_final_successes": 4,
+      "first_edit_application_successes": 0,
+      "tool_failures": 4,
+      "sentinel_unchanged_runs": 4,
+      "first_edit_tools": {
+        "edit_file": 4
+      },
+      "first_edit_patch_formats": {
+        "codex_envelope": 4
+      },
+      "average_duration_ms": 11929,
+      "average_llm_calls": 5,
+      "average_input_tokens": 5200,
+      "average_output_tokens": 526,
+      "average_reasoning_tokens": 48
+    }
+  ]
+}

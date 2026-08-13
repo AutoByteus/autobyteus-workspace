@@ -1,0 +1,19 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-lineage-origin-simplification/autobyteus-ts
+
+ ✓ tests/unit/memory/current-compaction-output-loader.test.ts (6 tests) 7ms
+ ✓ tests/unit/memory/raw-trace-archive-manager.test.ts (4 tests) 24ms
+ ✓ tests/unit/memory/compacted-memory-context-projector.test.ts (2 tests) 5ms
+ ✓ tests/unit/memory/accepted-compaction-committer.test.ts (9 tests) 9ms
+ ✓ tests/unit/memory/run-memory-file-store.test.ts (7 tests) 46ms
+ ✓ tests/unit/memory/working-context-snapshot-bootstrapper.test.ts (5 tests) 18ms
+ ✓ tests/integration/memory/working-context-snapshot-restore.test.ts (1 test) 33ms
+ ✓ tests/unit/memory/pending-compaction-executor.test.ts (5 tests) 42ms
+ ✓ tests/unit/memory/file-compaction-lineage-store.test.ts (9 tests) 1750ms
+     ✓ reads the exact tail after 1,000 recurrent appends without a mutable state pointer  1730ms
+
+ Test Files  9 passed (9)
+      Tests  48 passed (48)
+   Start at  19:55:20
+   Duration  2.22s (transform 1.39s, setup 140ms, import 1.89s, tests 1.93s, environment 1ms)
+

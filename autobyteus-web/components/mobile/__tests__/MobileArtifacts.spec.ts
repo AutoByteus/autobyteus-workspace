@@ -10,7 +10,6 @@ import { useRunFileChangesStore, type RunFileChangeArtifact } from '~/stores/run
 import { AgentContext } from '~/types/agent/AgentContext';
 import { AgentRunState } from '~/types/agent/AgentRunState';
 import { DEFAULT_AGENT_RUNTIME_KIND, type AgentRunConfig } from '~/types/agent/AgentRunConfig';
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { AgentTeamContext, AgentTeamMemberNode } from '~/types/agent/AgentTeamContext';
 import type { Conversation } from '~/types/conversation';
 import type { MobileWorkContext } from '~/types/mobileWork';
@@ -127,7 +126,7 @@ function seedActiveTeamRun(): AgentTeamContext {
     coordinatorMemberRouteKey: 'lead',
     historicalHydration: null,
     focusedMemberRouteKey: 'lead',
-    currentStatus: AgentTeamStatus.Offline,
+    isActive: false,
     isSubscribed: false,
   };
   useAgentTeamContextsStore().teams.set(context.teamRunId, context);

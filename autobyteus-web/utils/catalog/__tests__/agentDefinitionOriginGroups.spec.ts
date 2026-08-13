@@ -10,7 +10,6 @@ const agent = (overrides: Partial<AgentDefinition> & Pick<AgentDefinition, 'id' 
   toolNames: overrides.toolNames ?? [],
   inputProcessorNames: overrides.inputProcessorNames ?? [],
   llmResponseProcessorNames: overrides.llmResponseProcessorNames ?? [],
-  systemPromptProcessorNames: overrides.systemPromptProcessorNames ?? [],
   toolExecutionResultProcessorNames: overrides.toolExecutionResultProcessorNames ?? [],
   toolInvocationPreprocessorNames: overrides.toolInvocationPreprocessorNames ?? [],
   lifecycleProcessorNames: overrides.lifecycleProcessorNames ?? [],

@@ -2,7 +2,6 @@ import { defineStore } from 'pinia';
 import { useWorkspaceStore } from '~/stores/workspace';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
-import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
@@ -10,7 +9,6 @@ import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig';
 import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import { buildEditableAgentRunSeed } from '~/composables/useDefinitionLaunchDefaults';
 import type {
   RunEditableFieldFlags,
@@ -19,8 +17,6 @@ import type {
   TeamRunResumeConfigPayload,
 } from '~/stores/runHistoryTypes';
 import {
-  buildRunHistoryTeamNodes,
-  buildRunHistoryTreeNodes,
   findAgentNameByRunId as findAgentNameFromHistory,
   formatRunHistoryRelativeTime,
 } from '~/stores/runHistoryReadModel';
@@ -47,6 +43,22 @@ import {
   deleteTeamRunFromHistoryStore,
 } from '~/stores/runHistoryMutationActions';
 import { fetchWorkspaceHistoryForStore, pruneWorkspaceHistoryForStore } from '~/stores/runHistoryWorkspaceHistoryActions';
+import {
+  runHistoryMemberIndexKey,
+  type RunHistoryAgentNavigationAncestry,
+  type RunHistoryNavigationProjectionState,
+  type RunHistoryTeamNavigationAncestry,
+} from './runHistoryNavigationProjection';
+import type { RunNavigationEffect } from '~/services/agentStreaming/agentStreamMutationEffects';
+import type { TaskExecutionProjectionMutation } from '~/services/agentStreaming/teamTaskExecutionProjection';
+import type { RunNavigationTarget } from './runHistoryNavigationPatches';
+import {
+  applyRunNavigationEffectForStore,
+  applyRunNavigationTeamFocusForStore,
+  commitTaskProjectionNavigationMutationForStore,
+  focusTeamMemberAndEnsureHydratedForStore,
+  refreshRunNavigationTopologyForStore,
+} from './runHistoryNavigationStoreActions';
 
 const FALSE_EDITABLE_FIELDS: RunEditableFieldFlags = {
   llmModelIdentifier: false,
@@ -68,7 +80,9 @@ export const useRunHistoryStore = defineStore('runHistory', {
     selectedRunId: null as string | null,
     selectedTeamRunId: null as string | null,
     selectedTeamMemberRouteKey: null as string | null,
-    teamDraftProjectionRevision: 0,
+    navigationProjection: null as RunHistoryNavigationProjectionState | null,
+    navigationTopologyRevision: 0,
+    navigationPatchRevision: 0,
     loading: false,
     openingRun: false,
     error: null as string | null,
@@ -105,12 +119,22 @@ export const useRunHistoryStore = defineStore('runHistory', {
   },
 
   actions: {
+    async loadWorkspaceCatalogForNavigation(): Promise<void> {
+      const workspaceStore = useWorkspaceStore();
+      if (workspaceStore.workspacesFetched) return;
+      await workspaceStore.fetchAllWorkspaces();
+      if (!workspaceStore.workspacesFetched) return;
+      this.refreshRunNavigationTopology('workspace-catalog-load');
+    },
+
     async fetchTree(limitPerAgent = 6, options: { quiet?: boolean } = {}): Promise<void> {
       await fetchRunHistoryTree(this, limitPerAgent, options);
+      this.refreshRunNavigationTopology('history-fetch');
     },
 
     async openRun(runId: string, options: { selectionMode?: RunHistorySelectionMode } = {}): Promise<void> {
       await openHistoricalRun(this, runId, options);
+      this.refreshRunNavigationTopology('standalone-open');
     },
 
     async createDraftRun(options: {
@@ -208,6 +232,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
       const workspaceStore = useWorkspaceStore();
       const workspaceId = await workspaceStore.createWorkspace({ root_path: rootPath });
       const workspace = workspaceStore.workspaces[workspaceId];
+      this.refreshRunNavigationTopology('workspace-create');
       return workspace?.absolutePath || rootPath;
     },
 
@@ -236,6 +261,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
           ),
         })),
       }));
+      this.refreshRunNavigationTopology('run-active');
     },
 
     markRunAsInactive(runId: string): void {
@@ -270,6 +296,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
           ),
         })),
       }));
+      this.refreshRunNavigationTopology('run-inactive');
     },
 
     reconcileActiveRunIds(activeRunIds: Iterable<string>): void {
@@ -300,6 +327,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
           }),
         })),
       }));
+      this.refreshRunNavigationTopology('run-reconcile');
     },
 
     markTeamAsActive(teamRunId: string): void {
@@ -313,7 +341,6 @@ export const useRunHistoryStore = defineStore('runHistory', {
               : {
                   ...team,
                   isActive: true,
-                  status: AgentTeamStatus.Running,
                 }),
         })),
       }));
@@ -325,6 +352,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
           isActive: true,
         };
       }
+      this.refreshRunNavigationTopology('team-active');
     },
 
     markTeamAsInactive(teamRunId: string): void {
@@ -338,7 +366,6 @@ export const useRunHistoryStore = defineStore('runHistory', {
               : {
                   ...team,
                   isActive: false,
-                  status: team.status === AgentTeamStatus.Error ? AgentTeamStatus.Error : AgentTeamStatus.Offline,
                   members: team.members.map((member) => ({
                     ...member,
                     status: AgentStatus.Offline,
@@ -354,6 +381,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
           isActive: false,
         };
       }
+      this.refreshRunNavigationTopology('team-inactive');
     },
 
     reconcileActiveTeamRunIds(activeTeamRunIds: Iterable<string>): void {
@@ -379,11 +407,6 @@ export const useRunHistoryStore = defineStore('runHistory', {
             return {
               ...team,
               isActive,
-              status: isActive
-                ? AgentTeamStatus.Running
-                : team.status === AgentTeamStatus.Error
-                  ? AgentTeamStatus.Error
-                  : AgentTeamStatus.Offline,
               members: team.members.map((member) => ({
                 ...member,
                 status: isActive ? member.status : AgentStatus.Offline,
@@ -392,26 +415,31 @@ export const useRunHistoryStore = defineStore('runHistory', {
           }),
         })),
       }));
-    },
-
-    markTeamDraftProjectionDirty(): void {
-      this.teamDraftProjectionRevision += 1;
+      this.refreshRunNavigationTopology('team-reconcile');
     },
 
     async deleteRun(runId: string): Promise<boolean> {
-      return deleteRunFromHistoryStore(this, runId);
+      const changed = await deleteRunFromHistoryStore(this, runId);
+      if (changed) this.refreshRunNavigationTopology('run-delete');
+      return changed;
     },
 
     async archiveRun(runId: string): Promise<boolean> {
-      return archiveRunInHistoryStore(this, runId);
+      const changed = await archiveRunInHistoryStore(this, runId);
+      if (changed) this.refreshRunNavigationTopology('run-archive');
+      return changed;
     },
 
     async deleteTeamRun(teamRunId: string): Promise<boolean> {
-      return deleteTeamRunFromHistoryStore(this, teamRunId);
+      const changed = await deleteTeamRunFromHistoryStore(this, teamRunId);
+      if (changed) this.refreshRunNavigationTopology('team-delete');
+      return changed;
     },
 
     async archiveTeamRun(teamRunId: string): Promise<boolean> {
-      return archiveTeamRunInHistoryStore(this, teamRunId);
+      const changed = await archiveTeamRunInHistoryStore(this, teamRunId);
+      if (changed) this.refreshRunNavigationTopology('team-archive');
+      return changed;
     },
 
     async refreshTreeQuietly(limitPerAgent = 6): Promise<void> {
@@ -424,6 +452,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
 
     async fetchWorkspaceHistory(workspaceId: string, limitPerAgent = 6, options: { quiet?: boolean } = {}): Promise<void> {
       await fetchWorkspaceHistoryForStore(this, workspaceId, limitPerAgent, options);
+      this.refreshRunNavigationTopology('workspace-history-fetch');
     },
 
     async refreshWorkspaceHistoryQuietly(workspaceId: string, limitPerAgent = 6): Promise<void> {
@@ -436,30 +465,58 @@ export const useRunHistoryStore = defineStore('runHistory', {
 
     pruneWorkspace(workspaceId: string, workspaceRootPath: string | null | undefined): void {
       pruneWorkspaceHistoryForStore(this, workspaceId, workspaceRootPath);
+      this.refreshRunNavigationTopology('workspace-prune');
     },
 
     getTreeNodes(): RunTreeWorkspaceNode[] {
-      const workspaceStore = useWorkspaceStore();
-      const agentContextsStore = useAgentContextsStore();
-      return buildRunHistoryTreeNodes({
-        workspaceGroups: this.workspaceGroups,
-        agentAvatarByDefinitionId: this.agentAvatarByDefinitionId,
-        allWorkspaces: workspaceStore.allWorkspaces,
-        workspacesById: workspaceStore.workspaces,
-        agentContexts: agentContextsStore.runs,
-      });
+      if (!this.navigationProjection) this.refreshRunNavigationTopology('lazy-tree-read');
+      return this.navigationProjection?.workspaceNodes ?? [];
     },
 
     getTeamNodes(workspaceRootPath?: string): import('~/stores/runHistoryTypes').TeamTreeNode[] {
-      void this.teamDraftProjectionRevision;
-      const workspaceStore = useWorkspaceStore();
-      const teamContextsStore = useAgentTeamContextsStore();
-      return buildRunHistoryTeamNodes({
-        workspaceGroups: this.workspaceGroups,
-        teamContexts: teamContextsStore.allTeamRuns ?? [],
-        workspacesById: workspaceStore.workspaces,
-        workspaceRootPath,
-      });
+      if (!this.navigationProjection) this.refreshRunNavigationTopology('lazy-team-read');
+      if (!workspaceRootPath) return this.navigationProjection?.teamNodes ?? [];
+      return this.navigationProjection?.teamNodesByWorkspaceRoot[workspaceRootPath] ?? [];
+    },
+
+    getAgentNavigationAncestry(runId: string): RunHistoryAgentNavigationAncestry | null {
+      if (!this.navigationProjection) this.refreshRunNavigationTopology('lazy-agent-ancestry-read');
+      return this.navigationProjection?.runAncestryById[runId] ?? null;
+    },
+
+    getTeamNavigationAncestry(teamRunId: string): RunHistoryTeamNavigationAncestry | null {
+      if (!this.navigationProjection) this.refreshRunNavigationTopology('lazy-team-ancestry-read');
+      return this.navigationProjection?.teamAncestryById[teamRunId] ?? null;
+    },
+
+    getTeamMemberNavigationAncestorRouteKeys(teamRunId: string, memberRouteKey: string): string[] {
+      if (!this.navigationProjection) this.refreshRunNavigationTopology('lazy-member-ancestry-read');
+      return this.navigationProjection?.memberAncestorRouteKeysByIdentity[
+        runHistoryMemberIndexKey(teamRunId, memberRouteKey)
+      ] ?? [];
+    },
+
+    refreshRunNavigationTopology(reason: string): void {
+      refreshRunNavigationTopologyForStore(this, reason);
+    },
+
+    applyRunNavigationEffect(target: RunNavigationTarget, effect: RunNavigationEffect): boolean {
+      return applyRunNavigationEffectForStore(this, target, effect);
+    },
+
+    commitTaskProjectionNavigationMutation(
+      teamRunId: string,
+      mutation: TaskExecutionProjectionMutation,
+    ): boolean {
+      return commitTaskProjectionNavigationMutationForStore(this, teamRunId, mutation);
+    },
+
+    applyRunNavigationTeamFocus(teamRunId: string, memberRouteKey: string): boolean {
+      return applyRunNavigationTeamFocusForStore(this, teamRunId, memberRouteKey);
+    },
+
+    async focusTeamMemberAndEnsureHydrated(teamRunId: string, memberRouteKey: string): Promise<boolean> {
+      return focusTeamMemberAndEnsureHydratedForStore(this, teamRunId, memberRouteKey);
     },
 
     async openTeamMemberRun(
@@ -468,6 +525,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
       options: { selectionMode?: RunHistorySelectionMode } = {},
     ): Promise<void> {
       await openTeamMemberRunFromHistory(this, teamRunId, memberRouteKey, options);
+      this.refreshRunNavigationTopology('team-open');
     },
 
     async selectTreeRun(

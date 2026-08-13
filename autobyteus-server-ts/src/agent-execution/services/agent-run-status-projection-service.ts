@@ -30,7 +30,6 @@ export type AgentRunStatusSource =
 export type AgentRunStatusProjection = {
   runId: string;
   status: AgentApiStatus;
-  canInterrupt: boolean;
   isActive: boolean;
   shouldConnectStream: boolean;
   lastKnownStatus: RunKnownStatus;
@@ -109,36 +108,13 @@ export class AgentRunStatusProjectionService {
     const commandRegistry = this.deps.commandRegistry ?? getAgentRunCommandRegistry();
 
     const activeRun = agentRunManager.getActiveRun(normalizedRunId);
-    const overlay = overlayStore.getOverlay(normalizedRunId);
     const inFlight = commandRegistry.getInFlightRecord(normalizedRunId);
-
-    if (overlay) {
-      const overlayRecord = overlay.messageId
-        ? commandRegistry.getRecord(normalizedRunId, overlay.messageId)
-        : inFlight;
-      return this.buildProjection({
-        runId: normalizedRunId,
-        status: overlay.status,
-        canInterrupt: false,
-        isActive: overlay.status === "initializing",
-        shouldConnectStream: overlay.status === "initializing",
-        lastKnownStatus: overlay.status === "error" ? "ERROR" : "ACTIVE",
-        statusSource: "COMMAND_OVERLAY",
-        statusPayload: overlay.statusPayload,
-        command: overlayRecord ? {
-          messageId: overlayRecord.messageId,
-          state: this.toProjectedCommandState(overlayRecord.state),
-          updatedAt: overlayRecord.updatedAt,
-        } : null,
-      });
-    }
 
     if (activeRun) {
       const snapshot = activeRun.getStatusSnapshot();
       return this.buildProjection({
         runId: normalizedRunId,
         status: snapshot.status,
-        canInterrupt: snapshot.can_interrupt === true,
         isActive: true,
         shouldConnectStream: true,
         lastKnownStatus: snapshot.status === "error" ? "ERROR" : "ACTIVE",
@@ -148,6 +124,27 @@ export class AgentRunStatusProjectionService {
           messageId: inFlight.messageId,
           state: inFlight.state === "FORWARDED" ? "FORWARDED" : "STARTING",
           updatedAt: inFlight.updatedAt,
+        } : null,
+      });
+    }
+
+    const overlay = overlayStore.getOverlay(normalizedRunId);
+    if (overlay) {
+      const overlayRecord = overlay.messageId
+        ? commandRegistry.getRecord(normalizedRunId, overlay.messageId)
+        : inFlight;
+      return this.buildProjection({
+        runId: normalizedRunId,
+        status: overlay.status,
+        isActive: overlay.status === "initializing",
+        shouldConnectStream: overlay.status === "initializing",
+        lastKnownStatus: overlay.status === "error" ? "ERROR" : "ACTIVE",
+        statusSource: "COMMAND_OVERLAY",
+        statusPayload: overlay.statusPayload,
+        command: overlayRecord ? {
+          messageId: overlayRecord.messageId,
+          state: this.toProjectedCommandState(overlayRecord.state),
+          updatedAt: overlayRecord.updatedAt,
         } : null,
       });
     }
@@ -176,12 +173,10 @@ export class AgentRunStatusProjectionService {
   }): AgentRunStatusProjection {
     return this.buildProjection({
       ...input,
-      canInterrupt: false,
       isActive: false,
       shouldConnectStream: false,
       statusPayload: buildAgentStatusPayload({
         status: input.status,
-        canInterrupt: false,
         agentId: input.runId,
       }),
       command: null,

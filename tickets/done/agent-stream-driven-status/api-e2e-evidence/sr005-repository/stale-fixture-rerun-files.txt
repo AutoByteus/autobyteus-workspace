@@ -1,0 +1,4 @@
+tests/integration/agent/agent-team-websocket.integration.test.ts
+tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts
+tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts

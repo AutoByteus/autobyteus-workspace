@@ -1,7 +1,7 @@
 <template>
   <div
     class="flex w-full cursor-pointer items-center rounded-md bg-indigo-50/40 text-sm transition-colors hover:bg-indigo-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-indigo-300"
-    :class="focused ? 'text-indigo-900 ring-1 ring-indigo-200' : 'text-gray-600'"
+    :class="isSelected ? 'text-indigo-900 ring-1 ring-indigo-200' : 'text-gray-600'"
     :style="rowStyle"
     data-test="workspace-team-transient-execution-row"
     data-row-kind="transient_execution"
@@ -10,6 +10,7 @@
     :data-member-route-key="row.memberRouteKey"
     :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.temporary_execution_title')"
     :aria-label="ariaLabel"
+    :aria-current="isSelected ? 'true' : undefined"
     role="button"
     tabindex="0"
     @click="activateRow"
@@ -43,9 +44,9 @@
 
     <div class="flex min-w-0 flex-1 items-center py-1 pr-2">
       <StatusDot
+        v-if="row.memberKind === 'agent'"
         class="mr-1.5"
         data-test="workspace-transient-status-dot"
-        :kind="row.memberKind === 'agent_team' ? 'team' : 'agent'"
         :status="row.currentStatus"
         variant="transient"
       />
@@ -58,22 +59,22 @@
 import { computed } from 'vue';
 import { Icon } from '@iconify/vue';
 import StatusDot from '~/components/workspace/common/StatusDot.vue';
-import type { WorkspaceTransientExecutionDisplayRow } from '~/utils/workspaceTeamExecutionDisplayRows';
+import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes';
 
 const props = withDefaults(defineProps<{
-  row: WorkspaceTransientExecutionDisplayRow;
-  focused?: boolean;
+  row: RunHistoryTransientExecutionRow;
+  isSelected?: boolean;
   hasChildren?: boolean;
   expanded?: boolean;
 }>(), {
-  focused: false,
+  isSelected: false,
   hasChildren: false,
   expanded: false,
 });
 
 const emit = defineEmits<{
-  (e: 'select', row: WorkspaceTransientExecutionDisplayRow): void;
-  (e: 'toggle', row: WorkspaceTransientExecutionDisplayRow): void;
+  (e: 'select', row: RunHistoryTransientExecutionRow): void;
+  (e: 'toggle', row: RunHistoryTransientExecutionRow): void;
 }>();
 
 const rowStyle = computed(() => ({

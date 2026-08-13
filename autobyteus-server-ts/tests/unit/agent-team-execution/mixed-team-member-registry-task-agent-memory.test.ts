@@ -22,7 +22,7 @@ describe("MixedTaskAgentInstanceRegistry task-agent memory", () => {
         config,
         isActive: () => true,
         getPlatformAgentRunId: () => null,
-        getStatusSnapshot: () => ({ status: "idle", can_interrupt: true }),
+        getStatusSnapshot: () => ({ status: "idle" }),
         subscribeToEvents: () => () => undefined,
         postUserMessage: async () => ({ accepted: true }),
         approveToolInvocation: async () => ({ accepted: true }),

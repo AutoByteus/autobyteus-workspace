@@ -34,6 +34,14 @@ import {
   ServerMessageType,
   createErrorMessage,
 } from "./models.js";
+import {
+  buildInterruptGenerationCommandAck,
+  normalizeInterruptCommandId,
+} from "./interrupt-generation-command-ack.js";
+import {
+  AgentStreamWebSocketEgress,
+  type AgentStreamServerMessageSink,
+} from "./websocket-egress/agent-stream-websocket-egress.js";
 
 export type WebSocketConnection = {
   send: (data: string) => void;
@@ -71,7 +79,7 @@ export class AgentStreamHandler {
   private sessionManager: AgentSessionManager;
   private eventMessageMapper: AgentRunEventMessageMapper;
   private activeRunUnsubscribers = new Map<string, () => void>();
-  private sessionConnections = new Map<string, WebSocketConnection>();
+  private sessionEgresses = new Map<string, AgentStreamWebSocketEgress>();
   private subscribedRunsBySessionId = new Map<
     string,
     AgentRun
@@ -117,30 +125,37 @@ export class AgentStreamHandler {
       return null;
     }
 
+    const egress = new AgentStreamWebSocketEgress({
+      sendRaw: (payload) => connection.send(payload),
+      onSendError: (error) => logger.error(
+        `Agent WebSocket egress failed: session=${sessionId}, run=${agentRunId}: ${String(error)}`,
+      ),
+    });
     const connectedMsg = createConnectedMessage(agentRunId, sessionId);
-    this.broadcaster.registerConnection(sessionId, agentRunId, connection);
-    this.sessionConnections.set(sessionId, connection);
+    this.broadcaster.registerConnection(sessionId, agentRunId, egress);
+    this.sessionEgresses.set(sessionId, egress);
 
     const activeRun = this.getActiveRun(agentRunId);
-    if (activeRun && !this.bindSessionToRun(sessionId, activeRun, connection)) {
-      this.sessionConnections.delete(sessionId);
+    if (activeRun && !this.bindSessionToRun(sessionId, activeRun, egress)) {
+      this.sessionEgresses.delete(sessionId);
       this.broadcaster.unregisterConnection(sessionId);
       this.sessionManager.closeSession(sessionId);
       const errorMsg = createErrorMessage(
         "AGENT_STREAM_UNAVAILABLE",
         `Agent run '${agentRunId}' stream not available`,
       );
-      connection.send(errorMsg.toJson());
+      egress.send(errorMsg);
+      egress.dispose();
       connection.close(1011);
       return null;
     }
 
-    connection.send(connectedMsg.toJson());
-    connection.send(
+    egress.send(connectedMsg);
+    egress.send(
       new ServerMessage(
         ServerMessageType.AGENT_STATUS,
-        projection.statusPayload,
-      ).toJson(),
+        activeRun?.getStatusSnapshot() ?? projection.statusPayload,
+      ),
     );
 
     logger.info(`Agent WebSocket connected: session=${sessionId}, run=${agentRunId}`);
@@ -165,6 +180,12 @@ export class AgentStreamHandler {
         return;
       }
 
+      const egress = this.sessionEgresses.get(sessionId) ?? null;
+      if (msgType === ClientMessageType.INTERRUPT_GENERATION) {
+        await this.handleInterruptGeneration(agentRunId, payload, egress);
+        return;
+      }
+
       if (!this.ensureActiveSessionSubscription(sessionId, agentRunId)) {
         logger.warn(
           `Agent websocket session '${sessionId}' lost its active run subscription for run '${agentRunId}'.`,
@@ -172,9 +193,7 @@ export class AgentStreamHandler {
         return;
       }
 
-      if (msgType === ClientMessageType.INTERRUPT_GENERATION) {
-        await this.handleInterruptGeneration(agentRunId);
-      } else if (msgType === ClientMessageType.APPROVE_TOOL) {
+      if (msgType === ClientMessageType.APPROVE_TOOL) {
         await this.handleToolApproval(agentRunId, payload, true);
       } else if (msgType === ClientMessageType.DENY_TOOL) {
         await this.handleToolApproval(agentRunId, payload, false);
@@ -194,7 +213,8 @@ export class AgentStreamHandler {
       this.activeRunUnsubscribers.delete(sessionId);
       runUnsubscribe();
     }
-    this.sessionConnections.delete(sessionId);
+    this.sessionEgresses.get(sessionId)?.dispose();
+    this.sessionEgresses.delete(sessionId);
     this.subscribedRunsBySessionId.delete(sessionId);
 
     this.sessionManager.closeSession(sessionId);
@@ -203,18 +223,18 @@ export class AgentStreamHandler {
   }
 
   private ensureActiveSessionSubscription(sessionId: string, runId: string): boolean {
-    const connection = this.sessionConnections.get(sessionId);
-    if (!connection) {
+    const egress = this.sessionEgresses.get(sessionId);
+    if (!egress) {
       return false;
     }
     const activeRun = this.getActiveRun(runId);
-    return !!activeRun && this.bindSessionToRun(sessionId, activeRun, connection);
+    return !!activeRun && this.bindSessionToRun(sessionId, activeRun, egress);
   }
 
   private bindSessionToRun(
     sessionId: string,
     activeRun: AgentRun,
-    connection: WebSocketConnection,
+    egress: AgentStreamWebSocketEgress,
   ): boolean {
     const subscribedRun = this.subscribedRunsBySessionId.get(sessionId);
     if (subscribedRun === activeRun) {
@@ -222,16 +242,19 @@ export class AgentStreamHandler {
     }
 
     const existingUnsubscribe = this.activeRunUnsubscribers.get(sessionId);
+    if (existingUnsubscribe) {
+      egress.flush();
+    }
     existingUnsubscribe?.();
     this.activeRunUnsubscribers.delete(sessionId);
 
-    this.startRunEventLoop(connection, activeRun, sessionId);
+    this.startRunEventLoop(egress, activeRun, sessionId);
     this.subscribedRunsBySessionId.set(sessionId, activeRun);
     return true;
   }
 
   private startRunEventLoop(
-    connection: WebSocketConnection,
+    sink: AgentStreamServerMessageSink,
     activeRun: AgentRun,
     sessionId: string,
   ): void {
@@ -239,13 +262,13 @@ export class AgentStreamHandler {
       if (!isAgentRunEvent(event)) {
         return;
       }
-      void this.forwardRunEvent(connection, activeRun.runId, event);
+      void this.forwardRunEvent(sink, activeRun.runId, event);
     });
     this.activeRunUnsubscribers.set(sessionId, unsubscribe);
   }
 
   private async forwardRunEvent(
-    connection: WebSocketConnection,
+    sink: AgentStreamServerMessageSink,
     runId: string,
     event: AgentRunEvent,
   ): Promise<void> {
@@ -278,7 +301,7 @@ export class AgentStreamHandler {
           eventType: event.eventType,
         });
       }
-      connection.send(message.toJson());
+      sink.send(message);
     } catch (error) {
       logger.error(`Error forwarding runtime event: ${String(error)}`);
     }
@@ -289,8 +312,8 @@ export class AgentStreamHandler {
     agentRunId: string,
     payload: Record<string, unknown>,
   ): Promise<void> {
-    const connection = this.sessionConnections.get(sessionId);
-    if (!connection) {
+    const egress = this.sessionEgresses.get(sessionId);
+    if (!egress) {
       return;
     }
 
@@ -326,14 +349,14 @@ export class AgentStreamHandler {
       message: userMessage,
       summary: content,
       onActiveRunReady: (activeRun) => {
-        this.bindSessionToRun(sessionId, activeRun, connection);
+        this.bindSessionToRun(sessionId, activeRun, egress);
       },
     });
-    connection.send(
+    egress.send(
       new ServerMessage(
         ServerMessageType.AGENT_COMMAND_ACK,
         result.ack,
-      ).toJson(),
+      ),
     );
     if (!result.ack.accepted) {
       logger.warn(
@@ -342,17 +365,56 @@ export class AgentStreamHandler {
     }
   }
 
-  private async handleInterruptGeneration(agentRunId: string): Promise<void> {
+  private async handleInterruptGeneration(
+    agentRunId: string,
+    payload: Record<string, unknown>,
+    sink: AgentStreamServerMessageSink | null,
+  ): Promise<void> {
     const activeRun = this.getActiveRun(agentRunId);
-    if (!activeRun) {
-      logger.warn(`INTERRUPT_GENERATION rejected for missing agent run ${agentRunId}.`);
+    const target = { target_kind: "standalone_run" as const, run_id: agentRunId };
+    const commandId = normalizeInterruptCommandId(payload.command_id);
+    if (!commandId) {
+      sink?.send(new ServerMessage(
+        ServerMessageType.AGENT_COMMAND_ACK,
+        buildInterruptGenerationCommandAck({ commandId, target }),
+      ));
       return;
     }
-    const result = await activeRun.interrupt(null);
-    if (!result.accepted) {
-      logger.warn(
-        `INTERRUPT_GENERATION rejected for agent run ${agentRunId}: [${result.code ?? "UNKNOWN"}] ${result.message ?? "no message"}`,
-      );
+    if (!activeRun) {
+      logger.warn(`INTERRUPT_GENERATION rejected for missing agent run ${agentRunId}.`);
+      sink?.send(new ServerMessage(
+        ServerMessageType.AGENT_COMMAND_ACK,
+        buildInterruptGenerationCommandAck({
+          commandId,
+          target,
+          validationFailure: {
+            code: "RUN_NOT_FOUND",
+            message: `Agent run '${agentRunId}' is not active.`,
+          },
+        }),
+      ));
+      return;
+    }
+    try {
+      const result = await activeRun.interrupt(null);
+      sink?.send(new ServerMessage(
+        ServerMessageType.AGENT_COMMAND_ACK,
+        buildInterruptGenerationCommandAck({ commandId, target, result }),
+      ));
+      if (!result.accepted) {
+        logger.warn(
+          `INTERRUPT_GENERATION rejected for agent run ${agentRunId}: [${result.code ?? "UNKNOWN"}] ${result.message ?? "no message"}`,
+        );
+      }
+    } catch (error) {
+      sink?.send(new ServerMessage(
+        ServerMessageType.AGENT_COMMAND_ACK,
+        buildInterruptGenerationCommandAck({
+          commandId,
+          target,
+          executionError: error,
+        }),
+      ));
     }
   }
 

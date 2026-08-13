@@ -1,0 +1,20 @@
+Fresh frontend typecheck classification — SR-005
+
+Command: pnpm exec nuxi typecheck
+Exit: 1 (Nuxt reports underlying typecheck status 2)
+Fresh diagnostics: 221 TypeScript error lines across 89 files.
+Baseline context from upstream package: repository typecheck was already non-clean (230 recorded errors); fresh result is independently classified rather than assumed.
+Changed-file intersection: 4 diagnostics across 3 files among 104 frontend files changed from baseline.
+
+Intersection detail:
+- autobyteus-web/generated/graphql.ts:2:38 TS2307 Cannot find module '@vue/apollo-composable' or its corresponding type declarations.
+- autobyteus-web/generated/graphql.ts:3:36 TS2307 Cannot find module '@vue/composition-api' or its corresponding type declarations.
+- autobyteus-web/services/agentStreaming/__tests__/AgentStreamingService.spec.ts:471:52 TS2339 Property 'segments' does not exist on type 'never'.
+- autobyteus-web/stores/__tests__/agentContextsStore.spec.ts:24:3 TS2353 Object literal may only specify known properties, and 'prompts' does not exist in type 'AgentDefinition'.
+
+Classification:
+- autobyteus-web/generated/graphql.ts: baseline imports of @vue/apollo-composable and @vue/composition-api are unchanged; SR-005 changed only generated workspace team status fields/documents. Missing-module diagnostics are baseline dependency/configuration limitations, not caused by the status removal.
+- autobyteus-web/services/agentStreaming/__tests__/AgentStreamingService.spec.ts: the replacementConversation.messages[0].segments inference diagnostic exists in the baseline test at the equivalent assertion (baseline line 465); SR-005 changes are status-field removal and companion batching expectations elsewhere.
+- autobyteus-web/stores/__tests__/agentContextsStore.spec.ts: the AgentDefinition.prompts fixture diagnostic at line 24 predates SR-005; the SR-005 diff only removes canInterrupt mutations/assertions near lines 215-228.
+
+Conclusion: Typecheck remains FAIL as a repository baseline limitation. No fresh diagnostic is attributable to SR-005 production or durable coverage edits. This does not convert the command to a pass; focused executable coverage remains the changed-surface proof.

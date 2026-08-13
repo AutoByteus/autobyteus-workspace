@@ -3,7 +3,10 @@ import { mount } from '@vue/test-utils'
 import { setActivePinia } from 'pinia'
 import { defineComponent, h } from 'vue'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
+import {
+  QwenConfigurationMutationError,
+  useLLMProviderConfigStore,
+} from '~/stores/llmProviderConfig'
 import { useProviderApiKeySectionRuntime } from '../useProviderApiKeySectionRuntime'
 
 const translations: Record<string, string> = {
@@ -22,6 +25,11 @@ const translations: Record<string, string> = {
   'settings.components.settings.ProviderAPIKeyManager.custom_provider_deleted_successfully': '{{provider}} deleted',
   'settings.components.settings.ProviderAPIKeyManager.failed_to_delete_custom_provider': '{{provider}} delete failed',
   'settings.components.settings.ProviderAPIKeyManager.new_custom_provider': 'New Provider',
+  'settings.components.settings.ProviderAPIKeyManager.qwen_configuration_saved': 'Qwen saved',
+  'settings.components.settings.ProviderAPIKeyManager.qwen_configuration_saved_refresh_failed': 'Qwen saved; refresh failed',
+  'settings.components.settings.ProviderAPIKeyManager.qwen_previous_configuration_active': 'Previous Qwen configuration active',
+  'settings.components.settings.ProviderAPIKeyManager.qwen_configuration_repair_required': 'Qwen repair required',
+  'settings.components.settings.ProviderAPIKeyManager.failed_to_save_qwen_configuration': 'Qwen save failed',
 }
 
 const translate = (key: string, params?: Record<string, unknown>) =>
@@ -71,6 +79,11 @@ const mountRuntime = (groups = [group('OPENAI', true, [1, 1, 1, 0])]) => {
           vertexExpressConfigured: false,
           vertexProject: null,
         },
+        qwenSetup: {
+          effectiveBaseUrl: 'https://default.example/v1',
+          endpointSource: 'DEFAULT',
+          apiKeyConfigured: false,
+        },
         isLoadingProviderSettings: false,
         isReloadingModels: false,
         isReloadingProviderModels: false,
@@ -82,6 +95,8 @@ const mountRuntime = (groups = [group('OPENAI', true, [1, 1, 1, 0])]) => {
   const store = useLLMProviderConfigStore()
   store.fetchProviderSettings = vi.fn().mockResolvedValue(store.providerSettingsGroups)
   store.fetchGeminiSetupConfig = vi.fn().mockResolvedValue(store.geminiSetup)
+  store.fetchQwenSetupStatus = vi.fn().mockResolvedValue(store.qwenSetup)
+  store.refreshProviderDataAfterQwenSave = vi.fn().mockResolvedValue(undefined)
   store.reloadModels = vi.fn().mockResolvedValue(true)
   store.reloadModelsForProvider = vi.fn().mockResolvedValue(true)
   store.setLLMProviderApiKey = vi.fn().mockResolvedValue(true)
@@ -90,6 +105,11 @@ const mountRuntime = (groups = [group('OPENAI', true, [1, 1, 1, 0])]) => {
   store.deleteCustomProvider = vi.fn().mockResolvedValue(true)
   store.saveGeminiConfigurationOption = vi.fn()
   store.activateGeminiConfigurationOption = vi.fn()
+  store.saveQwenConfiguration = vi.fn().mockResolvedValue({
+    effectiveBaseUrl: 'https://regional.example/v1',
+    endpointSource: 'CONFIGURED',
+    apiKeyConfigured: true,
+  })
   const wrapper = mount(RuntimeHarness, { global: { plugins: [pinia] } })
   return { wrapper, store }
 }
@@ -123,6 +143,65 @@ describe('useProviderApiKeySectionRuntime', () => {
     await (wrapper.vm as any).initialize()
     await expect((wrapper.vm as any).saveProviderApiKey('OPENAI', 'synthetic-key')).resolves.toBe(true)
     expect(store.setLLMProviderApiKey).toHaveBeenCalledWith('OPENAI', 'synthetic-key')
+  })
+
+  it('loads and saves Qwen only through its pair status/command boundary', async () => {
+    const { wrapper, store } = mountRuntime([group('QWEN', true)])
+    await (wrapper.vm as any).initialize()
+    expect(store.fetchQwenSetupStatus).toHaveBeenCalledOnce()
+
+    await (wrapper.vm as any).selectProvider('QWEN')
+    expect(store.fetchQwenSetupStatus).toHaveBeenCalledTimes(2)
+    await expect((wrapper.vm as any).saveQwenConfiguration({
+      baseUrl: 'https://regional.example/v1', apiKey: 'synthetic-key',
+    })).resolves.toBe(true)
+    expect(store.saveQwenConfiguration).toHaveBeenCalledWith({
+      baseUrl: 'https://regional.example/v1', apiKey: 'synthetic-key',
+    })
+    expect((wrapper.vm as any).qwenFormResetVersion).toBe(1)
+    expect((wrapper.vm as any).notification.message).toBe('Qwen saved')
+  })
+
+  it('keeps a committed Qwen save successful when post-commit refresh rejects', async () => {
+    const { wrapper, store } = mountRuntime([group('QWEN', true)])
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+    store.refreshProviderDataAfterQwenSave = vi.fn().mockRejectedValue(
+      new Error('provider settings network failure'),
+    )
+
+    await expect((wrapper.vm as any).saveQwenConfiguration({
+      baseUrl: 'https://regional.example/v1', apiKey: 'synthetic-key',
+    })).resolves.toBe(true)
+
+    expect((wrapper.vm as any).qwenFormResetVersion).toBe(1)
+    expect((wrapper.vm as any).qwenSaveErrorCode).toBeNull()
+    expect((wrapper.vm as any).qwenSaveErrorMessage).toBeNull()
+    expect((wrapper.vm as any).saving).toBe(false)
+    expect((wrapper.vm as any).notification).toEqual({
+      message: 'Qwen saved; refresh failed', type: 'warning',
+    })
+    expect(consoleError).toHaveBeenCalledWith(
+      'Qwen configuration saved, but provider data refresh failed:',
+      expect.any(Error),
+    )
+    consoleError.mockRestore()
+  })
+
+  it.each([
+    ['QWEN_CONFIGURATION_SAVE_FAILED_PREVIOUS_RESTORED', 'Previous Qwen configuration active'],
+    ['QWEN_CONFIGURATION_REPAIR_REQUIRED', 'Qwen repair required'],
+  ])('maps Qwen failure code %s without guessing endpoint state', async (code, message) => {
+    const { wrapper, store } = mountRuntime([group('QWEN', true)])
+    store.saveQwenConfiguration = vi.fn().mockRejectedValue(
+      new QwenConfigurationMutationError('internal message must not win', code),
+    )
+
+    await expect((wrapper.vm as any).saveQwenConfiguration({
+      baseUrl: 'https://regional.example/v1', apiKey: 'synthetic-key',
+    })).resolves.toBe(false)
+    expect((wrapper.vm as any).qwenSaveErrorCode).toBe(code)
+    expect((wrapper.vm as any).qwenSaveErrorMessage).toBe(message)
+    expect((wrapper.vm as any).qwenFormResetVersion).toBe(0)
   })
 
   it('pins Settings reload commands to the AutoByteus runtime', async () => {

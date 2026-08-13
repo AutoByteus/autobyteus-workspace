@@ -43,7 +43,7 @@ describe("ClaudeAgentRunBackend", () => {
     const { backend, session } = createBackend();
     const listener = vi.fn();
 
-    const unsubscribe = backend.subscribeToEvents(listener);
+    const unsubscribe = backend.subscribeToSourceEventBatches(listener);
     const sendResult = await backend.postUserMessage(new AgentInputUserMessage("hello claude"));
     const approveResult = await backend.approveToolInvocation("invoke-1", true);
     const interruptResult = await backend.interrupt();
@@ -66,7 +66,11 @@ describe("ClaudeAgentRunBackend", () => {
     expect(interruptResult).toEqual({ accepted: true });
     expect(terminateResult).toEqual({ accepted: true });
     expect(backend.getPlatformAgentRunId()).toBe("claude-session-1");
-    expect(backend.getStatusSnapshot()).toEqual({ status: "idle", can_interrupt: false });
+    expect(backend.getLifecycleSnapshot()).toEqual({
+      availability: "active",
+      phase: "idle",
+      currentTurn: { kind: "NONE" },
+    });
   });
 
   it("returns a runtime command failure when session sendTurn throws", async () => {

@@ -1,0 +1,153 @@
+diff --git a/autobyteus-ts/src/utils/diff-utils.ts b/autobyteus-ts/src/utils/diff-utils.ts
+index f3f2b51a7..2df9cad2b 100644
+--- a/autobyteus-ts/src/utils/diff-utils.ts
++++ b/autobyteus-ts/src/utils/diff-utils.ts
+@@ -88,12 +88,13 @@ export function applyUnifiedDiff(
+     }
+ 
+     const match = HUNK_HEADER_RE.exec(line);
+-    if (!match) {
++    const isContextOnlyHeader = line.trim() === '@@';
++    if (!match && !isContextOnlyHeader) {
+       throw new PatchApplicationError(`Malformed hunk header: '${line.trim()}'.`);
+     }
+ 
+-    const oldStart = parseInt(match[1], 10);
+-    const oldCount = parseInt(match[2] ?? '1', 10);
++    const oldStart = match ? parseInt(match[1], 10) : 0;
++    const oldCount = match ? parseInt(match[2] ?? '1', 10) : 0;
+     const expectedOldCount = Number.isNaN(oldCount) ? 1 : oldCount;
+ 
+     lineIdx += 1;
+@@ -129,24 +130,11 @@ export function applyUnifiedDiff(
+     }
+ 
+     const expectedCount = refinedExpectedOrig.length;
+-    const targetIdxBase = oldStart > 0 ? oldStart - 1 : 0;
+-
+     let foundIdx = -1;
+-    const offsets: number[] = [0];
+-    for (let f = 1; f <= fuzzFactor; f += 1) {
+-      offsets.push(-f, f);
+-    }
+-
+-    for (const offset of offsets) {
+-      const candidateIdx = targetIdxBase + offset;
+-      if (candidateIdx < origIdx) {
+-        continue;
++    const candidateMatches = (candidateIdx: number): boolean => {
++      if (candidateIdx < origIdx || candidateIdx + expectedCount > originalLines.length) {
++        return false;
+       }
+-      if (candidateIdx + expectedCount > originalLines.length) {
+-        continue;
+-      }
+-
+-      let matchSuccess = true;
+       for (let k = 0; k < expectedCount; k += 1) {
+         const isEofLine = candidateIdx + expectedCount === originalLines.length && k === expectedCount - 1;
+         if (!linesMatch(
+@@ -155,20 +143,48 @@ export function applyUnifiedDiff(
+           ignoreWhitespace,
+           isEofLine
+         )) {
+-          matchSuccess = false;
+-          break;
++          return false;
+         }
+       }
++      return true;
++    };
+ 
+-      if (matchSuccess) {
+-        foundIdx = candidateIdx;
+-        break;
++    if (isContextOnlyHeader) {
++      if (expectedCount === 0) {
++        throw new PatchApplicationError('Context-only hunk header requires at least one context or removal line.');
++      }
++      const candidates: number[] = [];
++      for (let candidateIdx = origIdx; candidateIdx + expectedCount <= originalLines.length; candidateIdx += 1) {
++        if (candidateMatches(candidateIdx)) {
++          candidates.push(candidateIdx);
++        }
++      }
++      if (candidates.length > 1) {
++        throw new PatchApplicationError(
++          `Context-only hunk is ambiguous: matched ${candidates.length} locations. Add more context or use a numeric hunk header.`
++        );
++      }
++      foundIdx = candidates[0] ?? -1;
++    } else {
++      const targetIdxBase = oldStart > 0 ? oldStart - 1 : 0;
++      const offsets: number[] = [0];
++      for (let f = 1; f <= fuzzFactor; f += 1) {
++        offsets.push(-f, f);
++      }
++      for (const offset of offsets) {
++        const candidateIdx = targetIdxBase + offset;
++        if (candidateMatches(candidateIdx)) {
++          foundIdx = candidateIdx;
++          break;
++        }
+       }
+     }
+ 
+     if (foundIdx === -1) {
+       throw new PatchApplicationError(
+-        `Could not find context for hunk starting at ${oldStart} (fuzz=${fuzzFactor}).`
++        isContextOnlyHeader
++          ? 'Could not find context for context-only hunk.'
++          : `Could not find context for hunk starting at ${oldStart} (fuzz=${fuzzFactor}).`
+       );
+     }
+ 
+@@ -211,7 +227,7 @@ export function applyUnifiedDiff(
+     }
+ 
+     origIdx = foundIdx + expectedCount;
+-    if (expectedOldCount === 0) {
++    if (!isContextOnlyHeader && expectedOldCount === 0) {
+       origIdx = foundIdx;
+     }
+   }
+diff --git a/autobyteus-ts/tests/unit/utils/diff-utils-fuzzy.test.ts b/autobyteus-ts/tests/unit/utils/diff-utils-fuzzy.test.ts
+index dccbaf8dc..e58d97abf 100644
+--- a/autobyteus-ts/tests/unit/utils/diff-utils-fuzzy.test.ts
++++ b/autobyteus-ts/tests/unit/utils/diff-utils-fuzzy.test.ts
+@@ -77,4 +77,35 @@ index 1234567..89abcde 100644
+     const patched = applyUnifiedDiff(original, patch);
+     expect(patched).toEqual(['line1\n', 'LINE2']);
+   });
++
++  it('applies a unique context-only hunk emitted with a bare @@ header', () => {
++    const original = ['alpha\n', 'target: old\n', 'omega\n'];
++    const patch = `@@
++ alpha
++-target: old
+++target: new
++ omega
++`;
++
++    expect(applyUnifiedDiff(original, patch)).toEqual(['alpha\n', 'target: new\n', 'omega\n']);
++  });
++
++  it('rejects an ambiguous context-only hunk instead of editing the wrong occurrence', () => {
++    const original = ['status: draft\n', 'separator\n', 'status: draft\n'];
++    const patch = `@@
++-status: draft
+++status: ready
++`;
++
++    expect(() => applyUnifiedDiff(original, patch)).toThrow(/ambiguous: matched 2 locations/i);
++  });
++
++  it('rejects a context-only pure insertion because it has no safe anchor', () => {
++    const original = ['alpha\n'];
++    const patch = `@@
+++inserted
++`;
++
++    expect(() => applyUnifiedDiff(original, patch)).toThrow(/requires at least one context or removal line/i);
++  });
+ });

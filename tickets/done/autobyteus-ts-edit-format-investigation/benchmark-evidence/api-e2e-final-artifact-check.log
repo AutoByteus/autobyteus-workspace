@@ -1,0 +1,47 @@
+$ git diff --check
+exit=0
+
+$ required artifact files
+tickets/in-progress/autobyteus-ts-edit-format-investigation/api-e2e-coverage-investigation.md    40352 bytes
+tickets/in-progress/autobyteus-ts-edit-format-investigation/api-e2e-execution-coverage-report.md    24136 bytes
+tickets/in-progress/autobyteus-ts-edit-format-investigation/api-e2e-revision-record.md     3807 bytes
+
+$ placeholder scan
+no unexpected placeholders
+
+$ evidence completeness
+      60 tickets/in-progress/autobyteus-ts-edit-format-investigation/benchmark-evidence/api-e2e-current-context-live-2026-08-02.jsonl
+      60 tickets/in-progress/autobyteus-ts-edit-format-investigation/benchmark-evidence/api-e2e-explicit-context-live-2026-08-02.jsonl
+     120 total
+temporary harness absent
+
+$ evidence secret-pattern audit
+no secret-pattern matches
+
+$ git status --short
+ M tickets/in-progress/autobyteus-ts-edit-format-investigation/code-review-report.md
+ M tickets/in-progress/autobyteus-ts-edit-format-investigation/code-review-revision-record.md
+?? tickets/in-progress/autobyteus-ts-edit-format-investigation/api-e2e-coverage-investigation.md
+?? tickets/in-progress/autobyteus-ts-edit-format-investigation/api-e2e-execution-coverage-report.md
+?? tickets/in-progress/autobyteus-ts-edit-format-investigation/api-e2e-revision-record.md
+?? tickets/in-progress/autobyteus-ts-edit-format-investigation/benchmark-evidence/api-e2e-approval-flow.log
+?? tickets/in-progress/autobyteus-ts-edit-format-investigation/benchmark-evidence/api-e2e-core-build.log
+?? tickets/in-progress/autobyteus-ts-edit-format-investigation/benchmark-evidence/api-e2e-current-context-live-2026-08-02.jsonl
+?? tickets/in-progress/autobyteus-ts-edit-format-investigation/benchmark-evidence/api-e2e-current-context-live-2026-08-02.log
+?? tickets/in-progress/autobyteus-ts-edit-format-investigation/benchmark-evidence/api-e2e-current-context-live-summary.json
+?? tickets/in-progress/autobyteus-ts-edit-format-investigation/benchmark-evidence/api-e2e-explicit-context-live-2026-08-02.jsonl
+?? tickets/in-progress/autobyteus-ts-edit-format-investigation/benchmark-evidence/api-e2e-explicit-context-live-2026-08-02.log
+?? tickets/in-progress/autobyteus-ts-edit-format-investigation/benchmark-evidence/api-e2e-explicit-context-live-summary.json
+?? tickets/in-progress/autobyteus-ts-edit-format-investigation/benchmark-evidence/api-e2e-final-artifact-check.log
+?? tickets/in-progress/autobyteus-ts-edit-format-investigation/benchmark-evidence/api-e2e-focused-tests.log
+?? tickets/in-progress/autobyteus-ts-edit-format-investigation/benchmark-evidence/api-e2e-full-approval-flow.log
+?? tickets/in-progress/autobyteus-ts-edit-format-investigation/benchmark-evidence/api-e2e-full-unit.log
+?? tickets/in-progress/autobyteus-ts-edit-format-investigation/benchmark-evidence/api-e2e-live-benchmark-comparison.json
+?? tickets/in-progress/autobyteus-ts-edit-format-investigation/benchmark-evidence/api-e2e-live-cleanup.log
+?? tickets/in-progress/autobyteus-ts-edit-format-investigation/benchmark-evidence/api-e2e-live-harness-preflight.log
+?? tickets/in-progress/autobyteus-ts-edit-format-investigation/benchmark-evidence/api-e2e-package-dry-run.json
+?? tickets/in-progress/autobyteus-ts-edit-format-investigation/benchmark-evidence/api-e2e-platform-runtime.log
+?? tickets/in-progress/autobyteus-ts-edit-format-investigation/benchmark-evidence/api-e2e-resolver.log
+?? tickets/in-progress/autobyteus-ts-edit-format-investigation/benchmark-evidence/api-e2e-server-build.log
+?? tickets/in-progress/autobyteus-ts-edit-format-investigation/benchmark-evidence/api-e2e-structural-runtime-checks.log
+?? tickets/in-progress/autobyteus-ts-edit-format-investigation/benchmark-evidence/code-review-cr-001-resolution-verification.log

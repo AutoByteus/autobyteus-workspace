@@ -530,21 +530,13 @@ const attachMemory = (state: AgentRuntimeState) => {
 };
 
 describe('Agent runtime integration', () => {
-  let previousParser: string | undefined;
 
   beforeEach(() => {
-    previousParser = process.env.AUTOBYTEUS_STREAM_PARSER;
-    process.env.AUTOBYTEUS_STREAM_PARSER = 'api_tool_call';
     SkillRegistry.getInstance().clear();
     resetFactory();
   });
 
   afterEach(() => {
-    if (previousParser === undefined) {
-      delete process.env.AUTOBYTEUS_STREAM_PARSER;
-    } else {
-      process.env.AUTOBYTEUS_STREAM_PARSER = previousParser;
-    }
     SkillRegistry.getInstance().clear();
     resetFactory();
   });

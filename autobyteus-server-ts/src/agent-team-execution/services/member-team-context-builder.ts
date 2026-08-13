@@ -206,14 +206,16 @@ export class MemberTeamContextBuilder {
         this.teamDefinitionService
           .getDefinitionById(teamDefinitionId)
           .then((definition) => {
+            if (!definition) {
+              throw new Error(`Team definition '${teamDefinitionId}' was not found.`);
+            }
             const name = definition?.name?.trim() ?? "";
             const instruction = definition?.instructions?.trim() ?? "";
             return {
               name: name.length > 0 ? name : null,
               instruction: instruction.length > 0 ? instruction : null,
             };
-          })
-          .catch(() => ({ name: null, instruction: null })),
+          }),
       );
     }
     return this.teamDefinitionSummaryCache.get(teamDefinitionId)!;

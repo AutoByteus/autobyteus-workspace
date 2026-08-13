@@ -53,8 +53,8 @@ vi.mock('../../../../src/agent/pipelines/llm-response-pipeline.js', () => ({
   }
 }));
 
-vi.mock('../../../../src/agent/loop/tool-result-continuation-builder.js', () => ({
-  ToolResultContinuationBuilder: class MockToolResultContinuationBuilder {
+vi.mock('../../../../src/agent/loop/tool-continuation-input-builder.js', () => ({
+  ToolContinuationInputBuilder: class MockToolContinuationInputBuilder {
     build = mocks.continuationBuild;
   }
 }));
@@ -162,26 +162,42 @@ describe('AgentTurnRunner interruption fences', () => {
     expect(mocks.notifyTurnInterrupted).toHaveBeenCalledWith('turn-1', 'post_llm_interrupt');
   });
 
-  it('uses ToolContinuationReadyEvent instead of synthetic LLMUserMessageReadyEvent for native tool-history continuations', async () => {
-    const { context, turn } = makeContextAndTurn();
-    const invocation = new ToolInvocation('tool', {}, 'inv-1', 'turn-1');
+  it('commits the final ordered processed batch once before pure continuation construction and emits the ephemeral continuation event', async () => {
+    const { context, turn, ingestToolResults } = makeContextAndTurn();
+    const invocations = [
+      new ToolInvocation('tool_a', {}, 'inv-1', 'turn-1'),
+      new ToolInvocation('tool_b', {}, 'inv-2', 'turn-1'),
+    ];
     mocks.llmRun
       .mockResolvedValueOnce({
         kind: 'tool_invocations',
         response: new CompleteResponse({ content: '' }),
-        toolInvocations: [invocation]
+        toolInvocations: invocations,
       })
       .mockResolvedValueOnce({
         kind: 'final',
         response: new CompleteResponse({ content: 'done' })
       });
-    mocks.toolRun.mockImplementation(async () => {
-      return [new ToolResultEvent('tool', { ok: true }, 'inv-1', undefined, {}, 'turn-1', false)];
-    });
+    const rawResults = [
+      new ToolResultEvent('tool_a', { raw: 1 }, 'inv-1', undefined, {}, 'turn-1', false),
+      new ToolResultEvent('tool_b', { raw: 2 }, 'inv-2', undefined, {}, 'turn-1', false),
+    ];
+    mocks.toolRun.mockResolvedValue(rawResults);
+    mocks.toolResultProcess.mockImplementation(async (event: ToolResultEvent) =>
+      new ToolResultEvent(
+        event.toolName,
+        { processed: (event.result as { raw: number }).raw },
+        event.toolInvocationId,
+        event.error,
+        event.toolArgs,
+        event.turnId,
+        event.isDenied,
+      ));
+    const continuationInput = { content: 'tool result continuation' };
+    mocks.continuationBuild.mockReturnValue(continuationInput);
     mocks.inputProcessToolContinuation.mockResolvedValue({
-      llmUserMessage: { role: 'tool', content: 'The tool tool call completed successfully.' },
+      llmUserMessage: null,
       sourceEvent: {} as any,
-      llmRequestMode: 'tool_history_only'
     });
 
     const outcome = await new AgentTurnRunner(context, turn).run(makeTrigger());
@@ -202,8 +218,33 @@ describe('AgentTurnRunner interruption fences', () => {
           )
       )
     ).toHaveLength(0);
+    expect(mocks.toolResultProcess.mock.calls.map(([event]) => event.toolInvocationId)).toEqual([
+      'inv-1',
+      'inv-2',
+    ]);
+    expect(ingestToolResults).toHaveBeenCalledOnce();
+    expect(ingestToolResults).toHaveBeenCalledWith([
+      expect.objectContaining({ toolInvocationId: 'inv-1', result: { processed: 1 } }),
+      expect.objectContaining({ toolInvocationId: 'inv-2', result: { processed: 2 } }),
+    ], 'turn-1', {
+      source: 'native_api_ordered_batch',
+    });
+    expect(turn.activeToolInvocationBatch).toBeNull();
+    expect(mocks.continuationBuild).toHaveBeenCalledOnce();
+    const [continuationResults, continuationTurnId] = mocks.continuationBuild.mock.calls[0];
+    expect(continuationTurnId).toBe('turn-1');
+    expect(continuationResults.map((event: ToolResultEvent) => event.toolInvocationId)).toEqual([
+      'inv-1',
+      'inv-2',
+    ]);
+    expect(ingestToolResults.mock.invocationCallOrder[0]).toBeLessThan(
+      mocks.continuationBuild.mock.invocationCallOrder[0],
+    );
+    expect(mocks.continuationBuild.mock.invocationCallOrder[0]).toBeLessThan(
+      mocks.inputProcessToolContinuation.mock.invocationCallOrder[0],
+    );
     expect(mocks.llmRun.mock.calls[1][0]).toEqual(expect.objectContaining({
-      llmRequestMode: 'tool_history_only'
+      llmUserMessage: null,
     }));
   });
 

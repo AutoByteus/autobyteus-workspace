@@ -1,0 +1,62 @@
+Fresh frontend failure classification (2026-08-02)
+
+Combined result: 45/46 files and 344/353 tests passed; all 9 failures plus one unhandled rejection are in stores/__tests__/agentRunStore.spec.ts.
+Classification: repository-baseline stale fixture, outside this feature source behavior; not an implementation defect.
+
+Fresh evidence:
+- autobyteus-web/stores/agentRunStore.ts has no diff from baseline 4b29481d5b6eaea64aebb20abcb5e4d784ea1178 to current HEAD.
+- the test diff from baseline is only isSending -> submissionPending / removed canInterrupt assertions (5 insertions, 6 deletions).
+- the first six failures and unhandled rejection use an ad-hoc object lacking the AgentContext.conversation getter and event-monitor mutation methods; beginRecentEventMonitorMutation has required context.conversation at baseline and current HEAD.
+- the three termination/close failures share the same older ad-hoc store/mutation fixture and are recorded in the detached baseline reproduction in implementation-revision-record.md; no production agentRunStore change exists in this ticket.
+- direct changed lifecycle/action/streaming/store/component paths passed in the other 45 files (344 tests), including agentPrimaryAction, localUserSubmission, AgentUserInputTextArea click/Enter, agent status handler, both streaming services, team store, history projections, recovery, Stop pending/failure, and exact nested leaf projection.
+
+No durable edit is made to agentRunStore.spec.ts because repairing its unrelated full AgentContext/Apollo fixture would expand scope and would not improve proof of the reviewed status/team-stream change.
+
+Diff evidence:
+ autobyteus-web/stores/__tests__/agentRunStore.spec.ts | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
+
+diff --git a/autobyteus-web/stores/__tests__/agentRunStore.spec.ts b/autobyteus-web/stores/__tests__/agentRunStore.spec.ts
+index 1d5268ee9..6f737de5c 100644
+--- a/autobyteus-web/stores/__tests__/agentRunStore.spec.ts
++++ b/autobyteus-web/stores/__tests__/agentRunStore.spec.ts
+@@ -154,7 +154,7 @@ describe('agentRunStore', () => {
+             },
+             requirement: 'do something',
+             contextFilePaths: [],
+-            isSending: false,
++            submissionPending: false,
+             isSubscribed: false,
+         };
+ 
+@@ -272,9 +272,8 @@ describe('agentRunStore', () => {
+         });
+         expect(mockAgentContext.requirement).toBe('');
+         expect(mockAgentContext.contextFilePaths).toEqual([]);
+-        expect(mockAgentContext.isSending).toBe(true);
++        expect(mockAgentContext.submissionPending).toBe(true);
+         expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Idle);
+-        expect(mockAgentContext.state.canInterrupt).toBeUndefined();
+ 
+         resolveCreate({
+           data: {
+@@ -450,16 +449,16 @@ describe('agentRunStore', () => {
+         expect(mockContextsStore.removeRun).not.toHaveBeenCalled();
+     });
+ 
+-    it('interruptGeneration should signal active stream without clearing sending state optimistically', () => {
++    it('interruptGeneration should signal the active stream without clearing submission pending optimistically', () => {
+         const store = useAgentRunStore();
+         mockAgentContext.state.runId = 'agent-1';
+-        mockAgentContext.isSending = true;
++        mockAgentContext.submissionPending = true;
+ 
+         store.connectToAgentStream('agent-1');
+         const result = store.interruptGeneration('agent-1');
+ 
+         expect(result).toBe(true);
+         expect(mockInterruptGeneration).toHaveBeenCalledTimes(1);
+-        expect(mockAgentContext.isSending).toBe(true);
++        expect(mockAgentContext.submissionPending).toBe(true);
+     });
+ });

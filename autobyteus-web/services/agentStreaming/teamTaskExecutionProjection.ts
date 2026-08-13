@@ -1,4 +1,5 @@
 import type { AgentTeamContext, TeamMemberNode } from '~/types/agent/AgentTeamContext';
+import type { AgentStatus } from '~/types/agent/AgentStatus';
 import type { TeamReferenceFile } from '~/types/teamReferenceFile';
 import { normalizeTeamReferenceFiles } from '~/utils/teamReferences/teamReferenceFileModel';
 import type { ServerMessage } from './protocol';
@@ -12,6 +13,106 @@ export type TaskExecutionProjectionStatus =
   | 'settling'
   | 'settled'
   | 'failed';
+
+export type TaskExecutionProjectionMutation =
+  | { kind: 'NONE' }
+  | {
+      kind: 'PRESENTATION';
+      memberRouteKey: string;
+      changes: Array<
+        | { field: 'DISPLAY_NAME'; value: string }
+        | { field: 'CURRENT_STATUS'; value: AgentStatus | string | null }
+      >;
+    }
+  | { kind: 'TOPOLOGY'; reason: string };
+
+export const NO_TASK_EXECUTION_PROJECTION_MUTATION: TaskExecutionProjectionMutation = Object.freeze({
+  kind: 'NONE',
+});
+
+export const mergeTaskExecutionProjectionMutations = (
+  left: TaskExecutionProjectionMutation,
+  right: TaskExecutionProjectionMutation,
+): TaskExecutionProjectionMutation => {
+  if (left.kind === 'TOPOLOGY') return left;
+  if (right.kind === 'TOPOLOGY') return right;
+  if (left.kind === 'NONE') return right;
+  if (right.kind === 'NONE') return left;
+  if (left.memberRouteKey !== right.memberRouteKey) {
+    return { kind: 'TOPOLOGY', reason: 'multiple task execution rows changed' };
+  }
+  const byField = new Map(left.changes.map((change) => [change.field, change]));
+  right.changes.forEach((change) => byField.set(change.field, change));
+  return { kind: 'PRESENTATION', memberRouteKey: left.memberRouteKey, changes: [...byField.values()] };
+};
+
+interface TaskExecutionNavigationRowSnapshot {
+  memberRouteKey: string;
+  structural: string;
+  displayName: string;
+  currentStatus: AgentStatus | string | null;
+}
+
+export type TaskExecutionNavigationSnapshot = Map<string, TaskExecutionNavigationRowSnapshot>;
+
+export const captureTaskExecutionNavigationSnapshot = (
+  teamContext: AgentTeamContext,
+): TaskExecutionNavigationSnapshot => {
+  const rows: TaskExecutionNavigationSnapshot = new Map();
+  const visit = (nodes: readonly TeamMemberNode[], parentRouteKey: string | null, depth: number): void => {
+    nodes.forEach((node, order) => {
+      if (node.isTaskAgentInstance || node.isTaskTeamInstance || node.isTaskTeamChildProjection) {
+        rows.set(node.memberRouteKey, {
+          memberRouteKey: node.memberRouteKey,
+          structural: JSON.stringify({
+            parentRouteKey,
+            order,
+            depth,
+            memberKind: node.memberKind,
+            memberPath: node.memberPath,
+            hasChildren: node.memberKind === 'agent_team' && node.children.length > 0,
+          }),
+          displayName: node.displayName,
+          currentStatus: node.memberKind === 'agent'
+            ? node.isTaskAgentInstance
+              ? teamContext.leafAgentContextsByRouteKey.get(node.memberRouteKey)?.state.currentStatus
+                ?? node.currentStatus
+                ?? null
+              : node.currentStatus ?? null
+            : null,
+        });
+      }
+      if (node.memberKind === 'agent_team') visit(node.children, node.memberRouteKey, depth + 1);
+    });
+  };
+  visit(teamContext.memberTree, null, 0);
+  return rows;
+};
+
+export const deriveTaskExecutionProjectionMutation = (
+  before: TaskExecutionNavigationSnapshot,
+  teamContext: AgentTeamContext,
+  reason: string,
+): TaskExecutionProjectionMutation => {
+  const after = captureTaskExecutionNavigationSnapshot(teamContext);
+  if (before.size !== after.size) return { kind: 'TOPOLOGY', reason };
+  const presentation: Array<Extract<TaskExecutionProjectionMutation, { kind: 'PRESENTATION' }>> = [];
+  for (const [routeKey, current] of after.entries()) {
+    const prior = before.get(routeKey);
+    if (!prior || prior.structural !== current.structural) return { kind: 'TOPOLOGY', reason };
+    const changes: Extract<TaskExecutionProjectionMutation, { kind: 'PRESENTATION' }>['changes'] = [];
+    if (prior.displayName !== current.displayName) {
+      changes.push({ field: 'DISPLAY_NAME', value: current.displayName });
+    }
+    if (prior.currentStatus !== current.currentStatus) {
+      changes.push({ field: 'CURRENT_STATUS', value: current.currentStatus });
+    }
+    if (changes.length > 0) presentation.push({ kind: 'PRESENTATION', memberRouteKey: routeKey, changes });
+  }
+  if (presentation.length === 0) return NO_TASK_EXECUTION_PROJECTION_MUTATION;
+  if (presentation.length === 1) return presentation[0]!;
+  return { kind: 'TOPOLOGY', reason: `${reason}: multiple represented rows changed` };
+};
 
 export interface TaskExecutionTimelineEntry {
   id: string;

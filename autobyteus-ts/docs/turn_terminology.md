@@ -12,16 +12,19 @@ This project uses two different runtime concepts that previously both used the w
 
 2. `ToolInvocationBatch` (tool aggregation batch)
 - Scope: one set of tool calls emitted by a single LLM response.
-- Source: created by the active `AgentTurnRunner`/`LlmPhase` path when tool invocations are parsed from streamed output.
-- Usage: temporarily collects tool results and gates when to continue the same outer turn.
-  - In legacy text-parser modes, completion enqueues one aggregated
-    `SenderType.TOOL` continuation message back into the turn-local input
-    pipeline.
-  - In native `api_tool_call` mode, `ToolResultContinuationBuilder` marks the
-    continuation `tool_history_only`; `AgentTurnRunner` emits
-    `ToolContinuationReadyEvent` so the next LLM request uses structured
-    `assistant.tool_calls` / `role: "tool"` history without adding an aggregate
-    user message. If the continuation carries context-file media, the same batch
+- Source: created by the active `AgentTurnRunner`/`LlmPhase` path when
+  normalized provider-native deltas produce tool invocations.
+- Usage: retains the expected invocation identities in provider order and admits
+  only matching results for the active outer turn.
+  - After processing the complete batch, `AgentTurnRunner` clears the batch and
+    calls `MemoryManager.ingestToolResults(...)` once in call order.
+  - The pure `ToolContinuationInputBuilder` then creates the internal
+    `SenderType.TOOL` semantic/context carrier.
+  - When no context-file media must be carried, `AgentInputPipeline` represents
+    that absence as `llmUserMessage: null`; `AgentTurnRunner` emits
+    `ToolContinuationReadyEvent`, and the next request uses structured
+    provider-native tool-call/result history without adding an aggregate user
+    message. If the continuation carries context-file media, the same batch
     stays in the outer turn but uses an appended user/media carrier with
     semantic completed-tool wording so the media can be sent.
 

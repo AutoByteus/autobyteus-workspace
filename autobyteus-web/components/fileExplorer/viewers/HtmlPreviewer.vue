@@ -13,23 +13,25 @@
 
 <script setup lang="ts">
 import { ref, watch, onBeforeUnmount, nextTick, computed } from 'vue'
-import { useWorkspaceStore } from '~/stores/workspace'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
+import type { FileRelativeResourceContext } from '~/stores/fileExplorerState'
 
 const props = defineProps<{
   content: string
   path?: string
+  relativeResourceContext?: FileRelativeResourceContext | null
 }>()
 
 const iframeSrc = ref<string | null>(null)
 
-const workspaceStore = useWorkspaceStore()
 const windowNodeContextStore = useWindowNodeContextStore()
 
 const encodePath = (path: string) => path.split('/').map(encodeURIComponent).join('/')
 
 const staticUrl = computed(() => {
-  const workspaceId = workspaceStore.activeWorkspace?.workspaceId
+  const workspaceId = props.relativeResourceContext?.kind === 'workspace'
+    ? props.relativeResourceContext.workspaceId
+    : null
   if (!workspaceId || !props.path) return null
 
   const restBase = windowNodeContextStore.getBoundEndpoints().rest.replace(/\/$/, '')

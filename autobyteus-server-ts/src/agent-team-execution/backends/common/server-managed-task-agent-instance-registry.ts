@@ -50,8 +50,7 @@ export class ServerManagedTaskAgentInstanceRegistry<
       identity: TaskAgentInstanceIdentity,
     ) => Promise<AgentRunConfig>;
     publish: (event: TeamRunEvent) => void;
-    publishTeamStatusIfChanged: () => void;
-  }) {}
+    }) {}
 
   listStatusSnapshots(): AgentStatusPayload[] {
     return [...this.activeByRunId.values()].map(({ logicalMember, identity, run }) => ({
@@ -124,7 +123,6 @@ export class ServerManagedTaskAgentInstanceRegistry<
     if (!result.accepted) {
       await this.terminateAndClear(identity.taskAgentRunId);
     }
-    this.options.publishTeamStatusIfChanged();
     return {
       ...result,
       memberRunId: identity.taskAgentRunId,
@@ -138,7 +136,6 @@ export class ServerManagedTaskAgentInstanceRegistry<
     if (!active) return { accepted: false, code: "TASK_AGENT_RUN_NOT_FOUND", message: `Task-agent run '${taskAgentRunId}' was not found.` };
     if (active.logicalMember.memberRouteKey !== logicalMemberRouteKey) return { accepted: false, code: "TASK_AGENT_ROUTE_MISMATCH", message: `Task-agent run '${taskAgentRunId}' is not for logical member '${logicalMemberRouteKey}'.` };
     const result = await active.run.postUserMessage(message);
-    this.options.publishTeamStatusIfChanged();
     return { ...result, memberRunId: active.identity.taskAgentRunId, memberName: active.logicalMember.memberName };
   }
 
@@ -167,7 +164,6 @@ export class ServerManagedTaskAgentInstanceRegistry<
     const result = await active.run.terminate();
     if (result.accepted) {
       this.clear(taskAgentRunId);
-      this.options.publishTeamStatusIfChanged();
     }
     return result;
   }
@@ -240,7 +236,6 @@ export class ServerManagedTaskAgentInstanceRegistry<
         return;
       }
       this.options.publish(this.buildTeamEvent(logicalMember, identity, event));
-      this.options.publishTeamStatusIfChanged();
     });
   }
 

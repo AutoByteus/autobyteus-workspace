@@ -50,7 +50,7 @@ flowchart TD
 | Type      | Extensions                      | Viewer Component  |
 | --------- | ------------------------------- | ----------------- |
 | Text/Code | `.js`, `.py`, `.ts`, etc.       | MonacoEditor      |
-| Image     | `.jpg`, `.png`, `.gif`, `.webp` | ImageViewer       |
+| Image     | `.jpg`, `.jpeg`, `.png`, `.gif`, `.bmp`, `.webp`, `.svg` | ImageViewer       |
 | Video     | `.mp4`, `.mov`, `.webm`         | VideoPlayer       |
 | Audio     | `.mp3`, `.wav`, `.m4a`          | AudioPlayer       |
 | PDF       | `.pdf`                          | PdfViewer         |
@@ -156,7 +156,11 @@ attribute, artifact/reference record, or API request.
 Action eligibility and File Explorer type routing share the pure
 `utils/fileExplorer/fileTypePolicy.ts` policy. Supported text/code/Markdown/HTML
 families (including `.lua`) and the established image, audio, video, PDF, CSV,
-and Excel families may produce an Event Monitor action. ZIP/DMG/PKG/application
+and Excel families may produce an Event Monitor action. The image family
+includes `.svg` (case-insensitively); after classification, workspace, trusted
+local, and Artifacts-tab content continues through its existing authorized
+content boundary into `FileViewer` and the URL-based `ImageViewer` rather than
+an SVG source or inline-DOM renderer. ZIP/DMG/PKG/application
 bundles, archives, generic binaries, and unknown extensions remain literal
 source-faithful content with no Files affordance, filesystem read, media URL,
 workspace fetch, or panel switch. A supported-looking path that is missing,
@@ -181,6 +185,58 @@ File explorer and artifact viewers intentionally follow the shared **Settings ->
 ## Markdown Rendering
 
 Markdown files are rendered using `MarkdownRenderer.vue`, which uses `markdown-it` for parsing. The parsing logic is encapsulated in `useMarkdownSegments.ts`.
+
+### Conversation Progressive Rich Rendering
+
+Conversation text and reasoning use one rich presentation path for active,
+completed, historical, and hydrated content. The server WebSocket egress shapes
+`SEGMENT_CONTENT` cadence, and the frontend applies each shaped revision
+immediately without adding another scheduler or presentation timer:
+
+- `AIMessage.vue` dispatches each typed segment without deriving a separate
+  presentation-completion state.
+- `TextSegment.vue` delegates the current accumulated text directly to the
+  reactive `MarkdownRenderer.vue` on every shaped revision.
+- `ThinkSegment.vue` remains collapsed by default. While its disclosure is
+  expanded, current accumulated reasoning is rendered and revised through the
+  same `MarkdownRenderer.vue` path.
+- Completed and historical/hydrated content continues through that same rich
+  owner, so there is no completion-selected renderer switch or temporary plain
+  presentation format.
+
+Stream-segment completion metadata remains authoritative for lifecycle,
+terminalization, and Event Monitor behavior. `SEGMENT_END` and supported
+message-terminal paths still finalize open segments, but that state no longer
+selects text or reasoning presentation.
+
+The **Thinking** disclosure exists only when the backend/provider emits an
+identified reasoning segment for that turn. A model or individual response that
+emits text without reasoning intentionally has no disclosure; absence alone
+does not show that the frontend dropped reasoning. When reasoning is emitted,
+standalone and team-member streams route it through the same progressive-rich
+`ThinkSegment.vue` presentation boundary.
+
+For native AutoByteus runs, a non-empty completed reasoning value is persisted
+as its own replay-authoritative `reasoning` raw trace before the ordinary
+assistant trace, with the same turn/source identity. Standalone and team
+GraphQL history projection can therefore recreate the completed Thinking
+segment after run reopen, hard reload, or member reselection. Raw traces written
+before this persistence contract was introduced are not backfilled or
+heuristically reconstructed, so an older affected turn can remain without a
+historical Thinking disclosure.
+
+Each visible shaped revision runs the existing Markdown parsing, sanitization,
+syntax-highlighting, math, Mermaid, managed-image, link, and enabled file-action
+pipeline. Server-owned cadence bounds normal update frequency, but a very large
+or feature-heavy accumulated revision can still be expensive. Background and
+unfocused streams now avoid unrelated renderer work through exact repeated-
+status suppression, explicit Event Monitor/navigation mutation effects, and a
+cached run-history projection; the selected stream still renders each shaped
+revision progressively through this same rich path. This does not introduce a
+Markdown parsing worker or transcript virtualization, so higher-scale parsing
+remains a separate optimization. See
+[Agent Execution Architecture](./agent_execution_architecture.md) for the
+transport and completion ownership boundaries.
 
 ### Features
 
@@ -223,6 +279,32 @@ The server remains authoritative for containment. Workspace content paths are
 resolved lexically below the selected workspace root, and absolute or sibling
 prefix traversal candidates are rejected even if a client bypasses frontend
 normalization. Existing symlink semantics are unchanged.
+
+### HTML Preview Source Selection
+
+`FileViewer.vue` forwards the file's optional `relativeResourceContext` to
+`HtmlPreviewer.vue`. The HTML adapter chooses its iframe source from that
+explicit resource identity; it must not infer workspace authority from a
+global active-workspace store or from the file path alone.
+
+- Workspace-relative HTML with `{ kind: "workspace", workspaceId }` uses the
+  bound REST static route, with each path segment encoded:
+  `/rest/workspaces/<workspaceId>/static/<relative-path>`.
+- Local absolute HTML and HTML without workspace resource context use the
+  already-loaded content in a managed `Blob` URL. The adapter does not send
+  the host absolute path to a workspace route. Blob URLs are revoked when the
+  source changes or the viewer unmounts.
+- The iframe remains sandboxed with `allow-scripts allow-same-origin` for both
+  source strategies. Mobile workspace HTML continues to use the raw,
+  read-only mobile presentation described above rather than this rich iframe
+  path.
+
+The backend static route remains the containment authority. An absolute path
+or traversal candidate must not be converted into a workspace static URL or
+used to bypass the workspace boundary; the server rejects such candidates
+without returning the outside file payload. Relative local HTML assets loaded
+from the existing Blob base may retain browser-origin limitations; changing
+that behavior requires a separate trusted-resource design.
 
 ### Mermaid Support
 

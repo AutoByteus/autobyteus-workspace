@@ -1,0 +1,43 @@
+v1.4.41 publication audit — 2026-08-03
+$ git rev-parse HEAD
+d792ea38c8bd97fd24fa8a2687db0bdbfcd55d1e
+$ git rev-parse v1.4.41
+a1653e3f3e6c3be12ca3860d9a311568086e5b12
+$ git rev-list -n1 v1.4.41
+d792ea38c8bd97fd24fa8a2687db0bdbfcd55d1e
+$ git ls-remote origin refs/heads/personal refs/tags/v1.4.41
+d792ea38c8bd97fd24fa8a2687db0bdbfcd55d1e	refs/heads/personal
+a1653e3f3e6c3be12ca3860d9a311568086e5b12	refs/tags/v1.4.41
+$ gh release view v1.4.41
+{"assetCount":21,"assetNames":["autobyteus-message-gateway-1.4.41-node-generic.tar.gz","autobyteus-message-gateway-1.4.41-node-generic.tar.gz.json","autobyteus-message-gateway-1.4.41-node-generic.tar.gz.sha256","AutoByteus_personal_android-1.4.41-release.apk","AutoByteus_personal_android-1.4.41-release.apk.sha256","AutoByteus_personal_linux-arm64-1.4.41.AppImage","AutoByteus_personal_linux-x64-1.4.41.AppImage","AutoByteus_personal_macos-arm64-1.4.41.dmg","AutoByteus_personal_macos-arm64-1.4.41.dmg.blockmap","AutoByteus_personal_macos-arm64-1.4.41.zip","AutoByteus_personal_macos-arm64-1.4.41.zip.blockmap","AutoByteus_personal_macos-x64-1.4.41.dmg","AutoByteus_personal_macos-x64-1.4.41.dmg.blockmap","AutoByteus_personal_macos-x64-1.4.41.zip","AutoByteus_personal_macos-x64-1.4.41.zip.blockmap","AutoByteus_personal_windows-1.4.41.exe","latest-linux-arm64.yml","latest-linux.yml","latest-mac.yml","latest.yml","release-manifest.json"],"isDraft":false,"isPrerelease":false,"name":"v1.4.41","publishedAt":"2026-08-03T10:41:25Z","tagName":"v1.4.41","url":"https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.41"}
+$ gh run list
+30806389308	Server Docker Release	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30806389308
+30806389262	Android APK Release	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30806389262
+30806389213	Desktop Release	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30806389213
+30806389209	iOS App Store Connect Release	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30806389209
+30806389204	Release Messaging Gateway	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30806389204
+$ docker manifest inspect autobyteus/autobyteus-server:1.4.41
+{
+   "schemaVersion": 2,
+   "mediaType": "application/vnd.oci.image.index.v1+json",
+   "manifests": [
+      {
+         "mediaType": "application/vnd.oci.image.manifest.v1+json",
+         "size": 8996,
+         "digest": "sha256:a00ea6424851a6621707af9640ac6c6fa75d98646a3e09617f510f948159513b",
+         "platform": {
+            "architecture": "amd64",
+            "os": "linux"
+         }
+      },
+      {
+         "mediaType": "application/vnd.oci.image.manifest.v1+json",
+         "size": 8996,
+         "digest": "sha256:c2f82dcd0e47a1335bb9efc8f14763d968781349aa4ff05dca30b4e270819004",
+         "platform": {
+            "architecture": "arm64",
+            "os": "linux"
+         }
+      }
+   ]
+}

@@ -18,7 +18,8 @@ import { ClaudeAgentRunBackend } from "../../../src/agent-execution/backends/cla
 import { ClaudeAgentRunContext } from "../../../src/agent-execution/backends/claude/backend/claude-agent-run-context.js";
 import { buildClaudeSessionConfig } from "../../../src/agent-execution/backends/claude/session/claude-session-config.js";
 import { ClaudeSessionManager } from "../../../src/agent-execution/backends/claude/session/claude-session-manager.js";
-import { buildConfiguredAgentToolExposure } from "../../../src/agent-execution/shared/configured-agent-tool-exposure.js";
+import { buildRuntimeAgentToolExposure } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
+import { composeCarpenterPrompt } from "../../../src/agent-execution/prompt/carpenter-prompt-composer.js";
 import { MixedTeamRunBackend } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-backend.js";
 import { MixedAgentMemberContext, MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
 import type { TeamManager } from "../../../src/agent-team-execution/backends/team-manager.js";
@@ -235,8 +236,17 @@ const createClaudeRunContext = (input: {
   runId: string;
   modelIdentifier?: string;
   workspaceRoot?: string;
-}): AgentRunContext<ClaudeAgentRunContext> =>
-  new AgentRunContext({
+}): AgentRunContext<ClaudeAgentRunContext> => {
+  const workspaceRoot = input.workspaceRoot ?? process.cwd();
+  const carpenterSystemPrompt = composeCarpenterPrompt({
+    agentDefinition: {
+      name: "Claude WebSocket E2E Agent",
+      description: "Exercises Claude create and resume instruction projection",
+      instructions: "Keep persistent instructions separate from user turns.",
+    },
+    workspaceRootPath: workspaceRoot,
+  });
+  return new AgentRunContext({
     runId: input.runId,
     config: new AgentRunConfig({
       agentDefinitionId: "agent-claude-ws",
@@ -248,13 +258,15 @@ const createClaudeRunContext = (input: {
     runtimeContext: new ClaudeAgentRunContext({
       sessionConfig: buildClaudeSessionConfig({
         model: input.modelIdentifier ?? "claude-test-model",
-        workingDirectory: input.workspaceRoot ?? process.cwd(),
+        workingDirectory: workspaceRoot,
         permissionMode: "default",
       }),
-      configuredToolExposure: buildConfiguredAgentToolExposure([]),
+      carpenterSystemPrompt,
+      runtimeToolExposure: buildRuntimeAgentToolExposure([]),
       skillAccessMode: SkillAccessMode.NONE,
     }),
   });
+};
 
 const createClaudeAgentRun = async (input: {
   runId: string;
@@ -558,16 +570,20 @@ const createClaudeTeamWebSocketHarness = async (input: {
   });
   const fakeTeamManager: TeamManager = {
     hasActiveMembers: () => true,
-    getStatusSnapshot: () => ({
-      status: agentRun.getStatusSnapshot().status,
-    }),
-    getMemberStatusSnapshots: () => [
-      {
+    getLeafAgentStatusSnapshots: () => [{
+      scopeKind: "ordinary_member",
+      teamRunId: input.teamRunId,
+      payload: {
         ...agentRun.getStatusSnapshot(),
         agent_id: input.memberRunId,
         agent_name: input.memberName,
+        member_route_key: input.memberName,
+        member_path: [input.memberName],
+        source_route_key: input.memberName,
+        source_path: [input.memberName],
       },
-    ],
+    }],
+    hasOpenExecutionWork: () => true,
     postMessage: async (message, targetMemberSelector) => {
       expect(selectorToRouteKey(targetMemberSelector)).toBe(input.memberName);
       const result = await agentRun.postUserMessage(message);
@@ -688,9 +704,10 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
     });
 
     try {
+      const initialUserPrompt = `Remember this exact marker before I interrupt you: ${marker}`;
       sendE2eSendMessageCommand(harness.socket, {
-            content: `Remember this exact marker before I interrupt you: ${marker}`,
-          });
+        content: initialUserPrompt,
+      });
 
       await waitForCondition(
         () =>
@@ -699,8 +716,16 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
         "initial fake Claude query memory capture and provider session adoption",
       );
       expect(harness.runContext.runtimeContext.hasCompletedTurn).toBe(false);
+      expect(harness.sdkCalls[0]?.prompt).toBe(initialUserPrompt);
+      expect(harness.sdkCalls[0]?.options?.systemPrompt).toBe(
+        harness.runContext.runtimeContext.carpenterSystemPrompt,
+      );
+      expect(harness.sdkCalls[0]?.prompt).not.toContain("## Agent Identity");
 
-      harness.socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION" }));
+      harness.socket.send(JSON.stringify({
+        type: "INTERRUPT_GENERATION",
+        payload: { command_id: "client_interrupt_claude_memory" },
+      }));
       await waitForCondition(
         () =>
           firstQuery.abortObserved &&
@@ -716,7 +741,8 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
           message.payload.delta.includes(`remembered provider context marker: ${marker}`),
         "provider-memory follow-up SEGMENT_CONTENT",
       );
-      sendE2eSendMessageCommand(harness.socket, { content: "What exact marker did I ask you to remember?" });
+      const followUpUserPrompt = "What exact marker did I ask you to remember?";
+      sendE2eSendMessageCommand(harness.socket, { content: followUpUserPrompt });
 
       const rememberedMessage = await rememberedMessagePromise;
       const rememberedDelta = rememberedMessage.payload?.delta;
@@ -724,6 +750,13 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
       expect(rememberedDelta).not.toBe("new conversation: no remembered provider context marker");
       expect(harness.sdkCalls[1]?.options?.resume).toBe(providerSessionId);
       expect(harness.sdkCalls[1]?.options?.resume).not.toBe(runId);
+      expect(harness.sdkCalls[1]?.prompt).toBe(followUpUserPrompt);
+      expect(harness.sdkCalls[1]?.options?.systemPrompt).toBe(
+        harness.runContext.runtimeContext.carpenterSystemPrompt,
+      );
+      expect(harness.sdkCalls[1]?.options?.systemPrompt).toBe(
+        harness.sdkCalls[0]?.options?.systemPrompt,
+      );
     } finally {
       await closeHarness(harness);
     }
@@ -751,7 +784,10 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
       expect(harness.sdkCalls[0]?.options?.resume).toBeUndefined();
       expect(harness.runContext.runtimeContext.hasCompletedTurn).toBe(false);
 
-      harness.socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION" }));
+      harness.socket.send(JSON.stringify({
+        type: "INTERRUPT_GENERATION",
+        payload: { command_id: "client_interrupt_claude_resume" },
+      }));
       await waitForCondition(
         () =>
           firstQuery.abortObserved &&
@@ -810,6 +846,7 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
         JSON.stringify({
           type: "INTERRUPT_GENERATION",
           payload: {
+            command_id: "client_interrupt_claude_team_member",
             target_member_route_key: memberName,
             target_member_run_id: memberRunId,
           },
@@ -861,7 +898,10 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
       expect(harness.runContext.runtimeContext.sessionId).toBe(runId);
       expect(harness.runContext.runtimeContext.hasCompletedTurn).toBe(false);
 
-      harness.socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION" }));
+      harness.socket.send(JSON.stringify({
+        type: "INTERRUPT_GENERATION",
+        payload: { command_id: "client_interrupt_claude_placeholder" },
+      }));
       await waitForCondition(
         () =>
           firstQuery.abortObserved &&
@@ -936,7 +976,10 @@ describeLiveClaudeRuntime("Claude Agent SDK websocket interrupt/resume live E2E"
         expect(providerSessionId).not.toBe(runId);
         expect(harness.runContext.runtimeContext.hasCompletedTurn).toBe(false);
 
-        harness.socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION" }));
+        harness.socket.send(JSON.stringify({
+          type: "INTERRUPT_GENERATION",
+          payload: { command_id: "client_interrupt_claude_live" },
+        }));
         await waitForCondition(
           () => harness.runContext.runtimeContext.activeTurnId === null,
           "live Claude interrupt settlement",

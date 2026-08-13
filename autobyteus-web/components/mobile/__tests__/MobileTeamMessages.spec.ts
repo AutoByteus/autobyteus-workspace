@@ -5,7 +5,6 @@ import MobileTeamMessages from '../MobileTeamMessages.vue';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useTeamCommunicationStore } from '~/stores/teamCommunicationStore';
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { MobileWorkContext } from '~/types/mobileWork';
 
 let pinia: Pinia;
@@ -42,7 +41,7 @@ function seedTeamContext(): void {
     coordinatorMemberRouteKey: 'lead',
     historicalHydration: null,
     focusedMemberRouteKey: 'lead',
-    currentStatus: AgentTeamStatus.Offline,
+    isActive: false,
     isSubscribed: false,
   } as any);
   useAgentSelectionStore().selectRunWithoutShellNavigation('team-1', 'team');

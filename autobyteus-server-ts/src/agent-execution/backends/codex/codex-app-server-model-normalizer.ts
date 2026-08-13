@@ -150,5 +150,6 @@ export const mapCodexModelListRowToModelInfo = (row: unknown): ModelInfo | null 
     active_context_tokens: null,
     max_input_tokens: null,
     max_output_tokens: null,
+    resolved_model_metadata: null,
   };
 };

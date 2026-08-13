@@ -59,12 +59,12 @@ describe('fileExplorerStore node routing behavior', () => {
     determineFileTypeMock.mockResolvedValue('Image');
     const store = useFileExplorerStore();
 
-    await store.openFile('/tmp/screenshot.png', 'ws-1');
+    await store.openFile('/tmp/diagram.SVG', 'ws-1');
 
     const wsState = store._getOrCreateWorkspaceState('ws-1');
     expect(wsState.openFiles).toHaveLength(1);
     expect(wsState.openFiles[0].url).toBe(
-      'https://node.example/rest/workspaces/ws-1/content?path=%2Ftmp%2Fscreenshot.png',
+      'https://node.example/rest/workspaces/ws-1/content?path=%2Ftmp%2Fdiagram.SVG',
     );
     expect(wsState.openFiles[0].url?.startsWith('local-file://')).toBe(false);
   });
@@ -74,11 +74,11 @@ describe('fileExplorerStore node routing behavior', () => {
     determineFileTypeMock.mockResolvedValue('Image');
     const store = useFileExplorerStore();
 
-    await store.openFile('/tmp/screenshot.png', 'ws-1');
+    await store.openFile('/tmp/diagram.svg', 'ws-1');
 
     const wsState = store._getOrCreateWorkspaceState('ws-1');
     expect(wsState.openFiles).toHaveLength(1);
-    expect(wsState.openFiles[0].url).toBe('local-file://local/tmp/screenshot.png');
+    expect(wsState.openFiles[0].url).toBe('local-file://local/tmp/diagram.svg');
   });
 
   it('uses the bound workspace route for an embedded sentinel without Electron', async () => {
@@ -112,11 +112,11 @@ describe('fileExplorerStore node routing behavior', () => {
     determineFileTypeMock.mockResolvedValue('Image');
     const store = useFileExplorerStore();
 
-    await store.openFile('/tmp/screenshot.png', 'ws-1');
+    await store.openFile('/tmp/diagram.svg', 'ws-1');
 
     const wsState = store._getOrCreateWorkspaceState('ws-1');
     expect(wsState.openFiles[0].url).toBe(
-      'https://node.example/rest/workspaces/ws-1/content?path=%2Ftmp%2Fscreenshot.png',
+      'https://node.example/rest/workspaces/ws-1/content?path=%2Ftmp%2Fdiagram.svg',
     );
     expect(wsState.openFiles[0].url?.startsWith('local-file://')).toBe(false);
   });

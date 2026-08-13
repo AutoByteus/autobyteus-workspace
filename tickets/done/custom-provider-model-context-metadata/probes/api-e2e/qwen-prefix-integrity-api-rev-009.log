@@ -1,0 +1,39 @@
+# API-REV-009 live-prefix integrity and cleanup
+UTC 2026-08-10T10:39:23Z
+HEAD 331ff94da3c2c9a2a07e11efff68f5307a4cfabb
+Electron backend process:
+31475 /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js --port 29695 --data-dir /Users/normy/.autobyteus/server-data
+Electron backend listener:
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 31475 normy   31u  IPv4 0xc7bc8fba3a7d5e65      0t0  TCP *:29695 (LISTEN)
+Owned Nuxt port 3137 after cleanup:
+none
+Owned probe process after cleanup:
+none
+Live browser GraphQL operations (read-only):
+GetProviderSettings	200	http://127.0.0.1:29695/graphql
+GetGeminiSetupConfig	200	http://127.0.0.1:29695/graphql
+GetQwenSetupStatus	200	http://127.0.0.1:29695/graphql
+GetQwenSetupStatus	200	http://127.0.0.1:29695/graphql
+Live backend identifier/name/value triples (Qwen plus direct collision owners):
+DEEPSEEK	deepseek-v4-flash	deepseek-v4-flash	deepseek-v4-flash
+DEEPSEEK	deepseek-v4-pro	deepseek-v4-pro	deepseek-v4-pro
+GLM	glm-5.2	glm-5.2	glm-5.2
+QWEN	qwen:deepseek-v4-flash-0731	DeepSeek V4 Flash 0731 (Qwen)	deepseek-v4-flash-0731
+QWEN	qwen:deepseek-v4-pro	DeepSeek V4 Pro (Qwen)	deepseek-v4-pro
+QWEN	qwen:glm-5.2	GLM-5.2 (Qwen)	glm-5.2
+QWEN	qwen3-max	qwen3-max	qwen3-max
+QWEN	qwen3.7-max	qwen3.7-max	qwen3.7-max
+QWEN	qwen3.8-max	qwen3.8-max	qwen3.8-max
+Current approved requirement lines:
+23:| BEH-005 | Native Qwen lacks `deepseek-v4-flash-0731`; prior custom logic contains `qwen3.8-max-preview`. | Remove preview behavior and expose exact native Qwen values `qwen3.8-max`, `deepseek-v4-pro`, `deepseek-v4-flash-0731`, and `glm-5.2`. | Direct DeepSeek/GLM ownership remains separate; exact wire values do not change. | REQ-007; AC-009, AC-010 |
+110:- **REQ-007 — Provide exact Qwen catalog:** Native Qwen owns exact values `qwen3.8-max`, `deepseek-v4-pro`, `deepseek-v4-flash-0731`, and `glm-5.2`; preview is absent; third-party duplicates use stable Qwen-prefixed identifiers while wire values remain exact.
+131:- **AC-010:** Qwen third-party entries have stable Qwen-prefixed identifiers and unchanged exact wire values.
+180:| REQ-007 |  | X |  |  | X |  |  |  |
+Source request wire-value lines:
+126:      model: this.model.value,
+154:      model: this.model.value,
+Current no-code/test-delta check relative to pre-probe worktree:
+no source or durable test change
+Artifact JSON validity:
+pass

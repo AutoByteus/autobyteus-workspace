@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 import { nextTick, reactive } from 'vue'
 import AgentUserInputTextArea from '../AgentUserInputTextArea.vue'
+import { AgentStatus } from '~/types/agent/AgentStatus'
 
 type MockAgentContext = {
   contextId: string
@@ -17,8 +18,8 @@ const createContext = (contextId: string, requirement = ''): MockAgentContext =>
 
 const activeContextStoreMock = reactive({
   activeAgentContext: createContext('ctx-1') as MockAgentContext | null,
-  isSending: false,
-  canInterrupt: false,
+  submissionPending: false,
+  currentStatus: AgentStatus.Idle,
   currentRequirement: '',
   updateRequirement: vi.fn(),
   updateRequirementForContext: vi.fn(),
@@ -28,10 +29,12 @@ const activeContextStoreMock = reactive({
 
 const voiceInputStoreMock = reactive({
   isAvailable: false,
+  isStarting: false,
   isRecording: false,
   isTranscribing: false,
   initialize: vi.fn().mockResolvedValue(undefined),
   cleanup: vi.fn().mockResolvedValue(undefined),
+  cancelOperationForSource: vi.fn().mockResolvedValue(undefined),
   toggleRecording: vi.fn().mockResolvedValue(undefined),
 })
 
@@ -53,8 +56,8 @@ vi.mock('pinia', async () => {
   return {
     ...actual,
     storeToRefs: (store: any) => ({
-      isSending: toRef(store, 'isSending'),
-      canInterrupt: toRef(store, 'canInterrupt'),
+      submissionPending: toRef(store, 'submissionPending'),
+      currentStatus: toRef(store, 'currentStatus'),
       currentRequirement: toRef(store, 'currentRequirement'),
     }),
   }
@@ -115,10 +118,11 @@ describe('AgentUserInputTextArea', () => {
       },
     )
     selectContext(createContext('ctx-1'))
-    activeContextStoreMock.isSending = false
-    activeContextStoreMock.canInterrupt = false
+    activeContextStoreMock.submissionPending = false
+    activeContextStoreMock.currentStatus = AgentStatus.Idle
     contextFileUploadStoreMock.isUploading = false
     voiceInputStoreMock.isAvailable = false
+    voiceInputStoreMock.isStarting = false
     voiceInputStoreMock.isRecording = false
     voiceInputStoreMock.isTranscribing = false
   })
@@ -154,6 +158,23 @@ describe('AgentUserInputTextArea', () => {
     expect(wrapper.find('button[title="Stop recording"]').exists()).toBe(true)
   })
 
+  it('shows immediate starting feedback, guards duplicate activation, and cancels only composer on unmount', async () => {
+    voiceInputStoreMock.isAvailable = true
+    voiceInputStoreMock.isStarting = true
+
+    const wrapper = mount(AgentUserInputTextArea)
+    await nextTick()
+
+    const button = wrapper.find('button[title="Starting microphone..."]')
+    expect(button.exists()).toBe(true)
+    expect(button.attributes('disabled')).toBeDefined()
+    expect(button.attributes('aria-busy')).toBe('true')
+    expect(wrapper.text()).toContain('Starting microphone...')
+
+    wrapper.unmount()
+    expect(voiceInputStoreMock.cancelOperationForSource).toHaveBeenCalledWith('composer')
+  })
+
   it('disables send while context files are still uploading', async () => {
     contextFileUploadStoreMock.isUploading = true
     selectContext(createContext('ctx-uploading', 'ready to send'))
@@ -164,9 +185,9 @@ describe('AgentUserInputTextArea', () => {
     expect(wrapper.find('button[title="Send message"]').attributes('disabled')).toBeDefined()
   })
 
-  it('uses backend canInterrupt to show and trigger stop even without a sendable draft', async () => {
-    activeContextStoreMock.canInterrupt = true
-    activeContextStoreMock.isSending = false
+  it('uses canonical running status to show and trigger stop even without a sendable draft', async () => {
+    activeContextStoreMock.currentStatus = AgentStatus.Running
+    activeContextStoreMock.submissionPending = false
     selectContext(createContext('ctx-interrupt', ''))
 
     const wrapper = mount(AgentUserInputTextArea)
@@ -183,9 +204,9 @@ describe('AgentUserInputTextArea', () => {
     expect(activeContextStoreMock.send).not.toHaveBeenCalled()
   })
 
-  it('does not show stop from isSending alone when canInterrupt is false', async () => {
-    activeContextStoreMock.isSending = true
-    activeContextStoreMock.canInterrupt = false
+  it('keeps send disabled while a submission is pending without presenting stop', async () => {
+    activeContextStoreMock.submissionPending = true
+    activeContextStoreMock.currentStatus = AgentStatus.Idle
     selectContext(createContext('ctx-sending', 'ready to send'))
 
     const wrapper = mount(AgentUserInputTextArea)
@@ -196,6 +217,38 @@ describe('AgentUserInputTextArea', () => {
     expect(sendButton.attributes('disabled')).toBeDefined()
     expect(wrapper.find('button[title="Stop generation"]').exists()).toBe(false)
     expect(wrapper.find('[data-icon="heroicons:paper-airplane-solid"]').exists()).toBe(true)
+  })
+
+  it('applies the same disabled primary-action policy to Enter', async () => {
+    activeContextStoreMock.submissionPending = true
+    selectContext(createContext('ctx-pending-enter', 'ready to send'))
+
+    const wrapper = mount(AgentUserInputTextArea)
+    await wrapper.find('textarea').trigger('keydown', { key: 'Enter' })
+
+    expect(activeContextStoreMock.send).not.toHaveBeenCalled()
+    expect(activeContextStoreMock.interruptGeneration).not.toHaveBeenCalled()
+  })
+
+  it('applies the same running interrupt policy to Enter', async () => {
+    activeContextStoreMock.currentStatus = AgentStatus.Running
+    selectContext(createContext('ctx-running-enter', 'draft is ignored while running'))
+
+    const wrapper = mount(AgentUserInputTextArea)
+    await wrapper.find('textarea').trigger('keydown', { key: 'Enter' })
+
+    expect(activeContextStoreMock.interruptGeneration).toHaveBeenCalledTimes(1)
+    expect(activeContextStoreMock.send).not.toHaveBeenCalled()
+  })
+
+  it('leaves Shift+Enter to the textarea without invoking the primary action', async () => {
+    selectContext(createContext('ctx-shift-enter', 'first line'))
+
+    const wrapper = mount(AgentUserInputTextArea)
+    await wrapper.find('textarea').trigger('keydown', { key: 'Enter', shiftKey: true })
+
+    expect(activeContextStoreMock.send).not.toHaveBeenCalled()
+    expect(activeContextStoreMock.interruptGeneration).not.toHaveBeenCalled()
   })
 
   it('clears the visible composer when the active send is locally acknowledged while send remains pending', async () => {
@@ -209,7 +262,7 @@ describe('AgentUserInputTextArea', () => {
         activeContextStoreMock.activeAgentContext.requirement = ''
       }
       activeContextStoreMock.currentRequirement = ''
-      activeContextStoreMock.isSending = true
+      activeContextStoreMock.submissionPending = true
       return new Promise<void>((resolve) => {
         resolveSend = resolve
       })
@@ -232,7 +285,7 @@ describe('AgentUserInputTextArea', () => {
     expect(wrapper.find('button[title="Send message"]').attributes('disabled')).toBeDefined()
 
     resolveSend?.()
-    activeContextStoreMock.isSending = false
+    activeContextStoreMock.submissionPending = false
     await nextTick()
   })
 

@@ -1,0 +1,14 @@
+{
+  "scenarioId": "EVENT-FILE-001",
+  "result": "Pass with host-workspace boundary observed",
+  "source": "Standalone live final response",
+  "target": "live-file-action-target.md",
+  "targetMarker": "RESTORE-PROGRESSIVE-MARKDOWN-FILE-ACTION-001",
+  "observed": {
+    "fileActionRendered": true,
+    "clickRelayed": true,
+    "filesTabActivated": true,
+    "previewMessage": "This file is available only on the host workspace."
+  },
+  "interpretation": "The changed presenter preserved file-action propagation. The selected temporary workspace did not have permission to preview the ticket-worktree path; successful in-workspace preview remains covered by the passing Event Monitor/file-action repository suites."
+}

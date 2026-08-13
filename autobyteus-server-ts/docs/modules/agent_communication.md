@@ -98,7 +98,10 @@ relevant surviving files inside editable skill roots.
 ## Runtime Projection
 
 Runtime adapters expose one logical `send_message_to` capability through their
-native tool surfaces when the current agent/tool configuration includes it:
+native tool surfaces when effective runtime exposure includes it. Standalone
+runs require explicit configuration; every valid team member context receives
+it automatically, with duplicates removed. The team delivery binding and
+recipient roster still authorize each team-route call:
 
 - AutoByteus uses the server-owned local `BaseTool` wrapper.
 - Codex App Server receives the first-party Agent Tools MCP server through
@@ -112,10 +115,10 @@ native tool surfaces when the current agent/tool configuration includes it:
 - External process runtimes can receive a session-scoped
   `autobyteus_agent_tools` Streamable HTTP MCP descriptor from the Agent Tools
   MCP Server. That surface also reuses this shared contract and dispatcher, and
-  its server-side session still gates exposure by the configured AutoByteus tool
-  set.
+  its server-side session still gates exposure by the resolved effective
+  AutoByteus tool set.
 
-Standalone configured runs can use `target_agent_run_id` without team context.
+Explicitly configured standalone runs can use `target_agent_run_id` without team context.
 They cannot use `recipient_name` unless they are running with an active
 `MemberTeamContext`. Team members use the same shared dispatcher so selector
 semantics stay identical across AutoByteus, Codex, Claude, and the

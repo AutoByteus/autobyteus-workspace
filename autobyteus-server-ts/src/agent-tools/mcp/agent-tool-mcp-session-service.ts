@@ -82,8 +82,8 @@ export class AgentToolMcpSessionService {
   createAgentToolMcpSession(
     input: AgentToolMcpSessionIssueInput,
   ): CreateAgentToolMcpSessionResult {
-    const exposure = this.catalog.resolveConfiguredSessionToolExposure({
-      configuredExposure: input.configuredExposure,
+    const exposure = this.catalog.resolveRuntimeSessionToolExposure({
+      runtimeExposure: input.runtimeExposure,
       sender: input.sender,
       executionContext: input.executionContext ?? {},
     });

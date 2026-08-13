@@ -301,7 +301,6 @@ class LegacyDbToFileMigrator:
                 "skillNames": parse_json_array(row["skill_names"]),
                 "inputProcessorNames": parse_json_array(row["input_processor_names"]),
                 "llmResponseProcessorNames": parse_json_array(row["llm_response_processor_names"]),
-                "systemPromptProcessorNames": parse_json_array(row["system_prompt_processor_names"]),
                 "toolExecutionResultProcessorNames": parse_json_array(
                     row["tool_execution_result_processor_names"]
                 ),
@@ -504,7 +503,7 @@ class LegacyDbToFileMigrator:
                 """
                 SELECT id, name, role, description,
                        tool_names, input_processor_names, llm_response_processor_names,
-                       system_prompt_processor_names, tool_execution_result_processor_names,
+                       tool_execution_result_processor_names,
                        tool_invocation_preprocessor_names, lifecycle_processor_names,
                        skill_names, avatar_url
                 FROM agent_definitions

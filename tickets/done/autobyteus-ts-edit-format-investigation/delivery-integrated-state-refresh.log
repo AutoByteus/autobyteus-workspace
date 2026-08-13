@@ -1,0 +1,76 @@
+Delivery integrated-state refresh — 2026-08-02
+
+Recorded bootstrap base:
+  origin/personal @ 4b29481d5b6eaea64aebb20abcb5e4d784ea1178
+Initial delivery fetch:
+  git fetch origin --prune
+Latest tracked remote base after fetch:
+  origin/personal @ 1df9bde23065eb4b4260698acfce1907153dc2bc
+Initial relationship:
+  ticket HEAD bb6657c4016fed1550eb8b899e03457b5e1178db
+  merge base 4b29481d5b6eaea64aebb20abcb5e4d784ea1178
+  ahead 6 / behind 7
+
+Safety checkpoint:
+  git add tickets/in-progress/autobyteus-ts-edit-format-investigation
+  git commit -m "chore(delivery): checkpoint validated context patch package"
+  result f31d50a258a0b14bbf7bfa774fb4c3f76081d2c8
+  rationale: protect uncommitted CRR-003/API-REV-001 reports and execution evidence before integration
+
+Integration:
+  git merge --no-edit origin/personal
+  result 25c75631b4d7b25b68102221686782fc9884f251
+  method: merge using Git's ort strategy
+  conflicts: none
+  relationship after merge: ahead 8 / behind 0; origin/personal is an ancestor of ticket HEAD
+  base changes were the unrelated SVG preview/release v1.4.38 series; no context-patch source path overlapped.
+
+Post-integration verification at ticket HEAD 25c75631b4d7b25b68102221686782fc9884f251:
+1. Focused 11-file context/edit/schema/transport suite
+   command: pnpm exec vitest run tests/unit/agent/streaming/api-tool-call/file-content-streamer.test.ts tests/unit/tools/file/context-patch.test.ts tests/unit/agent/streaming/handlers/api-tool-call-streaming-response-handler.test.ts tests/unit/tools/file/file-tool-schema.test.ts tests/integration/tools/file/edit-file.test.ts tests/integration/tools/file/protected-file-tool-paths.test.ts tests/unit/tools/file/edit-file.test.ts tests/unit/tools/usage/formatters/edit-file-xml-formatter.test.ts tests/unit/agent/streaming/parser/states/xml-edit-file-tool-parsing-state.test.ts tests/integration/tools/usage/formatters/edit-file-xml-formatter.test.ts tests/unit/tools/file/exact-file-tools-removed.test.ts
+   working directory: autobyteus-ts
+   result: PASS — 11 files / 91 tests
+   evidence: benchmark-evidence/delivery-post-integration-focused-tests.log
+2. Selected native approval lifecycle
+   command: pnpm exec vitest run tests/integration/agent/tool-approval-flow.test.ts -t "executes edit_file after approval"
+   working directory: autobyteus-ts
+   result: PASS — 1 selected / 4 skipped
+   evidence: benchmark-evidence/delivery-post-integration-selected-approval.log
+3. Persisted-name resolver
+   command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.test.ts --no-watch
+   working directory: repository root
+   result: PASS — 1 file / 1 test
+   evidence: benchmark-evidence/delivery-post-integration-resolver.log
+4. Core clean build/runtime dependency verification
+   command: pnpm -C autobyteus-ts build
+   working directory: repository root
+   result: PASS
+   evidence: benchmark-evidence/delivery-post-integration-core-build.log
+5. Server/shared/Prisma/bootstrap build
+   command: pnpm -C autobyteus-server-ts build
+   working directory: repository root
+   result: PASS; sanitized built-in bootstrap smoke passed without DATABASE_URL
+   evidence: benchmark-evidence/delivery-post-integration-server-build.log
+6. Broad core unit baseline recheck
+   command: pnpm exec vitest run tests/unit
+   working directory: autobyteus-ts
+   command exit: 1, expected from recorded unrelated baseline
+   result: UNCHANGED KNOWN BASELINE — 330 files / 1,804 tests passed; exact 2 files / 5 unrelated assertions failed
+   failures: event-types count (1); legacy parsing-streaming-response-handler invocation expectations (4)
+   evidence: benchmark-evidence/delivery-post-integration-full-unit.log
+7. Broad approval-flow baseline recheck
+   command: pnpm exec vitest run tests/integration/agent/tool-approval-flow.test.ts
+   working directory: autobyteus-ts
+   command exit: 1, expected from recorded unrelated baseline
+   result: UNCHANGED KNOWN BASELINE — edit_file and both run_bash cases passed; exact 2 stale tool_name-absence assertions failed for write_file/read_file
+   evidence: benchmark-evidence/delivery-post-integration-full-approval.log
+
+Integrated-state decision:
+  PASS. New base commits were integrated without conflicts or effective context-patch behavior change. Focused, lifecycle, resolver, and build checks passed. Both broader nonzero suites reproduced only the exact known unrelated baselines. Delivery-owned docs and handoff edits may proceed against this state.
+
+Pre-handoff tracked-base and hygiene recheck:
+  git fetch origin --prune
+  origin/personal: 1df9bde23065eb4b4260698acfce1907153dc2bc (unchanged from integrated base)
+  ticket HEAD: 25c75631b4d7b25b68102221686782fc9884f251
+  relationship: ahead 8 / behind 0; origin/personal remains an ancestor
+  git diff --check: PASS after docs sync and delivery artifact creation

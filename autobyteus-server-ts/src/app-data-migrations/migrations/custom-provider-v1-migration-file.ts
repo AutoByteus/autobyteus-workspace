@@ -135,6 +135,12 @@ export class CustomProviderV1MigrationFile {
       throw new Error("CUSTOM_PROVIDER_V1_SOURCE_CHANGED");
     }
     await fs.rename(stagePath, this.canonicalPath);
+    const directory = await fs.open(path.dirname(this.canonicalPath), "r");
+    try {
+      await directory.sync();
+    } finally {
+      await directory.close();
+    }
   }
 
   async discardStage(stagePath: string | null): Promise<void> {

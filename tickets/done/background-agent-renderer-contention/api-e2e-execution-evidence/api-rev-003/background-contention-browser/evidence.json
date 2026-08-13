@@ -1,0 +1,660 @@
+{
+  "startedAt": "2026-08-10T08:52:33.940Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "webDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/tests/e2e/fixtures/background-agent-renderer-contention.page.vue",
+  "installedPagePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/autobyteus-web/pages/api-e2e-background-agent-renderer-contention.vue",
+  "routePath": "/api-e2e-background-agent-renderer-contention",
+  "scenarios": {
+    "BG-BROWSER-000": {
+      "description": "Production fixture seeds the approved 26-workspace/38-team topology",
+      "result": "Pass",
+      "startedAt": "2026-08-10T08:52:56.262Z",
+      "details": {
+        "topologyText": " workspaces=26 teams=38 topology=2 patches=0"
+      }
+    },
+    "BG-BROWSER-001A": {
+      "description": "Warmed foreground Files/Teams latency at idle",
+      "result": "Pass",
+      "startedAt": "2026-08-10T08:52:56.269Z",
+      "details": {
+        "mode": "idle",
+        "elapsedMs": 6502.299999952316,
+        "windows": 0,
+        "dispatches": 0,
+        "topologyDelta": 0,
+        "navigationReasons": [],
+        "patchDelta": 0,
+        "presentationRevisionDelta": 0,
+        "contentCharacterDelta": 0,
+        "statusValues": [
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running"
+        ],
+        "longTasks": [],
+        "actionLatencies": [
+          6.200000047683716,
+          6.599999904632568,
+          6.400000095367432,
+          4.6000001430511475,
+          4.299999952316284,
+          5.1000001430511475,
+          5.200000047683716,
+          3.799999952316284,
+          4.900000095367432,
+          5,
+          6.6000001430511475,
+          6.599999904632568,
+          6.799999952316284,
+          6.3999998569488525,
+          5.599999904632568,
+          6.700000047683716,
+          6.199999809265137,
+          4.299999952316284,
+          5.599999904632568,
+          5.299999952316284,
+          5.599999904632568,
+          5.900000095367432,
+          6,
+          4.299999952316284,
+          5.700000047683716,
+          4.8999998569488525,
+          6,
+          6
+        ],
+        "latency": {
+          "count": 28,
+          "min": 3.799999952316284,
+          "mean": 5.592857130936214,
+          "p95": 6.700000047683716,
+          "max": 6.799999952316284
+        }
+      }
+    },
+    "BG-BROWSER-001B": {
+      "description": "One background run at two windows per second remains responsive",
+      "result": "Pass",
+      "startedAt": "2026-08-10T08:53:02.778Z",
+      "details": {
+        "mode": "one",
+        "elapsedMs": 6502.600000143051,
+        "windows": 13,
+        "dispatches": 26,
+        "topologyDelta": 0,
+        "navigationReasons": [],
+        "patchDelta": 1,
+        "presentationRevisionDelta": 13,
+        "contentCharacterDelta": 42,
+        "statusValues": [
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running"
+        ],
+        "longTasks": [],
+        "actionLatencies": [
+          5.099999904632568,
+          5,
+          7.1000001430511475,
+          5.599999904632568,
+          6.299999952316284,
+          4.8999998569488525,
+          5.6000001430511475,
+          6.1000001430511475,
+          4.799999952316284,
+          5.799999952316284,
+          6.299999952316284,
+          6.799999952316284,
+          5.400000095367432,
+          5.700000047683716,
+          5.8999998569488525,
+          5.700000047683716,
+          4.5,
+          5.8999998569488525,
+          5.799999952316284,
+          7.099999904632568,
+          6.200000047683716,
+          3.0999999046325684,
+          6.700000047683716,
+          5.900000095367432,
+          4.299999952316284,
+          3.4000000953674316,
+          3.700000047683716,
+          7.400000095367432
+        ],
+        "latency": {
+          "count": 28,
+          "min": 3.0999999046325684,
+          "mean": 5.574999996594021,
+          "p95": 7.1000001430511475,
+          "max": 7.400000095367432
+        }
+      }
+    },
+    "BG-BROWSER-001C": {
+      "description": "Twenty-run aggregate-equivalent 40 windows/80 dispatches per second remains responsive",
+      "result": "Pass",
+      "startedAt": "2026-08-10T08:53:09.283Z",
+      "details": {
+        "mode": "aggregate",
+        "elapsedMs": 6502.299999952316,
+        "windows": 260,
+        "dispatches": 520,
+        "topologyDelta": 0,
+        "navigationReasons": [],
+        "patchDelta": 19,
+        "presentationRevisionDelta": 260,
+        "contentCharacterDelta": 1190,
+        "statusValues": [
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running",
+          "running"
+        ],
+        "longTasks": [],
+        "actionLatencies": [
+          4.5,
+          6.400000095367432,
+          5.400000095367432,
+          5,
+          6.200000047683716,
+          6.900000095367432,
+          5.099999904632568,
+          6.799999952316284,
+          5.800000190734863,
+          4.599999904632568,
+          4.8999998569488525,
+          6.200000047683716,
+          5.200000047683716,
+          5.200000047683716,
+          6.599999904632568,
+          6,
+          5.200000047683716,
+          6.200000047683716,
+          7,
+          5.6000001430511475,
+          5.6000001430511475,
+          6.599999904632568,
+          6.799999952316284,
+          6.5,
+          4.700000047683716,
+          6.1000001430511475,
+          5.799999952316284,
+          5.300000190734863
+        ],
+        "latency": {
+          "count": 28,
+          "min": 4.5,
+          "mean": 5.7928571701049805,
+          "p95": 6.900000095367432,
+          "max": 7
+        }
+      }
+    },
+    "BG-BROWSER-002": {
+      "description": "CONNECTED and exact repeated status cause no presentation or navigation work",
+      "result": "Pass",
+      "startedAt": "2026-08-10T08:53:15.789Z",
+      "details": {
+        "topologyDelta": 0,
+        "patchDelta": 0,
+        "presentationRevisionDelta": 0,
+        "status": "running"
+      }
+    },
+    "BG-BROWSER-003": {
+      "description": "Latest-100 retention remains exact after 110 completed segment lifecycles",
+      "result": "Pass",
+      "startedAt": "2026-08-10T08:53:15.791Z",
+      "details": {
+        "visualCount": 100,
+        "segmentCount": 100,
+        "firstContent": "retained-10",
+        "lastContent": "retained-109",
+        "topologyRevision": 2,
+        "revisions": {
+          "before": {
+            "topology": 2,
+            "patch": 20
+          },
+          "after": {
+            "topology": 2,
+            "patch": 21
+          }
+        }
+      }
+    },
+    "BG-BROWSER-004": {
+      "description": "Collapsed/unfocused stable, task-agent, task-team, child, status, and focus survive sustained traffic",
+      "result": "Pass",
+      "startedAt": "2026-08-10T08:53:15.813Z",
+      "details": {
+        "hierarchy": {
+          "focusedMemberRouteKey": "worker",
+          "rows": [
+            {
+              "kind": "stable_member",
+              "routeKey": "worker",
+              "depth": 0,
+              "hasChildren": true,
+              "transientKind": null
+            },
+            {
+              "kind": "transient_execution",
+              "routeKey": "rich-task-agent-run",
+              "depth": 1,
+              "hasChildren": false,
+              "transientKind": "task_agent",
+              "status": "running"
+            },
+            {
+              "kind": "stable_member",
+              "routeKey": "ReviewTeam",
+              "depth": 0,
+              "hasChildren": true,
+              "transientKind": null
+            },
+            {
+              "kind": "stable_member",
+              "routeKey": "ReviewTeam/reviewer",
+              "depth": 1,
+              "hasChildren": false,
+              "transientKind": null
+            },
+            {
+              "kind": "transient_execution",
+              "routeKey": "rich-task-team-run",
+              "depth": 0,
+              "hasChildren": true,
+              "transientKind": "task_team",
+              "status": null
+            },
+            {
+              "kind": "transient_execution",
+              "routeKey": "rich-task-team-run/reviewer",
+              "depth": 1,
+              "hasChildren": false,
+              "transientKind": "task_team_child",
+              "status": "running"
+            }
+          ]
+        },
+        "beforeDetail": {
+          "topology": 2,
+          "patch": 22
+        },
+        "afterDetail": {
+          "topology": 2,
+          "patch": 22
+        },
+        "transientRowsVisible": 3
+      }
+    },
+    "BG-BROWSER-005A": {
+      "description": "Delayed-upload paste-to-placeholder at idle",
+      "result": "Pass",
+      "startedAt": "2026-08-10T08:53:15.987Z",
+      "details": {
+        "latency": {
+          "count": 10,
+          "min": 4.8999998569488525,
+          "mean": 6.8599999904632565,
+          "p95": 8,
+          "max": 8
+        },
+        "load": {
+          "mode": "idle",
+          "elapsedMs": 4003.399999856949,
+          "windows": 0,
+          "dispatches": 0,
+          "topologyDelta": 0,
+          "navigationReasons": [],
+          "patchDelta": 0,
+          "presentationRevisionDelta": 0,
+          "contentCharacterDelta": 0,
+          "statusValues": [
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running"
+          ],
+          "longTasks": [],
+          "actionLatencies": []
+        }
+      }
+    },
+    "BG-BROWSER-005B": {
+      "description": "Delayed-upload paste-to-placeholder under aggregate traffic",
+      "result": "Pass",
+      "startedAt": "2026-08-10T08:53:19.995Z",
+      "details": {
+        "latency": {
+          "count": 10,
+          "min": 2.8000001907348633,
+          "mean": 6.380000019073487,
+          "p95": 7.6000001430511475,
+          "max": 7.6000001430511475
+        },
+        "load": {
+          "mode": "aggregate",
+          "elapsedMs": 4002.2000000476837,
+          "windows": 160,
+          "dispatches": 320,
+          "topologyDelta": 0,
+          "navigationReasons": [],
+          "patchDelta": 0,
+          "presentationRevisionDelta": 160,
+          "contentCharacterDelta": 690,
+          "statusValues": [
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running"
+          ],
+          "longTasks": [],
+          "actionLatencies": []
+        }
+      }
+    },
+    "BG-BROWSER-006A": {
+      "description": "Warmed fake-media voice start at idle",
+      "result": "Pass",
+      "startedAt": "2026-08-10T08:53:24.100Z",
+      "details": {
+        "samples": [
+          {
+            "clickToStartingVisibleMs": 7.5,
+            "clickToRecordingVisibleMs": 33.299999952316284,
+            "raw": {
+              "clickedAt": 38109.09999990463,
+              "startingAt": 38109.199999809265,
+              "startingVisibleAt": 38116.59999990463,
+              "recordingAt": 38139,
+              "recordingVisibleAt": 38142.39999985695,
+              "error": null,
+              "isStarting": false,
+              "isRecording": true
+            }
+          },
+          {
+            "clickToStartingVisibleMs": 6.5,
+            "clickToRecordingVisibleMs": 41.59999990463257,
+            "raw": {
+              "clickedAt": 38184.09999990463,
+              "startingAt": 38184.199999809265,
+              "startingVisibleAt": 38190.59999990463,
+              "recordingAt": 38220.299999952316,
+              "recordingVisibleAt": 38225.699999809265,
+              "error": null,
+              "isStarting": false,
+              "isRecording": true
+            }
+          },
+          {
+            "clickToStartingVisibleMs": 6.400000095367432,
+            "clickToRecordingVisibleMs": 32.09999990463257,
+            "raw": {
+              "clickedAt": 38260.09999990463,
+              "startingAt": 38260.09999990463,
+              "startingVisibleAt": 38266.5,
+              "recordingAt": 38290.39999985695,
+              "recordingVisibleAt": 38292.199999809265,
+              "error": null,
+              "isStarting": false,
+              "isRecording": true
+            }
+          }
+        ],
+        "starting": {
+          "count": 3,
+          "min": 6.400000095367432,
+          "mean": 6.800000031789144,
+          "p95": 7.5,
+          "max": 7.5
+        },
+        "recording": {
+          "count": 3,
+          "min": 32.09999990463257,
+          "mean": 35.66666658719381,
+          "p95": 41.59999990463257,
+          "max": 41.59999990463257
+        }
+      }
+    },
+    "BG-BROWSER-006B": {
+      "description": "Fake-media voice start under aggregate traffic",
+      "result": "Pass",
+      "startedAt": "2026-08-10T08:53:24.326Z",
+      "details": {
+        "samples": [
+          {
+            "clickToStartingVisibleMs": 5.799999952316284,
+            "clickToRecordingVisibleMs": 32.5,
+            "raw": {
+              "clickedAt": 38335,
+              "startingAt": 38335.199999809265,
+              "startingVisibleAt": 38340.799999952316,
+              "recordingAt": 38362.799999952316,
+              "recordingVisibleAt": 38367.5,
+              "error": null,
+              "isStarting": false,
+              "isRecording": true
+            }
+          },
+          {
+            "clickToStartingVisibleMs": 5.900000095367432,
+            "clickToRecordingVisibleMs": 31.700000047683716,
+            "raw": {
+              "clickedAt": 38410.39999985695,
+              "startingAt": 38410.39999985695,
+              "startingVisibleAt": 38416.299999952316,
+              "recordingAt": 38437.699999809265,
+              "recordingVisibleAt": 38442.09999990463,
+              "error": null,
+              "isStarting": false,
+              "isRecording": true
+            }
+          },
+          {
+            "clickToStartingVisibleMs": 5.200000047683716,
+            "clickToRecordingVisibleMs": 31.90000009536743,
+            "raw": {
+              "clickedAt": 38485.39999985695,
+              "startingAt": 38485.39999985695,
+              "startingVisibleAt": 38490.59999990463,
+              "recordingAt": 38515.5,
+              "recordingVisibleAt": 38517.299999952316,
+              "error": null,
+              "isStarting": false,
+              "isRecording": true
+            }
+          }
+        ],
+        "starting": {
+          "count": 3,
+          "min": 5.200000047683716,
+          "mean": 5.6333333651224775,
+          "p95": 5.900000095367432,
+          "max": 5.900000095367432
+        },
+        "recording": {
+          "count": 3,
+          "min": 31.700000047683716,
+          "mean": 32.03333338101705,
+          "p95": 32.5,
+          "max": 32.5
+        },
+        "load": {
+          "mode": "aggregate",
+          "elapsedMs": 6502.099999904633,
+          "windows": 260,
+          "dispatches": 520,
+          "topologyDelta": 0,
+          "navigationReasons": [],
+          "patchDelta": 0,
+          "presentationRevisionDelta": 260,
+          "contentCharacterDelta": 1190,
+          "statusValues": [
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running",
+            "running"
+          ],
+          "longTasks": [],
+          "actionLatencies": []
+        }
+      }
+    },
+    "BG-BROWSER-007": {
+      "description": "Mobile viewport preserves hierarchy/composer width and controls",
+      "result": "Pass",
+      "startedAt": "2026-08-10T08:53:30.830Z",
+      "details": {
+        "innerWidth": 390,
+        "bodyScrollWidth": 390,
+        "documentScrollWidth": 390,
+        "voiceVisible": true,
+        "attachmentVisible": true
+      }
+    }
+  },
+  "browserEvents": [
+    {
+      "type": "console:log",
+      "text": "Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+    }
+  ],
+  "failures": [],
+  "cleanup": {
+    "browserContext": "closed",
+    "browser": "closed",
+    "nuxt": {
+      "status": "terminated",
+      "pid": 21637,
+      "exitCode": null,
+      "signalCode": null,
+      "finalExitCode": null,
+      "finalSignalCode": "SIGTERM"
+    },
+    "nuxtLog": "closed",
+    "installedFixture": "removed"
+  },
+  "port": 60984,
+  "baseUrl": "http://127.0.0.1:60984",
+  "performanceComparison": {
+    "idleP95": 6.700000047683716,
+    "oneP95": 7.1000001430511475,
+    "aggregateP95": 6.900000095367432,
+    "oneToIdle": 1.0597015063463644,
+    "aggregateToIdle": 1.0298507531731822
+  },
+  "result": "Pass",
+  "finishedAt": "2026-08-10T08:53:31.355Z",
+  "artifacts": {
+    "evidencePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/api-e2e-execution-evidence/api-rev-003/background-contention-browser/evidence.json",
+    "nuxtLogPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/api-e2e-execution-evidence/api-rev-003/background-contention-browser/nuxt.log",
+    "desktopScreenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/api-e2e-execution-evidence/api-rev-003/background-contention-browser/desktop-hierarchy.png",
+    "mobileScreenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/api-e2e-execution-evidence/api-rev-003/background-contention-browser/mobile-composer.png"
+  }
+}

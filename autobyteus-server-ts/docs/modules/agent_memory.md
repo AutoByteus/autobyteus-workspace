@@ -40,7 +40,7 @@ Common files/directories:
 - `raw_traces_manifest.json` — completed raw-trace archive descriptors owned by `RawTraceArchiveManager`.
 - `raw_traces_<zero-padded-index>.jsonl` — immutable raw-trace archives, including one exact-new-activity archive per successful native compaction.
 - `episodic.jsonl` and `semantic.jsonl` — immutable native compacted output rows.
-- `compaction_lineage.jsonl` — append-only successful native-compaction lineage. Its last valid record is the only current-compaction head and lists exact current output IDs plus the run-relative completed raw archive.
+- `compaction_lineage.jsonl` — append-only successful native-compaction lineage. Its last valid record is the only current-compaction head and lists exact current output IDs, the optional preceding compaction, and execution/prompt audit metadata; it does not identify a raw archive.
 - `working_context_snapshot.json` — native AutoByteus continuation state: strict schema-v5 finalized provider-neutral messages and message-local constituent ranges. It contains no output identity, lineage object, or mutable current-state field. Codex and Claude recording no longer creates or updates this file.
 
 There is no current `compacted_memory_manifest.json` or compaction-state/pointer
@@ -95,13 +95,13 @@ runtime memory provider.
 
 Native AutoByteus runs remain owned by the `autobyteus-ts` `MemoryManager`. The server-side recorder must skip `RuntimeKind.AUTOBYTEUS` so native traces, snapshots, archives, outputs, and lineage are not duplicated.
 
-Native compaction is a proposal / accept / commit boundary. The executor resolves the process-global strategy, captures the manager-owned WorkingContext and lineage-head baseline, and requests an ID-less proposal. `MemoryManager` verifies the baseline, assigns output identities, finalizes the candidate, and commits exact new-raw archive -> output rows -> lineage append -> finalized context -> schema-v5 snapshot -> pending clear. Recurrent compaction consumes the current head output plus new raw-backed work but archives only the new raw evidence. The lineage tail selects the exact current complete replacement bundle; older successful outputs remain historical rather than being mixed into normal projection.
+Native compaction is a proposal / accept / commit boundary. The executor resolves the process-global strategy, captures the manager-owned WorkingContext and lineage-head baseline, and requests an ID-less proposal. `MemoryManager` verifies the baseline, assigns output identities, and builds a complete accepted candidate whose lineage record is finalized before commit. Commit then executes exact new-raw archive -> output rows -> lineage append -> finalized context -> schema-v5 snapshot -> pending clear. The archive is an independent command: `RawTraceArchiveManager` owns its descriptor and filename, and neither is returned into the candidate or lineage. Recurrent compaction consumes the current head output plus new raw-backed work but archives only the new raw evidence. The lineage tail selects the exact current complete replacement bundle; older successful outputs remain historical rather than being mixed into normal projection.
 
 The built-in Memory Compactor chooses the natural number of episodes and
 semantic facts needed for safe continuation. Accepted output requires at least
 one episode, but no fixed total episode/fact cap is imposed during parsing,
-normalization, publication, lineage read/write, current-head projection, or
-typed origin lookup. Per-entry bounds, structural validation, cleanup,
+normalization, publication, lineage read/write, or current-head projection.
+Per-entry bounds, structural validation, cleanup,
 deduplication, and positive salience remain enforced.
 
 The persisted `autobyteus-memory-compactor` system prompt owns the stable task,
@@ -118,6 +118,11 @@ immutable value-1 records remain directly usable, mixed `1 -> 2` chains are
 valid, and unsupported values reject without rewriting or compatibility
 decoding.
 
+Existing schema-v1 rows that contain the former `rawTraceArchiveFile` extra field
+remain directly readable through recognized-field normalization. The stored
+field is ignored without a data rewrite, version branch, or output-to-raw origin
+interpretation; new rows omit it.
+
 Explicit existing-run restore requires a strict-v5 snapshot; no raw-history
 projector or pre-v5 runtime reader remains. `LLMRequestAssembler` completes any
 pending compaction before capturing the request-recovery checkpoint and captures
@@ -126,7 +131,25 @@ that stable base, while final output, real Tool ingestion, and supported retaine
 interruption release it exactly once. Accepted archive/output/lineage state is
 never rolled back.
 
-`AgentMemoryOriginService` composes the core run-scoped resolver for explicit standalone/team-member targets and typed episode/semantic IDs. It returns direct and recursive raw origin for valid current-format chains, `not_found` for unknown artifacts, and an integrity error for broken lineage/archive/output membership.
+An otherwise current schema-v5 snapshot whose native assistant tool call lacks
+a matching result is repaired during bootstrap before strict message/provenance
+validation. The bootstrapper validates the v5 envelope and run identity, asks
+the native `MemoryManager` protocol-safety owner to correlate calls by
+`(turn_id, tool_call_id)`, and then requires the repaired snapshot to pass the
+ordinary strict validator. When no committed result exists, repair appends one
+canonical raw `tool_result` first, preserving the original tool name and
+arguments while recording `tool_result: null` plus a deterministic non-empty
+`tool_error`; the working-context snapshot is then rebuilt from raw authority.
+Repeated restore is idempotent and does not append another result. Only a
+malformed final physical record in the active raw JSONL file may be truncated as
+a partial-write tail; earlier malformed records and unrelated snapshot
+corruption remain integrity failures.
+
+There is no server or GraphQL direct/recursive episode/semantic-to-raw origin
+service. Current output projection reads the lineage tail, loads exactly its
+episode/semantic membership in stored order, and treats malformed/unsupported
+lineage or missing/misordered output rows as integrity errors without opening a
+raw archive.
 
 ### Global Compaction Strategy Setting
 
@@ -140,6 +163,15 @@ GraphQL keeps option discovery and effective selection separate:
 Settings -> Server Settings -> Basics uses these reads for a registry-backed Compaction strategy selector. The card keeps the trigger ratio, effective-context override, and detailed-log controls, persists only changed valid fields through the existing per-key mutation, and stops after the first failed write while retaining failed and unsent drafts for retry. Catalog/effective-read errors and unknown IDs are shown without guessing or silently writing a default.
 
 The `structured-json` strategy always invokes the built-in `autobyteus-memory-compactor`; blank launch fields inherit the parent run's runtime/model. `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` is no longer a predefined setting or runtime selection path. A stale custom value is inert, and a missing/invalid built-in definition fails without arbitrary-agent fallback.
+
+`ServerCompactionAgentRunner` allows an ordinarily constructed compactor child
+up to 300,000 ms (five minutes) to return its final output. This is a
+runner-owned omitted-option default, not an application setting:
+`ServerCompactionAgentRunnerOptions.timeoutMs` remains the authoritative
+explicit override for tests or custom construction. On timeout or another
+failure, the existing typed error projection, event unsubscription, and child
+run termination still apply; unrelated process, server-start, and test timeout
+policies are not derived from this value.
 
 Compaction status metadata includes stable `compaction_strategy_id` and `compaction_strategy_name` in addition to operation/turn and current runner diagnostics. A resolver, strategy, validation, or replacement failure preserves the pending request and does not emit a false completed state.
 
@@ -338,7 +370,7 @@ When archive inclusion is requested without file-selector mode, readers retain t
 
 Current archive/rotation behavior:
 
-- Native AutoByteus compaction rotates compacted raw traces into `native_compaction` segments.
+- Native AutoByteus compaction rotates exactly the selected active raw traces into `native_compaction` segments. The store derives a retry-stable `native_compaction_selection:<sha256>` boundary key from the JSON encoding of sorted selected trace IDs; the archive manager independently owns manifest completion and the rotated filename.
 - Codex/Claude provider-boundary rotation moves settled active raw traces before an eligible boundary marker into `provider_compaction_boundary` segments.
 - New rotated segment files live directly beside `raw_traces_active.jsonl` as `raw_traces_<zero-padded-index>.jsonl`, for example `raw_traces_000001.jsonl`; boundary identity remains in the manifest `boundary_key`, not in the filename.
 - New writes use `raw_traces_manifest.json` and never create `raw_traces_archive_manifest.json` or `raw_traces_archive/`.

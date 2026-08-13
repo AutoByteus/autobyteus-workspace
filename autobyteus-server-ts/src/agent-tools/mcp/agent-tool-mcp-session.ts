@@ -1,5 +1,5 @@
 import type { AgentRunMessageSenderContext } from "../../agent-communication/domain/agent-run-message-sender.js";
-import type { ConfiguredAgentToolExposure } from "../../agent-execution/shared/configured-agent-tool-exposure.js";
+import type { RuntimeAgentToolExposure } from "../../agent-execution/shared/runtime-agent-tool-exposure.js";
 import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type {
@@ -73,7 +73,7 @@ export type AgentToolMcpSession = {
   owner: AgentToolMcpSessionOwnerIdentity;
   sender: AgentRunMessageSenderContext;
   runtimeKind: RuntimeKind | string | null;
-  configuredExposure: ConfiguredAgentToolExposure;
+  runtimeExposure: RuntimeAgentToolExposure;
   executionContext: AgentToolMcpExecutionContext;
   executionCapabilities: AgentToolMcpSessionExecutionCapabilities | null;
   enabledTools: string[];
@@ -87,7 +87,7 @@ export type AgentToolMcpSession = {
 export type AgentToolMcpCreateSessionInput = {
   owner: AgentToolMcpSessionOwnerIdentity;
   sender: AgentRunMessageSenderContext;
-  configuredExposure: ConfiguredAgentToolExposure;
+  runtimeExposure: RuntimeAgentToolExposure;
   executionContext?: AgentToolMcpExecutionContext | null;
   executionCapabilities?: AgentToolMcpSessionExecutionCapabilities | null;
   enabledTools: string[];

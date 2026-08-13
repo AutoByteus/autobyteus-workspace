@@ -1,0 +1,39 @@
+Finalization target refresh after explicit user authorization
+timestamp=2026-08-02T09:31:48+0200
+command=git fetch origin --prune
+recorded_target=origin/personal -> personal
+handoff_base=4b29481d5b6eaea64aebb20abcb5e4d784ea1178
+latest_tracked_target=4b29481d5b6eaea64aebb20abcb5e4d784ea1178
+ticket_head_before_finalization=541d2361cccfb7c9f7be89c53d106a11dd9f2f76
+target_is_ancestor_of_ticket_head=yes
+target_advanced_beyond_handoff=no
+tracked_worktree_status:
+## codex/svg-file-preview...origin/personal [ahead 2]
+ M autobyteus-server-ts/tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts
+ M autobyteus-server-ts/tests/unit/api/rest/run-file-changes.test.ts
+ M autobyteus-server-ts/tests/unit/utils/artifact-utils.test.ts
+ M autobyteus-web/components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts
+ M autobyteus-web/components/fileExplorer/__tests__/FileViewer.spec.ts
+ M autobyteus-web/components/mobile/__tests__/MobileArtifactsContentViewerIntegration.spec.ts
+ M autobyteus-web/components/mobile/__tests__/MobileFileViewer.spec.ts
+ M autobyteus-web/components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts
+ M autobyteus-web/components/workspace/team/__tests__/TeamCommunicationReferenceViewer.spec.ts
+ M autobyteus-web/components/workspace/team/__tests__/TeamTaskReferenceViewer.spec.ts
+ M autobyteus-web/docs/content_rendering.md
+ M autobyteus-web/docs/file_explorer.md
+ M autobyteus-web/electron/local-file-protocol/__tests__/local-file-response.spec.ts
+ M autobyteus-web/stores/__tests__/fileExplorerNodeRouting.spec.ts
+ M tickets/in-progress/svg-file-preview/code-review-report.md
+ M tickets/in-progress/svg-file-preview/code-review-revision-record.md
+?? autobyteus-web/composables/__tests__/useEventMonitorFilePreview.spec.ts
+?? tickets/in-progress/svg-file-preview/api-e2e-coverage-investigation.md
+?? tickets/in-progress/svg-file-preview/api-e2e-execution-coverage-report.md
+?? tickets/in-progress/svg-file-preview/api-e2e-revision-record.md
+?? tickets/in-progress/svg-file-preview/api-e2e-test-output/
+?? tickets/in-progress/svg-file-preview/api-e2e-test-review-report.md
+?? tickets/in-progress/svg-file-preview/delivery-integrated-state-refresh.log
+?? tickets/in-progress/svg-file-preview/delivery-revision-record.md
+?? tickets/in-progress/svg-file-preview/docs-sync-report.md
+?? tickets/in-progress/svg-file-preview/finalization-target-refresh.log
+?? tickets/in-progress/svg-file-preview/handoff-summary.md
+?? tickets/in-progress/svg-file-preview/release-deployment-report.md

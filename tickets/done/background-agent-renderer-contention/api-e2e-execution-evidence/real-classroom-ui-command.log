@@ -1,0 +1,8 @@
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+Error: Classroom run was not present after browser reload
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/api-e2e-execution-evidence/real-classroom-ui-drive.mjs:174:61
+
+Node.js v22.23.1

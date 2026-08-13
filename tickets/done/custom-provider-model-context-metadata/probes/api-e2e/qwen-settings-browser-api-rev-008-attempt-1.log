@@ -1,0 +1,9 @@
+file:///private/tmp/qwen-settings-browser-api-rev-008.mjs:51
+  if (!condition) throw new Error(`ASSERTION_FAILED: ${message}`);
+                        ^
+
+Error: ASSERTION_FAILED: current Qwen model missing from browser: DeepSeek V4 Pro (Qwen)
+    at assert (file:///private/tmp/qwen-settings-browser-api-rev-008.mjs:51:25)
+    at file:///private/tmp/qwen-settings-browser-api-rev-008.mjs:176:5
+
+Node.js v22.23.1

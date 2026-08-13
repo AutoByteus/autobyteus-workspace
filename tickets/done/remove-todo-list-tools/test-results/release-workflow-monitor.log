@@ -1,0 +1,365 @@
+--- poll 1 2026-08-03T10:39:15Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	queued		2026-08-03T10:39:12Z
+30806389213	Desktop Release	queued		2026-08-03T10:39:14Z
+30806389209	iOS App Store Connect Release	in_progress		2026-08-03T10:39:13Z
+30806389204	Release Messaging Gateway	in_progress		2026-08-03T10:39:11Z
+--- poll 2 2026-08-03T10:39:37Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	in_progress		2026-08-03T10:39:16Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:39:18Z
+30806389209	iOS App Store Connect Release	in_progress		2026-08-03T10:39:13Z
+30806389204	Release Messaging Gateway	in_progress		2026-08-03T10:39:11Z
+--- poll 3 2026-08-03T10:40:00Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	in_progress		2026-08-03T10:39:16Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:39:18Z
+30806389209	iOS App Store Connect Release	in_progress		2026-08-03T10:39:13Z
+30806389204	Release Messaging Gateway	in_progress		2026-08-03T10:39:11Z
+--- poll 4 2026-08-03T10:40:23Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	in_progress		2026-08-03T10:39:16Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:39:18Z
+30806389209	iOS App Store Connect Release	in_progress		2026-08-03T10:39:13Z
+30806389204	Release Messaging Gateway	in_progress		2026-08-03T10:39:11Z
+--- poll 5 2026-08-03T10:40:45Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	in_progress		2026-08-03T10:39:16Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:39:18Z
+30806389209	iOS App Store Connect Release	in_progress		2026-08-03T10:39:13Z
+30806389204	Release Messaging Gateway	in_progress		2026-08-03T10:39:11Z
+--- poll 6 2026-08-03T10:41:08Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	in_progress		2026-08-03T10:39:16Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:39:18Z
+30806389209	iOS App Store Connect Release	in_progress		2026-08-03T10:39:13Z
+30806389204	Release Messaging Gateway	in_progress		2026-08-03T10:40:58Z
+--- poll 7 2026-08-03T10:41:31Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	in_progress		2026-08-03T10:39:16Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:39:18Z
+30806389209	iOS App Store Connect Release	in_progress		2026-08-03T10:39:13Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 8 2026-08-03T10:41:54Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	in_progress		2026-08-03T10:39:16Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:39:18Z
+30806389209	iOS App Store Connect Release	in_progress		2026-08-03T10:39:13Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 9 2026-08-03T10:42:16Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	in_progress		2026-08-03T10:42:08Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:39:18Z
+30806389209	iOS App Store Connect Release	in_progress		2026-08-03T10:39:13Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 10 2026-08-03T10:42:38Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:39:18Z
+30806389209	iOS App Store Connect Release	in_progress		2026-08-03T10:39:13Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 11 2026-08-03T10:43:01Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:39:18Z
+30806389209	iOS App Store Connect Release	in_progress		2026-08-03T10:39:13Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 12 2026-08-03T10:43:24Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:39:18Z
+30806389209	iOS App Store Connect Release	in_progress		2026-08-03T10:39:13Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 13 2026-08-03T10:43:46Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:39:18Z
+30806389209	iOS App Store Connect Release	in_progress		2026-08-03T10:39:13Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 14 2026-08-03T10:44:09Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:39:18Z
+30806389209	iOS App Store Connect Release	in_progress		2026-08-03T10:39:13Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 15 2026-08-03T10:44:31Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:39:18Z
+30806389209	iOS App Store Connect Release	in_progress		2026-08-03T10:39:13Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 16 2026-08-03T10:44:54Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:39:18Z
+30806389209	iOS App Store Connect Release	in_progress		2026-08-03T10:39:13Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 17 2026-08-03T10:45:16Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:39:18Z
+30806389209	iOS App Store Connect Release	in_progress		2026-08-03T10:39:13Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 18 2026-08-03T10:45:40Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:39:18Z
+30806389209	iOS App Store Connect Release	in_progress		2026-08-03T10:39:13Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 19 2026-08-03T10:46:02Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:39:18Z
+30806389209	iOS App Store Connect Release	in_progress		2026-08-03T10:39:13Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 20 2026-08-03T10:46:25Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:39:18Z
+30806389209	iOS App Store Connect Release	in_progress		2026-08-03T10:39:13Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 21 2026-08-03T10:46:47Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:39:18Z
+30806389209	iOS App Store Connect Release	in_progress		2026-08-03T10:39:13Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 22 2026-08-03T10:47:10Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:39:18Z
+30806389209	iOS App Store Connect Release	in_progress		2026-08-03T10:39:13Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 23 2026-08-03T10:47:32Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:39:18Z
+30806389209	iOS App Store Connect Release	in_progress		2026-08-03T10:39:13Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 24 2026-08-03T10:47:55Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:39:18Z
+30806389209	iOS App Store Connect Release	in_progress		2026-08-03T10:39:13Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 25 2026-08-03T10:48:17Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:39:18Z
+30806389209	iOS App Store Connect Release	in_progress		2026-08-03T10:48:06Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 26 2026-08-03T10:48:40Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:39:18Z
+30806389209	iOS App Store Connect Release	in_progress		2026-08-03T10:48:23Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 27 2026-08-03T10:49:02Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:39:18Z
+30806389209	iOS App Store Connect Release	in_progress		2026-08-03T10:48:23Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 28 2026-08-03T10:49:25Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:39:18Z
+30806389209	iOS App Store Connect Release	in_progress		2026-08-03T10:48:23Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 29 2026-08-03T10:49:47Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:39:18Z
+30806389209	iOS App Store Connect Release	in_progress		2026-08-03T10:48:23Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 30 2026-08-03T10:50:09Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:39:18Z
+30806389209	iOS App Store Connect Release	in_progress		2026-08-03T10:48:23Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 31 2026-08-03T10:50:32Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:39:18Z
+30806389209	iOS App Store Connect Release	completed	success	2026-08-03T10:50:31Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 32 2026-08-03T10:50:54Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:39:18Z
+30806389209	iOS App Store Connect Release	completed	success	2026-08-03T10:50:31Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 33 2026-08-03T10:51:17Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:39:18Z
+30806389209	iOS App Store Connect Release	completed	success	2026-08-03T10:50:31Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 34 2026-08-03T10:51:40Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:39:18Z
+30806389209	iOS App Store Connect Release	completed	success	2026-08-03T10:50:31Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 35 2026-08-03T10:52:02Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:39:18Z
+30806389209	iOS App Store Connect Release	completed	success	2026-08-03T10:50:31Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 36 2026-08-03T10:52:24Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:39:18Z
+30806389209	iOS App Store Connect Release	completed	success	2026-08-03T10:50:31Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 37 2026-08-03T10:52:47Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:39:18Z
+30806389209	iOS App Store Connect Release	completed	success	2026-08-03T10:50:31Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 38 2026-08-03T10:53:09Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	queued		2026-08-03T10:53:00Z
+30806389209	iOS App Store Connect Release	completed	success	2026-08-03T10:50:31Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 39 2026-08-03T10:53:32Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:53:10Z
+30806389209	iOS App Store Connect Release	completed	success	2026-08-03T10:50:31Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 40 2026-08-03T10:53:54Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:53:10Z
+30806389209	iOS App Store Connect Release	completed	success	2026-08-03T10:50:31Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 41 2026-08-03T10:54:17Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:53:10Z
+30806389209	iOS App Store Connect Release	completed	success	2026-08-03T10:50:31Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 42 2026-08-03T10:54:39Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	in_progress		2026-08-03T10:53:10Z
+30806389209	iOS App Store Connect Release	completed	success	2026-08-03T10:50:31Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 43 2026-08-03T10:55:02Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	completed	success	2026-08-03T10:55:02Z
+30806389209	iOS App Store Connect Release	completed	success	2026-08-03T10:50:31Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 44 2026-08-03T10:55:25Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	completed	success	2026-08-03T10:55:02Z
+30806389209	iOS App Store Connect Release	completed	success	2026-08-03T10:50:31Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 45 2026-08-03T10:55:48Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	completed	success	2026-08-03T10:55:02Z
+30806389209	iOS App Store Connect Release	completed	success	2026-08-03T10:50:31Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 46 2026-08-03T10:56:10Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	completed	success	2026-08-03T10:55:02Z
+30806389209	iOS App Store Connect Release	completed	success	2026-08-03T10:50:31Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 47 2026-08-03T10:56:32Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	completed	success	2026-08-03T10:55:02Z
+30806389209	iOS App Store Connect Release	completed	success	2026-08-03T10:50:31Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 48 2026-08-03T10:56:56Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	completed	success	2026-08-03T10:55:02Z
+30806389209	iOS App Store Connect Release	completed	success	2026-08-03T10:50:31Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 49 2026-08-03T10:57:19Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	completed	success	2026-08-03T10:55:02Z
+30806389209	iOS App Store Connect Release	completed	success	2026-08-03T10:50:31Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 50 2026-08-03T10:57:42Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	completed	success	2026-08-03T10:55:02Z
+30806389209	iOS App Store Connect Release	completed	success	2026-08-03T10:50:31Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 51 2026-08-03T10:58:05Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	completed	success	2026-08-03T10:55:02Z
+30806389209	iOS App Store Connect Release	completed	success	2026-08-03T10:50:31Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 52 2026-08-03T10:58:28Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	completed	success	2026-08-03T10:55:02Z
+30806389209	iOS App Store Connect Release	completed	success	2026-08-03T10:50:31Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 53 2026-08-03T10:58:50Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	completed	success	2026-08-03T10:55:02Z
+30806389209	iOS App Store Connect Release	completed	success	2026-08-03T10:50:31Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 54 2026-08-03T10:59:15Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	completed	success	2026-08-03T10:55:02Z
+30806389209	iOS App Store Connect Release	completed	success	2026-08-03T10:50:31Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 55 2026-08-03T10:59:37Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	completed	success	2026-08-03T10:55:02Z
+30806389209	iOS App Store Connect Release	completed	success	2026-08-03T10:50:31Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 56 2026-08-03T10:59:59Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	completed	success	2026-08-03T10:55:02Z
+30806389209	iOS App Store Connect Release	completed	success	2026-08-03T10:50:31Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 57 2026-08-03T11:00:23Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	completed	success	2026-08-03T10:55:02Z
+30806389209	iOS App Store Connect Release	completed	success	2026-08-03T10:50:31Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 58 2026-08-03T11:00:46Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	completed	success	2026-08-03T10:55:02Z
+30806389209	iOS App Store Connect Release	completed	success	2026-08-03T10:50:31Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 59 2026-08-03T11:01:09Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	completed	success	2026-08-03T10:55:02Z
+30806389209	iOS App Store Connect Release	completed	success	2026-08-03T10:50:31Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+--- poll 60 2026-08-03T11:01:32Z ---
+30806389308	Server Docker Release	in_progress		2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	2026-08-03T10:42:24Z
+30806389213	Desktop Release	completed	success	2026-08-03T10:55:02Z
+30806389209	iOS App Store Connect Release	completed	success	2026-08-03T10:50:31Z
+30806389204	Release Messaging Gateway	completed	success	2026-08-03T10:41:28Z
+30806389308	Server Docker Release	in_progress		v1.4.41	d792ea38c8bd97fd24fa8a2687db0bdbfcd55d1e	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30806389308	2026-08-03T10:39:10Z
+30806389262	Android APK Release	completed	success	v1.4.41	d792ea38c8bd97fd24fa8a2687db0bdbfcd55d1e	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30806389262	2026-08-03T10:42:24Z
+30806389213	Desktop Release	completed	success	v1.4.41	d792ea38c8bd97fd24fa8a2687db0bdbfcd55d1e	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30806389213	2026-08-03T10:55:02Z
+30806389209	iOS App Store Connect Release	completed	success	v1.4.41	d792ea38c8bd97fd24fa8a2687db0bdbfcd55d1e	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30806389209	2026-08-03T10:50:31Z
+30806389204	Release Messaging Gateway	completed	success	v1.4.41	d792ea38c8bd97fd24fa8a2687db0bdbfcd55d1e	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30806389204	2026-08-03T10:41:28Z

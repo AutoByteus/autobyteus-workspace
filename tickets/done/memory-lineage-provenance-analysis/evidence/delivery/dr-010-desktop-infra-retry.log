@@ -1,0 +1,8 @@
+cancel_utc=2026-08-01T04:37:57Z
+✓ Request to cancel workflow 30682822428 submitted.
+2026-08-01T04:37:58Z in_progress
+2026-08-01T04:38:04Z in_progress
+2026-08-01T04:38:10Z in_progress
+2026-08-01T04:38:16Z completed	cancelled
+rerun_utc=2026-08-01T04:38:39Z
+{"attempt":2,"conclusion":"","jobs":[{"conclusion":"","name":"Build Linux x64","startedAt":"2026-08-01T04:38:43Z","status":"in_progress"},{"conclusion":"success","name":"Build Windows x64","startedAt":"2026-08-01T03:52:37Z","status":"completed"},{"conclusion":"success","name":"Build macOS Intel x64","startedAt":"2026-08-01T03:52:38Z","status":"completed"},{"conclusion":"success","name":"Build macOS ARM64","startedAt":"2026-08-01T03:52:38Z","status":"completed"},{"conclusion":"success","name":"Build Linux ARM64","startedAt":"2026-08-01T03:52:40Z","status":"completed"}],"status":"queued","url":"https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30682822428"}

@@ -1,0 +1,25 @@
+$ git diff --check
+PASS: tracked diff has no whitespace errors
+$ verify untracked Qwen E2E whitespace
+PASS: untracked Qwen E2E has no trailing whitespace
+$ verify TR-002 fresh-child helper and call receive no explicit Qwen endpoint
+    const config = appConfigProvider.initialize({ appDataDir: runtimeRoot });
+    config.initialize();
+    JSON.stringify(['qwen3.8-max', 'deepseek-v4-pro', 'glm-5.2']),
+PASS: child must initialize AppConfig from the owned runtime and receives no QWEN_BASE_URL override
+$ verify TR-003 cleanup is provider-owned, not globally value-scoped
+          models { providerId }
+    expect(remainingModelProviderIds).not.toContain(deletedProviderId);
+    expect(providerConfig).not.toContain(deletedProviderId);
+PASS: cleanup proves deleted provider/model ownership and config absence only
+$ affected rerun summary
+ Test Files  2 passed (2)
+      Tests  4 passed (4)
+PASS: affected rerun recorded 2 files / 4 tests
+$ verify API-REV-004 canonical artifact state
+- Current API/E2E Revision ID: `API-REV-004`
+- Current API/E2E Revision ID: `API-REV-004`
+### API-REV-004 — Resolve persisted-route and provider-scoped cleanup proof defects
+PASS: canonical coverage, execution, and revision artifacts are current
+$ verify owned Qwen test runtime cleanup
+PASS: no owned qwen-configuration test targets remain

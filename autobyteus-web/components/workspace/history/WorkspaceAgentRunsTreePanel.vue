@@ -123,7 +123,6 @@ import { useWorkspaceStore } from '~/stores/workspace';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentRunStore } from '~/stores/agentRunStore';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
-import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
@@ -151,7 +150,7 @@ const workspaceStore = useWorkspaceStore();
 const selectionStore = useAgentSelectionStore();
 const agentRunStore = useAgentRunStore();
 const teamRunStore = useAgentTeamRunStore();
-const agentTeamContextsStore = useAgentTeamContextsStore();
+const { stopPendingTeamIds } = storeToRefs(teamRunStore);
 const agentDefinitionStore = useAgentDefinitionStore();
 const agentTeamDefinitionStore = useAgentTeamDefinitionStore();
 const windowNodeContextStore = useWindowNodeContextStore();
@@ -207,7 +206,6 @@ const {
 
 const {
   terminatingRunIds,
-  terminatingTeamIds,
   deletingRunIds,
   deletingTeamIds,
   archivingRunIds,
@@ -235,6 +233,7 @@ const {
   archiveTeamRun: (teamRunId: string) => runHistoryStore.archiveTeamRun(teamRunId),
   addToast: addWorkspaceToast,
   canTerminateTeam: treeState.canTerminateTeam,
+  stopPendingTeamIds,
 });
 
 const {
@@ -310,8 +309,10 @@ const sectionState: WorkspaceHistorySectionState = {
   get selectedRunId() {
     return treeState.selectedRunId.value;
   },
+  isTeamRunSelected: (teamRunId: string) =>
+    selectionStore.selectedType === 'team' && selectionStore.selectedRunId === teamRunId,
   isRunTerminating: (runId: string) => Boolean(terminatingRunIds.value[runId]),
-  isTeamTerminating: (teamRunId: string) => Boolean(terminatingTeamIds.value[teamRunId]),
+  isTeamTerminating: (teamRunId: string) => Boolean(stopPendingTeamIds.value[teamRunId]),
   isRunDeleting: (runId: string) => Boolean(deletingRunIds.value[runId]),
   isTeamDeleting: (teamRunId: string) => Boolean(deletingTeamIds.value[teamRunId]),
   isRunArchiving: (runId: string) => Boolean(archivingRunIds.value[runId]),
@@ -327,7 +328,6 @@ const sectionState: WorkspaceHistorySectionState = {
   isTeamDefinitionExpanded: treeState.isTeamDefinitionExpanded,
   toggleTeamDefinition: treeState.toggleTeamDefinition,
   isTeamExpanded: treeState.isTeamExpanded,
-  getLiveTeamContext: (teamRunId: string) => agentTeamContextsStore.getTeamContextById(teamRunId) ?? null,
   isTeamMemberExpanded: treeState.isTeamMemberExpanded,
   toggleTeamMember: treeState.toggleTeamMember,
   canTerminateTeam: treeState.canTerminateTeam,
@@ -367,7 +367,7 @@ let refreshTimerId: ReturnType<typeof setInterval> | null = null;
 
 onMounted(async () => {
   await Promise.all([
-    workspaceStore.fetchAllWorkspaces().catch(() => undefined),
+    runHistoryStore.loadWorkspaceCatalogForNavigation().catch(() => undefined),
     agentDefinitionStore.fetchAllAgentDefinitions().catch(() => undefined),
     agentTeamDefinitionStore.fetchAllAgentTeamDefinitions().catch(() => undefined),
   ]);

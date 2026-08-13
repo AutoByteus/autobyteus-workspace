@@ -1,0 +1,130 @@
+{
+  "generatedAt": "2026-08-03T19:24:40.864Z",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "frames": [
+    {
+      "direction": "connect",
+      "kind": "standalone",
+      "url": "/ws/agent/browser-agent-run"
+    },
+    {
+      "direction": "connect",
+      "kind": "team",
+      "url": "/ws/agent-team/browser-team-run"
+    },
+    {
+      "direction": "client-to-server",
+      "kind": "standalone",
+      "mode": "standalone-failed",
+      "message": {
+        "type": "INTERRUPT_GENERATION",
+        "payload": {
+          "command_id": "client_interrupt_02b842d4-2993-4b5e-944f-75880cb93037"
+        }
+      }
+    },
+    {
+      "direction": "server-to-client",
+      "kind": "standalone",
+      "mode": "standalone-failed",
+      "message": {
+        "type": "AGENT_COMMAND_ACK",
+        "payload": {
+          "command_type": "INTERRUPT_GENERATION",
+          "command_id": "client_interrupt_02b842d4-2993-4b5e-944f-75880cb93037",
+          "state": "failed",
+          "code": "NO_ACTIVE_TURN",
+          "message": "The provider has no active turn.",
+          "target": {
+            "target_kind": "standalone_run",
+            "run_id": "browser-agent-run"
+          }
+        }
+      }
+    }
+  ],
+  "browserEvents": [
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:log",
+      "text": "Agent WebSocket connected"
+    },
+    {
+      "type": "console:log",
+      "text": "Team WebSocket connected"
+    },
+    {
+      "type": "console:warning",
+      "text": "No member context found for message, skipping"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22applicationsCapability%22%2C%22%7B%5Cn%20%20%5C%22availableLlmProvidersWithModels%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22agentTeamDefinitions%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspaces%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspaceInfos%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspacesWithMetadata%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Checking server health at /rest/health"
+    },
+    {
+      "type": "console:log",
+      "text": "Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+    }
+  ],
+  "scenarios": {
+    "SR008-BR-001": {
+      "result": "Fail",
+      "failure": {
+        "id": "SR008-BR-001",
+        "message": "Timed out waiting for one standalone failure toast",
+        "stack": "Error: Timed out waiting for one standalone failure toast\n    at waitFor (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:53:9)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:264:7\n    at async runScenario (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:178:57)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:259:3"
+      }
+    }
+  },
+  "cleanup": {
+    "nuxt": {
+      "status": "terminated",
+      "pid": 18696,
+      "exitCode": null,
+      "signalCode": "SIGTERM"
+    },
+    "fixtureRemoved": true
+  },
+  "failures": [
+    {
+      "id": "SR008-BR-001",
+      "message": "Timed out waiting for one standalone failure toast",
+      "stack": "Error: Timed out waiting for one standalone failure toast\n    at waitFor (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:53:9)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:264:7\n    at async runScenario (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:178:57)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:259:3"
+    },
+    {
+      "id": "probe",
+      "message": "Timed out waiting for one standalone failure toast",
+      "stack": "Error: Timed out waiting for one standalone failure toast\n    at waitFor (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:53:9)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:264:7\n    at async runScenario (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:178:57)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:259:3"
+    }
+  ],
+  "wsPort": 63198,
+  "nuxtPort": 63199,
+  "completedAt": "2026-08-03T19:25:33.487Z"
+}

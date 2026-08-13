@@ -6,6 +6,16 @@ export const SAVE_PROVIDER_API_KEY = gql`
   }
 `
 
+export const SAVE_QWEN_CONFIGURATION = gql`
+  mutation SaveQwenConfiguration($input: QwenConfigurationInput!) {
+    saveQwenConfiguration(input: $input) {
+      effectiveBaseUrl
+      endpointSource
+      apiKeyConfigured
+    }
+  }
+`
+
 export const RELOAD_LLM_MODELS = gql`
   mutation ReloadLLMModels($runtimeKind: String) {
     reloadLlmModels(runtimeKind: $runtimeKind)

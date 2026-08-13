@@ -36,8 +36,6 @@ export class GeneralProcessRunSupervisor {
       undefined,
       undefined,
       undefined,
-      undefined,
-      undefined,
       agentToolsSessionManager,
     );
     const claudeSessionManager = new ClaudeSessionManager(

@@ -43,6 +43,7 @@ describe('MobileFileViewer', () => {
 
   it.each([
     ['Image', 'images/pic.png'],
+    ['Image', 'images/diagram.svg'],
     ['Audio', 'audio/clip.mp3'],
     ['Video', 'video/demo.mp4'],
     ['PDF', 'docs/spec.pdf'],

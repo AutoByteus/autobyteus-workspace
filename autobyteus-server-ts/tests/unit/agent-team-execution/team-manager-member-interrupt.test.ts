@@ -56,7 +56,7 @@ const createFakeAgentRun = () => ({
   approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
   interrupt: vi.fn().mockResolvedValue({ accepted: true }),
   terminate: vi.fn().mockResolvedValue({ accepted: true }),
-  getStatusSnapshot: vi.fn(() => ({ status: "running", can_interrupt: true })),
+  getStatusSnapshot: vi.fn(() => ({ status: "running" })),
   subscribeToEvents: vi.fn(() => () => undefined),
 });
 
@@ -87,7 +87,7 @@ const attachMemberRuns = (manager: MixedTeamManager) => {
   const codeReviewerRun = createFakeAgentRun();
   const mixed = manager as unknown as {
     teamContext: TeamRunContext<MixedTeamRunContext>;
-    memberRegistry: { handles: Map<string, unknown> };
+    persistentMembers: { handles: Map<string, unknown> };
   };
   const contexts = mixed.teamContext.runtimeContext.memberContexts;
   const makeHandle = (
@@ -112,11 +112,11 @@ const attachMemberRuns = (manager: MixedTeamManager) => {
     (context) => context.memberRouteKey === "code_reviewer",
   ) as MixedAgentMemberContext;
 
-  mixed.memberRegistry.handles.set(
+  mixed.persistentMembers.handles.set(
     "solution_designer",
     makeHandle(solutionDesignerContext, solutionDesignerRun),
   );
-  mixed.memberRegistry.handles.set(
+  mixed.persistentMembers.handles.set(
     "code_reviewer",
     makeHandle(codeReviewerContext, codeReviewerRun),
   );
@@ -130,7 +130,7 @@ const attachTaskAgentRun = (manager: MixedTeamManager) => {
   const taskAgentRunId = "team-1::code_reviewer::task-agent-1";
   const mixed = manager as unknown as {
     teamContext: TeamRunContext<MixedTeamRunContext>;
-    memberRegistry: { taskAgentHandles: Map<string, unknown> };
+    taskAgentInstances: { handles: Map<string, unknown> };
   };
   const logicalContext = mixed.teamContext.runtimeContext.memberContexts.find(
     (context) => context.memberRouteKey === logicalRouteKey,
@@ -170,7 +170,7 @@ const attachTaskAgentRun = (manager: MixedTeamManager) => {
     delegatorReplyRecipientName: "solution_designer",
   });
   directory.markActive(identity.taskId);
-  mixed.memberRegistry.taskAgentHandles.set(taskAgentRunId, {
+  mixed.taskAgentInstances.handles.set(taskAgentRunId, {
     context: {
       ...logicalContext,
       memberRunId: taskAgentRunId,

@@ -9,18 +9,21 @@ import {
   SAVE_GEMINI_VERTEX_EXPRESS,
   SAVE_GEMINI_VERTEX_PROJECT,
   SAVE_PROVIDER_API_KEY,
+  SAVE_QWEN_CONFIGURATION,
   USE_GEMINI_MODE,
 } from '~/graphql/mutations/llm_provider_mutations'
 import {
   GET_AVAILABLE_LLM_PROVIDERS_WITH_MODELS,
   GET_GEMINI_SETUP_CONFIG,
   GET_PROVIDER_SETTINGS,
+  GET_QWEN_SETUP_STATUS,
 } from '~/graphql/queries/llm_provider_queries'
 import type { LLMProvider } from '~/types/llm'
 import { getApolloClient } from '~/utils/apolloClient'
 import { normalizeModelConfigSchema, type UiModelConfigSchema } from '~/utils/llmConfigSchema'
 import {
   defaultGeminiSetup,
+  defaultQwenSetupStatus,
   type CatalogProviderRecord,
   type CustomLlmProviderDraftInput,
   type CustomLlmProviderProbeResult,
@@ -29,6 +32,8 @@ import {
   type GeminiSetupConfigState,
   type ProviderSettingsGroup,
   type ProviderWithModels,
+  type QwenConfigurationInput,
+  type QwenSetupStatus,
 } from './llmProviderConfigSupport'
 export * from './llmProviderConfigSupport'
 
@@ -49,6 +54,35 @@ const throwGraphqlErrors = (
   if (errors?.length) throw new Error(errors.map(error => error.message).join(', '))
 }
 
+export class QwenConfigurationMutationError extends Error {
+  constructor(message: string, readonly code: string | null) {
+    super(message)
+    this.name = 'QwenConfigurationMutationError'
+  }
+}
+
+const throwQwenGraphqlErrors = (
+  errors: readonly { message: string; extensions?: Record<string, unknown> }[] | null | undefined,
+): void => {
+  const first = errors?.[0]
+  if (!first) return
+  const code = typeof first.extensions?.code === 'string' ? first.extensions.code : null
+  throw new QwenConfigurationMutationError(first.message, code)
+}
+
+const normalizeQwenMutationFailure = (error: unknown): QwenConfigurationMutationError => {
+  if (error instanceof QwenConfigurationMutationError) return error
+  const graphQLError = (error as {
+    graphQLErrors?: Array<{ message?: string; extensions?: Record<string, unknown> }>
+  } | null)?.graphQLErrors?.[0]
+  const message = graphQLError?.message
+    || (error instanceof Error ? error.message : 'Qwen configuration operation failed')
+  const code = typeof graphQLError?.extensions?.code === 'string'
+    ? graphQLError.extensions.code
+    : null
+  return new QwenConfigurationMutationError(message, code)
+}
+
 export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
   state: () => ({
     providersWithModels: [] as ProviderWithModels[],
@@ -66,6 +100,7 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
     modelRuntimeKind: 'autobyteus',
     providerSettingsRuntimeKind: null as typeof PROVIDER_SETTINGS_RUNTIME_KIND | null,
     geminiSetup: defaultGeminiSetup(),
+    qwenSetup: defaultQwenSetupStatus(),
   }),
   getters: {
     providers(state): string[] {
@@ -212,11 +247,13 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
         })
         throwGraphqlErrors(errors)
         if (!data?.reloadLlmModels?.includes('successfully')) throw new Error('Failed to reload models')
-        await this.reloadProvidersWithModels({
-          showLoading: false,
-          runtimeKind: effectiveRuntimeKind,
-        })
-        if (this.hasFetchedProviderSettings) await this.fetchProviderSettings(true)
+        await Promise.all([
+          this.reloadProvidersWithModels({
+            showLoading: false,
+            runtimeKind: effectiveRuntimeKind,
+          }),
+          this.fetchProviderSettings(true),
+        ])
         return true
       } finally {
         this.isReloadingModels = false
@@ -235,11 +272,13 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
         })
         throwGraphqlErrors(errors)
         if (!data?.reloadLlmProviderModels?.includes('successfully')) throw new Error('Failed to reload provider models')
-        await this.reloadProvidersWithModels({
-          showLoading: false,
-          runtimeKind: effectiveRuntimeKind,
-        })
-        if (this.hasFetchedProviderSettings) await this.fetchProviderSettings(true)
+        await Promise.all([
+          this.reloadProvidersWithModels({
+            showLoading: false,
+            runtimeKind: effectiveRuntimeKind,
+          }),
+          this.fetchProviderSettings(true),
+        ])
         return true
       } finally {
         this.isReloadingProviderModels = false
@@ -254,7 +293,7 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
       })
       requireMutationSuccess(data, errors, 'saveProviderApiKey')
       if (providerId === 'AUTOBYTEUS') await this.reloadModels(PROVIDER_SETTINGS_RUNTIME_KIND)
-      await this.fetchProviderSettings(true)
+      else await this.fetchProviderSettings(true)
       return true
     },
 
@@ -311,6 +350,45 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
       if (!data?.getGeminiSetupConfig) throw new Error('Failed to fetch Gemini setup config')
       this.geminiSetup = data.getGeminiSetupConfig
       return this.geminiSetup
+    },
+
+    async fetchQwenSetupStatus() {
+      const { data, errors } = await getApolloClient().query({
+        query: GET_QWEN_SETUP_STATUS,
+        fetchPolicy: 'network-only',
+        errorPolicy: 'all',
+      })
+      throwQwenGraphqlErrors(errors)
+      if (!data?.qwenSetupStatus) throw new Error('Failed to fetch Qwen setup status')
+      this.qwenSetup = data.qwenSetupStatus as QwenSetupStatus
+      return this.qwenSetup
+    },
+
+    async refreshProviderDataAfterQwenSave() {
+      await Promise.all([
+        this.fetchProviderSettings(true),
+        this.reloadProvidersWithModels({
+          showLoading: false,
+          runtimeKind: PROVIDER_SETTINGS_RUNTIME_KIND,
+        }),
+      ])
+    },
+
+    async saveQwenConfiguration(input: QwenConfigurationInput): Promise<QwenSetupStatus> {
+      try {
+        const { data, errors } = await getApolloClient().mutate({
+          mutation: SAVE_QWEN_CONFIGURATION,
+          variables: { input },
+          errorPolicy: 'all',
+        })
+        throwQwenGraphqlErrors(errors)
+        const status = data?.saveQwenConfiguration as QwenSetupStatus | undefined
+        if (!status) throw new Error('Qwen configuration operation did not complete')
+        this.qwenSetup = status
+        return status
+      } catch (error) {
+        throw normalizeQwenMutationFailure(error)
+      }
     },
 
     async saveGeminiConfigurationOption(

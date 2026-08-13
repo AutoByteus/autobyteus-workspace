@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
@@ -51,6 +52,32 @@ const rawTrace = (input: {
   sourceEvent: 'test',
   correlationId: input.correlationId,
 });
+
+const makeNativeSelectionStore = async (): Promise<RunMemoryFileStore> => {
+  const store = new RunMemoryFileStore(await mkTempDir());
+  store.appendRawTrace(rawTrace({
+    id: 'rt-selected-b',
+    ts: 1,
+    seq: 1,
+    traceType: 'user',
+    content: 'selected b',
+  }));
+  store.appendRawTrace(rawTrace({
+    id: 'rt-keep',
+    ts: 2,
+    seq: 2,
+    traceType: 'assistant',
+    content: 'keep',
+  }));
+  store.appendRawTrace(rawTrace({
+    id: 'rt-selected-a',
+    ts: 3,
+    seq: 3,
+    traceType: 'assistant',
+    content: 'selected a',
+  }));
+  return store;
+};
 
 describe('RunMemoryFileStore', () => {
   it('does not create a missing run directory for read-only complete-corpus reads', async () => {
@@ -122,6 +149,47 @@ describe('RunMemoryFileStore', () => {
     expect(await pathExists(path.join(memoryDir, manifest.segments[0].file_name))).toBe(true);
     expect(await pathExists(store.getRawTracesArchiveDirPath())).toBe(false);
     expect(store.readCompleteArchiveRawTraceDicts().map((trace) => trace.id)).toEqual(['rt-remove']);
+  });
+
+  it('archives an exact native selection under its canonical full selection digest', async () => {
+    const store = await makeNativeSelectionStore();
+    const reversedInputStore = await makeNativeSelectionStore();
+
+    expect(store.archiveExactRawTraces(['rt-selected-b', 'rt-selected-a'])).toBeUndefined();
+    expect(reversedInputStore.archiveExactRawTraces(['rt-selected-a', 'rt-selected-b']))
+      .toBeUndefined();
+
+    const selectionDigest = createHash('sha256')
+      .update(JSON.stringify(['rt-selected-a', 'rt-selected-b']), 'utf8')
+      .digest('hex');
+    const segments = store.readRawTraceArchiveManifest().segments;
+    const reversedInputSegments = reversedInputStore.readRawTraceArchiveManifest().segments;
+    expect(segments).toEqual([
+      expect.objectContaining({
+        boundary_type: 'native_compaction',
+        boundary_key: `native_compaction_selection:${selectionDigest}`,
+        record_count: 2,
+        status: 'complete',
+      }),
+    ]);
+    expect(reversedInputSegments[0]?.boundary_key).toBe(segments[0]?.boundary_key);
+    expect(store.listRawTraceDicts().map((trace) => trace.id)).toEqual(['rt-keep']);
+    expect(store.readCompleteArchiveRawTraceDicts().map((trace) => trace.id)).toEqual([
+      'rt-selected-b',
+      'rt-selected-a',
+    ]);
+  });
+
+  it('rejects an inexact native selection without changing active or archive storage', async () => {
+    const store = await makeNativeSelectionStore();
+    const activeBefore = store.listRawTraceDicts();
+
+    expect(() => store.archiveExactRawTraces(['rt-selected-a', 'rt-missing']))
+      .toThrow('Selected raw traces are missing from active storage: rt-missing.');
+
+    expect(store.listRawTraceDicts()).toEqual(activeBefore);
+    expect(store.readRawTraceArchiveManifest().segments).toEqual([]);
+    expect(store.readCompleteArchiveRawTraceDicts()).toEqual([]);
   });
 
   it('rotates active traces before a provider boundary marker and keeps complete corpus ordered', async () => {

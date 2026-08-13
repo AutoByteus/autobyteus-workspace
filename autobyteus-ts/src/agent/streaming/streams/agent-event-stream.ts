@@ -18,7 +18,6 @@ import {
   createSegmentEventData,
   createSystemTaskNotificationData,
   createInterAgentMessageData,
-  createTodoListUpdateData,
   createArtifactPersistedData,
   createArtifactUpdatedData,
   createTokenUsageUpdatedData,
@@ -38,7 +37,6 @@ import {
   CompactionStatusData,
   SystemTaskNotificationData,
   InterAgentMessageData,
-  ToDoListUpdateData,
   ArtifactPersistedData,
   ArtifactUpdatedData,
   TokenUsageUpdatedData,
@@ -181,10 +179,6 @@ export class AgentEventStream extends EventEmitter {
         case EventType.AGENT_DATA_INTER_AGENT_MESSAGE_RECEIVED:
           typedPayload = createInterAgentMessageData(payload);
           streamEventType = StreamEventType.INTER_AGENT_MESSAGE;
-          break;
-        case EventType.AGENT_DATA_TODO_LIST_UPDATED:
-          typedPayload = createTodoListUpdateData(payload);
-          streamEventType = StreamEventType.AGENT_TODO_LIST_UPDATE;
           break;
         case EventType.AGENT_ARTIFACT_PERSISTED:
           typedPayload = createArtifactPersistedData(payload);
@@ -336,14 +330,6 @@ export class AgentEventStream extends EventEmitter {
   async *streamInterAgentMessages(): AsyncGenerator<InterAgentMessageData, void, unknown> {
     for await (const event of this.allEvents()) {
       if (event.event_type === StreamEventType.INTER_AGENT_MESSAGE && event.data instanceof InterAgentMessageData) {
-        yield event.data;
-      }
-    }
-  }
-
-  async *streamTodoUpdates(): AsyncGenerator<ToDoListUpdateData, void, unknown> {
-    for await (const event of this.allEvents()) {
-      if (event.event_type === StreamEventType.AGENT_TODO_LIST_UPDATE && event.data instanceof ToDoListUpdateData) {
         yield event.data;
       }
     }

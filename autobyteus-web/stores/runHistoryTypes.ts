@@ -1,6 +1,5 @@
 import type { AgentRuntimeKind, SkillAccessMode } from '~/types/agent/AgentRunConfig';
 import type { AgentStatus } from '~/types/agent/AgentStatus';
-import type { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { RunProjectionConversationEntry } from '~/services/runHydration/runProjectionConversation';
 import type { RunProjectionActivityEntry } from '~/services/runHydration/runProjectionActivityHydration';
 import type { TeamCommunicationMessage } from '~/stores/teamCommunicationTypes';
@@ -66,7 +65,6 @@ export interface RunResumeConfigPayload {
   editableFields: RunEditableFieldFlags;
 }
 
-export type TeamRunKnownStatus = 'ACTIVE' | 'IDLE' | 'ERROR';
 export type TeamRunDeleteLifecycle = 'READY' | 'CLEANUP_PENDING';
 
 export interface TeamRunMemberHistoryItem {
@@ -94,7 +92,6 @@ export interface TeamRunHistoryItem {
   createdAt: string;
   archivedAt?: string | null;
   terminatedAt?: string | null;
-  status: AgentTeamStatus;
   isActive: boolean;
   memberTree?: TeamRunMetadataMember[] | null;
   members: TeamRunMemberHistoryItem[];
@@ -172,8 +169,7 @@ export interface TeamMemberTreeRow {
   workspaceRootPath: string | null;
   summary: string;
   lastActivityAt: string;
-  currentStatus: AgentStatus;
-  lastKnownStatus: TeamRunKnownStatus;
+  currentStatus: AgentStatus | null;
   isActive: boolean;
   deleteLifecycle: TeamRunDeleteLifecycle;
   children: TeamMemberTreeRow[];
@@ -184,6 +180,29 @@ export interface TeamMemberFocusTarget {
   memberRouteKey: string;
 }
 
+export interface RunHistoryTeamExecutionRowBase extends TeamMemberFocusTarget {
+  memberKind: TeamMemberTreeRow['memberKind'];
+  memberPath: string[];
+  displayName: string;
+  depth: number;
+  hasChildren: boolean;
+}
+
+export interface RunHistoryStableExecutionRow extends RunHistoryTeamExecutionRowBase {
+  kind: 'stable_member';
+  row: TeamMemberTreeRow;
+}
+
+export interface RunHistoryTransientExecutionRow extends RunHistoryTeamExecutionRowBase {
+  kind: 'transient_execution';
+  transientKind: 'task_agent' | 'task_team' | 'task_team_child';
+  currentStatus: AgentStatus | string | null;
+}
+
+export type RunHistoryTeamExecutionRow =
+  | RunHistoryStableExecutionRow
+  | RunHistoryTransientExecutionRow;
+
 export interface TeamTreeNode {
   teamRunId: string;
   teamDefinitionId: string;
@@ -191,13 +210,12 @@ export interface TeamTreeNode {
   workspaceRootPath: string;
   summary: string;
   lastActivityAt: string;
-  lastKnownStatus: TeamRunKnownStatus;
   isActive: boolean;
-  currentStatus: AgentTeamStatus;
   deleteLifecycle: TeamRunDeleteLifecycle;
   focusedMemberRouteKey: string;
   members: TeamMemberTreeRow[];
   memberTree: TeamMemberTreeRow[];
+  executionRows: RunHistoryTeamExecutionRow[];
 }
 
 export interface ListWorkspaceRunHistoryQueryData {

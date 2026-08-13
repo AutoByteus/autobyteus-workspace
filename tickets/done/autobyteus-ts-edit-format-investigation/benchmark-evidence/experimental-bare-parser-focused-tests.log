@@ -1,0 +1,10 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/autobyteus-ts
+
+ ✓ tests/unit/utils/diff-utils-fuzzy.test.ts (9 tests) 5ms
+
+ Test Files  1 passed (1)
+      Tests  9 passed (9)
+   Start at  08:47:49
+   Duration  199ms (transform 47ms, setup 25ms, import 36ms, tests 5ms, environment 0ms)
+

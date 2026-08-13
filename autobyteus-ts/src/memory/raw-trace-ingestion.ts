@@ -1,10 +1,35 @@
+import { randomUUID } from 'node:crypto';
 import type { ToolResultEvent } from '../agent/events/agent-events.js';
 import type { ToolInvocation } from '../agent/tool-invocation.js';
 import type { ToolCallSpec } from '../llm/utils/messages.js';
+import type { CompleteResponse } from '../llm/utils/response-types.js';
 import { RawTraceItem } from './models/raw-trace-item.js';
 import { createToolCallIdentity, type ToolCallIdentity } from './models/tool-call-identity.js';
 
 type NextSeq = (turnId: string) => number;
+
+export const buildNativeAssistantResponseTraces = (
+  response: CompleteResponse,
+  turnId: string,
+  sourceEvent: string,
+  nextSeq: NextSeq,
+): RawTraceItem[] => {
+  const observedAtMs = Date.now();
+  const buildTrace = (traceType: 'reasoning' | 'assistant', content: string): RawTraceItem =>
+    new RawTraceItem({
+      id: `rt_${observedAtMs}_${randomUUID()}`,
+      ts: observedAtMs / 1000,
+      turnId,
+      seq: nextSeq(turnId),
+      traceType,
+      content,
+      sourceEvent,
+    });
+  const traces: RawTraceItem[] = [];
+  if (response.reasoning?.length) traces.push(buildTrace('reasoning', response.reasoning));
+  traces.push(buildTrace('assistant', response.content ?? ''));
+  return traces;
+};
 
 export type NativeToolCallRegistration = {
   identity: ToolCallIdentity;
@@ -90,6 +115,7 @@ export const buildNativeToolResultTrace = (
   canonicalToolName: string,
   sourceEvent: string,
   nextSeq: NextSeq,
+  correlationId?: string | null,
 ): RawTraceItem => {
   const { event, identity } = registration;
   const toolError = event.error?.trim() || (event.isDenied ? 'Tool execution denied.' : null);
@@ -103,7 +129,9 @@ export const buildNativeToolResultTrace = (
     sourceEvent,
     toolName: canonicalToolName,
     toolCallId: identity.toolCallId,
+    toolArgs: event.toolArgs ?? null,
     toolResult: event.result === undefined ? null : event.result,
     toolError,
+    correlationId: correlationId ?? null,
   });
 };

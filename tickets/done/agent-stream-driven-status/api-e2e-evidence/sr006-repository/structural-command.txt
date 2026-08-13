@@ -1,0 +1,4 @@
+git diff --check
+git diff --name-only 55c5b3c914d64059361d47ec87a29da0e4eb9bbb..bfd5ea4037109d49072fdcd9dc861cfe86966737
+production added-line forbidden-coupling scan for AgentStatus/StatusDot/animate-pulse/isSubscribed/stopPending/currentStatus/TEAM_STATUS/AgentTeamStatus
+verify no installed API/E2E fixture page or owned Nuxt process remains

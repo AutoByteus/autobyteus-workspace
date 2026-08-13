@@ -37,11 +37,12 @@ import {
 } from "../../../src/runtime-management/codex/codex-sandbox-mode-setting.js";
 import { FEATURED_CATALOG_ITEMS_SETTING_KEY } from "../../../src/config/featured-catalog-items-setting.js";
 import {
-  AUTOBYTEUS_STREAM_PARSER_SETTING_KEY,
-  STREAM_PARSER_PROVIDER_NATIVE_VALUE,
-  STREAM_PARSER_SETTING_VALUES,
-} from "../../../src/config/stream-parser-setting.js";
+  DEFAULT_STREAMING_CONTENT_FLUSH_INTERVAL_MS,
+  STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY,
+} from "../../../src/config/streaming-content-flush-interval-setting.js";
 import { WORKING_CONTEXT_COMPACTION_STRATEGY_SETTING_KEY } from "../../../src/config/working-context-compaction-strategy-setting.js";
+
+const AUTOBYTEUS_STREAM_PARSER_SETTING_KEY = "AUTOBYTEUS_STREAM_PARSER";
 
 class RecordingPromptRenderer extends BasePromptRenderer {
   async render(messages: Message[]): Promise<Array<Record<string, unknown>>> {
@@ -58,6 +59,7 @@ describe("Server settings GraphQL e2e", () => {
   let originalCompactionStrategyEnv: string | undefined;
   let originalFeaturedCatalogItemsEnv: string | undefined;
   let originalStreamParserEnv: string | undefined;
+  let originalStreamingContentFlushIntervalEnv: string | undefined;
   let originalMediaModelEnv: Record<string, string | undefined>;
 
   beforeAll(async () => {
@@ -76,6 +78,8 @@ describe("Server settings GraphQL e2e", () => {
     originalCompactionStrategyEnv = process.env[AUTOBYTEUS_COMPACTION_STRATEGY];
     originalFeaturedCatalogItemsEnv = process.env[FEATURED_CATALOG_ITEMS_SETTING_KEY];
     originalStreamParserEnv = process.env[AUTOBYTEUS_STREAM_PARSER_SETTING_KEY];
+    originalStreamingContentFlushIntervalEnv =
+      process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY];
     originalMediaModelEnv = {
       [DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY]: process.env[DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY],
       [DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY]: process.env[DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY],
@@ -92,6 +96,7 @@ describe("Server settings GraphQL e2e", () => {
     delete process.env[AUTOBYTEUS_COMPACTION_STRATEGY];
     delete process.env[FEATURED_CATALOG_ITEMS_SETTING_KEY];
     delete process.env[AUTOBYTEUS_STREAM_PARSER_SETTING_KEY];
+    delete process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY];
     delete process.env[DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY];
     delete process.env[DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY];
     delete process.env[DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY];
@@ -124,6 +129,12 @@ describe("Server settings GraphQL e2e", () => {
       delete process.env[AUTOBYTEUS_STREAM_PARSER_SETTING_KEY];
     } else {
       process.env[AUTOBYTEUS_STREAM_PARSER_SETTING_KEY] = originalStreamParserEnv;
+    }
+    if (originalStreamingContentFlushIntervalEnv === undefined) {
+      delete process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY];
+    } else {
+      process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY] =
+        originalStreamingContentFlushIntervalEnv;
     }
     for (const [key, value] of Object.entries(originalMediaModelEnv)) {
       if (value === undefined) {
@@ -394,15 +405,10 @@ describe("Server settings GraphQL e2e", () => {
     );
   });
 
-  it("validates and exposes the stream parser override through the GraphQL settings boundary", async () => {
+  it("discards and rejects the retired stream-parser key through the GraphQL settings boundary", async () => {
     const updateMutation = `
       mutation UpdateServerSetting($key: String!, $value: String!) {
         updateServerSetting(key: $key, value: $value)
-      }
-    `;
-    const deleteMutation = `
-      mutation DeleteServerSetting($key: String!) {
-        deleteServerSetting(key: $key)
       }
     `;
     const listQuery = `
@@ -416,17 +422,87 @@ describe("Server settings GraphQL e2e", () => {
         }
       }
     `;
+    fs.writeFileSync(
+      path.join(tempDir, ".env"),
+      [
+        "AUTOBYTEUS_SERVER_HOST=http://localhost:8000",
+        "APP_ENV=test",
+        `${AUTOBYTEUS_STREAM_PARSER_SETTING_KEY}=xml`,
+        "UNRELATED_SETTING=preserved",
+        "",
+      ].join("\n"),
+      "utf-8",
+    );
+    process.env[AUTOBYTEUS_STREAM_PARSER_SETTING_KEY] = "sentinel";
+    appConfigProvider.config.initialize();
 
-    for (const parserValue of STREAM_PARSER_SETTING_VALUES) {
-      const rawValue = parserValue === "xml" ? " XML " : parserValue.toUpperCase();
+    const listed = await execGraphql<{
+      getServerSettings: Array<{ key: string; value: string }>;
+    }>(listQuery);
+    expect(listed.getServerSettings.find(
+      (entry) => entry.key === AUTOBYTEUS_STREAM_PARSER_SETTING_KEY,
+    )).toBeUndefined();
+    expect(listed.getServerSettings.find(
+      (entry) => entry.key === "UNRELATED_SETTING",
+    )).toMatchObject({ value: "preserved" });
+    expect(process.env[AUTOBYTEUS_STREAM_PARSER_SETTING_KEY]).toBeUndefined();
+
+    const rejectedUpdate = await execGraphql<{ updateServerSetting: string }>(updateMutation, {
+      key: AUTOBYTEUS_STREAM_PARSER_SETTING_KEY,
+      value: "api_tool_call",
+    });
+    expect(rejectedUpdate.updateServerSetting).toBe(
+      "Error updating server setting: SERVER_SETTING_UPDATE_REJECTED",
+    );
+    expect(process.env[AUTOBYTEUS_STREAM_PARSER_SETTING_KEY]).toBeUndefined();
+
+    const envFileContents = fs.readFileSync(path.join(tempDir, ".env"), "utf-8");
+    expect(envFileContents).not.toContain(`${AUTOBYTEUS_STREAM_PARSER_SETTING_KEY}=`);
+    expect(envFileContents).toContain("UNRELATED_SETTING=preserved");
+  });
+
+  it("persists and reports the effective live response interval through GraphQL", async () => {
+    const query = `
+      query GetStreamingContentFlushInterval {
+        getEffectiveStreamingContentFlushIntervalMs
+        getServerSettings {
+          key
+          value
+          description
+          isEditable
+          isDeletable
+        }
+      }
+    `;
+    const updateMutation = `
+      mutation UpdateServerSetting($key: String!, $value: String!) {
+        updateServerSetting(key: $key, value: $value)
+      }
+    `;
+
+    const absent = await execGraphql<{
+      getEffectiveStreamingContentFlushIntervalMs: number;
+      getServerSettings: Array<{ key: string }>;
+    }>(query);
+    expect(absent.getEffectiveStreamingContentFlushIntervalMs).toBe(
+      DEFAULT_STREAMING_CONTENT_FLUSH_INTERVAL_MS,
+    );
+    expect(absent.getServerSettings.some(
+      (setting) => setting.key === STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY,
+    )).toBe(false);
+    expect(fs.readFileSync(path.join(tempDir, ".env"), "utf-8")).not.toContain(
+      STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY,
+    );
+
+    for (const interval of [100, 500, 1_000, 2_000]) {
       const updated = await execGraphql<{ updateServerSetting: string }>(updateMutation, {
-        key: AUTOBYTEUS_STREAM_PARSER_SETTING_KEY,
-        value: rawValue,
+        key: STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY,
+        value: interval === 500 ? " 0500 " : String(interval),
       });
       expect(updated.updateServerSetting).toContain("updated successfully");
-      expect(process.env[AUTOBYTEUS_STREAM_PARSER_SETTING_KEY]).toBe(parserValue);
 
-      const listed = await execGraphql<{
+      const current = await execGraphql<{
+        getEffectiveStreamingContentFlushIntervalMs: number;
         getServerSettings: Array<{
           key: string;
           value: string;
@@ -434,42 +510,48 @@ describe("Server settings GraphQL e2e", () => {
           isEditable: boolean;
           isDeletable: boolean;
         }>;
-      }>(listQuery);
-      const streamParserSetting = listed.getServerSettings.find(
-        (entry) => entry.key === AUTOBYTEUS_STREAM_PARSER_SETTING_KEY,
-      );
-
-      expect(streamParserSetting).toMatchObject({
-        value: parserValue,
+      }>(query);
+      expect(current.getEffectiveStreamingContentFlushIntervalMs).toBe(interval);
+      expect(current.getServerSettings.find(
+        (setting) => setting.key === STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY,
+      )).toMatchObject({
+        value: String(interval),
+        description: expect.stringContaining("Recommended default: 500"),
         isEditable: true,
         isDeletable: false,
       });
-      expect(streamParserSetting?.description).toContain("Streaming tool-call parser override");
-      expect(streamParserSetting?.description).toContain(STREAM_PARSER_PROVIDER_NATIVE_VALUE);
-      expect(streamParserSetting?.description).not.toBe("Custom user-defined setting");
+      expect(process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY]).toBe(String(interval));
+      expect(fs.readFileSync(path.join(tempDir, ".env"), "utf-8")).toContain(
+        `${STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY}=${String(interval)}`,
+      );
     }
 
-    const invalidUpdate = await execGraphql<{ updateServerSetting: string }>(updateMutation, {
-      key: AUTOBYTEUS_STREAM_PARSER_SETTING_KEY,
-      value: "yaml",
-    });
-    expect(invalidUpdate.updateServerSetting).toContain(
-      STREAM_PARSER_SETTING_VALUES.join(", "),
-    );
-    expect(process.env[AUTOBYTEUS_STREAM_PARSER_SETTING_KEY]).toBe(
-      STREAM_PARSER_PROVIDER_NATIVE_VALUE,
+    for (const invalid of ["99", "2001", "500.5", "5e2"]) {
+      const rejected = await execGraphql<{ updateServerSetting: string }>(updateMutation, {
+        key: STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY,
+        value: invalid,
+      });
+      expect(rejected.updateServerSetting).toContain("whole number from 100 through 2000");
+      expect(process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY]).toBe("2000");
+    }
+
+    process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY] = "invalid-direct-input";
+    const invalidDirectInput = await execGraphql<{
+      getEffectiveStreamingContentFlushIntervalMs: number;
+    }>(query);
+    expect(invalidDirectInput.getEffectiveStreamingContentFlushIntervalMs).toBe(
+      DEFAULT_STREAMING_CONTENT_FLUSH_INTERVAL_MS,
     );
 
-    const deleteResult = await execGraphql<{ deleteServerSetting: string }>(deleteMutation, {
-      key: AUTOBYTEUS_STREAM_PARSER_SETTING_KEY,
+    const reset = await execGraphql<{ updateServerSetting: string }>(updateMutation, {
+      key: STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY,
+      value: String(DEFAULT_STREAMING_CONTENT_FLUSH_INTERVAL_MS),
     });
-    expect(deleteResult.deleteServerSetting).toContain("managed by the system");
-
-    const envFileContents = fs.readFileSync(path.join(tempDir, ".env"), "utf-8");
-    expect(envFileContents).toContain(
-      `${AUTOBYTEUS_STREAM_PARSER_SETTING_KEY}=${STREAM_PARSER_PROVIDER_NATIVE_VALUE}`,
+    expect(reset.updateServerSetting).toContain("updated successfully");
+    expect(process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY]).toBe("500");
+    expect(fs.readFileSync(path.join(tempDir, ".env"), "utf-8")).toContain(
+      `${STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY}=500`,
     );
-    expect(envFileContents).not.toContain(`${AUTOBYTEUS_STREAM_PARSER_SETTING_KEY}=yaml`);
   });
 
   it("persists media default model identifiers as predefined GraphQL settings without catalog allow-list validation", async () => {
@@ -578,45 +660,6 @@ describe("Server settings GraphQL e2e", () => {
     expect(codexSandboxSetting?.description).not.toBe("Custom user-defined setting");
     expect(fs.readFileSync(path.join(tempDir, ".env"), "utf-8")).not.toContain(
       CODEX_APP_SERVER_SANDBOX_SETTING_KEY,
-    );
-  });
-
-  it("lists effective stream parser values with predefined metadata even when not persisted", async () => {
-    process.env[AUTOBYTEUS_STREAM_PARSER_SETTING_KEY] = "sentinel";
-    const listQuery = `
-      query GetServerSettings {
-        getServerSettings {
-          key
-          value
-          description
-          isEditable
-          isDeletable
-        }
-      }
-    `;
-
-    const listed = await execGraphql<{
-      getServerSettings: Array<{
-        key: string;
-        value: string;
-        description: string;
-        isEditable: boolean;
-        isDeletable: boolean;
-      }>;
-    }>(listQuery);
-
-    const streamParserSetting = listed.getServerSettings.find(
-      (entry) => entry.key === AUTOBYTEUS_STREAM_PARSER_SETTING_KEY,
-    );
-    expect(streamParserSetting).toMatchObject({
-      value: "sentinel",
-      isEditable: true,
-      isDeletable: false,
-    });
-    expect(streamParserSetting?.description).toContain("future streamed agent responses");
-    expect(streamParserSetting?.description).not.toBe("Custom user-defined setting");
-    expect(fs.readFileSync(path.join(tempDir, ".env"), "utf-8")).not.toContain(
-      AUTOBYTEUS_STREAM_PARSER_SETTING_KEY,
     );
   });
 

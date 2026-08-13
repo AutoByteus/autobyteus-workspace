@@ -1,0 +1,11 @@
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+Error: Timed out waiting for one standalone failure toast
+    at waitFor (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:53:9)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:264:7
+    at async runScenario (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:178:57)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:259:3
+
+Node.js v22.23.1

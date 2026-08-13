@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { AgentExternalEventNotifier } from "../../../../src/agent/events/notifiers.js";
-import { ApiToolCallStreamingResponseHandler } from "../../../../src/agent/streaming/handlers/api-tool-call-streaming-response-handler.js";
+import { LlmStreamingResponseHandler } from "../../../../src/agent/streaming/handlers/llm-streaming-response-handler.js";
 import { AgentEventStream } from "../../../../src/agent/streaming/streams/agent-event-stream.js";
 import { StreamEvent, StreamEventType } from "../../../../src/agent/streaming/events/stream-events.js";
 import { ChunkResponse } from "../../../../src/llm/utils/response-types.js";
@@ -25,8 +25,9 @@ describe("Kimi-shaped tool-call id stream boundary", () => {
     const eventsPromise = collectEvents(stream);
     const invocationIds = ["run_bash:0", "run_bash:1", "run_bash:2"];
 
-    const handler = new ApiToolCallStreamingResponseHandler({
+    const handler = new LlmStreamingResponseHandler({
       turnId: TURN_ID,
+      toolCallsEnabled: true,
       onSegmentEvent: (event) => {
         notifier.notifyAgentSegmentEvent(event.toDict());
       },

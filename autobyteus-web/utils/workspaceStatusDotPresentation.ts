@@ -1,11 +1,10 @@
 import type { AgentStatus } from '~/types/agent/AgentStatus';
-import type { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 
 export const workspaceStatusDotBaseClass = 'inline-block h-2 w-2 flex-shrink-0 rounded-full';
 export const workspaceTransientStatusDotBaseClass = 'inline-block h-2.5 w-2.5 flex-shrink-0';
 export type WorkspaceStatusDotVariant = 'solid' | 'transient';
 
-const normalizeStatus = (status: AgentStatus | AgentTeamStatus | string | null | undefined): string => (
+const normalizeStatus = (status: AgentStatus | string | null | undefined): string => (
   typeof status === 'string' ? status.trim().toLowerCase() : ''
 );
 
@@ -47,20 +46,9 @@ export const agentStatusDotClass = (
   status: AgentStatus | string | null | undefined,
 ): string => statusDotClassByValue(normalizeStatus(status), 'bg-gray-400');
 
-export const teamStatusDotClass = (
-  status: AgentTeamStatus | string | null | undefined,
-): string => statusDotClassByValue(normalizeStatus(status), 'bg-gray-300');
-
 export const agentTransientStatusDotClass = (
   status: AgentStatus | string | null | undefined,
 ): string => transientStatusDotClassByValue(
   normalizeStatus(status),
   'text-gray-600',
-);
-
-export const teamTransientStatusDotClass = (
-  status: AgentTeamStatus | string | null | undefined,
-): string => transientStatusDotClassByValue(
-  normalizeStatus(status),
-  'text-gray-500',
 );

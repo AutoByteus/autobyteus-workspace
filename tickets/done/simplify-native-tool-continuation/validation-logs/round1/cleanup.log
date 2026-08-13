@@ -1,0 +1,11 @@
+OWNED_RESOURCE_CLEANUP
+ABSENT node_modules
+ABSENT autobyteus-ts/node_modules
+ABSENT autobyteus-server-ts/node_modules
+ABSENT autobyteus-application-sdk-contracts/node_modules
+ABSENT autobyteus-application-backend-sdk/node_modules
+ABSENT autobyteus-server-ts/tests/.tmp/live-e2e-runtime
+OWNED_SERVER_PROCESS none
+RETAINED_AUTHORIZED_TEST_VAULT autobyteus-server-ts/db/test.db (gitignored)
+RETAINED_AUTHORIZED_TEST_VAULT_KEY autobyteus-server-ts/db/test.db.secret.key (gitignored)
+SECRET_VALUES_OUTPUT no

@@ -1,10 +1,5 @@
 import type { AgentRunEvent } from "../../../domain/agent-run-event.js";
-import {
-  normalizeAgentApiStatus,
-  type AgentStatusPayload,
-} from "../../../domain/agent-status-payload.js";
 import { AgentRunEventType } from "../../../domain/agent-run-event.js";
-import { resolveAgentRunErrorEvidence } from "../../../domain/agent-run-error-evidence.js";
 import type { JsonObject } from "../codex-app-server-json.js";
 import { CodexThreadEventName } from "./codex-thread-event-name.js";
 
@@ -19,7 +14,7 @@ export type CodexThreadLifecycleEventConverterContext = {
     eventType: AgentRunEventType,
     payload: Record<string, unknown>,
   ) => AgentRunEvent;
-  createStatusEvent: (codexEventName: string, payload?: Partial<AgentStatusPayload>) => AgentRunEvent;
+  createStatusEvent: (codexEventName: string, payload?: Record<string, unknown>) => AgentRunEvent;
   closeAllReasoningBlocks: (codexEventName: string) => AgentRunEvent[];
   clearAllOrderedTools: () => void;
 };
@@ -67,14 +62,7 @@ export const convertCodexThreadLifecycleEvent = (
         AgentRunEventType.ERROR,
         errorPayload,
       );
-      const evidence = resolveAgentRunErrorEvidence(errorEvent);
-      if (evidence?.kind !== "TURN_TERMINAL" && evidence?.kind !== "RUNTIME_GLOBAL") {
-        return [...reasoningEnds, errorEvent];
-      }
-      const statusEvent = context.createStatusEvent(codexEventName);
-      return normalizeAgentApiStatus(statusEvent.payload.status) === "error"
-        ? [...reasoningEnds, errorEvent, statusEvent]
-        : [...reasoningEnds, errorEvent];
+      return [...reasoningEnds, errorEvent];
     }
     default:
       return [];

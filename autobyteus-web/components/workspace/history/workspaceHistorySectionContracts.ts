@@ -1,10 +1,9 @@
-import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import type { TeamMemberFocusTarget, TeamMemberTreeRow, TeamTreeNode } from '~/stores/runHistoryTypes';
-import type { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { RunTreeRow, RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
 
 export interface WorkspaceHistorySectionState {
   selectedRunId: string | null;
+  isTeamRunSelected: (teamRunId: string) => boolean;
   isRunTerminating: (runId: string) => boolean;
   isTeamTerminating: (teamRunId: string) => boolean;
   isRunDeleting: (runId: string) => boolean;
@@ -22,7 +21,6 @@ export interface WorkspaceHistorySectionState {
   isTeamDefinitionExpanded: (workspaceId: string, groupKey: string) => boolean;
   toggleTeamDefinition: (workspaceId: string, groupKey: string) => void;
   isTeamExpanded: (teamRunId: string) => boolean;
-  getLiveTeamContext: (teamRunId: string) => AgentTeamContext | null;
   isTeamMemberExpanded: (
     workspaceId: string,
     teamRunId: string,
@@ -33,7 +31,7 @@ export interface WorkspaceHistorySectionState {
     teamRunId: string,
     memberRouteKey: string,
   ) => void;
-  canTerminateTeam: (status: AgentTeamStatus) => boolean;
+  canTerminateTeam: (isActive: boolean) => boolean;
 }
 
 export interface WorkspaceHistoryAvatarBindings {
@@ -73,6 +71,5 @@ export interface WorkspaceHistorySectionActions {
   onSelectTeamMember: (
     member: TeamMemberFocusTarget,
     workspaceId?: string,
-    memberTree?: readonly TeamMemberTreeRow[],
   ) => Promise<void> | void;
 }

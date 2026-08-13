@@ -5,18 +5,20 @@ import {
   RestoreAgentTeamRun,
   TerminateAgentTeamRun,
 } from '~/graphql/mutations/agentTeamRunMutations';
-import type {
-  TeamMemberConfigInput,
-} from '~/generated/graphql';
+import type { TeamMemberConfigInput } from '~/generated/graphql';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useContextFileUploadStore } from '~/stores/contextFileUploadStore';
-import { ConnectionState, TeamStreamingService } from '~/services/agentStreaming';
+import {
+  ConnectionState,
+  TeamStreamingService,
+  type InterruptGenerationCommandAckPayload,
+  type InterruptCommandTransportFailure,
+} from '~/services/agentStreaming';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import type { ContextAttachment } from '~/types/conversation';
 import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig';
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { ToolApprovalTarget } from '~/types/segments';
 import { planContextAttachmentSubmission } from '~/utils/contextFiles/contextAttachmentSend';
@@ -30,24 +32,18 @@ import { buildTeamRunMemberConfigRecords } from '~/utils/teamRunMemberConfigBuil
 import { evaluateTeamRunLaunchReadiness } from '~/utils/teamRunLaunchReadiness';
 import { resolveEffectiveMemberRuntimeKind } from '~/utils/teamRunConfigUtils';
 import { resolveTeamConversationTargetAddressResult } from '~/utils/teamConversationTargetAddress';
-import {
-  applyOfflineOrTerminalCleanup,
-} from '~/services/runStatus/agentRuntimeStatusState';
+import { applyOfflineOrTerminalCleanup } from '~/services/runStatus/agentRuntimeStatusState';
 import {
   beginLocalUserSubmission,
   failLocalSubmission,
   finalizeLocalSubmissionAttachments,
+  retargetLocalUserSubmission,
   type LocalUserSubmissionHandle,
 } from '~/services/runSubmission/localUserSubmission';
-import {
-  reconcileTeamContextMemberRunIdsFromBackend,
-} from '~/services/runHydration/teamRunMemberIdentityReconciler';
-import {
-  beginRecentEventMonitorMutation,
-  commitRecentEventMonitorMutation,
-} from '~/services/eventMonitor/recentEventMonitorMutationCommit';
+import { reconcileTeamContextMemberRunIdsFromBackend } from '~/services/runHydration/teamRunMemberIdentityReconciler';
+import { useToasts } from '~/composables/useToasts';
+import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
 
-// Maintain a map of streaming services per team run
 const teamStreamingServices = new Map<string, TeamStreamingService>();
 
 const buildClientMessageId = (): string => {
@@ -56,6 +52,26 @@ const buildClientMessageId = (): string => {
     return `client_${randomId}`;
   }
   return `client_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+};
+
+const buildClientInterruptCommandId = (): string =>
+  buildClientMessageId().replace(/^client_/, 'client_interrupt_');
+
+const showInterruptCommandResult = (ack: InterruptGenerationCommandAckPayload): void => {
+  if (ack.state === 'accepted') return;
+  useToasts().addToast(localizationRuntime.translate('agents.store.interrupt.failed', {
+    target: ack.target.target_kind === 'team_member' ? ack.target.member_route_key : ack.target.run_id,
+    detail: ack.message,
+  }), 'error');
+};
+
+const showInterruptTransportFailure = (failure: InterruptCommandTransportFailure): void => {
+  useToasts().addToast(localizationRuntime.translate('agents.store.interrupt.transportFailed', {
+    target: failure.target.target_kind === 'team_member'
+      ? failure.target.member_route_key
+      : failure.target.run_id,
+    detail: failure.reason.message,
+  }), 'error');
 };
 
 const buildConversationTargetInputDedupeKey = (
@@ -96,12 +112,10 @@ export interface FocusedTeamMemberInterruptTarget {
 export const useAgentTeamRunStore = defineStore('agentTeamRun', {
   state: () => ({
     isLaunching: false,
+    stopPendingTeamIds: {} as Record<string, boolean>,
   }),
 
   actions: {
-    /**
-     * Establish WebSocket connection for a team run.
-     */
     connectToTeamStream(teamRunId: string): TeamStreamingService | null {
       const teamContextsStore = useAgentTeamContextsStore();
       const teamContext = teamContextsStore.getTeamContextById(teamRunId);
@@ -120,26 +134,27 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         };
         if (existingService.connectionState === ConnectionState.DISCONNECTED) {
           existingService.connect(teamRunId, teamContext);
-          teamContext.isSubscribed = true;
-        } else {
-          teamContext.isSubscribed = true;
         }
+        teamContext.isSubscribed = existingService.connectionState === ConnectionState.CONNECTED;
         return existingService;
       }
 
       const windowNodeContextStore = useWindowNodeContextStore();
       const wsEndpoint = windowNodeContextStore.getBoundEndpoints().teamWs;
 
-      const service = new TeamStreamingService(wsEndpoint);
+      const service = new TeamStreamingService(wsEndpoint, {
+        onInterruptCommandResult: showInterruptCommandResult,
+        onInterruptCommandTransportFailure: showInterruptTransportFailure,
+      });
       teamStreamingServices.set(teamRunId, service);
 
-      teamContext.isSubscribed = true;
       teamContext.unsubscribe = () => {
         service.disconnect();
         teamStreamingServices.delete(teamRunId);
       };
 
       service.connect(teamRunId, teamContext);
+      teamContext.isSubscribed = service.connectionState === ConnectionState.CONNECTED;
       return service;
     },
 
@@ -186,6 +201,17 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       const teamContextsStore = useAgentTeamContextsStore();
       const runHistoryStore = useRunHistoryStore();
       const teamContext = teamContextsStore.getTeamContextById(teamRunId);
+      if (
+        teamRunId.startsWith('temp-') ||
+        this.stopPendingTeamIds[teamRunId] ||
+        (teamContext && !teamContext.isActive)
+      ) {
+        return false;
+      }
+      this.stopPendingTeamIds = {
+        ...this.stopPendingTeamIds,
+        [teamRunId]: true,
+      };
 
       const teardownLocalRuntime = () => {
         if (teamContext?.isSubscribed || teamStreamingServices.has(teamRunId)) {
@@ -194,18 +220,13 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
 
         if (teamContext) {
           teamContext.isSubscribed = false;
-          teamContext.currentStatus = AgentTeamStatus.Offline;
+          teamContext.isActive = false;
           teamContext.leafAgentContextsByRouteKey.forEach((member) => {
             applyOfflineOrTerminalCleanup(member);
             useAgentActivityStore().clearActivities(member.state.runId);
           });
         }
       };
-
-      if (teamRunId.startsWith('temp-')) {
-        teardownLocalRuntime();
-        return true;
-      }
 
       try {
         const client = getApolloClient()
@@ -230,6 +251,10 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       } catch (error) {
         console.error(`Error terminating team ${teamRunId} on backend:`, error);
         return false;
+      } finally {
+        const next = { ...this.stopPendingTeamIds };
+        delete next[teamRunId];
+        this.stopPendingTeamIds = next;
       }
     },
 
@@ -257,7 +282,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       }
 
       teamContext.isSubscribed = false;
-      teamContext.currentStatus = AgentTeamStatus.Offline;
+      teamContext.isActive = false;
       teamContext.leafAgentContextsByRouteKey.forEach((member) => {
         applyOfflineOrTerminalCleanup(member);
         useAgentActivityStore().clearActivities(member.state.runId);
@@ -340,6 +365,12 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
           localSubmission = beginLocalUserSubmission(focusedMember, {
             text,
             attachments: contextAttachments,
+            navigationTarget: {
+              kind: 'team_member',
+              teamRunId: activeTeam.teamRunId,
+              memberRouteKey: conversationTargetKey,
+              memberRunId: focusedMember.state.runId,
+            },
           });
         }
 
@@ -405,13 +436,21 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
           finalTeamRunId = result.teamRunId || finalTeamRunId;
         }
 
-        teamContextsStore.lockConfig(finalTeamRunId);
-        runHistoryStore.markTeamAsActive(finalTeamRunId);
-        void runHistoryStore.refreshTreeQuietly();
-
         const finalTeamContext = teamContextsStore.getTeamContextById(finalTeamRunId);
         if (!finalTeamContext) {
           throw new Error(`Team context '${finalTeamRunId}' not found after creation.`);
+        }
+        finalTeamContext.isActive = true;
+        teamContextsStore.lockConfig(finalTeamRunId);
+        runHistoryStore.markTeamAsActive(finalTeamRunId);
+        void runHistoryStore.refreshTreeQuietly();
+        if (localSubmission) {
+          retargetLocalUserSubmission(localSubmission, {
+            kind: 'team_member',
+            teamRunId: finalTeamRunId,
+            memberRouteKey: conversationTargetKey,
+            memberRunId: localSubmission.context.state.runId,
+          });
         }
         const finalizedAttachments = await contextFileUploadStore.finalizeDraftAttachments({
           draftOwner,
@@ -432,17 +471,18 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
           localSubmission.message.dedupeKey = dedupeKey;
           finalizeLocalSubmissionAttachments(localSubmission, submissionPlan.retainedMessageAttachments);
         } else if (finalFocusedMember) {
-          const presentationBaseline = beginRecentEventMonitorMutation(finalFocusedMember);
-          finalFocusedMember.state.conversation.messages.push({
-            type: 'user',
+          localSubmission = beginLocalUserSubmission(finalFocusedMember, {
             text,
-            timestamp: new Date(),
-            contextFilePaths: submissionPlan.retainedMessageAttachments,
-            messageId,
-            dedupeKey,
+            attachments: submissionPlan.retainedMessageAttachments,
+            navigationTarget: {
+              kind: 'team_member',
+              teamRunId: finalTeamRunId,
+              memberRouteKey: conversationTargetKey,
+              memberRunId: finalFocusedMember.state.runId,
+            },
           });
-          commitRecentEventMonitorMutation(finalFocusedMember, presentationBaseline);
-          finalFocusedMember.state.conversation.updatedAt = new Date().toISOString();
+          localSubmission.message.messageId = messageId;
+          localSubmission.message.dedupeKey = dedupeKey;
         }
 
         const service = await this.ensureTeamStreamConnected(finalTeamRunId);
@@ -456,12 +496,12 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       } catch (error: any) {
         console.error(`Failed to send message to conversation target ${conversationTargetKey}:`, error);
         if (localSubmission) {
-          failLocalSubmission(localSubmission, error);
           applyOfflineOrTerminalCleanup(localSubmission.context, AgentStatus.Error);
+          failLocalSubmission(localSubmission, error);
           return;
         }
         if (focusedMember) {
-          focusedMember.isSending = false;
+          focusedMember.submissionPending = false;
         }
         throw new Error(`Failed to send message: ${error.message}`);
       } finally {
@@ -519,11 +559,10 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         return false;
       }
 
-      service.interruptGeneration({
+      return service.interruptGeneration(buildClientInterruptCommandId(), {
         targetMemberRouteKey,
         targetMemberRunId: target.targetMemberRunId,
       });
-      return true;
     },
   },
 });

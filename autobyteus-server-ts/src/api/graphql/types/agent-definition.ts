@@ -62,9 +62,6 @@ export class AgentDefinition {
   llmResponseProcessorNames!: string[];
 
   @Field(() => [String])
-  systemPromptProcessorNames!: string[];
-
-  @Field(() => [String])
   toolExecutionResultProcessorNames!: string[];
 
   @Field(() => [String])
@@ -131,9 +128,6 @@ export class CreateAgentDefinitionInput {
   llmResponseProcessorNames?: string[] | null;
 
   @Field(() => [String], { nullable: true })
-  systemPromptProcessorNames?: string[] | null;
-
-  @Field(() => [String], { nullable: true })
   toolExecutionResultProcessorNames?: string[] | null;
 
   @Field(() => [String], { nullable: true })
@@ -180,9 +174,6 @@ export class UpdateAgentDefinitionInput {
 
   @Field(() => [String], { nullable: true })
   llmResponseProcessorNames?: string[] | null;
-
-  @Field(() => [String], { nullable: true })
-  systemPromptProcessorNames?: string[] | null;
 
   @Field(() => [String], { nullable: true })
   toolExecutionResultProcessorNames?: string[] | null;
@@ -282,7 +273,6 @@ export class AgentDefinitionResolver {
         toolNames: input.toolNames ?? undefined,
         inputProcessorNames: input.inputProcessorNames ?? undefined,
         llmResponseProcessorNames: input.llmResponseProcessorNames ?? undefined,
-        systemPromptProcessorNames: input.systemPromptProcessorNames ?? undefined,
         toolExecutionResultProcessorNames: input.toolExecutionResultProcessorNames ?? undefined,
         toolInvocationPreprocessorNames: input.toolInvocationPreprocessorNames ?? undefined,
         lifecycleProcessorNames: input.lifecycleProcessorNames ?? undefined,

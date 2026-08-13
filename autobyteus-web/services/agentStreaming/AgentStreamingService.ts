@@ -7,38 +7,23 @@
 
 import type { AgentContext } from '~/types/agent/AgentContext';
 import { WebSocketClient, ConnectionState, type IWebSocketClient } from './transport';
-import { parseServerMessage, serializeClientMessage, type ServerMessage, type ClientMessage } from './protocol';
 import {
-  handleSegmentStart,
-  handleSegmentContent,
-  handleSegmentEnd,
-  handleExternalUserMessage,
-  handleToolApprovalRequested,
-  handleToolApproved,
-  handleToolDenied,
-  handleToolExecutionStarted,
-  handleToolExecutionSucceeded,
-  handleToolExecutionFailed,
-  handleToolExecutionInterrupted,
-  handleToolLog,
-  handleAgentStatus,
-  handleCompactionStatus,
-  handleTokenUsageUpdated,
-  handleAssistantComplete,
-  handleTurnCompleted,
-  handleTurnInterrupted,
-  handleTodoListUpdate,
-  handleError,
-  handleFileChange,
-  handleSystemTaskNotification,
-} from './handlers';
-import { handleBrowserToolExecutionSucceeded } from './browser/browserToolExecutionSucceededHandler';
+  parseServerMessage,
+  serializeClientMessage,
+  type ServerMessage,
+  type ClientMessage,
+  type InterruptGenerationCommandAckPayload,
+  type InterruptCommandTransportFailure,
+  type PendingInterruptCommand,
+} from './protocol';
 import { getActiveRemoteAccessCredential } from '~/utils/remoteAccess/authorizedTransport';
 import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAuth';
+import { dispatchAgentStreamMessage } from './agentStreamMessageProjector';
 import {
-  beginRecentEventMonitorMutation,
-  commitRecentEventMonitorMutation,
-} from '~/services/eventMonitor/recentEventMonitorMutationCommit';
+  drainPendingInterruptTransportFailures,
+  interruptCommandTargetsEqual,
+  tryAdmitInterruptCommand,
+} from './interruptCommandAdmission';
 
 const shouldLogStreaming = (): boolean => {
   if (typeof window === 'undefined') return false;
@@ -60,12 +45,18 @@ const summarizeDelta = (delta: string, maxLen = 120): string => {
 export interface AgentStreamingServiceOptions {
   /** Custom WebSocket client for testing */
   wsClient?: IWebSocketClient;
+  onInterruptCommandResult?: (ack: InterruptGenerationCommandAckPayload) => void;
+  onInterruptCommandTransportFailure?: (failure: InterruptCommandTransportFailure) => void;
 }
 
 export class AgentStreamingService {
   private wsClient: IWebSocketClient;
   private context: AgentContext | null = null;
   private wsEndpoint: string;
+  private runId: string | null = null;
+  private readonly pendingInterruptCommands = new Map<string, PendingInterruptCommand>();
+  private readonly onInterruptCommandResult: (ack: InterruptGenerationCommandAckPayload) => void;
+  private readonly onInterruptCommandTransportFailure: (failure: InterruptCommandTransportFailure) => void;
 
   /**
    * Create an AgentStreamingService.
@@ -76,6 +67,9 @@ export class AgentStreamingService {
   constructor(wsEndpoint: string, options: AgentStreamingServiceOptions = {}) {
     this.wsClient = options.wsClient || new WebSocketClient();
     this.wsEndpoint = wsEndpoint;
+    this.onInterruptCommandResult = options.onInterruptCommandResult ?? (() => undefined);
+    this.onInterruptCommandTransportFailure = options.onInterruptCommandTransportFailure
+      ?? (() => undefined);
   }
 
   get connectionState(): ConnectionState {
@@ -90,7 +84,8 @@ export class AgentStreamingService {
    * Connect to an agent's WebSocket stream.
    */
   connect(agentRunId: string, context: AgentContext): void {
-    this.context = context;
+    this.attachContext(context);
+    this.runId = agentRunId.trim();
     
     this.wsClient.on('onMessage', this.handleMessage);
     this.wsClient.on('onConnect', this.handleConnect);
@@ -107,6 +102,7 @@ export class AgentStreamingService {
    * Disconnect from the WebSocket stream.
    */
   disconnect(): void {
+    this.drainPendingInterruptCommands('Interrupt was cancelled because the stream disconnected.');
     this.wsClient.off('onMessage', this.handleMessage);
     this.wsClient.off('onConnect', this.handleConnect);
     this.wsClient.off('onDisconnect', this.handleDisconnect);
@@ -114,6 +110,7 @@ export class AgentStreamingService {
 
     this.wsClient.disconnect();
     this.context = null;
+    this.runId = null;
   }
 
   /**
@@ -163,11 +160,23 @@ export class AgentStreamingService {
   /**
    * Interrupt the current generation.
    */
-  interruptGeneration(): void {
+  interruptGeneration(commandId: string): boolean {
+    const normalizedCommandId = commandId.trim();
+    const entry: PendingInterruptCommand = {
+      commandId: normalizedCommandId,
+      target: { target_kind: 'standalone_run', run_id: this.runId ?? '' },
+    };
     const message: ClientMessage = {
       type: 'INTERRUPT_GENERATION',
+      payload: { command_id: normalizedCommandId },
     };
-    this.wsClient.send(serializeClientMessage(message));
+    return tryAdmitInterruptCommand({
+      pending: this.pendingInterruptCommands,
+      entry,
+      getConnectionState: () => this.wsClient.state,
+      send: () => this.wsClient.send(serializeClientMessage(message)),
+      onTransportFailure: this.onInterruptCommandTransportFailure,
+    });
   }
 
   // ============================================================================
@@ -179,6 +188,13 @@ export class AgentStreamingService {
 
     try {
       const message = parseServerMessage(raw);
+      if (
+        message.type === 'AGENT_COMMAND_ACK'
+        && message.payload.command_type === 'INTERRUPT_GENERATION'
+      ) {
+        this.handleInterruptCommandAck(message.payload);
+        return;
+      }
       this.logMessage(message);
       this.dispatchMessage(message, this.context);
     } catch (e) {
@@ -195,6 +211,9 @@ export class AgentStreamingService {
 
   private handleDisconnect = (reason?: string): void => {
     console.log('Agent WebSocket disconnected:', reason);
+    this.drainPendingInterruptCommands(
+      reason || 'Interrupt result was lost because the stream disconnected.',
+    );
     if (this.context) {
       this.context.isSubscribed = false;
     }
@@ -203,6 +222,28 @@ export class AgentStreamingService {
   private handleError = (error: Error): void => {
     console.error('Agent WebSocket error:', error);
   };
+
+  private handleInterruptCommandAck(ack: InterruptGenerationCommandAckPayload): void {
+    const pending = this.pendingInterruptCommands.get(ack.command_id);
+    if (!pending || !interruptCommandTargetsEqual(pending.target, ack.target)) {
+      console.warn('Ignoring unmatched interrupt command acknowledgement.', ack);
+      return;
+    }
+    this.pendingInterruptCommands.delete(ack.command_id);
+    this.onInterruptCommandResult(ack);
+  }
+
+  private drainPendingInterruptCommands(message: string): void {
+    drainPendingInterruptTransportFailures({
+      pending: this.pendingInterruptCommands,
+      reason: {
+        code: 'INTERRUPT_TRANSPORT_DISCONNECTED',
+        connectionState: this.wsClient.state,
+        message,
+      },
+      onTransportFailure: this.onInterruptCommandTransportFailure,
+    });
+  }
 
   private logMessage(message: ServerMessage): void {
     if (!shouldLogStreaming()) return;
@@ -238,125 +279,10 @@ export class AgentStreamingService {
    * Dispatch a parsed message to the appropriate handler.
    */
   private dispatchMessage(message: ServerMessage, context: AgentContext): void {
-    const presentationBaseline = beginRecentEventMonitorMutation(context);
-    // Update timestamp
-    context.conversation.updatedAt = new Date().toISOString();
-
-    switch (message.type) {
-      case 'SEGMENT_START':
-        handleSegmentStart(message.payload, context);
-        break;
-
-      case 'SEGMENT_CONTENT':
-        handleSegmentContent(message.payload, context);
-        break;
-
-      case 'SEGMENT_END':
-        handleSegmentEnd(message.payload, context);
-        break;
-
-      case 'EXTERNAL_USER_MESSAGE':
-        handleExternalUserMessage(message.payload, context);
-        break;
-
-      case 'TOOL_APPROVAL_REQUESTED':
-        handleToolApprovalRequested(message.payload, context);
-        break;
-
-      case 'TOOL_APPROVED':
-        handleToolApproved(message.payload, context);
-        break;
-
-      case 'TOOL_DENIED':
-        handleToolDenied(message.payload, context);
-        break;
-
-      case 'TOOL_EXECUTION_STARTED':
-        handleToolExecutionStarted(message.payload, context);
-        break;
-
-      case 'TOOL_EXECUTION_SUCCEEDED':
-        handleToolExecutionSucceeded(message.payload, context);
-        void handleBrowserToolExecutionSucceeded(message.payload);
-        break;
-
-      case 'TOOL_EXECUTION_FAILED':
-        handleToolExecutionFailed(message.payload, context);
-        break;
-
-      case 'TOOL_EXECUTION_INTERRUPTED':
-        handleToolExecutionInterrupted(message.payload, context);
-        break;
-
-      case 'TOOL_LOG':
-        handleToolLog(message.payload, context);
-        break;
-
-      case 'AGENT_STATUS':
-        handleAgentStatus(message.payload, context);
-        break;
-
-      case 'AGENT_COMMAND_ACK':
-        if (message.payload.status) {
-          handleAgentStatus(message.payload.status, context);
-        }
-        if (!message.payload.accepted) {
-          handleError({
-            code: message.payload.code ?? 'AGENT_COMMAND_REJECTED',
-            message: message.payload.message ?? 'Agent command was not accepted.',
-          }, context);
-        }
-        break;
-
-      case 'COMPACTION_STATUS':
-        handleCompactionStatus(message.payload, context);
-        break;
-
-      case 'TOKEN_USAGE_UPDATED':
-        handleTokenUsageUpdated(message.payload, context);
-        break;
-
-      case 'TURN_STARTED':
-        break;
-
-      case 'TURN_COMPLETED':
-        handleTurnCompleted(message.payload, context);
-        break;
-
-      case 'TURN_INTERRUPTED':
-        handleTurnInterrupted(message.payload, context);
-        break;
-
-      case 'ASSISTANT_COMPLETE':
-        handleAssistantComplete(message.payload, context);
-        break;
-
-      case 'TODO_LIST_UPDATE':
-        handleTodoListUpdate(message.payload, context);
-        break;
-
-      case 'ERROR':
-        handleError(message.payload, context);
-        break;
-
-      case 'SYSTEM_TASK_NOTIFICATION':
-        handleSystemTaskNotification(message.payload, context);
-        break;
-
-      case 'ARTIFACT_PERSISTED':
-        break;
-
-      case 'FILE_CHANGE':
-        handleFileChange(message.payload, context);
-        break;
-
-      case 'CONNECTED':
-        // Connection confirmed - nothing to do
-        break;
-
-      default:
-        console.warn('Unhandled message type:', (message as any).type);
-    }
-    commitRecentEventMonitorMutation(context, presentationBaseline);
+    dispatchAgentStreamMessage(message, {
+      kind: 'standalone',
+      context,
+      runId: context.state.runId,
+    });
   }
 }

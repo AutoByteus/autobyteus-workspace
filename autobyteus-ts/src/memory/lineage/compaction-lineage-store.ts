@@ -1,4 +1,3 @@
-import type { MemoryArtifactRef } from './memory-origin-resolution.js';
 import type { CompactionLineageRecord } from './compaction-lineage-record.js';
 
 export interface CompactionLineageStore {
@@ -8,6 +7,4 @@ export interface CompactionLineageStore {
   ): void;
   list(): CompactionLineageRecord[];
   readHead(): CompactionLineageRecord | null;
-  getByCompactionId(compactionId: string): CompactionLineageRecord | null;
-  findProducingRecord(artifact: MemoryArtifactRef): CompactionLineageRecord | null;
 }

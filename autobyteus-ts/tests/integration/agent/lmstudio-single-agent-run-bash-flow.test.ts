@@ -32,22 +32,14 @@ const runIntegration = hasLmstudioConfig() ? describe : describe.skip;
 
 runIntegration('LM Studio single-agent run_bash flow', () => {
   let tempDir: string;
-  let originalParserEnv: string | undefined;
 
   beforeEach(async () => {
-    originalParserEnv = process.env.AUTOBYTEUS_STREAM_PARSER;
-    process.env.AUTOBYTEUS_STREAM_PARSER = 'api_tool_call';
     SkillRegistry.getInstance().clear();
     resetFactory();
     tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'lmstudio-run-bash-flow-'));
   });
 
   afterEach(async () => {
-    if (originalParserEnv === undefined) {
-      delete process.env.AUTOBYTEUS_STREAM_PARSER;
-    } else {
-      process.env.AUTOBYTEUS_STREAM_PARSER = originalParserEnv;
-    }
     SkillRegistry.getInstance().clear();
     resetFactory();
     await fs.rm(tempDir, { recursive: true, force: true });
@@ -80,7 +72,6 @@ runIntegration('LM Studio single-agent run_bash flow', () => {
       'You must satisfy the user request by calling run_bash. Use provider-native tool calls only.',
       [runBashTool],
       true,
-      null,
       null,
       null,
       null,
@@ -294,7 +285,6 @@ runIntegration('LM Studio single-agent run_bash flow', () => {
         ].join(' '),
         [runBashTool],
         true,
-        null,
         null,
         null,
         null,

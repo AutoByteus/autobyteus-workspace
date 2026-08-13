@@ -1,0 +1,214 @@
+# Implementation Revision Record
+
+The current code and `implementation-handoff.md` remain authoritative. This record locates the initial implementation baseline and subsequent implementation rework.
+
+## Revision Index
+
+| Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
+| --- | --- | --- | --- | --- | --- |
+| IR-001 | `architecture_reviewer`; `design-review-report.md`; `ARCH-REV-002` | `N/A` (approved design resolved `ARCH-FIND-001`, `ARCH-FIND-002`) | `Initial Baseline` | `SR-002`, `ARCH-REV-002`; `CRR N/A`, `API-REV N/A`, `DR N/A` | Implemented; local implementation checks pass subject to recorded repository baseline limitations; ready for code review |
+| IR-002 | `code_reviewer`; `code-review-report.md`; Implementation Review round 1 | `CODE-FIND-001` | `Local Fix` | `SR-002`, `ARCH-REV-002`, `CRR-001`; `API-REV N/A`, `DR N/A` | Companion statuses are presentation-transparent in both streaming services; focused regression checks pass; ready for source re-review |
+| IR-003 | `architecture_reviewer`; `design-review-report.md`; `ARCH-REV-004` | `ARCH-FIND-003` resolved by `SR-004` | `Expanded Rework` | `SR-002`, `SR-004`, `ARCH-REV-002`, `ARCH-REV-004`, preserved `CRR-002`; `API-REV N/A`, `DR N/A` | Manager-owned binary team lifecycle, scoped leaf snapshots, aggregate removal, and frontend activity/pending contraction implemented; focused checks pass; ready for source re-review |
+| IR-004 | `architecture_reviewer`; `design-review-report.md`; `ARCH-REV-005` after `CRR-003` | `CODE-FIND-002`, `CODE-FIND-003` | `Design-Impact Rework + Local Fix` | `SR-005`, `ARCH-REV-005`, `CRR-003`; preserved `IR-001`–`IR-003`; `API-REV N/A`, `DR N/A` | Single-coordinate-frame task-team stream scope and stale manager-double fix implemented; focused checks pass; ready for source re-review |
+| IR-005 | `architecture_reviewer`; `design-review-report.md`; `ARCH-REV-006` after user feedback during `DR-004` | `N/A` | `User-Approved Presentation Change` | `SR-006`, `ARCH-REV-006`; preserves `CRR-004`, `API-REV-002`, `CRR-006`, `DR-004` baseline | Binary exact-run and any-displayed-child group activity dots implemented; focused checks pass; ready for source review |
+| IR-006 | `architecture_reviewer`; `design-review-report.md`; `ARCH-REV-008` after `ARCH-REV-007` | `ARCH-FIND-004` resolved in design | `User-Approved Defect Refinement` | `SR-007`, `SR-008`, `ARCH-REV-007`, `ARCH-REV-008`; preserves `CRR-007`, `API-REV-003`, `CRR-008`, `DR-005` baseline | Exact Codex steering, discriminated interrupt results, and failure-safe frontend admission implemented; focused checks pass; ready for source review |
+
+## Revision Entries
+
+### IR-001 — Serialized run lifecycle and unified composer action baseline
+
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/design-review-report.md`; `ARCH-REV-002`
+- Triggering finding IDs: `N/A` for initial implementation; approved `SR-002` had already resolved `ARCH-FIND-001` and `ARCH-FIND-002`
+- Classification: `Initial Baseline`
+- Prior authoritative result: `N/A`
+- Current authoritative result: Reviewed design implemented on `codex/agent-stream-driven-status`; primary implementation commit `b1e96b73f0b40427bebe07f9b4f9609007a766fe`; ready for code review.
+- Related solution revision IDs: `SR-002`
+- Related architecture-review revision IDs: `ARCH-REV-002`
+- Related code-review revision IDs: `N/A`
+- Related API/E2E revision IDs: `N/A`
+- Related delivery revision IDs: `N/A`
+- Why this baseline is recorded: Establishes the first completed implementation handoff for the approved status-only lifecycle authority and composer action policy.
+- Approved behavior or requirement IDs affected: `BEH-001`–`BEH-005`; `REQ-001`–`REQ-012`; implementation-level evidence for `AC-001`–`AC-014`; `AC-015` remains downstream-owned.
+- Implementation delta:
+  - Replaced runtime backend outward listeners with neutral source-event batch plus internal lifecycle snapshot contracts.
+  - Made `AgentRun` the sole run-owned queue/state/listener/publication boundary and moved lifecycle finalization after processors.
+  - Added identified/anonymous/current/retired turn precedence, command facts, fresh snapshot reconciliation, terminal/error/offline rules, and per-event status companions.
+  - Removed active-run direct status replacement, `statusOverride`, `emitLocalEvent`, duplicate converter status events, and the public interrupt-permission field.
+  - Routed local run events through awaited `publishEvent` with accepted-domain failure semantics.
+  - Replaced frontend lifecycle use of `isSending` with local `submissionPending`; added one primary-action resolver used by component and store guards; preserved exact interrupt routes.
+  - Updated implementation-scoped unit/component fixtures and tests for the new contracts and races.
+- Changed files or areas: Backend `agent-execution` domain/backends/events/services, mixed-team member status integration, stream mapping/handler, local event producers; frontend protocol/status/hydration/recovery/stores/composer; focused tests.
+- Local validation and result:
+  - Server build TypeScript: pass.
+  - Changed server units: 32 files / 387 tests pass.
+  - Viable changed frontend units/components: 18 files / 150 tests pass.
+  - Targeted store lifecycle/routing cases: 5 tests pass.
+  - Composer/action render set: 3 files / 20 tests pass.
+  - Full changed frontend batch limitation and `nuxi typecheck` baseline errors are documented in `implementation-handoff.md`; detached baseline reproduced the same 20 store-test failures.
+- Next recipient or routing: `code_reviewer`
+- Remaining limitations or risks: Real multi-runtime API/E2E/WebSocket evidence, volume observation, environment-level failure injection, and docs sync remain downstream work. No implementation-owned requirement or design gap was found.
+
+### IR-002 — Preserve content batching across lifecycle companions
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/code-review-report.md`; `Implementation Review` round `1`
+- Triggering finding IDs: `CODE-FIND-001`
+- Classification: `Local Fix`
+- Prior authoritative result: `IR-001` implementation was complete, but `CRR-001` returned `Fail / Local Fix` because each required `AGENT_STATUS(running)` companion triggered the frontend's generic non-content flush and defeated the 100 ms presentation cadence.
+- Current authoritative result: Corrected on `codex/agent-stream-driven-status` in commit `f453286d829ffde874a700d350f9c8ade80af4c9`; deterministic standalone/team regressions pass; ready for source re-review.
+- Related solution revision IDs: `SR-002`
+- Related architecture-review revision IDs: `ARCH-REV-002`
+- Related code-review revision IDs: `CRR-001`
+- Related API/E2E revision IDs: `N/A`
+- Related delivery revision IDs: `N/A`
+- Why this implementation revision is recorded: Resolves the reachable frontend presentation regression without changing the approved serialized `AgentRun` lifecycle authority or weakening the required one-companion-per-final-event server contract.
+- Approved behavior or requirement IDs affected: `BEH-002`; `REQ-003`; `REQ-010`; approved preservation of existing high-frequency content presentation batching.
+- Implementation delta:
+  - Added one shared presentation flush classification: `AGENT_STATUS` is presentation-transparent; every other non-content message remains a flush boundary.
+  - Updated `AgentStreamingService` and `TeamStreamingService` to apply status immediately without flushing queued content.
+  - Preserved status-before-content ordering/repair, server companion frequency, receipt-time cadence, and flush-before-dispatch behavior for genuine segment, semantic, and terminal events.
+  - Added companion-interleaved fake-timer coverage in both services, including immediate status assertions, two-or-more pairs inside the timer window, coalescing assertions, and `SEGMENT_END` / `TURN_COMPLETED` boundary flush assertions.
+- Changed files or areas:
+  - `autobyteus-web/services/agentStreaming/presentation/streamContentPresentationFlushPolicy.ts`
+  - `autobyteus-web/services/agentStreaming/AgentStreamingService.ts`
+  - `autobyteus-web/services/agentStreaming/TeamStreamingService.ts`
+  - `autobyteus-web/services/agentStreaming/__tests__/AgentStreamingService.spec.ts`
+  - `autobyteus-web/services/agentStreaming/__tests__/TeamStreamingService.spec.ts`
+- Local validation and result:
+  - Standalone/team streaming regression set: `2` files / `68` tests pass.
+  - Code-review frontend scope: `5` files / `91` tests pass.
+  - `pnpm exec nuxi typecheck`: the recorded repository baseline remains `230` errors; no changed production file is listed.
+  - Source guardrails: changed production files are 328, 489, and 9 effective non-empty lines; no hard-limit or changed-line trigger.
+  - `git diff --check`: pass.
+- Next recipient or routing: `code_reviewer` for source re-review; do not advance directly to `api_e2e_engineer`.
+- Remaining limitations or risks: Real cross-runtime ordering/reconnect evidence, live companion-volume observation, environment-level publication failure injection, and realistic UI/API/E2E coverage remain downstream-owned after code review passes. The 230-error repository typecheck baseline remains unchanged.
+
+### IR-003 — Replace aggregate team status with manager lifecycle and scoped leaf snapshots
+
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/design-review-report.md`; `ARCH-REV-004`
+- Triggering finding ID: `ARCH-FIND-003` was resolved by the approved `SR-004` design; implementation executes that reviewed expansion.
+- Classification: `Expanded Rework`
+- Prior authoritative result: `IR-002` / `CRR-002` passed for the `SR-002` agent lifecycle and presentation foundation. The user-approved team simplification expanded scope and returned through design review before source changes.
+- Current authoritative result: Implemented on `codex/agent-stream-driven-status` in source/test commit `9c4c6f09546b426ab27598a11753657b438c3fde`; focused implementation checks pass; ready for source re-review.
+- Related solution revision IDs: `SR-002`, `SR-004`
+- Related architecture-review revision IDs: `ARCH-REV-002`, `ARCH-REV-004`
+- Related code-review revision IDs: `CRR-002` for the preserved foundation; expanded source review pending
+- Related API/E2E revision IDs: `N/A` for the expanded source state
+- Related delivery revision IDs: `N/A`
+- Why this revision is recorded: It cleanly removes the public five-state team aggregate and installs the approved root/leaf/internal ownership split without disturbing the serialized per-agent lifecycle boundary.
+- Approved behavior or requirement IDs affected: `BEH-006`–`BEH-009`; `REQ-013`–`REQ-019`; `AC-016`–`AC-025`; preserved `BEH-001`–`BEH-005`.
+- Implementation delta:
+  - Added manager-owned `TeamRunLifecycle` snapshots/subscriptions with exact-run, stale-backend, replacement, listener-failure, and idempotent unregister semantics.
+  - Replaced root `TEAM_STATUS` with `TEAM_RUN_LIFECYCLE`, while initial and live leaf-agent statuses share `TeamLeafAgentStatusSnapshot`, recursive scope prefixing, and task-team identity flattening.
+  - Removed aggregate team status DTO/aggregation/overlay, root/nested event source, root history/GraphQL status, frontend team status model/hydration/visuals, and compatibility parsing.
+  - Reassigned settlement to private `hasOpenExecutionWork`, cleanup to terminal task facts/reconciliation, and failure handling to member/operation owners.
+  - Added frontend `isActive` plus separate `isSubscribed`, store-owned `stopPending`, failed-Stop preservation, and status-free definition/root/subteam presentation.
+  - Updated focused server and frontend unit/component coverage, including nested task-team carrier validation and lifecycle teardown/race cases.
+- Changed files or areas: server `agent-team-execution`, team streaming, run history/GraphQL and focused units; frontend team protocol/hydration/open/recovery/stores/history/workspace/mobile presentation and focused tests.
+- Local validation and result:
+  - Server TypeScript build: pass.
+  - Focused server units: 14 files / 104 tests pass.
+  - Focused changed frontend suite: 33 files / 240 tests pass; additional high-risk set: 10 files / 152 tests pass.
+  - Web/localization guards and literal audit: pass.
+  - `nuxi typecheck`: repository baseline remains non-green; changed-file intersection contains only two unchanged generated GraphQL dependency-import errors, with no task-semantic changed-file error.
+  - Protected stale API/E2E server tests: SHA-1 unchanged and not committed.
+  - Obsolete-path scans, source-size guard, and `git diff --check`: pass.
+- Next recipient or routing: `code_reviewer` for expanded source re-review. Do not advance directly to `api_e2e_engineer`.
+- Remaining limitations or risks: held pre-expansion coverage must be reinvestigated; realistic WebSocket/reconnect/nested task-team/Stop-failure evidence and direct browser validation remain downstream-owned. GraphQL codegen could not run without a configured endpoint. Product iteration callback is `Not Required`.
+
+### IR-004 — Enforce one task-team stream coordinate frame at every recursion boundary
+
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/design-review-report.md`; `ARCH-REV-005` following `CRR-003`
+- Triggering finding IDs: `CODE-FIND-002` (`Resolved In Design` by `SR-005`) and `CODE-FIND-003` (`Local Fix`)
+- Classification: `Design-Impact Rework + Local Fix`
+- Prior authoritative result: `CRR-003` failed `IR-003` because task-team-under-ordinary-subteam recursion mixed root-relative leaf paths with child-local logical-team identity; the separately run `TeamRunService` test exposed a stale manager double.
+- Current authoritative result: Implemented in source/test commit `4eca42bf56831eb6561a0f8ceee949c62674c4da`; focused implementation checks pass; ready for source re-review.
+- Related solution revision IDs: `SR-005` (preserving `SR-002` and the sound `SR-004` scope)
+- Related architecture-review revision IDs: `ARCH-REV-005`
+- Related code-review revision IDs: `CRR-003`
+- Related API/E2E revision IDs: `N/A`; prior investigation/evidence remains held and stale
+- Related delivery revision IDs: `N/A`
+- Why this revision is recorded: It replaces the mixed-frame outward carrier with the reviewed single-coordinate-frame contract and resolves the required stale test fixture without weakening production interfaces.
+- Approved behavior or requirement IDs affected: `BEH-009`, `REQ-017`, `AC-021`; preserved `BEH-001`–`BEH-008` and all prior acceptance behavior.
+- Implementation delta:
+  - Added tight `TaskTeamStreamScope` builder/clone and retained full operational `TaskTeamInstanceIdentity` only in task execution owners.
+  - Changed `TeamRunEvent` and `TeamLeafAgentStatusSnapshot` outward carriers to `taskTeamScope`.
+  - Replaced leaf-only prefixing with `prefixMixedTeamStreamScope`; AGENT, TASK_DELEGATION, COMMUNICATION, MEMBER_INPUT, and recursive initial snapshots now share it.
+  - Task-team handles build one target-parent-frame override; ordinary parents rebase retained source/member/logical-team paths and rebuild all route keys.
+  - Stream mapping strictly validates/subtracts the already-rooted scope and rejects invalid frames or empty task-team leaf selectors; no transport/frontend prefix fallback was added.
+  - Updated the `TeamRunService` manager test double with the required lifecycle subscription/snapshot methods only.
+  - Added live/reconnect, repeated nesting/idempotence, target-frame, route-key, all-event, strict-failure, and exact frontend route coverage.
+- Changed files or areas: server task-team stream domain, mixed event bridge/task-team handle, stream mapper/flattener and focused units; one frontend projection regression test; `TeamRunService` test fixture.
+- Local validation and result:
+  - Server TypeScript build: pass.
+  - Server regression set: 15 files / 128 tests pass.
+  - Exact `TeamRunService` reproduction: 1 file / 13 tests pass.
+  - Frontend changed set: 33 files / 241 tests pass; focused task-team set: 3 files / 43 tests pass.
+  - Web/localization guards and literal audit: pass.
+  - `nuxi typecheck`: repository baseline remains non-green; no `IR-004` changed file appears in the error set.
+  - Protected held files: SHA-1 unchanged and not committed.
+  - Obsolete outward-carrier/aggregate scans, source-size guard, and `git diff --check`: pass.
+- Next recipient or routing: `code_reviewer` for `IR-004` source re-review. API/E2E remains blocked until it passes.
+- Remaining limitations or risks: realistic multi-boundary WebSocket/reconnect traces and direct browser validation remain downstream-owned; prior API/E2E coverage must be reinvestigated against `SR-005`. Product iteration callback is `Not Required`.
+
+### IR-005 — Restore binary activity cues without restoring aggregate team status
+
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/design-review-report.md`; `ARCH-REV-006` after user-approved feedback during the `DR-004` verification hold
+- Triggering finding IDs: `N/A` — approved post-delivery presentation correction
+- Classification: `User-Approved Presentation Change`
+- Prior authoritative result: `SR-005` passed `CRR-004`, `API-REV-002`, proportional durable-test review `CRR-006`, and reached `DR-004`; its source remains accepted, while the user superseded the no-dot delivery candidate for completion.
+- Current authoritative result: Implemented in frontend source/test commit `bfd5ea4037109d49072fdcd9dc861cfe86966737`; focused implementation checks pass; ready for `SR-006` source review.
+- Related solution revision IDs: `SR-006`, preserving accepted `SR-005`
+- Related architecture-review revision IDs: `ARCH-REV-006`
+- Related code-review revision IDs: accepted baseline `CRR-004` / `CRR-006`; current source review pending
+- Related API/E2E revision IDs: accepted prior state `API-REV-002`; fresh `SR-006` investigation/execution pending
+- Related delivery revision IDs: `DR-004` integrated start; its candidate is superseded for completion
+- Why this revision is recorded: Restores the two scan cues the user requested while keeping domain ownership contracted to manager-owned run `isActive` and leaf-owned `AgentStatus`.
+- Approved behavior or requirement IDs affected: `BEH-006`, `BEH-008`, `REQ-013`, `REQ-016`, `REQ-020`, `AC-016`, `AC-023`, `AC-026`; all other accepted behaviors are preserved.
+- Implementation delta:
+  - Added `TeamActivityDot.vue`, accepting only `{ isActive, label }`, with solid blue/gray, no pulse, and accessible label/title.
+  - Added internal `hasActiveRuns` to `WorkspaceHistoryTeamDefinitionDisplayGroup`, initialized/updated from displayed current nodes and calculated from the final history runs collection; leftover/current-node groups reuse the same builder.
+  - Rendered any-child group and exact-run activity dots in `WorkspaceHistoryWorkspaceSection`, `RunningTeamGroup`, and `RunningTeamRow` with localized English/Simplified Chinese labels.
+  - Extracted workspace run-label formatting to keep the changed history component at the 500-effective-line guardrail.
+  - Added focused component, builder, history surface, and running surface coverage varying representative/member/socket/action facts independently.
+- Changed files or areas: frontend common/history/running presentation, internal display-group projection, focused tests, and workspace localization catalogs only; no backend, GraphQL, WebSocket, store, or action-policy source changed.
+- Local validation and result:
+  - Focused `SR-006` set: 5 files / 16 tests pass.
+  - Relevant regression set: 13 files / 92 tests pass, including real store Stop failure/pending, team stream lifecycle/batching, and agent-only status-dot coverage.
+  - Broader attempted set: 144/146 tests pass; the two failures are accepted-baseline test-double omissions of `stopPendingTeamIds`, reproduced unchanged at integrated start `55c5b3c9` (52/54 in those two baseline files).
+  - Web/localization boundary guards and localization literal audit: pass.
+  - Typecheck: default 4 GB heap OOM; 8 GB run reaches 5457 repository diagnostics with no changed-file hit.
+  - Delivery-owned protected artifact hashes, frontend-only boundary, forbidden aggregate/conversion scan, source-size guard, and `git diff --check`: pass.
+- Next recipient or routing: `code_reviewer` for `IR-005` source review. API/E2E remains blocked until it passes, then must investigate `SR-006` afresh.
+- Remaining limitations or risks: no authenticated live-running-team browser fixture was available; mounted rendering/interaction is complete, but realistic browser-equivalent validation and a rebuilt delivery candidate remain downstream work. Product iteration callback is `Not Required` because this revision implements the approved user correction.
+
+### IR-006 — Preserve Codex turn identity and complete interrupt attempts observably
+
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/design-review-report.md`; `ARCH-REV-008` after `ARCH-REV-007` returned `ARCH-FIND-004`
+- Triggering finding IDs: `ARCH-FIND-004` resolved by the approved `SR-008` design; no new architecture finding
+- Classification: `User-Approved Defect Refinement`
+- Prior authoritative result: `SR-006` passed `CRR-007`, `API-REV-003`, `CRR-008`, and reached `DR-005`. Live verification then exposed Codex current-turn replacement and log-only interrupt failures. `ARCH-REV-007` accepted the provider/server result design but failed the frontend immediate-admission edge; `ARCH-REV-008` passed the complete `SR-008` design.
+- Current authoritative result: Implemented in source/test commit `274086704a58fb837c61159bf2a3274cb56c176f`; focused implementation checks pass; ready for source review.
+- Related solution revision IDs: `SR-007`, `SR-008`, preserving `SR-002`, `SR-004`, `SR-005`, `SR-006`
+- Related architecture-review revision IDs: `ARCH-REV-007`, `ARCH-REV-008`
+- Related code-review revision IDs: accepted prior source/test reviews `CRR-007`, `CRR-008`; current source review pending
+- Related API/E2E revision IDs: accepted prior presentation state `API-REV-003`; fresh `SR-008` investigation/execution pending
+- Related delivery revision IDs: `DR-005` implementation start; its Electron candidate is superseded for completion by the approved defect correction
+- Why this implementation revision is recorded: It executes the user-approved live-defect correction while preserving the accepted runtime-neutral lifecycle/team/presentation architecture and adds the missing failure-safe transport admission transition required by `ARCH-FIND-004`.
+- Approved behavior or requirement IDs affected: `BEH-010`, `BEH-011`; `REQ-002`, `REQ-005`, `REQ-008`, `REQ-012`, `REQ-017`, `REQ-019`, `REQ-021`, `REQ-022`; `AC-002`, `AC-004`, `AC-011`, `AC-015`, `AC-021`, `AC-027`, `AC-028`, `AC-029`; preserved `BEH-001`–`BEH-009`.
+- Implementation delta:
+  - Replaced `CodexThread.sendTurn` with serialized `submitInput`, strict idle start versus identified current-turn steer, method-specific response parsing, exact-A validation/preservation, terminal-response guard, and no fallback.
+  - Added structured Codex submission errors and preserved their code/message through the backend operation result without adding provider fields to the runtime-neutral contract.
+  - Widened `AGENT_COMMAND_ACK` with a tight interrupt arm and added one shared server builder; standalone/team handlers acknowledge accepted, rejected, and failed outcomes on the originating socket with exact targets and no status.
+  - Added one shared frontend admission/completion helper covering register-before-send, immediate `ConnectionState`, send-throw rollback, delete-guarded callback, and pending-only disconnect drain.
+  - Updated standalone/team streaming services for exact result matching and early team interception; updated stores for fresh command IDs, boolean passthrough, and one localized failure toast without lifecycle/transcript mutation.
+  - Extracted team approval tracking and team interrupt handling to keep changed source within the size guardrail without changing their established contracts.
+- Changed files or areas: server Codex thread/backend and command/stream transport handlers; frontend streaming protocol/services/shared admission helper/stores/localization; focused Codex/backend/handler/service/helper/store tests; two live Codex integration call sites renamed for compile compatibility.
+- Local validation and result:
+  - Server build TypeScript: pass.
+  - Focused server regression set: 4 files / 88 tests pass.
+  - Focused frontend regression set: 5 files / 117 tests pass.
+  - Web/localization guards and localization literal audit: pass.
+  - Frontend repository typecheck remains non-green with 5456 baseline diagnostics at 8 GB; no `IR-006` changed-file hit. Default 4 GB run exhausted heap.
+  - Protected delivery/upstream artifact hashes, source-size guard, forbidden-path scans, staged-path audit, and `git diff --check`: pass.
+- Next recipient or routing: `code_reviewer` for `IR-006` source review. API/E2E remains blocked until review passes.
+- Remaining limitations or risks: configured live Codex start/steer and response races, real same-socket WebSocket results, reconnect/send-failure behavior, and rendered toast/Stop transitions remain downstream API/E2E work. Existing delivery docs/logs/build artifacts were protected and require later refresh/rebuild. Product iteration callback is `Not Required` because this revision implements the already approved defect refinement.

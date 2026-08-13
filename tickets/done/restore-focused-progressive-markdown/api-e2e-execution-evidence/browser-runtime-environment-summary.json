@@ -1,0 +1,26 @@
+{
+  "frontend": {
+    "sourceWorktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown",
+    "url": "http://127.0.0.1:3107",
+    "implementationCommit": "295943495e0816efac5a6e8d43d90cdff27ad7bd",
+    "ownership": "API/E2E-owned temporary process"
+  },
+  "backend": {
+    "url": "http://127.0.0.1:29695",
+    "pid": 25606,
+    "startedAtLocal": "2026-08-08 08:58:40 +02:00",
+    "binaryWorktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup",
+    "ownership": "user-owned embedded server; not restarted or stopped"
+  },
+  "reasoningPersistenceContext": {
+    "separateFixCommit": "d691736dc66a3d4323d44367d837d57405bf20b8",
+    "fixCommitTimeLocal": "2026-08-08T10:01:01+02:00",
+    "observation": "The current backend process predates the fix. Live reasoning streamed and rendered, but persisted standalone/team projections contained no reasoning item after reload. This is an environment-version limitation, not evidence against the frontend-only ticket."
+  },
+  "mobilePairing": {
+    "deviceId": "device_c79924d2745180d39ad12d1b66cd0d73",
+    "ownership": "API/E2E-owned temporary pairing",
+    "cleanup": "Revoked successfully by DELETE device API before handoff; local browser session removed."
+  },
+  "scopeBoundary": "Renderer-wide background/unfocused contention was not tested as fixed and is explicitly outside this ticket."
+}
