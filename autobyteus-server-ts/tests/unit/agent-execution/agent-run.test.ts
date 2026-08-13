@@ -318,18 +318,28 @@ describe("AgentRun input admission", () => {
     expect(lifecycle.filter((fact) => fact.kind === "failed")).toHaveLength(1);
   });
 
-  it("retains waiting input through interrupt acceptance and drains only on terminal", async () => {
+  it("keeps append-capable input FIFO-owned through interrupt acceptance until terminal", async () => {
+    const interruptResult = createDeferred<AgentOperationResult>();
     const harness = createHarness({
+      append: "supported",
+      interrupt: vi.fn().mockReturnValue(interruptResult.promise),
       snapshot: {
         availability: "active",
         phase: "running",
         currentTurn: { kind: "IDENTIFIED", turnId: "turn-active" },
       },
     });
-    await harness.run.postUserMessage(new AgentInputUserMessage("after interrupt"));
 
-    await expect(harness.run.interrupt()).resolves.toEqual({ accepted: true });
+    const stop = harness.run.interrupt();
+    await vi.waitFor(() => expect(harness.backend.interrupt).toHaveBeenCalledOnce());
+    await expect(harness.run.postUserMessage(
+      new AgentInputUserMessage("after interrupt"),
+    )).resolves.toEqual({ accepted: true, turnId: null });
     expect(harness.backend.interrupt).toHaveBeenCalledWith("turn-active");
+    expect(harness.backend.dispatchUserInput).not.toHaveBeenCalled();
+
+    interruptResult.resolve({ accepted: true, turnId: "turn-active" });
+    await expect(stop).resolves.toEqual({ accepted: true, turnId: "turn-active" });
     expect(harness.backend.dispatchUserInput).not.toHaveBeenCalled();
 
     harness.setSnapshot({ availability: "active", phase: "idle", currentTurn: { kind: "NONE" } });
@@ -342,10 +352,68 @@ describe("AgentRun input admission", () => {
     }));
   });
 
+  it("resumes exact active-turn append after interrupt rejection", async () => {
+    const interruptResult = createDeferred<AgentOperationResult>();
+    const harness = createHarness({
+      append: "supported",
+      interrupt: vi.fn().mockReturnValue(interruptResult.promise),
+      snapshot: {
+        availability: "active",
+        phase: "running",
+        currentTurn: { kind: "IDENTIFIED", turnId: "turn-active" },
+      },
+    });
+
+    const stop = harness.run.interrupt();
+    await vi.waitFor(() => expect(harness.backend.interrupt).toHaveBeenCalledOnce());
+    await harness.run.postUserMessage(new AgentInputUserMessage("append after rejection"));
+    expect(harness.backend.dispatchUserInput).not.toHaveBeenCalled();
+
+    interruptResult.resolve({ accepted: false, code: "INTERRUPT_REJECTED" });
+    await expect(stop).resolves.toEqual({ accepted: false, code: "INTERRUPT_REJECTED" });
+    await vi.waitFor(() => expect(harness.backend.dispatchUserInput).toHaveBeenCalledWith({
+      kind: "append_to_active_turn",
+      turnId: "turn-active",
+      message: expect.objectContaining({ content: "append after rejection" }),
+    }));
+    expect(harness.backend.interrupt).toHaveBeenCalledOnce();
+    expect(harness.backend.dispatchUserInput).toHaveBeenCalledOnce();
+  });
+
+  it("resumes exact active-turn append after interrupt failure", async () => {
+    const interruptResult = createDeferred<AgentOperationResult>();
+    const harness = createHarness({
+      append: "supported",
+      interrupt: vi.fn().mockReturnValue(interruptResult.promise),
+      snapshot: {
+        availability: "active",
+        phase: "running",
+        currentTurn: { kind: "IDENTIFIED", turnId: "turn-active" },
+      },
+    });
+
+    const stop = harness.run.interrupt();
+    const stopFailure = expect(stop).rejects.toThrow("interrupt failed");
+    await vi.waitFor(() => expect(harness.backend.interrupt).toHaveBeenCalledOnce());
+    await harness.run.postUserMessage(new AgentInputUserMessage("append after failure"));
+    expect(harness.backend.dispatchUserInput).not.toHaveBeenCalled();
+
+    interruptResult.reject(new Error("interrupt failed"));
+    await stopFailure;
+    await vi.waitFor(() => expect(harness.backend.dispatchUserInput).toHaveBeenCalledWith({
+      kind: "append_to_active_turn",
+      turnId: "turn-active",
+      message: expect.objectContaining({ content: "append after failure" }),
+    }));
+    expect(harness.backend.interrupt).toHaveBeenCalledOnce();
+    expect(harness.backend.dispatchUserInput).toHaveBeenCalledOnce();
+  });
+
   it("reserves one no-id interrupt and lets a canonical terminal win provider-result ordering", async () => {
     const deferred = createDeferred<AgentOperationResult>();
     const interrupt = vi.fn().mockReturnValue(deferred.promise);
     const harness = createHarness({
+      append: "supported",
       interrupt,
       snapshot: {
         availability: "active",
@@ -353,12 +421,15 @@ describe("AgentRun input admission", () => {
         currentTurn: { kind: "IDENTIFIED", turnId: "turn-active" },
       },
     });
-    await harness.run.postUserMessage(new AgentInputUserMessage("after terminal"));
 
     const standaloneStop = harness.run.interrupt(null);
     const teamStop = harness.run.interrupt();
     await vi.waitFor(() => expect(interrupt).toHaveBeenCalledOnce());
     expect(interrupt).toHaveBeenCalledWith("turn-active");
+    await expect(harness.run.postUserMessage(
+      new AgentInputUserMessage("after terminal"),
+    )).resolves.toEqual({ accepted: true, turnId: null });
+    expect(harness.backend.dispatchUserInput).not.toHaveBeenCalled();
 
     harness.setSnapshot({ availability: "active", phase: "idle", currentTurn: { kind: "NONE" } });
     await harness.getSourceListener()?.([
@@ -375,6 +446,7 @@ describe("AgentRun input admission", () => {
       { accepted: true, turnId: "turn-active" },
     ]);
     expect(interrupt).toHaveBeenCalledOnce();
+    expect(harness.backend.dispatchUserInput).toHaveBeenCalledOnce();
   });
 
   it("rejects an interrupt target mismatch before provider I/O", async () => {

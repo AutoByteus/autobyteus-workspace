@@ -213,6 +213,7 @@ export class AgentRun {
   }
 
   private claimNextInput(): ClaimedInputDispatch | null {
+    if (this.activeInterruptReservation) return null;
     const claim = this.inputAdmissionState.claimNext({
       activeTurn: this.lifecycleState.activeTurn,
       hasPendingTurnStart: this.lifecycleState.hasPendingCommand,
@@ -382,16 +383,19 @@ export class AgentRun {
     try {
       result = await this.backend.interrupt(reservation.turnId);
     } catch (error) {
-      await this.dispatchQueue.enqueue(this.runId, () => {
+      const released = await this.dispatchQueue.enqueue(this.runId, () => {
         if (this.activeInterruptReservation === reservation) {
           this.activeInterruptReservation = null;
+          return true;
         }
+        return false;
       });
+      if (released) await this.drainInputAfterLifecycleChange();
       reservation.reject(error);
       return;
     }
 
-    await this.dispatchQueue.enqueue(this.runId, () => {
+    const application = await this.dispatchQueue.enqueue(this.runId, () => {
       const providerTurnId = result.turnId;
       const applied = providerTurnId !== undefined && providerTurnId !== null &&
         providerTurnId !== reservation.turnId
@@ -401,11 +405,15 @@ export class AgentRun {
             message: `Interrupt result targeted '${providerTurnId}' instead of canonical turn '${reservation.turnId}'.`,
           }
         : result;
+      let released = false;
       if (this.activeInterruptReservation === reservation && !applied.accepted) {
         this.activeInterruptReservation = null;
+        released = true;
       }
-      reservation.resolve(applied);
+      return { applied, released };
     });
+    if (application.released) await this.drainInputAfterLifecycleChange();
+    reservation.resolve(application.applied);
   }
 
   private releaseInterruptReservation(turnId: string | null): void {
