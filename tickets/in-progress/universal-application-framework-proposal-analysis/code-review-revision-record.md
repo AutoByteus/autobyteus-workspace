@@ -1094,3 +1094,31 @@ None for proportional test code. `CR-019`–`CR-021` were design-impact findings
 - Material score or classification changes: current implementation result is `Pass / 97`; every scorecard category is `>=9.4`. The slight score drag is the required downstream real-current-base execution and the existing positional Codex constructor, not a ticket-blocking defect.
 - Recommended recipient: `api_e2e_engineer`
 - Remaining risks or uncertainty: API/E2E must run the complete current-base matrix, real Studio/standalone publication/handoff/projection/remount/restart/cleanup, exact 73/73 package parity, and coordinate Electron/delivery gates. Repository-resident durable coverage edits must return for proportional review. Historical `APIE2E-REPO-005` stays separate.
+
+### CRR-040 — API-REV-014 Studio same-data restart failure is a bounded Brief catch-up defect
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Review entry point and round: `API/E2E Failure-Origin Review`, round `40`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `API-REV-014`, `APIE2E-STUDIO-RESTART-014`, `APIE2E-F009`, new `CR-026`
+- Relevant solution revision IDs: `SR-018`; retained `SR-016`, `SR-013`
+- Relevant architecture-review revision IDs: `ARCH-REV-016`; retained `ARCH-REV-014`, `ARCH-REV-011`
+- Relevant implementation revision IDs: `IR-022`; retained `IR-017`–`IR-021`
+- Relevant API/E2E revision IDs: `API-REV-014`; retained `API-REV-013`
+- Relevant delivery revision IDs: `DR-009`
+- Prior authoritative result: `CRR-039` implementation-source `Pass / 97`
+- Current authoritative result: `Fail — Local Fix`; open `CR-026`
+- What changed in the review result and why: a real maintained Studio Brief run reached the generic Agent Tools publisher, retained a researcher-owned `final-brief.md` summary in platform history, and logged/contained Brief's correct live producer/path rejection. After a supported graceful same-data restart, Brief `onStart` enumerated every researcher summary and replayed that already rejected path as a fatal exception, so `ensure-ready` repeatedly returned 500 despite a correct completed app projection. The approved AC-022/AC-025 combination makes this reachable and unambiguous. Focused tests independently confirm both governing current contracts: post-commit event failure keeps the platform projection, and Brief rejects unsupported application projection without committing app state. The defect is bounded to Brief catch-up eligibility/failure policy, predates IR-022 source, and is implementation-owned; it is not a generic platform-architecture, MCP, environment, migration, or test defect. CRR-039 should have traced retained post-commit history into application `onStart`, so its readiness result is superseded.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-026` | N/A | Open — Local Fix | `API-REV-014`, `CRR-040` | Real same-data Studio restart repeatedly returns 500 when Brief catch-up encounters the durable researcher/final summary; direct source trace confirms fatal replay. |
+| `CR-023`, `CR-024`, `CR-025` | Resolved | Remain resolved | `IR-020`, `IR-021`, `CRR-037`, `API-REV-013`, `CRR-038`, `CRR-039` | No AFB parser/policy path participates in APIE2E-F009. |
+| `CR-001`–`CR-022` | Resolved | Remain resolved except the newly exposed recovery interaction is recorded separately as `CR-026` | cumulative prior records | API-REV-014 passes publication, named handoff, valid projection, worker recovery, remount, route separation, parity, and broad repository gates before the specific same-data catch-up failure. |
+| `APIE2E-REPO-005` | Historical `Unclear` / unattributed | Remains separate and unchanged | prior API/E2E/review records | No supported connection to APIE2E-F009; not failure or Pass evidence. |
+
+- New or remaining finding IDs: `CR-026`.
+- Material score or classification changes: no focused-review score recomputation. CRR-039's `97/100` is historical; its source-readiness conclusion is superseded by `Fail — Local Fix`.
+- Recommended recipient: `implementation_engineer`
+- Remaining risks or uncertainty: correction must skip only app-ineligible producer/path input during catch-up while preserving strict live projection and surfacing real binding/revision/storage/transaction failures. Both hosts share this Brief worker code. The API/E2E-owned `team-lifecycle-websocket.integration.test.ts` update remains pending proportional review after a successful rerun.
