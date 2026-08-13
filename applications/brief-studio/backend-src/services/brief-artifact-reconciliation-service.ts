@@ -10,7 +10,10 @@ import { createArtifactRepository } from "../repositories/artifact-repository.js
 import { createBriefArtifactRevisionRepository } from "../repositories/brief-artifact-revision-repository.js";
 import { createBriefBindingRepository } from "../repositories/brief-binding-repository.js";
 import { createBriefRepository } from "../repositories/brief-repository.js";
-import { resolveBriefArtifactPathRule } from "./brief-artifact-paths.js";
+import {
+  findBriefArtifactPathRule,
+  resolveBriefArtifactPathRule,
+} from "./brief-artifact-paths.js";
 import { createRunBindingCorrelationService } from "./run-binding-correlation-service.js";
 
 const TERMINAL_BINDING_STATUSES = new Set(["TERMINATED", "FAILED", "ORPHANED"]);
@@ -116,6 +119,9 @@ export const createBriefArtifactReconciliationService = (context: ApplicationHan
           await context.publishedArtifacts.list(runId),
         );
         for (const artifact of publishedArtifacts) {
+          if (!findBriefArtifactPathRule(producer.memberRouteKey, artifact.path)) {
+            continue;
+          }
           await this.projectArtifactRevision({
             binding,
             producer,

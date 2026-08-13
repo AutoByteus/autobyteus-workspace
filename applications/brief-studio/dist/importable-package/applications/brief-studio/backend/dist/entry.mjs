@@ -394,17 +394,25 @@ var extractBriefStudioSuffix = (normalizedPath) => {
   }
   return normalizedPath.slice(markerIndex + 1);
 };
-var resolveBriefArtifactPathRule = (memberRouteKey, artifactPath) => {
+var findBriefArtifactPathRule = (memberRouteKey, artifactPath) => {
   const normalizedRouteKey = memberRouteKey.trim();
   const normalizedPath = normalizeArtifactPath(artifactPath);
+  const producerRules = RULES_BY_PRODUCER[normalizedRouteKey];
+  if (!producerRules) {
+    return null;
+  }
+  const suffixPath = extractBriefStudioSuffix(normalizedPath);
+  return producerRules[normalizedPath] ?? (suffixPath ? producerRules[suffixPath] : void 0) ?? BASENAME_RULES_BY_PRODUCER[normalizedRouteKey]?.[basenameOf(normalizedPath)] ?? null;
+};
+var resolveBriefArtifactPathRule = (memberRouteKey, artifactPath) => {
+  const normalizedRouteKey = memberRouteKey.trim();
   const producerRules = RULES_BY_PRODUCER[normalizedRouteKey];
   if (!producerRules) {
     throw new Error(
       `Unexpected Brief Studio artifact producer '${memberRouteKey}'. Expected 'researcher' or 'writer'.`
     );
   }
-  const suffixPath = extractBriefStudioSuffix(normalizedPath);
-  const rule = producerRules[normalizedPath] ?? (suffixPath ? producerRules[suffixPath] : void 0) ?? BASENAME_RULES_BY_PRODUCER[normalizedRouteKey]?.[basenameOf(normalizedPath)];
+  const rule = findBriefArtifactPathRule(normalizedRouteKey, artifactPath);
   if (!rule) {
     throw new Error(
       `Unexpected Brief Studio artifact path '${artifactPath}' for producer '${memberRouteKey}'.`
@@ -688,6 +696,9 @@ var createBriefArtifactReconciliationService = (context) => ({
           await context.publishedArtifacts.list(runId)
         );
         for (const artifact of publishedArtifacts) {
+          if (!findBriefArtifactPathRule(producer.memberRouteKey, artifact.path)) {
+            continue;
+          }
           await this.projectArtifactRevision({
             binding,
             producer,

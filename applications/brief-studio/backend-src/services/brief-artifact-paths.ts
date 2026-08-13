@@ -119,12 +119,29 @@ const extractBriefStudioSuffix = (normalizedPath: string): string | null => {
   return normalizedPath.slice(markerIndex + 1);
 };
 
+export const findBriefArtifactPathRule = (
+  memberRouteKey: string,
+  artifactPath: string,
+): BriefArtifactPathRule | null => {
+  const normalizedRouteKey = memberRouteKey.trim();
+  const normalizedPath = normalizeArtifactPath(artifactPath);
+  const producerRules = RULES_BY_PRODUCER[normalizedRouteKey];
+  if (!producerRules) {
+    return null;
+  }
+
+  const suffixPath = extractBriefStudioSuffix(normalizedPath);
+  return producerRules[normalizedPath]
+    ?? (suffixPath ? producerRules[suffixPath] : undefined)
+    ?? BASENAME_RULES_BY_PRODUCER[normalizedRouteKey]?.[basenameOf(normalizedPath)]
+    ?? null;
+};
+
 export const resolveBriefArtifactPathRule = (
   memberRouteKey: string,
   artifactPath: string,
 ): BriefArtifactPathRule => {
   const normalizedRouteKey = memberRouteKey.trim();
-  const normalizedPath = normalizeArtifactPath(artifactPath);
   const producerRules = RULES_BY_PRODUCER[normalizedRouteKey];
   if (!producerRules) {
     throw new Error(
@@ -132,10 +149,7 @@ export const resolveBriefArtifactPathRule = (
     );
   }
 
-  const suffixPath = extractBriefStudioSuffix(normalizedPath);
-  const rule = producerRules[normalizedPath]
-    ?? (suffixPath ? producerRules[suffixPath] : undefined)
-    ?? BASENAME_RULES_BY_PRODUCER[normalizedRouteKey]?.[basenameOf(normalizedPath)];
+  const rule = findBriefArtifactPathRule(normalizedRouteKey, artifactPath);
   if (!rule) {
     throw new Error(
       `Unexpected Brief Studio artifact path '${artifactPath}' for producer '${memberRouteKey}'.`,

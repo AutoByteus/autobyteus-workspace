@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { resolveBriefArtifactPathRule } from "../../../../applications/brief-studio/backend-src/services/brief-artifact-paths.ts";
+import {
+  findBriefArtifactPathRule,
+  resolveBriefArtifactPathRule,
+} from "../../../../applications/brief-studio/backend-src/services/brief-artifact-paths.ts";
 import { resolveLessonArtifactPathRule } from "../../../../applications/socratic-math-teacher/backend-src/services/lesson-artifact-paths.ts";
 
 describe("app published-artifact semantic path resolvers", () => {
@@ -32,6 +35,7 @@ describe("app published-artifact semantic path resolvers", () => {
   });
 
   it("rejects unrecognized Brief Studio artifact filenames for the producer", () => {
+    expect(findBriefArtifactPathRule("researcher", "/tmp/downloads/final-brief.md")).toBeNull();
     expect(() =>
       resolveBriefArtifactPathRule("researcher", "/tmp/downloads/final-brief.md"),
     ).toThrow("Unexpected Brief Studio artifact path '/tmp/downloads/final-brief.md' for producer 'researcher'.");
