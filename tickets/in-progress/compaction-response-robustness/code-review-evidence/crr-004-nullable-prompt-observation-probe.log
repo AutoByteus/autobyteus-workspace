@@ -1,0 +1,5 @@
+# CRR-004 nullable prompt-observation probe
+# Commit: 51ed4b666
+# Demonstrates the established normalized usage contract can carry input_tokens:null and the current adapter/gate chain treats the missing value as observed zero.
+normalized observation: {"input_tokens":null,"quality_flags":["input_tokens_missing"]}
+current gate result after missing prompt count is coerced to zero: {"episode":{"kind":"ready"},"action":"reset"}

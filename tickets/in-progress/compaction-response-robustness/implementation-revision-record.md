@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | `architecture_reviewer` / `design-review-report.md` / `ARCH-REV-001` initial implementation round | N/A | `Initial Baseline` | `SR-001`, `ARCH-REV-001`; `CRR-*`, `API-REV-*`, `DR-*`: N/A | Ready for code review |
 | IR-002 | `architecture_reviewer` / `design-review-report.md` / `ARCH-REV-004` rework round | `AR-FIND-001`–`AR-FIND-004` | `Design Impact` | `SR-001`–`SR-004`, `ARCH-REV-001`–`ARCH-REV-004`, prior `CRR-001`–`CRR-003`, `API-REV-001`–`API-REV-002`, `DR-001`–`DR-002` | Ready for new code review |
+| IR-003 | `code_reviewer` / `code-review-report.md` / `CRR-004` source round 2 | `CR-IMPL-001` | `Local Fix` | `SR-001`–`SR-004`, `ARCH-REV-001`–`ARCH-REV-004`, `IR-002`, `CRR-004`; prior downstream history retained | Ready for source re-review |
 
 ## Revision Entries
 
@@ -63,3 +64,27 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: both project builds passed; final focused core unit aggregate, core narrow integrations, server runner/event units, server parent-fallback integration, and preserved prompt/parser/lineage/input baselines passed as detailed in `implementation-handoff.md`; source guardrail and drift audits passed; `git diff --check` passed.
 - Next recipient or routing: `code_reviewer` for a new source review of the cumulative SR-004 implementation.
 - Remaining limitations or risks: token estimation and factual quality remain approximate; the threshold episode resets on restart; one oversized new input lacks a general admission/chunking gate; first runner failure remains manual-retry only; queued turn starts retain existing non-persistent shutdown behavior; provider fallback/quota and broader API/E2E/real-provider execution remain downstream or out of scope.
+
+### IR-003 — Preserve absent provider prompt observations without threshold mutation
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/code-review-report.md`; `CRR-004`, implementation source review round 2.
+- Triggering finding IDs: `CR-IMPL-001` (`CR-MP-001` established the reachable normalized-usage path).
+- Classification: `Local Fix`.
+- Prior authoritative result: `CRR-004` failed `IR-002` because the LLM-phase adapter's nullish fallback converted a present normalized usage observation with `input_tokens:null` into observed prompt zero, which could falsely rearm the accepted post-success threshold episode.
+- Current authoritative result: the adapter now treats an absent resolved prompt total as no numeric threshold observation, preserves the full threshold episode unchanged, logs the truthful missing-prompt reason and usage quality flags, and retains numeric zero as a genuine below-threshold observation. The cumulative implementation is ready for source re-review and must not advance to API/E2E until that review passes.
+- Related solution revision IDs: `SR-001`, `SR-002`, `SR-003`, `SR-004` (no design change).
+- Related architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`, `ARCH-REV-003`, `ARCH-REV-004` (no architecture re-review required for this local fix).
+- Related code-review revision IDs: `CRR-001`–`CRR-003` are prior-baseline history; `CRR-004` is the triggering fail; new source review pending.
+- Related API/E2E revision IDs: `API-REV-001`, `API-REV-002` are prior-baseline history; fresh investigation/execution remains pending after source review passes.
+- Related delivery revision IDs: `DR-001`, `DR-002` are prior-baseline history; no delivery routing is permitted yet.
+- Why this implementation revision is recorded: close the bounded production-contract defect without changing the reviewed prompt, schema, tool, persistence, lineage, planning, runner, retry, or queue architecture.
+- Approved behavior or requirement IDs affected: corrects `BEH-007`, `REQ-012`, and `AC-016`; all other approved behavior is preserved.
+- Implementation delta:
+  - replaced `observedPromptTokens ?? tokenUsage.input_tokens ?? 0` with explicit `undefined` fallback and a null early return, so an explicitly resolved null remains missing rather than becoming zero;
+  - emits `compaction_budget_skipped_no_usage` with `reason: missing_prompt_tokens` and the normalized observation's `quality_flags` before token-budget policy or lifecycle evaluation;
+  - added direct adapter/lifecycle regressions proving both `awaiting_below_observation` and `inadequate_reduction_suppressed` remain exactly state-equivalent when `input_tokens:null`, with no gate call, request, reset, or suppression action;
+  - added a direct numeric-zero regression proving `0` still reaches the gate and resets the awaiting episode as an actual below-threshold observation.
+- Changed files or areas: `autobyteus-ts/src/agent/loop/llm-phase-compaction.ts`; new `autobyteus-ts/tests/unit/agent/loop/llm-phase-compaction.test.ts`; this handoff and revision record. The triggering code-review report/revision/evidence were retained unchanged from the reviewer.
+- Local validation and result: both `autobyteus-ts` and `autobyteus-server-ts` builds passed; a 7-file/31-test focused adapter, usage-normalizer, tracking, threshold, coordinator, planning, and LLM recovery set passed; a targeted strict no-emit compile of the new test and imported source graph passed; `git diff --check` passed. The optional repository-wide test-inclusive TypeScript check remains blocked by extensive existing/stale broad-test fixture errors outside this local fix. No API/E2E execution was performed.
+- Next recipient or routing: `code_reviewer` for source re-review of `IR-003` plus the cumulative SR-004 package.
+- Remaining limitations or risks: unchanged approved residuals — token-estimate variance, runtime-only episode restart behavior, one oversized new input without general admission/chunking, probabilistic summary factual quality, manual recovery after the first runner failure, and downstream real-provider/API/E2E coverage still required after source review.

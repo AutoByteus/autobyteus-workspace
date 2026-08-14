@@ -33,6 +33,20 @@ export function evaluateLlmPhaseCompaction(input: {
     );
     return null;
   }
+  const promptTokens = observedPromptTokens === undefined
+    ? tokenUsage.input_tokens
+    : observedPromptTokens;
+  if (promptTokens === null) {
+    compactionReporter.logBudgetSkippedNoUsage(
+      {
+        turn_id: activeTurnId,
+        reason: 'missing_prompt_tokens',
+        quality_flags: tokenUsage.quality_flags,
+      },
+      runtimeSettings.detailedLogsEnabled,
+    );
+    return null;
+  }
   const budget = resolveTokenBudget(
     llmInstance.model,
     llmInstance.config,
@@ -42,7 +56,6 @@ export function evaluateLlmPhaseCompaction(input: {
   if (!budget) return null;
 
   applyCompactionPolicy(memoryManager.compactionPolicy, budget);
-  const promptTokens = observedPromptTokens ?? tokenUsage.input_tokens ?? 0;
   const planningBudget = resolveCompactionPlanningBudget(
     budget,
     promptTokens,

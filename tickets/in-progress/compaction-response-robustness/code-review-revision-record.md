@@ -9,6 +9,7 @@ The latest `code-review-report.md` or `api-e2e-test-review-report.md` remains au
 | `CRR-001` | `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/code-review-report.md` | Implementation review / `IR-001` handoff at `ed7f65a5d` | `N/A` | `Pass` | None |
 | `CRR-002` | `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/api-e2e-test-review-report.md` | Proportional test review / successful `API-REV-001` with four durable coverage updates | `CRR-001` source review `Pass` | `Fail` | `CR-TEST-001` |
 | `CRR-003` | `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/api-e2e-test-review-report.md` | Proportional re-review / successful `API-REV-002` correction | `CRR-002` proportional review `Fail` | `Pass` | `CR-TEST-001` |
+| `CRR-004` | `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/code-review-report.md` | Implementation review / `IR-002` handoff at `51ed4b666` | `CRR-001` source review `Pass`; latest review event `CRR-003` test review `Pass` | `Fail` | `CR-IMPL-001` |
 
 ## Revision Entries
 
@@ -82,3 +83,26 @@ None.
 - Material score or classification changes: no score changes; the implementation scorecard was not reopened. The bounded `Local Fix` is complete, so the proportional test-review result changes from `Fail` to `Pass`.
 - Recommended recipient: `delivery_engineer`
 - Remaining risks or uncertainty: unchanged API/E2E residuals — probabilistic factual quality of otherwise schema-valid summaries, intentionally terminal first-attempt transport failure, optional local-provider timing/tool-selection variability, and unrelated broad-suite test debt.
+
+### CRR-004 — IR-002 source review finds a nullable prompt-observation defect
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/code-review-report.md`
+- Review entry point and round: `Implementation Review`, source round 2
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/implementation-handoff.md`; `IR-002`; new finding `CR-IMPL-001`
+- Relevant solution revision IDs: `SR-001`–`SR-004`
+- Relevant architecture-review revision IDs: `ARCH-REV-001`–`ARCH-REV-004`
+- Relevant implementation revision IDs: `IR-002`
+- Relevant API/E2E revision IDs: `API-REV-001`, `API-REV-002` as prior-baseline history only
+- Relevant delivery revision IDs: `DR-001`, `DR-002` as prior-baseline history and user-verification context
+- Prior authoritative result: `CRR-001` implementation source review `Pass` for `IR-001`; latest completed review event `CRR-003` proportional test review `Pass`
+- Current authoritative result: implementation source review `Fail`; `IR-002` must not advance to API/E2E until the local defect is fixed and re-reviewed.
+- What changed in the review result and why: the SR-004 planning, typed-failure, manual-retry, and queue design is substantially realized, but the production LLM-phase adapter converts a present normalized usage observation with `input_tokens:null` into observed prompt `0`. The threshold gate then treats missing information as an actual below-threshold observation and rearms the post-success episode, contradicting `BEH-007`/`AC-016`. The normalized-usage contract and forward production path establish reachability independently of the review probe.
+
+#### Prior Finding Resolution
+
+None. `CR-TEST-001` remains resolved and is unrelated to the `IR-002` source defect.
+
+- New or remaining finding IDs: `CR-IMPL-001`
+- Material score or classification changes: source score changes from the `IR-001` baseline `9.5/10 (95.1/100)` to `9.1/10 (91.4/100)`; API/interface clarity, API/E2E readiness, and runtime fidelity fall below 9.0. Classification: `Local Fix`.
+- Recommended recipient: `implementation_engineer`
+- Remaining risks or uncertainty: the finding is bounded and unambiguous; after correction, fresh source review and then fresh API/E2E investigation/execution are still required. Approved residuals remain token-estimate variance, runtime-only episode restart behavior, oversized-new-input admission, model factual quality, and manual recovery after first runner failure.
