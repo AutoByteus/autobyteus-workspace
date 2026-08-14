@@ -25,6 +25,27 @@ export type AgentCompactionSummarizerOptions = {
 
 type AttemptFailureStage = CompactionResponseValidationStage | 'runner_execution';
 
+export class CompactionResponseRepairExhaustedError extends Error {
+  constructor(readonly details: {
+    initialStage: CompactionResponseValidationStage;
+    initialMetadata: CompactionAgentExecutionMetadata | null;
+    correctionStage: AttemptFailureStage;
+    correctionMetadata: CompactionAgentExecutionMetadata | null;
+    correctionCause: unknown;
+  }) {
+    const correctionDetail = details.correctionCause instanceof Error
+      ? ` Correction failure: ${details.correctionCause.message}`
+      : '';
+    super(
+      'Memory compaction response repair exhausted after two attempts: '
+      + `attempt 1 stage=${details.initialStage}${formatRunId(details.initialMetadata)}; `
+      + `attempt 2 stage=${details.correctionStage}${formatRunId(details.correctionMetadata)}.`
+      + correctionDetail,
+    );
+    this.name = 'CompactionResponseRepairExhaustedError';
+  }
+}
+
 export class AgentCompactionSummarizer {
   private readonly runner: CompactionAgentRunner;
   private readonly parentAgentId: string | null;
@@ -144,17 +165,7 @@ const exhaustedRepairError = (input: {
   correctionStage: AttemptFailureStage;
   correctionMetadata: CompactionAgentExecutionMetadata | null;
   correctionCause: unknown;
-}): Error => {
-  const correctionDetail = input.correctionCause instanceof Error
-    ? ` Correction failure: ${input.correctionCause.message}`
-    : '';
-  return new Error(
-    'Memory compaction response repair exhausted after two attempts: '
-    + `attempt 1 stage=${input.initialStage}${formatRunId(input.initialMetadata)}; `
-    + `attempt 2 stage=${input.correctionStage}${formatRunId(input.correctionMetadata)}.`
-    + correctionDetail,
-  );
-};
+}): CompactionResponseRepairExhaustedError => new CompactionResponseRepairExhaustedError(input);
 
 const formatRunId = (metadata: CompactionAgentExecutionMetadata | null): string => {
   const runId = normalizeOptionalString(metadata?.compactionRunId);

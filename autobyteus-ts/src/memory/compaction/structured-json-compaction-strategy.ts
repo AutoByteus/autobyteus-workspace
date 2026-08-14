@@ -4,10 +4,11 @@ import { CompactionResultNormalizer } from './compaction-result-normalizer.js';
 import type { WorkingContextCompactionDiagnostics, WorkingContextCompactionStrategy } from './working-context-compaction-strategy.js';
 import type { WorkingContextCompactionProposal } from './working-context-compaction-proposal.js';
 import { WorkingContextMessageWindowPlanner } from './working-context-message-window-planner.js';
+import type { CompactionPlanningBudget } from './compaction-planning-budget.js';
 
 export type StructuredJsonCompactionStrategyOptions = {
   summarizer: AgentCompactionSummarizer;
-  inputBudgetTokens: number | null;
+  planningBudget: CompactionPlanningBudget;
   diagnostics?: WorkingContextCompactionDiagnostics | null;
   planner?: WorkingContextMessageWindowPlanner;
   normalizer?: CompactionResultNormalizer;
@@ -29,7 +30,7 @@ export class StructuredJsonCompactionStrategy implements WorkingContextCompactio
     const messages = workingContext.buildMessages();
     const plan = this.planner.plan({
       messages,
-      inputBudgetTokens: this.options.inputBudgetTokens,
+      planningBudget: this.options.planningBudget,
     });
     this.options.diagnostics?.reportPlan({
       selectedUnitCount: plan.compactableUnits.length,
@@ -37,6 +38,8 @@ export class StructuredJsonCompactionStrategy implements WorkingContextCompactio
       retainedUnitCount: plan.retainedUnits.length,
       workingContextMessageCount: messages.length,
       rawTraceCount: plan.rawTraceIdsToArchive.length,
+      postCompactionTargetTokens: plan.budgetAssessment.planningBudget.postCompactionTargetTokens,
+      estimatedPlannedPromptTokens: plan.budgetAssessment.estimatedPlannedPromptTokens,
     });
     if (!plan.compactableUnits.length || !plan.rawTraceIdsToArchive.length) {
       throw new Error('No eligible settled natural working-context message was available.');
@@ -61,12 +64,14 @@ export class StructuredJsonCompactionStrategy implements WorkingContextCompactio
       semanticFactCount: result.semanticEntries.length,
       episodeSummaryLength: result.episodes.reduce((sum, episode) => sum + episode.summary.length, 0),
       compactionMetadata: execution,
+      postCompactionTargetTokens: plan.budgetAssessment.planningBudget.postCompactionTargetTokens,
     });
     return {
       selectedNewRawTraceIds: plan.rawTraceIdsToArchive,
       retainedMessages: plan.retainedMessages,
       output: result,
       execution,
+      budgetAssessment: plan.budgetAssessment,
     };
   }
 }

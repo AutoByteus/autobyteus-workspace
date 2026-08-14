@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { AgentExternalEventNotifier } from '../../../../src/agent/events/notifiers.js';
 import { EventType } from '../../../../src/events/event-types.js';
 import { AgentStatus } from '../../../../src/agent/status/status-enum.js';
+import { CompleteResponse } from '../../../../src/llm/utils/response-types.js';
 
 describe('AgentExternalEventNotifier', () => {
   const originalVerboseAgentEventLogs = process.env.AUTOBYTEUS_VERBOSE_AGENT_EVENT_LOGS;
@@ -105,6 +106,25 @@ describe('AgentExternalEventNotifier', () => {
       error_effect: 'diagnostic',
       turn_id: 'turn-1',
     });
+  });
+
+  it('publishes ordinary and error assistant completions with an explicit error bit', () => {
+    vi.spyOn(console, 'info').mockImplementation(() => undefined);
+    vi.spyOn(console, 'debug').mockImplementation(() => undefined);
+    const notifier = new AgentExternalEventNotifier('agent-assistant');
+    const received: any[] = [];
+    notifier.subscribe(EventType.AGENT_DATA_ASSISTANT_COMPLETE_RESPONSE, (payload) => {
+      received.push(payload);
+    });
+    notifier.notifyAgentDataAssistantCompleteResponse(new CompleteResponse({ content: 'ok' }));
+    notifier.notifyAgentDataAssistantCompleteResponse(
+      new CompleteResponse({ content: 'provider failed' }),
+      true,
+    );
+    expect(received).toEqual([
+      expect.objectContaining({ content: 'ok', is_error: false }),
+      expect.objectContaining({ content: 'provider failed', is_error: true }),
+    ]);
   });
 
   it('logs streaming details only when verbose agent event logs are enabled', () => {

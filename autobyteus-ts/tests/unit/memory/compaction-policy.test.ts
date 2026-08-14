@@ -4,16 +4,16 @@ import { CompactionPolicy } from '../../../src/memory/policies/compaction-policy
 describe('CompactionPolicy', () => {
   it('should compact at ratio threshold', () => {
     const policy = new CompactionPolicy({ triggerRatio: 0.8 });
-    expect(policy.shouldCompact(81, 100)).toBe(true);
+    expect(policy.classifyPressure(81, 100)).toBe('proactive');
   });
 
   it('should compact at budget limit', () => {
     const policy = new CompactionPolicy({ triggerRatio: 0.8 });
-    expect(policy.shouldCompact(100, 100)).toBe(true);
+    expect(policy.classifyPressure(100, 100)).toBe('hard_input_cap');
   });
 
   it('does not compact below ratio', () => {
     const policy = new CompactionPolicy({ triggerRatio: 0.8 });
-    expect(policy.shouldCompact(50, 100)).toBe(false);
+    expect(policy.classifyPressure(50, 100)).toBe('none');
   });
 });

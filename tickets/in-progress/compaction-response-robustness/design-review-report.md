@@ -5,225 +5,256 @@
 - Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/requirements.md`
 - Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/investigation-notes.md`
 - Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/design-spec.md`
-- Supplemental Task Artifacts Reviewed: `memory-compactor-prompt-spec.md`, `prompt-confusion-root-cause.md`, `compaction-output-contract-decision.md`, and all seven evidence artifacts inventoried in `investigation-notes.md`
+- Supplemental Task Artifacts Reviewed: `memory-compactor-prompt-spec.md`, `prompt-confusion-root-cause.md`, `compaction-output-contract-decision.md`, `repeated-compaction-runtime-analysis.md`, `compactor-runner-failure-analysis.md`, `compaction-runtime-behavior-examples.md`, `compaction-memory-shape-reassessment.md`, all retained evidence, and the still-relevant implementation/review/API-E2E/delivery reports
 - Solution Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-001`
+- Relevant Solution Revision IDs: `SR-001`, `SR-002`, `SR-003`, `SR-004`
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-001`
-- Current Review Round: `1`
-- Trigger: initial architecture review of the user-approved compaction-response-robustness solution package
-- Prior Review Round Reviewed: `N/A`
-- Latest Authoritative Round: `1`
-- Current-State Evidence Basis: repository base `54890a07f74e941a7a12b6daaa26364f4c927b72`; current prompt/input/runner/parser/lifecycle/commit/lineage source; retained failed and successful child traces; retained server log and screenshots; parser probe; direct prompt-tail comparison
+- Current Architecture Review Revision ID: `ARCH-REV-004`
+- Current Review Round: `4`
+- Trigger: `SR-004` resolution of `AR-FIND-003` and `AR-FIND-004` through the approved USER-only recovery signal and same-queue non-user preservation
+- Prior Review Round Reviewed: round 3 / `ARCH-REV-003` / `Fail — Requirement Gap`
+- Latest Authoritative Round: `4`
+- Current-State Evidence Basis: implemented baseline commits `ed7f65a5d` and `1f2406ffa`; current memory compaction/planning/commit, agent turn/input/request, inbox queue/scheduler/wait/shutdown, response event, and server delivery/child-run source; corrected three-operation evidence with SHA-256 `e8737eb3150dfe478aeed87c4c3c24e158bc152b8d97d1bf3d90f9d846203cd8`; retained provider-failure and prompt/parser evidence
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
 - Overall Basis Status: `Confirmed`
-- Approved requirements / intended behavior understood: `Yes`; `requirements.md`, `memory-compactor-prompt-spec.md`, and `compaction-output-contract-decision.md` record user approval on 2026-08-14.
-- Relevant existing behavior and evidence confirmed: `Yes`; current source and retained production evidence confirm the ambiguous input boundary, first-object parser selection, one-shot failure path, host-owned accepted-compaction path, zero-tool child, and prompt-contract-1/2 reader contract.
-- Approved change, preserved behavior, and outside scope understood: `Yes`; the target is a clean sender-heading removal plus bounded compaction prompt/parser/attempt changes, not a response-schema, tool-authority, provider-rendering, persistence, or common-system-prompt redesign.
+- Approved requirements / intended behavior understood: `Yes`; `REQ-001`–`REQ-015`, `AC-001`–`AC-023`, exact v3/six-array/zero-tool/host-commit/no-migration behavior, trigger-aligned planning, actual-observation post-success suppression, typed runner failure, strict fail-closed retry, and same-queue non-user preservation are recorded as approved.
+- Relevant existing behavior and evidence confirmed: `Yes`; both direct inter-agent events and production `SenderType.AGENT`/`SYSTEM` carriers use the ordinary turn-start path, current FIFO selection is head-only, request assembly currently executes from pending presence, and the worker already owns active-turn serialization, wakeup, and shutdown drain.
+- Approved change, preserved behavior, and outside scope understood: `Yes`; SR-004 adds runtime-only origin/attempt/admission control without changing the prompt, response schema, tools, persistence, lineage version, or normal no-gate FIFO behavior.
 - Remaining material ambiguity, if any: `None`.
 
 | Behavior ID | Kind | Design Alignment With Approved Intent (`Pass`/`Fail`) | Approved Trigger / Contract And Current-State Evidence (`Pass`/`Fail`/`Unclear`) | Target Outcome / Path / Spine Coherence (`Pass`/`Fail`/`Unclear`) | Status (`Confirmed`/`Needs Correction`/`Unclear`) | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| `BEH-001` | System | Pass | Pass — automatic threshold crossing is logged and traced through the prompt builder, mandatory processor, runner, and failed child outputs | Pass — `DS-001`, `DS-002`, `DS-004`, and `DS-006` cover the parent operation, one child, bounded attempt flow, and global input cleanup | Confirmed | None |
-| `BEH-002` | Contract | Pass | Pass — current parser source/tests and `parser-tolerance-probe.jsonl` establish exact/fenced/prose tolerance and first-object masking | Pass — validate-all, recognized-field projection, semantic dedupe, and distinct-valid-object rejection stay inside the parser boundary | Confirmed | None |
-| `BEH-003` | Operational | Pass | Pass — two observed invalid returned outputs and the current pending-executor failure path establish the supported lifecycle | Pass — `AgentCompactionSummarizer` owns fixed `initial -> correction -> terminal`; the parent executor remains the sole terminal-status owner | Confirmed | None |
-| `BEH-004` | System / Contract | Pass | Pass — strategy, manager, accepted builder, committer, lineage, and projection source confirm the existing acceptance/commit path | Pass — valid output alone reaches the unchanged proposal/prepare/validate/commit path and commits once | Confirmed | None |
-| `BEH-005` | User / Operational | Pass | Pass — screenshot/logs and config/runner/collector source distinguish the parent `write_file` error and establish the zero-tool child policy | Pass — no tool grant or tool-policy broadening occurs; textual wrong-task output remains validation input, while runner/tool failure remains safe failure | Confirmed | None |
-| `BEH-006` | Contract | Pass | Pass — current lineage reader/writer source and retained prompt-contract-2 lineage establish the stored-data contract; version 1 is an already supported value | Pass — `DS-005` cleanly separates current version-3 writes from direct 1/2/3 reads with no stored-data rewrite | Confirmed | None |
+| `BEH-001` | System | Pass | Pass | Pass — exact target-agent prompt boundary remains unchanged | Confirmed | None |
+| `BEH-002` | Contract | Pass | Pass | Pass — usable non-error output alone reaches the preserved tolerant schema parser | Confirmed | None |
+| `BEH-003` | Operational | Pass | Pass | Pass — one content correction remains bounded below one parent lifecycle | Confirmed | None |
+| `BEH-004` | Contract | Pass | Pass | Pass — final budget validation precedes the sole host-owned accepted committer | Confirmed | None |
+| `BEH-005` | User / Operational | Pass | Pass | Pass — compactor remains zero-tool and tool approval remains a typed failure | Confirmed | None |
+| `BEH-006` | Contract | Pass | Pass | Pass — v1/v2/v3 direct reads, v3 writes, and no migration remain intact | Confirmed | None |
+| `BEH-007` | System | Pass | Pass | Pass — one planning budget, precommit target validation, and a separate actual-observation episode bound the crossing | Confirmed | None; `AR-FIND-001` remains resolved |
+| `BEH-008` | Operational | Pass | Pass | Pass — `is_error` reaches typed runner failure before parser/repair | Confirmed | None |
+| `BEH-009` | Operational | Pass | Pass | Pass — attempt state distinguishes the automatic initial execution from a distinct USER-authorized retry and fails closed per turn | Confirmed | None |
+| `BEH-010` | System | Pass | Pass — direct and carrier-based non-user production paths plus current queue behavior are established | Pass — origin is stamped before conversion; first-eligible selection retains non-user order and USER recovery reaches atomic authorization | Confirmed | None; `AR-FIND-003` is resolved |
 
 ## Supplemental Artifact Coherence Verdict
 
 | Artifact | Purpose And Scope Are Clear? (`Pass`/`Fail`) | Linked To Relevant Core Artifacts? (`Pass`/`Fail`) | Internally Complete? (`Pass`/`Fail`) | Consistent With Related Core Artifacts? (`Pass`/`Fail`) | Status And Approval Applicability Are Clear? (`Pass`/`Fail`) | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
 | `memory-compactor-prompt-spec.md` | Pass | Pass | Pass | Pass | Pass — approved wording authority | None |
-| `prompt-confusion-root-cause.md` | Pass | Pass | Pass | Pass | Pass — evidence/context, approval N/A | None |
+| `prompt-confusion-root-cause.md` | Pass | Pass | Pass | Pass | Pass — evidence/context | None |
 | `compaction-output-contract-decision.md` | Pass | Pass | Pass | Pass | Pass — approved behavior authority | None |
-| `evidence/daily-assistant-compaction-failure.png` | Pass | Pass | Pass | Pass | Pass — retained UI evidence | None |
-| `evidence/memory-compactor-user-requirement-view.png` | Pass | Pass | Pass | Pass | Pass — retained UI evidence | None |
-| `evidence/daily-assistant-server-log-excerpt.txt` | Pass | Pass | Pass | Pass | Pass — retained runtime evidence | None |
-| `evidence/failed-compactor-final-system-prompt.md` | Pass | Pass | Pass | Pass | Pass — exact 5,466-character evidence | None |
-| `evidence/failed-compactor-outputs.json` | Pass | Pass | Pass | Pass | Pass — focused public-output evidence | None |
-| `evidence/successful-compactor-output-comparison.json` | Pass | Pass | Pass | Pass | Pass — successful same-parent comparison | None |
-| `evidence/parser-tolerance-probe.jsonl` | Pass | Pass | Pass | Pass | Pass — executed current-parser evidence | None |
+| `repeated-compaction-runtime-analysis.md` | Pass | Pass | Pass | Pass | Pass — evidence/context | None |
+| `compactor-runner-failure-analysis.md` | Pass | Pass | Pass | Pass — normative direction now requires `awaiting_user_retry`, USER-only re-entry, and same-queue non-user retention | Pass — evidence/context | None; `AR-FIND-004` is resolved |
+| `compaction-runtime-behavior-examples.md` | Pass | Pass | Pass | Pass | Pass — approved intended behavior, including USER-versus-non-user queue example | None |
+| `compaction-memory-shape-reassessment.md` | Pass | Pass | Pass | Pass | Pass — resolved decision context | None |
+| Prior SR-001 evidence set | Pass | Pass | Pass | Pass | Pass — retained evidence | None |
+| `evidence/repeated-compaction-at-20-percent.png` | Pass | Pass | Pass | Pass | Pass — retained UI evidence | None |
+| `evidence/repeated-compaction-server-log-excerpt.txt` | Pass | Pass | Pass | Pass — hash and exact three-operation sequence revalidated | Pass — corrected retained evidence | None; `AR-FIND-002` remains resolved |
+| `evidence/compactor-provider-failure-and-repeat.png` | Pass | Pass | Pass | Pass | Pass — retained UI evidence | None |
+| `evidence/compactor-runner-failure-evidence.json` | Pass | Pass | Pass | Pass | Pass — retained trace summary | None |
 
-The investigation notes provide the canonical complete supplement inventory. Each supplement is linked from at least one materially supported core artifact, and approval applicability is not conflated with evidentiary status.
+The investigation contains the canonical supplement inventory, and every behavior-defining supplement is linked from the relevant core artifacts with clear authority.
 
 ## Task Design Health Assessment Verdict
 
 | Assessment Area | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Assessment is present for the current task posture | Pass | Requirements, investigation notes, and design spec classify the work as a bug fix with bounded behavior change and cleanup | None |
-| Root-cause classification is explicit and evidence-backed | Pass | Missing task/evidence invariant is proven by two live failures; generic sender prose and first-object selection are confirmed in current code | None |
-| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | Design requires a bounded refactor in existing prompt/parser/attempt owners and explicitly defers file-backed transport/common-prompt redesign | None |
-| Refactor decision is supported by the concrete design sections or residual-risk rationale | Pass | Ownership, removal, interface, file, sequence, test, and risk sections implement the assessment without disturbing the healthy accepted-compaction boundary | None |
+| Assessment is present for the current task posture | Pass | Bug fix, bounded behavior change, and local refactor are explicit | None |
+| Root-cause classification is explicit and evidence-backed | Pass | Trigger/post-success invariants, error transport, pending authorization, and pre-conversion origin loss are traced through current code/evidence | None |
+| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | Planning, episode, event, runner, pending-attempt, origin, queue admission, and recovery changes are mapped; unrelated admission/chunking remains deferred | None |
+| Refactor decision is supported by the concrete design sections or residual-risk rationale | Pass | Files, interfaces, state shapes, ordering, failure behavior, cleanup, tests, and unchanged contracts are concrete | None |
 
 ## Spine Inventory Verdict
 
 | Spine ID | Scope | Spine Is Readable? (`Pass`/`Fail`) | Narrative Is Clear? (`Pass`/`Fail`) | Facade Vs Governing Owner Is Clear? (`Pass`/`Fail`/`N/A`) | Main Domain Subject Naming Is Clear? (`Pass`/`Fail`) | Ownership Is Clear? (`Pass`/`Fail`) | Off-Spine Concerns Stay Off Main Line? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `DS-001` | Primary end-to-end parent compaction | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| `DS-002` | Primary end-to-end child attempt | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| `DS-003` | Return/event validation and lifecycle path | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| `DS-004` | Bounded local two-state attempt flow | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
-| `DS-005` | Primary end-to-end lineage read/write | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| `DS-006` | Primary end-to-end global input composition | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-
-`DS-001` spans the real supported trigger through parent continuation or final safe failure; the local parser and retry paths do not substitute for that business spine.
+| `DS-001` | Primary automatic compaction and authorized retry | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| `DS-002` | Primary child execution outcome | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| `DS-003` | Bounded target-respecting planner | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
+| `DS-004` | Bounded post-success threshold gate | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
+| `DS-005` | Return/event terminal outcome | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| `DS-006` | Failed-pending external turn admission and execution authorization | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 
 ## Boundary Encapsulation Verdict
 
 | Boundary / Owner | Authoritative Public Entry Point Is Clear? (`Pass`/`Fail`) | Internal Owned Mechanisms Stay Internal? (`Pass`/`Fail`) | Caller Bypass Risk Is Controlled? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `WorkingContextCompactionStrategy.propose` | Pass | Pass | Pass | Pass | Executor does not call summarizer/parser directly |
-| `AgentCompactionSummarizer.summarizeMessageUnits` | Pass | Pass | Pass | Pass | Attempt policy remains below strategy and above prompt/runner/parser |
-| `CompactionAgentRunner.runCompactionTask` | Pass | Pass | Pass | Pass | Exactly one child lifecycle per call; no runner-owned retry |
-| `CompactionResponseParser.parse` | Pass | Pass | Pass | Pass | Extraction, schema validation, and ambiguity stay together |
-| `MemoryManager.prepareCompaction` / `commitAcceptedCompaction` | Pass | Pass | Pass | Pass | No response/repair path reaches stores directly |
-| `AgentInputPipeline.processForLlm` | Pass | Pass | Pass | Pass | Mandatory processor changes content composition only, not turn/tool/provider authority |
+| `MemoryManager.evaluateCompactionObservation` / coordinator | Pass | Pass | Pass | Pass | Sole observation/request owner |
+| `MemoryManager.getPendingCompactionGate` / `beginPendingCompactionAttempt` | Pass | Pass | Pass | Pass | Presence, admission query, and atomic execution authorization remain distinct |
+| `MemoryManager.retainCompactionFailure` | Pass | Pass | Pass | Pass | Verifies the in-progress operation/turn and installs `awaiting_user_retry` without scheduling |
+| `AgentEventInbox` / `AgentEventScheduler` | Pass | Pass | Pass | Pass | One queue owns origin-stamped storage and first-eligible selection |
+| `CompactionRetryTurnAdmissionPolicy` | Pass | Pass | Pass | Pass | Read-only adapter; cannot mutate queue or pending state |
+| `WorkingContextCompactionStrategyResolver.resolve({planningBudget})` | Pass | Pass | Pass | Pass | Dynamic operation budget remains sound |
+| `ServerCompactionAgentRunner.runCompactionTask` | Pass | Pass | Pass | Pass | Child execution stays isolated from parser correction |
+| `MemoryManager.prepare/commitAcceptedCompaction` | Pass | Pass | Pass | Pass | Final hook changes runtime gate only after accepted writes/snapshot succeed |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
 
 | Owner / Boundary | Allowed Dependencies Are Clear? (`Pass`/`Fail`) | Forbidden Shortcuts Are Explicit? (`Pass`/`Fail`) | Direction Is Coherent With Ownership? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Prompt/history boundary | Pass | Pass | Pass | Pass | Prompt builder may use renderer and parser-owned stage type only |
-| Summarizer/runner/parser | Pass | Pass | Pass | Pass | Summarizer coordinates; runner and parser remain independently singular |
-| Strategy/parent executor | Pass | Pass | Pass | Pass | Strategy sees final summarizer outcome; executor sees final proposal/error only |
-| Accepted-compaction boundary | Pass | Pass | Pass | Pass | Model adaptation cannot bypass host acceptance or persistence |
-| Input-processing boundary | Pass | Pass | Pass | Pass | Source-specific wording stays with source builders and provider roles |
-| Lineage boundary | Pass | Pass | Pass | Pass | Prompt-version metadata does not leak into prompt/runtime branching |
+| Inbox/scheduler/admission policy | Pass | Pass | Pass | Pass | Scheduler reads only the public failed-pending query and never mutates memory state |
+| Active turn/request assembler/executor | Pass | Pass | Pass | Pass | Immutable origin reaches the coordinator command; processed text is not authority |
+| LLM phase / compaction observation | Pass | Pass | Pass | Pass | Threshold decisions stay behind memory boundary |
+| Coordinator / threshold gate | Pass | Pass | Pass | Pass | Post-success state remains local and separate from pending |
+| Planner / planning budget / validator | Pass | Pass | Pass | Pass | One immutable budget flows forward |
+| Response event / collector / summarizer | Pass | Pass | Pass | Pass | Execution usability precedes response validation |
+| Accepted-compaction boundary | Pass | Pass | Pass | Pass | No child/parser/store bypass |
 
 ## Interface Boundary Verdict
 
 | Interface / API / Query / Command / Method | Subject Is Clear? (`Pass`/`Fail`) | Responsibility Is Singular? (`Pass`/`Fail`) | Identity Shape Is Explicit? (`Pass`/`Fail`) | Generic Boundary Risk (`Low`/`Medium`/`High`) | Verdict (`Pass`/`Fail`) |
 | --- | --- | --- | --- | --- | --- |
-| `buildTaskPrompt(units, options)` | Pass | Pass | Pass | Low | Pass |
-| `buildCorrectionTaskPrompt(initialPrompt, validationStage)` | Pass | Pass | Pass | Low | Pass |
-| `CompactionResponseParser.parse(text)` | Pass | Pass | Pass | Low | Pass |
-| `runCompactionTask(task)` | Pass | Pass | Pass | Low | Pass |
-| `summarizeMessageUnits(units)` | Pass | Pass | Pass | Low | Pass |
-| `getLastCompactionExecutionMetadata()` | Pass | Pass | Pass | Low | Pass |
-| `UserInputContextBuildingProcessor.process(...)` | Pass | Pass | Pass | Low | Pass |
-| `normalizeCompactionLineageRecord(value)` | Pass | Pass | Pass | Low | Pass |
+| `resolveCompactionPlanningBudget(TokenBudget, observedPromptTokens)` | Pass | Pass | Pass | Low | Pass |
+| `MemoryManager.evaluateCompactionObservation(input)` | Pass | Pass | Pass | Low | Pass |
+| Pending gate read query | Pass | Pass | Pass | Low | Pass |
+| `MemoryManager.beginPendingCompactionAttempt(input)` | Pass | Pass | Pass | Low | Pass |
+| `MemoryManager.retainCompactionFailure(...)` | Pass | Pass | Pass | Low | Pass |
+| `MemoryManager.completePendingAfterAcceptedCommit(operationId)` | Pass | Pass | Pass | Low | Pass |
+| `resolveTurnStartOrigin(event)` | Pass | Pass | Pass | Low | Pass |
+| `InboxQueueStore.claimFirstMatching(lane, predicate)` | Pass | Pass | Pass | Low | Pass |
+| `CompactionRetryTurnAdmissionPolicy.isDispatchable(entry)` | Pass | Pass | Pass | Low | Pass |
+| `PendingCompactionExecutor.executeIfAuthorized(input)` | Pass | Pass | Pass | Low | Pass |
+| `WorkingContextCompactionStrategyResolver.resolve({planningBudget})` | Pass | Pass | Pass | Low | Pass |
+| `CompactionRunOutputCollector.waitForFinalOutput` | Pass | Pass | Pass | Low | Pass |
 
 ## Existing Capability / Subsystem Reuse Verdict
 
 | Need / Concern | Existing Capability Area Was Checked? (`Pass`/`Fail`) | Reuse / Extension Decision Is Sound? (`Pass`/`Fail`) | New Support Piece Is Justified? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Target-history rendering | Pass | Pass | N/A | Pass | Extend the existing renderer |
-| Initial/correction task messages | Pass | Pass | N/A | Pass | Extend the existing prompt builder |
-| Candidate/schema validation | Pass | Pass | N/A | Pass | Extend the existing parser |
-| Bounded content repair | Pass | Pass | N/A | Pass | Extend the existing summarizer; no generic retry service |
-| Parent terminal lifecycle | Pass | Pass | N/A | Pass | Reuse executor/reporter |
-| Canonical mutation | Pass | Pass | N/A | Pass | Reuse accepted-compaction owners |
-| Sender-neutral context concatenation | Pass | Pass | N/A | Pass | Extend the mandatory input processor |
-| Prompt-version validation | Pass | Pass | N/A | Pass | Extend lineage record authority |
+| Trigger/capacity arithmetic | Pass | Pass | N/A | Pass | Extend current budget/policy owners |
+| Post-success threshold episode | Pass | Pass | Pass | Pass | Focused gate under coordinator is proportionate |
+| Failed-pending execution authorization | Pass | Pass | Pass | Pass | Attempt state is local to existing coordinator |
+| USER/non-user admission | Pass | Pass | Pass | Pass | Extend existing inbox/scheduler with one read-only compaction policy and matching claim |
+| Target-aware unit selection | Pass | Pass | N/A | Pass | Extend planner/cost strategy |
+| Child error transport and response repair | Pass | Pass | N/A | Pass | Existing event/runner/summarizer owners are reused |
+| Persistence | Pass | Pass | N/A | Pass | Accepted path remains sole writer |
 
 ## Subsystem / Capability-Area Allocation Verdict
 
 | Subsystem / Capability Area | Ownership Allocation Is Clear? (`Pass`/`Fail`) | Reuse / Extend / Create-New Decision Is Sound? (`Pass`/`Fail`) | Supports The Right Spine Owners? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `autobyteus-ts` memory compaction | Pass | Pass | Pass | Pass | Prompt, parser, and attempt changes stay in the established capability |
-| `autobyteus-server-ts` compactor execution/built-in definition | Pass | Pass | Pass | Pass | Prompt changes; one-run server boundary is reused |
-| `autobyteus-server-ts` prompt processing | Pass | Pass | Pass | Pass | Only generic content composition changes |
-| `autobyteus-ts` memory lineage | Pass | Pass | Pass | Pass | Owns supported/current prompt versions |
-| Accepted memory commit/projection | Pass | Pass | Pass | Pass | Reused unchanged |
+| Agent inbox/runtime/turn/request assembly | Pass | Pass | Pass | Pass | Owns origin, queue selection, active-turn serialization, and propagation, not memory mutation |
+| `autobyteus-ts` agent loop/token budget | Pass | Pass | Pass | Pass | Usage and generic error-event roles remain bounded |
+| `autobyteus-ts` memory compaction | Pass | Pass | Pass | Pass | Planning, threshold episode, pending authorization, acceptance, and failure retention are coherent |
+| `autobyteus-ts` streaming events | Pass | Pass | Pass | Pass | Generic `is_error` contract is sound |
+| `autobyteus-server-ts` compaction execution | Pass | Pass | Pass | Pass | One child run and typed collection |
+| Memory persistence/lineage | Pass | Pass | Pass | Pass | Reused unchanged; no migration |
 
 ## Reusable Owned Structures Verdict
 
 | Repeated Structure / Logic | Extraction Need Was Evaluated? (`Pass`/`Fail`) | Shared File Choice Is Sound? (`Pass`/`Fail`/`N/A`) | Ownership Of Shared Structure Is Clear? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Response validation stage | Pass | Pass | Pass | Pass | Parser-owned closed type shared only with prompt/summarizer |
-| Supported lineage prompt versions | Pass | Pass | Pass | Pass | One tuple/type/runtime authority in lineage record |
-| Per-child execution metadata | Pass | N/A | Pass | Pass | Existing runner-owned structure is reused; no parent-operation DTO is added |
+| Planning target values | Pass | Pass | Pass | Pass | One immutable planning budget |
+| Pending/episode recovery copy | Pass | Pass | Pass | Pass | Shared coordinator types avoid recovery duplication |
+| Pending attempt state | Pass | Pass | Pass | Pass | One closed union serves coordinator/executor/recovery/query |
+| Turn-start origin | Pass | Pass | Pass | Pass | Entry owns classification; active turn carries the same value |
+| Runner failure kind | Pass | Pass | Pass | Pass | Closed cross-package classification |
+| Budget assessment | Pass | Pass | Pass | Pass | Runtime-only acceptance metadata |
 
 ## Shared Structure / Data Model Tightness Verdict
 
 | Shared Structure / Type / Schema | One Clear Meaning Per Field? (`Pass`/`Fail`) | Redundant Attributes Removed? (`Pass`/`Fail`) | Overlapping Representation Risk Is Controlled? (`Pass`/`Fail`) | Shared Core Vs Specialized Variant / Composition Decision Is Sound? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| Six-array model response | Pass | Pass | Pass | N/A | Pass | Preserved as approved transient boundary; unknown extras do not become memory |
-| `CompactionResult` | Pass | Pass | Pass | Pass | Pass | Remains the sole host-consumed result shape |
-| Validation-stage union | Pass | Pass | Pass | N/A | Pass | Closed to extraction/schema/ambiguity for correction text |
-| `CompactionAgentExecutionMetadata` | Pass | Pass | Pass | Pass | Pass | One record per child, not overloaded with parent lifecycle |
-| Prompt-contract version set | Pass | Pass | Pass | N/A | Pass | Current write value and supported read set have distinct clear meanings |
+| `CompactionPlanningBudget` | Pass | Pass | Pass | Pass | Pass | `B/T/P` meanings are clear |
+| `CompactionThresholdEpisode` | Pass | Pass | Pass | Pass | Pass | Separate from pending because accepted commit must clear pending |
+| `PendingCompactionRequest` + `PendingCompactionAttemptState` | Pass | Pass | Pass | Pass | Pass | Presence no longer implies authorization |
+| `TurnStartEventInboxEntry.origin` / `AgentTurn.startOrigin` | Pass | Pass | Pass | Pass | Pass | One immutable `TurnStartOrigin`; TOOL is excluded |
+| `CompactionBudgetAssessment` | Pass | Pass | Pass | Pass | Pass | Planned and finalized estimates remain distinct |
+| Runner error and assistant-complete payload | Pass | Pass | Pass | Pass | Pass | Execution and content facts remain singular |
 
 ## File Responsibility Mapping Verdict
 
 | File | Responsibility Is Singular And Clear? (`Pass`/`Fail`) | Responsibility Matches The Intended Owner/Boundary? (`Pass`/`Fail`) | Responsibilities Were Re-Tightened After Shared-Structure Extraction? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `working-context-compaction-prompt-builder.ts` | Pass | Pass | Pass | Pass | Initial and correction messages are one prompt subject |
-| `compaction-conversation-history-renderer.ts` | Pass | Pass | N/A | Pass | Transcript and sole wrapper only |
-| `compaction-response-parser.ts` | Pass | Pass | Pass | Pass | Parser owns its stage type and candidate semantics |
-| `agent-compaction-summarizer.ts` | Pass | Pass | Pass | Pass | Fixed local attempt flow and diagnostics only |
-| Memory Compactor `agent.md` | Pass | Pass | N/A | Pass | Stable exact system task definition |
-| `user-input-context-building-processor.ts` | Pass | Pass | Pass | Pass | Path/context composition remains cohesive after sender prose removal |
-| `compaction-lineage-record.ts` | Pass | Pass | Pass | Pass | Current/supported prompt versions stay with persisted record validation |
-| Direct tests and durable docs | Pass | Pass | N/A | Pass | Explicit target paths are actionable; the design lists five current docs despite one editorial reference to “four” |
+| Planning budget / planner / cost files | Pass | Pass | Pass | Pass | Complete-target formula and selection remain actionable |
+| Threshold gate / coordinator / memory facade | Pass | Pass | Pass | Pass | Separate actual-observation and pending-attempt states have clear owners |
+| Inbox entry/store/scheduler | Pass | Pass | Pass | Pass | Origin stamping, matching claim, identical dispatchability predicate, wake, and drain are mapped |
+| Admission policy | Pass | Pass | Pass | Pass | Focused read-only bridge between memory gate and scheduler |
+| `agent-turn.ts`, worker, turn-start handler, assembler | Pass | Pass | Pass | Pass | Carry origin and invoke typed authorization without inference |
+| Strategy resolver/registry files | Pass | Pass | Pass | Pass | Static and dynamic inputs remain separated |
+| Pipeline/notifier/stream payload files | Pass | Pass | Pass | Pass | Existing response path owns `is_error` |
+| Collector/runner/summarizer files | Pass | Pass | Pass | Pass | Runner failure and response correction remain disjoint |
+| Accepted builder/validator/committer | Pass | Pass | Pass | Pass | Final validation and commit-hook order are explicit |
 
 ## Subsystem / Folder / File Placement Verdict
 
 | Path / Item | Target Placement Is Clear? (`Pass`/`Fail`) | Folder Matches Owning Boundary? (`Pass`/`Fail`) | Mixed-Layer Or Over-Split Risk (`Low`/`Medium`/`High`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `autobyteus-ts/src/memory/compaction` | Pass | Pass | Low | Pass | Established flat capability folder remains proportionate |
-| `autobyteus-server-ts/src/agent-execution/compaction` | Pass | Pass | Low | Pass | Server child lifecycle remains transport-owned |
-| `autobyteus-server-ts/src/agent-customization/processors/prompt` | Pass | Pass | Low | Pass | Shared context composition stays off the compaction spine |
-| `autobyteus-ts/src/memory/lineage` | Pass | Pass | Low | Pass | Persisted provenance validation remains isolated |
-| Built-in Memory Compactor template folder | Pass | Pass | Low | Pass | Stable prompt/config authority |
+| `autobyteus-ts/src/agent/event-inbox` | Pass | Pass | Low | Pass | Existing queue/selection capability owns origin-stamped entries and matching claim |
+| `autobyteus-ts/src/agent/compaction/compaction-retry-turn-admission-policy.ts` | Pass | Pass | Low | Pass | Narrow cross-boundary policy without queue or memory mutation |
+| `autobyteus-ts/src/agent` active-turn/request path | Pass | Pass | Low | Pass | Existing lifecycle subject carries origin |
+| `autobyteus-ts/src/memory/compaction` | Pass | Pass | Low | Pass | Focused peer concerns remain appropriate |
+| `autobyteus-ts/src/memory` | Pass | Pass | Low | Pass | Coordinator remains memory authority |
+| `autobyteus-server-ts/src/agent-execution/compaction` | Pass | Pass | Low | Pass | Server child adapter remains isolated |
+| Stores/lineage | Pass | Pass | Low | Pass | Unchanged persistence depth |
 
 ## Removal / Decommission Completeness Verdict
 
 | Item / Area | Redundant / Obsolete Piece To Remove Is Named? (`Pass`/`Fail`) | Replacement Owner / Structure Is Clear? (`Pass`/`Fail`/`N/A`) | Removal / Decommission Scope Is Explicit? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Generic sender-heading map/fallback/parameter/import | Pass | Pass | Pass | Pass | Replaced by raw or neutral context/message composition |
-| Old `<conversation_history>` wrapper/escapes | Pass | Pass | Pass | Pass | Replaced by sole target-agent wrapper |
-| First-parseable-object selection | Pass | Pass | Pass | Pass | Replaced by validate-then-select |
-| Unknown-field rejection | Pass | Pass | Pass | Pass | Replaced by recognized-field projection |
-| One-shot returned-content failure path | Pass | Pass | Pass | Pass | Replaced by fixed two-state summarizer flow |
-| Current prompt-contract value 2 | Pass | Pass | Pass | Pass | Writers move to 3; immutable records remain directly readable |
-| Stale current tests/docs | Pass | Pass | Pass | Pass | Direct source, generated counterpart, E2E expectation, and five doc paths are named |
+| Independent fixed-35% suffix authority | Pass | Pass | Pass | Pass | 35% remains only a capped preference |
+| Budget-overriding suffix fallback | Pass | Pass | Pass | Pass | Soft recent minimum replaces it |
+| Split caller trigger/request policy | Pass | Pass | Pass | Pass | One observation boundary |
+| Duplicated recovery pending type / mutable boolean / pending-presence execution | Pass | Pass | Pass | Pass | Shared runtime shapes and atomic authorization replace them |
+| Lost error marker / error-text classification | Pass | Pass | Pass | Pass | Typed event and runner error |
+| Generic repair-exhaustion error | Pass | Pass | Pass | Pass | Typed response failure |
+| SR-002 autonomous failure-retry states | Pass | Pass | Pass | Pass | Explicitly rejected in favor of USER-controlled recovery |
+| Consume/requeue/second-buffer non-user workaround | Pass | Pass | Pass | Pass | Same-queue first-matching admission is the clean replacement |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Area | Compatibility Wrapper / Dual-Path / Legacy Retention Exists? (`Yes`/`No`) | Clean-Cut Removal Is Explicit? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- |
-| Generic sender headings | No | Pass | Pass | No setting, alias, or fallback |
-| History wrapper | No | Pass | Pass | No old-tag alias or nested/dual wrapper |
-| Model response contract | No | Pass | Pass | Six-array only; no `items` alias or first-object fallback |
-| Attempt policy | No | Pass | Pass | Fixed two attempts; no configurable/unbounded legacy path |
-| Lineage prompt versions 1/2 | No | Pass | Pass | Supported provenance values in one normal reader, not historical-schema branches or dual business behavior |
+| Planner/trigger policy | No | Pass | Pass | One current formula/observation boundary |
+| Assistant error classification | No | Pass | Pass | No missing-flag or text fallback |
+| Pending/recovery shape | No | Pass | Pass | No duplicate DTO or boolean-authority path |
+| Queue deferral | No | Pass | Pass | No second store, message copy, or compatibility branch |
+| Prompt/schema/lineage | No | Pass | Pass | Preserved v3 and version-agnostic supported reads |
+| SR-002 failure scheduler | No | Pass | Pass | Removed from current design |
 
 ## Persisted-Data Transition Verdict (When Applicable)
 
 | Area / Stored Subject | Approved Decision | Representative Reader / Semantic / Invariant Evidence Is Sufficient? (`Pass`/`Fail`) | Direct Use, Rebuild, Or Migration Choice Is Proportionate? (`Pass`/`Fail`) | Migration Safety Is Complete If Required? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| Episodic/semantic rows, schema-v1 lineage, raw archives, working-context snapshot | `Directly Usable — No Migration` | Pass | Pass | N/A | Pass | Only prompt provenance advances to 3; no stored shape or consumed semantics change, and one reader accepts 1/2/3 without branching behavior |
+| Episodic/semantic rows, lineage, raw archives/manifests, working-context snapshot | `Directly Usable — No Migration` | Pass | Pass | N/A | Pass | Planning, episode, pending-attempt, origin, and queue admission state are runtime-only; stored schema and semantics remain unchanged |
 
 ## Change / Refactor Safety Verdict
 
 | Area | Sequence Is Realistic? (`Pass`/`Fail`) | Temporary Seams Are Explicit? (`Pass`/`Fail`) | Cleanup / Removal Is Explicit? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) |
 | --- | --- | --- | --- | --- |
-| Exact system and operation prompt | Pass | Pass | Pass | Pass |
-| Global input-format cleanup | Pass | Pass | Pass | Pass |
-| Parser and bounded attempt flow | Pass | Pass | Pass | Pass |
-| Lineage current/supported versions | Pass | Pass | Pass | Pass |
-| Tests and durable docs | Pass | Pass | Pass | Pass |
-
-No temporary dual path is planned; owner-local changes are ordered so focused contracts can be verified before the attempt lifecycle is widened.
+| Planning budget and target-aware planner | Pass | Pass | Pass | Pass |
+| Post-success threshold episode / commit hook | Pass | Pass | Pass | Pass |
+| Dynamic strategy execution budget | Pass | Pass | Pass | Pass |
+| Assistant event and typed runner outcome | Pass | Pass | Pass | Pass |
+| Pending-attempt state and USER-only authorization | Pass | Pass | Pass | Pass |
+| Origin-stamped same-queue admission | Pass | Pass | Pass | Pass |
+| Recovery-state sharing and prior-policy removal | Pass | Pass | Pass | Pass |
+| Executable coverage | Pass | Pass | Pass | Pass |
 
 ## Example Adequacy Verdict
 
 | Topic / Area | Example Was Needed? (`Yes`/`No`) | Example Is Present And Clear? (`Pass`/`Fail`/`N/A`) | Bad / Avoided Shape Is Explained When Helpful? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Exact first operation message | Yes | Pass | Pass | Pass | Approved byte shape is complete |
-| Neutral context/message composition | Yes | Pass | Pass | Pass | Raw vs context-bearing shapes are explicit |
-| Candidate selection/ambiguity | Yes | Pass | Pass | Pass | Unrelated-first, duplicate, and distinct-valid cases are covered |
-| Correction task and validation stages | Yes | Pass | Pass | Pass | Exact prefix and closed substitutions are specified |
-| Parent/child lifecycle and commit | Yes | Pass | Pass | Pass | Good and forbidden shapes make ownership clear |
+| `B/T/P` formula and reserve | Yes | Pass | Pass | Pass | 20% and 80% paths are clear |
+| Post-success actual-below / inadequate reduction | Yes | Pass | Pass | Pass | Estimate versus observation is explicit |
+| User retry after failure | Yes | Pass | Pass | Pass | State and distinct-turn authorization are concrete |
+| USER behind retained AGENT/SYSTEM entries | Yes | Pass | Pass | Pass | Success, failure, no-spin wait, relative order, and initial automatic attempt are covered |
+| Runner failure versus usable invalid output | Yes | Pass | Pass | Pass | Typed flag and forbidden text matching are explicit |
 
 ## Material Premise Validation (Only When Needed)
 
-None. The design's bounded correction machinery depends on invalid returned compactor content, which is already established directly in `BEH-003` by two production child outputs and the current automatic-compaction lifecycle. No prospective finding or new machinery depends on an additional assumed production, failure, or lifecycle scenario.
+### `MP-002` — a supported inter-agent or system message can enter the turn-start queue while a failed compaction awaits user retry
+
+- Related approved requirement or established contract: `REQ-014`, `REQ-015`, `AC-020`–`AC-023`; established core/server external turn-start contracts.
+- Relevant behavior ID(s): `BEH-009`, `BEH-010`
+- Initiating basis kind: `System`
+- Independent product-supported initiating trigger or applicable governing contract: another active agent sends a normal direct/team message, or the system posts a normal task notification, after the target agent's compaction failed and retained pending state.
+- Support evidence: core `AgentTurnTrigger` and inbox accept `InterAgentMessageReceivedEvent`; production direct/team builders also create `UserMessageReceivedEvent` with `SenderType.AGENT`; task notification builders use `SenderType.SYSTEM`. All enter the `turn_start` lane before input conversion.
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: compaction final failure -> coordinator retains pending -> active turn settles -> non-user input is posted -> origin-stamped turn-start entry -> scheduler admission observes `awaiting_user_retry` -> entry remains unclaimed; later USER entry wakes selection -> first eligible USER is claimed -> active turn carries USER origin -> coordinator authorizes one retry -> failure retains queue/gate or success clears pending, dispatches USER, and later resumes FIFO.
+- Lifecycle preconditions and material consequence at the claimed point: the pending operation is awaiting explicit USER authorization. Without the gate, non-user input would autonomously retry; without matching selection, retained non-user input would block recovery. The target path avoids both consequences while preserving one queue.
+- Reachability: `Reachable`
+- Review consequence / proportionate response: SR-004 provides the required origin stamp, narrow read-only admission policy, same-queue first-matching claim, atomic attempt authorization, wake/settlement behavior, and direct executable coverage. The premise is fully handled and no additional machinery is required.
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
@@ -239,7 +270,7 @@ None.
 
 ## Classification
 
-`N/A — Pass`
+N/A — `Pass`.
 
 ## Recommended Recipient
 
@@ -247,14 +278,16 @@ None.
 
 ## Residual Risks
 
-- A schema-valid summary can still be incomplete or factually weak; deterministic validation cannot prove model fidelity.
-- Invalid returned content may add one full child-run latency and token cost; the attempt bound is fixed at two.
-- First-attempt provider, timeout, launch, or transport failure is intentionally not retried because the approved correction is content-specific.
-- The global input-formatting cleanup has broad product reach; implementation and downstream coverage must preserve USER/TOOL/AGENT/SYSTEM content, readable context/media behavior, null text-only tool continuation, provider-native tool history, and source-specific wording.
-- The design explicitly lists five current documentation paths; the isolated “four current memory architecture docs” label in the file-responsibility table is editorial and does not obscure implementation scope.
+- Token estimation remains approximate; the accepted precommit postcondition and actual-observation gate bound the effect.
+- Runtime-only post-success suppression can reset on restart and permit one additional operation, as explicitly accepted.
+- Ordinary queued turn-start delivery remains non-persistent and follows the existing shutdown drain contract.
+- A schema-valid summary can still be factually weak.
+- Invalid usable content may add one bounded correction child; runner failures bypass it.
+- A single oversized newly arriving message still has no general tokenizer/admission/chunking gate.
+- The global sender-heading cleanup and approved v3 prompt/parser baseline must remain intact during rework.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
 - Material-Premise Gate: `Pass`
-- Notes: `ARCH-REV-001` confirms `SR-001`. The solution is behavior-grounded, owner-coherent, clean-cut, actionable on the current codebase, and ready for implementation with no unresolved findings.
+- Notes: `ARCH-REV-004` confirms `AR-FIND-003` and `AR-FIND-004` resolved; `AR-FIND-001` and `AR-FIND-002` remain resolved. SR-004 is behaviorally grounded, structurally actionable, clean-cut, and ready for implementation rework.

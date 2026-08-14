@@ -210,12 +210,12 @@ remain directly readable. Recognized-field normalization ignores that stored
 superset field without rewriting the append-only file, introducing a schema
 branch, or using it as an output-to-raw origin link. New rows omit it.
 
-`selectionPolicyVersion` remains `1`. Existing prompt-audit value `1` is retained
-and read directly, while every new accepted compaction writes
-`promptContractVersion: 2` for the natural-sizing/canonical-history contract.
-Mixed immutable `1 -> 2` chains are valid without rewriting or decoding earlier
-records. Any other prompt-contract value is rejected without mutating the
-append-only lineage file.
+`selectionPolicyVersion` remains `1`. Prompt-contract values `1`, `2`, and `3`
+are read directly, while every new accepted compaction writes
+`promptContractVersion: 3` for the explicit target-agent framing and bounded
+response-repair contract. Mixed immutable `1 -> 2 -> 3` chains are valid without
+rewriting or decoding earlier records. Any other prompt-contract value is
+rejected without mutating the append-only lineage file.
 
 ## 8. Forward-Only Native Snapshot Migration
 
@@ -292,11 +292,15 @@ select a fallback model.
 ## 11. Natural Compactor Conversation
 
 The built-in `autobyteus-memory-compactor` system prompt owns the stable
-summarization instructions, natural episode/fact sizing guidance, and exact JSON
-response schema. The per-operation user message is only one renderer-produced
-`<conversation_history>...</conversation_history>` block; it does not duplicate
-task instructions, schema text, size policy, token settings, or platform
-internals.
+summarization instructions, natural episode/fact sizing guidance, and exact
+six-array JSON response schema. The initial per-operation user message identifies
+the input as the conversation history of the target agent, surrounds it with one
+plain-text `START OF TARGET AGENT CONVERSATION HISTORY` /
+`END OF TARGET AGENT CONVERSATION HISTORY` separator pair,
+and contains exactly one renderer-produced
+`<target_agent_conversation_history>...</target_agent_conversation_history>`
+block. Nothing follows the end separator, and the initial message does not
+duplicate the task, schema, size policy, token settings, or platform internals.
 
 The compactable logical prefix is rendered as one natural ordered conversation.
 Before rendering, `WorkingContextFinalizer` composes the selected visible
@@ -307,13 +311,39 @@ ordered.
 
 The renderer omits private reasoning and backend call IDs. Each settled tool
 interaction is one `Tool` body containing name, status, arguments, and exactly
-one result or error section. Source text that could imitate the reserved outer
-boundary is escaped.
+one result or error section. Source text that could imitate the reserved
+`target_agent_conversation_history` boundary is escaped.
 
-The compactor returns only the exact structured JSON contract and may choose any
-structurally valid natural output size with at least one episode. Prompt
-rendering is not persisted as lineage evidence; an optional SHA-256 digest may
-support integrity/audit metadata without copying content.
+The shared server input processor does not wrap messages in generic sender
+headings. Authored content passes through unchanged when no readable context is
+concatenated; when context is present, neutral `[Context]` and `[Message]`
+sections delimit it without changing sender metadata or provider-native tool
+protocol.
+
+The response parser extracts exact, fenced, and balanced JSON-object candidates,
+validates every candidate against all six required arrays, and accepts exactly
+one distinct host-consumed result with at least one non-empty episode. Harmless
+extra fields and unusable blank/non-string entries are ignored; unrelated JSON
+objects cannot mask a later valid object, while multiple distinct valid objects
+are rejected as ambiguous.
+
+Returned-content validation failure triggers exactly one corrective child run
+under the same pending compaction operation. The correction prefix records the
+closed validation stage, restates the six-array shape, and resends the same
+selected target history. It has a new task/run identity and the compactor remains
+tool-free. A first-attempt runner, transport, provider, or timeout failure is
+terminal and is not retried by this response-repair boundary.
+
+Repair success produces one parent completed lifecycle and reaches the existing
+proposal/accept/commit boundary exactly once. Repair exhaustion produces one
+parent failed lifecycle with both stages and available child run IDs, retains the
+pending operation, and does not advance raw archives, output rows, lineage,
+WorkingContext, or its snapshot.
+
+The compactor may choose any structurally valid natural output size with at least
+one episode. Prompt rendering is not persisted as lineage evidence; the final
+successful attempt's optional SHA-256 digest may support integrity/audit metadata
+without copying content.
 
 ## 12. Shared Readable Value And Tool Policy
 
@@ -325,8 +355,8 @@ with an omitted-character count.
 Native compaction and generated Work Evidence reuse this value/tool body policy
 but keep separate sources and envelopes:
 
-- compaction renders selected WorkingContext units with its smaller bound and
-  XML boundary; and
+- compaction renders selected WorkingContext units with its smaller bound,
+  target-agent separators, and XML boundary; and
 - Work Evidence renders canonical raw-backed historical events with timestamps,
   Markdown files/manifests, and a 20,000-character per-value bound.
 

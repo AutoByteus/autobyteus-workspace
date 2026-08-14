@@ -9,6 +9,25 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/memory-compactor-prompt-spec.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/prompt-confusion-root-cause.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/compaction-output-contract-decision.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/repeated-compaction-runtime-analysis.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/compactor-runner-failure-analysis.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/compaction-runtime-behavior-examples.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/compaction-memory-shape-reassessment.md`
+- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/solution-revision-record.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/design-review-report.md`
+- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/architecture-review-revision-record.md`
+- Triggering prior downstream reports and revision records:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/code-review-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/code-review-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/api-e2e-execution-coverage-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/api-e2e-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/api-e2e-test-review-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/handoff-summary.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/delivery-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/docs-sync-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/release-deployment-report.md`
+- Triggering and retained evidence:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/evidence/daily-assistant-compaction-failure.png`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/evidence/memory-compactor-user-requirement-view.png`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/evidence/daily-assistant-server-log-excerpt.txt`
@@ -16,136 +35,156 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/evidence/failed-compactor-outputs.json`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/evidence/successful-compactor-output-comparison.json`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/evidence/parser-tolerance-probe.jsonl`
-- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/solution-revision-record.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/design-review-report.md`
-- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence, when applicable: N/A; this is the initial implementation after architecture Pass.
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/evidence/repeated-compaction-at-20-percent.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/evidence/repeated-compaction-server-log-excerpt.txt`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/evidence/compactor-provider-failure-and-repeat.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/evidence/compactor-runner-failure-evidence.json`
 
 ## Current Implementation Summary
 
-The implementation applies the approved target-agent prompt boundary exactly, removes generic sender prose, validates all response candidates against the preserved six-array contract, performs one new-child correction only after typed returned-content validation failure, and writes prompt contract 3 while directly reading 1/2/3. The existing runner, parent terminal lifecycle, normalization, accepted-compaction, canonical commit, tool policy, and projection owners remain intact.
+The current implementation preserves the already reviewed and delivered `REQ-001`–`REQ-010` prompt/parser/lineage baseline and implements the reviewed SR-002–SR-004 runtime redesign. A trigger observation now captures one immutable complete-prompt planning budget. One coordinator owns the pending operation, attempt authorization, and separate post-success actual-observation episode. Planning cannot exceed the trigger-derived target, runner failures cannot enter response parsing, every final failure stops target dispatch and waits for a distinct USER-origin retry, and AGENT/SYSTEM starts remain in the existing queue while the earliest eligible USER is admitted. Canonical mutation still occurs only through accepted compaction.
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
-- Related solution revision IDs: `SR-001`
-- Related architecture-review revision IDs: `ARCH-REV-001`
-- Related code-review revision IDs: N/A
-- Related API/E2E revision IDs: N/A
-- Related delivery revision IDs: N/A
-- Triggering finding IDs: N/A
+- Current implementation revision ID: `IR-002`
+- Related solution revision IDs: `SR-001`, `SR-002`, `SR-003`, `SR-004`
+- Related architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`, `ARCH-REV-003`, `ARCH-REV-004`
+- Related code-review revision IDs: `CRR-001`, `CRR-002`, `CRR-003` (prior baseline history; new source review required)
+- Related API/E2E revision IDs: `API-REV-001`, `API-REV-002` (prior baseline history; new investigation/execution required after source review)
+- Related delivery revision IDs: `DR-001`, `DR-002` (prior delivered baseline history; finalization was held after user verification)
+- Triggering finding IDs: `AR-FIND-001`, `AR-FIND-002`, `AR-FIND-003`, `AR-FIND-004`; all are resolved in the reviewed SR-004 package and realized by this implementation.
 - Branch/worktree: `codex/compaction-response-robustness` at `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness`
 
 ## Reviewed Behavior Implementation Trace
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| `BEH-001` | Exact target-agent framing; raw/neutral input composition; no generic sender headings; source/provider semantics preserved | `autobyteus-server-ts/src/built-in-agents/templates/memory-compactor/agent.md`; `autobyteus-ts/src/memory/compaction/{working-context-compaction-prompt-builder,compaction-conversation-history-renderer}.ts`; `autobyteus-server-ts/src/agent-customization/processors/prompt/user-input-context-building-processor.ts` | Approved `agent.md` matches the prompt specification byte-for-byte; its six-array tail matches the prior file byte-for-byte. Initial operation message is exact intro -> START -> sole target wrapper -> END with no trailing text. Generic heading map/import/branch are removed; no-context content passes through unchanged and readable context uses only bold `[Context]` / `[Message]`. |
-| `BEH-002` | Preserve six-array contract; schema-aware selection; harmless extras; unambiguous candidate | `autobyteus-ts/src/memory/compaction/compaction-response-parser.ts` | Parser extracts distinct exact/fenced/balanced candidates, validates every object, projects recognized fields, discards permitted unusable entries, fingerprints the clamped host-consumed result, returns one semantic result, and rejects zero or multiple distinct valid results with a closed stage. |
-| `BEH-003` | Fixed initial -> one new-child correction -> terminal below the sole parent lifecycle owner | `autobyteus-ts/src/memory/compaction/agent-compaction-summarizer.ts`; prompt builder correction method; existing strategy/executor unchanged | First `CompactionResponseParseError` triggers exactly one correction task with a new task/run. First runner failures are not retried. Repair success returns normally with attempt-2 metadata; exhaustion reports both stages and available run IDs. Runtime integration observes one parent completed lifecycle on repair and one terminal failed lifecycle only after exhaustion. |
-| `BEH-004` | Canonical mutation only after accepted compaction; typed outcome/projection unchanged | Existing `StructuredJsonCompactionStrategy -> MemoryManager -> AcceptedCompactionBuilder/Committer` path, plus `pending-compaction-executor.test.ts` and runtime integrations | No parser/summarizer/prompt code reaches stores or parent events. Recovered output flows through the existing proposal/accept/commit path once; exhausted output leaves pending memory and canonical surfaces unchanged. |
-| `BEH-005` | Compactor remains zero-tool; no ordinary-agent tool policy change | Existing server runner/collector and unchanged `memory-compactor/agent-config.json`; focused server runner/collector/bootstrap tests | `toolNames` remains empty, `autoExecuteTools: false` remains enforced, approval remains failure, and no Daily Assistant tool configuration changed. |
-| `BEH-006` | New writes use prompt contract 3; normal reader accepts 1/2/3 without migration | `autobyteus-ts/src/memory/lineage/compaction-lineage-record.ts`; existing accepted builder imports current constant; lineage/pending/tool-lifecycle tests | Supported tuple/type/runtime guard is `[1,2,3]`, current is 3, mixed lineage reads directly, new accepted lineage is 3, and unsupported 4 fails closed without rewriting the file. |
+| `BEH-001` | Preserve exact target-agent task framing and raw/neutral sender composition | Existing committed prompt builder, compactor `agent.md`, history renderer, and input processor | Preserved unchanged in this rework. No prompt, parser, compactor tool, lineage-version, or sender-heading compatibility path was added. |
+| `BEH-002` | Preserve six-array schema-aware selection and harmless-extra projection | Existing committed `compaction-response-parser.ts` | Preserved unchanged; focused parser regression remains green. |
+| `BEH-003` | Preserve initial -> one new correction child -> terminal response-repair flow | `agent-compaction-summarizer.ts`; `compaction-agent-runner.ts` | Response-invalid first output still gets exactly one correction child. Typed runner failure on attempt 1 invokes neither parser nor correction; correction-runner failure is typed repair exhaustion with both attempts' metadata. |
+| `BEH-004` | Keep host-owned acceptance and canonical mutation | `PendingCompactionExecutor -> MemoryManager -> AcceptedCompactionBuilder/OutputValidator -> AcceptedCompactionCommitter` | Planning/proposal/final estimate is checked before the unchanged committer. Every failure retains raw traces and leaves context, archive, stores, lineage, and snapshot unchanged. Pending clears only in the accepted committer's final hook. |
+| `BEH-005` | Keep the compactor zero-tool and ordinary tool policy unchanged | Existing compactor config; `ServerCompactionAgentRunner`; `CompactionRunOutputCollector` | No tool or auto-approval was added. A child tool-approval request is a typed runner failure. |
+| `BEH-006` | Keep prompt contract 3 writes and direct 1/2/3 reads without migration | Existing lineage record/builder/store paths | Preserved unchanged; mixed-lineage regression remains green. |
+| `BEH-007` | Derive one trigger-aligned complete-prompt target and bound post-success recurrence by actual provider observation | `compaction-planning-budget.ts`; `llm-phase-compaction.ts`; `message-budget-strategy.ts`; `working-context-message-window-planner.ts`; `accepted-compaction-builder.ts`; `working-context-compaction-output-validator.ts`; `compaction-threshold-gate.ts`; `memory-manager-compaction-coordinator.ts` | Implements `P=max(0,min(floor(.35B),T-max(256,ceil(.10T))))`, a bounded replacement reserve, provider-gap calibration, protected/system/recent costs, typed unattainable/no-prefix failure, finalized precommit budget rejection, and `awaiting_below_observation -> reset/suppress` from fresh usage only. Budget-key change resets and hard cap overrides suppression. |
+| `BEH-008` | Distinguish child runner failure from usable assistant content | Core `compaction-agent-runner.ts`; generic `isError` propagation through `LLMResponsePipeline`, notifier, stream payload, server converter; server collector/runner | Error completion, interruption, terminal error, timeout, tool approval, rejected task, launch failure, and collection failure become typed `CompactionAgentRunnerError` with cause/run metadata before parsing. Only non-error assistant output reaches the parser. |
+| `BEH-009` | Fail closed and allow only a later USER-origin attempt | `PendingCompactionAttemptState`; coordinator `beginPendingAttempt`/`retainFailure`; `PendingCompactionExecutor.executeIfAuthorized`; both `LlmPhase` execution sites | New operations receive one automatic initial attempt for any origin. Final planning, runner, response, or precommit failure transitions to `awaiting_user_retry`, emits one failed lifecycle plus an error completion, performs no subsequent provider/tool dispatch in that turn, and schedules nothing. One distinct later USER turn may make one attempt; success resumes that user turn, failure stops it and retains the same operation. |
+| `BEH-010` | Stamp origin before conversion and admit the earliest USER without moving non-user entries | `agent-event-inbox-entry.ts`; `agent-event-inbox.ts`; `inbox-queue-store.ts`; `compaction-retry-turn-admission-policy.ts`; `agent-event-scheduler.ts`; turn handler; `AgentTurn`; runtime state/worker; assembler | USER/AGENT/SYSTEM origin is stored on the original turn-start entry and immutable active turn. One same-queue `claimFirstMatching` selects the earliest eligible USER while blocked AGENT/SYSTEM entries stay in place. Claim and wait use the same predicate, avoiding spin. Retry failure leaves them untouched; success restores their relative FIFO order after the USER turn settles. Existing lifecycle/active-turn priority and shutdown drain remain unchanged. |
 
 ## Key Files Or Areas
 
-Production:
+Planning and lifecycle authority:
 
-- `autobyteus-ts/src/memory/compaction/working-context-compaction-prompt-builder.ts`
-- `autobyteus-ts/src/memory/compaction/compaction-conversation-history-renderer.ts`
-- `autobyteus-ts/src/memory/compaction/compaction-response-parser.ts`
-- `autobyteus-ts/src/memory/compaction/agent-compaction-summarizer.ts`
-- `autobyteus-ts/src/memory/lineage/compaction-lineage-record.ts`
-- `autobyteus-server-ts/src/built-in-agents/templates/memory-compactor/agent.md`
-- `autobyteus-server-ts/src/agent-customization/processors/prompt/user-input-context-building-processor.ts`
+- `autobyteus-ts/src/memory/compaction/compaction-planning-budget.ts`
+- `autobyteus-ts/src/memory/compaction/compaction-threshold-gate.ts`
+- `autobyteus-ts/src/memory/memory-manager-compaction-coordinator.ts`
+- `autobyteus-ts/src/memory/memory-manager.ts`
+- `autobyteus-ts/src/agent/loop/llm-phase-compaction.ts`
+- `autobyteus-ts/src/memory/llm-request-recovery.ts`
 
-Focused tests:
+Target-aware plan and acceptance:
 
-- `autobyteus-ts/tests/unit/memory/{working-context-compaction-prompt-builder,compaction-response-parser,agent-compaction-summarizer,file-compaction-lineage-store,pending-compaction-executor}.test.ts`
-- `autobyteus-ts/tests/integration/agent/runtime/agent-runtime-compaction.test.ts`
-- `autobyteus-ts/tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts`
-- `autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-templates.test.ts`
-- `autobyteus-server-ts/tests/unit/agent-customization/processors/prompt/user-input-context-building-processor.test.{ts,js}`
+- `autobyteus-ts/src/memory/compaction/message-budget-strategy.ts`
+- `autobyteus-ts/src/memory/compaction/working-context-message-window-planner.ts`
+- `autobyteus-ts/src/memory/compaction/working-context-compaction-{strategy,resolver,strategy-registry,proposal}.ts`
+- `autobyteus-ts/src/memory/compaction/{structured-json-compaction-strategy,accepted-compaction-builder,working-context-compaction-output-validator,pending-compaction-executor}.ts`
+
+Runner failure boundary:
+
+- `autobyteus-ts/src/memory/compaction/{compaction-agent-runner,agent-compaction-summarizer}.ts`
+- `autobyteus-ts/src/agent/{pipelines/llm-response-pipeline,events/notifiers,streaming/events/stream-event-payload-assistant}.ts`
+- `autobyteus-server-ts/src/agent-execution/compaction/{compaction-run-output-collector,server-compaction-agent-runner}.ts`
+
+Origin and queue admission:
+
+- `autobyteus-ts/src/agent/compaction/compaction-retry-turn-admission-policy.ts`
+- `autobyteus-ts/src/agent/event-inbox/{agent-event-inbox-entry,agent-event-inbox,inbox-queue-store,agent-event-scheduler}.ts`
+- `autobyteus-ts/src/agent/event-inbox/handlers/turn-start-inbox-event-handler.ts`
+- `autobyteus-ts/src/agent/{agent-turn,llm-request-assembler}.ts`
+- `autobyteus-ts/src/agent/context/agent-runtime-state.ts`
+- `autobyteus-ts/src/agent/runtime/agent-worker.ts`
+
+The former independent mutable `compactionRequired`, direct `clearCompactionRequest`, pending-presence execution, stale static `inputBudgetTokens`, fixed suffix authority, budget-overriding minimum, error-completion-as-text, generic repair exhaustion, and FIFO-head-only user-retry behavior are removed.
 
 ## Important Assumptions
 
-- Existing `CompactionResult` property order is the stable host-consumed serialization order used for semantic candidate fingerprints.
-- Runner-provided `compactionRunId` values are authoritative when present; the summarizer never invents a run ID and always hashes the actual prompt for the child attempt whose metadata it exposes.
-- Durable docs are intentionally left to `delivery_engineer`, and real-provider/API/E2E coverage remains owned by `api_e2e_engineer` under the team workflow.
+- The latest normalized provider prompt-usage observation is the trigger/calibration authority; local estimates deliberately retain any positive untracked provider gap.
+- `TurnStartOrigin` is authoritative only when resolved from the original inbox event before input conversion. `SenderType.TOOL` remains a same-turn continuation and is rejected as an external turn start.
+- The accepted committer remains the sole canonical mutation boundary. The coordinator's final hook may clear pending and install the post-success runtime episode only after all existing canonical writes and snapshot installation complete.
+- Runtime-only pending/episode/origin state is intentionally not persisted and introduces no stored schema.
 
 ## Known Risks
 
-- A shape-valid response may still be factually poor; deterministic validation does not prove summarization fidelity.
-- The corrective child resends the full selected history and adds at most one model latency/token cost.
-- A first-attempt runner/provider/timeout failure remains immediately terminal by design; only invalid returned content is repairable here.
-- Removing generic headings is global; focused unit coverage passed for USER/TOOL/AGENT/SYSTEM raw content, readable context, tool continuation carriers, inter-agent/system pipeline semantics, and media builders, but broader independent regression coverage remains required.
-- Current durable docs still describe the old tag/version/one-shot behavior and require delivery-stage sync against the later integrated branch.
+- Character-based token estimates and provider accounting can differ. Calibration/headroom reduce this risk; unattainable planning and finalized oversize fail closed before child launch or commit respectively.
+- The post-success threshold episode is runtime-only. A process restart can forget suppression and permit one additional proactive operation.
+- A single newly arriving oversized input still has no general admission/chunking gate.
+- Schema validity cannot prove summary factual quality.
+- First-attempt provider/transport/timeout failure is intentionally not automatically corrected; recovery requires a distinct later USER-origin turn.
+- Queued turn starts retain the existing non-persistent shutdown lifecycle.
+- Provider fallback/quota policy and UI token-denominator redesign remain out of scope.
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: `Bug Fix` + bounded `Behavior Change` + `Cleanup`.
-- Reviewed root-cause classification: primary `Missing Invariant`; secondary `Legacy Or Compatibility Pressure` and `Shared Structure Looseness`.
-- Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now`, confined to prompt ownership, response validation, and model-attempt ownership.
+- Reviewed change posture: `Bug Fix`, bounded `Behavior Change`, and local `Refactor` on top of the implemented prompt/parser baseline.
+- Reviewed root-cause classification: `Missing Invariant`, `Duplicated Policy Or Coordination`, `Boundary Or Ownership Issue`, and `Shared Structure Looseness`.
+- Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now`.
 - Implementation matched the reviewed assessment (`Yes`/`No`): `Yes`.
-- If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A`.
-- Evidence / notes: Existing prompt, parser, summarizer, input-processor, and lineage owners were extended directly; no transport, generic retry service, persistence bypass, parent-lifecycle duplication, or strategy-wide JSON assumption was added.
+- If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A`; no new design mismatch was found.
+- Evidence / notes: trigger arithmetic is owned by an immutable DTO; the coordinator is the only pending/episode/authorization owner; the planner and validator consume the same assessment; assistant error truth crosses the generic event boundary; and queue admission depends on the memory boundary without moving queue ownership.
 
 ## Legacy / Compatibility Removal Check
 
 - Backward-compatibility mechanisms introduced: `None`.
 - Legacy old-behavior retained in scope: `No`.
-- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes` for implementation-owned runtime/direct-test scope; the sender heading map/fallback/import, old output wrapper/escapes, first-object selection, unknown-field rejection, and one-shot validation path are gone. Downstream-owned E2E/docs expectations are called out separately rather than kept as runtime compatibility.
-- Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`; only the parser-owned three-value stage union and lineage-owned version tuple were added.
+- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes`; the obsolete mutable compaction boolean/setter, direct clear, static strategy budget injection, fixed retention override, pending-presence retry, error-text parser path, and head-only retry admission are removed rather than wrapped.
+- Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`; planning budget, pending attempt, threshold episode, runner failure, budget assessment, and turn origin each have one closed meaning and owner.
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`; no new upstream issue was found.
-- Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`; every changed source file is below 500 lines. The parser's 242-line diff signal was assessed and retained as one cohesive 270-line authoritative response boundary, matching the reviewed file mapping rather than adding an artificial helper split.
-- Notes: No feature flag, old-tag alias, response-schema alias, retry configuration, or version-specific business branch exists.
+- Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`. All changed/new production files are at or below 494 effective non-empty lines. `memory-manager.ts` was kept below the limit by extracting its pre-existing projection-scope, recent-trace selection, and operation-boundary concerns. `memory-manager-compaction-coordinator.ts` has a 266-line changed delta, was explicitly assessed, and remains one cohesive 384-line design-mapped authority for pending state, threshold episode, authorization, baseline fencing, and accepted completion; splitting that state machine would weaken its authoritative boundary.
+- Notes: the SR-001 prompt/parser/lineage files have no rework diff relative to the implementation baseline.
 
 ## Persisted Data Transition Check (When Applicable)
 
 - Approved decision (`Not Affected`/`Directly Usable — No Migration`/`Discard or Rebuild`/`Migration Required`): `Directly Usable — No Migration`.
 - Design-spec decision reference: `design-spec.md`, “Persisted Data / State Transition Decision”.
 - Implementation follows the approved decision without an unapproved migration or version-specific runtime fallback: `Yes`.
-- Direct-use evidence or discard/rebuild result, when applicable: focused lineage store coverage loads an immutable mixed 1 -> 2 -> 3 chain, projects the current head, preserves the append-only file, and rejects prompt version 4 without a write. Existing version-2 loader/committer fixtures remain valid.
+- Direct-use evidence or discard/rebuild result, when applicable: no persisted shape changed; existing v1/v2/v3 lineage remains directly readable, prompt contract stays 3, and the accepted committer remains the sole writer. Focused mixed-lineage coverage passed without a rewrite.
 - Migration implementation and focused checks, only when `Migration Required`: N/A.
 - Deviation from the reviewed transition decision: `None`.
 
 ## Environment Or Dependency Notes
 
-- Installed the locked pnpm workspace dependencies in this dedicated worktree with `pnpm install --frozen-lockfile`.
-- Prisma client generation was required before the server source-only TypeScript check; the normal server build performs it automatically.
-- The repository's general `autobyteus-server-ts` `pnpm typecheck` command is currently not a usable check: existing `tsconfig.json` sets `rootDir: src` while including `tests`, producing repository-wide `TS6059` errors. The source-only build config and full project build both passed.
+- Locked workspace dependencies were already installed in the dedicated worktree.
+- The normal server build generated Prisma and ran the sanitized built-in bootstrap smoke successfully.
+- The focused server parent-fallback integration emits the repository's normal local provider-discovery warning when Ollama is not running; its fully controlled compaction boundary still passed all five tests.
 
 ## Local Implementation Checks Run
 
 All checks below are implementation-scoped; none is downstream API/E2E sign-off.
 
-- Approved prompt exactness probe: extracted the approved `agent.md` code block and compared it byte-for-byte with the implementation — passed (2,891 bytes). Compared the prior and current template from `Return one JSON object with these fields:` through EOF with `cmp` — passed, byte-identical.
-- `pnpm build` in `autobyteus-ts` — passed, including runtime dependency verification.
-- `pnpm build` in `autobyteus-server-ts` — passed, including shared builds, Prisma generation, TypeScript build, managed asset copy, and sanitized built-in-agent/bootstrap smoke.
-- Six focused `autobyteus-ts` unit files — 40 tests passed: prompt builder, parser, summarizer, structured strategy, pending executor, lineage store.
-- Three input/provider/tool semantic unit files — 16 tests passed: agent input pipeline, multimodal user-message builder, tool continuation builder.
-- Final runtime compaction integration — 2 tests passed, including invalid first response -> valid correction -> one completed parent lifecycle and repeated exhausted repair with no canonical mutation.
-- Tool lifecycle integration — 1 test passed, preserving native tool protocol and new prompt-contract-3 lineage.
-- Server prompt/input units — 13 tests passed: byte-exact built-in prompt and raw/neutral input composition.
-- Server runner/collector/bootstrap units — 20 tests passed, including one-run cleanup, `autoExecuteTools: false`, approval failure, and zero-tool template synchronization.
-- Retained production-evidence parser probe against `failed-compactor-outputs.json` and `successful-compactor-output-comparison.json` — both wrong-task outputs rejected at `json_object_extraction`; both earlier valid outputs accepted (4 and 3 episodes).
+- `pnpm build` in `autobyteus-ts` — passed, including TypeScript build and runtime-dependency verification.
+- `pnpm build` in `autobyteus-server-ts` — passed, including shared builds, Prisma generation, TypeScript build, asset copy, and sanitized built-in-agent/bootstrap smoke.
+- Focused new core runtime/unit set — 18 files and 93 tests passed in the final aggregate rerun, including FIFO resumption after the retry gate clears.
+- Core narrow integration/regression set — 5 files and 12 tests passed: runtime compaction success/manual retry failure, tool-safe lifecycle, recurrent snapshot/lineage commit, turn interruption fences, and LLM/tool recovery.
+- Server collector/runner/event conversion set — 3 files and 44 tests passed.
+- Server parent-runtime/model-fallback narrow integration — 1 file and 5 tests passed.
+- Preserved prompt/parser/lineage core baseline — 3 files and 27 tests passed.
+- Preserved built-in prompt and raw/neutral input processing server baseline — 2 files and 13 tests passed.
+- Prompt/parser/lineage/tool-config rework drift check — no diff relative to the current baseline for the approved prompt builder, response parser, compactor `agent.md`, or lineage version file.
+- Changed-source size audit — every changed/new production file is below 500 effective non-empty lines; the sole >220 changed-delta file was assessed as described above.
 - `git diff --check` — passed.
-- General server `pnpm typecheck` — not passed for the existing repository configuration reason recorded above; no change was made to that unrelated configuration. `tsc -p tsconfig.build.json --noEmit` and the full server build passed after normal Prisma generation.
 
 ## Frontend Rendered-Result Check (When Applicable)
 
-Not Applicable — the change affects backend/core prompt processing, response validation, child-attempt orchestration, and lineage metadata; no rendered frontend surface changed.
+Not Applicable — the rework changes core/server planning, state, queue, runner, and event boundaries; it does not change a rendered frontend surface.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
-- Classify and update `autobyteus-server-ts/tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts`, whose current successful-compaction expectation still requires prompt contract 2; new successful records must be 3.
-- Exercise a realistic provider/model history ending in source-task tool output and inspect the actual child user message for exact target-agent framing, no generic sender heading, one target wrapper/separator pair, and no text after END.
-- Exercise first invalid returned content then valid correction; verify two distinct child run IDs, one parent `completed`, attempt-2 prompt hash/lineage metadata, and one canonical commit.
-- Exercise two invalid returned contents and invalid-first/runner-failed-second; verify one final parent `failed`, both available run IDs/stages, pending retention, and byte-identical canonical stores/snapshot/archive before and after.
-- Regress USER/TOOL/AGENT/SYSTEM input across no-context, readable-context, media/context tool continuation, text-only null continuation, inter-agent content, and system notification content.
-- Load representative persisted v1, v2, and mixed v1/v2/v3 lineage from files without rewrite; reject unsupported future values.
-- Confirm the built-in compactor remains tool-free and a confused textual DSML/tool-call response never becomes canonical memory.
+- Re-run the real supported 80% -> 20% setting change and confirm one target-respecting operation, no accepted-estimate rearm, and either actual-below reset or one inadequate-reduction diagnostic/suppression.
+- Produce a controlled child `ASSISTANT_COMPLETE { is_error: true }`, timeout, interruption, and tool-approval outcome; verify zero parser/correction calls, preserved child run ID/cause, one target-turn error completion, unchanged canonical memory, and `awaiting_user_retry`.
+- Queue AGENT, USER `continue`, and SYSTEM starts behind a failed gate. Verify USER executes one retry first; failure preserves the queue, while success resumes retained AGENT then SYSTEM in relative FIFO order after the USER turn settles.
+- Exercise planning target zero/unattainable, no raw-backed compactable prefix, and oversized finalized projection; verify no child for planning failures and no commit for precommit failure.
+- Regress live tool-protocol suffix protection, source media/context carriers, and USER/TOOL/AGENT/SYSTEM sender semantics.
+- Re-investigate and run the updated repository-resident real-provider/server-settings E2E coverage under the new complete-budget and `turnOrigin` contracts.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Yes. `api_e2e_engineer` must produce the required coverage investigation artifact, decide whether current API/E2E coverage is valid or stale, perform/update/remove/add durable downstream coverage as appropriate, execute realistic coverage, and report evidence. Any repository-resident durable coverage edits made after code review must return through `code_reviewer` before delivery.
+Yes. After source review passes, `api_e2e_engineer` must create a new coverage-investigation revision for the SR-004 rework, classify the prior `API-REV-001`/`API-REV-002` evidence and existing durable coverage against `REQ-011`–`REQ-015`, execute the required repository and realistic coverage, and report new evidence. Any durable coverage changes made after source review must return through `code_reviewer` before delivery.

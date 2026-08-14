@@ -9,6 +9,16 @@ import { WorkingContext } from '../../../src/memory/working-context.js';
 const validator = new WorkingContextCompactionOutputValidator();
 const system = () => new Message(MessageRole.SYSTEM, { content: 'System', metadata: { stable: { yes: true } } });
 const baseline = () => new WorkingContext([system(), new Message(MessageRole.USER, { content: 'old' })]);
+const accepted = (finalizedContext: WorkingContext) => ({
+  finalizedContext,
+  budgetAssessment: {
+    planningBudget: { postCompactionTargetTokens: 1_000_000 },
+    estimatedFinalizedContextTokens: 1,
+    estimatedUntrackedOverheadTokens: 0,
+  },
+} as any);
+const validate = (current: WorkingContext, input: WorkingContext, next: WorkingContext) =>
+  validator.assertValid(current, input, accepted(next));
 
 const expectCode = (action: () => void, code: string) => {
   try {
@@ -36,13 +46,13 @@ describe('WorkingContextCompactionOutputValidator', () => {
       new Message(MessageRole.TOOL, { tool_payload: new ToolResultPayload('b', 'second', ['done']) }),
       new Message(MessageRole.USER, { content: 'continue' }),
     ]);
-    expect(() => validator.assertValid(current, input, next)).not.toThrow();
+    expect(() => validate(current, input, next)).not.toThrow();
   });
 
   it('rejects the strategy input instance, even when its content is otherwise valid', () => {
     const current = baseline();
     const input = current.copy();
-    expectCode(() => validator.assertValid(current, input, input), 'aliased-context');
+    expectCode(() => validate(current, input, input), 'aliased-context');
   });
 
   it('detects mutation of the isolated strategy input before head comparison', () => {
@@ -50,7 +60,7 @@ describe('WorkingContextCompactionOutputValidator', () => {
     const input = current.copy();
     input.replaceMessage(0, new Message(MessageRole.SYSTEM, { content: 'mutated input' }));
     expectCode(
-      () => validator.assertValid(current, input, new WorkingContext(input.buildMessages())),
+      () => validate(current, input, new WorkingContext(input.buildMessages())),
       'mutated-strategy-input',
     );
   });
@@ -62,7 +72,7 @@ describe('WorkingContextCompactionOutputValidator', () => {
     ]);
 
     expectCode(
-      () => validator.assertValid(current, current.copy(), malformed),
+      () => validate(current, current.copy(), malformed),
       'invalid-message-shape',
     );
   });
@@ -83,7 +93,7 @@ describe('WorkingContextCompactionOutputValidator', () => {
       new Message(MessageRole.USER, { content: 'old' }),
     ]);
     expectCode(
-      () => validator.assertValid(current, current.copy(), next),
+      () => validate(current, current.copy(), next),
       'changed-required-head',
     );
   });
@@ -94,7 +104,7 @@ describe('WorkingContextCompactionOutputValidator', () => {
     const invalidRole = new WorkingContext([system(), new Message(MessageRole.USER, {
       tool_payload: new ToolCallPayload([{ id: 'a', name: 'tool', arguments: {} }]),
     })]);
-    expectCode(() => validator.assertValid(current, input, invalidRole), 'invalid-message-shape');
+    expectCode(() => validate(current, input, invalidRole), 'invalid-message-shape');
 
     const invalidNative = new WorkingContext([system(), new Message(MessageRole.ASSISTANT, {
       tool_payload: new ToolCallPayload([{
@@ -104,7 +114,21 @@ describe('WorkingContextCompactionOutputValidator', () => {
         nativeToolCallContext: { provider: 'unknown' } as any,
       }]),
     }), new Message(MessageRole.TOOL, { tool_payload: new ToolResultPayload('a', 'tool', null) })]);
-    expectCode(() => validator.assertValid(current, input, invalidNative), 'invalid-message-shape');
+    expectCode(() => validate(current, input, invalidNative), 'invalid-message-shape');
+  });
+
+  it('rejects an accepted result whose finalized estimate exceeds the planning target', () => {
+    const current = baseline();
+    const input = current.copy();
+    const next = new WorkingContext([system(), new Message(MessageRole.USER, { content: 'replacement' })]);
+    const result = accepted(next);
+    result.budgetAssessment.planningBudget.postCompactionTargetTokens = 100;
+    result.budgetAssessment.estimatedFinalizedContextTokens = 101;
+
+    expectCode(
+      () => validator.assertValid(current, input, result),
+      'post_compaction_target_exceeded',
+    );
   });
 
   it.each([
@@ -139,7 +163,7 @@ describe('WorkingContextCompactionOutputValidator', () => {
   ])('rejects invalid tool protocol: %s', (_label, body) => {
     const current = baseline();
     expectCode(
-      () => validator.assertValid(current, current.copy(), new WorkingContext([system(), ...body])),
+      () => validate(current, current.copy(), new WorkingContext([system(), ...body])),
       'invalid-tool-protocol',
     );
   });

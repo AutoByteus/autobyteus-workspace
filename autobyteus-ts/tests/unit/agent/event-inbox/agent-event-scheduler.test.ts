@@ -6,6 +6,7 @@ import { ToolExecutionApprovalEvent, ToolResultEvent, UserMessageReceivedEvent }
 import { AgentInputUserMessage } from '../../../../src/agent/message/agent-input-user-message.js';
 import { AgentTurn } from '../../../../src/agent/agent-turn.js';
 import type { AgentEventSchedulerHandlers } from '../../../../src/agent/event-inbox/agent-event-scheduler.js';
+import { SenderType } from '../../../../src/agent/sender-type.js';
 
 const timeout = <T>(promise: Promise<T>, ms = 1000): Promise<T> =>
   Promise.race([
@@ -133,5 +134,63 @@ describe('AgentEventScheduler', () => {
     expect(entry.event).toBeInstanceOf(ToolExecutionApprovalEvent);
     expect(schedulerWaiterCount(scheduler)).toBe(0);
     expect(storeWaiterCount(inbox)).toBe(0);
+  });
+
+  it('admits the earliest USER behind retained non-user entries with the same wait predicate', async () => {
+    const inbox = new AgentEventInbox();
+    const state = new AgentRuntimeState('agent-user-gate');
+    const admission = { isDispatchable: (entry: { origin: string }) => entry.origin === 'user' };
+    const scheduler = new AgentEventScheduler({ state } as any, makeHandlers(), admission as any);
+    await inbox.postUserEvent(new UserMessageReceivedEvent(
+      new AgentInputUserMessage('agent-a', SenderType.AGENT),
+    ));
+    await inbox.postUserEvent(new UserMessageReceivedEvent(
+      new AgentInputUserMessage('continue', SenderType.USER),
+    ));
+    await inbox.postUserEvent(new UserMessageReceivedEvent(
+      new AgentInputUserMessage('system-s', SenderType.SYSTEM),
+    ));
+
+    const entry = await timeout(scheduler.nextDispatchable({ inbox, runtimeState: state }), 200);
+    expect((entry.event as UserMessageReceivedEvent).agentInputUserMessage.content).toBe('continue');
+    expect(inbox.peekCandidates().turn_start.map(({ origin }) => origin)).toEqual(['agent', 'system']);
+
+    const waiting = scheduler.nextDispatchable({ inbox, runtimeState: state });
+    expect(await waitForCondition(() => schedulerWaiterCount(scheduler) === 1)).toBe(true);
+    await inbox.postUserEvent(new UserMessageReceivedEvent(
+      new AgentInputUserMessage('next user', SenderType.USER),
+    ));
+    await expect(timeout(waiting, 200)).resolves.toMatchObject({ origin: 'user' });
+    expect(inbox.peekCandidates().turn_start.map(({ origin }) => origin)).toEqual(['agent', 'system']);
+  });
+
+  it('resumes the retained non-user entries in relative FIFO order after the retry gate clears', async () => {
+    const inbox = new AgentEventInbox();
+    const state = new AgentRuntimeState('agent-user-gate-success');
+    let awaitingUserRetry = true;
+    const admission = {
+      isDispatchable: (entry: { origin: string }) => !awaitingUserRetry || entry.origin === 'user',
+    };
+    const scheduler = new AgentEventScheduler({ state } as any, makeHandlers(), admission as any);
+    for (const [content, senderType] of [
+      ['agent-a', SenderType.AGENT],
+      ['continue', SenderType.USER],
+      ['system-s', SenderType.SYSTEM],
+    ] as const) {
+      await inbox.postUserEvent(new UserMessageReceivedEvent(
+        new AgentInputUserMessage(content, senderType),
+      ));
+    }
+
+    await expect(timeout(scheduler.nextDispatchable({ inbox, runtimeState: state }), 200))
+      .resolves.toMatchObject({ origin: 'user' });
+    awaitingUserRetry = false;
+    scheduler.wakeDispatchabilityChanged();
+
+    const firstRetained = await timeout(scheduler.nextDispatchable({ inbox, runtimeState: state }), 200);
+    const secondRetained = await timeout(scheduler.nextDispatchable({ inbox, runtimeState: state }), 200);
+    expect([firstRetained, secondRetained].map((entry) =>
+      (entry.event as UserMessageReceivedEvent).agentInputUserMessage.content))
+      .toEqual(['agent-a', 'system-s']);
   });
 });

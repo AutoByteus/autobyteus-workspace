@@ -1,0 +1,116 @@
+Documentation sync validation — DR-001
+Date: 2026-08-14T12:58:25+02:00
+
+$ git diff --check
+PASS: tracked delivery-owned documentation diff has no whitespace errors.
+
+$ delivery artifact trailing-whitespace scan
+PASS: new integration/docs/handoff/revision/release artifacts have no trailing whitespace; this replacement log is emitted from the same whitespace-clean script.
+
+$ diff core memory docs after intentional title line
+PASS: core memory docs are behaviorally identical after line 1.
+
+$ stale-guidance scan across five long-lived target docs
+PASS: removed wrapper, v2-write, 1->2-only, and old operation-message guidance is absent.
+
+$ required durable invariant scans
+autobyteus-server-ts/docs/modules/agent_work_traces.md:122:`<target_agent_conversation_history>` block, composed through
+autobyteus-ts/docs/agent_memory_design_nodejs.md:215:`promptContractVersion: 3` for the explicit target-agent framing and bounded
+autobyteus-ts/docs/agent_memory_design_nodejs.md:216:response-repair contract. Mixed immutable `1 -> 2 -> 3` chains are valid without
+autobyteus-ts/docs/agent_memory_design_nodejs.md:301:`<target_agent_conversation_history>...</target_agent_conversation_history>`
+autobyteus-ts/docs/agent_memory_design_nodejs.md:325:one distinct host-consumed result with at least one non-empty episode. Harmless
+autobyteus-ts/docs/agent_memory_design_nodejs.md:330:Returned-content validation failure triggers exactly one corrective child run
+autobyteus-ts/docs/agent_memory_design_nodejs.md:334:tool-free. A first-attempt runner, transport, provider, or timeout failure is
+autobyteus-ts/docs/agent_memory_design.md:215:`promptContractVersion: 3` for the explicit target-agent framing and bounded
+autobyteus-ts/docs/agent_memory_design.md:216:response-repair contract. Mixed immutable `1 -> 2 -> 3` chains are valid without
+autobyteus-ts/docs/agent_memory_design.md:301:`<target_agent_conversation_history>...</target_agent_conversation_history>`
+autobyteus-ts/docs/agent_memory_design.md:325:one distinct host-consumed result with at least one non-empty episode. Harmless
+autobyteus-ts/docs/agent_memory_design.md:330:Returned-content validation failure triggers exactly one corrective child run
+autobyteus-ts/docs/agent_memory_design.md:334:tool-free. A first-attempt runner, transport, provider, or timeout failure is
+autobyteus-server-ts/docs/ARCHITECTURE.md:153:`<target_agent_conversation_history>` block inside one plain-text target-agent
+autobyteus-server-ts/docs/ARCHITECTURE.md:164:host-consumed result with a non-empty episode. Harmless extra fields do not fail
+autobyteus-server-ts/docs/ARCHITECTURE.md:168:The compactor remains tool-free. Success produces one parent completed lifecycle
+autobyteus-server-ts/docs/ARCHITECTURE.md:172:New lineage records write `promptContractVersion: 3`. Existing immutable values
+autobyteus-server-ts/docs/ARCHITECTURE.md:173:1 and 2 remain directly readable, mixed `1 -> 2 -> 3` chains remain valid, and
+autobyteus-server-ts/docs/modules/agent_memory.md:112:`<target_agent_conversation_history>` block with nothing after the end separator.
+autobyteus-server-ts/docs/modules/agent_memory.md:127:all six required arrays and accepts exactly one distinct host-consumed result
+autobyteus-server-ts/docs/modules/agent_memory.md:132:Only a typed returned-content validation failure triggers one corrective child
+autobyteus-server-ts/docs/modules/agent_memory.md:139:unbounded retry or fallback model is introduced. The compactor stays zero-tool.
+autobyteus-server-ts/docs/modules/agent_memory.md:141:New successful lineage records use `promptContractVersion: 3`. Existing
+autobyteus-server-ts/docs/modules/agent_memory.md:142:immutable values 1 and 2 remain directly usable, mixed `1 -> 2 -> 3` chains are
+PASS: target framing, v3/direct-read, validation, bounded correction, and least-authority guidance is present.
+
+$ implemented-source cross-checks
+10:const TARGET_HISTORY_START_SEPARATOR = '---------------- START OF TARGET AGENT CONVERSATION HISTORY ----------------';
+11:const TARGET_HISTORY_END_SEPARATOR = '----------------- END OF TARGET AGENT CONVERSATION HISTORY -----------------';
+31:      TARGET_HISTORY_START_SEPARATOR,
+33:      TARGET_HISTORY_END_SEPARATOR,
+37:  buildCorrectionTaskPrompt(
+9:  | 'json_object_extraction'
+10:  | 'six_array_schema_validation'
+11:  | 'multiple_valid_objects';
+143:        'six_array_schema_validation',
+151:        'multiple_valid_objects',
+174:        'json_object_extraction',
+7:export const COMPACTION_LINEAGE_SUPPORTED_PROMPT_CONTRACT_VERSIONS = [1, 2, 3] as const;
+10:export const COMPACTION_LINEAGE_CURRENT_PROMPT_CONTRACT_VERSION:
+11:  CompactionLineagePromptContractVersion = 3;
+140:      return messageContent;
+142:    return `**[Context]**\n${contextString}\n\n**[Message]**\n${messageContent}`;
+PASS: durable descriptions match the integrated source owners.
+
+$ git diff --stat (tracked long-lived docs)
+ autobyteus-server-ts/docs/ARCHITECTURE.md          | 36 +++++++----
+ autobyteus-server-ts/docs/modules/agent_memory.md  | 45 ++++++++++----
+ .../docs/modules/agent_work_traces.md              | 13 ++--
+ autobyteus-ts/docs/agent_memory_design.md          | 70 +++++++++++++++-------
+ autobyteus-ts/docs/agent_memory_design_nodejs.md   | 70 +++++++++++++++-------
+ 5 files changed, 168 insertions(+), 66 deletions(-)
+
+$ git status --short (delivery hold state)
+ M autobyteus-server-ts/docs/ARCHITECTURE.md
+ M autobyteus-server-ts/docs/modules/agent_memory.md
+ M autobyteus-server-ts/docs/modules/agent_work_traces.md
+ M autobyteus-ts/docs/agent_memory_design.md
+ M autobyteus-ts/docs/agent_memory_design_nodejs.md
+?? tickets/in-progress/compaction-response-robustness/delivery-integrated-state-refresh.log
+?? tickets/in-progress/compaction-response-robustness/delivery-revision-record.md
+?? tickets/in-progress/compaction-response-robustness/docs-sync-report.md
+?? tickets/in-progress/compaction-response-robustness/docs-sync-validation.log
+?? tickets/in-progress/compaction-response-robustness/handoff-summary.md
+?? tickets/in-progress/compaction-response-robustness/release-deployment-report.md
+
+FINAL: PASS
+
+Documentation/handoff continuation validation — DR-002
+Date: 2026-08-14T13:09:10+0200
+
+$ git diff --check
+PASS: tracked documentation diff remains whitespace-clean.
+
+$ delivery Markdown trailing-whitespace scan
+PASS: DR-002 delivery Markdown is trailing-whitespace-free.
+
+$ local Electron artifact verification result
+VERIFICATION RESULT: PASS
+PASS: authoritative local Electron artifact verification is successful.
+
+$ expected Electron output ignore check
+PASS: generated Electron output did not add tracked or untracked repository-status noise.
+
+$ git status --short (DR-002 verification hold state)
+ M autobyteus-server-ts/docs/ARCHITECTURE.md
+ M autobyteus-server-ts/docs/modules/agent_memory.md
+ M autobyteus-server-ts/docs/modules/agent_work_traces.md
+ M autobyteus-ts/docs/agent_memory_design.md
+ M autobyteus-ts/docs/agent_memory_design_nodejs.md
+?? tickets/in-progress/compaction-response-robustness/delivery-integrated-state-refresh.log
+?? tickets/in-progress/compaction-response-robustness/delivery-revision-record.md
+?? tickets/in-progress/compaction-response-robustness/docs-sync-report.md
+?? tickets/in-progress/compaction-response-robustness/docs-sync-validation.log
+?? tickets/in-progress/compaction-response-robustness/electron-build-macos-arm64.log
+?? tickets/in-progress/compaction-response-robustness/electron-build-verification-macos-arm64.log
+?? tickets/in-progress/compaction-response-robustness/handoff-summary.md
+?? tickets/in-progress/compaction-response-robustness/release-deployment-report.md
+
+DR-002 CONTINUATION: PASS

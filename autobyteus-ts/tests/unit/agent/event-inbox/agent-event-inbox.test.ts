@@ -54,6 +54,23 @@ describe('AgentEventInbox', () => {
     expect(claimed).not.toHaveProperty('input');
   });
 
+  it('stamps authoritative USER, AGENT, and SYSTEM origin before input conversion', async () => {
+    const inbox = new AgentEventInbox();
+    await inbox.postUserEvent(new UserMessageReceivedEvent(
+      new AgentInputUserMessage('user', SenderType.USER),
+    ));
+    await inbox.postUserEvent(new UserMessageReceivedEvent(
+      new AgentInputUserMessage('agent carrier', SenderType.AGENT),
+    ));
+    await inbox.postInterAgentEvent(new InterAgentMessageReceivedEvent({} as any));
+    await inbox.postUserEvent(new UserMessageReceivedEvent(
+      new AgentInputUserMessage('system', SenderType.SYSTEM),
+    ));
+
+    expect(inbox.peekCandidates().turn_start.map((entry) => entry.origin))
+      .toEqual(['user', 'agent', 'agent', 'system']);
+  });
+
   it('rejects TOOL continuations and non-lifecycle events through lifecycle helper', async () => {
     const inbox = new AgentEventInbox();
 

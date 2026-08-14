@@ -60,6 +60,6 @@ export class LLMResponsePipeline {
       }
     }
 
-    notifier?.notifyAgentDataAssistantCompleteResponse(response);
+    notifier?.notifyAgentDataAssistantCompleteResponse(response, options.isError ?? false);
   }
 }

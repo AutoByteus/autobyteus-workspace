@@ -1,6 +1,10 @@
+import type { TurnStartOrigin } from '../../agent/event-inbox/agent-event-inbox-entry.js';
 import { CompactionPreparationError } from '../../agent/compaction/compaction-preparation-error.js';
 import { CompactionRuntimeReporter } from '../../agent/compaction/compaction-runtime-reporter.js';
 import type { MemoryManager, PendingCompactionRequest } from '../memory-manager.js';
+import { CompactionResponseRepairExhaustedError } from './agent-compaction-summarizer.js';
+import { CompactionAgentRunnerError } from './compaction-agent-runner.js';
+import { CompactionPlanningError } from './working-context-message-window-planner.js';
 import {
   WorkingContextCompactionOutputValidationError,
   WorkingContextCompactionOutputValidator,
@@ -8,7 +12,8 @@ import {
 import type { WorkingContextCompactionStrategyResolver } from './working-context-compaction-strategy-resolver.js';
 
 export type PendingCompactionExecutionInput = {
-  turnId?: string | null;
+  turnId: string;
+  turnOrigin: TurnStartOrigin;
 };
 
 export type PendingCompactionExecutorOptions = {
@@ -29,18 +34,31 @@ export class PendingCompactionExecutor {
     this.reporter = options.reporter ?? null;
   }
 
-  async executeIfRequired(input: PendingCompactionExecutionInput = {}): Promise<boolean> {
-    if (!this.memoryManager.compactionRequired) return false;
+  async executeIfAuthorized(input: PendingCompactionExecutionInput): Promise<boolean> {
+    const gate = this.memoryManager.getPendingCompactionGate();
+    if (gate.kind === 'none') return false;
+    const begin = this.memoryManager.beginPendingCompactionAttempt({
+      operationId: gate.operationId,
+      turnId: input.turnId,
+      turnOrigin: input.turnOrigin,
+    });
+    if (!begin.authorized) {
+      throw new CompactionPreparationError(
+        `Memory compaction execution was not authorized (${begin.code}).`,
+      );
+    }
 
-    const pendingRequest = this.memoryManager.requirePendingCompactionRequest();
-    const lifecycleMetadata = toLifecycleMetadata(pendingRequest, input.turnId ?? null);
+    const pendingRequest = begin.request;
+    const lifecycleMetadata = toLifecycleMetadata(pendingRequest, input.turnId);
     let strategyIdentity: Record<string, string | null> = {
       compaction_strategy_id: null,
       compaction_strategy_name: null,
     };
 
     try {
-      const strategy = this.options.strategyResolver.resolve();
+      const strategy = this.options.strategyResolver.resolve({
+        planningBudget: pendingRequest.planningBudget,
+      });
       strategyIdentity = {
         compaction_strategy_id: strategy.id,
         compaction_strategy_name: strategy.name,
@@ -50,7 +68,7 @@ export class PendingCompactionExecutor {
 
       this.reporter?.emitStatus({
         phase: 'started',
-        turn_id: input.turnId ?? null,
+        turn_id: input.turnId,
         ...lifecycleMetadata,
         ...strategyIdentity,
         selected_block_count: null,
@@ -59,15 +77,11 @@ export class PendingCompactionExecutor {
 
       const proposal = await strategy.propose(strategyInput);
       const accepted = this.memoryManager.prepareCompaction(baseline, proposal);
-      this.outputValidator.assertValid(
-        baseline.context,
-        strategyInput,
-        accepted.finalizedContext,
-      );
+      this.outputValidator.assertValid(baseline.context, strategyInput, accepted);
       this.memoryManager.commitAcceptedCompaction(accepted);
       this.reporter?.emitStatus({
         phase: 'completed',
-        turn_id: input.turnId ?? null,
+        turn_id: input.turnId,
         ...lifecycleMetadata,
         ...strategyIdentity,
         selected_block_count: null,
@@ -75,29 +89,39 @@ export class PendingCompactionExecutor {
       });
       return true;
     } catch (error) {
+      const errorKind = classifyCompactionFailure(error);
+      this.memoryManager.retainCompactionFailure(
+        pendingRequest.operationId,
+        input.turnId,
+        errorKind,
+      );
       const causeMessage = error instanceof Error ? error.message : String(error);
-      const invariantPrefix = error instanceof WorkingContextCompactionOutputValidationError
-        ? `[${error.code}] `
-        : '';
-      const errorMessage = `Memory compaction failed before dispatch: ${invariantPrefix}${causeMessage}`;
+      const errorMessage = `Memory compaction failed before dispatch [${errorKind}]: ${causeMessage}`;
       this.reporter?.emitStatus({
         phase: 'failed',
-        turn_id: input.turnId ?? null,
+        turn_id: input.turnId,
         ...lifecycleMetadata,
         ...strategyIdentity,
         selected_block_count: null,
         compacted_block_count: null,
         error_message: errorMessage,
       });
-      if (error instanceof CompactionPreparationError) throw error;
       throw new CompactionPreparationError(errorMessage, error);
     }
   }
 }
 
+const classifyCompactionFailure = (error: unknown): string => {
+  if (error instanceof CompactionAgentRunnerError) return `runner_${error.kind}`;
+  if (error instanceof CompactionResponseRepairExhaustedError) return 'response_repair_exhausted';
+  if (error instanceof CompactionPlanningError) return error.code;
+  if (error instanceof WorkingContextCompactionOutputValidationError) return error.code;
+  return 'execution_failure';
+};
+
 const toLifecycleMetadata = (
   pendingCompactionRequest: PendingCompactionRequest,
-  executionTurnId: string | null,
+  executionTurnId: string,
 ): Record<string, string | null> => ({
   compaction_operation_id: pendingCompactionRequest.operationId,
   requested_turn_id: pendingCompactionRequest.requestedTurnId,

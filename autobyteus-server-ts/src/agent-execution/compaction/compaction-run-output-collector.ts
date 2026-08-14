@@ -9,6 +9,25 @@ export type CompactionRunOutputCollectorOptions = {
   runId: string;
 };
 
+export type CompactionRunCollectionFailureKind =
+  | 'error_completion'
+  | 'interrupted'
+  | 'terminal_error'
+  | 'timeout'
+  | 'tool_approval'
+  | 'collection_failed';
+
+export class CompactionRunCollectionError extends Error {
+  constructor(
+    readonly kind: CompactionRunCollectionFailureKind,
+    message: string,
+    readonly cause: unknown = null,
+  ) {
+    super(message);
+    this.name = 'CompactionRunCollectionError';
+  }
+}
+
 type Waiter = {
   resolve: (value: string) => void;
   reject: (error: Error) => void;
@@ -83,7 +102,8 @@ export class CompactionRunOutputCollector {
 
     const failure = this.failureObserver.observe(event);
     if (failure) {
-      this.fail(new Error(
+      this.fail(new CompactionRunCollectionError(
+        'terminal_error',
         `Compactor agent run '${this.runId}' failed: ${failure.message ?? extractErrorMessage(event)}`,
       ));
       return;
@@ -91,8 +111,21 @@ export class CompactionRunOutputCollector {
 
     switch (event.eventType) {
       case AgentRunEventType.ASSISTANT_COMPLETE:
+        if (event.payload.is_error === true) {
+          this.fail(new CompactionRunCollectionError(
+            'error_completion',
+            `Compactor agent run '${this.runId}' returned an error completion: ${extractPayloadText(event.payload) ?? 'unknown child error'}`,
+          ));
+          return;
+        }
         this.captureAssistantComplete(event.payload);
         break;
+      case AgentRunEventType.TURN_INTERRUPTED:
+        this.fail(new CompactionRunCollectionError(
+          'interrupted',
+          `Compactor agent run '${this.runId}' was interrupted: ${extractErrorMessage(event)}`,
+        ));
+        return;
       case AgentRunEventType.SEGMENT_CONTENT:
         this.captureSegmentContent(event.payload);
         break;
@@ -100,7 +133,10 @@ export class CompactionRunOutputCollector {
         this.captureSegmentEnd(event.payload);
         break;
       case AgentRunEventType.TOOL_APPROVAL_REQUESTED:
-        this.fail(new Error(this.buildToolApprovalError(event.payload)));
+        this.fail(new CompactionRunCollectionError(
+          'tool_approval',
+          this.buildToolApprovalError(event.payload),
+        ));
         return;
       case AgentRunEventType.TURN_COMPLETED:
         this.markTerminal();
@@ -128,7 +164,8 @@ export class CompactionRunOutputCollector {
       let waiter: Waiter;
       const timer = setTimeout(() => {
         this.removeWaiter(waiter);
-        reject(new Error(
+        reject(new CompactionRunCollectionError(
+          'timeout',
           `Compactor agent run '${this.runId}' timed out after ${timeoutMs}ms before returning final JSON.`,
         ));
       }, timeoutMs);
@@ -211,7 +248,8 @@ export class CompactionRunOutputCollector {
     }
     const output = this.getFinalOutput();
     if (!output) {
-      return Promise.reject(new Error(
+      return Promise.reject(new CompactionRunCollectionError(
+        'collection_failed',
         `Compactor agent run '${this.runId}' finished without a final assistant output.`,
       ));
     }

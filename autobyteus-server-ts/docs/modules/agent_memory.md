@@ -105,16 +105,41 @@ Per-entry bounds, structural validation, cleanup,
 deduplication, and positive salience remain enforced.
 
 The persisted `autobyteus-memory-compactor` system prompt owns the stable task,
-natural-sizing guidance, and exact response schema. Each operation sends only
-the core renderer's canonical `<conversation_history>` block. The renderer
-reuses `WorkingContextFinalizer`, so compatible prior-memory and current-user
-regions become one natural User turn and assistant/Tool boundaries remain
-ordered. It omits reasoning, backend IDs, duplicated schema/count policy, and
-platform internals while preserving redaction, explicit value bounds, and
-reserved-boundary escaping.
+natural-sizing guidance, and exact six-array response schema. The initial
+operation message identifies the conversation history as belonging to the target
+agent, surrounds it with one plain-text target-agent `START` / `END` separator
+pair, and contains exactly one canonical
+`<target_agent_conversation_history>` block with nothing after the end separator.
+The renderer reuses `WorkingContextFinalizer`, so compatible prior-memory and
+current-user regions become one natural User turn and assistant/Tool boundaries
+remain ordered. It omits reasoning, backend IDs, duplicated schema/count policy,
+and platform internals while preserving redaction, explicit value bounds, and
+renamed-boundary escaping.
 
-New successful lineage records use `promptContractVersion: 2`. Existing
-immutable value-1 records remain directly usable, mixed `1 -> 2` chains are
+`UserInputContextBuildingProcessor` no longer applies generic `[User
+Requirement]`, `[Tool Execution Result]`, `[Message From Agent]`, or `[System
+Notification]` headings. Authored message content passes through unchanged when
+no readable context is concatenated; a combined payload uses only neutral
+`[Context]` and `[Message]` sections. Sender metadata, provider-native tool
+protocol, and source-specific carrier builders retain their existing ownership.
+
+The parser evaluates exact, fenced, and balanced JSON-object candidates against
+all six required arrays and accepts exactly one distinct host-consumed result
+with at least one non-empty episode. Harmless extra fields and unusable
+blank/non-string entries are ignored; unrelated JSON objects cannot mask a later
+valid object, and multiple distinct valid objects fail as ambiguous.
+
+Only a typed returned-content validation failure triggers one corrective child
+run with a new task/run identity. Its deterministic prefix records the validation
+stage, restates the six-array shape, and resends the same target history. Repair
+success yields one parent completed lifecycle and one canonical commit. Repair
+exhaustion yields one parent failed lifecycle, retains the pending operation, and
+leaves archives, output rows, lineage, WorkingContext, and snapshot unchanged.
+First-attempt runner/provider/transport/timeout failure remains terminal; no
+unbounded retry or fallback model is introduced. The compactor stays zero-tool.
+
+New successful lineage records use `promptContractVersion: 3`. Existing
+immutable values 1 and 2 remain directly usable, mixed `1 -> 2 -> 3` chains are
 valid, and unsupported values reject without rewriting or compatibility
 decoding.
 

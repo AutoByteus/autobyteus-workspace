@@ -48,6 +48,7 @@ const isCompactionEventPayload = (payload: unknown): payload is CompactionEventP
   Boolean(payload) &&
   typeof payload === 'object' &&
   typeof (payload as { phase?: unknown }).phase === 'string';
+const promptSizedUserMessage = (label: string): string => `${label} ${'context '.repeat(500)}`;
 
 const snapshotCanonicalCompactionFiles = (agentDir: string): Record<string, string | null> => {
   const snapshot: Record<string, string | null> = {};
@@ -149,9 +150,9 @@ const createMainModel = () =>
     value: 'runtime-compaction-main-model',
     canonicalName: 'runtime-compaction-main-model',
     provider: LLMProvider.OPENAI,
-    activeContextTokens: 150,
-    maxContextTokens: 150,
-    maxOutputTokens: 20
+    activeContextTokens: 5_000,
+    maxContextTokens: 5_000,
+    maxOutputTokens: 200
   });
 
 const createConfig = (tempDir: string, mainLLM: RecordingMainLLM, runner: CompactionAgentRunner): AgentConfig => {
@@ -203,11 +204,11 @@ describe('Agent runtime compaction integration', () => {
       createMainModel(),
       new LLMConfig({
         systemMessage: 'Runtime compaction system prompt',
-        maxTokens: 20,
+        maxTokens: 200,
         compactionRatio: 0.5,
         safetyMarginTokens: 10
       }),
-      [20, 20, 20, 80, 20]
+      [200, 200, 200, 3_000, 200]
     );
     const agent = new AgentFactory().createAgent(createConfig(tempDir, mainLLM, compactionRunner));
     const compactionEvents: CompactionEventPayload[] = [];
@@ -225,7 +226,9 @@ describe('Agent runtime compaction integration', () => {
       notifier?.subscribe(EventType.AGENT_COMPACTION_STATUS_UPDATED, onCompactionStatus);
 
       for (let turnIndex = 1; turnIndex <= 3; turnIndex += 1) {
-        await agent.postUserMessage(new AgentInputUserMessage(`Seed turn ${turnIndex}`));
+        await agent.postUserMessage(new AgentInputUserMessage(
+          promptSizedUserMessage(`Seed turn ${turnIndex}`),
+        ));
         expect(await waitForCondition(
           () => mainLLM.requests.length === turnIndex && agent.currentStatus === AgentStatus.IDLE && agent.context.state.activeTurn === null,
           10000
@@ -258,7 +261,7 @@ describe('Agent runtime compaction integration', () => {
       await agent.postUserMessage(new AgentInputUserMessage('What should you do next?'));
       expect(await waitForCondition(
         () => mainLLM.requests.length === 5
-          && agent.context.state.memoryManager?.compactionRequired === false
+          && agent.context.state.memoryManager?.hasPendingCompaction() === false
           && agent.currentStatus === AgentStatus.IDLE,
         10000
       )).toBe(true);
@@ -337,11 +340,11 @@ describe('Agent runtime compaction integration', () => {
       createMainModel(),
       new LLMConfig({
         systemMessage: 'Runtime compaction system prompt',
-        maxTokens: 20,
+        maxTokens: 200,
         compactionRatio: 0.5,
         safetyMarginTokens: 10
       }),
-      [20, 20, 20, 80]
+      [200, 200, 200, 3_000]
     );
     const agent = new AgentFactory().createAgent(createConfig(tempDir, mainLLM, compactionRunner));
     const compactionEvents: CompactionEventPayload[] = [];
@@ -349,9 +352,6 @@ describe('Agent runtime compaction integration', () => {
       const manager = agent.context.state.memoryManager!;
       const store = manager.store as FileMemoryStore;
       return {
-        pendingCompaction: manager.getPendingCompactionRequest()
-          ? { ...manager.getPendingCompactionRequest()! }
-          : null,
         workingContext: manager.getWorkingContextMessages().map((message) => message.toDict()),
         episodes: store.list(MemoryType.EPISODIC).map((item) => item.toDict()),
         semantics: store.list(MemoryType.SEMANTIC).map((item) => item.toDict()),
@@ -376,7 +376,9 @@ describe('Agent runtime compaction integration', () => {
       notifier?.subscribe(EventType.AGENT_COMPACTION_STATUS_UPDATED, onCompactionStatus);
 
       for (let turnIndex = 1; turnIndex <= 3; turnIndex += 1) {
-        await agent.postUserMessage(new AgentInputUserMessage(`Seed turn ${turnIndex}`));
+        await agent.postUserMessage(new AgentInputUserMessage(
+          promptSizedUserMessage(`Seed turn ${turnIndex}`),
+        ));
         expect(await waitForCondition(
           () => mainLLM.requests.length === turnIndex && agent.currentStatus === AgentStatus.IDLE && agent.context.state.activeTurn === null,
           10000
@@ -386,7 +388,7 @@ describe('Agent runtime compaction integration', () => {
       await agent.postUserMessage(new AgentInputUserMessage('Please remember this failing turn.'));
       expect(await waitForCondition(
         () => mainLLM.requests.length === 4
-          && agent.context.state.memoryManager?.compactionRequired === true
+          && agent.context.state.memoryManager?.isCompactionAwaitingUserRetry() === true
           && compactionEvents.some((event) => event.phase === 'failed')
           && agent.currentStatus === AgentStatus.IDLE,
         10000
@@ -395,6 +397,8 @@ describe('Agent runtime compaction integration', () => {
       const store = agent.context.state.memoryManager?.store as FileMemoryStore;
       expect(startedAttemptBaseline).not.toBeNull();
       expect(snapshotCanonicalState()).toEqual(startedAttemptBaseline);
+      expect(agent.context.state.memoryManager?.getPendingCompactionGate().kind)
+        .toBe('awaiting_user_retry');
       await agent.postUserMessage(new AgentInputUserMessage('Try to continue anyway.'));
 
       expect(await waitForCondition(
@@ -427,7 +431,7 @@ describe('Agent runtime compaction integration', () => {
       expect(compactionEvents[2]?.error_message).toContain('Memory compaction failed before dispatch');
       expect(compactionEvents[2]?.error_message).toContain('compactionRunId=compaction-run-1');
       expect(compactionEvents[2]?.error_message).toContain('compactionRunId=compaction-run-2');
-      expect(agent.context.state.memoryManager?.compactionRequired).toBe(true);
+      expect(agent.context.state.memoryManager?.isCompactionAwaitingUserRetry()).toBe(true);
       expect(agent.context.state.memoryManager?.getPendingCompactionRequest()?.operationId).toBe(failedOperationId);
       expect(store.list(MemoryType.EPISODIC)).toHaveLength(0);
       expect(store.list(MemoryType.SEMANTIC)).toHaveLength(0);

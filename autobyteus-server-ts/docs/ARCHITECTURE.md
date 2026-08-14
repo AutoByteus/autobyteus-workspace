@@ -147,17 +147,31 @@ required for continuation; accepted output requires at least one episode, but
 the parser, normalizer, manager publication, lineage, and current projection do
 not impose the former fixed total-count limits.
 
-The persisted `autobyteus-memory-compactor` system prompt is the sole owner of
-stable task instructions, natural-sizing guidance, and the response schema. The
-operation user message is only the core renderer's canonical
-`<conversation_history>` block. That renderer reuses
-`WorkingContextFinalizer` so compatible prior-memory/current-user regions appear
-as one natural User turn, while assistant and Tool order, redaction, per-value
-bounds, reserved-boundary escaping, and input non-mutation remain enforced.
+The persisted `autobyteus-memory-compactor` system prompt owns the stable task,
+natural-sizing guidance, and six-array response schema. The initial operation
+message explicitly identifies the target agent and contains one
+`<target_agent_conversation_history>` block inside one plain-text target-agent
+`START` / `END` separator pair, with nothing after the end separator. The
+renderer reuses `WorkingContextFinalizer` so compatible prior-memory/current-user
+regions appear as one natural User turn, while assistant and Tool order,
+redaction, per-value bounds, renamed-boundary escaping, and input non-mutation
+remain enforced. Generic sender headings are removed from shared input
+composition; content without readable context remains unchanged, while combined
+context/message payloads use only neutral `[Context]` and `[Message]` sections.
 
-New lineage records write `promptContractVersion: 2`. Existing immutable value-1
-records remain directly readable, mixed `1 -> 2` chains remain valid, and any
-unsupported audit value is rejected without compatibility decoding or file
+The response boundary validates every exact, fenced, or balanced JSON-object
+candidate against the six required arrays and accepts only one distinct
+host-consumed result with a non-empty episode. Harmless extra fields do not fail
+validation, unrelated JSON cannot mask a later valid object, and multiple valid
+objects are ambiguous. A typed returned-content failure receives one corrective
+child attempt with the same selected history; runner/transport failure does not.
+The compactor remains tool-free. Success produces one parent completed lifecycle
+and one accepted commit; exhaustion produces one terminal failure and leaves the
+pending operation and canonical memory unchanged.
+
+New lineage records write `promptContractVersion: 3`. Existing immutable values
+1 and 2 remain directly readable, mixed `1 -> 2 -> 3` chains remain valid, and
+any unsupported audit value is rejected without compatibility decoding or file
 mutation. Existing schema-v1 stored supersets that include the former
 `rawTraceArchiveFile` field remain directly readable: normalization ignores that
 extra field without rewriting data or introducing a schema branch, and new rows

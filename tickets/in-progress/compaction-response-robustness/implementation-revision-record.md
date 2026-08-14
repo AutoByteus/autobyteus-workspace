@@ -7,6 +7,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | `architecture_reviewer` / `design-review-report.md` / `ARCH-REV-001` initial implementation round | N/A | `Initial Baseline` | `SR-001`, `ARCH-REV-001`; `CRR-*`, `API-REV-*`, `DR-*`: N/A | Ready for code review |
+| IR-002 | `architecture_reviewer` / `design-review-report.md` / `ARCH-REV-004` rework round | `AR-FIND-001`–`AR-FIND-004` | `Design Impact` | `SR-001`–`SR-004`, `ARCH-REV-001`–`ARCH-REV-004`, prior `CRR-001`–`CRR-003`, `API-REV-001`–`API-REV-002`, `DR-001`–`DR-002` | Ready for new code review |
 
 ## Revision Entries
 
@@ -35,3 +36,30 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: approved prompt/tail byte comparison passed; `autobyteus-ts` build passed; `autobyteus-server-ts` full build/bootstrap smoke passed; 89 focused unit tests and 3 narrow integration tests passed across the final implementation paths; retained production evidence probe rejected both captured wrong-task outputs and accepted both captured successful outputs. The general server `pnpm typecheck` command remains unusable because its existing `tsconfig.json` includes `tests` while fixing `rootDir` to `src`; source-only build TypeScript checks passed.
 - Next recipient or routing: `code_reviewer`.
 - Remaining limitations or risks: API/E2E coverage investigation and execution remain downstream-owned; model factual quality remains probabilistic; correction adds one bounded child cost; first-attempt provider/timeout failure is intentionally not retried; the global sender-format change retains broad USER/TOOL/AGENT/SYSTEM context/media regression exposure; durable docs and the real-provider E2E version expectation remain for their owning downstream stages.
+
+### IR-002 — Trigger-aligned, typed-failure, USER-authorized compaction rework
+
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/design-review-report.md`; round 4, `ARCH-REV-004` Pass for the cumulative SR-001–SR-004 package after user verification of the prior delivered baseline.
+- Triggering finding IDs: `AR-FIND-001`, `AR-FIND-002`, `AR-FIND-003`, `AR-FIND-004`; all were resolved in the reviewed design package before this implementation round.
+- Classification: `Design Impact` implementation rework.
+- Prior authoritative result: `IR-001` implemented `REQ-001`–`REQ-010` and passed prior source review (`CRR-001`, `CRR-003`), API/E2E (`API-REV-001`, `API-REV-002`), and delivery preparation (`DR-001`, `DR-002`); subsequent user verification exposed trigger/planning recurrence, runner-error classification, and retry-authorization gaps.
+- Current authoritative result: the SR-001 prompt/parser/lineage baseline remains intact, and the reviewed SR-002–SR-004 runtime redesign is implemented and ready for a new code-review round.
+- Related solution revision IDs: `SR-001`, `SR-002`, `SR-003`, `SR-004`.
+- Related architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`, `ARCH-REV-003`, `ARCH-REV-004`.
+- Related code-review revision IDs: `CRR-001`, `CRR-002`, `CRR-003` are prior-baseline history; new review pending.
+- Related API/E2E revision IDs: `API-REV-001`, `API-REV-002` are prior-baseline history; new investigation/execution pending after source review.
+- Related delivery revision IDs: `DR-001`, `DR-002` are prior-baseline history; finalization remained held after user verification.
+- Why this implementation revision is recorded: implement the newly approved trigger-aligned planning, actual-observation recurrence gate, typed runner failure boundary, strict failed-pending manual recovery, and authoritative same-queue USER admission without changing the already approved prompt/schema/tool/persistence/lineage contract.
+- Approved behavior or requirement IDs affected: implements `BEH-007`–`BEH-010`, `REQ-011`–`REQ-015`, and `AC-014`–`AC-023`; preserves `BEH-001`–`BEH-006`, `REQ-001`–`REQ-010`, and `AC-001`–`AC-013`.
+- Implementation delta:
+  - added immutable trigger-time `CompactionPlanningBudget` with exact `B/T/P` and replacement-reserve arithmetic, complete-prompt cost calibration, target-respecting selection, typed planning failure, and finalized precommit target validation;
+  - added a separate actual-observation threshold episode that rearms only below threshold, emits one bounded inadequate-reduction diagnostic, resets on budget-key change, and permits hard-cap override;
+  - replaced mutable pending-presence authority with coordinator-owned `initial_attempt_ready -> attempt_in_progress -> awaiting_user_retry`, atomic attempt authorization, failure retention, and accepted-commit-only clearing;
+  - propagated generic assistant `is_error` into the server child collector and introduced closed runner failure kinds/metadata so unusable child outcomes bypass parsing and correction;
+  - stamped `user`/`agent`/`system` origin on ordinary turn-start entries and active turns, added first-matching claim to the existing queue, and used one admission predicate for claim and wait so the earliest USER can retry without moving or dropping AGENT/SYSTEM entries;
+  - removed static strategy budget injection, fixed-retention override, independent compaction boolean/clear API, pending-only execution, and head-only retry admission;
+  - extracted pre-existing memory projection-scope, recent-trace selection, and operation-boundary concerns to keep `memory-manager.ts` below the source-size guardrail.
+- Changed files or areas: core memory compaction planning/strategy/proposal/acceptance/executor; memory coordinator/manager/recovery; LLM phase and generic assistant event propagation; agent inbox/queue/scheduler/turn/worker origin path; server compaction collector/runner; focused unit/integration and existing durable coverage listed in `implementation-handoff.md`.
+- Local validation and result: both project builds passed; final focused core unit aggregate, core narrow integrations, server runner/event units, server parent-fallback integration, and preserved prompt/parser/lineage/input baselines passed as detailed in `implementation-handoff.md`; source guardrail and drift audits passed; `git diff --check` passed.
+- Next recipient or routing: `code_reviewer` for a new source review of the cumulative SR-004 implementation.
+- Remaining limitations or risks: token estimation and factual quality remain approximate; the threshold episode resets on restart; one oversized new input lacks a general admission/chunking gate; first runner failure remains manual-retry only; queued turn starts retain existing non-persistent shutdown behavior; provider fallback/quota and broader API/E2E/real-provider execution remain downstream or out of scope.

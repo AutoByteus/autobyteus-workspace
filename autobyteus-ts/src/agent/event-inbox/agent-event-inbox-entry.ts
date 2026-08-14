@@ -1,4 +1,4 @@
-import type {
+import {
   BaseEvent,
   InterAgentMessageReceivedEvent,
   LifecycleEvent,
@@ -6,6 +6,7 @@ import type {
   ToolResultEvent,
   UserMessageReceivedEvent
 } from '../events/agent-events.js';
+import { SenderType } from '../sender-type.js';
 import type { PostToolApprovalResult } from '../tool-approval-result.js';
 import type { PostToolResultResult } from '../tool-result-posting.js';
 import type { InboxLane } from './inbox-queue-store.js';
@@ -38,14 +39,36 @@ export type AgentEventInboxEntry<E extends BaseEvent = BaseEvent> = {
   awaitable?: AwaitableCompletion;
 };
 
+export type TurnStartOrigin = 'user' | 'agent' | 'system';
+
 export type TurnStartRuntimeEvent = UserMessageReceivedEvent | InterAgentMessageReceivedEvent;
 export type ActiveTurnRuntimeEvent = ToolExecutionApprovalEvent | ToolResultEvent;
 export type RuntimeLifecycleInputEvent = LifecycleEvent;
 
-export type TurnStartEventInboxEntry = AgentEventInboxEntry<TurnStartRuntimeEvent> & { lane: 'turn_start' };
+export type TurnStartEventInboxEntry = AgentEventInboxEntry<TurnStartRuntimeEvent> & {
+  lane: 'turn_start';
+  origin: TurnStartOrigin;
+};
 export type RuntimeLifecycleEventInboxEntry = AgentEventInboxEntry<RuntimeLifecycleInputEvent> & {
   lane: 'runtime_lifecycle';
 };
 export type ActiveTurnEventInboxEntry = AgentEventInboxEntry<ActiveTurnRuntimeEvent> & { lane: 'active_turn' };
 
 export type AgentEventInboxCandidateSnapshot = Record<InboxLane, AgentEventInboxEntry[]>;
+
+export const resolveTurnStartOrigin = (event: TurnStartRuntimeEvent): TurnStartOrigin => {
+  if (event instanceof InterAgentMessageReceivedEvent) return 'agent';
+  if (!(event instanceof UserMessageReceivedEvent)) {
+    throw new TypeError('Unsupported turn-start event.');
+  }
+  switch (event.agentInputUserMessage.senderType) {
+    case SenderType.USER:
+      return 'user';
+    case SenderType.AGENT:
+      return 'agent';
+    case SenderType.SYSTEM:
+      return 'system';
+    case SenderType.TOOL:
+      throw new Error('TOOL input cannot be classified as an external turn start.');
+  }
+};

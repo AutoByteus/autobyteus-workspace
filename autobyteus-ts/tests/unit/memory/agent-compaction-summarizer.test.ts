@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { Message, MessageRole } from '../../../src/llm/utils/messages.js';
 import { AgentCompactionSummarizer } from '../../../src/memory/compaction/agent-compaction-summarizer.js';
 import { CompactionAgentRunnerError } from '../../../src/memory/compaction/compaction-agent-runner.js';
@@ -156,7 +156,7 @@ describe('AgentCompactionSummarizer', () => {
     const runner = new FakeRunner([
       'not valid json',
       (task) => {
-        throw new CompactionAgentRunnerError('correction provider timeout', {
+        throw new CompactionAgentRunnerError('timeout', 'correction provider timeout', {
           compactionAgentDefinitionId: 'memory-compactor',
           compactionRunId: 'compaction-run-2',
           taskId: task.taskId,
@@ -181,7 +181,7 @@ describe('AgentCompactionSummarizer', () => {
   it('does not retry a first-attempt runner failure and preserves its metadata', async () => {
     const runner = new FakeRunner([
       (task) => {
-        throw new CompactionAgentRunnerError('tool approval requested', {
+        throw new CompactionAgentRunnerError('tool_approval', 'tool approval requested', {
           compactionAgentDefinitionId: 'memory-compactor',
           compactionAgentName: 'Memory Compactor',
           runtimeKind: 'codex_app_server',
@@ -192,14 +192,17 @@ describe('AgentCompactionSummarizer', () => {
         });
       },
     ]);
+    const responseParser = { parse: vi.fn() };
     const summarizer = new AgentCompactionSummarizer({
       runner,
+      responseParser: responseParser as any,
       taskIdFactory: taskIdFactory('task-1'),
     });
 
     await expect(summarizer.summarizeMessageUnits([makeUnit('trace')]))
       .rejects.toThrow('tool approval requested');
     expect(runner.calls).toHaveLength(1);
+    expect(responseParser.parse).not.toHaveBeenCalled();
     expect(summarizer.getLastCompactionExecutionMetadata()).toMatchObject({
       compactionRunId: 'compaction-run-1',
       taskId: 'task-1',

@@ -154,7 +154,6 @@ export class LlmPhase {
       constructionContext: {
         agentId,
         compactionAgentRunner: context.config.compactionAgentRunner,
-        inputBudgetTokens: requestTokenBudget?.inputBudget ?? null,
         maxItemChars: memoryManager.compactionPolicy.maxItemChars,
         diagnostics: compactionDiagnostics,
       },
@@ -179,7 +178,7 @@ export class LlmPhase {
         { kind: 'llm_request_assembly' },
         () => assembler.prepareRequest(
           input.llmUserMessage,
-          { turnId: activeTurnId, requestId: llmCallId },
+          { turnId: activeTurnId, requestId: llmCallId, turnOrigin: turn.startOrigin },
           systemPrompt ?? undefined,
         )
       );
@@ -367,10 +366,11 @@ export class LlmPhase {
     }
 
     turn.executionScope.throwIfAborted({ kind: 'llm_compaction' });
-    evaluateLlmPhaseCompaction({
+    const compactionDecision = evaluateLlmPhaseCompaction({
       llmInstance,
       memoryManager,
       tokenUsage,
+      observedPromptTokens: tokenUsage ? resolveLatestPromptTokens(tokenUsage) : null,
       activeTurnId,
       compactionReporter,
       runtimeSettingsResolver
@@ -379,10 +379,11 @@ export class LlmPhase {
     const toolInvocations = turn.activeToolInvocationBatch && parsedToolInvocationCount > 0
       ? streamingHandler.getAllInvocations()
       : [];
-    if (!toolInvocations.length && memoryManager.compactionRequired) {
+    if (!toolInvocations.length && compactionDecision?.kind === 'requested') {
       try {
-        await pendingCompactionExecutor.executeIfRequired({
+        await pendingCompactionExecutor.executeIfAuthorized({
           turnId: activeTurnId,
+          turnOrigin: turn.startOrigin,
         });
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error);
@@ -392,6 +393,11 @@ export class LlmPhase {
           details: String(error),
           classification: { scope: 'turn', effect: 'diagnostic', turnId: activeTurnId }
         });
+        return {
+          kind: 'final',
+          isError: true,
+          response: new CompleteResponse({ content: errorMessage, usage: null })
+        };
       }
     }
     if (toolInvocations.length) {

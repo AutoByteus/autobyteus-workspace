@@ -118,11 +118,14 @@ truthful status and `result: not available`.
 The Work Evidence layer still owns timestamps, Markdown headings, file/manifests,
 raw-trace source selection, correlation, and the larger consumer bound. Native
 compaction owns its natural conversation/XML envelope and smaller bound. Its
-operation message is only the compaction renderer's canonical
-`<conversation_history>` block, composed through `WorkingContextFinalizer`; the
-stable task, natural-sizing guidance, and response schema live only in the
-built-in Memory Compactor system prompt. Native compaction never reads Work
-Evidence Markdown or manifests as memory input or provenance.
+initial operation message identifies the target agent and contains one canonical
+`<target_agent_conversation_history>` block, composed through
+`WorkingContextFinalizer`, inside one plain-text target-agent `START` / `END`
+separator pair. The stable task, natural-sizing guidance, and response schema
+remain in the built-in Memory Compactor system prompt; only the single bounded
+correction prefix restates the schema after typed returned-content validation
+failure. Native compaction never reads Work Evidence Markdown or manifests as
+memory input or provenance.
 Exact work trace paths remain visible because consumers need file references.
 
 ## Consumer Contract

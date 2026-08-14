@@ -1,0 +1,112 @@
+# Electron macOS ARM64 build verification
+UTC: 2026-08-14T11:06:52Z
+Branch: codex/compaction-response-robustness
+HEAD: 1f2406ffa6e320094d3252e42f5b982212a448c5
+Host: Darwin 25.5.0 arm64
+
+## Artifact inventory
+-rw-r--r--@ 1 normy  staff   384M Aug 14 13:04 /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.dmg
+-rw-r--r--@ 1 normy  staff   410K Aug 14 13:04 /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.dmg.blockmap
+-rw-r--r--@ 1 normy  staff   379M Aug 14 13:05 /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.zip
+-rw-r--r--@ 1 normy  staff   400K Aug 14 13:05 /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.zip.blockmap
+-rw-r--r--@ 1 normy  staff   555B Aug 14 13:05 /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/latest-mac.yml
+
+## SHA-256
+350fa262b73c73c8b5ddeee5f60329219e32bde666ea75cc84ac95defc457492  /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.dmg
+0b06e25cc10b9a43f2596552366a68b0337a72647e860e0ab5bf1eabb06e2ee2  /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.zip
+fe5ffdb988f3e154491b8adb1ed5d915b93e3e33fcfae62ed3b24a8e53b39e99  /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.dmg.blockmap
+1d61a7ed1053ba32c24f0057e3ca53227bcd37c2b8b129549867f6063c2c10d4  /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.zip.blockmap
+
+## SHA-512 (base64, for updater metadata comparison)
+DMG t7xxD/nVwXxG0ukF1mFApDdYXYNPb5bcweLBNso8SuY++9763AmpjlnbiSvXMm4pqT4u29qxbUY1iSJLd54/Sg==
+ZIP UuNo0KNjSY7kf0x73IIUbY3kR5r3oxuQmcKfmZCxr+7QiYpNVIeXc2ViACZDrrFqT/mC+ofz8q5PF5QjOeDl7w==
+
+## Updater metadata
+version: 1.4.50
+files:
+  - url: AutoByteus_personal_macos-arm64-1.4.50.zip
+    sha512: UuNo0KNjSY7kf0x73IIUbY3kR5r3oxuQmcKfmZCxr+7QiYpNVIeXc2ViACZDrrFqT/mC+ofz8q5PF5QjOeDl7w==
+    size: 397863911
+  - url: AutoByteus_personal_macos-arm64-1.4.50.dmg
+    sha512: t7xxD/nVwXxG0ukF1mFApDdYXYNPb5bcweLBNso8SuY++9763AmpjlnbiSvXMm4pqT4u29qxbUY1iSJLd54/Sg==
+    size: 402310529
+path: AutoByteus_personal_macos-arm64-1.4.50.zip
+sha512: UuNo0KNjSY7kf0x73IIUbY3kR5r3oxuQmcKfmZCxr+7QiYpNVIeXc2ViACZDrrFqT/mC+ofz8q5PF5QjOeDl7w==
+releaseDate: '2026-08-14T11:05:28.049Z'
+
+## Bundle metadata
+com.autobyteus.app
+1.4.50
+1.4.50
+/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+
+## Code-signing state (informational; this local test build was intentionally unsigned)
+Executable=/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+Identifier=Electron
+Format=app bundle with Mach-O thin (arm64)
+CodeDirectory v=20400 size=392 flags=0x20002(adhoc,linker-signed) hashes=9+0 location=embedded
+VersionPlatform=1
+VersionMin=786432
+VersionSDK=1704448
+Hash type=sha256 size=32
+CandidateCDHash sha256=183bce38eb383b21f21c2cdedcf6cd8781b11cdd
+CandidateCDHashFull sha256=183bce38eb383b21f21c2cdedcf6cd8781b11cdd090f942c4eacd6c09b1112f7
+Hash choices=sha256
+CMSDigest=183bce38eb383b21f21c2cdedcf6cd8781b11cdd090f942c4eacd6c09b1112f7
+CMSDigestType=2
+Executable Segment base=0
+Executable Segment limit=16384
+Executable Segment flags=0x1
+Page size=4096
+CDHash=183bce38eb383b21f21c2cdedcf6cd8781b11cdd
+Signature=adhoc
+Info.plist=not bound
+TeamIdentifier=not set
+Sealed Resources=none
+Internal requirements=none
+/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app: code has no resources but signature indicates they must be present
+codesign describe exit: 0
+codesign verify exit: 1
+
+## Staged packaged Terminal runtime
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+
+## Final app packaged Terminal runtime
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+
+## Ticket implementation markers in packaged core
+104:    return new Error('Memory compaction response repair exhausted after two attempts: '
+6:    .replaceAll('<target_agent_conversation_history>', '&lt;target_agent_conversation_history&gt;')
+48:            '<target_agent_conversation_history>',
+5:const CORRECTION_PREFIX = (validationStage) => `A prior compaction attempt failed host validation at the \`${validationStage}\` stage. This is the single corrective attempt. Return exactly one JSON object with all six required arrays: \`episodes\`, \`critical_issues\`, \`unresolved_work\`, \`durable_facts\`, \`user_preferences\`, and \`important_artifacts\`. At least one \`episodes\` entry must contain a non-empty \`summary\`; entries in the five fact arrays use \`fact\`. Do not add Markdown fences or prose.`;
+
+## DMG integrity
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $1AFC8DEB
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $812757F3
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $BD4909A0
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $946FF65A
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $BD4909A0
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $2B9EC1D8
+Die überprüfte CRC32-Prüfsumme ist $89959837
+hdiutil: verify: checksum of "/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.dmg" is VALID
+
+## ZIP integrity
+No errors detected in compressed data of /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.zip.
+
+VERIFICATION RESULT: PASS

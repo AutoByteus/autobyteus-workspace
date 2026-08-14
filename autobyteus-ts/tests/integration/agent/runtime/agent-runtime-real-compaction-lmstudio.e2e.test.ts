@@ -460,7 +460,7 @@ runRealE2E('Agent runtime real compaction (LM Studio)', () => {
         expect(completedCompactions[0]?.raw_trace_count).toBeGreaterThan(0);
         expect(completedCompactions[0]?.compaction_model_identifier).toContain(EXPECTED_MODEL);
         expect(compactionStatuses.some(({ phase }) => phase === 'failed')).toBe(false);
-        expect(memoryManager.compactionRequired).toBe(false);
+        expect(memoryManager.hasPendingCompaction()).toBe(false);
 
         const observedPromptTokens = tokenStatuses
           .map(({ latest_prompt_tokens }) => latest_prompt_tokens)

@@ -2,543 +2,753 @@
 
 ## Current-State Read
 
-Automatic compaction is initiated during parent LLM request assembly after the memory manager has already recorded a pending compaction operation. `PendingCompactionExecutor` owns that parent operation's `started`/`completed`/`failed` lifecycle. It resolves `StructuredJsonCompactionStrategy`, which plans a settled prefix, calls `AgentCompactionSummarizer`, normalizes the parsed result, and returns an ID-less proposal. `MemoryManager` then owns optimistic baseline/lineage checks, accepted-output construction, validation, and the only canonical commit path.
+The ticket worktree already contains the reviewed and implemented REQ-001–REQ-010 baseline at commits `ed7f65a5d` and `1f2406ffa`: explicit target-agent prompt framing, the preserved six-array response contract, schema-aware tolerant parsing, one new-child response correction, prompt-contract version 3, direct v1/v2/v3 lineage reads, zero compactor tools, and the existing host-owned accepted-compaction commit. The user has explicitly reconfirmed that boundary. The Memory Compactor system/operation prompt, response schema, episodic/semantic model, parser tolerance, and persistence model are not redesigned in this revision.
 
-The failure occurs below that healthy operation/commit boundary. The current summarizer builds one task whose user message is only a renderer-produced `<conversation_history>` block. The mandatory server input processor then prefixes it with `**[User Requirement]**`. The built-in compactor prompt refers to “earlier work” and “the same agent.” In the retained production trace, the enclosed target history itself starts with a continuation instruction and ends after a successful source-task tool result. Two child models consequently selected the enclosed source task and returned commentary/tool markup instead of compaction JSON.
+User verification and architecture review exposed four defects below or beside that healthy response/commit boundary:
 
-The current parser is more tolerant than the UI error alone suggests: exact JSON, fenced JSON, and prose-wrapped JSON work. Its defect is ordering—`parseObject` returns the first parseable object before checking the six-array schema—and its validation rejects otherwise harmless extra fields. The current summarizer makes one child call only, so any invalid response reaches `PendingCompactionExecutor`, which emits the terminal parent failure immediately.
+1. `evaluateLlmPhaseCompaction` requests compaction at `triggerRatio × inputBudget`, while `EstimatedMessageBudgetStrategy` independently gives the recent suffix 35% of the full input budget. With a 20% trigger this allowed a planned result above the trigger. Three successful operations in one parent turn reduced 249,416 → 243,153 → 242,812 → 8,755 tokens.
+2. `LlmPhase` already represents provider/request/ingestion failure as `LlmPhaseOutcome.isError`, but `LLMResponsePipeline` drops that bit when publishing `ASSISTANT_COMPLETE`. `CompactionRunOutputCollector` therefore accepts generated error prose as usable model output, and `AgentCompactionSummarizer` misclassifies it as JSON extraction failure and launches an inapplicable correction child.
+3. `PendingCompactionExecutor` preserves the same pending operation after every failure, and request assembly executes it before a later user message reaches the target agent. The user has now explicitly approved that strict fail-closed/manual-retry boundary. The defect is that a genuine runner failure launches a meaningless correction child and is reported as JSON failure; the platform must perform no autonomous retry after the final failure.
+4. Pending presence is also treated as sufficient execution authorization. `InterAgentMessageReceivedEvent` shares the same turn-start/request path, and production team/direct-agent messages commonly arrive as `UserMessageReceivedEvent` with `SenderType.AGENT`; system task notifications use `SenderType.SYSTEM`. Any of them can currently execute the retained operation. Merely leaving an ineligible non-user message at the FIFO head would block a later user `continue`, while consuming it would lose supported work.
 
-The existing owners remain appropriate for this scope:
+The healthy boundary remains: a strategy proposal is normalized; `MemoryManager` validates the baseline and lineage; `AcceptedCompactionBuilder` creates host-owned typed artifacts and finalized context; validation runs before `AcceptedCompactionCommitter`; and only the committer archives selected traces, appends memory/lineage, replaces context/snapshot, and completes the pending operation. The revised design strengthens planning, child outcome transport, and pending-operation control without bypassing this boundary.
 
-- `UserInputContextBuildingProcessor` owns readable context-file concatenation, but it should not invent sender semantics already represented by `senderType`, provider roles, and source-specific builders.
-- `CompactionConversationHistoryRenderer` owns the canonical selected transcript and its sole XML-style delimiter.
-- `WorkingContextCompactionPromptBuilder` owns the operation-message framing around that transcript.
-- `AgentCompactionSummarizer` owns the model-attempt sequence and the transition from model text to parsed compaction result.
-- `CompactionResponseParser` owns candidate extraction and the six-array validation boundary.
-- `ServerCompactionAgentRunner` owns exactly one visible child-run lifecycle per call and already guarantees termination in `finally`.
-- `PendingCompactionExecutor` owns the single terminal lifecycle for the parent compaction operation.
-- `AcceptedCompactionBuilder` / `AcceptedCompactionCommitter` own host-generated identities, lineage, projection, persistence ordering, snapshot installation, and pending-state clearing.
-
-The current-state evidence and exact reproduction are in `investigation-notes.md`, `prompt-confusion-root-cause.md`, and the retained trace/prompt evidence. The target must preserve the healthy planning, accepted-compaction, tool-protocol, provider-role, and parent lifecycle boundaries.
+Exact evidence and production traces are in `repeated-compaction-runtime-analysis.md`, `compactor-runner-failure-analysis.md`, `compaction-memory-shape-reassessment.md`, and `investigation-notes.md`.
 
 ## Intended Change
 
-Make the target-agent boundary unmistakable with the exact approved prompt text; remove the obsolete global sender-heading map; preserve the original six-array model response instructions verbatim; make response candidate selection schema-aware and tolerant of harmless extras; and place one bounded corrective child attempt inside `AgentCompactionSummarizer` before the parent operation may fail.
+Preserve the approved prompt and six-array output exactly. Add one trigger-owned planning budget that travels from the observed parent token usage through the pending request into the strategy, planner, accepted result, and postcondition validator. The planner must cap its existing 35% recent-context preference by a trigger-derived target with explicit headroom, reserve required/protected/replacement/estimated-untracked costs, and never override that cap merely to preserve a minimum recent-unit count. A target that cannot preserve mandatory content must fail once before child launch; an actual finalized context estimated above the target must fail before commit.
 
-The first attempt uses the exact approved operation message. A response-validation failure causes one new child run with a short deterministic correction prefix before the same approved task message. A valid first or corrective response flows through the existing normalization/proposal/accept/commit path. If correction is exhausted, one structured error names both validation stages and both available child run IDs; only then does `PendingCompactionExecutor` emit the single parent failure. Runner/transport failure before a first response remains immediately terminal because the approved repair is for invalid returned content, not provider availability or timeout recovery.
+Accepted success must not substitute its local estimate for the actual below-threshold observation required by REQ-012. The existing accepted-commit hook still clears pending atomically, while the coordinator separately records `awaiting_below_observation` for that budget key. The first fresh same-key provider usage below `T` rearms crossing detection; the first at/above `T` requests no second proactive operation, emits one bounded inadequate-reduction diagnostic, and suppresses further proactive operations until actual-below or budget-key reset. Hard-input-cap safety overrides suppression.
+
+Propagate the existing `isError` outcome through the assistant-complete event contract. The compaction collector must turn an error completion, timeout, interruption, terminal child error, tool approval, rejected task, or launch failure into a typed `CompactionAgentRunnerError`. Only a non-error assistant payload may reach `CompactionResponseParser`; the already-approved correction child remains exclusive to usable but invalid model output.
+
+Preserve the pending compaction as a pre-dispatch gate after any final failure, but do not equate pending presence with executability. A pending operation has an explicit attempt state: a newly requested operation is `initial_attempt_ready` and keeps one automatic first attempt regardless of current turn origin; after final failure it is `awaiting_user_retry`. The failed target-agent turn ends after one truthful terminal error; no target-agent LLM dispatch/tool phase follows it, and the platform schedules no same-turn or background retry. A distinct turn with authoritative USER origin, such as `continue`, may initiate at most one new execution. Success clears the pending operation and resumes that user turn; another failure stops it and leaves the gate waiting. This uniform rule applies to proactive and hard-cap pressure. All raw traces and canonical memory remain untouched on every failure.
+
+Resolve turn origin at the inbox boundary before inter-agent conversion or input processing. Store `user` / `agent` / `system` on each turn-start entry and carry it into `AgentTurn` and request assembly. While `awaiting_user_retry`, a compaction-aware admission policy leaves agent/system entries unclaimed in the existing turn-start queue and allows the scheduler to claim the earliest USER entry behind them. No second deferred queue is needed. If recovery fails, retained entries stay queued. If it succeeds, the user turn runs first; after that active turn settles, ordinary FIFO scheduling resumes over the retained entries. Existing shutdown drain semantics continue to own all queued entries.
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
 | Behavior ID | Kind (`User`/`System`/`Operational`/`Contract`) | Approved Requirement / Intent And Acceptance-Criteria IDs | Approved Trigger Or Governing Contract | Relevant Existing Behavior And Evidence Reference | Approved Change Or Preserved Outcome | Target Production Path / Lifecycle And Spine ID(s) |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH-001 | System | REQ-001; AC-001, AC-002 | Parent token budget crosses the supported automatic-compaction threshold before dispatch | Current history-only prompt, generic heading injection, and wrong-task child outputs; investigation rows BEH-001 and source-log rows 63–70 | Exact target-agent system wording, renamed sole wrapper, exact separator message, and no generic sender heading; source transcript content and generated common system sections remain unchanged | Parent request assembly -> pending executor -> structured strategy -> summarizer -> prompt builder/renderer -> new visible child run; DS-001, DS-002, DS-004 |
-| BEH-002 | Contract | REQ-002–REQ-004; AC-003–AC-007 | `structured-json` strategy receives public assistant text from a completed compactor child | Parser probe proves prose/fence tolerance and first-unrelated-object masking; investigation BEH-002 | Preserve six arrays and entry meanings; validate all candidates by schema, ignore harmless extras, select one semantic result, reject zero or multiple distinct valid results | Collector -> schema-aware parser -> `CompactionResult`; DS-001, DS-003 |
-| BEH-003 | Operational | REQ-005–REQ-007; AC-008–AC-010 | First child returns content that fails extraction, six-array validation, or ambiguity validation | Current one-shot failure reaches pending executor immediately; investigation BEH-003 | Summarizer launches exactly one new correction child before returning/failing; no intermediate parent failed status; exhaustion carries stages and available run IDs | Summarizer bounded attempt loop -> strategy result/error -> pending executor terminal lifecycle; DS-001, DS-003, DS-004 |
-| BEH-004 | System / Contract | REQ-007, REQ-008; AC-009–AC-011 | Parser returns one valid typed result and captured baseline is still current | Existing proposal/prepare/validate/commit path is healthy; investigation BEH-004 | Preserve normalization, host-generated identities/salience, lineage membership, exact trace archival, context projection, ordered commit, and single pending clear | Parser -> strategy proposal -> memory manager prepare -> validator -> accepted committer -> completed event; DS-001, DS-003 |
-| BEH-005 | User / Operational | REQ-009; AC-002, AC-012 | Parent or compactor attempts a tool call | Compactor config is empty; runner disables auto-execution; collector fails approval; parent `write_file` was separate and recovered | No compactor tool or Daily Assistant tool-policy change; source-task commentary/tool markup still cannot become memory | Child event -> output collector failure or parser rejection -> bounded/content-specific repair or final operation failure; DS-002, DS-003 |
-| BEH-006 | Contract | REQ-010; AC-011, AC-013 | Existing/new lineage is loaded or a successful compaction appends lineage | Existing data has schema-v1 lineage with prompt versions 1/2; current reader accepts 1/2; investigation BEH-006 | New records use prompt version 3; version-agnostic reader accepts 1/2/3 directly; no stored data rewrite | Accepted builder -> lineage store; lineage store -> current-output loader/projection; DS-001, DS-005 |
-
-The behavior map defines the supported behavior. The following spines show how the target owners carry it.
+| BEH-001 | System | REQ-001; AC-001, AC-002 | Automatic compactor child receives selected target-agent history | Initial baseline commits and `memory-compactor-prompt-spec.md` | Preserve the exact approved target-agent system and operation prompt; no new wording or separator change | Input composition -> prompt builder -> zero-tool child; DS-001, DS-002 |
+| BEH-002 | Contract | REQ-002, REQ-003, REQ-004; AC-003, AC-004, AC-005, AC-006, AC-007 | Non-error child assistant response reaches the structured strategy | Current tolerant schema-aware parser and tests | Preserve all six arrays, episode requirement, benign-format tolerance, and ambiguity rejection | Collector usable output -> summarizer -> parser -> normalized proposal; DS-002, DS-005 |
+| BEH-003 | Operational | REQ-005, REQ-006; AC-008, AC-009, AC-010, AC-019 | Usable first response fails extraction/schema validation | Current bounded new-child correction implementation | Preserve exactly one response correction and one parent terminal lifecycle; typed runner failures never enter this branch | Summarizer attempt state -> parser -> correction or typed exhaustion; DS-002, DS-005 |
+| BEH-004 | Contract | REQ-007, REQ-008; AC-010, AC-011, AC-021 | Valid proposal and current baseline/lineage | Existing accepted builder/validator/committer and stored data | Preserve typed episodes/semantics, host IDs, lineage, exact-trace archival, projection, atomic commit, and no mutation on failure; add budget postcondition before commit | Manager acceptance -> builder -> output validator -> committer; DS-001, DS-005 |
+| BEH-005 | User / Operational | REQ-009; AC-002, AC-012 | Compactor or parent attempts a tool call | Tool-free compactor configuration and runner policy | Preserve zero tools; do not add `run_bash`, `write_file`, or direct parent-memory writes | Child event -> collector failure; DS-002 |
+| BEH-006 | Contract | REQ-010; AC-013 | Existing lineage loads or a new compaction commits | Current v1/v2/v3 direct reader and v3 writer | Preserve prompt contract 3 and direct use of existing memory; no migration and no v4 bump | Store read / accepted commit; DS-005 |
+| BEH-007 | System | REQ-011, REQ-012; AC-014, AC-015, AC-016, AC-017 | Successful parent usage observation is at/above the active trigger | `repeated-compaction-runtime-analysis.md`; fixed 35% planner mismatch | Derive one planning target from the same budget/trigger, validate the result below it, and prevent a successful operation that remains above target | Usage -> token budget -> eligibility -> pending budget -> target planner -> accepted postcondition; DS-001, DS-003, DS-004 |
+| BEH-008 | Operational | REQ-013; AC-018, AC-019, AC-021 | Child request fails before usable output, or produces usable invalid output | `compactor-runner-failure-analysis.md`; four no-assistant/no-usage runs | Preserve the error bit and cause across the event boundary; runner error bypasses parser/repair, while usable invalid output still gets one correction | LlmPhase outcome -> assistant event -> collector -> typed runner result -> summarizer; DS-002, DS-005 |
+| BEH-009 | Operational | REQ-014, REQ-015; AC-020–AC-023 | Any required compaction reaches a final failure | Same pending operation reran on the later user-authored `continue`; each runner failure incorrectly created a correction child | Stop that target-agent turn, transition pending to `awaiting_user_retry`, schedule no autonomous retry, and let one distinct USER-origin turn authorize no more than one new attempt | Executor failure -> retained pending attempt state -> terminal turn error -> eligible user request assembly -> one authorized attempt; DS-001, DS-004–DS-006 |
+| BEH-010 | System | REQ-015; AC-022, AC-023 | USER, AGENT, or SYSTEM input is queued while failed pending awaits user retry | `ARCH-REV-003` / `MP-002`; core inbox/turn/input/assembler path; server AGENT/SYSTEM carrier builders | Stamp authoritative origin before conversion; non-user entries remain in the existing queue and cause no turn/retry/dispatch/error; an eligible USER entry may pass them only to resolve the gate, then normal FIFO resumes after successful user-turn settlement | Message submit -> origin-stamped inbox entry -> eligibility-aware scheduler -> retained non-user or USER retry turn -> authorized executor -> user dispatch -> queued work resumes; DS-006 |
 
 ## Relevant Supplemental Task Artifacts
 
 | Artifact Path | Purpose | Related Requirement / Acceptance-Criteria IDs (When Applicable) | Relationship To This Design | Status / Approval Applicability |
 | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/memory-compactor-prompt-spec.md` | Exact `agent.md` and first-attempt operation-message wording | REQ-001, REQ-002; AC-001–AC-003 | Exact text authority; implementation must copy, not paraphrase | User approved 2026-08-14 |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/prompt-confusion-root-cause.md` | Causal prompt anatomy | REQ-001; AC-001, AC-002 | Establishes why target-agent wording/framing is the root fix and why extra XML hierarchy is rejected | Evidence/context; approval N/A |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/compaction-output-contract-decision.md` | Response/repair/tool/persistence decisions | REQ-001–REQ-010; AC-001–AC-013 | Constrains parser, retry, least-authority, and compatibility design | User approved 2026-08-14 |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/evidence/failed-compactor-final-system-prompt.md` | Exact failed processed system prompt | REQ-001; AC-001 | Regression comparison authority for unchanged generated section order | Evidence; approval N/A |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/evidence/failed-compactor-outputs.json` | Exact wrong-task public output | REQ-001, REQ-003–REQ-007; AC-001, AC-002, AC-008–AC-010 | Parser/repair negative fixture and prompt-boundary evidence | Evidence; approval N/A |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/evidence/successful-compactor-output-comparison.json` | Earlier successful same-run outputs | REQ-001, REQ-002, REQ-010; AC-001, AC-003, AC-013 | Proves the six-array contract itself works and must be preserved | Evidence; approval N/A |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/evidence/parser-tolerance-probe.jsonl` | Current parser probe | REQ-003, REQ-004; AC-004–AC-007 | Baseline for candidate-order and formatting-tolerance tests | Evidence; approval N/A |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/evidence/daily-assistant-compaction-failure.png` | User-visible lifecycle evidence | REQ-006, REQ-009; AC-009, AC-012 | Confirms separate parent tool error and compaction failure presentation | Evidence; approval N/A |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/evidence/memory-compactor-user-requirement-view.png` | User-visible child input evidence | REQ-001; AC-001 | Confirms misleading current heading/history adjacency | Evidence; approval N/A |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/evidence/daily-assistant-server-log-excerpt.txt` | Operation/run/log correlation | REQ-001, REQ-005–REQ-009; AC-001, AC-008–AC-012 | Confirms current operation ID reuse, child IDs, runner policy, and final failure | Evidence; approval N/A |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/memory-compactor-prompt-spec.md` | Exact system and first-attempt message | REQ-001, REQ-002; AC-001–AC-003 | Byte-exact unchanged prompt authority | Approved 2026-08-14 |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/prompt-confusion-root-cause.md` | Original wrong-task causal analysis | REQ-001; AC-001, AC-002 | Establishes why the initial prompt correction remains necessary | Evidence; N/A |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/compaction-output-contract-decision.md` | Original structured-output decision | REQ-001–REQ-010; AC-001–AC-013 | Preserved contract and least-authority boundary | Approved 2026-08-14 |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/repeated-compaction-runtime-analysis.md` | 80%→20% trigger/planner evidence | REQ-011, REQ-012; AC-014, AC-015, AC-016, AC-017 | Defines the trigger-alignment defect and observed sequence | Evidence; N/A |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/compactor-runner-failure-analysis.md` | Four child failures, pending retry, and corrected re-entry direction | REQ-013–REQ-015; AC-018–AC-023 | Defines the event-boundary defect and aligns recovery with USER-only authorization and queued non-user preservation | Evidence; N/A |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/compaction-runtime-behavior-examples.md` | Concrete intended runtime outcomes | REQ-011–REQ-015; AC-014–AC-023 | Governs ratio lowering, later crossing, runner/output distinction, user-only retry, queued non-user preservation, and unattainable target | Approved 2026-08-14, including SR-004 clarification |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/compaction-memory-shape-reassessment.md` | Response/storage option analysis | REQ-002, REQ-007–REQ-010; AC-003, AC-007–AC-013 | Records why JSON is transient, episodes are continuation-critical, direct writes are rejected, and the existing contract is preserved | Resolved evidence/decision context; user decision 2026-08-14 |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/evidence/repeated-compaction-at-20-percent.png` | User-visible repeated-success sequence | REQ-011, REQ-012; AC-014–AC-017 | Shows three rapid compaction cards after the ratio change | Evidence; N/A |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/evidence/repeated-compaction-server-log-excerpt.txt` | Exact trigger/plan/result logs | REQ-011, REQ-012 | Runtime numbers for planning regression coverage | Evidence; N/A |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/evidence/compactor-provider-failure-and-repeat.png` | User-visible later failure sequence | REQ-013, REQ-014; AC-018–AC-021 | Shows two failures and the parent token context | Evidence; N/A |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/evidence/compactor-runner-failure-evidence.json` | Correlated parent/child trace summary | REQ-013, REQ-014 | Proves error completion was not model-authored compaction output | Evidence; N/A |
 
 ## Task Design Health Assessment (Mandatory)
 
-- Change posture: `Bug Fix` + bounded `Behavior Change` + `Cleanup`.
+- Change posture: `Bug Fix`, bounded `Behavior Change`, and local `Refactor` on top of the implemented prompt/parser baseline.
 - Current design issue found: `Yes`.
-- Root cause classification: primary `Missing Invariant`; secondary `Legacy Or Compatibility Pressure` in generic sender headings and `Shared Structure Looseness` in first-object parser selection.
-- Refactor needed now: `Yes`, confined to prompt ownership, response validation, and the model-attempt loop.
-- Evidence: two identical live histories were treated as active source work; the task message did not identify a target agent; the generic processor added a misleading requirement heading; parser probing showed validation occurs after first-object selection; the operation lifecycle currently has no content-repair boundary.
-- Design response: clarify the task/evidence boundary with approved text, remove obsolete generic heading policy, move candidate choice behind validation, and make the existing summarizer the bounded two-attempt owner.
-- Refactor rationale: these concerns already belong to the named owners. No new transport, persistence abstraction, strategy API, or generic retry service is necessary. The accepted-compaction architecture is healthy and remains untouched.
-- Intentional deferrals and residual risk: deterministic validation cannot prove factual summary quality. Provider/model runtime failure is not retried by this content-repair loop. File-backed output, model fallback, and generated common-system-section redesign are out of scope. One repair adds bounded latency/token cost.
+- Root cause classification: `Missing Invariant` (post-compaction target, actual-observation reset, and failed-pending authorization), `Duplicated Policy Or Coordination` (trigger versus fixed retention), `Boundary Or Ownership Issue` (LLM error bit lost before collector and original turn origin absent at pending execution), and `Shared Structure Looseness` (duplicated/minimal pending request cannot carry the trigger-time budget or attempt state, while pending alone cannot own post-success state after accepted cleanup).
+- Refactor needed now: `Yes`.
+- Evidence: the supported 20% setting produced three rapid successful operations; four child runs had no assistant trace or usage yet reached the JSON parser; the identical pending operation reran before `continue` could dispatch; supported AGENT/SYSTEM turn starts share the same pending executor and current FIFO head-only selection cannot both preserve them and admit a user behind them.
+- Design response: introduce a single planning-budget DTO and target formula, preserve one coordinator-owned pending gate with explicit attempt state, add authoritative turn-start origin and eligibility-aware same-queue admission, add typed assistant error projection/collector failure, type repair exhaustion, and validate the budget before commit.
+- Refactor rationale: local patches such as lowering the 35% constant, matching error-message text, clearing every failed request, treating every pending record as executable, rejecting/dropping non-user messages, or adding a second deferred queue would leave two owners for policy, conflate model text with runtime failure, discard supported work, block user recovery, or weaken hard-cap safety.
+- Intentional deferrals and residual risk: exact tokenizer admission/chunking for one enormous newly arriving message, provider fallback, provider quota policy, UI denominator redesign, and factual-summary evaluation remain separate. Token estimation can differ from provider accounting; calibration and headroom reduce that risk, and the accepted postcondition fails closed before commit.
 
 ## Terminology
 
-- **Target agent:** the parent/task agent whose selected working-context conversation is being compacted.
-- **Compactor child / attempt:** one visible Memory Compactor agent run created by one `CompactionAgentRunner.runCompactionTask` call.
-- **Parent compaction operation:** the pending operation identified by `compaction_operation_id`; it may contain one or two child attempts but has one terminal lifecycle.
-- **Recognized response fields:** the six approved top-level arrays and `summary`/`fact` entry properties. Unknown fields do not become memory.
-- **Semantic candidate fingerprint:** a stable serialization of the parsed/clamped `CompactionResult`; candidates with the same host-consumed result are duplicates, not ambiguity.
+- **Input budget (`B`)**: safety-adjusted maximum combined parent input tokens, currently derived from total context minus reserved output and safety margin.
+- **Trigger threshold (`T`)**: `floor(compactionRatio × B)`; proactive compaction begins here.
+- **Planning budget**: immutable per-operation values captured from the triggering token observation and carried with the pending request.
+- **Post-compaction target (`P`)**: upper bound for the estimated complete finalized prompt, not merely the recent suffix.
+- **Usable assistant response**: non-error public assistant completion text. Error completions, interruptions, timeouts, terminal child failures, and tool approvals are runner failures.
+- **Pending attempt state**: `initial_attempt_ready` permits the one automatic first execution; `attempt_in_progress` identifies that execution and turn; `awaiting_user_retry` permits no execution until a distinct USER-origin turn authorizes one attempt.
+- **Authoritative turn-start origin**: `user`, `agent`, or `system`, resolved from the original inbox event/sender type before input conversion and stored on the turn-start entry and active turn.
+- **Fail-closed pending gate**: a requested compaction remains pending until accepted commit clears it. Final failure ends the current target-agent turn and changes authorization to `awaiting_user_retry`; pending presence by itself is not executable authority.
 
 ## Design Reading Order
 
-The remainder follows: legacy/state decisions; spines and owners; boundaries/interfaces; file responsibilities; then sequencing, examples, tests, and risks.
+1. Preserve the approved prompt/schema/commit baseline.
+2. Carry one observed planning budget through trigger, pending request, strategy, plan, and validation.
+3. Preserve the child `isError` contract through server collection.
+4. Apply uniform fail-closed/manual-retry behavior with explicit pending attempt state.
+5. Admit USER versus non-user turn starts from authoritative origin while retaining one ordinary queue.
+6. Map these owners into current files, remove duplicated policies, and validate without migration.
 
 ## Legacy Removal Policy (Mandatory)
 
 - Policy: `No backward compatibility; remove legacy code paths.`
-- Remove the generic sender-heading map, sender-dependent formatting branch/parameter/import, and current test expectations for `[User Requirement]`, `[Tool Execution Result]`, `[Message From Agent]`, and `[System Notification]`.
-- Replace the old `<conversation_history>` output delimiter with the sole `<target_agent_conversation_history>` delimiter and update collision escaping/tests/docs. Do not support both tags, add a parser alias, or render nested wrappers.
-- Do not retain a first-parseable-object parser path, strict unknown-field rejection path, one-shot response-validation path, feature flag, or fallback that restores replaced behavior.
-- Preserve active `SenderType` metadata and tool/inter-agent/system source builders. They are current routing semantics, not legacy formatting.
-- Existing immutable lineage prompt versions 1/2 remain readable as directly usable persisted data; this is a supported version set in the normal version-agnostic reader, not a dual business path or migration shim.
+- Remove the independent fixed-35%-of-input suffix decision as the authoritative planner cap. The 35% value survives only as a quality preference capped by the trigger-derived complete-prompt target.
+- Remove `enforceBudgetAndCompactablePrefix` behavior that can override the budget by retaining the minimum suffix or collapse an all-fitting candidate set without reference to the target.
+- Remove the duplicated reduced `PendingCompactionRequest` definition in `llm-request-recovery.ts`; use the coordinator-owned shared runtime shape containing the trigger-time planning budget.
+- Remove pending-presence-only execution checks and any direct derivation of compaction executability from `pendingRequest !== null`.
+- Remove the path that treats `ASSISTANT_COMPLETE` with `is_error=true` as candidate compaction text.
+- Remove generic `Error` construction for response-repair exhaustion in favor of a typed response-validation failure.
+- Do not keep old planner behavior behind a flag, accept error prose as a fallback, dual-write pending shapes, or add a v4 prompt alias.
 
 ## Persisted Data / State Transition Decision (Mandatory When Persisted Data May Be Affected)
 
-- Stored subject, location, representative shape, and approximate volume: each agent memory root contains `episodic.jsonl`, `semantic.jsonl`, schema-v1 `compaction_lineage.jsonl`, raw-trace archive/manifest, and `working_context_snapshot.json`. The investigated parent has two lineage records using prompt contract 2; representative episode/semantic rows are typed current shapes.
-- Relevant code-model, serialization, semantic, or physical-store change: only the lineage prompt-contract discriminator advances from current 2 to current 3. The transient model response shape is preserved. No episode, semantic, snapshot, archive, or lineage schema-version shape changes.
-- Normal reader/writer behavior and representative evidence: the accepted builder writes the current prompt-contract constant; the lineage normalizer reads supported prompt versions. Current episode/semantic/current-output loaders do not depend on the transient model response. Existing v1/v2 records load today.
-- Required semantics and invariants under direct use: immutable existing identities, timestamps, categories, salience, membership, raw-trace origin, lineage order, and current snapshot must remain unchanged. New records must be attributable to prompt contract 3.
-- Physical-store, privacy/security, disposal/rebuild, and operational constraints: memory is user data and must not be rewritten for representational cleanliness. A normal deployment/restart is sufficient; no mixed physical schema exists.
+- Stored subject, location, representative shape, and approximate volume: run-local `episodic.jsonl`, `semantic.jsonl`, `compaction_lineage.jsonl`, raw trace archives/manifests, and `working_context_snapshot.json`; representative Daily Assistant lineage has five successful heads with episode/semantic counts `4/25`, `3/21`, `2/18`, `2/18`, and `5/0`.
+- Relevant code-model, serialization, semantic, or physical-store change: none. The expanded pending request/attempt state, post-success threshold episode, authoritative turn origin, ordinary inbox entries, planning assessment, and LLM request recovery snapshot are runtime-only objects. Prompt contract remains 3.
+- Normal reader/writer behavior and representative evidence: current v1/v2/v3 lineage reader and typed episode/semantic stores already load the representative data; accepted committer remains the only writer.
+- Required semantics and invariants under direct use: all existing IDs, timestamps, categories, facts, salience, lineage membership, archived traces, and current projection remain unchanged.
+- Physical-store, privacy/security, disposal/rebuild, and operational constraints: existing user memory must not be rewritten; compactor receives no filesystem authority.
 - Decision: `Directly Usable — No Migration`.
-- Decision rationale: define a supported version tuple/set `[1, 2, 3]`, set current to 3, and keep the normal reader version-agnostic otherwise. Rewriting stored JSONL provides no semantic benefit and adds nonzero I/O/corruption/recovery risk.
-- Acceptance criteria or design constraints supported by this decision: REQ-007, REQ-008, REQ-010; AC-010, AC-011, AC-013.
+- Decision rationale: no stored schema changes. Migration would add I/O and corruption/recovery risk without changing runtime meaning. The runtime-only post-success suppression state may reset on process restart, which can permit one additional proactive operation after restart; this bounded residual does not justify writing lifecycle state into canonical memory.
+- Acceptance criteria or design constraints supported: REQ-007–REQ-010, REQ-014, REQ-015; AC-010–AC-013, AC-020–AC-023.
 
-No migration plan applies.
+### Migration Plan
+
+N/A — no persisted transformation is required.
 
 ## Data-Flow Spine Inventory
 
 | Spine ID | Scope (`Primary End-to-End`/`Return-Event`/`Bounded Local`) | Related Behavior ID(s) | Start | End | Governing Owner | Why It Matters |
 | --- | --- | --- | --- | --- | --- | --- |
-| DS-001 | Primary End-to-End | BEH-001–BEH-004, BEH-006 | Parent LLM request assembly with pending compaction | One canonical commit plus parent request continuation, or one final operation failure with no mutation | `PendingCompactionExecutor` for operation lifecycle; `MemoryManager` for acceptance/commit | Full supported business path; prevents the design from stopping at the parser |
-| DS-002 | Primary End-to-End | BEH-001, BEH-005 | One summarizer attempt task | Public assistant text/runner failure plus terminated visible child | `ServerCompactionAgentRunner` | Establishes one-new-child-per-attempt and least authority |
-| DS-003 | Return-Event | BEH-002–BEH-005 | Child run events/public output | Parsed result or structured attempt failure returned to strategy/executor | `AgentCompactionSummarizer` | Carries response validation, repair, and final diagnostic outcome |
-| DS-004 | Bounded Local | BEH-001, BEH-003 | Initial task prompt | Valid first/repair result or exhausted two-attempt error | `AgentCompactionSummarizer` | Makes the fixed two-attempt state transition explicit below the parent lifecycle |
-| DS-005 | Primary End-to-End | BEH-006 | Persisted lineage read or accepted lineage append | Current bundle/projection or new schema-v1 record with prompt contract 3 | Lineage store/normalizer and `AcceptedCompactionBuilder` | Proves direct use without migration and correct version attribution |
-| DS-006 | Primary End-to-End | BEH-001 | Any sender-type `AgentInputUserMessage` | Provider/user message content with raw authored content or neutral context/message sections | `AgentInputPipeline` with `UserInputContextBuildingProcessor` as mandatory formatting concern | Covers the approved global removal, not only compactor input |
+| DS-001 | Primary End-to-End | BEH-001, BEH-004, BEH-007, BEH-009 | Parent token-usage observation or an authorized retained pending gate at request assembly | One accepted commit followed by an observation-governed threshold episode, or one fail-closed turn awaiting a distinct USER-origin retry | `MemoryManagerCompactionCoordinator` for pending/episode/attempt state; `PendingCompactionExecutor` for operation lifecycle | Exposes the full supported automatic-compaction and authorized manual-retry path |
+| DS-002 | Primary End-to-End | BEH-001–BEH-003, BEH-005, BEH-008 | Summarizer sends one child task | Typed usable output or typed runner failure with child metadata | `ServerCompactionAgentRunner` | Keeps model output distinct from child execution failure |
+| DS-003 | Bounded Local | BEH-007 | Per-operation planning budget | Target-respecting `MessageCompactionPlan` or typed planning failure | `WorkingContextMessageWindowPlanner` | Makes the trigger a planning postcondition instead of a separate policy |
+| DS-004 | Bounded Local | BEH-007, BEH-009 | New token-usage observation or accepted operation result | Request, await actual-below observation, bounded inadequate-reduction suppression, actual-below reset, budget-key reset, or hard-cap override | `CompactionThresholdGate` owned by the coordinator | Prevents estimated success from creating another operation before an actual below-threshold observation |
+| DS-005 | Return-Event | BEH-002–BEH-004, BEH-006, BEH-008, BEH-009 | Child/strategy result or failure | One parent terminal status and either one commit or no canonical mutation | `PendingCompactionExecutor` | Preserves coherent reporting and atomicity |
+| DS-006 | Primary End-to-End | BEH-009, BEH-010 | USER/AGENT/SYSTEM input submission while a failed pending operation awaits user retry | Non-user entry retained without work, or one USER-authorized retry followed by user dispatch and later FIFO resumption | `AgentEventScheduler` for dispatch selection; `CompactionRetryTurnAdmissionPolicy` for eligibility; coordinator/executor for authorization | Prevents autonomous retries and message loss without a second queue or blocked user recovery |
 
 ## Primary Execution Spine(s)
 
-**DS-001 — Parent automatic compaction**
+**DS-001 — automatic compaction and parent continuation**
 
-`Parent LLMRequestAssembler -> PendingCompactionExecutor -> StructuredJsonCompactionStrategy -> AgentCompactionSummarizer -> CompactionAgentRunner / child model -> CompactionResponseParser -> strategy proposal -> MemoryManager prepare -> output validator -> AcceptedCompactionCommitter -> parent LLM request continuation`
+`Parent LLM response usage -> TokenBudget -> MemoryManager.evaluateCompactionObservation -> coordinator/threshold gate -> pending request with planning budget + initial attempt state -> authorized request assembly/immediate execution -> PendingCompactionExecutor -> strategy/planner -> summarizer/child -> MemoryManager.prepareCompaction -> accepted budget/output validation -> AcceptedCompactionCommitter -> pending clear + post-success awaiting-observation state -> later authoritative usage observation, or final fail-closed turn with pending retained in awaiting-user state`
 
-**DS-002 — One child attempt**
+**DS-002 — child execution outcome**
 
-`AgentCompactionSummarizer -> WorkingContextCompactionPromptBuilder / history renderer -> ServerCompactionAgentRunner -> AgentRunService / visible child -> child runtime/model -> CompactionRunOutputCollector -> runner result -> child termination`
+`AgentCompactionSummarizer -> ServerCompactionAgentRunner -> child AgentRun/LlmPhase -> assistant-complete event with is_error -> CompactionRunOutputCollector -> CompactionAgentRunnerResult or CompactionAgentRunnerError -> summarizer parser/correction decision`
 
-**DS-005 — Lineage direct read/write**
+**DS-006 — external turn admission during failed-pending recovery**
 
-`AcceptedCompactionBuilder -> schema-v1 lineage record(prompt contract 3) -> lineage store` and `schema-v1 lineage record(prompt contract 1/2/3) -> lineage normalizer/store -> CurrentCompactionOutputLoader -> compacted-memory projection`
-
-**DS-006 — Global input content composition**
-
-`External/tool/inter-agent/system input owner -> AgentInputPipeline -> mandatory UserInputContextBuildingProcessor -> buildLLMUserMessage (or null for text-only tool continuation) -> LLMRequestAssembler -> provider renderer`
+`User/agent/system message submission -> AgentEventInbox origin-stamped turn_start entry -> AgentEventScheduler + CompactionRetryTurnAdmissionPolicy -> non-user remains unclaimed OR earliest USER is claimed -> AgentWorker creates AgentTurn(origin=user) -> LLMRequestAssembler -> PendingCompactionExecutor.begin authorized attempt -> failure retains queue/gate OR success clears pending -> current user turn dispatches -> active turn settles -> normal FIFO resumes retained entries`
 
 ## Spine Narratives (Mandatory)
 
 | Spine ID | Short Narrative | Main Domain Subject Nodes | Governing Owner | Key Off-Spine Concerns |
 | --- | --- | --- | --- | --- |
-| DS-001 | The pending operation resolves the strategy, plans one prefix, obtains a valid typed result through at most two child attempts, then uses the unchanged accepted-compaction boundary to commit once or fail without mutation. | Parent request, pending operation, compaction proposal, accepted compaction | `PendingCompactionExecutor`; `MemoryManager` at acceptance | Prompt wording, parser extraction, diagnostics, lineage version |
-| DS-002 | Each runner invocation creates a new visible zero-tool child, posts one user-role task, collects only public assistant output, and terminates that child regardless of outcome. | Attempt task, child run, public output | `ServerCompactionAgentRunner` | launch resolution, event collection, timeout cleanup |
-| DS-003 | Child public text returns to the summarizer, which validates it; one first validation failure becomes a repair task, while final success/error returns once to the strategy and parent operation. | Attempt result, parsed compaction result, exhausted repair error | `AgentCompactionSummarizer` | validation-stage classification, run-ID formatting |
-| DS-004 | State is `initial`; a valid result terminates successfully, one typed validation error transitions to `correction`, and the next success/error terminates. No transition leads back to `initial` or launches a third attempt. | Initial attempt, correction attempt | `AgentCompactionSummarizer` | deterministic correction prefix, per-attempt metadata |
-| DS-005 | Writers use current prompt contract 3; one normalizer accepts immutable supported versions 1/2/3 and returns the same canonical lineage meaning without rewriting files. | Lineage execution metadata, current bundle | Lineage record normalizer / accepted builder | store integrity checks |
-| DS-006 | The processor resolves context files and concatenates readable context; it no longer translates sender type into prose. Sender-specific meaning remains with provider roles and source builders. | Authored message, readable context, LLM user carrier | `AgentInputPipeline` | path security, media continuation, source-specific text |
+| DS-001 | The latest successful parent usage is resolved into one immutable planning budget. The threshold gate may create one pending operation with one automatic initial attempt. The operation either commits once, clearing pending while latching that an actual below-threshold observation is still required, or fails once and enters `awaiting_user_retry`; a later authorized USER turn can begin one new attempt. | token observation, threshold episode, planning budget, pending operation/attempt state, proposal, accepted compaction | coordinator/executor | reporting, strategy resolution, request recovery |
+| DS-002 | One child run publishes either a non-error completion or an explicit error completion/lifecycle failure. The collector rejects every failure before response parsing and the server runner preserves the run ID and cause in a typed error. | child task, child run, assistant outcome, runner result | server runner | event conversion, timeout, cleanup |
+| DS-003 | The planner calculates the complete-prompt target, subtracts required/system/protected/untracked/replacement costs, and selects only a newest natural suffix that fits while leaving a compactable prefix. | budget assessment, message units, compaction plan | message-window planner | token estimation, protected tool protocol |
+| DS-004 | One runtime-only state machine survives successful pending cleanup. Accepted success enters `awaiting_below_observation`; only an actual same-key usage below `T` rearms normal proactive eligibility. A first fresh same-key observation at/above `T` emits one inadequate-reduction diagnostic and suppresses another proactive operation until actual-below or budget-key reset; hard cap overrides suppression. | threshold episode, budget key, completed operation identity, first inadequate observation | threshold gate | diagnostic reason codes |
+| DS-005 | Parsed output returns through normalization and accepted construction. Finalized prompt cost is validated before the committer. A final failure transitions the pending attempt to `awaiting_user_retry` and terminates the target-agent turn; success commits once and installs the post-success threshold episode. | strategy result, accepted compaction, attempt disposition, terminal outcome | executor/manager | failure classification, reporter enrichment |
+| DS-006 | Every external turn-start entry receives immutable origin before input conversion. While the pending attempt awaits user retry, scheduler admission treats non-user entries as temporarily ineligible but leaves them in the sole FIFO queue; it selects the earliest USER behind them. The active turn carries that origin to request assembly, where the coordinator authorizes at most one retry for that turn. Success lets the user turn proceed and normal FIFO resume afterward; failure leaves retained entries untouched. | turn-start entry, authoritative origin, admission decision, authorized retry, retained queue order | scheduler/admission policy + coordinator/executor | inbox availability/wakeup, shutdown drain |
 
 ## Spine Actors / Main-Line Nodes
 
-- `LLMRequestAssembler`: supported trigger surface for executing a pending compaction before the next provider request.
-- `PendingCompactionExecutor`: parent operation lifecycle and terminal status owner.
-- `StructuredJsonCompactionStrategy`: compaction plan, normalization, and proposal owner.
-- `AgentCompactionSummarizer`: bounded content-attempt owner.
-- `WorkingContextCompactionPromptBuilder`: initial/correction task-message owner.
-- `CompactionConversationHistoryRenderer`: selected transcript and delimiter owner.
-- `ServerCompactionAgentRunner`: one child-run lifecycle owner.
-- `CompactionResponseParser`: candidate/validation/mapping owner.
-- `MemoryManager` compaction coordinator: baseline/lineage acceptance owner.
-- `AcceptedCompactionCommitter`: ordered canonical mutation owner.
-- `AgentInputPipeline`: sender/turn routing and LLM carrier owner.
-- `UserInputContextBuildingProcessor`: readable-context concatenation concern within the input pipeline.
+- `evaluateLlmPhaseCompaction`: thin adapter from provider usage observation into the memory boundary and reporter.
+- `MemoryManager` / `MemoryManagerCompactionCoordinator`: authoritative pending-operation and post-success threshold-episode boundary.
+- `CompactionThresholdGate`: bounded local post-success eligibility transition owner.
+- `CompactionPlanningBudgetResolver`: pure owner of `B`, `T`, headroom, quality cap, and `P`.
+- `PendingCompactionExecutor`: one operation's start/propose/accept/validate/commit/fail lifecycle.
+- `AgentEventInbox`: authoritative turn-start entry/origin and single FIFO storage owner.
+- `AgentEventScheduler`: selects the first currently dispatchable entry without consuming deferred non-user entries.
+- `CompactionRetryTurnAdmissionPolicy`: narrow adapter from public failed-pending state plus entry origin to dispatch eligibility.
+- `AgentTurn`: immutable carrier of authoritative external origin across input conversion and tool continuations.
+- `WorkingContextMessageWindowPlanner`: target-respecting unit selection.
+- `AgentCompactionSummarizer`: initial output/correction state.
+- `ServerCompactionAgentRunner`: one child execution and typed outcome.
+- `MemoryManager.prepareCompaction` / `AcceptedCompactionBuilder`: host-owned accepted result.
+- `AcceptedCompactionCommitter`: sole canonical mutation owner.
 
 ## Ownership Map
 
-| Main-Line Node | Owns | Must Preserve / Enforce |
+| Owner | Owns | Must Not Own |
 | --- | --- | --- |
-| `PendingCompactionExecutor` | one pending operation's started/completed/failed lifecycle; transition into prepare/commit | one terminal parent status; no attempt-level failed status |
-| `StructuredJsonCompactionStrategy` | window planning, normalized result, ID-less proposal | strategy-specific JSON; generic strategy interface remains neutral |
-| `AgentCompactionSummarizer` | initial/repair state, child invocation count, attempt metadata, final content failure composition | maximum two calls; retry only typed returned-content validation failures; latest successful metadata for proposal |
-| `WorkingContextCompactionPromptBuilder` | exact first-task envelope and exact repair prefix | approved first prompt byte shape; no text after END; no raw failed output in repair |
-| `CompactionConversationHistoryRenderer` | transcript roles/tool condensation/redaction/value bounds/sole wrapper | unchanged inner rendering; new-tag collision escaping only |
-| `ServerCompactionAgentRunner` | one visible run, posting one task, waiting, output metadata, termination | zero tool auto-execution; one run per call; cleanup on all outcomes |
-| `CompactionResponseParser` | candidate extraction, six-array validation, harmless-extra projection, ambiguity detection, text bounds | at least one episode; no arbitrary Markdown; typed validation stage |
-| `MemoryManager` / accepted owners | baseline check, identity assignment, lineage, context, persistence, pending clear | no mutation before validated proposal; exactly one commit |
-| `UserInputContextBuildingProcessor` | file-path resolution and optional readable-context concatenation | raw content unchanged without context; neutral context/message labels with context; no sender heading policy |
-| Lineage record normalizer | supported prompt-contract version set | direct 1/2/3 read; reject unsupported versions |
-
-`LLMRequestAssembler` is a thin initiating boundary for this use case; it delegates compaction lifecycle to `PendingCompactionExecutor`. `ServerCompactionAgentRunner` is an authoritative boundary for one child run, not the retry owner.
+| `CompactionPolicy` | threshold and hard-cap pressure classification from prompt tokens and budget | pending state, episode history, unit selection |
+| `CompactionPlanningBudgetResolver` | immutable target formula and budget key | message selection, model output, persistence |
+| `MemoryManagerCompactionCoordinator` | the pending request, attempt state/authorization, separate post-success threshold episode, baseline/lineage fencing, and success/failure control transition | provider events, response parsing, token estimation, or inbox storage |
+| `CompactionThresholdGate` | pure transitions over the coordinator-owned post-success episode for one budget key | canonical memory, child retries, hard input calculation, or pending-operation mutation |
+| `WorkingContextMessageWindowPlanner` | unit costs, protected suffix, fit, compactable prefix, plan assessment | trigger eligibility or pending lifecycle |
+| `ServerCompactionAgentRunner` | create/post/collect/terminate one child; typed runner metadata | JSON parsing or response correction |
+| `CompactionRunOutputCollector` | event-level success versus execution-failure classification | model schema validation |
+| `AgentCompactionSummarizer` | non-error output parsing and one correction | provider retry/backoff or parent pending state |
+| `PendingCompactionExecutor` | one authorized execution attempt, fail-closed parent-turn result, and accepted completion invocation | token target formula, event parsing, retry scheduling, or turn-origin inference |
+| `AgentEventInbox` / `InboxQueueStore` | immutable entry origin, one queue, matching claim, and shutdown drain | compaction state or provider retry policy |
+| `AgentEventScheduler` | priority and first-eligible claim using injected admission policy | pending state mutation or input conversion |
+| `CompactionRetryTurnAdmissionPolicy` | whether one turn-start entry is dispatchable under the public `awaiting_user_retry` query | queue mutation, attempt authorization, or message conversion |
+| `AgentWorker` / `AgentTurn` | active-turn lifecycle and immutable origin propagation | compaction eligibility decisions |
+| accepted builder/validator/committer | typed result, final context, postcondition, ordered commit | trigger/retry policy or child tools |
 
 ## Thin Entry Facades / Public Wrappers (If Applicable)
 
 | Facade / Entry Wrapper | Governing Owner Behind It | Why It Exists | Must Not Secretly Own |
 | --- | --- | --- | --- |
-| `LLMRequestAssembler.prepareRequest` | `PendingCompactionExecutor` and `MemoryManager` | ensures pending compaction completes before assembling next parent request | model-attempt policy, parser rules, persistence order |
-| `CompactionAgentRunner.runCompactionTask` interface | concrete `ServerCompactionAgentRunner` | core/server inversion for one child attempt | retry count or parent operation terminal status |
-| `WorkingContextCompactionStrategy.propose` | `StructuredJsonCompactionStrategy` | strategy registry boundary | universal JSON schema or canonical persistence |
+| `MemoryManager.evaluateCompactionObservation` | coordinator + threshold gate | one authoritative call from LLM phase | duplicate trigger/episode decisions |
+| `MemoryManager.prepare/commitAcceptedCompaction` | coordinator + accepted builder/committer | preserve existing public memory boundary | parser/runner internals |
+| `WorkingContextCompactionStrategyResolver` | registered strategy factory | binds static dependencies and per-operation planning budget | cached/stale dynamic budget state |
+| `MemoryManager.getPendingCompactionGate` / `beginPendingCompactionAttempt` | coordinator attempt state | expose a narrow admission query and atomically authorize one execution | event-type parsing, queue selection, or provider retry |
 
 ## Removal / Decommission Plan (Mandatory)
 
-| Item To Remove / Decommission | Why It Becomes Unnecessary | Replaced By Which Owner / File / Structure | Scope (`In This Change`/`Follow-up`) | Notes |
+| Item To Remove / Decommission | Why It Becomes Unnecessary | Replaced By Which Owner / File / Structure | Scope | Notes |
 | --- | --- | --- | --- | --- |
-| Generic sender header map and fallback `[Input]` | sender meaning already exists outside shared prose formatting | raw or neutral context/message composition in `UserInputContextBuildingProcessor` | In This Change | remove sender argument/import from formatting method |
-| Old generic `<conversation_history>` output and collision escapes | sole wrapper becomes target-specific | `CompactionConversationHistoryRenderer` new delimiter | In This Change | no alias/dual wrapper |
-| First-parseable-object candidate selection | unrelated object can mask valid compaction | validate every candidate, then choose one semantic result | In This Change | remove strict candidate-position dependence |
-| Unknown-field rejection for otherwise valid recognized content | harmless model metadata should not fail compaction | projection of recognized fields only | In This Change | wrong required field types/shapes still fail |
-| One-shot response-validation failure path | production-critical invalid output merits one bounded correction | `AgentCompactionSummarizer` two-state loop | In This Change | runner failures before first response are not content repairs |
-| Old prompt-contract-current value 2 | framing changes require attribution | current 3 plus supported `[1,2,3]` tuple | In This Change | no data rewrite |
-| Stale prompt/tag/version test expectations and current docs | would describe removed behavior | updated exact/unit/integration/E2E expectations and durable docs | In This Change | historical completed-ticket evidence remains historical |
+| Fixed 35%-of-input suffix as independent authority | Can exceed low trigger and cause repeated compactions | `CompactionPlanningBudgetResolver` target plus capped quality preference | In This Change | 35% remains only `qualityRetentionCapTokens` |
+| Budget-overriding minimum/fallback branch | Violates target and caused abrupt all-candidate collapse | target-respecting suffix selection and typed unattainable/no-prefix errors | In This Change | recent-unit minimum becomes a preference, never an override |
+| Split `shouldCompact` then `requestCompaction` policy at LLM caller | Caller coordinates policy and manager internals | `MemoryManager.evaluateCompactionObservation` | In This Change | reporter receives returned decision |
+| Duplicated pending request type in recovery | Cannot safely carry nested planning/request metadata | shared coordinator-owned `PendingCompactionRequest` and deep-copy function | In This Change | runtime-only |
+| Independent mutable `compactionRequired` boolean/setter and pending-presence executability | Can contradict pending state and lets non-user turns retry a failed operation | coordinator-owned `PendingCompactionAttemptState` plus `beginPendingCompactionAttempt` authorization | In This Change | `hasPendingCompaction` is only presence; execution requires state + turn origin + turn ID |
+| Lost assistant error marker | Allows error prose into parser | `is_error` assistant event field and collector rejection | In This Change | normal response content unchanged |
+| Generic repair-exhaustion `Error` | Final classifier cannot distinguish response validation | typed `CompactionResponseRepairExhaustedError` | In This Change | no message-compatible fallback |
+| Automatic deferred/suppressed failure retry policy proposed in SR-002 | Contradicts the user's approved fail-closed/manual-retry policy and adds unnecessary retry scheduling | retain one pending operation; one automatic initial attempt, then only a distinct USER-origin turn authorizes one attempt | In This Change | preserves REQ-007/AC-010 pending retention and active raw traces |
+| Consuming, rejecting, or copying blocked non-user turn starts | Risks message loss, delivery-contract breakage, a second queue lifecycle, or user-retry head blocking | origin-stamped existing entry + eligibility-aware matching claim in the same queue | In This Change | no persisted deferred store and no special shutdown path |
 
 ## Return Or Event Spine(s) (If Applicable)
 
-**DS-003**
+`LlmPhaseOutcome(isError) -> LLMResponsePipeline -> AgentExternalEventNotifier -> AssistantCompleteResponseData.is_error -> AutoByteusStreamEventConverter -> AgentRunEvent.ASSISTANT_COMPLETE -> CompactionRunOutputCollector -> CompactionAgentRunnerError -> AgentCompactionSummarizer -> PendingCompactionExecutor -> CompactionRuntimeReporter -> UI/log terminal status`
 
-`Child runtime events -> CompactionRunOutputCollector -> CompactionAgentRunnerResult / RunnerError -> AgentCompactionSummarizer parse/repair -> StructuredJsonCompactionStrategy result/error -> PendingCompactionExecutor completed/failed -> CompactionRuntimeReporter -> notifier/stream -> one parent Activity row`
-
-Only `PendingCompactionExecutor` emits the parent operation's terminal status. A recovered first validation failure remains below it. Child runs remain individually visible through their normal run lifecycle, which preserves attempt-level operational evidence without projecting a failed parent compaction card.
+The notifier does not convert ordinary model failures into terminal global agent status. It carries the already-existing per-response error fact. The compaction collector is the adapter that interprets an error response as unusable for this child task.
 
 ## Bounded Local / Internal Spines (If Applicable)
 
-Parent owner: `AgentCompactionSummarizer`.
+### DS-003 — target-respecting planner
 
-`Build approved initial task -> run child attempt 1 -> parse`
+Parent: `WorkingContextMessageWindowPlanner`.
 
-- valid -> store attempt-1 metadata -> return result;
-- typed response-validation failure -> build deterministic correction task from the same initial prompt and stage -> run new child attempt 2 -> parse;
-- repair valid -> store attempt-2 metadata -> return result;
-- repair parse/runner failure -> throw one exhausted-repair error containing attempt stages and available run IDs.
+`planning budget -> build units/costs -> reserve system + protected suffix + estimation gap + replacement memory -> calculate recent suffix capacity -> select newest fitting units -> ensure compactable natural prefix -> return plan assessment or typed planning error`
 
-There is no loop counter exposed to configuration and no third transition. The constant maximum is two attempts. First-attempt runner/transport failure does not enter the content-repair branch because no returned response was available to correct.
+### DS-004 — post-success threshold gate
+
+Parent: `MemoryManagerCompactionCoordinator`.
+
+- `ready` + `T <= prompt < B` -> create one pending `threshold_crossing` request carrying the current planning budget.
+- Any final execution failure -> transition that pending request to `awaiting_user_retry`, record the failed execution turn, report one terminal error, and stop the target-agent turn. The gate schedules nothing. A distinct USER-origin turn may invoke the retained operation once before dispatch.
+- Accepted commit -> clear the pending request through the existing committer hook and set the separate runtime episode to `awaiting_below_observation { budgetKey, completedOperationId }`. The validated estimate `P < T` is not an observation.
+- First fresh provider usage under the same budget key:
+  - `prompt < T` -> transition to `ready` without requesting compaction; a later actual crossing may create a new operation.
+  - `T <= prompt < B` while `awaiting_below_observation` -> do not request another proactive operation; transition to `inadequate_reduction_suppressed`, emit exactly one `post_success_usage_not_below_trigger` diagnostic containing the completed operation ID, observed prompt, `T`, `P`, and budget key.
+  - `T <= prompt < B` while already `inadequate_reduction_suppressed` -> remain suppressed and emit only detailed log state, not repeated lifecycle/error cards.
+- Budget-key change -> reset the prior episode first, then evaluate the same fresh observation under the new key. If it is at/above the new `T`, one new configuration-driven operation may be requested.
+- Any `prompt >= B` -> hard-cap safety overrides `awaiting_below_observation` or suppression and creates one pending `hard_input_cap` request. Failure is still fail-closed and manual-retry only.
+
+There is no timer, background retry, linked deferred operation, retry counter, or persisted cooldown schema. Manual retries reuse the pending operation identity and are distinguished by execution turn ID and child run ID. The post-success episode is separate because accepted commit must continue clearing pending state atomically.
+
+### DS-006 — failed-pending turn admission and execution authorization
+
+Parent: `AgentEventScheduler` for queue selection and `MemoryManagerCompactionCoordinator` for attempt authorization.
+
+- `AgentEventInbox` resolves and stores `TurnStartOrigin` before later conversion:
+  - `UserMessageReceivedEvent` + `SenderType.USER` -> `user`;
+  - `InterAgentMessageReceivedEvent` or `UserMessageReceivedEvent` + `SenderType.AGENT` -> `agent`;
+  - `UserMessageReceivedEvent` + `SenderType.SYSTEM` -> `system`;
+  - `SenderType.TOOL` remains invalid as a turn start.
+- When no pending request is `awaiting_user_retry`, every turn-start entry is eligible and the current FIFO behavior is unchanged.
+- While `awaiting_user_retry`, the admission policy returns eligible only for `origin='user'`. `InboxQueueStore.claimFirstMatching('turn_start', predicate)` claims the first such entry without moving or copying earlier non-user entries.
+- Scheduler `hasDispatchable` and `claimNextDispatchable` use the identical predicate. If only retained non-user entries exist, the worker waits rather than spinning; a newly enqueued USER/lifecycle event or a post-turn dispatchability wakeup re-evaluates the queue.
+- `TurnStartInboxEventHandler` passes the entry origin into `AgentWorker`; `AgentTurn` retains it unchanged through `AgentInputPipeline` conversion and tool continuations.
+- `LLMRequestAssembler` passes `{turnId, turnOrigin}` to `PendingCompactionExecutor.executeIfAuthorized`. The coordinator atomically begins:
+  - `initial_attempt_ready` for any origin, once; or
+  - `awaiting_user_retry` only for USER origin and only when the current turn ID is not the last failed attempt turn.
+- Beginning transitions to `attempt_in_progress {authorization, executionTurnId}`. Accepted commit clears pending. Any final failure transitions to `awaiting_user_retry {lastFailedExecutionTurnId}`. A duplicate/re-entrant call in the same turn is not authorized.
+- If a USER-authorized retry succeeds, request assembly appends/renders that user message normally. The active turn prevents other turn-start dispatch until it settles; then the scheduler reverts to ordinary FIFO and retained non-user entries run in their original relative order.
+- If the retry fails, the user turn terminates and retained non-user entries remain in place. Another distinct USER entry is required.
+- Existing shutdown drain owns every retained entry because none leaves the normal queue.
+
+The scheduler owns selection, not compaction state; the coordinator owns authorization, not queue order. A defensive assembler authorization failure is terminal before the current message is appended, so bypassing admission cannot dispatch target work.
+
+### Existing response repair
+
+Parent: `AgentCompactionSummarizer`.
+
+`non-error output -> parse -> success OR CompactionResponseParseError -> one new child correction -> parse -> success or typed CompactionResponseRepairExhaustedError`.
+
+A `CompactionAgentRunnerError` at either child execution is never converted to a parser stage.
 
 ## Off-Spine Concerns Around The Spine
 
 | Off-Spine Concern | Related Spine ID(s) | Serves Which Owner | Responsibility | Why It Exists | Risk If Misplaced On Main Line |
 | --- | --- | --- | --- | --- | --- |
-| Compactor system-template wording | DS-001, DS-002 | prompt builder / child model task | stable identity/task/schema instruction | model needs durable task authority | runtime code would duplicate/paraphrase approved prompt |
-| Launch resolution | DS-002 | server runner | choose fixed built-in definition/model/runtime | provider/server concern | summarizer would gain server composition knowledge |
-| Output collection | DS-002, DS-003 | server runner | collect public assistant text; fence errors/tool approval | event protocol concern | parser would depend on runtime events/private reasoning |
-| Validation-stage classification | DS-003, DS-004 | parser/summarizer | bounded safe correction reason | correction must be deterministic/actionable | arbitrary error strings/raw output would contaminate prompt |
-| Result normalization | DS-001 | strategy | dedupe/order/salience before proposal | existing category policy | parser would mix model contract and product normalization |
-| Runtime reporting | DS-003 | pending executor | operation-level events/log enrichment | one Activity identity | attempt loop could emit contradictory parent statuses |
-| Lineage version set | DS-005 | lineage normalizer / accepted builder | current-write and supported-read contract | provenance without migration | retry/prompt code would leak storage policy |
-| Context-file path/security rendering | DS-006 | input processor | safe file resolution and readable context | existing shared concern | sender-specific builders would duplicate filesystem policy |
+| Token estimation/calibration | DS-003, DS-005 | planner/validator | estimate unit/final-message costs and retain observed-provider gap | provider tokenization/tool-schema costs are not fully represented by message characters | target looks precise but is not comparable to provider usage |
+| Runtime reporting | DS-001, DS-004, DS-005 | executor/gate | log target, estimates, pressure, request kind, failure kind, post-success observation state, and manual execution turn | operational diagnosis and UI truthfulness | reporter starts deciding lifecycle |
+| Assistant event serialization | DS-002 | server runner | preserve `is_error` through typed stream payload | core and server are separate packages | collector must infer from text |
+| Request recovery snapshot | DS-001, DS-004 | coordinator | copy pending request and post-success episode around parent request rollback | rollback must not desynchronize eligibility | recovery owns business transitions |
+| Child cleanup | DS-002 | server runner | unsubscribe/terminate in `finally` | one child lifecycle per attempt | summarizer leaks server run state |
+| Exact prompt templates | DS-002 | summarizer | preserve v3 task wording | user-approved contract | runtime fix accidentally churns prompt |
+| Turn-start origin resolution | DS-006 | inbox/active turn | classify original USER/AGENT/SYSTEM source before conversion | later pipeline normalizes different event shapes | sender text or converted event class is mistaken for authority |
+| Compaction retry admission | DS-006 | scheduler | use public failed-pending query to filter dispatchability without moving entries | normal FIFO must remain one queue | queue starts owning memory state or a second buffer appears |
 
 ## Ownership Boundaries
 
-- Above the compaction-strategy boundary, callers see `propose` and do not reach into the summarizer/parser/runner.
-- `StructuredJsonCompactionStrategy` calls the summarizer but does not call its runner or parser independently; otherwise it would bypass the attempt owner.
-- `AgentCompactionSummarizer` calls `CompactionAgentRunner` once per attempt. It never creates server runs directly and never emits parent operation events.
-- `CompactionResponseParser` accepts text and returns a `CompactionResult` or typed validation error. It never runs models, normalizes product salience, or persists.
-- `PendingCompactionExecutor` receives only final proposal/error. It never observes attempt 1 as a terminal lifecycle.
-- Canonical writes stay behind `MemoryManager.prepareCompaction` / `commitAcceptedCompaction`; no response or repair code reaches stores directly.
-- `UserInputContextBuildingProcessor` may concatenate context but must not reinterpret sender type. Inter-agent/tool/system owners remain the only source-specific wording owners.
+- `evaluateLlmPhaseCompaction` must use one `MemoryManager` observation API. It may resolve/log the token budget but may not independently mutate policy, request state, and retry state.
+- The pending request is the immutable carrier of the trigger-time planning budget and request kind. A strategy must receive that dynamic object at `resolve` time, not a stale context captured when `LlmPhase` was constructed.
+- The pending request also owns one attempt-state union. Presence answers only whether compaction is pending; `beginPendingCompactionAttempt` is the sole execution-authorization boundary.
+- `TurnStartOrigin` is resolved once at inbox entry construction and carried by `AgentTurn`; input conversion must not recompute or overwrite it.
+- The scheduler may ask only the narrow public `isCompactionAwaitingUserRetry` query. It must not inspect coordinator internals or mutate pending state. The coordinator never scans or reorders the inbox.
+- `CompactionRunOutputCollector` owns event usability; `CompactionResponseParser` owns only the six-array content contract. Neither may infer the other's classification.
+- `AgentCompactionSummarizer` owns response correction but not provider retry. `CompactionThresholdGate` owns post-success proactive eligibility but not child correction or manual pending execution.
+- The accepted-compaction boundary remains authoritative for host memory. Planning assessment is runtime metadata only and cannot be written by the child model.
 
 ## Boundary Encapsulation Map
 
 | Authoritative Boundary | Internal Owned Mechanism(s) It Encapsulates | Upstream Callers That Must Use The Boundary | Forbidden Bypass Shape | If Boundary API Is Too Thin, Fix By |
 | --- | --- | --- | --- | --- |
-| `WorkingContextCompactionStrategy.propose` | planner, summarizer, normalizer, proposal creation | pending executor | executor calling summarizer/parser directly | extend strategy result/diagnostics, not bypass internals |
-| `AgentCompactionSummarizer.summarizeMessageUnits` | initial/correction prompts, two runner calls, parser, attempt metadata | structured strategy | strategy calling runner after parser error | strengthen summarizer error/metadata API |
-| `CompactionAgentRunner.runCompactionTask` | visible child create/post/collect/terminate | summarizer | summarizer using `AgentRunService` | extend task/result metadata on runner boundary |
-| `CompactionResponseParser.parse` | extraction, candidate validation/dedupe, result mapping | summarizer | summarizer scanning JSON itself | add typed stage/error to parser |
-| `MemoryManager.prepareCompaction` / `commitAcceptedCompaction` | baseline/lineage checks, accepted builder/committer/stores | pending executor | strategy or compactor writing memory files | extend accepted boundary only if a proven invariant is missing |
-| `AgentInputPipeline.processForLlm` | mandatory processors, sender turn rules, LLM user carrier/null | external/tool input entrypoints | processor changing provider tool history directly | strengthen pipeline/source builder contract |
+| `MemoryManager.evaluateCompactionObservation` | policy pressure + post-success gate/request | `evaluateLlmPhaseCompaction` | caller invokes `shouldCompact`, interprets post-success state, and requests separately | return explicit decision/reason/operation ID |
+| `MemoryManager.retainCompactionFailure` | in-progress attempt to awaiting-user transition | `PendingCompactionExecutor` | executor clears pending, invents retry state, or dispatches parent work | verify operation/turn identity and return fail-closed disposition without scheduling retry |
+| `MemoryManager.getPendingCompactionGate` / `beginPendingCompactionAttempt` | pending presence/state and atomic attempt authorization | admission policy (read only) / executor (command) | scheduler reads coordinator fields or assembler authorizes from pending presence | expose closed read result and typed begin result |
+| `AgentEventInbox` + `AgentEventScheduler` | origin-stamped FIFO storage and eligible claim | runtime worker | compaction coordinator stores messages or handler consumes/requeues blocked entries | add matching claim and injected admission policy while retaining one queue |
+| `WorkingContextCompactionStrategyResolver.resolve(executionContext)` | registry + dynamic planning budget | executor | LLM phase injects stale `inputBudgetTokens` into strategy construction | split static construction and dynamic execution context |
+| `ServerCompactionAgentRunner.runCompactionTask` | run service + collector + cleanup | summarizer | summarizer subscribes to events | enrich runner error type/result |
+| `MemoryManager.prepare/commitAcceptedCompaction` | builder/validator/committer/coordinator | executor | strategy writes stores or clears pending | strengthen accepted assessment API |
 
 ## Dependency Rules
 
 Allowed:
 
-- prompt builder -> history renderer;
-- prompt builder -> parser validation-stage **type only** for deterministic repair wording;
-- summarizer -> prompt builder, runner interface, parser;
-- strategy -> summarizer/normalizer/planner;
-- pending executor -> strategy boundary, memory manager acceptance, reporter;
-- server runner -> core runner/task types and server run service;
-- accepted builder -> lineage current-version constant;
-- input processor -> message/context/path/context-builder types.
+- `LlmPhase` -> `resolveTokenBudget`, thin compaction evaluator, response pipeline.
+- thin evaluator -> `MemoryManager.evaluateCompactionObservation`, reporter.
+- coordinator -> `CompactionThresholdGate`, accepted builder/committer, stores.
+- pending executor -> strategy resolver and authoritative memory methods.
+- strategy -> planner, summarizer, normalizer.
+- planner/accepted validator -> shared planning-budget and token-estimation structures.
+- summarizer -> runner interface and parser.
+- server runner -> event collector and agent run service.
+- response pipeline/notifier -> generic assistant stream payload.
+- inbox origin resolver -> `SenderType` and external event type; worker -> origin-stamped entry/turn.
+- scheduler -> injected `CompactionRetryTurnAdmissionPolicy`; policy -> `MemoryManager.isCompactionAwaitingUserRetry` query only.
+- assembler/executor -> active turn origin + coordinator attempt-authorization command.
 
 Forbidden:
 
-- prompt builder or renderer -> server runner, strategy, stores, or accepted commit;
-- parser -> runner, strategy, logger/reporter, normalizer, or stores;
-- server runner -> retry policy or response schema;
-- summarizer -> `AgentRunService`, reporter, memory stores, or accepted builder;
-- strategy/pending executor -> parsing JSON independently;
-- compactor child -> generic filesystem tools or canonical memory files;
-- shared input processor -> sender-specific prose policy;
-- any normal runtime path -> old/new tag dual rendering, version-specific prompt branches, or response-schema aliases.
+- planner -> runtime settings resolver, pending coordinator, or stores;
+- threshold gate -> LLM provider, parser, child runner, pending execution, or canonical memory;
+- collector -> JSON parser or prompt builder;
+- parser -> event payload or provider error text;
+- LLM phase -> threshold-gate internals or retry scheduling;
+- scheduler/admission policy -> pending mutation, executor, input pipeline, or provider;
+- coordinator/executor -> inbox scan/reorder/requeue;
+- assembler -> infer user authority from converted content or event prose;
+- child compactor -> parent files, lineage, snapshot, or accepted commit;
+- any v2/v3 dual prompt or response path.
 
 ## Interface Boundary Mapping
 
-| Interface / API / Query / Command / Method | Subject Owned | Responsibility | Accepted Identity Shape(s) | Notes |
+| Interface / API / Method | Subject Owned | Responsibility | Accepted Identity Shape(s) | Notes |
 | --- | --- | --- | --- | --- |
-| `WorkingContextCompactionPromptBuilder.buildTaskPrompt(units, options)` | initial model task | exact approved first-attempt message | selected units + max item chars | returns intro/start/renamed wrapper/end and nothing after END |
-| `WorkingContextCompactionPromptBuilder.buildCorrectionTaskPrompt(initialPrompt, validationStage)` | correction model task | prepend exact bounded correction reminder | initial prompt + closed validation-stage union | must not include raw output/error prose |
-| `CompactionResponseParser.parse(text)` | compaction response | return one semantic candidate or typed staged error | public assistant text | six arrays preserved; extras projected away |
-| `CompactionAgentRunner.runCompactionTask(task)` | one child attempt | run/collect/terminate one child | unique task ID + parent IDs + prompt/counts | unchanged one-run ownership |
-| `AgentCompactionSummarizer.summarizeMessageUnits(units)` | one summarization operation | at most two child attempts, return result/final error | selected message units | no retry configuration |
-| `AgentCompactionSummarizer.getLastCompactionExecutionMetadata()` | accepted/final attempt | expose latest actual child metadata | no selector | repair success exposes attempt 2 for lineage/status |
-| `UserInputContextBuildingProcessor.process(message, context, event)` | LLM input content | path resolve and neutral content composition | `AgentInputUserMessage.senderType` remains metadata | formatting no longer branches on sender type |
-| `normalizeCompactionLineageRecord(value)` | persisted lineage record | validate schema 1 and prompt contract 1/2/3 | record content | no migration or fallback read |
+| `resolveCompactionPlanningBudget(TokenBudget, observedPromptTokens)` | one trigger observation | derive budget key, headroom, quality cap, target | finite integer tokens | production auto-request requires a complete budget |
+| `MemoryManager.evaluateCompactionObservation(input)` | one parent usage observation | request/await/suppress/reset/hard-cap-override and return decision | turn ID + observation ID + planning budget | sole request entrypoint for supported auto compaction |
+| `MemoryManager.getPendingCompactionGate()` | current pending operation | expose `none`, `initial_attempt_ready`, `attempt_in_progress`, or `awaiting_user_retry` without mutable internals | no selector | admission uses only whether USER recovery is required |
+| `MemoryManager.beginPendingCompactionAttempt(input)` | current pending attempt | atomically authorize and mark automatic initial or USER retry execution | operation ID + nonblank turn ID + `TurnStartOrigin` | returns closed authorization or typed denial; no provider call |
+| `MemoryManager.retainCompactionFailure(operationId, executionTurnId, errorKind)` | current in-progress attempt | verify and transition to `awaiting_user_retry` | exact pending operation and executing turn IDs | returns fail-closed disposition; no retry scheduling |
+| `MemoryManager.completePendingAfterAcceptedCommit(operationId)` | accepted pending operation | clear pending and install the post-success episode in the committer's final hook | exact operation ID + its immutable planning budget | runs only after archive/memory/lineage/context/snapshot writes succeed |
+| `WorkingContextCompactionStrategyResolver.resolve({planningBudget})` | one pending execution | create strategy with current operation budget | immutable planning budget | no cached prompt usage |
+| `MessageBudgetStrategy.calculate(input)` | one baseline context | compute cost map and available suffix budget | units + planning budget | returns complete budget breakdown |
+| `CompactionRunOutputCollector.waitForFinalOutput` | one child run | return only non-error assistant text | exact run ID | all other outcomes reject typed |
+| `CompactionAgentRunner.runCompactionTask` | one child task | typed success/failure plus metadata | task ID + parent agent ID | no response parsing |
+| `resolveTurnStartOrigin(event)` | one external turn-start entry | classify USER/AGENT/SYSTEM before conversion | supported turn-start event + original sender type | rejects TOOL/unknown rather than guessing |
+| `InboxQueueStore.claimFirstMatching(lane, predicate)` | one queue | remove first eligible entry while leaving all others in relative order | exact lane + pure predicate | used only where eligibility can temporarily differ from FIFO head |
+| `CompactionRetryTurnAdmissionPolicy.isDispatchable(entry)` | one turn-start entry | permit all normally; while awaiting retry permit USER only | origin-stamped entry | read-only memory query; no mutation/log loop |
+| `PendingCompactionExecutor.executeIfAuthorized(input)` | one pending attempt | begin authorization, execute once, commit or retain failure | operation/turn ID + immutable turn origin | replaces pending-presence-only `executeIfRequired` |
 
 ## Interface Boundary Check
 
-| Interface | Responsibility Is Singular? (`Yes`/`No`) | Identity Shape Is Explicit? (`Yes`/`No`) | Ambiguous Selector Risk (`Low`/`Medium`/`High`) | Corrective Action |
+| Interface | Responsibility Is Singular? | Identity Shape Is Explicit? | Ambiguous Selector Risk | Corrective Action |
 | --- | --- | --- | --- | --- |
-| Prompt build methods | Yes | Yes | Low | use separate initial/correction methods, not optional kitchen-sink options |
-| Parser `parse` | Yes | Yes | Low | typed closed validation stages; semantic candidate fingerprint |
-| Runner `runCompactionTask` | Yes | Yes | Low | keep one child per call; unique task ID per attempt |
-| Summarizer `summarizeMessageUnits` | Yes | Yes | Low | fixed two-state ownership; no generic retry callback |
-| Input processor `process` | Yes | Yes | Low | remove sender formatting branch while retaining path/context concern |
-| Lineage normalizer | Yes | Yes | Low | supported tuple owns version discriminator |
+| planning budget resolver | Yes | Yes | Low | reject non-positive/contradictory target inputs |
+| manager observation API | Yes | Yes | Low | remove separate supported request decision path |
+| strategy resolve execution context | Yes | Yes | Low | keep static dependencies separate |
+| collector final output | Yes | Yes | Low | propagate explicit error flag; no text matching |
+| failure retention | Yes | Yes | Low | verify current in-progress operation and leave pending awaiting USER retry |
+| pending attempt authorization | Yes | Yes | Low | closed state/origin decision; reject duplicate same-turn execution |
+| origin resolver | Yes | Yes | Low | exact event/sender mapping before conversion |
+| eligible queue claim | Yes | Yes | Low | preserve relative order and use same predicate in wait logic |
 
 ## Main Domain Subject Naming Check
 
-| Node / Subject | Current / Proposed Name | Name Is Natural And Self-Descriptive? (`Yes`/`No`) | Naming Drift Risk | Corrective Action |
+| Node / Subject | Current / Proposed Name | Natural And Self-Descriptive? | Naming Drift Risk | Corrective Action |
 | --- | --- | --- | --- | --- |
-| Parent model-to-memory orchestration | `AgentCompactionSummarizer` | Yes | Low | retain; it now owns the complete bounded summarization attempt |
-| Selected source transcript renderer | `CompactionConversationHistoryRenderer` | Yes | Low | retain; update delimiter constant only |
-| Operation task prompt | `WorkingContextCompactionPromptBuilder` | Yes | Low | retain; add explicit correction method |
-| Response contract boundary | `CompactionResponseParser` | Yes | Low | retain; parse includes schema validation by existing convention |
-| Strategy | `StructuredJsonCompactionStrategy` | Yes | Low | retain; contract remains structured JSON |
-| Global message/content concern | `UserInputContextBuildingProcessor` | Yes | Medium | keep existing name; remove misleading `rawRequirement` local naming |
+| per-operation token limits | `CompactionPlanningBudget` | Yes | Low | do not call it generic `context` or `options` |
+| post-success eligibility | `CompactionThresholdGate` | Yes | Low | states use `ready`, `awaiting_below_observation`, `inadequate_reduction_suppressed` |
+| pressure | `proactive` / `hard_input_cap` | Yes | Low | do not call both simply `required` |
+| child execution failure | `CompactionAgentRunnerError` | Yes | Low | add closed failure kind; do not reuse parse stage |
+| finalized budget result | `CompactionBudgetAssessment` | Yes | Low | distinguish planned and finalized estimates |
+| original external author | `TurnStartOrigin` | Yes | Low | exactly `user` / `agent` / `system`; do not reuse `SenderType.TOOL` |
+| pending execution lifecycle | `PendingCompactionAttemptState` | Yes | Low | distinguish initial, in-progress, and awaiting-user states; do not call all `required` |
 
 ## Existing Capability / Subsystem Reuse Check
 
-| Need / Concern | Existing Capability Area / Subsystem | Decision (`Reuse`/`Extend`/`Create New`) | Why | If New, Why Existing Areas Are Not Right |
+| Need / Concern | Existing Capability Area / Subsystem | Decision | Why | If New, Why Existing Areas Are Not Right |
 | --- | --- | --- | --- | --- |
-| Target-history transcript | memory compaction renderer | Extend | already owns role/tool rendering and delimiter escape | N/A |
-| Initial/correction model message | compaction prompt builder | Extend | already owns per-operation task prompt | N/A |
-| Candidate/schema validation | compaction response parser | Extend | existing authoritative model-response boundary | N/A |
-| Bounded content repair | compaction summarizer | Extend | already sequences prompt -> runner -> parser and retains metadata | N/A |
-| Parent terminal lifecycle | pending executor/reporter | Reuse | existing owner already emits once after strategy returns/throws | N/A |
-| Canonical memory mutation | accepted compaction owners | Reuse | healthy atomic path | N/A |
-| Sender-neutral context concatenation | mandatory input processor | Extend | existing path/security/context owner | N/A |
-| Persisted version read/write | lineage record + accepted builder | Extend | existing provenance owner | N/A |
-| Generic retry service | none | Do not create | only one narrow two-state repair is needed | A generic service would obscure policy/ownership |
+| token capacity/trigger arithmetic | agent token budget + memory compaction policy | Extend | already owns model budget and threshold | N/A |
+| bounded post-success threshold episode | memory compaction coordinator | Extend with one owned gate separate from pending | accepted commit must clear pending while actual-below eligibility survives | gate is a focused local state machine, not a new subsystem |
+| target-aware selection | memory compaction planner | Extend | already owns message-unit selection and estimates | N/A |
+| child error transport | agent streaming + server compaction runner | Extend | existing `isError` fact and collector boundary already exist | N/A |
+| response repair | compaction summarizer/parser | Reuse | correct owner for usable invalid output | N/A |
+| persistence | accepted compaction | Reuse | healthy atomic boundary | N/A |
+| external origin and deferred admission | agent event inbox/scheduler + active turn | Extend | already own entry identity, FIFO storage, dispatchability, active-turn serialization, wakeup, and shutdown drain | one narrow compaction admission policy is needed because memory owns the gate but must not own the queue |
 
 ## Subsystem / Capability-Area Allocation
 
-| Subsystem / Capability Area | Owns Which Concerns | Related Spine ID(s) | Governing Owner(s) Served | Decision (`Reuse`/`Extend`/`Create New`) | Notes |
+| Subsystem / Capability Area | Owns Which Concerns | Related Spine ID(s) | Governing Owner(s) Served | Decision | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `autobyteus-ts` memory compaction | rendering, task prompts, parser, bounded summarizer, strategy/proposal | DS-001–DS-004 | summarizer/strategy | Extend | compact flat folder remains appropriate; files have distinct concerns |
-| `autobyteus-server-ts` compactor execution | built-in prompt, launch, one child lifecycle, output events | DS-002, DS-003 | server runner | Extend prompt only / reuse runner | no tool config change |
-| `autobyteus-server-ts` prompt processing | path/context composition | DS-006 | input pipeline | Extend | cleanly removes sender prose policy |
-| `autobyteus-ts` memory lineage | supported versions and current write discriminator | DS-005 | lineage normalizer/accepted builder | Extend | no migration module |
-| memory accepted commit | identity/persistence/projection | DS-001, DS-005 | memory manager/committer | Reuse | source unchanged except imported current value effect |
-| durable documentation/tests | contract and executable coverage | all | downstream maintainers | Extend | update current docs and direct expectations |
+| `autobyteus-ts` agent inbox/runtime/loop | origin-stamped entry, eligible same-queue selection, active-turn origin, usage observation, and generic error-response publication | DS-001, DS-002, DS-006 | memory boundary, server collector | Extend | no new queue or UI denominator change |
+| `autobyteus-ts` memory compaction | planning budget, post-success gate, planner, strategy, acceptance, pending lifecycle | DS-001, DS-003–DS-005 | coordinator/executor | Extend | primary change area |
+| `autobyteus-ts` streaming events | `is_error` typed assistant payload | DS-002 | server runner | Extend | generic truthful event contract |
+| `autobyteus-server-ts` compaction execution | one child run and typed collector errors | DS-002 | server runner | Extend | no child retry policy |
+| memory persistence/lineage | existing canonical commit | DS-005 | accepted committer | Reuse unchanged | no migration/version bump |
 
 ## Draft File Responsibility Mapping
 
-| Candidate File | Owning Subsystem / Capability Area | Owner / Boundary | Concrete Concern | Why This Is One File | Reuses Shared Structure? |
+| Candidate File | Owning Subsystem | Owner / Boundary | Concrete Concern | Why This Is One File | Reuses Shared Structure? |
 | --- | --- | --- | --- | --- | --- |
-| `working-context-compaction-prompt-builder.ts` | memory compaction | prompt boundary | exact initial and correction task messages | both are variants of one operation prompt subject | rendered history + validation-stage type |
-| `compaction-conversation-history-renderer.ts` | memory compaction | transcript renderer | inner transcript and sole target wrapper | existing cohesive renderer | current finalizer/renderers |
-| `compaction-response-parser.ts` | memory compaction | response boundary | candidates, validation stages, semantic dedupe, mapping | one authoritative response contract | `CompactionResult` |
-| `agent-compaction-summarizer.ts` | memory compaction | attempt owner | fixed attempt transitions, metadata, exhausted error | bounded local loop belongs together | runner/parser/prompt APIs |
-| `user-input-context-building-processor.ts` | server prompt processing | input content concern | path resolution + neutral context/message concatenation | existing mandatory processor concern | existing context builder |
-| `compaction-lineage-record.ts` | memory lineage | persisted contract | supported prompt versions | existing record authority | one supported tuple/type |
-| Memory Compactor `agent.md` | server built-in agents | stable model task | exact approved system content | current canonical template | prompt spec |
+| `compaction-planning-budget.ts` | memory compaction | planning-budget resolver | immutable DTO, key, exact target formula/constants | one shared policy subject | Yes |
+| `compaction-threshold-gate.ts` | memory compaction | coordinator-owned local state | post-success await/suppress/reset/hard-cap transitions | state machine survives pending cleanup and deserves focused tests | planning budget |
+| `message-budget-strategy.ts` | memory compaction | planner cost concern | context cost map, calibration, required reserves | existing estimation owner | planning budget |
+| `working-context-message-window-planner.ts` | memory compaction | planner | target-respecting suffix/prefix plan | existing selection owner | budget assessment |
+| `memory-manager-compaction-coordinator.ts` | memory | authoritative state | pending metadata/budget/attempt state, authorization, separate post-success episode, accepted completion | existing lifecycle owner | shared pending/episode shapes |
+| inbox entry/store/scheduler | agent runtime | queue/origin/admission | stamp origin, claim first eligible, preserve wait/shutdown behavior | existing event-loop owner | turn-start origin/admission contract |
+| `agent-turn.ts` / worker / assembler | agent runtime | origin carrier and execution caller | preserve original origin through conversion and call typed attempt authorization | existing turn/request spine | turn-start origin |
+| stream payload/notifier/pipeline files | agent streaming | event contract | retain response error bit | existing event path | boolean field |
+| collector/runner files | server compaction | runner boundary | typed execution failure | existing boundary | runner error kinds |
 
 ## Reusable Owned Structures Check
 
-| Repeated Structure / Logic | Candidate Shared File | Owning Subsystem | Why Shared | Redundant Attributes Removed? (`Yes`/`No`) | Overlapping Representations Removed? (`Yes`/`No`) | Must Not Become |
+| Repeated Structure / Logic | Candidate Shared File | Owning Subsystem | Why Shared | Redundant Attributes Removed? | Overlapping Representations Removed? | Must Not Become |
 | --- | --- | --- | --- | --- | --- | --- |
-| Response validation stage | export type from `compaction-response-parser.ts` | memory compaction response boundary | parser emits it; prompt builder/summarizer consume it | Yes | Yes | generic error taxonomy |
-| Supported lineage prompt versions | constant tuple in `compaction-lineage-record.ts` | memory lineage | drives type and runtime check from one authority | Yes | Yes | migration/version-routing registry |
-| Attempt metadata | existing `CompactionAgentExecutionMetadata` per child | compaction runner boundary | already carries run/task/model identity | Yes | Yes | recursive operation DTO |
-
-No new cross-subsystem DTO is needed. The exhausted-repair error may keep its two per-attempt records local to `agent-compaction-summarizer.ts`; only its final message and last metadata cross the current strategy/reporter boundaries.
+| planning target values | `compaction-planning-budget.ts` | memory compaction | trigger, request, planner, validator, reporter need identical meanings | Yes | Yes | generic token bag |
+| pending/episode recovery copy | coordinator exported types + copy function | memory lifecycle | coordinator and request recovery need the same runtime shapes | Yes | Yes | second recovery-only DTO |
+| runner failure kind | `compaction-agent-runner.ts` | core runner interface | core summarizer and server adapter share classification | Yes | Yes | provider-specific error taxonomy |
+| budget assessment | `working-context-compaction-proposal.ts` | accepted proposal | planner, builder, validator use one estimate contract | Yes | Yes | persisted lineage metadata |
+| turn-start origin | `agent-event-inbox-entry.ts` / `AgentTurn` | agent runtime | inbox, scheduler, worker, turn, and assembler require one immutable author classification | Yes | Yes | sender-content heuristic |
+| pending attempt state | coordinator exported type + copy function | memory lifecycle | coordinator, executor, recovery, and admission query require one lifecycle meaning | Yes | Yes | a second retry-state DTO |
 
 ## Shared Structure / Data Model Tightness Check
 
-| Shared Structure / Type / Schema | One Clear Meaning Per Field? (`Yes`/`No`) | Redundant Attributes Removed? (`Yes`/`No`) | Parallel / Overlapping Representation Risk (`Low`/`Medium`/`High`) | Corrective Action |
+| Shared Structure / Type | One Clear Meaning Per Field? | Redundant Attributes Removed? | Parallel Representation Risk | Corrective Action |
 | --- | --- | --- | --- | --- |
-| Six-array model response | Yes | Yes | Low | preserve exactly; project unknown extras away |
-| `CompactionResult` | Yes | Yes | Low | retain as sole host result shape |
-| Validation-stage union | Yes | Yes | Low | use three closed values only |
-| `CompactionAgentExecutionMetadata` | Yes | Yes | Low | one record per actual child; do not overload with parent operation state |
-| Prompt-contract supported tuple/type | Yes | Yes | Low | derive type/runtime membership from same tuple |
+| `CompactionPlanningBudget` | Yes | Yes | Low | integers only; derive rather than duplicate ratios |
+| `PendingCompactionRequest` | Yes | Yes | Low | nest planning budget and one closed `PendingCompactionAttemptState`; pending does not imply executable |
+| `CompactionBudgetAssessment` | Yes | Yes | Low | separate planned/final estimate fields explicitly |
+| runner failure enum/error | Yes | Yes | Low | message/cause/metadata remain singular |
+| `CompactionThresholdEpisode` | Yes | Yes | Low | separate runtime-only state is required because accepted commit clears pending before an actual usage observation exists |
+| `TurnStartEventInboxEntry.origin` / `AgentTurn.startOrigin` | Yes | Yes | Low | same immutable `TurnStartOrigin`; entry is source, turn carries it rather than recomputing |
 
 ## Final File Responsibility Mapping
 
-| File | Owning Subsystem / Capability Area | Owner / Boundary | Concrete Concern | Why This Is One File | Reuses Shared Structure? |
+| File | Owning Subsystem | Owner / Boundary | Concrete Concern | Why This Is One File | Reuses Shared Structure? |
 | --- | --- | --- | --- | --- | --- |
-| `autobyteus-ts/src/memory/compaction/working-context-compaction-prompt-builder.ts` | memory compaction | prompt builder | exact approved initial framing and exact design-specified correction prefix | one model-task prompt subject | renderer + parser stage type |
-| `autobyteus-ts/src/memory/compaction/compaction-conversation-history-renderer.ts` | memory compaction | history renderer | target-agent tag and collision escaping; inner transcript unchanged | one transcript rendering concern | finalizer/value/tool renderers |
-| `autobyteus-ts/src/memory/compaction/compaction-response-parser.ts` | memory compaction | parser | extract/validate all candidates, tolerate extras, fingerprint/dedupe, staged errors | one authoritative response boundary | `CompactionResult` |
-| `autobyteus-ts/src/memory/compaction/agent-compaction-summarizer.ts` | memory compaction | bounded attempt owner | initial then one correction, unique tasks, attempt metadata, exhausted error | one local state flow | prompt/runner/parser |
-| `autobyteus-server-ts/src/built-in-agents/templates/memory-compactor/agent.md` | built-in agent | system prompt authority | exact approved prompt | canonical template | prompt spec |
-| `autobyteus-server-ts/src/agent-customization/processors/prompt/user-input-context-building-processor.ts` | prompt processing | context concatenation | raw pass-through or neutral context/message sections | existing processor concern | context builder/path resolver |
-| `autobyteus-ts/src/memory/lineage/compaction-lineage-record.ts` | memory lineage | record contract | current 3 + supported 1/2/3 | current persisted contract owner | tuple/type/runtime validation |
-| Direct unit/integration/E2E tests listed below | respective subsystem | executable contract | exact prompt/parser/repair/lifecycle/version/tool invariants | close to owners | retained evidence fixtures where useful |
-| Four current memory architecture docs | respective package docs | durable documentation | target prompt, parser/repair, global formatting, version | existing canonical docs | requirements/design references |
+| `autobyteus-ts/src/memory/compaction/compaction-planning-budget.ts` | memory compaction | planning target | formula: `qualityCap=floor(.35B)`, `headroom=max(256,ceil(.10T))`, `P=min(qualityCap,T-headroom)` | one pure policy | N/A |
+| `autobyteus-ts/src/memory/compaction/compaction-threshold-gate.ts` | memory compaction | bounded post-success state owner | await actual below, suppress inadequate reduction, reset, and hard-cap override | independently testable state machine | planning budget |
+| `autobyteus-ts/src/memory/policies/compaction-policy.ts` | memory policy | pressure classifier | `none` / `proactive` / `hard_input_cap` | small stateless policy | token budget |
+| `autobyteus-ts/src/agent/loop/llm-phase-compaction.ts` | agent loop | thin adapter | resolve observation, call manager, report decision | no business state | planning budget |
+| `autobyteus-ts/src/memory/memory-manager-compaction-coordinator.ts` | memory lifecycle | authoritative coordinator | pending identity/budget/attempt state, execution authorization, post-success episode, accepted-success and failure-retention transitions | current owner strengthened | pending/episode/budget types |
+| `autobyteus-ts/src/memory/memory-manager.ts` | memory facade | public boundary | observation/failure/commit methods | prevents mixed-level caller | coordinator |
+| `autobyteus-ts/src/memory/llm-request-recovery.ts` | memory recovery | rollback adapter | copy/restore pending request plus post-success episode | current snapshot owner | shared state types |
+| `autobyteus-ts/src/memory/compaction/message-budget-strategy.ts` | memory compaction | cost estimator | current-context estimate, calibration gap, target-scaled replacement reserve, available suffix | existing estimate concern | planning budget |
+| `autobyteus-ts/src/memory/compaction/working-context-message-window-planner.ts` | memory compaction | planner | strict target fit and typed planning errors | existing selection owner | assessment |
+| `autobyteus-ts/src/memory/compaction/working-context-message-unit.ts` | memory compaction | plan model | budget breakdown on plan | existing plan shape | assessment |
+| `autobyteus-ts/src/memory/compaction/{working-context-compaction-strategy.ts,working-context-compaction-strategy-resolver.ts,working-context-compaction-strategy-registry.ts,default-working-context-compaction-strategy-registry.ts}` | memory compaction | strategy boundary | static dependencies plus dynamic execution planning budget | budget must be current per operation | planning budget |
+| `autobyteus-ts/src/memory/compaction/structured-json-compaction-strategy.ts` | memory compaction | production strategy | pass budget to planner and assessment to proposal | existing owner | plan assessment |
+| `autobyteus-ts/src/memory/compaction/working-context-compaction-proposal.ts` | memory compaction | proposal/accepted model | runtime-only planning/final assessment | common acceptance contract | planning budget |
+| `autobyteus-ts/src/memory/compaction/{accepted-compaction-builder.ts,working-context-compaction-output-validator.ts}` | memory acceptance | builder/validator | estimate finalized complete prompt plus calibration gap and reject over target | precommit invariant | assessment/token estimate |
+| `autobyteus-ts/src/memory/compaction/pending-compaction-executor.ts` | memory lifecycle | operation owner | classify failure, retain pending, surface fail-closed result, report once | existing terminal owner | failure kind/disposition |
+| `autobyteus-ts/src/agent/event-inbox/agent-event-inbox-entry.ts` | agent runtime | entry contract | closed `TurnStartOrigin` on every turn-start entry | authoritative pre-conversion identity | `SenderType` mapping |
+| `autobyteus-ts/src/agent/event-inbox/{inbox-queue-store.ts,agent-event-inbox.ts,agent-event-scheduler.ts}` | agent runtime | queue/selection owner | first-matching claim, same predicate for dispatchability/wait, existing shutdown drain | preserves one queue and relative order | origin-stamped entries/admission policy |
+| `autobyteus-ts/src/agent/compaction/compaction-retry-turn-admission-policy.ts` | agent compaction integration | read-only admission policy | allow all normally; while awaiting USER retry, allow only USER entry | one narrow cross-boundary rule | memory gate query + entry origin |
+| `autobyteus-ts/src/agent/{agent-turn.ts,runtime/agent-worker.ts,event-inbox/handlers/turn-start-inbox-event-handler.ts}` | agent runtime | active-turn lifecycle | pass immutable entry origin into active turn and preserve it through settlement | existing start boundary | `TurnStartOrigin` |
+| `autobyteus-ts/src/agent/{llm-request-assembler.ts,loop/llm-phase.ts}` | agent request execution | authorization caller | pass turn ID/origin to executor at pre-dispatch and immediate initial execution sites | existing request spine | active turn + pending attempt command |
+| `autobyteus-ts/src/agent/compaction/compaction-runtime-reporter.ts` | diagnostics | reporter | target/pressure/request/failure/post-success-observation diagnostics | existing projection concern | decision/assessment |
+| `autobyteus-ts/src/agent/pipelines/llm-response-pipeline.ts`, `src/agent/events/notifiers.ts`, `src/agent/streaming/events/stream-event-payload-assistant.ts` | agent events | response event contract | propagate `is_error` | one existing path | existing `isError` |
+| `autobyteus-ts/src/memory/compaction/compaction-agent-runner.ts` | memory compaction | runner interface | closed runner failure kinds and metadata | cross-package contract | N/A |
+| `autobyteus-ts/src/memory/compaction/agent-compaction-summarizer.ts` | memory compaction | response attempt owner | typed response-repair exhaustion; runner errors bypass parser | existing owner | runner/parser errors |
+| `autobyteus-server-ts/src/agent-execution/compaction/{compaction-run-output-collector.ts,server-compaction-agent-runner.ts}` | server compaction | runner adapter | reject error completion/interruption/terminal/timeout/tool/launch and preserve cause/run ID | existing server boundary | runner error kinds |
 
 ## Applied Patterns (If Any)
 
-- **Bounded two-state attempt flow:** explicit `initial -> correction -> terminal`, owned by the summarizer rather than a generic retry helper.
-- **Validate then select:** extract candidates, validate each through the preserved contract, deduplicate by host-consumed meaning, then require exactly one result.
-- **Host-owned proposal/accept/commit:** unchanged safety pattern prevents model output from mutating canonical memory directly.
-- **Projection of recognized fields:** harmless extras are ignored without adding old/new response aliases.
+- **Immutable command context:** the trigger-time planning budget travels with the pending operation rather than being recomputed from later mutable settings.
+- **Bounded local state machine:** one coordinator-owned gate expresses post-success observed-below eligibility without a retry scheduler.
+- **Typed result/error boundary:** assistant content and child execution failure are disjoint before the parser.
+- **Proposal/accept/commit:** unchanged host-owned canonical memory transaction with one additional precommit budget invariant.
+- **Hysteresis by authoritative observation:** an accepted estimate cannot reset a crossing; only actual below-threshold provider usage or a budget-key change rearms proactive eligibility.
+- **Origin-stamped work item:** external author class is captured once before event conversion and carried through the active turn.
+- **Eligibility-aware single queue:** a pure admission predicate changes which entry may be claimed while preserving one FIFO store and ordinary order outside the gate.
+- **Bounded pending-attempt state machine:** initial automatic execution, one in-progress identity, and USER-authorized recovery are explicit without a retry scheduler.
 
 ## Target Subsystem / Folder / File Mapping
 
-| Path | Kind (`Folder`/`Module`/`File`) | Owner / Boundary | Responsibility | Why It Belongs Here | Must Not Contain |
+| Path | Kind | Owner / Boundary | Responsibility | Why It Belongs Here | Must Not Contain |
 | --- | --- | --- | --- | --- | --- |
-| `autobyteus-ts/src/memory/compaction/working-context-compaction-prompt-builder.ts` | File | prompt builder | initial/correction message framing | existing memory compaction prompt concern | system-template prose duplication, runner logic |
-| `autobyteus-ts/src/memory/compaction/compaction-conversation-history-renderer.ts` | File | transcript renderer | new sole wrapper/collision escape | existing transcript concern | operation instruction or response schema |
-| `autobyteus-ts/src/memory/compaction/compaction-response-parser.ts` | File | parser | staged schema-aware candidate handling | existing response contract concern | model calls, normalization, persistence |
-| `autobyteus-ts/src/memory/compaction/agent-compaction-summarizer.ts` | File | attempt owner | bounded two-attempt sequence | already spans prompt/runner/parser | server run service, parent events, stores |
-| `autobyteus-ts/src/memory/lineage/compaction-lineage-record.ts` | File | lineage record | supported/current prompt versions | existing persistence contract | migration logic |
-| `autobyteus-server-ts/src/built-in-agents/templates/memory-compactor/agent.md` | File | built-in task prompt | exact approved system prompt | canonical built-in definition | repair-specific dynamic stage text |
-| `autobyteus-server-ts/src/agent-customization/processors/prompt/user-input-context-building-processor.ts` | File | input context processor | secure context files + neutral composition | existing mandatory processor | sender header map/source-specific wording |
-| `autobyteus-{ts,server-ts}/docs/...` | File set | durable docs | current compaction protocol | existing memory docs | obsolete old tag/one-shot/current-v2 statements |
+| `autobyteus-ts/src/memory/compaction` | Folder | compaction domain/control | planning budget, post-success gate, planner, strategy, attempt, acceptance | existing coherent capability area | provider run service or UI |
+| `autobyteus-ts/src/memory/compaction/compaction-planning-budget.ts` | File | planning policy | exact `B/T/P` shape/formula | shared by trigger and plan | state or I/O |
+| `autobyteus-ts/src/memory/compaction/compaction-threshold-gate.ts` | File | local state owner | post-success observed-below transitions | serves coordinator | parser/model or retry logic |
+| `autobyteus-ts/src/memory/memory-manager-compaction-coordinator.ts` | File | memory authority | pending gate/post-success episode/acceptance lifecycle | existing owner | stream event details |
+| `autobyteus-ts/src/agent/event-inbox` | Folder | runtime queue/selection | origin-stamped turn-start entries and first-eligible same-queue claim | existing event-loop capability | compaction mutation or second deferred store |
+| `autobyteus-ts/src/agent/compaction/compaction-retry-turn-admission-policy.ts` | File | failed-pending admission adapter | map public gate + entry origin to dispatchability | focused cross-boundary policy | queue mutation, provider retry, or input conversion |
+| `autobyteus-ts/src/agent/agent-turn.ts` | File | active-turn identity | carry immutable start origin | existing lifecycle subject | origin inference from processed content |
+| `autobyteus-ts/src/agent/streaming/events` | Folder | stream contract | assistant error flag | existing typed event layer | compaction-specific retry |
+| `autobyteus-server-ts/src/agent-execution/compaction` | Folder | server child adapter | one child execution outcome | existing server boundary | JSON schema or persistence |
+| `autobyteus-{ts,server-ts}/docs/...` | File set | durable docs | current trigger target, observed-below episode, failure typing/manual retry, unchanged prompt/storage | existing architecture docs | obsolete fixed-35/error-text behavior |
 
-The existing flat `memory/compaction` layout is retained because these are small, clearly named peer concerns under one capability area; adding a new retry or parser subfolder would over-split this bounded change.
+The existing flat `memory/compaction` folder remains appropriate: the new files are small peer concerns serving one capability, while persistence, agent-loop transport, and server execution remain at their existing structural depths.
 
 ## Folder Boundary Check
 
-| Path / Folder | Intended Structural Depth (`Transport`/`Main-Line Domain-Control`/`Persistence-Provider`/`Off-Spine Concern`/`Mixed Justified`) | Ownership Boundary Is Clear? (`Yes`/`No`) | Mixed-Layer Or Over-Split Risk (`Low`/`Medium`/`High`) | Justification / Corrective Action |
+| Path / Folder | Intended Structural Depth | Ownership Boundary Is Clear? | Mixed-Layer Or Over-Split Risk | Justification / Corrective Action |
 | --- | --- | --- | --- | --- |
-| `autobyteus-ts/src/memory/compaction` | Main-Line Domain-Control | Yes | Low | established capability folder; peer files retain singular responsibilities |
-| `autobyteus-server-ts/src/agent-execution/compaction` | Transport | Yes | Low | one child execution remains server-owned and unchanged |
-| `autobyteus-server-ts/src/agent-customization/processors/prompt` | Off-Spine Concern | Yes | Low | mandatory input composition only; remove sender policy drift |
-| `autobyteus-ts/src/memory/lineage` | Persistence-Provider | Yes | Low | record/version validation remains isolated from prompt runtime |
-| `autobyteus-server-ts/src/built-in-agents/templates/memory-compactor` | Off-Spine Concern | Yes | Low | stable model task definition and zero-tool config |
+| `autobyteus-ts/src/memory/compaction` | Main-Line Domain-Control | Yes | Low | planning-budget and threshold-gate files expose focused policy/state without a new artificial module tree |
+| `autobyteus-ts/src/memory` | Main-Line Domain-Control / persistence coordination | Yes | Low | coordinator stays above compaction mechanisms and stores |
+| `autobyteus-ts/src/agent` | Transport/control | Yes | Low | inbox owns storage/selection, active turn owns origin, compaction adapter owns admission; memory state stays behind facade |
+| `autobyteus-server-ts/src/agent-execution/compaction` | Transport | Yes | Low | server run lifecycle remains isolated |
+| memory stores/lineage | Persistence-Provider | Yes | Low | unchanged |
 
 ## Concrete Examples / Shape Guidance (Mandatory When Needed)
 
-| Topic | Good Example | Bad / Avoided Shape | Why The Example Matters |
-| --- | --- | --- | --- |
-| First operation message | exact sentence -> START -> one `<target_agent_conversation_history>` block -> END, with no trailing text | `[User Requirement]` immediately followed by generic history or several nested XML sections | fixes the causal target/evidence ambiguity without prompt inflation |
-| Context composition | no readable context: `message.content` byte-for-byte; with context: `**[Context]**\n...\n\n**[Message]**\n...` | sender-specific heading map or fallback `[Input]` | shared processor should separate payload regions, not invent sender semantics |
-| Candidate choice | unrelated `{ "note": ... }` ignored, one later valid six-array candidate selected | return first parseable object, then reject it | validation must govern selection |
-| Ambiguity | identical duplicated extraction/fence representations dedupe to one semantic fingerprint; different valid summaries fail | silently choose earliest/latest valid compaction | avoids arbitrary memory selection |
-| Attempt flow | `initial invalid -> new child correction -> valid -> one parent completed` | emit failed parent status, then retry and emit completed; or reuse misdirected child conversation | preserves coherent lifecycle and clean model context |
-| Commit | valid parsed result -> strategy proposal -> manager prepare -> accepted committer | compactor writes memory Markdown/JSON files | keeps integrity and least authority host-owned |
+### Exact target formula
 
-### Exact correction-task prefix
-
-The first-attempt message remains byte-exact to `memory-compactor-prompt-spec.md`. Only a new correction child receives this prefix, followed by one blank line and then the complete first-attempt message unchanged:
+For `B=615,744`, `T=123,148`:
 
 ```text
-A prior compaction attempt failed host validation at the `<validation_stage>` stage. This is the single corrective attempt. Return exactly one JSON object with all six required arrays: `episodes`, `critical_issues`, `unresolved_work`, `durable_facts`, `user_preferences`, and `important_artifacts`. At least one `episodes` entry must contain a non-empty `summary`; entries in the five fact arrays use `fact`. Do not add Markdown fences or prose.
+qualityRetentionCap = floor(0.35 × 615,744) = 215,510
+triggerHeadroom      = max(256, ceil(0.10 × 123,148)) = 12,315
+triggerDerivedCap    = 123,148 - 12,315 = 110,833
+postCompactionTarget = min(215,510, 110,833) = 110,833
 ```
 
-`<validation_stage>` is replaced only with one parser-owned closed value:
+The target applies to the estimated complete finalized parent prompt. The cost strategy then subtracts:
 
-- `json_object_extraction`
-- `six_array_schema_validation`
-- `multiple_valid_objects`
+```text
+leading system units
++ protected live tool suffix
++ max(0, observed provider prompt - estimated current working context)
++ replacement-memory allowance `min(8,192, max(1,024, floor(0.20 × P)))`
+```
 
-Do not include the previous model output, arbitrary exception message, source-task commentary, stack trace, IDs, or a second JSON example in the correction prompt. Because the unchanged first-attempt message follows the prefix, the correction task still ends at the approved END separator.
+Only the remainder may retain recent natural units. The finalized replacement memory is estimated again before commit; if the complete estimate plus the calibration gap exceeds 110,833, the operation fails without commit.
 
-### Parser candidate algorithm
+For the default 80% trigger, the trigger-derived cap is above the 35% quality cap, so the 35% preference continues to limit retained context. For a low ratio, the trigger cap becomes authoritative.
 
-1. Extract the trimmed response, fenced bodies, and balanced object substrings; deduplicate identical candidate strings.
-2. JSON-parse object candidates. If none parse, throw `CompactionResponseParseError(stage='json_object_extraction')`.
-3. Validate every parsed object against the six required array fields and host entry rules. Unknown top-level fields and unknown fields beside a valid `summary`/`fact` are ignored. Missing/non-array required fields and nonempty object entries lacking their category's recognized property are invalid. Null/primitive/empty-object or blank/non-string recognized entries may be discarded, but at least one nonblank episode must remain.
-4. For each valid candidate, build the clamped `CompactionResult` and fingerprint `JSON.stringify` of that host-consumed result.
-5. Zero valid candidates -> `six_array_schema_validation`, reporting the most relevant candidate failure (highest required-field coverage, then earliest candidate) without treating an unrelated nested object as authority.
-6. One distinct fingerprint -> return that result.
-7. More than one distinct fingerprint -> `multiple_valid_objects` error.
+### Threshold episode and manual-retry examples
+
+The coordinator-owned runtime shape is explicit and separate from the pending request:
+
+```ts
+type CompactionThresholdEpisode =
+  | { kind: 'ready' }
+  | {
+      kind: 'awaiting_below_observation';
+      budgetKey: string;
+      completedOperationId: string;
+      postCompactionTargetTokens: number;
+    }
+  | {
+      kind: 'inadequate_reduction_suppressed';
+      budgetKey: string;
+      completedOperationId: string;
+      postCompactionTargetTokens: number;
+      firstObservedPromptTokens: number;
+      diagnosticEmitted: true;
+    };
+```
+
+`AcceptedCompactionCommitter` keeps its existing final `clearPending` hook. The coordinator supplies that hook as `completePendingAfterAcceptedCommit`: after every durable write and snapshot installation succeeds, it verifies the operation ID, clears `pendingRequest`, and installs `awaiting_below_observation` from that operation's immutable planning budget. A commit failure before the final hook transitions the in-progress pending request to `awaiting_user_retry` and does not install an episode.
+
+| Observation / outcome | Coordinator/gate result |
+| --- | --- |
+| First `249,416 >= 123,148` after ratio change | request `threshold_crossing` |
+| Successful accepted estimate `<=110,833` | clear pending and enter `awaiting_below_observation`; estimate does not reset the crossing |
+| First fresh same-key provider usage `110,950 < 123,148` | enter `ready`; no request now; a later actual crossing is legitimate |
+| First fresh same-key provider usage `123,520 >= 123,148` | no second proactive operation; emit one `post_success_usage_not_below_trigger` diagnostic and enter `inadequate_reduction_suppressed` |
+| Later same-key usage remains between 123,148 and 615,744 | remain suppressed; detailed log only, no repeated card or operation |
+| Budget key changes while suppressed and current usage exceeds the new trigger | reset the old episode and request one configuration-driven operation under the new key |
+| Prompt reaches/exceeds 615,744 while awaiting/suppressed | request `hard_input_cap`; hard-cap safety overrides suppression |
+| Child runner fails for any in-progress request | one final fail-closed error; transition the same pending operation to `awaiting_user_retry`; no parser, correction child, target dispatch, or scheduled retry |
+| Distinct USER-origin turn later sends `continue` | authorize and execute the retained pending operation once before dispatch; success clears it and continues, failure records that execution turn and stops again |
+| AGENT/SYSTEM input arrives while awaiting | leave its origin-stamped entry in the normal queue; no turn, child, error, or target dispatch |
+
+The pending attempt shape is closed and runtime-only:
+
+```ts
+type PendingCompactionAttemptState =
+  | { kind: 'initial_attempt_ready' }
+  | {
+      kind: 'attempt_in_progress';
+      authorization: 'automatic_initial' | 'user_retry';
+      executionTurnId: string;
+    }
+  | {
+      kind: 'awaiting_user_retry';
+      lastFailedExecutionTurnId: string;
+    };
+```
+
+Pending presence is deliberately not a boolean execution flag. `beginPendingCompactionAttempt` is the only transition into `attempt_in_progress`.
+
+### USER versus non-user queue example
+
+Given the turn-start queue below while the pending attempt is `awaiting_user_retry`:
+
+```text
+AGENT-A -> USER-continue -> SYSTEM-S -> AGENT-B
+```
+
+The scheduler uses the admission predicate to claim only `USER-continue`; it does not claim/requeue `AGENT-A`. During the active user turn the remaining queue is still:
+
+```text
+AGENT-A -> SYSTEM-S -> AGENT-B
+```
+
+If compaction fails, that queue stays unchanged. If it succeeds, `USER-continue` reaches the target model and, after the user turn settles, ordinary FIFO resumes with `AGENT-A`, then `SYSTEM-S`, then `AGENT-B`. A queue containing only non-user entries while awaiting retry is not considered dispatchable, so the worker waits for a user/lifecycle event rather than busy-looping.
+
+### Output versus runner failure
+
+Good:
+
+```text
+ASSISTANT_COMPLETE { content: "not json", is_error: false }
+  -> parser failure -> one correction child
+
+ASSISTANT_COMPLETE { content: "Error processing ... rate limit ...", is_error: true }
+  -> collector runner error -> no parser -> no correction child
+```
+
+Bad:
+
+```text
+if response.content startsWith("Error processing") then runner failure
+```
+
+Text matching is forbidden because valid model-authored content can contain those words and provider wording can change.
 
 ## Backward-Compatibility Rejection Log (Mandatory)
 
-| Candidate Compatibility Mechanism | Why It Was Considered | Rejection Decision (`Rejected`/`N/A`) | Clean-Cut Replacement / Removal Plan |
+| Candidate Compatibility Mechanism | Why It Was Considered | Rejection Decision | Clean-Cut Replacement / Removal Plan |
 | --- | --- | --- | --- |
-| Keep old generic sender headings behind a setting | global behavior change | Rejected | delete map/branch/old expectations |
-| Render both old and target-agent history tags | old tests/docs may refer to old tag | Rejected | sole renamed tag; update current sources/docs/tests |
-| Parse both six-array and `items` schema | earlier design exploration | Rejected | preserve six-array only; no alias DTO/mapper |
-| Keep first-object selection as fallback | perceived leniency | Rejected | validate all candidates and require one semantic result |
-| Retry indefinitely or by configurable count | reliability | Rejected | fixed maximum of two attempts in summarizer |
-| Reuse the same child conversation for correction | fewer visible runs | Rejected | new child prevents wrong-task context carryover and preserves distinct run IDs/cleanup |
-| Rewrite v1/v2 lineage to v3 | representational uniformity | Rejected | direct reader support `[1,2,3]`; writers use 3 |
-| Grant `write_file` / staged generic workspace output | response robustness | Rejected | retain zero-tool child and host text validation/commit |
+| Keep old fixed planner when ratio >=35% and new planner below | reduce test churn | Rejected | one target formula; 35% is a capped quality preference for all ratios |
+| Keep old `requestCompaction(turnId)` as supported auto path | existing tests call it | Rejected | auto path uses explicit observation/budget; tests construct complete request state |
+| Accept error completion as text if collector lacks flag | older events may omit flag | Rejected | all newly emitted assistant events carry boolean default false; compaction success requires explicit non-error event |
+| Match known error prose | minimal patch | Rejected | propagate typed `is_error` and runner failure kind |
+| Keep SR-002 deferred/suppressed failure states | allow parent work and automatic recovery below hard cap | Rejected by approved fail-closed policy | one pending attempt gate remains until commit; after failure only a distinct USER-origin turn authorizes execution |
+| Treat any turn-start event or pending presence as retry authorization | minimal change to request assembly | Rejected | stamp authoritative origin and require coordinator attempt authorization; non-user events remain queued |
+| Consume/requeue non-user entries into a compaction-specific deferred buffer | bypass FIFO head | Rejected as unnecessary lifecycle state | one ordinary queue plus first-matching claim preserves order, wakeup, and shutdown behavior |
+| Store post-success episode in pending request | avoid a second runtime shape | Rejected | accepted commit must clear pending; coordinator separately owns runtime-only `CompactionThresholdEpisode` until actual-below/key reset |
+| Persist post-success suppression in memory files | restart continuity | Rejected | runtime-only state; no stored-schema change or migration |
+| Prompt-contract v4 | runtime behavior changed | Rejected | model prompt/output bytes do not change; retain v3 |
+| Direct child file write or single text memory | simplify output | Rejected | preserve approved six arrays and accepted host commit |
 
 ## Derived Layering (If Useful)
 
-Explanatory only:
+- Observation/control: token budget -> manager observation -> post-success gate/pending request.
+- Turn admission/control: origin-stamped inbox entry -> eligibility-aware scheduler -> active turn -> authorized pending attempt.
+- Planning/model adaptation: dynamic strategy context -> planner -> summarizer -> runner/parser.
+- Domain acceptance: manager baseline -> accepted builder -> structural and budget postcondition.
+- Persistence/projection: committer -> stores/lineage/snapshot/context.
+- Event return: child response flag -> collector -> typed error/result -> executor reporter -> UI/log.
 
-- parent operation/control: request assembler -> pending executor -> strategy;
-- bounded model adaptation: summarizer -> prompt/runner/parser;
-- domain acceptance: memory manager -> accepted builder/validator;
-- persistence/projection: committer -> stores/snapshot/lineage/context;
-- external return: reporter/notifier -> UI activity.
-
-No higher layer bypasses the named owner below it.
+No caller depends on both an authoritative boundary and its internal gate/planner/collector.
 
 ## Change / Refactor Sequence
 
-1. Update the built-in Memory Compactor `agent.md` and its byte-exact template test from the approved prompt specification. Verify the response section from `Return one JSON object...` through the example remains byte-identical to the old file.
-2. Change the history renderer's sole tag and collision escaping. Update focused renderer/prompt tests before changing operation framing so inner-output preservation is explicit.
-3. Change `WorkingContextCompactionPromptBuilder.buildTaskPrompt` to assemble the exact approved intro/START/rendered block/END message. Add the exact correction builder method/prefix and closed validation-stage input. Verify nothing follows END.
-4. Remove sender-specific heading formatting from `UserInputContextBuildingProcessor`. Rename `rawRequirement` to neutral message content, remove `SenderType` formatting dependency, return raw content without readable context, and use only bold Markdown `[Context]`/`[Message]` sections when context exists. Update active TS tests and remove stale old-heading expectations from any checked-in counterpart affected by this test source; do not alter sender metadata or source builders.
-5. Refactor `CompactionResponseParser` from first-object selection to validate-all/select-one. Add staged errors, harmless-extra projection, wrong-shape/empty-episode rules, semantic fingerprint dedupe, and ambiguity rejection. Preserve current bounds and `CompactionResult` mapping.
-6. Extend `AgentCompactionSummarizer` with the fixed two-state attempt flow. Build the source history once, run the exact initial prompt, retry only `CompactionResponseParseError`, create a new task/run for correction, and preserve the actual prompt hash/metadata for each call. On repair success, expose correction metadata. On exhaustion, throw one error whose message lists attempt number, stage (`runner_execution` if the second runner fails), and each available `compactionRunId`; set last metadata to the last attempt for existing reporter enrichment.
-7. Keep `StructuredJsonCompactionStrategy`, `PendingCompactionExecutor`, `CompactionRuntimeReporter`, runner, collector, manager, accepted builder/committer behavior structurally unchanged. Add regression assertions proving recovered validation does not reach the parent failed event and exhausted validation reaches it once.
-8. Set lineage current prompt contract to 3 and derive the supported type/runtime validation from `[1,2,3]`; update writer/read tests and version expectations. Do not add a migration.
-9. Update direct unit/integration/E2E coverage and current memory architecture docs. Use the retained wrong-task outputs/parser probe as fixtures where practical. Do not edit completed-ticket historical evidence as if it described current behavior.
-10. Run package-focused tests/typechecks, then downstream API/E2E coverage investigation and execution per team workflow.
+1. Add `CompactionPlanningBudget` and pure resolver with the exact quality cap, 10%/256-token headroom, target, validation, and budget-key tests. Preserve `resolveTokenBudget` arithmetic unchanged.
+2. Add `CompactionThresholdGate` as pure transition logic over a coordinator-owned runtime episode, with exhaustive tests for initial request, accepted success awaiting observation, first actual-below reset, first same-key at/above inadequate-reduction suppression, repeated suppression without repeated cards, budget-key reset, and hard-cap override.
+3. Strengthen `MemoryManagerCompactionCoordinator`/`MemoryManager` so the LLM evaluator submits one observation, accepted commit atomically clears pending while installing the separate post-success episode, and executor failure verifies the in-progress attempt before transitioning it to `awaiting_user_retry`. Replace the independent mutable `compactionRequired` boolean/setter and pending-presence executability with public presence/gate queries plus atomic `beginPendingCompactionAttempt`; include the immutable planning budget and closed attempt state in the shared pending shape. Replace the recovery-local duplicate type and copy pending/attempt plus episode state in LLM request recovery.
+4. Refactor `llm-phase-compaction.ts` to use the authoritative observation result and report requested/awaiting/suppressed/reset decisions. Remove supported split `shouldCompact` + direct request coordination. A first post-success same-key observation at/above `T` emits one bounded diagnostic rather than requesting another proactive operation.
+5. Split strategy creation into static construction dependencies and dynamic per-operation execution context. `PendingCompactionExecutor` supplies the pending planning budget to resolver/registry/strategy; remove stale static `inputBudgetTokens` injection from `LlmPhase`.
+6. Replace independent suffix budgeting with complete-target budgeting. Estimate all units, calibrate with observed provider prompt usage, reserve system/protected/replacement costs, make minimum recent units a preference only, require a compactable natural prefix/raw traces, and emit typed `target_unattainable` / `no_compactable_prefix` errors. Remove the budget-override/fallback method.
+7. Carry `CompactionBudgetAssessment` through plan/proposal/accepted result. After host rendering, estimate the actual finalized context plus calibration gap and reject `post_compaction_target_exceeded` before committer invocation. Add plan/result diagnostics.
+8. Propagate `isError` from `LlmPhaseOutcome` through `LLMResponsePipeline`, notifier, `AssistantCompleteResponseData.is_error`, event conversion, and server collector. Add typed collector/runner failure kinds for error completion, interruption, terminal error, timeout, tool approval, rejection, launch, and collection failure.
+9. Make summarizer repair exhaustion typed. Assert first runner failure performs zero parser/correction calls; a runner failure on the second child after one actual invalid response preserves attempt 1 validation and attempt 2 runner metadata.
+10. Update `PendingCompactionExecutor` and both LLM-phase call sites to use `executeIfAuthorized({turnId, turnOrigin})`. Initial-ready requests execute once for any origin. Every final failure retains the pending request as `awaiting_user_retry`, emits one truthful terminal status, and stops the current target-agent turn. A distinct USER-origin turn may begin one pre-dispatch retry; success resumes it and failure records that turn and stops it again.
+11. Add authoritative `TurnStartOrigin` to inbox entries and active turns. Extend the existing queue store with first-matching claim. Inject `CompactionRetryTurnAdmissionPolicy` into scheduler selection and use the same predicate in `hasDispatchable`/wait logic. Preserve all non-user entries in place; do not create a second queue. Preserve existing lifecycle/active-turn priority and shutdown drain.
+12. Keep `memory-compactor/agent.md`, operation prompt, parser schema, prompt-contract version 3, tool config, episodic/semantic shapes, lineage reader/writer, and accepted committer byte/behavior unchanged. Add regression assertions that these files/contracts did not drift.
+13. Update current memory architecture documentation and diagnostics. Do not rewrite completed historical tickets or existing memory.
+14. Run focused core/server unit and integration checks, then route through code review and API/E2E coverage investigation. Re-run the real 80%→20% scenario, a controlled child error-completion scenario, and direct USER-versus-AGENT/SYSTEM admission scenarios when provider/environment access permits.
 
-No temporary dual path is permitted at any step.
+No temporary dual path is permitted.
 
 ## Key Tradeoffs
 
-- A new child for correction costs launch latency but gives a clean system/user context, avoids reinforcing the first child's wrong task, fits the existing one-run runner contract, guarantees cleanup, and supplies distinct run IDs.
-- Preserving the six arrays retains some syntactic burden, but avoids unrelated prompt/schema churn and keeps proven category semantics.
-- Ignoring harmless extras improves resilience; requiring all recognized arrays and one episode preserves sufficient signal to reject wrong-task prose.
-- Semantic fingerprint dedupe treats extraction duplicates and output-equivalent candidates as one; truly different memory candidates remain an actionable ambiguity.
-- Error messages carry both run IDs without expanding the external compaction status schema. The existing last-run fields remain stable, while the final `error_message` supplies both IDs.
-- No content repair for first-attempt provider/timeout failure avoids converting an availability policy into an implicit retry policy. A correction is only meaningful after the host receives invalid content.
+- A 10% trigger headroom and target-scaled replacement reserve are deliberately conservative. They may retain less recent context, but avoid repeated expensive compactions and preserve the existing 35% cap at the default ratio.
+- Provider-observed calibration improves comparability without adding a provider tokenizer dependency. It is still an estimate; the post-render validation fails closed.
+- Strict fail-closed behavior sacrifices availability below the hard cap, but it matches the user's priority that required compaction succeed before target work continues. Retry timing is user-controlled; retained operation ID plus execution turn/child IDs keep attempts diagnosable without an automatic scheduler.
+- Letting a USER entry bypass earlier non-user entries is a deliberate, narrow ordering exception needed to resolve the gate. It is safer than letting AGENT/SYSTEM trigger provider retries, dropping them, or blocking user recovery. Their relative order and ordinary FIFO resume immediately after successful user-turn settlement.
+- First-matching claim adds a small queue primitive but avoids a second deferred store, message-copy lifecycle, separate shutdown handling, and data migration.
+- A separate post-success episode adds one runtime shape, but accepted commit must clear the pending operation while REQ-012 still requires an actual provider observation before rearming. Combining both states would either violate commit cleanup or lose the threshold-crossing invariant.
+- Adding `is_error` to the generic assistant-complete payload is broader than a compaction-only text heuristic, but it preserves an existing core fact truthfully and benefits any typed run consumer without changing ordinary response content.
 
 ## Risks
 
-- The model may still produce a plausible but factually poor valid summary; the current typed contract cannot prove fidelity.
-- The correction child adds up to one full additional model latency/token cost on invalid content.
-- A long history is resent on correction. This is deliberate because a new child must receive the target evidence; input budgeting remains the existing planner's responsibility.
-- Unknown extra-field tolerance must not accidentally admit a wrong recognized entry shape. Tests must separate “extra beside correct property” from “missing required property.”
-- Candidate extraction can yield nested JSON objects. Highest-required-field-coverage error selection and semantic validation prevent nested objects from masking the intended candidate.
-- If the second child fails at the runner/transport layer, there is only one invalid returned response plus one failed correction execution. The final error must say so accurately rather than claim two parsed outputs.
-- Existing old lineage remains directly readable; unsupported future versions must still fail closed.
-- The mandatory input processor is global. Tests must cover USER/TOOL/AGENT/SYSTEM content preservation, readable context, media/context tool continuation, text-only null tool continuation, and source-specific inter-agent/system wording.
+- Token estimation may undercount provider-native tool schemas or media. The observed calibration gap and 10% headroom mitigate this, but cannot replace a future pre-dispatch tokenizer/admission system.
+- At very low ratios, mandatory system/protected content or the replacement reserve may exceed the target. The design reports `target_unattainable` and does not discard required content.
+- A huge model summary can exceed the reserve. Final accepted-budget validation prevents commit but consumes one child call; it is not automatically treated as JSON repair.
+- Runtime-only post-success suppression resets on process restart. One new proactive attempt after restart is possible and avoids a persistence migration; repeated restarts can therefore repeat one operation for an inadequately reduced same-key context.
+- A syntactically valid six-array summary can still be factually poor. Deterministic shape and budget validation do not prove factual fidelity.
+- The assistant event field must be carried across every AutoByteus conversion path. Missing propagation in one layer would recreate the misclassification; contract tests must span notifier through server collector.
+- Existing uncommitted delivery documentation belongs to the previous completed round. Implementation must preserve unrelated edits and update it only through the delivery workflow after review/testing.
+- A process shutdown before successful recovery drains retained non-user entries under existing runtime semantics; this ticket does not add persistent inbox delivery. That is unchanged from other queued turn-start work and requires no migration.
 
 ## Guidance For Implementation
 
-### Exactness and invariants
+### Exact invariants
 
-- Copy the approved `agent.md` and first-attempt operation message exactly from `memory-compactor-prompt-spec.md`. Do not improvise wording.
-- Preserve every line of the original response section, including all six explanations, empty-array instruction, and full JSON example.
-- Use `**[Context]**` and `**[Message]**` only when readable context is actually concatenated; otherwise do not trim, label, or rewrite authored content.
-- Render exactly one opening and closing target-agent history tag; escape literal occurrences of those new tags inside all user/assistant/tool content. Do not specially escape the obsolete tag.
-- Hash the actual prompt sent on each child. A repair success's lineage metadata should therefore use the repair task's hash and child metadata.
-- Do not retry `CompactionAgentRunnerError` from the first attempt. Do wrap a second-attempt runner error after a first validation failure so final diagnostics retain both available attempt records.
-- Do not emit parent lifecycle events from the summarizer, runner, or parser.
-- Do not mutate canonical memory before parser success, strategy proposal, accepted validation, and commit.
+- Do not edit the approved Memory Compactor system prompt, first-attempt task prompt, six-array response section, correction prefix, target-agent tag/separators, or prompt-contract version 3 in this revision.
+- `P` must be a complete-prompt target: `min(floor(0.35B), T - max(256, ceil(0.10T)))`, clamped to nonnegative integer. A planner suffix budget must never exceed the remainder after required reserves.
+- `replacementMemoryReserveTokens = min(8_192, max(1_024, floor(0.20 × P)))`; the finalized replacement is measured rather than pessimistically reserving the old summary size, so a large old summary can still be compacted and supported low ratios are not made impossible by a fixed 8,192-token floor.
+- Preserve protected live tool protocol; recent-unit minimum is soft and may not violate `P`.
+- No child launch when mandatory estimated costs already meet/exceed `P`, or when no selected settled natural unit contributes a new raw trace.
+- No accepted commit when `estimatedFinalizedContextTokens + estimatedUntrackedOverheadTokens > P`.
+- Accepted success must enter `awaiting_below_observation`; neither `P` nor the finalized local estimate counts as an actual below-threshold usage observation. A first same-key observation at/above `T` suppresses another proactive operation with exactly one diagnostic; actual-below or budget-key change resets, and hard cap overrides.
+- Any final failed operation must retain its pending record as `awaiting_user_retry`, not generally executable. It must not archive raw traces, append memory/lineage, replace snapshot/context, delete source traces, schedule retry, or allow target-agent dispatch in that turn.
+- Final compaction failure ends only the active turn. It must not stop the agent worker/runtime; the inbox remains available for retained non-user entries and a later USER recovery signal.
+- `initial_attempt_ready` authorizes exactly one automatic first execution for any turn origin. After failure, only `TurnStartOrigin='user'` can authorize; the same failed execution turn ID cannot authorize again.
+- Resolve origin before input conversion. `InterAgentMessageReceivedEvent`, `SenderType.AGENT`, and `SenderType.SYSTEM` are non-user; event names, rendered sender prose, and converted LLM messages are not authorization evidence.
+- While awaiting user retry, non-user entries remain in the existing turn-start queue and are not claimed/requeued. The scheduler's wait predicate must ignore them yet wake for a new USER or lifecycle event. Normal FIFO, active-turn serialization, and shutdown drain remain unchanged outside this gate.
+- Error assistant completion is a runner failure even if its text contains valid-looking JSON. Non-error invalid assistant completion is a response-validation failure even if its prose resembles a provider error.
+- No string matching to classify execution failure.
 
 ### Targeted executable coverage
 
-At minimum update/add:
+Core unit/integration:
 
-- `autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-templates.test.ts`: byte-exact approved prompt and preserved six-array tail.
-- `autobyteus-ts/tests/unit/memory/working-context-compaction-prompt-builder.test.ts`: exact first message, sole renamed tag/escapes, unchanged inner ordering/redaction/bounds, exact repair prefix, no content after END.
-- `autobyteus-server-ts/tests/unit/agent-customization/processors/prompt/user-input-context-building-processor.test.ts`: raw pass-through for all sender types; neutral context/message form; no generic headings; path/media behavior unchanged. Keep checked-in test counterparts consistent with repository policy.
-- `autobyteus-ts/tests/unit/memory/compaction-response-parser.test.ts`: exact/fenced/prose; unrelated-first; missing/wrong fields; blank entries; harmless top/entry extras; identical duplicate candidate; two distinct candidates; captured wrong-task output.
-- `autobyteus-ts/tests/unit/memory/agent-compaction-summarizer.test.ts`: first success one call; first parse failure then repair success two new tasks/runs; two parse failures final stages/both IDs; second runner failure; first runner failure no retry; last metadata/hash follows accepted/final attempt.
-- `autobyteus-ts/tests/unit/memory/structured-json-compaction-strategy.test.ts` and `pending-compaction-executor.test.ts`: final metadata/error propagation, no intermediate failed lifecycle, one final failure.
-- `autobyteus-ts/tests/integration/agent/runtime/agent-runtime-compaction.test.ts`: final framed prompt and one completed parent operation; add recovered-first-response scenario if the existing fake runner supports queued outputs.
-- `autobyteus-ts/tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts`: renamed wrapper, native tool protocol unchanged, prompt contract 3.
-- `autobyteus-ts/tests/unit/memory/file-compaction-lineage-store.test.ts` plus related loader/committer fixtures: mixed 1/2/3 succeeds; unsupported 4 fails without write.
-- `autobyteus-server-ts/tests/unit/agent-execution/compaction/server-compaction-agent-runner.test.ts` / collector tests: retain one-run cleanup and no-tools invariants; no runner-owned retry expectation.
-- `autobyteus-server-ts/tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts`: current completed compactions expect prompt contract 3 when this scenario is in downstream execution scope.
-- Regression of final compacted memory: `Earlier progress` and populated existing category headings/order remain unchanged.
+- `token-budget` / new planning-budget tests: exact 1%, 20%, and 80% arithmetic; 10%/256 headroom; target-scaled replacement reserve; invalid/low target.
+- new threshold-gate tests: initial crossing, accepted success awaiting actual observation, first actual-below reset, first same-key at/above suppression with one diagnostic, repeated suppression without another card, budget-key reset/re-evaluation, hard-cap override, and no token usage.
+- `working-context-message-window-planner.test.ts`: complete-target budget; required/system/protected/replacement/calibration deductions; low-ratio plan under 123,148; soft recent minimum; unattainable target; compactable raw-trace prefix; removal of 35%-above-trigger and all-fitting collapse.
+- strategy registry/resolver tests: dynamic pending planning budget reaches the strategy on both immediate and next-dispatch execution; no stale budget captured before token usage.
+- accepted builder/output validator/executor tests: actual projected summary under target commits once; commit clears pending and installs `awaiting_below_observation`; oversize summary fails before every store mutation and retains pending as `awaiting_user_retry`.
+- coordinator/recovery tests: pending/planning/attempt and episode copies without aliasing; `initial_attempt_ready -> attempt_in_progress -> awaiting_user_retry`, USER-only retry, duplicate same-turn denial, accepted clear, rollback restores both shapes; direct v1/v2/v3 stored memory remains unchanged.
+- `llm-phase-compaction` integration: 249,416 at 20% requests once; resulting target below 123,148; default 80% remains governed by the 35% quality cap.
+- summarizer tests: first typed runner failure -> one child, zero parser/correction; invalid non-error output -> two children; second runner failure after invalid output -> typed exhausted response failure with both run IDs.
+
+Event/server:
+
+- response pipeline/notifier/stream payload tests: `isError` becomes `is_error` and defaults false for ordinary responses.
+- AutoByteus event converter test: error flag survives to `AgentRunEvent.ASSISTANT_COMPLETE`.
+- collector tests: non-error output success; error completion failure with exact message; terminal child error; interruption; timeout; tool approval; empty success; error text containing JSON never returns output.
+- server runner tests: every collector failure becomes `CompactionAgentRunnerError` with closed kind, cause, task ID, and child run ID; cleanup always runs.
+- inbox/scheduler unit tests: exact origin resolution for direct `InterAgentMessageReceivedEvent` and USER/AGENT/SYSTEM carriers; first-matching claim leaves skipped entries/order intact; same predicate governs dispatchability/wait; non-user-only queue does not spin; lifecycle priority and shutdown drain unchanged.
+- parent runtime integration: runner failure produces one truthful failed status, one child and zero correction children, retains `awaiting_user_retry`, performs no target dispatch, and schedules no retry; a distinct user `continue` executes once before dispatch and either resumes on success or stops again on failure. The same rule covers proactive and hard-cap pending requests.
+- direct origin-gate integration: with `AGENT-A, USER-continue, SYSTEM-S, AGENT-B`, no non-user turn/child/error occurs before USER; failure retains all three entries; success dispatches USER first and retained entries later as A/S/B. Repeat with the direct inter-agent event representation and the production `SenderType.AGENT` carrier. Verify a newly requested initial operation still auto-executes from AGENT/SYSTEM turns.
+
+Regression/API/E2E intent:
+
+- exact prompt contract and parser tests remain byte/behavior stable;
+- no tool is added to Memory Compactor or Daily Assistant;
+- no episodic/semantic/lineage migration or prompt version change;
+- real or deterministic 80%→20% run produces one compaction rather than a rapid chain;
+- after accepted success, first fresh same-key provider usage below `T` rearms; at/above `T` produces one bounded inadequate-reduction diagnostic and no second proactive operation;
+- controlled child error completion is reported as runner failure, never `json_object_extraction`, and never launches correction;
+- genuine malformed non-error model output still launches exactly one correction;
+- AGENT/SYSTEM delivery during `awaiting_user_retry` creates no compactor attempt and is preserved until a successful USER retry; USER recovery is not blocked by an earlier non-user queue head;
+- Memory Inspector and continuation projection retain existing episode/category behavior.
 
 ### Durable documentation
 
-Update current descriptions in:
+Update the current sections in:
 
 - `autobyteus-ts/docs/agent_memory_design.md`
 - `autobyteus-ts/docs/agent_memory_design_nodejs.md`
@@ -546,4 +756,4 @@ Update current descriptions in:
 - `autobyteus-server-ts/docs/modules/agent_work_traces.md`
 - `autobyteus-server-ts/docs/ARCHITECTURE.md`
 
-Document exact target-agent framing, schema-aware parser tolerance, bounded new-child correction, one parent terminal lifecycle, zero tools, accepted commit, and prompt version 3 with direct 1/2/3 reads.
+Document trigger-derived complete-prompt target, calibration/headroom/reserve, post-success actual-observation gate, typed runner-versus-response outcome, pending attempt states, authoritative USER-only retry admission with existing-queue non-user preservation, hard-cap override, and unchanged six-array/v3/tool-free/accepted-commit contracts.

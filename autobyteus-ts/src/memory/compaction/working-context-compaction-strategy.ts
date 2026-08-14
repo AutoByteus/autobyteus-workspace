@@ -3,6 +3,7 @@ import type {
   CompactionAgentExecutionMetadata,
   CompactionAgentRunner,
 } from './compaction-agent-runner.js';
+import type { CompactionPlanningBudget } from './compaction-planning-budget.js';
 
 export type WorkingContextCompactionPlanDiagnostics = Readonly<{
   selectedUnitCount: number;
@@ -10,6 +11,8 @@ export type WorkingContextCompactionPlanDiagnostics = Readonly<{
   retainedUnitCount: number;
   workingContextMessageCount: number;
   rawTraceCount: number;
+  postCompactionTargetTokens: number;
+  estimatedPlannedPromptTokens: number;
 }>;
 
 export type WorkingContextCompactionResultDiagnostics = Readonly<{
@@ -19,6 +22,7 @@ export type WorkingContextCompactionResultDiagnostics = Readonly<{
   semanticFactCount: number;
   episodeSummaryLength: number;
   compactionMetadata: CompactionAgentExecutionMetadata | null;
+  postCompactionTargetTokens: number;
 }>;
 
 export interface WorkingContextCompactionDiagnostics {
@@ -37,8 +41,10 @@ export interface WorkingContextCompactionStrategy {
 export type WorkingContextCompactionStrategyConstructionContext = Readonly<{
   agentId: string;
   compactionAgentRunner: CompactionAgentRunner | null;
-  inputBudgetTokens: number | null;
   maxItemChars: number;
   diagnostics: WorkingContextCompactionDiagnostics | null;
+}>;
+export type WorkingContextCompactionStrategyExecutionContext = Readonly<{
+  planningBudget: CompactionPlanningBudget;
 }>;
 import type { WorkingContextCompactionProposal } from './working-context-compaction-proposal.js';
