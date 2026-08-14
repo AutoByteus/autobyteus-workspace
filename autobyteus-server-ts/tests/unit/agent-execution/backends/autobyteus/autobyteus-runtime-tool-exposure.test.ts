@@ -11,16 +11,18 @@ describe("autobyteus runtime tool exposure", () => {
       "run_bash",
       "read_file",
       "edit_file",
+      "write_file",
     ]);
     expect(resolveAutoByteusRuntimeAgentToolExposure(null).requestedToolNames).toEqual([
       "run_bash",
       "read_file",
       "edit_file",
+      "write_file",
     ]);
   });
 
   it("deduplicates configured names without mutating persisted configuration", () => {
-    const configuredToolNames = [" read_file ", "run_bash", "custom", "edit_file"];
+    const configuredToolNames = [" read_file ", "run_bash", "custom", "edit_file", "write_file"];
 
     const exposure = resolveAutoByteusRuntimeAgentToolExposure({
       toolNames: configuredToolNames,
@@ -30,9 +32,16 @@ describe("autobyteus runtime tool exposure", () => {
       "run_bash",
       "read_file",
       "edit_file",
+      "write_file",
       "custom",
     ]);
-    expect(configuredToolNames).toEqual([" read_file ", "run_bash", "custom", "edit_file"]);
+    expect(configuredToolNames).toEqual([
+      " read_file ",
+      "run_bash",
+      "custom",
+      "edit_file",
+      "write_file",
+    ]);
   });
 
   it("keeps the automatic team pair additive to the native baseline", () => {
@@ -45,6 +54,7 @@ describe("autobyteus runtime tool exposure", () => {
       "run_bash",
       "read_file",
       "edit_file",
+      "write_file",
       "send_message_to",
       "delegate_task",
     ]);

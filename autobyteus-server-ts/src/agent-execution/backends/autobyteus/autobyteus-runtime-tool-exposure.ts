@@ -9,6 +9,7 @@ export const AUTOBYTEUS_DEFAULT_TOOL_NAMES = [
   "run_bash",
   "read_file",
   "edit_file",
+  "write_file",
 ] as const;
 
 /**

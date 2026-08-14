@@ -2,7 +2,7 @@
 
 ## Status
 
-`Approved by explicit user request; architecture review remains the gate before implementation.`
+`Approved by explicit user request; architecture review remains the gate before the follow-up implementation change.`
 
 ## Design Judgment
 
@@ -16,12 +16,13 @@ Its only required clarifications are:
 - Bash is for navigation, search, repository/project commands, processes, and
   verification.
 - Exposed file tools are the normal interface for file content.
+- Native AutoByteus runs expose `write_file` as part of the four-tool foundation baseline; external runtimes must treat it as available only when their own projection exposes it.
 - Read current content before a targeted edit and reread after an edit-context
   failure before retrying.
 - Bash remains an available fallback when file tools are unavailable or cannot
   complete the operation after recovery.
 
-## Proposed Fixed Prompt Sections
+## Approved Fixed Prompt Sections
 
 Replace the current fixed sections in
 `autobyteus-server-ts/src/agent-execution/prompt/carpenter-prompt-sections.ts`
@@ -47,7 +48,7 @@ with this concise wording:
 
 - Tool schemas remain authoritative for arguments, patch syntax, path resolution,
   validation, and safety behavior.
-- This prompt does not make `write_file` mandatory where it is not exposed.
+- This prompt does not make `write_file` mandatory where it is not exposed; the native AutoByteus four-tool baseline is the exposure authority for native runs, not the prompt.
 - This prompt does not prohibit Bash fallback when the dedicated file tools do
   not work.
 - External runtimes receiving the same prompt must not be assumed to expose

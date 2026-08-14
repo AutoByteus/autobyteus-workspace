@@ -212,6 +212,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       "run_bash",
       "read_file",
       "edit_file",
+      "write_file",
     ]);
   });
 
@@ -294,6 +295,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       "run_bash",
       "read_file",
       "edit_file",
+      "write_file",
       "send_message_to",
       "delegate_task",
     ]);
@@ -372,6 +374,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       "run_bash",
       "read_file",
       "edit_file",
+      "write_file",
       "send_message_to",
       "delegate_task",
     ]);
@@ -432,6 +435,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       "run_bash",
       "read_file",
       "edit_file",
+      "write_file",
       "send_message_to",
       "assign_task_to",
     ]);

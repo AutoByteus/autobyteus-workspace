@@ -572,8 +572,8 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
     const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "autobyteus-team-runtime-workspace-"));
     createdWorkspaceRoots.add(workspaceRootPath);
 
-    const workerAgentDefinitionId = await createAgentDefinition("worker");
-    const reviewerAgentDefinitionId = await createAgentDefinition("reviewer");
+    const workerAgentDefinitionId = await createAgentDefinition("worker", { toolNames: [] });
+    const reviewerAgentDefinitionId = await createAgentDefinition("reviewer", { toolNames: [] });
 
     const createTeamDefinitionMutation = `
       mutation CreateAgentTeamDefinition($input: CreateAgentTeamDefinitionInput!) {
@@ -679,7 +679,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
             target_member_route_key: "worker",
             content:
               `Create the file ${targetRelativePath} with exactly this content: ${expectedContent}. ` +
-              "Use a relative path and perform the real tool call.",
+              `Use the relative path with base_dir set to ${workspaceRootPath}, perform the real tool call, then verify the created file with run_bash using cat ${targetAbsolutePath} before completing. Do not answer with plain text.`,
           });
 
       const approvalRequested = await waitForMessageAfter(
@@ -719,13 +719,65 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         "worker TOOL_EXECUTION_SUCCEEDED",
       );
       const toolSucceededIndex = streamMessages.indexOf(toolSucceeded);
+      const verificationApproval = await waitForMessageAfter(
+        streamMessages,
+        toolSucceededIndex + 1,
+        (message) =>
+          message.type === "TOOL_APPROVAL_REQUESTED" && message.payload.agent_name === "worker",
+        "worker second TOOL_APPROVAL_REQUESTED for file verification",
+      );
+      expect(verificationApproval.payload.tool_name).toBe("run_bash");
+      expect(verificationApproval.payload.arguments).toMatchObject({
+        command: expect.any(String),
+      });
+      const verificationCommand = (verificationApproval.payload.arguments as { command: string }).command;
+      expect(verificationCommand.trimStart()).toMatch(/^cat(?:\s|$)/);
+      expect(verificationCommand).toContain(targetAbsolutePath);
+
+      const verificationInvocationId = resolveInvocationId(verificationApproval.payload);
+      expect(verificationInvocationId).toBeTruthy();
+      teamSocket.send(
+        JSON.stringify({
+          type: "APPROVE_TOOL",
+          payload: {
+            target_member_route_key: "worker",
+            invocation_id: verificationInvocationId,
+            reason: "approved expected file verification by team API e2e",
+          },
+        }),
+      );
+
       await waitForMessageAfter(
         streamMessages,
         toolSucceededIndex + 1,
         (message) =>
-          message.type === "ASSISTANT_COMPLETE" &&
-          message.payload.agent_name === "worker",
-        "worker ASSISTANT_COMPLETE after tool",
+          message.type === "TOOL_APPROVED" &&
+          message.payload.agent_name === "worker" &&
+          resolveInvocationId(message.payload) === verificationInvocationId,
+        "worker verification TOOL_APPROVED",
+      );
+      const verificationSucceeded = await waitForMessageAfter(
+        streamMessages,
+        toolSucceededIndex + 1,
+        (message) =>
+          message.type === "TOOL_EXECUTION_SUCCEEDED" &&
+          message.payload.agent_name === "worker" &&
+          resolveInvocationId(message.payload) === verificationInvocationId,
+        "worker verification TOOL_EXECUTION_SUCCEEDED",
+      );
+      const verificationSucceededIndex = streamMessages.indexOf(verificationSucceeded);
+      await waitForMessageAfter(
+        streamMessages,
+        verificationSucceededIndex + 1,
+        (message) => {
+          if (message.type === "TOOL_APPROVAL_REQUESTED" && message.payload.agent_name === "worker") {
+            throw new Error(
+              `Unexpected additional worker tool approval after expected verification: ${JSON.stringify(message.payload)}`,
+            );
+          }
+          return message.type === "ASSISTANT_COMPLETE" && message.payload.agent_name === "worker";
+        },
+        "worker ASSISTANT_COMPLETE after expected verification",
       );
       await waitForMessageAfter(
         streamMessages,
@@ -770,6 +822,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
       const restoreToken = `TEAM_RESTORE_${randomUUID().replace(/-/g, "_")}`;
       const restoreStartIndex = streamMessages.length;
       sendE2eSendMessageCommand(teamSocket, {
+            target_member_route_key: "worker",
             content: `Reply with exactly ${restoreToken} and nothing else.`,
           });
 

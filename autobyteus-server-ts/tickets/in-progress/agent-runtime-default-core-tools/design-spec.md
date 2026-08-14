@@ -4,7 +4,7 @@
 
 Server-managed native AutoByteus runs are selected by AgentRunManager and built by AutoByteusAgentRunBackendFactory. The factory loads the current AgentDefinition, calls the shared runtime-neutral exposure resolver, resolves native tool instances through resolveAutoByteusAgentTools, and passes those instances into AgentConfig before AgentFactory.createAgentWithId or restoreAgent. The current shared resolver trims/deduplicates configured names and adds send_message_to plus delegate_task when a MemberTeamContext is present. It is also used by Claude Agent SDK and Codex App Server bootstrap paths, so it cannot silently acquire native-only defaults.
 
-The native tool registry already registers run_bash, read_file, and edit_file through registerTools() during AgentFactory initialization. That registry-readiness contract is the concrete current behavior supporting AC-006; the design reuses it without changing registration or schemas. Mixed native team filtering removes legacy task-management names but does not remove file/system tools. Create and restore both converge on the same native factory buildAgentConfig path, so one native exposure composition change covers standalone, team-member, and task-agent native runs.
+The native tool registry already registers run_bash, read_file, edit_file, and write_file through registerTools() during AgentFactory initialization. The current implementation's native wrapper defaults are the previously approved three names (`run_bash`, `read_file`, and `edit_file`); this revision adds the already-registered `write_file` name to that tuple. The registry-readiness contract is the concrete current behavior supporting AC-006; the design reuses it without changing registration or schemas. Mixed native team filtering removes legacy task-management names but does not remove file/system tools. Create and restore both converge on the same native factory buildAgentConfig path, so one native exposure composition change covers standalone, team-member, and task-agent native runs.
 
 The fixed Carpenter prompt is owned by `carpenter-prompt-sections.ts` and is composed for native, Claude, and Codex backends. Its current Bash section calls Bash primary for file reading/writing/editing, while its file/directory section recommends shell readers such as `cat`, `sed`, and `nl`; that overlaps with the exposed `read_file` tool. The tool schemas already own detailed range, line-number, patch, path, and validation semantics. The approved prompt supplement gives Bash primary ownership of navigation/search/repository/project work, gives exposed file tools primary ownership of file content, keeps edit recovery explicit, remains availability-aware for external runtimes, and preserves Bash as a fallback when file tools cannot complete the operation.
 
@@ -30,9 +30,9 @@ Introduce a native-backend-owned exposure composition boundary containing the ma
       -> native tool resolver
       -> AgentConfig.tools
 
-AUTOBYTEUS_DEFAULT_TOOL_NAMES is exactly run_bash, read_file, and edit_file. The new native wrapper is called by the AutoByteus backend factory for both create and restore. Claude/Codex continue calling the runtime-neutral resolver directly and therefore do not receive the native baseline unless their definitions explicitly request those names under their existing provider projections.
+AUTOBYTEUS_DEFAULT_TOOL_NAMES is exactly run_bash, read_file, edit_file, and write_file. The native wrapper is called by the AutoByteus backend factory for both create and restore. Claude/Codex continue calling the runtime-neutral resolver directly and therefore do not receive the native baseline unless their definitions explicitly request those names under their existing provider projections.
 
-No tool implementation, registry registration, persisted model, migration, runtime event, approval, path-authorization, or external-provider protocol change is required.
+No underlying tool implementation, registry registration, persisted model, migration, runtime event, approval, path-authorization, or external-provider protocol change is required; only the native exposure tuple and its corresponding coverage need to expand.
 
 Add the reviewed fixed prompt guidance as a separate concern around the run-start/bootstrap spine:
 
@@ -45,18 +45,19 @@ The prompt contract gives Bash primary ownership of navigation/search/repository
 
 | Behavior ID | Kind | Approved Requirement / Intent And Acceptance-Criteria IDs | Approved Trigger Or Governing Contract | Relevant Existing Behavior And Evidence Reference | Approved Change Or Preserved Outcome | Target Production Path / Lifecycle And Spine ID(s) |
 | --- | --- | --- | --- | --- | --- | --- |
-| BE-001 | System | REQ-001, REQ-003; AC-001, AC-003, AC-006, AC-007 | Standalone server run starts with runtimeKind=autobyteus; definition may omit toolNames. | AgentRunManager -> AutoByteusAgentRunBackendFactory -> shared resolver -> native resolver; omitted foundation names are absent. See investigation BE-001. | Add three native defaults without mutating the definition; deduplicate and materialize registry-backed tools. | DS-001, DS-003 |
-| BE-002 | System | REQ-002, REQ-003, REQ-005; AC-002, AC-003, AC-004, AC-007 | Mixed team member/task-agent launches with runtimeKind=autobyteus and valid MemberTeamContext. | Team member handle creates/restores through AgentRunManager; shared helper adds team pair; mixed filtering removes only legacy task-plan names. See investigation BE-002. | Add three native defaults to all native team runs; preserve additive team tools and legacy filtering. | DS-002, DS-003 |
+| BE-001 | System | REQ-001, REQ-003; AC-001, AC-003, AC-006, AC-007 | Standalone server run starts with runtimeKind=autobyteus; definition may omit toolNames. | AgentRunManager -> AutoByteusAgentRunBackendFactory -> native wrapper -> native resolver; the current wrapper adds the prior three defaults and omits `write_file`. See investigation BE-001. | Extend the native wrapper to add four defaults without mutating the definition; deduplicate and materialize registry-backed tools. | DS-001, DS-003 |
+| BE-002 | System | REQ-002, REQ-003, REQ-005; AC-002, AC-003, AC-004, AC-007 | Mixed team member/task-agent launches with runtimeKind=autobyteus and valid MemberTeamContext. | Team member handle creates/restores through AgentRunManager; current native wrapper adds the prior three defaults, shared helper adds team pair, and mixed filtering removes only legacy task-plan names. See investigation BE-002. | Extend the native wrapper to add four defaults to all native team runs; preserve additive team tools and legacy filtering. | DS-002, DS-003 |
 | BE-003 | Contract | REQ-004, REQ-005; AC-005 | Claude/Codex backend bootstrap/restore executes with an external runtime kind. | Claude/Codex call the shared resolver directly; manager restore also builds external contexts with it. See investigation BE-003. | Do not call native wrapper from external paths; preserve current explicit/team exposure. | DS-005 |
-| BE-004 | System | REQ-005; AC-006 | Native factory creates an agent after AgentFactory initializes the registry. | AgentFactory calls registerTools; registry contains the three canonical definitions. See investigation BE-004. | Reuse current definitions and contracts; no registration/schema change. | DS-003 |
+| BE-004 | System | REQ-005; AC-006 | Native factory creates an agent after AgentFactory initializes the registry. | AgentFactory calls registerTools; registry contains the four canonical definitions. See investigation BE-004. | Reuse current definitions and contracts; no registration/schema change. | DS-003 |
 | BE-005 | Contract | REQ-006; AC-008, AC-009 | A native, Claude, or Codex run composes its fixed Carpenter prompt. | The Bash and file sections overlap on file operations; tool schemas already contain detailed file semantics and the edit-tool description contains precise fresh-context/recovery guidance. See investigation BE-005. | Give Bash primary ownership of command/search/project work with practical targeted-discovery examples, and exposed file tools primary ownership of file content; explicitly require recent relevant `read_file` content before regional `edit_file` changes, rereading after context failure, and appropriate `write_file` selection without duplicating unrelated schema details or changing tool exposure/safety contracts. | DS-006 |
+| BE-006 | Contract | REQ-007; AC-010 | The implementation must be protected by proportional unit, integration, and API/E2E evidence. | Existing downstream artifacts cover the prior three-tool implementation and require new source/coverage review for the requested `write_file` default. | Update policy, materialization, create/restore, external-isolation, approval/path, and representative standalone/team coverage for the four-tool baseline without changing external defaults. | DS-001, DS-002, DS-003, DS-004, DS-005 |
 
 ## Relevant Supplemental Task Artifacts
 
 | Artifact Path | Purpose | Related Requirement / Acceptance-Criteria IDs | Relationship To This Design | Status / Approval Applicability |
 | --- | --- | --- | --- | --- |
-| runtime-tool-exposure-matrix.md | Effective exposure matrix by runtime kind/run shape and coverage intent | REQ-001 through REQ-005; AC-001 through AC-007 | Design implements native-only baseline and preserves external rows. | Approved intended-behavior supplement; keep aligned |
-| system-prompt-file-operations-contract.md | Fixed system-prompt contract for file-tool choice, fresh context, recovery, verification, and Bash fallback | REQ-006; AC-008, AC-009 | Design fixes the prompt procedure without moving tool policy into the prompt | Approved intended-behavior supplement; architecture review remains the gate |
+| runtime-tool-exposure-matrix.md | Effective exposure matrix by runtime kind/run shape and coverage intent | REQ-001 through REQ-005, REQ-007; AC-001 through AC-007, AC-010 | Design implements the four-tool native-only baseline and preserves external rows. | Approved intended-behavior supplement; keep aligned |
+| system-prompt-file-operations-contract.md | Fixed system-prompt contract for file-tool choice, fresh context, recovery, verification, and Bash fallback | REQ-006; AC-008, AC-009 | Design fixes the prompt procedure without moving tool policy into the prompt; native `write_file` availability comes from the four-tool exposure baseline while external wording remains availability-aware | Approved intended-behavior supplement; architecture review remains the gate |
 
 ## Task Design Health Assessment (Mandatory)
 
@@ -64,7 +65,7 @@ The prompt contract gives Bash primary ownership of navigation/search/repository
 - Current design issue found: Yes
 - Root cause classification: Missing Invariant
 - Refactor needed now: No — a small native policy boundary is added, but the existing factory, resolver, registry, and lifecycle remain healthy and are reused.
-- Evidence: The native path is centralized and create/restore symmetric. The requested behavior is absent because configured names are treated as the complete effective set except for team automatic names. The shared helper is consumed by external runtimes, making a global default unsafe.
+- Evidence: The native path is centralized and create/restore symmetric. The requested `write_file` behavior is absent because the current native wrapper stops at the prior three-name tuple. The shared helper is consumed by external runtimes, making a global default unsafe.
 - Design response: Add a dedicated native exposure wrapper. It composes the baseline, delegates trimming/deduplication and team-pair logic to the existing shared builder, and feeds the existing native resolver.
 - Refactor rationale: Do not turn the shared helper into a runtime-kind switch or change registry/tool classes. A native-specific wrapper keeps policy ownership explicit and limits fanout.
 - Intentional deferrals and residual risk: Direct low-level autobyteus-ts AgentFactory callers that do not pass through server RuntimeKind.AUTOBYTEUS are outside this server runtime contract; they have no runtime-kind boundary and are not changed.
@@ -72,14 +73,14 @@ The prompt contract gives Bash primary ownership of navigation/search/repository
 ## Terminology
 
 - Native AutoByteus run: server-managed AgentRunConfig with runtimeKind=RuntimeKind.AUTOBYTEUS, built by AutoByteusAgentRunBackendFactory.
-- Foundation tools: mandatory native baseline run_bash, read_file, and edit_file.
+- Foundation tools: mandatory native baseline run_bash, read_file, edit_file, and write_file.
 - Effective exposure: runtime-derived normalized tool-name set used for instance creation or provider projection; it is not persisted.
 
 ## Legacy Removal Policy (Mandatory)
 
 - Policy: No backward compatibility; remove legacy code paths.
 - Obsolete paths in scope: None. This is an additive default invariant; no legacy tool implementation is replaced.
-- Native omission of the foundation tools when toolNames omits them is no longer valid effective native behavior. Do not retain a native opt-out or fallback.
+- Native omission of `write_file` when `toolNames` omits it is no longer valid effective native behavior. Do not retain a native opt-out or fallback for the four-tool baseline.
 - Persisted configuration remains unchanged because it is the source of optional-tool intent, not a legacy path.
 
 ## Persisted Data / State Transition Decision (Mandatory When Persisted Data May Be Affected)
@@ -138,7 +139,7 @@ AgentRunManager; MixedAgentMemberHandle for team paths; AutoByteusAgentRunBacken
 | AgentRunManager | Runtime selection, active-run lifecycle, create/restore orchestration; not tool-name policy |
 | MixedAgentMemberHandle | Team member lazy create/restore and MemberTeamContext supply; not native defaults |
 | AutoByteusAgentRunBackendFactory | Native AgentConfig assembly and create/restore symmetry |
-| AutoByteusRuntimeToolExposure | Exact three-name native baseline without persisted-definition mutation |
+| AutoByteusRuntimeToolExposure | Exact four-name native baseline without persisted-definition mutation |
 | buildRuntimeAgentToolExposure | Runtime-neutral normalization, deduplication, derived flags, and current team automatic names |
 | resolveAutoByteusAgentTools | Native materialization, server-owned factories, registry lookup, warning/skip, actual names |
 | defaultToolRegistry / AgentFactory | Native definitions, instance creation, agent lifecycle/runtime execution |
@@ -162,7 +163,7 @@ AgentRunManager; MixedAgentMemberHandle for team paths; AutoByteusAgentRunBacken
 
 ## Return Or Event Spine(s) (If Applicable)
 
-DS-004: Native tool instance -> existing runtime invocation/approval -> existing event converter -> run history/memory/streaming projections. No return/event contract changes; canonical names remain run_bash, read_file, and edit_file.
+DS-004: Native tool instance -> existing runtime invocation/approval -> existing event converter -> run history/memory/streaming projections. No return/event contract changes; canonical foundation names remain run_bash, read_file, edit_file, and write_file.
 
 ## Bounded Local / Internal Spines (If Applicable)
 
@@ -278,7 +279,7 @@ AgentRunManager is authoritative for backend selection/lifecycle. AutoByteusAgen
 | Repeated Structure / Logic | Candidate Shared File | Owning Subsystem | Why Shared | Redundant Attributes Removed? | Overlapping Representations Removed? | Must Not Become |
 | --- | --- | --- | --- | --- | --- | --- |
 | Normalized exposure/derived flags | Existing runtime-agent-tool-exposure.ts | Shared exposure | Already shared across runtimes | Yes | Yes | Runtime-kind switch with hidden defaults |
-| Native mandatory tuple | autobyteus-runtime-tool-exposure.ts | Native backend | Native-only invariant | Yes, exactly three names | Yes, one tuple | General registry or persisted field |
+| Native mandatory tuple | autobyteus-runtime-tool-exposure.ts | Native backend | Native-only invariant | Yes, exactly four names | Yes, one tuple | General registry or persisted field |
 
 ## Shared Structure / Data Model Tightness Check
 
@@ -298,6 +299,10 @@ AgentRunManager is authoritative for backend selection/lifecycle. AutoByteusAgen
 | autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-runtime-tool-exposure.test.ts | Native tests | Policy/immutability tests | Mirrors one policy file | Shared builder/team fixture |
 | autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts | Native tests | Actual instance names and team composition | Existing harness | Native registry |
 | autobyteus-server-ts/tests/unit/agent-execution/shared/runtime-agent-tool-exposure.test.ts | Shared tests | No native leak | Protects external callers | Existing helper |
+| autobyteus-server-ts/tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts | Native integration tests | Create/restore registry materialization, definition immutability, approval/path preservation | Existing integration harness | Native runtime only |
+| autobyteus-server-ts/tests/integration/agent-execution/agent-run-manager.integration.test.ts | Lifecycle integration tests | Standalone/team create/restore route through the native four-tool boundary | Existing manager harness | External provider policy |
+| autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts | Native API/E2E tests | Representative standalone four-tool exposure and approved file-tool execution | Existing GraphQL/websocket journey | Broad auto-approval |
+| autobyteus-server-ts/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts | Native team API/E2E tests | Representative team four-tool exposure, approval, file side effect, and restore behavior | Existing GraphQL/websocket journey | Broad auto-approval |
 | autobyteus-server-ts/docs/modules/agent_tools.md | Docs | Native default and external distinction | Existing durable source | N/A |
 | autobyteus-server-ts/src/agent-execution/prompt/carpenter-prompt-sections.ts | Prompt subsystem | Fixed availability-aware file-operation contract | Existing prompt owner | No registry/exposure/safety policy |
 | autobyteus-server-ts/src/agent-execution/prompt/carpenter-prompt-composer.ts | Prompt subsystem | Preserve fixed-section assembly for all backends | Existing composer | No runtime-specific file-tool policy |
@@ -321,6 +326,8 @@ AgentRunManager is authoritative for backend selection/lifecycle. AutoByteusAgen
 | autobyteus-runtime-tool-exposure.ts | File | Native exposure | Exact baseline and wrapper | Explicit runtime ownership | Execution, registry mutation, persistence |
 | autobyteus-agent-run-backend-factory.ts | File | Native factory | Calls wrapper and builds AgentConfig | Existing entrypoint | Provider policy/direct registry |
 | tests/unit/.../backends/autobyteus | Module | Native tests | Policy/materialization coverage | Mirrors ownership | API/E2E or provider implementation |
+| tests/integration/agent-execution | Module | Native/lifecycle integration tests | Create/restore and manager boundary coverage | Existing integration location | Provider-specific unit policy |
+| tests/e2e/runtime | Module | Native API/E2E | Representative standalone/team approval and file behavior | Existing runtime E2E location | Broad auto-approval |
 | docs/modules/agent_tools.md | File | Tool docs | Durable exposure contract | Existing docs location | Unneeded implementation detail |
 | src/agent-execution/prompt/carpenter-prompt-sections.ts | File | Prompt contract | Existing fixed prompt owner | No registry/exposure policy |
 | tests/unit/.../prompt/carpenter-prompt-composer.test.ts | File | Prompt contract tests | Existing prompt test owner | Provider-specific prompt forks |
@@ -367,13 +374,13 @@ External layering remains run lifecycle/orchestration -> provider bootstrap -> r
 1. Add autobyteus-runtime-tool-exposure.ts with the exact native tuple and a wrapper that forms a fresh iterable from defaults plus configured names and delegates to buildRuntimeAgentToolExposure.
 2. Change AutoByteusAgentRunBackendFactory.buildAgentConfig to call the wrapper. Do not change resolveAutoByteusAgentTools, the shared helper, or external bootstrap callers.
 3. Add native policy tests for empty, partial, full, duplicate, team, mixed-filter, stale-name, and immutability cases.
-4. Update native factory test setup to register existing foundation definitions and update exact name expectations. Add registry-backed instance assertions for standalone/team.
-5. Retain/add neutral shared exposure tests proving empty external-style calls remain empty and team-pair behavior remains exact. Treat DS-005 as the external regression path and run Claude/Codex focused regressions where available.
+4. Update native factory test setup to register existing foundation definitions and update exact name expectations. Add registry-backed `run_bash`, `read_file`, `edit_file`, and `write_file` instance assertions for standalone/team create and restore.
+5. Retain/add neutral shared exposure tests proving empty external-style calls remain empty and team-pair behavior remains exact. Update the listed native integration and GraphQL/API-E2E journeys for four-tool exposure, approval/path behavior, file side effects, and restore; treat DS-005 as the external regression path and run Claude/Codex focused regressions where available.
 6. Update both fixed Carpenter prompt sections and their unit assertions with the approved contract; keep `read-file.ts` and `edit-file-contract.ts` as schema authorities.
 7. Update `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/docs/modules/prompt_engineering.md` by replacing its obsolete fixed Bash/file excerpts with the approved sections; the prompt documentation/delivery owner owns this edit.
 8. Verify `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-ts/docs/tool_schema_and_configuration.md` remains aligned; its disposition is verification-only with no planned edit unless implementation exposes drift.
 9. Update docs/modules/agent_tools.md to state native-only defaults and external-runtime isolation.
-10. Run typecheck and focused downstream API/E2E coverage; report missing dependency setup separately from product failures.
+10. Run unit, integration, and focused API/E2E coverage; report missing dependency setup separately from product failures and route the new source/test state through code review before delivery.
 
 No migration, compatibility seam, or decommissioned source path is needed.
 
@@ -388,7 +395,7 @@ No migration, compatibility seam, or decommissioned source path is needed.
 
 - Future native entrypoint bypassing the factory could omit the baseline. Keep the factory as the server native entrypoint and cover manager create/restore.
 - Cleared registries in native factory tests may need registerTools setup. This is a test-fixture issue.
-- The three tools are powerful local capabilities. Existing approval, workspace/path, shell, and auto-execution controls remain authoritative.
+- The four tools are powerful local capabilities. Existing approval, workspace/path, shell, and auto-execution controls remain authoritative.
 - Because the prompt is reused by Claude/Codex, wording that unconditionally requires `write_file` or native defaults could create an unavailable-tool loop. Keep the contract availability-aware.
 - Tool schemas already own range, line-number, and patch-context semantics; avoid duplicating those details in the fixed prompt unless a concrete model failure justifies it.
 - Bash fallback must remain explicit so a file-tool failure does not dead-end an otherwise recoverable run.
@@ -400,7 +407,7 @@ No migration, compatibility seam, or decommissioned source path is needed.
 - Keep canonical order stable: defaults first, configured names next, team pair appended by shared builder; dedup preserves first occurrence.
 - Keep AUTOMATIC_TEAM_TOOL_NAMES and the native tuple separate.
 - Do not add RuntimeKind branching to the neutral helper unless review identifies a concrete owner change.
-- Ensure mixed legacy filtering leaves the three foundation names.
+- Ensure mixed legacy filtering leaves all four foundation names.
 - Add prompt-composer assertions for the logical Bash/file division, practical discovery examples, explicit recent-region `read_file` before regional `edit_file`, reread-and-rebuild recovery, concise `write_file` selection, availability-aware Bash fallback, post-change verification, and the absence of contradictory instructions.
 - Use existing registerTools/defaultToolRegistry definitions; do not duplicate schemas/factories.
 - Do not create implementation-handoff.md; implementation_engineer owns it after implementation.

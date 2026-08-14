@@ -53,11 +53,13 @@ task lifecycle tools remain explicitly selected and availability-gated.
 
 The native AutoByteus backend owns an additional runtime-derived baseline. For
 every native standalone or team run, it prepends exactly `run_bash`, `read_file`,
-and `edit_file` before delegating to the shared normalization and team-tool
-composition. The baseline is deduplicated with configured names, materialized
-through the existing native registry, and never written back to
+`edit_file`, and `write_file` before delegating to the shared normalization and
+team-tool composition. The baseline is deduplicated with configured names,
+materialized through the existing native registry, and never written back to
 `AgentDefinition.toolNames`. Mixed-team filtering may remove legacy local task
-tools but does not remove this foundation baseline.
+tools but does not remove any foundation tool. The existing `write_file`
+trusted-local path, approval, overwrite, and execution contracts remain
+authoritative.
 
 Claude Agent SDK and Codex App Server continue to call the runtime-neutral
 boundary directly. They do not inherit the native baseline; their configured

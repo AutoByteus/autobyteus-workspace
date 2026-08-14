@@ -8,6 +8,7 @@
 | ARCH-REV-002 | SR-002 rework returned after ARCH-REV-001 | SR-002 | Fail | Pass | None |
 | ARCH-REV-003 | SR-009 approved prompt-contract scope returned after ARCH-REV-002 | SR-003 through SR-009 | Pass | Fail | ARCH-DI-003 |
 | ARCH-REV-004 | SR-010 rework returned after ARCH-REV-003 | SR-010 | Fail | Pass | None |
+| ARCH-REV-005 | SR-011 four-tool native baseline scope expansion returned after ARCH-REV-004 | SR-011 | Pass | Pass | None |
 
 ## Revision Entries
 
@@ -96,3 +97,27 @@ None.
 - Material classification changes: `ARCH-DI-003` Design Impact resolved. No new classification.
 - Recommended recipient: `implementation_engineer`
 - Remaining risks or uncertainty: Focused tests remain unexecuted pending dependency installation. This is downstream implementation validation; no design blocker remains. Implementation/delivery must perform the mapped prompt-document edit and verification-only schema-doc check.
+
+### ARCH-REV-005 — Review four-tool native baseline scope expansion
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/in-progress/agent-runtime-default-core-tools/design-review-report.md`
+- Review round and trigger: Round 5; `SR-011` returned the cumulative package for the user-approved expansion from the prior three-tool native baseline to the existing four-tool baseline including `write_file`.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/in-progress/agent-runtime-default-core-tools/solution-revision-record.md` (`SR-011`); no new finding IDs.
+- Relevant solution revision IDs: `SR-011`, with `SR-010`, `SR-009`, and `SR-002` as still-relevant design history.
+- Prior authoritative decision: `Pass` (`ARCH-REV-004`)
+- Current authoritative decision: `Pass`
+- What changed in the review result or what baseline was established: The four-tool requirements, investigation evidence, design spec, exposure matrix, prompt supplement, and solution revision record were independently revalidated. The design correctly extends the native-only wrapper tuple to include the existing registered `write_file` tool, preserves its trusted-local path/approval/execution/event contract, keeps Claude/Codex on the neutral path, and adds fresh unit, integration, and API/E2E coverage expectations. Prior implementation and downstream artifacts are explicitly historical context and are not treated as authorization for the revised scope.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `ARCH-REQ-001` | Resolved in ARCH-REV-002 | Remains Resolved | `SR-002`; `ARCH-REV-002` | BE-004 still traces the native registry readiness contract through requirements, investigation, and design. |
+| `ARCH-DI-001` | Resolved in ARCH-REV-002 | Remains Resolved | `SR-002`; `ARCH-REV-002` | Both approved supplements retain explicit user approval and architecture-gate metadata. |
+| `ARCH-DI-002` | Resolved in ARCH-REV-002 | Remains Resolved | `SR-002`; `ARCH-REV-002` | DS-005 still explicitly traces external bootstrap through neutral exposure/provider projection and forbids the native wrapper. |
+| `ARCH-DI-003` | Resolved in ARCH-REV-004 | Remains Resolved | `SR-010`; `ARCH-REV-004` | Durable prompt documentation remains explicitly mapped with owner/scope, and schema documentation remains verification-only. |
+
+- New or remaining finding IDs: None
+- Material classification changes: None. `SR-011` is a user-approved Requirement Scope Change, not an implementation finding or unresolved design classification.
+- Recommended recipient: `implementation_engineer`
+- Remaining risks or uncertainty: The prior implementation and downstream evidence cover the three-tool scope only. A fresh four-tool implementation, code review, API/E2E coverage investigation/execution, durable-test review, and delivery review are required. Live external-provider isolation remains a downstream execution limitation if credentials are unavailable.

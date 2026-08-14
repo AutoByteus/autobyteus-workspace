@@ -59,11 +59,12 @@ describe('resolveAutoByteusAgentTools', () => {
       runtimeToolExposure: resolveAutoByteusRuntimeAgentToolExposure(agentDefinition),
     });
 
-    expect(resolution.actualToolNames).toEqual(['run_bash', 'read_file', 'edit_file']);
+    expect(resolution.actualToolNames).toEqual(['run_bash', 'read_file', 'edit_file', 'write_file']);
     expect(resolution.tools.map((tool) => tool.definition?.name)).toEqual([
       'run_bash',
       'read_file',
       'edit_file',
+      'write_file',
     ]);
     expect(agentDefinition.toolNames).toEqual([]);
   });
