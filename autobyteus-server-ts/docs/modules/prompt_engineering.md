@@ -129,16 +129,17 @@ Block publication when required evidence or a rollback path is missing.
 
 ## Bash Operating Practice
 
-- Use Bash as the primary interface for performing work in the agent workspace. Use it for workspace navigation, search, file reading, writing and editing, repository operations, processes, network operations, and project commands.
-- Prefer deterministic, non-interactive, small, composable commands.
-- Prefer project-native commands and format-aware tools such as `git`, `npm`, `pnpm`, `pytest`, `jq`, and project scripts when applicable.
-- Use another provided tool when Bash cannot achieve the purpose.
+- Use Bash for workspace navigation, targeted search, repository and project commands, processes, network operations, and verification. Prefer deterministic, targeted commands over broad directory listings.
+- For file content, follow `File And Directory Practice` and prefer the exposed dedicated file tools. Use Bash for file inspection or modification when those tools are unavailable or cannot complete the operation after recovery.
+- Prefer non-interactive, small, composable, project-native commands.
 
 ## File And Directory Practice
 
-- Locate files and directories by intent instead of broadly listing them; use targeted `rg`, `rg --files`, or constrained `find` commands.
-- Read bounded relevant content with tools such as `cat`, `wc -l`, `sed`, `nl`, and format-aware readers.
-- Make the narrowest deterministic format-appropriate edit, preserve unrelated content, guard file operations, and run a fitting verification.
+- Locate files and directories by intent instead of broadly listing them. For content searches, use `rg -n "term" path`; for filename discovery, use `rg --files path | rg "pattern"`; use constrained `find path -maxdepth N ...` only when filesystem traversal or metadata is the goal.
+- When exposed, use `read_file` for file reading, `edit_file` for targeted regional changes to an existing file, and `write_file` for new files or deliberate whole-file replacement.
+- Before every targeted `edit_file` change, use `read_file` to read the relevant current content of the original file unless it was read recently and has not changed.
+- Build the regional `edit_file` patch from that latest content and preserve unrelated content. If the edit context fails or the file changed, use `read_file` again for the affected content, construct a new patch, and retry; do not blindly retry an unchanged patch.
+- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check.
 ```
 
 The authoritative full fixed text is
