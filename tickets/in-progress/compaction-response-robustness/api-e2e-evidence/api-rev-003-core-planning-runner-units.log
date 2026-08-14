@@ -1,0 +1,17 @@
+$ pnpm exec vitest run [8 planning/runner/acceptance files] --no-watch
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-ts
+
+ ✓ tests/unit/memory/compaction-policy.test.ts (3 tests) 2ms
+ ✓ tests/unit/memory/working-context-compaction-output-validator.test.ts (15 tests) 7ms
+ ✓ tests/unit/memory/structured-json-compaction-strategy.test.ts (3 tests) 6ms
+ ✓ tests/unit/memory/working-context-message-window-planner.test.ts (8 tests) 7ms
+ ✓ tests/unit/memory/agent-compaction-summarizer.test.ts (5 tests) 8ms
+ ✓ tests/unit/memory/working-context-compaction-strategy-registry.test.ts (6 tests) 11ms
+ ✓ tests/unit/memory/pending-compaction-executor.test.ts (6 tests) 34ms
+
+ Test Files  7 passed (7)
+      Tests  46 passed (46)
+   Start at  18:18:13
+   Duration  448ms (transform 855ms, setup 96ms, import 1.05s, tests 74ms, environment 0ms)
+

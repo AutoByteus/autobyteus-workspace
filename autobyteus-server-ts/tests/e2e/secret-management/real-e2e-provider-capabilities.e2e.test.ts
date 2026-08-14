@@ -143,7 +143,7 @@ run('value-safe one-database-vault managed-provider capabilities', () => {
         expect(result.managedSecretResolverUsed).toBe(scenario.requiredSecretId !== null);
         expect(result.effectiveContextWindowTokens).toBeGreaterThan(0);
         expect(result.triggerThresholdTokens).toBeGreaterThan(0);
-        expect(result.completedCompactionCount).toBeGreaterThanOrEqual(1);
+        expect(result.completedCompactionCount).toBe(1);
         expect(result.promptContractVersions).toHaveLength(result.completedCompactionCount);
         expect(result.promptContractVersions.every((version) => version === 3)).toBe(true);
         expect(result.qualityEvidence.persistedMemory.episodes.length).toBeGreaterThanOrEqual(1);

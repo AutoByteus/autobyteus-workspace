@@ -2,35 +2,34 @@
 
 ## Review Meta
 
-- Review Round: `2`
-- Trigger: successful `API-REV-002` execution after the bounded `CR-TEST-001` live-harness correction
+- Review Round: `3`
+- Trigger: successful `API-REV-003` execution for `IR-003`, with three durable coverage paths updated
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/requirements.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/design-spec.md`
-- Supplemental Task Artifacts Reviewed As Context: `memory-compactor-prompt-spec.md`, `prompt-confusion-root-cause.md`, `compaction-output-contract-decision.md`, and the retained production incident evidence
-- Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/solution-revision-record.md` (`SR-001`)
-- Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/architecture-review-revision-record.md` (`ARCH-REV-001`)
-- Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/implementation-revision-record.md` (`IR-001`)
-- Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/code-review-report.md`
+- Supplemental Task Artifacts Reviewed As Context: `repeated-compaction-runtime-analysis.md`; `compactor-runner-failure-analysis.md`; `compaction-runtime-behavior-examples.md`; `compaction-memory-shape-reassessment.md`; preserved prompt/output-contract artifacts and incident evidence
+- Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/solution-revision-record.md` (`SR-001`–`SR-004`)
+- Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/architecture-review-revision-record.md` (`ARCH-REV-001`–`ARCH-REV-004`)
+- Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/implementation-revision-record.md` (`IR-003`)
+- Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/code-review-report.md` (`CRR-005 Pass`)
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-003`
+- Current Code Review Revision ID: `CRR-006`
 - Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/api-e2e-coverage-investigation.md`
 - Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/api-e2e-execution-coverage-report.md`
-- API/E2E Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/api-e2e-revision-record.md` (`API-REV-002`)
-- Delivery Revision Record Reviewed As Context (delivery re-entry only): `N/A`
+- API/E2E Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/api-e2e-revision-record.md` (`API-REV-003`)
+- Delivery Revision Record Reviewed As Context (delivery re-entry only): `N/A`; prior `DR-001`/`DR-002` are historical only
 - API/E2E Result: `Pass`
-- Final Validation Confidence: `97.5%`
-- Prior unresolved test-review findings rechecked: `CR-TEST-001 — Resolved`
+- Final Validation Confidence: `98.3%`
+- Prior unresolved test-review findings rechecked: none. `CR-TEST-001` remains resolved; the corrected source-tail predicate is unchanged by this round.
 
 ## Changed Durable Test Scope
 
-Temporary probes, logs, generated evidence, and live-environment artifacts were treated as execution evidence rather than durable test code. Round 2 changed only the live harness; the other three paths retain their round-1 proportional-review pass.
+Temporary probes, logs, screenshots, generated evidence, managed-vault data, and live runtime artifacts were treated as execution evidence rather than durable test code.
 
 | Durable Test Path | Change (`Added`/`Updated`/`Removed`) | Related Scenario / Requirement | Coherent Test Responsibility | Notes |
 | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/test-support/live-e2e/live-e2e-harness.ts` | Updated | `API-E2E-001`; `LIVE-DEEPSEEK-001`; REQ-001; AC-001 | Canonical child-task framing and wrapper-scoped source-tool-tail evidence | Corrected in `API-REV-002` and re-reviewed in this round. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-server-ts/tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts` | Updated | `API-E2E-001`–`003`; AC-001/002/012/013 | Value-safe real-provider scenario assertions | Passed proportional review in round 1; no round-2 code change. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-ts/tests/integration/agent/runtime/agent-runtime-compaction.test.ts` | Updated | `API-E2E-004`; REQ-006/007; AC-009/010 | Exhausted-repair in-memory and canonical-file atomicity | Passed proportional review in round 1; no round-2 code change. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts` | Updated | `API-E2E-005`; REQ-001/008; AC-001/011 | GraphQL-selected compaction strategy and current-user projection | Passed proportional review in round 1; no round-2 code change. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-ts/tests/integration/agent/runtime/agent-runtime-compaction.test.ts` | Updated | `API-E2E-006`; `API-E2E-007`; REQ-011–015; AC-014–023 | Real core agent-runtime compaction, observation episode, fail-closed runner recovery, origin admission, and resumed FIFO | Adds the null -> numeric-above -> numeric-below sequence and a typed runner-failure/USER-retry journey. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/test-support/live-e2e/live-e2e-harness.ts` | Updated | `LIVE-DEEPSEEK-002`; REQ-011/012; AC-016 | Managed-provider compaction lifecycle and canonical quality evidence | Tightens the successful journey from at least one to exactly one completed compaction and exposes the count as literal `1`. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-server-ts/tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts` | Updated | `LIVE-DEEPSEEK-002`; REQ-011/012; AC-016 | Public real-provider capability assertion over the harness result | Requires exactly one completion at the external scenario boundary. |
 
 - No durable test file changed: `No`
 - Review result when no durable test file changed: `N/A`
@@ -39,24 +38,24 @@ Temporary probes, logs, generated evidence, and live-environment artifacts were 
 
 | Check | Result (`Pass`/`Fail`/`N/A`) | Evidence / Notes |
 | --- | --- | --- |
-| Scenario grouping and names make intent clear | Pass | `hasCanonicalSourceToolTail` owns the corrected tail predicate separately from `inspectCanonicalCompactorTask`'s general framing checks; the other durable paths retain their coherent boundary-specific grouping. |
-| Assertions prove approved requirements instead of incidental implementation details | Pass | The corrected predicate extracts only the sole target-history wrapper's content, identifies the final rendered User/Assistant/Tool role, requires Tool to be final, and requires the final entry to be a successful native `read_file` with rendered `arguments:` and `result:` sections. A later User/Assistant or a wrong, failed, or incomplete tool entry no longer satisfies the reported source-tool-tail condition. This directly proves the incident-aligned AC-001 premise. |
-| Fixtures, setup, helpers, and data builders reuse meaningful repetition | Pass | The bounded helper keeps target-tail interpretation reusable without duplicating the canonical framing inspector or provider assertion setup. Prior snapshot and typed-message helpers remain unchanged. |
-| Test isolation and determinism are appropriate for the exercised boundary | Pass | The predicate is deterministic over the persisted child task. `API-REV-002` exercised it through the isolated managed-vault/real-DeepSeek journey and completed exact cleanup; deterministic integration and server-settings coverage remain passed from round 1. |
-| Large files remain coherent and navigable rather than mixing unrelated scenarios | Pass | The correction remains next to the live harness's canonical compactor evidence helpers and does not introduce an unrelated scenario owner. The other three paths were unchanged this round. |
-| No stale, duplicated, disabled-without-reason, or compatibility-only tests remain | Pass | The correction replaces the overstated predicate rather than retaining a permissive compatibility path; the compile/skip gate is intentionally environment-gated and successfully transformed/imported before its documented skip. |
-| Added, updated, and removed coverage agrees with the coverage investigation and execution evidence | Pass | `API-REV-002` records only the live-harness correction. The compile/skip gate passed, and the real DeepSeek rerun passed 2/2 with one completed compaction and `canonicalCompactorSourceToolTailVerified: true` under the corrected predicate. Final diff, cleanup, and value-safety checks also passed. |
+| Scenario grouping and names make intent clear | Pass | The runtime file keeps three end-to-end scenarios: successful compaction plus observation episode, typed runner failure plus USER recovery/origin FIFO, and exhausted invalid-response retry. The live changes remain within the existing compaction-agent-flow boundary. |
+| Assertions prove approved requirements instead of incidental implementation details | Pass | `API-E2E-006` asserts truthful missing diagnostics/quality flags, no extra child or lifecycle on null/above observations, one suppression, later reset, and a trigger-aligned target. `API-E2E-007` asserts one typed-failure child, retained pending state, no target dispatch from direct/AGENT/SYSTEM entries, one USER retry, one commit, USER-first dispatch, and retained relative FIFO. Existing focused units cover zero parser/correction and full canonical-surface atomicity. Both live paths now require exactly one completed operation rather than accepting recurrence. |
+| Fixtures, setup, helpers, and data builders reuse meaningful repetition | Pass | `RecordingMainLLM` now truthfully supports nullable prompt counts; `RecordingCompactionAgentRunner` supports either output or typed error; the existing canonical-file snapshot, model factory, runtime harness, and live evidence helpers are reused. The 15,000-token fixture makes the approved 20% target attainable without weakening the intended above-trigger condition. |
+| Test isolation and determinism are appropriate for the exercised boundary | Pass | Core integrations use per-test temporary memory, controlled LLM usage/error sequences, deterministic waits, cleanup, and restoration of the debug-log environment variable. The live journey used the isolated owner-authorized worktree vault and its evidence records complete cleanup/value-safety checks. |
+| Large files remain coherent and navigable rather than mixing unrelated scenarios | Pass | The runtime integration is long but remains one coherent agent-runtime compaction boundary with shared fixtures. The live harness remains the established owner of managed-provider scenario execution/evidence; no unrelated test responsibility was added. Implementation-source size limits do not apply. |
+| No stale, duplicated, disabled-without-reason, or compatibility-only tests remain | Pass | No path was added or removed, no old permissive completion assertion remains, and the compile/skip behavior remains an intentional environment gate rather than disabled coverage. The initial 5,000-token fixture was corrected rather than retained as a misleading alternate. |
+| Added, updated, and removed coverage agrees with the coverage investigation and execution evidence | Pass | The three diffs match `API-REV-003` exactly. The corrected runtime file passed 3/3 and the affected integration group; the live compile/skip gate and managed DeepSeek run passed 2/2 with `completedCompactionCount:1`; final builds, drift, cleanup, value-safety, and whitespace evidence passed. No removal is reported or present. |
 
 ## Findings
 
-No unresolved findings. `CR-TEST-001` is resolved: the prior whole-task presence check was replaced with wrapper-scoped final-role and successful native-result validation, and the affected live scenario was rerun successfully. Resolution history is recorded in `CRR-003`.
+None.
 
-No full API/E2E rerun was performed during review. The correction is directly judgeable from the durable diff and the focused `API-REV-002` execution evidence, so an additional reviewer-run command was not warranted.
+No API/E2E workflow was rerun during proportional review. The assertion meaning is directly judgeable from the durable diffs and the successful focused/live `API-REV-003` evidence, so an additional reviewer execution was not warranted.
 
 ## Latest Authoritative Result
 
 - Result: `Pass`
-- Changed durable test paths reviewed: `4` cumulative (`1` corrected and re-reviewed in round 2; `3` unchanged from their round-1 pass)
+- Changed durable test paths reviewed: `3` updated; `0` added; `0` removed
 - Unresolved finding IDs: `None`
 - Recommended Recipient: `delivery_engineer`
-- Notes: the implementation source review remains `Pass` at `9.5/10`; its scorecard was not reopened. The authoritative API/E2E result remains `Pass` at `97.5%` confidence under `API-REV-002`.
+- Notes: the `CRR-005` implementation source result remains `Pass` at `9.5/10`; its scorecard was not reopened. `API-REV-003` remains the authoritative API/E2E `Pass` at `98.3%` confidence. The durable coverage is coherent, requirement-aligned, isolated at its exercised boundaries, and ready for delivery-stage integrated refresh and documentation/handoff work.

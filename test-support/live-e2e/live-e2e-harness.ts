@@ -105,7 +105,7 @@ export type LiveE2eCompactionAgentFlowResult = {
   triggerThresholdTokens: number;
   observedBelowThreshold: true;
   observedAtOrAboveThreshold: true;
-  completedCompactionCount: number;
+  completedCompactionCount: 1;
   promptContractVersions: 3[];
   successfulToolCount: number;
   recoverableToolFailureCount: number;
@@ -798,7 +798,7 @@ export class LiveE2eScenarioExecution {
         phases,
       })}\n`);
       if (
-        completedCompactions.length < 1
+        completedCompactions.length !== 1
         || !phases.includes('requested')
         || !phases.includes('started')
         || phases.includes('failed')
@@ -938,7 +938,7 @@ export class LiveE2eScenarioExecution {
         requestedModelIdentifier: this.scenario.model,
         modelIdentifier,
         compactionRatio: REAL_COMPACTION_RATIO,
-        completedCompactionCount: completedCompactions.length,
+        completedCompactionCount: 1,
         compactionAgentDefinitionIds,
         compactionRunIds,
         promptContractVersions,

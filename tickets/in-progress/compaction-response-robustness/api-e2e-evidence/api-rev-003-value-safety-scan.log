@@ -1,0 +1,5 @@
+source_secret_like_values_compared=12
+target_files_scanned=28
+exact_source_value_matches=0
+credential_assignment_pattern_matches=0
+result=PASS

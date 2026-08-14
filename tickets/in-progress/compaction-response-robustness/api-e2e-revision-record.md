@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | `API-REV-001` | `code_reviewer`; `code-review-report.md`; API/E2E round 1 | `SR-001`, `ARCH-REV-001`, `IR-001`, `CRR-001` | N/A | Pass / 97.5% |
 | `API-REV-002` | `code_reviewer`; `api-e2e-test-review-report.md`; API/E2E round 2 | `SR-001`, `ARCH-REV-001`, `IR-001`, `CRR-001`, `CRR-002`, `API-REV-001` | Pass / 97.5%; proportional review Fail `CR-TEST-001` | Pass / 97.5% |
+| `API-REV-003` | `code_reviewer`; `code-review-report.md`; API/E2E round 3 | `SR-004`, `ARCH-REV-004`, `IR-003`, `CRR-005`, `API-REV-001/002` | historical Pass / 97.5%; not validation of IR-003 | Pass / 98.3% |
 
 ## Revision Entries
 
@@ -55,3 +56,30 @@ None — no earlier completed API/E2E result exists.
 - New or remaining failure IDs: none in API/E2E execution. Proportional confirmation of this corrected durable predicate remains the next gate.
 - Recommended recipient: `code_reviewer` for proportional re-review; the implementation source scorecard remains closed.
 - Remaining risks: unchanged from API-REV-001 — probabilistic quality of otherwise schema-valid summaries, intentionally terminal first-attempt transport failure, optional local-provider timing/tool-selection variability, and unrelated broad-suite debt.
+
+### API-REV-003 — Missing-Observation And Cumulative Runtime Validation
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/code-review-report.md`; API/E2E round 3.
+- Triggering finding or scenario IDs: resolved `CR-IMPL-001`; `API-E2E-006`, `API-E2E-007`, and `LIVE-DEEPSEEK-002`.
+- Related revisions: `SR-004`, `ARCH-REV-004`, `IR-003`, `CRR-005`, with `API-REV-001/002` retained as history only.
+- Why recorded: IR-003 changed the provider-observation adapter and the cumulative SR-004 planner, threshold-episode, typed runner-failure, USER-retry, and origin-admission behavior. Earlier API/E2E passes were explicitly not evidence for this implementation.
+- Durable paths changed:
+  - `autobyteus-ts/tests/integration/agent/runtime/agent-runtime-compaction.test.ts` — accepted success -> missing prompt -> numeric-above suppression -> numeric-below reset, plus typed runner failure -> retained non-user starts -> one USER retry -> USER-first/FIFO recovery.
+  - `test-support/live-e2e/live-e2e-harness.ts` — completed compaction count is exactly one.
+  - `autobyteus-server-ts/tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts` — public live assertion requires exactly one.
+- Scenarios added/changed/rechecked: new `API-E2E-006/007` and `LIVE-DEEPSEEK-002`; cumulative `API-E2E-001`–`005`, planning/runner/origin/event transport, snapshots, parent fallback, server settings, prompt/parser/tool/version, and direct lineage behavior rechecked.
+- Execution delta: 215 focused unit tests, 12 focused integrations, 10 deterministic server API E2E tests, two package builds, live-file compile/skip, contract drift probe, isolated vault import, 18-test live preflight, and real DeepSeek 2/2 with exactly one completed compaction.
+
+#### Prior Failure Resolution
+
+| Prior Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence |
+| --- | --- | --- | --- |
+| `CR-IMPL-001` / missing `input_tokens:null` observation | implementation defect resolved in IR-003/CRR-005 | fresh direct units and `API-E2E-006` prove the missing diagnostic, unchanged awaiting/suppressed state, no threshold evaluation, and later numeric behavior | `api-rev-003-core-observation-lifecycle-units.log`; corrected runtime integration logs |
+| initial API-REV-003 `API-E2E-006` run | API/E2E-owned new-fixture setup | changed active context from 5,000 to 15,000 so ratio 0.2 has an attainable target; corrected test passed 3/3 and again in the affected group | `api-rev-003-changed-runtime-integration.log`; `...-rerun.log`; `api-rev-003-core-affected-integrations.log` |
+
+- Canonical artifacts updated: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, this revision record, and `api-e2e-evidence/api-rev-003-*.log`.
+- Prior result/confidence: `API-REV-001/002` historical `Pass / 97.5%`, expressly not current IR-003 validation.
+- Current result/confidence: `Pass / 98.3%`.
+- New or remaining failure IDs: none.
+- Recommended recipient: `code_reviewer` for proportional review of the three updated durable coverage paths.
+- Remaining risks: live provider summary quality is probabilistic; typed external runner failure is forced deterministically rather than induced against DeepSeek; historical unrelated broad-suite debt remains out of the changed-owner set.

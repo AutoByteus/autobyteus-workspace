@@ -5,199 +5,118 @@
 - Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/requirements.md`
 - Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/investigation-notes.md`
 - Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/design-spec.md`
-- Supplemental Task Artifacts: `memory-compactor-prompt-spec.md`, `prompt-confusion-root-cause.md`, `compaction-output-contract-decision.md`, and the seven upstream evidence artifacts inventoried in `investigation-notes.md`
-- Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/solution-revision-record.md` (`SR-001`)
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/design-review-report.md`
-- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/architecture-review-revision-record.md` (`ARCH-REV-001`)
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/implementation-handoff.md`
-- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/implementation-revision-record.md` (`IR-001`)
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/code-review-report.md`
-- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/code-review-revision-record.md` (`CRR-002`; implementation source review remains Pass, proportional test review finding `CR-TEST-001` routed here)
-- Delivery Revision Record: N/A
-- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-002`
-- Current Investigation Round: `2`
-- Trigger: proportional test-review `CRR-002` / `CR-TEST-001`, after API-REV-001 execution passed but the source-tool-tail predicate was found to overstate its proof
-- Prior Investigation Reviewed: `API-REV-001` canonical investigation and execution artifacts
-- Latest Authoritative Investigation: this file
-- Sequencing record: this artifact was first written before API-REV-001 durable edits/execution. Round 2 rechecked the existing investigation and `CR-TEST-001` before the bounded harness correction and final rerun; this file now records the latest state.
+- Supplemental artifacts: `memory-compactor-prompt-spec.md`, `prompt-confusion-root-cause.md`, `compaction-output-contract-decision.md`, `repeated-compaction-runtime-analysis.md`, `compactor-runner-failure-analysis.md`, `compaction-runtime-behavior-examples.md`, `compaction-memory-shape-reassessment.md`, and the retained incident evidence set
+- Solution / architecture / implementation / source-review revisions: `SR-004`; `ARCH-REV-004` Pass; `IR-003` at `915c938da`; `CRR-005` Pass
+- Historical API/E2E context: `API-REV-001` and `API-REV-002` are prior-baseline evidence only; neither was accepted as validation of `IR-003`
+- Current revision / round: `API-REV-003` / round 3
+- Trigger: fresh cumulative validation after `CR-IMPL-001` was resolved, specifically a missing provider prompt observation between an accepted compaction and the next numeric provider observation
+- Investigation sequencing: the pre-execution version of this artifact was written before API-REV-003 durable coverage edits or final execution
+- Latest status: `Complete — Pass / 98.3%`
 
 ## Current Requirement And Design Basis
 
-Validation covers `BEH-001` through `BEH-006`, `REQ-001` through `REQ-010`, and `AC-001` through `AC-013`. The critical behaviors are sender-neutral raw/context composition; byte-exact target-agent prompt framing and sole renamed wrapper; the preserved six-array response; validate-all candidate selection and ambiguity rejection; exactly one content-specific correction child; one parent terminal lifecycle; no canonical mutation before acceptance; unchanged projection; zero tools; prompt-contract-3 writes; and direct non-rewriting reads of versions 1/2/3. `memory-compactor-prompt-spec.md` is the exact prompt authority. The approved persisted-data decision is `Directly Usable — No Migration`.
+The current scope is cumulative. `BEH-001`–`BEH-006`, `REQ-001`–`REQ-010`, and `AC-001`–`AC-013` preserve the exact prompt, six-array response, tool-free compactor, validate-all correction lifecycle, atomic accepted mutation boundary, and direct lineage 1/2/3 reads with v3 writes. `BEH-007`–`BEH-010`, `REQ-011`–`REQ-015`, and `AC-014`–`AC-023` add:
 
-The source review found no implementation defect. API-REV-001 closed the realistic-provider, stale live-E2E version, repair atomicity, sender-format, zero-tool, and mixed-lineage evidence gaps. The first proportional test review then found `CR-TEST-001`: the harness reported a source-tool **tail** while only searching for a source tool anywhere in the task. API-REV-002 corrected that API/E2E-owned predicate without reopening the implementation review.
+1. a trigger-aligned complete-prompt target with headroom;
+2. one compaction operation per threshold episode, an accepted-success wait for a fresh numeric observation, one inadequate-reduction suppression, and rearm only below threshold or on budget-key change;
+3. a typed child runner/provider/ingestion failure distinct from a usable invalid response, with no parser or correction call for the former;
+4. fail-closed canonical memory, a retained pending operation, target-dispatch stop, and one later retry authorized only by a distinct USER-origin turn;
+5. retained AGENT/SYSTEM turn starts while the earliest eligible USER passes, followed by relative-FIFO resumption; and
+6. `input_tokens:null` as a missing observation: emit `missing_prompt_tokens` with quality flags, perform no threshold evaluation, and preserve both `awaiting_below_observation` and `inadequate_reduction_suppressed`. Numeric zero remains a real below-threshold observation.
 
-## Changed Behavior Summary
-
-| Behavior | Coverage Consequence | Final Evidence State |
-| --- | --- | --- |
-| `BEH-001` input and target-history prompt | Preserve raw/context tests and inspect the persisted actual child user trace, including a rendered source-tool tail. | Unit/integration/exact evidence pass; corrected wrapper-scoped final-role/native-`read_file` predicate passed the API-REV-002 DeepSeek rerun. |
-| `BEH-002` response boundary | Exercise validate-all, ambiguity, production wrong-task negatives, and earlier successful positives. | Parser units and retained production-output probe pass. |
-| `BEH-003` attempt/parent lifecycle | Prove recovery and exhaustion deterministically; do not depend on a provider to emit invalid content. | Summarizer/runtime tests pass; exactly one correction and terminal parent behavior are directly exercised. |
-| `BEH-004` accepted commit/projection | Prove one accepted commit on recovery and byte/state equality on exhaustion. | Runtime atomicity snapshot and tool-lifecycle integrations pass; live continuation artifact passes. |
-| `BEH-005` compactor authority | Make the canonical live definition's zero-tool invariant explicit. | Built-in definition, runner/collector, and live DeepSeek checks pass. |
-| `BEH-006` prompt provenance | Replace stale live version 2 expectation with 3 and retain mixed 1/2/3 reads. | Lineage file unit and live DeepSeek v3 write pass. |
+Persisted data remains `Directly Usable — No Migration`; the new episode/gate/origin state is runtime-only.
 
 ## Changed Surface And Boundary Classification
 
-| Surface / Boundary | Affected? | Actual Boundary | Direct Repository Evidence | Broader Mode / Result |
-| --- | --- | --- | --- | --- |
-| Domain/backend | Yes | prompt, parser, retry, input composition | focused units and runtime integrations | real DeepSeek canonical flow passed |
-| API/transport | Yes | server child-run creation, public assistant content, events | runner/collector and parent-fallback integration | live product runner passed |
-| Frontend/browser/desktop | No | none | N/A | not required |
-| Process/lifecycle | Yes | one/two children below one parent operation | recovery/exhaustion integration | live child lifecycle passed |
-| Persisted data | Yes | v3 writes; 1/2/3 direct reads | file-store and runtime commit tests | live v3 lineage passed |
-| External provider | Yes | actual model interprets realistic tool-tail prompt | mocks cannot close this gap | DeepSeek passed; optional LM Studio was unstable for unrelated main-agent/local-inference reasons |
+| Surface / Boundary | Affected | Evidence Required And Obtained |
+| --- | --- | --- |
+| Planning/domain | Yes | arithmetic, low ratio, headroom, protected suffix, unattainable/no-prefix/oversize failure; focused units and runtime integration passed |
+| Provider observation adapter | Yes | null versus zero and accepted -> missing -> numeric-above -> numeric-below sequence; direct units plus real runtime integration passed |
+| Process/lifecycle | Yes | invalid-response correction versus typed runner failure, failure retention, USER retry, one operation; units/integration/live passed |
+| Queue/admission | Yes | origin stamping, USER bypass, retained direct/AGENT/SYSTEM FIFO; units and combined runtime integration passed |
+| API/event transport | Yes | `isError` -> stream converter -> collector/runner and closed error metadata; core/server units and parent integration passed |
+| Persistence | Behavior-preserving | failure atomicity, accepted commit, mixed lineage direct read/new v3; integrations and preserved contract units passed |
+| External provider | Yes | canonical server live runner, native source-tool tail, tool-free compactor, current planner, exactly one completion; DeepSeek passed |
+| Frontend/browser/desktop | No | no renderer, browser API, or shell owner changed; N/A |
 
 ## Project Execution Discovery
 
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness`
-- Stack: pnpm TypeScript monorepo; Node/Vitest; Fastify; Prisma/SQLite; AutoByteus agent runtime; managed live-provider harness.
-- Test authority: `autobyteus-server-ts/AGENTS.md` requires `vitest run ... --no-watch`; the root/server READMEs define `pnpm test:e2e`, `pnpm test:e2e:real:preflight`, and `pnpm test:e2e:real`.
-- TypeScript authority: package builds are authoritative; the general server `pnpm typecheck` is known upstream to include tests below `rootDir: src` and is not the project validation command.
-- Initial live state: the worktree had no `autobyteus-server-ts/db/test.db`, vault key, or persistent live runtime.
-- Final secret readiness: `Yes`. At the user's explicit direction, the documented generic importer previewed and imported `/Users/normy/.autobyteus/server-data/.env` into the isolated worktree test database only. The value-free preview planned nine creates; the TTY-confirmed import configured nine secret IDs. No production database was targeted and no secret value was printed.
-- Live readiness: DeepSeek and `qwen/qwen3.6-35b-a3b` preflighted `READY`.
-- Cleanup: the isolated test DB, adjacent vault key, and `tests/.tmp/live-e2e-runtime` were removed; the authorized source remained untouched/readable; no owned server/test process remained.
+- Stack: pnpm TypeScript workspace; Vitest; AutoByteus runtime; Fastify/Prisma/SQLite server; managed live-provider harness.
+- Instructions: `autobyteus-server-ts/AGENTS.md` requires `vitest run ... --no-watch`; root scripts define `test:e2e:real:preflight`, `test:e2e:real`, and the explicit-target value-safe secret importer.
+- Builds: `pnpm build` in both packages. The server build includes shared builds, Prisma generation, asset copy, and sanitized built-in bootstrap smoke.
+- Live environment: the user explicitly authorized importing `/Users/normy/.autobyteus/server-data/.env`. The run used only the absolute worktree vault `autobyteus-server-ts/db/test.db`, previewed before a TTY-confirmed apply, emitted secret IDs/status only, and removed the DB, adjacent key, runtime, and test DB afterward.
+- Browser/desktop: not selected because all changed owners are backend/runtime/provider boundaries.
 
-| Component | Setup / Command | Readiness / Safety | Cleanup |
-| --- | --- | --- | --- |
-| deterministic tests | package-local Vitest `run --no-watch` | test-owned temp roots and SQLite setup | hooks/project setup |
-| isolated managed vault | `pnpm secrets:import -- --source ... --database-url file:/.../db/test.db --dry-run`, then TTY-confirmed apply | absolute target; value-free output; nine IDs configured | DB/key removed |
-| live server | root live-E2E scripts | owned loopback process and isolated app data | runner stop plus verified runtime removal |
-| DeepSeek | `deepseek.compaction-agent-flow` | managed secret resolved from isolated vault | client/runner cleanup |
-| LM Studio | `lmstudio.qwen36.compaction-agent-flow` | unowned local service/model preflighted READY | no unowned process stopped |
+## Coverage Validity Decisions
 
-## Persisted Data Transition Coverage Basis
-
-- Decision: `Directly Usable — No Migration`.
-- Representative data: immutable schema-v1 lineage containing prompt contracts 1 then 2, followed by a new version-3 record.
-- Result: direct mixed `1 -> 2 -> 3` read and exact v3 head projection passed; unsupported 4 remains fail-closed; live DeepSeek produced `[3]` without a compatibility branch or rewrite.
-- Migration completion/recovery: N/A.
-
-## Existing Durable Coverage Inventory And Final Decisions
-
-| Path / Scenario | Initial Decision | Final Action / Result |
+| Coverage | Decision For IR-003 | Final Evidence |
 | --- | --- | --- |
-| core prompt builder, parser, summarizer, structured strategy, pending executor, lineage store units | Still Valid | retained; 40/40 focused tests passed |
-| server template, input processor, runner, collector units | Still Valid | retained; 27/27 tests passed |
-| core input pipeline, tool continuation, multimodal builder, native history renderer | Still Valid | retained; 21/21 tests passed |
-| runtime compaction integration | Needs Update | strengthened exact in-memory/on-disk atomicity; 2/2 tests passed inside the 8-test integration group |
-| tool lifecycle and native continuation integrations | Still Valid | retained; core integration group 8/8 passed |
-| parent fallback integration | Still Valid | retained; 5/5 passed |
-| mixed lineage file store | Still Valid | retained; direct 1/2/3 and unsupported-4 coverage passed |
-| canonical real-provider E2E/harness | Needs Update | v2 -> v3; added child framing/source-tool-tail/zero-tool proof; after `CR-TEST-001`, tail proof was corrected to wrapper-only final-role `Tool:` plus successful native `read_file` arguments/result shape; DeepSeek rerun passed |
-| server settings GraphQL compaction E2E | Needs Update discovered during broad execution | stale string argument no longer matched `LLMRequestAssembler`'s `LLMUserMessage` contract; fixture updated, preserving its current-user projection assertion; isolated 10/10 passed |
-| custom core LM Studio compaction E2E | Out Of Scope | not target evidence because it bypasses the canonical built-in/server prompt boundary |
+| `API-REV-001` / `API-REV-002` reports | `Historical Only` | retained only as revision history |
+| `llm-phase-compaction`, normalizer, planning/policy/gate/coordinator/recovery units | `Still Valid, Rerun` | 7 files / 31 tests and 7 files / 46 tests passed |
+| summarizer/pending/output/window/registry units | `Still Valid, Rerun` | included in the 46-test planning/runner group |
+| inbox/store/scheduler/notifier/stream/input/request units | `Still Valid, Rerun` | 8 files / 42 tests passed |
+| server converter/collector/runner | `Still Valid, Rerun` | 3 files / 44 tests passed |
+| runtime compaction integration | `Needs Update` | updated for missing-observation sequence and combined typed-failure/USER-retry/origin FIFO; 3/3 passed |
+| core tool/snapshot/recovery integrations | `Still Valid, Rerun` | affected integration group 5 files / 7 tests passed |
+| server parent fallback integration | `Still Valid, Rerun` | 5/5 passed |
+| prompt/parser/lineage/template/input coverage | `Still Valid, Rerun` | core 27/27 and server combined 25/25 units passed; source-drift probe passed |
+| server-settings GraphQL E2E | `Still Valid, Rerun` | 10/10 passed |
+| live harness / provider E2E | `Needs Update` | exact-one completion assertion added; compile/skip gate and live DeepSeek passed |
+| optional LM Studio journey | `Out Of Required Scope` | no current rerun; managed DeepSeek was the selected real-provider boundary |
 
-## Stale Or Obsolete Coverage Decisions
+No coverage was stale/removed and no compatibility-only assertion was added.
 
-| Scenario | Obsolete Assertion / Fixture | Why Stale | Replacement |
+## Durable Coverage Changes
+
+| Scenario | Path | Change | Requirement / Result |
 | --- | --- | --- | --- |
-| canonical live E2E | current writes have prompt contract 2 | approved new writes are v3; v2 is read-only history | same flow requires v3, plus mixed 1/2/3 file coverage |
-| server-settings compaction E2E | pass a raw string to `prepareRequest` | assembler now accepts `LLMUserMessage`; the raw string yielded an empty projected current-user body and invalidated the test rather than production | construct `LLMUserMessage({content})`; original projection assertions retained and pass |
+| `API-E2E-006` | `autobyteus-ts/tests/integration/agent/runtime/agent-runtime-compaction.test.ts` | accepted success -> null prompt -> numeric above/suppression -> numeric below/reset; target below trigger; one operation | REQ-011/012, AC-014–017; Pass |
+| `API-E2E-007` | same path | typed runner failure, no correction/dispatch/mutation, retained direct/AGENT/SYSTEM starts, one USER retry, USER-first then relative FIFO | REQ-013–015, AC-018–023; Pass |
+| `LIVE-DEEPSEEK-002` | `test-support/live-e2e/live-e2e-harness.ts`; `autobyteus-server-ts/tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts` | require exactly one completed operation and expose the result type as literal `1` | REQ-011/012, preserved AC-001–013; Pass |
 
-No durable coverage was removed.
+An initial execution of `API-E2E-006` exposed an API/E2E-owned fixture issue: a 5,000-token active context with ratio `0.2` made the expected post-compaction target unattainable. The fixture was corrected to a 15,000-token active context while retaining the 20% low-ratio scenario. The rerun and the final affected integration group both passed. This did not implicate production source.
 
-## Durable Coverage Added Or Updated
+## Current Execution Evidence
 
-| Scenario ID | Path | Change | Requirement / Result |
-| --- | --- | --- | --- |
-| `API-E2E-001` | `test-support/live-e2e/live-e2e-harness.ts` | inspect the persisted accepted child user trace for exact framing; separately extract only the target wrapper and require its final rendered role to be a successful native `read_file` Tool with arguments/result | REQ-001; AC-001/002; corrected live rerun pass |
-| `API-E2E-002` | harness + live E2E test | require canonical built-in definition `toolNames.length === 0` and report/assert tool-free | REQ-009; AC-012; live pass |
-| `API-E2E-003` | harness + live E2E test | current-write contract `2 -> 3` | REQ-010; AC-013; live pass |
-| `API-E2E-004` | core runtime compaction integration | snapshot pending state, working context, episode/semantic rows, archive, lineage, snapshot, and canonical files at each exhausted attempt | REQ-006/007; AC-009/010; deterministic pass |
-| `API-E2E-005` | server-settings GraphQL E2E | use typed `LLMUserMessage` so current-user projection coverage remains valid | REQ-001/008; AC-001/011; isolated pass |
+| Evidence Group | Result | Artifact |
+| --- | --- | --- |
+| core observation/lifecycle units | 7 files / 31 tests passed | `api-e2e-evidence/api-rev-003-core-observation-lifecycle-units.log` |
+| core planning/runner units | 7 files / 46 tests passed | `api-e2e-evidence/api-rev-003-core-planning-runner-units.log` |
+| core origin/event units | 8 files / 42 tests passed | `api-e2e-evidence/api-rev-003-core-origin-event-units.log` |
+| changed runtime integration | initial fixture fail; corrected 3/3 pass | `api-rev-003-changed-runtime-integration*.log` |
+| affected core integrations | 5 files / 7 tests passed | `api-rev-003-core-affected-integrations.log` |
+| server compaction units | 3 files / 44 tests passed | `api-rev-003-server-compaction-units.log` |
+| server parent/preserved | 5 files / 30 tests passed, including 5 parent integration tests | `api-rev-003-server-parent-preserved.log` |
+| preserved core contracts | 3 files / 27 tests passed | `api-rev-003-core-preserved-contract-units.log` |
+| server settings API E2E | 1 file / 10 tests passed | `api-rev-003-server-settings-e2e.log` |
+| package builds | both passed; server sanitized bootstrap passed | `api-rev-003-core-build.log`; `api-rev-003-server-build.log` |
+| prompt/parser/tool/version drift | no diff from the reviewed prompt baseline | `api-rev-003-contract-drift-probe.log` |
+| live compile/skip | transformed/imported; intentionally skipped without live flag | `api-rev-003-live-e2e-compile-skip.log` |
+| live preflight | 18/18; DeepSeek compaction READY | `api-rev-003-live-provider-preflight.log` |
+| live DeepSeek | 2/2; exactly one compaction, v3, tool-free, canonical tail/framing, exact continuation | `api-rev-003-live-deepseek-compaction-e2e.log` |
+| hygiene | cleanup, exact secret-value/pattern scan, and `git diff --check` passed | `api-rev-003-cleanup.log`; `api-rev-003-value-safety-scan.log`; `api-rev-003-git-diff-check.log` |
 
-## Repository Coverage Execution Plan And Results
+The broad deterministic server E2E suite was not rerun: its historical unrelated debt was already known, while the current round freshly executed every changed owner, both package builds, the relevant server-settings API E2E, and the real managed-provider boundary. A broad rerun would not materially improve current confidence.
 
-| Order | Command / Mode | Boundary | Result | Evidence |
-| --- | --- | --- | --- | --- |
-| 1 | core focused prompt/parser/summarizer/strategy/executor/lineage units | direct model-response and provenance owners | Pass — 40/40 | `api-e2e-evidence/core-focused-unit-tests.log` |
-| 2 | server focused template/input/runner/collector units | exact prompt, sender-neutral input, child authority | Pass — 27/27 | `api-e2e-evidence/server-focused-unit-tests.log` |
-| 3 | core input/provider unit group | sender/tool/media/provider formatting | Pass — 21/21 | `api-e2e-evidence/core-input-provider-unit-tests.log` |
-| 4 | core compaction/tool/native-continuation integrations | recovery, exhaustion atomicity, commit/projection | Pass — 8/8 | `api-e2e-evidence/core-compaction-integration-tests.log` |
-| 5 | server parent-fallback integration | production server child fallback/error metadata | Pass — 5/5 | `api-e2e-evidence/server-compaction-integration-tests.log` |
-| 6 | changed live test without live flag | compilation and skip gate | Pass — file compiled; intentionally skipped | `api-e2e-evidence/live-e2e-test-compile-skip-final.log` |
-| 7 | `pnpm -C autobyteus-ts build`; `pnpm -C autobyteus-server-ts build` | package integration/bootstrap | Pass / Pass | `core-build.log`; `server-build.log` |
-| 8 | retained output parser probe | two incident wrong-task outputs and two prior successes | Pass — rejected 2/2 at extraction; accepted 2/2 (4 and 3 episodes) | `production-output-parser-probe.log` |
-| 9 | exact prompt/tail probe | approved byte equality and preserved six-array tail | Pass | `exact-prompt-contract-probe.log` |
-| 10 | `pnpm test:e2e` broad suite | unrelated regression signal plus relevant server-settings compaction scenario | Mixed — 177 passed, 50 skipped, 4 failed and one suite load failure; related stale fixture repaired afterward | `deterministic-e2e-suite.log` |
-| 11 | isolated server-settings GraphQL E2E after fixture repair | selected compaction strategy and current-user projection | Pass — 10/10 | `server-settings-compaction-e2e-fixed.log` |
-| 12 | value-safe managed-provider preflight | isolated vault and provider/model readiness | Pass — 18/18 preflight tests; both compaction scenarios READY | `live-provider-preflight.log` |
-| 13 | live DeepSeek canonical compaction | actual provider, tools, child, lifecycle, persistence, v3, projection | Pass — 2/2 including preflight | `live-deepseek-compaction-e2e.log` |
-| 14 | optional live LM Studio and one rerun | secondary local-model evidence | Non-blocking Fail — first exact main-agent tool sequence differed; rerun had a 300s local compactor transport timeout before later compactions completed | `live-lmstudio-compaction-e2e*.log` |
-| 15 | `git diff --check` | API-REV-001 patch hygiene | Pass | `git-diff-check.log` |
-| 16 | changed live file after `CR-TEST-001` correction, live flag absent | TypeScript transform/import and skip gate | Pass — file compiled; intentionally skipped | `api-rev-002-live-e2e-compile-skip.log` |
-| 17 | `pnpm test:e2e:real -- --scenarios=deepseek.compaction-agent-flow` after isolated import | corrected wrapper-scoped final-role/native-tool tail predicate at real provider boundary | Pass — 2/2; one completed compaction; corrected tail boolean true | `api-rev-002-live-deepseek-compaction-e2e.log` |
-| 18 | API-REV-002 cleanup | isolated DB/key, test DB/runtime, process audit | Pass | `api-rev-002-cleanup.log` |
-| 19 | `git diff --check` after API-REV-002 artifact updates | patch hygiene | Pass | `api-rev-002-git-diff-check.log` |
-| 20 | exact authorized-source-value and credential-pattern scan | evidence value safety | Pass | `api-rev-002-value-safety-scan.log` |
+## Post-Repository Confidence And Broader-Validation Gate
 
-### Broad-Suite Failure Classification
+| Category | Post-Repository | Final After Live | Basis / Residual |
+| --- | ---: | ---: | --- |
+| Requirement and acceptance-criteria proof | 98% | 99% | direct cumulative deterministic mapping plus live preserved-contract proof; provider output remains probabilistic |
+| Changed-boundary execution directness | 98% | 99% | real runtime/queue/memory/server owners and current live runner exercised |
+| Cross-boundary integration realism and mock gap | 92% | 98% | live DeepSeek closed provider/server/native-tool/child/persistence gap; typed failure remains deterministically injected |
+| Environment/configuration/identity/fixture fidelity | 92% | 98% | isolated real vault, managed resolver, loopback server, generated corpus, exact cleanup |
+| Failure/edge/lifecycle/recovery evidence | 99% | 99% | invalid response, exhaustion, typed runner failure, null/zero, suppression/reset, USER retry, retained FIFO |
+| User-surface/browser/desktop-shell confidence | N/A | N/A | no such boundary changed |
+| Durable regression coverage quality/relevance | 97% | 97% | three narrow updated paths; proportional review remains the next gate |
 
-The initial full deterministic E2E command was deliberately broader than the changed boundary. It exposed the stale, relevant server-settings fixture, which was locally repaired and then passed in isolation. The remaining failures are in unchanged, unrelated coverage: a removed Codex bootstrap-strategy import in `agent-package-private-skills.e2e.test.ts`, an incomplete `appConfigProvider` mock in the media catalog case, and an incomplete `providerNameReader` mock in two token-usage backfill cases. No implementation/API-E2E diff touches those paths or their production owners. They are recorded as pre-existing broader-suite debt, not claimed as passes and not used to prove this task.
-
-The optional LM Studio attempts also do not contradict this change: the first failed on the primary fixture agent's model-selected tool count, after compactions completed; the rerun failed because a local compactor child exceeded the existing 300-second runner timeout, an explicitly out-of-scope transport failure, before later operations completed. The incident-aligned managed DeepSeek scenario passed every task-specific assertion.
-
-## Post-Repository Confidence Scorecard
-
-| Confidence Category | Score | Support | Remaining Uncertainty |
-| --- | ---: | --- | --- |
-| Requirement and acceptance-criteria proof | 98% | direct units/integrations/probes cover AC-001–013 | schema-valid semantic completeness remains model-dependent |
-| Changed-boundary execution directness | 98% | production prompt/parser/attempt/commit/input/lineage owners executed | none material |
-| Cross-boundary integration realism and mock gap | 97% | real DeepSeek, native tools, persisted child trace, actual server runner | optional LM Studio local inference was unstable |
-| Environment, configuration, identity, and fixture fidelity | 97% | documented isolated vault, absolute target, loopback server, synthetic real files, cleanup | external provider/service availability varies |
-| Failure, edge-case, lifecycle, and recovery evidence | 97% | validate-all negatives, one repair, recovery, repeated exhaustion and full atomicity | live provider pass did not require content repair; deterministic runtime did |
-| User-surface, browser, and desktop-shell confidence | N/A | no UI/shell boundary changed | N/A |
-| Durable regression coverage quality and relevance | 98% | four narrow durable paths; `CR-TEST-001` corrected with wrapper-scoped last-role/native-result semantics and re-executed | proportional re-review remains required |
-
-- Overall post-repository confidence: `97.5%` (simple mean of six applicable categories)
+- Overall post-repository confidence: `96.0%`
+- Broader-validation decision: `Required — Live API`
+- Selected mode: managed DeepSeek through the canonical server live-E2E runner
+- Overall final confidence: `98.3%` (simple mean of six applicable final categories)
 - Every critical acceptance criterion directly proven: `Yes`
 - Any applicable category below 90%: `No`
-- Default clean-confidence target met: `Yes`
-- Material residual risks: probabilistic factual quality of otherwise schema-valid summaries; intentionally terminal transport failure; optional local-model timing/tool-selection variability; unrelated broad-suite debt listed above.
-
-## Broader Validation Decision
-
-- Decision: `Required — Completed`
-- Selected mode: `Live API` through the canonical server live-E2E harness.
-- Rationale: the reported production defect depended on a real provider interpreting realistic tool-tail history. Fakes could not prove the actual processed child input or provider behavior.
-- Result: DeepSeek `deepseek-v4-flash` passed again in API-REV-002 at the product boundary with one completed compaction, prompt contract `[3]`, three exact successful tools, no tool failure, canonical child framing/corrected wrapper-scoped final-`read_file`-tool-tail/zero-tool true, persisted memory, exact retained artifact, and projected current-user region all verified.
-- Browser decision: not required because no frontend/browser/desktop owner changed.
-
-## Live Environment, Fixture, And Cleanup Result
-
-- Startup order: API-REV-001 completed the full sequence. API-REV-002 ran the corrected live-file compile/skip gate, importer dry run, TTY-confirmed isolated import, and required DeepSeek rerun; no optional LM Studio rerun was needed for the bounded finding.
-- Environment: worktree `db/test.db` only; adjacent generated vault key; tracked credential-free `.env.test`; loopback owned server; DeepSeek `thinking_type` disabled, temperature zero, ratio 0.05.
-- Fixtures: harness-generated synthetic incident JSONL; native `read_file`/`write_file`; exact retained anchors; persisted accepted child trace.
-- Evidence output: value-safe readiness/results, hashes, booleans, counts, phases, and synthetic fixture content only; no secret value.
-- Cleanup: API-REV-002 removed the isolated DB/key, test DB/journal, and persistent live runtime; no owned process remained; the authorized source stayed untouched/readable. See `api-e2e-evidence/api-rev-002-cleanup.log`.
-
-## Temporary Executable Validation
-
-| Scenario ID | Probe | Result | Retention |
-| --- | --- | --- | --- |
-| `API-PROBE-001` | built parser over captured failed/successful production outputs | Pass | log retained; no general test embeds user evidence |
-| `API-PROBE-002` | byte compare approved prompt/current file and base/current six-array tail | Pass | log retained; durable exact template test already exists |
-
-## Not Tested / Infeasible / Deferred
-
-| Boundary | Reason | Risk / Follow-up |
-| --- | --- | --- |
-| factual completeness of every schema-valid summary | not structurally decidable; live anchors provide bounded evidence | residual model-quality risk |
-| retry for first-attempt provider/transport failure | explicitly excluded by approved design | remains terminal by design |
-| browser/Electron presentation | unaffected | none |
-| optional LM Studio journey as a clean second-provider pass | external local model deviated/timed out twice | recorded truthfully; DeepSeek is the required incident-aligned real-provider proof |
-| unrelated broad-suite failures | unchanged, outside requirements and production diff | repository debt, not a task blocker |
-
-## Investigation Decision
-
-- Proceeded To API/E2E Execution: `Yes`
-- Repository-Resident Durable Coverage Added / Updated / Removed: `Yes` — four files updated in API-REV-001; the existing live harness path received the bounded `CR-TEST-001` correction in API-REV-002; none added or removed.
-- Final API/E2E result: `Pass`
-- Post-repository/final confidence: `97.5%`
-- Broader validation: `Required — Completed`
-- Reroute required for implementation failure: `No`
-- Required next recipient: `code_reviewer` for proportional re-review of the corrected live harness before delivery.
+- Final result: `Pass`
+- Residual risks: provider summary quality is probabilistic; typed external runner failure is forced deterministically rather than induced against the live provider; unrelated broad-suite debt is historical and out of this change's owner set.
+- Required next action: proportional review of the three updated durable coverage paths by `code_reviewer` before delivery.

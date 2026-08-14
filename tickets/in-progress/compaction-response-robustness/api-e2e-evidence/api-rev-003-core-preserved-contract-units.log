@@ -1,0 +1,14 @@
+$ pnpm exec vitest run [preserved prompt/parser/lineage units] --no-watch
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-ts
+
+ ✓ tests/unit/memory/compaction-response-parser.test.ts (15 tests) 7ms
+ ✓ tests/unit/memory/working-context-compaction-prompt-builder.test.ts (3 tests) 8ms
+ ✓ tests/unit/memory/file-compaction-lineage-store.test.ts (9 tests) 1432ms
+     ✓ reads the exact tail after 1,000 recurrent appends without a mutable state pointer  1416ms
+
+ Test Files  3 passed (3)
+      Tests  27 passed (27)
+   Start at  18:21:31
+   Duration  1.71s (transform 264ms, setup 55ms, import 303ms, tests 1.45s, environment 0ms)
+

@@ -5,6 +5,8 @@ import path from 'node:path';
 import { AgentConfig } from '../../../../src/agent/context/agent-config.js';
 import { AgentFactory } from '../../../../src/agent/factory/agent-factory.js';
 import { AgentInputUserMessage } from '../../../../src/agent/message/agent-input-user-message.js';
+import { InterAgentMessage } from '../../../../src/agent/message/inter-agent-message.js';
+import { SenderType } from '../../../../src/agent/sender-type.js';
 import { AgentStatus } from '../../../../src/agent/status/status-enum.js';
 import { BaseLLM } from '../../../../src/llm/base.js';
 import { LLMModel } from '../../../../src/llm/models.js';
@@ -14,7 +16,11 @@ import { Message } from '../../../../src/llm/utils/messages.js';
 import { ChunkResponse, CompleteResponse } from '../../../../src/llm/utils/response-types.js';
 import { buildLlmTokenUsageObservation } from '../../../../src/llm/utils/llm-token-usage-observation.js';
 import { EventType } from '../../../../src/events/event-types.js';
-import type { CompactionAgentRunner, CompactionAgentTask } from '../../../../src/memory/compaction/compaction-agent-runner.js';
+import {
+  CompactionAgentRunnerError,
+  type CompactionAgentRunner,
+  type CompactionAgentTask,
+} from '../../../../src/memory/compaction/compaction-agent-runner.js';
 import { MemoryType } from '../../../../src/memory/models/memory-types.js';
 import { FileMemoryStore } from '../../../../src/memory/store/file-store.js';
 import { MEMORY_FILE_NAMES } from '../../../../src/memory/store/memory-file-names.js';
@@ -82,7 +88,7 @@ class RecordingMainLLM extends BaseLLM {
   constructor(
     model: LLMModel,
     config: LLMConfig,
-    private readonly promptTokensByCall: number[]
+    private readonly promptTokensByCall: Array<number | null>
   ) {
     super(model, config);
   }
@@ -106,13 +112,15 @@ class RecordingMainLLM extends BaseLLM {
   }
 
   private buildResponsePayload(callIndex: number): ConstructorParameters<typeof ChunkResponse>[0] {
-    const promptTokens = this.promptTokensByCall[callIndex - 1] ?? 1;
+    const promptTokens = callIndex - 1 < this.promptTokensByCall.length
+      ? this.promptTokensByCall[callIndex - 1]!
+      : 1;
     return {
       content: `assistant-turn-${callIndex}`,
       usage: buildLlmTokenUsageObservation({
         inputTokens: promptTokens,
         outputTokens: 1,
-        totalTokens: promptTokens + 1,
+        totalTokens: promptTokens === null ? null : promptTokens + 1,
         rawUsage: null,
       }),
     };
@@ -122,13 +130,14 @@ class RecordingMainLLM extends BaseLLM {
 class RecordingCompactionAgentRunner implements CompactionAgentRunner {
   readonly tasks: CompactionAgentTask[] = [];
 
-  constructor(private readonly outputText: string | string[]) {}
+  constructor(private readonly outputText: string | Array<string | Error>) {}
 
   async runCompactionTask(task: CompactionAgentTask) {
     this.tasks.push(task);
     const outputText = Array.isArray(this.outputText)
       ? this.outputText[this.tasks.length - 1] ?? this.outputText.at(-1)!
       : this.outputText;
+    if (outputText instanceof Error) throw outputText;
     return {
       outputText,
       metadata: {
@@ -144,14 +153,14 @@ class RecordingCompactionAgentRunner implements CompactionAgentRunner {
   }
 }
 
-const createMainModel = () =>
+const createMainModel = (activeContextTokens = 5_000) =>
   new LLMModel({
     name: 'runtime-compaction-main-model',
     value: 'runtime-compaction-main-model',
     canonicalName: 'runtime-compaction-main-model',
     provider: LLMProvider.OPENAI,
-    activeContextTokens: 5_000,
-    maxContextTokens: 5_000,
+    activeContextTokens,
+    maxContextTokens: activeContextTokens,
     maxOutputTokens: 200
   });
 
@@ -185,6 +194,8 @@ describe('Agent runtime compaction integration', () => {
 
   it('uses the injected compaction agent runner to compact memory before the next LLM leg', async () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'agent-runtime-compaction-'));
+    const originalCompactionDebugLogs = process.env.AUTOBYTEUS_COMPACTION_DEBUG_LOGS;
+    process.env.AUTOBYTEUS_COMPACTION_DEBUG_LOGS = 'true';
     const compactionRunner = new RecordingCompactionAgentRunner([
       'source-task commentary without a compaction object',
       JSON.stringify({
@@ -201,14 +212,14 @@ describe('Agent runtime compaction integration', () => {
       }),
     ]);
     const mainLLM = new RecordingMainLLM(
-      createMainModel(),
+      createMainModel(15_000),
       new LLMConfig({
         systemMessage: 'Runtime compaction system prompt',
         maxTokens: 200,
-        compactionRatio: 0.5,
+        compactionRatio: 0.2,
         safetyMarginTokens: 10
       }),
-      [200, 200, 200, 3_000, 200]
+      [200, 200, 200, 3_000, null, 3_000, 200]
     );
     const agent = new AgentFactory().createAgent(createConfig(tempDir, mainLLM, compactionRunner));
     const compactionEvents: CompactionEventPayload[] = [];
@@ -258,13 +269,66 @@ describe('Agent runtime compaction integration', () => {
         execution_turn_id: null,
       });
 
-      await agent.postUserMessage(new AgentInputUserMessage('What should you do next?'));
+      await agent.postUserMessage(new AgentInputUserMessage('Observe a missing prompt-token total.'));
       expect(await waitForCondition(
         () => mainLLM.requests.length === 5
           && agent.context.state.memoryManager?.hasPendingCompaction() === false
           && agent.currentStatus === AgentStatus.IDLE,
         10000
       )).toBe(true);
+      expect(console.info).toHaveBeenCalledWith(
+        'compaction_budget_skipped_no_usage',
+        expect.objectContaining({
+          reason: 'missing_prompt_tokens',
+          quality_flags: expect.arrayContaining(['input_tokens_missing']),
+        }),
+      );
+      expect(compactionRunner.tasks).toHaveLength(2);
+      expect(compactionEvents.map((event) => event.phase)).toEqual(['requested', 'started', 'completed']);
+
+      await agent.postUserMessage(new AgentInputUserMessage('Observe the first numeric total still above the trigger.'));
+      expect(await waitForCondition(
+        () => mainLLM.requests.length === 6 && agent.currentStatus === AgentStatus.IDLE,
+        10000
+      )).toBe(true);
+      expect(console.error).toHaveBeenCalledWith(
+        'compaction_post_success_usage_not_below_trigger',
+        expect.objectContaining({
+          reason: 'post_success_usage_not_below_trigger',
+          observed_prompt_tokens: 3_000,
+        }),
+      );
+      expect(compactionRunner.tasks).toHaveLength(2);
+      expect(compactionEvents.map((event) => event.phase)).toEqual(['requested', 'started', 'completed']);
+
+      await agent.postUserMessage(new AgentInputUserMessage('Observe a later numeric total below the trigger.'));
+      expect(await waitForCondition(
+        () => mainLLM.requests.length === 7 && agent.currentStatus === AgentStatus.IDLE,
+        10000
+      )).toBe(true);
+
+      const evaluatedBudgets = vi.mocked(console.info).mock.calls
+        .filter(([event]) => event === 'compaction_budget_evaluated')
+        .map(([, payload]) => payload as Record<string, unknown>);
+      const requestedBudget = evaluatedBudgets.find(({ threshold_episode_decision }) =>
+        threshold_episode_decision === 'requested');
+      expect(requestedBudget).toEqual(expect.objectContaining({
+        prompt_tokens: 3_000,
+        compaction_ratio: 0.2,
+        threshold_episode_decision: 'requested',
+      }));
+      expect(requestedBudget?.post_compaction_target_tokens as number)
+        .toBeLessThan(requestedBudget?.trigger_threshold_tokens as number);
+      expect(evaluatedBudgets).toEqual(expect.arrayContaining([
+        expect.objectContaining({
+          prompt_tokens: 3_000,
+          threshold_episode_decision: 'suppressed',
+        }),
+        expect.objectContaining({
+          prompt_tokens: 200,
+          threshold_episode_decision: 'reset',
+        }),
+      ]));
 
       expect(compactionEvents.map((event) => event.compaction_operation_id)).toEqual([
         requestedOperationId,
@@ -313,7 +377,8 @@ describe('Agent runtime compaction integration', () => {
       expect(store.readArchiveRawTraces().length).toBeGreaterThan(0);
 
       const remainingRawTraces = store.list(MemoryType.RAW_TRACE) as RawTraceItem[];
-      expect(remainingRawTraces.some((item) => item.content.includes('What should you do next?'))).toBe(true);
+      expect(remainingRawTraces.some((item) =>
+        item.content.includes('Observe a missing prompt-token total.'))).toBe(true);
       expect(remainingRawTraces.some((item) => item.content.includes('Seed turn 1'))).toBe(false);
 
       const fifthRequest = mainLLM.requests[4] ?? [];
@@ -321,13 +386,149 @@ describe('Agent runtime compaction integration', () => {
         (message) => message.role === 'user' && typeof message.content === 'string' && message.content.includes('Earlier progress:')
       );
       expect(memorySummaryMessage?.content).toContain('First turn summary');
-      expect(fifthRequest.at(-1)?.content).toBe('What should you do next?');
+      expect(fifthRequest.at(-1)?.content).toBe('Observe a missing prompt-token total.');
 
       notifier?.unsubscribe(EventType.AGENT_COMPACTION_STATUS_UPDATED, onCompactionStatus);
     } finally {
       if (agent.isRunning) {
         await agent.stop(2);
       }
+      await mainLLM.cleanup();
+      fs.rmSync(tempDir, { recursive: true, force: true });
+      if (originalCompactionDebugLogs === undefined) {
+        delete process.env.AUTOBYTEUS_COMPACTION_DEBUG_LOGS;
+      } else {
+        process.env.AUTOBYTEUS_COMPACTION_DEBUG_LOGS = originalCompactionDebugLogs;
+      }
+    }
+  }, 30000);
+
+  it('fails closed on a typed runner error and admits one USER retry ahead of retained non-user starts', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'agent-runtime-compaction-runner-retry-'));
+    const compactionRunner = new RecordingCompactionAgentRunner([
+      new CompactionAgentRunnerError(
+        'error_completion',
+        'provider request failed before a usable assistant response',
+        {
+          compactionRunId: 'compaction-run-failed-1',
+          taskId: 'compaction-task-failed-1',
+          modelIdentifier: 'compactor-model',
+          provider: 'test-provider',
+        },
+      ),
+      JSON.stringify({
+        episodes: [{ summary: 'Recovered through the user-authorized retry.' }],
+        critical_issues: [],
+        unresolved_work: [],
+        durable_facts: [],
+        user_preferences: [],
+        important_artifacts: [],
+      }),
+    ]);
+    const mainLLM = new RecordingMainLLM(
+      createMainModel(),
+      new LLMConfig({
+        systemMessage: 'Runtime compaction system prompt',
+        maxTokens: 200,
+        compactionRatio: 0.5,
+        safetyMarginTokens: 10,
+      }),
+      [200, 200, 200, 3_000, 200, 200, 200, 200],
+    );
+    const agent = new AgentFactory().createAgent(createConfig(tempDir, mainLLM, compactionRunner));
+    const compactionEvents: CompactionEventPayload[] = [];
+
+    try {
+      agent.start();
+      expect(await waitForStatus(
+        agent.context,
+        (status) => status === AgentStatus.IDLE || status === AgentStatus.ERROR,
+      )).toBe(true);
+      const notifier = agent.context.statusManager?.notifier;
+      const onCompactionStatus = (payload?: unknown) => {
+        if (isCompactionEventPayload(payload)) compactionEvents.push(payload);
+      };
+      notifier?.subscribe(EventType.AGENT_COMPACTION_STATUS_UPDATED, onCompactionStatus);
+
+      for (let turnIndex = 1; turnIndex <= 3; turnIndex += 1) {
+        await agent.postUserMessage(new AgentInputUserMessage(
+          promptSizedUserMessage(`Runner-failure seed ${turnIndex}`),
+        ));
+        expect(await waitForCondition(
+          () => mainLLM.requests.length === turnIndex && agent.currentStatus === AgentStatus.IDLE,
+          10000,
+        )).toBe(true);
+      }
+
+      await agent.postUserMessage(new AgentInputUserMessage('Trigger the runner failure.'));
+      expect(await waitForCondition(
+        () => mainLLM.requests.length === 4
+          && compactionRunner.tasks.length === 1
+          && agent.context.state.memoryManager?.isCompactionAwaitingUserRetry() === true
+          && compactionEvents.some(({ phase }) => phase === 'failed')
+          && agent.currentStatus === AgentStatus.IDLE,
+        10000,
+      )).toBe(true);
+      expect(compactionEvents.map(({ phase }) => phase)).toEqual(['requested', 'started', 'failed']);
+      expect(compactionEvents[2]).toMatchObject({
+        compaction_run_id: 'compaction-run-failed-1',
+        compaction_task_id: 'compaction-task-failed-1',
+      });
+      expect(compactionEvents[2]?.error_message).toContain(
+        'provider request failed before a usable assistant response',
+      );
+      const store = agent.context.state.memoryManager?.store as FileMemoryStore;
+      expect(store.list(MemoryType.EPISODIC)).toHaveLength(0);
+      expect(store.list(MemoryType.SEMANTIC)).toHaveLength(0);
+      expect(store.readArchiveRawTraces()).toHaveLength(0);
+
+      await agent.postInterAgentMessage(new InterAgentMessage(
+        'RuntimeCompactionAgent',
+        agent.agentId,
+        'retained-direct-agent-a',
+        'handoff',
+        'source-agent-a',
+      ));
+      await agent.postUserMessage(new AgentInputUserMessage(
+        'retained-agent-carrier-b',
+        SenderType.AGENT,
+      ));
+      await agent.postUserMessage(new AgentInputUserMessage(
+        'retained-system-s',
+        SenderType.SYSTEM,
+      ));
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      expect(mainLLM.requests).toHaveLength(4);
+      expect(compactionRunner.tasks).toHaveLength(1);
+      expect(compactionEvents.filter(({ phase }) => phase === 'failed')).toHaveLength(1);
+
+      await agent.postUserMessage(new AgentInputUserMessage('continue-after-runner-failure'));
+      expect(await waitForCondition(
+        () => mainLLM.requests.length === 8
+          && compactionRunner.tasks.length === 2
+          && agent.context.state.memoryManager?.hasPendingCompaction() === false
+          && agent.currentStatus === AgentStatus.IDLE,
+        15000,
+      )).toBe(true);
+
+      expect(compactionEvents.map(({ phase }) => phase))
+        .toEqual(['requested', 'started', 'failed', 'started', 'completed']);
+      expect(compactionEvents.filter(({ phase }) => phase === 'failed')).toHaveLength(1);
+      expect(compactionRunner.tasks).toHaveLength(2);
+      expect(store.list(MemoryType.EPISODIC)).toHaveLength(1);
+      expect(store.readArchiveRawTraces().length).toBeGreaterThan(0);
+
+      const dispatchedAfterRecovery = mainLLM.requests.slice(4)
+        .map((request) => JSON.stringify(request));
+      expect(dispatchedAfterRecovery).toHaveLength(4);
+      expect(dispatchedAfterRecovery[0]).toContain('continue-after-runner-failure');
+      expect(dispatchedAfterRecovery[1]).toContain('retained-direct-agent-a');
+      expect(dispatchedAfterRecovery[2]).toContain('retained-agent-carrier-b');
+      expect(dispatchedAfterRecovery[3]).toContain('retained-system-s');
+
+      notifier?.unsubscribe(EventType.AGENT_COMPACTION_STATUS_UPDATED, onCompactionStatus);
+    } finally {
+      if (agent.isRunning) await agent.stop(2);
       await mainLLM.cleanup();
       fs.rmSync(tempDir, { recursive: true, force: true });
     }
