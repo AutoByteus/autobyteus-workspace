@@ -1,0 +1,16 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-ts
+
+ ✓ tests/unit/memory/compaction-response-parser.test.ts (15 tests) 8ms
+ ✓ tests/unit/memory/working-context-compaction-prompt-builder.test.ts (3 tests) 10ms
+ ✓ tests/unit/memory/agent-compaction-summarizer.test.ts (5 tests) 11ms
+ ✓ tests/unit/memory/structured-json-compaction-strategy.test.ts (3 tests) 7ms
+ ✓ tests/unit/memory/pending-compaction-executor.test.ts (5 tests) 43ms
+ ✓ tests/unit/memory/file-compaction-lineage-store.test.ts (9 tests) 1506ms
+     ✓ reads the exact tail after 1,000 recurrent appends without a mutable state pointer  1486ms
+
+ Test Files  6 passed (6)
+      Tests  40 passed (40)
+   Start at  11:58:44
+   Duration  1.88s (transform 793ms, setup 108ms, import 980ms, tests 1.58s, environment 0ms)
+

@@ -106,13 +106,15 @@ export type LiveE2eCompactionAgentFlowResult = {
   observedBelowThreshold: true;
   observedAtOrAboveThreshold: true;
   completedCompactionCount: number;
-  promptContractVersions: 2[];
+  promptContractVersions: 3[];
   successfulToolCount: number;
   recoverableToolFailureCount: number;
   orderedToolTracePairsVerified: true;
   continuationTraceAbsent: true;
   exactRetainedArtifactVerified: true;
   projectedMemoryAndCurrentUserVerified: true;
+  canonicalCompactorTaskFramingVerified: true;
+  canonicalCompactorSourceToolTailVerified: true;
   qualityEvidence: {
     persistedMemory: {
       episodes: Record<string, unknown>[];
@@ -122,12 +124,20 @@ export type LiveE2eCompactionAgentFlowResult = {
     nextCurrentUserRegion: string;
   };
   canonicalCompactorAgentUsed: true;
+  canonicalCompactorToolFree: true;
   canonicalCompactorPromptSha256: string;
   managedSecretResolverUsed: boolean;
 };
 
 const REAL_COMPACTION_RATIO = 0.05 as const;
 const REAL_COMPACTION_TIMEOUT_MS = 300_000;
+const COMPACTION_TASK_INTRO =
+  'Here is the conversation history of the target agent whose conversation history needs to be compacted. '
+  + 'This conversation history is contained between the START and END separators below.';
+const COMPACTION_TASK_END_SEPARATOR =
+  '----------------- END OF TARGET AGENT CONVERSATION HISTORY -----------------';
+const TARGET_HISTORY_OPEN_TAG = '<target_agent_conversation_history>';
+const TARGET_HISTORY_CLOSE_TAG = '</target_agent_conversation_history>';
 const MEMORY_COMPACTOR_TEMPLATE_PATH = fileURLToPath(new URL(
   '../../autobyteus-server-ts/src/built-in-agents/templates/memory-compactor/agent.md',
   import.meta.url,
@@ -174,6 +184,7 @@ const extractAgentMarkdownInstructions = (source: string): string => {
 
 const loadCanonicalCompactorEvidence = async (): Promise<{
   promptSha256: string;
+  toolFree: true;
 }> => {
   const source = await fs.readFile(MEMORY_COMPACTOR_TEMPLATE_PATH, 'utf8');
   const canonicalInstructions = extractAgentMarkdownInstructions(source);
@@ -183,12 +194,79 @@ const loadCanonicalCompactorEvidence = async (): Promise<{
     !definition
     || definition.id !== MEMORY_COMPACTOR_AGENT_DEFINITION_ID
     || definition.defaultLaunchConfig !== null
+    || definition.toolNames.length !== 0
     || definition.instructions.trim() !== canonicalInstructions
   ) {
     throw new Error('LIVE_E2E_CANONICAL_COMPACTOR_DEFINITION_MISMATCH');
   }
   return {
     promptSha256: createHash('sha256').update(canonicalInstructions).digest('hex'),
+    toolFree: true,
+  };
+};
+
+const countOccurrences = (value: string, needle: string): number =>
+  value.split(needle).length - 1;
+
+const hasCanonicalSourceToolTail = (initialTask: string): boolean => {
+  const openTagStart = initialTask.indexOf(TARGET_HISTORY_OPEN_TAG);
+  if (openTagStart < 0) return false;
+  const historyStart = openTagStart + TARGET_HISTORY_OPEN_TAG.length;
+  const historyEnd = initialTask.indexOf(TARGET_HISTORY_CLOSE_TAG, historyStart);
+  if (historyEnd < 0) return false;
+
+  const wrappedHistory = initialTask.slice(historyStart, historyEnd);
+  if (!wrappedHistory.startsWith('\n') || !wrappedHistory.endsWith('\n')) return false;
+  const renderedHistory = wrappedHistory.slice(1, -1);
+  const roleEntries = Array.from(
+    renderedHistory.matchAll(/(?:^|\n\n)(User|Assistant|Tool):\n/gu),
+  );
+  const finalRoleEntry = roleEntries[roleEntries.length - 1];
+  if (!finalRoleEntry || finalRoleEntry[1] !== 'Tool' || finalRoleEntry.index === undefined) {
+    return false;
+  }
+
+  const finalEntryStart = finalRoleEntry.index
+    + (finalRoleEntry[0].startsWith('\n\n') ? 2 : 0);
+  const finalEntry = renderedHistory.slice(finalEntryStart);
+  return /^Tool:\nname: read_file\nstatus: success\narguments:\n  [\s\S]+\nresult:\n  [\s\S]+$/u
+    .test(finalEntry);
+};
+
+const inspectCanonicalCompactorTask = (runId: string): {
+  taskFramingVerified: true;
+  sourceToolTailVerified: boolean;
+} => {
+  const store = new FileMemoryStore(appConfigProvider.config.getMemoryDir(), runId);
+  const userTraces = store.listRawTraceCorpusOrdered()
+    .filter(({ traceType }) => traceType === 'user');
+  if (userTraces.length !== 1) {
+    throw new Error('LIVE_E2E_CANONICAL_COMPACTOR_TASK_TRACE_INVALID');
+  }
+  const processedTask = userTraces[0]!.content;
+  const initialTaskStart = processedTask.lastIndexOf(COMPACTION_TASK_INTRO);
+  if (initialTaskStart < 0) {
+    throw new Error('LIVE_E2E_CANONICAL_COMPACTOR_TASK_FRAMING_INVALID');
+  }
+  const initialTask = processedTask.slice(initialTaskStart);
+  if (
+    processedTask.startsWith('**[User Requirement]**')
+    || (initialTaskStart > 0
+      && !processedTask.startsWith('A prior compaction attempt failed host validation at the `'))
+    || countOccurrences(initialTask, COMPACTION_TASK_INTRO) !== 1
+    || countOccurrences(initialTask, TARGET_HISTORY_OPEN_TAG) !== 1
+    || countOccurrences(initialTask, TARGET_HISTORY_CLOSE_TAG) !== 1
+    || countOccurrences(initialTask, 'START OF TARGET AGENT CONVERSATION HISTORY') !== 1
+    || countOccurrences(initialTask, 'END OF TARGET AGENT CONVERSATION HISTORY') !== 1
+    || initialTask.includes('<conversation_history>')
+    || initialTask.includes('</conversation_history>')
+    || !initialTask.endsWith(COMPACTION_TASK_END_SEPARATOR)
+  ) {
+    throw new Error('LIVE_E2E_CANONICAL_COMPACTOR_TASK_FRAMING_INVALID');
+  }
+  return {
+    taskFramingVerified: true,
+    sourceToolTailVerified: hasCanonicalSourceToolTail(initialTask),
   };
 };
 
@@ -755,6 +833,13 @@ export class LiveE2eScenarioExecution {
       ) {
         throw new Error('LIVE_E2E_CANONICAL_COMPACTOR_EXECUTION_METADATA_INVALID');
       }
+      const canonicalCompactorTasks = compactionRunIds.map((runId) =>
+        inspectCanonicalCompactorTask(runId!));
+      const canonicalCompactorSourceToolTailVerified = canonicalCompactorTasks
+        .some(({ sourceToolTailVerified }) => sourceToolTailVerified);
+      if (!canonicalCompactorSourceToolTailVerified) {
+        throw new Error('LIVE_E2E_CANONICAL_COMPACTOR_SOURCE_TOOL_TAIL_MISSING');
+      }
 
       const successfulTools = events.filter(
         ({ eventType }) => eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
@@ -823,7 +908,7 @@ export class LiveE2eScenarioExecution {
         .map(({ execution }) => execution.promptContractVersion);
       if (
         lineageRecords.length !== completedCompactions.length
-        || promptContractVersions.some((version) => version !== 2)
+        || promptContractVersions.some((version) => version !== 3)
       ) {
         throw new Error('LIVE_E2E_COMPACTION_LINEAGE_COUNT_MISMATCH');
       }
@@ -858,6 +943,9 @@ export class LiveE2eScenarioExecution {
         compactionRunIds,
         promptContractVersions,
         canonicalCompactorPromptSha256: canonicalCompactor.promptSha256,
+        canonicalCompactorTaskFramingVerified: true,
+        canonicalCompactorSourceToolTailVerified,
+        canonicalCompactorToolFree: canonicalCompactor.toolFree,
         persistedMemory: {
           episodes,
           semanticFacts,
@@ -899,13 +987,15 @@ export class LiveE2eScenarioExecution {
         observedBelowThreshold: true,
         observedAtOrAboveThreshold: true,
         completedCompactionCount: completedCompactions.length,
-        promptContractVersions: promptContractVersions as 2[],
+        promptContractVersions: promptContractVersions as 3[],
         successfulToolCount: successfulTools.length,
         recoverableToolFailureCount: failedTools.length,
         orderedToolTracePairsVerified: true,
         continuationTraceAbsent: true,
         exactRetainedArtifactVerified: true,
         projectedMemoryAndCurrentUserVerified: true,
+        canonicalCompactorTaskFramingVerified: true,
+        canonicalCompactorSourceToolTailVerified: true,
         qualityEvidence: {
           persistedMemory: {
             episodes,
@@ -915,6 +1005,7 @@ export class LiveE2eScenarioExecution {
           nextCurrentUserRegion,
         },
         canonicalCompactorAgentUsed: true,
+        canonicalCompactorToolFree: true,
         canonicalCompactorPromptSha256: canonicalCompactor.promptSha256,
         managedSecretResolverUsed: this.scenario.requiredSecretId !== null,
       };

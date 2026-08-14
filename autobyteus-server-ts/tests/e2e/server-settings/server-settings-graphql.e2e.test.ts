@@ -7,6 +7,7 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { LLMRequestAssembler } from "autobyteus-ts/agent/llm-request-assembler.js";
 import { BasePromptRenderer } from "autobyteus-ts/llm/prompt-renderers/base-prompt-renderer.js";
+import { LLMUserMessage } from "autobyteus-ts/llm/user-message.js";
 import { Message, MessageRole } from "autobyteus-ts/llm/utils/messages.js";
 import { CompactionRuntimeSettingsResolver } from "autobyteus-ts/memory/compaction/compaction-runtime-settings.js";
 import { defaultWorkingContextCompactionStrategyRegistry } from "autobyteus-ts/memory/compaction/default-working-context-compaction-strategy-registry.js";
@@ -799,7 +800,7 @@ describe("Server settings GraphQL e2e", () => {
     );
 
     const request = await assembler.prepareRequest(
-      "after GraphQL update",
+      new LLMUserMessage({ content: "after GraphQL update" }),
       {
         turnId: "turn-after-setting-update",
         requestId: "turn-after-setting-update:llm:1",

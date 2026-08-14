@@ -17,6 +17,11 @@ import { EventType } from '../../../../src/events/event-types.js';
 import type { CompactionAgentRunner, CompactionAgentTask } from '../../../../src/memory/compaction/compaction-agent-runner.js';
 import { MemoryType } from '../../../../src/memory/models/memory-types.js';
 import { FileMemoryStore } from '../../../../src/memory/store/file-store.js';
+import { MEMORY_FILE_NAMES } from '../../../../src/memory/store/memory-file-names.js';
+import {
+  RAW_TRACES_ARCHIVE_DIR_NAME,
+  RAW_TRACES_ARCHIVE_MANIFEST_FILE_NAME,
+} from '../../../../src/memory/store/raw-trace-archive-manifest.js';
 import { SkillRegistry } from '../../../../src/skills/registry.js';
 import { resetAgentFactory, waitForCondition, waitForStatus } from './runtime-test-harness.js';
 import { RawTraceItem } from '../../../../src/memory/models/raw-trace-item.js';
@@ -43,6 +48,32 @@ const isCompactionEventPayload = (payload: unknown): payload is CompactionEventP
   Boolean(payload) &&
   typeof payload === 'object' &&
   typeof (payload as { phase?: unknown }).phase === 'string';
+
+const snapshotCanonicalCompactionFiles = (agentDir: string): Record<string, string | null> => {
+  const snapshot: Record<string, string | null> = {};
+  for (const fileName of [
+    MEMORY_FILE_NAMES.episodic,
+    MEMORY_FILE_NAMES.semantic,
+    MEMORY_FILE_NAMES.compactionLineage,
+    MEMORY_FILE_NAMES.workingContextSnapshot,
+    RAW_TRACES_ARCHIVE_MANIFEST_FILE_NAME,
+  ]) {
+    const filePath = path.join(agentDir, fileName);
+    snapshot[fileName] = fs.existsSync(filePath)
+      ? fs.readFileSync(filePath).toString('base64')
+      : null;
+  }
+  const archiveDir = path.join(agentDir, RAW_TRACES_ARCHIVE_DIR_NAME);
+  if (fs.existsSync(archiveDir)) {
+    for (const entry of fs.readdirSync(archiveDir, { withFileTypes: true })) {
+      if (!entry.isFile()) continue;
+      snapshot[path.join(RAW_TRACES_ARCHIVE_DIR_NAME, entry.name)] = fs
+        .readFileSync(path.join(archiveDir, entry.name))
+        .toString('base64');
+    }
+  }
+  return snapshot;
+};
 
 class RecordingMainLLM extends BaseLLM {
   readonly requests: Array<Array<Record<string, unknown>>> = [];
@@ -314,6 +345,21 @@ describe('Agent runtime compaction integration', () => {
     );
     const agent = new AgentFactory().createAgent(createConfig(tempDir, mainLLM, compactionRunner));
     const compactionEvents: CompactionEventPayload[] = [];
+    const snapshotCanonicalState = () => {
+      const manager = agent.context.state.memoryManager!;
+      const store = manager.store as FileMemoryStore;
+      return {
+        pendingCompaction: manager.getPendingCompactionRequest()
+          ? { ...manager.getPendingCompactionRequest()! }
+          : null,
+        workingContext: manager.getWorkingContextMessages().map((message) => message.toDict()),
+        episodes: store.list(MemoryType.EPISODIC).map((item) => item.toDict()),
+        semantics: store.list(MemoryType.SEMANTIC).map((item) => item.toDict()),
+        archivedRawTraces: store.readArchiveRawTraces(),
+        canonicalFiles: snapshotCanonicalCompactionFiles(store.agentDir),
+      };
+    };
+    let startedAttemptBaseline: ReturnType<typeof snapshotCanonicalState> | null = null;
 
     try {
       agent.start();
@@ -322,6 +368,9 @@ describe('Agent runtime compaction integration', () => {
       const onCompactionStatus = (payload?: unknown) => {
         if (isCompactionEventPayload(payload)) {
           compactionEvents.push(payload);
+          if (payload.phase === 'started') {
+            startedAttemptBaseline = snapshotCanonicalState();
+          }
         }
       };
       notifier?.subscribe(EventType.AGENT_COMPACTION_STATUS_UPDATED, onCompactionStatus);
@@ -344,6 +393,8 @@ describe('Agent runtime compaction integration', () => {
       )).toBe(true);
 
       const store = agent.context.state.memoryManager?.store as FileMemoryStore;
+      expect(startedAttemptBaseline).not.toBeNull();
+      expect(snapshotCanonicalState()).toEqual(startedAttemptBaseline);
       await agent.postUserMessage(new AgentInputUserMessage('Try to continue anyway.'));
 
       expect(await waitForCondition(
@@ -379,7 +430,10 @@ describe('Agent runtime compaction integration', () => {
       expect(agent.context.state.memoryManager?.compactionRequired).toBe(true);
       expect(agent.context.state.memoryManager?.getPendingCompactionRequest()?.operationId).toBe(failedOperationId);
       expect(store.list(MemoryType.EPISODIC)).toHaveLength(0);
+      expect(store.list(MemoryType.SEMANTIC)).toHaveLength(0);
       expect(store.readArchiveRawTraces()).toHaveLength(0);
+      expect(startedAttemptBaseline).not.toBeNull();
+      expect(snapshotCanonicalState()).toEqual(startedAttemptBaseline);
 
       notifier?.unsubscribe(EventType.AGENT_COMPACTION_STATUS_UPDATED, onCompactionStatus);
     } finally {

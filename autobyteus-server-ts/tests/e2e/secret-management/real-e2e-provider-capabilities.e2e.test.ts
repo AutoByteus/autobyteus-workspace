@@ -134,6 +134,9 @@ run('value-safe one-database-vault managed-provider capabilities', () => {
           exactRetainedArtifactVerified: true,
           projectedMemoryAndCurrentUserVerified: true,
           canonicalCompactorAgentUsed: true,
+          canonicalCompactorTaskFramingVerified: true,
+          canonicalCompactorSourceToolTailVerified: true,
+          canonicalCompactorToolFree: true,
         });
         expect(result.modelIdentifier).toContain(scenario.model!);
         expect(result.canonicalCompactorPromptSha256).toMatch(/^[a-f0-9]{64}$/);
@@ -142,7 +145,7 @@ run('value-safe one-database-vault managed-provider capabilities', () => {
         expect(result.triggerThresholdTokens).toBeGreaterThan(0);
         expect(result.completedCompactionCount).toBeGreaterThanOrEqual(1);
         expect(result.promptContractVersions).toHaveLength(result.completedCompactionCount);
-        expect(result.promptContractVersions.every((version) => version === 2)).toBe(true);
+        expect(result.promptContractVersions.every((version) => version === 3)).toBe(true);
         expect(result.qualityEvidence.persistedMemory.episodes.length).toBeGreaterThanOrEqual(1);
         expect(result.recoverableToolFailureCount).toBe(0);
         process.stdout.write(`${JSON.stringify(result)}\n`);

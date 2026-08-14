@@ -1,0 +1,12 @@
+$ cleanup exact API-REV-002-owned vault/runtime/test DB artifacts
+REMOVE autobyteus-server-ts/db/test.db
+ABSENT autobyteus-server-ts/db/test.db-secret-key
+REMOVE autobyteus-server-ts/db/test.db.secret.key
+REMOVE autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db
+REMOVE autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db-journal
+ABSENT autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db.secret.key
+REMOVE autobyteus-server-ts/tests/.tmp/live-e2e-runtime
+VERIFY_OWNED_RESOURCES_ABSENT yes
+SOURCE_ENV_READABLE_UNMODIFIED_TARGET yes
+RELEVANT_OWNED_PROCESS_AUDIT
+CLEANUP_PASS
