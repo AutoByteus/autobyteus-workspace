@@ -289,7 +289,7 @@ describe('structured strategy tool-safe lifecycle', () => {
       expect(head).toMatchObject({
         previousCompactionId: null,
         execution: {
-          promptContractVersion: 2,
+          promptContractVersion: 3,
           selectionPolicyVersion: 1,
         },
       });
@@ -317,8 +317,8 @@ describe('structured strategy tool-safe lifecycle', () => {
       expect(nextRequest[toolCallIndex + 1]?.tool_payload).toBeInstanceOf(ToolResultPayload);
       expect((nextRequest[toolCallIndex + 1]?.tool_payload as ToolResultPayload).toolCallId)
         .toBe('call-lookup-1');
-      expect(runner.tasks[0]?.prompt.match(/<conversation_history>/g)).toHaveLength(1);
-      expect(runner.tasks[0]?.prompt.match(/<\/conversation_history>/g)).toHaveLength(1);
+      expect(runner.tasks[0]?.prompt.match(/<target_agent_conversation_history>/g)).toHaveLength(1);
+      expect(runner.tasks[0]?.prompt.match(/<\/target_agent_conversation_history>/g)).toHaveLength(1);
       expect(runner.tasks[0]?.prompt).not.toContain('call-lookup-1');
 
       const rendered = llm.renderedPayloads[1] as Array<Record<string, any>>;

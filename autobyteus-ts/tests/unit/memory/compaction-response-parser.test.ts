@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   CompactionResponseParseError,
   CompactionResponseParser,
+  type CompactionResponseValidationStage,
 } from '../../../src/memory/compaction/compaction-response-parser.js';
 
 const currentResponse = (overrides: Record<string, unknown> = {}) => ({
@@ -14,11 +15,27 @@ const currentResponse = (overrides: Record<string, unknown> = {}) => ({
   ...overrides,
 });
 
+const captureParseError = (
+  response: string,
+  stage: CompactionResponseValidationStage,
+): CompactionResponseParseError => {
+  try {
+    new CompactionResponseParser().parse(response);
+  } catch (error) {
+    expect(error).toBeInstanceOf(CompactionResponseParseError);
+    expect(error).toMatchObject({ stage });
+    return error as CompactionResponseParseError;
+  }
+  throw new Error('Expected compaction parsing to fail.');
+};
+
 describe('CompactionResponseParser', () => {
-  it('parses the exact current replacement bundle from fenced JSON', () => {
-    const result = new CompactionResponseParser().parse(
-      `\`\`\`json\n${JSON.stringify(currentResponse())}\n\`\`\``,
-    );
+  it.each([
+    ['exact JSON', JSON.stringify(currentResponse())],
+    ['JSON fence', `\`\`\`json\n${JSON.stringify(currentResponse())}\n\`\`\``],
+    ['visible prose', `Result follows.\n${JSON.stringify(currentResponse())}\nDone.`],
+  ])('parses the six-array response from %s', (_label, response) => {
+    const result = new CompactionResponseParser().parse(response);
 
     expect(result.episodes).toEqual([{ summary: 'Earlier work was compacted.' }]);
     expect(result.criticalIssues).toEqual([
@@ -36,6 +53,38 @@ describe('CompactionResponseParser', () => {
     expect(result.importantArtifacts).toEqual([
       { fact: 'The implementation handoff remains authoritative.' },
     ]);
+  });
+
+  it('selects the schema-valid candidate instead of the first parseable object', () => {
+    const result = new CompactionResponseParser().parse([
+      'Unrelated metadata: {"status":"done"}',
+      `Compaction: ${JSON.stringify(currentResponse())}`,
+    ].join('\n'));
+
+    expect(result.episodes).toEqual([{ summary: 'Earlier work was compacted.' }]);
+  });
+
+  it('projects harmless extras and discards blank or non-string recognized entries', () => {
+    const result = new CompactionResponseParser().parse(JSON.stringify(currentResponse({
+      diagnostic: 'ignored',
+      episodes: [
+        null,
+        {},
+        { summary: 42 },
+        { summary: '   ' },
+        { summary: 'Projected episode', confidence: 0.9 },
+      ],
+      critical_issues: [
+        null,
+        {},
+        { fact: false },
+        { fact: 'Projected fact', reference: 'turn-1' },
+      ],
+    })));
+
+    expect(result.episodes).toEqual([{ summary: 'Projected episode' }]);
+    expect(result.criticalIssues).toEqual([{ fact: 'Projected fact' }]);
+    expect(result).not.toHaveProperty('diagnostic');
   });
 
   it('retains natural episode/fact counts while enforcing configured per-entry text bounds', () => {
@@ -64,19 +113,56 @@ describe('CompactionResponseParser', () => {
     expect(result.criticalIssues.at(-1)?.fact).toContain('fact-25');
   });
 
-  it('rejects removed aliases, stale entry metadata, and incomplete current responses', () => {
-    expect(() => new CompactionResponseParser().parse(JSON.stringify({
-      ...currentResponse(),
-      episodic_summary: 'removed alias',
-    }))).toThrow(CompactionResponseParseError);
-    expect(() => new CompactionResponseParser().parse(JSON.stringify(currentResponse({
-      critical_issues: [{ fact: 'Keep only fact.', reference: 'turn-1' }],
-    })))).toThrow('may contain only fact');
-    expect(() => new CompactionResponseParser().parse(JSON.stringify(currentResponse({
-      episodes: [],
-    })))).toThrow('at least one non-empty episode');
-    expect(() => new CompactionResponseParser().parse(JSON.stringify({
-      episodes: [{ summary: 'only field present' }],
-    }))).toThrow('missing a critical_issues array');
+  it.each([
+    ['missing required array', { important_artifacts: undefined }, 'missing a important_artifacts array'],
+    ['wrong required field type', { durable_facts: {} }, 'missing a durable_facts array'],
+    ['no nonblank episode', { episodes: [null, {}, { summary: ' ' }] }, 'at least one non-empty episode'],
+    ['wrong episode entry shape', { episodes: [{ text: 'wrong alias' }] }, 'must contain summary'],
+    ['wrong fact entry shape', { critical_issues: [{ text: 'wrong alias' }] }, 'must contain fact'],
+  ])('rejects %s at the six-array schema stage', (_label, overrides, message) => {
+    const error = captureParseError(
+      JSON.stringify(currentResponse(overrides as Record<string, unknown>)),
+      'six_array_schema_validation',
+    );
+    expect(error.message).toContain(message);
+  });
+
+  it('reports the most complete invalid candidate instead of an unrelated nested object', () => {
+    const incomplete = currentResponse();
+    delete (incomplete as Record<string, unknown>).important_artifacts;
+    const error = captureParseError(
+      `{"note":"unrelated"}\n${JSON.stringify(incomplete)}`,
+      'six_array_schema_validation',
+    );
+
+    expect(error.message).toContain('important_artifacts');
+  });
+
+  it('deduplicates extraction duplicates and output-equivalent valid objects', () => {
+    const base = JSON.stringify(currentResponse());
+    const withExtras = JSON.stringify({ ...currentResponse(), diagnostic: 'ignored' });
+    const result = new CompactionResponseParser().parse(
+      `\`\`\`json\n${base}\n\`\`\`\n${base}\n${withExtras}`,
+    );
+
+    expect(result.episodes).toEqual([{ summary: 'Earlier work was compacted.' }]);
+  });
+
+  it('rejects two distinct valid compaction objects as ambiguous', () => {
+    const error = captureParseError([
+      JSON.stringify(currentResponse()),
+      JSON.stringify(currentResponse({ episodes: [{ summary: 'Different result.' }] })),
+    ].join('\n'), 'multiple_valid_objects');
+
+    expect(error.message).toContain('multiple distinct valid compaction objects');
+  });
+
+  it('classifies source-task commentary and tool markup without JSON as extraction failure', () => {
+    const error = captureParseError(
+      'Let me inspect the source first. <tool name="run_bash">pnpm test</tool>',
+      'json_object_extraction',
+    );
+
+    expect(error.message).toContain('Could not parse a valid JSON object');
   });
 });

@@ -1,8 +1,12 @@
+import { createHash } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
 import { Message, MessageRole } from '../../../src/llm/utils/messages.js';
 import { AgentCompactionSummarizer } from '../../../src/memory/compaction/agent-compaction-summarizer.js';
 import { CompactionAgentRunnerError } from '../../../src/memory/compaction/compaction-agent-runner.js';
-import type { CompactionAgentRunner, CompactionAgentTask } from '../../../src/memory/compaction/compaction-agent-runner.js';
+import type {
+  CompactionAgentRunner,
+  CompactionAgentTask,
+} from '../../../src/memory/compaction/compaction-agent-runner.js';
 import type { WorkingContextMessageUnit } from '../../../src/memory/compaction/working-context-message-unit.js';
 
 const makeUnit = (content: string): WorkingContextMessageUnit => ({
@@ -14,46 +18,64 @@ const makeUnit = (content: string): WorkingContextMessageUnit => ({
   rawTraceIds: ['rt-1'],
 });
 
+const validResponse = JSON.stringify({
+  episodes: [{ summary: 'Durable summary' }],
+  critical_issues: [{ fact: 'Keep this' }],
+  unresolved_work: [],
+  durable_facts: [],
+  user_preferences: [],
+  important_artifacts: [],
+});
+
+type RunnerOutcome = string | ((task: CompactionAgentTask) => never);
+
 class FakeRunner implements CompactionAgentRunner {
-  calls: CompactionAgentTask[] = [];
-  outputText = [
-    '```json',
-    '{"episodes":[{"summary":"Durable summary"}],"critical_issues":[{"fact":"Keep this"}],"unresolved_work":[],"durable_facts":[],"user_preferences":[],"important_artifacts":[]}',
-    '```',
-  ].join('\n');
+  readonly calls: CompactionAgentTask[] = [];
+
+  constructor(private readonly outcomes: RunnerOutcome[] = [validResponse]) {}
 
   async runCompactionTask(task: CompactionAgentTask) {
     this.calls.push(task);
+    const outcome = this.outcomes[this.calls.length - 1] ?? this.outcomes.at(-1)!;
+    if (typeof outcome === 'function') {
+      return outcome(task);
+    }
     return {
-      outputText: this.outputText,
+      outputText: outcome,
       metadata: {
         compactionAgentDefinitionId: 'memory-compactor',
         compactionAgentName: 'Memory Compactor',
         runtimeKind: 'codex_app_server',
         provider: 'openai',
         modelIdentifier: 'gpt-5.4-codex',
-        compactionRunId: 'compaction-run-1',
+        compactionRunId: `compaction-run-${this.calls.length}`,
+        taskId: task.taskId,
       },
     };
   }
 }
 
+const taskIdFactory = (...ids: string[]): (() => string) => {
+  let index = 0;
+  return () => ids[index++] ?? `unexpected-task-${index}`;
+};
+
 describe('AgentCompactionSummarizer', () => {
-  it('builds an agent compaction task, parses fenced JSON, and records runner metadata', async () => {
+  it('returns a valid first response after one child and records its actual prompt metadata', async () => {
     const runner = new FakeRunner();
     const summarizer = new AgentCompactionSummarizer({
       runner,
       parentAgentId: 'parent-agent',
       maxItemChars: 32,
-      taskIdFactory: () => 'task-1',
+      taskIdFactory: taskIdFactory('task-1'),
     });
 
-    const result = await summarizer.summarizeMessageUnits([makeUnit('a very long trace that should appear in the prompt')]);
+    const result = await summarizer.summarizeMessageUnits([
+      makeUnit('a very long trace that should appear in the prompt'),
+    ]);
 
     expect(result.episodes).toEqual([{ summary: 'Durable summary' }]);
-    expect(result.criticalIssues).toEqual([
-      { fact: 'Keep this' },
-    ]);
+    expect(result.criticalIssues).toEqual([{ fact: 'Keep this' }]);
     expect(runner.calls).toHaveLength(1);
     expect(runner.calls[0]).toMatchObject({
       taskId: 'task-1',
@@ -62,36 +84,103 @@ describe('AgentCompactionSummarizer', () => {
       blockCount: 1,
       traceCount: 1,
     });
-    expect(runner.calls[0]?.prompt).toContain('<conversation_history>');
+    expect(runner.calls[0]?.prompt).toContain('<target_agent_conversation_history>');
     expect(runner.calls[0]?.prompt).toContain('User:');
-    expect(runner.calls[0]?.prompt).not.toContain(
-      'Your final answer must be one JSON object with this exact shape',
-    );
+    expect(runner.calls[0]?.prompt).not.toContain('single corrective attempt');
     expect(summarizer.getLastCompactionExecutionMetadata()).toMatchObject({
-      compactionAgentDefinitionId: 'memory-compactor',
-      compactionAgentName: 'Memory Compactor',
-      runtimeKind: 'codex_app_server',
-      provider: 'openai',
-      modelIdentifier: 'gpt-5.4-codex',
       compactionRunId: 'compaction-run-1',
       taskId: 'task-1',
+      renderedInputSha256: createHash('sha256')
+        .update(runner.calls[0]!.prompt, 'utf8')
+        .digest('hex'),
     });
-    expect(summarizer.getLastCompactionExecutionMetadata()?.renderedInputSha256)
-      .toMatch(/^[a-f0-9]{64}$/);
   });
 
-  it('raises when the compaction agent response is invalid', async () => {
-    const runner = new FakeRunner();
-    runner.outputText = 'not valid json';
-    const summarizer = new AgentCompactionSummarizer({ runner });
+  it('uses exactly one new correction child after a typed first-response validation failure', async () => {
+    const runner = new FakeRunner(['source-task commentary only', validResponse]);
+    const summarizer = new AgentCompactionSummarizer({
+      runner,
+      taskIdFactory: taskIdFactory('task-initial', 'task-correction'),
+    });
+
+    const result = await summarizer.summarizeMessageUnits([makeUnit('trace')]);
+
+    expect(result.episodes).toEqual([{ summary: 'Durable summary' }]);
+    expect(runner.calls.map(({ taskId }) => taskId)).toEqual([
+      'task-initial',
+      'task-correction',
+    ]);
+    const initialPrompt = runner.calls[0]!.prompt;
+    const correctionPrompt = runner.calls[1]!.prompt;
+    expect(correctionPrompt).toContain(
+      'failed host validation at the `json_object_extraction` stage',
+    );
+    expect(correctionPrompt.endsWith(initialPrompt)).toBe(true);
+    expect(correctionPrompt).not.toContain('source-task commentary only');
+    expect(summarizer.getLastCompactionExecutionMetadata()).toMatchObject({
+      compactionRunId: 'compaction-run-2',
+      taskId: 'task-correction',
+      renderedInputSha256: createHash('sha256')
+        .update(correctionPrompt, 'utf8')
+        .digest('hex'),
+    });
+  });
+
+  it('reports both validation stages and both run IDs after exhausted correction', async () => {
+    const invalidSchema = JSON.stringify({
+      episodes: [],
+      critical_issues: [],
+      unresolved_work: [],
+      durable_facts: [],
+      user_preferences: [],
+      important_artifacts: [],
+    });
+    const runner = new FakeRunner(['not valid json', invalidSchema]);
+    const summarizer = new AgentCompactionSummarizer({
+      runner,
+      taskIdFactory: taskIdFactory('task-1', 'task-2'),
+    });
 
     await expect(summarizer.summarizeMessageUnits([makeUnit('trace')])).rejects.toThrow(
-      'Could not parse a valid JSON object'
+      'attempt 1 stage=json_object_extraction, compactionRunId=compaction-run-1; '
+      + 'attempt 2 stage=six_array_schema_validation, compactionRunId=compaction-run-2',
     );
+    expect(runner.calls).toHaveLength(2);
+    expect(summarizer.getLastCompactionExecutionMetadata()).toMatchObject({
+      compactionRunId: 'compaction-run-2',
+      taskId: 'task-2',
+    });
   });
-  it('preserves runner failure metadata for parent compaction status', async () => {
-    class FailingRunner implements CompactionAgentRunner {
-      async runCompactionTask(task: CompactionAgentTask): Promise<never> {
+
+  it('wraps a correction runner failure without claiming a second parsed response', async () => {
+    const runner = new FakeRunner([
+      'not valid json',
+      (task) => {
+        throw new CompactionAgentRunnerError('correction provider timeout', {
+          compactionAgentDefinitionId: 'memory-compactor',
+          compactionRunId: 'compaction-run-2',
+          taskId: task.taskId,
+        });
+      },
+    ]);
+    const summarizer = new AgentCompactionSummarizer({
+      runner,
+      taskIdFactory: taskIdFactory('task-1', 'task-2'),
+    });
+
+    await expect(summarizer.summarizeMessageUnits([makeUnit('trace')])).rejects.toThrow(
+      'attempt 2 stage=runner_execution, compactionRunId=compaction-run-2',
+    );
+    expect(runner.calls).toHaveLength(2);
+    expect(summarizer.getLastCompactionExecutionMetadata()).toMatchObject({
+      compactionRunId: 'compaction-run-2',
+      taskId: 'task-2',
+    });
+  });
+
+  it('does not retry a first-attempt runner failure and preserves its metadata', async () => {
+    const runner = new FakeRunner([
+      (task) => {
         throw new CompactionAgentRunnerError('tool approval requested', {
           compactionAgentDefinitionId: 'memory-compactor',
           compactionAgentName: 'Memory Compactor',
@@ -101,26 +190,19 @@ describe('AgentCompactionSummarizer', () => {
           compactionRunId: 'compaction-run-1',
           taskId: task.taskId,
         });
-      }
-    }
-
+      },
+    ]);
     const summarizer = new AgentCompactionSummarizer({
-      runner: new FailingRunner(),
-      taskIdFactory: () => 'task-1',
+      runner,
+      taskIdFactory: taskIdFactory('task-1'),
     });
 
-    await expect(summarizer.summarizeMessageUnits([makeUnit('trace')])).rejects.toThrow('tool approval requested');
+    await expect(summarizer.summarizeMessageUnits([makeUnit('trace')]))
+      .rejects.toThrow('tool approval requested');
+    expect(runner.calls).toHaveLength(1);
     expect(summarizer.getLastCompactionExecutionMetadata()).toMatchObject({
-      compactionAgentDefinitionId: 'memory-compactor',
-      compactionAgentName: 'Memory Compactor',
-      runtimeKind: 'codex_app_server',
-      provider: 'openai',
-      modelIdentifier: 'gpt-5.4-codex',
       compactionRunId: 'compaction-run-1',
       taskId: 'task-1',
     });
-    expect(summarizer.getLastCompactionExecutionMetadata()?.renderedInputSha256)
-      .toMatch(/^[a-f0-9]{64}$/);
   });
-
 });

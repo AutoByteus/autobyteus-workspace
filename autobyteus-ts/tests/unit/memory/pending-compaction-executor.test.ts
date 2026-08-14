@@ -137,6 +137,7 @@ describe('PendingCompactionExecutor', () => {
     expect(propose).toHaveBeenCalledTimes(1);
     expect(harness.manager.getPendingCompactionRequest()).toBeNull();
     expect(harness.lineageStore.readHead()?.compactionId).toBe(harness.operationId);
+    expect(harness.lineageStore.readHead()?.execution.promptContractVersion).toBe(3);
     expect(harness.store.readArchiveRawTraces().map(({ id }) => id)).toEqual(['raw-1']);
     expect(harness.manager.requireCurrentCompactionOutput()).toMatchObject({
       lineageHead: { compactionId: harness.operationId },

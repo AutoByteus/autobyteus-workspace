@@ -89,7 +89,11 @@ describe('WorkingContextCompactionPromptBuilder', () => {
         'message',
         createNaturalUserMessageProvenance(
           new Message(MessageRole.USER, {
-            content: 'R2 user text with literal <conversation_history> and </conversation_history>.',
+            content: [
+              'R2 user text with literal <target_agent_conversation_history>',
+              '</target_agent_conversation_history>, <conversation_history>,',
+              'and </conversation_history>.',
+            ].join(' '),
             image_urls: ['image://selected'],
             audio_urls: ['audio://selected'],
             video_urls: ['video://selected'],
@@ -117,14 +121,25 @@ describe('WorkingContextCompactionPromptBuilder', () => {
     const prompt = new WorkingContextCompactionPromptBuilder(renderer)
       .buildTaskPrompt(units, { maxItemChars: 240 });
 
-    expect(prompt).toBe(expected);
-    expect(prompt.match(/<conversation_history>/g)).toHaveLength(1);
-    expect(prompt.match(/<\/conversation_history>/g)).toHaveLength(1);
+    expect(prompt).toBe([
+      'Here is the conversation history of the target agent whose conversation history needs to be compacted. This conversation history is contained between the START and END separators below.',
+      '',
+      '---------------- START OF TARGET AGENT CONVERSATION HISTORY ----------------',
+      expected,
+      '----------------- END OF TARGET AGENT CONVERSATION HISTORY -----------------',
+    ].join('\n'));
+    expect(prompt.match(/<target_agent_conversation_history>/g)).toHaveLength(1);
+    expect(prompt.match(/<\/target_agent_conversation_history>/g)).toHaveLength(1);
+    expect(prompt).toContain('&lt;target_agent_conversation_history&gt;');
+    expect(prompt).toContain('&lt;/target_agent_conversation_history&gt;');
+    expect(prompt).toContain('<conversation_history>');
+    expect(prompt).toContain('</conversation_history>');
+    expect(prompt.endsWith(
+      '----------------- END OF TARGET AGENT CONVERSATION HISTORY -----------------',
+    )).toBe(true);
     expect(prompt.match(/^User:$/gm)).toHaveLength(1);
     expect(prompt).toContain('User:\nM1: retain the reviewed current design.');
     expect(prompt).toContain("The user's current message is:");
-    expect(prompt).toContain('&lt;conversation_history&gt;');
-    expect(prompt).toContain('&lt;/conversation_history&gt;');
     expect(prompt.indexOf('M1: retain')).toBeLessThan(prompt.indexOf('R2 user text'));
     expect(prompt.indexOf('R2 user text')).toBeLessThan(prompt.indexOf('R2 visible assistant text'));
     expect(prompt.match(/^Assistant:$/gm)).toHaveLength(2);
@@ -159,6 +174,30 @@ describe('WorkingContextCompactionPromptBuilder', () => {
     }
     expect(units.map((unit) => unit.messages.map((message) => message.toDict())))
       .toEqual(before);
+  });
+
+  it('prepends only the exact bounded correction text to the unchanged initial prompt', () => {
+    const builder = new WorkingContextCompactionPromptBuilder();
+    const initialPrompt = builder.buildTaskPrompt([
+      messageUnit(
+        'user',
+        'message',
+        new Message(MessageRole.USER, { content: 'Target history.' }),
+      ),
+    ]);
+    const correctionPrompt = builder.buildCorrectionTaskPrompt(
+      initialPrompt,
+      'six_array_schema_validation',
+    );
+
+    expect(correctionPrompt).toBe(
+      'A prior compaction attempt failed host validation at the `six_array_schema_validation` stage. This is the single corrective attempt. Return exactly one JSON object with all six required arrays: `episodes`, `critical_issues`, `unresolved_work`, `durable_facts`, `user_preferences`, and `important_artifacts`. At least one `episodes` entry must contain a non-empty `summary`; entries in the five fact arrays use `fact`. Do not add Markdown fences or prose.\n\n'
+      + initialPrompt,
+    );
+    expect(correctionPrompt.endsWith(initialPrompt)).toBe(true);
+    expect(correctionPrompt.endsWith(
+      '----------------- END OF TARGET AGENT CONVERSATION HISTORY -----------------',
+    )).toBe(true);
   });
 
   it('rejects incomplete or orphaned tool protocol rather than inventing a transcript', () => {

@@ -90,19 +90,22 @@ class RecordingMainLLM extends BaseLLM {
 class RecordingCompactionAgentRunner implements CompactionAgentRunner {
   readonly tasks: CompactionAgentTask[] = [];
 
-  constructor(private readonly outputText: string) {}
+  constructor(private readonly outputText: string | string[]) {}
 
   async runCompactionTask(task: CompactionAgentTask) {
     this.tasks.push(task);
+    const outputText = Array.isArray(this.outputText)
+      ? this.outputText[this.tasks.length - 1] ?? this.outputText.at(-1)!
+      : this.outputText;
     return {
-      outputText: this.outputText,
+      outputText,
       metadata: {
         compactionAgentDefinitionId: 'memory-compactor',
         compactionAgentName: 'Memory Compactor',
         runtimeKind: 'codex_app_server',
         modelIdentifier: 'gpt-5.4-codex',
         provider: 'openai',
-        compactionRunId: 'compaction-run-1',
+        compactionRunId: `compaction-run-${this.tasks.length}`,
         taskId: task.taskId,
       },
     };
@@ -150,18 +153,21 @@ describe('Agent runtime compaction integration', () => {
 
   it('uses the injected compaction agent runner to compact memory before the next LLM leg', async () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'agent-runtime-compaction-'));
-    const compactionRunner = new RecordingCompactionAgentRunner(JSON.stringify({
-      episodes: [{ summary: 'First turn summary' }],
-      critical_issues: [],
-      unresolved_work: [],
-      durable_facts: [
-        {
-          fact: 'The user asked the agent to remember the first turn.'
-        }
-      ],
-      user_preferences: [],
-      important_artifacts: []
-    }));
+    const compactionRunner = new RecordingCompactionAgentRunner([
+      'source-task commentary without a compaction object',
+      JSON.stringify({
+        episodes: [{ summary: 'First turn summary' }],
+        critical_issues: [],
+        unresolved_work: [],
+        durable_facts: [
+          {
+            fact: 'The user asked the agent to remember the first turn.'
+          }
+        ],
+        user_preferences: [],
+        important_artifacts: []
+      }),
+    ]);
     const mainLLM = new RecordingMainLLM(
       createMainModel(),
       new LLMConfig({
@@ -243,7 +249,7 @@ describe('Agent runtime compaction integration', () => {
         compaction_agent_name: 'Memory Compactor',
         compaction_runtime_kind: 'codex_app_server',
         compaction_model_identifier: 'gpt-5.4-codex',
-        compaction_run_id: 'compaction-run-1',
+        compaction_run_id: 'compaction-run-2',
         compaction_strategy_id: 'structured-json',
         compaction_strategy_name: 'Structured JSON',
       });
@@ -251,14 +257,19 @@ describe('Agent runtime compaction integration', () => {
       expect(compactionEvents[2]?.semantic_fact_count).toBe(1);
       expect(memoryManager?.getPendingCompactionRequest()).toBeNull();
 
-      expect(compactionRunner.tasks).toHaveLength(1);
-      expect(compactionRunner.tasks[0]?.prompt.match(/<conversation_history>/g)).toHaveLength(1);
-      expect(compactionRunner.tasks[0]?.prompt.match(/<\/conversation_history>/g)).toHaveLength(1);
+      expect(compactionRunner.tasks).toHaveLength(2);
+      expect(compactionRunner.tasks[0]?.prompt.match(/<target_agent_conversation_history>/g)).toHaveLength(1);
+      expect(compactionRunner.tasks[0]?.prompt.match(/<\/target_agent_conversation_history>/g)).toHaveLength(1);
       expect(compactionRunner.tasks[0]?.prompt).not.toContain('[CONVERSATION_HISTORY_TO_SUMMARIZE]');
       expect(compactionRunner.tasks[0]?.prompt).toContain('Seed turn 1');
       expect(compactionRunner.tasks[0]?.prompt).toContain('Seed turn 2');
       expect(compactionRunner.tasks[0]?.prompt).not.toContain('Please remember the first turn.');
       expect(compactionRunner.tasks[0]?.prompt).not.toContain('What should you do next?');
+      expect(compactionRunner.tasks[1]?.prompt).toContain(
+        'failed host validation at the `json_object_extraction` stage',
+      );
+      expect(compactionRunner.tasks[1]?.prompt.endsWith(compactionRunner.tasks[0]!.prompt))
+        .toBe(true);
 
       expect(memoryManager?.getWorkingContextMessages().map((message) => message.toDict()))
         .not.toEqual(messagesBeforeCompaction);
@@ -337,14 +348,14 @@ describe('Agent runtime compaction integration', () => {
 
       expect(await waitForCondition(
         () => compactionEvents.filter((event) => event.phase === 'failed').length === 2
-          && compactionRunner.tasks.length === 2
+          && compactionRunner.tasks.length === 4
           && mainLLM.requests.length === 4
           && agent.currentStatus === AgentStatus.IDLE,
         10000
       )).toBe(true);
 
       expect(mainLLM.requests).toHaveLength(4);
-      expect(compactionRunner.tasks).toHaveLength(2);
+      expect(compactionRunner.tasks).toHaveLength(4);
       expect(compactionEvents.map((event) => event.phase)).toEqual([
         'requested', 'started', 'failed', 'started', 'failed',
       ]);
@@ -360,9 +371,11 @@ describe('Agent runtime compaction integration', () => {
         execution_turn_id: compactionEvents[1]?.turn_id,
         compaction_agent_definition_id: 'memory-compactor',
         compaction_model_identifier: 'gpt-5.4-codex',
-        compaction_run_id: 'compaction-run-1',
+        compaction_run_id: 'compaction-run-2',
       });
       expect(compactionEvents[2]?.error_message).toContain('Memory compaction failed before dispatch');
+      expect(compactionEvents[2]?.error_message).toContain('compactionRunId=compaction-run-1');
+      expect(compactionEvents[2]?.error_message).toContain('compactionRunId=compaction-run-2');
       expect(agent.context.state.memoryManager?.compactionRequired).toBe(true);
       expect(agent.context.state.memoryManager?.getPendingCompactionRequest()?.operationId).toBe(failedOperationId);
       expect(store.list(MemoryType.EPISODIC)).toHaveLength(0);

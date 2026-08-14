@@ -4,9 +4,18 @@ import {
 } from './compaction-lineage-scope.js';
 
 export const COMPACTION_LINEAGE_SCHEMA_VERSION = 1;
-export const COMPACTION_LINEAGE_CURRENT_PROMPT_CONTRACT_VERSION = 2;
-export type CompactionLineagePromptContractVersion = 1
-  | typeof COMPACTION_LINEAGE_CURRENT_PROMPT_CONTRACT_VERSION;
+export const COMPACTION_LINEAGE_SUPPORTED_PROMPT_CONTRACT_VERSIONS = [1, 2, 3] as const;
+export type CompactionLineagePromptContractVersion =
+  typeof COMPACTION_LINEAGE_SUPPORTED_PROMPT_CONTRACT_VERSIONS[number];
+export const COMPACTION_LINEAGE_CURRENT_PROMPT_CONTRACT_VERSION:
+  CompactionLineagePromptContractVersion = 3;
+
+const isSupportedPromptContractVersion = (
+  value: unknown,
+): value is CompactionLineagePromptContractVersion =>
+  COMPACTION_LINEAGE_SUPPORTED_PROMPT_CONTRACT_VERSIONS.some(
+    (version) => version === value,
+  );
 
 export type CompactionLineageExecution = {
   runtimeKind: string;
@@ -73,10 +82,7 @@ export const normalizeCompactionLineageRecord = (value: unknown): CompactionLine
     throw new Error('Unsupported compaction selection policy version.');
   }
   const promptContractVersion = execution.promptContractVersion;
-  if (
-    promptContractVersion !== 1
-    && promptContractVersion !== COMPACTION_LINEAGE_CURRENT_PROMPT_CONTRACT_VERSION
-  ) {
+  if (!isSupportedPromptContractVersion(promptContractVersion)) {
     throw new Error('Unsupported compaction selection or prompt contract version.');
   }
   const renderedInputSha256 = execution.renderedInputSha256 === undefined
