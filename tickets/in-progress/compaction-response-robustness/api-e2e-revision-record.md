@@ -7,6 +7,7 @@
 | `API-REV-001` | `code_reviewer`; `code-review-report.md`; API/E2E round 1 | `SR-001`, `ARCH-REV-001`, `IR-001`, `CRR-001` | N/A | Pass / 97.5% |
 | `API-REV-002` | `code_reviewer`; `api-e2e-test-review-report.md`; API/E2E round 2 | `SR-001`, `ARCH-REV-001`, `IR-001`, `CRR-001`, `CRR-002`, `API-REV-001` | Pass / 97.5%; proportional review Fail `CR-TEST-001` | Pass / 97.5% |
 | `API-REV-003` | `code_reviewer`; `code-review-report.md`; API/E2E round 3 | `SR-004`, `ARCH-REV-004`, `IR-003`, `CRR-005`, `API-REV-001/002` | historical Pass / 97.5%; not validation of IR-003 | Pass / 98.3% |
+| `API-REV-004` | `code_reviewer`; `code-review-report.md`; API/E2E round 4 | `SR-006`, `ARCH-REV-006`, `IR-004`, `CRR-007`, `DR-004`, `API-REV-001/002/003` | historical Pass / 98.3%; not validation of IR-004 | Pass / 98.7% |
 
 ## Revision Entries
 
@@ -83,3 +84,33 @@ None — no earlier completed API/E2E result exists.
 - New or remaining failure IDs: none.
 - Recommended recipient: `code_reviewer` for proportional review of the three updated durable coverage paths.
 - Remaining risks: live provider summary quality is probabilistic; typed external runner failure is forced deterministically rather than induced against DeepSeek; historical unrelated broad-suite debt remains out of the changed-owner set.
+
+### API-REV-004 — Provider-Safe Unicode And Integrated Zero-Tool Validation
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/code-review-report.md`; API/E2E round 4.
+- Triggering revisions and findings: `IR-004` / `CRR-007` after `DR-004`; fresh proof required for `REQ-016` / `AC-024`–`AC-026` and integrated `REQ-009` / `AC-012`.
+- Related revisions: `SR-006`, `ARCH-REV-006`, `IR-004`, `CRR-007`, `DR-004`; `API-REV-001`–`003` retained as history only.
+- Why recorded: IR-004 added provider-safe derived Unicode boundaries, typed pre-launch prompt-construction failure, safe accepted projection, and the exact built-in compactor exposure exception. Earlier API/E2E passes expressly did not validate this implementation.
+- Durable paths changed:
+  - `autobyteus-ts/tests/integration/agent/runtime/agent-runtime-compaction.test.ts` — complete initial/correction prompt safety, supplementary-boundary accepted projection, and actual-runtime typed pre-launch fail-closed behavior.
+  - `autobyteus-server-ts/tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts` — final built-in compactor `AgentConfig.tools=[]` with ordinary four-tool defaults preserved.
+  - `test-support/live-e2e/live-e2e-harness.ts` — exact captured shield source, omission-pressure/provider-safe child task, raw-source equality, safe projection, and empty effective exposure.
+  - `autobyteus-server-ts/tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts` — public assertions for the IR-004 live result.
+- Scenarios added/changed/rechecked: `API-E2E-008`, `API-E2E-009`, `LIVE-DEEPSEEK-003`, plus cumulative `API-E2E-001`–`007`, prompt/schema/planning/observation/retry/origin/tool/snapshot/lineage/API boundaries.
+- Execution delta: 223 core unit tests; 8 core integrations; 29 focused server tests; 10 GraphQL API E2E tests; both package builds; live compile/skip; isolated vault dry-run/apply; 18-test preflight; managed DeepSeek exact-shield journey 2/2; cleanup/value-safety/diff checks.
+
+#### Prior Failure Resolution
+
+| Prior Scenario / Failure Reference | Classification | Resolution | Evidence |
+| --- | --- | --- | --- |
+| `DR-004` compactor inherited four generic native defaults | implementation defect resolved by IR-004/CRR-007 | final factory integration and live child both prove zero effective tools; ordinary factory remains four tools | `api-rev-004-server-tool-and-compactor-coverage.log`; live rerun log |
+| initial `API-E2E-008` run | API/E2E-local fixture issue | safety mock narrowed from every rendered value to the complete task boundary; typed `input_construction_failure` runtime scenario passed 4/4 | initial and rerun runtime logs |
+| first `LIVE-DEEPSEEK-003` post-success assertion | API/E2E-local assertion issue | authoritative source check moved from intentionally empty successful trace `content` to `toolResult`; compile/skip and live rerun passed | initial and rerun live logs |
+
+- Live result: DeepSeek `deepseek-v4-flash` accepted the exact shield-pressure compaction; one v3 operation completed; the canonical child task was provider-safe with no U+FFFD, source remained exact with valid `🛡️`, the child runtime had zero tools, and four parent native tool operations produced the exact retained artifact.
+- Canonical artifacts updated: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, this revision record, and `api-e2e-evidence/api-rev-004-*.log`.
+- Prior result/confidence: `API-REV-003` historical `Pass / 98.3%`, expressly not current IR-004 evidence.
+- Current result/confidence: `Pass / 98.7%`.
+- New or remaining failure IDs: none.
+- Recommended recipient: `code_reviewer` for proportional review of the four updated durable coverage paths.
+- Remaining risks: probabilistic provider summary wording, external availability/accounting variance, and deterministic rather than live-provider induction of the local prompt invariant failure.

@@ -128,7 +128,7 @@ run('value-safe one-database-vault managed-provider capabilities', () => {
           compactionRatio: 0.05,
           observedBelowThreshold: true,
           observedAtOrAboveThreshold: true,
-          successfulToolCount: 3,
+          successfulToolCount: 4,
           orderedToolTracePairsVerified: true,
           continuationTraceAbsent: true,
           exactRetainedArtifactVerified: true,
@@ -136,7 +136,11 @@ run('value-safe one-database-vault managed-provider capabilities', () => {
           canonicalCompactorAgentUsed: true,
           canonicalCompactorTaskFramingVerified: true,
           canonicalCompactorSourceToolTailVerified: true,
+          canonicalCompactorProviderSafeUnicodeVerified: true,
+          canonicalCompactorShieldOmissionPressureVerified: true,
+          unicodeShieldSourceImmutableVerified: true,
           canonicalCompactorToolFree: true,
+          canonicalCompactorEffectiveToolNames: [],
         });
         expect(result.modelIdentifier).toContain(scenario.model!);
         expect(result.canonicalCompactorPromptSha256).toMatch(/^[a-f0-9]{64}$/);

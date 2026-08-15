@@ -12,6 +12,8 @@ The latest `code-review-report.md` or `api-e2e-test-review-report.md` remains au
 | `CRR-004` | `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/code-review-report.md` | Implementation review / `IR-002` handoff at `51ed4b666` | `CRR-001` source review `Pass`; latest review event `CRR-003` test review `Pass` | `Fail` | `CR-IMPL-001` |
 | `CRR-005` | `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/code-review-report.md` | Implementation re-review / `IR-003` correction at `915c938da` | `CRR-004` source review `Fail` | `Pass` | `CR-IMPL-001` |
 | `CRR-006` | `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/api-e2e-test-review-report.md` | Proportional test review / successful `API-REV-003` with three durable coverage updates | `CRR-005` source review `Pass` | `Pass` | None |
+| `CRR-007` | `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/code-review-report.md` | Implementation review / `IR-004` at `aa12df0a3` after Unicode redesign and `DR-004` compatibility block | `CRR-005` source review `Pass`; latest review event `CRR-006` test review `Pass`; `DR-004` delivery `Blocked` | `Pass` | `DR-004` zero-tool compatibility finding resolved |
+| `CRR-008` | `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/api-e2e-test-review-report.md` | Proportional test review / successful `API-REV-004` with four durable coverage updates | `CRR-007` source review `Pass` | `Pass` | None |
 
 ## Revision Entries
 
@@ -156,3 +158,53 @@ None. `CR-IMPL-001` remains resolved by `IR-003`/`CRR-005`, and `CR-TEST-001` re
 - Material score or classification changes: the implementation scorecard was not reopened and remains `9.5/10 (95.0/100)`. The proportional test-review result is `Pass` with no failure classification.
 - Recommended recipient: `delivery_engineer`
 - Remaining risks or uncertainty: live summary semantics remain probabilistic, and typed external runner failure is induced deterministically rather than against DeepSeek. Neither prevents delivery-stage integrated-state refresh and handoff work.
+
+### CRR-007 — IR-004 provider-safe compaction boundary passes source review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/code-review-report.md`
+- Review entry point and round: `Implementation Review`, source round 4
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/implementation-handoff.md`; `IR-004`; `BEH-011`/`REQ-016`; `DR-004` zero-tool compatibility finding
+- Relevant solution revision IDs: `SR-001`–`SR-006`
+- Relevant architecture-review revision IDs: `ARCH-REV-001`–`ARCH-REV-006`
+- Relevant implementation revision IDs: `IR-004`; `IR-001`–`IR-003` preserved cumulative basis
+- Relevant API/E2E revision IDs: `API-REV-001`–`API-REV-003` as prior-baseline history only
+- Relevant delivery revision IDs: `DR-004` as the triggering compatibility block; `DR-001`–`DR-003` as history
+- Prior authoritative result: `CRR-005` implementation source `Pass` for `IR-003`; latest completed review event `CRR-006` proportional test-code `Pass`; subsequent delivery result `DR-004 Blocked` on effective compactor tool exposure
+- Current authoritative result: implementation source review `Pass`; the cumulative `IR-004` implementation is ready for fresh API/E2E coverage investigation and execution.
+- What changed in the review result and why: SR-006's shared derived-copy utility now preserves valid Unicode, repairs lone surrogates, removes only specified controls, and supplies safe middle/end boundaries with actual omission accounting. Initial and correction prompts are finalized and checked before child launch, and local failure is classified as `input_construction_failure`. The built-in Memory Compactor now bypasses generic native defaults and team tools at the effective AutoByteus exposure boundary while ordinary agents retain them.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `DR-004` zero-tool compatibility finding | Open / delivery `Blocked` after latest-base integration | Resolved in implementation source | `DR-004`; `IR-004`; `CRR-007` | `autobyteus-runtime-tool-exposure.ts` built-in ID branch; shared exposure returns an empty request; final resolver only filters that set; focused exposure/resolver tests 6/6; both builds pass |
+
+`CR-IMPL-001` remains resolved by `IR-003`; `CR-TEST-001` remains resolved by `API-REV-002`/`CRR-003` and is not reopened.
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: source score advances from `9.5/10 (95.0/100)` to `9.6/10 (96.4/100)`; all categories remain at least 9.0. Current classification is `N/A — Pass`.
+- Recommended recipient: `api_e2e_engineer`
+- Remaining risks or uncertainty: fresh IR-004 API/E2E must replay the incident-aligned Unicode/provider path and integrated effective zero-tool behavior. Approved residuals remain provider/token-estimate variability, runtime-only threshold state, oversized-new-input admission, probabilistic summary factual quality, and manual recovery after a terminal first runner failure.
+
+### CRR-008 — API-REV-004 Unicode and zero-tool coverage passes proportional review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/api-e2e-test-review-report.md`
+- Review entry point and round: `Successful API/E2E Test-Code Review`, round 4
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/api-e2e-execution-coverage-report.md`; `API-REV-004`; `API-E2E-008`; `API-E2E-009`; `LIVE-DEEPSEEK-003`
+- Relevant solution revision IDs: `SR-001`–`SR-006`
+- Relevant architecture-review revision IDs: `ARCH-REV-001`–`ARCH-REV-006`
+- Relevant implementation revision IDs: `IR-004`
+- Relevant API/E2E revision IDs: `API-REV-004`
+- Relevant delivery revision IDs: `DR-004` as the resolved triggering compatibility context
+- Prior authoritative result: `CRR-007` implementation source review `Pass`; prior proportional result `CRR-006` `Pass` for the IR-003 baseline
+- Current authoritative result: proportional test-code review `Pass`; the current cumulative package is ready for `delivery_engineer`.
+- What changed in the review result and why: four durable paths now prove complete initial/correction task safety, surrogate-safe accepted projection, actual-runtime typed pre-launch failure, final backend `AgentConfig.tools=[]` with ordinary defaults preserved, and the exact captured shield journey through managed DeepSeek with authoritative raw-source equality, whole-pair omission pressure, safe projection, v3 persistence, and zero child tools. The public E2E asserts the complete result. API-REV-004 passed at 98.7% confidence.
+
+#### Prior Finding Resolution
+
+None. The `DR-004` implementation finding remains resolved by `IR-004`/`CRR-007` and is freshly proven by final factory and live evidence. `CR-TEST-001` remains resolved from `CRR-003`.
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: the implementation source scorecard was not reopened and remains `9.6/10 (96.4/100)`. The proportional test-review result is `Pass` with no failure classification.
+- Recommended recipient: `delivery_engineer`
+- Remaining risks or uncertainty: live summary wording and external provider availability/accounting remain probabilistic; the local prompt invariant failure is induced deterministically rather than by a provider. Neither prevents delivery-stage integrated refresh, documentation sync, and new user handoff preparation.

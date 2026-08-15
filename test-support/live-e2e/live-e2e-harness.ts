@@ -20,6 +20,7 @@ import type { CompleteResponse } from '../../autobyteus-ts/src/llm/utils/respons
 import { SkillAccessMode } from '../../autobyteus-ts/src/agent/context/skill-access-mode.js';
 import { resolveTokenBudget } from '../../autobyteus-ts/src/agent/token-budget.js';
 import { CompactionPolicy } from '../../autobyteus-ts/src/memory/policies/compaction-policy.js';
+import { providerSafeCompactionText } from '../../autobyteus-ts/src/memory/presentation/unicode-safe-text.js';
 import {
   getWorkingContextMessageProvenance,
   type WorkingContextMessageProvenance,
@@ -43,6 +44,7 @@ import { AgentDefinition } from '../../autobyteus-server-ts/src/agent-definition
 import { AgentDefinitionService } from '../../autobyteus-server-ts/src/agent-definition/services/agent-definition-service.js';
 import { MEMORY_COMPACTOR_AGENT_DEFINITION_ID } from '../../autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.js';
 import { AutoByteusAgentRunBackendFactory } from '../../autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js';
+import { resolveAutoByteusRuntimeAgentToolExposure } from '../../autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-runtime-tool-exposure.js';
 import type { AgentRunBackend } from '../../autobyteus-server-ts/src/agent-execution/backends/agent-run-backend.js';
 import { AgentRun } from '../../autobyteus-server-ts/src/agent-execution/domain/agent-run.js';
 import { AgentRunConfig } from '../../autobyteus-server-ts/src/agent-execution/domain/agent-run-config.js';
@@ -115,6 +117,9 @@ export type LiveE2eCompactionAgentFlowResult = {
   projectedMemoryAndCurrentUserVerified: true;
   canonicalCompactorTaskFramingVerified: true;
   canonicalCompactorSourceToolTailVerified: true;
+  canonicalCompactorProviderSafeUnicodeVerified: true;
+  canonicalCompactorShieldOmissionPressureVerified: true;
+  unicodeShieldSourceImmutableVerified: true;
   qualityEvidence: {
     persistedMemory: {
       episodes: Record<string, unknown>[];
@@ -125,6 +130,7 @@ export type LiveE2eCompactionAgentFlowResult = {
   };
   canonicalCompactorAgentUsed: true;
   canonicalCompactorToolFree: true;
+  canonicalCompactorEffectiveToolNames: [];
   canonicalCompactorPromptSha256: string;
   managedSecretResolverUsed: boolean;
 };
@@ -140,6 +146,10 @@ const TARGET_HISTORY_OPEN_TAG = '<target_agent_conversation_history>';
 const TARGET_HISTORY_CLOSE_TAG = '</target_agent_conversation_history>';
 const MEMORY_COMPACTOR_TEMPLATE_PATH = fileURLToPath(new URL(
   '../../autobyteus-server-ts/src/built-in-agents/templates/memory-compactor/agent.md',
+  import.meta.url,
+));
+const UNICODE_SHIELD_TOOL_TRACE_FIXTURE_PATH = fileURLToPath(new URL(
+  '../../autobyteus-ts/tests/fixtures/memory/compaction-unicode-shield-tool-trace.json',
   import.meta.url,
 ));
 
@@ -184,6 +194,7 @@ const extractAgentMarkdownInstructions = (source: string): string => {
 
 const loadCanonicalCompactorEvidence = async (): Promise<{
   promptSha256: string;
+  effectiveToolNames: [];
   toolFree: true;
 }> => {
   const source = await fs.readFile(MEMORY_COMPACTOR_TEMPLATE_PATH, 'utf8');
@@ -199,7 +210,13 @@ const loadCanonicalCompactorEvidence = async (): Promise<{
   ) {
     throw new Error('LIVE_E2E_CANONICAL_COMPACTOR_DEFINITION_MISMATCH');
   }
+  const effectiveToolNames = resolveAutoByteusRuntimeAgentToolExposure(definition)
+    .requestedToolNames;
+  if (effectiveToolNames.length !== 0) {
+    throw new Error('LIVE_E2E_CANONICAL_COMPACTOR_EFFECTIVE_TOOLS_PRESENT');
+  }
   return {
+    effectiveToolNames: [],
     promptSha256: createHash('sha256').update(canonicalInstructions).digest('hex'),
     toolFree: true,
   };
@@ -235,6 +252,8 @@ const hasCanonicalSourceToolTail = (initialTask: string): boolean => {
 
 const inspectCanonicalCompactorTask = (runId: string): {
   taskFramingVerified: true;
+  providerSafeUnicodeVerified: true;
+  shieldOmissionPressureVerified: boolean;
   sourceToolTailVerified: boolean;
 } => {
   const store = new FileMemoryStore(appConfigProvider.config.getMemoryDir(), runId);
@@ -264,8 +283,21 @@ const inspectCanonicalCompactorTask = (runId: string): {
   ) {
     throw new Error('LIVE_E2E_CANONICAL_COMPACTOR_TASK_FRAMING_INVALID');
   }
+  if (
+    !providerSafeCompactionText.isProviderSafeText(processedTask)
+    || !providerSafeCompactionText.isProviderSafeText(initialTask)
+    || processedTask.includes('\uFFFD')
+  ) {
+    throw new Error('LIVE_E2E_CANONICAL_COMPACTOR_TASK_UNICODE_UNSAFE');
+  }
   return {
     taskFramingVerified: true,
+    providerSafeUnicodeVerified: true,
+    shieldOmissionPressureVerified:
+      initialTask.includes('<script setup>')
+      && initialTask.includes('</template>')
+      && initialTask.includes('… [')
+      && !initialTask.includes('🛡️'),
     sourceToolTailVerified: hasCanonicalSourceToolTail(initialTask),
   };
 };
@@ -587,6 +619,10 @@ export class LiveE2eScenarioExecution {
     const workspaceDirectory = path.join(ownedRoot, 'workspace');
     const memoryDirectory = path.join(ownedRoot, 'memory');
     const evidenceAPath = path.join(workspaceDirectory, 'incident-evidence-a.jsonl');
+    const unicodeBoundaryEvidencePath = path.join(
+      workspaceDirectory,
+      'unicode-boundary-evidence.json',
+    );
     const evidenceBPath = path.join(workspaceDirectory, 'incident-evidence-b.jsonl');
     const finalArtifactPath = path.join(workspaceDirectory, 'retained-incident-plan.json');
     await fs.mkdir(workspaceDirectory, { recursive: true });
@@ -606,11 +642,23 @@ export class LiveE2eScenarioExecution {
     };
     const newConstraint = 'preserve auditable rollback proof';
     const localModelScenario = this.scenario.providerId === 'LMSTUDIO';
+    const unicodeShieldFixture = JSON.parse(
+      await fs.readFile(UNICODE_SHIELD_TOOL_TRACE_FIXTURE_PATH, 'utf8'),
+    ) as { tool_result?: unknown };
+    const unicodeShieldSource = JSON.stringify(unicodeShieldFixture.tool_result, null, 2);
+    if (
+      !unicodeShieldSource.includes('🛡️')
+      || !unicodeShieldSource.includes('<script setup>')
+      || !unicodeShieldSource.includes('</template>')
+    ) {
+      throw new Error('LIVE_E2E_UNICODE_SHIELD_FIXTURE_INVALID');
+    }
     await fs.writeFile(
       evidenceAPath,
       buildCompactionEvidence('A', partA, localModelScenario ? 170 : 180),
       'utf8',
     );
+    await fs.writeFile(unicodeBoundaryEvidencePath, unicodeShieldSource, 'utf8');
     await fs.writeFile(
       evidenceBPath,
       buildCompactionEvidence('B', partB, localModelScenario ? 20 : 570),
@@ -736,13 +784,23 @@ export class LiveE2eScenarioExecution {
         1,
       );
       await postAndWait(
+        `Call read_file exactly once for "${unicodeBoundaryEvidencePath}" with `
+        + 'include_line_numbers=false. Do not call write_file. Preserve the result as ordinary evidence and '
+        + 'then respond concisely with UNICODE_BOUNDARY_EVIDENCE_INGESTED.',
+        2,
+      );
+      if (await fs.readFile(unicodeBoundaryEvidencePath, 'utf8') !== unicodeShieldSource) {
+        throw new Error('LIVE_E2E_UNICODE_SHIELD_SOURCE_MUTATED');
+      }
+      await postAndWait(
         `Call read_file exactly once for "${evidenceBPath}" with include_line_numbers=false. ` +
         'Do not call write_file. Learn the task anchor and then respond concisely with EVIDENCE_B_INGESTED ' +
         'plus the exact owner, mitigation, rejection_condition, and communication_channel values.',
-        2,
+        3,
       );
 
       await fs.rm(evidenceAPath, { force: true });
+      await fs.rm(unicodeBoundaryEvidencePath, { force: true });
       await fs.rm(evidenceBPath, { force: true });
       const finalInstruction =
         `The evidence files are deleted. Without rereading them, call write_file exactly once with the exact ` +
@@ -751,7 +809,7 @@ export class LiveE2eScenarioExecution {
         'customer, rollback_action, safety_rule, verification, owner, mitigation, rejection_condition, ' +
         `communication_channel, new_constraint. Use the exact retained values and set new_constraint to ` +
         `"${newConstraint}". Do not write Markdown.`;
-      await postAndWait(finalInstruction, 3);
+      await postAndWait(finalInstruction, 4);
 
       const finalContent = await fs.readFile(finalArtifactPath, 'utf8');
       const finalArtifact = JSON.parse(finalContent) as Record<string, unknown>;
@@ -837,8 +895,18 @@ export class LiveE2eScenarioExecution {
         inspectCanonicalCompactorTask(runId!));
       const canonicalCompactorSourceToolTailVerified = canonicalCompactorTasks
         .some(({ sourceToolTailVerified }) => sourceToolTailVerified);
+      const canonicalCompactorProviderSafeUnicodeVerified = canonicalCompactorTasks
+        .every(({ providerSafeUnicodeVerified }) => providerSafeUnicodeVerified);
+      const canonicalCompactorShieldOmissionPressureVerified = canonicalCompactorTasks
+        .some(({ shieldOmissionPressureVerified }) => shieldOmissionPressureVerified);
       if (!canonicalCompactorSourceToolTailVerified) {
         throw new Error('LIVE_E2E_CANONICAL_COMPACTOR_SOURCE_TOOL_TAIL_MISSING');
+      }
+      if (
+        !canonicalCompactorProviderSafeUnicodeVerified
+        || !canonicalCompactorShieldOmissionPressureVerified
+      ) {
+        throw new Error('LIVE_E2E_CANONICAL_COMPACTOR_UNICODE_EVIDENCE_MISSING');
       }
 
       const successfulTools = events.filter(
@@ -851,9 +919,9 @@ export class LiveE2eScenarioExecution {
         .map(({ payload }) => asString(payload.tool_name))
         .filter((value): value is string => value !== null);
       if (
-        successfulToolNames.filter((name) => name === 'read_file').length !== 2
+        successfulToolNames.filter((name) => name === 'read_file').length !== 3
         || successfulToolNames.filter((name) => name === 'write_file').length !== 1
-        || successfulTools.length !== 3
+        || successfulTools.length !== 4
         || failedTools.length !== 0
       ) {
         throw new Error('LIVE_E2E_COMPACTION_TOOL_SEQUENCE_INVALID');
@@ -869,12 +937,18 @@ export class LiveE2eScenarioExecution {
         'tool_call', 'tool_result',
         'tool_call', 'tool_result',
         'tool_call', 'tool_result',
+        'tool_call', 'tool_result',
       ];
       const expectedToolTraceNames = [
         'read_file', 'read_file',
         'read_file', 'read_file',
+        'read_file', 'read_file',
         'write_file', 'write_file',
       ];
+      const unicodeShieldSourceResults = rawTraceCorpus.filter((fact) =>
+        fact.traceType === 'tool_result'
+        && fact.toolName === 'read_file'
+        && fact.toolResult === unicodeShieldSource);
       if (
         JSON.stringify(toolTraceFacts.map(({ traceType }) => traceType))
           !== JSON.stringify(expectedToolTraceTypes)
@@ -885,6 +959,10 @@ export class LiveE2eScenarioExecution {
           index % 2 === 1 && fact.toolCallId !== toolTraceFacts[index - 1]?.toolCallId)
         || rawTraceCorpus.some(({ traceType }) => traceType === 'tool_continuation')
         || rawTraceCorpus.some(({ content }) => content.includes('Native API tool continuation'))
+        || unicodeShieldSourceResults.length !== 1
+        || typeof unicodeShieldSourceResults[0]?.toolResult !== 'string'
+        || !unicodeShieldSourceResults[0].toolResult.includes('🛡️')
+        || unicodeShieldSourceResults[0].toolResult.includes('\uFFFD')
       ) {
         throw new Error('LIVE_E2E_NATIVE_TRACE_LIFECYCLE_INVALID');
       }
@@ -945,7 +1023,11 @@ export class LiveE2eScenarioExecution {
         canonicalCompactorPromptSha256: canonicalCompactor.promptSha256,
         canonicalCompactorTaskFramingVerified: true,
         canonicalCompactorSourceToolTailVerified,
+        canonicalCompactorProviderSafeUnicodeVerified,
+        canonicalCompactorShieldOmissionPressureVerified,
         canonicalCompactorToolFree: canonicalCompactor.toolFree,
+        canonicalCompactorEffectiveToolNames: canonicalCompactor.effectiveToolNames,
+        unicodeShieldSourceImmutableVerified: true,
         persistedMemory: {
           episodes,
           semanticFacts,
@@ -964,6 +1046,9 @@ export class LiveE2eScenarioExecution {
       })}\n`);
       if (
         !projectedCompactedMemoryUserRegion
+        || !providerSafeCompactionText.isProviderSafeText(projectedCompactedMemoryUserRegion)
+        || !providerSafeCompactionText.isProviderSafeText(projectedInvocation)
+        || projectedCompactedMemoryUserRegion.includes('\uFFFD')
         || !projectedCompactedMemoryUserRegion.includes(
           'You are continuing an ongoing task. Here is a concise summary of earlier work',
         )
@@ -996,6 +1081,9 @@ export class LiveE2eScenarioExecution {
         projectedMemoryAndCurrentUserVerified: true,
         canonicalCompactorTaskFramingVerified: true,
         canonicalCompactorSourceToolTailVerified: true,
+        canonicalCompactorProviderSafeUnicodeVerified: true,
+        canonicalCompactorShieldOmissionPressureVerified: true,
+        unicodeShieldSourceImmutableVerified: true,
         qualityEvidence: {
           persistedMemory: {
             episodes,
@@ -1006,6 +1094,7 @@ export class LiveE2eScenarioExecution {
         },
         canonicalCompactorAgentUsed: true,
         canonicalCompactorToolFree: true,
+        canonicalCompactorEffectiveToolNames: canonicalCompactor.effectiveToolNames,
         canonicalCompactorPromptSha256: canonicalCompactor.promptSha256,
         managedSecretResolverUsed: this.scenario.requiredSecretId !== null,
       };

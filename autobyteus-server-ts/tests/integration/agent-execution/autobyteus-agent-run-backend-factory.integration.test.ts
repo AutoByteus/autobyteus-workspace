@@ -13,6 +13,7 @@ import { AgentDefinition } from "../../../src/agent-definition/domain/models.js"
 import { AutoByteusAgentRunBackendFactory } from "../../../src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
+import { MEMORY_COMPACTOR_AGENT_DEFINITION_ID } from "../../../src/built-in-agents/built-in-agent-registry.js";
 
 class DummyLLM extends BaseLLM {
   protected async _sendMessagesToLLM(_messages: Message[]): Promise<CompleteResponse> {
@@ -142,6 +143,36 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
     expect(terminateResult.accepted).toBe(true);
     expect(backend.isActive()).toBe(false);
     expect(agentFactory.getAgent(backend.runId)).toBeUndefined();
+  });
+
+  it("materializes the built-in Memory Compactor with no effective runtime tools", async () => {
+    persistedAgentDefinition = new AgentDefinition({
+      id: MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
+      name: "Memory Compactor",
+      role: "Compaction specialist",
+      description: "Compacts target-agent memory.",
+      instructions: "Return the required structured memory object.",
+      toolNames: [],
+    });
+    const runId = "memory_compactor_runtime_tools_empty_11111111";
+    const backend = await backendFactory.createBackend(
+      new AgentRunConfig({
+        agentDefinitionId: MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
+        llmModelIdentifier: "dummy-model",
+        autoExecuteTools: false,
+        memoryDir: path.join(memoryDir, "agents", runId),
+      }),
+      runId,
+    );
+
+    expect(agentFactory.getAgent(runId)?.context.config.tools).toEqual([]);
+    expect(persistedAgentDefinition.toolNames).toEqual([]);
+    expect(backend.getContext().config.agentDefinitionId)
+      .toBe(MEMORY_COMPACTOR_AGENT_DEFINITION_ID);
+
+    const terminateResult = await backend.terminate();
+    expect(terminateResult.accepted).toBe(true);
+    expect(agentFactory.getAgent(runId)).toBeUndefined();
   });
 
   it("respects a preferred run id and provisions the standalone memory directory explicitly", async () => {

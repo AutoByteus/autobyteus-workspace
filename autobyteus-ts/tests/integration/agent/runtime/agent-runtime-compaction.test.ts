@@ -31,6 +31,7 @@ import {
 import { SkillRegistry } from '../../../../src/skills/registry.js';
 import { resetAgentFactory, waitForCondition, waitForStatus } from './runtime-test-harness.js';
 import { RawTraceItem } from '../../../../src/memory/models/raw-trace-item.js';
+import { providerSafeCompactionText } from '../../../../src/memory/presentation/unicode-safe-text.js';
 
 type CompactionEventPayload = {
   phase: string;
@@ -55,6 +56,7 @@ const isCompactionEventPayload = (payload: unknown): payload is CompactionEventP
   typeof payload === 'object' &&
   typeof (payload as { phase?: unknown }).phase === 'string';
 const promptSizedUserMessage = (label: string): string => `${label} ${'context '.repeat(500)}`;
+const acceptedBoundaryEpisode = 'First turn summary '.padEnd(3_999, 'x') + '🛡️tail';
 
 const snapshotCanonicalCompactionFiles = (agentDir: string): Record<string, string | null> => {
   const snapshot: Record<string, string | null> = {};
@@ -199,7 +201,7 @@ describe('Agent runtime compaction integration', () => {
     const compactionRunner = new RecordingCompactionAgentRunner([
       'source-task commentary without a compaction object',
       JSON.stringify({
-        episodes: [{ summary: 'First turn summary' }],
+        episodes: [{ summary: acceptedBoundaryEpisode }],
         critical_issues: [],
         unresolved_work: [],
         durable_facts: [
@@ -368,6 +370,12 @@ describe('Agent runtime compaction integration', () => {
       );
       expect(compactionRunner.tasks[1]?.prompt.endsWith(compactionRunner.tasks[0]!.prompt))
         .toBe(true);
+      expect(providerSafeCompactionText.isProviderSafeText(compactionRunner.tasks[0]!.prompt))
+        .toBe(true);
+      expect(providerSafeCompactionText.isProviderSafeText(compactionRunner.tasks[1]!.prompt))
+        .toBe(true);
+      expect(compactionRunner.tasks[0]?.prompt).not.toContain('\uFFFD');
+      expect(compactionRunner.tasks[1]?.prompt).not.toContain('\uFFFD');
 
       expect(memoryManager?.getWorkingContextMessages().map((message) => message.toDict()))
         .not.toEqual(messagesBeforeCompaction);
@@ -386,6 +394,15 @@ describe('Agent runtime compaction integration', () => {
         (message) => message.role === 'user' && typeof message.content === 'string' && message.content.includes('Earlier progress:')
       );
       expect(memorySummaryMessage?.content).toContain('First turn summary');
+      expect(memorySummaryMessage?.content).not.toContain('🛡');
+      expect(memorySummaryMessage?.content).not.toContain('\uFFFD');
+      expect(providerSafeCompactionText.isProviderSafeText(memorySummaryMessage?.content ?? ''))
+        .toBe(true);
+      for (const message of fifthRequest) {
+        if (typeof message.content === 'string') {
+          expect(providerSafeCompactionText.isProviderSafeText(message.content)).toBe(true);
+        }
+      }
       expect(fifthRequest.at(-1)?.content).toBe('Observe a missing prompt-token total.');
 
       notifier?.unsubscribe(EventType.AGENT_COMPACTION_STATUS_UPDATED, onCompactionStatus);
@@ -400,6 +417,105 @@ describe('Agent runtime compaction integration', () => {
       } else {
         process.env.AUTOBYTEUS_COMPACTION_DEBUG_LOGS = originalCompactionDebugLogs;
       }
+    }
+  }, 30000);
+
+  it('fails before a child launch and blocks the USER retry dispatch when the final prompt invariant fails', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'agent-runtime-compaction-input-failure-'));
+    const compactionRunner = new RecordingCompactionAgentRunner(JSON.stringify({
+      episodes: [{ summary: 'This output must never be requested.' }],
+      critical_issues: [],
+      unresolved_work: [],
+      durable_facts: [],
+      user_preferences: [],
+      important_artifacts: [],
+    }));
+    const mainLLM = new RecordingMainLLM(
+      createMainModel(),
+      new LLMConfig({
+        systemMessage: 'Runtime compaction system prompt',
+        maxTokens: 200,
+        compactionRatio: 0.5,
+        safetyMarginTokens: 10,
+      }),
+      [200, 200, 200, 3_000],
+    );
+    const agent = new AgentFactory().createAgent(createConfig(tempDir, mainLLM, compactionRunner));
+    const compactionEvents: CompactionEventPayload[] = [];
+
+    try {
+      agent.start();
+      expect(await waitForStatus(
+        agent.context,
+        (status) => status === AgentStatus.IDLE || status === AgentStatus.ERROR,
+      )).toBe(true);
+      const notifier = agent.context.statusManager?.notifier;
+      const onCompactionStatus = (payload?: unknown) => {
+        if (isCompactionEventPayload(payload)) compactionEvents.push(payload);
+      };
+      notifier?.subscribe(EventType.AGENT_COMPACTION_STATUS_UPDATED, onCompactionStatus);
+
+      for (let turnIndex = 1; turnIndex <= 3; turnIndex += 1) {
+        await agent.postUserMessage(new AgentInputUserMessage(
+          promptSizedUserMessage(`Input-failure seed ${turnIndex}`),
+        ));
+        expect(await waitForCondition(
+          () => mainLLM.requests.length === turnIndex && agent.currentStatus === AgentStatus.IDLE,
+          10000,
+        )).toBe(true);
+      }
+
+      const originalIsProviderSafeText = providerSafeCompactionText.isProviderSafeText
+        .bind(providerSafeCompactionText);
+      vi.spyOn(providerSafeCompactionText, 'isProviderSafeText').mockImplementation((value) =>
+        value.includes('Here is the conversation history of the target agent')
+          ? false
+          : originalIsProviderSafeText(value));
+      await agent.postUserMessage(new AgentInputUserMessage('Trigger local input construction failure.'));
+      expect(await waitForCondition(
+        () => mainLLM.requests.length === 4
+          && compactionEvents.filter(({ phase }) => phase === 'failed').length === 1
+          && agent.context.state.memoryManager?.isCompactionAwaitingUserRetry() === true
+          && agent.currentStatus === AgentStatus.IDLE,
+        10000,
+      )).toBe(true);
+
+      expect(compactionRunner.tasks).toHaveLength(0);
+      expect(compactionEvents.map(({ phase }) => phase))
+        .toEqual(['requested', 'started', 'failed']);
+      expect(compactionEvents.at(-1)?.error_message).toContain('[input_construction_failure]');
+      const store = agent.context.state.memoryManager?.store as FileMemoryStore;
+      expect(store.list(MemoryType.EPISODIC)).toHaveLength(0);
+      expect(store.list(MemoryType.SEMANTIC)).toHaveLength(0);
+      expect(store.readArchiveRawTraces()).toHaveLength(0);
+      const canonicalAfterInitialFailure = snapshotCanonicalCompactionFiles(store.agentDir);
+
+      await agent.postUserMessage(new AgentInputUserMessage(
+        'continue-after-input-construction-failure',
+      ));
+      expect(await waitForCondition(
+        () => compactionEvents.filter(({ phase }) => phase === 'failed').length === 2
+          && agent.context.state.memoryManager?.isCompactionAwaitingUserRetry() === true
+          && agent.currentStatus === AgentStatus.IDLE,
+        10000,
+      )).toBe(true);
+
+      expect(mainLLM.requests).toHaveLength(4);
+      expect(compactionRunner.tasks).toHaveLength(0);
+      expect(compactionEvents.map(({ phase }) => phase))
+        .toEqual(['requested', 'started', 'failed', 'started', 'failed']);
+      expect(compactionEvents.at(-1)?.error_message).toContain('[input_construction_failure]');
+      expect(snapshotCanonicalCompactionFiles(store.agentDir)).toEqual(canonicalAfterInitialFailure);
+      expect(store.list(MemoryType.EPISODIC)).toHaveLength(0);
+      expect(store.list(MemoryType.SEMANTIC)).toHaveLength(0);
+      expect(store.readArchiveRawTraces()).toHaveLength(0);
+
+      notifier?.unsubscribe(EventType.AGENT_COMPACTION_STATUS_UPDATED, onCompactionStatus);
+    } finally {
+      vi.restoreAllMocks();
+      if (agent.isRunning) await agent.stop(2);
+      await mainLLM.cleanup();
+      fs.rmSync(tempDir, { recursive: true, force: true });
     }
   }, 30000);
 
