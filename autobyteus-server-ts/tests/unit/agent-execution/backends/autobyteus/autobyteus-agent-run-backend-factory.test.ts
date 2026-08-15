@@ -22,6 +22,7 @@ import { TeamBackendKind } from "../../../../../src/agent-team-execution/domain/
 import { buildTaskDelegationToolContextFromNativeContext } from "../../../../../src/agent-tools/task-delegation/task-delegation-autobyteus-context.js";
 import { registerAgentCommunicationTools } from "../../../../../src/agent-tools/agent-communication/register-agent-communication-tools.js";
 import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-enum.js";
+import { registerTools } from "autobyteus-ts/tools/register-tools.js";
 
 class DummyLLM extends BaseLLM {
   protected async _sendMessagesToLLM(_messages: Message[]): Promise<CompleteResponse> {
@@ -142,6 +143,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
 
   beforeEach(() => {
     defaultToolRegistry.clear();
+    registerTools();
     registerAgentCommunicationTools();
     defaultToolRegistry.registerTool(createToolDefinition(AssignTaskTool, ToolCategory.TASK_MANAGEMENT));
   });
@@ -191,7 +193,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       provider_specific_flag: "kept",
     };
 
-    await (factory as any).buildAgentConfig(
+    const built = await (factory as any).buildAgentConfig(
       new AgentRunConfig({
         agentDefinitionId: "agent-1",
         llmModelIdentifier: "dummy-model",
@@ -206,6 +208,12 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     expect(createLLM).toHaveBeenCalledWith("dummy-model", rawLlmConfig);
     expect(createLLM.mock.calls[0]?.[1]).toBe(rawLlmConfig);
     expect(createLLM.mock.calls[0]?.[1]).not.toBeInstanceOf(LLMConfig);
+    expect(built.agentConfig.tools.map((tool: BaseTool) => tool.definition?.name)).toEqual([
+      "run_bash",
+      "read_file",
+      "edit_file",
+      "write_file",
+    ]);
   });
 
   it("wires one subject-scoped API-key resolver into the core factory", async () => {
@@ -284,6 +292,10 @@ describe("AutoByteusAgentRunBackendFactory", () => {
 
     expect(built.agentConfig).toBeInstanceOf(AgentConfig);
     expect(built.agentConfig.tools.map((tool: BaseTool) => tool.definition?.name)).toEqual([
+      "run_bash",
+      "read_file",
+      "edit_file",
+      "write_file",
       "send_message_to",
       "delegate_task",
     ]);
@@ -359,6 +371,10 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     );
 
     expect(built.agentConfig.tools.map((tool: BaseTool) => tool.definition?.name)).toEqual([
+      "run_bash",
+      "read_file",
+      "edit_file",
+      "write_file",
       "send_message_to",
       "delegate_task",
     ]);
@@ -416,6 +432,10 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     );
 
     expect(built.agentConfig.tools.map((tool: BaseTool) => tool.definition?.name)).toEqual([
+      "run_bash",
+      "read_file",
+      "edit_file",
+      "write_file",
       "send_message_to",
       "assign_task_to",
     ]);
@@ -477,7 +497,9 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       "run-professor",
     );
 
-    const sendMessageTool = built.agentConfig.tools[0] as BaseTool<unknown, Record<string, unknown>, string>;
+    const sendMessageTool = built.agentConfig.tools.find(
+      (tool: BaseTool) => tool.definition?.name === "send_message_to",
+    ) as BaseTool<unknown, Record<string, unknown>, string>;
 
     await expect(
       sendMessageTool.execute({}, {
