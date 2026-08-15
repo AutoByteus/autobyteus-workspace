@@ -1,0 +1,35 @@
+{
+  "runtimeKind": "codex_app_server",
+  "model": "gpt-5.6-luna",
+  "runId": "daily_assistant_03d6f498e67b400086f0489cd49cf738",
+  "sent": true,
+  "terminal": "TURN_COMPLETED",
+  "error": null,
+  "typeCounts": {
+    "CONNECTED": 1,
+    "AGENT_STATUS": 4,
+    "AGENT_COMMAND_ACK": 1,
+    "TURN_STARTED": 1,
+    "SEGMENT_START": 1,
+    "SEGMENT_CONTENT": 1,
+    "SEGMENT_END": 1,
+    "TOKEN_USAGE_UPDATED": 1,
+    "TURN_COMPLETED": 1
+  },
+  "conversation": [
+    {
+      "kind": "message",
+      "role": "user",
+      "content": "Reply with exactly STANDALONE_codex_app_server_OK and do not call tools.",
+      "media": null,
+      "ts": 1786826494.5
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "content": "STANDALONE_codex_app_server_OK",
+      "media": null,
+      "ts": 1786826497.473
+    }
+  ]
+}

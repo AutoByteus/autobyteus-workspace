@@ -1,0 +1,4 @@
+target=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-007-live-20260815-1.db
+target_absent_before=true
+migration_dir_count=21
+protected_ports_observation_only:

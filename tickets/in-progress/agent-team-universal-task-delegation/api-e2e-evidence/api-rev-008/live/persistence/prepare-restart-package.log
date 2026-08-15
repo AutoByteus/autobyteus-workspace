@@ -1,0 +1,23 @@
+{
+  "at": "2026-08-15T21:44:01.923Z",
+  "runtimeRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/.tmp/api-rev-008-live-20260815-1",
+  "targetRoot": "stale_team_stale_1786830141758_c2d8537ad0404cc4adf6df1703ffc878",
+  "validSiblingRoot": "stale_team_stale_1786830141758_718eec8e6a834770b96c85022e078ff8",
+  "invalidRootId": "a-invalid-root-1786830241925",
+  "realActiveTaskId": "task_daf3ec78f8e3449ebabc4bddbaf479fe",
+  "awaitingTaskId": "task_daf3ec78f8e3449ebabc4bddbaf479fe_awaiting",
+  "acceptedTaskId": "task_daf3ec78f8e3449ebabc4bddbaf479fe_accepted",
+  "activeRunId": "stale_worker_stale_1786830141758_f282a38f1156415e82665b3ecd0b103d",
+  "awaitingRunId": "stale_worker_stale_1786830141758_f282a38f1156415e82665b3ecd0b103d_awaiting",
+  "acceptedRunId": "stale_worker_stale_1786830141758_f282a38f1156415e82665b3ecd0b103d_accepted",
+  "orphanRunId": "stale_worker_stale_1786830141758_f282a38f1156415e82665b3ecd0b103d_orphan",
+  "expectedBeforeRestart": {
+    "statuses": [
+      "active",
+      "awaiting_review",
+      "accepted"
+    ],
+    "unsettledExecutions": 4
+  },
+  "operationalDatabaseAction": "NONE"
+}

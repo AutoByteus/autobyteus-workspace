@@ -1,0 +1,44 @@
+{
+  "teamRunId": "stale_team_stale_1786830141758_c2d8537ad0404cc4adf6df1703ffc878",
+  "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+  "durationMs": 15840,
+  "sent": true,
+  "terminalAt": {
+    "type": "TURN_COMPLETED",
+    "atMs": 3817
+  },
+  "websocketError": null,
+  "messageCount": 91,
+  "typeCounts": {
+    "CONNECTED": 1,
+    "TEAM_EXECUTION_VIEW_SNAPSHOT": 1,
+    "TEAM_RUN_LIFECYCLE": 1,
+    "MEMBER_INPUT_MESSAGE": 1,
+    "TURN_STARTED": 1,
+    "SEGMENT_START": 2,
+    "SEGMENT_CONTENT": 72,
+    "SEGMENT_END": 2,
+    "TOKEN_USAGE_UPDATED": 2,
+    "TOOL_EXECUTION_STARTED": 1,
+    "TOOL_LOG": 3,
+    "TASK_DELEGATION_EVENT": 1,
+    "TOOL_EXECUTION_SUCCEEDED": 1,
+    "ASSISTANT_COMPLETE": 1,
+    "TURN_COMPLETED": 1
+  },
+  "tasks": [
+    {
+      "taskId": "task_daf3ec78f8e3449ebabc4bddbaf479fe",
+      "delegatorAgentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "recipientAddress": "/worker",
+      "targetAgentRunId": "stale_worker_stale_1786830141758_f282a38f1156415e82665b3ecd0b103d",
+      "targetTeamRunId": null,
+      "status": "active",
+      "description": "Keep this real task active across a process restart. This is a stale-task restart probe. Do not finalize the task; leave it nonterminal and active so it can be repaired/restarted after process restart. Report only when explicitly asked, and preserve task continuity across restart.",
+      "createdAt": "2026-08-15T21:42:24.705Z",
+      "referenceFiles": [],
+      "updates": []
+    }
+  ],
+  "communications": []
+}

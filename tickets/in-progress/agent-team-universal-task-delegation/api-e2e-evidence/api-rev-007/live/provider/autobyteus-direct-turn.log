@@ -1,0 +1,62 @@
+{
+  "teamRunId": "utd_root_team_api_rev_007_1786826064862_caef3a0c34d74ede9508c8f7b19182c4",
+  "agentRunId": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+  "durationMs": 22068,
+  "sent": true,
+  "terminalAt": null,
+  "websocketError": null,
+  "messageCount": 261,
+  "typeCounts": {
+    "CONNECTED": 1,
+    "TEAM_EXECUTION_VIEW_SNAPSHOT": 1,
+    "TEAM_RUN_LIFECYCLE": 1,
+    "MEMBER_INPUT_MESSAGE": 2,
+    "TURN_STARTED": 1,
+    "SEGMENT_START": 4,
+    "SEGMENT_CONTENT": 219,
+    "SEGMENT_END": 4,
+    "TOKEN_USAGE_UPDATED": 4,
+    "TOOL_EXECUTION_STARTED": 4,
+    "TOOL_LOG": 12,
+    "TASK_DELEGATION_EVENT": 4,
+    "TOOL_EXECUTION_SUCCEEDED": 4
+  },
+  "tasks": [
+    {
+      "taskId": "task_6acd721668fd4b079c292623e09999c2",
+      "delegatorAgentRunId": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+      "recipientAddress": "/worker",
+      "targetAgentRunId": "utd_worker_api_rev_007_1786826064862_7756877339b24424ab8bc93ca398a50e",
+      "targetTeamRunId": null,
+      "status": "accepted",
+      "description": "Return E2E_DIRECT_TASK_RESULT_42",
+      "createdAt": "2026-08-15T20:34:44.156Z",
+      "referenceFiles": [],
+      "updates": [
+        {
+          "kind": "submission",
+          "submissionId": "submission_63eb0a07af3a4f878c221421800f9ee1",
+          "reviewId": null,
+          "interruptionId": null,
+          "reviewedSubmissionId": null,
+          "decision": null,
+          "content": "E2E_DIRECT_TASK_RESULT_42",
+          "createdAt": "2026-08-15T20:34:45.619Z",
+          "referenceFiles": []
+        },
+        {
+          "kind": "review",
+          "submissionId": null,
+          "reviewId": "review_0f7151bd460c4408a0bcc9d84a73e218",
+          "interruptionId": null,
+          "reviewedSubmissionId": "submission_63eb0a07af3a4f878c221421800f9ee1",
+          "decision": "accept",
+          "content": "Accepted the submitted result containing the requested marker.",
+          "createdAt": "2026-08-15T20:35:02.781Z",
+          "referenceFiles": []
+        }
+      ]
+    }
+  ],
+  "communications": []
+}

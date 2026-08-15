@@ -1,0 +1,16 @@
+at=2026-08-15T20:58:26Z
+head=c853559929470e3455a7f7c160d4bd02a6a380dd
+unmerged_count=0
+git_diff_check=PASS
+git_diff_cached_check=PASS
+api_e2e_changed_production_or_test_paths:
+api_e2e_changed_production_or_test_path_count=0
+retired_path_absent=autobyteus-server-ts/tests/e2e/token-usage/token-usage-canonical-execution-address-graphql.e2e.test.ts
+retired_path_absent=autobyteus-server-ts/tests/e2e/token-usage/token-usage-legacy-path-columns-drop-startup.e2e.test.ts
+active_skip_only_todo=NONE (verified across 104 unique selected current paths with exact rooted paths; rg exit 1/no matches)
+authoritative_ticket_deletion_import_audit=/tmp/crr019-ticket-deletion-import-audit.log
+REMAINING_TICKET_DELETION_IMPORTS=0
+AFFECTED_FILES=0
+RESULT=PASS
+crr019_audit_sha256=be90f050f2005bc2101e480d6649caceac2361a458089ae48672a50101683780
+status=PASS

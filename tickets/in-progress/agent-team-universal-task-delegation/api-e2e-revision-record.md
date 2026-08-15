@@ -9,6 +9,9 @@
 | API-REV-003 | `code_reviewer` / CRR-008 / round 3 | SR-009, ARCH-REV-005, IR-006, CRR-008 | Fail / 76.6% | Fail / 81.0% |
 | API-REV-004 | `code_reviewer` / CRR-010 / round 4 | SR-009, ARCH-REV-005, IR-007, CRR-010 | Fail / 81.0% | Fail / 80.1% |
 | API-REV-005 | `code_reviewer` / CRR-013 / round 5 | SR-009, ARCH-REV-005, IR-009, CRR-013 | Fail / 80.1% | Fail / 93.3% |
+| API-REV-006 | `code_reviewer` / CRR-015 / round 6 | SR-009, ARCH-REV-005, IR-010, CRR-015 | Fail / 93.3% | Pass / 98.3% |
+| API-REV-007 | `code_reviewer` / CRR-019 / round 7 | SR-009, ARCH-REV-005, IR-013, CRR-019 | Pass / 98.3% (pre-integration historical) | Fail / 97.3% |
+| API-REV-008 | `code_reviewer` / CRR-021 / round 8 | SR-009, ARCH-REV-005, IR-014, CRR-021 | Fail / 97.3% | Pass / 98.3% |
 
 ## Revision Entries
 
@@ -165,3 +168,47 @@ None.
 - Durable package: 164 paths = 11 added / 122 updated / 31 removed; 132 active changed tests Pass; zero missing relative imports; zero active skip/only/todo; exact inventory/patch match and reverse apply Pass.
 - Safety: supported secret import only into checked disposable target; exact PID/database proof; exact owned cleanup; operational database inspection/action NONE; protected 60004/31004 action NONE; incident disclosure preserved.
 - Routing: `code_reviewer` for mandatory proportional review of the cumulative durable package before delivery.
+
+### API-REV-007 — Integrated matrix passes except mandatory before-listen restart repair
+
+- Triggering role/report: `code_reviewer`, CRR-019 complete cumulative integrated source review.
+- Related revisions: cumulative SR-009 / ARCH-REV-005 / IR-013 / CRR-019.
+- Integrated source: `c853559929470e3455a7f7c160d4bd02a6a380dd`.
+- Prior authority: API-REV-006 **Pass / 98.3%**, historical pre-integration evidence only.
+- Current authoritative result: **Fail / 97.3%**.
+- New finding: `API-F-007 / API-UTD-RESTART-007`.
+- Repository/build evidence: exact IR-013 12 files / 53 tests; cumulative server 70 files / 318 passed / 1 existing opt-in skip; core 33 / 184; web 34 / 257; production TypeScript, full server build/bootstrap, and Nuxt build all Pass.
+- Real system evidence: fresh AutoByteus/Codex/Claude direct and nested Team lifecycles; repeated target; invalid-address rejection; three intrinsic `get_handoff_rules` calls; three standalone Agents; imported Classroom exact `/student` and `/professor` LLM calls; desktop/mobile; direct/nested context files; process reopen; explicit restore/no duplication; 21 Prisma and 16/16 app-data migrations.
+- Failure: after a real active task and process restart, the built server listened before repair; the first public history read still returned `active`, zero interruption updates, and `settled_at: null`. Only explicit `restoreAgentTeamRun` invoked the existing correct/idempotent repair loader.
+- Source-origin evidence: startup `TeamRunV1PackageCatalog.rebuild()` validates/adopts without repair; `TeamRunStatePackageLoader.loadAndRepair()` has one production caller, `AgentTeamRunManager.restoreTeamRun()`.
+- UC/AC accounting: `75/77` Pass; `UC-017` and `AC-043` Fail; zero Not Tested.
+- Durable coverage delta: none. Ticket evidence scripts are not repository-resident durable tests.
+- Safety: checked disposable target only; supported secret/package import; exact PID/path proof; exact owned cleanup; operational database and protected-port action `NONE`; incident hash preserved.
+- Canonical artifacts updated: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md`.
+- Recommended recipient: `code_reviewer` for focused failure-origin review and routing of the preliminary implementation-source Local Fix.
+
+### API-REV-008 — IR-014 closes restart repair; complete current matrix passes
+
+- Triggering role/report: `code_reviewer`, CRR-021.
+- Related revisions: cumulative SR-009 / ARCH-REV-005 / IR-014 / CRR-021.
+- Source: `03b91d079af71b996ab4cadfe985ca2b2fddf049`.
+- Prior finding: `API-F-007 / API-UTD-RESTART-007`; failed rows `UC-017` and `AC-043`.
+- Authoritative result: **Pass / 98.3%**.
+- Prior result: API-REV-007 **Fail / 97.3%**.
+- Durable repository coverage delta: `0 added / 0 updated / 0 removed`; all new probes and outputs are ticket-owned evidence only.
+- Repository/build delta: current server `71 files / 320 tests` plus one declared opt-in skip; core `33 / 184`; web `34 / 257`; production TypeScript, full server build/sanitized bootstrap, Nuxt production build and 15-route prerender all Pass.
+- Environment delta: new checked runtime `tests/.tmp/api-rev-008-live-20260815-1`, SQLite `db/api-rev-008-live-20260815-1.db`, ports `60313/31313`, supported isolated secret import, public 98-Agent/20-Team package import, and exact owned cleanup.
+
+#### Prior Failure Resolution
+
+| Prior scenario / failure | Previous classification | Current resolution | Evidence |
+| --- | --- | --- | --- |
+| API-F-007 / API-UTD-RESTART-007; UC-017; AC-043 | implementation Local Fix | Resolved downstream. Repair completed before listen and before the first public read; active/awaiting interrupted once, accepted stayed accepted, all surviving executions settled, orphan disappeared, invalid-root failure was isolated, valid sibling/new root remained available, and repeated explicit restore was idempotent. | `api-e2e-evidence/api-rev-008/live/persistence/startup-repair-public-assertion.json`; `startup-repair-before-listen-correlation.log` |
+
+- Fresh real coverage: AutoByteus/Codex/Claude direct and nested Team task lifecycles, intrinsic handoff tool, all three standalone runtimes, exact invalid-address rejection, repeated-target independence, imported Classroom exact `/student` and `/professor` calls with reciprocal AgentRuns, desktop/mobile, context files, stop/reopen, restore/reconnect, 21 Prisma migrations, 16/16 app-data migrations, and no duplication.
+- UC/AC accounting: `77/77 Pass`; zero Fail and zero Not Tested.
+- Safety: operational database inspection/action `NONE`; protected `60004/31004` action `NONE`; exact owned runtime/database/sidecars/listeners absent; incident disclosure, stashes, backups, and no-rollback/no-repair state preserved.
+- Canonical artifacts updated: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md`.
+- New or remaining failure IDs: none.
+- Residual risks: provider tool choice is probabilistic outside controlled prompts; one declared Claude binary test remains opt-in but fresh real Claude Team/nested/tool/standalone rows pass; browser validates the web-equivalent renderer rather than unchanged Electron-shell-specific behavior.
+- Recommended recipient: `code_reviewer` for proportional test-code review; with zero durable API/E2E changes, expected disposition is `Not Applicable` after package accounting.

@@ -1,0 +1,1 @@
+{"query":"query { getAppDataMigrations { migrationId displayName status requiredOnStartup canRetry attempts startedAt completedAt summary errorMessage logPath } }"}

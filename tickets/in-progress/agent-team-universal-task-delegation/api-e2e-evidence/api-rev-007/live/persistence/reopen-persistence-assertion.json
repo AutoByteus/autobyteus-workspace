@@ -1,0 +1,24 @@
+{
+  "prePhase": "pre-reopen",
+  "postPhase": "post-reopen",
+  "sameRunIds": true,
+  "taskAndMessageExact": true,
+  "treeExact": true,
+  "runs": {
+    "utd_root_team_api_rev_007_1786826064862_58134fcbc99e4f98b812ae8e63cd5e12": {
+      "taskCount": 3,
+      "messageCount": 0,
+      "statuses": [
+        "accepted",
+        "accepted",
+        "accepted"
+      ]
+    },
+    "classroom_simulation_team_4901faf6cb294ec98282d4378c71f3cd": {
+      "taskCount": 0,
+      "messageCount": 2,
+      "statuses": []
+    }
+  },
+  "pass": true
+}

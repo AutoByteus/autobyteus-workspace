@@ -1,0 +1,18 @@
+{
+  "stamp": "stale_1786830141758",
+  "coordinator": {
+    "id": "stale-coordinator-stale-1786830141758",
+    "name": "stale_coordinator_stale_1786830141758"
+  },
+  "worker": {
+    "id": "stale-worker-stale-1786830141758",
+    "name": "stale_worker_stale_1786830141758"
+  },
+  "team": {
+    "id": "stale-team-stale-1786830141758",
+    "name": "stale_team_stale_1786830141758"
+  },
+  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-008/live/workspaces/stale_1786830141758/",
+  "teamRunId": "stale_team_stale_1786830141758_c2d8537ad0404cc4adf6df1703ffc878",
+  "coordinatorAgentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772"
+}

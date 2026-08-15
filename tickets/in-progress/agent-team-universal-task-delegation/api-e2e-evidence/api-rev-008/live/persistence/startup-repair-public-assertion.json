@@ -1,0 +1,670 @@
+{
+  "at": "2026-08-15T21:45:28.983Z",
+  "firstReadAt": "2026-08-15T21:45:28.823Z",
+  "fixture": {
+    "at": "2026-08-15T21:44:01.923Z",
+    "runtimeRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/.tmp/api-rev-008-live-20260815-1",
+    "targetRoot": "stale_team_stale_1786830141758_c2d8537ad0404cc4adf6df1703ffc878",
+    "validSiblingRoot": "stale_team_stale_1786830141758_718eec8e6a834770b96c85022e078ff8",
+    "invalidRootId": "a-invalid-root-1786830241925",
+    "realActiveTaskId": "task_daf3ec78f8e3449ebabc4bddbaf479fe",
+    "awaitingTaskId": "task_daf3ec78f8e3449ebabc4bddbaf479fe_awaiting",
+    "acceptedTaskId": "task_daf3ec78f8e3449ebabc4bddbaf479fe_accepted",
+    "activeRunId": "stale_worker_stale_1786830141758_f282a38f1156415e82665b3ecd0b103d",
+    "awaitingRunId": "stale_worker_stale_1786830141758_f282a38f1156415e82665b3ecd0b103d_awaiting",
+    "acceptedRunId": "stale_worker_stale_1786830141758_f282a38f1156415e82665b3ecd0b103d_accepted",
+    "orphanRunId": "stale_worker_stale_1786830141758_f282a38f1156415e82665b3ecd0b103d_orphan",
+    "expectedBeforeRestart": {
+      "statuses": [
+        "active",
+        "awaiting_review",
+        "accepted"
+      ],
+      "unsettledExecutions": 4
+    },
+    "operationalDatabaseAction": "NONE"
+  },
+  "targetBeforeExplicitRestore": {
+    "getTeamRunResumeConfig": {
+      "teamRunId": "stale_team_stale_1786830141758_c2d8537ad0404cc4adf6df1703ffc878",
+      "isActive": false,
+      "executionTree": {
+        "schema_version": 1,
+        "created_at": "2026-08-15T21:42:21.842Z",
+        "archived_at": null,
+        "application_binding": null,
+        "handoffs": [],
+        "root_team": {
+          "team_definition_id": "stale-team-stale-1786830141758",
+          "team_definition_name": "stale_team_stale_1786830141758",
+          "team_run_id": "stale_team_stale_1786830141758_c2d8537ad0404cc4adf6df1703ffc878",
+          "coordinator_address": "/coordinator",
+          "members": [
+            {
+              "kind": "configured_agent",
+              "address": "/coordinator",
+              "agent_definition_id": "stale-coordinator-stale-1786830141758",
+              "role": null,
+              "description": null,
+              "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+              "platform_agent_run_id": null,
+              "launch_configuration": {
+                "runtime_kind": "AUTOBYTEUS",
+                "llm_model_identifier": "gpt-5.6-luna",
+                "llm_config": null,
+                "auto_execute_tools": true,
+                "skill_access_mode": "NONE",
+                "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-008/live/workspaces/stale_1786830141758"
+              }
+            },
+            {
+              "kind": "configured_agent",
+              "address": "/worker",
+              "agent_definition_id": "stale-worker-stale-1786830141758",
+              "role": null,
+              "description": null,
+              "agent_run_id": "stale_worker_stale_1786830141758_def084b450334dafae4a9a513066d905",
+              "platform_agent_run_id": null,
+              "launch_configuration": {
+                "runtime_kind": "AUTOBYTEUS",
+                "llm_model_identifier": "gpt-5.6-luna",
+                "llm_config": null,
+                "auto_execute_tools": true,
+                "skill_access_mode": "NONE",
+                "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-008/live/workspaces/stale_1786830141758"
+              }
+            }
+          ],
+          "task_executions": [
+            {
+              "kind": "task_agent",
+              "address": "/worker",
+              "agent_run_id": "stale_worker_stale_1786830141758_f282a38f1156415e82665b3ecd0b103d",
+              "platform_agent_run_id": null,
+              "started_at": "2026-08-15T21:42:24.705Z",
+              "settled_at": "2026-08-15T21:44:13.107Z"
+            },
+            {
+              "kind": "task_agent",
+              "address": "/worker",
+              "agent_run_id": "stale_worker_stale_1786830141758_f282a38f1156415e82665b3ecd0b103d_awaiting",
+              "platform_agent_run_id": null,
+              "started_at": "2026-08-15T21:42:24.705Z",
+              "settled_at": "2026-08-15T21:44:13.107Z"
+            },
+            {
+              "kind": "task_agent",
+              "address": "/worker",
+              "agent_run_id": "stale_worker_stale_1786830141758_f282a38f1156415e82665b3ecd0b103d_accepted",
+              "platform_agent_run_id": null,
+              "started_at": "2026-08-15T21:42:24.705Z",
+              "settled_at": "2026-08-15T21:44:13.107Z"
+            }
+          ]
+        }
+      }
+    },
+    "getTaskDelegationRecords": [
+      {
+        "taskId": "task_daf3ec78f8e3449ebabc4bddbaf479fe",
+        "delegatorAgentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+        "recipientAddress": "/worker",
+        "targetAgentRunId": "stale_worker_stale_1786830141758_f282a38f1156415e82665b3ecd0b103d",
+        "targetTeamRunId": null,
+        "status": "interrupted",
+        "description": "Keep this real task active across a process restart. This is a stale-task restart probe. Do not finalize the task; leave it nonterminal and active so it can be repaired/restarted after process restart. Report only when explicitly asked, and preserve task continuity across restart.",
+        "createdAt": "2026-08-15T21:42:24.705Z",
+        "updates": [
+          {
+            "kind": "interruption",
+            "submissionId": null,
+            "reviewId": null,
+            "interruptionId": "task_daf3ec78f8e3449ebabc4bddbaf479fe_interruption_restart",
+            "reviewedSubmissionId": null,
+            "decision": null,
+            "content": "Interrupted because live task recovery is not supported after TeamRun reopen.",
+            "createdAt": "2026-08-15T21:44:13.107Z"
+          }
+        ]
+      },
+      {
+        "taskId": "task_daf3ec78f8e3449ebabc4bddbaf479fe_awaiting",
+        "delegatorAgentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+        "recipientAddress": "/worker",
+        "targetAgentRunId": "stale_worker_stale_1786830141758_f282a38f1156415e82665b3ecd0b103d_awaiting",
+        "targetTeamRunId": null,
+        "status": "interrupted",
+        "description": "Exact persisted awaiting-review restart-repair fixture.",
+        "createdAt": "2026-08-15T21:42:24.705Z",
+        "updates": [
+          {
+            "kind": "submission",
+            "submissionId": "task_daf3ec78f8e3449ebabc4bddbaf479fe_awaiting_submission",
+            "reviewId": null,
+            "interruptionId": null,
+            "reviewedSubmissionId": null,
+            "decision": null,
+            "content": "AWAITING_REVIEW_RESULT",
+            "createdAt": "2026-08-15T21:43:59.924Z"
+          },
+          {
+            "kind": "interruption",
+            "submissionId": null,
+            "reviewId": null,
+            "interruptionId": "task_daf3ec78f8e3449ebabc4bddbaf479fe_awaiting_interruption_restart",
+            "reviewedSubmissionId": null,
+            "decision": null,
+            "content": "Interrupted because live task recovery is not supported after TeamRun reopen.",
+            "createdAt": "2026-08-15T21:44:13.107Z"
+          }
+        ]
+      },
+      {
+        "taskId": "task_daf3ec78f8e3449ebabc4bddbaf479fe_accepted",
+        "delegatorAgentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+        "recipientAddress": "/worker",
+        "targetAgentRunId": "stale_worker_stale_1786830141758_f282a38f1156415e82665b3ecd0b103d_accepted",
+        "targetTeamRunId": null,
+        "status": "accepted",
+        "description": "Exact persisted accepted restart-preservation fixture.",
+        "createdAt": "2026-08-15T21:42:24.705Z",
+        "updates": [
+          {
+            "kind": "submission",
+            "submissionId": "task_daf3ec78f8e3449ebabc4bddbaf479fe_accepted_submission",
+            "reviewId": null,
+            "interruptionId": null,
+            "reviewedSubmissionId": null,
+            "decision": null,
+            "content": "ACCEPTED_RESULT",
+            "createdAt": "2026-08-15T21:43:59.924Z"
+          },
+          {
+            "kind": "review",
+            "submissionId": null,
+            "reviewId": "task_daf3ec78f8e3449ebabc4bddbaf479fe_accepted_review",
+            "interruptionId": null,
+            "reviewedSubmissionId": "task_daf3ec78f8e3449ebabc4bddbaf479fe_accepted_submission",
+            "decision": "accept",
+            "content": null,
+            "createdAt": "2026-08-15T21:44:00.924Z"
+          }
+        ]
+      }
+    ]
+  },
+  "validSibling": {
+    "teamRunId": "stale_team_stale_1786830141758_718eec8e6a834770b96c85022e078ff8",
+    "isActive": false,
+    "executionTree": {
+      "schema_version": 1,
+      "created_at": "2026-08-15T21:42:57.323Z",
+      "archived_at": null,
+      "application_binding": null,
+      "handoffs": [],
+      "root_team": {
+        "team_definition_id": "stale-team-stale-1786830141758",
+        "team_definition_name": "stale_team_stale_1786830141758",
+        "team_run_id": "stale_team_stale_1786830141758_718eec8e6a834770b96c85022e078ff8",
+        "coordinator_address": "/coordinator",
+        "members": [
+          {
+            "kind": "configured_agent",
+            "address": "/coordinator",
+            "agent_definition_id": "stale-coordinator-stale-1786830141758",
+            "role": null,
+            "description": null,
+            "agent_run_id": "stale_coordinator_stale_1786830141758_4e6f618197b84722b1087def9fdd4eb6",
+            "platform_agent_run_id": null,
+            "launch_configuration": {
+              "runtime_kind": "AUTOBYTEUS",
+              "llm_model_identifier": "gpt-5.6-luna",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "skill_access_mode": "NONE",
+              "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-008/live/workspaces/valid-sibling"
+            }
+          },
+          {
+            "kind": "configured_agent",
+            "address": "/worker",
+            "agent_definition_id": "stale-worker-stale-1786830141758",
+            "role": null,
+            "description": null,
+            "agent_run_id": "stale_worker_stale_1786830141758_95e3b644908f4f0da809a430b1c8b2af",
+            "platform_agent_run_id": null,
+            "launch_configuration": {
+              "runtime_kind": "AUTOBYTEUS",
+              "llm_model_identifier": "gpt-5.6-luna",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "skill_access_mode": "NONE",
+              "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-008/live/workspaces/valid-sibling"
+            }
+          }
+        ],
+        "task_executions": []
+      }
+    }
+  },
+  "invalidRootResponse": {
+    "httpStatus": 200,
+    "body": {
+      "data": null,
+      "errors": [
+        {
+          "message": "Execution tree root 'stale_team_stale_1786830141758_718eec8e6a834770b96c85022e078ff8' does not match 'a-invalid-root-1786830241925'.",
+          "locations": [
+            {
+              "line": 1,
+              "column": 20
+            }
+          ],
+          "path": [
+            "getTeamRunResumeConfig"
+          ]
+        }
+      ]
+    }
+  },
+  "firstRestore": {
+    "success": true,
+    "message": "Agent team run restored successfully.",
+    "teamRunId": "stale_team_stale_1786830141758_c2d8537ad0404cc4adf6df1703ffc878"
+  },
+  "afterFirst": {
+    "getTeamRunResumeConfig": {
+      "teamRunId": "stale_team_stale_1786830141758_c2d8537ad0404cc4adf6df1703ffc878",
+      "isActive": true,
+      "executionTree": {
+        "schema_version": 1,
+        "created_at": "2026-08-15T21:42:21.842Z",
+        "archived_at": null,
+        "application_binding": null,
+        "handoffs": [],
+        "root_team": {
+          "team_definition_id": "stale-team-stale-1786830141758",
+          "team_definition_name": "stale_team_stale_1786830141758",
+          "team_run_id": "stale_team_stale_1786830141758_c2d8537ad0404cc4adf6df1703ffc878",
+          "coordinator_address": "/coordinator",
+          "members": [
+            {
+              "kind": "configured_agent",
+              "address": "/coordinator",
+              "agent_definition_id": "stale-coordinator-stale-1786830141758",
+              "role": null,
+              "description": null,
+              "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+              "platform_agent_run_id": null,
+              "launch_configuration": {
+                "runtime_kind": "AUTOBYTEUS",
+                "llm_model_identifier": "gpt-5.6-luna",
+                "llm_config": null,
+                "auto_execute_tools": true,
+                "skill_access_mode": "NONE",
+                "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-008/live/workspaces/stale_1786830141758"
+              }
+            },
+            {
+              "kind": "configured_agent",
+              "address": "/worker",
+              "agent_definition_id": "stale-worker-stale-1786830141758",
+              "role": null,
+              "description": null,
+              "agent_run_id": "stale_worker_stale_1786830141758_def084b450334dafae4a9a513066d905",
+              "platform_agent_run_id": null,
+              "launch_configuration": {
+                "runtime_kind": "AUTOBYTEUS",
+                "llm_model_identifier": "gpt-5.6-luna",
+                "llm_config": null,
+                "auto_execute_tools": true,
+                "skill_access_mode": "NONE",
+                "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-008/live/workspaces/stale_1786830141758"
+              }
+            }
+          ],
+          "task_executions": [
+            {
+              "kind": "task_agent",
+              "address": "/worker",
+              "agent_run_id": "stale_worker_stale_1786830141758_f282a38f1156415e82665b3ecd0b103d",
+              "platform_agent_run_id": null,
+              "started_at": "2026-08-15T21:42:24.705Z",
+              "settled_at": "2026-08-15T21:44:13.107Z"
+            },
+            {
+              "kind": "task_agent",
+              "address": "/worker",
+              "agent_run_id": "stale_worker_stale_1786830141758_f282a38f1156415e82665b3ecd0b103d_awaiting",
+              "platform_agent_run_id": null,
+              "started_at": "2026-08-15T21:42:24.705Z",
+              "settled_at": "2026-08-15T21:44:13.107Z"
+            },
+            {
+              "kind": "task_agent",
+              "address": "/worker",
+              "agent_run_id": "stale_worker_stale_1786830141758_f282a38f1156415e82665b3ecd0b103d_accepted",
+              "platform_agent_run_id": null,
+              "started_at": "2026-08-15T21:42:24.705Z",
+              "settled_at": "2026-08-15T21:44:13.107Z"
+            }
+          ]
+        }
+      }
+    },
+    "getTaskDelegationRecords": [
+      {
+        "taskId": "task_daf3ec78f8e3449ebabc4bddbaf479fe",
+        "delegatorAgentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+        "recipientAddress": "/worker",
+        "targetAgentRunId": "stale_worker_stale_1786830141758_f282a38f1156415e82665b3ecd0b103d",
+        "targetTeamRunId": null,
+        "status": "interrupted",
+        "description": "Keep this real task active across a process restart. This is a stale-task restart probe. Do not finalize the task; leave it nonterminal and active so it can be repaired/restarted after process restart. Report only when explicitly asked, and preserve task continuity across restart.",
+        "createdAt": "2026-08-15T21:42:24.705Z",
+        "updates": [
+          {
+            "kind": "interruption",
+            "submissionId": null,
+            "reviewId": null,
+            "interruptionId": "task_daf3ec78f8e3449ebabc4bddbaf479fe_interruption_restart",
+            "reviewedSubmissionId": null,
+            "decision": null,
+            "content": "Interrupted because live task recovery is not supported after TeamRun reopen.",
+            "createdAt": "2026-08-15T21:44:13.107Z"
+          }
+        ]
+      },
+      {
+        "taskId": "task_daf3ec78f8e3449ebabc4bddbaf479fe_awaiting",
+        "delegatorAgentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+        "recipientAddress": "/worker",
+        "targetAgentRunId": "stale_worker_stale_1786830141758_f282a38f1156415e82665b3ecd0b103d_awaiting",
+        "targetTeamRunId": null,
+        "status": "interrupted",
+        "description": "Exact persisted awaiting-review restart-repair fixture.",
+        "createdAt": "2026-08-15T21:42:24.705Z",
+        "updates": [
+          {
+            "kind": "submission",
+            "submissionId": "task_daf3ec78f8e3449ebabc4bddbaf479fe_awaiting_submission",
+            "reviewId": null,
+            "interruptionId": null,
+            "reviewedSubmissionId": null,
+            "decision": null,
+            "content": "AWAITING_REVIEW_RESULT",
+            "createdAt": "2026-08-15T21:43:59.924Z"
+          },
+          {
+            "kind": "interruption",
+            "submissionId": null,
+            "reviewId": null,
+            "interruptionId": "task_daf3ec78f8e3449ebabc4bddbaf479fe_awaiting_interruption_restart",
+            "reviewedSubmissionId": null,
+            "decision": null,
+            "content": "Interrupted because live task recovery is not supported after TeamRun reopen.",
+            "createdAt": "2026-08-15T21:44:13.107Z"
+          }
+        ]
+      },
+      {
+        "taskId": "task_daf3ec78f8e3449ebabc4bddbaf479fe_accepted",
+        "delegatorAgentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+        "recipientAddress": "/worker",
+        "targetAgentRunId": "stale_worker_stale_1786830141758_f282a38f1156415e82665b3ecd0b103d_accepted",
+        "targetTeamRunId": null,
+        "status": "accepted",
+        "description": "Exact persisted accepted restart-preservation fixture.",
+        "createdAt": "2026-08-15T21:42:24.705Z",
+        "updates": [
+          {
+            "kind": "submission",
+            "submissionId": "task_daf3ec78f8e3449ebabc4bddbaf479fe_accepted_submission",
+            "reviewId": null,
+            "interruptionId": null,
+            "reviewedSubmissionId": null,
+            "decision": null,
+            "content": "ACCEPTED_RESULT",
+            "createdAt": "2026-08-15T21:43:59.924Z"
+          },
+          {
+            "kind": "review",
+            "submissionId": null,
+            "reviewId": "task_daf3ec78f8e3449ebabc4bddbaf479fe_accepted_review",
+            "interruptionId": null,
+            "reviewedSubmissionId": "task_daf3ec78f8e3449ebabc4bddbaf479fe_accepted_submission",
+            "decision": "accept",
+            "content": null,
+            "createdAt": "2026-08-15T21:44:00.924Z"
+          }
+        ]
+      }
+    ]
+  },
+  "terminated": {
+    "success": true,
+    "message": "Agent team run terminated successfully."
+  },
+  "secondRestore": {
+    "success": true,
+    "message": "Agent team run restored successfully.",
+    "teamRunId": "stale_team_stale_1786830141758_c2d8537ad0404cc4adf6df1703ffc878"
+  },
+  "afterSecond": {
+    "getTeamRunResumeConfig": {
+      "teamRunId": "stale_team_stale_1786830141758_c2d8537ad0404cc4adf6df1703ffc878",
+      "isActive": true,
+      "executionTree": {
+        "schema_version": 1,
+        "created_at": "2026-08-15T21:42:21.842Z",
+        "archived_at": null,
+        "application_binding": null,
+        "handoffs": [],
+        "root_team": {
+          "team_definition_id": "stale-team-stale-1786830141758",
+          "team_definition_name": "stale_team_stale_1786830141758",
+          "team_run_id": "stale_team_stale_1786830141758_c2d8537ad0404cc4adf6df1703ffc878",
+          "coordinator_address": "/coordinator",
+          "members": [
+            {
+              "kind": "configured_agent",
+              "address": "/coordinator",
+              "agent_definition_id": "stale-coordinator-stale-1786830141758",
+              "role": null,
+              "description": null,
+              "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+              "platform_agent_run_id": null,
+              "launch_configuration": {
+                "runtime_kind": "AUTOBYTEUS",
+                "llm_model_identifier": "gpt-5.6-luna",
+                "llm_config": null,
+                "auto_execute_tools": true,
+                "skill_access_mode": "NONE",
+                "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-008/live/workspaces/stale_1786830141758"
+              }
+            },
+            {
+              "kind": "configured_agent",
+              "address": "/worker",
+              "agent_definition_id": "stale-worker-stale-1786830141758",
+              "role": null,
+              "description": null,
+              "agent_run_id": "stale_worker_stale_1786830141758_def084b450334dafae4a9a513066d905",
+              "platform_agent_run_id": null,
+              "launch_configuration": {
+                "runtime_kind": "AUTOBYTEUS",
+                "llm_model_identifier": "gpt-5.6-luna",
+                "llm_config": null,
+                "auto_execute_tools": true,
+                "skill_access_mode": "NONE",
+                "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-008/live/workspaces/stale_1786830141758"
+              }
+            }
+          ],
+          "task_executions": [
+            {
+              "kind": "task_agent",
+              "address": "/worker",
+              "agent_run_id": "stale_worker_stale_1786830141758_f282a38f1156415e82665b3ecd0b103d",
+              "platform_agent_run_id": null,
+              "started_at": "2026-08-15T21:42:24.705Z",
+              "settled_at": "2026-08-15T21:44:13.107Z"
+            },
+            {
+              "kind": "task_agent",
+              "address": "/worker",
+              "agent_run_id": "stale_worker_stale_1786830141758_f282a38f1156415e82665b3ecd0b103d_awaiting",
+              "platform_agent_run_id": null,
+              "started_at": "2026-08-15T21:42:24.705Z",
+              "settled_at": "2026-08-15T21:44:13.107Z"
+            },
+            {
+              "kind": "task_agent",
+              "address": "/worker",
+              "agent_run_id": "stale_worker_stale_1786830141758_f282a38f1156415e82665b3ecd0b103d_accepted",
+              "platform_agent_run_id": null,
+              "started_at": "2026-08-15T21:42:24.705Z",
+              "settled_at": "2026-08-15T21:44:13.107Z"
+            }
+          ]
+        }
+      }
+    },
+    "getTaskDelegationRecords": [
+      {
+        "taskId": "task_daf3ec78f8e3449ebabc4bddbaf479fe",
+        "delegatorAgentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+        "recipientAddress": "/worker",
+        "targetAgentRunId": "stale_worker_stale_1786830141758_f282a38f1156415e82665b3ecd0b103d",
+        "targetTeamRunId": null,
+        "status": "interrupted",
+        "description": "Keep this real task active across a process restart. This is a stale-task restart probe. Do not finalize the task; leave it nonterminal and active so it can be repaired/restarted after process restart. Report only when explicitly asked, and preserve task continuity across restart.",
+        "createdAt": "2026-08-15T21:42:24.705Z",
+        "updates": [
+          {
+            "kind": "interruption",
+            "submissionId": null,
+            "reviewId": null,
+            "interruptionId": "task_daf3ec78f8e3449ebabc4bddbaf479fe_interruption_restart",
+            "reviewedSubmissionId": null,
+            "decision": null,
+            "content": "Interrupted because live task recovery is not supported after TeamRun reopen.",
+            "createdAt": "2026-08-15T21:44:13.107Z"
+          }
+        ]
+      },
+      {
+        "taskId": "task_daf3ec78f8e3449ebabc4bddbaf479fe_awaiting",
+        "delegatorAgentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+        "recipientAddress": "/worker",
+        "targetAgentRunId": "stale_worker_stale_1786830141758_f282a38f1156415e82665b3ecd0b103d_awaiting",
+        "targetTeamRunId": null,
+        "status": "interrupted",
+        "description": "Exact persisted awaiting-review restart-repair fixture.",
+        "createdAt": "2026-08-15T21:42:24.705Z",
+        "updates": [
+          {
+            "kind": "submission",
+            "submissionId": "task_daf3ec78f8e3449ebabc4bddbaf479fe_awaiting_submission",
+            "reviewId": null,
+            "interruptionId": null,
+            "reviewedSubmissionId": null,
+            "decision": null,
+            "content": "AWAITING_REVIEW_RESULT",
+            "createdAt": "2026-08-15T21:43:59.924Z"
+          },
+          {
+            "kind": "interruption",
+            "submissionId": null,
+            "reviewId": null,
+            "interruptionId": "task_daf3ec78f8e3449ebabc4bddbaf479fe_awaiting_interruption_restart",
+            "reviewedSubmissionId": null,
+            "decision": null,
+            "content": "Interrupted because live task recovery is not supported after TeamRun reopen.",
+            "createdAt": "2026-08-15T21:44:13.107Z"
+          }
+        ]
+      },
+      {
+        "taskId": "task_daf3ec78f8e3449ebabc4bddbaf479fe_accepted",
+        "delegatorAgentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+        "recipientAddress": "/worker",
+        "targetAgentRunId": "stale_worker_stale_1786830141758_f282a38f1156415e82665b3ecd0b103d_accepted",
+        "targetTeamRunId": null,
+        "status": "accepted",
+        "description": "Exact persisted accepted restart-preservation fixture.",
+        "createdAt": "2026-08-15T21:42:24.705Z",
+        "updates": [
+          {
+            "kind": "submission",
+            "submissionId": "task_daf3ec78f8e3449ebabc4bddbaf479fe_accepted_submission",
+            "reviewId": null,
+            "interruptionId": null,
+            "reviewedSubmissionId": null,
+            "decision": null,
+            "content": "ACCEPTED_RESULT",
+            "createdAt": "2026-08-15T21:43:59.924Z"
+          },
+          {
+            "kind": "review",
+            "submissionId": null,
+            "reviewId": "task_daf3ec78f8e3449ebabc4bddbaf479fe_accepted_review",
+            "interruptionId": null,
+            "reviewedSubmissionId": "task_daf3ec78f8e3449ebabc4bddbaf479fe_accepted_submission",
+            "decision": "accept",
+            "content": null,
+            "createdAt": "2026-08-15T21:44:00.924Z"
+          }
+        ]
+      }
+    ]
+  },
+  "afterRestoreHashes": {
+    "task_delegation_records.json": {
+      "before": "8d3529603b8a9e82113b968db6c1e12317a8ce24019ef374f35812cb018db1bb",
+      "after": "8d3529603b8a9e82113b968db6c1e12317a8ce24019ef374f35812cb018db1bb",
+      "equal": true
+    },
+    "team_run_execution_tree.json": {
+      "before": "11a02e694e51f3305bd688fbc348b13f8e80d21281823164f073727c9ff6ce07",
+      "after": "11a02e694e51f3305bd688fbc348b13f8e80d21281823164f073727c9ff6ce07",
+      "equal": true
+    },
+    "team_communication_messages.json": {
+      "before": "da3262420f0436cb2b799f259ef4026d74bf328d40913fcfd2879f54bc587e05",
+      "after": "da3262420f0436cb2b799f259ef4026d74bf328d40913fcfd2879f54bc587e05",
+      "equal": true
+    }
+  },
+  "newRoot": {
+    "success": true,
+    "message": "Agent team run created successfully.",
+    "teamRunId": "stale_team_stale_1786830141758_311e76f49ca9401bb280b5496154f325"
+  },
+  "assertions": {
+    "firstPublicReadWasBeforeExplicitRestore": true,
+    "startupTargetInactive": true,
+    "activeInterrupted": true,
+    "awaitingReviewInterrupted": true,
+    "acceptedPreserved": true,
+    "activeOneInterruption": true,
+    "awaitingOneInterruption": true,
+    "exactInterruptionReasons": true,
+    "linkedExecutionsRemain": true,
+    "linkedExecutionsSettled": true,
+    "oneAtomicSettlementTime": true,
+    "interruptionsMatchSettlement": true,
+    "orphanRemoved": true,
+    "validSiblingAvailable": true,
+    "invalidRootExcluded": true,
+    "explicitRestoreSucceeded": true,
+    "terminateSucceeded": true,
+    "secondRestoreSucceeded": true,
+    "explicitRestoresDidNotMutatePackage": true,
+    "exactlyOneInterruptionAfterTwoRestores": true,
+    "acceptedStillAcceptedAfterTwoRestores": true,
+    "newRootCreationUnaffected": true
+  },
+  "pass": true,
+  "operationalDatabaseAction": "NONE"
+}

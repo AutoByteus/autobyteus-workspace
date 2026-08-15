@@ -1,0 +1,84 @@
+{
+  "request": {
+    "teamDefinitionId": "stale-team-stale-1786830141758",
+    "memberConfigs": [
+      {
+        "memberAddress": "/coordinator",
+        "agentDefinitionId": "stale-coordinator-stale-1786830141758",
+        "llmModelIdentifier": "gpt-5.6-luna",
+        "autoExecuteTools": true,
+        "skillAccessMode": "NONE",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-008/live/workspaces/valid-sibling/",
+        "runtimeKind": "autobyteus"
+      },
+      {
+        "memberAddress": "/worker",
+        "agentDefinitionId": "stale-worker-stale-1786830141758",
+        "llmModelIdentifier": "gpt-5.6-luna",
+        "autoExecuteTools": true,
+        "skillAccessMode": "NONE",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-008/live/workspaces/valid-sibling/",
+        "runtimeKind": "autobyteus"
+      }
+    ]
+  },
+  "created": {
+    "success": true,
+    "message": "Agent team run created successfully.",
+    "teamRunId": "stale_team_stale_1786830141758_718eec8e6a834770b96c85022e078ff8"
+  },
+  "resume": {
+    "teamRunId": "stale_team_stale_1786830141758_718eec8e6a834770b96c85022e078ff8",
+    "isActive": true,
+    "executionTree": {
+      "schema_version": 1,
+      "created_at": "2026-08-15T21:42:57.323Z",
+      "archived_at": null,
+      "application_binding": null,
+      "handoffs": [],
+      "root_team": {
+        "team_definition_id": "stale-team-stale-1786830141758",
+        "team_definition_name": "stale_team_stale_1786830141758",
+        "team_run_id": "stale_team_stale_1786830141758_718eec8e6a834770b96c85022e078ff8",
+        "coordinator_address": "/coordinator",
+        "members": [
+          {
+            "kind": "configured_agent",
+            "address": "/coordinator",
+            "agent_definition_id": "stale-coordinator-stale-1786830141758",
+            "role": null,
+            "description": null,
+            "agent_run_id": "stale_coordinator_stale_1786830141758_4e6f618197b84722b1087def9fdd4eb6",
+            "platform_agent_run_id": null,
+            "launch_configuration": {
+              "runtime_kind": "AUTOBYTEUS",
+              "llm_model_identifier": "gpt-5.6-luna",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "skill_access_mode": "NONE",
+              "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-008/live/workspaces/valid-sibling"
+            }
+          },
+          {
+            "kind": "configured_agent",
+            "address": "/worker",
+            "agent_definition_id": "stale-worker-stale-1786830141758",
+            "role": null,
+            "description": null,
+            "agent_run_id": "stale_worker_stale_1786830141758_95e3b644908f4f0da809a430b1c8b2af",
+            "platform_agent_run_id": null,
+            "launch_configuration": {
+              "runtime_kind": "AUTOBYTEUS",
+              "llm_model_identifier": "gpt-5.6-luna",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "skill_access_mode": "NONE",
+              "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-008/live/workspaces/valid-sibling"
+            }
+          }
+        ],
+        "task_executions": []
+      }
+    }
+  }
+}

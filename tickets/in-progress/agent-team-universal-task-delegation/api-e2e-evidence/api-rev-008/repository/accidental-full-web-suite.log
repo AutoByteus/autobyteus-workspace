@@ -1,0 +1,300 @@
+
+> autobyteus@1.4.52 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web
+> cross-env NUXT_TEST=true vitest -- components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts components/workspace/team/__tests__/TeamOverviewPanel.spec.ts components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts components/mobile/__tests__/MobileContextSelectionRegression.spec.ts components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts services/runHydration/__tests__/teamRunContextHydrationService.spec.ts components/mobile/__tests__/MobileArtifacts.spec.ts components/mobile/__tests__/MobileTeamMessages.spec.ts components/workspace/running/__tests__/RunningTeamRow.spec.ts stores/__tests__/runHistoryStore.spec.ts components/workspace/team/__tests__/TeamWorkspaceView.spec.ts services/agentStreaming/__tests__/AgentStreamingService.spec.ts services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts stores/__tests__/agentTeamRunStore.spec.ts stores/__tests__/runHistoryNavigationProjection.spec.ts services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts services/runHydration/__tests__/taskDelegationGraphqlDtoProjection.spec.ts stores/__tests__/agentTeamContextsStore.spec.ts utils/__tests__/teamDelegatedTaskEntries.spec.ts services/runHydration/__tests__/teamCommunicationHydrationService.spec.ts stores/__tests__/runHistoryTeamExecutionRows.spec.ts composables/__tests__/useWorkspaceHistoryTreeState.spec.ts composables/mobile/__tests__/useMobileWorkCatalog.spec.ts stores/__tests__/mobileWorkStore.spec.ts services/agentStreaming/handlers/__tests__/toolLifecycleParsers.spec.ts stores/__tests__/runHistoryTeamRows.spec.ts composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web
+
+stderr | components/mobile/__tests__/MobileRemoteAccessShell.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/agent/__tests__/AgentConversationFeed.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/applications/__tests__/ApplicationShell.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | localization/messages/__tests__/zhCnGlossaryConsistency.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/recentEventMonitorProductionDispatch.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/MessagingSetupManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | tests/integration/voice-input-extension.integration.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | electron/extensions/__tests__/managedExtensionService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/mobile/__tests__/MobileRemoteAccessShell.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | tests/integration/voice-input-extension.integration.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/MessagingSetupManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/recentEventMonitorProductionDispatch.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | electron/extensions/__tests__/managedExtensionService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | localization/messages/__tests__/zhCnGlossaryConsistency.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/agent/__tests__/AgentConversationFeed.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/applications/__tests__/ApplicationShell.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ localization/messages/__tests__/zhCnGlossaryConsistency.spec.ts (2 tests | 1 failed) 41ms
+   ✓ zh-CN glossary consistency > keeps shared agent and team terminology aligned with the approved glossary 1ms
+   × zh-CN glossary consistency > does not retain deprecated glossary in the swept shared-product catalogs 39ms
+     → expected 'settings:settings.components.settings…' not to contain '代理'
+stdout | tests/integration/voice-input-extension.integration.test.ts
+[2026-08-15T21:35:41.110Z] [INFO] [electron] Application started
+
+stdout | electron/extensions/__tests__/managedExtensionService.spec.ts
+[2026-08-15T21:35:41.110Z] [INFO] [electron] Application started
+
+ ✓ components/workspace/agent/__tests__/AgentConversationFeed.spec.ts (15 tests) 146ms
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts (15 tests) 173ms
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > shows an error toast when terminate fails
+Failed to terminate run 'run-1'.
+
+ ✓ services/agentStreaming/__tests__/recentEventMonitorProductionDispatch.spec.ts (9 tests) 745ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts (50 tests) 771ms
+ ✓ components/settings/__tests__/MessagingSetupManager.spec.ts (4 tests) 131ms
+ ✓ components/applications/__tests__/ApplicationShell.spec.ts (3 tests) 886ms
+   ✓ ApplicationShell > shows the setup-first route, hides technical details by default, and does not auto-launch on initial load  856ms
+nvm is not compatible with the "npm_config_prefix" environment variable: currently set to "/Users/normy/.local"
+Run `unset npm_config_prefix` to unset it.
+stdout | electron/extensions/__tests__/managedExtensionService.spec.ts > ManagedExtensionService > installs disabled by default, enables explicitly, and transcribes via the worker
+[2026-08-15T21:35:42.656Z] [INFO] [electron] Loaded PATH from bash login shell
+[2026-08-15T21:35:42.657Z] [INFO] [electron] Login shell PATH: /Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/opt/homebrew/bin:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/node_modules/.bin:/Users/normy/.cache/node/corepack/v1/pnpm/10.28.1/dist/node-gyp-bin:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/node_modules/.bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.kimi-code/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/Users/normy/.codex/packages/standalone/releases/0.147.0-aarch64-apple-darwin/codex-path:/Users/normy/.codex/tmp/arg0/codex-arg0DcfB04:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin
+
+nvm is not compatible with the "npm_config_prefix" environment variable: currently set to "/Users/normy/.local"
+Run `unset npm_config_prefix` to unset it.
+stdout | tests/integration/voice-input-extension.integration.test.ts > voice input extension integration > installs, enables, and inserts transcript text into the draft
+[2026-08-15T21:35:42.740Z] [INFO] [electron] Loaded PATH from bash login shell
+[2026-08-15T21:35:42.740Z] [INFO] [electron] Login shell PATH: /Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/opt/homebrew/bin:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/node_modules/.bin:/Users/normy/.cache/node/corepack/v1/pnpm/10.28.1/dist/node-gyp-bin:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/node_modules/.bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.kimi-code/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/Users/normy/.codex/packages/standalone/releases/0.147.0-aarch64-apple-darwin/codex-path:/Users/normy/.codex/tmp/arg0/codex-arg0DcfB04:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin
+
+stderr | components/fileExplorer/__tests__/FileExplorer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentTeams/__tests__/AgentTeamDetail.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ tests/integration/voice-input-extension.integration.test.ts (1 test) 2092ms
+   ✓ voice input extension integration > installs, enables, and inserts transcript text into the draft  2092ms
+stderr | components/mobile/__tests__/MobileUxRefinement.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/fileExplorer/__tests__/FileExplorer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/settings/__tests__/ServerSettingsCompactionFailure.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamCommunicationReferenceViewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileFiles.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ electron/extensions/__tests__/managedExtensionService.spec.ts (3 tests) 2846ms
+   ✓ ManagedExtensionService > installs disabled by default, enables explicitly, and transcribes via the worker  2041ms
+   ✓ ManagedExtensionService > preserves enabled state and language mode across reinstall  571ms
+stdout | components/agentTeams/__tests__/AgentTeamDetail.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileUxRefinement.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/fileExplorer/__tests__/FileExplorer.spec.ts (10 tests) 205ms
+stdout | components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/ServerSettingsCompactionFailure.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamCommunicationReferenceViewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileFiles.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/agentTeams/__tests__/AgentTeamDetail.spec.ts (15 tests) 143ms
+ ✓ components/workspace/team/__tests__/TeamCommunicationReferenceViewer.spec.ts (13 tests) 79ms
+stderr | components/settings/messaging/__tests__/ChannelBindingSetupCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts (15 tests) 129ms
+ ✓ components/settings/__tests__/ServerSettingsCompactionFailure.spec.ts (2 tests) 60ms
+ ✓ components/mobile/__tests__/MobileFiles.spec.ts (9 tests) 127ms
+stderr | pages/__tests__/settings.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts (25 tests) 138ms
+stdout | components/settings/messaging/__tests__/ChannelBindingSetupCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/workspace/config/__tests__/ModelConfigSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/settings/messaging/__tests__/ChannelBindingSetupCard.spec.ts (7 tests) 104ms
+stdout | pages/__tests__/settings.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | tests/stores/serverSettingsStore.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/tools/__tests__/McpServerFormModal.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/config/__tests__/ModelConfigSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | electron/server/__tests__/serverOutputLogging.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/workspace/config/__tests__/ModelConfigSection.spec.ts (19 tests) 93ms
+stdout | tests/stores/serverSettingsStore.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | tests/stores/serverSettingsStore.test.ts > serverSettings store > fails deterministically when the bound backend is not ready
+Failed to fetch server settings: Error: backend readiness timed out
+    at ensureBoundBackendReady (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/stores/serverSettings.ts:146:11)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at Proxy.fetchServerSettings (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-web/stores/serverSettings.ts:195:40)
+
+stderr | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts (3 tests) 48ms
+stdout | components/tools/__tests__/McpServerFormModal.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ tests/stores/serverSettingsStore.test.ts (11 tests) 173ms
+ ✓ components/tools/__tests__/McpServerFormModal.spec.ts (7 tests) 55ms
+stderr | components/settings/__tests__/WebSearchConfigurationCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | electron/server/__tests__/serverOutputLogging.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | electron/server/__tests__/serverOutputLogging.spec.ts
+[2026-08-15T21:35:47.452Z] [INFO] [electron] Application started
+
+ ✓ pages/__tests__/settings.spec.ts (23 tests) 130ms
+ ✓ electron/server/__tests__/serverOutputLogging.spec.ts (4 tests) 149ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts (19 tests) 123ms
+stdout | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/WebSearchConfigurationCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts (12 tests) 126ms
+stderr | components/settings/__tests__/NodeManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/settings/__tests__/WebSearchConfigurationCard.spec.ts (7 tests) 85ms
+stderr | components/settings/__tests__/LiveResponseStreamingCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/tools/__tests__/Terminal.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | layouts/__tests__/default-drawer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/__tests__/NodeManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/mobile/__tests__/MobileArtifactsContentViewerIntegration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/layout/__tests__/RightSideTabs.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | electron/local-file-protocol/__tests__/local-file-response.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/settings/__tests__/NodeManager.spec.ts (10 tests) 50ms
+stdout | components/settings/__tests__/LiveResponseStreamingCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/LiveResponseStreamingCard.spec.ts (8 tests) 47ms
+stdout | components/workspace/tools/__tests__/Terminal.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | layouts/__tests__/default-drawer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/tools/__tests__/Terminal.spec.ts (8 tests) 157ms
+stderr | components/agentInput/__tests__/AgentUserInputTextArea.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+

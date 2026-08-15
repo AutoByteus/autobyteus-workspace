@@ -1,0 +1,44 @@
+{
+  "teamRunId": "stale_team_stale_1786827145248_1b9224423bd4447ca6298e7bad2c3677",
+  "agentRunId": "stale_coordinator_stale_1786827145248_db8dc5f4ab854dae8ff65f74bea32fea",
+  "durationMs": 14705,
+  "sent": true,
+  "terminalAt": {
+    "type": "TURN_COMPLETED",
+    "atMs": 2682
+  },
+  "websocketError": null,
+  "messageCount": 46,
+  "typeCounts": {
+    "CONNECTED": 1,
+    "TEAM_EXECUTION_VIEW_SNAPSHOT": 1,
+    "TEAM_RUN_LIFECYCLE": 1,
+    "MEMBER_INPUT_MESSAGE": 1,
+    "TURN_STARTED": 1,
+    "SEGMENT_START": 2,
+    "SEGMENT_CONTENT": 27,
+    "SEGMENT_END": 2,
+    "TOKEN_USAGE_UPDATED": 2,
+    "TOOL_EXECUTION_STARTED": 1,
+    "TOOL_LOG": 3,
+    "TASK_DELEGATION_EVENT": 1,
+    "TOOL_EXECUTION_SUCCEEDED": 1,
+    "ASSISTANT_COMPLETE": 1,
+    "TURN_COMPLETED": 1
+  },
+  "tasks": [
+    {
+      "taskId": "task_70257a0a02f445acadf6e44fd3acddf3",
+      "delegatorAgentRunId": "stale_coordinator_stale_1786827145248_db8dc5f4ab854dae8ff65f74bea32fea",
+      "recipientAddress": "/worker",
+      "targetAgentRunId": "stale_worker_stale_1786827145248_3e7f14e77ec043e1bc03db7fcd40f129",
+      "targetTeamRunId": null,
+      "status": "active",
+      "description": "REMAIN_ACTIVE_UNTIL_RESTART",
+      "createdAt": "2026-08-15T20:52:34.757Z",
+      "referenceFiles": [],
+      "updates": []
+    }
+  ],
+  "communications": []
+}

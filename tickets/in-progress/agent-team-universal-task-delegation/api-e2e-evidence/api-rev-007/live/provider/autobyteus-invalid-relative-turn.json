@@ -1,0 +1,1541 @@
+{
+  "teamRunId": "utd_root_team_api_rev_007_1786826064862_caef3a0c34d74ede9508c8f7b19182c4",
+  "agentRunId": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+  "prompt": "Call delegate_task exactly once using the deliberately invalid relative recipient_address worker and description MUST_NOT_START. Do not correct the address and do not retry.",
+  "startedAt": "2026-08-15T20:49:26.094Z",
+  "durationMs": 14668,
+  "sent": true,
+  "terminalAt": {
+    "type": "TURN_COMPLETED",
+    "atMs": 2654
+  },
+  "websocketError": null,
+  "observations": [
+    {
+      "atMs": 29,
+      "type": "CONNECTED",
+      "agentRunId": null,
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 29,
+      "type": "TEAM_EXECUTION_VIEW_SNAPSHOT",
+      "agentRunId": null,
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 30,
+      "type": "TEAM_RUN_LIFECYCLE",
+      "agentRunId": null,
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 56,
+      "type": "MEMBER_INPUT_MESSAGE",
+      "agentRunId": null,
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 71,
+      "type": "TURN_STARTED",
+      "agentRunId": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 1496,
+      "type": "SEGMENT_START",
+      "agentRunId": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 1508,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 1509,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 1509,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 1509,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 1522,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 1539,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 1539,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 1554,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 1554,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 1554,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 1555,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 1555,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 1566,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 1566,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 1566,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 1591,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 1591,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 1779,
+      "type": "SEGMENT_END",
+      "agentRunId": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 1784,
+      "type": "TOKEN_USAGE_UPDATED",
+      "agentRunId": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 1784,
+      "type": "TOOL_EXECUTION_STARTED",
+      "agentRunId": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": "delegate_task"
+    },
+    {
+      "atMs": 1786,
+      "type": "TOOL_LOG",
+      "agentRunId": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": "delegate_task"
+    },
+    {
+      "atMs": 1786,
+      "type": "TOOL_LOG",
+      "agentRunId": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": "delegate_task"
+    },
+    {
+      "atMs": 1787,
+      "type": "ERROR",
+      "agentRunId": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+      "status": null,
+      "code": "TEAM_AGENT_EVENT_ADMISSION_FAILED",
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 1788,
+      "type": "TOOL_EXECUTION_FAILED",
+      "agentRunId": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": "delegate_task"
+    },
+    {
+      "atMs": 2653,
+      "type": "TOKEN_USAGE_UPDATED",
+      "agentRunId": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 2654,
+      "type": "ASSISTANT_COMPLETE",
+      "agentRunId": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 2654,
+      "type": "TURN_COMPLETED",
+      "agentRunId": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    }
+  ],
+  "messages": [
+    {
+      "atMs": 29,
+      "message": {
+        "type": "CONNECTED",
+        "payload": {
+          "session_id": "7a41f339-5555-44f1-b832-86324e39de7d",
+          "root_team_run_id": "utd_root_team_api_rev_007_1786826064862_caef3a0c34d74ede9508c8f7b19182c4"
+        }
+      }
+    },
+    {
+      "atMs": 29,
+      "message": {
+        "type": "TEAM_EXECUTION_VIEW_SNAPSHOT",
+        "payload": {
+          "root_team_run_id": "utd_root_team_api_rev_007_1786826064862_caef3a0c34d74ede9508c8f7b19182c4",
+          "base_change_sequence": 0,
+          "execution_tree": {
+            "schema_version": 1,
+            "created_at": "2026-08-15T20:34:32.728Z",
+            "archived_at": null,
+            "application_binding": null,
+            "handoffs": [],
+            "root_team": {
+              "team_definition_id": "utd-root-team-api-rev-007-1786826064862",
+              "team_definition_name": "utd_root_team_api_rev_007_1786826064862",
+              "team_run_id": "utd_root_team_api_rev_007_1786826064862_caef3a0c34d74ede9508c8f7b19182c4",
+              "coordinator_address": "/coordinator",
+              "members": [
+                {
+                  "kind": "configured_agent",
+                  "address": "/coordinator",
+                  "agent_definition_id": "utd-coordinator-api-rev-007-1786826064862",
+                  "role": null,
+                  "description": null,
+                  "agent_run_id": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+                  "platform_agent_run_id": null,
+                  "launch_configuration": {
+                    "runtime_kind": "AUTOBYTEUS",
+                    "llm_model_identifier": "gpt-5.6-luna",
+                    "llm_config": null,
+                    "auto_execute_tools": true,
+                    "skill_access_mode": "NONE",
+                    "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-007/live/workspaces/api_rev_007_1786826064862"
+                  }
+                },
+                {
+                  "kind": "configured_agent",
+                  "address": "/worker",
+                  "agent_definition_id": "utd-worker-api-rev-007-1786826064862",
+                  "role": null,
+                  "description": null,
+                  "agent_run_id": "utd_worker_api_rev_007_1786826064862_5d5dd94bd81d417eb259e4b4371deea8",
+                  "platform_agent_run_id": null,
+                  "launch_configuration": {
+                    "runtime_kind": "AUTOBYTEUS",
+                    "llm_model_identifier": "gpt-5.6-luna",
+                    "llm_config": null,
+                    "auto_execute_tools": true,
+                    "skill_access_mode": "NONE",
+                    "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-007/live/workspaces/api_rev_007_1786826064862"
+                  }
+                },
+                {
+                  "kind": "configured_team",
+                  "address": "/lab",
+                  "team_definition_id": "utd-child-team-api-rev-007-1786826064862",
+                  "role": null,
+                  "description": null,
+                  "team_run_id": "utd_child_team_api_rev_007_1786826064862_3a279d8404e34e52b880c10d2ce0a4a0",
+                  "coordinator_address": "/lab/lead",
+                  "members": [
+                    {
+                      "kind": "configured_agent",
+                      "address": "/lab/lead",
+                      "agent_definition_id": "utd-nested-coordinator-api-rev-007-1786826064862",
+                      "role": null,
+                      "description": null,
+                      "agent_run_id": "utd_nested_coordinator_api_rev_007_1786826064862_46371751a590409098baa9e66e9cdcc5",
+                      "platform_agent_run_id": null,
+                      "launch_configuration": {
+                        "runtime_kind": "AUTOBYTEUS",
+                        "llm_model_identifier": "gpt-5.6-luna",
+                        "llm_config": null,
+                        "auto_execute_tools": true,
+                        "skill_access_mode": "NONE",
+                        "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-007/live/workspaces/api_rev_007_1786826064862"
+                      }
+                    },
+                    {
+                      "kind": "configured_agent",
+                      "address": "/lab/researcher",
+                      "agent_definition_id": "utd-nested-worker-api-rev-007-1786826064862",
+                      "role": null,
+                      "description": null,
+                      "agent_run_id": "utd_nested_worker_api_rev_007_1786826064862_855f206cb8de4c97b691967bedba1e8c",
+                      "platform_agent_run_id": null,
+                      "launch_configuration": {
+                        "runtime_kind": "AUTOBYTEUS",
+                        "llm_model_identifier": "gpt-5.6-luna",
+                        "llm_config": null,
+                        "auto_execute_tools": true,
+                        "skill_access_mode": "NONE",
+                        "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-007/live/workspaces/api_rev_007_1786826064862"
+                      }
+                    }
+                  ],
+                  "task_executions": []
+                }
+              ],
+              "task_executions": [
+                {
+                  "kind": "task_agent",
+                  "address": "/worker",
+                  "agent_run_id": "utd_worker_api_rev_007_1786826064862_7756877339b24424ab8bc93ca398a50e",
+                  "platform_agent_run_id": null,
+                  "started_at": "2026-08-15T20:34:44.156Z",
+                  "settled_at": "2026-08-15T20:35:02.802Z"
+                },
+                {
+                  "kind": "task_team",
+                  "address": "/lab",
+                  "team_run_id": "utd_child_team_api_rev_007_1786826064862_f3ae9fd365ea48cfb168e769f696840e",
+                  "members": [
+                    {
+                      "kind": "task_team_agent",
+                      "address": "/lab/lead",
+                      "agent_run_id": "utd_nested_coordinator_api_rev_007_1786826064862_68c186ab3acb480dba6b04176352fb5e",
+                      "platform_agent_run_id": null
+                    },
+                    {
+                      "kind": "task_team_agent",
+                      "address": "/lab/researcher",
+                      "agent_run_id": "utd_nested_worker_api_rev_007_1786826064862_cdcbcb62fb24455cad56481c038051b3",
+                      "platform_agent_run_id": null
+                    }
+                  ],
+                  "task_executions": [
+                    {
+                      "kind": "task_agent",
+                      "address": "/lab/researcher",
+                      "agent_run_id": "utd_nested_worker_api_rev_007_1786826064862_f77d4182686e4dd485fc62330af2bd1a",
+                      "platform_agent_run_id": null,
+                      "started_at": "2026-08-15T20:37:49.988Z",
+                      "settled_at": "2026-08-15T20:37:58.076Z"
+                    }
+                  ],
+                  "started_at": "2026-08-15T20:37:47.608Z",
+                  "settled_at": "2026-08-15T20:38:03.394Z"
+                }
+              ]
+            }
+          },
+          "tasks": [
+            {
+              "task_id": "task_6acd721668fd4b079c292623e09999c2",
+              "delegator_agent_run_id": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+              "recipient_address": "/worker",
+              "task_execution": {
+                "agent_run_id": "utd_worker_api_rev_007_1786826064862_7756877339b24424ab8bc93ca398a50e"
+              },
+              "description": "Return E2E_DIRECT_TASK_RESULT_42",
+              "reference_files": [],
+              "status": "accepted",
+              "updates": [
+                {
+                  "kind": "submission",
+                  "submission_id": "submission_63eb0a07af3a4f878c221421800f9ee1",
+                  "message": "E2E_DIRECT_TASK_RESULT_42",
+                  "reference_files": [],
+                  "created_at": "2026-08-15T20:34:45.619Z"
+                },
+                {
+                  "kind": "review",
+                  "review_id": "review_0f7151bd460c4408a0bcc9d84a73e218",
+                  "reviewed_submission_id": "submission_63eb0a07af3a4f878c221421800f9ee1",
+                  "decision": "accept",
+                  "comment": "Accepted the submitted result containing the requested marker.",
+                  "reference_files": [],
+                  "created_at": "2026-08-15T20:35:02.781Z"
+                }
+              ],
+              "created_at": "2026-08-15T20:34:44.156Z"
+            },
+            {
+              "task_id": "task_cb0c091672ad41f9a4fd2a7a6cefc96d",
+              "delegator_agent_run_id": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+              "recipient_address": "/lab",
+              "task_execution": {
+                "team_run_id": "utd_child_team_api_rev_007_1786826064862_f3ae9fd365ea48cfb168e769f696840e"
+              },
+              "description": "Return E2E_NESTED_TEAM_RESULT after delegating the required child task.",
+              "reference_files": [],
+              "status": "accepted",
+              "updates": [
+                {
+                  "kind": "submission",
+                  "submission_id": "submission_bd8f4d06a0d542878b9b9241eef36222",
+                  "message": "E2E_NESTED_TEAM_RESULT",
+                  "reference_files": [],
+                  "created_at": "2026-08-15T20:37:59.231Z"
+                },
+                {
+                  "kind": "review",
+                  "review_id": "review_9dfa2a5c4b8c41a7a9e7d1271b7e0a08",
+                  "reviewed_submission_id": "submission_bd8f4d06a0d542878b9b9241eef36222",
+                  "decision": "accept",
+                  "comment": "Accepted the submitted result containing the requested nested-team marker.",
+                  "reference_files": [],
+                  "created_at": "2026-08-15T20:38:03.366Z"
+                }
+              ],
+              "created_at": "2026-08-15T20:37:47.608Z"
+            },
+            {
+              "task_id": "task_add4bec1233a48eabdcdfd509b827ce1",
+              "delegator_agent_run_id": "utd_nested_coordinator_api_rev_007_1786826064862_68c186ab3acb480dba6b04176352fb5e",
+              "recipient_address": "/lab/researcher",
+              "task_execution": {
+                "agent_run_id": "utd_nested_worker_api_rev_007_1786826064862_f77d4182686e4dd485fc62330af2bd1a"
+              },
+              "description": "Return E2E_NESTED_CHILD_RESULT",
+              "reference_files": [],
+              "status": "accepted",
+              "updates": [
+                {
+                  "kind": "submission",
+                  "submission_id": "submission_622a3c167ee14d0cb73f72a63b752196",
+                  "message": "E2E_NESTED_CHILD_RESULT",
+                  "reference_files": [],
+                  "created_at": "2026-08-15T20:37:52.187Z"
+                },
+                {
+                  "kind": "review",
+                  "review_id": "review_badec819034e4cce87041d79034a9544",
+                  "reviewed_submission_id": "submission_622a3c167ee14d0cb73f72a63b752196",
+                  "decision": "accept",
+                  "comment": "Accepted the child result.",
+                  "reference_files": [],
+                  "created_at": "2026-08-15T20:37:58.057Z"
+                }
+              ],
+              "created_at": "2026-08-15T20:37:49.988Z"
+            }
+          ],
+          "messages": [
+            {
+              "message_id": "teammsg_2TmR87pdZRApOWzOMCF7k8UP_Okp-VmB",
+              "sender_agent_run_id": "utd_nested_coordinator_api_rev_007_1786826064862_68c186ab3acb480dba6b04176352fb5e",
+              "receiver_agent_run_id": "utd_nested_worker_api_rev_007_1786826064862_855f206cb8de4c97b691967bedba1e8c",
+              "content": "Please complete the delegated task and submit the formal result when ready.",
+              "message_type": "status",
+              "reference_files": [],
+              "created_at": "2026-08-15T20:37:51.447Z"
+            }
+          ],
+          "agent_statuses": [
+            {
+              "agent_run_id": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+              "member_address": "/coordinator",
+              "status": "offline",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            },
+            {
+              "agent_run_id": "utd_worker_api_rev_007_1786826064862_5d5dd94bd81d417eb259e4b4371deea8",
+              "member_address": "/worker",
+              "status": "offline",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            },
+            {
+              "agent_run_id": "utd_nested_coordinator_api_rev_007_1786826064862_46371751a590409098baa9e66e9cdcc5",
+              "member_address": "/lab/lead",
+              "status": "offline",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            },
+            {
+              "agent_run_id": "utd_nested_worker_api_rev_007_1786826064862_855f206cb8de4c97b691967bedba1e8c",
+              "member_address": "/lab/researcher",
+              "status": "offline",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "atMs": 30,
+      "message": {
+        "type": "TEAM_RUN_LIFECYCLE",
+        "payload": {
+          "is_active": true
+        }
+      }
+    },
+    {
+      "atMs": 56,
+      "message": {
+        "type": "MEMBER_INPUT_MESSAGE",
+        "payload": {
+          "change_sequence": 3,
+          "recipient_agent_run_id": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+          "message_id": "api-rev-007-27e589ea-9c78-42ec-a5d0-e6941fa02614",
+          "dedupe_key": "api-rev-007-ad9e771f-99e4-47b2-987a-141a4cceca78",
+          "content": "Call delegate_task exactly once using the deliberately invalid relative recipient_address worker and description MUST_NOT_START. Do not correct the address and do not retry.",
+          "input_origin": "user_message",
+          "received_at": "2026-08-15T20:49:26.149Z",
+          "context_file_paths": [],
+          "sender_agent_run_id": null,
+          "parent_communication_message_id": null
+        }
+      }
+    },
+    {
+      "atMs": 71,
+      "message": {
+        "type": "TURN_STARTED",
+        "payload": {
+          "change_sequence": 6,
+          "agent_run_id": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+          "turn_id": "turn_0001"
+        }
+      }
+    },
+    {
+      "atMs": 1496,
+      "message": {
+        "type": "SEGMENT_START",
+        "payload": {
+          "change_sequence": 10,
+          "agent_run_id": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+          "segment_id": "call_Lk9ykaYGR6I5DIa0eH4tKYi6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "metadata": {
+            "tool_name": "delegate_task",
+            "native_tool_call_context": {
+              "provider": "openai_responses",
+              "functionCallItem": {
+                "id": "fc_05c07d68ce6833ba006a80d0d78a2081a28b9ee62c1cb8b5fa",
+                "type": "function_call",
+                "status": "in_progress",
+                "arguments": "",
+                "call_id": "call_Lk9ykaYGR6I5DIa0eH4tKYi6",
+                "name": "delegate_task"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "atMs": 1508,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 12,
+          "agent_run_id": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+          "segment_id": "call_Lk9ykaYGR6I5DIa0eH4tKYi6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": "{\""
+        }
+      }
+    },
+    {
+      "atMs": 1509,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 14,
+          "agent_run_id": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+          "segment_id": "call_Lk9ykaYGR6I5DIa0eH4tKYi6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": "recipient"
+        }
+      }
+    },
+    {
+      "atMs": 1509,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 16,
+          "agent_run_id": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+          "segment_id": "call_Lk9ykaYGR6I5DIa0eH4tKYi6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": "_address"
+        }
+      }
+    },
+    {
+      "atMs": 1509,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 18,
+          "agent_run_id": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+          "segment_id": "call_Lk9ykaYGR6I5DIa0eH4tKYi6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": "\":\""
+        }
+      }
+    },
+    {
+      "atMs": 1522,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 20,
+          "agent_run_id": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+          "segment_id": "call_Lk9ykaYGR6I5DIa0eH4tKYi6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": "worker"
+        }
+      }
+    },
+    {
+      "atMs": 1539,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 22,
+          "agent_run_id": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+          "segment_id": "call_Lk9ykaYGR6I5DIa0eH4tKYi6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": "\",\""
+        }
+      }
+    },
+    {
+      "atMs": 1539,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 24,
+          "agent_run_id": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+          "segment_id": "call_Lk9ykaYGR6I5DIa0eH4tKYi6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": "description"
+        }
+      }
+    },
+    {
+      "atMs": 1554,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 26,
+          "agent_run_id": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+          "segment_id": "call_Lk9ykaYGR6I5DIa0eH4tKYi6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": "\":\""
+        }
+      }
+    },
+    {
+      "atMs": 1554,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 28,
+          "agent_run_id": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+          "segment_id": "call_Lk9ykaYGR6I5DIa0eH4tKYi6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": "M"
+        }
+      }
+    },
+    {
+      "atMs": 1554,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 30,
+          "agent_run_id": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+          "segment_id": "call_Lk9ykaYGR6I5DIa0eH4tKYi6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": "UST"
+        }
+      }
+    },
+    {
+      "atMs": 1555,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 32,
+          "agent_run_id": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+          "segment_id": "call_Lk9ykaYGR6I5DIa0eH4tKYi6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": "_NOT"
+        }
+      }
+    },
+    {
+      "atMs": 1555,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 34,
+          "agent_run_id": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+          "segment_id": "call_Lk9ykaYGR6I5DIa0eH4tKYi6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": "_START"
+        }
+      }
+    },
+    {
+      "atMs": 1566,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 36,
+          "agent_run_id": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+          "segment_id": "call_Lk9ykaYGR6I5DIa0eH4tKYi6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": "\",\""
+        }
+      }
+    },
+    {
+      "atMs": 1566,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 38,
+          "agent_run_id": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+          "segment_id": "call_Lk9ykaYGR6I5DIa0eH4tKYi6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": "reference"
+        }
+      }
+    },
+    {
+      "atMs": 1566,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 40,
+          "agent_run_id": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+          "segment_id": "call_Lk9ykaYGR6I5DIa0eH4tKYi6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": "_files"
+        }
+      }
+    },
+    {
+      "atMs": 1591,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 42,
+          "agent_run_id": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+          "segment_id": "call_Lk9ykaYGR6I5DIa0eH4tKYi6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": "\":"
+        }
+      }
+    },
+    {
+      "atMs": 1591,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 44,
+          "agent_run_id": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+          "segment_id": "call_Lk9ykaYGR6I5DIa0eH4tKYi6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": "[]}"
+        }
+      }
+    },
+    {
+      "atMs": 1779,
+      "message": {
+        "type": "SEGMENT_END",
+        "payload": {
+          "change_sequence": 46,
+          "agent_run_id": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+          "segment_id": "call_Lk9ykaYGR6I5DIa0eH4tKYi6",
+          "turn_id": "turn_0001",
+          "metadata": {
+            "tool_name": "delegate_task",
+            "arguments": {
+              "recipient_address": "worker",
+              "description": "MUST_NOT_START",
+              "reference_files": []
+            },
+            "native_tool_call_context": {
+              "provider": "openai_responses",
+              "functionCallItem": {
+                "id": "fc_05c07d68ce6833ba006a80d0d78a2081a28b9ee62c1cb8b5fa",
+                "type": "function_call",
+                "status": "completed",
+                "arguments": "{\"recipient_address\":\"worker\",\"description\":\"MUST_NOT_START\",\"reference_files\":[]}",
+                "call_id": "call_Lk9ykaYGR6I5DIa0eH4tKYi6",
+                "name": "delegate_task"
+              },
+              "responseOutputItems": [
+                {
+                  "id": "rs_05c07d68ce6833ba006a80d0d710a081a29b311a121d4782ad",
+                  "type": "reasoning",
+                  "content": [],
+                  "encrypted_content": "gAAAAABqgNDXh6qKbYHyzr9Vz8jixlrT5G64p5U1Tpw3Bv2Cp992koeeCz254eo04Lu3RTLUZk6Dt63l2JkV6o28LQGY9kuB_8MtK9py4OWCjpe5CKbW4eHG-fvAL52I3hV5JuFTCfLx85-sM3ztsnbhZtGgjKHpvlNg64knzazamxcI_PNBxKS2K57skl6uvhE-jV1m_px65jEjVCw39esZ-9u2rGLWDykFOjE7mFiu98J5gxr6K1r2DrpVUg93tDx4agYQAYA6cGelrDO_K0140hmPoxzxl_Z0qQr1q4ef8ykDDTn7veXmFOo1Qy-d8Mck-8_wpjLwkrH2UbPkxHEcrerv_HrwayHNCryzD6dEUa3KiW-B8FUa4j9-ylV3pSoOaU3OAq3O2Zpb31ZvpXTESqg_rX3lbgDg-9v3Ar53Lg5ytb3JNwUMhyVAY23aMhAALHU1izlJArOpkUTINuToDk2e_HO-j7HYQVdTuhFPgHTRN98X-ztw0RxULExqM0UN5bGwSciX-SeZ408acsqwFtabTawWA_g3mWuHC-XzgjdYww28fCkD3megfuhskp58bXuD9xIWBMC2P6onYPGR8C7gNxKdmM7e_3R4SklZz6Ch4Reot5-nQ6Hl95fm6EYoGGWttAifG1vgkh9p7Y6b95FG-j1u1XzgSQC8zFsiqqttNZzwiFM9meksmnZj_bisz434rsYN9QPTmzScCvZNbBMTB3OeJPmy3H_ece9bz5VkNVjyOMDJRH6wqFTJrCiN1Y4nSI_GaaafLd3Bfnf1yonKeraB_noXNSGwzYc6UP_DHSdoKQNX8T3cIeRDUmvBOuk8pHK9ygs_gwx9b6PuMisB-PAJqOhpGW2fPh61Qj1uoitLKjeTfu2uUJ4Mvf9s9uOJRdthnwagFB8KWMTpmv4p_B4MzNRDW6zAP54EMyFpqbaRvB3Y53_yKBI5W6bvJbUwvyRLhjaSvplmVhkb_Pq1BVFpe9SaIO4p-1kM5pyO2zGFaj0UQC6Q36QqzcR-g4lxQR1o3QvOEDpqaTumUvwwwFdCu3LHOzd6foy-f4W3eqRs0SQI-15RsVLTVLkqlnB4k00dMW17j0g5nxdjKlcC1ZhNpxlTRVhLmDGmp7UgIVD4d-Q0I_a-SdbS4W695WBoyINC8umqD521sn_MVFyiBAkH-QU7M0LFr-SkPPPvjPT8nj4_2U-IgI9kOEdHhuxTXKkIMVwgTaHMbcULyYbWB7LmUZk4NRHBkyz0LRrF-OXYiHlMTaTUYDibvHVXMJiFE4h0cXzuFS3Kz7TVrEJ9COseBtUtKlIX3cQ9gcJbxtxhZwaEtVWdTbyeDLO37qTnoGQDENl5sJVovdKLlzMggIylfiNZqEOmGlku71SgQKu6b3I=",
+                  "summary": []
+                },
+                {
+                  "id": "fc_05c07d68ce6833ba006a80d0d78a2081a28b9ee62c1cb8b5fa",
+                  "type": "function_call",
+                  "status": "completed",
+                  "arguments": "{\"recipient_address\":\"worker\",\"description\":\"MUST_NOT_START\",\"reference_files\":[]}",
+                  "call_id": "call_Lk9ykaYGR6I5DIa0eH4tKYi6",
+                  "name": "delegate_task"
+                }
+              ]
+            }
+          },
+          "interrupted": false,
+          "reason": null,
+          "failed": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "atMs": 1784,
+      "message": {
+        "type": "TOKEN_USAGE_UPDATED",
+        "payload": {
+          "change_sequence": 48,
+          "agent_run_id": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+          "usage_event_id": "9480502d-30bf-4f87-9bea-6322a9cdaa44",
+          "idempotency_key": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b:turn_0001:llm:1",
+          "observed_at": "2026-08-15T20:49:27.853Z",
+          "turn_id": "turn_0001",
+          "llm_call_id": "turn_0001:llm:1",
+          "model_provider": "OPENAI",
+          "model_identifier": "gpt-5.6-luna",
+          "model_value": "gpt-5.6-luna",
+          "usage_scope": "per_call",
+          "input_token_semantic": "gross_includes_cache",
+          "standard_input_tokens": 3,
+          "cache_miss_input_tokens": 3,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 3487,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "cache_state": "positive",
+          "reasoning_output_tokens": 32,
+          "billable_output_tokens": 64,
+          "meter_delta_input_tokens": 3490,
+          "meter_delta_output_tokens": 64,
+          "meter_delta_total_tokens": 3554,
+          "input_price_per_million": 0.2,
+          "output_price_per_million": 1.2,
+          "cached_input_read_price_per_million": 0.02,
+          "cached_input_write_price_per_million": 0.25,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "estimated_api_input_cost": 0.00087235,
+          "estimated_api_standard_input_cost": 6.000000000000001e-7,
+          "estimated_api_cache_read_input_cost": null,
+          "estimated_api_cache_creation_input_cost": 0.00087175,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": 0.0000768,
+          "estimated_api_reasoning_output_cost": 0.0000384,
+          "estimated_api_total_cost": 0.0009491500000000001,
+          "currency": "USD",
+          "api_cost_status": "estimated",
+          "missing_price_dimensions": [],
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+          "selected_pricing_tier_id": "standard_le_272k",
+          "latest_prompt_tokens": 3490,
+          "effective_context_window_tokens": 1050000,
+          "context_window_usage_percent": 0.3323809523809524,
+          "quality_flags": []
+        }
+      }
+    },
+    {
+      "atMs": 1784,
+      "message": {
+        "type": "TOOL_EXECUTION_STARTED",
+        "payload": {
+          "change_sequence": 51,
+          "agent_run_id": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+          "invocation_id": "call_Lk9ykaYGR6I5DIa0eH4tKYi6",
+          "tool_name": "delegate_task",
+          "turn_id": "turn_0001",
+          "arguments": {
+            "recipient_address": "worker",
+            "description": "MUST_NOT_START",
+            "reference_files": []
+          }
+        }
+      }
+    },
+    {
+      "atMs": 1786,
+      "message": {
+        "type": "TOOL_LOG",
+        "payload": {
+          "change_sequence": 53,
+          "agent_run_id": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+          "log_entry": "[TOOL_CALL] Agent_ID: utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b, Tool: delegate_task, Invocation_ID: call_Lk9ykaYGR6I5DIa0eH4tKYi6, Arguments: recipient_address: worker\ndescription: MUST_NOT_START\nreference_files: (empty list)",
+          "tool_invocation_id": "call_Lk9ykaYGR6I5DIa0eH4tKYi6",
+          "tool_name": "delegate_task",
+          "turn_id": "turn_0001"
+        }
+      }
+    },
+    {
+      "atMs": 1786,
+      "message": {
+        "type": "TOOL_LOG",
+        "payload": {
+          "change_sequence": 55,
+          "agent_run_id": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+          "log_entry": "[TOOL_EXCEPTION] Error executing tool 'delegate_task' (ID: call_Lk9ykaYGR6I5DIa0eH4tKYi6): Error: {\n  \"error\": {\n    \"code\": \"COLLABORATION_ADDRESS_INVALID\",\n    \"message\": \"AgentTeam address 'worker' is invalid: a canonical rooted value beginning with '/' is required\"\n  }\n}\nDetails:\nError: {\n  \"error\": {\n    \"code\": \"COLLABORATION_ADDRESS_INVALID\",\n    \"message\": \"AgentTeam address 'worker' is invalid: a canonical rooted value beginning with '/' is required\"\n  }\n}\n    at DelegateTaskTool._execute (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/dist/agent-tools/task-delegation/delegate-task.js:30:19)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)",
+          "tool_invocation_id": "call_Lk9ykaYGR6I5DIa0eH4tKYi6",
+          "tool_name": "delegate_task",
+          "turn_id": "turn_0001"
+        }
+      }
+    },
+    {
+      "atMs": 1787,
+      "message": {
+        "type": "ERROR",
+        "payload": {
+          "code": "TEAM_AGENT_EVENT_ADMISSION_FAILED",
+          "message": "Rejected ERROR: code is required",
+          "change_sequence": 56,
+          "agent_run_id": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+          "error_scope": "runtime",
+          "error_effect": "terminal",
+          "turn_id": null
+        }
+      }
+    },
+    {
+      "atMs": 1788,
+      "message": {
+        "type": "TOOL_EXECUTION_FAILED",
+        "payload": {
+          "change_sequence": 60,
+          "agent_run_id": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+          "invocation_id": "call_Lk9ykaYGR6I5DIa0eH4tKYi6",
+          "tool_name": "delegate_task",
+          "turn_id": "turn_0001",
+          "arguments": null,
+          "error": "Error executing tool 'delegate_task' (ID: call_Lk9ykaYGR6I5DIa0eH4tKYi6): Error: {\n  \"error\": {\n    \"code\": \"COLLABORATION_ADDRESS_INVALID\",\n    \"message\": \"AgentTeam address 'worker' is invalid: a canonical rooted value beginning with '/' is required\"\n  }\n}"
+        }
+      }
+    },
+    {
+      "atMs": 2653,
+      "message": {
+        "type": "TOKEN_USAGE_UPDATED",
+        "payload": {
+          "change_sequence": 64,
+          "agent_run_id": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+          "usage_event_id": "c0463cd2-5cfe-4072-bf1c-9aef061b11e3",
+          "idempotency_key": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b:turn_0001:llm:2",
+          "observed_at": "2026-08-15T20:49:28.739Z",
+          "turn_id": "turn_0001",
+          "llm_call_id": "turn_0001:llm:2",
+          "model_provider": "OPENAI",
+          "model_identifier": "gpt-5.6-luna",
+          "model_value": "gpt-5.6-luna",
+          "usage_scope": "per_call",
+          "input_token_semantic": "gross_includes_cache",
+          "standard_input_tokens": 3,
+          "cache_miss_input_tokens": 3,
+          "cache_read_input_tokens": 3487,
+          "cache_creation_input_tokens": 156,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "cache_state": "positive",
+          "reasoning_output_tokens": 0,
+          "billable_output_tokens": 4,
+          "meter_delta_input_tokens": 3646,
+          "meter_delta_output_tokens": 4,
+          "meter_delta_total_tokens": 3650,
+          "input_price_per_million": 0.2,
+          "output_price_per_million": 1.2,
+          "cached_input_read_price_per_million": 0.02,
+          "cached_input_write_price_per_million": 0.25,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "estimated_api_input_cost": 0.00010934000000000001,
+          "estimated_api_standard_input_cost": 6.000000000000001e-7,
+          "estimated_api_cache_read_input_cost": 0.00006974,
+          "estimated_api_cache_creation_input_cost": 0.000039,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": 0.0000048,
+          "estimated_api_reasoning_output_cost": null,
+          "estimated_api_total_cost": 0.00011414,
+          "currency": "USD",
+          "api_cost_status": "estimated",
+          "missing_price_dimensions": [],
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+          "selected_pricing_tier_id": "standard_le_272k",
+          "latest_prompt_tokens": 3646,
+          "effective_context_window_tokens": 1050000,
+          "context_window_usage_percent": 0.34723809523809523,
+          "quality_flags": []
+        }
+      }
+    },
+    {
+      "atMs": 2654,
+      "message": {
+        "type": "ASSISTANT_COMPLETE",
+        "payload": {
+          "change_sequence": 67,
+          "agent_run_id": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+          "content": "",
+          "reasoning": null,
+          "usage": {
+            "input_tokens": 3646,
+            "output_tokens": 4,
+            "total_tokens": 3650,
+            "usage_scope": "per_call",
+            "model_provider": "OPENAI",
+            "provider_name": "OpenAI",
+            "model_identifier": "gpt-5.6-luna",
+            "model_value": "gpt-5.6-luna",
+            "input_token_semantic": "gross_includes_cache",
+            "cache_state": "positive",
+            "standard_input_tokens": null,
+            "cache_miss_input_tokens": null,
+            "cache_read_input_tokens": 3487,
+            "cache_creation_input_tokens": 156,
+            "cache_creation_5m_input_tokens": null,
+            "cache_creation_1h_input_tokens": null,
+            "reasoning_output_tokens": 0,
+            "billable_input_tokens": null,
+            "billable_output_tokens": null,
+            "raw_usage_json": {
+              "input_tokens": 3646,
+              "input_tokens_details": {
+                "cache_write_tokens": 156,
+                "cached_tokens": 3487
+              },
+              "output_tokens": 4,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 3650
+            },
+            "quality_flags": []
+          },
+          "image_urls": [],
+          "audio_urls": [],
+          "video_urls": []
+        }
+      }
+    },
+    {
+      "atMs": 2654,
+      "message": {
+        "type": "TURN_COMPLETED",
+        "payload": {
+          "change_sequence": 68,
+          "agent_run_id": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+          "turn_id": "turn_0001",
+          "reason": null
+        }
+      }
+    }
+  ],
+  "finalSnapshot": {
+    "getTeamRunResumeConfig": {
+      "teamRunId": "utd_root_team_api_rev_007_1786826064862_caef3a0c34d74ede9508c8f7b19182c4",
+      "isActive": true,
+      "executionTree": {
+        "schema_version": 1,
+        "created_at": "2026-08-15T20:34:32.728Z",
+        "archived_at": null,
+        "application_binding": null,
+        "handoffs": [],
+        "root_team": {
+          "team_definition_id": "utd-root-team-api-rev-007-1786826064862",
+          "team_definition_name": "utd_root_team_api_rev_007_1786826064862",
+          "team_run_id": "utd_root_team_api_rev_007_1786826064862_caef3a0c34d74ede9508c8f7b19182c4",
+          "coordinator_address": "/coordinator",
+          "members": [
+            {
+              "kind": "configured_agent",
+              "address": "/coordinator",
+              "agent_definition_id": "utd-coordinator-api-rev-007-1786826064862",
+              "role": null,
+              "description": null,
+              "agent_run_id": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+              "platform_agent_run_id": null,
+              "launch_configuration": {
+                "runtime_kind": "AUTOBYTEUS",
+                "llm_model_identifier": "gpt-5.6-luna",
+                "llm_config": null,
+                "auto_execute_tools": true,
+                "skill_access_mode": "NONE",
+                "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-007/live/workspaces/api_rev_007_1786826064862"
+              }
+            },
+            {
+              "kind": "configured_agent",
+              "address": "/worker",
+              "agent_definition_id": "utd-worker-api-rev-007-1786826064862",
+              "role": null,
+              "description": null,
+              "agent_run_id": "utd_worker_api_rev_007_1786826064862_5d5dd94bd81d417eb259e4b4371deea8",
+              "platform_agent_run_id": null,
+              "launch_configuration": {
+                "runtime_kind": "AUTOBYTEUS",
+                "llm_model_identifier": "gpt-5.6-luna",
+                "llm_config": null,
+                "auto_execute_tools": true,
+                "skill_access_mode": "NONE",
+                "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-007/live/workspaces/api_rev_007_1786826064862"
+              }
+            },
+            {
+              "kind": "configured_team",
+              "address": "/lab",
+              "team_definition_id": "utd-child-team-api-rev-007-1786826064862",
+              "role": null,
+              "description": null,
+              "team_run_id": "utd_child_team_api_rev_007_1786826064862_3a279d8404e34e52b880c10d2ce0a4a0",
+              "coordinator_address": "/lab/lead",
+              "members": [
+                {
+                  "kind": "configured_agent",
+                  "address": "/lab/lead",
+                  "agent_definition_id": "utd-nested-coordinator-api-rev-007-1786826064862",
+                  "role": null,
+                  "description": null,
+                  "agent_run_id": "utd_nested_coordinator_api_rev_007_1786826064862_46371751a590409098baa9e66e9cdcc5",
+                  "platform_agent_run_id": null,
+                  "launch_configuration": {
+                    "runtime_kind": "AUTOBYTEUS",
+                    "llm_model_identifier": "gpt-5.6-luna",
+                    "llm_config": null,
+                    "auto_execute_tools": true,
+                    "skill_access_mode": "NONE",
+                    "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-007/live/workspaces/api_rev_007_1786826064862"
+                  }
+                },
+                {
+                  "kind": "configured_agent",
+                  "address": "/lab/researcher",
+                  "agent_definition_id": "utd-nested-worker-api-rev-007-1786826064862",
+                  "role": null,
+                  "description": null,
+                  "agent_run_id": "utd_nested_worker_api_rev_007_1786826064862_855f206cb8de4c97b691967bedba1e8c",
+                  "platform_agent_run_id": null,
+                  "launch_configuration": {
+                    "runtime_kind": "AUTOBYTEUS",
+                    "llm_model_identifier": "gpt-5.6-luna",
+                    "llm_config": null,
+                    "auto_execute_tools": true,
+                    "skill_access_mode": "NONE",
+                    "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-007/live/workspaces/api_rev_007_1786826064862"
+                  }
+                }
+              ],
+              "task_executions": []
+            }
+          ],
+          "task_executions": [
+            {
+              "kind": "task_agent",
+              "address": "/worker",
+              "agent_run_id": "utd_worker_api_rev_007_1786826064862_7756877339b24424ab8bc93ca398a50e",
+              "platform_agent_run_id": null,
+              "started_at": "2026-08-15T20:34:44.156Z",
+              "settled_at": "2026-08-15T20:35:02.802Z"
+            },
+            {
+              "kind": "task_team",
+              "address": "/lab",
+              "team_run_id": "utd_child_team_api_rev_007_1786826064862_f3ae9fd365ea48cfb168e769f696840e",
+              "members": [
+                {
+                  "kind": "task_team_agent",
+                  "address": "/lab/lead",
+                  "agent_run_id": "utd_nested_coordinator_api_rev_007_1786826064862_68c186ab3acb480dba6b04176352fb5e",
+                  "platform_agent_run_id": null
+                },
+                {
+                  "kind": "task_team_agent",
+                  "address": "/lab/researcher",
+                  "agent_run_id": "utd_nested_worker_api_rev_007_1786826064862_cdcbcb62fb24455cad56481c038051b3",
+                  "platform_agent_run_id": null
+                }
+              ],
+              "task_executions": [
+                {
+                  "kind": "task_agent",
+                  "address": "/lab/researcher",
+                  "agent_run_id": "utd_nested_worker_api_rev_007_1786826064862_f77d4182686e4dd485fc62330af2bd1a",
+                  "platform_agent_run_id": null,
+                  "started_at": "2026-08-15T20:37:49.988Z",
+                  "settled_at": "2026-08-15T20:37:58.076Z"
+                }
+              ],
+              "started_at": "2026-08-15T20:37:47.608Z",
+              "settled_at": "2026-08-15T20:38:03.394Z"
+            }
+          ]
+        }
+      }
+    },
+    "getTaskDelegationRecords": [
+      {
+        "taskId": "task_6acd721668fd4b079c292623e09999c2",
+        "delegatorAgentRunId": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+        "recipientAddress": "/worker",
+        "targetAgentRunId": "utd_worker_api_rev_007_1786826064862_7756877339b24424ab8bc93ca398a50e",
+        "targetTeamRunId": null,
+        "status": "accepted",
+        "description": "Return E2E_DIRECT_TASK_RESULT_42",
+        "createdAt": "2026-08-15T20:34:44.156Z",
+        "referenceFiles": [],
+        "updates": [
+          {
+            "kind": "submission",
+            "submissionId": "submission_63eb0a07af3a4f878c221421800f9ee1",
+            "reviewId": null,
+            "interruptionId": null,
+            "reviewedSubmissionId": null,
+            "decision": null,
+            "content": "E2E_DIRECT_TASK_RESULT_42",
+            "createdAt": "2026-08-15T20:34:45.619Z",
+            "referenceFiles": []
+          },
+          {
+            "kind": "review",
+            "submissionId": null,
+            "reviewId": "review_0f7151bd460c4408a0bcc9d84a73e218",
+            "interruptionId": null,
+            "reviewedSubmissionId": "submission_63eb0a07af3a4f878c221421800f9ee1",
+            "decision": "accept",
+            "content": "Accepted the submitted result containing the requested marker.",
+            "createdAt": "2026-08-15T20:35:02.781Z",
+            "referenceFiles": []
+          }
+        ]
+      },
+      {
+        "taskId": "task_cb0c091672ad41f9a4fd2a7a6cefc96d",
+        "delegatorAgentRunId": "utd_coordinator_api_rev_007_1786826064862_70eef29dcc78492db207e4f57276b44b",
+        "recipientAddress": "/lab",
+        "targetAgentRunId": null,
+        "targetTeamRunId": "utd_child_team_api_rev_007_1786826064862_f3ae9fd365ea48cfb168e769f696840e",
+        "status": "accepted",
+        "description": "Return E2E_NESTED_TEAM_RESULT after delegating the required child task.",
+        "createdAt": "2026-08-15T20:37:47.608Z",
+        "referenceFiles": [],
+        "updates": [
+          {
+            "kind": "submission",
+            "submissionId": "submission_bd8f4d06a0d542878b9b9241eef36222",
+            "reviewId": null,
+            "interruptionId": null,
+            "reviewedSubmissionId": null,
+            "decision": null,
+            "content": "E2E_NESTED_TEAM_RESULT",
+            "createdAt": "2026-08-15T20:37:59.231Z",
+            "referenceFiles": []
+          },
+          {
+            "kind": "review",
+            "submissionId": null,
+            "reviewId": "review_9dfa2a5c4b8c41a7a9e7d1271b7e0a08",
+            "interruptionId": null,
+            "reviewedSubmissionId": "submission_bd8f4d06a0d542878b9b9241eef36222",
+            "decision": "accept",
+            "content": "Accepted the submitted result containing the requested nested-team marker.",
+            "createdAt": "2026-08-15T20:38:03.366Z",
+            "referenceFiles": []
+          }
+        ]
+      },
+      {
+        "taskId": "task_add4bec1233a48eabdcdfd509b827ce1",
+        "delegatorAgentRunId": "utd_nested_coordinator_api_rev_007_1786826064862_68c186ab3acb480dba6b04176352fb5e",
+        "recipientAddress": "/lab/researcher",
+        "targetAgentRunId": "utd_nested_worker_api_rev_007_1786826064862_f77d4182686e4dd485fc62330af2bd1a",
+        "targetTeamRunId": null,
+        "status": "accepted",
+        "description": "Return E2E_NESTED_CHILD_RESULT",
+        "createdAt": "2026-08-15T20:37:49.988Z",
+        "referenceFiles": [],
+        "updates": [
+          {
+            "kind": "submission",
+            "submissionId": "submission_622a3c167ee14d0cb73f72a63b752196",
+            "reviewId": null,
+            "interruptionId": null,
+            "reviewedSubmissionId": null,
+            "decision": null,
+            "content": "E2E_NESTED_CHILD_RESULT",
+            "createdAt": "2026-08-15T20:37:52.187Z",
+            "referenceFiles": []
+          },
+          {
+            "kind": "review",
+            "submissionId": null,
+            "reviewId": "review_badec819034e4cce87041d79034a9544",
+            "interruptionId": null,
+            "reviewedSubmissionId": "submission_622a3c167ee14d0cb73f72a63b752196",
+            "decision": "accept",
+            "content": "Accepted the child result.",
+            "createdAt": "2026-08-15T20:37:58.057Z",
+            "referenceFiles": []
+          }
+        ]
+      }
+    ],
+    "getTeamCommunicationMessages": [
+      {
+        "messageId": "teammsg_2TmR87pdZRApOWzOMCF7k8UP_Okp-VmB",
+        "senderAgentRunId": "utd_nested_coordinator_api_rev_007_1786826064862_68c186ab3acb480dba6b04176352fb5e",
+        "receiverAgentRunId": "utd_nested_worker_api_rev_007_1786826064862_855f206cb8de4c97b691967bedba1e8c",
+        "content": "Please complete the delegated task and submit the formal result when ready.",
+        "messageType": "status",
+        "createdAt": "2026-08-15T20:37:51.447Z",
+        "referenceFiles": []
+      }
+    ]
+  }
+}

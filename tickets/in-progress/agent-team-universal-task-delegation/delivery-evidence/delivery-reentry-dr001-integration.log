@@ -1,0 +1,24 @@
+DR-001 merge origin/personal into ticket branch
+UTC 2026-08-15T17:25:23Z
+premerge_head=babcb4ac54ee9c2dff30dfee27dc163a8fb056a6
+merge_target=acb8985930ccce49b632cdca22b92f5b237e35bf
+Auto-merging autobyteus-server-ts/docs/ARCHITECTURE.md
+Auto-merging autobyteus-server-ts/docs/modules/agent_memory.md
+Auto-merging autobyteus-server-ts/docs/modules/agent_tools.md
+Auto-merging autobyteus-server-ts/src/agent-execution/compaction/compaction-run-output-collector.ts
+Auto-merging autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts
+Auto-merging autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-runtime-tool-exposure.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/agent-execution/compaction/compaction-run-output-collector.test.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/unit/agent-execution/compaction/compaction-run-output-collector.test.ts
+Auto-merging autobyteus-web/package.json
+Auto-merging test-support/live-e2e/live-e2e-harness.ts
+Automatic merge failed; fix conflicts and then commit the result.
+merge_exit=1
+head_after=babcb4ac54ee9c2dff30dfee27dc163a8fb056a6
+merge_head=acb8985930ccce49b632cdca22b92f5b237e35bf
+unmerged_count=2
+U	autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts
+U	autobyteus-server-ts/tests/unit/agent-execution/compaction/compaction-run-output-collector.test.ts

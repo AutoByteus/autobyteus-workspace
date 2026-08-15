@@ -1,0 +1,37 @@
+{
+  "at": "2026-08-15T20:56:52.966Z",
+  "terminated": {
+    "success": true,
+    "message": "Agent team run terminated successfully."
+  },
+  "restored": {
+    "success": true,
+    "message": "Agent team run restored successfully.",
+    "teamRunId": "stale_team_stale_1786827145248_1b9224423bd4447ca6298e7bad2c3677"
+  },
+  "task": {
+    "taskId": "task_70257a0a02f445acadf6e44fd3acddf3",
+    "status": "interrupted",
+    "updates": [
+      {
+        "kind": "interruption",
+        "content": "Interrupted because live task recovery is not supported after TeamRun reopen.",
+        "createdAt": "2026-08-15T20:56:37.386Z"
+      }
+    ]
+  },
+  "execution": {
+    "kind": "task_agent",
+    "address": "/worker",
+    "agent_run_id": "stale_worker_stale_1786827145248_3e7f14e77ec043e1bc03db7fcd40f129",
+    "platform_agent_run_id": null,
+    "started_at": "2026-08-15T20:52:34.757Z",
+    "settled_at": "2026-08-15T20:56:37.386Z"
+  },
+  "assertions": {
+    "oneInterruptionAfterSecondRestore": true,
+    "remainsInterrupted": true,
+    "remainsSettled": true
+  },
+  "pass": true
+}

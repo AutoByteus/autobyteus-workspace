@@ -1,0 +1,43 @@
+COMMAND   PID  USER   FD      TYPE             DEVICE  SIZE/OFF                NODE NAME
+node    99164 normy  cwd       DIR               1,13      1024           345229709 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+node    99164 normy  txt       REG               1,13 112928848           255287132 /Users/normy/.hermes/node/bin/node
+node    99164 normy  txt       REG               1,13     72984           293325547 /Library/Preferences/Logging/.plist-cache.TQHe3XLT
+node    99164 normy  txt       REG               1,13   2374000 1152921500312573276 /usr/lib/dyld
+node    99164 normy  txt       REG               1,13  17251592           349638075 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client/libquery_engine-darwin-arm64.dylib.node
+node    99164 normy    0u     unix 0xb9c734d1e82a0f0f       0t0                     ->0xfbd825e691d1fed4
+node    99164 normy    1u     unix 0xa18dfda2f01ca9b7       0t0                     ->0xb9b47b822721fe59
+node    99164 normy    2u     unix 0xae374ca112fb58fb       0t0                     ->0x399fae6bc315af6d
+node    99164 normy    3u   KQUEUE                                                  count=0, state=0x8
+node    99164 normy    4      PIPE 0x60606d5f2651c3e2     16384                     ->0x6a6429e68c46ef1f
+node    99164 normy    5      PIPE 0x6a6429e68c46ef1f     16384                     ->0x60606d5f2651c3e2
+node    99164 normy    6r      DIR               1,13       704                   2 /
+node    99164 normy    7u   KQUEUE                                                  count=0, state=0xa
+node    99164 normy    8r      DIR               1,13       704                   2 /
+node    99164 normy    9u   KQUEUE                                                  count=0, state=0xa
+node    99164 normy   10r      DIR               1,13       704                   2 /
+node    99164 normy   11r      CHR                3,2       0t0                 336 /dev/null
+node    99164 normy   12w      REG               1,13      5881           349639712 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/.tmp/api-rev-008-live-20260815-1/logs/server.log
+node    99164 normy   13u   KQUEUE                                                  count=0, state=0xa
+node    99164 normy   14u   KQUEUE                                                  count=0, state=0xa
+node    99164 normy   15u   KQUEUE                                                  count=0, state=0xa
+node    99164 normy   16u     unix 0x83a6456a693023ef       0t0                     ->0x9ceb7e2d9ef1041b
+node    99164 normy   17u     unix 0x9ceb7e2d9ef1041b       0t0                     ->0x83a6456a693023ef
+node    99164 normy   18u     unix 0x83a6456a693023ef       0t0                     ->0x9ceb7e2d9ef1041b
+node    99164 normy   19u      REG               1,13    221184           349632643 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-008-live-20260815-1.db
+node    99164 normy   20u      REG               1,13    221184           349632643 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-008-live-20260815-1.db
+node    99164 normy   21u      REG               1,13    221184           349632643 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-008-live-20260815-1.db
+node    99164 normy   22u      REG               1,13    221184           349632643 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-008-live-20260815-1.db
+node    99164 normy   23      PIPE 0xf11735f43d62fe4d     16384                     ->0xa01edd90f565c30d
+node    99164 normy   24u      REG               1,13    221184           349632643 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-008-live-20260815-1.db
+node    99164 normy   25u      REG               1,13    221184           349632643 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-008-live-20260815-1.db
+node    99164 normy   26u      REG               1,13    221184           349632643 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-008-live-20260815-1.db
+node    99164 normy   27u      REG               1,13    221184           349632643 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-008-live-20260815-1.db
+node    99164 normy   28u      REG               1,13    221184           349632643 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-008-live-20260815-1.db
+node    99164 normy   29      PIPE 0xa01edd90f565c30d     16384                     ->0xf11735f43d62fe4d
+node    99164 normy   30u     IPv4 0xc7e7a807b9bd2668       0t0                 TCP 127.0.0.1:60313 (LISTEN)
+node    99164 normy   31u    systm 0x8c5ffd492a9bd506       0t0                     [ctl com.apple.netsrc id 7 unit 93]
+node    99164 normy   32u     IPv4 0xe0271daf60061249       0t0                 TCP 127.0.0.1:63246->127.0.0.1:1234 (ESTABLISHED)
+node    99164 normy   33u     unix 0x132cf14bb8e72d95       0t0                     ->0x1c06a8e328de366d
+node    99164 normy   34   NPOLICY                                                  
+node    99164 normy   35u     IPv6 0xd06277ae684290bd       0t0                 TCP [2003:ca:5732:5a23:4872:be0d:35bd:cf64]:63247->[2607:6bc0::10]:443 (ESTABLISHED)
+node    99164 normy   36u     IPv6 0xde48b647e8c80da3       0t0                 TCP [2003:ca:5732:5a23:4872:be0d:35bd:cf64]:63248->[2606:4700::6812:1c88]:443 (ESTABLISHED)

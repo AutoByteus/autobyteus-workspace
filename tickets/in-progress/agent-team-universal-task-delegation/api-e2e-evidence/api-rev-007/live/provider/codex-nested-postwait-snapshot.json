@@ -1,0 +1,76 @@
+{
+  "data": {
+    "getTaskDelegationRecords": [
+      {
+        "taskId": "task_b535c1b0a150475e9da15beaafbec1fc",
+        "delegatorAgentRunId": "utd_coordinator_api_rev_007_1786826064862_9bc676f1aa9f4632898df8c3f297d329",
+        "recipientAddress": "/worker",
+        "targetAgentRunId": "utd_worker_api_rev_007_1786826064862_93d9f347efcf43578dea94b31188a275",
+        "targetTeamRunId": null,
+        "status": "accepted",
+        "description": "Return E2E_DIRECT_TASK_RESULT_42",
+        "updates": [
+          {
+            "kind": "submission",
+            "content": "E2E_DIRECT_TASK_RESULT_42",
+            "decision": null,
+            "reviewedSubmissionId": null
+          },
+          {
+            "kind": "review",
+            "content": null,
+            "decision": "accept",
+            "reviewedSubmissionId": "submission_253eb8eaff7b484db17fb9345d27a069"
+          }
+        ]
+      },
+      {
+        "taskId": "task_be036653cd7f4b449b4eb30e9848f9ff",
+        "delegatorAgentRunId": "utd_coordinator_api_rev_007_1786826064862_9bc676f1aa9f4632898df8c3f297d329",
+        "recipientAddress": "/lab",
+        "targetAgentRunId": null,
+        "targetTeamRunId": "utd_child_team_api_rev_007_1786826064862_8ae314d4a7894688b838b08ddcf90423",
+        "status": "accepted",
+        "description": "Return E2E_NESTED_TEAM_RESULT after delegating the required child task",
+        "updates": [
+          {
+            "kind": "submission",
+            "content": "E2E_NESTED_TEAM_RESULT",
+            "decision": null,
+            "reviewedSubmissionId": null
+          },
+          {
+            "kind": "review",
+            "content": null,
+            "decision": "accept",
+            "reviewedSubmissionId": "submission_8ea6c35f97e34a878356b564304e1ee1"
+          }
+        ]
+      },
+      {
+        "taskId": "task_ed6ba8642e9a4064962fe67be3c0ba38",
+        "delegatorAgentRunId": "utd_nested_coordinator_api_rev_007_1786826064862_571effc4204a4525ad438c75ad068ec1",
+        "recipientAddress": "/lab/researcher",
+        "targetAgentRunId": "utd_nested_worker_api_rev_007_1786826064862_857b5fb48e0e410a8e73c095a92c9845",
+        "targetTeamRunId": null,
+        "status": "accepted",
+        "description": "Return E2E_NESTED_CHILD_RESULT",
+        "updates": [
+          {
+            "kind": "submission",
+            "content": "E2E_NESTED_CHILD_RESULT",
+            "decision": null,
+            "reviewedSubmissionId": null
+          },
+          {
+            "kind": "review",
+            "content": null,
+            "decision": "accept",
+            "reviewedSubmissionId": "submission_3001715abb76402db14976a5307f5863"
+          }
+        ]
+      }
+    ],
+    "getTeamCommunicationMessages": []
+  }
+}

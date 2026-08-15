@@ -1,0 +1,458 @@
+{
+  "runtimeKind": "autobyteus",
+  "model": "gpt-5.6-luna",
+  "input": {
+    "agentDefinitionId": "daily-assistant",
+    "workspaceRootPath": "tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-007/live/workspaces/standalone-autobyteus",
+    "llmModelIdentifier": "gpt-5.6-luna",
+    "autoExecuteTools": true,
+    "skillAccessMode": "NONE",
+    "runtimeKind": "autobyteus"
+  },
+  "created": {
+    "createAgentRun": {
+      "success": true,
+      "message": "Agent run created successfully.",
+      "runId": "daily_assistant_1ac07face5134d52bf3b0eecd3560d7e"
+    }
+  },
+  "runId": "daily_assistant_1ac07face5134d52bf3b0eecd3560d7e",
+  "sent": true,
+  "terminal": "TURN_COMPLETED",
+  "error": null,
+  "messages": [
+    {
+      "atMs": 3,
+      "message": {
+        "type": "CONNECTED",
+        "payload": {
+          "agent_id": "daily_assistant_1ac07face5134d52bf3b0eecd3560d7e",
+          "session_id": "53a95500-c213-4841-a007-5536e8f3eda9"
+        }
+      }
+    },
+    {
+      "atMs": 4,
+      "message": {
+        "type": "AGENT_STATUS",
+        "payload": {
+          "status": "idle",
+          "agent_id": "daily_assistant_1ac07face5134d52bf3b0eecd3560d7e"
+        }
+      }
+    },
+    {
+      "atMs": 5,
+      "message": {
+        "type": "AGENT_STATUS",
+        "payload": {
+          "status": "initializing",
+          "agent_id": "daily_assistant_1ac07face5134d52bf3b0eecd3560d7e"
+        }
+      }
+    },
+    {
+      "atMs": 5,
+      "message": {
+        "type": "AGENT_COMMAND_ACK",
+        "payload": {
+          "command_type": "SEND_MESSAGE",
+          "run_id": "daily_assistant_1ac07face5134d52bf3b0eecd3560d7e",
+          "message_id": "standalone-c3370b3a-84ee-4b56-a687-3b673c488bd7",
+          "dedupe_key": "standalone-2dd92e33-7223-44c9-a754-33c8ec1e227c",
+          "state": "accepted",
+          "accepted": true,
+          "duplicate": false,
+          "status": {
+            "status": "initializing",
+            "agent_id": "daily_assistant_1ac07face5134d52bf3b0eecd3560d7e"
+          }
+        }
+      }
+    },
+    {
+      "atMs": 7,
+      "message": {
+        "type": "AGENT_STATUS",
+        "payload": {
+          "status": "running",
+          "agent_id": "daily_assistant_1ac07face5134d52bf3b0eecd3560d7e"
+        }
+      }
+    },
+    {
+      "atMs": 7,
+      "message": {
+        "type": "TURN_STARTED",
+        "payload": {
+          "turn_id": "turn_0001"
+        }
+      }
+    },
+    {
+      "atMs": 695,
+      "message": {
+        "type": "SEGMENT_START",
+        "payload": {
+          "id": "turn_d61001dfc5ae43acabb5b4a581323b7f:12f20694066b408f95ead9a387b127f9",
+          "turn_id": "turn_0001",
+          "segment_type": "text",
+          "metadata": null
+        }
+      }
+    },
+    {
+      "atMs": 912,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "turn_d61001dfc5ae43acabb5b4a581323b7f:12f20694066b408f95ead9a387b127f9",
+          "turn_id": "turn_0001",
+          "segment_type": "text",
+          "delta": "STANDALONE_autobyteus_OK"
+        }
+      }
+    },
+    {
+      "atMs": 912,
+      "message": {
+        "type": "SEGMENT_END",
+        "payload": {
+          "id": "turn_d61001dfc5ae43acabb5b4a581323b7f:12f20694066b408f95ead9a387b127f9",
+          "turn_id": "turn_0001",
+          "metadata": null,
+          "interrupted": false,
+          "reason": null,
+          "failed": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "atMs": 912,
+      "message": {
+        "type": "TOKEN_USAGE_UPDATED",
+        "payload": {
+          "usage_event_id": "b7339434-8203-4b96-9e25-5514ede6314e",
+          "idempotency_key": "daily_assistant_1ac07face5134d52bf3b0eecd3560d7e:turn_0001:llm:1",
+          "observed_at": "2026-08-15T20:41:14.461Z",
+          "run_id": "daily_assistant_1ac07face5134d52bf3b0eecd3560d7e",
+          "root_team_run_id": null,
+          "turn_id": "turn_0001",
+          "llm_call_id": "turn_0001:llm:1",
+          "call_sequence": 1,
+          "agent_definition_id": "daily-assistant",
+          "workspace_id": "agent_ws_2018ac5e41b4d7c9bbb68f62ab8c4199097a098fa6228292f056a30532a4201f",
+          "task_id": null,
+          "team_name": null,
+          "agent_name": null,
+          "run_summary": null,
+          "run_created_at": null,
+          "member_display_name": null,
+          "runtime_kind": "autobyteus",
+          "model_provider": "OPENAI",
+          "provider_name": "OpenAI",
+          "model_identifier": "gpt-5.6-luna",
+          "model_value": "gpt-5.6-luna",
+          "ingestion_kind": "autobyteus_llm_phase",
+          "usage_scope": "per_call",
+          "snapshot_series_key": null,
+          "previous_snapshot_event_id": null,
+          "input_token_semantic": "gross_includes_cache",
+          "reported_input_tokens": 4870,
+          "reported_output_tokens": 13,
+          "reported_total_tokens": 4883,
+          "accounting_input_tokens": 4870,
+          "accounting_output_tokens": 13,
+          "accounting_total_tokens": 4883,
+          "standard_input_tokens": 3,
+          "cache_miss_input_tokens": 3,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 4867,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "cache_state": "positive",
+          "reasoning_output_tokens": 0,
+          "billable_input_tokens": 4870,
+          "billable_output_tokens": 13,
+          "cost_basis": "api_price_estimate",
+          "currency": "USD",
+          "input_price_per_million": 0.2,
+          "output_price_per_million": 1.2,
+          "cached_input_read_price_per_million": 0.02,
+          "cached_input_write_price_per_million": 0.25,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "pricing_source": "autobyteus_model_catalog",
+          "pricing_status": "trusted",
+          "pricing_missing_reason": null,
+          "pricing_snapshot_json": {
+            "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+            "price_config_id": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+            "model_provider": "OPENAI",
+            "model_identifier": "gpt-5.6-luna",
+            "model_value": "gpt-5.6-luna",
+            "canonical_name": "gpt-5.6-luna",
+            "currency": "USD",
+            "input_price_per_million": 0.2,
+            "output_price_per_million": 1.2,
+            "cached_input_read_price_per_million": 0.02,
+            "cached_input_write_price_per_million": 0.25,
+            "cached_input_write_5m_price_per_million": null,
+            "cached_input_write_1h_price_per_million": null,
+            "input_price_tiers": [
+              {
+                "tier_id": "standard_le_272k",
+                "max_input_tokens": 272000,
+                "input_price_per_million": 0.2,
+                "output_price_per_million": 1.2,
+                "cached_input_read_price_per_million": 0.02,
+                "cached_input_write_price_per_million": 0.25,
+                "cached_input_write_5m_price_per_million": null,
+                "cached_input_write_1h_price_per_million": null,
+                "trusted_dimensions": {
+                  "input": true,
+                  "output": true,
+                  "cached_input_read": true,
+                  "cached_input_write": true,
+                  "cached_input_write_5m": false,
+                  "cached_input_write_1h": false
+                }
+              },
+              {
+                "tier_id": "long_context_gt_272k",
+                "max_input_tokens": null,
+                "input_price_per_million": 0.4,
+                "output_price_per_million": 1.8,
+                "cached_input_read_price_per_million": 0.04,
+                "cached_input_write_price_per_million": 0.5,
+                "cached_input_write_5m_price_per_million": null,
+                "cached_input_write_1h_price_per_million": null,
+                "trusted_dimensions": {
+                  "input": true,
+                  "output": true,
+                  "cached_input_read": true,
+                  "cached_input_write": true,
+                  "cached_input_write_5m": false,
+                  "cached_input_write_1h": false
+                }
+              }
+            ],
+            "pricing_status": "trusted",
+            "trusted_dimensions": {
+              "input": true,
+              "output": true,
+              "cached_input_read": true,
+              "cached_input_write": true,
+              "cached_input_write_5m": false,
+              "cached_input_write_1h": false
+            },
+            "missing_reason": null,
+            "source": "autobyteus_model_catalog",
+            "effective_from": null,
+            "effective_to": null,
+            "version": null,
+            "selected_tier_id": "standard_le_272k"
+          },
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+          "selected_pricing_tier_id": "standard_le_272k",
+          "missing_price_dimensions": [],
+          "estimated_api_input_cost": 0.0012173499999999999,
+          "estimated_api_standard_input_cost": 6.000000000000001e-7,
+          "estimated_api_cache_read_input_cost": null,
+          "estimated_api_cache_creation_input_cost": 0.00121675,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": 0.0000156,
+          "estimated_api_reasoning_output_cost": null,
+          "estimated_api_total_cost": 0.0012329499999999998,
+          "api_cost_status": "estimated",
+          "meter_delta_input_tokens": 4870,
+          "meter_delta_output_tokens": 13,
+          "meter_delta_total_tokens": 4883,
+          "run_summary_after_event": null,
+          "latest_prompt_tokens": 4870,
+          "effective_context_window_tokens": 1050000,
+          "context_window_usage_percent": 0.4638095238095238,
+          "raw_usage_json": {
+            "input_tokens": 4870,
+            "input_tokens_details": {
+              "cache_write_tokens": 4867,
+              "cached_tokens": 0
+            },
+            "output_tokens": 13,
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            },
+            "total_tokens": 4883
+          },
+          "raw_event_json": {
+            "usage": {
+              "input_tokens": 4870,
+              "output_tokens": 13,
+              "total_tokens": 4883,
+              "usage_scope": "per_call",
+              "model_provider": "OPENAI",
+              "provider_name": "OpenAI",
+              "model_identifier": "gpt-5.6-luna",
+              "model_value": "gpt-5.6-luna",
+              "input_token_semantic": "gross_includes_cache",
+              "cache_state": "positive",
+              "standard_input_tokens": null,
+              "cache_miss_input_tokens": null,
+              "cache_read_input_tokens": 0,
+              "cache_creation_input_tokens": 4867,
+              "cache_creation_5m_input_tokens": null,
+              "cache_creation_1h_input_tokens": null,
+              "reasoning_output_tokens": 0,
+              "billable_input_tokens": null,
+              "billable_output_tokens": null,
+              "raw_usage_json": {
+                "input_tokens": 4870,
+                "input_tokens_details": {
+                  "cache_write_tokens": 4867,
+                  "cached_tokens": 0
+                },
+                "output_tokens": 13,
+                "output_tokens_details": {
+                  "reasoning_tokens": 0
+                },
+                "total_tokens": 4883
+              },
+              "quality_flags": []
+            },
+            "turn_id": "turn_0001",
+            "llm_call_id": "turn_0001:llm:1",
+            "call_sequence": 1,
+            "runtime_kind": "autobyteus",
+            "ingestion_kind": "autobyteus_llm_phase",
+            "idempotency_key": "daily_assistant_1ac07face5134d52bf3b0eecd3560d7e:turn_0001:llm:1",
+            "latest_prompt_tokens": 4870,
+            "effective_context_window_tokens": 1050000,
+            "context_window_usage_percent": 0.4638095238095238,
+            "observed_at": "2026-08-15T20:41:14.461Z"
+          },
+          "quality_flags": []
+        }
+      }
+    },
+    {
+      "atMs": 912,
+      "message": {
+        "type": "ASSISTANT_COMPLETE",
+        "payload": {
+          "content": "STANDALONE_autobyteus_OK",
+          "usage": {
+            "input_tokens": 4870,
+            "output_tokens": 13,
+            "total_tokens": 4883,
+            "usage_scope": "per_call",
+            "model_provider": "OPENAI",
+            "provider_name": "OpenAI",
+            "model_identifier": "gpt-5.6-luna",
+            "model_value": "gpt-5.6-luna",
+            "input_token_semantic": "gross_includes_cache",
+            "cache_state": "positive",
+            "standard_input_tokens": null,
+            "cache_miss_input_tokens": null,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 4867,
+            "cache_creation_5m_input_tokens": null,
+            "cache_creation_1h_input_tokens": null,
+            "reasoning_output_tokens": 0,
+            "billable_input_tokens": null,
+            "billable_output_tokens": null,
+            "raw_usage_json": {
+              "input_tokens": 4870,
+              "input_tokens_details": {
+                "cache_write_tokens": 4867,
+                "cached_tokens": 0
+              },
+              "output_tokens": 13,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 4883
+            },
+            "quality_flags": []
+          },
+          "image_urls": [],
+          "audio_urls": [],
+          "video_urls": [],
+          "is_error": false
+        }
+      }
+    },
+    {
+      "atMs": 912,
+      "message": {
+        "type": "TURN_COMPLETED",
+        "payload": {
+          "turn_id": "turn_0001"
+        }
+      }
+    },
+    {
+      "atMs": 912,
+      "message": {
+        "type": "AGENT_STATUS",
+        "payload": {
+          "status": "idle",
+          "agent_id": "daily_assistant_1ac07face5134d52bf3b0eecd3560d7e"
+        }
+      }
+    }
+  ],
+  "resume": {
+    "getAgentRunResumeConfig": {
+      "runId": "daily_assistant_1ac07face5134d52bf3b0eecd3560d7e",
+      "isActive": true,
+      "metadataConfig": {
+        "agentDefinitionId": "daily-assistant",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-007/live/workspaces/standalone-autobyteus",
+        "llmModelIdentifier": "gpt-5.6-luna",
+        "llmConfig": null,
+        "autoExecuteTools": true,
+        "skillAccessMode": "NONE",
+        "runtimeKind": "autobyteus",
+        "runtimeReference": {
+          "runtimeKind": "autobyteus",
+          "sessionId": null,
+          "threadId": null,
+          "metadata": null
+        }
+      },
+      "editableFields": {
+        "llmModelIdentifier": false,
+        "llmConfig": false,
+        "autoExecuteTools": false,
+        "skillAccessMode": false,
+        "workspaceRootPath": false,
+        "runtimeKind": false
+      }
+    },
+    "getRunProjection": {
+      "runId": "daily_assistant_1ac07face5134d52bf3b0eecd3560d7e",
+      "summary": "Reply with exactly STANDALONE_autobyteus_OK and do not call tools.",
+      "lastActivityAt": "2026-08-15T20:41:14.461Z",
+      "conversation": [
+        {
+          "kind": "message",
+          "role": "user",
+          "content": "Reply with exactly STANDALONE_autobyteus_OK and do not call tools.",
+          "media": null,
+          "ts": 1786826473.56
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "STANDALONE_autobyteus_OK",
+          "media": null,
+          "ts": 1786826474.461
+        }
+      ],
+      "activities": [],
+      "hasEarlierActiveTraceEvents": false
+    }
+  }
+}

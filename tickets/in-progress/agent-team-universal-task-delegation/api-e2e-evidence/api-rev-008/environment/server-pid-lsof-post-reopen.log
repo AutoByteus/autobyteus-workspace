@@ -1,0 +1,36 @@
+COMMAND   PID  USER   FD      TYPE             DEVICE  SIZE/OFF                NODE NAME
+node    21460 normy  cwd       DIR               1,13      1024           345229709 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts
+node    21460 normy  txt       REG               1,13 112928848           255287132 /Users/normy/.hermes/node/bin/node
+node    21460 normy  txt       REG               1,13     72984           293325547 /Library/Preferences/Logging/.plist-cache.TQHe3XLT
+node    21460 normy  txt       REG               1,13   2374000 1152921500312573276 /usr/lib/dyld
+node    21460 normy  txt       REG               1,13  17251592           349638075 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client/libquery_engine-darwin-arm64.dylib.node
+node    21460 normy    0u     unix  0x108cbc41d335341       0t0                     ->0x83a6456a693023ef
+node    21460 normy    1u     unix 0xae374ca112fb58fb       0t0                     ->0x399fae6bc315af6d
+node    21460 normy    2u     unix 0xc1e2a2511cdb2aa9       0t0                     ->0x9ceb7e2d9ef1041b
+node    21460 normy    3u   KQUEUE                                                  count=0, state=0x8
+node    21460 normy    4      PIPE 0x5e44706168b18b3a     16384                     ->0x62b6f577a1f553ff
+node    21460 normy    5      PIPE 0x62b6f577a1f553ff     16384                     ->0x5e44706168b18b3a
+node    21460 normy    6r      DIR               1,13       704                   2 /
+node    21460 normy    7u   KQUEUE                                                  count=0, state=0xa
+node    21460 normy    8r      DIR               1,13       704                   2 /
+node    21460 normy    9u   KQUEUE                                                  count=0, state=0xa
+node    21460 normy   10r      DIR               1,13       704                   2 /
+node    21460 normy   11r      CHR                3,2       0t0                 336 /dev/null
+node    21460 normy   12w      REG               1,13    900489           349639712 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/.tmp/api-rev-008-live-20260815-1/logs/server.log
+node    21460 normy   13u   KQUEUE                                                  count=0, state=0xa
+node    21460 normy   14u   KQUEUE                                                  count=0, state=0xa
+node    21460 normy   15u   KQUEUE                                                  count=0, state=0xa
+node    21460 normy   16u     unix 0x22a40101464d3e1b       0t0                     ->0xfbd825e691d1fed4
+node    21460 normy   17u     unix 0xfbd825e691d1fed4       0t0                     ->0x22a40101464d3e1b
+node    21460 normy   18u     unix 0x22a40101464d3e1b       0t0                     ->0xfbd825e691d1fed4
+node    21460 normy   19u      REG               1,13    753664           349632643 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-008-live-20260815-1.db
+node    21460 normy   20u      REG               1,13    753664           349632643 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/db/api-rev-008-live-20260815-1.db
+node    21460 normy   21      PIPE 0x4a46a203349940af     16384                     ->0x3b5a37df44cbc528
+node    21460 normy   22      PIPE 0x3b5a37df44cbc528     16384                     ->0x4a46a203349940af
+node    21460 normy   23u     IPv4 0xb2ddb947e14fcadc       0t0                 TCP 127.0.0.1:60313 (LISTEN)
+node    21460 normy   24u    systm 0x434c0bca5c928952       0t0                     [ctl com.apple.netsrc id 7 unit 93]
+node    21460 normy   25u     unix 0x6a52a39bb2f9c9b7       0t0                     ->0x1f9e72fedf891ebd
+node    21460 normy   26u     IPv4 0x20d58dd16c606f86       0t0                 TCP 127.0.0.1:63871->127.0.0.1:1234 (ESTABLISHED)
+node    21460 normy   27   NPOLICY                                                  
+node    21460 normy   28u     IPv6 0xf291466652779e1c       0t0                 TCP [2003:ca:5732:5a23:4872:be0d:35bd:cf64]:63872->[2607:6bc0::10]:443 (SYN_SENT)
+node    21460 normy   29u     IPv6 0x73cdab9934a348ca       0t0                 TCP [2003:ca:5732:5a23:4872:be0d:35bd:cf64]:63873->[2606:4700::6812:1c88]:443 (SYN_SENT)

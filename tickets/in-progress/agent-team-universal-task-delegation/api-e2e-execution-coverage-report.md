@@ -2,114 +2,176 @@
 
 ## Execution Round Meta
 
-- Current API/E2E revision: `API-REV-006`
-- Trigger: `CRR-015 Pass / 92.7%; CR-F-013 / API-F-006 source-resolved by IR-010`
-- Reviewed HEAD: `8a0494e8b55a3debc7acbee7b61d286d5311d1a8`
-- Authoritative result: **Pass / 98.3%**
-- Open API/E2E product findings: `None`
-- Prior finding resolved downstream: `API-F-006 / API-UTD-CODEX-EVENT-006`
-- Requirements and supplemental contracts: `requirements.md`, `universal-task-delegation-behavior-contract.md`, `task-delegation-interaction-contract.md`, `agent-team-collaboration-system-instruction.md`, `team-execution-ownership-analysis.md`, `team-run-persistence-architecture-contract.md`, `team-execution-tree-ui-ux-spec.md`, `team-run-management-contract.md`, `execution-model-visualization.html`, and `persistence-scenarios/`.
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/design-spec.md`
+- Supplemental Task Artifacts: `universal-task-delegation-behavior-contract.md`, `task-delegation-interaction-contract.md`, `agent-team-collaboration-system-instruction.md`, `team-execution-ownership-analysis.md`, `team-run-persistence-architecture-contract.md`, `team-execution-tree-ui-ux-spec.md`, `team-run-management-contract.md`, `execution-model-visualization.html`, and `persistence-scenarios/README.md`
+- Solution Revision Record: `solution-revision-record.md`
+- Design Review Report: `design-review-report.md`
+- Architecture Review Revision Record: `architecture-review-revision-record.md`
+- Implementation Handoff / Revision Record: `implementation-handoff.md`; `implementation-revision-record.md`
+- Code Review Report / Revision Record: `code-review-report.md`; `code-review-revision-record.md`
+- Coverage Investigation: `api-e2e-coverage-investigation.md`
+- API/E2E Revision Record: `api-e2e-revision-record.md`
+- Current API/E2E Revision ID: `API-REV-008`
+- Current Execution Round: `8`
+- Trigger: `CRR-021 Pass / 92.8%` for IR-014 at HEAD `03b91d079af71b996ab4cadfe985ca2b2fddf049`
+- Prior Round Reviewed: `API-REV-007 Fail / 97.3%`
+- Latest Authoritative Round: `API-REV-008 Pass / 98.3%`
 
-## Safety And Environment
+## Investigation And Execution Basis
 
-All configured/live execution used only the checked disposable boundary:
+- Investigation completed before durable edits/final execution: `Yes`; the API-REV-008 section was written before repository and live work.
+- Investigation plan followed: `Yes`. The critical restart scenario ran before the new provider/browser matrix.
+- Reroute during execution: `No`.
+- Existing coverage decision: current IR-014 repair tests and cumulative current server/core/web selections remain valid. API/E2E made no repository-resident durable coverage change.
+- Broader validation: `Required — completed`, because source/repository proof could not establish repair-before-listen ordering, real configured provider behavior, browser projection, or real reopen/restore.
 
-- runtime root: `autobyteus-server-ts/tests/.tmp/api-rev-006-live-20260815-1`;
-- SQLite target: `autobyteus-server-ts/db/api-rev-006-live-20260815-1.db`;
-- server/frontend: `127.0.0.1:60311` / `127.0.0.1:31311`;
-- ambient `DATABASE_URL` and `DATABASE_URL_TEST`: absent from the child;
-- configuration-only preflight: exact disposable absolute target, with no DB initialization;
-- post-listen and post-reopen PID `lsof`: exact disposable DB true, operational target false;
-- migrations: 21 applied only to the disposable database;
-- secrets: nine named credentials imported by the supported pnpm importer from the user-authorized `/Users/normy/.autobyteus/server-data/.env`; no value is present in evidence;
-- Agent package: `/Users/normy/autobyteus_org/autobyteus-agents`, imported through the product API as 7 shared Agents, 57 Team-local Agents, and 14 AgentTeams.
+## Compatibility / Legacy Scope Check
 
-Cleanup removed only the exact owned runtime root, DB, key, journal/WAL/SHM candidates, and stopped only owned 60311/31311 processes. Operational database action and inspection: `NONE`. Protected 60004/31004 process action: `NONE`. The historical incident disclosure is preserved unchanged. Evidence: `environment/safe-target-preflight.log`, `environment/prisma-migrate-deploy.log`, `environment/secret-import-summary.log`, `environment/server-pid-lsof.log`, `cleanup/owned-runtime-cleanup.log`, and `cleanup/final-cleanup-verification.log`.
+- Invalid backward-compatibility scope found: `No`.
+- Compatibility-only runtime behavior found: `No`.
+- Approved persisted-data transition followed: `Yes`; current V1 packages and isolated predecessor migrations were exercised without a runtime dual reader.
+- Compatibility-only durable coverage added/retained: `No`.
 
-## Prior Failure Recheck — API-F-006
+## Changed Boundary And Evidence Matrix
 
-A fresh current Codex Team run created one task Agent at `/worker`; the task submitted exact `E2E_DIRECT_TASK_RESULT_42`; the exact coordinator accepted it; and the WebSocket observed normal coordinator `TURN_COMPLETED` at 37.9 seconds. It emitted zero `ERROR` frames and no `TEAM_AGENT_EVENT_ADMISSION_FAILED` marker. The durable task contains one submission and one review and is `accepted`.
+| Scenario ID | Behavior / Requirements | Execution surface | Evidence type | Result | Evidence |
+| --- | --- | --- | --- | --- | --- |
+| API-UTD-RESTART-007 | BEH-012, UC-017, R-041, AC-043: strict startup repair before listen/public history | Built process stop/restart, exact current package, first public GraphQL read | Live / Lifecycle | Pass | `api-e2e-evidence/api-rev-008/live/persistence/startup-repair-public-assertion.json`; `startup-repair-before-listen-correlation.log` |
+| API-UTD-RESTORE-008 | explicit restore idempotence, failed-root isolation, valid sibling and new-root availability | GraphQL plus exact package hashes | Live / API | Pass | same startup assertion; `restore-no-duplicate-assertion.json` |
+| API-UTD-PROVIDERS-008 | provider-neutral direct/nested delegation, intrinsic handoff tool, standalone operation | AutoByteus, Codex, Claude configured runtimes | Live | Pass | `live/provider/*-direct-turn.json`, `*-nested-turn.json`, `provider-handoff-rules-assertion.json`, `standalone-*.json` |
+| API-UTD-ADDRESS-008 | exact canonical address selection and exact recipient AgentRun | Imported Classroom real LLM calls `/student` and `/professor` | Live / API | Pass | `live/provider/classroom-send-message-address-assertion.json` |
+| API-UTD-UI-008 | active/restored task hierarchy, focus/details, mobile messages/references | Chrome 1440x1000 and 390x844 | Browser | Pass | `live/browser/desktop-*.json`; `mobile-classroom-*-journey.json` |
+| API-UTD-CONTEXT-008 | direct/nested Team-member context draft/final/delete/read and invalid-owner rejection | Real REST service from browser-run environment | Browser / API | Pass | `live/context-files/team-member-context-browser-probe.json` |
+| API-UTD-MIGRATION-008 | fresh schema, current app migrations, reopen and no duplicate attempt | Prisma, built startup, GraphQL | Lifecycle / API | Pass | `environment/prisma-migrate-deploy.log`; `live/persistence/app-data-migration-reopen-assertion.json` |
+| API-UTD-CLEANUP-008 | exact owned cleanup without operational/protected action | process/filesystem audit | Temporary | Pass | `environment/final-cleanup-verification.log` |
+| API-UTD-UCAC-008 | UC-001–UC-021 and AC-001–AC-056 | combined deterministic and real evidence | Durable / Live / Browser | Pass | `investigation/uc-ac-verification.tsv`: 77/77 Pass |
 
-Result: **Pass; API-F-006 is resolved downstream.** Evidence: `live/provider/fixture-codex-api-f006-recheck.json`, `fixture-codex-api-f006-recheck.log`, and `api-f006-recheck-assertion.log`.
+## Repository Coverage Execution
 
-## Real Agent, AgentTeam, Browser, And Restore Matrix
+| Order | Command / selection | Working directory / configuration | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| 1 | current cumulative server Vitest selection | `autobyteus-server-ts`; repository test DB | Pass — 71 files / 320 tests; 1 declared opt-in skip | `repository/server-cumulative-current.log` |
+| 2 | current cumulative core Vitest selection | `autobyteus-server-ts`; current core owners | Pass — 33 files / 184 tests | `repository/core-cumulative-current.log` |
+| 3 | current cumulative web Vitest selection | `autobyteus-web`; exact 34-file list | Pass — 34 files / 257 tests | `repository/web-cumulative-current.log` |
+| 4 | production TypeScript | `autobyteus-server-ts` | Pass | `repository/server-production-typecheck.log` |
+| 5 | `pnpm build:full` with sanitized DB environment | `autobyteus-server-ts` | Pass, including sanitized bootstrap | `repository/server-build-full.log` |
+| 6 | Nuxt production build | `autobyteus-web` | Pass, 15 routes prerendered | `repository/web-production-build.log` |
+| 7 | HEAD/unmerged/diff/dirt/disabled-selection audit | worktree | Pass | `repository/integrated-static-audit.log` |
 
-| Scenario | Result | Direct evidence |
-| --- | --- | --- |
-| AutoByteus imported Classroom | Pass | Real professor -> student assignment, student -> professor answer, exact `42`, two messages, two file references, coordinator completion: `live/provider/classroom-autobyteus-turn.json` |
-| Codex Team post-fix formal lifecycle | Pass | Fresh delegate -> submit -> accept, exact task/run identity, normal completion, no strict-admission error: `live/provider/api-f006-recheck-assertion.log` |
-| AutoByteus/Codex/Claude Team universal delegation and messaging | Pass | Retained current API-REV-005 real rows; IR-010 changes only the freshly rechecked Codex TOOL_LOG seam |
-| Codex nested task AgentTeam and nested child task Agent | Pass | Retained current API-REV-005 real nested row plus current deterministic lifecycle/host coverage |
-| AutoByteus/Codex/Claude standalone Agents | Pass | Retained current API-REV-005 real standalone turns with persisted correlation; Team-only tools/context remain absent in current provider tests |
-| process stop/reopen | Pass | Both roots become inactive while their exact tree/task/message state remains structurally identical: `live/persistence/reopen-persistence-assertion.json` |
-| explicit restore/reconnect | Pass | Both roots restore, each reconnect receives one authoritative snapshot, and no task/message duplication occurs: `restore-reconnect-result.json`, `restore-no-duplicate-assertion.json` |
-| real mobile before reopen | Pass | Chrome 390x844 shows two messages/two references; exact answer opens; Back closes viewer: `live/browser/mobile-classroom-pre-reopen-journey.json` |
-| real mobile after restore | Pass | Same count/content/open/close journey passes after process reopen and explicit restore: `mobile-classroom-post-restore-journey.json` |
-| real desktop after restore | Pass | Chrome shows one accepted Codex task, exact description, and worker: `desktop-codex-post-restore.json` |
-
-The first API-REV-006 Codex attempt closed its observation socket after the task became accepted and therefore did not prove coordinator terminal delivery. It is retained as a harness observation, not acceptance evidence. The fresh second run waited for the coordinator terminal event and is authoritative.
-
-The production build ran after browser assertions while the Nuxt development server was still alive; Nuxt's build cleanup caused the dev watcher to log transient `#app-manifest` resolution errors and then rebuild. This is an API/E2E process-order observation, not product evidence. The real browser assertions predate it, the production build passed, and the owned dev process was then stopped.
-
-## Repository And Build Execution
-
-| Selection | Result |
-| --- | --- |
-| complete active changed server durable selection | **66 files / 327 tests Pass** — `repository/all-active-changed-server.log` |
-| complete active changed web durable selection | **66 files / 472 tests Pass** — `repository/all-active-changed-web.log` |
-| exact IR-010 Codex converter/tracker selection | **7 files / 136 tests Pass** — `repository/codex-ir010-current.log` |
-| server production TypeScript/build/bootstrap | **Pass** — `repository/server-build-full.log` |
-| Nuxt production build / 15-route prerender | **Pass** — `repository/web-production-build.log` |
-| current static/diff/skip audit | **Pass** — zero unmerged, zero active skip/only/todo, no retired identity in forward runtime owners, all diff checks clean |
-| active changed-test relative imports | **Pass** — 132 paths, zero missing relative imports |
-| repository test database cleanup | **Pass** — no `autobyteus-server-test.db*` residue |
-
-Expected negative-path stderr inside tests (for example forced termination/preparation rejection) is assertion evidence; it is not suite failure.
-
-## Complete Use-Case And Acceptance-Criteria Accounting
-
-`api-e2e-evidence/api-rev-006/investigation/uc-ac-verification.tsv` records every `UC-001–UC-021` and `AC-001–AC-056` as Pass, with direct evidence tokens resolved to deterministic current owners, real provider/API/WebSocket execution, persisted V1 packages, real desktop/mobile Chrome, and process reopen/restore. Required rows marked Not Tested: **none**.
-
-Key cross-boundary conclusions:
-
-- canonical absolute same-root delegation, nested task Agent/AgentTeam execution, exact submit/revise/accept, invalid-address rejection, FIFO, fail-stop, settlement, persistence, migration, and local-manager ownership are directly covered;
-- current live/restored tree, task, message, status, focus, history, mobile reference content, and no-duplicate restore behavior are directly covered;
-- AutoByteus, Codex, and Claude provider parity plus standalone exclusion are covered by maintained current tests and real provider rows;
-- model call election is not treated as a deterministic invariant; capability and product boundaries are verified directly.
-
-## Durable Coverage Package
-
-- Cumulative repository-resident durable delta: **164 paths = 11 added / 122 updated / 31 removed**.
-- Active changed tests: 132 paths; all pass in the two complete selections.
-- Missing relative imports: zero.
-- Active `.skip` / `.only` / `.todo`: zero.
-- Inventory/patch exact path-set match: Pass.
-- Reverse application: Pass.
-- Production source changed by API/E2E in this round: `No`.
-- Ticket evidence runners are non-durable orchestration and are not counted as repository test coverage.
-
-Evidence: `investigation/cumulative-durable-coverage-inventory.tsv`, `investigation/cumulative-durable-diff.patch`, `investigation/cumulative-durable-inventory-audit.log`, `repository/cumulative-durable-import-audit.log`.
-
-Because durable coverage changed cumulatively after source review, delivery is blocked pending proportional code review of this exact package.
+An accidental full-web command reached an unrelated inherited Chinese-glossary failure and was interrupted. It is classified as an invalid harness selection, not acceptance evidence; the exact planned 34-file suite passed. Evidence: `repository/accidental-full-web-suite-classification.log`.
 
 ## Validation Confidence Scorecard
 
-| Category | Score | Basis / residual limitation |
-| --- | ---: | --- |
-| requirement and acceptance-criteria proof | 99% | all 21 UC and 56 AC rows mapped to passing direct evidence |
-| changed-boundary execution directness | 99% | actual owners, built process, GraphQL, WebSocket, providers, persistence, browser |
-| cross-boundary integration realism | 98% | real imported Agents/Teams and three providers; unchanged non-Codex rows retained from API-REV-005 |
-| environment/configuration/identity fidelity | 100% | fail-closed disposable target, exact PID/path, supported secret/package import, guarded cleanup |
-| lifecycle/failure/recovery evidence | 98% | current queue/fail-stop/migration plus real stop/reopen/restore/no-duplicate proof |
-| browser/mobile user-surface confidence | 97% | real Chrome desktop and 390x844 mobile before/after restore; Electron shell not claimed |
-| durable regression quality | 97% | complete active changed suite passes and import/static audits pass; proportional review remains |
+| Confidence category | Post-repository | Final | Final evidence | Residual uncertainty |
+| --- | ---: | ---: | --- | --- |
+| Requirement and acceptance-criteria proof | 91% | 99% | 77/77 mapped UC/AC rows pass | Provider choices remain probabilistic beyond controlled prompts. |
+| Changed-boundary execution directness | 92% | 99% | built restart, repair/listen timestamps, first public read, idempotent restore | None material. |
+| Cross-boundary integration realism and mock gap | 82% | 99% | built server, filesystem package, GraphQL/WS, provider runtimes, browser | External services can vary over time. |
+| Environment/configuration/identity/fixture fidelity | 97% | 99% | exact disposable target, supported imports, PID/lsof, real run identities | Secret values intentionally excluded from evidence. |
+| Failure/edge/lifecycle/recovery evidence | 89% | 98% | active/awaiting/accepted/orphan/invalid-root, invalid address, repeated target, reopen/restore | Not every theoretical filesystem fault injected live. |
+| User-surface/browser/desktop-shell confidence | 90% | 98% | desktop-equivalent plus mobile before/after reopen/restore | Electron shell not run; no changed shell-specific seam. |
+| Durable regression coverage quality/relevance | 96% | 96% | broad current owner selections; zero stale compatibility restoration | One declared Claude binary test remains opt-in; fresh real Claude rows pass. |
 
-- Overall confidence: **98.3%** (simple mean).
+- Overall post-repository confidence: `91.0%`.
+- Overall final confidence: **`98.3%`**.
+- Calculation: simple mean, rounded to one decimal.
+- Critical acceptance criteria directly proven: `Yes`.
+- Final category below 90%: `No`.
 - Default 95% target met: `Yes`.
-- Critical criteria all pass: `Yes`.
-- Broader validation: `Completed`.
-- Authoritative API/E2E result: **Pass**.
 
-## Routing
+## Broader Validation Environment
 
-Route the complete cumulative package to `code_reviewer` for proportional review of the 164-path durable delta. Do not route to delivery until that review passes. Operational data, protected ports, safety stashes/backups, and the historical incident disclosure remain preserved.
+- OS: macOS / Darwin worktree host.
+- Server: built Node/TypeScript server on owned `127.0.0.1:60313`.
+- Web: Nuxt browser-development surface on owned `127.0.0.1:31313`.
+- Browser viewports: desktop `1440x1000`; mobile `390x844`.
+- Runtime root: `autobyteus-server-ts/tests/.tmp/api-rev-008-live-20260815-1`.
+- SQLite target: `autobyteus-server-ts/db/api-rev-008-live-20260815-1.db`.
+- Ambient `DATABASE_URL` and `DATABASE_URL_TEST`: removed for every setup/server command.
+- Secrets: user-authorized `/Users/normy/.autobyteus/server-data/.env` imported only through the supported `pnpm secrets:import` path into the isolated vault; values were not printed or retained.
+- Agent package: `/Users/normy/autobyteus_org/autobyteus-agents` imported through the normal public API: 98 Agents and 20 Teams, including Classroom Simulation Team.
+- Readiness/path proof: `environment/safe-target-preflight.log`, `server-pid-lsof-pre-restart.log`, and `server-pid-lsof-post-reopen.log`.
+
+## Broader Journeys And Results
+
+| Journey | Expected | Actual | Evidence | Result |
+| --- | --- | --- | --- | --- |
+| Repair before listen | active/awaiting interrupt once; accepted preserved; orphan removed before public history | repair 21:44:13.107Z, listen 21:44:13.238Z, first read 21:45:28.823Z; all assertions pass | startup repair assertion/correlation | Pass |
+| Failed-root isolation | invalid root excluded without blocking valid sibling/new root | invalid root failed closed; sibling read and new root creation succeeded | startup repair assertion | Pass |
+| Restore idempotence | repeated restore cannot duplicate mutation | both restores pass; exact package hashes unchanged | startup assertion; restore hash assertion | Pass |
+| AutoByteus/Codex/Claude Team | direct and nested task lifecycles succeed | direct/nested rows pass for all three; repeated Codex target independent; relative address rejects | provider JSON rows | Pass |
+| Intrinsic tools / standalone | Team handoff tool exists in all providers; standalone works | three exact tool successes; three standalone TURN_COMPLETED | handoff assertion; standalone JSON | Pass |
+| Imported Classroom | LLM selects exact canonical recipient and reverse address; persistence exact once | `/student` then `/professor`; exact reciprocal AgentRuns and references | classroom address assertion | Pass |
+| Desktop-equivalent UI | truthful active/restored task rows/focus/details without public IDs | 2 Agent tasks, 1 Team task; accepted/details/focus pass before/after restore | desktop JSON + screenshots | Pass |
+| Mobile UI | 2 messages/2 refs; content opens/closes and survives restore | paired active/restored 390x844 journey passes | mobile JSON + screenshots | Pass |
+| Context files | safe direct/nested paths, correct ownership, deletion, invalid-owner rejection | all reads/finalization/deletion and 400 rejection pass | context probe | Pass |
+| Reopen/migration | stable tree/tasks/messages; reconnect; no duplicate migration attempts | snapshots equal, packages byte-identical, 16/16 succeeded once | persistence/migration assertions | Pass |
+
+Some nested provider sessions attempted a duplicate or late lifecycle call after the formal task had already succeeded. The strict current boundary rejected the redundant action without corrupting accepted state. This is recorded as nonblocking model behavior, not a product failure.
+
+## Desktop Application Validation
+
+- Approach: browser-preferred validation of the web-equivalent desktop renderer, per project architecture and skill policy.
+- Proved: active/restored Team navigation, task rows, focus/details, history, messages, context files, and mobile responsive behavior.
+- Electron-shell-specific execution: not run; no source-reviewed changed boundary depended on preload, IPC, windowing, or packaging.
+- Effect on user-held desktop/processes: `None`; protected `60004/31004` was not stopped, repointed, or mutated.
+
+## Lifecycle / Migration / Persisted Data
+
+- Decision: required V1 current package plus isolated predecessor migrations.
+- Prisma: 21 migrations applied only to the owned empty SQLite target.
+- App-data migration: 16/16 `SUCCEEDED`; exact migration IDs and attempt counts unchanged after reopen.
+- Reopen: two representative roots changed only from active to inactive; tree, tasks, and communications were exactly equal.
+- Restore/reconnect: one current snapshot per restored root; no package mutation or duplicate communication.
+- Runtime compatibility branch/dual read: `No`.
+
+## Durable Coverage Changed In The Codebase
+
+- Repository-resident durable coverage added: `0`.
+- Updated: `0`.
+- Removed: `0`.
+- Added/updated paths attached for proportional test review: `Not Applicable`.
+- Reviewer request: record proportional test-code review as `Not Applicable` if package accounting agrees; do not infer this from source review alone.
+
+## Temporary Execution Artifacts
+
+- Evidence root: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-008`
+- Summary: `live/browser-provider-lifecycle-matrix-summary.json`.
+- UC/AC map: `investigation/uc-ac-verification.tsv` and audit log.
+- Temporary `.mjs` probes were kept only under the ticket evidence root for reproducibility; they are not repository-resident durable tests.
+
+## Cleanup Performed
+
+| Resource | Ownership | Cleanup | Result |
+| --- | --- | --- | --- |
+| listeners 60313/31313 | API-REV-008 | stop exact owned processes | absent |
+| disposable runtime | API-REV-008 | remove exact owned path | absent |
+| DB, key, journal, WAL, SHM | API-REV-008 | remove exact owned files | absent |
+| operational database / `$HOME/.autobyteus` data | user | no inspection/action | NONE |
+| protected 60004/31004 | user-held | no stop/repoint/mutation | NONE |
+| stashes/backups/incident evidence | protected | preserve | preserved |
+
+Authoritative cleanup evidence: `environment/final-cleanup-verification.log`.
+
+## Result Summary
+
+| Result | Scenario IDs | Summary |
+| --- | --- | --- |
+| Pass | API-UTD-RESTART-007, API-UTD-RESTORE-008, API-UTD-PROVIDERS-008, API-UTD-ADDRESS-008, API-UTD-UI-008, API-UTD-CONTEXT-008, API-UTD-MIGRATION-008, API-UTD-CLEANUP-008, UC-001–UC-021, AC-001–AC-056 | Current repository/build, checked-disposable real restart, provider, standalone, Classroom, desktop/mobile, migration/reopen/restore, and cleanup all pass. |
+
+## Recommended Recipient
+
+`code_reviewer` for the mandatory proportional test-code review. API/E2E durable delta is zero, so the expected test-review scope is package-accounting verification and `Not Applicable`.
+
+## Latest Authoritative Result
+
+- Result: **Pass**.
+- Final validation confidence: **98.3%**.
+- Default 95% target met: `Yes`.
+- Final category below 90%: `No`.
+- Broader validation: `Required — completed`.
+- Critical acceptance criteria lacking direct proof: `None`.
+- Open API/E2E findings: `None`; API-F-007 is resolved downstream.
+- Release readiness: not yet claimed; proportional test-code review and delivery remain downstream.

@@ -1,0 +1,136 @@
+{
+  "teamRunId": "utd_root_team_api_rev_008_1786830349955_45bb7b4ee1014c9c9f9ea66ea5e30e8c",
+  "agentRunId": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+  "durationMs": 74100,
+  "sent": true,
+  "terminalAt": {
+    "type": "TURN_COMPLETED",
+    "atMs": 3645
+  },
+  "websocketError": null,
+  "messageCount": 110,
+  "typeCounts": {
+    "CONNECTED": 1,
+    "TEAM_EXECUTION_VIEW_SNAPSHOT": 1,
+    "TEAM_RUN_LIFECYCLE": 1,
+    "MEMBER_INPUT_MESSAGE": 4,
+    "SEGMENT_START": 17,
+    "SEGMENT_CONTENT": 30,
+    "SEGMENT_END": 17,
+    "TOKEN_USAGE_UPDATED": 13,
+    "TURN_COMPLETED": 3,
+    "TURN_STARTED": 3,
+    "TOOL_EXECUTION_STARTED": 6,
+    "TASK_DELEGATION_EVENT": 8,
+    "TOOL_EXECUTION_SUCCEEDED": 5,
+    "TOOL_EXECUTION_FAILED": 1
+  },
+  "tasks": [
+    {
+      "taskId": "task_f9e93ed17f8e4964accf2a8283670c77",
+      "delegatorAgentRunId": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+      "recipientAddress": "/worker",
+      "targetAgentRunId": "utd_worker_api_rev_008_1786830349955_6e563ed7d84147b191d0889649947ea6",
+      "targetTeamRunId": null,
+      "status": "accepted",
+      "description": "Return E2E_DIRECT_TASK_RESULT_42",
+      "createdAt": "2026-08-15T21:47:07.191Z",
+      "referenceFiles": [],
+      "updates": [
+        {
+          "kind": "submission",
+          "submissionId": "submission_d7fc51404b974d239090fa7da38c51b4",
+          "reviewId": null,
+          "interruptionId": null,
+          "reviewedSubmissionId": null,
+          "decision": null,
+          "content": "E2E_DIRECT_TASK_RESULT_42",
+          "createdAt": "2026-08-15T21:47:13.379Z",
+          "referenceFiles": []
+        },
+        {
+          "kind": "review",
+          "submissionId": null,
+          "reviewId": "review_abb1cd2df8c843b38c76f25a7f4f2e3f",
+          "interruptionId": null,
+          "reviewedSubmissionId": "submission_d7fc51404b974d239090fa7da38c51b4",
+          "decision": "accept",
+          "content": null,
+          "createdAt": "2026-08-15T21:48:27.079Z",
+          "referenceFiles": []
+        }
+      ]
+    },
+    {
+      "taskId": "task_fd619a28550b4558a47303bb9177a1ac",
+      "delegatorAgentRunId": "utd_coordinator_api_rev_008_1786830349955_8d4e5b4055844bc1ab52db657f5f6691",
+      "recipientAddress": "/lab",
+      "targetAgentRunId": null,
+      "targetTeamRunId": "utd_child_team_api_rev_008_1786830349955_e9491fe561024a59906fcbd8e9f68d8c",
+      "status": "accepted",
+      "description": "Return E2E_NESTED_TEAM_RESULT after delegating the required child task.",
+      "createdAt": "2026-08-15T21:48:36.017Z",
+      "referenceFiles": [],
+      "updates": [
+        {
+          "kind": "submission",
+          "submissionId": "submission_4dc1513e686045819ba2e67a55966984",
+          "reviewId": null,
+          "interruptionId": null,
+          "reviewedSubmissionId": null,
+          "decision": null,
+          "content": "E2E_NESTED_TEAM_RESULT",
+          "createdAt": "2026-08-15T21:48:54.502Z",
+          "referenceFiles": []
+        },
+        {
+          "kind": "review",
+          "submissionId": null,
+          "reviewId": "review_b79652726ad74dac82b43d108049f676",
+          "interruptionId": null,
+          "reviewedSubmissionId": "submission_4dc1513e686045819ba2e67a55966984",
+          "decision": "accept",
+          "content": null,
+          "createdAt": "2026-08-15T21:49:42.050Z",
+          "referenceFiles": []
+        }
+      ]
+    },
+    {
+      "taskId": "task_e7a202c5ea2c43c4915b50b75d17061c",
+      "delegatorAgentRunId": "utd_nested_coordinator_api_rev_008_1786830349955_cfe801dc482242609d92141704218d1b",
+      "recipientAddress": "/lab/researcher",
+      "targetAgentRunId": "utd_nested_worker_api_rev_008_1786830349955_d83db6e144cb4a5898b809441ae2d1ec",
+      "targetTeamRunId": null,
+      "status": "accepted",
+      "description": "Return E2E_NESTED_CHILD_RESULT",
+      "createdAt": "2026-08-15T21:48:43.070Z",
+      "referenceFiles": [],
+      "updates": [
+        {
+          "kind": "submission",
+          "submissionId": "submission_5105eccc953d4830ac7d763dfeacea08",
+          "reviewId": null,
+          "interruptionId": null,
+          "reviewedSubmissionId": null,
+          "decision": null,
+          "content": "E2E_NESTED_CHILD_RESULT",
+          "createdAt": "2026-08-15T21:48:50.064Z",
+          "referenceFiles": []
+        },
+        {
+          "kind": "review",
+          "submissionId": null,
+          "reviewId": "review_363cf8599e5740f595413919552c5dda",
+          "interruptionId": null,
+          "reviewedSubmissionId": "submission_5105eccc953d4830ac7d763dfeacea08",
+          "decision": "accept",
+          "content": null,
+          "createdAt": "2026-08-15T21:48:52.411Z",
+          "referenceFiles": []
+        }
+      ]
+    }
+  ],
+  "communications": []
+}

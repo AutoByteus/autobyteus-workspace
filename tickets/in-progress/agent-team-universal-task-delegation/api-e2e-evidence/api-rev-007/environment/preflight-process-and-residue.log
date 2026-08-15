@@ -1,0 +1,6 @@
+ports_before:
+protected_observation_only:
+target_paths:
+ABSENT autobyteus-server-ts/tests/.tmp/api-rev-007-live-20260815-1
+ABSENT autobyteus-server-ts/db/api-rev-007-live-20260815-1.db
+repo_test_db_residue:

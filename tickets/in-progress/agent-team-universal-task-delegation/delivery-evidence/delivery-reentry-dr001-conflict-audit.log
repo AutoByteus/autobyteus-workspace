@@ -1,0 +1,160 @@
+DR-001 latest-base conflict audit
+UTC 2026-08-15T17:25:53Z
+head=babcb4ac54ee9c2dff30dfee27dc163a8fb056a6
+merge_head=acb8985930ccce49b632cdca22b92f5b237e35bf
+merge_base=edace166ee24681126e9aec8c6c3ab594fb6ebd5
+premerge_divergence=16	108
+unmerged_count=2
+staged_automerge_path_count=302
+== unmerged paths ==
+U	autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts
+U	autobyteus-server-ts/tests/unit/agent-execution/compaction/compaction-run-output-collector.test.ts
+== conflict stages ==
+100644 a302d3cf114188c2ac402891f5f3c59e3d5259d3 1	autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts
+100644 590bdf2c2a2f3f559e606e11e1786ae011e73d78 2	autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts
+100644 b30745a457d8bd610ec7a6ed4c6fb1d5129f6a0a 3	autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts
+100644 9bf72b44a6aa1e4dc91aa630c1c0183ffe5dc7d8 1	autobyteus-server-ts/tests/unit/agent-execution/compaction/compaction-run-output-collector.test.ts
+100644 87de0e0db5b4db035f3891504a8e882cacab3d4b 2	autobyteus-server-ts/tests/unit/agent-execution/compaction/compaction-run-output-collector.test.ts
+100644 044467b1a7e5087a26565fb11aef711b486adc77 3	autobyteus-server-ts/tests/unit/agent-execution/compaction/compaction-run-output-collector.test.ts
+== production conflict combined diff ==
+diff --cc autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts
+index 590bdf2c2,b30745a45..000000000
+--- a/autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts
++++ b/autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts
+@@@ -79,9 -84,8 +84,14 @@@ export class ServerCompactionAgentRunne
+        const collector = new CompactionRunOutputCollector({ runId });
+        unsubscribe = run.subscribeToEvents((event) => collector.observe(event));
+  
+++<<<<<<< HEAD
+ +      const postResult = await run.postUserMessage(this.buildTaskMessage(task), {
+ +        lifecycleObserver: (fact) => collector.observeInputLifecycle(fact),
+ +      });
+++=======
++       phase = "post";
++       const postResult = await run.postUserMessage(this.buildTaskMessage(task));
+++>>>>>>> origin/personal
+        if (!postResult.accepted) {
+          throw new Error(
+            postResult.message ??
+== durable-test conflict combined diff ==
+diff --cc autobyteus-server-ts/tests/unit/agent-execution/compaction/compaction-run-output-collector.test.ts
+index 87de0e0db,044467b1a..000000000
+--- a/autobyteus-server-ts/tests/unit/agent-execution/compaction/compaction-run-output-collector.test.ts
++++ b/autobyteus-server-ts/tests/unit/agent-execution/compaction/compaction-run-output-collector.test.ts
+@@@ -120,29 -119,25 +123,52 @@@ describe("CompactionRunOutputCollector"
+      await expect(output).rejects.toThrow(/without a final assistant output/);
+    });
+  
+++<<<<<<< HEAD
+ +  it("fails a pending waiter immediately when input dispatch fails", async () => {
+ +    const collector = new CompactionRunOutputCollector({ runId: "compaction-run-1" });
+ +    const output = collector.waitForFinalOutput(10_000);
+ +
+ +    collector.observeInputLifecycle({
+ +      kind: "failed",
+ +      code: "RUNTIME_COMMAND_FAILED",
+ +      message: "provider rejected input",
+ +      turnId: null,
+ +    });
+ +
+ +    await expect(output).rejects.toThrow(/input dispatch failed: provider rejected input/);
+ +  });
+ +
+ +  it("fails a pending waiter immediately when admitted input is cancelled", async () => {
+ +    const collector = new CompactionRunOutputCollector({ runId: "compaction-run-1" });
+ +    const output = collector.waitForFinalOutput(10_000);
+ +
+ +    collector.observeInputLifecycle({
+ +      kind: "cancelled",
+ +      code: "AGENT_RUN_TERMINATED_BEFORE_INPUT_FORWARD",
+ +    });
+ +
+ +    await expect(output).rejects.toThrow(/terminated before input forwarding/);
+++=======
++   it("rejects an error completion before returning valid-looking JSON content", async () => {
++     const collector = new CompactionRunOutputCollector({ runId: "compaction-run-1" });
++     const output = collector.waitForFinalOutput(1_000);
++     collector.observe(event(AgentRunEventType.ASSISTANT_COMPLETE, {
++       content: '{"episodes":[{"summary":"must not parse"}]}',
++       is_error: true,
++     }));
++     await expect(output).rejects.toMatchObject<Partial<CompactionRunCollectionError>>({
++       kind: "error_completion",
++     });
++   });
++ 
++   it("classifies interruption and timeout separately", async () => {
++     const interrupted = new CompactionRunOutputCollector({ runId: "compaction-run-1" });
++     const interruptedOutput = interrupted.waitForFinalOutput(1_000);
++     interrupted.observe(event(AgentRunEventType.TURN_INTERRUPTED, { reason: "stopped" }));
++     await expect(interruptedOutput).rejects.toMatchObject({ kind: "interrupted" });
++ 
++     const timedOut = new CompactionRunOutputCollector({ runId: "compaction-run-1" });
++     await expect(timedOut.waitForFinalOutput(1)).rejects.toMatchObject({ kind: "timeout" });
+++>>>>>>> origin/personal
+    });
+  });
+== upstream commits since merge base ==
+acb898593 (origin/personal, origin/HEAD, personal, codex/event-monitor-cross-compaction-earlier-browsing) docs(delivery): record v1.4.52 rollout
+3572bb1fe (tag: v1.4.52) chore(release): bump workspace release version to 1.4.52
+ae1e79338 docs(delivery): finalize compaction response robustness
+c03a544be test(memory): checkpoint validated non-recursive compaction coverage
+204fcf0c1 fix(memory): make compactor children non-recursive
+75168d307 test(memory): checkpoint validated provider boundary coverage
+aa12df0a3 fix(memory): harden compaction provider boundary
+b2a6d29ce chore(delivery): checkpoint current electron handoff
+d3971c014 test(memory): checkpoint validated retry coverage
+915c938da fix(memory): preserve missing prompt observations
+51ed4b666 fix(memory): bound compaction retries and planning
+1f2406ffa test(memory): checkpoint validated compaction coverage
+ed7f65a5d fix(memory): harden compaction response handling
+== ticket commits since merge base (tail) ==
+babcb4ac5 (HEAD -> codex/agent-team-universal-task-delegation) chore(delivery): record DR-001 base refresh
+3f3aafa7c chore(delivery): checkpoint reviewed universal delegation package
+3e121efb3 (origin/codex/agent-team-hierarchical-handoffs, codex/agent-team-hierarchical-handoffs) chore(delivery): publish SR-028 verification checkpoint
+3297a0df5 chore(delivery): checkpoint reviewed SR-028 package
+632c50318 document IR-048 implementation handoff
+be0ecc1ed gate input dispatch during AgentRun interrupt
+0fa3148bc document IR-047 implementation handoff
+227169248 fix AgentRun interrupt ownership and forwarding semantics
+18e6a3793 document IR-046 implementation handoff
+1e7837929 refactor agent run input admission ownership
+42e42a947 docs(implementation): hand off exact AgentTeam prompt copy
+29337af23 chore(delivery): checkpoint SR-024 review and DR-008 handoff
+b8798338c refactor(agent-team): render exact collaboration sections
+258d18cdb docs(implementation): record SR-024 delta fidelity fix
+a64bc3b16 fix(agent-streaming): preserve canonical delta bytes
+9b0bbb11d docs(implementation): hand off SR-024 segment cut
+6a2ac70de fix(agent-streaming): enforce canonical segment admission
+0d32ff255 chore(delivery): checkpoint reviewed SR-020 coverage package
+6b5782359 docs(team): record IR-042 segment identity fixes
+50ae82448 fix(agent): enforce exact segment identity admission
+f1c8aa2c7 docs(team): record IR-041 segment lifecycle cut
+a0a1073cb refactor(agent): centralize segment lifecycle admission
+e29625f69 docs(team): record IR-040 segment admission fix
+bd6cf3c5a fix(server): admit canonical Team segment identity
+817956ba4 docs(team): record IR-039 integrated implementation
+3dbddf54d chore(delivery): checkpoint reviewed API-REV-033 package
+8475924fd docs(team): record IR-038 launch ownership fix
+9e05920d2 fix(web): own Team launch admission
+db0b11d0d chore(delivery): checkpoint reviewed SR-018 coverage package
+66cfe11e9 docs(team): record IR-037 communication projection fix
+c13eb75b3 fix(web): project team communication GraphQL DTOs
+67551df6b docs(team): record IR-036 stream egress fix
+1af1ce098 fix(server): preserve stream egress serialization
+41d31e695 docs(team): record IR-035 task Team binding fix
+c2da87da0 fix(server): separate task Team placement from execution
+649e24441 docs(team): record IR-034 topology config fix
+8d312409d fix(web): read selected Team config from topology
+a4ef4670f docs(team): record IR-033 canonical launch fix
+88760fa05 fix(web): centralize canonical Team draft launch
+324c91788 docs(team): record IR-032 launch draft fix
+
+--- SAFETY AND RESULT ---
+operational_database_action=NONE
+home_autobyteus_action=NONE
+protected_60004_31004_action=NONE
+rollback_repair_action=NONE
+repository_push_action=NONE
+release_deployment_action=NONE
+RESULT=BLOCKED_LOCAL_FIX

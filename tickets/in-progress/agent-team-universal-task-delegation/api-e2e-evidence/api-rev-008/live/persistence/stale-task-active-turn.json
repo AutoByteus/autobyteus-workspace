@@ -1,0 +1,2626 @@
+{
+  "teamRunId": "stale_team_stale_1786830141758_c2d8537ad0404cc4adf6df1703ffc878",
+  "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+  "prompt": "Call delegate_task exactly once with recipient_address /worker and description Keep this real task active across a process restart. Then end the turn.",
+  "startedAt": "2026-08-15T21:42:21.993Z",
+  "durationMs": 15840,
+  "sent": true,
+  "terminalAt": {
+    "type": "TURN_COMPLETED",
+    "atMs": 3817
+  },
+  "websocketError": null,
+  "observations": [
+    {
+      "atMs": 22,
+      "type": "CONNECTED",
+      "agentRunId": null,
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 23,
+      "type": "TEAM_EXECUTION_VIEW_SNAPSHOT",
+      "agentRunId": null,
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 23,
+      "type": "TEAM_RUN_LIFECYCLE",
+      "agentRunId": null,
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 50,
+      "type": "MEMBER_INPUT_MESSAGE",
+      "agentRunId": null,
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 62,
+      "type": "TURN_STARTED",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 1988,
+      "type": "SEGMENT_START",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 1989,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2003,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2003,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2004,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2018,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2019,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2031,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2031,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2032,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2033,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2045,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2045,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2046,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2046,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2057,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2057,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2057,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2068,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2069,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2070,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2081,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2081,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2100,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2113,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2113,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2115,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2129,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2130,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2141,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2151,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2151,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2151,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2152,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2182,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2182,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2182,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2182,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2183,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2183,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2199,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2209,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2225,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2226,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2236,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2246,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2246,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2247,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2257,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2257,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2270,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2282,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2294,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2318,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2330,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2363,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2385,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2408,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2419,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2420,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2434,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2446,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2472,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2472,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2483,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2483,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2483,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2500,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "tool_call",
+      "toolName": null
+    },
+    {
+      "atMs": 2716,
+      "type": "SEGMENT_END",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 2721,
+      "type": "TOKEN_USAGE_UPDATED",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 2724,
+      "type": "TOOL_EXECUTION_STARTED",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": "delegate_task"
+    },
+    {
+      "atMs": 2724,
+      "type": "TOOL_LOG",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": "delegate_task"
+    },
+    {
+      "atMs": 2770,
+      "type": "TASK_DELEGATION_EVENT",
+      "agentRunId": null,
+      "status": null,
+      "code": null,
+      "taskEvent": "TASK_AGENT_ACTIVATED",
+      "taskId": "task_daf3ec78f8e3449ebabc4bddbaf479fe",
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 2780,
+      "type": "TOOL_LOG",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": "delegate_task"
+    },
+    {
+      "atMs": 2781,
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": "delegate_task"
+    },
+    {
+      "atMs": 2781,
+      "type": "TOOL_LOG",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": "delegate_task"
+    },
+    {
+      "atMs": 3604,
+      "type": "SEGMENT_START",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "text",
+      "toolName": null
+    },
+    {
+      "atMs": 3604,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "text",
+      "toolName": null
+    },
+    {
+      "atMs": 3615,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "text",
+      "toolName": null
+    },
+    {
+      "atMs": 3619,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "text",
+      "toolName": null
+    },
+    {
+      "atMs": 3631,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "text",
+      "toolName": null
+    },
+    {
+      "atMs": 3631,
+      "type": "SEGMENT_CONTENT",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": "text",
+      "toolName": null
+    },
+    {
+      "atMs": 3814,
+      "type": "SEGMENT_END",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 3815,
+      "type": "TOKEN_USAGE_UPDATED",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 3816,
+      "type": "ASSISTANT_COMPLETE",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    },
+    {
+      "atMs": 3817,
+      "type": "TURN_COMPLETED",
+      "agentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+      "status": null,
+      "code": null,
+      "taskEvent": null,
+      "taskId": null,
+      "segmentType": null,
+      "toolName": null
+    }
+  ],
+  "messages": [
+    {
+      "atMs": 22,
+      "message": {
+        "type": "CONNECTED",
+        "payload": {
+          "session_id": "978439d7-d888-447c-ab8c-3b28c9b5e64f",
+          "root_team_run_id": "stale_team_stale_1786830141758_c2d8537ad0404cc4adf6df1703ffc878"
+        }
+      }
+    },
+    {
+      "atMs": 23,
+      "message": {
+        "type": "TEAM_EXECUTION_VIEW_SNAPSHOT",
+        "payload": {
+          "root_team_run_id": "stale_team_stale_1786830141758_c2d8537ad0404cc4adf6df1703ffc878",
+          "base_change_sequence": 0,
+          "execution_tree": {
+            "schema_version": 1,
+            "created_at": "2026-08-15T21:42:21.842Z",
+            "archived_at": null,
+            "application_binding": null,
+            "handoffs": [],
+            "root_team": {
+              "team_definition_id": "stale-team-stale-1786830141758",
+              "team_definition_name": "stale_team_stale_1786830141758",
+              "team_run_id": "stale_team_stale_1786830141758_c2d8537ad0404cc4adf6df1703ffc878",
+              "coordinator_address": "/coordinator",
+              "members": [
+                {
+                  "kind": "configured_agent",
+                  "address": "/coordinator",
+                  "agent_definition_id": "stale-coordinator-stale-1786830141758",
+                  "role": null,
+                  "description": null,
+                  "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+                  "platform_agent_run_id": null,
+                  "launch_configuration": {
+                    "runtime_kind": "AUTOBYTEUS",
+                    "llm_model_identifier": "gpt-5.6-luna",
+                    "llm_config": null,
+                    "auto_execute_tools": true,
+                    "skill_access_mode": "NONE",
+                    "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-008/live/workspaces/stale_1786830141758"
+                  }
+                },
+                {
+                  "kind": "configured_agent",
+                  "address": "/worker",
+                  "agent_definition_id": "stale-worker-stale-1786830141758",
+                  "role": null,
+                  "description": null,
+                  "agent_run_id": "stale_worker_stale_1786830141758_def084b450334dafae4a9a513066d905",
+                  "platform_agent_run_id": null,
+                  "launch_configuration": {
+                    "runtime_kind": "AUTOBYTEUS",
+                    "llm_model_identifier": "gpt-5.6-luna",
+                    "llm_config": null,
+                    "auto_execute_tools": true,
+                    "skill_access_mode": "NONE",
+                    "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-008/live/workspaces/stale_1786830141758"
+                  }
+                }
+              ],
+              "task_executions": []
+            }
+          },
+          "tasks": [],
+          "messages": [],
+          "agent_statuses": [
+            {
+              "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+              "member_address": "/coordinator",
+              "status": "offline",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            },
+            {
+              "agent_run_id": "stale_worker_stale_1786830141758_def084b450334dafae4a9a513066d905",
+              "member_address": "/worker",
+              "status": "offline",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "atMs": 23,
+      "message": {
+        "type": "TEAM_RUN_LIFECYCLE",
+        "payload": {
+          "is_active": true
+        }
+      }
+    },
+    {
+      "atMs": 50,
+      "message": {
+        "type": "MEMBER_INPUT_MESSAGE",
+        "payload": {
+          "change_sequence": 3,
+          "recipient_agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "message_id": "api-rev-008-c5c027df-3660-48ce-9294-996e6a5a6411",
+          "dedupe_key": "api-rev-008-8a973241-34a6-48f8-ad3c-66ecac3d9a48",
+          "content": "Call delegate_task exactly once with recipient_address /worker and description Keep this real task active across a process restart. Then end the turn.",
+          "input_origin": "user_message",
+          "received_at": "2026-08-15T21:42:22.043Z",
+          "context_file_paths": [],
+          "sender_agent_run_id": null,
+          "parent_communication_message_id": null
+        }
+      }
+    },
+    {
+      "atMs": 62,
+      "message": {
+        "type": "TURN_STARTED",
+        "payload": {
+          "change_sequence": 6,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "turn_id": "turn_0001"
+        }
+      }
+    },
+    {
+      "atMs": 1988,
+      "message": {
+        "type": "SEGMENT_START",
+        "payload": {
+          "change_sequence": 10,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "metadata": {
+            "tool_name": "delegate_task",
+            "native_tool_call_context": {
+              "provider": "openai_responses",
+              "functionCallItem": {
+                "id": "fc_0a33f55058f0ba8b006a80dd3fea9c81a1b5c2fe34476c5bd2",
+                "type": "function_call",
+                "status": "in_progress",
+                "arguments": "",
+                "call_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+                "name": "delegate_task"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "atMs": 1989,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 12,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": "{\""
+        }
+      }
+    },
+    {
+      "atMs": 2003,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 14,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": "recipient"
+        }
+      }
+    },
+    {
+      "atMs": 2003,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 16,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": "_address"
+        }
+      }
+    },
+    {
+      "atMs": 2004,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 18,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": "\":"
+        }
+      }
+    },
+    {
+      "atMs": 2018,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 20,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": "\"/"
+        }
+      }
+    },
+    {
+      "atMs": 2019,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 22,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": "worker"
+        }
+      }
+    },
+    {
+      "atMs": 2031,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 24,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": "\",\""
+        }
+      }
+    },
+    {
+      "atMs": 2031,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 26,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": "description"
+        }
+      }
+    },
+    {
+      "atMs": 2032,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 28,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": "\":\""
+        }
+      }
+    },
+    {
+      "atMs": 2033,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 30,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": "Keep"
+        }
+      }
+    },
+    {
+      "atMs": 2045,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 32,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " this"
+        }
+      }
+    },
+    {
+      "atMs": 2045,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 34,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " real"
+        }
+      }
+    },
+    {
+      "atMs": 2046,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 36,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " task"
+        }
+      }
+    },
+    {
+      "atMs": 2046,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 38,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " active"
+        }
+      }
+    },
+    {
+      "atMs": 2057,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 40,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " across"
+        }
+      }
+    },
+    {
+      "atMs": 2057,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 42,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " a"
+        }
+      }
+    },
+    {
+      "atMs": 2057,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 44,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " process"
+        }
+      }
+    },
+    {
+      "atMs": 2068,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 46,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " restart"
+        }
+      }
+    },
+    {
+      "atMs": 2069,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 48,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": "."
+        }
+      }
+    },
+    {
+      "atMs": 2070,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 50,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " This"
+        }
+      }
+    },
+    {
+      "atMs": 2081,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 52,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " is"
+        }
+      }
+    },
+    {
+      "atMs": 2081,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 54,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " a"
+        }
+      }
+    },
+    {
+      "atMs": 2100,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 56,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " stale"
+        }
+      }
+    },
+    {
+      "atMs": 2113,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 58,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": "-task"
+        }
+      }
+    },
+    {
+      "atMs": 2113,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 60,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " restart"
+        }
+      }
+    },
+    {
+      "atMs": 2115,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 62,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " probe"
+        }
+      }
+    },
+    {
+      "atMs": 2129,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 64,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": "."
+        }
+      }
+    },
+    {
+      "atMs": 2130,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 66,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " Do"
+        }
+      }
+    },
+    {
+      "atMs": 2141,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 68,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " not"
+        }
+      }
+    },
+    {
+      "atMs": 2151,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 70,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " finalize"
+        }
+      }
+    },
+    {
+      "atMs": 2151,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 72,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " the"
+        }
+      }
+    },
+    {
+      "atMs": 2151,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 74,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " task"
+        }
+      }
+    },
+    {
+      "atMs": 2152,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 76,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": ";"
+        }
+      }
+    },
+    {
+      "atMs": 2182,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 78,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " leave"
+        }
+      }
+    },
+    {
+      "atMs": 2182,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 80,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " it"
+        }
+      }
+    },
+    {
+      "atMs": 2182,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 82,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " non"
+        }
+      }
+    },
+    {
+      "atMs": 2182,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 84,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": "terminal"
+        }
+      }
+    },
+    {
+      "atMs": 2183,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 86,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " and"
+        }
+      }
+    },
+    {
+      "atMs": 2183,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 88,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " active"
+        }
+      }
+    },
+    {
+      "atMs": 2199,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 90,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " so"
+        }
+      }
+    },
+    {
+      "atMs": 2209,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 92,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " it"
+        }
+      }
+    },
+    {
+      "atMs": 2225,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 94,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " can"
+        }
+      }
+    },
+    {
+      "atMs": 2226,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 96,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " be"
+        }
+      }
+    },
+    {
+      "atMs": 2236,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 98,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " repaired"
+        }
+      }
+    },
+    {
+      "atMs": 2246,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 100,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": "/re"
+        }
+      }
+    },
+    {
+      "atMs": 2246,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 102,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": "started"
+        }
+      }
+    },
+    {
+      "atMs": 2247,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 104,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " after"
+        }
+      }
+    },
+    {
+      "atMs": 2257,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 106,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " process"
+        }
+      }
+    },
+    {
+      "atMs": 2257,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 108,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " restart"
+        }
+      }
+    },
+    {
+      "atMs": 2270,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 110,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": "."
+        }
+      }
+    },
+    {
+      "atMs": 2282,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 112,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " Report"
+        }
+      }
+    },
+    {
+      "atMs": 2294,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 114,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " only"
+        }
+      }
+    },
+    {
+      "atMs": 2318,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 116,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " when"
+        }
+      }
+    },
+    {
+      "atMs": 2330,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 118,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " explicitly"
+        }
+      }
+    },
+    {
+      "atMs": 2363,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 120,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " asked"
+        }
+      }
+    },
+    {
+      "atMs": 2385,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 122,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": ","
+        }
+      }
+    },
+    {
+      "atMs": 2408,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 124,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " and"
+        }
+      }
+    },
+    {
+      "atMs": 2419,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 126,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " preserve"
+        }
+      }
+    },
+    {
+      "atMs": 2420,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 128,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " task"
+        }
+      }
+    },
+    {
+      "atMs": 2434,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 130,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " continuity"
+        }
+      }
+    },
+    {
+      "atMs": 2446,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 132,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " across"
+        }
+      }
+    },
+    {
+      "atMs": 2472,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 134,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": " restart"
+        }
+      }
+    },
+    {
+      "atMs": 2472,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 136,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": ".\",\""
+        }
+      }
+    },
+    {
+      "atMs": 2483,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 138,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": "reference"
+        }
+      }
+    },
+    {
+      "atMs": 2483,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 140,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": "_files"
+        }
+      }
+    },
+    {
+      "atMs": 2483,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 142,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": "\":"
+        }
+      }
+    },
+    {
+      "atMs": 2500,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 144,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "segment_type": "tool_call",
+          "delta": "[]}"
+        }
+      }
+    },
+    {
+      "atMs": 2716,
+      "message": {
+        "type": "SEGMENT_END",
+        "payload": {
+          "change_sequence": 146,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "turn_id": "turn_0001",
+          "metadata": {
+            "tool_name": "delegate_task",
+            "arguments": {
+              "recipient_address": "/worker",
+              "description": "Keep this real task active across a process restart. This is a stale-task restart probe. Do not finalize the task; leave it nonterminal and active so it can be repaired/restarted after process restart. Report only when explicitly asked, and preserve task continuity across restart.",
+              "reference_files": []
+            },
+            "native_tool_call_context": {
+              "provider": "openai_responses",
+              "functionCallItem": {
+                "id": "fc_0a33f55058f0ba8b006a80dd3fea9c81a1b5c2fe34476c5bd2",
+                "type": "function_call",
+                "status": "completed",
+                "arguments": "{\"recipient_address\":\"/worker\",\"description\":\"Keep this real task active across a process restart. This is a stale-task restart probe. Do not finalize the task; leave it nonterminal and active so it can be repaired/restarted after process restart. Report only when explicitly asked, and preserve task continuity across restart.\",\"reference_files\":[]}",
+                "call_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+                "name": "delegate_task"
+              },
+              "responseOutputItems": [
+                {
+                  "id": "rs_0a33f55058f0ba8b006a80dd3f8e0081a188887b9164cd8117",
+                  "type": "reasoning",
+                  "content": [],
+                  "encrypted_content": "gAAAAABqgN1A7Im0kHvLtK0Riu0AlNAMHYxFISLH8dmRrAq2ldh3lCe6hOHseAvVsCXAXsk2G0veqbpN1VQe4XcVRipeMVeV4M4Pz2wKbIgaGQbNv_sjLTbfNQkEbhpYCfbsrsAjUmloJdpa1njzbav6rToEfD_bjbFwHbW4qXnqwrws0ywDZ9ku3oIblXzsQ0GvnmQiIpSFY6xMTTzL29B5QX1MW1DnFo3IfehiOZAhHnEPEXfGsWhJONBXcWi-uym7nViy9vQjSPXPAiJ9STyNu1JDGOCmjs5UXeRGvYN6R_DGUoDTmL78AWEB-exYrmrlpQK9-lTqQ-nPjtHr6khY6Y1m4Rjw4I1tSEiaGg_vmpAL2__eOQEXsuJc_P2dmTAjPwBRCRr5djvpe7-HIUqqo0_bPe0DXrkvlbS_mJQJdMYNPziiQg0xcZoO6w1Aa9qJIMteLko_MxUyIqZKlyX3Ee275Zt3bFHD-BLLz6MmkbJVdPQvOOnyxa3kIl6loxZgIhxbzoNq_X0QA5EEwOYeWTnl1ztnnHzdKvj0bpW7S_-TFb11xB4etETQgq0ebCHAllgH87Pcy9f225my-2V1StwDNhHNozJ7w3wc_PHqR6qdBC-JRo9J2Xbnju27N-yVBi3_eRCt4g3X1OPJYt7VLJ2ifqGc4p9KJgMzG4hQ7SCVtWOyw9sG_UJDROm_dbInhw19jL-ZeWO5xG2lWkAfLR2r8VK7_8sVvfrHCSLgDbN7rYQo0gy-88If8b2pNkgaY_V_ynrAsa3NDoHO5pAaqYHkRxtLo5gTqISlCSJ-hbmnTa63eVFVxe9waM0Y42hUlAw2MuHI1MXSJrXtd8ALcQuVQgc4ppEJM2zCP4Ke88__uXKKjqNZWcMnqIB6-cEs7HYMv4uusa4JTWi-T4m0HxbbHhG7JO746Dypx8q--2OtNZvCeamTFvApMsV84a44gXagMwPFEBPiDg60ye-4nTWcTn82wS5MPD2O4Tnux8OUtw3sfBVE5jKEjtF2sGIHAilOHvxi4zBjxGG7QvZpUY7Dby7VwEVFJ5SWCkpFfrLh7Wpkss00AvfKmozkbYOctdXcvKYvicD1bXelCN6HKFYE9xSaA-SrAXzW8cDIj7FRdRyGw0MWXqd2EK4MoHs96u2E09yo1JleZF-Kn4TTjOEdUj-sXhYyXHXMFp7YRKjag5nU03lvM5uagfsHzNDc8ILBQupOR3T9HH0_mjQ5a4Q9KIxctl16yA2JPlUG1ZDzU-nGqKTqVqDXzWTslqfJJdiCgljZzmLMBtHQELs3yaRX1szFQHZO5wHA8uX2OUuHR6hK7cUDS1009zpGu6oBDR9V3PRFFLaL7R66GTXmifPsi3Zc5g==",
+                  "summary": []
+                },
+                {
+                  "id": "fc_0a33f55058f0ba8b006a80dd3fea9c81a1b5c2fe34476c5bd2",
+                  "type": "function_call",
+                  "status": "completed",
+                  "arguments": "{\"recipient_address\":\"/worker\",\"description\":\"Keep this real task active across a process restart. This is a stale-task restart probe. Do not finalize the task; leave it nonterminal and active so it can be repaired/restarted after process restart. Report only when explicitly asked, and preserve task continuity across restart.\",\"reference_files\":[]}",
+                  "call_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+                  "name": "delegate_task"
+                }
+              ]
+            }
+          },
+          "interrupted": false,
+          "reason": null,
+          "failed": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "atMs": 2721,
+      "message": {
+        "type": "TOKEN_USAGE_UPDATED",
+        "payload": {
+          "change_sequence": 148,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "usage_event_id": "f6acb364-800c-4f90-92a6-219e6c403561",
+          "idempotency_key": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772:turn_0001:llm:1",
+          "observed_at": "2026-08-15T21:42:24.695Z",
+          "turn_id": "turn_0001",
+          "llm_call_id": "turn_0001:llm:1",
+          "model_provider": "OPENAI",
+          "model_identifier": "gpt-5.6-luna",
+          "model_value": "gpt-5.6-luna",
+          "usage_scope": "per_call",
+          "input_token_semantic": "gross_includes_cache",
+          "standard_input_tokens": 3,
+          "cache_miss_input_tokens": 3,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 3424,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "cache_state": "positive",
+          "reasoning_output_tokens": 27,
+          "billable_output_tokens": 109,
+          "meter_delta_input_tokens": 3427,
+          "meter_delta_output_tokens": 109,
+          "meter_delta_total_tokens": 3536,
+          "input_price_per_million": 0.2,
+          "output_price_per_million": 1.2,
+          "cached_input_read_price_per_million": 0.02,
+          "cached_input_write_price_per_million": 0.25,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "estimated_api_input_cost": 0.0008566,
+          "estimated_api_standard_input_cost": 6.000000000000001e-7,
+          "estimated_api_cache_read_input_cost": null,
+          "estimated_api_cache_creation_input_cost": 0.000856,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": 0.0001308,
+          "estimated_api_reasoning_output_cost": 0.000032399999999999995,
+          "estimated_api_total_cost": 0.0009874,
+          "currency": "USD",
+          "api_cost_status": "estimated",
+          "missing_price_dimensions": [],
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+          "selected_pricing_tier_id": "standard_le_272k",
+          "latest_prompt_tokens": 3427,
+          "effective_context_window_tokens": 1050000,
+          "context_window_usage_percent": 0.3263809523809524,
+          "quality_flags": []
+        }
+      }
+    },
+    {
+      "atMs": 2724,
+      "message": {
+        "type": "TOOL_EXECUTION_STARTED",
+        "payload": {
+          "change_sequence": 151,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "invocation_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "tool_name": "delegate_task",
+          "turn_id": "turn_0001",
+          "arguments": {
+            "recipient_address": "/worker",
+            "description": "Keep this real task active across a process restart. This is a stale-task restart probe. Do not finalize the task; leave it nonterminal and active so it can be repaired/restarted after process restart. Report only when explicitly asked, and preserve task continuity across restart.",
+            "reference_files": []
+          }
+        }
+      }
+    },
+    {
+      "atMs": 2724,
+      "message": {
+        "type": "TOOL_LOG",
+        "payload": {
+          "change_sequence": 153,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "log_entry": "[TOOL_CALL] Agent_ID: stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772, Tool: delegate_task, Invocation_ID: call_JySSV3qhAnn3D6UZN7yGR0i6, Arguments: recipient_address: /worker\ndescription: Keep this real task active across a process restart. This is a stale-task restart probe. Do not finalize the task; leave it nonterminal and active so it can be repaired/restarted after process restart. Report only when explicitly asked, and preserve task continuity across restart.\nreference_files: (empty list)",
+          "tool_invocation_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "tool_name": "delegate_task",
+          "turn_id": "turn_0001"
+        }
+      }
+    },
+    {
+      "atMs": 2770,
+      "message": {
+        "type": "TASK_DELEGATION_EVENT",
+        "payload": {
+          "event_type": "TASK_AGENT_ACTIVATED",
+          "change_sequence": 154,
+          "parent_team_run_id": "stale_team_stale_1786830141758_c2d8537ad0404cc4adf6df1703ffc878",
+          "execution": {
+            "kind": "task_agent",
+            "address": "/worker",
+            "agent_run_id": "stale_worker_stale_1786830141758_f282a38f1156415e82665b3ecd0b103d",
+            "platform_agent_run_id": null,
+            "started_at": "2026-08-15T21:42:24.705Z",
+            "settled_at": null
+          },
+          "task": {
+            "task_id": "task_daf3ec78f8e3449ebabc4bddbaf479fe",
+            "delegator_agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+            "recipient_address": "/worker",
+            "task_execution": {
+              "agent_run_id": "stale_worker_stale_1786830141758_f282a38f1156415e82665b3ecd0b103d"
+            },
+            "description": "Keep this real task active across a process restart. This is a stale-task restart probe. Do not finalize the task; leave it nonterminal and active so it can be repaired/restarted after process restart. Report only when explicitly asked, and preserve task continuity across restart.",
+            "reference_files": [],
+            "status": "active",
+            "updates": [],
+            "created_at": "2026-08-15T21:42:24.705Z"
+          }
+        }
+      }
+    },
+    {
+      "atMs": 2780,
+      "message": {
+        "type": "TOOL_LOG",
+        "payload": {
+          "change_sequence": 156,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "log_entry": "[TOOL_RESULT] {\n  \"task_id\": \"task_daf3ec78f8e3449ebabc4bddbaf479fe\",\n  \"status\": \"active\",\n  \"target_agent_run_id\": \"stale_worker_stale_1786830141758_f282a38f1156415e82665b3ecd0b103d\"\n}",
+          "tool_invocation_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "tool_name": "delegate_task",
+          "turn_id": "turn_0001"
+        }
+      }
+    },
+    {
+      "atMs": 2781,
+      "message": {
+        "type": "TOOL_EXECUTION_SUCCEEDED",
+        "payload": {
+          "change_sequence": 159,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "invocation_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "tool_name": "delegate_task",
+          "turn_id": "turn_0001",
+          "arguments": null,
+          "result": "{\n  \"task_id\": \"task_daf3ec78f8e3449ebabc4bddbaf479fe\",\n  \"status\": \"active\",\n  \"target_agent_run_id\": \"stale_worker_stale_1786830141758_f282a38f1156415e82665b3ecd0b103d\"\n}"
+        }
+      }
+    },
+    {
+      "atMs": 2781,
+      "message": {
+        "type": "TOOL_LOG",
+        "payload": {
+          "change_sequence": 161,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "log_entry": "[TOOL_RESULT_SUCCESS_PROCESSED] Agent_ID: stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772, Tool: delegate_task, Invocation_ID: call_JySSV3qhAnn3D6UZN7yGR0i6, Result: {\n  \"task_id\": \"task_daf3ec78f8e3449ebabc4bddbaf479fe\",\n  \"status\": \"active\",\n  \"target_agent_run_id\": \"stale_worker_stale_1786830141758_f282a38f1156415e82665b3ecd0b103d\"\n}",
+          "tool_invocation_id": "call_JySSV3qhAnn3D6UZN7yGR0i6",
+          "tool_name": "delegate_task",
+          "turn_id": "turn_0001"
+        }
+      }
+    },
+    {
+      "atMs": 3604,
+      "message": {
+        "type": "SEGMENT_START",
+        "payload": {
+          "change_sequence": 165,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "turn_d6e1d13a7280481096cd2330648e6dfe:6e36875f12314994a5e4bee2f95d521d",
+          "turn_id": "turn_0001",
+          "segment_type": "text",
+          "metadata": null
+        }
+      }
+    },
+    {
+      "atMs": 3604,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 167,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "turn_d6e1d13a7280481096cd2330648e6dfe:6e36875f12314994a5e4bee2f95d521d",
+          "turn_id": "turn_0001",
+          "segment_type": "text",
+          "delta": "WAIT"
+        }
+      }
+    },
+    {
+      "atMs": 3615,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 169,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "turn_d6e1d13a7280481096cd2330648e6dfe:6e36875f12314994a5e4bee2f95d521d",
+          "turn_id": "turn_0001",
+          "segment_type": "text",
+          "delta": "ING"
+        }
+      }
+    },
+    {
+      "atMs": 3619,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 171,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "turn_d6e1d13a7280481096cd2330648e6dfe:6e36875f12314994a5e4bee2f95d521d",
+          "turn_id": "turn_0001",
+          "segment_type": "text",
+          "delta": "_FOR"
+        }
+      }
+    },
+    {
+      "atMs": 3631,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 173,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "turn_d6e1d13a7280481096cd2330648e6dfe:6e36875f12314994a5e4bee2f95d521d",
+          "turn_id": "turn_0001",
+          "segment_type": "text",
+          "delta": "_RE"
+        }
+      }
+    },
+    {
+      "atMs": 3631,
+      "message": {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "change_sequence": 175,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "turn_d6e1d13a7280481096cd2330648e6dfe:6e36875f12314994a5e4bee2f95d521d",
+          "turn_id": "turn_0001",
+          "segment_type": "text",
+          "delta": "START"
+        }
+      }
+    },
+    {
+      "atMs": 3814,
+      "message": {
+        "type": "SEGMENT_END",
+        "payload": {
+          "change_sequence": 177,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "segment_id": "turn_d6e1d13a7280481096cd2330648e6dfe:6e36875f12314994a5e4bee2f95d521d",
+          "turn_id": "turn_0001",
+          "metadata": null,
+          "interrupted": false,
+          "reason": null,
+          "failed": false,
+          "error": null
+        }
+      }
+    },
+    {
+      "atMs": 3815,
+      "message": {
+        "type": "TOKEN_USAGE_UPDATED",
+        "payload": {
+          "change_sequence": 179,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "usage_event_id": "5c8b8252-5054-4bcc-86b9-1ba2ce0caa0c",
+          "idempotency_key": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772:turn_0001:llm:2",
+          "observed_at": "2026-08-15T21:42:25.798Z",
+          "turn_id": "turn_0001",
+          "llm_call_id": "turn_0001:llm:2",
+          "model_provider": "OPENAI",
+          "model_identifier": "gpt-5.6-luna",
+          "model_value": "gpt-5.6-luna",
+          "usage_scope": "per_call",
+          "input_token_semantic": "gross_includes_cache",
+          "standard_input_tokens": 3,
+          "cache_miss_input_tokens": 3,
+          "cache_read_input_tokens": 3424,
+          "cache_creation_input_tokens": 193,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "cache_state": "positive",
+          "reasoning_output_tokens": 0,
+          "billable_output_tokens": 9,
+          "meter_delta_input_tokens": 3620,
+          "meter_delta_output_tokens": 9,
+          "meter_delta_total_tokens": 3629,
+          "input_price_per_million": 0.2,
+          "output_price_per_million": 1.2,
+          "cached_input_read_price_per_million": 0.02,
+          "cached_input_write_price_per_million": 0.25,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "estimated_api_input_cost": 0.00011732999999999999,
+          "estimated_api_standard_input_cost": 6.000000000000001e-7,
+          "estimated_api_cache_read_input_cost": 0.00006848,
+          "estimated_api_cache_creation_input_cost": 0.00004825,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": 0.0000108,
+          "estimated_api_reasoning_output_cost": null,
+          "estimated_api_total_cost": 0.00012812999999999998,
+          "currency": "USD",
+          "api_cost_status": "estimated",
+          "missing_price_dimensions": [],
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+          "selected_pricing_tier_id": "standard_le_272k",
+          "latest_prompt_tokens": 3620,
+          "effective_context_window_tokens": 1050000,
+          "context_window_usage_percent": 0.34476190476190477,
+          "quality_flags": []
+        }
+      }
+    },
+    {
+      "atMs": 3816,
+      "message": {
+        "type": "ASSISTANT_COMPLETE",
+        "payload": {
+          "change_sequence": 182,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "content": "WAITING_FOR_RESTART",
+          "reasoning": null,
+          "usage": {
+            "input_tokens": 3620,
+            "output_tokens": 9,
+            "total_tokens": 3629,
+            "usage_scope": "per_call",
+            "model_provider": "OPENAI",
+            "provider_name": "OpenAI",
+            "model_identifier": "gpt-5.6-luna",
+            "model_value": "gpt-5.6-luna",
+            "input_token_semantic": "gross_includes_cache",
+            "cache_state": "positive",
+            "standard_input_tokens": null,
+            "cache_miss_input_tokens": null,
+            "cache_read_input_tokens": 3424,
+            "cache_creation_input_tokens": 193,
+            "cache_creation_5m_input_tokens": null,
+            "cache_creation_1h_input_tokens": null,
+            "reasoning_output_tokens": 0,
+            "billable_input_tokens": null,
+            "billable_output_tokens": null,
+            "raw_usage_json": {
+              "input_tokens": 3620,
+              "input_tokens_details": {
+                "cache_write_tokens": 193,
+                "cached_tokens": 3424
+              },
+              "output_tokens": 9,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 3629
+            },
+            "quality_flags": []
+          },
+          "image_urls": [],
+          "audio_urls": [],
+          "video_urls": []
+        }
+      }
+    },
+    {
+      "atMs": 3817,
+      "message": {
+        "type": "TURN_COMPLETED",
+        "payload": {
+          "change_sequence": 183,
+          "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+          "turn_id": "turn_0001",
+          "reason": null
+        }
+      }
+    }
+  ],
+  "finalSnapshot": {
+    "getTeamRunResumeConfig": {
+      "teamRunId": "stale_team_stale_1786830141758_c2d8537ad0404cc4adf6df1703ffc878",
+      "isActive": true,
+      "executionTree": {
+        "schema_version": 1,
+        "created_at": "2026-08-15T21:42:21.842Z",
+        "archived_at": null,
+        "application_binding": null,
+        "handoffs": [],
+        "root_team": {
+          "team_definition_id": "stale-team-stale-1786830141758",
+          "team_definition_name": "stale_team_stale_1786830141758",
+          "team_run_id": "stale_team_stale_1786830141758_c2d8537ad0404cc4adf6df1703ffc878",
+          "coordinator_address": "/coordinator",
+          "members": [
+            {
+              "kind": "configured_agent",
+              "address": "/coordinator",
+              "agent_definition_id": "stale-coordinator-stale-1786830141758",
+              "role": null,
+              "description": null,
+              "agent_run_id": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+              "platform_agent_run_id": null,
+              "launch_configuration": {
+                "runtime_kind": "AUTOBYTEUS",
+                "llm_model_identifier": "gpt-5.6-luna",
+                "llm_config": null,
+                "auto_execute_tools": true,
+                "skill_access_mode": "NONE",
+                "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-008/live/workspaces/stale_1786830141758"
+              }
+            },
+            {
+              "kind": "configured_agent",
+              "address": "/worker",
+              "agent_definition_id": "stale-worker-stale-1786830141758",
+              "role": null,
+              "description": null,
+              "agent_run_id": "stale_worker_stale_1786830141758_def084b450334dafae4a9a513066d905",
+              "platform_agent_run_id": null,
+              "launch_configuration": {
+                "runtime_kind": "AUTOBYTEUS",
+                "llm_model_identifier": "gpt-5.6-luna",
+                "llm_config": null,
+                "auto_execute_tools": true,
+                "skill_access_mode": "NONE",
+                "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-008/live/workspaces/stale_1786830141758"
+              }
+            }
+          ],
+          "task_executions": [
+            {
+              "kind": "task_agent",
+              "address": "/worker",
+              "agent_run_id": "stale_worker_stale_1786830141758_f282a38f1156415e82665b3ecd0b103d",
+              "platform_agent_run_id": null,
+              "started_at": "2026-08-15T21:42:24.705Z",
+              "settled_at": null
+            }
+          ]
+        }
+      }
+    },
+    "getTaskDelegationRecords": [
+      {
+        "taskId": "task_daf3ec78f8e3449ebabc4bddbaf479fe",
+        "delegatorAgentRunId": "stale_coordinator_stale_1786830141758_5444a0f0f8d84061bd9b08b8b4ebe772",
+        "recipientAddress": "/worker",
+        "targetAgentRunId": "stale_worker_stale_1786830141758_f282a38f1156415e82665b3ecd0b103d",
+        "targetTeamRunId": null,
+        "status": "active",
+        "description": "Keep this real task active across a process restart. This is a stale-task restart probe. Do not finalize the task; leave it nonterminal and active so it can be repaired/restarted after process restart. Report only when explicitly asked, and preserve task continuity across restart.",
+        "createdAt": "2026-08-15T21:42:24.705Z",
+        "referenceFiles": [],
+        "updates": []
+      }
+    ],
+    "getTeamCommunicationMessages": []
+  }
+}

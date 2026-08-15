@@ -1,0 +1,64 @@
+{
+  "teamRunId": "utd_root_team_api_rev_007_1786826064862_e2c10f7f00874d65afd80cb0b7583f9f",
+  "agentRunId": "utd_coordinator_api_rev_007_1786826064862_5bab9ddeb8e4474fba10f6c3f1556e7f",
+  "durationMs": 15592,
+  "sent": true,
+  "terminalAt": {
+    "type": "TURN_COMPLETED",
+    "atMs": 3566
+  },
+  "websocketError": null,
+  "messageCount": 14,
+  "typeCounts": {
+    "CONNECTED": 1,
+    "TEAM_EXECUTION_VIEW_SNAPSHOT": 1,
+    "TEAM_RUN_LIFECYCLE": 1,
+    "MEMBER_INPUT_MESSAGE": 1,
+    "TURN_STARTED": 1,
+    "SEGMENT_START": 2,
+    "TOOL_EXECUTION_STARTED": 1,
+    "SEGMENT_END": 2,
+    "TOOL_EXECUTION_SUCCEEDED": 1,
+    "SEGMENT_CONTENT": 1,
+    "TOKEN_USAGE_UPDATED": 1,
+    "TURN_COMPLETED": 1
+  },
+  "tasks": [
+    {
+      "taskId": "task_cb2f6fe11cc847a4bb39e5a04563a81a",
+      "delegatorAgentRunId": "utd_coordinator_api_rev_007_1786826064862_5bab9ddeb8e4474fba10f6c3f1556e7f",
+      "recipientAddress": "/worker",
+      "targetAgentRunId": "utd_worker_api_rev_007_1786826064862_f487a370772d4e329890088e26c126e8",
+      "targetTeamRunId": null,
+      "status": "accepted",
+      "description": "Return E2E_DIRECT_TASK_RESULT_42",
+      "createdAt": "2026-08-15T20:36:56.451Z",
+      "referenceFiles": [],
+      "updates": [
+        {
+          "kind": "submission",
+          "submissionId": "submission_b896233779e64fa092d9669d055bb18d",
+          "reviewId": null,
+          "interruptionId": null,
+          "reviewedSubmissionId": null,
+          "decision": null,
+          "content": "E2E_DIRECT_TASK_RESULT_42",
+          "createdAt": "2026-08-15T20:36:58.968Z",
+          "referenceFiles": []
+        },
+        {
+          "kind": "review",
+          "submissionId": null,
+          "reviewId": "review_bbfb2956796d4fd6882ac3ac47d66305",
+          "interruptionId": null,
+          "reviewedSubmissionId": "submission_b896233779e64fa092d9669d055bb18d",
+          "decision": "accept",
+          "content": null,
+          "createdAt": "2026-08-15T20:37:03.495Z",
+          "referenceFiles": []
+        }
+      ]
+    }
+  ],
+  "communications": []
+}

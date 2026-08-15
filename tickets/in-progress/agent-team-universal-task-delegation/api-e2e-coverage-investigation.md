@@ -638,3 +638,154 @@ The cumulative durable package was adjudicated before final execution as follows
 Cumulative durable package accounting is `164 paths = 11 added / 122 updated / 31 removed`. Inventory and patch path sets match exactly, reverse application passes, all diff checks pass, and all active changed tests have resolvable relative imports. The package must return through proportional code review before delivery because repository-resident durable coverage changed cumulatively.
 
 Coverage gaps after execution are residual, not open critical rows: probabilistic providers may choose different tools in future turns; real UI validation used Chrome web-equivalent desktop/mobile rather than the Electron shell; and unchanged provider rows other than the IR-010 defect seam were retained from API-REV-005 rather than unnecessarily rerun. These constraints lower confidence below 100% but do not leave a relevant UC/AC row untested.
+## API-REV-007 Fresh Integrated Coverage Investigation — CRR-019 / IR-013
+
+- Investigation date: `2026-08-15`.
+- Integrated source under test: `c853559929470e3455a7f7c160d4bd02a6a380dd`.
+- Upstream authority: `CRR-019 Pass / 92.7%`, complete cumulative source/structural review; open source findings `None`.
+- Prior API/E2E authority: `API-REV-006 Pass / 98.3%` at pre-integration HEAD `8a0494e8b55a3debc7acbee7b61d286d5311d1a8`. It remains historical evidence only and cannot accept the integrated v1.4.52 composition, IR-012 cleanup, IR-013 prompt copy, currentized suites, removed obsolete suites, or Team-member draft context-file layout.
+- Broader-validation decision: `Required`. Current source review did not run a server listener, provider, browser, mobile viewport, context-file journey, stop/reopen, or restore. The changed prompt is consumed by three provider seams and the changed context layout is reached through a browser upload/API boundary, so repository evidence alone cannot close the integration risk.
+
+### Integrated changed surfaces and required evidence
+
+| Surface | Current authority / change | Required proof |
+| --- | --- | --- |
+| AgentTeam prompt copy | one `member-collaboration-instruction-renderer.ts` template, substituted only with the caller member address | exact durable renderer/provider parity plus configured AutoByteus, Codex, and Claude Team sessions; exactly one Addressing then Collaboration section; neutral `/A` tree; no real-domain examples; standalone absence; identical intrinsic tool exposure |
+| Team-member draft context files | `ContextFileLayout` encodes a canonical absolute member address as one safe filesystem segment | retained REST integration plus live checked-disposable upload/list/delete/finalize/read for direct and nested addresses; every resolved path must remain under the owned draft/final roots |
+| Integrated task/message/persistence owners | cumulative SR-009 plus v1.4.52 AgentRun/compaction composition | current server/core/web selections; exact provider task/message rows; compaction lifecycle suite; startup, stop/reopen, restore/reconnect, no replay/duplication |
+| Browser/mobile projection | one `TeamExecutionViewState` and current run-history navigation | active and restored desktop/mobile Team journeys, exact focus/history/reference state, no duplicate root/task/message rows |
+| Persisted transition | V1 three-file Team package and isolated predecessor migrations | deterministic current/predecessor migration suites, fresh checked-disposable schema startup, strict reopen/restore, zero operational-data access |
+
+### Durable coverage validity decisions
+
+| Durable path or group | Decision | Reason and replacement/current evidence |
+| --- | --- | --- |
+| `tests/e2e/token-usage/token-usage-canonical-execution-address-graphql.e2e.test.ts` (removed by IR-013) | `Stale / Remove — no restoration` | Its harness stopped at the retired V5 composite execution-address intermediate. Current V6 exact root/run identity is covered by `token-usage-execution-identity-migration-repository` plus current ledger/statistics GraphQL suites. Restoring the file would protect prohibited compatibility behavior. |
+| `tests/e2e/token-usage/token-usage-legacy-path-columns-drop-startup.e2e.test.ts` (removed by IR-013) | `Stale / Remove — no restoration` | It asserted retired legacy-path columns and startup machinery that are not part of the approved current runtime or isolated required predecessor conversion. Current Prisma lifecycle, V6 repository migration, ledger, price, and statistics coverage are the proportional replacements. |
+| `recent-run-projection-graphql`, `token-usage-ledger-graphql`, `token-usage-unit-prices-graphql`, `archive-run-history-graphql`, `context-files.integration`, `brief-studio-imported-package`, `statistics-provider`, and `prisma-import-lifecycle` currentizations | `Still Valid / Run` | Each now reaches a supported current owner using V1 Team packages, intrinsic run identity, current application packages, current context-file layout, or current ledger/statistics boundaries. |
+| `team-member-run-view-projection-service.import.test.ts` currentization | `Still Valid / Run` | The deleted dynamic mock is replaced by the current projection owner; base-aware import audit must remain clean. |
+| `carpenter-prompt-composer.test.ts` and `member-collaboration-instruction-provider-parity.test.ts` | `Still Valid / Run` | These are the exact deterministic copy/order/provider/standalone checks for the IR-013 prompt refinement. They do not replace configured live provider sessions. |
+| context-file REST integration coverage | `Still Valid / Expand only if live gap is found` | It directly proves safe encoding and lifecycle at the production service seam. A temporary live browser/API probe will prove configured-system reachability without adding a duplicate durable browser harness unless a gap is exposed. |
+| pre-integration API-REV-006 provider/browser evidence | `Historical / Re-execute integrated state` | Useful for journey design only. Exact integrated execution must be fresh because provider composition, active test package, context layout, and base composition changed. |
+
+No repository-resident durable edit or removal is approved before the current selections run. If fresh evidence exposes a true regression gap, this investigation must be updated before changing coverage. Temporary execution harnesses belong only under `api-e2e-evidence/api-rev-007`.
+
+### Planned execution order and safety boundary
+
+1. Re-run the exact IR-013 currentized/prompt/context selections, cumulative server/core/web selections, compaction lifecycle selections, production TypeScript, full server build/bootstrap, and Nuxt production build.
+2. Create a unique runtime and SQLite database only under repository-owned test roots. Before database initialization, prove the child environment excludes ambient `DATABASE_URL` and `DATABASE_URL_TEST`, the runtime `.env` names the exact disposable absolute SQLite target, and configuration-only preflight resolves that same target.
+3. Apply migrations and import only named secrets through the supported importer into the disposable vault; import the maintained Agent/AgentTeam package from `/Users/normy/autobyteus_org/autobyteus-agents`; start only owned nonprotected ports and retain post-listen PID `lsof` exact-path verification.
+4. Execute fresh AutoByteus, Codex, and Claude Team and standalone rows; exact task/delegation/message/review behavior; real LLM-selected canonical addresses; current prompt/tool exposure; context-file direct/nested upload lifecycle; desktop-equivalent Chrome; mobile Chrome; stop/reopen; restore/reconnect; persisted/live correlation and no duplication.
+5. Stop only owned processes and remove only the exact disposable runtime/database/sidecars. Operational database and `$HOME/.autobyteus` action: `NONE`. Protected `60004/31004` action: `NONE`. Preserve incident disclosure, delivery-owned artifacts, stashes, and backups.
+
+### Initial confidence and stop rule
+
+Before fresh execution: requirement/AC proof `82%`; changed-boundary directness `78%`; cross-boundary realism `55%`; environment fidelity `92%`; lifecycle/recovery `75%`; browser/mobile `55%`; durable quality `91%`; simple mean `75.4%`. The score reflects strong source/repository evidence but no integrated live acceptance. Any failing critical criterion, unsafe database-target ambiguity, provider admission error, context-file path escape, missing current prompt/tool exposure, restore duplication, or unresolved current durable failure requires `Fail`/reroute regardless of score.
+
+### API-REV-007 execution disposition
+
+The integrated investigation reached every planned repository, provider, browser, context-file, migration, reopen, restore, and cleanup boundary. Existing currentized coverage is valid. The two IR-013 token tests remain correctly removed and must not be restored. API/E2E added, updated, or removed **zero** repository-resident production or durable-test paths; all new scripts and outputs are ticket-owned execution evidence only.
+
+Fresh results closed the prompt/tool, package import, context-file, provider, standalone, desktop, mobile, ordinary reopen, explicit restore, message-address, and cleanup risks. In particular, the real imported Classroom LLM called `send_message_to` with exact canonical `/student`, and the real student LLM replied with exact canonical `/professor`; the persisted public records resolved those calls to the exact reciprocal AgentRuns once each.
+
+One new critical current-source finding remains:
+
+| Finding / Scenario | Required | Observed | Decision |
+| --- | --- | --- | --- |
+| `API-F-007 / API-UTD-RESTART-007` | BEH-012, UC-017, R-041, AC-043, and DS-009 require server restart to use the strict repair loader before listen/exposure | after a real process restart, the first public history read still returned the stale task as `active`, zero interruption updates, and `settled_at: null`; only later explicit restore invoked the existing correct/idempotent repair loader | `Fail`; preliminary implementation-source Local Fix, routed to `code_reviewer` |
+
+The finding is not stale coverage: it was produced by a fresh real AutoByteus task on the checked disposable target, stopped at a truthful nonterminal durable state, reopened through the built server, and read through current GraphQL. Source inspection finds `TeamRunStatePackageLoader.loadAndRepair()` is called only from `AgentTeamRunManager.restoreTeamRun()`, while startup `TeamRunV1PackageCatalog.rebuild()` validates/adopts files without repair.
+
+The exact accounting is `75/77` UC/AC rows Pass and `2/77` Fail (`UC-017`, `AC-043`). The final scorecard is requirement/AC proof `97%`, changed-boundary directness `99%`, cross-boundary realism `99%`, environment fidelity `100%`, failure/lifecycle/recovery `90%`, browser/mobile `99%`, durable quality `97%`; simple mean `97.3%`. The critical restart contract overrides the high numeric confidence, so API-REV-007 is **Fail / 97.3%**.
+
+Authoritative evidence: `api-e2e-evidence/api-rev-007/failure/api-f007-startup-repair-timing-analysis.md`, `api-e2e-evidence/api-rev-007/investigation/uc-ac-verification.tsv`, and `api-e2e-evidence/api-rev-007/live/browser-provider-lifecycle-matrix-summary.json`.
+
+## API-REV-008 Post-IR-014 Coverage Investigation — CRR-021
+
+- Investigation date: `2026-08-15`.
+- Source under test: `03b91d079af71b996ab4cadfe985ca2b2fddf049`.
+- Upstream authority: `CRR-021 Pass / 92.8%`; CR-F-016 / API-F-007 is resolved in source, no open source or design findings.
+- Prior API/E2E authority: `API-REV-007 Fail / 97.3%`. Its successful provider/browser/context/migration rows are useful historical journey evidence but cannot accept IR-014's changed startup boundary.
+- Broader validation: `Required`.
+
+### Coverage decisions
+
+| Area | Existing status | API-REV-008 decision |
+| --- | --- | --- |
+| API-UTD-RESTART-007 | real API-REV-007 Fail; deterministic IR-014/CRR-021 source tests Pass | `Recheck First` on a new checked-disposable built process before other live rows |
+| startup stale active/awaiting/accepted/orphan handling | deterministic coverage now exists | `Still Valid + Real Process Expansion`; prove all four facts before listen/public history |
+| explicit restore and failed-root isolation | deterministic coverage now exists | `Still Valid + Real API Recheck`; repeat restore idempotence, failed-root exclusion, valid sibling availability, and new Team creation |
+| cumulative server/core/web coverage | current CRR-021 server selection passes; API-REV-007 core/web passed at parent | `Re-execute Current`; source changed the startup package owner and the user requires a complete refactoring validation |
+| AutoByteus/Codex/Claude Team and standalone | API-REV-007 fresh parent-state Pass | `Re-execute Current`; use real Agents/AgentTeams and current provider seams |
+| imported Classroom exact messages | API-REV-007 real LLM `/student` and `/professor` Pass | `Re-execute Current`; prove exact LLM recipient choice and persisted AgentRun endpoints |
+| desktop/mobile/context files | API-REV-007 Pass | `Re-execute Current`; active and restored browser state on the repaired process |
+| Prisma/app-data migration and cleanup | API-REV-007 Pass | `Re-execute Current`; exact disposable startup/reopen and cleanup |
+| repository-resident durable coverage | current implementation-owned repair tests cover the source fix | `No API/E2E Edit Planned`; add/update/remove only if fresh execution reveals a durable gap |
+
+### Execution and safety order
+
+1. Run current repository selections, production TypeScript, server build/bootstrap, and Nuxt build.
+2. Establish a new unique checked runtime/database and owned ports; sanitize ambient database variables and prove exact target resolution before initialization.
+3. Apply migrations and use the supported secret importer only into the disposable vault; import the authorized Agent package through the normal API.
+4. Build real stale active and awaiting-review tasks plus accepted history and an unreferenced orphan only under the owned package. Restart the built process and make the first post-listen read before explicit restore. Require active/awaiting -> interrupted exactly once, accepted unchanged, every surviving execution settled, orphan absent, and valid sibling/new-root availability despite one invalid root.
+5. Recheck explicit restore idempotence, then run the fresh three-provider Team/standalone, Classroom, desktop/mobile/context, ordinary reopen/restore, migration, and no-duplication matrix.
+6. Stop only owned processes and remove only exact owned runtime/database/sidecars. Operational database and protected `60004/31004` action remain `NONE`.
+
+Initial confidence: requirement/AC proof `82%`; changed-boundary directness `72%`; cross-boundary realism `55%`; environment fidelity `92%`; lifecycle/recovery `60%`; browser/mobile `55%`; durable quality `94%`; simple mean `72.9%`. A failed before-listen repair fact, unsafe target ambiguity, provider admission error, browser regression, restore duplication, or incomplete cleanup overrides the numeric score.
+
+### API-REV-008 Repository And Durable-Coverage Adjudication
+
+- The current repository selection passes: server `71 files / 320 tests` with one declared opt-in skip, core `33 / 184`, and web `34 / 257`. Production TypeScript, full server build/sanitized bootstrap, and Nuxt production build with 15-route prerender also pass.
+- The accidental invocation of the entire web suite was interrupted after an unrelated inherited Chinese-glossary assertion; it is recorded as an invalid harness selection and is not used as acceptance evidence. The exact planned 34-file current selection passes cleanly.
+- Existing IR-014 startup-repair coverage is `Still Valid`: it directly exercises the one catalog-to-loader boundary and remains green in the current server aggregate.
+- Existing current provider, package, migration, frontend, history, navigation, mobile, and restore coverage is `Still Valid`: every selected current suite passes without restoring retired identity or compatibility assertions.
+- API/E2E changed **zero** repository-resident production or durable-test paths in this round. All new scripts, JSON, logs, and screenshots are temporary or retained ticket evidence under `api-e2e-evidence/api-rev-008`.
+- Post-repository confidence remained below the final target because a deterministic test could not substitute for the required real before-listen repair ordering or the user-required configured provider/browser matrix. Broader validation therefore remained `Required`.
+
+### API-REV-008 Broader Validation Result
+
+The checked-disposable built process closes the prior critical gap. A real AutoByteus task was stopped at a truthful active state; the owned package was expanded with current-schema awaiting-review, accepted, orphan, valid-sibling, and invalid-root fixtures. On restart, repair completed at `2026-08-15T21:44:13.107Z`, the server listened at `2026-08-15T21:44:13.238Z`, and the first public read occurred at `2026-08-15T21:45:28.823Z`. Before explicit restore:
+
+- active and awaiting-review tasks were interrupted exactly once with the expected reason;
+- the accepted task remained accepted;
+- all three surviving executions shared the repair settlement time;
+- the orphan execution was absent;
+- the invalid root failed closed without mutating or blocking the valid sibling;
+- a new Team root could still be created.
+
+Two later explicit restores succeeded idempotently; the exact three package files remained byte-identical and no interruption was duplicated. `API-F-007 / API-UTD-RESTART-007`, `UC-017`, and `AC-043` are therefore resolved downstream.
+
+The remaining fresh matrix also passes:
+
+- real AutoByteus, Codex, and Claude direct and nested Team task lifecycles;
+- intrinsic `get_handoff_rules` calls through all three configured provider seams;
+- exact invalid relative-address rejection and independent repeated-target execution identity;
+- standalone AutoByteus, Codex, and Claude turns;
+- imported Classroom professor LLM call to exact `/student`, student LLM reply to exact `/professor`, exact reciprocal AgentRun persistence, once-only request/reply, and readable references;
+- desktop-equivalent active/restored task hierarchy, details, focus, and no public internal IDs;
+- 390x844 mobile active/restored message and reference counts plus reference open/close;
+- direct and nested Team-member draft/final/delete/read context-file lifecycle with invalid-owner rejection;
+- process reopen, explicit restore/reconnect, byte-identical package state, 21 Prisma migrations, and `16/16` application migrations with no duplicate attempt;
+- exact cleanup of owned ports, runtime, database, key, journal, WAL, and SHM.
+
+UC/AC accounting is now `77/77 Pass` (`21/21` use cases and `56/56` acceptance criteria), with zero Fail or Not Tested rows. Evidence is `api-e2e-evidence/api-rev-008/investigation/uc-ac-verification.tsv` and `live/browser-provider-lifecycle-matrix-summary.json`.
+
+### API-REV-008 Final Confidence And Decision
+
+| Confidence category | Final score | Evidence basis | Residual uncertainty |
+| --- | ---: | --- | --- |
+| Requirement and acceptance-criteria proof | 99% | 77/77 explicit UC/AC rows pass across deterministic and real surfaces | Provider choices remain probabilistic outside asserted prompts. |
+| Changed-boundary execution directness | 99% | Real built restart, exact timing correlation, first public read, and idempotent restore directly exercise IR-014 | None material. |
+| Cross-boundary integration realism and mock gap | 99% | Built server, GraphQL/WebSocket, real provider runtimes, browser, filesystem packages, and restart/reconnect | External provider services can vary over time. |
+| Environment, configuration, identity, and fixture fidelity | 99% | Exact disposable DB/runtime proof, supported secret and package imports, real identities, PID/lsof, and cleanup | Secrets were intentionally not recorded. |
+| Failure, edge-case, lifecycle, and recovery evidence | 98% | Active/awaiting/accepted/orphan/invalid-root restart, invalid address, repeated target, reopen, restore, and migration idempotence | Not every theoretically possible filesystem fault was injected live. |
+| User-surface, browser, and desktop-shell confidence | 98% | Desktop-equivalent and 390x844 mobile journeys before/after reopen and restore | Electron-shell-specific behavior was not material and was not run. |
+| Durable regression coverage quality and relevance | 96% | Broad current server/core/web selections directly cover the approved owners; no compatibility-only test retained | One declared Claude binary test is opt-in, offset by fresh real Claude rows. |
+
+- Overall final confidence: **98.3%** (simple mean, rounded to one decimal).
+- Every critical acceptance criterion directly proven: `Yes`.
+- Any applicable category below 90%: `No`.
+- Default 95% target met: `Yes`.
+- Broader-validation decision: `Required — completed`.
+- Final investigation decision: `Pass`; route the cumulative package to `code_reviewer` for proportional test-code review. With zero API/E2E durable changes, the expected proportional disposition is `Not Applicable` unless the reviewer identifies a package-accounting issue.
+- Operational database inspection/action: `NONE`. `$HOME/.autobyteus` operational data action: `NONE`; only the explicitly authorized `.env` was consumed through the supported importer into the isolated vault. Protected `60004/31004` action: `NONE`. Incident disclosure, stashes, backups, and no-rollback/no-repair state remain preserved.

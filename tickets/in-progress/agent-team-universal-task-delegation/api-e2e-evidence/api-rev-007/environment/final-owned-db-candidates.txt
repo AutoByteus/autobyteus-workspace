@@ -1,0 +1,2 @@
+autobyteus-server-ts/db/api-rev-007-live-20260815-1.db
+autobyteus-server-ts/db/api-rev-007-live-20260815-1.db.secret.key
