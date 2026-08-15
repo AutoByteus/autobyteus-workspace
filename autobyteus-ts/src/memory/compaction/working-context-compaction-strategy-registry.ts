@@ -1,6 +1,7 @@
 import type {
   WorkingContextCompactionStrategy,
   WorkingContextCompactionStrategyConstructionContext,
+  WorkingContextCompactionStrategyExecutionContext,
 } from './working-context-compaction-strategy.js';
 
 export type WorkingContextCompactionStrategyInfo = Readonly<{
@@ -13,6 +14,7 @@ export type WorkingContextCompactionStrategyRegistration = Readonly<{
   name: string;
   create(
     context: WorkingContextCompactionStrategyConstructionContext,
+    executionContext: WorkingContextCompactionStrategyExecutionContext,
   ): WorkingContextCompactionStrategy;
 }>;
 

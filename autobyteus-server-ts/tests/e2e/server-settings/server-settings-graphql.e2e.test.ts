@@ -7,10 +7,12 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { LLMRequestAssembler } from "autobyteus-ts/agent/llm-request-assembler.js";
 import { BasePromptRenderer } from "autobyteus-ts/llm/prompt-renderers/base-prompt-renderer.js";
+import { LLMUserMessage } from "autobyteus-ts/llm/user-message.js";
 import { Message, MessageRole } from "autobyteus-ts/llm/utils/messages.js";
 import { CompactionRuntimeSettingsResolver } from "autobyteus-ts/memory/compaction/compaction-runtime-settings.js";
 import { defaultWorkingContextCompactionStrategyRegistry } from "autobyteus-ts/memory/compaction/default-working-context-compaction-strategy-registry.js";
 import { PendingCompactionExecutor } from "autobyteus-ts/memory/compaction/pending-compaction-executor.js";
+import { resolveCompactionPlanningBudget } from "autobyteus-ts/memory/compaction/compaction-planning-budget.js";
 import { AUTOBYTEUS_COMPACTION_STRATEGY } from "autobyteus-ts/memory/compaction/working-context-compaction-strategy-setting.js";
 import { WorkingContextCompactionStrategyResolver } from "autobyteus-ts/memory/compaction/working-context-compaction-strategy-resolver.js";
 import type { CompactionLineageScope } from "autobyteus-ts/memory/lineage/compaction-lineage-scope.js";
@@ -697,7 +699,7 @@ describe("Server settings GraphQL e2e", () => {
       defaultWorkingContextCompactionStrategyRegistry.register({
         id: testStrategyId,
         name: "GraphQL Test Direct",
-        create: () => ({
+        create: (_constructionContext, executionContext) => ({
           id: testStrategyId,
           name: "GraphQL Test Direct",
           propose: async () => ({
@@ -713,6 +715,18 @@ describe("Server settings GraphQL e2e", () => {
               modelIdentifier: "test-model",
               taskId: "settings-compaction-task",
               renderedInputSha256: "a".repeat(64),
+            },
+            budgetAssessment: {
+              planningBudget: executionContext.planningBudget,
+              estimatedCurrentWorkingContextTokens: 100,
+              estimatedUntrackedOverheadTokens: 0,
+              requiredSystemTokens: 10,
+              protectedSuffixTokens: 0,
+              replacementMemoryReserveTokens:
+                executionContext.planningBudget.replacementMemoryReserveTokens,
+              retainedRecentTokens: 0,
+              estimatedPlannedPromptTokens: 100,
+              estimatedFinalizedContextTokens: null,
             },
           }),
         }),
@@ -765,14 +779,20 @@ describe("Server settings GraphQL e2e", () => {
       agentId,
     });
     manager.persistWorkingContextSnapshot();
-    manager.requestCompaction("turn-before-setting-update");
+    manager.requestCompaction({
+      requestedTurnId: "turn-before-setting-update",
+      requestKind: "threshold_crossing",
+      planningBudget: resolveCompactionPlanningBudget(
+        { inputBudget: 100_000, triggerThresholdTokens: 80_000 },
+        90_000,
+      ),
+    });
     const strategyResolver = new WorkingContextCompactionStrategyResolver({
       registry: defaultWorkingContextCompactionStrategyRegistry,
       settingsResolver: new CompactionRuntimeSettingsResolver(),
       constructionContext: {
         agentId,
         compactionAgentRunner: null,
-        inputBudgetTokens: 100,
         maxItemChars: 200,
         diagnostics: null,
       },
@@ -799,10 +819,11 @@ describe("Server settings GraphQL e2e", () => {
     );
 
     const request = await assembler.prepareRequest(
-      "after GraphQL update",
+      new LLMUserMessage({ content: "after GraphQL update" }),
       {
         turnId: "turn-after-setting-update",
         requestId: "turn-after-setting-update:llm:1",
+        turnOrigin: "user",
       },
       "System",
     );

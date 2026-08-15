@@ -1,0 +1,47 @@
+{
+  "captured_at": "2026-08-15",
+  "parent": {
+    "agent_run_id": "daily_assistant_2a39c68eb96443ada6f5af9f4f81acef",
+    "turn_id": "turn_0001",
+    "operation_id": "compaction_operation_msu088l2_1",
+    "observed_prompt_tokens": 372123,
+    "selected_unit_count": 551,
+    "raw_trace_count": 1762,
+    "post_success_prompt_tokens": 73102,
+    "post_success_threshold_decision": "reset"
+  },
+  "outer_compactor": {
+    "run_id": "memory_compactor_6d151dd0cc8441d8881a2d684f86b454",
+    "task_id": "compaction_task_7e04c6d6764342b0b5d94f4ac010c02d",
+    "input_processor_final_content_length": 540726,
+    "provider_prompt_tokens": 176655,
+    "trigger_threshold_tokens": 123148,
+    "incorrect_self_compaction_operation_id": "compaction_operation_msu09qwk_1",
+    "self_compaction_selected_unit_count": 1,
+    "self_compaction_raw_trace_count": 1,
+    "raw_user_trace_path": "/Users/normy/.autobyteus/server-data/memory/agents/memory_compactor_6d151dd0cc8441d8881a2d684f86b454/raw_traces_000001.jsonl",
+    "raw_user_content_length": 540257,
+    "raw_user_content_sha256": "3a28b7c706c586b64ea84ad9f1e11982aa476c4ea25893f66d590ab2dafcdbb7",
+    "start_separator_count": 1,
+    "end_separator_count": 1
+  },
+  "nested_compactor": {
+    "run_id": "memory_compactor_08242efd53204df8b27dd4782347bd17",
+    "task_id": "compaction_task_d16a001fb9c5493da9d567975c0dee7a",
+    "input_processor_final_content_length": 2432,
+    "provider_prompt_tokens": 1758,
+    "raw_user_trace_path": "/Users/normy/.autobyteus/server-data/memory/agents/memory_compactor_08242efd53204df8b27dd4782347bd17/raw_traces_active.jsonl",
+    "raw_user_content_length": 2430,
+    "raw_user_content_sha256": "75e60a391ba115ecaa8fd6a775a943b2db0fe0a568ced0e8cc63cc041b7d9298",
+    "start_separator_count": 2,
+    "end_separator_count": 2,
+    "target_tag_name_count": 4,
+    "middle_omitted_character_count": 538757,
+    "selected_unit_count": 1,
+    "raw_trace_count": 1,
+    "result_episode_summary_length": 977,
+    "result_semantic_fact_count": 11
+  },
+  "causal_finding": "The built-in Memory Compactor received the global 20% automatic compaction policy. After producing its own response, its 176655-token prompt exceeded 123148 and launched a second Memory Compactor. That nested child compacted the outer compactor task envelope itself; per-value middle omission reduced the single 540257-character user trace, so the nested task was only 2432 characters and contained two START/END wrapper pairs.",
+  "parent_result_note": "The intended outer result still completed and reduced the Daily Assistant to 73102 prompt tokens, but nested failure could replace an already-produced outer result with an error, and every nested call adds avoidable latency/cost/history noise."
+}

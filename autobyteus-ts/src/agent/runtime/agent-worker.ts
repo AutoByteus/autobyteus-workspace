@@ -11,6 +11,7 @@ import {
 } from '../events/agent-events.js';
 import { AgentEventInbox } from '../event-inbox/agent-event-inbox.js';
 import { AgentEventScheduler } from '../event-inbox/agent-event-scheduler.js';
+import { CompactionRetryTurnAdmissionPolicy } from '../compaction/compaction-retry-turn-admission-policy.js';
 import { RuntimeLifecycleInboxEventHandler } from '../event-inbox/handlers/runtime-lifecycle-inbox-event-handler.js';
 import { ToolApprovalInboxEventHandler } from '../event-inbox/handlers/tool-approval-inbox-event-handler.js';
 import { ToolResultInboxEventHandler } from '../event-inbox/handlers/tool-result-inbox-event-handler.js';
@@ -20,6 +21,7 @@ import { AgentStatusDeriver } from '../status/status-deriver.js';
 import { applyEventAndDeriveStatus } from '../status/status-update-utils.js';
 import { AgentBootstrapper } from '../bootstrap-steps/agent-bootstrapper.js';
 import { AgentTurnRunner, type AgentTurnTrigger } from '../loop/agent-turn-runner.js';
+import type { TurnStartOrigin } from '../event-inbox/agent-event-inbox-entry.js';
 import { AgentShutdownOrchestrator } from '../shutdown-steps/agent-shutdown-orchestrator.js';
 import type { AgentContext } from '../context/agent-context.js';
 import type { TurnOutcome } from '../agent-turn.js';
@@ -148,14 +150,14 @@ export class AgentWorker {
     }
 
     this.scheduler = new AgentEventScheduler(this.context, {
-      turnStartHandler: new TurnStartInboxEventHandler((trigger) => this.startTurnRunner(trigger)),
+      turnStartHandler: new TurnStartInboxEventHandler((input) => this.startTurnRunner(input)),
       lifecycleHandler: new RuntimeLifecycleInboxEventHandler(
         (event) => this.applyStatusEvent(event),
         () => { this.stopRequested = true; }
       ),
       toolApprovalHandler: new ToolApprovalInboxEventHandler((event) => this.applyStatusEvent(event)),
       toolResultHandler: new ToolResultInboxEventHandler()
-    });
+    }, new CompactionRetryTurnAdmissionPolicy(() => this.context.state.memoryManager));
     console.info(`Agent '${agentId}': Runtime init completed (AgentEventScheduler initialized).`);
     return true;
   }
@@ -233,7 +235,11 @@ export class AgentWorker {
     }
   }
 
-  private async startTurnRunner(trigger: AgentTurnTrigger): Promise<TurnStartEventResult> {
+  private async startTurnRunner(input: {
+    trigger: AgentTurnTrigger;
+    origin: TurnStartOrigin;
+  }): Promise<TurnStartEventResult> {
+    const { trigger, origin } = input;
     const agentId = this.context.agentId;
     if (this.stopRequested) {
       return {
@@ -251,7 +257,7 @@ export class AgentWorker {
       };
     }
 
-    const turn = this.context.state.startActiveTurn();
+    const turn = this.context.state.startActiveTurn(null, origin);
     turn.startExecution({
       trigger,
       runnerFactory: () => ({

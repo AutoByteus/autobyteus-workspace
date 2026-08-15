@@ -13,6 +13,7 @@ export class AssistantCompleteResponseData extends BaseStreamPayload {
   image_urls?: string[];
   audio_urls?: string[];
   video_urls?: string[];
+  is_error: boolean;
 
   constructor(data: Record<string, any>) {
     assertRequiredKeys(data, ['content'], 'AssistantCompleteResponseData');
@@ -23,6 +24,7 @@ export class AssistantCompleteResponseData extends BaseStreamPayload {
     this.image_urls = data.image_urls ?? undefined;
     this.audio_urls = data.audio_urls ?? undefined;
     this.video_urls = data.video_urls ?? undefined;
+    this.is_error = data.is_error === true;
   }
 }
 

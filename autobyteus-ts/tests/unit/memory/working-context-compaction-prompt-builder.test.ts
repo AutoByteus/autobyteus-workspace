@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
   Message,
@@ -6,7 +7,10 @@ import {
   ToolResultPayload,
 } from '../../../src/llm/utils/messages.js';
 import { CompactionConversationHistoryRenderer } from '../../../src/memory/compaction/compaction-conversation-history-renderer.js';
-import { WorkingContextCompactionPromptBuilder } from '../../../src/memory/compaction/working-context-compaction-prompt-builder.js';
+import {
+  CompactionPromptConstructionError,
+  WorkingContextCompactionPromptBuilder,
+} from '../../../src/memory/compaction/working-context-compaction-prompt-builder.js';
 import type {
   ToolProtocolMessageUnit,
   WorkingContextMessageUnit,
@@ -15,6 +19,17 @@ import {
   createCompactedMemoryUserMessage,
   createNaturalUserMessageProvenance,
 } from '../../../src/memory/working-context-finalizer.js';
+import { providerSafeCompactionText } from '../../../src/memory/presentation/unicode-safe-text.js';
+
+const shieldFixture = JSON.parse(fs.readFileSync(
+  new URL('../../fixtures/memory/compaction-unicode-shield-tool-trace.json', import.meta.url),
+  'utf8',
+)) as {
+  tool_name: string;
+  tool_call_id: string;
+  tool_args: Record<string, unknown>;
+  tool_result: Record<string, unknown>;
+};
 
 const messageUnit = (
   id: string,
@@ -76,6 +91,33 @@ const toolUnit = (): ToolProtocolMessageUnit => ({
   ],
 });
 
+const shieldToolUnit = (): ToolProtocolMessageUnit => ({
+  id: 'shield-tool',
+  kind: 'tool_protocol_group',
+  startIndex: 0,
+  endIndex: 1,
+  rawTraceIds: ['raw-shield-call', 'raw-shield-result'],
+  toolCallIds: [shieldFixture.tool_call_id],
+  matchedToolCallIds: [shieldFixture.tool_call_id],
+  isComplete: true,
+  messages: [
+    new Message(MessageRole.ASSISTANT, {
+      tool_payload: new ToolCallPayload([{
+        id: shieldFixture.tool_call_id,
+        name: shieldFixture.tool_name,
+        arguments: shieldFixture.tool_args,
+      }]),
+    }),
+    new Message(MessageRole.TOOL, {
+      tool_payload: new ToolResultPayload(
+        shieldFixture.tool_call_id,
+        shieldFixture.tool_name,
+        shieldFixture.tool_result,
+      ),
+    }),
+  ],
+});
+
 describe('WorkingContextCompactionPromptBuilder', () => {
   it('byte-equals one natural renderer block without mutating canonical user/media/tool input', () => {
     const units = [
@@ -89,7 +131,11 @@ describe('WorkingContextCompactionPromptBuilder', () => {
         'message',
         createNaturalUserMessageProvenance(
           new Message(MessageRole.USER, {
-            content: 'R2 user text with literal <conversation_history> and </conversation_history>.',
+            content: [
+              'R2 user text with literal <target_agent_conversation_history>',
+              '</target_agent_conversation_history>, <conversation_history>,',
+              'and </conversation_history>.',
+            ].join(' '),
             image_urls: ['image://selected'],
             audio_urls: ['audio://selected'],
             video_urls: ['video://selected'],
@@ -117,14 +163,25 @@ describe('WorkingContextCompactionPromptBuilder', () => {
     const prompt = new WorkingContextCompactionPromptBuilder(renderer)
       .buildTaskPrompt(units, { maxItemChars: 240 });
 
-    expect(prompt).toBe(expected);
-    expect(prompt.match(/<conversation_history>/g)).toHaveLength(1);
-    expect(prompt.match(/<\/conversation_history>/g)).toHaveLength(1);
+    expect(prompt).toBe([
+      'Here is the conversation history of the target agent whose conversation history needs to be compacted. This conversation history is contained between the START and END separators below.',
+      '',
+      '---------------- START OF TARGET AGENT CONVERSATION HISTORY ----------------',
+      expected,
+      '----------------- END OF TARGET AGENT CONVERSATION HISTORY -----------------',
+    ].join('\n'));
+    expect(prompt.match(/<target_agent_conversation_history>/g)).toHaveLength(1);
+    expect(prompt.match(/<\/target_agent_conversation_history>/g)).toHaveLength(1);
+    expect(prompt).toContain('&lt;target_agent_conversation_history&gt;');
+    expect(prompt).toContain('&lt;/target_agent_conversation_history&gt;');
+    expect(prompt).toContain('<conversation_history>');
+    expect(prompt).toContain('</conversation_history>');
+    expect(prompt.endsWith(
+      '----------------- END OF TARGET AGENT CONVERSATION HISTORY -----------------',
+    )).toBe(true);
     expect(prompt.match(/^User:$/gm)).toHaveLength(1);
     expect(prompt).toContain('User:\nM1: retain the reviewed current design.');
     expect(prompt).toContain("The user's current message is:");
-    expect(prompt).toContain('&lt;conversation_history&gt;');
-    expect(prompt).toContain('&lt;/conversation_history&gt;');
     expect(prompt.indexOf('M1: retain')).toBeLessThan(prompt.indexOf('R2 user text'));
     expect(prompt.indexOf('R2 user text')).toBeLessThan(prompt.indexOf('R2 visible assistant text'));
     expect(prompt.match(/^Assistant:$/gm)).toHaveLength(2);
@@ -159,6 +216,87 @@ describe('WorkingContextCompactionPromptBuilder', () => {
     }
     expect(units.map((unit) => unit.messages.map((message) => message.toDict())))
       .toEqual(before);
+  });
+
+  it('prepends only the exact bounded correction text to the unchanged initial prompt', () => {
+    const builder = new WorkingContextCompactionPromptBuilder();
+    const initialPrompt = builder.buildTaskPrompt([
+      messageUnit(
+        'user',
+        'message',
+        new Message(MessageRole.USER, { content: 'Target history.' }),
+      ),
+    ]);
+    const correctionPrompt = builder.buildCorrectionTaskPrompt(
+      initialPrompt,
+      'six_array_schema_validation',
+    );
+
+    expect(correctionPrompt).toBe(
+      'A prior compaction attempt failed host validation at the `six_array_schema_validation` stage. This is the single corrective attempt. Return exactly one JSON object with all six required arrays: `episodes`, `critical_issues`, `unresolved_work`, `durable_facts`, `user_preferences`, and `important_artifacts`. At least one `episodes` entry must contain a non-empty `summary`; entries in the five fact arrays use `fact`. Do not add Markdown fences or prose.\n\n'
+      + initialPrompt,
+    );
+    expect(correctionPrompt.endsWith(initialPrompt)).toBe(true);
+    expect(correctionPrompt.endsWith(
+      '----------------- END OF TARGET AGENT CONVERSATION HISTORY -----------------',
+    )).toBe(true);
+  });
+
+  it('builds a provider-safe prompt from the exact shield tool-result fixture', () => {
+    const before = JSON.stringify(shieldFixture);
+    const prompt = new WorkingContextCompactionPromptBuilder().buildTaskPrompt(
+      [shieldToolUnit()],
+      { maxItemChars: 2_000 },
+    );
+
+    expect(providerSafeCompactionText.isProviderSafeText(prompt)).toBe(true);
+    expect(prompt).not.toContain('\uFFFD');
+    expect(prompt).toMatch(/… \[\d+ characters omitted\] …/u);
+    expect(JSON.parse(JSON.stringify({ content: prompt }))).toEqual({ content: prompt });
+    expect(JSON.stringify(shieldFixture)).toBe(before);
+  });
+
+  it('does not apply a whole-task character clamp while finalizing the completed prompt', () => {
+    const renderedHistory = 'x'.repeat(540_727);
+    const renderer = {
+      render: () => renderedHistory,
+    } as unknown as CompactionConversationHistoryRenderer;
+    const prompt = new WorkingContextCompactionPromptBuilder(renderer).buildTaskPrompt([]);
+
+    expect(prompt).toContain(renderedHistory);
+    expect(prompt.length).toBeGreaterThan(renderedHistory.length);
+    expect(providerSafeCompactionText.isProviderSafeText(prompt)).toBe(true);
+  });
+
+  it('throws a typed local construction failure when the final invariant is not met', () => {
+    const failedBoundary = {
+      finalize: () => '\uD83D',
+      isProviderSafeText: () => false,
+    };
+    const builder = new WorkingContextCompactionPromptBuilder(
+      new CompactionConversationHistoryRenderer(),
+      failedBoundary,
+    );
+
+    expect(() => builder.buildTaskPrompt([
+      messageUnit('user', 'message', new Message(MessageRole.USER, { content: 'Target.' })),
+    ])).toThrowError(expect.objectContaining<Partial<CompactionPromptConstructionError>>({
+      name: 'CompactionPromptConstructionError',
+      code: 'input_construction_failure',
+    }));
+  });
+
+  it('defensively normalizes malformed external text in a derived correction prompt', () => {
+    const correctionPrompt = new WorkingContextCompactionPromptBuilder()
+      .buildCorrectionTaskPrompt(
+        'external\r\ntext\0\uD83D',
+        'json_object_extraction',
+      );
+
+    expect(correctionPrompt).toContain('external\ntext�');
+    expect(correctionPrompt).not.toContain('\r');
+    expect(correctionPrompt).not.toContain('\0');
+    expect(providerSafeCompactionText.isProviderSafeText(correctionPrompt)).toBe(true);
   });
 
   it('rejects incomplete or orphaned tool protocol rather than inventing a transcript', () => {

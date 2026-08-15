@@ -8,7 +8,6 @@ import { AgentContext } from '../context/agent-context.js';
 import { BaseTool } from '../../tools/base-tool.js';
 import { SkillRegistry } from '../../skills/registry.js';
 import {
-  CompactionPolicy,
   FileMemoryStore,
   MemoryManager,
   resolveMemoryBaseDir
@@ -137,10 +136,9 @@ export class AgentFactory extends Singleton {
       memberId: null,
     };
     const lineageStore = new FileCompactionLineageStore(memoryStore.agentDir, lineageScope);
-    const compactionPolicy = new CompactionPolicy();
     runtimeState.memoryManager = new MemoryManager({
       store: memoryStore,
-      compactionPolicy,
+      memoryCompaction: config.memoryCompaction,
       workingContextSnapshotStore: snapshotStore,
       lineageStore,
       lineageScope,

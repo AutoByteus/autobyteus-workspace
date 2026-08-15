@@ -7,13 +7,15 @@ import {
 } from '../../llm/utils/messages.js';
 import { ProviderNativeToolCallContextSchema } from '../../llm/utils/tool-call-delta.js';
 import { WorkingContext } from '../working-context.js';
+import type { AcceptedWorkingContextCompaction } from './working-context-compaction-proposal.js';
 
 export type WorkingContextCompactionOutputInvariantCode =
   | 'aliased-context'
   | 'mutated-strategy-input'
   | 'changed-required-head'
   | 'invalid-message-shape'
-  | 'invalid-tool-protocol';
+  | 'invalid-tool-protocol'
+  | 'post_compaction_target_exceeded';
 
 export class WorkingContextCompactionOutputValidationError extends Error {
   constructor(
@@ -29,8 +31,9 @@ export class WorkingContextCompactionOutputValidator {
   assertValid(
     baseline: WorkingContext,
     strategyInput: WorkingContext,
-    next: WorkingContext,
+    accepted: AcceptedWorkingContextCompaction,
   ): void {
+    const next = accepted.finalizedContext;
     if (!(next instanceof WorkingContext)) {
       throw new WorkingContextCompactionOutputValidationError(
         'invalid-message-shape',
@@ -68,6 +71,16 @@ export class WorkingContextCompactionOutputValidator {
       throw new WorkingContextCompactionOutputValidationError(
         'changed-required-head',
         'Compaction strategy changed or removed the required leading system-message run.',
+      );
+    }
+
+    const finalizedTokens = accepted.budgetAssessment.estimatedFinalizedContextTokens;
+    const totalEstimatedTokens = (finalizedTokens ?? Number.POSITIVE_INFINITY)
+      + accepted.budgetAssessment.estimatedUntrackedOverheadTokens;
+    if (totalEstimatedTokens > accepted.budgetAssessment.planningBudget.postCompactionTargetTokens) {
+      throw new WorkingContextCompactionOutputValidationError(
+        'post_compaction_target_exceeded',
+        'Finalized compaction context exceeds the trigger-derived post-compaction target.',
       );
     }
 

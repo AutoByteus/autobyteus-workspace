@@ -20,6 +20,7 @@ import type {
   RuntimeLifecycleEventInboxEntry,
   TurnStartEventInboxEntry
 } from './agent-event-inbox-entry.js';
+import { resolveTurnStartOrigin } from './agent-event-inbox-entry.js';
 
 const INBOX_LANES: readonly InboxLane[] = ['runtime_lifecycle', 'active_turn', 'turn_start'] as const;
 const DRAIN_PRIORITY: readonly InboxLane[] = ['runtime_lifecycle', 'active_turn', 'turn_start'] as const;
@@ -113,6 +114,13 @@ export class AgentEventInbox {
   claimFirst(lane: InboxLane): AgentEventInboxEntry | null {
     const candidate = this.peekFirst(lane);
     return candidate ? this.claim(candidate.entryId) : null;
+  }
+
+  claimFirstMatching(
+    lane: InboxLane,
+    predicate: (entry: AgentEventInboxEntry) => boolean,
+  ): AgentEventInboxEntry | null {
+    return this.store.claimFirstMatching(lane, predicate);
   }
 
   resolveAwaitable(entry: AgentEventInboxEntry, result: InboxEventHandlerResult): void {
@@ -229,7 +237,12 @@ export class AgentEventInbox {
     event: UserMessageReceivedEvent | InterAgentMessageReceivedEvent,
     idPrefix: string
   ): TurnStartEventInboxEntry {
-    return { entryId: nextEntryId(idPrefix), lane: 'turn_start', event };
+    return {
+      entryId: nextEntryId(idPrefix),
+      lane: 'turn_start',
+      event,
+      origin: resolveTurnStartOrigin(event),
+    };
   }
 
   private createLifecycleEntry(event: LifecycleEvent): RuntimeLifecycleEventInboxEntry {

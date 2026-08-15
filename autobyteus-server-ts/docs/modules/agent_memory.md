@@ -104,17 +104,96 @@ normalization, publication, lineage read/write, or current-head projection.
 Per-entry bounds, structural validation, cleanup,
 deduplication, and positive salience remain enforced.
 
-The persisted `autobyteus-memory-compactor` system prompt owns the stable task,
-natural-sizing guidance, and exact response schema. Each operation sends only
-the core renderer's canonical `<conversation_history>` block. The renderer
-reuses `WorkingContextFinalizer`, so compatible prior-memory and current-user
-regions become one natural User turn and assistant/Tool boundaries remain
-ordered. It omits reasoning, backend IDs, duplicated schema/count policy, and
-platform internals while preserving redaction, explicit value bounds, and
-reserved-boundary escaping.
+Each requested operation captures one immutable trigger-aligned planning budget.
+For effective input budget `B` and trigger threshold `T`, the post-compaction
+target is the non-negative smaller of `floor(0.35 * B)` and `T` minus headroom
+`max(256, ceil(0.10 * T))`. Planning reserves replacement-memory space, required
+system content, observed-but-untracked prompt overhead, and any complete final
+tool-protocol group before retaining the newest complete natural units. An
+unattainable target or absent settled raw-backed compactable prefix fails before
+the compactor runs; accepted output is re-estimated and must fit the same target.
 
-New successful lineage records use `promptContractVersion: 2`. Existing
-immutable value-1 records remain directly usable, mixed `1 -> 2` chains are
+The proactive threshold uses actual normalized prompt observations. Missing
+usage or missing prompt tokens leaves threshold state unchanged, while numeric
+zero is a real below-threshold observation. After success, a process-local
+episode suppresses another proactive request until an actual observation falls
+below the same threshold. The first still-high observation emits one inadequate-
+reduction diagnostic; later high observations remain suppressed. Budget-key
+change resets the episode, and hard-input-cap pressure can still request an
+operation. This removes the former independent fixed-retention/repeated-success
+loop without turning the configurable ratio into a hard context-window resize.
+
+The persisted `autobyteus-memory-compactor` system prompt owns the stable task,
+natural-sizing guidance, and exact six-array response schema. The initial
+operation message identifies the conversation history as belonging to the target
+agent, surrounds it with one plain-text target-agent `START` / `END` separator
+pair, and contains exactly one canonical
+`<target_agent_conversation_history>` block with nothing after the end separator.
+The renderer reuses `WorkingContextFinalizer`, so compatible prior-memory and
+current-user regions become one natural User turn and assistant/Tool boundaries
+remain ordered. It omits reasoning, backend IDs, duplicated schema/count policy,
+and platform internals while preserving redaction, explicit value bounds, and
+renamed-boundary escaping.
+
+Compaction rendering normalizes only derived provider-facing copies: CR/CRLF
+becomes LF, non-useful C0 controls are removed while newline/tab remain, lone
+UTF-16 surrogates become U+FFFD, and valid pairs plus multilingual text, paths,
+code, symbols, and emoji remain intact. Middle omission and accepted-entry end
+clamps use surrogate-safe boundaries. Canonical raw traces, tool payloads,
+archives, stored memory, and lineage are never rewritten by this policy.
+
+The complete initial and correction task prompts are finalized and checked
+again before `ServerCompactionAgentRunner` can launch a child. An invariant
+failure is `input_construction_failure`: zero child/correction calls, zero target
+dispatch, zero canonical mutation, and the same retained USER-authorized gate.
+
+`UserInputContextBuildingProcessor` no longer applies generic `[User
+Requirement]`, `[Tool Execution Result]`, `[Message From Agent]`, or `[System
+Notification]` headings. Authored message content passes through unchanged when
+no readable context is concatenated; a combined payload uses only neutral
+`[Context]` and `[Message]` sections. Sender metadata, provider-native tool
+protocol, and source-specific carrier builders retain their existing ownership.
+
+The parser evaluates exact, fenced, and balanced JSON-object candidates against
+all six required arrays and accepts exactly one distinct host-consumed result
+with at least one non-empty episode. Harmless extra fields and unusable
+blank/non-string entries are ignored; unrelated JSON objects cannot mask a later
+valid object, and multiple distinct valid objects fail as ambiguous.
+
+The server child collector returns usable final assistant output or a typed
+runner failure. Error completion, interruption, terminal error, timeout, tool
+approval, task rejection, launch failure, and collection failure retain their
+kind and available child run/task metadata and never enter the JSON parser.
+
+Only a typed returned-content validation failure triggers one corrective child
+run with a new task/run identity. Its deterministic prefix records the validation
+stage, restates the six-array shape, and resends the same target history. The
+initial and optional correction are disabled siblings owned by the same parent
+operation, not a recursive parent/child chain; neither writes child lineage or
+raw archives. Repair success yields one parent completed lifecycle and one
+canonical commit. Repair exhaustion yields one parent failed lifecycle, retains
+the pending operation, and leaves archives, output rows, lineage,
+WorkingContext, and snapshot unchanged. A runner/provider/transport/timeout
+failure is terminal for the current attempt, bypasses response repair, and
+introduces no fallback model.
+
+A new pending operation receives one automatic initial attempt. Any final
+failure moves it to `awaiting_user_retry` and stops the current target-agent turn
+before further model dispatch. Each distinct `user`-origin turn can authorize
+one new attempt; `agent` and `system` turn starts remain queued and invoke neither the
+compactor nor target model. The core scheduler may select the earliest queued
+user behind those entries without removing them. Retry success clears the
+operation, dispatches that user turn, and then restores normal relative FIFO;
+retry failure retains the same gate. The compactor remains zero-tool.
+
+The native exposure resolver enforces that least-authority boundary by exact
+built-in definition ID before ordinary native defaults or team tools are
+composed, so the final Memory Compactor `AgentConfig.tools` is empty. Ordinary
+native agents still receive `run_bash`, `read_file`, `edit_file`, and
+`write_file` as their runtime-derived baseline.
+
+New successful lineage records use `promptContractVersion: 3`. Existing
+immutable values 1 and 2 remain directly usable, mixed `1 -> 2 -> 3` chains are
 valid, and unsupported values reject without rewriting or compatibility
 decoding.
 
@@ -164,6 +243,33 @@ Settings -> Server Settings -> Basics uses these reads for a registry-backed Com
 
 The `structured-json` strategy always invokes the built-in `autobyteus-memory-compactor`; blank launch fields inherit the parent run's runtime/model. `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` is no longer a predefined setting or runtime selection path. A stale custom value is inert, and a missing/invalid built-in definition fails without arbitrary-agent fallback.
 
+### Automatic-Compaction Composition
+
+Core memory owns a closed `MemoryCompactionConfiguration`: `disabled` has no
+policy or strategy runner, while `enabled` carries one current
+`CompactionPolicy` and its required runner. `AgentConfig` supplies that complete
+value to `AgentFactory` and `MemoryManager`; neither factory nor manager infers
+or constructs an independent second policy. Direct core construction without an
+explicit value defaults to disabled.
+
+`AutoByteusAgentRunBackendFactory` selects disabled for the exact built-in
+Memory Compactor definition on create and restore and does not invoke the runner
+factory. Ordinary native agents receive enabled composition with a fresh current
+policy and runner; runner construction failure/null is an agent-composition
+failure, not a silent disabled fallback.
+
+The generic LLM phase still resolves provider/model request capacity for both
+variants. Enabled agents then derive threshold/hard-cap planning and use the
+existing strategy, executor, pending-operation, observation, and status path.
+Disabled compactor children skip all of that work even when their reported
+prompt usage exceeds the proactive threshold or policy hard cap; their original
+assistant/tool completion remains the runner result. A provider-admissible task
+therefore produces exactly one initial child plus at most one host-owned
+correction sibling and no descendant compactor. A task that exceeds actual
+provider capacity fails through planning/pre-launch or typed runner handling
+instead of recursively compacting its own task. The configuration is runtime
+only; no agent-definition, memory, snapshot, or lineage migration is required.
+
 `ServerCompactionAgentRunner` allows an ordinarily constructed compactor child
 up to 300,000 ms (five minutes) to return its final output. This is a
 runner-owned omitted-option default, not an application setting:
@@ -173,7 +279,12 @@ failure, the existing typed error projection, event unsubscription, and child
 run termination still apply; unrelated process, server-start, and test timeout
 policies are not derived from this value.
 
-Compaction status metadata includes stable `compaction_strategy_id` and `compaction_strategy_name` in addition to operation/turn and current runner diagnostics. A resolver, strategy, validation, or replacement failure preserves the pending request and does not emit a false completed state.
+Compaction status metadata includes stable `compaction_strategy_id` and
+`compaction_strategy_name` in addition to operation/turn and current runner
+diagnostics. Requested, execution, child run, and child task identities remain
+distinct. A resolver, strategy, planning, typed runner, response-repair,
+validation, or replacement failure preserves the pending request and does not
+emit a false completed state.
 
 Codex and Claude runs are recorded by the server as **raw-trace-only** local memory:
 

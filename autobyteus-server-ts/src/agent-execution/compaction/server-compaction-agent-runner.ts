@@ -19,7 +19,10 @@ import {
   MemoryCompactorAgentLaunchResolver,
   type CompactionParentLaunchFallback,
 } from "./memory-compactor-agent-launch-resolver.js";
-import { CompactionRunOutputCollector } from "./compaction-run-output-collector.js";
+import {
+  CompactionRunCollectionError,
+  CompactionRunOutputCollector,
+} from "./compaction-run-output-collector.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 
 export type ServerCompactionAgentRunnerOptions = {
@@ -58,13 +61,15 @@ export class ServerCompactionAgentRunner implements CompactionAgentRunner {
   }
 
   async runCompactionTask(task: CompactionAgentTask): Promise<CompactionAgentRunnerResult> {
-    const resolved = await this.getLaunchResolver().resolve(this.parentLaunchFallback);
+    let resolved: Awaited<ReturnType<MemoryCompactorAgentLaunchResolver["resolve"]>> | null = null;
     let runId: string | null = null;
     let unsubscribe: (() => void) | null = null;
+    let phase: "launch" | "post" | "collection" = "launch";
 
     const agentRunService = this.getAgentRunService();
 
     try {
+      resolved = await this.getLaunchResolver().resolve(this.parentLaunchFallback);
       const created = await agentRunService.createAgentRun({
         agentDefinitionId: resolved.agentDefinitionId,
         workspaceRootPath: this.workspaceRootPath,
@@ -79,6 +84,7 @@ export class ServerCompactionAgentRunner implements CompactionAgentRunner {
       const collector = new CompactionRunOutputCollector({ runId });
       unsubscribe = run.subscribeToEvents((event) => collector.observe(event));
 
+      phase = "post";
       const postResult = await run.postUserMessage(this.buildTaskMessage(task), {
         lifecycleObserver: (fact) => collector.observeInputLifecycle(fact),
       });
@@ -90,6 +96,7 @@ export class ServerCompactionAgentRunner implements CompactionAgentRunner {
       }
 
       await this.recordRunActivity(agentRunService, run, task.taskId);
+      phase = "collection";
       const outputText = await collector.waitForFinalOutput(this.timeoutMs);
       return {
         outputText,
@@ -105,6 +112,7 @@ export class ServerCompactionAgentRunner implements CompactionAgentRunner {
       };
     } catch (error) {
       throw new CompactionAgentRunnerError(
+        this.classifyFailure(error, phase),
         this.formatFailureMessage(error),
         this.buildExecutionMetadata(resolved, runId, task.taskId),
         error,
@@ -138,16 +146,16 @@ export class ServerCompactionAgentRunner implements CompactionAgentRunner {
   }
 
   private buildExecutionMetadata(
-    resolved: Awaited<ReturnType<MemoryCompactorAgentLaunchResolver["resolve"]>>,
+    resolved: Awaited<ReturnType<MemoryCompactorAgentLaunchResolver["resolve"]>> | null,
     runId: string | null,
     taskId: string,
   ): CompactionAgentExecutionMetadata {
     return {
-      compactionAgentDefinitionId: resolved.agentDefinitionId,
-      compactionAgentName: resolved.agentName,
-      runtimeKind: resolved.runtimeKind,
-      modelIdentifier: resolved.llmModelIdentifier,
-      provider: resolved.provider,
+      compactionAgentDefinitionId: resolved?.agentDefinitionId ?? null,
+      compactionAgentName: resolved?.agentName ?? null,
+      runtimeKind: resolved?.runtimeKind ?? null,
+      modelIdentifier: resolved?.llmModelIdentifier ?? null,
+      provider: resolved?.provider ?? null,
       compactionRunId: runId,
       taskId,
     };
@@ -155,6 +163,16 @@ export class ServerCompactionAgentRunner implements CompactionAgentRunner {
 
   private formatFailureMessage(error: unknown): string {
     return error instanceof Error ? error.message : String(error);
+  }
+
+  private classifyFailure(
+    error: unknown,
+    phase: "launch" | "post" | "collection",
+  ): import("autobyteus-ts/memory/compaction/compaction-agent-runner.js").CompactionAgentRunnerFailureKind {
+    if (error instanceof CompactionRunCollectionError) return error.kind;
+    if (phase === "launch") return "launch_failed";
+    if (phase === "post") return "task_rejected";
+    return "collection_failed";
   }
 
   private buildTaskMessage(task: CompactionAgentTask): AgentInputUserMessage {

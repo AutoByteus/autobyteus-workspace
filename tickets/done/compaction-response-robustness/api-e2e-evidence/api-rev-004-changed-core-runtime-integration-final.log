@@ -1,0 +1,73 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-ts
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > uses the injected compaction agent runner to compact memory before the next LLM leg
+Registered AgentContext for agent_id 'runtimecompactionagent_tester_3702'. Total registered contexts: 1
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > uses the injected compaction agent runner to compact memory before the next LLM leg
+Unregistered AgentContext for agent_id 'runtimecompactionagent_tester_3702'.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > fails before a child launch and blocks the USER retry dispatch when the final prompt invariant fails
+Registered AgentContext for agent_id 'runtimecompactionagent_tester_4081'. Total registered contexts: 1
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > fails before a child launch and blocks the USER retry dispatch when the final prompt invariant fails
+Agent 'runtimecompactionagent_tester_4081' requesting runtime to stop (timeout: 2s).
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > fails before a child launch and blocks the USER retry dispatch when the final prompt invariant fails
+AgentExternalEventNotifier (NotifierID: 5abd2462-8d25-4d40-ab60-9c1bca9accc3, AgentID: runtimecompactionagent_tester_4081) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > fails before a child launch and blocks the USER retry dispatch when the final prompt invariant fails
+AgentWorker 'runtimecompactionagent_tester_4081': Stop requested.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > fails before a child launch and blocks the USER retry dispatch when the final prompt invariant fails
+AgentExternalEventNotifier (NotifierID: 5abd2462-8d25-4d40-ab60-9c1bca9accc3, AgentID: runtimecompactionagent_tester_4081) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > fails before a child launch and blocks the USER retry dispatch when the final prompt invariant fails
+AgentWorker 'runtimecompactionagent_tester_4081' asyncRun() loop has finished.
+AgentWorker 'runtimecompactionagent_tester_4081': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > fails before a child launch and blocks the USER retry dispatch when the final prompt invariant fails
+AgentWorker 'runtimecompactionagent_tester_4081': Shutdown resource cleanup completed successfully.
+AgentWorker 'runtimecompactionagent_tester_4081': Shutdown sequence completed.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > fails before a child launch and blocks the USER retry dispatch when the final prompt invariant fails
+Unregistered AgentContext for agent_id 'runtimecompactionagent_tester_4081'.
+AgentRuntime for 'runtimecompactionagent_tester_4081': Context unregistered.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > fails before a child launch and blocks the USER retry dispatch when the final prompt invariant fails
+AgentRuntime for 'runtimecompactionagent_tester_4081' stop() method completed.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > fails closed on a typed runner error and admits one USER retry ahead of retained non-user starts
+Registered AgentContext for agent_id 'runtimecompactionagent_tester_8057'. Total registered contexts: 1
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > fails closed on a typed runner error and admits one USER retry ahead of retained non-user starts
+Unregistered AgentContext for agent_id 'runtimecompactionagent_tester_8057'.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > keeps compaction pending and blocks the next provider dispatch when compaction agent output is invalid
+Registered AgentContext for agent_id 'runtimecompactionagent_tester_1410'. Total registered contexts: 1
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > keeps compaction pending and blocks the next provider dispatch when compaction agent output is invalid
+Unregistered AgentContext for agent_id 'runtimecompactionagent_tester_1410'.
+
+ ✓ tests/integration/agent/runtime/agent-runtime-compaction.test.ts (4 tests) 816ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  08:03:12
+   Duration  2.01s (transform 785ms, setup 15ms, import 1.09s, tests 816ms, environment 0ms)
+

@@ -1,0 +1,9 @@
+cleanup_scope=isolated_api_e2e_resources_only
+absent=autobyteus-server-ts/db/test.db
+absent=autobyteus-server-ts/db/test.db.secret.key
+absent=autobyteus-server-ts/db/test.db-wal
+absent=autobyteus-server-ts/db/test.db-shm
+absent=autobyteus-server-ts/tests/.tmp/live-e2e-runtime
+authorized_source_remains_readable=yes
+owned_processes_remaining=no
+cleanup_status=passed

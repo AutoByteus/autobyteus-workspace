@@ -11,8 +11,14 @@ import type { WorkingContextMessageUnit } from './working-context-message-unit.j
 
 const escapeReservedBoundary = (value: string): string =>
   value
-    .replaceAll('<conversation_history>', '&lt;conversation_history&gt;')
-    .replaceAll('</conversation_history>', '&lt;/conversation_history&gt;');
+    .replaceAll(
+      '<target_agent_conversation_history>',
+      '&lt;target_agent_conversation_history&gt;',
+    )
+    .replaceAll(
+      '</target_agent_conversation_history>',
+      '&lt;/target_agent_conversation_history&gt;',
+    );
 
 export class CompactionConversationHistoryRenderer {
   constructor(
@@ -49,7 +55,11 @@ export class CompactionConversationHistoryRenderer {
       entries.push(`${message.role === MessageRole.USER ? 'User' : 'Assistant'}:\n${content}`);
     }
     if (!entries.length) throw new Error('Compaction conversation history is empty.');
-    return `<conversation_history>\n${entries.join('\n\n')}\n</conversation_history>`;
+    return [
+      '<target_agent_conversation_history>',
+      entries.join('\n\n'),
+      '</target_agent_conversation_history>',
+    ].join('\n');
   }
 
   private renderToolProtocol(

@@ -24,6 +24,7 @@ import type {
   CompactionAgentRunner,
   CompactionAgentTask,
 } from '../../../src/memory/compaction/compaction-agent-runner.js';
+import { createEnabledMemoryCompactionConfiguration } from '../../../src/memory/compaction/memory-compaction-configuration.js';
 import { AUTOBYTEUS_COMPACTION_STRATEGY } from '../../../src/memory/compaction/working-context-compaction-strategy-setting.js';
 import { MemoryManager } from '../../../src/memory/memory-manager.js';
 import { MemoryType } from '../../../src/memory/models/memory-types.js';
@@ -50,14 +51,14 @@ class SequencedStreamingLLM extends BaseLLM {
         value: 'tool-lifecycle-model',
         canonicalName: 'tool-lifecycle-model',
         provider: LLMProvider.OPENAI,
-        maxInputTokens: 1_000,
-        defaultCompactionRatio: 0.1,
+        maxInputTokens: 10_000,
+        defaultCompactionRatio: 0.5,
         defaultSafetyMarginTokens: 0,
       }),
       new LLMConfig({
         systemMessage: 'System prompt',
         maxTokens: 64,
-        compactionRatio: 0.1,
+        compactionRatio: 0.5,
         safetyMarginTokens: 0,
       }),
     );
@@ -135,9 +136,14 @@ const makeInput = (
 const seedSettledHistory = (manager: MemoryManager): void => {
   for (let index = 1; index <= 3; index += 1) {
     const turnId = manager.startTurn();
-    manager.appendWorkingContextUserMessage(`settled user ${index}`, { turnId });
+    manager.appendWorkingContextUserMessage(
+      `settled user ${index} ${'user-history '.repeat(350)}`,
+      { turnId },
+    );
     manager.ingestAssistantResponse(
-      new CompleteResponse({ content: `settled assistant ${index}` }),
+      new CompleteResponse({
+        content: `settled assistant ${index} ${'assistant-history '.repeat(300)}`,
+      }),
       turnId,
       'test',
     );
@@ -167,15 +173,19 @@ describe('structured strategy tool-safe lifecycle', () => {
         memberId: null,
       };
       const lineageStore = new FileCompactionLineageStore(store.agentDir, lineageScope);
+      const runner = new RecordingCompactionRunner();
+      const memoryCompaction = createEnabledMemoryCompactionConfiguration(
+        new CompactionPolicy({ triggerRatio: 0.5, safetyMarginTokens: 0 }),
+        runner,
+      );
       const manager = new MemoryManager({
         store,
-        compactionPolicy: new CompactionPolicy({ triggerRatio: 0.1, safetyMarginTokens: 0 }),
+        memoryCompaction,
         lineageStore,
         lineageScope,
         agentId: 'tool-lifecycle-agent',
       });
       seedSettledHistory(manager);
-      const runner = new RecordingCompactionRunner();
       const llm = new SequencedStreamingLLM([
         [new ChunkResponse({
           content: 'I will inspect the runtime.',
@@ -189,7 +199,7 @@ describe('structured strategy tool-safe lifecycle', () => {
             }),
           }],
           is_complete: true,
-          usage: usage(200),
+          usage: usage(6_000),
         })],
         [new ChunkResponse({
           content: 'The lookup completed.',
@@ -205,7 +215,7 @@ describe('structured strategy tool-safe lifecycle', () => {
         'System prompt',
         [readFileTool],
       );
-      config.compactionAgentRunner = runner;
+      config.memoryCompaction = memoryCompaction;
       const state = new AgentRuntimeState('tool-lifecycle-agent', tempDir);
       state.llmInstance = llm;
       state.memoryManager = manager;
@@ -229,7 +239,7 @@ describe('structured strategy tool-safe lifecycle', () => {
 
       expect(toolOutcome.kind).toBe('tool_invocations');
       expect(statuses.map((status) => status.phase)).toEqual(['requested']);
-      expect(manager.compactionRequired).toBe(true);
+      expect(manager.hasPendingCompaction()).toBe(true);
       expect(runner.tasks).toHaveLength(0);
 
       if (toolOutcome.kind !== 'tool_invocations') {
@@ -263,7 +273,7 @@ describe('structured strategy tool-safe lifecycle', () => {
         tool_result_count: 1,
       });
       expect(runner.tasks).toHaveLength(0);
-      expect(manager.compactionRequired).toBe(true);
+      expect(manager.hasPendingCompaction()).toBe(true);
 
       const finalOutcome = await new LlmPhase().run(
         makeInput(turn, 'Tool results are ready.', null),
@@ -280,7 +290,7 @@ describe('structured strategy tool-safe lifecycle', () => {
         compaction_strategy_name: 'Structured JSON',
         semantic_fact_count: 25,
       });
-      expect(manager.compactionRequired).toBe(false);
+      expect(manager.hasPendingCompaction()).toBe(false);
 
       expect(store.list(MemoryType.EPISODIC)).toHaveLength(4);
       expect(store.list(MemoryType.SEMANTIC)).toHaveLength(25);
@@ -289,7 +299,7 @@ describe('structured strategy tool-safe lifecycle', () => {
       expect(head).toMatchObject({
         previousCompactionId: null,
         execution: {
-          promptContractVersion: 2,
+          promptContractVersion: 3,
           selectionPolicyVersion: 1,
         },
       });
@@ -317,8 +327,8 @@ describe('structured strategy tool-safe lifecycle', () => {
       expect(nextRequest[toolCallIndex + 1]?.tool_payload).toBeInstanceOf(ToolResultPayload);
       expect((nextRequest[toolCallIndex + 1]?.tool_payload as ToolResultPayload).toolCallId)
         .toBe('call-lookup-1');
-      expect(runner.tasks[0]?.prompt.match(/<conversation_history>/g)).toHaveLength(1);
-      expect(runner.tasks[0]?.prompt.match(/<\/conversation_history>/g)).toHaveLength(1);
+      expect(runner.tasks[0]?.prompt.match(/<target_agent_conversation_history>/g)).toHaveLength(1);
+      expect(runner.tasks[0]?.prompt.match(/<\/target_agent_conversation_history>/g)).toHaveLength(1);
       expect(runner.tasks[0]?.prompt).not.toContain('call-lookup-1');
 
       const rendered = llm.renderedPayloads[1] as Array<Record<string, any>>;

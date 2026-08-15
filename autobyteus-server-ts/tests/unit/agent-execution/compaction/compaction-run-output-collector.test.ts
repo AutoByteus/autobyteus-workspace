@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { CompactionRunOutputCollector } from "../../../../src/agent-execution/compaction/compaction-run-output-collector.js";
+import {
+  CompactionRunCollectionError,
+  CompactionRunOutputCollector,
+} from "../../../../src/agent-execution/compaction/compaction-run-output-collector.js";
 import {
   AgentRunEventType,
   type AgentRunEvent,
@@ -131,7 +134,10 @@ describe("CompactionRunOutputCollector", () => {
       turnId: null,
     });
 
-    await expect(output).rejects.toThrow(/input dispatch failed: provider rejected input/);
+    await expect(output).rejects.toMatchObject({
+      kind: "collection_failed",
+      message: expect.stringMatching(/input dispatch failed: provider rejected input/),
+    });
   });
 
   it("fails a pending waiter immediately when admitted input is cancelled", async () => {
@@ -143,6 +149,43 @@ describe("CompactionRunOutputCollector", () => {
       code: "AGENT_RUN_TERMINATED_BEFORE_INPUT_FORWARD",
     });
 
-    await expect(output).rejects.toThrow(/terminated before input forwarding/);
+    await expect(output).rejects.toMatchObject({
+      kind: "collection_failed",
+      message: expect.stringMatching(/terminated before input forwarding/),
+    });
+  });
+
+  it("classifies an interrupted admitted input as interruption", async () => {
+    const collector = new CompactionRunOutputCollector({ runId: "compaction-run-1" });
+    const output = collector.waitForFinalOutput(10_000);
+
+    collector.observeInputLifecycle({ kind: "interrupted", turnId: "turn-1" });
+
+    await expect(output).rejects.toMatchObject({
+      kind: "interrupted",
+      message: expect.stringMatching(/input was interrupted/),
+    });
+  });
+
+  it("rejects an error completion before returning valid-looking JSON content", async () => {
+    const collector = new CompactionRunOutputCollector({ runId: "compaction-run-1" });
+    const output = collector.waitForFinalOutput(1_000);
+    collector.observe(event(AgentRunEventType.ASSISTANT_COMPLETE, {
+      content: '{"episodes":[{"summary":"must not parse"}]}',
+      is_error: true,
+    }));
+    await expect(output).rejects.toMatchObject<Partial<CompactionRunCollectionError>>({
+      kind: "error_completion",
+    });
+  });
+
+  it("classifies interruption and timeout separately", async () => {
+    const interrupted = new CompactionRunOutputCollector({ runId: "compaction-run-1" });
+    const interruptedOutput = interrupted.waitForFinalOutput(1_000);
+    interrupted.observe(event(AgentRunEventType.TURN_INTERRUPTED, { reason: "stopped" }));
+    await expect(interruptedOutput).rejects.toMatchObject({ kind: "interrupted" });
+
+    const timedOut = new CompactionRunOutputCollector({ runId: "compaction-run-1" });
+    await expect(timedOut.waitForFinalOutput(1)).rejects.toMatchObject({ kind: "timeout" });
   });
 });

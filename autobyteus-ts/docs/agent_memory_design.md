@@ -53,10 +53,13 @@ descriptors are archive-manager results; they are not accepted-candidate or
 lineage fields.
 
 Failures before publication leave output, lineage, snapshot, and installed
-context unchanged and retain the pending ID for normal retry. The publication
-sequence is ordered and validated but is not crash-atomic across its multiple
-files; an early archive or output side effect can remain when a later step fails.
-No journal or unsupported recovery inference is implied.
+context unchanged. A newly requested operation receives one automatic initial
+attempt. Any final planning, runner, response-repair, validation, or commit
+failure retains the same operation in `awaiting_user_retry`; only a distinct
+user-origin turn can authorize another attempt. The publication sequence is
+ordered and validated but is not crash-atomic across its multiple files; an
+early archive or output side effect can remain when a later step fails. No
+journal or unsupported recovery inference is implied.
 
 ## 3. Strategy Contract And Selection
 
@@ -83,6 +86,94 @@ The structured strategy uses the fixed built-in
 `autobyteus-memory-compactor`. Blank runtime/model fields inherit the parent
 run's launch values. `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` is not a runtime
 selector, and no arbitrary-agent fallback is allowed.
+
+### Automatic-Compaction Composition And Leaf Runs
+
+`MemoryCompactionConfiguration` is the complete runtime composition owned by
+memory. Its closed variants are `disabled`, with no policy or runner, and
+`enabled`, with one `CompactionPolicy` plus the current strategy runner.
+`AgentConfig` carries the composition into `AgentFactory`, which passes it to
+`MemoryManager` without constructing another policy. Omitted direct core
+construction defaults to the complete disabled variant.
+
+Server agent creation selects disabled for the exact built-in
+`autobyteus-memory-compactor` on create and restore and does not call the
+compaction-runner factory. Ordinary native definitions receive enabled
+composition with a fresh current policy and required runner; runner composition
+failure does not silently downgrade them to disabled.
+
+`LlmPhase` resolves provider/model request capacity for both variants. Enabled
+runs then derive the compaction budget and use the existing policy, strategy,
+executor, pending-operation, observation, and lifecycle path. Disabled runs
+skip all of that automatic-compaction work at both proactive and hard-input-cap
+pressure and return the original response/tool outcome. A provider-admissible
+Memory Compactor task therefore runs once as a leaf; an oversized task fails
+through planning/pre-launch or the typed runner boundary instead of rewriting
+its own instruction/history recursively. This composition is process/runtime
+state only and adds no persisted field or migration.
+
+### Trigger-Aligned Planning Budget
+
+Each threshold or hard-input-cap request captures one immutable planning budget
+for the whole pending operation, including later user-authorized retries. For an
+effective input budget `B` and trigger threshold `T`, planning derives:
+
+```text
+quality retention cap = floor(0.35 * B)
+trigger headroom       = max(256, ceil(0.10 * T))
+post-compaction target = max(0, min(quality retention cap, T - trigger headroom))
+replacement reserve   = min(8192, max(1024, floor(0.20 * target)))
+```
+
+The message budget estimates the complete observed prompt rather than only the
+stored WorkingContext. It accounts for required leading system messages, a
+complete protected final tool-protocol group, observed-but-untracked overhead,
+and the replacement-memory reserve before retaining the newest complete natural
+units that fit. Planning fails closed with `target_unattainable` when those
+mandatory costs meet or exceed the target, and with `no_compactable_prefix`
+when no settled raw-backed prefix remains. Acceptance estimates the finalized
+context again and rejects it when finalized context plus untracked overhead
+exceeds the captured target.
+
+### Actual-Observation Threshold Episode
+
+Trigger decisions use the provider-normalized prompt tokens observed for a
+completed LLM request. Missing usage or an explicitly missing prompt-token count
+logs a skipped observation and does not mutate threshold state; numeric zero is
+a genuine below-threshold observation.
+
+After one accepted compaction, the process-local threshold episode waits for an
+actual prompt observation below the same threshold before rearming. The first
+above-or-equal observation emits one inadequate-reduction diagnostic and moves
+the episode into suppression; later above-or-equal observations remain
+suppressed instead of requesting repeated successful compactions. A below-
+threshold observation rearms the gate, a changed budget key starts a new
+episode, and hard-input-cap pressure may request compaction regardless of the
+proactive suppression state. An existing pending operation always takes
+precedence. This episode is runtime state and resets when the agent runtime is
+restarted; it is not a persisted memory contract.
+
+### Failed-Pending Attempt And Turn Admission
+
+Pending attempt authority is explicit:
+
+```text
+initial_attempt_ready
+  -> attempt_in_progress(automatic_initial)
+  -> accepted commit and clear
+  or awaiting_user_retry
+       -> attempt_in_progress(user_retry) on a distinct user-origin turn
+```
+
+Failure ends the current target-agent turn before further model dispatch and
+does not schedule a background, same-turn, agent-authored, or system-authored
+retry. Turn-start entries carry authoritative `user`, `agent`, or `system`
+origin before input conversion. While the pending operation awaits user retry,
+the scheduler may claim the earliest queued user entry even when non-user
+entries precede it; those non-user entries remain queued in their relative FIFO
+order. If the retry succeeds, the user message dispatches and normal FIFO
+service resumes afterward. If it fails, the pending operation and non-user
+entries remain in place.
 
 ## 4. Recurrent Complete Replacement
 
@@ -210,12 +301,12 @@ remain directly readable. Recognized-field normalization ignores that stored
 superset field without rewriting the append-only file, introducing a schema
 branch, or using it as an output-to-raw origin link. New rows omit it.
 
-`selectionPolicyVersion` remains `1`. Existing prompt-audit value `1` is retained
-and read directly, while every new accepted compaction writes
-`promptContractVersion: 2` for the natural-sizing/canonical-history contract.
-Mixed immutable `1 -> 2` chains are valid without rewriting or decoding earlier
-records. Any other prompt-contract value is rejected without mutating the
-append-only lineage file.
+`selectionPolicyVersion` remains `1`. Prompt-contract values `1`, `2`, and `3`
+are read directly, while every new accepted compaction writes
+`promptContractVersion: 3` for the explicit target-agent framing and bounded
+response-repair contract. Mixed immutable `1 -> 2 -> 3` chains are valid without
+rewriting or decoding earlier records. Any other prompt-contract value is
+rejected without mutating the append-only lineage file.
 
 ## 8. Forward-Only Native Snapshot Migration
 
@@ -292,11 +383,15 @@ select a fallback model.
 ## 11. Natural Compactor Conversation
 
 The built-in `autobyteus-memory-compactor` system prompt owns the stable
-summarization instructions, natural episode/fact sizing guidance, and exact JSON
-response schema. The per-operation user message is only one renderer-produced
-`<conversation_history>...</conversation_history>` block; it does not duplicate
-task instructions, schema text, size policy, token settings, or platform
-internals.
+summarization instructions, natural episode/fact sizing guidance, and exact
+six-array JSON response schema. The initial per-operation user message identifies
+the input as the conversation history of the target agent, surrounds it with one
+plain-text `START OF TARGET AGENT CONVERSATION HISTORY` /
+`END OF TARGET AGENT CONVERSATION HISTORY` separator pair,
+and contains exactly one renderer-produced
+`<target_agent_conversation_history>...</target_agent_conversation_history>`
+block. Nothing follows the end separator, and the initial message does not
+duplicate the task, schema, size policy, token settings, or platform internals.
 
 The compactable logical prefix is rendered as one natural ordered conversation.
 Before rendering, `WorkingContextFinalizer` composes the selected visible
@@ -307,26 +402,80 @@ ordered.
 
 The renderer omits private reasoning and backend call IDs. Each settled tool
 interaction is one `Tool` body containing name, status, arguments, and exactly
-one result or error section. Source text that could imitate the reserved outer
-boundary is escaped.
+one result or error section. Source text that could imitate the reserved
+`target_agent_conversation_history` boundary is escaped.
 
-The compactor returns only the exact structured JSON contract and may choose any
-structurally valid natural output size with at least one episode. Prompt
-rendering is not persisted as lineage evidence; an optional SHA-256 digest may
-support integrity/audit metadata without copying content.
+All rendered compaction values are derived provider-facing copies. They
+normalize CR/CRLF to LF, remove non-useful C0 controls while preserving newline
+and tab, replace a pre-existing lone UTF-16 surrogate with U+FFFD, and preserve
+valid surrogate pairs, multilingual text, paths, code, symbols, and emoji.
+Head/tail omission adjusts both slice boundaries so it never splits a valid
+pair. Canonical raw traces, tool payloads, archives, and stored source values are
+not rewritten or sanitized.
+
+The shared server input processor does not wrap messages in generic sender
+headings. Authored content passes through unchanged when no readable context is
+concatenated; when context is present, neutral `[Context]` and `[Message]`
+sections delimit it without changing sender metadata or provider-native tool
+protocol.
+
+Both the initial and corrective task messages are finalized and rechecked as
+provider-safe text before child launch. Failure of that completed-prompt
+invariant is typed as `input_construction_failure`: no child or correction run
+starts, the target model is not dispatched, canonical memory is unchanged, and
+the pending operation retains the ordinary user-authorized retry gate.
+
+The response parser extracts exact, fenced, and balanced JSON-object candidates,
+validates every candidate against all six required arrays, and accepts exactly
+one distinct host-consumed result with at least one non-empty episode. Harmless
+extra fields and unusable blank/non-string entries are ignored; unrelated JSON
+objects cannot mask a later valid object, while multiple distinct valid objects
+are rejected as ambiguous.
+
+The compaction-agent boundary returns usable final output or a typed runner
+failure. Error completions, interruption, terminal error, timeout, tool approval,
+task rejection, launch failure, and collection failure keep their original
+failure kind and available child run/task metadata; they do not become parser
+input.
+
+Returned-content validation failure triggers exactly one corrective child run
+under the same pending compaction operation. The correction prefix records the
+closed validation stage, restates the six-array shape, and resends the same
+selected target history. It has a new task/run identity and is a second disabled
+sibling of the initial child, not a descendant; both remain tool-free and write
+no child lineage/archive. Any additional or uninspectable new compactor run is
+outside the bounded operation topology. A runner/provider/transport/timeout
+failure is terminal for that execution attempt and bypasses the response-repair
+boundary; the retained operation can run again only through the distinct
+user-turn policy above.
+
+Repair success produces one parent completed lifecycle and reaches the existing
+proposal/accept/commit boundary exactly once. Repair exhaustion produces one
+parent failed lifecycle with both stages and available child run IDs, retains the
+pending operation, and does not advance raw archives, output rows, lineage,
+WorkingContext, or its snapshot.
+
+The compactor may choose any structurally valid natural output size with at least
+one episode. Prompt rendering is not persisted as lineage evidence; the final
+successful attempt's optional SHA-256 digest may support integrity/audit metadata
+without copying content. Accepted episode/fact strings use the same
+provider-safe end clamp, so later prompt projection cannot create a lone
+surrogate at an entry-length boundary.
 
 ## 12. Shared Readable Value And Tool Policy
 
 `ReadableValueRenderer` and `CondensedToolCallRenderer` are core-owned,
 consumer-neutral presentation policies. They provide deterministic
 serialization, secret/backend-field redaction, and explicit head/tail omission
-with an omitted-character count.
+with an omitted-character count. `ProviderSafeCompactionText` owns the shared
+derived-copy Unicode invariant and surrogate-safe slice/end-truncation
+boundaries. The policy never mutates the canonical input value.
 
 Native compaction and generated Work Evidence reuse this value/tool body policy
 but keep separate sources and envelopes:
 
-- compaction renders selected WorkingContext units with its smaller bound and
-  XML boundary; and
+- compaction renders selected WorkingContext units with its smaller bound,
+  target-agent separators, and XML boundary; and
 - Work Evidence renders canonical raw-backed historical events with timestamps,
   Markdown files/manifests, and a 20,000-character per-value bound.
 
@@ -384,12 +533,14 @@ Core domain, acceptance, and publication:
 
 Current strategy and presentation:
 
+- `src/memory/compaction/memory-compaction-configuration.ts`
 - `src/memory/compaction/structured-json-compaction-strategy.ts`
 - `src/memory/compaction/working-context-message-window-planner.ts`
 - `src/memory/compaction/working-context-compaction-prompt-builder.ts`
 - `src/memory/compaction/compaction-conversation-history-renderer.ts`
 - `src/memory/presentation/readable-value-renderer.ts`
 - `src/memory/presentation/condensed-tool-call-renderer.ts`
+- `src/memory/presentation/unicode-safe-text.ts`
 
 Lineage, projection, and restore:
 

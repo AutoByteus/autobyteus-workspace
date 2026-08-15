@@ -111,18 +111,24 @@ assistant message content remains visible as `assistant:` content.
 `CondensedToolCallRenderer`. The shared policy deterministically serializes
 visible values, redacts common secrets and backend/protocol fields, and bounds
 each variable value to 20,000 characters with explicit head/tail retention and an
-omitted-character count. A tool block has name, terminal status, arguments, and
-exactly one result/error section; a genuinely missing terminal record renders its
-truthful status and `result: not available`.
+omitted-character count. Its derived text is well-formed Unicode: valid pairs,
+multilingual/code/path content, emoji, newline, and tab survive; lone surrogates
+are replaced, non-useful controls are removed, and omission cannot split a
+surrogate pair. Canonical raw traces are not rewritten. A tool block has name,
+terminal status, arguments, and exactly one result/error section; a genuinely
+missing terminal record renders its truthful status and `result: not available`.
 
 The Work Evidence layer still owns timestamps, Markdown headings, file/manifests,
 raw-trace source selection, correlation, and the larger consumer bound. Native
 compaction owns its natural conversation/XML envelope and smaller bound. Its
-operation message is only the compaction renderer's canonical
-`<conversation_history>` block, composed through `WorkingContextFinalizer`; the
-stable task, natural-sizing guidance, and response schema live only in the
-built-in Memory Compactor system prompt. Native compaction never reads Work
-Evidence Markdown or manifests as memory input or provenance.
+initial operation message identifies the target agent and contains one canonical
+`<target_agent_conversation_history>` block, composed through
+`WorkingContextFinalizer`, inside one plain-text target-agent `START` / `END`
+separator pair. The stable task, natural-sizing guidance, and response schema
+remain in the built-in Memory Compactor system prompt; only the single bounded
+correction prefix restates the schema after typed returned-content validation
+failure. Native compaction never reads Work Evidence Markdown or manifests as
+memory input or provenance.
 Exact work trace paths remain visible because consumers need file references.
 
 ## Consumer Contract

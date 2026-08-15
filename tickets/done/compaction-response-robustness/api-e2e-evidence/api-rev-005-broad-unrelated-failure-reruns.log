@@ -1,0 +1,533 @@
+Targeted rerun of the three broad-suite failures not on the compaction changed boundary.
+$ pnpm -C autobyteus-server-ts exec vitest run tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts --no-watch
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:94012) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts [ tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts ]
+Error: Cannot find module '../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrap-strategy.js' imported from '/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-server-ts/tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts'
+ ❯ tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts:22:1
+     20| import type { CodexWorkspaceResolver } from "../../../src/agent-execut…
+     21| import { CodexThreadBootstrapper } from "../../../src/agent-execution/…
+     22| import { DefaultCodexThreadBootstrapStrategy, type CodexThreadBootstra…
+       | ^
+     23| import { AgentRunConfig } from "../../../src/agent-execution/domain/ag…
+     24| import { AgentRunContext } from "../../../src/agent-execution/domain/a…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  12:10:05
+   Duration  5.07s (transform 3.37s, setup 9ms, import 0ms, tests 0ms, environment 0ms)
+
+$ pnpm -C autobyteus-server-ts exec vitest run tests/e2e/media/server-owned-media-tools.e2e.test.ts --no-watch
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+
+stdout | tests/e2e/media/server-owned-media-tools.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:94339) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stderr | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > executes the four canonical media tools through the AutoByteus local registry and writes output files
+Attempted to unregister tool 'generate_image', but it was not found in the registry.
+Attempted to unregister tool 'edit_image', but it was not found in the registry.
+Attempted to unregister tool 'generate_speech', but it was not found in the registry.
+Attempted to unregister tool 'generate_video', but it was not found in the registry.
+
+stdout | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > executes the four canonical media tools through the AutoByteus local registry and writes output files
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stdout | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > executes the four canonical media tools through the AutoByteus local registry and writes output files
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > executes the four canonical media tools through the AutoByteus local registry and writes output files
+Successfully unregistered tool definition: 'generate_image'
+Successfully unregistered tool definition: 'edit_image'
+Successfully unregistered tool definition: 'generate_speech'
+Successfully unregistered tool definition: 'generate_video'
+
+stderr | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > revokes a cancelled image publication lease and suppresses a late provider completion
+Attempted to unregister tool 'generate_image', but it was not found in the registry.
+Attempted to unregister tool 'edit_image', but it was not found in the registry.
+Attempted to unregister tool 'generate_speech', but it was not found in the registry.
+Attempted to unregister tool 'generate_video', but it was not found in the registry.
+
+stdout | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > revokes a cancelled image publication lease and suppresses a late provider completion
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stdout | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > revokes a cancelled image publication lease and suppresses a late provider completion
+Successfully unregistered tool definition: 'generate_image'
+Successfully unregistered tool definition: 'edit_image'
+Successfully unregistered tool definition: 'generate_speech'
+Successfully unregistered tool definition: 'generate_video'
+
+stderr | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > applies default media model setting changes to future AutoByteus schemas and invocations
+Attempted to unregister tool 'generate_image', but it was not found in the registry.
+Attempted to unregister tool 'edit_image', but it was not found in the registry.
+Attempted to unregister tool 'generate_speech', but it was not found in the registry.
+Attempted to unregister tool 'generate_video', but it was not found in the registry.
+
+stdout | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > applies default media model setting changes to future AutoByteus schemas and invocations
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stdout | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > applies default media model setting changes to future AutoByteus schemas and invocations
+Successfully unregistered tool definition: 'generate_image'
+Successfully unregistered tool definition: 'edit_image'
+Successfully unregistered tool definition: 'generate_speech'
+Successfully unregistered tool definition: 'generate_video'
+
+stderr | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > exposes nested speech and video generation_config schemas through the GraphQL tools query
+Attempted to unregister tool 'generate_image', but it was not found in the registry.
+Attempted to unregister tool 'edit_image', but it was not found in the registry.
+Attempted to unregister tool 'generate_speech', but it was not found in the registry.
+Attempted to unregister tool 'generate_video', but it was not found in the registry.
+
+stdout | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > exposes nested speech and video generation_config schemas through the GraphQL tools query
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stdout | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > exposes nested speech and video generation_config schemas through the GraphQL tools query
+Successfully unregistered tool definition: 'generate_image'
+Successfully unregistered tool definition: 'edit_image'
+Successfully unregistered tool definition: 'generate_speech'
+Successfully unregistered tool definition: 'generate_video'
+
+stderr | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > exposes video model catalog rows through the GraphQL provider query
+Attempted to unregister tool 'generate_image', but it was not found in the registry.
+Attempted to unregister tool 'edit_image', but it was not found in the registry.
+Attempted to unregister tool 'generate_speech', but it was not found in the registry.
+Attempted to unregister tool 'generate_video', but it was not found in the registry.
+
+stderr | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > exposes video model catalog rows through the GraphQL provider query
+Attempted to unregister tool 'generate_image', but it was not found in the registry.
+Attempted to unregister tool 'edit_image', but it was not found in the registry.
+Attempted to unregister tool 'generate_speech', but it was not found in the registry.
+Attempted to unregister tool 'generate_video', but it was not found in the registry.
+
+stderr | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > normalizes media input paths consistently for workspace, external absolute, file URL, URL/data URI, missing, non-file, and traversal references
+Attempted to unregister tool 'generate_image', but it was not found in the registry.
+Attempted to unregister tool 'edit_image', but it was not found in the registry.
+Attempted to unregister tool 'generate_speech', but it was not found in the registry.
+Attempted to unregister tool 'generate_video', but it was not found in the registry.
+
+stderr | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > normalizes media input paths consistently for workspace, external absolute, file URL, URL/data URI, missing, non-file, and traversal references
+Attempted to unregister tool 'generate_image', but it was not found in the registry.
+Attempted to unregister tool 'edit_image', but it was not found in the registry.
+Attempted to unregister tool 'generate_speech', but it was not found in the registry.
+Attempted to unregister tool 'generate_video', but it was not found in the registry.
+
+ ❯ tests/e2e/media/server-owned-media-tools.e2e.test.ts (6 tests | 1 failed) 72ms
+     ✓ executes the four canonical media tools through the AutoByteus local registry and writes output files 11ms
+     ✓ revokes a cancelled image publication lease and suppresses a late provider completion 4ms
+     ✓ applies default media model setting changes to future AutoByteus schemas and invocations 4ms
+     ✓ exposes nested speech and video generation_config schemas through the GraphQL tools query 3ms
+     × exposes video model catalog rows through the GraphQL provider query 3ms
+     ✓ normalizes media input paths consistently for workspace, external absolute, file URL, URL/data URI, missing, non-file, and traversal references 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > exposes video model catalog rows through the GraphQL provider query
+GraphQLError: __vite_ssr_import_2__.appConfigProvider.config.getAppDataDir is not a function
+ ❯ new CustomLlmProviderStore src/llm-management/llm-providers/stores/custom-llm-provider-store.ts:49:68
+     47| export class CustomLlmProviderStore {
+     48|   constructor(
+     49|     private readonly appDataDir: string = appConfigProvider.config.get…
+       |                                                                    ^
+     50|   ) {}
+     51| 
+ ❯ getCustomLlmProviderStore src/llm-management/llm-providers/stores/custom-llm-provider-store.ts:140:36
+ ❯ new CustomLlmProviderRuntimeSyncService src/llm-management/llm-providers/services/custom-llm-provider-runtime-sync-service.ts:35:68
+ ❯ getCustomLlmProviderRuntimeSyncService src/llm-management/llm-providers/services/custom-llm-provider-runtime-sync-service.ts:97:49
+ ❯ new AutobyteusLlmModelProvider src/llm-management/providers/autobyteus-llm-model-provider.ts:22:7
+ ❯ new AutobyteusModelCatalog src/llm-management/services/autobyteus-model-catalog.ts:27:27
+ ❯ Function.getInstance src/llm-management/services/autobyteus-model-catalog.ts:15:41
+ ❯ getAutobyteusModelCatalog src/llm-management/services/autobyteus-model-catalog.ts:56:26
+ ❯ new ModelCatalogService src/llm-management/services/model-catalog-service.ts:46:71
+ ❯ getModelCatalogService src/llm-management/services/model-catalog-service.ts:179:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 5 passed (6)
+   Start at  12:10:11
+   Duration  5.13s (transform 3.37s, setup 10ms, import 4.59s, tests 72ms, environment 0ms)
+
+$ pnpm -C autobyteus-server-ts exec vitest run tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts --no-watch
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+
+stdout | tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:94360) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts > token usage provider-name snapshot backfill startup e2e
+prisma:info Starting a sqlite pool with 21 connections.
+
+ ❯ tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts (2 tests | 2 failed) 86ms
+     × runs the real Prisma adapter, preserves all non-provider fields, and explicitly retries warning rows 33ms
+     × blocks startup after a failed provider-name update and retries only the unresolved row 14ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts > token usage provider-name snapshot backfill startup e2e > runs the real Prisma adapter, preserves all non-provider fields, and explicitly retries warning rows
+AssertionError: expected [ { …(13) }, { …(13) } ] to deeply equal ArrayContaining{…}
+
+- Expected
++ Received
+
+- ArrayContaining [
+-   ObjectContaining {
++ [
++   {
+      "attempts": 1,
+      "canRetry": true,
++     "completedAt": 2026-08-15T10:10:21.002Z,
++     "description": "Recovers exact provider display names for legacy AutoByteus ledger rows without snapshots.",
++     "displayName": "Token usage provider-name snapshot backfill",
++     "errorMessage": "this.providerNameReader.read is not a function",
++     "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/token-usage-provider-name-backfill-e2e-eGSi67/20260730_token_usage_provider_name_snapshot_backfill-2026-08-15T10-10-21-001Z.log",
+      "migrationId": "20260730_token_usage_provider_name_snapshot_backfill",
+-     "status": "SUCCEEDED_WITH_WARNINGS",
++     "requiredOnStartup": true,
++     "startedAt": 2026-08-15T10:10:20.999Z,
++     "status": "FAILED",
++     "summary": {
++       "details": [
++         {
++           "itemId": "token-usage-provider-name:provider-map",
++           "message": "this.providerNameReader.read is not a function",
++           "status": "FAILED",
+          },
+-   ObjectContaining {
++       ],
++       "failedCount": 1,
++       "migratedCount": 0,
++       "scannedCount": 0,
++       "skippedCount": 0,
++     },
++     "summaryJson": "{\"scannedCount\":0,\"migratedCount\":0,\"skippedCount\":0,\"failedCount\":1,\"details\":[{\"itemId\":\"token-usage-provider-name:provider-map\",\"status\":\"FAILED\",\"message\":\"this.providerNameReader.read is not a function\"}]}",
++   },
++   {
++     "attempts": 1,
++     "canRetry": false,
++     "completedAt": 2026-08-15T10:10:21.004Z,
++     "description": "Confirms startup continues after provider-name snapshot migration outcomes.",
++     "displayName": "Synthetic provider-name startup sibling migration",
++     "errorMessage": null,
++     "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/token-usage-provider-name-backfill-e2e-eGSi67/provider-name-warning-sibling-7358d663-8683-48dd-a71a-4c5da1bdb34f-2026-08-15T10-10-21-004Z.log",
+      "migrationId": "provider-name-warning-sibling-7358d663-8683-48dd-a71a-4c5da1bdb34f",
++     "requiredOnStartup": true,
++     "startedAt": 2026-08-15T10:10:21.003Z,
+      "status": "SUCCEEDED",
++     "summary": {
++       "details": [],
++       "failedCount": 0,
++       "migratedCount": 0,
++       "scannedCount": 0,
++       "skippedCount": 0,
++     },
++     "summaryJson": "{\"scannedCount\":0,\"migratedCount\":0,\"skippedCount\":0,\"failedCount\":0,\"details\":[]}",
+    },
+  ]
+
+ ❯ tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts:232:19
+    230| 
+    231|     const first = await runner.runPending();
+    232|     expect(first).toEqual(expect.arrayContaining([
+       |                   ^
+    233|       expect.objectContaining({
+    234|         migrationId: TOKEN_USAGE_PROVIDER_NAME_SNAPSHOT_BACKFILL_MIGRA…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts > token usage provider-name snapshot backfill startup e2e > blocks startup after a failed provider-name update and retries only the unresolved row
+AssertionError: expected [ null, null, null ] to deeply equal [ 'Alibaba Cloud', null, …(1) ]
+
+- Expected
++ Received
+
+  [
+-   "Alibaba Cloud",
+    null,
+-   "Alibaba Cloud",
++   null,
++   null,
+  ]
+
+ ❯ tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts:304:69
+    302|     ]));
+    303|     expect(siblingExecutions).toBe(1);
+    304|     expect((await readRows(rowIds)).map((row) => row.providerName)).to…
+       |                                                                     ^
+    305|       'Alibaba Cloud',
+    306|       null,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  12:10:16
+   Duration  4.32s (transform 2.77s, setup 10ms, import 3.76s, tests 86ms, environment 0ms)
+

@@ -1,3 +1,5 @@
+import type { CompactionPressure } from '../compaction/compaction-threshold-gate.js';
+
 export class CompactionPolicy {
   triggerRatio: number;
   maxItemChars: number;
@@ -13,13 +15,14 @@ export class CompactionPolicy {
     this.safetyMarginTokens = options?.safetyMarginTokens ?? 256;
   }
 
-  shouldCompact(promptTokens: number, inputBudget: number): boolean {
-    if (inputBudget <= 0) {
-      return true;
+  classifyPressure(
+    promptTokens: number,
+    inputBudgetTokens: number,
+    triggerThresholdTokens = Math.floor(this.triggerRatio * inputBudgetTokens),
+  ): CompactionPressure {
+    if (inputBudgetTokens <= 0 || promptTokens >= inputBudgetTokens) {
+      return 'hard_input_cap';
     }
-    if (promptTokens >= inputBudget) {
-      return true;
-    }
-    return promptTokens >= Math.floor(this.triggerRatio * inputBudget);
+    return promptTokens >= triggerThresholdTokens ? 'proactive' : 'none';
   }
 }

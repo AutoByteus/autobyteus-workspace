@@ -96,6 +96,38 @@ export class CompactionRuntimeReporter {
     console.info('compaction_result_summary', { agent_id: this.agentId, ...payload });
   }
 
+  reportInadequateReduction(input: {
+    turnId: string;
+    completedOperationId: string | null;
+    observedPromptTokens: number;
+    triggerThresholdTokens: number;
+    postCompactionTargetTokens: number;
+    budgetKey: string;
+  }): void {
+    const message =
+      'Memory compaction completed, but the first fresh provider usage was not below the trigger; '
+      + 'further proactive compaction is suppressed until a below-trigger observation or budget change.';
+    const details = {
+      reason: 'post_success_usage_not_below_trigger',
+      completed_operation_id: input.completedOperationId,
+      observed_prompt_tokens: input.observedPromptTokens,
+      trigger_threshold_tokens: input.triggerThresholdTokens,
+      post_compaction_target_tokens: input.postCompactionTargetTokens,
+      budget_key: input.budgetKey,
+    };
+    console.error('compaction_post_success_usage_not_below_trigger', {
+      agent_id: this.agentId,
+      turn_id: input.turnId,
+      ...details,
+    });
+    this.notifier?.notifyAgentErrorOutputGeneration({
+      source: 'CompactionThresholdGate',
+      message,
+      details: JSON.stringify(details),
+      classification: { scope: 'turn', effect: 'diagnostic', turnId: input.turnId },
+    });
+  }
+
   private enrichTerminalStatus(payload: CompactionStatusPayload): CompactionStatusPayload {
     if (payload.phase === 'completed' && this.resultDiagnostics) {
       return {

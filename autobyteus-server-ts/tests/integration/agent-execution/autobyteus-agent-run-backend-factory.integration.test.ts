@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AgentFactory, AgentInputUserMessage } from "autobyteus-ts";
 import { BaseLLM } from "autobyteus-ts/llm/base.js";
 import { LLMModel } from "autobyteus-ts/llm/models.js";
@@ -13,6 +13,7 @@ import { AgentDefinition } from "../../../src/agent-definition/domain/models.js"
 import { AutoByteusAgentRunBackendFactory } from "../../../src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
+import { MEMORY_COMPACTOR_AGENT_DEFINITION_ID } from "../../../src/built-in-agents/built-in-agent-registry.js";
 
 class DummyLLM extends BaseLLM {
   protected async _sendMessagesToLLM(_messages: Message[]): Promise<CompleteResponse> {
@@ -48,6 +49,8 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
   let agentFactory: AgentFactory;
   let backendFactory: AutoByteusAgentRunBackendFactory;
   let persistedAgentDefinition: AgentDefinition;
+  let compactionRunner: { runCompactionTask: ReturnType<typeof vi.fn> };
+  let compactionAgentRunnerFactory: ReturnType<typeof vi.fn>;
 
   const createPreparedConfig = (runId: string): AgentRunConfig =>
     new AgentRunConfig({
@@ -74,6 +77,8 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
     const activeIds = agentFactory.listActiveAgentIds();
     await Promise.all(activeIds.map((id) => agentFactory.removeAgent(id).catch(() => false)));
 
+    compactionRunner = { runCompactionTask: vi.fn() };
+    compactionAgentRunnerFactory = vi.fn(() => compactionRunner);
     backendFactory = new AutoByteusAgentRunBackendFactory({
       agentFactory: agentFactory as any,
       agentDefinitionService: {
@@ -91,6 +96,7 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
       skillService: {
         getSkill: () => null,
       } as any,
+      compactionAgentRunnerFactory,
     });
     persistedAgentDefinition = new AgentDefinition({
       id: "def-autobyteus-backend",
@@ -130,11 +136,18 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
       "write_file",
     ]);
     expect(persistedAgentDefinition.toolNames).toEqual([]);
+    expect(agentFactory.getAgent(runId)?.context.state.memoryManager
+      ?.getAutomaticCompactionConfiguration()).toMatchObject({
+        kind: "enabled",
+        runner: compactionRunner,
+      });
+    expect(compactionAgentRunnerFactory).toHaveBeenCalledOnce();
 
-    const commandResult = await backend.postUserMessage(
-      new AgentInputUserMessage("hello backend integration"),
-    );
-    expect(commandResult.accepted).toBe(true);
+    const commandResult = await backend.dispatchUserInput({
+      kind: "start_turn",
+      message: new AgentInputUserMessage("hello backend integration"),
+    });
+    expect(commandResult.forwarded).toBe(true);
 
     await waitFor(() => backend.getLifecycleSnapshot().phase === "idle");
 
@@ -142,6 +155,64 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
     expect(terminateResult.accepted).toBe(true);
     expect(backend.isActive()).toBe(false);
     expect(agentFactory.getAgent(backend.runId)).toBeUndefined();
+  });
+
+  it("materializes and restores the canonical Memory Compactor as a disabled leaf", async () => {
+    persistedAgentDefinition = new AgentDefinition({
+      id: MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
+      name: "Memory Compactor",
+      role: "Compaction specialist",
+      description: "Compacts target-agent memory.",
+      instructions: "Return the required structured memory object.",
+      toolNames: [],
+    });
+    const runId = "memory_compactor_runtime_tools_empty_11111111";
+    compactionAgentRunnerFactory.mockClear();
+    const backend = await backendFactory.createBackend(
+      new AgentRunConfig({
+        agentDefinitionId: MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
+        llmModelIdentifier: "dummy-model",
+        autoExecuteTools: false,
+        memoryDir: path.join(memoryDir, "agents", runId),
+      }),
+      runId,
+    );
+
+    expect(agentFactory.getAgent(runId)?.context.config.tools).toEqual([]);
+    expect(persistedAgentDefinition.toolNames).toEqual([]);
+    expect(backend.getContext().config.agentDefinitionId)
+      .toBe(MEMORY_COMPACTOR_AGENT_DEFINITION_ID);
+    expect(agentFactory.getAgent(runId)?.context.state.memoryManager
+      ?.getAutomaticCompactionConfiguration()).toEqual({ kind: "disabled" });
+    expect(compactionAgentRunnerFactory).not.toHaveBeenCalled();
+
+    const commandResult = await backend.dispatchUserInput({
+      kind: "start_turn",
+      message: new AgentInputUserMessage("persist one compactor task before restore"),
+    });
+    expect(commandResult.forwarded).toBe(true);
+    await waitFor(() => backend.getLifecycleSnapshot().phase === "idle");
+
+    const terminateResult = await backend.terminate();
+    expect(terminateResult.accepted).toBe(true);
+    expect(agentFactory.getAgent(runId)).toBeUndefined();
+
+    const restored = await backendFactory.restoreBackend(new AgentRunContext({
+      runId,
+      config: new AgentRunConfig({
+        agentDefinitionId: MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
+        llmModelIdentifier: "dummy-model",
+        autoExecuteTools: false,
+        memoryDir: path.join(memoryDir, "agents", runId),
+      }),
+      runtimeContext: null,
+    }));
+
+    expect(restored.runId).toBe(runId);
+    expect(agentFactory.getAgent(runId)?.context.config.tools).toEqual([]);
+    expect(agentFactory.getAgent(runId)?.context.state.memoryManager
+      ?.getAutomaticCompactionConfiguration()).toEqual({ kind: "disabled" });
+    expect(compactionAgentRunnerFactory).not.toHaveBeenCalled();
   });
 
   it("respects a preferred run id and provisions the standalone memory directory explicitly", async () => {
@@ -159,10 +230,11 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
       fs.access(path.join(memoryDir, "agents", preferredRunId)),
     ).resolves.toBeUndefined();
 
-    const commandResult = await backend.postUserMessage(
-      new AgentInputUserMessage("hello explicit memory"),
-    );
-    expect(commandResult.accepted).toBe(true);
+    const commandResult = await backend.dispatchUserInput({
+      kind: "start_turn",
+      message: new AgentInputUserMessage("hello explicit memory"),
+    });
+    expect(commandResult.forwarded).toBe(true);
     await waitFor(() => backend.getLifecycleSnapshot().phase === "idle");
 
     const rawTracesPath = path.join(memoryDir, "agents", preferredRunId, "raw_traces_active.jsonl");
@@ -183,10 +255,11 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
       runId,
     );
 
-    const firstResult = await created.postUserMessage(
-      new AgentInputUserMessage("first restoreable turn"),
-    );
-    expect(firstResult.accepted).toBe(true);
+    const firstResult = await created.dispatchUserInput({
+      kind: "start_turn",
+      message: new AgentInputUserMessage("first restoreable turn"),
+    });
+    expect(firstResult.forwarded).toBe(true);
     await waitFor(() => created.getLifecycleSnapshot().phase === "idle");
 
     const terminateResult = await created.terminate();
@@ -214,11 +287,18 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
       "write_file",
     ]);
     expect(persistedAgentDefinition.toolNames).toEqual([]);
+    expect(agentFactory.getAgent(runId)?.context.state.memoryManager
+      ?.getAutomaticCompactionConfiguration()).toMatchObject({
+        kind: "enabled",
+        runner: compactionRunner,
+      });
+    expect(compactionAgentRunnerFactory).toHaveBeenCalledTimes(2);
 
-    const secondResult = await restored.postUserMessage(
-      new AgentInputUserMessage("second restoreable turn"),
-    );
-    expect(secondResult.accepted).toBe(true);
+    const secondResult = await restored.dispatchUserInput({
+      kind: "start_turn",
+      message: new AgentInputUserMessage("second restoreable turn"),
+    });
+    expect(secondResult.forwarded).toBe(true);
     await waitFor(() => restored.getLifecycleSnapshot().phase === "idle");
   });
 

@@ -1,0 +1,49 @@
+release_clone_head=b74b074e1fd8fa1743781de40abe34645000f614
+Repository artifact hygiene check passed.
+Tracked files scanned: 19486
+Path-length threshold: 200
+Longest tracked path: 197 chars: tickets/done/agent-catalog-origin-grouping/validation-artifacts/round3/ui-application-package/applications/research-workspace/agent-teams/literature-review/agents/source-collector/agent-config.json
+pre_web_version=1.4.51
+pre_gateway_version=1.4.51
+
+> autobyteus-workspace@ release /Users/normy/autobyteus_org/autobyteus-worktrees/release-compaction-response-v1.4.52
+> bash scripts/desktop-release.sh release 1.4.52 -- --release-notes tickets/done/compaction-response-robustness/release-notes.md
+
+Updating autobyteus-web/package.json: 1.4.51 -> 1.4.52
+Updating autobyteus-message-gateway/package.json: 1.4.51 -> 1.4.52
+Synced curated release notes to .github/release-notes/release-notes.md
+Syncing managed messaging release manifest to v1.4.52
+[32mSynced default release manifest: /Users/normy/autobyteus_org/autobyteus-worktrees/release-compaction-response-v1.4.52/autobyteus-server-ts/src/managed-capabilities/messaging-gateway/release-manifest.json[0m
+[32mRelease tag: v1.4.52[0m
+[32mServer version: 0.1.1[0m
+[personal 3572bb1fe] chore(release): bump workspace release version to 1.4.52
+ Committer: normy <normy@macbookpro.speedport.ip>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 4 files changed, 14 insertions(+), 12 deletions(-)
+remote: 
+remote: GitHub found 818 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 347 high, 385 moderate, 66 low). To find out more, visit:        
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot        
+remote: 
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+   b74b074e1..3572bb1fe  personal -> personal
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+ * [new tag]             v1.4.52 -> v1.4.52
+Release complete and pushed: branch 'personal', tag 'v1.4.52'.
+release_commit=3572bb1fe23dde7056a6b5b5c817a9b78d1ddb4c
+tag_commit=3572bb1fe23dde7056a6b5b5c817a9b78d1ddb4c
+post_web_version=1.4.52
+post_gateway_version=1.4.52
+remote_personal=3572bb1fe23dde7056a6b5b5c817a9b78d1ddb4c
+remote_tag=3572bb1fe23dde7056a6b5b5c817a9b78d1ddb4c
+RELEASE_HELPER_PASS

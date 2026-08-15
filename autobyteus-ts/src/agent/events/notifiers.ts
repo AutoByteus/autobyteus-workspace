@@ -130,8 +130,14 @@ export class AgentExternalEventNotifier extends EventEmitter {
     this.emitEvent(EventType.AGENT_TURN_INTERRUPTED, { turn_id: turnId, reason, interrupted: true });
   }
 
-  notifyAgentDataAssistantCompleteResponse(completeResponse: CompleteResponse): void {
-    this.emitEvent(EventType.AGENT_DATA_ASSISTANT_COMPLETE_RESPONSE, completeResponse);
+  notifyAgentDataAssistantCompleteResponse(
+    completeResponse: CompleteResponse,
+    isError = false,
+  ): void {
+    this.emitEvent(EventType.AGENT_DATA_ASSISTANT_COMPLETE_RESPONSE, {
+      ...completeResponse,
+      is_error: isError,
+    });
   }
 
   notifyAgentTokenUsageUpdated(payload: {

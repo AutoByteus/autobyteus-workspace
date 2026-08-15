@@ -1,0 +1,25 @@
+CRR-007 independent Unicode boundary probe
+Date: 2026-08-15 Europe/Berlin
+Implementation: IR-004 / aa12df0a3
+
+Execution boundary:
+- Built autobyteus-ts output.
+- Instantiated the production ReadableValueRenderer and providerSafeCompactionText exports.
+- Generated 250 deterministic valid-Unicode source strings from ASCII, German,
+  Chinese, shield-plus-variation-selector emoji, a supplementary-plane musical
+  symbol, newline, tab, slash, and backslash atoms.
+- Rendered every source at every limit from 0 through 96 UTF-16 code units.
+- For each result, asserted provider-safe text, output length <= configured limit,
+  no U+FFFD replacement for valid source content, and exact actual omission count
+  whenever the complete omission marker was present.
+
+Result:
+PASS exhaustive valid-Unicode renderer probe: 24250 cases; every result safe and
+bounded, no valid character replaced, every complete omission marker exact.
+
+Related independent checks in CRR-007:
+- 5 core files / 45 focused tests passed.
+- 2 server tool-exposure/resolver files / 6 focused tests passed.
+- autobyteus-ts build passed.
+- autobyteus-server-ts full build, Prisma generation, and sanitized bootstrap smoke passed.
+- git diff --check 9f00e5d70..aa12df0a3 passed.

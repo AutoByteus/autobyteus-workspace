@@ -128,21 +128,45 @@ run('value-safe one-database-vault managed-provider capabilities', () => {
           compactionRatio: 0.05,
           observedBelowThreshold: true,
           observedAtOrAboveThreshold: true,
-          successfulToolCount: 3,
+          successfulToolCount: 4,
           orderedToolTracePairsVerified: true,
           continuationTraceAbsent: true,
           exactRetainedArtifactVerified: true,
           projectedMemoryAndCurrentUserVerified: true,
           canonicalCompactorAgentUsed: true,
+          canonicalCompactorTaskFramingVerified: true,
+          canonicalCompactorSourceToolTailVerified: true,
+          canonicalCompactorProviderSafeUnicodeVerified: true,
+          canonicalCompactorShieldOmissionPressureVerified: true,
+          canonicalCompactorNoSelfCompactionPersistenceVerified: true,
+          canonicalCompactorDescendantCount: 0,
+          unicodeShieldSourceImmutableVerified: true,
+          canonicalCompactorToolFree: true,
+          canonicalCompactorEffectiveToolNames: [],
         });
         expect(result.modelIdentifier).toContain(scenario.model!);
         expect(result.canonicalCompactorPromptSha256).toMatch(/^[a-f0-9]{64}$/);
         expect(result.managedSecretResolverUsed).toBe(scenario.requiredSecretId !== null);
         expect(result.effectiveContextWindowTokens).toBeGreaterThan(0);
         expect(result.triggerThresholdTokens).toBeGreaterThan(0);
-        expect(result.completedCompactionCount).toBeGreaterThanOrEqual(1);
+        expect(result.completedCompactionCount).toBe(1);
+        expect(result.canonicalCompactorInitialSiblingRunCount)
+          .toBe(result.completedCompactionCount);
+        expect(result.canonicalCompactorCorrectionSiblingRunCount)
+          .toBeLessThanOrEqual(result.completedCompactionCount);
+        expect(result.canonicalCompactorSiblingRunCount).toBe(
+          result.canonicalCompactorInitialSiblingRunCount
+          + result.canonicalCompactorCorrectionSiblingRunCount,
+        );
+        expect(result.canonicalCompactorRunCount).toBe(
+          result.canonicalCompactorSiblingRunCount + result.canonicalCompactorDescendantCount,
+        );
+        expect(result.canonicalCompactorSiblingRunCount)
+          .toBeGreaterThanOrEqual(result.completedCompactionCount);
+        expect(result.canonicalCompactorSiblingRunCount)
+          .toBeLessThanOrEqual(result.completedCompactionCount * 2);
         expect(result.promptContractVersions).toHaveLength(result.completedCompactionCount);
-        expect(result.promptContractVersions.every((version) => version === 2)).toBe(true);
+        expect(result.promptContractVersions.every((version) => version === 3)).toBe(true);
         expect(result.qualityEvidence.persistedMemory.episodes.length).toBeGreaterThanOrEqual(1);
         expect(result.recoverableToolFailureCount).toBe(0);
         process.stdout.write(`${JSON.stringify(result)}\n`);

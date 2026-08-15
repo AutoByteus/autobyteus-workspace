@@ -7,6 +7,8 @@ import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { CompleteResponse, ChunkResponse } from '../../../../src/llm/utils/response-types.js';
 import { LLMUserMessage } from '../../../../src/llm/user-message.js';
 import { SkillAccessMode } from '../../../../src/agent/context/skill-access-mode.js';
+import { createEnabledMemoryCompactionConfiguration } from '../../../../src/memory/compaction/memory-compaction-configuration.js';
+import { CompactionPolicy } from '../../../../src/memory/policies/compaction-policy.js';
 
 class DummyLLM extends BaseLLM {
   protected async _sendMessagesToLLM(_messages: any[]): Promise<CompleteResponse> {
@@ -81,6 +83,32 @@ describe('AgentConfig', () => {
   it('defaults skillAccessMode to PRELOADED_ONLY when no skills are configured', () => {
     const config = new AgentConfig('name', 'role', 'desc', makeLLM());
     expect(config.skillAccessMode).toBe(SkillAccessMode.PRELOADED_ONLY);
+    expect(config.memoryCompaction).toEqual({ kind: 'disabled' });
+    expect(config).not.toHaveProperty('compactionAgentRunner');
+  });
+
+  it('copies enabled memory compaction with a fresh policy and retained runner identity', () => {
+    const runner = { runCompactionTask: async () => ({ outputText: '{}' }) };
+    const memoryCompaction = createEnabledMemoryCompactionConfiguration(
+      new CompactionPolicy({ triggerRatio: 0.2, maxItemChars: 1234, safetyMarginTokens: 77 }),
+      runner,
+    );
+    const config = new AgentConfig(
+      'name', 'role', 'desc', makeLLM(), null, null, true, null, null, null, null,
+      null, null, null, null, null, SkillAccessMode.PRELOADED_ONLY, memoryCompaction,
+    );
+
+    const clone = config.copy();
+
+    expect(clone.memoryCompaction.kind).toBe('enabled');
+    if (clone.memoryCompaction.kind !== 'enabled') throw new Error('Expected enabled copy.');
+    expect(clone.memoryCompaction.policy).not.toBe(memoryCompaction.policy);
+    expect(clone.memoryCompaction.policy).toMatchObject({
+      triggerRatio: 0.2,
+      maxItemChars: 1234,
+      safetyMarginTokens: 77,
+    });
+    expect(clone.memoryCompaction.runner).toBe(runner);
   });
 
   it('respects explicit skillAccessMode', () => {

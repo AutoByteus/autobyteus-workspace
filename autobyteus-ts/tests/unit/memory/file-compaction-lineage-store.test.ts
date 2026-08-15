@@ -2,7 +2,11 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import type { CompactionLineageRecord } from '../../../src/memory/lineage/compaction-lineage-record.js';
+import {
+  COMPACTION_LINEAGE_CURRENT_PROMPT_CONTRACT_VERSION,
+  COMPACTION_LINEAGE_SUPPORTED_PROMPT_CONTRACT_VERSIONS,
+  type CompactionLineageRecord,
+} from '../../../src/memory/lineage/compaction-lineage-record.js';
 import type { CompactionLineageScope } from '../../../src/memory/lineage/compaction-lineage-scope.js';
 import { EpisodicItem } from '../../../src/memory/models/episodic-item.js';
 import { MemoryType } from '../../../src/memory/models/memory-types.js';
@@ -100,7 +104,7 @@ describe('FileCompactionLineageStore', () => {
     expect(fs.readFileSync(file, 'utf-8')).toBe(persisted);
   });
 
-  it('preserves a mixed audit 1 -> 2 chain and projects the exact natural-count head', () => {
+  it('directly reads a mixed audit 1 -> 2 -> 3 chain and projects the exact current head', () => {
     const memoryStore = new FileMemoryStore(dir, scope.runId, { agentRootSubdir: '' });
     const predecessorEpisode = new EpisodicItem({
       id: 'episode-v1',
@@ -148,14 +152,25 @@ describe('FileCompactionLineageStore', () => {
         promptContractVersion: 2,
       },
     }));
-
-    expect(store.list().map(({ execution }) => execution.promptContractVersion)).toEqual([1, 2]);
-    expect(store.readHead()).toMatchObject({
-      compactionId: 'c-2',
-      previousCompactionId: 'c-1',
+    store.appendNext('c-2', record(3, 'c-2', {
       episodeIds: headEpisodes.map(({ id }) => id),
       semanticIds: headSemantics.map(({ id }) => id),
-      execution: { promptContractVersion: 2 },
+      execution: {
+        ...record(3, 'c-2').execution,
+        promptContractVersion: 3,
+      },
+    }));
+
+    expect(COMPACTION_LINEAGE_SUPPORTED_PROMPT_CONTRACT_VERSIONS).toEqual([1, 2, 3]);
+    expect(COMPACTION_LINEAGE_CURRENT_PROMPT_CONTRACT_VERSION).toBe(3);
+    expect(store.list().map(({ execution }) => execution.promptContractVersion))
+      .toEqual([1, 2, 3]);
+    expect(store.readHead()).toMatchObject({
+      compactionId: 'c-3',
+      previousCompactionId: 'c-2',
+      episodeIds: headEpisodes.map(({ id }) => id),
+      semanticIds: headSemantics.map(({ id }) => id),
+      execution: { promptContractVersion: 3 },
     });
     const current = new CurrentCompactionOutputLoader(store, memoryStore).loadCurrent()!;
     expect(current.episodes).toHaveLength(4);
@@ -172,16 +187,16 @@ describe('FileCompactionLineageStore', () => {
     const file = path.join(dir, 'compaction_lineage.jsonl');
     const before = fs.readFileSync(file, 'utf-8');
     const unsupported = {
-      ...record(3, 'c-2'),
+      ...record(4, 'c-3'),
       execution: {
-        ...record(3, 'c-2').execution,
-        promptContractVersion: 3,
+        ...record(4, 'c-3').execution,
+        promptContractVersion: 4,
       },
     } as unknown as CompactionLineageRecord;
-    expect(() => store.appendNext('c-2', unsupported))
+    expect(() => store.appendNext('c-3', unsupported))
       .toThrow('Unsupported compaction selection or prompt contract version');
     expect(fs.readFileSync(file, 'utf-8')).toBe(before);
-    expect(store.readHead()?.compactionId).toBe('c-2');
+    expect(store.readHead()?.compactionId).toBe('c-3');
   });
 
   it('reads the exact tail after 1,000 recurrent appends without a mutable state pointer', () => {

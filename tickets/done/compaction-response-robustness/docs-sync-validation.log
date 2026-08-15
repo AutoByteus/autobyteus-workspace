@@ -1,0 +1,432 @@
+Documentation sync validation — DR-001
+Date: 2026-08-14T12:58:25+02:00
+
+$ git diff --check
+PASS: tracked delivery-owned documentation diff has no whitespace errors.
+
+$ delivery artifact trailing-whitespace scan
+PASS: new integration/docs/handoff/revision/release artifacts have no trailing whitespace; this replacement log is emitted from the same whitespace-clean script.
+
+$ diff core memory docs after intentional title line
+PASS: core memory docs are behaviorally identical after line 1.
+
+$ stale-guidance scan across five long-lived target docs
+PASS: removed wrapper, v2-write, 1->2-only, and old operation-message guidance is absent.
+
+$ required durable invariant scans
+autobyteus-server-ts/docs/modules/agent_work_traces.md:122:`<target_agent_conversation_history>` block, composed through
+autobyteus-ts/docs/agent_memory_design_nodejs.md:215:`promptContractVersion: 3` for the explicit target-agent framing and bounded
+autobyteus-ts/docs/agent_memory_design_nodejs.md:216:response-repair contract. Mixed immutable `1 -> 2 -> 3` chains are valid without
+autobyteus-ts/docs/agent_memory_design_nodejs.md:301:`<target_agent_conversation_history>...</target_agent_conversation_history>`
+autobyteus-ts/docs/agent_memory_design_nodejs.md:325:one distinct host-consumed result with at least one non-empty episode. Harmless
+autobyteus-ts/docs/agent_memory_design_nodejs.md:330:Returned-content validation failure triggers exactly one corrective child run
+autobyteus-ts/docs/agent_memory_design_nodejs.md:334:tool-free. A first-attempt runner, transport, provider, or timeout failure is
+autobyteus-ts/docs/agent_memory_design.md:215:`promptContractVersion: 3` for the explicit target-agent framing and bounded
+autobyteus-ts/docs/agent_memory_design.md:216:response-repair contract. Mixed immutable `1 -> 2 -> 3` chains are valid without
+autobyteus-ts/docs/agent_memory_design.md:301:`<target_agent_conversation_history>...</target_agent_conversation_history>`
+autobyteus-ts/docs/agent_memory_design.md:325:one distinct host-consumed result with at least one non-empty episode. Harmless
+autobyteus-ts/docs/agent_memory_design.md:330:Returned-content validation failure triggers exactly one corrective child run
+autobyteus-ts/docs/agent_memory_design.md:334:tool-free. A first-attempt runner, transport, provider, or timeout failure is
+autobyteus-server-ts/docs/ARCHITECTURE.md:153:`<target_agent_conversation_history>` block inside one plain-text target-agent
+autobyteus-server-ts/docs/ARCHITECTURE.md:164:host-consumed result with a non-empty episode. Harmless extra fields do not fail
+autobyteus-server-ts/docs/ARCHITECTURE.md:168:The compactor remains tool-free. Success produces one parent completed lifecycle
+autobyteus-server-ts/docs/ARCHITECTURE.md:172:New lineage records write `promptContractVersion: 3`. Existing immutable values
+autobyteus-server-ts/docs/ARCHITECTURE.md:173:1 and 2 remain directly readable, mixed `1 -> 2 -> 3` chains remain valid, and
+autobyteus-server-ts/docs/modules/agent_memory.md:112:`<target_agent_conversation_history>` block with nothing after the end separator.
+autobyteus-server-ts/docs/modules/agent_memory.md:127:all six required arrays and accepts exactly one distinct host-consumed result
+autobyteus-server-ts/docs/modules/agent_memory.md:132:Only a typed returned-content validation failure triggers one corrective child
+autobyteus-server-ts/docs/modules/agent_memory.md:139:unbounded retry or fallback model is introduced. The compactor stays zero-tool.
+autobyteus-server-ts/docs/modules/agent_memory.md:141:New successful lineage records use `promptContractVersion: 3`. Existing
+autobyteus-server-ts/docs/modules/agent_memory.md:142:immutable values 1 and 2 remain directly usable, mixed `1 -> 2 -> 3` chains are
+PASS: target framing, v3/direct-read, validation, bounded correction, and least-authority guidance is present.
+
+$ implemented-source cross-checks
+10:const TARGET_HISTORY_START_SEPARATOR = '---------------- START OF TARGET AGENT CONVERSATION HISTORY ----------------';
+11:const TARGET_HISTORY_END_SEPARATOR = '----------------- END OF TARGET AGENT CONVERSATION HISTORY -----------------';
+31:      TARGET_HISTORY_START_SEPARATOR,
+33:      TARGET_HISTORY_END_SEPARATOR,
+37:  buildCorrectionTaskPrompt(
+9:  | 'json_object_extraction'
+10:  | 'six_array_schema_validation'
+11:  | 'multiple_valid_objects';
+143:        'six_array_schema_validation',
+151:        'multiple_valid_objects',
+174:        'json_object_extraction',
+7:export const COMPACTION_LINEAGE_SUPPORTED_PROMPT_CONTRACT_VERSIONS = [1, 2, 3] as const;
+10:export const COMPACTION_LINEAGE_CURRENT_PROMPT_CONTRACT_VERSION:
+11:  CompactionLineagePromptContractVersion = 3;
+140:      return messageContent;
+142:    return `**[Context]**\n${contextString}\n\n**[Message]**\n${messageContent}`;
+PASS: durable descriptions match the integrated source owners.
+
+$ git diff --stat (tracked long-lived docs)
+ autobyteus-server-ts/docs/ARCHITECTURE.md          | 36 +++++++----
+ autobyteus-server-ts/docs/modules/agent_memory.md  | 45 ++++++++++----
+ .../docs/modules/agent_work_traces.md              | 13 ++--
+ autobyteus-ts/docs/agent_memory_design.md          | 70 +++++++++++++++-------
+ autobyteus-ts/docs/agent_memory_design_nodejs.md   | 70 +++++++++++++++-------
+ 5 files changed, 168 insertions(+), 66 deletions(-)
+
+$ git status --short (delivery hold state)
+ M autobyteus-server-ts/docs/ARCHITECTURE.md
+ M autobyteus-server-ts/docs/modules/agent_memory.md
+ M autobyteus-server-ts/docs/modules/agent_work_traces.md
+ M autobyteus-ts/docs/agent_memory_design.md
+ M autobyteus-ts/docs/agent_memory_design_nodejs.md
+?? tickets/in-progress/compaction-response-robustness/delivery-integrated-state-refresh.log
+?? tickets/in-progress/compaction-response-robustness/delivery-revision-record.md
+?? tickets/in-progress/compaction-response-robustness/docs-sync-report.md
+?? tickets/in-progress/compaction-response-robustness/docs-sync-validation.log
+?? tickets/in-progress/compaction-response-robustness/handoff-summary.md
+?? tickets/in-progress/compaction-response-robustness/release-deployment-report.md
+
+FINAL: PASS
+
+Documentation/handoff continuation validation — DR-002
+Date: 2026-08-14T13:09:10+0200
+
+$ git diff --check
+PASS: tracked documentation diff remains whitespace-clean.
+
+$ delivery Markdown trailing-whitespace scan
+PASS: DR-002 delivery Markdown is trailing-whitespace-free.
+
+$ local Electron artifact verification result
+VERIFICATION RESULT: PASS
+PASS: authoritative local Electron artifact verification is successful.
+
+$ expected Electron output ignore check
+PASS: generated Electron output did not add tracked or untracked repository-status noise.
+
+$ git status --short (DR-002 verification hold state)
+ M autobyteus-server-ts/docs/ARCHITECTURE.md
+ M autobyteus-server-ts/docs/modules/agent_memory.md
+ M autobyteus-server-ts/docs/modules/agent_work_traces.md
+ M autobyteus-ts/docs/agent_memory_design.md
+ M autobyteus-ts/docs/agent_memory_design_nodejs.md
+?? tickets/in-progress/compaction-response-robustness/delivery-integrated-state-refresh.log
+?? tickets/in-progress/compaction-response-robustness/delivery-revision-record.md
+?? tickets/in-progress/compaction-response-robustness/docs-sync-report.md
+?? tickets/in-progress/compaction-response-robustness/docs-sync-validation.log
+?? tickets/in-progress/compaction-response-robustness/electron-build-macos-arm64.log
+?? tickets/in-progress/compaction-response-robustness/electron-build-verification-macos-arm64.log
+?? tickets/in-progress/compaction-response-robustness/handoff-summary.md
+?? tickets/in-progress/compaction-response-robustness/release-deployment-report.md
+
+DR-002 CONTINUATION: PASS
+
+Documentation sync validation — DR-003
+Date: 2026-08-14T18:45:30+0200
+
+$ git diff --check
+PASS: tracked current delivery diff has no whitespace errors.
+
+$ delivery Markdown trailing-whitespace scan
+PASS: current delivery Markdown has no trailing whitespace.
+
+$ core memory doc mirror after intentional title
+PASS: core memory docs are behaviorally identical after line 1.
+
+$ stale-guidance scan
+PASS: obsolete normal-retry and unqualified runner-failure wording is absent.
+
+$ required durable invariant scans
+autobyteus-server-ts/docs/ARCHITECTURE.md:158:episode, changed budget identity resets it, and hard-input-cap pressure remains
+autobyteus-server-ts/docs/ARCHITECTURE.md:180:collection failure retain typed runner identity and bypass response repair. The
+autobyteus-server-ts/docs/ARCHITECTURE.md:186:it to `awaiting_user_retry`, stops that target-agent turn before dispatch, and
+autobyteus-server-ts/docs/ARCHITECTURE.md:187:permits one new attempt from each distinct later user-origin turn. Agent/system
+autobyteus-server-ts/docs/ARCHITECTURE.md:190:ordinary relative FIFO after a successful retry. There is no same-turn,
+autobyteus-server-ts/docs/modules/agent_memory.md:122:change resets the episode, and hard-input-cap pressure can still request an
+autobyteus-server-ts/docs/modules/agent_memory.md:166:failure moves it to `awaiting_user_retry` and stops the current target-agent turn
+autobyteus-server-ts/docs/modules/agent_memory.md:171:operation, dispatches that user turn, and then restores normal relative FIFO;
+autobyteus-server-ts/docs/modules/agent_memory.md:237:distinct. A resolver, strategy, planning, typed runner, response-repair,
+autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md:105:When memory has a failed pending compaction in `awaiting_user_retry`, the
+autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md:106:compaction retry admission policy makes only user-origin turn starts
+autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md:157:    trigger-aligned compaction, while missing prompt-token observations leave
+autobyteus-ts/docs/agent_memory_design.md:58:failure retains the same operation in `awaiting_user_retry`; only a distinct
+autobyteus-ts/docs/agent_memory_design.md:59:user-origin turn can authorize another attempt. The publication sequence is
+autobyteus-ts/docs/agent_memory_design.md:92:Each threshold or hard-input-cap request captures one immutable planning budget
+autobyteus-ts/docs/agent_memory_design.md:99:post-compaction target = max(0, min(quality retention cap, T - trigger headroom))
+autobyteus-ts/docs/agent_memory_design.md:116:completed LLM request. Missing usage or an explicitly missing prompt-token count
+autobyteus-ts/docs/agent_memory_design.md:122:above-or-equal observation emits one inadequate-reduction diagnostic and moves
+autobyteus-ts/docs/agent_memory_design.md:126:episode, and hard-input-cap pressure may request compaction regardless of the
+autobyteus-ts/docs/agent_memory_design.md:139:  or awaiting_user_retry
+autobyteus-ts/docs/agent_memory_design.md:140:       -> attempt_in_progress(user_retry) on a distinct user-origin turn
+autobyteus-ts/docs/agent_memory_design.md:148:entries precede it; those non-user entries remain queued in their relative FIFO
+autobyteus-ts/docs/agent_memory_design.md:396:The compaction-agent boundary returns usable final output or a typed runner
+autobyteus-ts/docs/agent_memory_design_nodejs.md:58:failure retains the same operation in `awaiting_user_retry`; only a distinct
+autobyteus-ts/docs/agent_memory_design_nodejs.md:59:user-origin turn can authorize another attempt. The publication sequence is
+autobyteus-ts/docs/agent_memory_design_nodejs.md:92:Each threshold or hard-input-cap request captures one immutable planning budget
+autobyteus-ts/docs/agent_memory_design_nodejs.md:99:post-compaction target = max(0, min(quality retention cap, T - trigger headroom))
+autobyteus-ts/docs/agent_memory_design_nodejs.md:116:completed LLM request. Missing usage or an explicitly missing prompt-token count
+autobyteus-ts/docs/agent_memory_design_nodejs.md:122:above-or-equal observation emits one inadequate-reduction diagnostic and moves
+autobyteus-ts/docs/agent_memory_design_nodejs.md:126:episode, and hard-input-cap pressure may request compaction regardless of the
+autobyteus-ts/docs/agent_memory_design_nodejs.md:139:  or awaiting_user_retry
+autobyteus-ts/docs/agent_memory_design_nodejs.md:140:       -> attempt_in_progress(user_retry) on a distinct user-origin turn
+autobyteus-ts/docs/agent_memory_design_nodejs.md:148:entries precede it; those non-user entries remain queued in their relative FIFO
+autobyteus-ts/docs/agent_memory_design_nodejs.md:396:The compaction-agent boundary returns usable final output or a typed runner
+PASS: planning target, missing observation, threshold episode, typed runner, explicit attempt state, user admission, and FIFO guidance is present.
+
+$ implemented-source cross-checks
+44:  const qualityRetentionCapTokens = Math.floor(0.35 * inputBudgetTokens);
+45:  const triggerHeadroomTokens = Math.max(256, Math.ceil(0.10 * triggerThresholdTokens));
+46:  const postCompactionTargetTokens = Math.max(
+59:  const replacementMemoryReserveTokens = Math.min(
+6:      kind: 'awaiting_below_observation';
+12:      kind: 'inadequate_reduction_suppressed';
+40:    if (pressure === 'hard_input_cap') {
+59:    if (planningBudget.observedPromptTokens < planningBudget.triggerThresholdTokens) {
+66:          kind: 'inadequate_reduction_suppressed',
+40:      kind: 'awaiting_user_retry';
+80:      code: 'none_pending' | 'operation_mismatch' | 'attempt_in_progress' | 'user_retry_required' | 'same_turn_retry';
+215:      if (input.turnOrigin !== 'user') {
+219:        return { authorized: false, code: 'same_turn_retry' };
+222:    const authorization = state.kind === 'initial_attempt_ready'
+249:      kind: 'awaiting_user_retry',
+autobyteus-ts/src/agent/compaction/compaction-retry-turn-admission-policy.ts:9:    return !memoryManager?.isCompactionAwaitingUserRetry() || entry.origin === 'user';
+autobyteus-ts/src/agent/event-inbox/agent-event-scheduler.ts:79:        ? inbox.claimFirstMatching(lane, (candidate) => this.isTurnStartDispatchable(candidate))
+39:  if (promptTokens === null) {
+43:        reason: 'missing_prompt_tokens',
+PASS: durable descriptions match the integrated source owners.
+
+$ post-integration executable rerun decision
+NO RERUN: origin/personal remained 54890a07f and no base commit was integrated; API-REV-003 Pass / 98.3% and CRR-006 Pass remain current.
+
+$ git diff --stat
+ autobyteus-server-ts/docs/ARCHITECTURE.md          | 29 +++++++-
+ autobyteus-server-ts/docs/modules/agent_memory.md  | 44 ++++++++++-
+ autobyteus-ts/docs/agent_memory_design.md          | 85 ++++++++++++++++++++--
+ autobyteus-ts/docs/agent_memory_design_nodejs.md   | 85 ++++++++++++++++++++--
+ .../docs/agent_runtime_loop_and_interrupt.md       | 33 +++++++--
+ .../delivery-integrated-state-refresh.log          | 35 +++++++++
+ .../docs-sync-report.md                            | 82 ++++++++++++---------
+ .../docs-sync-validation.log                       | 79 ++++++++++++++++++++
+ 8 files changed, 412 insertions(+), 60 deletions(-)
+
+DR-003 DOCS RESULT: PASS
+
+## DR-003 final handoff and artifact audit — 2026-08-14 (Europe/Berlin)
+$ git diff --check
+PASS: git diff --check
+$ delivery Markdown trailing-whitespace scan
+PASS: delivery Markdown contains no trailing whitespace
+$ core memory-doc mirror comparison after title
+PASS: core memory-doc mirrors match after title
+$ current artifact size and SHA-256
+402327711 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.dmg
+8295f78c6c954eff4793c79666ebf42d65c71124073d601e945520f2f4ba93c5  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.dmg
+397898745 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.zip
+905d164b26644687788945305b14f0a95f92b5527b307f041452c8a8b29e9657  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.zip
+$ current package-verification terminal result
+VERIFICATION RESULT: PASS
+$ generated package ignore boundary
+autobyteus-web/.gitignore:7:electron-dist	autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.dmg
+autobyteus-web/.gitignore:7:electron-dist	autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.zip
+PASS: generated packages remain ignored and outside delivery commit state
+$ git status --short
+ M autobyteus-server-ts/docs/ARCHITECTURE.md
+ M autobyteus-server-ts/docs/modules/agent_memory.md
+ M autobyteus-ts/docs/agent_memory_design.md
+ M autobyteus-ts/docs/agent_memory_design_nodejs.md
+ M autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md
+ M tickets/in-progress/compaction-response-robustness/delivery-integrated-state-refresh.log
+ M tickets/in-progress/compaction-response-robustness/delivery-revision-record.md
+ M tickets/in-progress/compaction-response-robustness/docs-sync-report.md
+ M tickets/in-progress/compaction-response-robustness/docs-sync-validation.log
+ M tickets/in-progress/compaction-response-robustness/handoff-summary.md
+ M tickets/in-progress/compaction-response-robustness/release-deployment-report.md
+?? tickets/in-progress/compaction-response-robustness/electron-build-macos-arm64-dr-003.log
+?? tickets/in-progress/compaction-response-robustness/electron-build-verification-macos-arm64-dr-003.log
+DR-003 FINAL HANDOFF AUDIT: PASS
+
+## DR-004 integrated-state documentation and handoff audit — 2026-08-15 (Europe/Berlin)
+
+- Latest base merge: PASS — `origin/personal` `cd2420c607c5129c961f14d4d9e2559c0888331f` is an ancestor of integrated HEAD `9f00e5d7078dfb4800b8dae9a1b5f4abe3d8d3f8`; relation after merge was 7 ticket-only / 0 base-only commits.
+- Electron build: PASS — `electron-build-macos-arm64-dr-004.log` ends with `build_exit=0`.
+- Package verification: PASS — `electron-build-verification-macos-arm64-dr-004.log` ends with `VERIFICATION RESULT: PASS`.
+- Integrated compatibility: BLOCKED — `delivery-integrated-compatibility-probe-dr-004.log` proves the empty Memory Compactor definition resolves four effective generic native tools.
+- Documentation decision: PASS — long-lived docs retain the approved zero-tool contract and do not normalize the executable mismatch; `docs-sync-report.md`, `handoff-summary.md`, and `release-deployment-report.md` explicitly record the local-fix route.
+- Release/finalization boundary: PASS — no push, target merge, archive, publication, deployment, or cleanup was performed.
+
+DR-004 DOCS/HANDOFF RESULT: BLOCKED BY INTEGRATED SOURCE COMPATIBILITY FINDING
+- Post-build base re-fetch: PASS — `origin/personal` remained `cd2420c607c5129c961f14d4d9e2559c0888331f`, contained by rebuild HEAD `9f00e5d7078dfb4800b8dae9a1b5f4abe3d8d3f8` at 7 ahead / 0 behind.
+
+## DR-005 documentation validation — 2026-08-15 (Europe/Berlin)
+$ git diff --check
+PASS: git diff --check
+$ delivery/long-lived Markdown trailing-whitespace scan
+PASS: Markdown contains no trailing whitespace
+$ core memory-doc mirror comparison after title
+PASS: core memory-doc mirrors match after title
+PASS: core doc contains ProviderSafeCompactionText
+PASS: core doc contains input_construction_failure
+PASS: core doc contains U+FFFD
+PASS: core doc contains unicode-safe-text.ts
+PASS: exact compactor exception replaces stale universal native-default wording
+PASS: shared derived Unicode policy preserves raw authority
+PROBE RESULT: PASS — compactor zero-tool exception and ordinary native defaults coexist
+relation=9	0
+DR-005 DOCS RESULT: PASS
+
+## DR-005 final handoff and artifact audit — 2026-08-15 (Europe/Berlin)
+$ git diff --check
+PASS: git diff --check
+$ delivery/long-lived Markdown trailing-whitespace scan
+PASS: Markdown contains no trailing whitespace
+$ core memory-doc mirror comparison after title
+PASS: core memory-doc mirrors match after title
+$ current DR-005 artifact size and SHA-256
+402293986 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.dmg
+398040397 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.zip
+50ac6506ba6980870463b92e816c9e8ad0d843d0183432f63e59fe950f3ff894  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.dmg
+89c95c31f93e9a40e43645d74e3079f2da7d3b1b80d3b56c1a1f5bdefae33ab3  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.zip
+PASS: artifact identities match DR-005 handoff
+$ current build/package terminal results
+
+finished_utc=2026-08-15T06:18:05Z
+build_exit=0
+VERIFICATION RESULT: PASS
+PASS: build and package verification terminal results
+$ post-build base containment
+head=75168d307f5291c3bbd6e98978db146c4c3204dd
+base=cd2420c607c5129c961f14d4d9e2559c0888331f
+base...head=0	9
+PASS: latest origin/personal is contained at 9 ahead / 0 behind
+$ generated package ignore boundary
+autobyteus-web/.gitignore:7:electron-dist	autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.dmg
+autobyteus-web/.gitignore:7:electron-dist	autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.zip
+PASS: generated packages remain ignored and outside delivery commit state
+$ current-handoff supersession scan
+tickets/in-progress/compaction-response-robustness/handoff-summary.md:9:- Current delivery revision: `DR-005`
+tickets/in-progress/compaction-response-robustness/handoff-summary.md:54:- DMG size / SHA-256: `402293986` bytes / `50ac6506ba6980870463b92e816c9e8ad0d843d0183432f63e59fe950f3ff894`
+tickets/in-progress/compaction-response-robustness/handoff-summary.md:56:- ZIP size / SHA-256: `398040397` bytes / `89c95c31f93e9a40e43645d74e3079f2da7d3b1b80d3b56c1a1f5bdefae33ab3`
+tickets/in-progress/compaction-response-robustness/handoff-summary.md:80:`Pass — latest origin/personal is contained, reviewed source/API/E2E/test evidence is current, durable docs are synchronized, and the rebuilt local Electron package is integrity/runtime-verified. Explicit hands-on user verification is the only current gate before repository finalization.`
+tickets/in-progress/compaction-response-robustness/release-deployment-report.md:5:DR-005 covers delivery re-entry after the reviewed provider-boundary and exact-compactor-tool fixes, latest-`origin/personal` refresh, durable documentation synchronization, and the user-requested macOS ARM64 Electron rebuild and package verification. No release, publication, deployment, or repository finalization was requested or performed.
+tickets/in-progress/compaction-response-robustness/release-deployment-report.md:43:- DMG integrity: `402293986` bytes; SHA-256 `50ac6506ba6980870463b92e816c9e8ad0d843d0183432f63e59fe950f3ff894`; SHA-512 `ZII59UlLE3WyTXZIY1vsNIhuvcyD1H0Yew3l6JJ/LirYmP48o2nCjJT9M4maXSNeub0cSNAEw6zZwT3TMqE8xw==`; `hdiutil verify` Pass.
+tickets/in-progress/compaction-response-robustness/release-deployment-report.md:45:- ZIP integrity: `398040397` bytes; SHA-256 `89c95c31f93e9a40e43645d74e3079f2da7d3b1b80d3b56c1a1f5bdefae33ab3`; SHA-512 `tsodVqTeDODmy3+PfploceNbOm0ro07HpI85G7ba2IHgmxeLat6/YEgL8eonsI7DOdQv95t2HDoce5o11V2HBw==`; `unzip -tq` Pass.
+tickets/in-progress/compaction-response-robustness/release-deployment-report.md:65:No remote ticket or target state changed. The generated DMG/ZIP is ignored local build output and has not been published. DR-001 through DR-004 artifacts and hashes are historical; only DR-005 hashes identify the current same-path files.
+PASS: handoff/release report identify DR-005 and supersede DR-004
+$ git status --short (explicit-verification hold)
+ M autobyteus-server-ts/docs/ARCHITECTURE.md
+ M autobyteus-server-ts/docs/modules/agent_memory.md
+ M autobyteus-server-ts/docs/modules/agent_tools.md
+ M autobyteus-server-ts/docs/modules/agent_work_traces.md
+ M autobyteus-ts/docs/agent_memory_design.md
+ M autobyteus-ts/docs/agent_memory_design_nodejs.md
+ M autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md
+ M tickets/in-progress/compaction-response-robustness/delivery-integrated-state-refresh.log
+ M tickets/in-progress/compaction-response-robustness/delivery-revision-record.md
+ M tickets/in-progress/compaction-response-robustness/docs-sync-report.md
+ M tickets/in-progress/compaction-response-robustness/docs-sync-validation.log
+ M tickets/in-progress/compaction-response-robustness/handoff-summary.md
+ M tickets/in-progress/compaction-response-robustness/release-deployment-report.md
+?? tickets/in-progress/compaction-response-robustness/delivery-integrated-compatibility-probe-dr-005.log
+?? tickets/in-progress/compaction-response-robustness/electron-build-macos-arm64-dr-005.log
+?? tickets/in-progress/compaction-response-robustness/electron-build-verification-macos-arm64-dr-005.log
+DR-005 FINAL HANDOFF AUDIT: PASS
+
+## DR-006 integrated documentation validation — 2026-08-15 (Europe/Berlin)
+$ git diff --check
+PASS: git diff --check
+$ delivery/long-lived Markdown trailing-whitespace scan
+PASS: Markdown contains no trailing whitespace
+$ core memory-doc mirror after intentional title
+PASS: core memory-doc mirrors match after title
+$ required durable invariant markers
+autobyteus-server-ts/docs/ARCHITECTURE.md:158:episode, changed budget identity resets it, and hard-input-cap pressure remains
+autobyteus-server-ts/docs/ARCHITECTURE.md:188:children are disabled siblings owned by the parent operation, not recursive
+autobyteus-server-ts/docs/ARCHITECTURE.md:223:`disabled` has no policy or runner; `enabled` has the existing single
+autobyteus-server-ts/docs/ARCHITECTURE.md:231:The generic LLM phase resolves provider/model request capacity for both
+autobyteus-server-ts/docs/ARCHITECTURE.md:234:skip proactive and hard-input-cap classification, pending/execution work, and
+autobyteus-server-ts/docs/ARCHITECTURE.md:239:composition and requires no persisted-data migration.
+autobyteus-server-ts/docs/modules/agent_memory.md:122:change resets the episode, and hard-input-cap pressure can still request an
+autobyteus-server-ts/docs/modules/agent_memory.md:171:initial and optional correction are disabled siblings owned by the same parent
+autobyteus-server-ts/docs/modules/agent_memory.md:248:Core memory owns a closed `MemoryCompactionConfiguration`: `disabled` has no
+autobyteus-server-ts/docs/modules/agent_memory.md:261:The generic LLM phase still resolves provider/model request capacity for both
+autobyteus-ts/docs/agent_memory_design.md:92:`MemoryCompactionConfiguration` is the complete runtime composition owned by
+autobyteus-ts/docs/agent_memory_design.md:93:memory. Its closed variants are `disabled`, with no policy or runner, and
+autobyteus-ts/docs/agent_memory_design.md:105:`LlmPhase` resolves provider/model request capacity for both variants. Enabled
+autobyteus-ts/docs/agent_memory_design.md:108:skip all of that automatic-compaction work at both proactive and hard-input-cap
+autobyteus-ts/docs/agent_memory_design.md:113:state only and adds no persisted field or migration.
+autobyteus-ts/docs/agent_memory_design.md:117:Each threshold or hard-input-cap request captures one immutable planning budget
+autobyteus-ts/docs/agent_memory_design.md:151:episode, and hard-input-cap pressure may request compaction regardless of the
+autobyteus-ts/docs/agent_memory_design.md:278:derived snapshot in the existing shapes, so no persisted-data migration is
+autobyteus-ts/docs/agent_memory_design.md:445:sibling of the initial child, not a descendant; both remain tool-free and write
+PASS: composition, capacity, leaf, sibling, and no-migration guidance is present
+$ stale fragmented-composition guidance scan
+PASS: stale fragmented-composition guidance is absent
+$ implemented-source ownership cross-checks
+18:export const DEFAULT_MEMORY_COMPACTION_CONFIGURATION: DisabledMemoryCompactionConfiguration =
+21:export const createDisabledMemoryCompactionConfiguration = (
+22:): DisabledMemoryCompactionConfiguration => DEFAULT_MEMORY_COMPACTION_CONFIGURATION;
+24:export const createEnabledMemoryCompactionConfiguration = (
+41:    return DEFAULT_MEMORY_COMPACTION_CONFIGURATION;
+43:  return createEnabledMemoryCompactionConfiguration(
+159:  getAutomaticCompactionConfiguration(): MemoryCompactionConfiguration { return this.automaticCompactionConfiguration; }
+21:  resolveCompactionTokenBudget,
+22:  resolveLlmRequestCapacity,
+85:    const requestCapacity = resolveLlmRequestCapacity(
+89:      automaticCompaction.kind === 'enabled'
+93:    const compactionTokenBudget = automaticCompaction.kind === 'enabled' && requestCapacity
+94:      ? resolveCompactionTokenBudget(
+102:    if (automaticCompaction.kind === 'enabled' && compactionTokenBudget) {
+126:    if (automaticCompaction.kind === 'enabled') {
+11:  createDisabledMemoryCompactionConfiguration,
+12:  createEnabledMemoryCompactionConfiguration,
+52:import { MEMORY_COMPACTOR_AGENT_DEFINITION_ID } from "../../../built-in-agents/built-in-agent-registry.js";
+450:    let memoryCompaction: MemoryCompactionConfiguration = createDisabledMemoryCompactionConfiguration();
+451:    if (agentDefinitionId !== MEMORY_COMPACTOR_AGENT_DEFINITION_ID) {
+470:      memoryCompaction = createEnabledMemoryCompactionConfiguration(new CompactionPolicy(), compactionAgentRunner);
+PASS: durable descriptions match integrated source owners
+$ post-integration smoke and base relation
+INTEGRATED SMOKE RESULT: PASS
+relation=0	12
+PASS: latest base contained and required integrated smoke passed
+DR-006 DOCS RESULT: PASS
+
+## DR-006 final handoff and artifact audit — 2026-08-15 (Europe/Berlin)
+$ git diff --check
+PASS: git diff --check
+$ delivery/long-lived Markdown trailing-whitespace scan
+PASS: Markdown contains no trailing whitespace
+$ core memory-doc mirror comparison after title
+PASS: core memory-doc mirrors match after title
+$ current build/package terminal results
+build_exit=0
+VERIFICATION RESULT: PASS
+PASS: DR-006 build and package verification terminal results
+$ current DR-006 artifact size and SHA-256
+402536373 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.51.dmg
+398169811 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.51.zip
+3167d439c78903d14cba5828fb1084064f1d9bcb7994c7a98d210fe774873b8c  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.51.dmg
+f852f55b21a1c33731b46ccea26e9ebc2aab622f49fa77d1fc50cffc9bc8d3e1  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.51.zip
+PASS: artifact identities match the DR-006 handoff
+$ post-build base containment
+head=70ed21eff3afa223da233b6bb603915ba48a48d7
+base=edace166ee24681126e9aec8c6c3ab594fb6ebd5
+base...head=0	12
+PASS: latest origin/personal is contained at 12 ahead / 0 behind
+$ generated package ignore boundary
+autobyteus-web/.gitignore:7:electron-dist AutoByteus_personal_macos-arm64-1.4.51.dmg
+autobyteus-web/.gitignore:7:electron-dist AutoByteus_personal_macos-arm64-1.4.51.zip
+PASS: generated packages remain ignored and outside delivery commit state
+$ current-handoff supersession scan
+PASS: handoff/release report identify DR-006, version 1.4.51, current hashes, and supersede DR-005
+$ current delivery records
+PASS: docs-sync report, handoff summary, release/deployment report, and delivery revision record consistently describe the integrated DR-006 state
+$ git status --short (explicit-verification hold)
+ M autobyteus-server-ts/docs/ARCHITECTURE.md
+ M autobyteus-server-ts/docs/modules/agent_memory.md
+ M autobyteus-ts/docs/agent_memory_design.md
+ M autobyteus-ts/docs/agent_memory_design_nodejs.md
+ M autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md
+ M tickets/in-progress/compaction-response-robustness/delivery-integrated-state-refresh.log
+ M tickets/in-progress/compaction-response-robustness/delivery-revision-record.md
+ M tickets/in-progress/compaction-response-robustness/docs-sync-report.md
+ M tickets/in-progress/compaction-response-robustness/docs-sync-validation.log
+ M tickets/in-progress/compaction-response-robustness/handoff-summary.md
+ M tickets/in-progress/compaction-response-robustness/release-deployment-report.md
+?? tickets/in-progress/compaction-response-robustness/delivery-integrated-smoke-dr-006.log
+?? tickets/in-progress/compaction-response-robustness/electron-build-macos-arm64-dr-006.log
+?? tickets/in-progress/compaction-response-robustness/electron-build-verification-macos-arm64-dr-006.log
+DR-006 FINAL HANDOFF AUDIT: PASS

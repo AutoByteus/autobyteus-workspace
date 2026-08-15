@@ -108,6 +108,7 @@ class FakeCompactorRun {
     private readonly events: AgentRunEvent[] = [
       createCompactorEvent("visible-compaction-run-1", AgentRunEventType.SEGMENT_CONTENT, {
         id: "message-1",
+        turn_id: "compaction-turn-1",
         segment_type: "text",
         delta: COMPACTION_OUTPUT,
       }),
@@ -149,9 +150,9 @@ const createMainModel = () =>
     value: "runtime-compaction-parent-model",
     canonicalName: "runtime-compaction-parent-model",
     provider: LLMProvider.OPENAI,
-    activeContextTokens: 150,
-    maxContextTokens: 150,
-    maxOutputTokens: 20,
+    activeContextTokens: 30_000,
+    maxContextTokens: 30_000,
+    maxOutputTokens: 200,
   });
 
 const createLaunchResolverModel = (modelIdentifier: string) =>
@@ -231,6 +232,7 @@ const collectCompactionStatuses = (events: unknown[]): CompactionStatusPayload[]
       (event as { eventType?: unknown }).eventType === AgentRunEventType.COMPACTION_STATUS,
     )
     .map((event) => event.payload as CompactionStatusPayload);
+const promptSizedUserMessage = (label: string): string => `${label} ${"context ".repeat(3_000)}`;
 
 describe("compaction agent parent runtime/model fallback executable validation", () => {
   let memoryDir = "";
@@ -279,11 +281,11 @@ describe("compaction agent parent runtime/model fallback executable validation",
       createMainModel(),
       new LLMConfig({
         systemMessage: "Parent compaction integration prompt",
-        maxTokens: 20,
+        maxTokens: 200,
         compactionRatio: 0.5,
         safetyMarginTokens: 10,
       }),
-      [20, 20, 20, 80, 20],
+      [200, 200, 200, 18_000, 200],
     );
     const compactionAgentRunnerFactory = vi.fn((input: CompactionAgentRunnerFactoryInput) =>
       new ServerCompactionAgentRunner({
@@ -335,8 +337,11 @@ describe("compaction agent parent runtime/model fallback executable validation",
 
     try {
       for (let turnIndex = 1; turnIndex <= 3; turnIndex += 1) {
-        const result = await backend.postUserMessage(new AgentInputUserMessage(`Seed turn ${turnIndex}`));
-        expect(result.accepted).toBe(true);
+        const result = await backend.dispatchUserInput({
+          kind: "start_turn",
+          message: new AgentInputUserMessage(promptSizedUserMessage(`Seed turn ${turnIndex}`)),
+        });
+        expect(result.forwarded).toBe(true);
         await waitFor(() =>
           parentLLM.requests.length === turnIndex &&
           backend.getLifecycleSnapshot().phase === "idle" &&
@@ -344,18 +349,29 @@ describe("compaction agent parent runtime/model fallback executable validation",
         );
       }
 
-      await backend.postUserMessage(new AgentInputUserMessage("Please remember the fallback behavior."));
+      await backend.dispatchUserInput({
+        kind: "start_turn",
+        message: new AgentInputUserMessage("Please remember the fallback behavior."),
+      });
       await waitFor(() =>
         parentLLM.requests.length === 4 &&
-        (backend.getContext().runtimeContext as any)?.state?.memoryManager?.compactionRequired === false &&
         backend.getLifecycleSnapshot().phase === "idle" &&
-        collectCompactionStatuses(serverEvents).some((event) => event.phase === "completed"),
+        collectCompactionStatuses(serverEvents).some((event) =>
+          event.phase === "completed" || event.phase === "failed"),
       );
+      const terminalCompaction = collectCompactionStatuses(serverEvents).find((event) =>
+        event.phase === "completed" || event.phase === "failed");
+      expect(terminalCompaction?.phase, terminalCompaction?.error_message ?? undefined).toBe("completed");
+      expect((backend.getContext().runtimeContext as any)?.state?.memoryManager?.hasPendingCompaction())
+        .toBe(false);
 
-      await backend.postUserMessage(new AgentInputUserMessage("Continue after compaction."));
+      await backend.dispatchUserInput({
+        kind: "start_turn",
+        message: new AgentInputUserMessage("Continue after compaction."),
+      });
       await waitFor(() =>
         parentLLM.requests.length === 5 &&
-        (backend.getContext().runtimeContext as any)?.state?.memoryManager?.compactionRequired === false &&
+        (backend.getContext().runtimeContext as any)?.state?.memoryManager?.hasPendingCompaction() === false &&
         backend.getLifecycleSnapshot().phase === "idle",
       );
 
@@ -404,6 +420,7 @@ describe("compaction agent parent runtime/model fallback executable validation",
     const visibleCompactorRun = new FakeCompactorRun("visible-compaction-run-2", [
       createCompactorEvent("visible-compaction-run-2", AgentRunEventType.SEGMENT_CONTENT, {
         id: "message-1",
+        turn_id: "compaction-turn-1",
         segment_type: "text",
         delta: COMPACTION_OUTPUT,
       }),
@@ -449,6 +466,7 @@ describe("compaction agent parent runtime/model fallback executable validation",
     const visibleCompactorRun = new FakeCompactorRun("visible-compaction-run-3", [
       createCompactorEvent("visible-compaction-run-3", AgentRunEventType.SEGMENT_CONTENT, {
         id: "message-1",
+        turn_id: "compaction-turn-1",
         segment_type: "text",
         delta: COMPACTION_OUTPUT,
       }),

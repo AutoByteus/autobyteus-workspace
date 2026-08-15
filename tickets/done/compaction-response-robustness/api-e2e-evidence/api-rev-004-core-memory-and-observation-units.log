@@ -1,0 +1,51 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-ts
+
+ ✓ tests/unit/memory/raw-trace-archive-manager.test.ts (4 tests) 14ms
+ ✓ tests/unit/memory/working-context-snapshot-serializer.test.ts (4 tests) 12ms
+ ✓ tests/unit/memory/file-store.test.ts (8 tests) 22ms
+ ✓ tests/unit/memory/working-context-compaction-prompt-builder.test.ts (7 tests) 65ms
+ ✓ tests/unit/memory/run-memory-file-store.test.ts (7 tests) 60ms
+ ✓ tests/unit/memory/native-working-context-snapshot-v5-converter.test.ts (11 tests) 11ms
+ ✓ tests/unit/memory/llm-request-recovery.test.ts (2 tests) 16ms
+ ✓ tests/unit/memory/pending-compaction-executor.test.ts (7 tests) 44ms
+ ✓ tests/unit/memory/memory-manager.test.ts (21 tests) 67ms
+ ✓ tests/unit/memory/accepted-compaction-committer.test.ts (9 tests) 6ms
+ ✓ tests/unit/memory/memory-manager-working-context-snapshot-persistence.test.ts (3 tests) 16ms
+ ✓ tests/unit/memory/working-context-snapshot-bootstrapper.test.ts (5 tests) 19ms
+ ✓ tests/unit/memory/working-context-compaction-strategy-registry.test.ts (6 tests) 17ms
+ ✓ tests/unit/memory/agent-compaction-summarizer.test.ts (6 tests) 27ms
+ ✓ tests/unit/memory/compaction-response-parser.test.ts (16 tests) 9ms
+ ✓ tests/unit/memory/working-context-tool-protocol-repairer.test.ts (3 tests) 6ms
+ ✓ tests/unit/memory/working-context-compaction-output-validator.test.ts (15 tests) 11ms
+ ✓ tests/unit/memory/memory-manager-reasoning-persistence.test.ts (3 tests) 12ms
+ ✓ tests/unit/memory/working-context-message-window-planner.test.ts (8 tests) 11ms
+ ✓ tests/unit/memory/compaction-result-normalizer.test.ts (3 tests) 4ms
+ ✓ tests/unit/memory/unicode-safe-text.test.ts (9 tests) 9ms
+ ✓ tests/unit/memory/structured-json-compaction-strategy.test.ts (3 tests) 6ms
+ ✓ tests/unit/memory/working-context-snapshot-store.test.ts (2 tests) 15ms
+ ✓ tests/unit/memory/tool-interaction-builder.test.ts (5 tests) 5ms
+ ✓ tests/unit/memory/readable-memory-presentation.test.ts (4 tests) 5ms
+ ✓ tests/unit/memory/compacted-memory-context-projector.test.ts (2 tests) 4ms
+ ✓ tests/unit/memory/tool-trace-lifecycle-index.test.ts (2 tests) 3ms
+ ✓ tests/unit/memory/current-compaction-output-loader.test.ts (6 tests) 5ms
+ ✓ tests/unit/memory/working-context.test.ts (2 tests) 4ms
+ ✓ tests/unit/agent/loop/llm-phase-compaction.test.ts (3 tests) 7ms
+ ✓ tests/unit/memory/memory-tool-continuation-reasoning.test.ts (1 test) 10ms
+ ✓ tests/unit/memory/compaction-planning-budget.test.ts (5 tests) 3ms
+ ✓ tests/unit/memory/memory-manager-compaction-coordinator.test.ts (3 tests) 4ms
+ ✓ tests/unit/memory/retriever.test.ts (1 test) 5ms
+ ✓ tests/unit/memory/compaction-threshold-gate.test.ts (4 tests) 3ms
+ ✓ tests/unit/memory/raw-trace-item.test.ts (3 tests) 3ms
+ ✓ tests/unit/memory/path-resolver.test.ts (4 tests) 2ms
+ ✓ tests/unit/memory/compaction-runtime-settings.test.ts (2 tests) 2ms
+ ✓ tests/unit/memory/compaction-policy.test.ts (3 tests) 2ms
+ ✓ tests/unit/memory/turn-tracker.test.ts (2 tests) 1ms
+ ✓ tests/unit/memory/file-compaction-lineage-store.test.ts (9 tests) 1622ms
+     ✓ reads the exact tail after 1,000 recurrent appends without a mutable state pointer  1600ms
+
+ Test Files  41 passed (41)
+      Tests  223 passed (223)
+   Start at  07:50:07
+   Duration  2.05s (transform 2.16s, setup 265ms, import 4.19s, tests 2.17s, environment 3ms)
+
