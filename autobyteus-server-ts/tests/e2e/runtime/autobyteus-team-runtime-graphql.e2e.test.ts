@@ -689,6 +689,12 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
           message.type === "TOOL_APPROVAL_REQUESTED" && message.payload.agent_name === "worker",
         "worker TOOL_APPROVAL_REQUESTED",
       );
+      expect(approvalRequested.payload.tool_name).toBe("write_file");
+      expect(approvalRequested.payload.arguments).toMatchObject({
+        path: targetRelativePath,
+        base_dir: workspaceRootPath,
+        content: expectedContent,
+      });
       const invocationId = resolveInvocationId(approvalRequested.payload);
       expect(invocationId).toBeTruthy();
 

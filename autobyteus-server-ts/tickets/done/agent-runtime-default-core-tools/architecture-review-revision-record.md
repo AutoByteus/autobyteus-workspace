@@ -14,9 +14,9 @@
 
 ### ARCH-REV-001 — Initial native-runtime default-tool architecture review
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/in-progress/agent-runtime-default-core-tools/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/design-review-report.md`
 - Review round and trigger: Round 1; complete handoff from `solution_designer` for the native AutoByteus default foundation-tools design.
-- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/in-progress/agent-runtime-default-core-tools/solution-revision-record.md` (`SR-001`); findings `ARCH-REQ-001`, `ARCH-DI-001`, `ARCH-DI-002`.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/solution-revision-record.md` (`SR-001`); findings `ARCH-REQ-001`, `ARCH-DI-001`, `ARCH-DI-002`.
 - Relevant solution revision IDs: `SR-001`
 - Prior authoritative decision: `N/A`
 - Current authoritative decision: `Fail`
@@ -33,9 +33,9 @@ None.
 
 ### ARCH-REV-002 — Verify SR-002 resolution and authorize implementation
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/in-progress/agent-runtime-default-core-tools/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/design-review-report.md`
 - Review round and trigger: Round 2; cumulative package returned after `SR-002` rework of ARCH-REV-001 findings.
-- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/in-progress/agent-runtime-default-core-tools/solution-revision-record.md` (`SR-002`); prior findings `ARCH-REQ-001`, `ARCH-DI-001`, `ARCH-DI-002`.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/solution-revision-record.md` (`SR-002`); prior findings `ARCH-REQ-001`, `ARCH-DI-001`, `ARCH-DI-002`.
 - Relevant solution revision IDs: `SR-002`
 - Prior authoritative decision: `Fail` (`ARCH-REV-001`)
 - Current authoritative decision: `Pass`
@@ -56,9 +56,9 @@ None.
 
 ### ARCH-REV-003 — Review approved system-prompt file-operation contract
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/in-progress/agent-runtime-default-core-tools/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/design-review-report.md`
 - Review round and trigger: Round 3; `SR-009` returned the cumulative package after explicit user approval of the system-prompt file-operation contract. The solution record labels the return `ARCH-REV-002`, but that ID is already the prior Pass; this entry preserves the canonical sequence.
-- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/in-progress/agent-runtime-default-core-tools/solution-revision-record.md` (`SR-009`); new finding `ARCH-DI-003`.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/solution-revision-record.md` (`SR-009`); new finding `ARCH-DI-003`.
 - Relevant solution revision IDs: `SR-003` through `SR-009`, with `SR-009` as the approval-state trigger; prior native rework remains verified through `SR-002`.
 - Prior authoritative decision: `Pass` (`ARCH-REV-002`)
 - Current authoritative decision: `Fail`
@@ -79,9 +79,9 @@ None.
 
 ### ARCH-REV-004 — Verify SR-010 resolution and authorize implementation
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/in-progress/agent-runtime-default-core-tools/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/design-review-report.md`
 - Review round and trigger: Round 4; `SR-010` returned the cumulative package after rework of `ARCH-DI-003`.
-- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/in-progress/agent-runtime-default-core-tools/solution-revision-record.md` (`SR-010`); prior finding `ARCH-DI-003`.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/solution-revision-record.md` (`SR-010`); prior finding `ARCH-DI-003`.
 - Relevant solution revision IDs: `SR-010`, with `SR-009` as the approved prompt-contract state and `SR-002` as the prior native-runtime rework baseline.
 - Prior authoritative decision: `Fail` (`ARCH-REV-003`)
 - Current authoritative decision: `Pass`
@@ -100,9 +100,9 @@ None.
 
 ### ARCH-REV-005 — Review four-tool native baseline scope expansion
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/in-progress/agent-runtime-default-core-tools/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/design-review-report.md`
 - Review round and trigger: Round 5; `SR-011` returned the cumulative package for the user-approved expansion from the prior three-tool native baseline to the existing four-tool baseline including `write_file`.
-- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/in-progress/agent-runtime-default-core-tools/solution-revision-record.md` (`SR-011`); no new finding IDs.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/solution-revision-record.md` (`SR-011`); no new finding IDs.
 - Relevant solution revision IDs: `SR-011`, with `SR-010`, `SR-009`, and `SR-002` as still-relevant design history.
 - Prior authoritative decision: `Pass` (`ARCH-REV-004`)
 - Current authoritative decision: `Pass`

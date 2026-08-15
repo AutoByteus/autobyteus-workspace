@@ -2,13 +2,13 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/in-progress/agent-runtime-default-core-tools/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/in-progress/agent-runtime-default-core-tools/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/in-progress/agent-runtime-default-core-tools/design-spec.md`
-- Supplemental Task Artifacts Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/in-progress/agent-runtime-default-core-tools/runtime-tool-exposure-matrix.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/in-progress/agent-runtime-default-core-tools/system-prompt-file-operations-contract.md`
-- Solution Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/in-progress/agent-runtime-default-core-tools/solution-revision-record.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/design-spec.md`
+- Supplemental Task Artifacts Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/runtime-tool-exposure-matrix.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/system-prompt-file-operations-contract.md`
+- Solution Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/solution-revision-record.md`
 - Relevant Solution Revision IDs: `SR-011`, with `SR-010`, `SR-009`, and `SR-002` as still-relevant prior design history
-- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/in-progress/agent-runtime-default-core-tools/architecture-review-revision-record.md`
+- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/architecture-review-revision-record.md`
 - Current Architecture Review Revision ID: `ARCH-REV-005`
 - Current Review Round: `5`
 - Trigger: `SR-011` user-requested expansion of the native default baseline from three tools to the existing four-tool set, including `write_file`.

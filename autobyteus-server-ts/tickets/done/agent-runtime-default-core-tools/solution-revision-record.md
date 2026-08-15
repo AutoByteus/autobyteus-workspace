@@ -34,7 +34,7 @@
 - Remaining gaps or risks: Implementation validation requires workspace dependency installation; architecture review must confirm the native wrapper boundary and coverage scope.
 ### SR-002 — Resolve ARCH-REV-001 upstream coherence findings
 
-- Triggering role, report path, and round: architecture_reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/in-progress/agent-runtime-default-core-tools/design-review-report.md`; ARCH-REV-001 / Round 1.
+- Triggering role, report path, and round: architecture_reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/design-review-report.md`; ARCH-REV-001 / Round 1.
 - Triggering finding IDs: ARCH-REQ-001, ARCH-DI-001, ARCH-DI-002.
 - Prior authoritative result: Architecture review `Fail` before implementation.
 - Current authoritative result: Requirements/investigation/design package reworked; ready for ARCH-REV-002; implementation still not authorized.
@@ -154,7 +154,7 @@
 
 ### SR-010 — Resolve ARCH-DI-003 durable prompt-document inventory gap
 
-- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/in-progress/agent-runtime-default-core-tools/design-review-report.md`; ARCH-REV-003 / Round 3.
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/design-review-report.md`; ARCH-REV-003 / Round 3.
 - Triggering finding IDs: ARCH-DI-003.
 - Prior authoritative result: Architecture review `Fail`; the native-only runtime design and all prior ARCH-REV-001 findings remained resolved, but the durable prompt-document inventory was incomplete.
 - Current authoritative result: Design rework is complete and the cumulative package is ready for ARCH-REV-004; implementation remains unauthorized.
@@ -169,7 +169,7 @@
 
 ### SR-011 — Expand the native baseline with write_file
 
-- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/in-progress/agent-runtime-default-core-tools/code-review-report.md` and the `code_reviewer` follow-up message; post-CRR-006 scope review.
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/code-review-report.md` and the `code_reviewer` follow-up message; post-CRR-006 scope review.
 - Triggering finding IDs: N/A; this is a user-requested behavior-scope expansion, not an implementation defect in the prior three-tool scope.
 - Prior authoritative result: The approved design and implemented/reviewed baseline required native `run_bash`, `read_file`, and `edit_file`, while `write_file` remained configured/optional.
 - Current authoritative result: The requirements, investigation notes, design spec, runtime exposure matrix, and prompt contract now specify native `run_bash`, `read_file`, `edit_file`, and `write_file` as the four-tool baseline for standalone and team create/restore; architecture review is required before follow-up implementation.

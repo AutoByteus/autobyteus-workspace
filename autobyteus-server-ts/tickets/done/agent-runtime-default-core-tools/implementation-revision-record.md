@@ -4,14 +4,14 @@
 
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
-| IR-001 | `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/in-progress/agent-runtime-default-core-tools/architecture-review-revision-record.md`; ARCH-REV-004 implementation authorization | N/A | `Initial Baseline` | `SR-010`, `ARCH-REV-004`, `CRR-N/A`, `API-REV-N/A`, `DR-N/A` | Implemented and ready for code review |
-| IR-002 | `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/in-progress/agent-runtime-default-core-tools/architecture-review-revision-record.md`; ARCH-REV-005 fresh revised-scope authorization | N/A | `Local Fix` | `SR-011`, `ARCH-REV-005`, prior context `CRR-006`/`API-REV-002`, current `CRR-N/A`/`API-REV-N/A`/`DR-N/A` | Four-tool revised implementation ready for fresh code review |
+| IR-001 | `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/architecture-review-revision-record.md`; ARCH-REV-004 implementation authorization | N/A | `Initial Baseline` | `SR-010`, `ARCH-REV-004`, `CRR-N/A`, `API-REV-N/A`, `DR-N/A` | Implemented and ready for code review |
+| IR-002 | `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/architecture-review-revision-record.md`; ARCH-REV-005 fresh revised-scope authorization | N/A | `Local Fix` | `SR-011`, `ARCH-REV-005`, prior context `CRR-006`/`API-REV-002`, current `CRR-N/A`/`API-REV-N/A`/`DR-N/A` | Four-tool revised implementation ready for fresh code review |
 
 ## Revision Entries
 
 ### IR-001 — Native defaults, prompt contract, and durable documentation baseline
 
-- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/in-progress/agent-runtime-default-core-tools/architecture-review-revision-record.md`; Round 4 / ARCH-REV-004 Pass.
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/architecture-review-revision-record.md`; Round 4 / ARCH-REV-004 Pass.
 - Triggering finding IDs: `N/A`; the reviewed package had no unresolved findings.
 - Classification: `Initial Baseline`
 - Prior authoritative result: `N/A`
@@ -37,7 +37,7 @@
 
 ### IR-002 — Expand the native baseline to the approved four-tool scope
 
-- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/in-progress/agent-runtime-default-core-tools/architecture-review-revision-record.md`; Round 5 / ARCH-REV-005 Pass for SR-011.
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-runtime-default-core-tools/autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/architecture-review-revision-record.md`; Round 5 / ARCH-REV-005 Pass for SR-011.
 - Triggering finding IDs: `N/A`; this is an explicitly approved scope expansion, not a finding resolution.
 - Classification: `Local Fix` — extend the existing native tuple and its coverage; no new boundary or compatibility path.
 - Prior authoritative result: `IR-001` three-tool native implementation, previously reviewed through CRR-001/CRR-006 and API-REV-002; those artifacts are historical context only for this fresh cycle.
