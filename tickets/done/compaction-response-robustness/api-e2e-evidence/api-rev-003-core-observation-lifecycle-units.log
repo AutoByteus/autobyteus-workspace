@@ -1,0 +1,72 @@
+$ pnpm exec vitest run [7 IR-003 observation/lifecycle files] --no-watch
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-ts
+
+ ✓ tests/unit/memory/compaction-planning-budget.test.ts (5 tests) 3ms
+ ✓ tests/unit/memory/compaction-threshold-gate.test.ts (4 tests) 3ms
+ ✓ tests/unit/agent/loop/llm-phase-compaction.test.ts (3 tests) 6ms
+ ✓ tests/unit/memory/memory-manager-compaction-coordinator.test.ts (3 tests) 3ms
+ ✓ tests/unit/memory/llm-request-recovery.test.ts (2 tests) 12ms
+ ✓ tests/unit/llm/api/token-usage-normalizers.test.ts (9 tests) 6ms
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase unified streaming setup > uses the unified handler path without tool schemas when the turn has no tools
+AgentRuntimeState initialized for agent_id 'agent_no_tools'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentConfig created for name='agent', role='role'.
+AgentContext composed for agent_id 'agent_no_tools'. Config and State linked.
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase unified streaming setup > uses the unified handler path without tool schemas when the turn has no tools
+compaction_budget_skipped_no_usage {
+  agent_id: 'agent_no_tools',
+  turn_id: 'turn_no_tools',
+  reason: 'missing_usage'
+}
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase successful retained-outcome recovery settlement > captures once and releases once after real Tool-invocation ingestion without restoring retained context
+Successfully registered tool definition: 'request_recovery_test_tool'
+AgentRuntimeState initialized for agent_id 'agent_tool_recovery'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentConfig created for name='agent', role='role'.
+AgentContext composed for agent_id 'agent_tool_recovery'. Config and State linked.
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase successful retained-outcome recovery settlement > captures once and releases once after real Tool-invocation ingestion without restoring retained context
+LlmStreamingResponseHandler finalized 1 tool invocations.
+compaction_budget_skipped_no_usage {
+  agent_id: 'agent_tool_recovery',
+  turn_id: 'turn_tool_recovery',
+  reason: 'missing_usage'
+}
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase successful retained-outcome recovery settlement > captures once and releases once on retained partial interruption without restoring or settling twice
+AgentRuntimeState initialized for agent_id 'agent_interruption_recovery'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentConfig created for name='agent', role='role'.
+AgentContext composed for agent_id 'agent_interruption_recovery'. Config and State linked.
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase incomplete native tool-call resume recovery > kicks off LLM execution after one additional user prompt with provider-safe rendered history
+AgentRuntimeState initialized for agent_id 'agent_resume_repair'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentConfig created for name='agent', role='role'.
+AgentContext composed for agent_id 'agent_resume_repair'. Config and State linked.
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase incomplete native tool-call resume recovery > kicks off LLM execution after one additional user prompt with provider-safe rendered history
+compaction_budget_skipped_no_usage {
+  agent_id: 'agent_resume_repair',
+  turn_id: 'turn_after_restart',
+  reason: 'missing_usage'
+}
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase unknown-capability provider recovery > rolls back one failed image request and accepts the next text-only turn without retrying
+AgentRuntimeState initialized for agent_id 'agent_provider_recovery'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentConfig created for name='agent', role='role'.
+AgentContext composed for agent_id 'agent_provider_recovery'. Config and State linked.
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase unknown-capability provider recovery > rolls back one failed image request and accepts the next text-only turn without retrying
+compaction_budget_skipped_no_usage {
+  agent_id: 'agent_provider_recovery',
+  turn_id: 'turn_provider_recovery',
+  reason: 'missing_usage'
+}
+
+ ✓ tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts (5 tests) 28ms
+
+ Test Files  7 passed (7)
+      Tests  31 passed (31)
+   Start at  18:18:02
+   Duration  763ms (transform 1.16s, setup 137ms, import 1.83s, tests 60ms, environment 1ms)
+

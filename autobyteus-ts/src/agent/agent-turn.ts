@@ -3,6 +3,7 @@ import { ToolInvocationBatch } from './tool-invocation-batch.js';
 import { TurnToolInputPort } from './loop/turn-tool-input-port.js';
 import { TurnExecutionScope } from './interruption/turn-execution-scope.js';
 import type { AgentInterruptResult } from './interruption/agent-interruption.js';
+import type { TurnStartOrigin } from './event-inbox/agent-event-inbox-entry.js';
 import { ToolExecutionApprovalEvent, ToolResultEvent } from './events/agent-events.js';
 import {
   normalizeToolApprovalInvocationId,
@@ -42,7 +43,7 @@ export class AgentTurn {
   private settlementResolve!: (outcome: TurnOutcome) => void;
   private readonly settlementPromise: Promise<TurnOutcome>;
 
-  constructor(turnId: string) {
+  constructor(turnId: string, readonly startOrigin: TurnStartOrigin = 'system') {
     if (!turnId) {
       throw new Error('AgentTurn requires a non-empty turnId.');
     }

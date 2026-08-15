@@ -1,0 +1,4 @@
+{"corpus":"failed-production","index":1,"status":"REJECTED","stage":"json_object_extraction"}
+{"corpus":"failed-production","index":2,"status":"REJECTED","stage":"json_object_extraction"}
+{"corpus":"successful-production","index":1,"status":"ACCEPTED","episodeCount":4,"semanticCount":25}
+{"corpus":"successful-production","index":2,"status":"ACCEPTED","episodeCount":3,"semanticCount":22}

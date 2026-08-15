@@ -14,6 +14,8 @@ import { CompleteResponse } from '../../../../src/llm/utils/response-types.js';
 import { BaseTool } from '../../../../src/tools/base-tool.js';
 import type { LLMUserMessage } from '../../../../src/llm/user-message.js';
 import type { CompleteResponse as CompleteResponseType, ChunkResponse } from '../../../../src/llm/utils/response-types.js';
+import { createEnabledMemoryCompactionConfiguration } from '../../../../src/memory/compaction/memory-compaction-configuration.js';
+import { CompactionPolicy } from '../../../../src/memory/policies/compaction-policy.js';
 
 class DummyLLM extends BaseLLM {
   protected async _sendMessagesToLLM(_messages: any[]): Promise<CompleteResponseType> {
@@ -139,6 +141,22 @@ describe('AgentFactory', () => {
     expect(runtime).toBeInstanceOf(AgentRuntime);
     expect(runtime.context.state.llmInstance).toBe(config.llmInstance);
     expect(runtime.context.state.toolInstances?.factory_tool).toBe(config.tools[0]);
+    expect(runtime.context.state.memoryManager?.getAutomaticCompactionConfiguration())
+      .toBe(config.memoryCompaction);
+  });
+
+  it('installs supplied memory compaction without inventing another policy', () => {
+    const factory = new AgentFactory();
+    const config = makeConfig();
+    const policy = new CompactionPolicy({ triggerRatio: 0.2 });
+    const runner = { runCompactionTask: vi.fn() };
+    config.memoryCompaction = createEnabledMemoryCompactionConfiguration(policy, runner);
+
+    const runtime = (factory as any).createRuntimeWithId('enabled-memory-agent', config) as AgentRuntime;
+    const installed = runtime.context.state.memoryManager?.getAutomaticCompactionConfiguration();
+
+    expect(installed).toBe(config.memoryCompaction);
+    expect(installed).toMatchObject({ kind: 'enabled', policy, runner });
   });
 
   it('restores agents with existing id', () => {

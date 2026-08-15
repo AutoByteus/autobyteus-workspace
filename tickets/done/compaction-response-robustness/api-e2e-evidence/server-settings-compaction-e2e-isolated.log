@@ -1,0 +1,275 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:92361) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > supports update/list/delete lifecycle for custom server settings
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-B0vhSy
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-B0vhSy/.env
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > supports update/list/delete lifecycle for custom server settings
+Initialized server settings service with 20 predefined settings
+Added new custom server setting: CUSTOM_SETTING_1786702770849_l4me5v
+Server setting 'CUSTOM_SETTING_1786702770849_l4me5v' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > supports update/list/delete lifecycle for custom server settings
+Server setting 'CUSTOM_SETTING_1786702770849_l4me5v' deleted
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > persists featured catalog items through the GraphQL settings boundary
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-aFklFW
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-aFklFW/.env
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > persists featured catalog items through the GraphQL settings boundary
+Server setting 'AUTOBYTEUS_FEATURED_CATALOG_ITEMS' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > rejects duplicate featured catalog items through GraphQL without replacing the saved value
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-DT0vtv
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-DT0vtv/.env
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > rejects duplicate featured catalog items through GraphQL without replacing the saved value
+Server setting 'AUTOBYTEUS_FEATURED_CATALOG_ITEMS' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > validates and exposes Codex sandbox mode through the GraphQL settings boundary
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-GXC9sW
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-GXC9sW/.env
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > validates and exposes Codex sandbox mode through the GraphQL settings boundary
+Server setting 'CODEX_APP_SERVER_SANDBOX' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > validates and exposes Codex sandbox mode through the GraphQL settings boundary
+Server setting 'CODEX_APP_SERVER_SANDBOX' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > validates and exposes Codex sandbox mode through the GraphQL settings boundary
+Server setting 'CODEX_APP_SERVER_SANDBOX' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > discards and rejects the retired stream-parser key through the GraphQL settings boundary
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-s57n9F
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-s57n9F/.env
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > discards and rejects the retired stream-parser key through the GraphQL settings boundary
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-s57n9F/.env
+[dotenv@17.3.1] injecting env (1) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-s57n9F/.env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-s57n9F
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-s57n9F/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-s57n9F/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-s57n9F/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-s57n9F/memory
+============================================================
+AppConfig initialization completed successfully
+
+stderr | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > discards and rejects the retired stream-parser key through the GraphQL settings boundary
+Error updating server setting 'AUTOBYTEUS_STREAM_PARSER'
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > persists and reports the effective live response interval through GraphQL
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-8KzjVG
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-8KzjVG/.env
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > persists and reports the effective live response interval through GraphQL
+Server setting 'AUTOBYTEUS_STREAMING_CONTENT_FLUSH_INTERVAL_MS' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > persists and reports the effective live response interval through GraphQL
+Server setting 'AUTOBYTEUS_STREAMING_CONTENT_FLUSH_INTERVAL_MS' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > persists and reports the effective live response interval through GraphQL
+Server setting 'AUTOBYTEUS_STREAMING_CONTENT_FLUSH_INTERVAL_MS' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > persists and reports the effective live response interval through GraphQL
+Server setting 'AUTOBYTEUS_STREAMING_CONTENT_FLUSH_INTERVAL_MS' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > persists and reports the effective live response interval through GraphQL
+Server setting 'AUTOBYTEUS_STREAMING_CONTENT_FLUSH_INTERVAL_MS' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > persists media default model identifiers as predefined GraphQL settings without catalog allow-list validation
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-TDKWCk
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-TDKWCk/.env
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > persists media default model identifiers as predefined GraphQL settings without catalog allow-list validation
+Server setting 'DEFAULT_IMAGE_EDIT_MODEL' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > persists media default model identifiers as predefined GraphQL settings without catalog allow-list validation
+Server setting 'DEFAULT_IMAGE_GENERATION_MODEL' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > persists media default model identifiers as predefined GraphQL settings without catalog allow-list validation
+Server setting 'DEFAULT_SPEECH_GENERATION_MODEL' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > lists effective Codex sandbox values with predefined metadata even when not persisted
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-CiZaJY
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-CiZaJY/.env
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > exposes the production compaction strategy catalog and effective default without persisting it
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-iuylQe
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-iuylQe/.env
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > persists a registered global compaction strategy and selects it for an existing runtime's next operation
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-AwUwNj
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-AwUwNj/.env
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > persists a registered global compaction strategy and selects it for an existing runtime's next operation
+Server setting 'AUTOBYTEUS_COMPACTION_STRATEGY' updated
+
+ ❯ tests/e2e/server-settings/server-settings-graphql.e2e.test.ts (10 tests | 1 failed) 97ms
+     ✓ supports update/list/delete lifecycle for custom server settings 7ms
+     ✓ persists featured catalog items through the GraphQL settings boundary 3ms
+     ✓ rejects duplicate featured catalog items through GraphQL without replacing the saved value 3ms
+     ✓ validates and exposes Codex sandbox mode through the GraphQL settings boundary 5ms
+     ✓ discards and rejects the retired stream-parser key through the GraphQL settings boundary 4ms
+     ✓ persists and reports the effective live response interval through GraphQL 7ms
+     ✓ persists media default model identifiers as predefined GraphQL settings without catalog allow-list validation 3ms
+     ✓ lists effective Codex sandbox values with predefined metadata even when not persisted 2ms
+     ✓ exposes the production compaction strategy catalog and effective default without persisting it 2ms
+     × persists a registered global compaction strategy and selects it for an existing runtime's next operation 16ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > persists a registered global compaction strategy and selects it for an existing runtime's next operation
+AssertionError: expected 'You are continuing an ongoing task. H…' to contain 'after GraphQL update'
+
+- Expected
++ Received
+
+- after GraphQL update
++ You are continuing an ongoing task. Here is a concise summary of earlier work to help you resume.
++ Use it as context for previous reasoning, actions, findings, decisions, constraints, and open work.
++
++ Earlier progress:
++ 1. selected by GraphQL update
++
++ The user's current message is:
++
++
+
+ ❯ tests/e2e/server-settings/server-settings-graphql.e2e.test.ts:813:51
+    811|     expect(request.canonicalMessages[0]?.content).toBe("System");
+    812|     expect(request.canonicalMessages[1]?.content).toContain("selected …
+    813|     expect(request.canonicalMessages[1]?.content).toContain("after Gra…
+       |                                                   ^
+    814|     expect(request.renderedPayload).toEqual([
+    815|       { role: MessageRole.SYSTEM, content: "System" },
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 9 passed (10)
+   Start at  12:19:26
+   Duration  4.90s (transform 3.23s, setup 9ms, import 4.35s, tests 97ms, environment 0ms)
+

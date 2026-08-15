@@ -6,6 +6,7 @@ import { MemoryManager } from '../../../src/memory/memory-manager.js';
 import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
 import { Message, MessageRole } from '../../../src/llm/utils/messages.js';
 import { WorkingContext } from '../../../src/memory/working-context.js';
+import { resolveCompactionPlanningBudget } from '../../../src/memory/compaction/compaction-planning-budget.js';
 
 const tempDirs: string[] = [];
 
@@ -39,7 +40,14 @@ describe('LLM request recovery boundary', () => {
       content: 'Failed image-bearing continuation',
       image_urls: ['data:image/png;base64,'],
     }), { turnId: 'turn-failed' });
-    manager.requestCompaction('turn-failed');
+    manager.requestCompaction({
+      requestedTurnId: 'turn-failed',
+      requestKind: 'threshold_crossing',
+      planningBudget: resolveCompactionPlanningBudget(
+        { inputBudget: 10_000, triggerThresholdTokens: 8_000 },
+        9_000,
+      ),
+    });
 
     manager.restoreLlmRequestRecoverySnapshot(snapshot, {
       sourceEvent: 'test.restore',
@@ -51,7 +59,7 @@ describe('LLM request recovery boundary', () => {
       'Earlier user turn',
     ]);
     expect(manager.getPendingCompactionRequest()).toBeNull();
-    expect(manager.compactionRequired).toBe(false);
+    expect(manager.hasPendingCompaction()).toBe(false);
     expect(manager.listRawTracesOrdered().map((trace) => trace.traceType)).toEqual([
       'user',
       'llm_request_recovery',

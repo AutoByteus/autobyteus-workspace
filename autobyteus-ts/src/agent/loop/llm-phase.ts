@@ -16,7 +16,11 @@ import { WorkingContextCompactionStrategyResolver } from '../../memory/compactio
 import { isAgentInterruptionError } from '../interruption/agent-interruption.js';
 import { resolveTurnToolNames } from './llm-phase-tools.js';
 import { evaluateLlmPhaseCompaction } from './llm-phase-compaction.js';
-import { applyCompactionPolicy, resolveTokenBudget } from '../token-budget.js';
+import {
+  applyCompactionPolicy,
+  resolveCompactionTokenBudget,
+  resolveLlmRequestCapacity,
+} from '../token-budget.js';
 import type { AgentContext } from '../context/agent-context.js';
 import type { AgentTurn } from '../agent-turn.js';
 import type { AgentInputPipelineResult } from '../pipelines/agent-input-pipeline.js';
@@ -75,16 +79,28 @@ export class LlmPhase {
     const completeAudioUrls: string[] = [];
     const completeVideoUrls: string[] = [];
 
-    const compactionReporter = new CompactionRuntimeReporter(agentId, context.statusManager?.notifier ?? null);
     const runtimeSettingsResolver = new CompactionRuntimeSettingsResolver();
-    const requestTokenBudget = resolveTokenBudget(
+    const runtimeSettings = runtimeSettingsResolver.resolve();
+    const automaticCompaction = memoryManager.getAutomaticCompactionConfiguration();
+    const requestCapacity = resolveLlmRequestCapacity(
       llmInstance.model,
       llmInstance.config,
-      memoryManager.compactionPolicy,
-      runtimeSettingsResolver.resolve()
+      runtimeSettings,
+      automaticCompaction.kind === 'enabled'
+        ? automaticCompaction.policy.safetyMarginTokens
+        : undefined,
     );
-    if (requestTokenBudget) {
-      applyCompactionPolicy(memoryManager.compactionPolicy, requestTokenBudget);
+    const compactionTokenBudget = automaticCompaction.kind === 'enabled' && requestCapacity
+      ? resolveCompactionTokenBudget(
+          requestCapacity,
+          llmInstance.model,
+          llmInstance.config,
+          automaticCompaction.policy,
+          runtimeSettings,
+        )
+      : null;
+    if (automaticCompaction.kind === 'enabled' && compactionTokenBudget) {
+      applyCompactionPolicy(automaticCompaction.policy, compactionTokenBudget);
     }
 
     const toolNames = resolveTurnToolNames(context);
@@ -105,64 +121,72 @@ export class LlmPhase {
     }
 
     const renderer = (llmInstance as any)._renderer ?? new OpenAIChatRenderer();
-    const compactionDiagnostics: WorkingContextCompactionDiagnostics = {
-      reportPlan: (details) => {
-        compactionReporter.recordStrategyPlanDiagnostics(details);
-        const pending = memoryManager.getPendingCompactionRequest();
-        compactionReporter.logExecutionContext({
-          turn_id: activeTurnId,
-          compaction_operation_id: pending?.operationId ?? null,
-          requested_turn_id: pending?.requestedTurnId ?? null,
-          execution_turn_id: activeTurnId,
-          pending_compaction: true,
-          selected_unit_count: details.selectedUnitCount,
-          protected_suffix_unit_count: details.protectedSuffixUnitCount,
-          retained_unit_count: details.retainedUnitCount,
-          working_context_message_count: details.workingContextMessageCount,
-          raw_trace_count: details.rawTraceCount,
-        }, runtimeSettingsResolver.resolve().detailedLogsEnabled);
-      },
-      reportResult: (details) => {
-        compactionReporter.recordStrategyResultDiagnostics(details);
-        const pending = memoryManager.getPendingCompactionRequest();
-        const metadata = details.compactionMetadata;
-        compactionReporter.logResultSummary({
-          turn_id: activeTurnId,
-          compaction_operation_id: pending?.operationId ?? null,
-          requested_turn_id: pending?.requestedTurnId ?? null,
-          execution_turn_id: activeTurnId,
-          selected_block_count: details.selectedUnitCount,
-          compacted_block_count: details.compactedUnitCount,
-          raw_trace_count: details.rawTraceCount,
-          episode_summary_length: details.episodeSummaryLength,
-          semantic_fact_count: details.semanticFactCount,
-          compaction_agent_definition_id: metadata?.compactionAgentDefinitionId ?? null,
-          compaction_agent_name: metadata?.compactionAgentName ?? null,
-          compaction_runtime_kind: metadata?.runtimeKind ?? null,
-          compaction_model_identifier: metadata?.modelIdentifier ?? null,
-          compaction_run_id: metadata?.compactionRunId ?? null,
-          compaction_task_id: metadata?.taskId ?? null,
-        }, runtimeSettingsResolver.resolve().detailedLogsEnabled);
-      },
-      reportFailure: (metadata) => {
-        compactionReporter.recordStrategyFailureMetadata(metadata);
-      },
-    };
-    const strategyResolver = new WorkingContextCompactionStrategyResolver({
-      registry: defaultWorkingContextCompactionStrategyRegistry,
-      settingsResolver: runtimeSettingsResolver,
-      constructionContext: {
+    let compactionReporter: CompactionRuntimeReporter | null = null;
+    let pendingCompactionExecutor: PendingCompactionExecutor | null = null;
+    if (automaticCompaction.kind === 'enabled') {
+      compactionReporter = new CompactionRuntimeReporter(
         agentId,
-        compactionAgentRunner: context.config.compactionAgentRunner,
-        inputBudgetTokens: requestTokenBudget?.inputBudget ?? null,
-        maxItemChars: memoryManager.compactionPolicy.maxItemChars,
-        diagnostics: compactionDiagnostics,
-      },
-    });
-    const pendingCompactionExecutor = new PendingCompactionExecutor(memoryManager, {
-      reporter: compactionReporter,
-      strategyResolver,
-    });
+        context.statusManager?.notifier ?? null,
+      );
+      const reporter = compactionReporter;
+      const compactionDiagnostics: WorkingContextCompactionDiagnostics = {
+        reportPlan: (details) => {
+          reporter.recordStrategyPlanDiagnostics(details);
+          const pending = memoryManager.getPendingCompactionRequest();
+          reporter.logExecutionContext({
+            turn_id: activeTurnId,
+            compaction_operation_id: pending?.operationId ?? null,
+            requested_turn_id: pending?.requestedTurnId ?? null,
+            execution_turn_id: activeTurnId,
+            pending_compaction: true,
+            selected_unit_count: details.selectedUnitCount,
+            protected_suffix_unit_count: details.protectedSuffixUnitCount,
+            retained_unit_count: details.retainedUnitCount,
+            working_context_message_count: details.workingContextMessageCount,
+            raw_trace_count: details.rawTraceCount,
+          }, runtimeSettings.detailedLogsEnabled);
+        },
+        reportResult: (details) => {
+          reporter.recordStrategyResultDiagnostics(details);
+          const pending = memoryManager.getPendingCompactionRequest();
+          const metadata = details.compactionMetadata;
+          reporter.logResultSummary({
+            turn_id: activeTurnId,
+            compaction_operation_id: pending?.operationId ?? null,
+            requested_turn_id: pending?.requestedTurnId ?? null,
+            execution_turn_id: activeTurnId,
+            selected_block_count: details.selectedUnitCount,
+            compacted_block_count: details.compactedUnitCount,
+            raw_trace_count: details.rawTraceCount,
+            episode_summary_length: details.episodeSummaryLength,
+            semantic_fact_count: details.semanticFactCount,
+            compaction_agent_definition_id: metadata?.compactionAgentDefinitionId ?? null,
+            compaction_agent_name: metadata?.compactionAgentName ?? null,
+            compaction_runtime_kind: metadata?.runtimeKind ?? null,
+            compaction_model_identifier: metadata?.modelIdentifier ?? null,
+            compaction_run_id: metadata?.compactionRunId ?? null,
+            compaction_task_id: metadata?.taskId ?? null,
+          }, runtimeSettings.detailedLogsEnabled);
+        },
+        reportFailure: (metadata) => {
+          reporter.recordStrategyFailureMetadata(metadata);
+        },
+      };
+      const strategyResolver = new WorkingContextCompactionStrategyResolver({
+        registry: defaultWorkingContextCompactionStrategyRegistry,
+        settingsResolver: runtimeSettingsResolver,
+        constructionContext: {
+          agentId,
+          compactionAgentRunner: automaticCompaction.runner,
+          maxItemChars: automaticCompaction.policy.maxItemChars,
+          diagnostics: compactionDiagnostics,
+        },
+      });
+      pendingCompactionExecutor = new PendingCompactionExecutor(memoryManager, {
+        reporter,
+        strategyResolver,
+      });
+    }
     const assembler = new LLMRequestAssembler(
       memoryManager,
       renderer,
@@ -179,7 +203,7 @@ export class LlmPhase {
         { kind: 'llm_request_assembly' },
         () => assembler.prepareRequest(
           input.llmUserMessage,
-          { turnId: activeTurnId, requestId: llmCallId },
+          { turnId: activeTurnId, requestId: llmCallId, turnOrigin: turn.startOrigin },
           systemPrompt ?? undefined,
         )
       );
@@ -288,8 +312,8 @@ export class LlmPhase {
           ingestion_kind: 'autobyteus_llm_phase',
           idempotency_key: `${agentId}:${llmCallId}`,
           latest_prompt_tokens: latestPromptTokens,
-          effective_context_window_tokens: requestTokenBudget?.effectiveContextCapacity ?? null,
-          context_window_usage_percent: percentOf(latestPromptTokens, requestTokenBudget?.effectiveContextCapacity)
+          effective_context_window_tokens: requestCapacity?.effectiveContextCapacity ?? null,
+          context_window_usage_percent: percentOf(latestPromptTokens, requestCapacity?.effectiveContextCapacity)
         });
       }
 
@@ -367,22 +391,30 @@ export class LlmPhase {
     }
 
     turn.executionScope.throwIfAborted({ kind: 'llm_compaction' });
-    evaluateLlmPhaseCompaction({
-      llmInstance,
-      memoryManager,
-      tokenUsage,
-      activeTurnId,
-      compactionReporter,
-      runtimeSettingsResolver
-    });
+    const compactionDecision = compactionReporter
+      ? evaluateLlmPhaseCompaction({
+          memoryManager,
+          tokenBudget: compactionTokenBudget,
+          tokenUsage,
+          observedPromptTokens: tokenUsage ? resolveLatestPromptTokens(tokenUsage) : null,
+          activeTurnId,
+          compactionReporter,
+          runtimeSettingsResolver,
+        })
+      : null;
 
     const toolInvocations = turn.activeToolInvocationBatch && parsedToolInvocationCount > 0
       ? streamingHandler.getAllInvocations()
       : [];
-    if (!toolInvocations.length && memoryManager.compactionRequired) {
+    if (
+      !toolInvocations.length
+      && compactionDecision?.kind === 'requested'
+      && pendingCompactionExecutor
+    ) {
       try {
-        await pendingCompactionExecutor.executeIfRequired({
+        await pendingCompactionExecutor.executeIfAuthorized({
           turnId: activeTurnId,
+          turnOrigin: turn.startOrigin,
         });
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error);
@@ -392,6 +424,11 @@ export class LlmPhase {
           details: String(error),
           classification: { scope: 'turn', effect: 'diagnostic', turnId: activeTurnId }
         });
+        return {
+          kind: 'final',
+          isError: true,
+          response: new CompleteResponse({ content: errorMessage, usage: null })
+        };
       }
     }
     if (toolInvocations.length) {

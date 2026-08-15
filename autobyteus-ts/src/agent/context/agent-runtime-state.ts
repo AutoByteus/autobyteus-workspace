@@ -4,6 +4,7 @@ import { AgentStatus } from '../status/status-enum.js';
 import { ToolInvocation } from '../tool-invocation.js';
 import { AgentTurn } from '../agent-turn.js';
 import type { AgentEventInbox } from '../event-inbox/agent-event-inbox.js';
+import type { TurnStartOrigin } from '../event-inbox/agent-event-inbox-entry.js';
 import { BaseLLM } from '../../llm/base.js';
 import type { BaseTool } from '../../tools/base-tool.js';
 import type { MemoryManager } from '../../memory/memory-manager.js';
@@ -67,7 +68,7 @@ export class AgentRuntimeState {
     );
   }
 
-  startActiveTurn(turnId?: string | null): AgentTurn {
+  startActiveTurn(turnId?: string | null, startOrigin: TurnStartOrigin = 'system'): AgentTurn {
     if (this.activeTurn && !this.activeTurn.isSettled) {
       throw new Error(`Agent '${this.agentId}' already has active turn '${this.activeTurn.turnId}'.`);
     }
@@ -79,7 +80,7 @@ export class AgentRuntimeState {
 
     const nextTurnId =
       typeof turnId === 'string' && turnId.trim().length > 0 ? turnId.trim() : memoryManager.startTurn();
-    const nextTurn = new AgentTurn(nextTurnId);
+    const nextTurn = new AgentTurn(nextTurnId, startOrigin);
     this.activeTurn = nextTurn;
     return nextTurn;
   }

@@ -1,0 +1,8 @@
+Darwin MacBookPro 25.5.0 Darwin Kernel Version 25.5.0: Tue Jun  9 22:18:58 PDT 2026; root:xnu-12377.121.10~1/RELEASE_ARM64_T6000 arm64
+ProductName:		macOS
+ProductVersion:		26.5.2
+BuildVersion:		25F84
+v22.23.1
+10.28.2
+vitest/4.0.18 darwin-arm64 node-v22.23.1
+2026-08-15 12:45:33 CEST +0200

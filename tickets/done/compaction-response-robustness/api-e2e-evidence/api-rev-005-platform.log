@@ -1,0 +1,13 @@
+PLATFORM
+ProductName:		macOS
+ProductVersion:		26.5.2
+BuildVersion:		25F84
+arm64
+NODE
+v22.23.1
+PNPM
+10.28.2
+VITEST
+vitest/4.0.18 darwin-arm64 node-v22.23.1
+TIMEZONE
+CEST +0200

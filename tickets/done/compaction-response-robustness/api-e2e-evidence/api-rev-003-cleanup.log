@@ -1,0 +1,13 @@
+autobyteus-server-ts/db/test.db: before=True after=False
+autobyteus-server-ts/db/test.db-journal: before=False after=False
+autobyteus-server-ts/db/test.db-shm: before=False after=False
+autobyteus-server-ts/db/test.db-wal: before=False after=False
+autobyteus-server-ts/db/test.db.secret.key: before=True after=False
+autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db: before=True after=False
+autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db-journal: before=True after=False
+autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db-shm: before=False after=False
+autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db-wal: before=False after=False
+autobyteus-server-ts/tests/.tmp/live-e2e-runtime: before=True after=False
+source_env_after_cleanup_readable=True
+
+--- lingering owned processes ---

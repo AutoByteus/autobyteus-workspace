@@ -147,17 +147,66 @@ required for continuation; accepted output requires at least one episode, but
 the parser, normalizer, manager publication, lineage, and current projection do
 not impose the former fixed total-count limits.
 
-The persisted `autobyteus-memory-compactor` system prompt is the sole owner of
-stable task instructions, natural-sizing guidance, and the response schema. The
-operation user message is only the core renderer's canonical
-`<conversation_history>` block. That renderer reuses
-`WorkingContextFinalizer` so compatible prior-memory/current-user regions appear
-as one natural User turn, while assistant and Tool order, redaction, per-value
-bounds, reserved-boundary escaping, and input non-mutation remain enforced.
+Native trigger planning is derived from the same input budget and threshold that
+requested the operation. One immutable operation budget sets a post-compaction
+target below the threshold with explicit headroom, accounts for required system
+content, protected final tool protocol, untracked prompt overhead, and
+replacement memory, and fails closed when the target is unattainable. Finalized
+accepted context must fit that same target. After success, an actual-observation
+episode suppresses repeated proactive operations until a normalized prompt
+observation falls below threshold; missing prompt counts do not mutate the
+episode, changed budget identity resets it, and hard-input-cap pressure remains
+an override. The threshold episode is process-local, not persisted memory.
 
-New lineage records write `promptContractVersion: 2`. Existing immutable value-1
-records remain directly readable, mixed `1 -> 2` chains remain valid, and any
-unsupported audit value is rejected without compatibility decoding or file
+The persisted `autobyteus-memory-compactor` system prompt owns the stable task,
+natural-sizing guidance, and six-array response schema. The initial operation
+message explicitly identifies the target agent and contains one
+`<target_agent_conversation_history>` block inside one plain-text target-agent
+`START` / `END` separator pair, with nothing after the end separator. The
+renderer reuses `WorkingContextFinalizer` so compatible prior-memory/current-user
+regions appear as one natural User turn, while assistant and Tool order,
+redaction, per-value bounds, renamed-boundary escaping, and input non-mutation
+remain enforced. Generic sender headings are removed from shared input
+composition; content without readable context remains unchanged, while combined
+context/message payloads use only neutral `[Context]` and `[Message]` sections.
+
+Derived compaction text is normalized to a provider-safe Unicode copy without
+rewriting canonical raw traces or stored source values. Valid surrogate pairs,
+multilingual text, code, paths, symbols, emoji, newline, and tab are preserved;
+lone surrogates are replaced, non-useful C0 controls are removed, and middle/end
+truncation cannot split a pair. The completed initial or correction prompt is
+checked before child launch. Failure is typed `input_construction_failure` and
+performs no child/correction call, target dispatch, or canonical mutation while
+retaining the user-authorized pending gate.
+
+The response boundary validates every exact, fenced, or balanced JSON-object
+candidate against the six required arrays and accepts only one distinct
+host-consumed result with a non-empty episode. Harmless extra fields do not fail
+validation, unrelated JSON cannot mask a later valid object, and multiple valid
+objects are ambiguous. A typed returned-content failure receives one corrective
+child attempt with the same selected history. Initial and optional correction
+children are disabled siblings owned by the parent operation, not recursive
+descendants, and neither persists child lineage/archive state. Child error
+completion, interruption, terminal error, timeout, tool approval,
+launch/rejection, and collection failure retain typed runner identity and bypass
+response repair. The compactor remains tool-free: the native exposure resolver
+matches its exact built-in definition ID before ordinary default/team
+composition, leaving final `AgentConfig.tools` empty while ordinary native
+agents retain all four foundation tools. Success produces one parent completed
+lifecycle and one accepted commit; final failure leaves the pending operation
+and canonical memory unchanged.
+
+A new pending operation has one automatic initial attempt. Final failure changes
+it to `awaiting_user_retry`, stops that target-agent turn before dispatch, and
+permits one new attempt from each distinct later user-origin turn. Agent/system
+turn-start entries remain in the core runtime queue; the scheduler may select the
+earliest user behind them without dropping or reordering them, then resumes
+ordinary relative FIFO after a successful retry. There is no same-turn,
+background, or non-user retry and no persistent deferred-message store.
+
+New lineage records write `promptContractVersion: 3`. Existing immutable values
+1 and 2 remain directly readable, mixed `1 -> 2 -> 3` chains remain valid, and
+any unsupported audit value is rejected without compatibility decoding or file
 mutation. Existing schema-v1 stored supersets that include the former
 `rawTraceArchiveFile` field remain directly readable: normalization ignores that
 extra field without rewriting data or introducing a schema branch, and new rows
@@ -169,6 +218,25 @@ uses the fixed built-in `autobyteus-memory-compactor`, with blank runtime/model
 launch values inherited from the parent run. The removed
 `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` key is inert, and no arbitrary-agent
 fallback exists.
+
+Automatic compaction is one complete runtime composition owned by core memory:
+`disabled` has no policy or runner; `enabled` has the existing single
+`CompactionPolicy` and current strategy runner. `AgentConfig` carries it through
+`AgentFactory` into `MemoryManager`, and direct core construction defaults to
+disabled. The server backend selects disabled for the exact built-in compactor
+on create/restore without invoking the runner factory. Ordinary native agents
+receive enabled composition; runner construction failure cannot silently turn a
+normal agent into a disabled one.
+
+The generic LLM phase resolves provider/model request capacity for both
+variants. Enabled agents retain compaction-budget derivation and the current
+policy/strategy/executor/observation/lifecycle path. Disabled compactor children
+skip proactive and hard-input-cap classification, pending/execution work, and
+compaction lifecycle reporting while preserving the original response/tool
+outcome. Provider-admissible tasks run directly as leaves; oversized tasks fail
+through existing planning/pre-launch or typed runner handling rather than
+recursively rewriting their own instruction/history. This is runtime-only
+composition and requires no persisted-data migration.
 
 The backend resolves explicit standalone/team-member lineage scopes for native
 memory composition. There is no direct/recursive episode/semantic-to-raw origin

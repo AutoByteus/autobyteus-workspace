@@ -11,13 +11,24 @@ export { CompactionResult } from './compaction/compaction-result.js';
 export { CompactionResultNormalizer } from './compaction/compaction-result-normalizer.js';
 export type { NormalizedCompactionResult, NormalizedCompactedMemoryEntry } from './compaction/compaction-result-normalizer.js';
 export { AgentCompactionSummarizer } from './compaction/agent-compaction-summarizer.js';
-export { WorkingContextCompactionPromptBuilder } from './compaction/working-context-compaction-prompt-builder.js';
+export { CompactionPromptConstructionError, WorkingContextCompactionPromptBuilder } from './compaction/working-context-compaction-prompt-builder.js';
 export { CompactionAgentRunnerError, getCompactionAgentRunnerErrorMetadata } from './compaction/compaction-agent-runner.js';
 export type { CompactionAgentExecutionMetadata, CompactionAgentRunner, CompactionAgentRunnerResult, CompactionAgentTask } from './compaction/compaction-agent-runner.js';
 export { CompactionResponseParser, CompactionResponseParseError } from './compaction/compaction-response-parser.js';
 export { CompactionRuntimeSettingsResolver } from './compaction/compaction-runtime-settings.js';
 export type { CompactionRuntimeSettings } from './compaction/compaction-runtime-settings.js';
 export { PendingCompactionExecutor } from './compaction/pending-compaction-executor.js';
+export {
+  copyMemoryCompactionConfiguration,
+  createDisabledMemoryCompactionConfiguration,
+  createEnabledMemoryCompactionConfiguration,
+  DEFAULT_MEMORY_COMPACTION_CONFIGURATION,
+} from './compaction/memory-compaction-configuration.js';
+export type {
+  DisabledMemoryCompactionConfiguration,
+  EnabledMemoryCompactionConfiguration,
+  MemoryCompactionConfiguration,
+} from './compaction/memory-compaction-configuration.js';
 export { WorkingContextMessageWindowPlanner } from './compaction/working-context-message-window-planner.js';
 export { WorkingContextMessageUnitBuilder } from './compaction/working-context-message-unit-builder.js';
 export { EstimatedMessageBudgetStrategy } from './compaction/message-budget-strategy.js';
@@ -72,3 +83,4 @@ export type { CompactionLineageScope } from './lineage/compaction-lineage-scope.
 export type { CompactionLineageRecord } from './lineage/compaction-lineage-record.js';
 export { CondensedToolCallRenderer } from './presentation/condensed-tool-call-renderer.js';
 export { ReadableValueRenderer } from './presentation/readable-value-renderer.js';
+export { ProviderSafeCompactionText, providerSafeCompactionText } from './presentation/unicode-safe-text.js';

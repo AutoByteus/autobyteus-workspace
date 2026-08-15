@@ -5,7 +5,10 @@ import { LLMFactory } from '../../../src/llm/llm-factory.js';
 import { LLMProvider } from '../../../src/llm/providers.js';
 import { OpenAICompatibleEndpointLLM } from '../../../src/llm/api/openai-compatible-endpoint-llm.js';
 import { SecretValue } from '../../../src/secrets/secret-value.js';
-import { resolveTokenBudget } from '../../../src/agent/token-budget.js';
+import {
+  resolveCompactionTokenBudget,
+  resolveLlmRequestCapacity,
+} from '../../../src/agent/token-budget.js';
 import { CompactionPolicy } from '../../../src/memory/policies/compaction-policy.js';
 import { LLMConfig } from '../../../src/llm/utils/llm-config.js';
 
@@ -86,10 +89,11 @@ describe('OpenAICompatibleEndpointModelProvider', () => {
       },
     });
 
-    const budget = resolveTokenBudget(
-      report.models[0]!,
-      new LLMConfig({ maxTokens: 4096 }),
-      new CompactionPolicy(),
+    const config = new LLMConfig({ maxTokens: 4096 });
+    const policy = new CompactionPolicy();
+    const capacity = resolveLlmRequestCapacity(report.models[0]!, config);
+    const budget = resolveCompactionTokenBudget(
+      capacity!, report.models[0]!, config, policy,
     );
     expect(budget).toMatchObject({
       effectiveContextCapacity: 198_000,
@@ -108,13 +112,12 @@ describe('OpenAICompatibleEndpointModelProvider', () => {
     const model = report.models[0]!;
 
     expect(model.maxContextTokens).toBeNull();
-    expect(resolveTokenBudget(model, new LLMConfig({ maxTokens: 4096 }), new CompactionPolicy())).toBeNull();
+    expect(resolveLlmRequestCapacity(model, new LLMConfig({ maxTokens: 4096 }))).toBeNull();
 
-    expect(resolveTokenBudget(
+    expect(resolveLlmRequestCapacity(
       model,
       new LLMConfig({ maxTokens: 4096 }),
-      new CompactionPolicy(),
-      { activeContextTokensOverride: 12000, triggerRatioOverride: null },
+      { activeContextTokensOverride: 12000 },
     )).toMatchObject({
       effectiveContextCapacity: 12000,
       overrideActive: true,

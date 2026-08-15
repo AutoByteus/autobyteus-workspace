@@ -5,7 +5,10 @@ import {
   ToolCallPayload,
   ToolResultPayload,
 } from '../../../src/llm/utils/messages.js';
-import { WorkingContextMessageWindowPlanner } from '../../../src/memory/compaction/working-context-message-window-planner.js';
+import {
+  CompactionPlanningError,
+  WorkingContextMessageWindowPlanner,
+} from '../../../src/memory/compaction/working-context-message-window-planner.js';
 import {
   createCompactedMemoryUserMessage,
   createNaturalUserMessageProvenance,
@@ -14,6 +17,18 @@ import type {
   MessageBudgetStrategy,
   MessageBudgetStrategyResult,
 } from '../../../src/memory/compaction/message-budget-strategy.js';
+import { resolveCompactionPlanningBudget } from '../../../src/memory/compaction/compaction-planning-budget.js';
+
+const planningBudget = (inputBudget = 10_000, trigger = 8_000, observed = 9_000) =>
+  resolveCompactionPlanningBudget(
+    { inputBudget, triggerThresholdTokens: trigger },
+    observed,
+  );
+
+const rawUser = (content: string, id: string) => createNaturalUserMessageProvenance(
+  new Message(MessageRole.USER, { content }),
+  { kind: 'retained_user', rawTraceIds: [id], turnId: id },
+);
 
 class FixedBudgetStrategy implements MessageBudgetStrategy {
   constructor(private readonly recentSuffixBudgetTokens = 250) {}
@@ -22,6 +37,11 @@ class FixedBudgetStrategy implements MessageBudgetStrategy {
     return {
       costByUnitId: Object.fromEntries(input.units.map((unit) => [unit.id, 100])),
       recentSuffixBudgetTokens: this.recentSuffixBudgetTokens,
+      estimatedCurrentWorkingContextTokens: input.units.length * 100,
+      estimatedUntrackedOverheadTokens: 0,
+      requiredSystemTokens: 0,
+      protectedSuffixTokens: 0,
+      replacementMemoryReserveTokens: 0,
     };
   }
 }
@@ -31,13 +51,13 @@ describe('WorkingContextMessageWindowPlanner', () => {
     const planner = new WorkingContextMessageWindowPlanner(undefined, new FixedBudgetStrategy(250));
     const messages = [
       new Message(MessageRole.SYSTEM, { content: 'System' }),
-      new Message(MessageRole.USER, { content: 'old user' }),
+      rawUser('old user', 'raw-old'),
       new Message(MessageRole.ASSISTANT, { content: 'old assistant' }),
       new Message(MessageRole.USER, { content: 'recent user' }),
       new Message(MessageRole.ASSISTANT, { content: 'recent assistant' }),
     ];
 
-    const plan = planner.plan({ messages, minRecentNaturalUnits: 2 });
+    const plan = planner.plan({ messages, planningBudget: planningBudget(), minRecentNaturalUnits: 2 });
 
     expect(plan.units.filter(({ kind }) => kind === 'system')
       .flatMap(({ messages: unitMessages }) => unitMessages)
@@ -64,6 +84,7 @@ describe('WorkingContextMessageWindowPlanner', () => {
         r2,
         new Message(MessageRole.ASSISTANT, { content: 'Retained tail' }),
       ],
+      planningBudget: planningBudget(),
       minRecentNaturalUnits: 1,
     });
 
@@ -81,7 +102,7 @@ describe('WorkingContextMessageWindowPlanner', () => {
   });
 
   it('protects only the latest live tool-call/result group as structured messages', () => {
-    const planner = new WorkingContextMessageWindowPlanner(undefined, new FixedBudgetStrategy(100));
+    const planner = new WorkingContextMessageWindowPlanner(undefined, new FixedBudgetStrategy(0));
     const firstToolCall = new Message(MessageRole.ASSISTANT, {
       content: 'I will search first.',
       tool_payload: new ToolCallPayload([{ id: 'call_1', name: 'search', arguments: { q: 'a' } }]),
@@ -100,12 +121,13 @@ describe('WorkingContextMessageWindowPlanner', () => {
     const plan = planner.plan({
       messages: [
         new Message(MessageRole.SYSTEM, { content: 'System' }),
-        new Message(MessageRole.USER, { content: 'Please investigate.' }),
+        rawUser('Please investigate.', 'raw-investigate'),
         firstToolCall,
         firstToolResult,
         latestToolCall,
         latestToolResult,
       ],
+      planningBudget: planningBudget(),
       minRecentNaturalUnits: 0,
     });
 
@@ -131,10 +153,11 @@ describe('WorkingContextMessageWindowPlanner', () => {
     const plan = planner.plan({
       messages: [
         new Message(MessageRole.SYSTEM, { content: 'System' }),
-        new Message(MessageRole.USER, { content: 'Run both.' }),
+        rawUser('Run both.', 'raw-both'),
         toolCalls,
         resultB,
       ],
+      planningBudget: planningBudget(),
       minRecentNaturalUnits: 0,
     });
 
@@ -155,15 +178,16 @@ describe('WorkingContextMessageWindowPlanner', () => {
     const plan = planner.plan({
       messages: [
         new Message(MessageRole.SYSTEM, { content: 'System' }),
-        new Message(MessageRole.USER, { content: `old ${huge}` }),
+        rawUser(`old ${huge}`, 'raw-huge'),
         new Message(MessageRole.ASSISTANT, { content: `latest ${huge}` }),
       ],
-      inputBudgetTokens: 1_000,
+      planningBudget: planningBudget(100_000, 50_000, 12_000),
     });
 
     expect(plan.compactableUnits.length).toBeGreaterThan(0);
     expect(plan.retainedUnits.length).toBeLessThan(2);
-    expect(plan.estimatedRetainedTokens).toBeLessThanOrEqual(350);
+    expect(plan.budgetAssessment.estimatedPlannedPromptTokens)
+      .toBeLessThanOrEqual(plan.budgetAssessment.planningBudget.postCompactionTargetTokens);
   });
 
   it('compacts a large settled active-turn prefix while protecting the live tool suffix', () => {
@@ -180,12 +204,12 @@ describe('WorkingContextMessageWindowPlanner', () => {
     const plan = planner.plan({
       messages: [
         new Message(MessageRole.SYSTEM, { content: 'System' }),
-        new Message(MessageRole.USER, { content: `active turn consumed prefix ${huge}` }),
+        rawUser(`active turn consumed prefix ${huge}`, 'raw-active'),
         new Message(MessageRole.ASSISTANT, { content: `consumed assistant reasoning ${huge}` }),
         liveToolCall,
         liveToolResult,
       ],
-      inputBudgetTokens: 1_000,
+      planningBudget: planningBudget(100_000, 50_000, 12_000),
     });
 
     expect(plan.protectedSuffixUnits).toHaveLength(1);
@@ -193,5 +217,33 @@ describe('WorkingContextMessageWindowPlanner', () => {
     expect(plan.compactableUnits.flatMap((unit) => unit.messages).some((message) => message.content?.includes('consumed'))).toBe(true);
     expect(plan.retainedMessages).toContain(liveToolCall);
     expect(plan.retainedMessages).toContain(liveToolResult);
+  });
+
+  it('fails closed when the trigger-derived target is zero', () => {
+    const planner = new WorkingContextMessageWindowPlanner();
+
+    expect(() => planner.plan({
+      messages: [
+        new Message(MessageRole.SYSTEM, { content: 'System' }),
+        rawUser('old work', 'raw-old'),
+      ],
+      planningBudget: planningBudget(1_000, 200, 300),
+    })).toThrowError(expect.objectContaining<Partial<CompactionPlanningError>>({
+      code: 'target_unattainable',
+    }));
+  });
+
+  it('fails before child work when no compactable unit is backed by a raw trace', () => {
+    const planner = new WorkingContextMessageWindowPlanner(undefined, new FixedBudgetStrategy(0));
+
+    expect(() => planner.plan({
+      messages: [
+        new Message(MessageRole.SYSTEM, { content: 'System' }),
+        new Message(MessageRole.USER, { content: 'untracked old work' }),
+      ],
+      planningBudget: planningBudget(),
+    })).toThrowError(expect.objectContaining<Partial<CompactionPlanningError>>({
+      code: 'no_compactable_prefix',
+    }));
   });
 });

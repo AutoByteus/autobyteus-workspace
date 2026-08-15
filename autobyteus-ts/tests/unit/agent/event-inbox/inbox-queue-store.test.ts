@@ -34,6 +34,17 @@ describe('InboxQueueStore', () => {
     ]);
   });
 
+  it('claims the first matching entry without moving skipped entries', () => {
+    const store = new InboxQueueStore<{ entryId: string; eligible: boolean }>(['turn_start']);
+    store.enqueue('turn_start', { entryId: 'agent-a', eligible: false });
+    store.enqueue('turn_start', { entryId: 'user', eligible: true });
+    store.enqueue('turn_start', { entryId: 'system', eligible: false });
+
+    expect(store.claimFirstMatching('turn_start', ({ eligible }) => eligible))
+      .toEqual({ entryId: 'user', eligible: true });
+    expect(store.drain().map(({ entryId }) => entryId)).toEqual(['agent-a', 'system']);
+  });
+
   it('wakes waiters only on new availability', async () => {
     const store = new InboxQueueStore<{ entryId: string }>(['turn_start']);
     const waitPromise = timeout(store.waitForAvailability(), 1000);

@@ -7,8 +7,12 @@ import type {
 } from '../agent-event-inbox-entry.js';
 import type { InboxEventHandler } from './inbox-event-handler.js';
 import type { AgentTurnTrigger } from '../../loop/agent-turn-runner.js';
+import type { TurnStartOrigin } from '../agent-event-inbox-entry.js';
 
-export type StartTurnTask = (trigger: AgentTurnTrigger) => Promise<TurnStartEventResult>;
+export type StartTurnTask = (input: {
+  trigger: AgentTurnTrigger;
+  origin: TurnStartOrigin;
+}) => Promise<TurnStartEventResult>;
 
 export class TurnStartInboxEventHandler implements InboxEventHandler<TurnStartEventInboxEntry> {
   constructor(private readonly startTurnTask: StartTurnTask) {}
@@ -29,6 +33,6 @@ export class TurnStartInboxEventHandler implements InboxEventHandler<TurnStartEv
         message: `Agent '${context.agentId}' already has active turn '${context.state.activeTurn.turnId}'.`
       };
     }
-    return this.startTurnTask(entry.event);
+    return this.startTurnTask({ trigger: entry.event, origin: entry.origin });
   }
 }

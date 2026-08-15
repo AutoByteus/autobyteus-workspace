@@ -6,8 +6,12 @@ import type { BaseToolInvocationPreprocessor } from '../tool-invocation-preproce
 import type { BaseToolExecutionResultProcessor } from '../tool-execution-result-processor/base-processor.js';
 import type { BaseLLMResponseProcessor } from '../llm-response-processor/base-processor.js';
 import type { BaseLifecycleEventProcessor } from '../lifecycle/base-processor.js';
-import type { CompactionAgentRunner } from '../../memory/compaction/compaction-agent-runner.js';
 import type { CompactionLineageScope } from '../../memory/lineage/compaction-lineage-scope.js';
+import {
+  copyMemoryCompactionConfiguration,
+  DEFAULT_MEMORY_COMPACTION_CONFIGURATION,
+  type MemoryCompactionConfiguration,
+} from '../../memory/compaction/memory-compaction-configuration.js';
 
 function deepClone<T>(value: T): T {
   if (value === null || value === undefined) {
@@ -39,7 +43,7 @@ export class AgentConfig {
   skills: string[];
   skillAccessMode: SkillAccessMode;
   memoryDir?: string | null;
-  compactionAgentRunner: CompactionAgentRunner | null;
+  memoryCompaction: MemoryCompactionConfiguration;
   compactionLineageScope: CompactionLineageScope | null;
 
   constructor(
@@ -60,7 +64,7 @@ export class AgentConfig {
     skills: string[] | null = null,
     memoryDir: string | null = null,
     skillAccessMode: SkillAccessMode | null = null,
-    compactionAgentRunner: CompactionAgentRunner | null = null,
+    memoryCompaction: MemoryCompactionConfiguration = DEFAULT_MEMORY_COMPACTION_CONFIGURATION,
     compactionLineageScope: CompactionLineageScope | null = null,
   ) {
     this.name = name;
@@ -84,7 +88,7 @@ export class AgentConfig {
     this.skills = skills ?? [];
     this.skillAccessMode = resolveSkillAccessMode(skillAccessMode, this.skills.length);
     this.memoryDir = memoryDir ?? undefined;
-    this.compactionAgentRunner = compactionAgentRunner ?? null;
+    this.memoryCompaction = memoryCompaction;
     this.compactionLineageScope = compactionLineageScope
       ? { ...compactionLineageScope }
       : null;
@@ -111,7 +115,7 @@ export class AgentConfig {
       this.skills.slice(),
       this.memoryDir ?? null,
       this.skillAccessMode,
-      this.compactionAgentRunner,
+      copyMemoryCompactionConfiguration(this.memoryCompaction),
       this.compactionLineageScope,
     );
   }

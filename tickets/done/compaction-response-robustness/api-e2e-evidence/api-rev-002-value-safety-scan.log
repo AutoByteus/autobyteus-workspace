@@ -1,0 +1,4 @@
+scanned_file_count=10
+exact_authorized_source_secret_value_found=no
+credential_pattern_found=no
+value_safety_scan=PASS

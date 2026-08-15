@@ -1,6 +1,6 @@
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { AgentConfig, LLMFactory } from "autobyteus-ts";
+import { AgentConfig, CompactionPolicy, LLMFactory } from "autobyteus-ts";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { BaseLLM } from "autobyteus-ts/llm/base.js";
 import { LLMModel } from "autobyteus-ts/llm/models.js";
@@ -23,6 +23,7 @@ import { buildTaskDelegationToolContextFromNativeContext } from "../../../../../
 import { registerAgentCommunicationTools } from "../../../../../src/agent-tools/agent-communication/register-agent-communication-tools.js";
 import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-enum.js";
 import { registerTools } from "autobyteus-ts/tools/register-tools.js";
+import { MEMORY_COMPACTOR_AGENT_DEFINITION_ID } from "../../../../../src/built-in-agents/built-in-agent-registry.js";
 
 class DummyLLM extends BaseLLM {
   protected async _sendMessagesToLLM(_messages: Message[]): Promise<CompleteResponse> {
@@ -732,8 +733,94 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       runtimeKind: RuntimeKind.AUTOBYTEUS,
       llmModelIdentifier: "dummy-model",
     });
-    expect(built.agentConfig.compactionAgentRunner).toBe(compactionRunner);
+    expect(built.agentConfig.memoryCompaction).toMatchObject({
+      kind: "enabled",
+      policy: expect.any(CompactionPolicy),
+      runner: compactionRunner,
+    });
+    expect(built.agentConfig).not.toHaveProperty("compactionAgentRunner");
     expect(built.resolvedRunConfig.runtimeKind).toBe(RuntimeKind.AUTOBYTEUS);
+  });
+
+  it("provisions the canonical Memory Compactor as disabled without creating a runner", async () => {
+    const compactionAgentRunnerFactory = vi.fn(() => ({ runCompactionTask: vi.fn() }));
+    const factory = new AutoByteusAgentRunBackendFactory({
+      agentDefinitionService: {
+        getAgentDefinitionById: vi.fn(async () => new AgentDefinition({
+          id: MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
+          name: "Memory Compactor",
+          description: "Compacts one target-agent history.",
+          toolNames: [],
+        })),
+      } as any,
+      createLLM: vi.fn(async () => new DummyLLM(
+        new LLMModel({
+          name: "dummy-model", value: "dummy-model", canonicalName: "dummy-model",
+          provider: LLMProvider.OPENAI,
+        }),
+        new LLMConfig(),
+      )),
+      workspaceManager: {
+        getWorkspaceById: () => null,
+        getOrCreateTempWorkspace: async () => ({
+          workspaceId: "workspace-1",
+          getName: () => "Workspace",
+          getBasePath: () => path.join("/tmp", "workspace-1"),
+        }),
+      } as any,
+      skillService: { getSkill: () => null } as any,
+      compactionAgentRunnerFactory,
+    });
+
+    const built = await (factory as any).buildAgentConfig(new AgentRunConfig({
+      agentDefinitionId: MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
+      llmModelIdentifier: "dummy-model",
+      autoExecuteTools: false,
+      runtimeKind: RuntimeKind.AUTOBYTEUS,
+    }), "memory-compactor-run");
+
+    expect(compactionAgentRunnerFactory).not.toHaveBeenCalled();
+    expect(built.agentConfig.memoryCompaction).toEqual({ kind: "disabled" });
+  });
+
+  it.each([
+    ["null result", vi.fn(() => null), /returned no runner/],
+    ["thrown failure", vi.fn(() => { throw new Error("runner unavailable"); }), /runner creation failed.*runner unavailable/],
+  ])("fails normal-agent composition on a %s without a disabled fallback", async (_label, runnerFactory, errorPattern) => {
+    const factory = new AutoByteusAgentRunBackendFactory({
+      agentDefinitionService: {
+        getAgentDefinitionById: vi.fn(async () => new AgentDefinition({
+          id: "agent-1",
+          name: "Professor",
+          description: "Coordinates work.",
+        })),
+      } as any,
+      createLLM: vi.fn(async () => new DummyLLM(
+        new LLMModel({
+          name: "dummy-model", value: "dummy-model", canonicalName: "dummy-model",
+          provider: LLMProvider.OPENAI,
+        }),
+        new LLMConfig(),
+      )),
+      workspaceManager: {
+        getWorkspaceById: () => null,
+        getOrCreateTempWorkspace: async () => ({
+          workspaceId: "workspace-1",
+          getName: () => "Workspace",
+          getBasePath: () => path.join("/tmp", "workspace-1"),
+        }),
+      } as any,
+      skillService: { getSkill: () => null } as any,
+      compactionAgentRunnerFactory: runnerFactory,
+    });
+
+    await expect((factory as any).buildAgentConfig(new AgentRunConfig({
+      agentDefinitionId: "agent-1",
+      llmModelIdentifier: "dummy-model",
+      autoExecuteTools: false,
+      runtimeKind: RuntimeKind.AUTOBYTEUS,
+    }), "normal-run")).rejects.toThrow(errorPattern);
+    expect(runnerFactory).toHaveBeenCalledOnce();
   });
 
 });

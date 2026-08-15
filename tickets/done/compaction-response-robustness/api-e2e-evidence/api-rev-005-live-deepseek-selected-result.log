@@ -1,0 +1,32 @@
+{
+  "canonicalCompactorAgentUsed": true,
+  "canonicalCompactorDescendantCount": 0,
+  "canonicalCompactorEffectiveToolNames": [],
+  "canonicalCompactorNoSelfCompactionPersistenceVerified": true,
+  "canonicalCompactorPromptSha256": "b7c0900948722caebb5ce5afa90c195a8e40eaa6fe91e5e0b3088c402e9b96ef",
+  "canonicalCompactorProviderSafeUnicodeVerified": true,
+  "canonicalCompactorRunCount": 1,
+  "canonicalCompactorShieldOmissionPressureVerified": true,
+  "canonicalCompactorSourceToolTailVerified": true,
+  "canonicalCompactorTaskFramingVerified": true,
+  "canonicalCompactorToolFree": true,
+  "compactionRatio": 0.05,
+  "completedCompactionCount": 1,
+  "continuationTraceAbsent": true,
+  "effectiveContextWindowTokens": 1000000,
+  "exactRetainedArtifactVerified": true,
+  "managedSecretResolverUsed": true,
+  "modelIdentifier": "deepseek-v4-flash",
+  "observedAtOrAboveThreshold": true,
+  "observedBelowThreshold": true,
+  "orderedToolTracePairsVerified": true,
+  "projectedMemoryAndCurrentUserVerified": true,
+  "promptContractVersions": [
+    3
+  ],
+  "scenarioId": "deepseek.compaction-agent-flow",
+  "status": "PASSED",
+  "successfulToolCount": 4,
+  "triggerThresholdTokens": 49936,
+  "unicodeShieldSourceImmutableVerified": true
+}

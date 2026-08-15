@@ -23,35 +23,37 @@ export type CompactionAgentRunnerResult = {
   metadata?: CompactionAgentExecutionMetadata | null;
 };
 
+export type CompactionAgentRunnerFailureKind =
+  | 'error_completion'
+  | 'interrupted'
+  | 'terminal_error'
+  | 'timeout'
+  | 'tool_approval'
+  | 'task_rejected'
+  | 'launch_failed'
+  | 'collection_failed';
+
 export interface CompactionAgentRunner {
   runCompactionTask(task: CompactionAgentTask): Promise<CompactionAgentRunnerResult>;
 }
 
 export class CompactionAgentRunnerError extends Error {
-  readonly compactionMetadata: CompactionAgentExecutionMetadata | null;
-  readonly cause: unknown;
-
   constructor(
+    readonly kind: CompactionAgentRunnerFailureKind,
     message: string,
-    compactionMetadata: CompactionAgentExecutionMetadata | null = null,
-    cause: unknown = null,
+    readonly compactionMetadata: CompactionAgentExecutionMetadata | null = null,
+    readonly cause: unknown = null,
   ) {
     super(message);
     this.name = 'CompactionAgentRunnerError';
-    this.compactionMetadata = compactionMetadata;
-    this.cause = cause;
   }
 }
 
 export const getCompactionAgentRunnerErrorMetadata = (
   error: unknown,
 ): CompactionAgentExecutionMetadata | null => {
-  if (error instanceof CompactionAgentRunnerError) {
-    return error.compactionMetadata;
-  }
-  if (!error || typeof error !== 'object' || Array.isArray(error)) {
-    return null;
-  }
+  if (error instanceof CompactionAgentRunnerError) return error.compactionMetadata;
+  if (!error || typeof error !== 'object' || Array.isArray(error)) return null;
   const metadata = (error as { compactionMetadata?: unknown }).compactionMetadata;
   return metadata && typeof metadata === 'object' && !Array.isArray(metadata)
     ? metadata as CompactionAgentExecutionMetadata

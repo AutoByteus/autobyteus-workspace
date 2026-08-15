@@ -7,6 +7,12 @@ import type {
   WorkingContextMessageUnit,
 } from '../../../src/memory/compaction/working-context-message-unit.js';
 import { WorkingContext } from '../../../src/memory/working-context.js';
+import { resolveCompactionPlanningBudget } from '../../../src/memory/compaction/compaction-planning-budget.js';
+
+const budget = resolveCompactionPlanningBudget(
+  { inputBudget: 10_000, triggerThresholdTokens: 8_000 },
+  9_000,
+);
 
 const unit = (
   id: string,
@@ -37,6 +43,17 @@ const plan = (
   rawTraceIdsToArchive: [...new Set(compactableUnits.flatMap(({ rawTraceIds }) => rawTraceIds))],
   estimatedRetainedTokens: 0,
   estimatedCompactedTokens: 20,
+  budgetAssessment: {
+    planningBudget: budget,
+    estimatedCurrentWorkingContextTokens: 100,
+    estimatedUntrackedOverheadTokens: 0,
+    requiredSystemTokens: 20,
+    protectedSuffixTokens: 0,
+    replacementMemoryReserveTokens: budget.replacementMemoryReserveTokens,
+    retainedRecentTokens: 0,
+    estimatedPlannedPromptTokens: 20 + budget.replacementMemoryReserveTokens,
+    estimatedFinalizedContextTokens: null,
+  },
 });
 
 describe('StructuredJsonCompactionStrategy', () => {
@@ -59,7 +76,7 @@ describe('StructuredJsonCompactionStrategy', () => {
     const diagnostics = { reportPlan: vi.fn(), reportResult: vi.fn() };
     const strategy = new StructuredJsonCompactionStrategy({
       summarizer: summarizer as any,
-      inputBudgetTokens: 900,
+      planningBudget: budget,
       diagnostics,
       planner: planner as any,
     });
@@ -71,7 +88,7 @@ describe('StructuredJsonCompactionStrategy', () => {
     ]));
 
     expect(planner.plan).toHaveBeenCalledWith(expect.objectContaining({
-      inputBudgetTokens: 900,
+      planningBudget: budget,
     }));
     expect(summarizer.summarizeMessageUnits).toHaveBeenCalledWith([compacted]);
     expect(proposal).toEqual({
@@ -91,6 +108,7 @@ describe('StructuredJsonCompactionStrategy', () => {
         modelIdentifier: 'model-1',
         taskId: 'task-1',
       },
+      budgetAssessment: plan([compacted], [retained]).budgetAssessment,
     });
     expect(proposal).not.toHaveProperty('compactionId');
     expect(proposal).not.toHaveProperty('episodeIds');
@@ -121,7 +139,7 @@ describe('StructuredJsonCompactionStrategy', () => {
     };
     const strategy = new StructuredJsonCompactionStrategy({
       summarizer: summarizer as any,
-      inputBudgetTokens: null,
+      planningBudget: budget,
       planner: { plan: () => plan([m1, r2]) } as any,
     });
 
@@ -139,7 +157,7 @@ describe('StructuredJsonCompactionStrategy', () => {
         summarizeMessageUnits,
         getLastCompactionExecutionMetadata: () => null,
       } as any,
-      inputBudgetTokens: null,
+      planningBudget: budget,
       planner: { plan: () => plan([]) } as any,
     });
 

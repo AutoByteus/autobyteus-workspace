@@ -84,6 +84,16 @@ describe("AutoByteusStreamEventConverter", () => {
     } as any)).toMatchObject({ payload: { status: "idle" } });
   });
 
+  it("preserves the assistant error-completion bit", () => {
+    expect(new AutoByteusStreamEventConverter("run-1").convert({
+      event_type: StreamEventType.ASSISTANT_COMPLETE_RESPONSE,
+      data: { content: "provider failed", is_error: true },
+    } as any)).toMatchObject({
+      eventType: AgentRunEventType.ASSISTANT_COMPLETE,
+      payload: { content: "provider failed", is_error: true },
+    });
+  });
+
   it("does not grant status or lifecycle authority to malformed terminal error payloads", () => {
     const converter = new AutoByteusStreamEventConverter("run-1");
     converter.convert({

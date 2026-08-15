@@ -1,0 +1,72 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-ts
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > uses the injected compaction agent runner to compact memory before the next LLM leg
+Registered AgentContext for agent_id 'runtimecompactionagent_tester_2016'. Total registered contexts: 1
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > uses the injected compaction agent runner to compact memory before the next LLM leg
+Unregistered AgentContext for agent_id 'runtimecompactionagent_tester_2016'.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > fails before a child launch and blocks the USER retry dispatch when the final prompt invariant fails
+Registered AgentContext for agent_id 'runtimecompactionagent_tester_6005'. Total registered contexts: 1
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > fails before a child launch and blocks the USER retry dispatch when the final prompt invariant fails
+Unregistered AgentContext for agent_id 'runtimecompactionagent_tester_6005'.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > fails closed on a typed runner error and admits one USER retry ahead of retained non-user starts
+Registered AgentContext for agent_id 'runtimecompactionagent_tester_7364'. Total registered contexts: 1
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > fails closed on a typed runner error and admits one USER retry ahead of retained non-user starts
+Unregistered AgentContext for agent_id 'runtimecompactionagent_tester_7364'.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > keeps compaction pending and blocks the next provider dispatch when compaction agent output is invalid
+Registered AgentContext for agent_id 'runtimecompactionagent_tester_4061'. Total registered contexts: 1
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > keeps compaction pending and blocks the next provider dispatch when compaction agent output is invalid
+Unregistered AgentContext for agent_id 'runtimecompactionagent_tester_4061'.
+
+ ❯ tests/integration/agent/runtime/agent-runtime-compaction.test.ts (4 tests | 1 failed) 808ms
+     ✓ uses the injected compaction agent runner to compact memory before the next LLM leg 230ms
+     × fails before a child launch and blocks the USER retry dispatch when the final prompt invariant fails 147ms
+     ✓ fails closed on a typed runner error and admits one USER retry ahead of retained non-user starts 267ms
+     ✓ keeps compaction pending and blocks the next provider dispatch when compaction agent output is invalid 164ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > fails before a child launch and blocks the USER retry dispatch when the final prompt invariant fails
+AssertionError: expected 'Memory compaction failed before dispa…' to contain '[input_construction_failure]'
+
+Expected: "[input_construction_failure]"
+Received: "Memory compaction failed before dispatch [execution_failure]: Provider-safe text normalization did not satisfy its invariant."
+
+ ❯ tests/integration/agent/runtime/agent-runtime-compaction.test.ts:481:54
+    479|       expect(compactionEvents.map(({ phase }) => phase))
+    480|         .toEqual(['requested', 'started', 'failed']);
+    481|       expect(compactionEvents.at(-1)?.error_message).toContain('[input…
+       |                                                      ^
+    482|       const store = agent.context.state.memoryManager?.store as FileMe…
+    483|       expect(store.list(MemoryType.EPISODIC)).toHaveLength(0);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 passed (4)
+   Start at  07:49:03
+   Duration  2.02s (transform 683ms, setup 18ms, import 1.09s, tests 808ms, environment 0ms)
+

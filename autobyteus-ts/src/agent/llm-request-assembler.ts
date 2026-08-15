@@ -12,10 +12,12 @@ import {
   type MediaInputDiagnostic,
 } from '../llm/utils/media-input-sanitizer.js';
 import type { LlmRequestRecoverySnapshot } from '../memory/llm-request-recovery.js';
+import type { TurnStartOrigin } from './event-inbox/agent-event-inbox-entry.js';
 
 export type LlmRequestAssemblyIdentity = Readonly<{
   turnId: string;
   requestId: string;
+  turnOrigin: TurnStartOrigin;
 }>;
 
 export type RequestPackage = {
@@ -46,8 +48,9 @@ export class LLMRequestAssembler {
     });
 
     const didCompact = this.pendingCompactionExecutor
-      ? await this.pendingCompactionExecutor.executeIfRequired({
+      ? await this.pendingCompactionExecutor.executeIfAuthorized({
           turnId: identity.turnId,
+          turnOrigin: identity.turnOrigin,
         })
       : false;
 

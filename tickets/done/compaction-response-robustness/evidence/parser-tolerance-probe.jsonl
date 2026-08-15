@@ -1,0 +1,6 @@
+{"name":"exact","ok":true,"episodes":[{"summary":"resume safely"}]}
+{"name":"prose-before-after","ok":true,"episodes":[{"summary":"resume safely"}]}
+{"name":"fenced-with-prose","ok":true,"episodes":[{"summary":"resume safely"}]}
+{"name":"unrelated-json-first","ok":false,"error":"Compaction response contains unsupported fields: note."}
+{"name":"memory_compactor_506ea3c502f34687a3f6004a08364364","ok":false,"error":"Could not parse a valid JSON object from the compaction response."}
+{"name":"memory_compactor_e1f5d8b1cc884f66a4d4c9918639ba30","ok":false,"error":"Could not parse a valid JSON object from the compaction response."}

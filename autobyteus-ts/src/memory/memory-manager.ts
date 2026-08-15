@@ -7,7 +7,6 @@ import { ToolInvocation } from '../agent/tool-invocation.js';
 import { RawTraceItem, type RawTraceItemOptions } from './models/raw-trace-item.js';
 import { toolCallIdentityKey } from './models/tool-call-identity.js';
 import { MemoryType } from './models/memory-types.js';
-import { CompactionPolicy } from './policies/compaction-policy.js';
 import { MemoryStore } from './store/base-store.js';
 import type { CompactionLineageStore } from './lineage/compaction-lineage-store.js';
 import type { CompactionLineageScope } from './lineage/compaction-lineage-scope.js';
@@ -24,15 +23,27 @@ import type {
 import type { CompactedMemoryProjectionBundle } from './projection/compacted-memory-projection-bundle.js';
 import {
   MemoryManagerCompactionCoordinator,
+  type BeginPendingCompactionAttemptResult,
+  type CompactionObservationDecision,
   type CompactionOperationId,
+  type CompactionRequestKind,
   type MemoryManagerCompactionBaseline,
+  type PendingCompactionGate,
   type PendingCompactionRequest,
 } from './memory-manager-compaction-coordinator.js';
 export type {
+  BeginPendingCompactionAttemptResult,
+  CompactionObservationDecision,
   CompactionOperationId,
+  CompactionRequestKind,
   MemoryManagerCompactionBaseline,
+  PendingCompactionAttemptState,
+  PendingCompactionGate,
   PendingCompactionRequest,
 } from './memory-manager-compaction-coordinator.js';
+import type { CompactionPlanningBudget } from './compaction/compaction-planning-budget.js';
+import { DEFAULT_MEMORY_COMPACTION_CONFIGURATION, type MemoryCompactionConfiguration } from './compaction/memory-compaction-configuration.js';
+import type { TurnStartOrigin } from '../agent/event-inbox/agent-event-inbox-entry.js';
 import {
   buildNativeAssistantResponseTraces,
   buildNativeToolCallTrace,
@@ -42,6 +53,9 @@ import {
   type NativeToolCallRegistration,
 } from './raw-trace-ingestion.js';
 import { ToolTraceLifecycleState } from './tool-trace-lifecycle-state.js';
+import { findRecentRawTraceIds } from './recent-raw-trace-selector.js';
+import { requireAgentTurnScopeId, type MemoryProjectionScope } from './memory-projection-scope.js';
+import { getOperationBoundaryNoteContent, OPERATION_BOUNDARY_TRACE_TYPE } from './operation-boundary-trace.js';
 import {
   LlmRequestRecoveryBoundary,
   type LlmRequestRecoveryInput,
@@ -65,7 +79,7 @@ import {
   type WorkingContextAppendOptions,
 } from './memory-manager-working-context-controller.js';
 export type { WorkingContextAppendOptions } from './memory-manager-working-context-controller.js';
-export type MemoryProjectionScope = { kind: 'agent_turn'; id: string };
+export type { MemoryProjectionScope } from './memory-projection-scope.js';
 
 export type AppendRawTraceInput = RawTraceItem | (Omit<RawTraceItemOptions, 'id' | 'ts' | 'seq'> & Partial<Pick<RawTraceItemOptions, 'id' | 'ts' | 'seq'>>);
 
@@ -75,12 +89,9 @@ export type EnsureWorkingContextToolProtocolSafeForNextLlmInput = MemoryManagerT
 
 export type OperationBoundaryNoteInput = { scope: MemoryProjectionScope; reason?: string | null };
 
-const OPERATION_BOUNDARY_TRACE_TYPE = 'operation_boundary';
-
 export class MemoryManager {
   store: MemoryStore;
   turnTracker: TurnTracker;
-  compactionPolicy: CompactionPolicy;
   memoryTypes = MemoryType;
   private readonly workingContextController: MemoryManagerWorkingContextController;
   workingContextSnapshotStore: WorkingContextSnapshotStore | null;
@@ -88,8 +99,10 @@ export class MemoryManager {
   private readonly llmRequestRecovery: LlmRequestRecoveryBoundary;
   private seqByTurn = new Map<string, number>();
   private readonly toolLifecycleState: ToolTraceLifecycleState;
+  private readonly automaticCompactionConfiguration: MemoryCompactionConfiguration;
 
-  constructor(options: { store: MemoryStore; turnTracker?: TurnTracker; compactionPolicy?: CompactionPolicy;
+  constructor(options: { store: MemoryStore; turnTracker?: TurnTracker;
+    memoryCompaction?: MemoryCompactionConfiguration;
     workingContext?: WorkingContext;
     workingContextSnapshotStore?: WorkingContextSnapshotStore | null;
     lineageStore?: CompactionLineageStore | null;
@@ -97,7 +110,7 @@ export class MemoryManager {
     agentId?: string | null }) {
     this.store = options.store;
     this.turnTracker = options.turnTracker ?? new TurnTracker();
-    this.compactionPolicy = options.compactionPolicy ?? new CompactionPolicy();
+    this.automaticCompactionConfiguration = options.memoryCompaction ?? DEFAULT_MEMORY_COMPACTION_CONFIGURATION;
     this.workingContextSnapshotStore = options.workingContextSnapshotStore ?? null;
     this.workingContextController = new MemoryManagerWorkingContextController({
       workingContext: options.workingContext,
@@ -117,8 +130,8 @@ export class MemoryManager {
     this.llmRequestRecovery = new LlmRequestRecoveryBoundary({
       getWorkingContext: () => this.workingContextController.getContext(),
       setWorkingContext: (workingContext) => this.workingContextController.install(workingContext),
-      getCompactionState: () => this.compactionCoordinator.capturePendingState(),
-      setCompactionState: (state) => this.compactionCoordinator.restorePendingState(state),
+      getCompactionState: () => this.compactionCoordinator.captureState(),
+      setCompactionState: (state) => this.compactionCoordinator.restoreState(state),
       persistWorkingContextSnapshot: () => this.persistWorkingContextSnapshot(),
       appendRawTrace: (input) => this.appendRawTrace(input),
     });
@@ -128,28 +141,49 @@ export class MemoryManager {
     return this.turnTracker.nextTurnId();
   }
 
-  requestCompaction(requestedTurnId?: string | null): CompactionOperationId {
-    return this.compactionCoordinator.request(requestedTurnId);
+  evaluateCompactionObservation(input: {
+    requestedTurnId: string;
+    planningBudget: CompactionPlanningBudget;
+  }): CompactionObservationDecision {
+    if (this.automaticCompactionConfiguration.kind === 'disabled') {
+      return { kind: 'none', operationId: null, requestKind: null, planningBudget: input.planningBudget };
+    }
+    const pressure = this.automaticCompactionConfiguration.policy.classifyPressure(
+      input.planningBudget.observedPromptTokens,
+      input.planningBudget.inputBudgetTokens,
+      input.planningBudget.triggerThresholdTokens,
+    );
+    return this.compactionCoordinator.evaluateObservation({ ...input, pressure });
   }
 
-  getPendingCompactionRequest(): PendingCompactionRequest | null {
-    return this.compactionCoordinator.getPending();
+  getAutomaticCompactionConfiguration(): MemoryCompactionConfiguration { return this.automaticCompactionConfiguration; }
+
+  requestCompaction(input: {
+    requestedTurnId?: string | null;
+    requestKind: CompactionRequestKind;
+    planningBudget: CompactionPlanningBudget;
+  }): CompactionOperationId {
+    return this.compactionCoordinator.request(input);
   }
 
-  requirePendingCompactionRequest(): PendingCompactionRequest {
-    return this.compactionCoordinator.requirePending();
-  }
+  hasPendingCompaction(): boolean { return this.compactionCoordinator.hasPending(); }
 
-  clearCompactionRequest(): void {
-    this.compactionCoordinator.clear();
-  }
+  getPendingCompactionRequest(): PendingCompactionRequest | null { return this.compactionCoordinator.getPending(); }
 
-  get compactionRequired(): boolean {
-    return this.compactionCoordinator.compactionRequired;
-  }
+  requirePendingCompactionRequest(): PendingCompactionRequest { return this.compactionCoordinator.requirePending(); }
 
-  set compactionRequired(value: boolean) {
-    this.compactionCoordinator.compactionRequired = value;
+  getPendingCompactionGate(): PendingCompactionGate { return this.compactionCoordinator.getPendingGate(); }
+
+  isCompactionAwaitingUserRetry(): boolean { return this.getPendingCompactionGate().kind === 'awaiting_user_retry'; }
+
+  beginPendingCompactionAttempt(input: {
+    operationId: string;
+    turnId: string;
+    turnOrigin: TurnStartOrigin;
+  }): BeginPendingCompactionAttemptResult { return this.compactionCoordinator.beginPendingAttempt(input); }
+
+  retainCompactionFailure(operationId: string, executionTurnId: string, errorKind: string): void {
+    this.compactionCoordinator.retainFailure(operationId, executionTurnId, errorKind);
   }
 
   private nextSeq(turnId: string): number {
@@ -198,7 +232,12 @@ export class MemoryManager {
             video_urls: input.video_urls,
           })
         : new Message(MessageRole.USER, { content: String(input) });
-    const rawTraceIds = options.rawTraceIds ?? this.findRecentRawTraceIds(options.turnId, 'user', message.content);
+    const rawTraceIds = options.rawTraceIds ?? findRecentRawTraceIds(
+      this.listRawTracesOrdered(),
+      options.turnId,
+      'user',
+      message.content,
+    );
     this.appendWorkingContextMessage(message, { ...options, rawTraceIds });
   }
 
@@ -404,7 +443,7 @@ export class MemoryManager {
   }
 
   buildOperationBoundaryNote(input: OperationBoundaryNoteInput): string {
-    const scopeId = this.requireAgentTurnScopeId(input.scope, 'MemoryManager.buildOperationBoundaryNote');
+    const scopeId = requireAgentTurnScopeId(input.scope, 'MemoryManager.buildOperationBoundaryNote');
     const reasonText = input.reason ? ` Reason: ${input.reason}.` : '';
     return (
       `System note: turn '${scopeId}' was interrupted before normal completion.${reasonText} ` +
@@ -427,12 +466,14 @@ export class MemoryManager {
     }
 
     const fenceTurnId = input.fenceIncompleteToolProtocolScope
-      ? this.requireAgentTurnScopeId(
+      ? requireAgentTurnScopeId(
           input.fenceIncompleteToolProtocolScope,
           'MemoryManager.projectWorkingContextForNextLlm'
         )
       : null;
-    const boundaryContent = fenceTurnId ? this.getOperationBoundaryNoteContent(fenceTurnId) : null;
+    const boundaryContent = fenceTurnId
+      ? getOperationBoundaryNoteContent(this.listRawTracesOrdered(), fenceTurnId)
+      : null;
     this.ensureWorkingContextToolProtocolSafeForNextLlm({
       scope: input.fenceIncompleteToolProtocolScope,
       includeCommittedFacts: input.includeCommittedFacts,
@@ -503,48 +544,12 @@ export class MemoryManager {
     this.workingContextController.append(message, options);
   }
 
-  private findRecentRawTraceIds(
-    turnId: string | null | undefined,
-    traceType: string,
-    content?: string | null
-  ): string[] | undefined {
-    if (!turnId) {
-      return undefined;
-    }
-    const match = [...this.listRawTracesOrdered()]
-      .reverse()
-      .find((trace) =>
-        trace.turnId === turnId &&
-        trace.traceType === traceType &&
-        (!content || trace.content === content)
-      );
-    return match ? [match.id] : undefined;
-  }
-
   getToolInteractions(turnId?: string | null) {
     let rawItems = this.listRawTraceCorpusOrdered();
     if (turnId) {
       rawItems = rawItems.filter((item) => item.turnId === turnId);
     }
     return buildToolInteractions(rawItems);
-  }
-
-  private requireAgentTurnScopeId(scope: MemoryProjectionScope | undefined, operation: string): string {
-    if (!scope || scope.kind !== 'agent_turn' || typeof scope.id !== 'string' || !scope.id.trim()) {
-      throw new Error(`${operation} requires an agent_turn scope with a non-empty id.`);
-    }
-    return scope.id.trim();
-  }
-
-  private getOperationBoundaryNoteContent(turnId: string): string | null {
-    const marker = this.listRawTracesOrdered()
-      .filter((item) =>
-        item.turnId === turnId &&
-        item.traceType === OPERATION_BOUNDARY_TRACE_TYPE &&
-        item.sourceEvent === 'AgentTurnInterruptedEvent'
-      )
-      .at(-1);
-    return marker?.content ?? null;
   }
 
   private recordPhysicalToolTrace(trace: RawTraceItem): void {

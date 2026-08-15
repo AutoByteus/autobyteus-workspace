@@ -1,3 +1,5 @@
+import { providerSafeCompactionText } from './unicode-safe-text.js';
+
 export type ReadableValueRenderOptions = {
   maxChars: number | null;
 };
@@ -41,29 +43,49 @@ const omitMiddle = (value: string, limit: number): string => {
   for (let iteration = 0; iteration < 8; iteration += 1) {
     const marker = `… [${omitted} characters omitted] …`;
     if (limit <= marker.length + 1) {
-      return marker.slice(0, limit);
+      return providerSafeCompactionText.truncateEnd(marker, limit);
     }
     const retained = limit - marker.length;
-    const headLength = Math.max(1, Math.ceil(retained / 2));
-    const tailLength = Math.max(1, retained - headLength);
-    const nextOmitted = Math.max(0, value.length - headLength - tailLength);
+    const requestedHeadLength = Math.max(1, Math.ceil(retained / 2));
+    const requestedTailLength = Math.max(1, retained - requestedHeadLength);
+    const headEnd = providerSafeCompactionText.sliceEndWithoutSplittingSurrogate(
+      value,
+      requestedHeadLength,
+    );
+    const tailStart = providerSafeCompactionText.sliceStartWithoutSplittingSurrogate(
+      value,
+      value.length - requestedTailLength,
+    );
+    const nextOmitted = Math.max(0, tailStart - headEnd);
     if (nextOmitted === omitted) {
-      return `${value.slice(0, headLength)}${marker}${value.slice(value.length - tailLength)}`;
+      return `${value.slice(0, headEnd)}${marker}${value.slice(tailStart)}`;
     }
     omitted = nextOmitted;
   }
 
   const marker = `… [${omitted} characters omitted] …`;
   const retained = Math.max(2, limit - marker.length);
-  const headLength = Math.ceil(retained / 2);
-  const tailLength = retained - headLength;
-  return `${value.slice(0, headLength)}${marker}${value.slice(value.length - tailLength)}`.slice(0, limit);
+  const headEnd = providerSafeCompactionText.sliceEndWithoutSplittingSurrogate(
+    value,
+    Math.ceil(retained / 2),
+  );
+  const tailStart = providerSafeCompactionText.sliceStartWithoutSplittingSurrogate(
+    value,
+    value.length - (retained - Math.ceil(retained / 2)),
+  );
+  return providerSafeCompactionText.truncateEnd(
+    `${value.slice(0, headEnd)}${marker}${value.slice(tailStart)}`,
+    limit,
+  );
 };
 
 export class ReadableValueRenderer {
   render(value: unknown, options: ReadableValueRenderOptions): string {
     const redacted = redactVisibleText(serializeVisibleValue(value));
+    const providerSafeValue = providerSafeCompactionText.finalize(redacted);
     const limit = normalizeLimit(options.maxChars);
-    return limit === null ? redacted : omitMiddle(redacted, limit);
+    return limit === null
+      ? providerSafeValue
+      : omitMiddle(providerSafeValue, limit);
   }
 }

@@ -1,0 +1,308 @@
+# Focused recursive Memory Compactor runtime excerpt
+# Extracted: 2026-08-15
+# Source: /Users/normy/.autobyteus/server-data/logs/server.log
+# Line numbers refer to the source at extraction time. Every source block below is copied verbatim.
+
+## Daily Assistant 20% observation requests the intended parent compaction
+# Source lines 2671381-2671420
+compaction_budget_evaluated {
+  agent_id: 'daily_assistant_2a39c68eb96443ada6f5af9f4f81acef',
+  prompt_tokens: 372123,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.2,
+  trigger_threshold_tokens: 123148,
+  trigger_headroom_tokens: 12315,
+  quality_retention_cap_tokens: 215510,
+  post_compaction_target_tokens: 110833,
+  budget_key: '615744:123148:215510:12315:110833',
+  override_active: false,
+  compaction_required: true,
+  threshold_episode_decision: 'requested'
+}
+compaction_requested {
+  agent_id: 'daily_assistant_2a39c68eb96443ada6f5af9f4f81acef',
+  phase: 'requested',
+  turn_id: 'turn_0001',
+  compaction_operation_id: 'compaction_operation_msu088l2_1',
+  requested_turn_id: 'turn_0001',
+  execution_turn_id: null,
+  selected_block_count: null,
+  compacted_block_count: null,
+  raw_trace_count: null,
+  semantic_fact_count: null
+}
+AgentExternalEventNotifier (NotifierID: c936e39a-58ad-4c74-931a-f15ce31992b7, AgentID: daily_assistant_2a39c68eb96443ada6f5af9f4f81acef) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c936e39a-58ad-4c74-931a-f15ce31992b7, AgentID: daily_assistant_2a39c68eb96443ada6f5af9f4f81acef) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c936e39a-58ad-4c74-931a-f15ce31992b7, AgentID: daily_assistant_2a39c68eb96443ada6f5af9f4f81acef) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c936e39a-58ad-4c74-931a-f15ce31992b7, AgentID: daily_assistant_2a39c68eb96443ada6f5af9f4f81acef) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+prisma:error 
+Invalid `prisma.tokenUsageLedgerEvent.create()` invocation:
+
+
+
+## Daily Assistant starts the intended operation over 551 units / 1762 traces
+# Source lines 2671434-2671460
+compaction_started {
+  agent_id: 'daily_assistant_2a39c68eb96443ada6f5af9f4f81acef',
+  phase: 'started',
+  turn_id: 'turn_0001',
+  compaction_operation_id: 'compaction_operation_msu088l2_1',
+  requested_turn_id: 'turn_0001',
+  execution_turn_id: 'turn_0001',
+  compaction_strategy_id: 'structured-json',
+  compaction_strategy_name: 'Structured JSON',
+  selected_block_count: null,
+  compacted_block_count: null
+}
+AgentExternalEventNotifier (NotifierID: c936e39a-58ad-4c74-931a-f15ce31992b7, AgentID: daily_assistant_2a39c68eb96443ada6f5af9f4f81acef) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+compaction_execution_context {
+  agent_id: 'daily_assistant_2a39c68eb96443ada6f5af9f4f81acef',
+  turn_id: 'turn_0001',
+  compaction_operation_id: 'compaction_operation_msu088l2_1',
+  requested_turn_id: 'turn_0001',
+  execution_turn_id: 'turn_0001',
+  pending_compaction: true,
+  selected_unit_count: 551,
+  protected_suffix_unit_count: 1,
+  retained_unit_count: 58,
+  working_context_message_count: 1177,
+  raw_trace_count: 1762
+}
+Creating new workspace for rootPath: /Users/normy/eddie_project
+
+## Outer Memory Compactor receives 540726 characters, reports 176655 prompt tokens, and incorrectly requests its own compaction
+# Source lines 2671565-2671638
+Successfully created autobyteus agent run 'memory_compactor_6d151dd0cc8441d8881a2d684f86b454'.
+AgentExternalEventNotifier (NotifierID: 0b60e0ae-cb4e-4f38-b351-472ac905ecb1, AgentID: memory_compactor_6d151dd0cc8441d8881a2d684f86b454) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0b60e0ae-cb4e-4f38-b351-472ac905ecb1, AgentID: memory_compactor_6d151dd0cc8441d8881a2d684f86b454) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'memory_compactor_6d151dd0cc8441d8881a2d684f86b454': UserInputContextBuildingProcessor completed. Final content length: 540726
+AgentExternalEventNotifier (NotifierID: 0b60e0ae-cb4e-4f38-b351-472ac905ecb1, AgentID: memory_compactor_6d151dd0cc8441d8881a2d684f86b454) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Memory file missing: /Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_b49c9266f232468a8882048860fca281/api_e2e_engineer_0ba4a3ed0a0341bca635d7387bb2be0b/raw_traces_active.jsonl
+Memory file missing: /Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_b49c9266f232468a8882048860fca281/code_reviewer_8474d71c35f44576a13e292540ae4716/raw_traces_active.jsonl
+AgentExternalEventNotifier (NotifierID: 0b60e0ae-cb4e-4f38-b351-472ac905ecb1, AgentID: memory_compactor_6d151dd0cc8441d8881a2d684f86b454) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'memory_compactor_6d151dd0cc8441d8881a2d684f86b454',
+  prompt_tokens: 176655,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.2,
+  trigger_threshold_tokens: 123148,
+  trigger_headroom_tokens: 12315,
+  quality_retention_cap_tokens: 215510,
+  post_compaction_target_tokens: 110833,
+  budget_key: '615744:123148:215510:12315:110833',
+  override_active: false,
+  compaction_required: true,
+  threshold_episode_decision: 'requested'
+}
+compaction_requested {
+  agent_id: 'memory_compactor_6d151dd0cc8441d8881a2d684f86b454',
+  phase: 'requested',
+  turn_id: 'turn_0001',
+  compaction_operation_id: 'compaction_operation_msu09qwk_1',
+  requested_turn_id: 'turn_0001',
+  execution_turn_id: null,
+  selected_block_count: null,
+  compacted_block_count: null,
+  raw_trace_count: null,
+  semantic_fact_count: null
+}
+AgentExternalEventNotifier (NotifierID: 0b60e0ae-cb4e-4f38-b351-472ac905ecb1, AgentID: memory_compactor_6d151dd0cc8441d8881a2d684f86b454) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: 'memory_compactor_6d151dd0cc8441d8881a2d684f86b454',
+  phase: 'started',
+  turn_id: 'turn_0001',
+  compaction_operation_id: 'compaction_operation_msu09qwk_1',
+  requested_turn_id: 'turn_0001',
+  execution_turn_id: 'turn_0001',
+  compaction_strategy_id: 'structured-json',
+  compaction_strategy_name: 'Structured JSON',
+  selected_block_count: null,
+  compacted_block_count: null
+}
+AgentExternalEventNotifier (NotifierID: 0b60e0ae-cb4e-4f38-b351-472ac905ecb1, AgentID: memory_compactor_6d151dd0cc8441d8881a2d684f86b454) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+compaction_execution_context {
+  agent_id: 'memory_compactor_6d151dd0cc8441d8881a2d684f86b454',
+  turn_id: 'turn_0001',
+  compaction_operation_id: 'compaction_operation_msu09qwk_1',
+  requested_turn_id: 'turn_0001',
+  execution_turn_id: 'turn_0001',
+  pending_compaction: true,
+  selected_unit_count: 1,
+  protected_suffix_unit_count: 0,
+  retained_unit_count: 1,
+  working_context_message_count: 3,
+  raw_trace_count: 1
+}
+Creating new workspace for rootPath: /Users/normy/eddie_project
+Created metadata-only FileSystemWorkspace at /Users/normy/eddie_project.
+Reusing registered workspace ID: agent_ws_0be1f5398768ef2e7d63a93621c8ec1e60e3159f2a90d47fe5a7aede1acbf878
+prisma:error 
+Invalid `prisma.tokenUsageLedgerEvent.create()` invocation:
+
+
+
+## Nested Memory Compactor is created
+# Source lines 2671649-2671659
+AgentRuntimeState initialized for agent_id 'memory_compactor_08242efd53204df8b27dd4782347bd17'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'memory_compactor_08242efd53204df8b27dd4782347bd17': No tools provided in config.
+Agent 'memory_compactor_08242efd53204df8b27dd4782347bd17': LLM instance 'DeepSeekLLM' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'memory_compactor_08242efd53204df8b27dd4782347bd17'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'memory_compactor_08242efd53204df8b27dd4782347bd17' with config: 'Memory Compactor'.
+AgentWorker initialized for agent_id 'memory_compactor_08242efd53204df8b27dd4782347bd17'.
+Registered AgentContext for agent_id 'memory_compactor_08242efd53204df8b27dd4782347bd17'. Total registered contexts: 3
+AgentRuntime initialized for agent_id 'memory_compactor_08242efd53204df8b27dd4782347bd17'. Context registered.
+Agent facade initialized for agent_id 'memory_compactor_08242efd53204df8b27dd4782347bd17'.
+Agent 'memory_compactor_08242efd53204df8b27dd4782347bd17' created and stored successfully.
+Agent 'memory_compactor_08242efd53204df8b27dd4782347bd17' requesting runtime to start.
+
+## Nested task is submitted to the created run with 2432 characters
+# Source lines 2671747-2671752
+Successfully created autobyteus agent run 'memory_compactor_08242efd53204df8b27dd4782347bd17'.
+AgentExternalEventNotifier (NotifierID: 194b4da8-c821-4eb4-8cb2-158940844b4b, AgentID: memory_compactor_08242efd53204df8b27dd4782347bd17) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 194b4da8-c821-4eb4-8cb2-158940844b4b, AgentID: memory_compactor_08242efd53204df8b27dd4782347bd17) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'memory_compactor_08242efd53204df8b27dd4782347bd17': UserInputContextBuildingProcessor completed. Final content length: 2432
+AgentExternalEventNotifier (NotifierID: 194b4da8-c821-4eb4-8cb2-158940844b4b, AgentID: memory_compactor_08242efd53204df8b27dd4782347bd17) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+
+## Nested child reports only 1758 prompt tokens and does not recurse further
+# Source lines 2671792-2671812
+compaction_budget_evaluated {
+  agent_id: 'memory_compactor_08242efd53204df8b27dd4782347bd17',
+  prompt_tokens: 1758,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.2,
+  trigger_threshold_tokens: 123148,
+  trigger_headroom_tokens: 12315,
+  quality_retention_cap_tokens: 215510,
+  post_compaction_target_tokens: 110833,
+  budget_key: '615744:123148:215510:12315:110833',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+AgentExternalEventNotifier (NotifierID: 194b4da8-c821-4eb4-8cb2-158940844b4b, AgentID: memory_compactor_08242efd53204df8b27dd4782347bd17) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+## Nested self-compaction completes for one trace
+# Source lines 2671840-2671880
+compaction_result_summary {
+  agent_id: 'memory_compactor_6d151dd0cc8441d8881a2d684f86b454',
+  turn_id: 'turn_0001',
+  compaction_operation_id: 'compaction_operation_msu09qwk_1',
+  requested_turn_id: 'turn_0001',
+  execution_turn_id: 'turn_0001',
+  selected_block_count: 1,
+  compacted_block_count: 1,
+  raw_trace_count: 1,
+  episode_summary_length: 977,
+  semantic_fact_count: 11,
+  compaction_agent_definition_id: 'autobyteus-memory-compactor',
+  compaction_agent_name: 'Memory Compactor',
+  compaction_runtime_kind: 'autobyteus',
+  compaction_model_identifier: 'deepseek-v4-flash',
+  compaction_run_id: 'memory_compactor_08242efd53204df8b27dd4782347bd17',
+  compaction_task_id: 'compaction_task_d16a001fb9c5493da9d567975c0dee7a'
+}
+compaction_completed {
+  agent_id: 'memory_compactor_6d151dd0cc8441d8881a2d684f86b454',
+  phase: 'completed',
+  turn_id: 'turn_0001',
+  compaction_operation_id: 'compaction_operation_msu09qwk_1',
+  requested_turn_id: 'turn_0001',
+  execution_turn_id: 'turn_0001',
+  compaction_strategy_id: 'structured-json',
+  compaction_strategy_name: 'Structured JSON',
+  selected_block_count: 1,
+  compacted_block_count: 1,
+  raw_trace_count: 1,
+  semantic_fact_count: 11,
+  compaction_agent_definition_id: 'autobyteus-memory-compactor',
+  compaction_agent_name: 'Memory Compactor',
+  compaction_runtime_kind: 'autobyteus',
+  compaction_model_identifier: 'deepseek-v4-flash',
+  compaction_run_id: 'memory_compactor_08242efd53204df8b27dd4782347bd17',
+  compaction_task_id: 'compaction_task_d16a001fb9c5493da9d567975c0dee7a'
+}
+AgentExternalEventNotifier (NotifierID: 0b60e0ae-cb4e-4f38-b351-472ac905ecb1, AgentID: memory_compactor_6d151dd0cc8441d8881a2d684f86b454) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0b60e0ae-cb4e-4f38-b351-472ac905ecb1, AgentID: memory_compactor_6d151dd0cc8441d8881a2d684f86b454) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'memory_compactor_6d151dd0cc8441d8881a2d684f86b454': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+## Outer result completes the Daily Assistant operation and the parent resets below threshold at 73102 tokens
+# Source lines 2671897-2671956
+compaction_result_summary {
+  agent_id: 'daily_assistant_2a39c68eb96443ada6f5af9f4f81acef',
+  turn_id: 'turn_0001',
+  compaction_operation_id: 'compaction_operation_msu088l2_1',
+  requested_turn_id: 'turn_0001',
+  execution_turn_id: 'turn_0001',
+  selected_block_count: 551,
+  compacted_block_count: 551,
+  raw_trace_count: 1762,
+  episode_summary_length: 4974,
+  semantic_fact_count: 33,
+  compaction_agent_definition_id: 'autobyteus-memory-compactor',
+  compaction_agent_name: 'Memory Compactor',
+  compaction_runtime_kind: 'autobyteus',
+  compaction_model_identifier: 'deepseek-v4-flash',
+  compaction_run_id: 'memory_compactor_6d151dd0cc8441d8881a2d684f86b454',
+  compaction_task_id: 'compaction_task_7e04c6d6764342b0b5d94f4ac010c02d'
+}
+compaction_completed {
+  agent_id: 'daily_assistant_2a39c68eb96443ada6f5af9f4f81acef',
+  phase: 'completed',
+  turn_id: 'turn_0001',
+  compaction_operation_id: 'compaction_operation_msu088l2_1',
+  requested_turn_id: 'turn_0001',
+  execution_turn_id: 'turn_0001',
+  compaction_strategy_id: 'structured-json',
+  compaction_strategy_name: 'Structured JSON',
+  selected_block_count: 551,
+  compacted_block_count: 551,
+  raw_trace_count: 1762,
+  semantic_fact_count: 33,
+  compaction_agent_definition_id: 'autobyteus-memory-compactor',
+  compaction_agent_name: 'Memory Compactor',
+  compaction_runtime_kind: 'autobyteus',
+  compaction_model_identifier: 'deepseek-v4-flash',
+  compaction_run_id: 'memory_compactor_6d151dd0cc8441d8881a2d684f86b454',
+  compaction_task_id: 'compaction_task_7e04c6d6764342b0b5d94f4ac010c02d'
+}
+AgentExternalEventNotifier (NotifierID: c936e39a-58ad-4c74-931a-f15ce31992b7, AgentID: daily_assistant_2a39c68eb96443ada6f5af9f4f81acef) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c936e39a-58ad-4c74-931a-f15ce31992b7, AgentID: daily_assistant_2a39c68eb96443ada6f5af9f4f81acef) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'daily_assistant_2a39c68eb96443ada6f5af9f4f81acef',
+  prompt_tokens: 73102,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.2,
+  trigger_threshold_tokens: 123148,
+  trigger_headroom_tokens: 12315,
+  quality_retention_cap_tokens: 215510,
+  post_compaction_target_tokens: 110833,
+  budget_key: '615744:123148:215510:12315:110833',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'reset'
+}
