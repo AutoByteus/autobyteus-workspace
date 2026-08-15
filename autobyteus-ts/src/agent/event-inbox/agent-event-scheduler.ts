@@ -10,6 +10,7 @@ import type {
   TurnStartEventInboxEntry
 } from './agent-event-inbox-entry.js';
 import type { InboxEventHandler } from './handlers/inbox-event-handler.js';
+import type { CompactionRetryTurnAdmissionPolicy } from '../compaction/compaction-retry-turn-admission-policy.js';
 
 const ACTIVE_TURN_PRIORITY: readonly InboxLane[] = ['runtime_lifecycle', 'active_turn'] as const;
 const IDLE_PRIORITY: readonly InboxLane[] = ['runtime_lifecycle', 'active_turn', 'turn_start'] as const;
@@ -29,7 +30,8 @@ export class AgentEventScheduler {
 
   constructor(
     private readonly context: AgentContext,
-    private readonly handlers: AgentEventSchedulerHandlers
+    private readonly handlers: AgentEventSchedulerHandlers,
+    private readonly turnAdmissionPolicy: CompactionRetryTurnAdmissionPolicy | null = null,
   ) {}
 
   async nextDispatchable(input: {
@@ -73,7 +75,9 @@ export class AgentEventScheduler {
   ): AgentEventInboxEntry | null {
     const priority = runtimeState.activeTurn ? ACTIVE_TURN_PRIORITY : IDLE_PRIORITY;
     for (const lane of priority) {
-      const entry = inbox.claimFirst(lane);
+      const entry = lane === 'turn_start'
+        ? inbox.claimFirstMatching(lane, (candidate) => this.isTurnStartDispatchable(candidate))
+        : inbox.claimFirst(lane);
       if (entry) {
         return entry;
       }
@@ -135,7 +139,16 @@ export class AgentEventScheduler {
 
   private hasDispatchable(inbox: AgentEventInbox, runtimeState: AgentRuntimeState): boolean {
     const priority = runtimeState.activeTurn ? ACTIVE_TURN_PRIORITY : IDLE_PRIORITY;
-    return priority.some((lane) => inbox.peekFirst(lane) !== null);
+    const candidates = inbox.peekCandidates();
+    return priority.some((lane) => lane === 'turn_start'
+      ? candidates.turn_start.some((entry) => this.isTurnStartDispatchable(entry))
+      : candidates[lane].length > 0);
+  }
+
+  private isTurnStartDispatchable(entry: AgentEventInboxEntry): boolean {
+    return entry.lane === 'turn_start'
+      && (!this.turnAdmissionPolicy
+        || this.turnAdmissionPolicy.isDispatchable(entry as TurnStartEventInboxEntry));
   }
 
   private createDispatchabilityWaiter(signal?: AbortSignal): CancellableWait {

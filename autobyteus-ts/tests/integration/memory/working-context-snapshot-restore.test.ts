@@ -4,6 +4,7 @@ import path from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { Message, MessageRole } from '../../../src/llm/utils/messages.js';
 import type { WorkingContextCompactionProposal } from '../../../src/memory/compaction/working-context-compaction-proposal.js';
+import { resolveCompactionPlanningBudget } from '../../../src/memory/compaction/compaction-planning-budget.js';
 import type { CompactionLineageScope } from '../../../src/memory/lineage/compaction-lineage-scope.js';
 import { MemoryManager } from '../../../src/memory/memory-manager.js';
 import { MemoryType } from '../../../src/memory/models/memory-types.js';
@@ -24,6 +25,10 @@ const scope: CompactionLineageScope = {
   runId: agentId,
   memberId: null,
 };
+const planningBudget = resolveCompactionPlanningBudget(
+  { inputBudget: 100_000, triggerThresholdTokens: 80_000 },
+  90_000,
+);
 
 const proposal = (
   selectedNewRawTraceIds: string[],
@@ -46,6 +51,17 @@ const proposal = (
     modelIdentifier: 'model-current',
     taskId: `task-${episode}`,
     renderedInputSha256: 'a'.repeat(64),
+  },
+  budgetAssessment: {
+    planningBudget,
+    estimatedCurrentWorkingContextTokens: 1_000,
+    estimatedUntrackedOverheadTokens: 0,
+    requiredSystemTokens: 10,
+    protectedSuffixTokens: 0,
+    replacementMemoryReserveTokens: planningBudget.replacementMemoryReserveTokens,
+    retainedRecentTokens: 0,
+    estimatedPlannedPromptTokens: 1_000,
+    estimatedFinalizedContextTokens: null,
   },
 });
 
@@ -99,7 +115,16 @@ describe('current-only recurrent compaction lifecycle integration', () => {
   });
 
   it('commits C1/C2 through manager-owned acceptance and keeps only M2 current', () => {
-    const c1Id = manager.requestCompaction('turn-r1');
+    const c1Id = manager.requestCompaction({
+      requestedTurnId: 'turn-r1',
+      requestKind: 'threshold_crossing',
+      planningBudget,
+    });
+    expect(manager.beginPendingCompactionAttempt({
+      operationId: c1Id,
+      turnId: 'turn-r1',
+      turnOrigin: 'user',
+    })).toMatchObject({ authorized: true, authorization: 'automatic_initial' });
     const c1Baseline = manager.captureCompactionBaseline();
     const c1 = manager.prepareCompaction(
       c1Baseline,
@@ -113,7 +138,7 @@ describe('current-only recurrent compaction lifecycle integration', () => {
     expect(c1.lineageRecord).not.toHaveProperty('rawTraceArchiveFile');
     manager.commitAcceptedCompaction(c1);
 
-    expect(manager.compactionRequired).toBe(false);
+    expect(manager.hasPendingCompaction()).toBe(false);
     expect(lineageStore.readHead()).toMatchObject({
       compactionId: c1Id,
       previousCompactionId: null,
@@ -147,7 +172,16 @@ describe('current-only recurrent compaction lifecycle integration', () => {
       turnId: 'turn-r2',
     });
 
-    const c2Id = manager.requestCompaction('turn-r2');
+    const c2Id = manager.requestCompaction({
+      requestedTurnId: 'turn-r2',
+      requestKind: 'threshold_crossing',
+      planningBudget,
+    });
+    expect(manager.beginPendingCompactionAttempt({
+      operationId: c2Id,
+      turnId: 'turn-r2',
+      turnOrigin: 'user',
+    })).toMatchObject({ authorized: true, authorization: 'automatic_initial' });
     const c2Baseline = manager.captureCompactionBaseline();
     const baselineUser = c2Baseline.context.buildMessages()[1]!;
     expect(getWorkingContextMessageProvenance(baselineUser)).toMatchObject({

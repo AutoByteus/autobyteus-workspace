@@ -8,7 +8,6 @@ import {
 import type { UserMessageReceivedEvent } from "autobyteus-ts/agent/events/agent-events.js";
 import { ContextFileType } from "autobyteus-ts/agent/message/context-file-type.js";
 import type { ContextFile } from "autobyteus-ts/agent/message/context-file.js";
-import { SenderType } from "autobyteus-ts/agent/sender-type.js";
 import { PromptContextBuilder } from "./prompt-context-builder.js";
 import { resolveAgentRunIdFromRuntimeContext } from "../../utils/core-boundary-id-normalizer.js";
 import { ContextFileLocalPathResolver } from "../../../context-files/services/context-file-local-path-resolver.js";
@@ -134,25 +133,13 @@ export class UserInputContextBuildingProcessor extends BaseAgentUserInputMessage
   }
 
   private formatUserMessageContent(
-    rawRequirement: string,
+    messageContent: string,
     contextString: string | null,
-    senderType: SenderType,
   ): string {
-    const headerMap: Record<string, string> = {
-      [SenderType.USER]: "**[User Requirement]**",
-      [SenderType.TOOL]: "**[Tool Execution Result]**",
-      [SenderType.AGENT]: "**[Message From Agent]**",
-      [SenderType.SYSTEM]: "**[System Notification]**",
-    };
-    const mainHeader = headerMap[senderType] ?? "**[Input]**";
-
-    const parts: string[] = [];
-    if (contextString) {
-      parts.push(`**[Context]**\n${contextString}`);
+    if (!contextString) {
+      return messageContent;
     }
-
-    parts.push(`${mainHeader}\n${rawRequirement}`);
-    return parts.join("\n\n");
+    return `**[Context]**\n${contextString}\n\n**[Message]**\n${messageContent}`;
   }
 
   async process(
@@ -165,7 +152,7 @@ export class UserInputContextBuildingProcessor extends BaseAgentUserInputMessage
     const isFirstUserTurn =
       typeof customData.is_first_user_turn === "boolean" ? customData.is_first_user_turn : true;
 
-    const rawRequirement = message.content;
+    const messageContent = message.content;
 
     const processedContextFiles = await this.unifyAndTransformPaths(message, context);
     message.contextFiles = processedContextFiles;
@@ -185,9 +172,8 @@ export class UserInputContextBuildingProcessor extends BaseAgentUserInputMessage
     }
 
     const finalContent = this.formatUserMessageContent(
-      rawRequirement,
+      messageContent,
       contextString,
-      message.senderType,
     );
 
     logger.debug(

@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { CompactionRunOutputCollector } from "../../../../src/agent-execution/compaction/compaction-run-output-collector.js";
+import {
+  CompactionRunCollectionError,
+  CompactionRunOutputCollector,
+} from "../../../../src/agent-execution/compaction/compaction-run-output-collector.js";
 import {
   AgentRunEventType,
   type AgentRunEvent,
@@ -114,5 +117,27 @@ describe("CompactionRunOutputCollector", () => {
     collector.observe(event(AgentRunEventType.TURN_COMPLETED, { turn_id: "turn-1" }, "IDLE"));
 
     await expect(output).rejects.toThrow(/without a final assistant output/);
+  });
+
+  it("rejects an error completion before returning valid-looking JSON content", async () => {
+    const collector = new CompactionRunOutputCollector({ runId: "compaction-run-1" });
+    const output = collector.waitForFinalOutput(1_000);
+    collector.observe(event(AgentRunEventType.ASSISTANT_COMPLETE, {
+      content: '{"episodes":[{"summary":"must not parse"}]}',
+      is_error: true,
+    }));
+    await expect(output).rejects.toMatchObject<Partial<CompactionRunCollectionError>>({
+      kind: "error_completion",
+    });
+  });
+
+  it("classifies interruption and timeout separately", async () => {
+    const interrupted = new CompactionRunOutputCollector({ runId: "compaction-run-1" });
+    const interruptedOutput = interrupted.waitForFinalOutput(1_000);
+    interrupted.observe(event(AgentRunEventType.TURN_INTERRUPTED, { reason: "stopped" }));
+    await expect(interruptedOutput).rejects.toMatchObject({ kind: "interrupted" });
+
+    const timedOut = new CompactionRunOutputCollector({ runId: "compaction-run-1" });
+    await expect(timedOut.waitForFinalOutput(1)).rejects.toMatchObject({ kind: "timeout" });
   });
 });

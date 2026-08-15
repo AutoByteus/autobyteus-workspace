@@ -16,6 +16,15 @@ describe('StreamEvent', () => {
     expect(event.data).toBeInstanceOf(AssistantCompleteResponseData);
     const payload = event.data as AssistantCompleteResponseData;
     expect(payload.content).toBe('Hello');
+    expect(payload.is_error).toBe(false);
+  });
+
+  it('preserves the explicit assistant error-completion flag', () => {
+    const event = new StreamEvent({
+      event_type: StreamEventType.ASSISTANT_COMPLETE_RESPONSE,
+      data: { content: '{"looks":"valid"}', is_error: true },
+    });
+    expect((event.data as AssistantCompleteResponseData).is_error).toBe(true);
   });
 
   it('throws on unknown event type strings', () => {

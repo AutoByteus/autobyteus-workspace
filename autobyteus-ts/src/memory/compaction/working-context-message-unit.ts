@@ -1,4 +1,5 @@
 import type { Message } from '../../llm/utils/messages.js';
+import type { CompactionBudgetAssessment } from './working-context-compaction-proposal.js';
 
 export type WorkingContextMessageUnitKind =
   | 'system'
@@ -49,4 +50,5 @@ export type MessageCompactionPlan = {
   rawTraceIdsToArchive: string[];
   estimatedRetainedTokens: number;
   estimatedCompactedTokens: number;
+  budgetAssessment: CompactionBudgetAssessment;
 };

@@ -1,0 +1,162 @@
+# Electron macOS arm64 package verification — DR-005
+
+verified_utc=2026-08-15T06:22:05Z
+integrated_head=75168d307f5291c3bbd6e98978db146c4c3204dd
+implementation_commit=aa12df0a383c1520d23afc88e862994be5b65131
+origin_personal=cd2420c607c5129c961f14d4d9e2559c0888331f
+ahead_behind=9 ahead / 0 behind
+artifact_presence=PASS
+
+## SHA-256
+50ac6506ba6980870463b92e816c9e8ad0d843d0183432f63e59fe950f3ff894  /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.dmg
+89c95c31f93e9a40e43645d74e3079f2da7d3b1b80d3b56c1a1f5bdefae33ab3  /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.zip
+1dea28820674170ed9250a3e55cc6a1b47c7d32a7783918f559963f0116173d7  /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.dmg.blockmap
+2d9fa34be9461e8508810f90835013285131fe8b58fc4e537df52e28151ccacd  /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.zip.blockmap
+
+## SHA-512 (base64) and sizes
+DMG sha512=ZII59UlLE3WyTXZIY1vsNIhuvcyD1H0Yew3l6JJ/LirYmP48o2nCjJT9M4maXSNeub0cSNAEw6zZwT3TMqE8xw==
+DMG size=402293986
+ZIP sha512=tsodVqTeDODmy3+PfploceNbOm0ro07HpI85G7ba2IHgmxeLat6/YEgL8eonsI7DOdQv95t2HDoce5o11V2HBw==
+ZIP size=398040397
+
+## Updater metadata
+version: 1.4.50
+files:
+  - url: AutoByteus_personal_macos-arm64-1.4.50.zip
+    sha512: tsodVqTeDODmy3+PfploceNbOm0ro07HpI85G7ba2IHgmxeLat6/YEgL8eonsI7DOdQv95t2HDoce5o11V2HBw==
+    size: 398040397
+  - url: AutoByteus_personal_macos-arm64-1.4.50.dmg
+    sha512: ZII59UlLE3WyTXZIY1vsNIhuvcyD1H0Yew3l6JJ/LirYmP48o2nCjJT9M4maXSNeub0cSNAEw6zZwT3TMqE8xw==
+    size: 402293986
+path: AutoByteus_personal_macos-arm64-1.4.50.zip
+sha512: tsodVqTeDODmy3+PfploceNbOm0ro07HpI85G7ba2IHgmxeLat6/YEgL8eonsI7DOdQv95t2HDoce5o11V2HBw==
+releaseDate: '2026-08-15T06:18:05.955Z'
+updater_metadata_match=PASS
+
+## Bundle metadata
+com.autobyteus.app
+1.4.50
+1.4.50
+/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+bundle_metadata=PASS
+
+## Code-signing state (informational; local test build intentionally unsigned/ad-hoc)
+Executable=/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+Identifier=Electron
+Format=app bundle with Mach-O thin (arm64)
+CodeDirectory v=20400 size=392 flags=0x20002(adhoc,linker-signed) hashes=9+0 location=embedded
+VersionPlatform=1
+VersionMin=786432
+VersionSDK=1704448
+Hash type=sha256 size=32
+CandidateCDHash sha256=183bce38eb383b21f21c2cdedcf6cd8781b11cdd
+CandidateCDHashFull sha256=183bce38eb383b21f21c2cdedcf6cd8781b11cdd090f942c4eacd6c09b1112f7
+Hash choices=sha256
+CMSDigest=183bce38eb383b21f21c2cdedcf6cd8781b11cdd090f942c4eacd6c09b1112f7
+CMSDigestType=2
+Executable Segment base=0
+Executable Segment limit=16384
+Executable Segment flags=0x1
+Page size=4096
+CDHash=183bce38eb383b21f21c2cdedcf6cd8781b11cdd
+Signature=adhoc
+Info.plist=not bound
+TeamIdentifier=not set
+Sealed Resources=none
+Internal requirements=none
+/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app: code has no resources but signature indicates they must be present
+codesign describe exit: 0
+codesign verify exit: 1
+unsigned_local_build_state=EXPECTED
+
+## Staged packaged Terminal runtime
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+
+## Final app packaged Terminal runtime
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+
+## Current implementation markers in packaged resources
+21:export class ProviderSafeCompactionText {
+22:    toProviderSafeText(value) {
+49:    isProviderSafeText(value) {
+67:    finalize(value) {
+68:        const result = this.toProviderSafeText(value);
+69:        if (!this.isProviderSafeText(result)) {
+95:        const safeValue = this.finalize(value);
+104:export const providerSafeCompactionText = new ProviderSafeCompactionText();
+1:import { providerSafeCompactionText } from './unicode-safe-text.js';
+37:            return providerSafeCompactionText.truncateEnd(marker, limit);
+42:        const headEnd = providerSafeCompactionText.sliceEndWithoutSplittingSurrogate(value, requestedHeadLength);
+43:        const tailStart = providerSafeCompactionText.sliceStartWithoutSplittingSurrogate(value, value.length - requestedTailLength);
+52:    const headEnd = providerSafeCompactionText.sliceEndWithoutSplittingSurrogate(value, Math.ceil(retained / 2));
+53:    const tailStart = providerSafeCompactionText.sliceStartWithoutSplittingSurrogate(value, value.length - (retained - Math.ceil(retained / 2)));
+54:    return providerSafeCompactionText.truncateEnd(`${value.slice(0, headEnd)}${marker}${value.slice(tailStart)}`, limit);
+59:        const providerSafeValue = providerSafeCompactionText.finalize(redacted);
+9:    code = 'input_construction_failure';
+25:        return this.finalizePrompt([
+34:        return this.finalizePrompt(`${CORRECTION_PREFIX(validationStage)}\n\n${initialPrompt}`);
+36:    finalizePrompt(prompt) {
+38:            const finalized = this.providerSafeText.finalize(prompt);
+2:import { providerSafeCompactionText } from '../presentation/unicode-safe-text.js';
+13:const clampText = (value, limit) => providerSafeCompactionText.truncateEnd(value, limit).trim();
+82:    parse(text) {
+6:    .replaceAll('<target_agent_conversation_history>', '&lt;target_agent_conversation_history&gt;')
+7:    .replaceAll('</target_agent_conversation_history>', '&lt;/target_agent_conversation_history&gt;');
+40:            const content = escapeReservedBoundary(this.valueRenderer.render(message.content, {
+48:            '<target_agent_conversation_history>',
+50:            '</target_agent_conversation_history>',
+75:            entries.push(`Assistant:\n${escapeReservedBoundary(this.valueRenderer.render(assistant.content, { maxChars: maxValueChars }))}`);
+1:import { MEMORY_COMPACTOR_AGENT_DEFINITION_ID } from "../../../built-in-agents/built-in-agent-registry.js";
+3:export const AUTOBYTEUS_DEFAULT_TOOL_NAMES = [
+15:    if (agentDefinition?.id === MEMORY_COMPACTOR_AGENT_DEFINITION_ID) {
+16:        return buildRuntimeAgentToolExposure([], null);
+19:        ...AUTOBYTEUS_DEFAULT_TOOL_NAMES,
+packaged_marker_scan=PASS
+
+## Final packaged native-tool exposure runtime probe
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+{"compactor":[],"ordinary":["run_bash","read_file","edit_file","write_file"]}
+packaged_native_tool_exposure_probe=PASS
+
+## DMG integrity
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $9D17C352
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $207462B0
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $4E1BF8A4
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $28A28902
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $4E1BF8A4
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $8F6F1C8C
+Die überprüfte CRC32-Prüfsumme ist $132F6093
+hdiutil: verify: checksum of "/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.dmg" is VALID
+
+## ZIP integrity
+No errors detected in compressed data of /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.zip.
+
+VERIFICATION RESULT: PASS

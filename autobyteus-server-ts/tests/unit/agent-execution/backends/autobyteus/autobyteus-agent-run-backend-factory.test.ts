@@ -1,6 +1,6 @@
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { AgentConfig, LLMFactory } from "autobyteus-ts";
+import { AgentConfig, CompactionPolicy, LLMFactory } from "autobyteus-ts";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { BaseLLM } from "autobyteus-ts/llm/base.js";
 import { LLMModel } from "autobyteus-ts/llm/models.js";
@@ -22,6 +22,8 @@ import { TeamBackendKind } from "../../../../../src/agent-team-execution/domain/
 import { buildTaskDelegationToolContextFromNativeContext } from "../../../../../src/agent-tools/task-delegation/task-delegation-autobyteus-context.js";
 import { registerAgentCommunicationTools } from "../../../../../src/agent-tools/agent-communication/register-agent-communication-tools.js";
 import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-enum.js";
+import { registerTools } from "autobyteus-ts/tools/register-tools.js";
+import { MEMORY_COMPACTOR_AGENT_DEFINITION_ID } from "../../../../../src/built-in-agents/built-in-agent-registry.js";
 
 class DummyLLM extends BaseLLM {
   protected async _sendMessagesToLLM(_messages: Message[]): Promise<CompleteResponse> {
@@ -142,6 +144,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
 
   beforeEach(() => {
     defaultToolRegistry.clear();
+    registerTools();
     registerAgentCommunicationTools();
     defaultToolRegistry.registerTool(createToolDefinition(AssignTaskTool, ToolCategory.TASK_MANAGEMENT));
   });
@@ -191,7 +194,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       provider_specific_flag: "kept",
     };
 
-    await (factory as any).buildAgentConfig(
+    const built = await (factory as any).buildAgentConfig(
       new AgentRunConfig({
         agentDefinitionId: "agent-1",
         llmModelIdentifier: "dummy-model",
@@ -206,6 +209,12 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     expect(createLLM).toHaveBeenCalledWith("dummy-model", rawLlmConfig);
     expect(createLLM.mock.calls[0]?.[1]).toBe(rawLlmConfig);
     expect(createLLM.mock.calls[0]?.[1]).not.toBeInstanceOf(LLMConfig);
+    expect(built.agentConfig.tools.map((tool: BaseTool) => tool.definition?.name)).toEqual([
+      "run_bash",
+      "read_file",
+      "edit_file",
+      "write_file",
+    ]);
   });
 
   it("wires one subject-scoped API-key resolver into the core factory", async () => {
@@ -284,12 +293,16 @@ describe("AutoByteusAgentRunBackendFactory", () => {
 
     expect(built.agentConfig).toBeInstanceOf(AgentConfig);
     expect(built.agentConfig.tools.map((tool: BaseTool) => tool.definition?.name)).toEqual([
+      "run_bash",
+      "read_file",
+      "edit_file",
+      "write_file",
       "send_message_to",
       "delegate_task",
     ]);
     expect(built.agentConfig.systemPrompt).toContain("## Team Instruction");
     expect(built.agentConfig.systemPrompt).toContain("## Agent Identity");
-    expect(built.agentConfig.systemPrompt).toContain("## Team Runtime");
+    expect(built.agentConfig.systemPrompt).toContain("## Team Collaboration");
     expect(built.agentConfig.systemPrompt).toContain("## Working Environment");
     expect(built.agentConfig.initialCustomData?.teamContext).toEqual(
       expect.objectContaining({
@@ -359,6 +372,10 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     );
 
     expect(built.agentConfig.tools.map((tool: BaseTool) => tool.definition?.name)).toEqual([
+      "run_bash",
+      "read_file",
+      "edit_file",
+      "write_file",
       "send_message_to",
       "delegate_task",
     ]);
@@ -416,6 +433,10 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     );
 
     expect(built.agentConfig.tools.map((tool: BaseTool) => tool.definition?.name)).toEqual([
+      "run_bash",
+      "read_file",
+      "edit_file",
+      "write_file",
       "send_message_to",
       "assign_task_to",
     ]);
@@ -477,7 +498,9 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       "run-professor",
     );
 
-    const sendMessageTool = built.agentConfig.tools[0] as BaseTool<unknown, Record<string, unknown>, string>;
+    const sendMessageTool = built.agentConfig.tools.find(
+      (tool: BaseTool) => tool.definition?.name === "send_message_to",
+    ) as BaseTool<unknown, Record<string, unknown>, string>;
 
     await expect(
       sendMessageTool.execute({}, {
@@ -710,8 +733,94 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       runtimeKind: RuntimeKind.AUTOBYTEUS,
       llmModelIdentifier: "dummy-model",
     });
-    expect(built.agentConfig.compactionAgentRunner).toBe(compactionRunner);
+    expect(built.agentConfig.memoryCompaction).toMatchObject({
+      kind: "enabled",
+      policy: expect.any(CompactionPolicy),
+      runner: compactionRunner,
+    });
+    expect(built.agentConfig).not.toHaveProperty("compactionAgentRunner");
     expect(built.resolvedRunConfig.runtimeKind).toBe(RuntimeKind.AUTOBYTEUS);
+  });
+
+  it("provisions the canonical Memory Compactor as disabled without creating a runner", async () => {
+    const compactionAgentRunnerFactory = vi.fn(() => ({ runCompactionTask: vi.fn() }));
+    const factory = new AutoByteusAgentRunBackendFactory({
+      agentDefinitionService: {
+        getAgentDefinitionById: vi.fn(async () => new AgentDefinition({
+          id: MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
+          name: "Memory Compactor",
+          description: "Compacts one target-agent history.",
+          toolNames: [],
+        })),
+      } as any,
+      createLLM: vi.fn(async () => new DummyLLM(
+        new LLMModel({
+          name: "dummy-model", value: "dummy-model", canonicalName: "dummy-model",
+          provider: LLMProvider.OPENAI,
+        }),
+        new LLMConfig(),
+      )),
+      workspaceManager: {
+        getWorkspaceById: () => null,
+        getOrCreateTempWorkspace: async () => ({
+          workspaceId: "workspace-1",
+          getName: () => "Workspace",
+          getBasePath: () => path.join("/tmp", "workspace-1"),
+        }),
+      } as any,
+      skillService: { getSkill: () => null } as any,
+      compactionAgentRunnerFactory,
+    });
+
+    const built = await (factory as any).buildAgentConfig(new AgentRunConfig({
+      agentDefinitionId: MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
+      llmModelIdentifier: "dummy-model",
+      autoExecuteTools: false,
+      runtimeKind: RuntimeKind.AUTOBYTEUS,
+    }), "memory-compactor-run");
+
+    expect(compactionAgentRunnerFactory).not.toHaveBeenCalled();
+    expect(built.agentConfig.memoryCompaction).toEqual({ kind: "disabled" });
+  });
+
+  it.each([
+    ["null result", vi.fn(() => null), /returned no runner/],
+    ["thrown failure", vi.fn(() => { throw new Error("runner unavailable"); }), /runner creation failed.*runner unavailable/],
+  ])("fails normal-agent composition on a %s without a disabled fallback", async (_label, runnerFactory, errorPattern) => {
+    const factory = new AutoByteusAgentRunBackendFactory({
+      agentDefinitionService: {
+        getAgentDefinitionById: vi.fn(async () => new AgentDefinition({
+          id: "agent-1",
+          name: "Professor",
+          description: "Coordinates work.",
+        })),
+      } as any,
+      createLLM: vi.fn(async () => new DummyLLM(
+        new LLMModel({
+          name: "dummy-model", value: "dummy-model", canonicalName: "dummy-model",
+          provider: LLMProvider.OPENAI,
+        }),
+        new LLMConfig(),
+      )),
+      workspaceManager: {
+        getWorkspaceById: () => null,
+        getOrCreateTempWorkspace: async () => ({
+          workspaceId: "workspace-1",
+          getName: () => "Workspace",
+          getBasePath: () => path.join("/tmp", "workspace-1"),
+        }),
+      } as any,
+      skillService: { getSkill: () => null } as any,
+      compactionAgentRunnerFactory: runnerFactory,
+    });
+
+    await expect((factory as any).buildAgentConfig(new AgentRunConfig({
+      agentDefinitionId: "agent-1",
+      llmModelIdentifier: "dummy-model",
+      autoExecuteTools: false,
+      runtimeKind: RuntimeKind.AUTOBYTEUS,
+    }), "normal-run")).rejects.toThrow(errorPattern);
+    expect(runnerFactory).toHaveBeenCalledOnce();
   });
 
 });

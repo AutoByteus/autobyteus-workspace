@@ -3,17 +3,22 @@ import { LLMConfig } from '../llm/utils/llm-config.js';
 import { CompactionPolicy } from '../memory/policies/compaction-policy.js';
 import type { CompactionRuntimeSettings } from '../memory/compaction/compaction-runtime-settings.js';
 
-export type TokenBudget = {
+export const DEFAULT_LLM_REQUEST_SAFETY_MARGIN_TOKENS = 256;
+
+export type LlmRequestCapacity = {
   effectiveContextCapacity: number | null;
   contextDerivedInputCapTokens: number | null;
   providerInputCapTokens: number | null;
   effectiveInputCapacity: number;
   reservedOutputTokens: number;
   safetyMarginTokens: number;
-  compactionRatio: number;
   inputBudget: number;
-  triggerThresholdTokens: number;
   overrideActive: boolean;
+};
+
+export type CompactionTokenBudget = LlmRequestCapacity & {
+  compactionRatio: number;
+  triggerThresholdTokens: number;
 };
 
 const normalizePositiveInteger = (value: number | null | undefined): number | null => {
@@ -35,12 +40,12 @@ const minPositive = (...values: Array<number | null | undefined>): number | null
   return Math.min(...positives);
 };
 
-export const resolveTokenBudget = (
+export const resolveLlmRequestCapacity = (
   model: LLMModel,
   config: LLMConfig,
-  policy: CompactionPolicy,
-  runtimeSettings?: Pick<CompactionRuntimeSettings, 'triggerRatioOverride' | 'activeContextTokensOverride'> | null
-): TokenBudget | null => {
+  runtimeSettings?: Pick<CompactionRuntimeSettings, 'activeContextTokensOverride'> | null,
+  fallbackSafetyMarginTokens = DEFAULT_LLM_REQUEST_SAFETY_MARGIN_TOKENS,
+): LlmRequestCapacity | null => {
   const overrideContext = normalizePositiveInteger(runtimeSettings?.activeContextTokensOverride);
   const effectiveContextCapacity = overrideContext
     ?? normalizePositiveInteger(model.activeContextTokens)
@@ -72,15 +77,7 @@ export const resolveTokenBudget = (
 
   const safetyMarginTokens = config.safetyMarginTokens
     ?? model.defaultSafetyMarginTokens
-    ?? policy.safetyMarginTokens;
-
-  const compactionRatio = config.compactionRatio
-    ?? runtimeSettings?.triggerRatioOverride
-    ?? model.defaultCompactionRatio
-    ?? policy.triggerRatio;
-
-  const inputBudget = Math.max(0, effectiveInputCapacity - safetyMarginTokens);
-  const triggerThresholdTokens = Math.floor(compactionRatio * inputBudget);
+    ?? fallbackSafetyMarginTokens;
 
   return {
     effectiveContextCapacity,
@@ -89,14 +86,34 @@ export const resolveTokenBudget = (
     effectiveInputCapacity,
     reservedOutputTokens,
     safetyMarginTokens,
-    compactionRatio,
-    inputBudget,
-    triggerThresholdTokens,
-    overrideActive: overrideContext !== null
+    inputBudget: Math.max(0, effectiveInputCapacity - safetyMarginTokens),
+    overrideActive: overrideContext !== null,
   };
 };
 
-export const applyCompactionPolicy = (policy: CompactionPolicy, budget: TokenBudget): void => {
+export const resolveCompactionTokenBudget = (
+  capacity: LlmRequestCapacity,
+  model: LLMModel,
+  config: LLMConfig,
+  policy: CompactionPolicy,
+  runtimeSettings?: Pick<CompactionRuntimeSettings, 'triggerRatioOverride'> | null,
+): CompactionTokenBudget => {
+  const compactionRatio = config.compactionRatio
+    ?? runtimeSettings?.triggerRatioOverride
+    ?? model.defaultCompactionRatio
+    ?? policy.triggerRatio;
+
+  return {
+    ...capacity,
+    compactionRatio,
+    triggerThresholdTokens: Math.floor(compactionRatio * capacity.inputBudget),
+  };
+};
+
+export const applyCompactionPolicy = (
+  policy: CompactionPolicy,
+  budget: CompactionTokenBudget,
+): void => {
   policy.triggerRatio = budget.compactionRatio;
   policy.safetyMarginTokens = budget.safetyMarginTokens;
 };

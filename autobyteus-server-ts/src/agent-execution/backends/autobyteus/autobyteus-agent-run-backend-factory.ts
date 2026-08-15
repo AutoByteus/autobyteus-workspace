@@ -7,6 +7,10 @@ import {
   BaseLifecycleEventProcessor,
   BaseToolExecutionResultProcessor,
   BaseToolInvocationPreprocessor,
+  CompactionPolicy,
+  createDisabledMemoryCompactionConfiguration,
+  createEnabledMemoryCompactionConfiguration,
+  type MemoryCompactionConfiguration,
   defaultAgentFactory,
   defaultInputProcessorRegistry,
   defaultLlmResponseProcessorRegistry,
@@ -40,11 +44,12 @@ import {
 } from "./autobyteus-agent-run-backend.js";
 import type { AgentRunBackendFactory } from "../agent-run-backend-factory.js";
 import { buildAutoByteusManagedTeamContext } from "./autobyteus-managed-team-context-builder.js";
-import { composeCarpenterPrompt } from "../../prompt/carpenter-prompt-composer.js";
-import { resolveRuntimeAgentToolExposure } from "../../shared/runtime-agent-tool-exposure.js";
+import { composeNativeAutoByteusPrompt } from "../../prompt/carpenter-prompt-composer.js";
+import { resolveAutoByteusRuntimeAgentToolExposure } from "./autobyteus-runtime-tool-exposure.js";
 import { resolveAutoByteusAgentTools } from "./autobyteus-agent-tool-resolver.js";
 import { createLlmProviderApiKeyResolver } from "../../../secret-management/resolution/secret-management-provider-api-key-resolver.js";
 import { resolveCompactionLineageScope } from "./compaction-lineage-scope-resolver.js";
+import { MEMORY_COMPACTOR_AGENT_DEFINITION_ID } from "../../../built-in-agents/built-in-agent-registry.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -317,7 +322,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       throw new AgentCreationError("AutoByteus runtime workspace path is unavailable.");
     }
 
-    const runtimeToolExposure = resolveRuntimeAgentToolExposure(
+    const runtimeToolExposure = resolveAutoByteusRuntimeAgentToolExposure(
       agentDef,
       options.memberTeamContext,
     );
@@ -331,7 +336,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       memberTeamContext: options.memberTeamContext,
       logger,
     });
-    const resolvedPrompt = composeCarpenterPrompt({
+    const resolvedPrompt = composeNativeAutoByteusPrompt({
       agentDefinition: agentDef,
       workspaceRootPath,
       memberTeamContext: options.memberTeamContext ?? null,
@@ -442,12 +447,28 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
         : {}),
     };
 
-    const compactionAgentRunner = await this.compactionAgentRunnerFactory({
-      agentDefinitionId,
-      workspaceRootPath,
-      runtimeKind: effectiveRuntimeKind,
-      llmModelIdentifier,
-    });
+    let memoryCompaction: MemoryCompactionConfiguration = createDisabledMemoryCompactionConfiguration();
+    if (agentDefinitionId !== MEMORY_COMPACTOR_AGENT_DEFINITION_ID) {
+      let compactionAgentRunner: CompactionAgentRunner | null;
+      try {
+        compactionAgentRunner = await this.compactionAgentRunnerFactory({
+          agentDefinitionId,
+          workspaceRootPath,
+          runtimeKind: effectiveRuntimeKind,
+          llmModelIdentifier,
+        });
+      } catch (error) {
+        throw new AgentCreationError(
+          `Automatic compaction runner creation failed for agent definition '${agentDefinitionId}': ${String(error)}`,
+        );
+      }
+      if (!compactionAgentRunner) {
+        throw new AgentCreationError(
+          `Automatic compaction runner creation returned no runner for agent definition '${agentDefinitionId}'.`,
+        );
+      }
+      memoryCompaction = createEnabledMemoryCompactionConfiguration(new CompactionPolicy(), compactionAgentRunner);
+    }
 
     return {
       resolvedRunConfig: new AgentRunConfig({
@@ -480,7 +501,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
         skillPaths,
         null,
         skillAccessMode ?? SkillAccessMode.PRELOADED_ONLY,
-        compactionAgentRunner,
+        memoryCompaction,
         resolveCompactionLineageScope(runId, options.memberTeamContext),
       ),
     };

@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AgentFactory, AgentInputUserMessage } from "autobyteus-ts";
 import { BaseLLM } from "autobyteus-ts/llm/base.js";
 import { LLMModel } from "autobyteus-ts/llm/models.js";
@@ -13,6 +13,7 @@ import { AgentDefinition } from "../../../src/agent-definition/domain/models.js"
 import { AutoByteusAgentRunBackendFactory } from "../../../src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
+import { MEMORY_COMPACTOR_AGENT_DEFINITION_ID } from "../../../src/built-in-agents/built-in-agent-registry.js";
 
 class DummyLLM extends BaseLLM {
   protected async _sendMessagesToLLM(_messages: Message[]): Promise<CompleteResponse> {
@@ -47,6 +48,9 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
   let previousMemoryDir: string | undefined;
   let agentFactory: AgentFactory;
   let backendFactory: AutoByteusAgentRunBackendFactory;
+  let persistedAgentDefinition: AgentDefinition;
+  let compactionRunner: { runCompactionTask: ReturnType<typeof vi.fn> };
+  let compactionAgentRunnerFactory: ReturnType<typeof vi.fn>;
 
   const createPreparedConfig = (runId: string): AgentRunConfig =>
     new AgentRunConfig({
@@ -73,21 +77,14 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
     const activeIds = agentFactory.listActiveAgentIds();
     await Promise.all(activeIds.map((id) => agentFactory.removeAgent(id).catch(() => false)));
 
+    compactionRunner = { runCompactionTask: vi.fn() };
+    compactionAgentRunnerFactory = vi.fn(() => compactionRunner);
     backendFactory = new AutoByteusAgentRunBackendFactory({
       agentFactory: agentFactory as any,
       agentDefinitionService: {
-        getAgentDefinitionById: async () =>
-          new AgentDefinition({
-            id: "def-autobyteus-backend",
-            name: "AutoByteusBackendAgent",
-            role: "Tester",
-            description: "real backend integration test",
-            instructions: "Respond briefly.",
-          }),
+        getAgentDefinitionById: async () => persistedAgentDefinition,
       } as any,
-      llmFactory: {
-        createLLM: async () => new DummyLLM(model, new LLMConfig({ systemMessage: "test" })),
-      } as any,
+      createLLM: async () => new DummyLLM(model, new LLMConfig({ systemMessage: "test" })),
       workspaceManager: {
         getWorkspaceById: () => null,
         getOrCreateTempWorkspace: async () => ({
@@ -99,6 +96,15 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
       skillService: {
         getSkill: () => null,
       } as any,
+      compactionAgentRunnerFactory,
+    });
+    persistedAgentDefinition = new AgentDefinition({
+      id: "def-autobyteus-backend",
+      name: "AutoByteusBackendAgent",
+      role: "Tester",
+      description: "real backend integration test",
+      instructions: "Respond briefly.",
+      toolNames: [],
     });
   });
 
@@ -123,18 +129,88 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
 
     expect(backend.isActive()).toBe(true);
     expect(backend.getContext().config.agentDefinitionId).toBe("def-autobyteus-backend");
+    expect(agentFactory.getAgent(runId)?.context.config.tools.map((tool) => tool.definition?.name)).toEqual([
+      "run_bash",
+      "read_file",
+      "edit_file",
+      "write_file",
+    ]);
+    expect(persistedAgentDefinition.toolNames).toEqual([]);
+    expect(agentFactory.getAgent(runId)?.context.state.memoryManager
+      ?.getAutomaticCompactionConfiguration()).toMatchObject({
+        kind: "enabled",
+        runner: compactionRunner,
+      });
+    expect(compactionAgentRunnerFactory).toHaveBeenCalledOnce();
 
     const commandResult = await backend.postUserMessage(
       new AgentInputUserMessage("hello backend integration"),
     );
     expect(commandResult.accepted).toBe(true);
 
-    await waitFor(() => backend.getStatusSnapshot().status === "idle");
+    await waitFor(() => backend.getLifecycleSnapshot().phase === "idle");
 
     const terminateResult = await backend.terminate();
     expect(terminateResult.accepted).toBe(true);
     expect(backend.isActive()).toBe(false);
     expect(agentFactory.getAgent(backend.runId)).toBeUndefined();
+  });
+
+  it("materializes and restores the canonical Memory Compactor as a disabled leaf", async () => {
+    persistedAgentDefinition = new AgentDefinition({
+      id: MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
+      name: "Memory Compactor",
+      role: "Compaction specialist",
+      description: "Compacts target-agent memory.",
+      instructions: "Return the required structured memory object.",
+      toolNames: [],
+    });
+    const runId = "memory_compactor_runtime_tools_empty_11111111";
+    compactionAgentRunnerFactory.mockClear();
+    const backend = await backendFactory.createBackend(
+      new AgentRunConfig({
+        agentDefinitionId: MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
+        llmModelIdentifier: "dummy-model",
+        autoExecuteTools: false,
+        memoryDir: path.join(memoryDir, "agents", runId),
+      }),
+      runId,
+    );
+
+    expect(agentFactory.getAgent(runId)?.context.config.tools).toEqual([]);
+    expect(persistedAgentDefinition.toolNames).toEqual([]);
+    expect(backend.getContext().config.agentDefinitionId)
+      .toBe(MEMORY_COMPACTOR_AGENT_DEFINITION_ID);
+    expect(agentFactory.getAgent(runId)?.context.state.memoryManager
+      ?.getAutomaticCompactionConfiguration()).toEqual({ kind: "disabled" });
+    expect(compactionAgentRunnerFactory).not.toHaveBeenCalled();
+
+    const commandResult = await backend.postUserMessage(
+      new AgentInputUserMessage("persist one compactor task before restore"),
+    );
+    expect(commandResult.accepted).toBe(true);
+    await waitFor(() => backend.getLifecycleSnapshot().phase === "idle");
+
+    const terminateResult = await backend.terminate();
+    expect(terminateResult.accepted).toBe(true);
+    expect(agentFactory.getAgent(runId)).toBeUndefined();
+
+    const restored = await backendFactory.restoreBackend(new AgentRunContext({
+      runId,
+      config: new AgentRunConfig({
+        agentDefinitionId: MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
+        llmModelIdentifier: "dummy-model",
+        autoExecuteTools: false,
+        memoryDir: path.join(memoryDir, "agents", runId),
+      }),
+      runtimeContext: null,
+    }));
+
+    expect(restored.runId).toBe(runId);
+    expect(agentFactory.getAgent(runId)?.context.config.tools).toEqual([]);
+    expect(agentFactory.getAgent(runId)?.context.state.memoryManager
+      ?.getAutomaticCompactionConfiguration()).toEqual({ kind: "disabled" });
+    expect(compactionAgentRunnerFactory).not.toHaveBeenCalled();
   });
 
   it("respects a preferred run id and provisions the standalone memory directory explicitly", async () => {
@@ -156,7 +232,7 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
       new AgentInputUserMessage("hello explicit memory"),
     );
     expect(commandResult.accepted).toBe(true);
-    await waitFor(() => backend.getStatusSnapshot().status === "idle");
+    await waitFor(() => backend.getLifecycleSnapshot().phase === "idle");
 
     const rawTracesPath = path.join(memoryDir, "agents", preferredRunId, "raw_traces_active.jsonl");
     await waitFor(async () => {
@@ -180,7 +256,7 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
       new AgentInputUserMessage("first restoreable turn"),
     );
     expect(firstResult.accepted).toBe(true);
-    await waitFor(() => created.getStatusSnapshot().status === "idle");
+    await waitFor(() => created.getLifecycleSnapshot().phase === "idle");
 
     const terminateResult = await created.terminate();
     expect(terminateResult.accepted).toBe(true);
@@ -200,12 +276,25 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
 
     expect(restored.runId).toBe(runId);
     expect(restored.isActive()).toBe(true);
+    expect(agentFactory.getAgent(runId)?.context.config.tools.map((tool) => tool.definition?.name)).toEqual([
+      "run_bash",
+      "read_file",
+      "edit_file",
+      "write_file",
+    ]);
+    expect(persistedAgentDefinition.toolNames).toEqual([]);
+    expect(agentFactory.getAgent(runId)?.context.state.memoryManager
+      ?.getAutomaticCompactionConfiguration()).toMatchObject({
+        kind: "enabled",
+        runner: compactionRunner,
+      });
+    expect(compactionAgentRunnerFactory).toHaveBeenCalledTimes(2);
 
     const secondResult = await restored.postUserMessage(
       new AgentInputUserMessage("second restoreable turn"),
     );
     expect(secondResult.accepted).toBe(true);
-    await waitFor(() => restored.getStatusSnapshot().status === "idle");
+    await waitFor(() => restored.getLifecycleSnapshot().phase === "idle");
   });
 
   it("rejects fresh create when the standalone run is not fully prepared", async () => {

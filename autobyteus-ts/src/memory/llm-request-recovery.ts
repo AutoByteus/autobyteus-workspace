@@ -1,14 +1,16 @@
+import type { MemoryManagerCompactionState } from './memory-manager-compaction-coordinator.js';
+import {
+  copyPendingCompactionRequest,
+} from './memory-manager-compaction-coordinator.js';
+import { copyCompactionThresholdEpisode } from './compaction/compaction-threshold-gate.js';
 import { WorkingContext } from './working-context.js';
-
-export type PendingCompactionRequest = { operationId: string; requestedTurnId: string | null };
 
 export type LlmRequestRecoverySnapshot = {
   snapshotId: string;
   turnId: string;
   requestId: string;
   workingContext: WorkingContext;
-  compactionRequired: boolean;
-  pendingCompactionRequest: PendingCompactionRequest | null;
+  compactionState: MemoryManagerCompactionState;
 };
 
 export type LlmRequestRecoveryInput = {
@@ -24,14 +26,8 @@ export type LlmRequestRecoveryProvenance = {
 type LlmRequestRecoveryHost = {
   getWorkingContext: () => WorkingContext;
   setWorkingContext: (workingContext: WorkingContext) => void;
-  getCompactionState: () => {
-    compactionRequired: boolean;
-    pendingCompactionRequest: PendingCompactionRequest | null;
-  };
-  setCompactionState: (state: {
-    compactionRequired: boolean;
-    pendingCompactionRequest: PendingCompactionRequest | null;
-  }) => void;
+  getCompactionState: () => MemoryManagerCompactionState;
+  setCompactionState: (state: MemoryManagerCompactionState) => void;
   persistWorkingContextSnapshot: () => void;
   appendRawTrace: (input: {
     turnId: string;
@@ -53,16 +49,12 @@ export class LlmRequestRecoveryBoundary {
       throw new Error('LLM request recovery snapshots require non-empty turnId and requestId.');
     }
     this.snapshotCounter += 1;
-    const compaction = this.host.getCompactionState();
     const snapshot: LlmRequestRecoverySnapshot = {
       snapshotId: `llm_recovery_${Date.now().toString(36)}_${this.snapshotCounter}`,
       turnId: input.turnId,
       requestId: input.requestId,
       workingContext: this.host.getWorkingContext().copy(),
-      compactionRequired: compaction.compactionRequired,
-      pendingCompactionRequest: compaction.pendingCompactionRequest
-        ? { ...compaction.pendingCompactionRequest }
-        : null,
+      compactionState: copyCompactionState(this.host.getCompactionState()),
     };
     this.activeSnapshots.add(snapshot.snapshotId);
     return snapshot;
@@ -71,12 +63,7 @@ export class LlmRequestRecoveryBoundary {
   restore(snapshot: LlmRequestRecoverySnapshot, provenance: LlmRequestRecoveryProvenance): void {
     this.requireActive(snapshot);
     this.host.setWorkingContext(snapshot.workingContext);
-    this.host.setCompactionState({
-      compactionRequired: snapshot.compactionRequired,
-      pendingCompactionRequest: snapshot.pendingCompactionRequest
-        ? { ...snapshot.pendingCompactionRequest }
-        : null,
-    });
+    this.host.setCompactionState(copyCompactionState(snapshot.compactionState));
     this.activeSnapshots.delete(snapshot.snapshotId);
     this.host.persistWorkingContextSnapshot();
     this.host.appendRawTrace({
@@ -99,3 +86,12 @@ export class LlmRequestRecoveryBoundary {
     }
   }
 }
+
+const copyCompactionState = (
+  state: MemoryManagerCompactionState,
+): MemoryManagerCompactionState => ({
+  pendingCompactionRequest: state.pendingCompactionRequest
+    ? copyPendingCompactionRequest(state.pendingCompactionRequest)
+    : null,
+  thresholdEpisode: copyCompactionThresholdEpisode(state.thresholdEpisode),
+});

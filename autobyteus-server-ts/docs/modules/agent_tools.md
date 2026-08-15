@@ -45,11 +45,34 @@ valid non-null `MemberTeamContext`, it then automatically unions exactly:
 - `send_message_to`
 - `delegate_task`
 
-This automatic pair is required by the Team Runtime communication and
+This automatic pair is required by the Team Collaboration communication and
 delegation contract and applies even when the agent definition omitted both
 names. Standalone runs receive no automatic pair and preserve their explicitly
 configured set. Browser, media, publishing, configured MCP-origin, and the other
 task lifecycle tools remain explicitly selected and availability-gated.
+
+The native AutoByteus backend owns an additional runtime-derived baseline. For
+ordinary native standalone or team runs, it prepends exactly `run_bash`,
+`read_file`, `edit_file`, and `write_file` before delegating to the shared
+normalization and team-tool composition. The baseline is deduplicated with
+configured names, materialized through the existing native registry, and never
+written back to `AgentDefinition.toolNames`. Mixed-team filtering may remove
+legacy local task tools but does not remove any foundation tool. The existing
+`write_file` trusted-local path, approval, overwrite, and execution contracts
+remain authoritative.
+
+The product-owned built-in definition ID `autobyteus-memory-compactor` is the
+least-authority exception. The native resolver returns an empty effective
+exposure for that exact definition before foundation defaults, configured names,
+or team tools are composed, so its final `AgentConfig.tools` is empty on create
+and restore. Display names or arbitrary empty configurations do not activate the
+exception; ordinary native agents with empty persisted `toolNames` still receive
+the four-tool baseline.
+
+Claude Agent SDK and Codex App Server continue to call the runtime-neutral
+boundary directly. They do not inherit the native baseline; their configured
+and team-derived exposure remains governed by their existing provider
+projection and availability rules.
 
 Prompt composition does not inspect configured/effective tool names and does
 not render an `Available Tools` catalog. Tool manifests and schemas are

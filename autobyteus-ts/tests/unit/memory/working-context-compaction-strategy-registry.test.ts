@@ -13,6 +13,14 @@ import type { WorkingContextCompactionStrategyConstructionContext } from '../../
 import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
 import { WorkingContext } from '../../../src/memory/working-context.js';
 import { createNaturalUserMessageProvenance } from '../../../src/memory/working-context-finalizer.js';
+import { resolveCompactionPlanningBudget } from '../../../src/memory/compaction/compaction-planning-budget.js';
+
+const executionContext = {
+  planningBudget: resolveCompactionPlanningBudget(
+    { inputBudget: 100_000, triggerThresholdTokens: 80_000 },
+    9_000,
+  ),
+};
 
 const emptyProposal = () => ({
   selectedNewRawTraceIds: ['raw-1'],
@@ -40,9 +48,7 @@ afterEach(() => {
 
 const constructionContext = (): WorkingContextCompactionStrategyConstructionContext => ({
   agentId: 'agent-1',
-  memoryStore: {} as any,
   compactionAgentRunner: null,
-  inputBudgetTokens: 1234,
   maxItemChars: 567,
   diagnostics: null,
 });
@@ -61,7 +67,7 @@ describe('WorkingContextCompactionStrategyRegistry', () => {
 
   it('keeps the missing current compaction runner as a truthful construction failure', () => {
     const registration = defaultWorkingContextCompactionStrategyRegistry.get('structured-json')!;
-    expect(() => registration.create(constructionContext())).toThrow(
+    expect(() => registration.create(constructionContext(), executionContext)).toThrow(
       'Structured JSON compaction requires a compaction agent runner',
     );
   });
@@ -96,14 +102,12 @@ describe('WorkingContextCompactionStrategyResolver', () => {
       constructionContext: context,
     });
 
-    expect(resolver.resolve()).toMatchObject({ id: 'test-strategy', name: 'Test Strategy' });
+    expect(resolver.resolve(executionContext)).toMatchObject({ id: 'test-strategy', name: 'Test Strategy' });
     expect(create).toHaveBeenCalledTimes(1);
-    expect(create).toHaveBeenCalledWith(context);
+    expect(create).toHaveBeenCalledWith(context, executionContext);
     expect(Object.keys(create.mock.calls[0]![0])).toEqual([
       'agentId',
-      'memoryStore',
       'compactionAgentRunner',
-      'inputBudgetTokens',
       'maxItemChars',
       'diagnostics',
     ]);
@@ -116,7 +120,7 @@ describe('WorkingContextCompactionStrategyResolver', () => {
       registry,
       settingsResolver,
       constructionContext: constructionContext(),
-    }).resolve()).toThrow("Unknown working-context compaction strategy 'missing'");
+    }).resolve(executionContext)).toThrow("Unknown working-context compaction strategy 'missing'");
 
     registry.register({
       id: 'expected',
@@ -127,7 +131,7 @@ describe('WorkingContextCompactionStrategyResolver', () => {
       registry,
       settingsResolver: { resolve: () => ({ strategyId: 'expected' }) } as CompactionRuntimeSettingsResolver,
       constructionContext: constructionContext(),
-    }).resolve()).toThrow('invalid identity');
+    }).resolve(executionContext)).toThrow('invalid identity');
   });
 
   it('maps the exact default construction context to every structured-strategy consumer', async () => {
@@ -168,9 +172,7 @@ describe('WorkingContextCompactionStrategyResolver', () => {
       settingsResolver: new CompactionRuntimeSettingsResolver(),
       constructionContext: {
         agentId: 'mapped-agent',
-        memoryStore: store,
         compactionAgentRunner: runner,
-        inputBudgetTokens: 100,
         maxItemChars: 80,
         diagnostics,
       },
@@ -193,7 +195,7 @@ describe('WorkingContextCompactionStrategyResolver', () => {
       }),
     ]);
 
-    const strategy = resolver.resolve();
+    const strategy = resolver.resolve(executionContext);
     const result = await strategy.propose(context);
 
     expect(strategy).toMatchObject({ id: 'structured-json', name: 'Structured JSON' });

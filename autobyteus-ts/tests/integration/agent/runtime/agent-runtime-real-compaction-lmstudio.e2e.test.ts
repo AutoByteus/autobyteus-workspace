@@ -8,7 +8,10 @@ import { AgentConfig } from '../../../../src/agent/context/agent-config.js';
 import { AgentFactory } from '../../../../src/agent/factory/agent-factory.js';
 import { AgentInputUserMessage } from '../../../../src/agent/message/agent-input-user-message.js';
 import { AgentStatus } from '../../../../src/agent/status/status-enum.js';
-import { resolveTokenBudget } from '../../../../src/agent/token-budget.js';
+import {
+  resolveCompactionTokenBudget,
+  resolveLlmRequestCapacity,
+} from '../../../../src/agent/token-budget.js';
 import { EventType } from '../../../../src/events/event-types.js';
 import type { BaseLLM } from '../../../../src/llm/base.js';
 import { LLMExtension } from '../../../../src/llm/extensions/base-extension.js';
@@ -20,8 +23,10 @@ import type {
   CompactionAgentTask,
 } from '../../../../src/memory/compaction/compaction-agent-runner.js';
 import { CompactionAgentRunnerError } from '../../../../src/memory/compaction/compaction-agent-runner.js';
+import { createEnabledMemoryCompactionConfiguration } from '../../../../src/memory/compaction/memory-compaction-configuration.js';
 import { AUTOBYTEUS_COMPACTION_STRATEGY } from '../../../../src/memory/compaction/working-context-compaction-strategy-setting.js';
 import { MemoryType } from '../../../../src/memory/models/memory-types.js';
+import { CompactionPolicy } from '../../../../src/memory/policies/compaction-policy.js';
 import { FileCompactionLineageStore } from '../../../../src/memory/store/file-compaction-lineage-store.js';
 import { FileMemoryStore } from '../../../../src/memory/store/file-store.js';
 import {
@@ -357,7 +362,7 @@ runRealE2E('Agent runtime real compaction (LM Studio)', () => {
         null,
         memoryDir,
         null,
-        runner,
+        createEnabledMemoryCompactionConfiguration(new CompactionPolicy(), runner),
       );
       agent = new AgentFactory().createAgent(config);
 
@@ -425,7 +430,20 @@ runRealE2E('Agent runtime real compaction (LM Studio)', () => {
         if (!memoryManager) {
           throw new Error('Agent memory manager was not initialized.');
         }
-        const budget = resolveTokenBudget(mainLLM.model, mainLLM.config, memoryManager.compactionPolicy);
+        const automaticCompaction = memoryManager.getAutomaticCompactionConfiguration();
+        expect(automaticCompaction.kind).toBe('enabled');
+        if (automaticCompaction.kind !== 'enabled') {
+          throw new Error('Real LM Studio compaction agent must have enabled automatic compaction.');
+        }
+        const requestCapacity = resolveLlmRequestCapacity(mainLLM.model, mainLLM.config);
+        const budget = requestCapacity
+          ? resolveCompactionTokenBudget(
+              requestCapacity,
+              mainLLM.model,
+              mainLLM.config,
+              automaticCompaction.policy,
+            )
+          : null;
         expect(budget).not.toBeNull();
         expect(budget?.compactionRatio).toBe(COMPACTION_RATIO);
         expect(budget?.triggerThresholdTokens).toBeGreaterThan(5_000);
@@ -460,7 +478,7 @@ runRealE2E('Agent runtime real compaction (LM Studio)', () => {
         expect(completedCompactions[0]?.raw_trace_count).toBeGreaterThan(0);
         expect(completedCompactions[0]?.compaction_model_identifier).toContain(EXPECTED_MODEL);
         expect(compactionStatuses.some(({ phase }) => phase === 'failed')).toBe(false);
-        expect(memoryManager.compactionRequired).toBe(false);
+        expect(memoryManager.hasPendingCompaction()).toBe(false);
 
         const observedPromptTokens = tokenStatuses
           .map(({ latest_prompt_tokens }) => latest_prompt_tokens)

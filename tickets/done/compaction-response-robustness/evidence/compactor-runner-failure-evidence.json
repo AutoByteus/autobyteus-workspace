@@ -1,0 +1,72 @@
+{
+  "source_parent_agent": "daily_assistant_2a39c68eb96443ada6f5af9f4f81acef",
+  "compaction_operation_id": "compaction_operation_msswp70b_4",
+  "plan": {
+    "selected_unit_count": 208,
+    "retained_unit_count": 5,
+    "protected_suffix_unit_count": 1,
+    "raw_trace_count": 694,
+    "working_context_message_count": 422
+  },
+  "trigger": {
+    "prompt_tokens": 123520,
+    "input_budget_tokens": 615744,
+    "ratio": 0.2,
+    "threshold_tokens": 123148
+  },
+  "attempts": [
+    {
+      "compaction_run_id": "memory_compactor_15ea0a9f3866484aa4e35fcc42b7525c",
+      "parent_turn": "turn_0004",
+      "attempt_kind": "initial",
+      "trace_types": [
+        "user",
+        "llm_request_recovery"
+      ],
+      "user_prompt_characters": 190631,
+      "assistant_trace_count": 0,
+      "token_usage_ledger_event_count": 0,
+      "recovery_trace": "LLM request 'turn_0001:llm:1' rolled back: provider or response ingestion failed before a usable response"
+    },
+    {
+      "compaction_run_id": "memory_compactor_b07b6e3d8f594050886de9cd249f4f12",
+      "parent_turn": "turn_0004",
+      "attempt_kind": "correction",
+      "trace_types": [
+        "user",
+        "llm_request_recovery"
+      ],
+      "user_prompt_characters": 191082,
+      "assistant_trace_count": 0,
+      "token_usage_ledger_event_count": 0,
+      "recovery_trace": "LLM request 'turn_0001:llm:1' rolled back: provider or response ingestion failed before a usable response"
+    },
+    {
+      "compaction_run_id": "memory_compactor_9b61f992cf9f417390e839e161af1da2",
+      "parent_turn": "turn_0005",
+      "attempt_kind": "initial",
+      "trace_types": [
+        "user",
+        "llm_request_recovery"
+      ],
+      "user_prompt_characters": 190631,
+      "assistant_trace_count": 0,
+      "token_usage_ledger_event_count": 0,
+      "recovery_trace": "LLM request 'turn_0001:llm:1' rolled back: provider or response ingestion failed before a usable response"
+    },
+    {
+      "compaction_run_id": "memory_compactor_3c5445fccdaa4291afc55dedd41b69fd",
+      "parent_turn": "turn_0005",
+      "attempt_kind": "correction",
+      "trace_types": [
+        "user",
+        "llm_request_recovery"
+      ],
+      "user_prompt_characters": 191082,
+      "assistant_trace_count": 0,
+      "token_usage_ledger_event_count": 0,
+      "recovery_trace": "LLM request 'turn_0001:llm:1' rolled back: provider or response ingestion failed before a usable response"
+    }
+  ],
+  "interpretation": "All four child attempts failed before a usable assistant response and before token usage was recorded. Host response repair misclassified generated LLM error text as a json_object_extraction failure. The same pending operation was executed again on the next parent turn."
+}

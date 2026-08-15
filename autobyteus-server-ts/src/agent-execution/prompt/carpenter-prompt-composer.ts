@@ -1,7 +1,7 @@
 import path from "node:path";
 import type { AgentDefinition } from "../../agent-definition/domain/models.js";
 import type { MemberTeamContext } from "../../agent-team-execution/domain/member-team-context.js";
-import { renderTeamRuntimeInstruction } from "../../agent-team-execution/services/team-runtime-instruction-renderer.js";
+import { renderTeamCollaborationInstruction } from "../../agent-team-execution/services/team-collaboration-instruction-renderer.js";
 import {
   BASH_OPERATING_PRACTICE_SECTION,
   FILE_AND_DIRECTORY_PRACTICE_SECTION,
@@ -10,10 +10,13 @@ import {
   renderWorkingEnvironmentSection,
 } from "./carpenter-prompt-sections.js";
 
-export type CarpenterPromptComposerInput = {
+export type SharedCarpenterPromptComposerInput = {
   agentDefinition: AgentDefinition;
-  workspaceRootPath: string;
   memberTeamContext?: MemberTeamContext | null;
+};
+
+export type NativeCarpenterPromptComposerInput = SharedCarpenterPromptComposerInput & {
+  workspaceRootPath: string;
 };
 
 const assertNoUnresolvedPlaceholders = (prompt: string): void => {
@@ -22,13 +25,11 @@ const assertNoUnresolvedPlaceholders = (prompt: string): void => {
   }
 };
 
-export const composeCarpenterPrompt = (input: CarpenterPromptComposerInput): string => {
+const buildSharedCarpenterPromptSections = (
+  input: SharedCarpenterPromptComposerInput,
+): string[] => {
   if (!input.agentDefinition) {
     throw new Error("Agent definition is required to compose the carpenter prompt.");
-  }
-  const workspaceRootPath = input.workspaceRootPath?.trim() ?? "";
-  if (!workspaceRootPath || !path.isAbsolute(workspaceRootPath)) {
-    throw new Error("Agent workspace must be a non-blank absolute path.");
   }
 
   const sections: string[] = [renderAgentIdentitySection(input.agentDefinition)];
@@ -41,14 +42,35 @@ export const composeCarpenterPrompt = (input: CarpenterPromptComposerInput): str
     if (teamInstruction) {
       sections.push(teamInstruction);
     }
-    sections.push(`## Team Runtime\n\n${renderTeamRuntimeInstruction(input.memberTeamContext, memberName)}`);
+    sections.push(
+      `## Team Collaboration\n\n${renderTeamCollaborationInstruction(input.memberTeamContext, memberName)}`,
+    );
   }
-  sections.push(
-    renderWorkingEnvironmentSection(workspaceRootPath),
-    BASH_OPERATING_PRACTICE_SECTION,
-    FILE_AND_DIRECTORY_PRACTICE_SECTION,
-  );
+  return sections;
+};
+
+const finalizeCarpenterPrompt = (sections: string[]): string => {
   const prompt = sections.join("\n\n");
   assertNoUnresolvedPlaceholders(prompt);
   return prompt;
+};
+
+export const composeSharedCarpenterPrompt = (
+  input: SharedCarpenterPromptComposerInput,
+): string => finalizeCarpenterPrompt(buildSharedCarpenterPromptSections(input));
+
+export const composeNativeAutoByteusPrompt = (
+  input: NativeCarpenterPromptComposerInput,
+): string => {
+  const workspaceRootPath = input.workspaceRootPath?.trim() ?? "";
+  if (!workspaceRootPath || !path.isAbsolute(workspaceRootPath)) {
+    throw new Error("Agent workspace must be a non-blank absolute path.");
+  }
+
+  return finalizeCarpenterPrompt([
+    ...buildSharedCarpenterPromptSections(input),
+    renderWorkingEnvironmentSection(workspaceRootPath),
+    BASH_OPERATING_PRACTICE_SECTION,
+    FILE_AND_DIRECTORY_PRACTICE_SECTION,
+  ]);
 };

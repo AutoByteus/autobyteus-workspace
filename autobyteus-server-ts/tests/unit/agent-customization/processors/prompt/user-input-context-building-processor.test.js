@@ -53,6 +53,8 @@ describe("UserInputContextBuildingProcessor", () => {
 
     expect(result.contextFiles?.[0].uri).toBe(filePath);
     expect(result.content).toContain("relative content");
+    expect(result.content).toMatch(/^\*\*\[Context\]\*\*\n/);
+    expect(result.content).toContain("\n\n**[Message]**\nreq");
   });
 
   it("handles absolute paths correctly", async () => {
@@ -123,17 +125,17 @@ describe("UserInputContextBuildingProcessor", () => {
 
     const result = await processor.process(message, context, new UserMessageReceivedEvent(message));
 
-    expect(result.content).toBe("**[User Requirement]**\nMy Requirement");
+    expect(result.content).toBe("My Requirement");
     expect(result.content).not.toContain("AUTOBYTEUS System Message.");
     expect(context.customData.is_first_user_turn).toBe(false);
   });
 
   it.each([
-    [SenderType.USER, "**[User Requirement]**"],
-    [SenderType.TOOL, "**[Tool Execution Result]**"],
-    [SenderType.AGENT, "**[Message From Agent]**"],
-    [SenderType.SYSTEM, "**[System Notification]**"],
-  ])("preserves the %s sender header", async (senderType, expectedHeader) => {
+    SenderType.USER,
+    SenderType.TOOL,
+    SenderType.AGENT,
+    SenderType.SYSTEM,
+  ])("passes through authored %s content without a generic sender heading", async (senderType) => {
     const context = buildContext({
       workspaceRootPath: tempDir,
       provider: LLMProvider.AUTOBYTEUS,
@@ -144,7 +146,8 @@ describe("UserInputContextBuildingProcessor", () => {
 
     const result = await processor.process(message, context, new UserMessageReceivedEvent(message));
 
-    expect(result.content).toBe(`${expectedHeader}\nsender body`);
+    expect(result.content).toBe("sender body");
+    expect(result.senderType).toBe(senderType);
     expect(result.content).not.toContain("System Prompt.");
   });
 
@@ -163,7 +166,7 @@ describe("UserInputContextBuildingProcessor", () => {
     const result = await processor.process(message, context, new UserMessageReceivedEvent(message));
 
     expect(result.content.startsWith("AUTOBYTEUS System Message.")).toBe(false);
-    expect(result.content.endsWith("**[User Requirement]**\nMy Requirement")).toBe(true);
+    expect(result.content).toBe("My Requirement");
   });
 
   it("does not prepend system prompt for non-AUTOBYTEUS model on first turn", async () => {
@@ -181,7 +184,7 @@ describe("UserInputContextBuildingProcessor", () => {
     const result = await processor.process(message, context, new UserMessageReceivedEvent(message));
 
     expect(result.content.startsWith("AUTOBYTEUS System Message.")).toBe(false);
-    expect(result.content.endsWith("**[User Requirement]**\nMy Requirement")).toBe(true);
+    expect(result.content).toBe("My Requirement");
     expect(context.customData.is_first_user_turn).toBe(false);
   });
 

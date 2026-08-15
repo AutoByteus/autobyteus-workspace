@@ -8,6 +8,7 @@ import {
 import { AudioClientFactory } from 'autobyteus-ts/multimedia/audio/audio-client-factory.js';
 import { ImageClientFactory } from 'autobyteus-ts/multimedia/image/image-client-factory.js';
 import {
+  classifyCanonicalCompactorRunTopology,
   classifyAutoByteusDiscoveryUnavailable,
   databaseTargetsMatch,
   runLiveE2eAgentFlow,
@@ -282,6 +283,45 @@ describe('one-database live E2E runtime and evidence boundary', () => {
       providerId: 'LMSTUDIO',
       requiredSecretId: null,
       model: 'qwen/qwen3.6-35b-a3b',
+    });
+  });
+
+  it('accepts a final correction run as the second bounded sibling of one compaction', () => {
+    expect(classifyCanonicalCompactorRunTopology({
+      completedOperationCount: 1,
+      acceptedRunIds: ['memory_compactor_correction'],
+      runs: [
+        { runId: 'memory_compactor_initial', attemptKind: 'initial' },
+        { runId: 'memory_compactor_correction', attemptKind: 'correction' },
+      ],
+    })).toEqual({
+      valid: true,
+      siblingRunIds: ['memory_compactor_initial', 'memory_compactor_correction'],
+      initialSiblingRunIds: ['memory_compactor_initial'],
+      correctionSiblingRunIds: ['memory_compactor_correction'],
+      descendantRunIds: [],
+    });
+  });
+
+  it('counts only runs beyond the initial-plus-one-correction bound as descendants', () => {
+    expect(classifyCanonicalCompactorRunTopology({
+      completedOperationCount: 1,
+      acceptedRunIds: ['memory_compactor_correction'],
+      runs: [
+        { runId: 'memory_compactor_initial', attemptKind: 'initial' },
+        { runId: 'memory_compactor_correction', attemptKind: 'correction' },
+        { runId: 'memory_compactor_extra_correction', attemptKind: 'correction' },
+        { runId: 'memory_compactor_nested', attemptKind: null },
+      ],
+    })).toEqual({
+      valid: false,
+      siblingRunIds: ['memory_compactor_initial', 'memory_compactor_correction'],
+      initialSiblingRunIds: ['memory_compactor_initial'],
+      correctionSiblingRunIds: ['memory_compactor_correction'],
+      descendantRunIds: [
+        'memory_compactor_extra_correction',
+        'memory_compactor_nested',
+      ],
     });
   });
 

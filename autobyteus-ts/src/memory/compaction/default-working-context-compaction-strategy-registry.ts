@@ -16,13 +16,13 @@ export const defaultWorkingContextCompactionStrategyRegistry =
 defaultWorkingContextCompactionStrategyRegistry.register({
   id: 'structured-json',
   name: 'Structured JSON',
-  create: (context) => new StructuredJsonCompactionStrategy({
+  create: (context, executionContext) => new StructuredJsonCompactionStrategy({
     summarizer: new AgentCompactionSummarizer({
       runner: requireCompactionRunner(context.compactionAgentRunner),
       parentAgentId: context.agentId,
       maxItemChars: context.maxItemChars,
     }),
-    inputBudgetTokens: context.inputBudgetTokens,
+    planningBudget: executionContext.planningBudget,
     diagnostics: context.diagnostics,
   }),
 });

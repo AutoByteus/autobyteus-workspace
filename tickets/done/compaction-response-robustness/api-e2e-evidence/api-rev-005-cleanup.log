@@ -1,0 +1,12 @@
+API-REV-005 owned-resource cleanup
+REMOVE isolated secret vault/database artifacts and harness/test runtime state created by this round
+ABSENT autobyteus-server-ts/db/test.db
+ABSENT autobyteus-server-ts/db/test.db.secret.key
+ABSENT autobyteus-server-ts/db/test.db-wal
+ABSENT autobyteus-server-ts/db/test.db-shm
+ABSENT autobyteus-server-ts/tests/.tmp/live-e2e-runtime
+SOURCE_ENV_RETAINED /Users/normy/.autobyteus/server-data/.env
+PROCESS_AUDIT
+NO_OWNED_LIVE_PROCESS
+POST_FINAL_GATE_CLEANUP autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db ABSENT
+POST_FINAL_GATE_PROCESS_AUDIT NO_OWNED_PROCESS

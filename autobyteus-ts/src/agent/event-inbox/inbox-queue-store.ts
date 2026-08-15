@@ -25,6 +25,13 @@ class AsyncQueue<T extends { entryId: string }> {
     return item ?? null;
   }
 
+  claimFirstMatching(predicate: (item: T) => boolean): T | null {
+    const index = this.items.findIndex(predicate);
+    if (index < 0) return null;
+    const [item] = this.items.splice(index, 1);
+    return item ?? null;
+  }
+
   qsize(): number {
     return this.items.length;
   }
@@ -82,6 +89,10 @@ export class InboxQueueStore<T extends { entryId: string }> {
       }
     }
     return null;
+  }
+
+  claimFirstMatching(lane: InboxLane, predicate: (item: T) => boolean): T | null {
+    return this.getQueue(lane).claimFirstMatching(predicate);
   }
 
   snapshot(): Record<InboxLane, T[]> {

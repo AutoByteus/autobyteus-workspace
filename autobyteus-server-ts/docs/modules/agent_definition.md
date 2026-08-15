@@ -52,10 +52,11 @@ runtime prompt:
 - a blank body remains absent instead of falling back to the description.
 
 Keep the body specific to the agent's responsibilities and boundaries. Do not
-copy the platform-owned Working Environment, Bash Operating Practice, File And
-Directory Practice, Team Runtime rosters/protocols, configured skill bodies, or
-tool schemas into `agent.md`. Authored Markdown headings are deterministically
-nested below `Responsibilities and Boundaries` during composition.
+copy the platform-owned native Working Environment, Bash Operating Practice, or
+File And Directory Practice, Team Collaboration rosters/protocols, configured
+skill bodies, or tool schemas into `agent.md`. Authored Markdown headings are
+deterministically nested below `Responsibilities and Boundaries` during
+composition.
 
 For example:
 

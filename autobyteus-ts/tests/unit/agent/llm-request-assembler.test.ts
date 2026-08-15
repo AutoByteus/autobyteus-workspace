@@ -67,7 +67,7 @@ describe('LLMRequestAssembler', () => {
 
     const request = await assembler.prepareRequest(
       new LLMUserMessage({ content: 'hello' }),
-      { turnId: 'turn_0001', requestId: 'turn_0001:llm:1' },
+      { turnId: 'turn_0001', requestId: 'turn_0001:llm:1', turnOrigin: 'user' },
       'System prompt',
     );
 
@@ -86,7 +86,7 @@ describe('LLMRequestAssembler', () => {
     const memoryManager = new FakeMemoryManager();
     const executorCalls: Array<Record<string, unknown>> = [];
     const executor = {
-      executeIfRequired: vi.fn(async (input: Record<string, unknown>) => {
+      executeIfAuthorized: vi.fn(async (input: Record<string, unknown>) => {
         executorCalls.push(input);
         memoryManager.replaceWorkingContext(new WorkingContext([
           new Message(MessageRole.SYSTEM, { content: 'System prompt' }),
@@ -99,17 +99,18 @@ describe('LLMRequestAssembler', () => {
     const assembler = new LLMRequestAssembler(memoryManager as any, new FakeRenderer(), executor as any);
     const request = await assembler.prepareRequest(
       new LLMUserMessage({ content: 'new input' }),
-      { turnId: 'turn_0002', requestId: 'turn_0002:llm:1' },
+      { turnId: 'turn_0002', requestId: 'turn_0002:llm:1', turnOrigin: 'user' },
       'System prompt',
     );
 
     expect(request.didCompact).toBe(true);
     expect(memoryManager.ensureWorkingContextToolProtocolSafeForNextLlm.mock.invocationCallOrder[0]).toBeLessThan(
-      executor.executeIfRequired.mock.invocationCallOrder[0]
+      executor.executeIfAuthorized.mock.invocationCallOrder[0]
     );
     expect(executorCalls).toEqual([
       {
         turnId: 'turn_0002',
+        turnOrigin: 'user',
       }
     ]);
     expect(request.canonicalMessages.map((message) => message.role)).toEqual([
@@ -141,7 +142,7 @@ describe('LLMRequestAssembler', () => {
       }),
     ]);
     const executor = {
-      executeIfRequired: vi.fn(async () => {
+      executeIfAuthorized: vi.fn(async () => {
         memoryManager.replaceWorkingContext(compactedHistory);
         return true;
       }),
@@ -154,7 +155,7 @@ describe('LLMRequestAssembler', () => {
 
     const request = await assembler.prepareRequest(
       null,
-      { turnId: 'turn_tool', requestId: 'turn_tool:llm:2' },
+      { turnId: 'turn_tool', requestId: 'turn_tool:llm:2', turnOrigin: 'user' },
       'System prompt',
     );
 
@@ -212,7 +213,7 @@ describe('LLMRequestAssembler', () => {
         new OpenAIChatRenderer(),
       ).prepareRequest(
         new LLMUserMessage({ content: 'please continue there was a shutdown' }),
-        { turnId: 'turn_new', requestId: 'turn_new:llm:1' },
+        { turnId: 'turn_new', requestId: 'turn_new:llm:1', turnOrigin: 'user' },
         'System prompt',
       );
 
@@ -240,7 +241,7 @@ describe('LLMRequestAssembler', () => {
   it('propagates compaction preparation errors', async () => {
     const memoryManager = new FakeMemoryManager();
     const executor = {
-      executeIfRequired: async () => {
+      executeIfAuthorized: async () => {
         throw new CompactionPreparationError('compaction blocked');
       }
     };
@@ -249,7 +250,7 @@ describe('LLMRequestAssembler', () => {
 
     await expect(assembler.prepareRequest(
       new LLMUserMessage({ content: 'hello' }),
-      { turnId: 'turn_0002', requestId: 'turn_0002:llm:1' },
+      { turnId: 'turn_0002', requestId: 'turn_0002:llm:1', turnOrigin: 'user' },
       'System prompt',
     )).rejects.toBeInstanceOf(
       CompactionPreparationError
@@ -264,7 +265,7 @@ describe('LLMRequestAssembler', () => {
       new Message(MessageRole.USER, { content: 'Pre-compaction M1' }),
     ]));
     const executor = {
-      executeIfRequired: vi.fn(async () => {
+      executeIfAuthorized: vi.fn(async () => {
         memoryManager.replaceWorkingContext(new WorkingContext([
           new Message(MessageRole.SYSTEM, { content: 'System prompt' }),
           new Message(MessageRole.USER, { content: 'Accepted post-compaction M2' }),
@@ -278,7 +279,7 @@ describe('LLMRequestAssembler', () => {
 
     await expect(assembler.prepareRequest(
       new LLMUserMessage({ content: 'transient user input' }),
-      { turnId: 'turn_restore', requestId: 'turn_restore:llm:1' },
+      { turnId: 'turn_restore', requestId: 'turn_restore:llm:1', turnOrigin: 'user' },
       'System prompt',
     )).rejects.toThrow('renderer failed');
 

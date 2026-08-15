@@ -12,7 +12,7 @@ import { MemberTeamContext } from "../../../../../../src/agent-team-execution/do
 import { TeamBackendKind } from "../../../../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { buildTeamMemberAddress } from "../../../../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
 import { AgentDefinition } from "../../../../../../src/agent-definition/domain/models.js";
-import { composeCarpenterPrompt } from "../../../../../../src/agent-execution/prompt/carpenter-prompt-composer.js";
+import { composeSharedCarpenterPrompt } from "../../../../../../src/agent-execution/prompt/carpenter-prompt-composer.js";
 
 const {
   buildClaudeSessionMcpServersMock,
@@ -144,14 +144,13 @@ const createSession = (requestedToolNames: string[] = [], input: {
       memberTeamContext,
     }),
     runtimeContext: new ClaudeAgentRunContext({
-      carpenterSystemPrompt: composeCarpenterPrompt({
+      carpenterSystemPrompt: composeSharedCarpenterPrompt({
         agentDefinition: new AgentDefinition({
           name: "Test agent",
           description: "Tests Claude tooling.",
           instructions: "Run the requested test.",
           toolNames: requestedToolNames,
         }),
-        workspaceRootPath: "/tmp",
         memberTeamContext,
       }),
       sessionConfig: buildClaudeSessionConfig({
@@ -225,7 +224,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
     expect(startQueryTurn).toHaveBeenCalledWith(
       expect.objectContaining({
         prompt: "hello",
-        systemPrompt: expect.not.stringContaining("## Team Runtime"),
+        systemPrompt: expect.not.stringContaining("## Team Collaboration"),
         allowedTools: ["read_page", "mcp__autobyteus_agent_tools__read_page"],
       }),
     );

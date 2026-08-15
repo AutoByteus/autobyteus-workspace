@@ -1,0 +1,6 @@
+API-REV-004 owned-resource cleanup
+ABSENT autobyteus-server-ts/db/test.db
+ABSENT autobyteus-server-ts/db/test.db.secret.key
+ABSENT autobyteus-server-ts/tests/.tmp/live-e2e-runtime
+ABSENT autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db
+NO_OWNED_PROCESS

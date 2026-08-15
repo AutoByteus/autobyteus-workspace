@@ -19,7 +19,7 @@ import { ClaudeAgentRunContext } from "../../../src/agent-execution/backends/cla
 import { buildClaudeSessionConfig } from "../../../src/agent-execution/backends/claude/session/claude-session-config.js";
 import { ClaudeSessionManager } from "../../../src/agent-execution/backends/claude/session/claude-session-manager.js";
 import { buildRuntimeAgentToolExposure } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
-import { composeCarpenterPrompt } from "../../../src/agent-execution/prompt/carpenter-prompt-composer.js";
+import { composeSharedCarpenterPrompt } from "../../../src/agent-execution/prompt/carpenter-prompt-composer.js";
 import { MixedTeamRunBackend } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-backend.js";
 import { MixedAgentMemberContext, MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
 import type { TeamManager } from "../../../src/agent-team-execution/backends/team-manager.js";
@@ -238,13 +238,12 @@ const createClaudeRunContext = (input: {
   workspaceRoot?: string;
 }): AgentRunContext<ClaudeAgentRunContext> => {
   const workspaceRoot = input.workspaceRoot ?? process.cwd();
-  const carpenterSystemPrompt = composeCarpenterPrompt({
+  const carpenterSystemPrompt = composeSharedCarpenterPrompt({
     agentDefinition: {
       name: "Claude WebSocket E2E Agent",
       description: "Exercises Claude create and resume instruction projection",
       instructions: "Keep persistent instructions separate from user turns.",
     },
-    workspaceRootPath: workspaceRoot,
   });
   return new AgentRunContext({
     runId: input.runId,

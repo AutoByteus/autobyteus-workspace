@@ -16,6 +16,7 @@ import type {
   AcceptedWorkingContextCompaction,
   WorkingContextCompactionProposal,
 } from './working-context-compaction-proposal.js';
+import { estimateMessagesTokens } from './message-budget-strategy.js';
 
 export type AcceptedCompactionBuildInput = {
   compactionId: string;
@@ -120,6 +121,10 @@ export class AcceptedCompactionBuilder {
         },
       },
       finalizedContext,
+      budgetAssessment: {
+        ...proposal.budgetAssessment,
+        estimatedFinalizedContextTokens: estimateMessagesTokens(finalizedContext.buildMessages()),
+      },
     };
   }
 }
