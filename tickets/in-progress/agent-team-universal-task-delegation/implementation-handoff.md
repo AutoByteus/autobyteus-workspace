@@ -20,7 +20,7 @@
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/design-review-report.md`
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/architecture-review-revision-record.md`
 - Triggering rework report, revision record, or evidence:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/code-review-report.md` (`CRR-018` complete integrated cumulative Fail / Local Fix, with prior review lineage retained)
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/code-review-report.md` (`CRR-020` focused API-REV-007 failure-origin Fail / Critical Local Fix, with prior review lineage retained)
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/code-review-revision-record.md`
   - `/tmp/crr001-task-commit-audit.log`
   - `/tmp/crr001-agent-run-reservation-race.log`
@@ -33,9 +33,10 @@
   - `CRR-012` in the same canonical review artifacts, with `/tmp/crr012-server-complete-current.log`, `/tmp/crr012-web-complete-current.log`, `/tmp/crr012-server-build-full.log`, `/tmp/crr012-web-production-build.log`, `/tmp/crr012-built-default-construction.log`, and `/tmp/crr012-review-artifact-audit.log`
   - `CRR-014` in the same canonical review artifacts, with `/tmp/crr014-api-f006-origin-probe.log` and `/tmp/crr014-api-f006-origin-audit.log`
   - `CRR-018` in the same canonical review artifacts, with `/tmp/crr018-ticket-deletion-import-classification.log`, `/tmp/crr018-remaining-stale-active-tests.log`, `/tmp/crr018-server-complete-current.log`, `/tmp/crr018-core-complete-current.log`, `/tmp/crr018-web-complete-current.log`, `/tmp/crr018-server-production-typecheck.log`, and `/tmp/crr018-review-artifact-audit.log`
+  - `CRR-020` in the same canonical review artifacts, with `/tmp/crr020-api-f007-source-origin-audit.log`, `/tmp/crr020-review-artifact-audit.log`, and `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-007/failure/api-f007-startup-repair-timing-analysis.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-coverage-investigation.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-execution-coverage-report.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-revision-record.md` (`API-REV-006` Pass / 98.3%, now historical pre-integration evidence pending fresh integrated execution)
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-revision-record.md` (`API-REV-007` paused Fail at API-UTD-RESTART-007; API-REV-006 remains historical pre-integration evidence)
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-test-review-report.md` (`CRR-016` proportional durable-test Pass over the exact 164-path pre-integration package)
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-001/repository/api-utd-f001-delegate-schema-diagnostic.log`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/api-e2e-evidence/api-rev-002/repository/broad-failure-currentization-round2.log`
@@ -60,21 +61,21 @@
 
 ## Current Implementation Summary
 
-IR-013 completes the CR-F-015 clean-cut test currentization exposed by the complete integrated CRR-018 review and applies the user's explicitly authorized AgentTeam addressing-copy refinement. All nine active suites identified by CRR-018 now use current RootTeamRun V1, intrinsic run identity, application, context-file, and token-usage owners, or are removed when the scenario is strictly an obsolete intermediate migration contract. An additional stale dynamic mock and one obsolete V5 composite-address GraphQL migration suite discovered during the cumulative audit are likewise currentized or removed; no deleted module, alias, legacy field, fallback, or second owner is restored.
+IR-014 corrects CR-F-016 / API-F-007 at the existing current-schema restart owner. `TeamRunV1PackageCatalog.rebuild()` no longer performs a parallel three-store read and direct validation. For every target-only root it now invokes `TeamRunStatePackageLoader.loadAndRepair()` before admission. A successful repair therefore removes unreferenced task executions, interrupts active/awaiting-review tasks, preserves accepted tasks, settles surviving task executions, writes through the strict phase-aware stores, and validates the repaired package before history can expose the root.
 
-The Team-bound system prompt now explains canonical addresses with a neutral Linux-filesystem-like tree rooted at `/`, using placeholder nodes `/A`, `/B`, `/C`, `/C/D`, and `/C/E`. It explicitly explains that the root display name is metadata and absent from addresses, distinguishes direct root members from nested AgentTeams/members, and says the letters are syntax-only placeholders. The exact `AgentTeam Collaboration` copy and communication/tool semantics remain unchanged, and the shared renderer remains byte-identical across AutoByteus, Codex `baseInstructions`, and Claude `systemPrompt` injection.
+Repair failure remains root-local: the catalog excludes only that root and records the loader's stable code/message as its diagnostic. Other valid roots continue through the loop and new root creation may still admit its completed package. The predecessor-file check remains the migration ownership gate and is not treated as current-schema repair. `AgentTeamRunManager.restoreTeamRun()` continues to invoke the same loader class, so explicit restore remains idempotent and shares exactly one repair implementation.
 
-While currentizing the real V1 context-file route, implementation found and corrected one supported current-source defect: a canonical absolute member address such as `/A` escaped the draft storage root when used as a raw `path.join` segment. The existing `ContextFileLayout` owner now encodes that address for the filesystem segment; current V1 route coverage proves draft/final read, delete, and nested placement without reintroducing retired route keys.
+IR-013's neutral filesystem-style AgentTeam prompt, context-file safety correction, clean-cut tests, and all cumulative SR-009 ownership boundaries remain unchanged.
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/tickets/in-progress/agent-team-universal-task-delegation/implementation-revision-record.md`
-- Current implementation revision ID: `IR-013`
-- Related solution revision IDs: `SR-009` (cumulative `SR-001–SR-009`); direct user-approved prompt-copy clarification after SR-009
-- Related architecture-review revision IDs: `ARCH-REV-005`; no additional architecture round requested for the copy-only prompt clarification
-- Related code-review revision IDs: `CRR-018` (complete integrated cumulative review); `CRR-017` and pre-integration reviews retained as history
-- Related API/E2E revision IDs: `API-REV-006` pre-integration Pass / 98.3%; fresh integrated investigation/execution required
+- Current implementation revision ID: `IR-014`
+- Related solution revision IDs: `SR-009` (cumulative `SR-001–SR-009`)
+- Related architecture-review revision IDs: `ARCH-REV-005`
+- Related code-review revision IDs: `CRR-020` (focused failure-origin); `CRR-019` source-readiness result superseded; earlier lineage retained
+- Related API/E2E revision IDs: `API-REV-007` paused Fail at API-UTD-RESTART-007
 - Related delivery revision IDs: `DR-002`
-- Triggering finding IDs: `CR-F-015`; `CR-F-014` and `CR-F-001–CR-F-013 / API-F-001–API-F-006` remain resolved
+- Triggering finding IDs: `CR-F-016 / API-F-007 / API-UTD-RESTART-007`; `CR-F-001–CR-F-015 / API-F-001–API-F-006` remain resolved
 
 ## Reviewed Behavior Implementation Trace
 
@@ -91,11 +92,12 @@ While currentizing the real V1 context-file route, implementation found and corr
 | BEH-009 | Exactly three current Team JSON authorities and phase-truthful writes | tree/task/message V1 stores; `team-run-file-commit-writer.ts`; `team-run-persistence-coordinator.ts`; root/task owners | The coordinator latches fail-stop before notifying the root and rejects every later serialized mutation pending strict reopen. Task/service sweeps cannot write stale pre-indeterminate memory; hidden task/message reservations remain owned for fail-stop teardown. |
 | BEH-010 | Fail closed without artificial adjacency | canonical parser, root resolver/index, task/message validators and command parsers | Foreign, inactive, settled, malformed, and ambiguous identities reject before reserve/write/start; no adjacency fallback remains. |
 | BEH-011 | Minimal task result and exact bidirectional accepted history | `task-delegation-input.ts`; `team-communication-message-append-plan.ts`; `team-communication-service.ts`; `agent-run-input-admission-state.ts`; `agent-run-input-reservation.ts` | Work packets remain minimal and exact. Ordinary AgentRun quiescence waits every prior reservation and released/active dispatch without deleting it; exceptional communication indeterminacy releases its deliberately hidden reservation only after root fail-stop is latched. |
-| BEH-012 | Deterministic strict reopen with no live-task recovery | `team-run-state-package-loader.ts`; `team-run-state-package-validator.ts`; `team-run-v1-package-catalog.ts`; repair/migration services | Only complete current packages enter the catalog. Reopen repairs durable task truth rather than recreating provider work. |
+| BEH-012 | Deterministic strict reopen with no live-task recovery | `server-runtime.ts` -> `TeamRunV1PackageCatalog.rebuild()` -> `TeamRunStatePackageLoader.loadAndRepair()`; explicit restore enters the same loader through `AgentTeamRunManager` | Startup and explicit restore now share one repair implementation. Admission occurs only after committed repair and validation; one failed root receives actionable diagnostics while unrelated valid roots remain admitted. |
 | BEH-013 | Isolated per-root migration and forward-only current runtime | `app-data-migrations/migrations/team-run-execution-tree-v1/`; `app-data-migrations/legacy/`; `team-run-execution-tree.ts`; `runtime-memory-location-classifier.ts`; server startup boundary; token identity migration | Each predecessor root stages/promotes independently; invalid roots remain excluded/retryable. Exact persisted Team runtime labels convert through the V1 tree owner before snapshot policy, and the predecessor-only metadata type/clone preserves every strict Agent field, including `applicationExecutionContext`, without leaking it into the current runtime model. |
 | BEH-014 | One private local manager per materialized TeamRun | `domain/team-run.ts`; `backends/mixed/mixed-team-manager.ts`; task registries/handles; `team-run-resolver.ts` | Each concrete TeamRun recursively prepares its exact local subtree without provider teardown. Commit makes the task execution non-routable; finish tears down providers/handles outside the root lock, then inactive task-Team registrations are pruned. |
 | DR-002 integration | Preserve both AgentRun input-lifecycle settlement and v1.4.52 compaction phase/error semantics | `server-compaction-agent-runner.ts`; `compaction-run-output-collector.ts`; current AgentRun/backend factory and compaction tests | Runner observes the current AgentRun lifecycle at the post boundary, keeps provider I/O under AgentRun ownership, records launch/post/collection phase, and maps exact lifecycle/terminal/timeout facts once. Auto-merged tests use current `dispatchUserInput` and compound turn/segment identity; no retired backend method or fallback identity was restored. |
 | CRR-018 currentization | Preserve singular current owners and eliminate every ticket-deletion import from active tests | Eight of the nine named suites currentized; the obsolete V5/legacy-column startup suite removed; one additional obsolete composite-address migration suite removed; one stale dynamic mock currentized | Repository-wide base-aware import audit reports zero remaining imports whose target existed at integrated base and was deleted by the ticket. No retired owner, alias, fallback, or compatibility shape was restored. |
+| CRR-020 restart correction | Use one strict repair owner for both startup and explicit reopen before exposure | `team-run-v1-package-catalog.ts`; `team-run-state-package-loader.ts`; `agent-team-run-manager.ts`; `server-runtime.ts` | Catalog direct read/validate path is removed. Actual stale active/accepted/orphan repair, idempotent reopen, root-local write failure, valid sibling admission, new-root admission, and rebuild-before-listen ordering pass locally. |
 
 ## Key Files Or Areas
 
@@ -116,6 +118,7 @@ While currentizing the real V1 context-file route, implementation found and corr
 - IR-013 active-test currentization: the exact CRR-018 suite set uses current RootTeamRun V1, intrinsic AgentRun/TeamRun identity, application package, context-file, and token-ledger boundaries. The retired legacy-column startup and obsolete V5 composite-address migration E2E suites are absent.
 - IR-013 prompt copy: `member-collaboration-instruction-renderer.ts`, the exact-copy artifact, and provider-parity/composer tests own and prove the neutral filesystem tree, one-copy ordering, Team-only exposure, and unchanged collaboration copy.
 - IR-013 context-file safety: `context-file-layout.ts` owns encoded canonical member-address filesystem segments; the current V1 REST integration suite proves absolute and nested member addresses remain inside the draft/final roots.
+- IR-014 restart admission: `team-run-v1-package-catalog.ts` owns root enumeration/admission/diagnostics only; `team-run-state-package-loader.ts` remains the sole current-schema load/repair/validation owner used by catalog startup and explicit manager restore.
 
 ## Important Assumptions
 
@@ -130,30 +133,29 @@ While currentizing the real V1 context-file route, implementation found and corr
 
 ## Known Risks
 
-- CRR-018 was a complete integrated review and accepted the supported production ownership graph; IR-013 changes test/package seams plus one narrow context-file path projection and the user-approved prompt copy. Complete cumulative source review remains mandatory before API/E2E resumes.
-- Two obsolete Token Usage E2E suites were removed because they exercised retired intermediate V5/composite-address/legacy-column contracts. Current V6 migration repository and current ledger/statistics GraphQL suites pass, but `api_e2e_engineer` must explicitly investigate proportional replacement/expansion before fresh execution.
+- CRR-020 classified this as a bounded critical Local Fix under the already approved DS-009 owner. Source re-review must verify that no startup/current-schema package path still bypasses `TeamRunStatePackageLoader` before API/E2E resumes.
+- Repair writes are intentionally phase-aware. A `not_renamed` or `renamed_finalization_indeterminate` result leaves that root excluded; no in-process retry/replay is introduced. Fresh checked-disposable API/E2E must re-run restart-before-listen and explicit restore.
 - The package `typecheck` command still includes tests while declaring `rootDir: src`, so it retains the pre-existing repository-wide `TS6059` configuration failure. Production `tsconfig.build.json` typecheck and full build pass.
-- No live provider, API/E2E, operational database, release, deployment, push, or protected-port action was performed.
+- No live server listen, provider, browser, operational database, release, deployment, push, or protected-port action was performed.
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: bounded active-test clean-cut currentization after complete integrated CRR-018, plus an explicitly user-authorized wording/presentation refinement.
-- Reviewed root-cause classification: `Local Fix`; stranded test imports and current-owner assumptions were implementation packaging/currentization omissions, not a production ownership or architecture defect.
-- Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `No architecture refactor`; currentize supported scenarios, remove only retired scenarios, and keep current owners singular.
+- Reviewed change posture: critical bounded correction at the existing strict restart/reopen repair owner.
+- Reviewed root-cause classification: `Local Fix`; startup catalog duplicated current-schema read/validation and bypassed the existing loader, while the approved design and correct repair implementation already existed.
+- Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now` only to remove the parallel catalog path and route startup through the existing owner.
 - Implementation matched the reviewed assessment (`Yes`/`No`): `Yes`.
-- If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A`; no new ownership pressure or requirement gap emerged.
-- Evidence / notes: `/tmp/ir013-exact-currentized-final.log`, `/tmp/ir013-ticket-deletion-import-audit.log`, `/tmp/ir013-server-cumulative-current-final.log`, `/tmp/ir013-core-cumulative-current.log`, `/tmp/ir013-web-cumulative-current.log`, `/tmp/ir013-prompt-exact-parity.log`, `/tmp/ir013-server-production-typecheck.log`, `/tmp/ir013-server-production-build.log`, and `/tmp/ir013-source-safety-audit.log`.
+- If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A`; one owner now serves both approved initiators without new policy or state.
+- Evidence / notes: `/tmp/ir014-restart-repair-focused-final.log`, `/tmp/ir014-restart-repair-manager-current.log`, `/tmp/ir014-server-production-typecheck.log`, `/tmp/ir014-server-production-build.log`, `/tmp/ir014-source-safety-audit.log`, and `/tmp/ir014-handoff-audit.log`.
 
 ## Legacy / Compatibility Removal Check
 
 - Backward-compatibility mechanisms introduced: `None`.
-- Legacy old-behavior retained in scope: `No`.
-- Retired clean-cut modules restored for tests: `No`; the base-aware repository audit reports zero remaining ticket-deletion imports.
-- Retired durable scenarios removed: `Yes`; only the obsolete legacy-column startup and intermediate V5 composite-address migration suites were removed, with current V6 migration and GraphQL coverage retained.
-- Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`.
-- Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`; renderer is 51 effective lines and context layout is 67.
-- Prompt compatibility wrappers/provider variants introduced: `None`; one shared exact-copy renderer remains authoritative across all three providers.
-- Notes: canonical collaboration semantics, recipient resolution, task lifecycle, provider boundaries, and strict Team contracts are unchanged.
+- Legacy/predecessor reader added to current runtime: `No`; predecessor `team_run_metadata.json` still excludes that root for migration ownership.
+- Parallel current-schema catalog reader retained: `No`; direct store reads and direct package validation were removed from `TeamRunV1PackageCatalog`.
+- Repair retry/replay/fallback/alias/second lifecycle introduced: `None`.
+- Shared structures remain tight: `Yes`; catalog depends only on the loader's public `loadAndRepair` operation.
+- Changed source implementation files stayed within proactive size-pressure guardrails: `Yes`; catalog is 101 effective lines.
+- Notes: explicit restore continues through the same loader implementation and does not gain a special startup or compatibility branch.
 
 ## Persisted Data Transition Check (When Applicable)
 
@@ -166,31 +168,29 @@ While currentizing the real V1 context-file route, implementation found and corr
 
 ## Environment Or Dependency Notes
 
-- The user reported restoring `$HOME/.autobyteus/.../production.db`. IR-013 did not inspect, validate, migrate, copy, repair, remove, or otherwise access that database or any operational `$HOME/.autobyteus` data.
-- Every database-capable IR-013 command set both `DATABASE_URL` and `DATABASE_URL_TEST` to `file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db`. The disposable database and sidecars were removed after checks; residue count is zero.
-- Protected ports `60004`/`31004` were not acted on. The incident hash remains `574925aa4b0e0a1b570cb4a873734a671324617a7b6ab02c6528b790cf3d724b`; stash `a106d4e0011ee83608c77c91bd6984febf0e7ddf`, all five delivery backups, and all 14 delivery-owned untracked artifacts are preserved.
-- No dependency, environment file, branch integration, push, release, or deployment change was made.
+- The restored operational database and all `$HOME/.autobyteus` operational data were not accessed, inspected, validated, migrated, copied, repaired, or removed.
+- Every cited database-capable IR-014 command explicitly set both `DATABASE_URL` and `DATABASE_URL_TEST` to `file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-universal-task-delegation/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db`. The disposable database and sidecars were removed after each cited check; residue count is zero.
+- One initial exploratory invocation also resolved to the same repository-local disposable test database, was not cited as evidence, and was cleaned immediately; it did not access operational data.
+- Protected ports `60004`/`31004` were not acted on. The incident hash remains `574925aa4b0e0a1b570cb4a873734a671324617a7b6ab02c6528b790cf3d724b`; stash `a106d4e0011ee83608c77c91bd6984febf0e7ddf`, all five delivery backups, all 14 delivery-owned artifacts, and the paused API-REV-007 package are preserved.
+- No dependency, environment file, prompt, frontend, branch integration, push, release, or deployment change was made.
 
 ## Local Implementation Checks Run
 
-- Exact currentized/package/prompt/import-timing selection — Pass: 12 files / 53 tests. This includes all eight retained CRR-018 suites, the current V6 token identity migration repository, both exact prompt suites, and the import-timing seam. Evidence: `/tmp/ir013-exact-currentized-final.log`.
-- Cumulative maintained server selection — Pass: 70 files / 318 passed / 1 existing opt-in skip. Evidence: `/tmp/ir013-server-cumulative-current-final.log`.
-- Cumulative core selection — Pass: 33 files / 184 tests. Evidence: `/tmp/ir013-core-cumulative-current.log`.
-- Cumulative web selection — Pass: 34 files / 257 tests. Evidence: `/tmp/ir013-web-cumulative-current.log`.
-- Exact prompt artifact/built-renderer parity — Pass: 2560 bytes each, one Addressing section, one Collaboration section, no old Team Runtime wrapper, and no real-domain example names. Evidence: `/tmp/ir013-prompt-exact-parity.log`.
-- Production TypeScript (`pnpm exec tsc -p tsconfig.build.json --noEmit`) — Pass. Evidence: `/tmp/ir013-server-production-typecheck.log`.
-- Full server/shared production build, Prisma generation, and sanitized bootstrap — Pass. Evidence: `/tmp/ir013-server-production-build.log`.
-- Repository-wide integrated-base deletion-import audit — Pass: 1,786 active source/test files, 4,995 relative specifiers, zero unresolved imports whose target existed at integrated base and was deleted by the ticket. Evidence: `/tmp/ir013-ticket-deletion-import-audit.log`.
-- Source/diff/safety audit — Pass: clean diff, current runtime retired identities absent, source size guardrails pass, merge lineage present, disposable DB residue zero, incident hash unchanged, and stash/five backups/14 delivery artifacts preserved. Evidence: `/tmp/ir013-source-safety-audit.log`.
-- Final implementation artifact/evidence audit — Pass. Evidence: `/tmp/ir013-handoff-audit.log`.
-- No live provider, browser, server-listen, API/E2E matrix, operational-database, push, release, deployment, or protected-port action was run.
+- Focused startup/catalog/migration selection — Pass: 3 files / 12 tests. Covers actual stale active/accepted/orphan repair before admission, idempotent explicit loader reopen, root-local write failure, valid sibling admission, new-root admission, migration exclusion, and catalog rebuild before bootstrap/listen. Evidence: `/tmp/ir014-restart-repair-focused-final.log`.
+- Restart/restore manager composition selection — Pass: 5 files / 23 tests. Adds actual `AgentTeamRunManager` strict V1 create/restore and `TeamRunService` restore/current-catalog coverage. Evidence: `/tmp/ir014-restart-repair-manager-current.log`.
+- Production TypeScript (`pnpm exec tsc -p tsconfig.build.json --noEmit`) — Pass. Evidence: `/tmp/ir014-server-production-typecheck.log`.
+- Full server/shared production build, Prisma generation, and sanitized built-in-agent bootstrap — Pass. Evidence: `/tmp/ir014-server-production-build.log`.
+- Source/diff/safety audit — Pass: catalog direct read/validation absent; exactly startup catalog and explicit manager restore call the shared loader; rebuild precedes listen; source size/diff pass; disposable DB residue zero; incident/stash/five backups/14 delivery artifacts preserved. Evidence: `/tmp/ir014-source-safety-audit.log`.
+- Final implementation artifact/evidence audit — Pass. Evidence: `/tmp/ir014-handoff-audit.log`.
+- No live server listen, provider, browser, API/E2E matrix, operational-database, push, release, deployment, or protected-port action was run.
 
 ## Frontend Rendered-Result Check (When Applicable)
 
-Not Applicable. IR-013 changes server-side system-prompt text, backend context-file path projection, and backend durable tests; no rendered frontend or user interaction source changed. Prompt rendering is verified as exact text through the production renderer/provider composition tests. This is not downstream API/E2E sign-off.
+Not Applicable. IR-014 changes backend startup catalog composition and backend tests only; no rendered frontend or user interaction source changed. This is not downstream API/E2E sign-off.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
+- Re-run API-UTD-RESTART-007 first on a checked disposable target. Before listen/history exposure, prove active/awaiting-review tasks become interrupted, accepted tasks remain accepted, every surviving execution is settled, orphans are removed, repairs are durable, explicit restore is idempotent, and one failed root does not block a valid root or new Team creation.
 - Investigate the two removed obsolete Token Usage suites before durable coverage decisions. Confirm current V6 exact run/root identity migration plus ledger/statistics GraphQL coverage is sufficient or add current-contract replacements; do not restore composite execution addresses or legacy-column startup machinery.
 - Verify the Team-bound prompt on AutoByteus, Codex, and Claude contains the neutral root/tree explanation exactly once, substitutes only the real caller address, excludes real-domain example names, and leaves collaboration tools/semantics unchanged.
 - Exercise context-file upload/delete/finalize/read for direct and nested canonical absolute Team member addresses and prove all filesystem writes remain beneath their draft/final roots.
@@ -209,4 +209,4 @@ Not Applicable. IR-013 changes server-side system-prompt text, backend context-f
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Yes. This handoff reports implementation-scoped checks only. CRR-018 must receive focused CR-F-015 verification and the user-mandated complete cumulative integrated source/structural re-review. After source Pass, `api_e2e_engineer` must currentize the coverage investigation for the retained edits, two removals, prompt copy, and context-file correction, then run fresh checked-disposable integrated API/E2E. Any later repository-resident durable coverage edits/removals must return through proportional code review before delivery resumes.
+Yes. This handoff reports implementation-scoped checks only. CRR-020 must receive focused CR-F-016 verification plus cumulative source/structural re-review. After source Pass, `api_e2e_engineer` must re-run API-UTD-RESTART-007 first on a checked disposable target and then resume the paused integrated matrix. API-REV-007 changed no durable coverage; any later repository-resident durable coverage edit/removal must return through proportional code review before delivery resumes.

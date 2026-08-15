@@ -4,7 +4,7 @@ import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.
 import { TaskDelegationRecordsV1Store } from "../../agent-team-execution/task-delegation/records/task-delegation-records-v1-store.js";
 import { TeamCommunicationV1Store } from "../../services/team-communication/team-communication-v1-store.js";
 import { TeamRunExecutionTreeStore } from "../store/team-run-execution-tree-store.js";
-import { validateTeamRunStatePackage } from "./team-run-state-package-validator.js";
+import { TeamRunStatePackageLoader } from "./team-run-state-package-loader.js";
 
 type CatalogState = {
   initialized: boolean;
@@ -30,10 +30,19 @@ const missing = (error: unknown): boolean =>
 export class TeamRunV1PackageCatalog {
   private readonly state: CatalogState;
   private readonly layout: AgentMemoryLayout;
+  private readonly packageLoader: Pick<TeamRunStatePackageLoader, "loadAndRepair">;
 
-  constructor(private readonly memoryDir: string) {
+  constructor(
+    private readonly memoryDir: string,
+    packageLoader?: Pick<TeamRunStatePackageLoader, "loadAndRepair">,
+  ) {
     this.state = stateFor(memoryDir);
     this.layout = new AgentMemoryLayout(memoryDir);
+    this.packageLoader = packageLoader ?? new TeamRunStatePackageLoader({
+      executionTreeStore: new TeamRunExecutionTreeStore(),
+      taskRecordsStore: new TaskDelegationRecordsV1Store(),
+      communicationStore: new TeamCommunicationV1Store(),
+    });
   }
 
   isInitialized(): boolean { return this.state.initialized; }
@@ -61,9 +70,6 @@ export class TeamRunV1PackageCatalog {
     this.state.initialized = true;
     this.state.admitted.clear();
     this.state.diagnostics.clear();
-    const treeStore = new TeamRunExecutionTreeStore();
-    const taskStore = new TaskDelegationRecordsV1Store();
-    const messageStore = new TeamCommunicationV1Store();
     let entries: import("node:fs").Dirent[] = [];
     try {
       entries = await fs.readdir(this.layout.getTeamRootDirPath(), { withFileTypes: true });
@@ -84,16 +90,14 @@ export class TeamRunV1PackageCatalog {
         if (!missing(error)) throw error;
       }
       try {
-        const [executionTree, taskRecords, communicationMessages] = await Promise.all([
-          treeStore.read(rootDir, rootTeamRunId),
-          taskStore.read(rootDir, rootTeamRunId),
-          messageStore.read(rootDir, rootTeamRunId),
-        ]);
-        if (!executionTree || !taskRecords || !communicationMessages) {
-          this.exclude(rootTeamRunId, "Current TeamRun V1 package is incomplete.");
+        const loaded = await this.packageLoader.loadAndRepair({
+          teamMemoryDir: rootDir,
+          rootTeamRunId,
+        });
+        if (!loaded.loaded) {
+          this.exclude(rootTeamRunId, `${loaded.code}: ${loaded.message}`);
           continue;
         }
-        validateTeamRunStatePackage({ executionTree, taskRecords, communicationMessages });
         this.admit(rootTeamRunId);
       } catch (error) {
         this.exclude(rootTeamRunId, error instanceof Error ? error.message : String(error));

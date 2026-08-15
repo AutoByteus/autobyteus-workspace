@@ -26,6 +26,7 @@ const mocks = vi.hoisted(() => {
     startGatewayRuntime: vi.fn(),
     restoreManagedMessaging: vi.fn(async () => undefined),
     getOrCreateTempWorkspace: vi.fn(async () => undefined),
+    rebuildTeamRunCatalog: vi.fn(async () => undefined),
     runStartupRecovery: vi.fn(async (callback: () => Promise<void>) => callback()),
     resumeBindings: vi.fn(async () => []),
     resumePendingEvents: vi.fn(async () => undefined),
@@ -118,6 +119,11 @@ vi.mock("../../src/app-data-migrations/app-data-migration-runner.js", () => ({
     listStatuses: vi.fn(),
   }),
 }));
+vi.mock("../../src/run-history/services/team-run-v1-package-catalog.js", () => ({
+  TeamRunV1PackageCatalog: class {
+    rebuild = mocks.rebuildTeamRunCatalog;
+  },
+}));
 vi.mock("../../src/app-data-migrations/migrations/custom-provider-readable-id-app-data-migration.js", () => ({
   CUSTOM_PROVIDER_READABLE_ID_APP_DATA_MIGRATION_ID: "20260803_custom_provider_readable_identity",
 }));
@@ -137,6 +143,7 @@ vi.mock("../../src/config/app-config-provider.js", () => ({
   appConfigProvider: {
     config: {
       getLogsDir: () => "/tmp/server-runtime-gate/logs",
+      getMemoryDir: () => "/tmp/server-runtime-gate/memory",
       getAppRootDir: () => "/tmp/server-runtime-gate",
       getOperationalDatabaseUrl: () => "file:/tmp/server-runtime-gate/test.db",
       get: vi.fn(() => undefined),
@@ -233,6 +240,7 @@ describe("startConfiguredServer required app-data migration gates", () => {
     expect(mocks.initializePrisma).toHaveBeenCalledWith({ datasourceUrl: "file:/tmp/server-runtime-gate/test.db" });
     expect(mocks.initializeSecretVault).toHaveBeenCalledTimes(1);
     expect(mocks.runPending).toHaveBeenCalledTimes(1);
+    expect(mocks.rebuildTeamRunCatalog).toHaveBeenCalledTimes(1);
     expectStartupBlocked();
     expect(mocks.loggerError).toHaveBeenCalledWith(expect.stringContaining(TEAM_CANONICAL_IDENTITY_MIGRATION_ID));
   });
@@ -294,6 +302,8 @@ describe("startConfiguredServer required app-data migration gates", () => {
     ]);
     await expect(startConfiguredServer({ host: "127.0.0.1", port: 0 })).resolves.toBeUndefined();
     expect(mocks.runPending.mock.invocationCallOrder[0])
+      .toBeLessThan(mocks.rebuildTeamRunCatalog.mock.invocationCallOrder[0]!);
+    expect(mocks.rebuildTeamRunCatalog.mock.invocationCallOrder[0])
       .toBeLessThan(mocks.bootstrapBuiltInAgents.mock.invocationCallOrder[0]!);
     expect(mocks.bootstrapBuiltInAgents).toHaveBeenCalledTimes(1);
     expect(mocks.fastify).toHaveBeenCalledTimes(1);
@@ -304,8 +314,11 @@ describe("startConfiguredServer required app-data migration gates", () => {
   it("starts exactly once when all blocking migrations succeed", async () => {
     await expect(startConfiguredServer({ host: "127.0.0.1", port: 0 })).resolves.toBeUndefined();
     expect(mocks.bootstrapBuiltInAgents).toHaveBeenCalledTimes(1);
+    expect(mocks.rebuildTeamRunCatalog).toHaveBeenCalledTimes(1);
     expect(mocks.fastify).toHaveBeenCalledTimes(1);
     expect(mocks.app.listen).toHaveBeenCalledTimes(1);
+    expect(mocks.rebuildTeamRunCatalog.mock.invocationCallOrder[0])
+      .toBeLessThan(mocks.app.listen.mock.invocationCallOrder[0]!);
     expect(mocks.scheduleBackgroundTasks).toHaveBeenCalledTimes(1);
   });
 });
