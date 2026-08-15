@@ -13,15 +13,15 @@
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` — bounded documentation-hygiene local fix for CR-001; production implementation is unchanged.
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-carpenter-prompt/autobyteus-server-ts/tickets/in-progress/runtime-specific-carpenter-prompt/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-002`
 - Related architecture-review revision IDs: `ARCH-REV-002`
-- Related code-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001` / current narrow recheck pending
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Triggering finding IDs: `CR-001`
 
 The server Carpenter prompt boundary now has two explicit entrypoints. `composeSharedCarpenterPrompt` renders Agent Identity, optional Team Instruction, and optional Team Collaboration without requiring a workspace or adding native operating guidance. `composeNativeAutoByteusPrompt` builds on the same shared sections and appends Working Environment, Bash Operating Practice, and File And Directory Practice in the established order. Native AutoByteus uses the native entrypoint; Claude and Codex use the shared entrypoint through their existing `systemPrompt` and `baseInstructions` fields. The generated `Team Runtime` heading and renderer were cleanly renamed to `Team Collaboration` with no compatibility alias.
 
@@ -121,6 +121,7 @@ The server Carpenter prompt boundary now has two explicit entrypoints. `composeS
 - Passed: `pnpm --filter autobyteus-ts build`.
 - Passed: `pnpm --filter autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`.
 - Passed: `git diff --check`.
+- Passed after the local fix: `git diff --check origin/personal...HEAD` — no range diff whitespace errors.
 - The first focused Vitest attempt before Prisma generation failed at environment setup with a Prisma named-export loading error; after Prisma generation, the same focused suite passed. This is recorded as setup recovery, not an implementation failure.
 - No API/E2E or broader executable coverage was run in this implementation stage.
 
