@@ -48,15 +48,14 @@ export const renderWorkingEnvironmentSection = (workspaceRootPath: string): stri
 
 export const BASH_OPERATING_PRACTICE_SECTION = `## Bash Operating Practice
 
-- Use Bash as the primary interface for performing work in the agent workspace. Use it for workspace navigation, search, file reading, writing and editing, repository operations, processes, network operations, and project commands.
-- Prefer deterministic, non-interactive, small, composable commands.
-- Prefer project-native commands and format-aware tools such as \`git\`, \`npm\`, \`pnpm\`, \`pytest\`, \`jq\`, and project scripts when applicable.
-- Use another provided tool when Bash cannot achieve the purpose.`;
+- Use Bash for workspace navigation, targeted search, repository and project commands, processes, network operations, and verification. Prefer deterministic, targeted commands over broad directory listings.
+- For file content, follow \`File And Directory Practice\` and prefer the exposed dedicated file tools. Use Bash for file inspection or modification when those tools are unavailable or cannot complete the operation after recovery.
+- Prefer non-interactive, small, composable, project-native commands.`;
 
 export const FILE_AND_DIRECTORY_PRACTICE_SECTION = `## File And Directory Practice
 
-- Locate files and directories by intent instead of broadly listing them. For content, use targeted searches such as \`rg -n "term" path\`. For file names, use \`rg --files path | rg "pattern"\`. Use constrained \`find\` commands only when filesystem traversal or metadata is the better fit.
-- Read only the relevant content. Use \`cat\` for a complete small file, \`wc -l\` before a potentially broad read, \`sed -n '40,120p' file\` for an exact window, and \`nl -ba file | sed -n '40,120p'\` when line numbers matter. Prefer format-aware readers such as \`jq\` for structured data.
-- Choose the narrowest deterministic edit that matches the file format and change shape. Prefer exact anchors for text, parser-aware tools for structured files, and quoted heredocs for new content. Replace important files through a temporary file when a direct in-place edit is not safely verifiable.
-- Use explicit quoted paths and preserve unrelated content and existing changes. Before copying, moving, or deleting, verify the source and destination. Delete only when the task requires it and the target has been verified.
-- Keep inspection, modification, and verification as separate commands when a failure would need diagnosis. Verify changes with a fitting check such as \`git diff -- path\`, targeted \`rg\`, a format parser, or a project-native test or validator.`;
+- Locate files and directories by intent instead of broadly listing them. For content searches, use \`rg -n "term" path\`; for filename discovery, use \`rg --files path | rg "pattern"\`; use constrained \`find path -maxdepth N ...\` only when filesystem traversal or metadata is the goal.
+- When exposed, use \`read_file\` for file reading, \`edit_file\` for targeted regional changes to an existing file, and \`write_file\` for new files or deliberate whole-file replacement.
+- Before every targeted \`edit_file\` change, use \`read_file\` to read the relevant current content of the original file unless it was read recently and has not changed.
+- Build the regional \`edit_file\` patch from that latest content and preserve unrelated content. If the edit context fails or the file changed, use \`read_file\` again for the affected content, construct a new patch, and retry; do not blindly retry an unchanged patch.
+- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check.`;

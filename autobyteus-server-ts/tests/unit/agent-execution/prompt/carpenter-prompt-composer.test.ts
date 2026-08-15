@@ -44,6 +44,24 @@ describe("composeCarpenterPrompt", () => {
     expect(prompt).toContain("```md\n# keep\n```");
     expect(prompt).toContain("**Deep**");
     expect(prompt).toContain("- Agent workspace: `/tmp/carpenter-workspace`");
+    expect(prompt).toContain(
+      "Use Bash for workspace navigation, targeted search, repository and project commands, processes, network operations, and verification.",
+    );
+    expect(prompt).toContain('For content searches, use `rg -n "term" path`;');
+    expect(prompt).toContain("use `rg --files path | rg \"pattern\"`");
+    expect(prompt).toContain("use constrained `find path -maxdepth N ...`");
+    expect(prompt).toContain(
+      "Before every targeted `edit_file` change, use `read_file` to read the relevant current content",
+    );
+    expect(prompt).toContain(
+      "If the edit context fails or the file changed, use `read_file` again",
+    );
+    expect(prompt).toContain(
+      "Use Bash for file inspection or modification when those tools are unavailable",
+    );
+    expect(prompt).not.toContain(
+      "Use Bash as the primary interface for performing work in the agent workspace. Use it for workspace navigation, search, file reading, writing and editing",
+    );
     expect(prompt).not.toContain("Ignored role");
     expect(prompt).not.toContain("## Team Instruction");
     expect(prompt).not.toContain("## Team Runtime");
