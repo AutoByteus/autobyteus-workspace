@@ -42,7 +42,7 @@ file, not Agent Artifacts or Team Communication.
 - Team Communication references for accepted `recipient_address` deliveries:
   - `src/agent-execution/events/processors/team-communication/team-communication-message-event-processor.ts`
   - `src/services/team-communication/team-communication-service.ts`
-  - `src/services/team-communication/team-communication-projection-store.ts`
+  - `src/services/team-communication/team-communication-v1-store.ts`
   - `src/services/team-communication/team-communication-projection-service.ts`
   - `src/services/team-communication/team-communication-content-service.ts`
   - `src/api/graphql/types/team-communication.ts`

@@ -33,11 +33,12 @@ communication inside the same collaboration root. It rejects missing targets,
 invalid traversal through an Agent, self-targets, and Teams without valid
 ingress before recipient input or an accepted communication event is produced.
 
-The shared collaboration boundary carries one canonical coordinate rather than
-parallel path/owner caches. `MemberLogicalAddressContext` is exactly the frozen
-`{rootTeamRunId, memberAddress}` shape. The caller's immediate Team, address
-segments, basename, and route form are derived from `memberAddress` through the
-strict address domain. Common placement resolution returns only frozen Agent
+The shared collaboration boundary carries one canonical execution identity
+rather than parallel path/owner caches. `TeamMemberExecutionIdentity` is exactly
+the frozen `{rootTeamRunId, memberAddress, agentRunId}` shape. The caller's
+logical placement, address segments, and basename are derived from
+`memberAddress` through the strict address domain. Common placement resolution
+returns only frozen Agent
 `{kind:"agent",address}` or Team
 `{kind:"team",address,ingressAddress}` values. Team ingress is retained because
 it is configured topology, not derivable from the Team address; member paths,

@@ -186,9 +186,8 @@ model tools.
 
 Each Agent receives one `MemberTeamContext` containing:
 
-- exact AgentRun/runtime data;
-- `executionAddress` for concrete execution identity;
-- `MemberLogicalAddressContext {rootTeamRunId,memberAddress}` for collaboration;
+- exact `TeamMemberExecutionIdentity {rootTeamRunId,memberAddress,agentRunId}`
+  for rooted execution identity and logical collaboration placement;
 - only that Agent's immutable outgoing compiled handoff snapshot;
 - optional Team instruction; and
 - active delivery/tool service bindings.
@@ -265,7 +264,7 @@ pipeline passes, or projection writes.
 
 ## TS Source
 
-- `src/agent-team-execution/domain/team-execution-address.ts`
+- `src/agent-team-execution/domain/team-member-execution-identity.ts`
 - `src/agent-team-execution/domain/team-agent-execution-binding.ts`
 - `src/agent-team-execution/domain/team-run-config.ts`
 - `src/agent-team-execution/domain/team-run.ts`

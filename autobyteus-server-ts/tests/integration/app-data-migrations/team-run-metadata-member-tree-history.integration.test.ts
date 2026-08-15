@@ -18,7 +18,7 @@ import {
   TeamRunMetadataMemberTreeMigration,
   TEAM_RUN_METADATA_MEMBER_TREE_MIGRATION_ID,
 } from "../../../src/app-data-migrations/migrations/team-run-metadata-member-tree-migration.js";
-import { TeamRunMetadataStore } from "../../../src/run-history/store/team-run-metadata-store.js";
+import { TeamRunMetadataStore } from "../../../src/app-data-migrations/legacy/team-run-metadata-store.js";
 
 class InMemoryMigrationRepository implements AppDataMigrationRecordRepositoryLike {
   readonly records = new Map<string, AppDataMigrationRecordSnapshot>();

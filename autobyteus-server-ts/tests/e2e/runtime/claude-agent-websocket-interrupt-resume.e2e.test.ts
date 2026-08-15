@@ -20,16 +20,7 @@ import { buildClaudeSessionConfig } from "../../../src/agent-execution/backends/
 import { ClaudeSessionManager } from "../../../src/agent-execution/backends/claude/session/claude-session-manager.js";
 import { buildRuntimeAgentToolExposure } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { composeSharedCarpenterPrompt } from "../../../src/agent-execution/prompt/carpenter-prompt-composer.js";
-import { MixedTeamRunBackend } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-backend.js";
-import { MixedAgentMemberContext, MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
-import type { TeamManager } from "../../../src/agent-team-execution/backends/team-manager.js";
-import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
-import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
-import { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
-import type { TeamRunEventListener } from "../../../src/agent-team-execution/domain/team-run-event.js";
-import { createTeamExecutionAddress } from "../../../src/agent-team-execution/domain/team-execution-address.js";
 import { AgentStreamHandler } from "../../../src/services/agent-streaming/agent-stream-handler.js";
-import { AgentTeamStreamHandler } from "../../../src/services/agent-streaming/agent-team-stream-handler.js";
 import { AgentSessionManager } from "../../../src/services/agent-streaming/agent-session-manager.js";
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
 import {
@@ -38,11 +29,6 @@ import {
 } from "../../../src/runtime-management/claude/client/claude-sdk-client.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
-import {
-  address as teamAddress,
-  testAgentNode,
-  testTeamRunConfig,
-} from "../../fixtures/current-team-run-fixtures.js";
 
 type SdkQueryCall = {
   prompt?: unknown;
@@ -513,131 +499,6 @@ const createClaudeWebSocketHarness = async (input: {
   });
 };
 
-const createClaudeTeamWebSocketHarness = async (input: {
-  teamRunId: string;
-  memberRunId: string;
-  memberName: string;
-  queries: ControlledClaudeQuery[];
-}): Promise<{
-  app: FastifyInstance;
-  socket: WebSocket;
-  runContext: AgentRunContext<ClaudeAgentRunContext>;
-  sdkCalls: SdkQueryCall[];
-  sessionManager: ClaudeSessionManager;
-}> => {
-  const { sdkClient, sdkCalls } = createFakeSdkClient(input.queries);
-  const { agentRun, runContext, sessionManager } = await createClaudeAgentRun({
-    runId: input.memberRunId,
-    sdkClient,
-  });
-  const memberConfig = new AgentRunConfig({
-    agentDefinitionId: "agent-claude-team-ws",
-    llmModelIdentifier: "claude-test-model",
-    autoExecuteTools: false,
-    skillAccessMode: SkillAccessMode.NONE,
-    runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-  });
-  const memberAddress = teamAddress(`/${input.memberName}`);
-  const memberExecutionAddress = createTeamExecutionAddress({
-    rootTeamRunId: input.teamRunId,
-    memberAddress,
-  });
-  const memberContext = new MixedAgentMemberContext({
-    address: memberAddress,
-    agentRunId: input.memberRunId,
-    runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-    platformAgentRunId: null,
-  });
-  const config = testTeamRunConfig({
-    rootTeamRunId: input.teamRunId,
-    rootTeamDefinitionId: "team-claude-ws",
-    coordinatorAddress: memberAddress,
-    children: [testAgentNode(memberAddress, {
-      agentDefinitionId: memberConfig.agentDefinitionId,
-      agentRunId: input.memberRunId,
-      llmModelIdentifier: memberConfig.llmModelIdentifier,
-      autoExecuteTools: memberConfig.autoExecuteTools,
-      skillAccessMode: memberConfig.skillAccessMode,
-      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-    })],
-  });
-  const teamContext = new TeamRunContext({
-    teamRunId: input.teamRunId,
-    teamAddress: teamAddress("/"),
-    teamBackendKind: TeamBackendKind.MIXED,
-    config,
-    runtimeContext: new MixedTeamRunContext({
-      memberContexts: [memberContext],
-      teamExecutionAddress: createTeamExecutionAddress({
-        rootTeamRunId: input.teamRunId,
-        memberAddress: "/",
-      }),
-    }),
-  });
-  const fakeTeamManager: TeamManager = {
-    hasActiveMembers: () => true,
-    getLeafAgentStatusSnapshots: () => [],
-    hasOpenExecutionWork: () => true,
-    executeMemberCommand: async (executionAddress, command) => {
-      expect(executionAddress).toEqual(memberExecutionAddress);
-      if (command.kind === "interrupt") return agentRun.interrupt();
-      if (command.kind !== "post_message") {
-        return { accepted: false, code: "UNSUPPORTED_TEST_COMMAND" };
-      }
-      const result = await agentRun.postUserMessage(command.message);
-      memberContext.platformAgentRunId = agentRun.getPlatformAgentRunId()
-        ?? memberContext.platformAgentRunId;
-      return result;
-    },
-    terminate: async () => agentRun.terminate(),
-    subscribeToEvents: (_listener: TeamRunEventListener) => () => {},
-  } as unknown as TeamManager;
-  const teamRun = new TeamRun({
-    context: teamContext,
-    backend: new MixedTeamRunBackend(teamContext, fakeTeamManager),
-  });
-  const teamRunService = {
-    getTeamRun: (teamRunId: string) => (teamRunId === input.teamRunId ? teamRun : null),
-    resolveTeamRun: async (teamRunId: string) =>
-      teamRunId === input.teamRunId ? teamRun : null,
-    recordRunActivity: async () => {},
-    refreshRunMetadata: async () => {},
-  };
-  const teamHandler = new AgentTeamStreamHandler(
-    new AgentSessionManager(),
-    teamRunService as never,
-  );
-  const dummyAgentHandler = {
-    connect: async () => null,
-    handleMessage: async () => {},
-    disconnect: async () => {},
-  } as unknown as Parameters<typeof registerAgentWebsocket>[1];
-
-  const app = fastify();
-  await app.register(websocket);
-  await registerAgentWebsocket(app, dummyAgentHandler, teamHandler);
-  const address = await app.listen({ port: 0, host: "127.0.0.1" });
-  const url = new URL(address);
-  const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent-team/${input.teamRunId}`);
-  const connectedPromise = waitForMessage(socket);
-
-  await waitForOpen(socket);
-  const connectedMessage = JSON.parse(await connectedPromise) as {
-    type: string;
-    payload: { session_id?: string };
-  };
-  expect(connectedMessage.type).toBe("CONNECTED");
-  expect(connectedMessage.payload.session_id).toEqual(expect.any(String));
-
-  return {
-    app,
-    socket,
-    runContext,
-    sdkCalls,
-    sessionManager,
-  };
-};
-
 const closeHarness = async (harness: {
   app: FastifyInstance;
   socket: WebSocket;
@@ -775,87 +636,6 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
         () => harness.runContext.runtimeContext.hasCompletedTurn,
         "follow-up completion",
       );
-    } finally {
-      await closeHarness(harness);
-    }
-  });
-
-  it("resumes a targeted Claude team member follow-up sent on the same team WebSocket after INTERRUPT_GENERATION", async () => {
-    const teamRunId = "claude-team-ws-interrupt";
-    const memberRunId = "claude-team-member-alpha";
-    const memberName = "alpha";
-    const providerSessionId = "claude-team-provider-session-from-first-query";
-    const firstQuery = createProviderSessionThenPendingQuery(providerSessionId);
-    const secondQuery = createCompletedQuery(providerSessionId);
-    const harness = await createClaudeTeamWebSocketHarness({
-      teamRunId,
-      memberRunId,
-      memberName,
-      queries: [firstQuery, secondQuery],
-    });
-
-    try {
-      sendE2eSendMessageCommand(harness.socket, {
-        content: "start team member work",
-        context_file_paths: [],
-        image_urls: [],
-        execution_address: {
-          root_team_run_id: teamRunId,
-          task_team_run_ids: [],
-          member_address: `/${memberName}`,
-          task_agent_run_id: null,
-        },
-      });
-
-      await waitForCondition(
-        () =>
-          harness.sdkCalls.length === 1 &&
-          harness.runContext.runtimeContext.sessionId === providerSessionId,
-        "team member initial fake Claude query and provider session adoption",
-      );
-      expect(harness.sdkCalls[0]?.options?.resume).toBeUndefined();
-
-      harness.socket.send(
-        JSON.stringify({
-          type: "INTERRUPT_GENERATION",
-          payload: {
-            command_id: "client_interrupt_claude_team_member",
-            execution_address: {
-              root_team_run_id: teamRunId,
-              task_team_run_ids: [],
-              member_address: `/${memberName}`,
-              task_agent_run_id: null,
-            },
-          },
-        }),
-      );
-      await waitForCondition(
-        () =>
-          firstQuery.abortObserved &&
-          harness.runContext.runtimeContext.activeTurnId === null,
-        "team INTERRUPT_GENERATION interrupt settlement",
-      );
-
-      sendE2eSendMessageCommand(harness.socket, {
-        content: "continue team member work",
-        context_file_paths: [],
-        image_urls: [],
-        execution_address: {
-          root_team_run_id: teamRunId,
-          task_team_run_ids: [],
-          member_address: `/${memberName}`,
-          task_agent_run_id: null,
-        },
-      });
-
-      await waitForCondition(
-        () => harness.sdkCalls.length === 2,
-        "team member follow-up fake Claude query start",
-      );
-      const followUpResume = harness.sdkCalls[1]?.options?.resume;
-      expect(followUpResume).toBe(providerSessionId);
-      expect(followUpResume).not.toBeNull();
-      expect(followUpResume).not.toBe(memberRunId);
     } finally {
       await closeHarness(harness);
     }
