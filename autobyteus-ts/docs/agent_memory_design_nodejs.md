@@ -87,6 +87,31 @@ The structured strategy uses the fixed built-in
 run's launch values. `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` is not a runtime
 selector, and no arbitrary-agent fallback is allowed.
 
+### Automatic-Compaction Composition And Leaf Runs
+
+`MemoryCompactionConfiguration` is the complete runtime composition owned by
+memory. Its closed variants are `disabled`, with no policy or runner, and
+`enabled`, with one `CompactionPolicy` plus the current strategy runner.
+`AgentConfig` carries the composition into `AgentFactory`, which passes it to
+`MemoryManager` without constructing another policy. Omitted direct core
+construction defaults to the complete disabled variant.
+
+Server agent creation selects disabled for the exact built-in
+`autobyteus-memory-compactor` on create and restore and does not call the
+compaction-runner factory. Ordinary native definitions receive enabled
+composition with a fresh current policy and required runner; runner composition
+failure does not silently downgrade them to disabled.
+
+`LlmPhase` resolves provider/model request capacity for both variants. Enabled
+runs then derive the compaction budget and use the existing policy, strategy,
+executor, pending-operation, observation, and lifecycle path. Disabled runs
+skip all of that automatic-compaction work at both proactive and hard-input-cap
+pressure and return the original response/tool outcome. A provider-admissible
+Memory Compactor task therefore runs once as a leaf; an oversized task fails
+through planning/pre-launch or the typed runner boundary instead of rewriting
+its own instruction/history recursively. This composition is process/runtime
+state only and adds no persisted field or migration.
+
 ### Trigger-Aligned Planning Budget
 
 Each threshold or hard-input-cap request captures one immutable planning budget
@@ -416,10 +441,13 @@ input.
 Returned-content validation failure triggers exactly one corrective child run
 under the same pending compaction operation. The correction prefix records the
 closed validation stage, restates the six-array shape, and resends the same
-selected target history. It has a new task/run identity and the compactor remains
-tool-free. A runner/provider/transport/timeout failure is terminal for that
-execution attempt and bypasses the response-repair boundary; the retained
-operation can run again only through the distinct user-turn policy above.
+selected target history. It has a new task/run identity and is a second disabled
+sibling of the initial child, not a descendant; both remain tool-free and write
+no child lineage/archive. Any additional or uninspectable new compactor run is
+outside the bounded operation topology. A runner/provider/transport/timeout
+failure is terminal for that execution attempt and bypasses the response-repair
+boundary; the retained operation can run again only through the distinct
+user-turn policy above.
 
 Repair success produces one parent completed lifecycle and reaches the existing
 proposal/accept/commit boundary exactly once. Repair exhaustion produces one
@@ -505,6 +533,7 @@ Core domain, acceptance, and publication:
 
 Current strategy and presentation:
 
+- `src/memory/compaction/memory-compaction-configuration.ts`
 - `src/memory/compaction/structured-json-compaction-strategy.ts`
 - `src/memory/compaction/working-context-message-window-planner.ts`
 - `src/memory/compaction/working-context-compaction-prompt-builder.ts`

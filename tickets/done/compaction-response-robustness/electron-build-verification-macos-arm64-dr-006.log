@@ -1,0 +1,173 @@
+# Electron macOS arm64 package verification — DR-006
+
+verified_utc=2026-08-15T11:06:00Z
+integrated_head=70ed21eff3afa223da233b6bb603915ba48a48d7
+implementation_commit=204fcf0c1fae683b4cbae892d2c9b7425c5764b9
+origin_personal=edace166ee24681126e9aec8c6c3ab594fb6ebd5
+ahead_behind=12 ahead / 0 behind
+artifact_presence=PASS
+
+## SHA-256
+3167d439c78903d14cba5828fb1084064f1d9bcb7994c7a98d210fe774873b8c  /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.51.dmg
+f852f55b21a1c33731b46ccea26e9ebc2aab622f49fa77d1fc50cffc9bc8d3e1  /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.51.zip
+ee7123dadd5b9fd8395974b02636ae086f3aee894d50416b336244f81a7a1513  /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.51.dmg.blockmap
+2f460fc04a4d9c375c3f9f2f948605348e9d9b0873a8716bfffb7c84f69fd386  /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.51.zip.blockmap
+
+## SHA-512 (base64) and sizes
+DMG sha512=fKGP4BAm1cu3uRfSq+hjmJDfJYVozbXGvEaSuOJ7Nzx3TjqzBqRauZQAidslhw3KenArEfN98+KBbksFHqXn9w==
+DMG size=402536373
+ZIP sha512=T/ZQ3T/JJ8InbmMuuRk2s811ipxaOp/roD8KkkOcrKZK3VPu67KJWzTzZvpmtcbmGc1Jhn0ZYSp0g6bKQzD59Q==
+ZIP size=398169811
+
+## Updater metadata
+version: 1.4.51
+files:
+  - url: AutoByteus_personal_macos-arm64-1.4.51.zip
+    sha512: T/ZQ3T/JJ8InbmMuuRk2s811ipxaOp/roD8KkkOcrKZK3VPu67KJWzTzZvpmtcbmGc1Jhn0ZYSp0g6bKQzD59Q==
+    size: 398169811
+  - url: AutoByteus_personal_macos-arm64-1.4.51.dmg
+    sha512: fKGP4BAm1cu3uRfSq+hjmJDfJYVozbXGvEaSuOJ7Nzx3TjqzBqRauZQAidslhw3KenArEfN98+KBbksFHqXn9w==
+    size: 402536373
+path: AutoByteus_personal_macos-arm64-1.4.51.zip
+sha512: T/ZQ3T/JJ8InbmMuuRk2s811ipxaOp/roD8KkkOcrKZK3VPu67KJWzTzZvpmtcbmGc1Jhn0ZYSp0g6bKQzD59Q==
+releaseDate: '2026-08-15T11:04:19.482Z'
+updater_metadata_match=PASS
+
+## Bundle metadata
+com.autobyteus.app
+1.4.51
+1.4.51
+/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+bundle_metadata=PASS
+
+## Code-signing state (informational; local test build intentionally unsigned/ad-hoc)
+Executable=/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+Identifier=Electron
+Format=app bundle with Mach-O thin (arm64)
+CodeDirectory v=20400 size=392 flags=0x20002(adhoc,linker-signed) hashes=9+0 location=embedded
+VersionPlatform=1
+VersionMin=786432
+VersionSDK=1704448
+Hash type=sha256 size=32
+CandidateCDHash sha256=183bce38eb383b21f21c2cdedcf6cd8781b11cdd
+CandidateCDHashFull sha256=183bce38eb383b21f21c2cdedcf6cd8781b11cdd090f942c4eacd6c09b1112f7
+Hash choices=sha256
+CMSDigest=183bce38eb383b21f21c2cdedcf6cd8781b11cdd090f942c4eacd6c09b1112f7
+CMSDigestType=2
+Executable Segment base=0
+Executable Segment limit=16384
+Executable Segment flags=0x1
+Page size=4096
+CDHash=183bce38eb383b21f21c2cdedcf6cd8781b11cdd
+Signature=adhoc
+Info.plist=not bound
+TeamIdentifier=not set
+Sealed Resources=none
+Internal requirements=none
+/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app: code has no resources but signature indicates they must be present
+codesign describe exit: 0
+codesign verify exit: 1
+unsigned_local_build_state=EXPECTED
+
+## Staged packaged Terminal runtime
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+
+## Final app packaged Terminal runtime
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+
+## Current implementation markers in packaged resources
+2:export const DEFAULT_MEMORY_COMPACTION_CONFIGURATION = Object.freeze({ kind: 'disabled' });
+3:export const createDisabledMemoryCompactionConfiguration = () => DEFAULT_MEMORY_COMPACTION_CONFIGURATION;
+4:export const createEnabledMemoryCompactionConfiguration = (policy, runner) => {
+11:    return Object.freeze({ kind: 'enabled', policy, runner });
+15:        return DEFAULT_MEMORY_COMPACTION_CONFIGURATION;
+17:    return createEnabledMemoryCompactionConfiguration(new CompactionPolicy({
+2:import { copyMemoryCompactionConfiguration, DEFAULT_MEMORY_COMPACTION_CONFIGURATION, } from '../../memory/compaction/memory-compaction-configuration.js';
+31:    memoryCompaction;
+33:    constructor(name, role, description, llmInstance, systemPrompt = null, tools = null, autoExecuteTools = true, inputProcessors = null, llmResponseProcessors = null, toolExecutionResultProcessors = null, toolInvocationPreprocessors = null, workspaceRootPath = null, lifecycleProcessors = null, initialCustomData = null, skills = null, memoryDir = null, skillAccessMode = null, memoryCompaction = DEFAULT_MEMORY_COMPACTION_CONFIGURATION, compactionLineageScope = null) {
+54:        this.memoryCompaction = memoryCompaction;
+61:        return new AgentConfig(this.name, this.role, this.description, this.llmInstance, this.systemPrompt ?? null, this.tools.slice(), this.autoExecuteTools, this.inputProcessors.slice(), this.llmResponseProcessors.slice(), this.toolExecutionResultProcessors.slice(), this.toolInvocationPreprocessors.slice(), this.workspaceRootPath, this.lifecycleProcessors.slice(), deepClone(this.initialCustomData ?? null), this.skills.slice(), this.memoryDir ?? null, this.skillAccessMode, copyMemoryCompactionConfiguration(this.memoryCompaction), this.compactionLineageScope);
+17:import { applyCompactionPolicy, resolveCompactionTokenBudget, resolveLlmRequestCapacity, } from '../token-budget.js';
+59:        const automaticCompaction = memoryManager.getAutomaticCompactionConfiguration();
+60:        const requestCapacity = resolveLlmRequestCapacity(llmInstance.model, llmInstance.config, runtimeSettings, automaticCompaction.kind === 'enabled'
+63:        const compactionTokenBudget = automaticCompaction.kind === 'enabled' && requestCapacity
+64:            ? resolveCompactionTokenBudget(requestCapacity, llmInstance.model, llmInstance.config, automaticCompaction.policy, runtimeSettings)
+66:        if (automaticCompaction.kind === 'enabled' && compactionTokenBudget) {
+87:        if (automaticCompaction.kind === 'enabled') {
+3:import { AgentConfig, CompactionPolicy, createDisabledMemoryCompactionConfiguration, createEnabledMemoryCompactionConfiguration, defaultAgentFactory, defaultInputProcessorRegistry, defaultLlmResponseProcessorRegistry, defaultLifecycleEventProcessorRegistry, defaultToolExecutionResultProcessorRegistry, defaultToolInvocationPreprocessorRegistry, LLMFactory, waitForAgentToBeIdle, } from "autobyteus-ts";
+22:import { MEMORY_COMPACTOR_AGENT_DEFINITION_ID } from "../../../built-in-agents/built-in-agent-registry.js";
+47:    compactionAgentRunnerFactory;
+68:        this.compactionAgentRunnerFactory =
+69:            options.compactionAgentRunnerFactory ?? createDefaultCompactionAgentRunner;
+258:        let memoryCompaction = createDisabledMemoryCompactionConfiguration();
+259:        if (agentDefinitionId !== MEMORY_COMPACTOR_AGENT_DEFINITION_ID) {
+262:                compactionAgentRunner = await this.compactionAgentRunnerFactory({
+275:            memoryCompaction = createEnabledMemoryCompactionConfiguration(new CompactionPolicy(), compactionAgentRunner);
+21:export class ProviderSafeCompactionText {
+22:    toProviderSafeText(value) {
+49:    isProviderSafeText(value) {
+68:        const result = this.toProviderSafeText(value);
+69:        if (!this.isProviderSafeText(result)) {
+104:export const providerSafeCompactionText = new ProviderSafeCompactionText();
+9:    code = 'input_construction_failure';
+25:        return this.finalizePrompt([
+34:        return this.finalizePrompt(`${CORRECTION_PREFIX(validationStage)}\n\n${initialPrompt}`);
+36:    finalizePrompt(prompt) {
+38:            const finalized = this.providerSafeText.finalize(prompt);
+1:import { MEMORY_COMPACTOR_AGENT_DEFINITION_ID } from "../../../built-in-agents/built-in-agent-registry.js";
+3:export const AUTOBYTEUS_DEFAULT_TOOL_NAMES = [
+15:    if (agentDefinition?.id === MEMORY_COMPACTOR_AGENT_DEFINITION_ID) {
+16:        return buildRuntimeAgentToolExposure([], null);
+19:        ...AUTOBYTEUS_DEFAULT_TOOL_NAMES,
+packaged_marker_scan=PASS
+
+## Final packaged memory-compaction composition runtime probe
+AgentConfig created for name='package-probe', role='probe'.
+{"disabled":{"kind":"disabled"},"enabledKind":"enabled","enabledPolicyIdentity":true,"enabledRunnerIdentity":true,"copiedPolicyFresh":true,"copiedRunnerIdentity":true,"defaultAgentKind":"disabled"}
+packaged_memory_compaction_configuration_probe=PASS
+
+## Final packaged native-tool exposure runtime probe
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+{"compactor":[],"ordinary":["run_bash","read_file","edit_file","write_file"]}
+packaged_native_tool_exposure_probe=PASS
+
+## DMG integrity
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $BD0C598A
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $D9185FD0
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $4737F863
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $6C709BE6
+Prüfsumme für GPT Partition Data (Backup GPT Table : 5) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $4737F863
+Prüfsumme für GPT Header (Backup GPT Header : 6) berechnen …
+  GPT Header (Backup GPT Header : 6): Die überprüfte CRC32-Prüfsumme ist $E03674B5
+Die überprüfte CRC32-Prüfsumme ist $5099B6A7
+hdiutil: verify: checksum of "/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.51.dmg" is VALID
+
+## ZIP integrity
+No errors detected in compressed data of /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.51.zip.
+
+VERIFICATION RESULT: PASS

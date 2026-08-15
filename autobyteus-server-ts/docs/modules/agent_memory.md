@@ -167,12 +167,15 @@ kind and available child run/task metadata and never enter the JSON parser.
 
 Only a typed returned-content validation failure triggers one corrective child
 run with a new task/run identity. Its deterministic prefix records the validation
-stage, restates the six-array shape, and resends the same target history. Repair
-success yields one parent completed lifecycle and one canonical commit. Repair
-exhaustion yields one parent failed lifecycle, retains the pending operation, and
-leaves archives, output rows, lineage, WorkingContext, and snapshot unchanged.
-A runner/provider/transport/timeout failure is terminal for the current attempt,
-bypasses response repair, and introduces no fallback model.
+stage, restates the six-array shape, and resends the same target history. The
+initial and optional correction are disabled siblings owned by the same parent
+operation, not a recursive parent/child chain; neither writes child lineage or
+raw archives. Repair success yields one parent completed lifecycle and one
+canonical commit. Repair exhaustion yields one parent failed lifecycle, retains
+the pending operation, and leaves archives, output rows, lineage,
+WorkingContext, and snapshot unchanged. A runner/provider/transport/timeout
+failure is terminal for the current attempt, bypasses response repair, and
+introduces no fallback model.
 
 A new pending operation receives one automatic initial attempt. Any final
 failure moves it to `awaiting_user_retry` and stops the current target-agent turn
@@ -239,6 +242,33 @@ GraphQL keeps option discovery and effective selection separate:
 Settings -> Server Settings -> Basics uses these reads for a registry-backed Compaction strategy selector. The card keeps the trigger ratio, effective-context override, and detailed-log controls, persists only changed valid fields through the existing per-key mutation, and stops after the first failed write while retaining failed and unsent drafts for retry. Catalog/effective-read errors and unknown IDs are shown without guessing or silently writing a default.
 
 The `structured-json` strategy always invokes the built-in `autobyteus-memory-compactor`; blank launch fields inherit the parent run's runtime/model. `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` is no longer a predefined setting or runtime selection path. A stale custom value is inert, and a missing/invalid built-in definition fails without arbitrary-agent fallback.
+
+### Automatic-Compaction Composition
+
+Core memory owns a closed `MemoryCompactionConfiguration`: `disabled` has no
+policy or strategy runner, while `enabled` carries one current
+`CompactionPolicy` and its required runner. `AgentConfig` supplies that complete
+value to `AgentFactory` and `MemoryManager`; neither factory nor manager infers
+or constructs an independent second policy. Direct core construction without an
+explicit value defaults to disabled.
+
+`AutoByteusAgentRunBackendFactory` selects disabled for the exact built-in
+Memory Compactor definition on create and restore and does not invoke the runner
+factory. Ordinary native agents receive enabled composition with a fresh current
+policy and runner; runner construction failure/null is an agent-composition
+failure, not a silent disabled fallback.
+
+The generic LLM phase still resolves provider/model request capacity for both
+variants. Enabled agents then derive threshold/hard-cap planning and use the
+existing strategy, executor, pending-operation, observation, and status path.
+Disabled compactor children skip all of that work even when their reported
+prompt usage exceeds the proactive threshold or policy hard cap; their original
+assistant/tool completion remains the runner result. A provider-admissible task
+therefore produces exactly one initial child plus at most one host-owned
+correction sibling and no descendant compactor. A task that exceeds actual
+provider capacity fails through planning/pre-launch or typed runner handling
+instead of recursively compacting its own task. The configuration is runtime
+only; no agent-definition, memory, snapshot, or lineage migration is required.
 
 `ServerCompactionAgentRunner` allows an ordinarily constructed compactor child
 up to 300,000 ms (five minutes) to return its final output. This is a

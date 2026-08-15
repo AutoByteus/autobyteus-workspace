@@ -184,14 +184,17 @@ candidate against the six required arrays and accepts only one distinct
 host-consumed result with a non-empty episode. Harmless extra fields do not fail
 validation, unrelated JSON cannot mask a later valid object, and multiple valid
 objects are ambiguous. A typed returned-content failure receives one corrective
-child attempt with the same selected history. Child error completion,
-interruption, terminal error, timeout, tool approval, launch/rejection, and
-collection failure retain typed runner identity and bypass response repair. The
-compactor remains tool-free: the native exposure resolver matches its exact
-built-in definition ID before ordinary default/team composition, leaving final
-`AgentConfig.tools` empty while ordinary native agents retain all four foundation
-tools. Success produces one parent completed lifecycle and one accepted commit;
-final failure leaves the pending operation and canonical memory unchanged.
+child attempt with the same selected history. Initial and optional correction
+children are disabled siblings owned by the parent operation, not recursive
+descendants, and neither persists child lineage/archive state. Child error
+completion, interruption, terminal error, timeout, tool approval,
+launch/rejection, and collection failure retain typed runner identity and bypass
+response repair. The compactor remains tool-free: the native exposure resolver
+matches its exact built-in definition ID before ordinary default/team
+composition, leaving final `AgentConfig.tools` empty while ordinary native
+agents retain all four foundation tools. Success produces one parent completed
+lifecycle and one accepted commit; final failure leaves the pending operation
+and canonical memory unchanged.
 
 A new pending operation has one automatic initial attempt. Final failure changes
 it to `awaiting_user_retry`, stops that target-agent turn before dispatch, and
@@ -215,6 +218,25 @@ uses the fixed built-in `autobyteus-memory-compactor`, with blank runtime/model
 launch values inherited from the parent run. The removed
 `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` key is inert, and no arbitrary-agent
 fallback exists.
+
+Automatic compaction is one complete runtime composition owned by core memory:
+`disabled` has no policy or runner; `enabled` has the existing single
+`CompactionPolicy` and current strategy runner. `AgentConfig` carries it through
+`AgentFactory` into `MemoryManager`, and direct core construction defaults to
+disabled. The server backend selects disabled for the exact built-in compactor
+on create/restore without invoking the runner factory. Ordinary native agents
+receive enabled composition; runner construction failure cannot silently turn a
+normal agent into a disabled one.
+
+The generic LLM phase resolves provider/model request capacity for both
+variants. Enabled agents retain compaction-budget derivation and the current
+policy/strategy/executor/observation/lifecycle path. Disabled compactor children
+skip proactive and hard-input-cap classification, pending/execution work, and
+compaction lifecycle reporting while preserving the original response/tool
+outcome. Provider-admissible tasks run directly as leaves; oversized tasks fail
+through existing planning/pre-launch or typed runner handling rather than
+recursively rewriting their own instruction/history. This is runtime-only
+composition and requires no persisted-data migration.
 
 The backend resolves explicit standalone/team-member lineage scopes for native
 memory composition. There is no direct/recursive episode/semantic-to-raw origin

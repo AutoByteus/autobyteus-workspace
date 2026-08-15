@@ -157,6 +157,11 @@ uses these collaborators:
     `input_construction_failure` before any child launch or correction; the
     target dispatch remains stopped and the pending operation keeps its
     user-authorized retry gate;
+  - reads one complete memory-owned automatic-compaction configuration:
+    enabled runs retain request-capacity resolution plus the existing
+    policy/strategy/executor/observation path, while disabled leaf runs resolve
+    request capacity but perform no proactive or hard-cap compaction work and
+    return the original response/tool outcome;
   - evaluates provider-normalized prompt observations after responses for
     trigger-aligned compaction, while missing prompt-token observations leave
     the threshold episode unchanged;
