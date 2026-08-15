@@ -114,3 +114,127 @@ $ git status --short (DR-002 verification hold state)
 ?? tickets/in-progress/compaction-response-robustness/release-deployment-report.md
 
 DR-002 CONTINUATION: PASS
+
+Documentation sync validation — DR-003
+Date: 2026-08-14T18:45:30+0200
+
+$ git diff --check
+PASS: tracked current delivery diff has no whitespace errors.
+
+$ delivery Markdown trailing-whitespace scan
+PASS: current delivery Markdown has no trailing whitespace.
+
+$ core memory doc mirror after intentional title
+PASS: core memory docs are behaviorally identical after line 1.
+
+$ stale-guidance scan
+PASS: obsolete normal-retry and unqualified runner-failure wording is absent.
+
+$ required durable invariant scans
+autobyteus-server-ts/docs/ARCHITECTURE.md:158:episode, changed budget identity resets it, and hard-input-cap pressure remains
+autobyteus-server-ts/docs/ARCHITECTURE.md:180:collection failure retain typed runner identity and bypass response repair. The
+autobyteus-server-ts/docs/ARCHITECTURE.md:186:it to `awaiting_user_retry`, stops that target-agent turn before dispatch, and
+autobyteus-server-ts/docs/ARCHITECTURE.md:187:permits one new attempt from each distinct later user-origin turn. Agent/system
+autobyteus-server-ts/docs/ARCHITECTURE.md:190:ordinary relative FIFO after a successful retry. There is no same-turn,
+autobyteus-server-ts/docs/modules/agent_memory.md:122:change resets the episode, and hard-input-cap pressure can still request an
+autobyteus-server-ts/docs/modules/agent_memory.md:166:failure moves it to `awaiting_user_retry` and stops the current target-agent turn
+autobyteus-server-ts/docs/modules/agent_memory.md:171:operation, dispatches that user turn, and then restores normal relative FIFO;
+autobyteus-server-ts/docs/modules/agent_memory.md:237:distinct. A resolver, strategy, planning, typed runner, response-repair,
+autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md:105:When memory has a failed pending compaction in `awaiting_user_retry`, the
+autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md:106:compaction retry admission policy makes only user-origin turn starts
+autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md:157:    trigger-aligned compaction, while missing prompt-token observations leave
+autobyteus-ts/docs/agent_memory_design.md:58:failure retains the same operation in `awaiting_user_retry`; only a distinct
+autobyteus-ts/docs/agent_memory_design.md:59:user-origin turn can authorize another attempt. The publication sequence is
+autobyteus-ts/docs/agent_memory_design.md:92:Each threshold or hard-input-cap request captures one immutable planning budget
+autobyteus-ts/docs/agent_memory_design.md:99:post-compaction target = max(0, min(quality retention cap, T - trigger headroom))
+autobyteus-ts/docs/agent_memory_design.md:116:completed LLM request. Missing usage or an explicitly missing prompt-token count
+autobyteus-ts/docs/agent_memory_design.md:122:above-or-equal observation emits one inadequate-reduction diagnostic and moves
+autobyteus-ts/docs/agent_memory_design.md:126:episode, and hard-input-cap pressure may request compaction regardless of the
+autobyteus-ts/docs/agent_memory_design.md:139:  or awaiting_user_retry
+autobyteus-ts/docs/agent_memory_design.md:140:       -> attempt_in_progress(user_retry) on a distinct user-origin turn
+autobyteus-ts/docs/agent_memory_design.md:148:entries precede it; those non-user entries remain queued in their relative FIFO
+autobyteus-ts/docs/agent_memory_design.md:396:The compaction-agent boundary returns usable final output or a typed runner
+autobyteus-ts/docs/agent_memory_design_nodejs.md:58:failure retains the same operation in `awaiting_user_retry`; only a distinct
+autobyteus-ts/docs/agent_memory_design_nodejs.md:59:user-origin turn can authorize another attempt. The publication sequence is
+autobyteus-ts/docs/agent_memory_design_nodejs.md:92:Each threshold or hard-input-cap request captures one immutable planning budget
+autobyteus-ts/docs/agent_memory_design_nodejs.md:99:post-compaction target = max(0, min(quality retention cap, T - trigger headroom))
+autobyteus-ts/docs/agent_memory_design_nodejs.md:116:completed LLM request. Missing usage or an explicitly missing prompt-token count
+autobyteus-ts/docs/agent_memory_design_nodejs.md:122:above-or-equal observation emits one inadequate-reduction diagnostic and moves
+autobyteus-ts/docs/agent_memory_design_nodejs.md:126:episode, and hard-input-cap pressure may request compaction regardless of the
+autobyteus-ts/docs/agent_memory_design_nodejs.md:139:  or awaiting_user_retry
+autobyteus-ts/docs/agent_memory_design_nodejs.md:140:       -> attempt_in_progress(user_retry) on a distinct user-origin turn
+autobyteus-ts/docs/agent_memory_design_nodejs.md:148:entries precede it; those non-user entries remain queued in their relative FIFO
+autobyteus-ts/docs/agent_memory_design_nodejs.md:396:The compaction-agent boundary returns usable final output or a typed runner
+PASS: planning target, missing observation, threshold episode, typed runner, explicit attempt state, user admission, and FIFO guidance is present.
+
+$ implemented-source cross-checks
+44:  const qualityRetentionCapTokens = Math.floor(0.35 * inputBudgetTokens);
+45:  const triggerHeadroomTokens = Math.max(256, Math.ceil(0.10 * triggerThresholdTokens));
+46:  const postCompactionTargetTokens = Math.max(
+59:  const replacementMemoryReserveTokens = Math.min(
+6:      kind: 'awaiting_below_observation';
+12:      kind: 'inadequate_reduction_suppressed';
+40:    if (pressure === 'hard_input_cap') {
+59:    if (planningBudget.observedPromptTokens < planningBudget.triggerThresholdTokens) {
+66:          kind: 'inadequate_reduction_suppressed',
+40:      kind: 'awaiting_user_retry';
+80:      code: 'none_pending' | 'operation_mismatch' | 'attempt_in_progress' | 'user_retry_required' | 'same_turn_retry';
+215:      if (input.turnOrigin !== 'user') {
+219:        return { authorized: false, code: 'same_turn_retry' };
+222:    const authorization = state.kind === 'initial_attempt_ready'
+249:      kind: 'awaiting_user_retry',
+autobyteus-ts/src/agent/compaction/compaction-retry-turn-admission-policy.ts:9:    return !memoryManager?.isCompactionAwaitingUserRetry() || entry.origin === 'user';
+autobyteus-ts/src/agent/event-inbox/agent-event-scheduler.ts:79:        ? inbox.claimFirstMatching(lane, (candidate) => this.isTurnStartDispatchable(candidate))
+39:  if (promptTokens === null) {
+43:        reason: 'missing_prompt_tokens',
+PASS: durable descriptions match the integrated source owners.
+
+$ post-integration executable rerun decision
+NO RERUN: origin/personal remained 54890a07f and no base commit was integrated; API-REV-003 Pass / 98.3% and CRR-006 Pass remain current.
+
+$ git diff --stat
+ autobyteus-server-ts/docs/ARCHITECTURE.md          | 29 +++++++-
+ autobyteus-server-ts/docs/modules/agent_memory.md  | 44 ++++++++++-
+ autobyteus-ts/docs/agent_memory_design.md          | 85 ++++++++++++++++++++--
+ autobyteus-ts/docs/agent_memory_design_nodejs.md   | 85 ++++++++++++++++++++--
+ .../docs/agent_runtime_loop_and_interrupt.md       | 33 +++++++--
+ .../delivery-integrated-state-refresh.log          | 35 +++++++++
+ .../docs-sync-report.md                            | 82 ++++++++++++---------
+ .../docs-sync-validation.log                       | 79 ++++++++++++++++++++
+ 8 files changed, 412 insertions(+), 60 deletions(-)
+
+DR-003 DOCS RESULT: PASS
+
+## DR-003 final handoff and artifact audit — 2026-08-14 (Europe/Berlin)
+$ git diff --check
+PASS: git diff --check
+$ delivery Markdown trailing-whitespace scan
+PASS: delivery Markdown contains no trailing whitespace
+$ core memory-doc mirror comparison after title
+PASS: core memory-doc mirrors match after title
+$ current artifact size and SHA-256
+402327711 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.dmg
+8295f78c6c954eff4793c79666ebf42d65c71124073d601e945520f2f4ba93c5  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.dmg
+397898745 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.zip
+905d164b26644687788945305b14f0a95f92b5527b307f041452c8a8b29e9657  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.zip
+$ current package-verification terminal result
+VERIFICATION RESULT: PASS
+$ generated package ignore boundary
+autobyteus-web/.gitignore:7:electron-dist	autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.dmg
+autobyteus-web/.gitignore:7:electron-dist	autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.zip
+PASS: generated packages remain ignored and outside delivery commit state
+$ git status --short
+ M autobyteus-server-ts/docs/ARCHITECTURE.md
+ M autobyteus-server-ts/docs/modules/agent_memory.md
+ M autobyteus-ts/docs/agent_memory_design.md
+ M autobyteus-ts/docs/agent_memory_design_nodejs.md
+ M autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md
+ M tickets/in-progress/compaction-response-robustness/delivery-integrated-state-refresh.log
+ M tickets/in-progress/compaction-response-robustness/delivery-revision-record.md
+ M tickets/in-progress/compaction-response-robustness/docs-sync-report.md
+ M tickets/in-progress/compaction-response-robustness/docs-sync-validation.log
+ M tickets/in-progress/compaction-response-robustness/handoff-summary.md
+ M tickets/in-progress/compaction-response-robustness/release-deployment-report.md
+?? tickets/in-progress/compaction-response-robustness/electron-build-macos-arm64-dr-003.log
+?? tickets/in-progress/compaction-response-robustness/electron-build-verification-macos-arm64-dr-003.log
+DR-003 FINAL HANDOFF AUDIT: PASS

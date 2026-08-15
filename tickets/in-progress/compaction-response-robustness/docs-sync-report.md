@@ -3,66 +3,76 @@
 ## Scope
 
 - Ticket: `compaction-response-robustness`
-- Trigger: `CRR-003 Pass` after `API-REV-002 Pass` at 97.5% confidence and resolution of `CR-TEST-001`
-- Bootstrap base reference: `origin/personal` at `54890a07f74e941a7a12b6daaa26364f4c927b72`
-- Integrated base reference used for docs sync: unchanged `origin/personal` at `54890a07f74e941a7a12b6daaa26364f4c927b72`, contained by local reviewed-candidate checkpoint `1f2406ffa6e320094d3252e42f5b982212a448c5`
-- Post-integration verification reference: `delivery-integrated-state-refresh.log`; no additional executable rerun because fetch integrated no base commit; documentation validation is recorded in `docs-sync-validation.log`
+- Delivery revision: `DR-003`
+- Trigger: `CRR-006 Pass` after `CRR-005` source Pass at 9.5/10 and `API-REV-003 Pass` at 98.3% confidence
+- Current implementation commits: `51ed4b666` (`fix(memory): bound compaction retries and planning`) plus `915c938da` (`fix(memory): preserve missing prompt observations`)
+- Reviewed-current-candidate checkpoint: `d3971c014d910ba8ef3c65505a2a1d596af81372`
+- Integrated base: unchanged `origin/personal` at `54890a07f74e941a7a12b6daaa26364f4c927b72`, fully contained by the ticket branch
+- Post-integration verification: no additional executable rerun because fetch integrated no base commit; current `API-REV-003` / `CRR-006` evidence remains applicable
+- Integration evidence: `delivery-integrated-state-refresh.log`
 
 ## Why Docs Were Updated
 
-- Summary: The integrated implementation replaces ambiguous compactor input framing, broadens host-side response validation safely, adds one bounded invalid-content correction, and advances the prompt audit contract. Existing durable docs still described the old `<conversation_history>` tag, generic sender headings, first/one-shot response handling, and prompt contract 2.
-- Why this should live in long-lived project docs: Prompt ownership, response acceptance, repair/lifecycle boundaries, atomic commit behavior, zero-tool authority, and lineage-version readability are durable runtime and operations contracts. Leaving them only in ticket artifacts would make future memory, server, and work-trace changes rely on obsolete behavior.
+The prior DR-001/DR-002 documentation covered the target-history prompt, tolerant six-array response selection, one bounded returned-content correction, atomic accepted commit, zero-tool posture, and prompt-contract-v3 compatibility. User verification then exposed a second durable runtime surface: trigger and planner targets could diverge and request repeated successful compactions; child runner failures could be mistaken for invalid JSON; a retained failed operation could execute from any later turn start; and a missing normalized prompt-token observation could be treated as numeric zero.
+
+The current integrated implementation replaces those behaviors with trigger-aligned planning, an actual-observation suppression/rearm episode, typed child-run failures, explicit pending attempt authorization, and user-origin-only retry admission that preserves queued non-user work. These are durable memory/runtime contracts and must not remain only in ticket artifacts.
 
 ## Long-Lived Docs Reviewed
 
-| Doc Path | Why It Was Reviewed | Result (`Updated`/`No change`/`Needs follow-up`) | Notes |
+| Doc Path | Why It Was Reviewed | Result | Notes |
 | --- | --- | --- | --- |
-| `autobyteus-ts/docs/agent_memory_design.md` | Canonical core memory/prompt/parser/lineage design | Updated | Now records exact target-agent framing, schema-aware candidate validation, bounded corrective child behavior, atomic lifecycle, zero-tool posture, and prompt contract 3 with direct 1/2/3 reads. |
-| `autobyteus-ts/docs/agent_memory_design_nodejs.md` | Node.js/TypeScript mirror of the canonical memory design | Updated | Kept behaviorally synchronized with the canonical document; title remains its only intentional difference. |
-| `autobyteus-server-ts/docs/modules/agent_memory.md` | Server composition, built-in compactor, input processor, and persistence boundary | Updated | Documents neutral context/message formatting, target wrapper/separators, parser tolerance, correction behavior, single parent terminal outcome, safe failure, zero tools, and lineage versions. |
-| `autobyteus-server-ts/docs/modules/agent_work_traces.md` | Defines the deliberately separate envelope shared with readable-value/tool rendering | Updated | Replaced the obsolete compaction envelope statement and clarified the sole bounded schema-restating correction exception. |
-| `autobyteus-server-ts/docs/ARCHITECTURE.md` | High-level native compaction architecture and audit contract | Updated | Promotes the end-to-end target framing, response boundary, repair/commit lifecycle, zero-tool constraint, and v3 audit truth. |
+| `autobyteus-ts/docs/agent_memory_design.md` | Canonical native memory planning, execution, validation, and persistence authority | Updated | Added exact planning-budget derivation, target validation, threshold episode, missing-observation behavior, typed runner failures, and failed-pending user-retry admission. |
+| `autobyteus-ts/docs/agent_memory_design_nodejs.md` | Node.js/TypeScript mirror of canonical memory design | Updated | Behaviorally synchronized with the canonical doc; only the title intentionally differs. |
+| `autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md` | Canonical event-inbox, scheduler, active-turn, and LLM-phase ownership | Updated | Added authoritative turn-start origin, earliest-user admission during failed compaction, non-user queue retention, and fail-closed pre-dispatch execution. |
+| `autobyteus-server-ts/docs/modules/agent_memory.md` | Server compactor runner/collector, lifecycle, strategy, and persistence composition | Updated | Added trigger-aligned planning/observation behavior, typed collection failures, explicit retry gate, queue behavior, and truthful status identity. |
+| `autobyteus-server-ts/docs/ARCHITECTURE.md` | System-level native memory architecture | Updated | Promoted the new planning, suppression/rearm, runner classification, and user-authorized retry invariants. |
+| `autobyteus-server-ts/docs/modules/agent_work_traces.md` | Shared readable-value/tool rendering boundary | No change | Current framing and one returned-content correction description remain accurate; planning and turn admission do not change this owner. |
+| `autobyteus-web/docs/agent_execution_architecture.md` | User-visible compaction activity identity and feed projection | No change | No renderer/UI contract changed; the existing stable operation/requested-turn/execution-turn identity model remains accurate. |
 
 ## Docs Updated
 
 | Doc Path | Type Of Update | What Changed | Why |
 | --- | --- | --- | --- |
-| `autobyteus-ts/docs/agent_memory_design.md` | Runtime/design contract | Replaced v2/old-wrapper/one-shot guidance with the implemented v3 framing, parsing, repair, lifecycle, and compatibility behavior. | This is the primary core memory authority. |
-| `autobyteus-ts/docs/agent_memory_design_nodejs.md` | Runtime/design contract mirror | Applied the same behavioral truth as the canonical core doc. | Avoid divergence between the two current memory-design entry points. |
-| `autobyteus-server-ts/docs/modules/agent_memory.md` | Server module contract | Added shared input formatting and built-in compactor execution/validation/lineage details. | These owners are composed and persisted through the server runtime. |
-| `autobyteus-server-ts/docs/modules/agent_work_traces.md` | Cross-capability boundary | Updated only the native-compaction side of the Work Evidence comparison. | Prevent the work-trace doc from preserving the removed tag/envelope semantics. |
-| `autobyteus-server-ts/docs/ARCHITECTURE.md` | Architecture summary | Updated the native compaction section with the new durable invariants. | Keep the system-level reading path aligned with the detailed module/core docs. |
+| `autobyteus-ts/docs/agent_memory_design.md` | Core runtime/design contract | Replaced normal-retry wording and documented immutable operation budget, target/reserve arithmetic, actual-observation episode, typed failures, and explicit attempt states. | Primary native memory authority must match the integrated coordinator/planner/executor. |
+| `autobyteus-ts/docs/agent_memory_design_nodejs.md` | Core runtime/design mirror | Applied the same behavioral truth as the canonical core doc. | Prevent divergence between the two supported memory-design entry points. |
+| `autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md` | Runtime scheduling contract | Documented `user`/`agent`/`system` origin stamping, first-matching user admission, retained relative FIFO, and compaction-before-user-dispatch failure behavior. | Retry authorization is jointly owned by memory state and the existing event scheduler. |
+| `autobyteus-server-ts/docs/modules/agent_memory.md` | Server/core composition contract | Added exact target derivation, missing-observation handling, process-local suppression/rearm, typed collector failures, and user-only retry lifecycle. | Server readers need the real child-run and status boundary rather than parser-centric failure semantics. |
+| `autobyteus-server-ts/docs/ARCHITECTURE.md` | Architecture summary | Summarized planning/acceptance target alignment, threshold episode, typed runner classification, and retry admission. | Keep the system-level reading path aligned with detailed core/server docs. |
 
 ## Durable Design / Runtime Knowledge Promoted
 
-| Topic | What Future Readers Need To Understand | Source Ticket Artifact(s) | Target Long-Lived Doc |
+| Topic | Durable Truth | Source Ticket Artifact(s) | Target Long-Lived Docs |
 | --- | --- | --- | --- |
-| Target-agent input boundary | Initial task input uses one named target-history wrapper inside one target-agent start/end pair; no task restatement follows the end. Generic sender headings are removed; readable context uses neutral `[Context]` / `[Message]`. | `memory-compactor-prompt-spec.md`; `prompt-confusion-root-cause.md`; `requirements.md` | All five updated docs, with input-processor detail in `agent_memory.md` and core memory docs. |
-| Schema-aware response acceptance | Exact, fenced, and prose-surrounded/balanced object candidates are all evaluated; all six arrays and a non-empty episode are required; harmless extras are tolerated; zero or multiple distinct valid results fail closed. | `compaction-output-contract-decision.md`; `design-spec.md`; `implementation-handoff.md` | Core memory docs, server memory doc, architecture doc. |
-| Bounded repair and lifecycle | Only returned-content validation gets one new-child correction; first runner/transport failure remains terminal; success is one parent completion/one canonical commit; exhaustion is one parent failure/no canonical mutation. | `design-spec.md`; `implementation-handoff.md`; `api-e2e-execution-coverage-report.md` | Core memory docs, server memory doc, architecture doc. |
-| Least authority and persistence | The compactor remains tool-free. New lineage writes prompt contract 3; immutable versions 1/2/3 read directly without migration; unsupported future values fail closed. | `requirements.md`; `implementation-handoff.md`; `api-e2e-execution-coverage-report.md` | Core memory docs, server memory doc, architecture doc. |
+| Trigger-aligned planning | For input budget `B` and threshold `T`, one immutable operation budget derives explicit headroom, the lower of quality cap and below-threshold target, replacement reserve, and complete-prompt overhead. Unattainable/no-prefix planning and final target excess fail closed. | `repeated-compaction-runtime-analysis.md`; `compaction-runtime-behavior-examples.md`; `design-spec.md`; `implementation-handoff.md` | Core memory docs, server memory doc, architecture doc |
+| Actual-observation recurrence gate | Missing prompt observation does not mutate state; numeric zero is real. After success, proactive compaction stays suppressed until an actual below-threshold observation; first still-high observation emits one diagnostic; budget change resets and hard cap overrides. | `requirements.md`; `compaction-runtime-behavior-examples.md`; `code-review-report.md`; `api-e2e-execution-coverage-report.md` | Core memory docs, server memory doc, architecture doc |
+| Typed child-run boundary | Error completion, interruption, terminal error, timeout, tool approval, task rejection, launch failure, and collection failure preserve typed cause/child identity and bypass response parsing/correction. | `compactor-runner-failure-analysis.md`; `design-spec.md`; `implementation-handoff.md` | Core memory docs, server memory doc, architecture doc |
+| Failed-pending authorization | A new operation gets one automatic attempt. Final failure retains `awaiting_user_retry`, stops current dispatch, and lets each distinct later user-origin turn authorize one new attempt. | `requirements.md`; `compaction-runtime-behavior-examples.md`; `design-spec.md` | Core memory docs, runtime loop doc, server memory doc, architecture doc |
+| Origin-aware queue preservation | Origin is resolved before input conversion. While retry-gated, the scheduler claims the earliest user behind agent/system entries without removing them; success dispatches user then resumes relative FIFO, failure retains all gated state. | `requirements.md`; `design-spec.md`; `api-e2e-execution-coverage-report.md` | Core memory docs, runtime loop doc, server memory doc, architecture doc |
 
 ## Removed / Replaced Components Recorded
 
-| Old Component / Path / Concept | What Replaced It | Where The New Truth Is Documented |
+| Old Component / Concept | Replacement | Where The New Truth Is Documented |
 | --- | --- | --- |
-| `<conversation_history>` outer wrapper | Sole `<target_agent_conversation_history>` wrapper plus target-agent separators | Core memory docs, server memory doc, work-trace doc, architecture doc |
-| Generic sender headings (`[User Requirement]`, `[Tool Execution Result]`, `[Message From Agent]`, `[System Notification]`) | Raw authored content when no context; neutral `[Context]` / `[Message]` when combined | Core memory docs, server memory doc, architecture doc |
-| First parseable JSON object / strict unknown-field rejection | Validate every candidate, project recognized fields, accept one unambiguous host-consumed result | Core memory docs, server memory doc, architecture doc |
-| One-shot invalid returned-content failure | One bounded new-child correction under the same pending operation | Core memory docs, server memory doc, work-trace doc, architecture doc |
-| New lineage writes prompt contract 2 | New writes use 3; 1/2/3 read directly | Core memory docs, server memory doc, architecture doc |
+| Trigger ratio combined with an independent fixed 35% recent-suffix target | One trigger-derived planning target with explicit headroom, quality cap, reserves, and finalized-target validation | Core/server memory docs and architecture |
+| Repeated successful operations while the observed prompt remained above threshold | Post-success actual-observation suppression/rearm episode with one diagnostic and hard-cap override | Core/server memory docs and architecture |
+| Missing normalized prompt count coerced to zero | Missing-observation skip with unchanged threshold state; numeric zero remains a genuine observation | Core/server memory docs and architecture |
+| Child error prose treated as compactor response and corrected as JSON | Typed runner failure classification before parser/correction | Core/server memory docs and architecture |
+| Pending presence as unconditional execution authority | `initial_attempt_ready -> attempt_in_progress -> awaiting_user_retry` authorization | Core/server memory docs and architecture |
+| Head-only FIFO blocking or non-user retry execution | First-matching user admission with retained agent/system relative FIFO | Runtime loop, core/server memory docs, architecture |
 
-## No-Impact Decision (Use Only If Truly No Docs Changes Are Needed)
+## Persisted Data Outcome
 
-Not used. The implementation has material durable documentation impact.
+- Decision: `Directly Usable — No Migration`
+- Existing episodic/semantic rows, raw archives, schema-v1 lineage, prompt-contract versions 1/2, schema-v5 working-context snapshots, and current v3 records remain directly usable.
+- The planning budget, threshold episode, pending attempt state, and deferred queue are runtime state. No new persisted schema, data rewrite, migration, dual read, or compatibility fallback was introduced.
 
 ## Delivery Continuation
 
-- Result: `Pass`
-- DR-002 local build impact: `No additional long-lived docs change`. The user-requested macOS ARM64 Electron test artifact followed the existing commands in `autobyteus-web/README.md` and the existing packaged-runtime checks in `autobyteus-web/docs/github-actions-tag-build.md`; it introduces no new durable command, runtime contract, migration, release, or deployment behavior.
-- Next delivery action: present the integrated handoff and local Electron artifact for explicit user verification; keep archival, push, target merge, release/deployment, and cleanup on hold.
-- Notes: Persisted data is `Directly Usable — No Migration`. No version bump, release notes, release, publication, or deployment is currently requested. The local unsigned build is test evidence, not a published release.
+- Docs sync result: `Updated — Pass`
+- Current Electron artifact decision: the DR-002 DMG/ZIP predates `51ed4b666`, `915c938da`, and checkpoint `d3971c014`; it is historical and must not be used as proof of the current candidate. The DR-003 macOS ARM64 personal-flavor package was rebuilt and independently verified; its current paths and hashes are recorded in `release-deployment-report.md` and the DR-003 build/verification logs.
+- Finalization hold: ticket archival, final delivery commit/push, target merge, release/deployment, and cleanup remain blocked on explicit verification of the current candidate.
+- Release impact: no version bump, release notes, publication, or deployment requested.
 
-## Blocked Or Escalated Follow-Up (Use Only If Docs Sync Cannot Complete)
+## Blocked Or Escalated Follow-Up
 
-Not applicable. Documentation was finalized truthfully against the current integrated candidate.
+Not applicable. The integrated implementation and intended behavior are clear enough to synchronize truthfully; no documentation-local code/design reroute is required.

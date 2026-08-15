@@ -6,84 +6,89 @@
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness`
 - Ticket branch: `codex/compaction-response-robustness`
 - Recorded base/finalization target: `origin/personal` / `personal`
-- Current delivery revision: `DR-002`
-- State: `Local Electron Artifact Ready For Explicit User Verification`
-- Finalization hold: ticket remains under `tickets/in-progress`; no push, target merge, release, deployment, or cleanup has started
+- Current delivery revision: `DR-003`
+- State: `Current Electron Artifact Ready For Explicit User Verification`
+- Finalization hold: ticket remains under `tickets/in-progress`; no final delivery commit/push, target merge, release, deployment, or cleanup has started
 
 ## Integrated-State Authority
 
-- Bootstrap and latest fetched base: `origin/personal` at `54890a07f74e941a7a12b6daaa26364f4c927b72`
-- Implementation commit: `ed7f65a5df391cd3a55327b2c4a7a980ef44b711`
-- Reviewed-candidate local checkpoint: `1f2406ffa6e320094d3252e42f5b982212a448c5`
-- Branch relation after checkpoint: 2 commits ahead / 0 behind `origin/personal`
+- Latest fetched base: `origin/personal` at `54890a07f74e941a7a12b6daaa26364f4c927b72`
+- Current implementation commits: `51ed4b666` and corrective `915c938da`
+- Reviewed-current-candidate checkpoint: `d3971c014d910ba8ef3c65505a2a1d596af81372`
+- Branch relation: 5 commits ahead / 0 behind `origin/personal`; base is an ancestor
 - Integration method: `Already current`; fetch introduced no base commit, conflict, or behavior change
-- Additional post-integration executable rerun: not needed because no base commit was integrated; authoritative `API-REV-002` and `CRR-003` evidence remains applicable
+- Additional post-integration executable rerun: not needed because no base commit was integrated; current `API-REV-003` and `CRR-006` evidence remains applicable
 - Evidence: `delivery-integrated-state-refresh.log`
+- Historical boundary: DR-001/DR-002 and their Electron checksum cover only the earlier prompt/repair baseline and are not current-candidate evidence
 
-## Local Electron Test Artifact
+## Current Delivered Behavior
 
-- Build guidance: root `README.md`, `autobyteus-web/README.md`, `autobyteus-web/AGENTS.md`, and `autobyteus-web/docs/github-actions-tag-build.md`
-- Build command family: documented `pnpm build:electron:mac`, with timestamp suffix disabled, explicit `personal` flavor, and Apple signing/notarization credentials intentionally absent
-- Target: macOS ARM64, app version `1.4.50`, bundle identifier `com.autobyteus.app`
-- Preferred tester artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.dmg`
-- DMG size / SHA-256: `402310529` bytes / `350fa262b73c73c8b5ddeee5f60329219e32bde666ea75cc84ac95defc457492`
-- Alternate ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.zip`
-- ZIP size / SHA-256: `397863911` bytes / `0b06e25cc10b9a43f2596552366a68b0337a72647e860e0ab5bf1eabb06e2ee2`
-- Verification: `Pass` — ARM64 bundle/version metadata, updater hashes, staged and final packaged terminal runtime with real `node-pty` spawn probes, ticket implementation markers in packaged core, DMG checksum, and ZIP integrity all passed
-- Signing boundary: local test build only; no Developer ID signature or notarization. It must not be published or treated as a release artifact.
-- Evidence: `electron-build-macos-arm64.log`; `electron-build-verification-macos-arm64.log`
-
-## Delivered Behavior
-
-1. Compaction input is framed explicitly as the conversation history of a target agent. The initial message contains one `<target_agent_conversation_history>` wrapper inside one target-agent start/end separator pair and no text after the end separator.
-2. Shared message composition no longer adds generic sender headings. Content without readable context remains authored; combined context/message content uses neutral `[Context]` and `[Message]` sections without changing sender metadata or provider-native tool handling.
-3. The original six-array response contract remains unchanged. Host parsing evaluates exact, fenced, and prose-surrounded/balanced JSON-object candidates, tolerates harmless extra fields, requires all six arrays plus a non-empty episode, and rejects ambiguity.
-4. Invalid returned content receives exactly one corrective child attempt with a new task/run identity. First-attempt runner/provider/transport/timeout failure is intentionally terminal and receives no generic retry or fallback model.
-5. Repair success produces one parent completed lifecycle and one canonical accepted-compaction commit. Exhaustion produces one parent failed lifecycle, retains the pending operation, and leaves raw archives, output rows, lineage, WorkingContext, and snapshot unchanged.
-6. The Memory Compactor remains zero-tool. New lineage writes `promptContractVersion: 3`; immutable versions 1, 2, and 3 read directly without migration, while unsupported future values fail closed.
+1. The target-agent prompt, single target-history wrapper/separators, neutral input composition, six-array response contract, schema-aware candidate selection, one returned-content correction, zero-tool compactor, atomic accepted commit, and prompt-contract-v3 direct compatibility remain intact.
+2. One immutable planning budget is captured from the actual input budget and trigger threshold for the entire pending operation. It derives explicit headroom, a below-threshold post-compaction target capped by quality retention, a replacement-memory reserve, and complete-prompt overhead. Unattainable/no-prefix plans and finalized target excess fail closed.
+3. After accepted compaction, an actual-observation episode prevents repeated proactive operations until a normalized prompt observation falls below the same threshold. The first still-high observation emits one inadequate-reduction diagnostic; later high observations remain suppressed. Missing prompt counts do not mutate state, numeric zero is real, budget change resets the episode, and hard-input-cap pressure overrides it.
+4. The server compaction boundary returns usable output or a typed runner failure. Error completion, interruption, terminal error, timeout, tool approval, task rejection, launch failure, and collection failure preserve their cause and child identity and bypass JSON parsing/correction.
+5. A new pending operation receives one automatic initial attempt. Final failure retains `awaiting_user_retry` and stops that target-agent turn before further model dispatch. Each distinct later user-origin turn can authorize one new attempt; there is no same-turn, background, agent-origin, or system-origin retry.
+6. While retry-gated, agent/system turn starts stay queued. The scheduler can claim the earliest user behind them without removing or reordering them. Successful retry dispatches the user turn and then resumes relative FIFO; failed retry retains the pending operation and non-user entries.
+7. Existing persisted memory remains directly usable without migration. Planning budget, threshold episode, attempt state, and deferred queue are runtime state rather than a new persisted schema.
 
 ## Review And Validation Authority
 
-- Requirements/design: `SR-001`, `ARCH-REV-001 Pass`
-- Implementation: `IR-001`
-- Implementation source review: `CRR-001 Pass`, `9.5/10`; not reopened by later test work
-- API/E2E: `API-REV-002 Pass`, `97.5%` confidence
-- Proportional durable test-code review: `CRR-003 Pass`; `CR-TEST-001` resolved; four updated durable paths reviewed with no unresolved findings
-- Required live provider journey: corrected DeepSeek execution passed 2/2 with one completed compaction and `canonicalCompactorSourceToolTailVerified: true`
-- Persisted-data decision: `Directly Usable — No Migration`; live v3 write and mixed 1/2/3 lineage read passed
-- Desktop/browser validation: not applicable; changed boundaries are backend/runtime only
+- Requirements/design: `SR-001` through `SR-004`; `ARCH-REV-004 Pass`
+- Implementation: `IR-003` correcting `IR-002`
+- Current source review: `CRR-005 Pass`, `9.5/10`; `CR-IMPL-001` resolved
+- Current API/E2E: `API-REV-003 Pass`, `98.3%` confidence
+- Current proportional durable test review: `CRR-006 Pass`; three updated durable paths, no findings
+- Deterministic current evidence: 215 focused unit tests, 12 focused integrations, 10 deterministic server API E2E tests, and both project builds passed
+- Live current evidence: managed DeepSeek passed 2/2 with exactly one completed compaction and preserved canonical wrapper/tool-free/v3/continuation checks
+- Persisted-data decision: `Directly Usable — No Migration`
+- Desktop/browser validation: no renderer or IPC behavior changed; the current packaged Electron artifact was rebuilt because hands-on verification occurs through the desktop app
 
 ## Documentation Sync
 
-Five durable documents were updated against the latest-base-contained candidate:
+Five current long-lived documents were updated against checkpoint `d3971c014`:
 
 - `autobyteus-ts/docs/agent_memory_design.md`
 - `autobyteus-ts/docs/agent_memory_design_nodejs.md`
+- `autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md`
 - `autobyteus-server-ts/docs/modules/agent_memory.md`
-- `autobyteus-server-ts/docs/modules/agent_work_traces.md`
 - `autobyteus-server-ts/docs/ARCHITECTURE.md`
 
-They now record target framing, neutral message composition, schema-aware response validation, bounded correction, parent lifecycle/atomicity, zero-tool authority, and prompt-contract 3 direct-use semantics. Documentation validation and stale-guidance scans pass; see `docs-sync-report.md` and `docs-sync-validation.log`.
+`autobyteus-server-ts/docs/modules/agent_work_traces.md` and `autobyteus-web/docs/agent_execution_architecture.md` were reviewed with no current-impact edit required. Validation passed; see `docs-sync-report.md` and `docs-sync-validation.log`.
+
+## Current Local Electron Test Artifact
+
+- Target/flavor/version: macOS ARM64 / `personal` / `1.4.50`
+- Preferred DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.dmg`
+- DMG size / SHA-256: `402327711` bytes / `8295f78c6c954eff4793c79666ebf42d65c71124073d601e945520f2f4ba93c5`
+- Alternate ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.zip`
+- ZIP size / SHA-256: `397898745` bytes / `905d164b26644687788945305b14f0a95f92b5527b307f041452c8a8b29e9657`
+- Verification: `Pass` — ARM64 bundle/version, updater hashes, staged/final terminal runtime spawn probes, current planning/threshold/missing-observation/retry/runner markers in the packaged server, DMG checksum, and ZIP integrity passed
+- Signing boundary: intentionally unsigned and not notarized; local test only, not a release artifact
+- Evidence: `electron-build-macos-arm64-dr-003.log`; `electron-build-verification-macos-arm64-dr-003.log`
+- Historical checksum warning: DR-002 used the same output names. The current files were overwritten by DR-003 and must be verified only with the hashes above.
 
 ## Bounded Residual Risk
 
-- A schema-valid summary can still be factually poor or omit facts not structurally required; deterministic validation proves shape and minimum continuation content, not model factual fidelity.
-- A first-attempt transport/provider/timeout failure remains terminal by deliberate scope; only invalid returned content is repaired.
-- The optional local LM Studio/qwen path varied in timing and tool selection and is not used as acceptance proof; the incident-aligned managed DeepSeek path passed.
-- The broad server E2E run retains unrelated debt: 177 passed, 50 skipped, four unrelated tests failed, and one unrelated suite failed to load. The relevant stale server-settings fixture was repaired and passed 10/10 in isolation.
+- Live summary semantics remain probabilistic even when structure and lifecycle are valid.
+- The typed external runner-failure journey is induced deterministically rather than by forcing DeepSeek to fail.
+- Token estimates and provider usage reporting can vary; missing observations intentionally defer threshold mutation.
+- The post-success threshold episode is process-local and resets on runtime restart.
+- One oversized new input still has no general admission/chunking solution.
+- Queued turn starts retain the runtime's existing non-persistent shutdown behavior.
+- Historical unrelated broad-suite debt remains outside the changed-owner evidence set.
 
 ## User Verification And Next Action
 
-The integrated handoff is ready. Explicit user completion/verification is still required before repository finalization.
+The current DR-003 Electron artifact is ready for hands-on testing. Explicit acceptance of this current candidate is required; prior acceptance of the DR-002 baseline is not sufficient.
 
-After an explicit verification signal, delivery will:
+After explicit current verification, delivery will:
 
 1. fetch `origin/personal` again and re-integrate/reverify if it advanced materially;
 2. move the ticket to `tickets/done/compaction-response-robustness`;
 3. commit and push the ticket branch;
 4. update local `personal`, merge the ticket branch, and push `origin/personal`; and
-5. perform release/deployment only if the user explicitly requests it, then clean up the ticket worktree/branches when safe.
+5. perform release/publication only if explicitly requested, then clean up the ticket worktree/branches when safe.
 
 ## Current Status
 
-`Pass — integrated delivery preparation, durable docs sync, and the local macOS ARM64 Electron test build are complete; finalization is intentionally held for explicit user verification.`
+`Pass — current reviewed implementation, integrated-state refresh, durable docs, and rebuilt macOS ARM64 Electron artifact are ready; repository finalization remains intentionally held for explicit current user verification.`

@@ -64,9 +64,9 @@ effect monotonically.
 
 ## Turn Scheduling
 
-External user and inter-agent inputs enter the runtime through
-`AgentRuntime.submitEvent(...)` and are queued in the `turn_start` lane of
-`AgentEventInbox`.
+External user, inter-agent, and supported system inputs enter the runtime
+through `AgentRuntime.submitEvent(...)` and are queued in the `turn_start` lane
+of `AgentEventInbox`.
 When the worker selects a `UserMessageReceivedEvent` or
 `InterAgentMessageReceivedEvent`, it:
 
@@ -84,8 +84,8 @@ Only one active turn is allowed per runtime.
 
 `AgentEventInbox` is the runtime event inbox. It has three lanes:
 
-- `turn_start` for external user events (`UserMessageReceivedEvent`) and
-  inter-agent events (`InterAgentMessageReceivedEvent`);
+- `turn_start` for external `UserMessageReceivedEvent` and
+  `InterAgentMessageReceivedEvent` entries;
 - `active_turn` for awaitable active-turn controls such as tool approvals and
   external tool results;
 - `runtime_lifecycle` for runtime lifecycle events (`LifecycleEvent`).
@@ -94,6 +94,23 @@ Only one active turn is allowed per runtime.
 is idle. While a turn is active, it dispatches lifecycle entries and
 `active_turn` controls so the active turn can be interrupted, approved, or fed
 external tool results without starting another turn.
+
+Every turn-start entry is stamped with authoritative `user`, `agent`, or
+`system` origin before input conversion. `InterAgentMessageReceivedEvent` is
+always agent-origin; `UserMessageReceivedEvent` uses its `SenderType.USER`,
+`SenderType.AGENT`, or `SenderType.SYSTEM` value. `SenderType.TOOL` is not an
+external turn-start origin. `AgentTurn` retains the resolved origin through LLM
+request assembly and compaction attempt authorization.
+
+When memory has a failed pending compaction in `awaiting_user_retry`, the
+compaction retry admission policy makes only user-origin turn starts
+dispatchable. The scheduler selects the earliest matching user entry without
+claiming or moving earlier agent/system entries. A distinct user turn authorizes
+one pending retry before that user's message is appended or dispatched to the
+model. Success allows the user turn to continue and ordinary FIFO service to
+resume; failure ends that turn and leaves both the pending operation and the
+deferred non-user entries intact. This is an in-memory scheduling gate, not a
+persistent deferred-message store.
 
 `AgentRuntime.submitEvent(...)` rejects unsupported operational events instead
 of hiding them in the lifecycle queue. Tool approval decisions are not
@@ -133,6 +150,12 @@ uses these collaborators:
     inter-agent input when structured `reference_files` are present.
 - `LlmPhase`
   - assembles memory-backed LLM requests;
+  - executes an authorized pending compaction before appending the new turn's
+    user message, and treats final compaction failure as a fail-closed turn
+    result rather than dispatching the target model;
+  - evaluates provider-normalized prompt observations after responses for
+    trigger-aligned compaction, while missing prompt-token observations leave
+    the threshold episode unchanged;
   - opens a named `MemoryManager` LLM-request recovery boundary before request
     preparation, commits it after successful response/tool ingestion, and
     restores working context plus compaction state on assembly or provider

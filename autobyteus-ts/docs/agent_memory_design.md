@@ -53,10 +53,13 @@ descriptors are archive-manager results; they are not accepted-candidate or
 lineage fields.
 
 Failures before publication leave output, lineage, snapshot, and installed
-context unchanged and retain the pending ID for normal retry. The publication
-sequence is ordered and validated but is not crash-atomic across its multiple
-files; an early archive or output side effect can remain when a later step fails.
-No journal or unsupported recovery inference is implied.
+context unchanged. A newly requested operation receives one automatic initial
+attempt. Any final planning, runner, response-repair, validation, or commit
+failure retains the same operation in `awaiting_user_retry`; only a distinct
+user-origin turn can authorize another attempt. The publication sequence is
+ordered and validated but is not crash-atomic across its multiple files; an
+early archive or output side effect can remain when a later step fails. No
+journal or unsupported recovery inference is implied.
 
 ## 3. Strategy Contract And Selection
 
@@ -83,6 +86,69 @@ The structured strategy uses the fixed built-in
 `autobyteus-memory-compactor`. Blank runtime/model fields inherit the parent
 run's launch values. `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` is not a runtime
 selector, and no arbitrary-agent fallback is allowed.
+
+### Trigger-Aligned Planning Budget
+
+Each threshold or hard-input-cap request captures one immutable planning budget
+for the whole pending operation, including later user-authorized retries. For an
+effective input budget `B` and trigger threshold `T`, planning derives:
+
+```text
+quality retention cap = floor(0.35 * B)
+trigger headroom       = max(256, ceil(0.10 * T))
+post-compaction target = max(0, min(quality retention cap, T - trigger headroom))
+replacement reserve   = min(8192, max(1024, floor(0.20 * target)))
+```
+
+The message budget estimates the complete observed prompt rather than only the
+stored WorkingContext. It accounts for required leading system messages, a
+complete protected final tool-protocol group, observed-but-untracked overhead,
+and the replacement-memory reserve before retaining the newest complete natural
+units that fit. Planning fails closed with `target_unattainable` when those
+mandatory costs meet or exceed the target, and with `no_compactable_prefix`
+when no settled raw-backed prefix remains. Acceptance estimates the finalized
+context again and rejects it when finalized context plus untracked overhead
+exceeds the captured target.
+
+### Actual-Observation Threshold Episode
+
+Trigger decisions use the provider-normalized prompt tokens observed for a
+completed LLM request. Missing usage or an explicitly missing prompt-token count
+logs a skipped observation and does not mutate threshold state; numeric zero is
+a genuine below-threshold observation.
+
+After one accepted compaction, the process-local threshold episode waits for an
+actual prompt observation below the same threshold before rearming. The first
+above-or-equal observation emits one inadequate-reduction diagnostic and moves
+the episode into suppression; later above-or-equal observations remain
+suppressed instead of requesting repeated successful compactions. A below-
+threshold observation rearms the gate, a changed budget key starts a new
+episode, and hard-input-cap pressure may request compaction regardless of the
+proactive suppression state. An existing pending operation always takes
+precedence. This episode is runtime state and resets when the agent runtime is
+restarted; it is not a persisted memory contract.
+
+### Failed-Pending Attempt And Turn Admission
+
+Pending attempt authority is explicit:
+
+```text
+initial_attempt_ready
+  -> attempt_in_progress(automatic_initial)
+  -> accepted commit and clear
+  or awaiting_user_retry
+       -> attempt_in_progress(user_retry) on a distinct user-origin turn
+```
+
+Failure ends the current target-agent turn before further model dispatch and
+does not schedule a background, same-turn, agent-authored, or system-authored
+retry. Turn-start entries carry authoritative `user`, `agent`, or `system`
+origin before input conversion. While the pending operation awaits user retry,
+the scheduler may claim the earliest queued user entry even when non-user
+entries precede it; those non-user entries remain queued in their relative FIFO
+order. If the retry succeeds, the user message dispatches and normal FIFO
+service resumes afterward. If it fails, the pending operation and non-user
+entries remain in place.
 
 ## 4. Recurrent Complete Replacement
 
@@ -327,12 +393,19 @@ extra fields and unusable blank/non-string entries are ignored; unrelated JSON
 objects cannot mask a later valid object, while multiple distinct valid objects
 are rejected as ambiguous.
 
+The compaction-agent boundary returns usable final output or a typed runner
+failure. Error completions, interruption, terminal error, timeout, tool approval,
+task rejection, launch failure, and collection failure keep their original
+failure kind and available child run/task metadata; they do not become parser
+input.
+
 Returned-content validation failure triggers exactly one corrective child run
 under the same pending compaction operation. The correction prefix records the
 closed validation stage, restates the six-array shape, and resends the same
 selected target history. It has a new task/run identity and the compactor remains
-tool-free. A first-attempt runner, transport, provider, or timeout failure is
-terminal and is not retried by this response-repair boundary.
+tool-free. A runner/provider/transport/timeout failure is terminal for that
+execution attempt and bypasses the response-repair boundary; the retained
+operation can run again only through the distinct user-turn policy above.
 
 Repair success produces one parent completed lifecycle and reaches the existing
 proposal/accept/commit boundary exactly once. Repair exhaustion produces one

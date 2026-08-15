@@ -104,6 +104,25 @@ normalization, publication, lineage read/write, or current-head projection.
 Per-entry bounds, structural validation, cleanup,
 deduplication, and positive salience remain enforced.
 
+Each requested operation captures one immutable trigger-aligned planning budget.
+For effective input budget `B` and trigger threshold `T`, the post-compaction
+target is the non-negative smaller of `floor(0.35 * B)` and `T` minus headroom
+`max(256, ceil(0.10 * T))`. Planning reserves replacement-memory space, required
+system content, observed-but-untracked prompt overhead, and any complete final
+tool-protocol group before retaining the newest complete natural units. An
+unattainable target or absent settled raw-backed compactable prefix fails before
+the compactor runs; accepted output is re-estimated and must fit the same target.
+
+The proactive threshold uses actual normalized prompt observations. Missing
+usage or missing prompt tokens leaves threshold state unchanged, while numeric
+zero is a real below-threshold observation. After success, a process-local
+episode suppresses another proactive request until an actual observation falls
+below the same threshold. The first still-high observation emits one inadequate-
+reduction diagnostic; later high observations remain suppressed. Budget-key
+change resets the episode, and hard-input-cap pressure can still request an
+operation. This removes the former independent fixed-retention/repeated-success
+loop without turning the configurable ratio into a hard context-window resize.
+
 The persisted `autobyteus-memory-compactor` system prompt owns the stable task,
 natural-sizing guidance, and exact six-array response schema. The initial
 operation message identifies the conversation history as belonging to the target
@@ -129,14 +148,28 @@ with at least one non-empty episode. Harmless extra fields and unusable
 blank/non-string entries are ignored; unrelated JSON objects cannot mask a later
 valid object, and multiple distinct valid objects fail as ambiguous.
 
+The server child collector returns usable final assistant output or a typed
+runner failure. Error completion, interruption, terminal error, timeout, tool
+approval, task rejection, launch failure, and collection failure retain their
+kind and available child run/task metadata and never enter the JSON parser.
+
 Only a typed returned-content validation failure triggers one corrective child
 run with a new task/run identity. Its deterministic prefix records the validation
 stage, restates the six-array shape, and resends the same target history. Repair
 success yields one parent completed lifecycle and one canonical commit. Repair
 exhaustion yields one parent failed lifecycle, retains the pending operation, and
 leaves archives, output rows, lineage, WorkingContext, and snapshot unchanged.
-First-attempt runner/provider/transport/timeout failure remains terminal; no
-unbounded retry or fallback model is introduced. The compactor stays zero-tool.
+A runner/provider/transport/timeout failure is terminal for the current attempt,
+bypasses response repair, and introduces no fallback model.
+
+A new pending operation receives one automatic initial attempt. Any final
+failure moves it to `awaiting_user_retry` and stops the current target-agent turn
+before further model dispatch. Each distinct `user`-origin turn can authorize
+one new attempt; `agent` and `system` turn starts remain queued and invoke neither the
+compactor nor target model. The core scheduler may select the earliest queued
+user behind those entries without removing them. Retry success clears the
+operation, dispatches that user turn, and then restores normal relative FIFO;
+retry failure retains the same gate. The compactor remains zero-tool.
 
 New successful lineage records use `promptContractVersion: 3`. Existing
 immutable values 1 and 2 remain directly usable, mixed `1 -> 2 -> 3` chains are
@@ -198,7 +231,12 @@ failure, the existing typed error projection, event unsubscription, and child
 run termination still apply; unrelated process, server-start, and test timeout
 policies are not derived from this value.
 
-Compaction status metadata includes stable `compaction_strategy_id` and `compaction_strategy_name` in addition to operation/turn and current runner diagnostics. A resolver, strategy, validation, or replacement failure preserves the pending request and does not emit a false completed state.
+Compaction status metadata includes stable `compaction_strategy_id` and
+`compaction_strategy_name` in addition to operation/turn and current runner
+diagnostics. Requested, execution, child run, and child task identities remain
+distinct. A resolver, strategy, planning, typed runner, response-repair,
+validation, or replacement failure preserves the pending request and does not
+emit a false completed state.
 
 Codex and Claude runs are recorded by the server as **raw-trace-only** local memory:
 

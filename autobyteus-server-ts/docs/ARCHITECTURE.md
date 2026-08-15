@@ -147,6 +147,17 @@ required for continuation; accepted output requires at least one episode, but
 the parser, normalizer, manager publication, lineage, and current projection do
 not impose the former fixed total-count limits.
 
+Native trigger planning is derived from the same input budget and threshold that
+requested the operation. One immutable operation budget sets a post-compaction
+target below the threshold with explicit headroom, accounts for required system
+content, protected final tool protocol, untracked prompt overhead, and
+replacement memory, and fails closed when the target is unattainable. Finalized
+accepted context must fit that same target. After success, an actual-observation
+episode suppresses repeated proactive operations until a normalized prompt
+observation falls below threshold; missing prompt counts do not mutate the
+episode, changed budget identity resets it, and hard-input-cap pressure remains
+an override. The threshold episode is process-local, not persisted memory.
+
 The persisted `autobyteus-memory-compactor` system prompt owns the stable task,
 natural-sizing guidance, and six-array response schema. The initial operation
 message explicitly identifies the target agent and contains one
@@ -164,10 +175,20 @@ candidate against the six required arrays and accepts only one distinct
 host-consumed result with a non-empty episode. Harmless extra fields do not fail
 validation, unrelated JSON cannot mask a later valid object, and multiple valid
 objects are ambiguous. A typed returned-content failure receives one corrective
-child attempt with the same selected history; runner/transport failure does not.
-The compactor remains tool-free. Success produces one parent completed lifecycle
-and one accepted commit; exhaustion produces one terminal failure and leaves the
-pending operation and canonical memory unchanged.
+child attempt with the same selected history. Child error completion,
+interruption, terminal error, timeout, tool approval, launch/rejection, and
+collection failure retain typed runner identity and bypass response repair. The
+compactor remains tool-free. Success produces one parent completed lifecycle and
+one accepted commit; final failure leaves the pending operation and canonical
+memory unchanged.
+
+A new pending operation has one automatic initial attempt. Final failure changes
+it to `awaiting_user_retry`, stops that target-agent turn before dispatch, and
+permits one new attempt from each distinct later user-origin turn. Agent/system
+turn-start entries remain in the core runtime queue; the scheduler may select the
+earliest user behind them without dropping or reordering them, then resumes
+ordinary relative FIFO after a successful retry. There is no same-turn,
+background, or non-user retry and no persistent deferred-message store.
 
 New lineage records write `promptContractVersion: 3`. Existing immutable values
 1 and 2 remain directly readable, mixed `1 -> 2 -> 3` chains remain valid, and
