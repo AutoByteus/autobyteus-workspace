@@ -51,7 +51,7 @@ The ticket separates shared Carpenter prompt composition from native-only AutoBy
 
 ## Finalization Action
 
-The verified ticket package is ready to archive under `tickets/done/runtime-specific-carpenter-prompt`, commit and push on the ticket branch, merge into `personal`, push `personal`, and clean up the dedicated ticket worktree/branch. The authoritative completion details are recorded in the delivery/release report and delivery revision record.
+The verified ticket package was archived under `tickets/done/runtime-specific-carpenter-prompt`, committed and pushed on `codex/runtime-specific-carpenter-prompt` at `d97b684e8ffd468223e87f6898fa03ec6e54b79d`, merged into `personal`, and pushed at `2cadabc372a2d69313eb45a9906005664fae088c`. The release/deployment report records that no new version or deployment was required.
 
 ## Cumulative Artifact Package
 
