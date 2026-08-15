@@ -301,7 +301,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     ]);
     expect(built.agentConfig.systemPrompt).toContain("## Team Instruction");
     expect(built.agentConfig.systemPrompt).toContain("## Agent Identity");
-    expect(built.agentConfig.systemPrompt).toContain("## Team Runtime");
+    expect(built.agentConfig.systemPrompt).toContain("## Team Collaboration");
     expect(built.agentConfig.systemPrompt).toContain("## Working Environment");
     expect(built.agentConfig.initialCustomData?.teamContext).toEqual(
       expect.objectContaining({

@@ -45,7 +45,7 @@ valid non-null `MemberTeamContext`, it then automatically unions exactly:
 - `send_message_to`
 - `delegate_task`
 
-This automatic pair is required by the Team Runtime communication and
+This automatic pair is required by the Team Collaboration communication and
 delegation contract and applies even when the agent definition omitted both
 names. Standalone runs receive no automatic pair and preserve their explicitly
 configured set. Browser, media, publishing, configured MCP-origin, and the other

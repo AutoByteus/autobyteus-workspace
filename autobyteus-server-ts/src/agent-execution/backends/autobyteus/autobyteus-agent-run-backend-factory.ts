@@ -40,7 +40,7 @@ import {
 } from "./autobyteus-agent-run-backend.js";
 import type { AgentRunBackendFactory } from "../agent-run-backend-factory.js";
 import { buildAutoByteusManagedTeamContext } from "./autobyteus-managed-team-context-builder.js";
-import { composeCarpenterPrompt } from "../../prompt/carpenter-prompt-composer.js";
+import { composeNativeAutoByteusPrompt } from "../../prompt/carpenter-prompt-composer.js";
 import { resolveAutoByteusRuntimeAgentToolExposure } from "./autobyteus-runtime-tool-exposure.js";
 import { resolveAutoByteusAgentTools } from "./autobyteus-agent-tool-resolver.js";
 import { createLlmProviderApiKeyResolver } from "../../../secret-management/resolution/secret-management-provider-api-key-resolver.js";
@@ -331,7 +331,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       memberTeamContext: options.memberTeamContext,
       logger,
     });
-    const resolvedPrompt = composeCarpenterPrompt({
+    const resolvedPrompt = composeNativeAutoByteusPrompt({
       agentDefinition: agentDef,
       workspaceRootPath,
       memberTeamContext: options.memberTeamContext ?? null,
