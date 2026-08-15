@@ -65,7 +65,7 @@ No version or release commit is required. No tag will be created.
 - Re-integration before final merge result: `Not needed` — target had no drift
 - Target branch update result: `Completed` — merge commit `2cadabc372a2d69313eb45a9906005664fae088c`
 - Merge into target result: `Completed`
-- Push target branch result: `Completed` — `origin/personal` at `2cadabc372a2d69313eb45a9906005664fae088c`
+- Push target branch result: `Completed` — initial merge pushed at `2cadabc372a2d69313eb45a9906005664fae088c`; final delivery-record commits were also pushed and `origin/personal` is synchronized.
 - Repository finalization status: `Completed`
 - Blocker (if applicable): `None known`
 
