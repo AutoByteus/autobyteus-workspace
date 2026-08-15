@@ -14,114 +14,118 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/compaction-runtime-behavior-examples.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/compaction-memory-shape-reassessment.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/compaction-unicode-safety-analysis.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/recursive-compaction-root-cause.md`
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/solution-revision-record.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/design-review-report.md`
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/architecture-review-revision-record.md`
 - Triggering rework reports, revision records, and evidence:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/release-deployment-report.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/delivery-revision-record.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/delivery-integrated-compatibility-probe-dr-004.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/evidence/recursive-memory-compactor-ui.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/evidence/recursive-memory-compactor-server-log-excerpt.txt`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/evidence/recursive-memory-compactor-proof.json`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/code-review-report.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/code-review-revision-record.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/api-e2e-coverage-investigation.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/api-e2e-execution-coverage-report.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/api-e2e-revision-record.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/api-e2e-test-review-report.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/evidence/compaction-unicode-request-rejection.png`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/evidence/compaction-unicode-request-rejection-log.txt`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/evidence/compaction-unicode-truncation-proof.json`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/delivery-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/release-deployment-report.md`
 
 ## Current Implementation Summary
 
-The cumulative `REQ-001`–`REQ-016` implementation now includes the reviewed provider-safe Unicode boundary. Raw traces, source payloads, archives, and canonical memory remain unchanged; compaction presentation operates on derived copies, preserves valid Unicode, normalizes newline/control hazards, prevents middle/end clamps from splitting surrogate pairs, and checks the complete task prompt before child launch. A local prompt-construction invariant failure is typed and fails before runner or repair. There is deliberately no whole-task character clamp: complete-prompt admission remains owned only by the established B/T/P token-planning path, while each rendered value and accepted response field keeps its own configured character limit.
+The cumulative `REQ-001`–`REQ-017` implementation now makes automatic compaction one closed, memory-owned runtime composition. The new `MemoryCompactionConfiguration` is either complete `disabled` or complete `enabled` with the existing `CompactionPolicy` and current strategy runner. Omitted direct-core `AgentConfig` and `MemoryManager` construction defaults to disabled; `AgentFactory` installs the supplied configuration without creating a second policy.
 
-This revision also closes the latest-base `DR-004` compatibility block. The native AutoByteus exposure resolver now explicitly bypasses generic native defaults and member-team tools for the built-in Memory Compactor while leaving ordinary agents unchanged. The compactor's effective exposure is again exactly empty.
+The server's shared create/restore configuration path selects disabled for the exact canonical Memory Compactor definition and skips runner creation. Every normal AutoByteus definition instead receives a fresh current policy plus the required runner, and runner creation throw/null fails agent composition rather than silently disabling compaction. This makes initial and response-correction Memory Compactor children sibling leaves and prevents either from requesting a descendant.
 
-The previously reviewed v3 prompt/six-array response contract, schema-aware candidate selection, immutable planning budget, actual-observation threshold episode, typed runner/response distinction, pending-attempt state machine, USER-only retry admission, retained non-user FIFO, accepted-commit authority, missing-usage semantics, persistence, and lineage behavior remain intact.
+`LlmPhase` is definition-agnostic and asks the memory boundary once. It always resolves ordinary provider/model request capacity, but only an enabled configuration derives/applies compaction thresholds, constructs the current strategy/executor/reporter, executes pending work, or evaluates a post-response observation. Disabled runs pass no compaction executor to request assembly and return their original tool/final response even at policy-hard-cap pressure.
+
+The exact v3 prompt and byte-identical six-array response, schema-aware candidate selection, provider-safe Unicode rules, B/T/P planning, missing-usage behavior, actual-observation threshold episode, typed runner/response failures, USER-only retry/same-queue preservation, zero tools, sole accepted commit, lineage, and no-migration posture remain unchanged.
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/implementation-revision-record.md`
-- Current implementation revision ID: `IR-004`
-- Related solution revision IDs: `SR-001`–`SR-006`
-- Related architecture-review revision IDs: `ARCH-REV-001`–`ARCH-REV-006`; current decision `ARCH-REV-006 Pass`
-- Related code-review revision IDs: `CRR-001`–`CRR-006` are prior cumulative history; a new source review is required for `IR-004`
-- Related API/E2E revision IDs: `API-REV-001`–`API-REV-003` are prior history; fresh investigation/execution is required after source review
-- Related delivery revision IDs: `DR-001`–`DR-004`; `DR-004 Blocked / Local Fix` triggered the native-default bypass portion of this revision
-- Triggering finding IDs: `AR-FIND-002` and `AR-FIND-005` were resolved by SR-006/ARCH-REV-006 before implementation; the delivery compatibility finding recorded in `DR-004` is locally corrected
+- Current implementation revision ID: `IR-005`
+- Related solution revision IDs: `SR-001`–`SR-008`; `SR-008` supersedes the unimplemented `SR-007` design shape
+- Related architecture-review revision IDs: `ARCH-REV-001`–`ARCH-REV-007`; current decision `ARCH-REV-007 Pass`
+- Related code-review revision IDs: `CRR-001`–`CRR-008` are prior cumulative history; a new source review is required for `IR-005`
+- Related API/E2E revision IDs: `API-REV-001`–`API-REV-004` are prior history; fresh coverage investigation/execution is required after source review
+- Related delivery revision IDs: `DR-001`–`DR-005` are prior history; `DR-005` passed before user verification exposed recursive child compaction
+- Triggering finding IDs: `N/A`; `ARCH-REV-007` has no findings, and `IR-005` implements approved `BEH-012` / `REQ-017`
 - Branch/worktree: `codex/compaction-response-robustness` at `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness`
 
 ## Reviewed Behavior Implementation Trace
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| `BEH-001` | Exact target-agent framing and raw/neutral sender composition | Existing compaction prompt/history builder, built-in `agent.md`, and input processor | Preserved; no prompt wording or history-envelope change in IR-004. |
-| `BEH-002` | One schema-valid projected six-array result | Existing `compaction-response-parser.ts` | Preserved; the only parser delta is shared surrogate-safe accepted-text clamping. |
-| `BEH-003` | Initial attempt, at most one new-child correction, then terminal | Existing `agent-compaction-summarizer.ts`; prompt builder finalization | Preserved; local prompt construction failure occurs before runner/parser/correction. |
-| `BEH-004` | Host validation and sole accepted commit | Existing output validator, normalizer, accepted committer, and pending executor | Preserved; Unicode failure cannot reach canonical mutation. |
-| `BEH-005` | Effective compactor tool surface is empty | `autobyteus-runtime-tool-exposure.ts` keyed by built-in Memory Compactor ID | Corrected after latest-base integration; native defaults and team tools are bypassed only for this built-in. |
+| `BEH-001` | Exact target-agent framing and raw/neutral sender composition | Existing compaction prompt/history builder, built-in `agent.md`, and input processor | Preserved; no prompt wording or history-envelope change in IR-005. |
+| `BEH-002` | One schema-valid projected six-array result | Existing `compaction-response-parser.ts` | Preserved; no response-shape or candidate-selection change. |
+| `BEH-003` | Initial attempt, at most one new-child correction, then terminal | Existing `agent-compaction-summarizer.ts`; server definition-aware child composition | Preserved; initial and optional correction children are disabled sibling leaves. |
+| `BEH-004` | Host validation and sole accepted commit | Existing output validator, normalizer, accepted committer, and pending executor | Preserved; no canonical mutation moved outside accepted commit. |
+| `BEH-005` | Effective compactor tool surface is empty | Existing `autobyteus-runtime-tool-exposure.ts` built-in exception | Preserved; configuration disablement is independent from zero-tool exposure. |
 | `BEH-006` | Prompt contract 3 write and direct 1/2/3 read | Existing lineage writer/reader | Preserved; no migration or lineage-version change. |
-| `BEH-007` | Immutable B/T/P planning and actual-observation threshold episode | Existing planning budget, threshold gate, manager/coordinator, and LLM-phase adapter | Preserved; missing prompt usage remains missing and numeric zero remains an actual observation. |
-| `BEH-008` | Runner failures bypass response parsing/repair | Existing typed runner and summarizer; `CompactionPromptConstructionError` adds a typed pre-run local failure | Preserved/extended at the approved local boundary. |
-| `BEH-009` | Final failure stops target dispatch and retains one manual retry | Existing pending executor and parent terminal owner | Preserved; construction failure follows the same fail-closed pending outcome. |
+| `BEH-007` | Immutable B/T/P planning and actual-observation threshold episode | `token-budget.ts`; planning budget; threshold gate; manager/coordinator; LLM-phase adapter | Preserved for enabled runs; request-capacity arithmetic is now separate and still applies to disabled leaves. |
+| `BEH-008` | Runner failures bypass response parsing/repair | Existing typed runner, collector, and summarizer | Preserved; no new retry or classification path. |
+| `BEH-009` | Final failure stops target dispatch and retains one manual retry | Existing pending executor and parent terminal owner | Preserved for enabled target agents. |
 | `BEH-010` | Only earliest eligible USER retries; queued AGENT/SYSTEM entries remain | Existing origin-stamped inbox/turn and atomic pending-attempt admission | Preserved unchanged. |
-| `BEH-011` | Provider-safe derived Unicode without source mutation or whole-task character clamp | New `unicode-safe-text.ts`; `readable-value-renderer.ts`; prompt builder; parser clamp | Implemented with surrogate-safe head/tail/end boundaries, actual omission accounting, CRLF/CR normalization, LF/TAB preservation, disallowed C0/DEL removal, defensive lone-surrogate replacement, and final prompt assertion. |
+| `BEH-011` | Provider-safe derived Unicode without source mutation or whole-task character clamp | Existing Unicode-safe presentation, prompt invariant, and parser clamp | Preserved unchanged. |
+| `BEH-012` | Memory-owned automatic-compaction configuration and non-recursive built-in leaf | New `memory-compaction-configuration.ts`; `AgentConfig`; `AgentFactory`; `MemoryManager`; split token-budget functions; `LlmPhase`; AutoByteus backend factory | Implemented. Direct core defaults disabled; normal server composition is enabled-or-fail; canonical Memory Compactor create/restore shares the disabled/no-runner path; core performs no automatic-compaction work when disabled. |
 
 ## Key Files Or Areas
 
-- `autobyteus-ts/src/memory/presentation/unicode-safe-text.ts` — pure provider-safe normalization and UTF-16 boundary authority.
-- `autobyteus-ts/src/memory/presentation/readable-value-renderer.ts` — derived-copy normalization plus safe middle omission using adjusted boundaries and actual omitted count.
-- `autobyteus-ts/src/memory/compaction/working-context-compaction-prompt-builder.ts` — complete-prompt finalization/assertion and typed construction failure.
-- `autobyteus-ts/src/memory/compaction/compaction-response-parser.ts` — shared safe end clamp for accepted episode/fact text.
-- `autobyteus-ts/src/memory/compaction/pending-compaction-executor.ts` — truthful `input_construction_failure` classification.
-- `autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-runtime-tool-exposure.ts` — Memory Compactor-specific native-default/team-tool bypass.
-- `autobyteus-ts/tests/fixtures/memory/compaction-unicode-shield-tool-trace.json` — exact captured source fixture used by direct renderer/prompt tests.
-- Direct core/server unit tests beside the changed paths.
+- `autobyteus-ts/src/memory/compaction/memory-compaction-configuration.ts` — closed disabled/enabled variants, immutable disabled default, complete enabled constructor, and copy semantics.
+- `autobyteus-ts/src/agent/context/agent-config.ts` — replaces the nullable top-level runner with the non-null memory configuration.
+- `autobyteus-ts/src/agent/factory/agent-factory.ts` — installs the configuration into memory without inventing policy.
+- `autobyteus-ts/src/memory/memory-manager.ts` — authoritative configuration owner/facade and disabled no-work observation.
+- `autobyteus-ts/src/agent/token-budget.ts` — common `LlmRequestCapacity` plus enabled-only `CompactionTokenBudget`.
+- `autobyteus-ts/src/agent/loop/llm-phase.ts` and `llm-phase-compaction.ts` — definition-agnostic optional compaction integration.
+- `autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts` — exact built-in leaf selection and normal enabled-or-fail composition.
+- Focused unit and narrow integration tests beside these boundaries.
 
 ## Important Assumptions
 
-- Configured per-value and accepted-text limits are UTF-16 code-unit limits, matching existing JavaScript string semantics; a boundary may retain one fewer unit to keep a surrogate pair whole.
-- U+FFFD is permitted only in a derived copy when the source is already malformed; valid paired supplementary characters are preserved or omitted whole.
-- The built-in registry ID is the stable runtime identity for the product-owned Memory Compactor and is the narrowest authority for bypassing generic native defaults.
+- `MEMORY_COMPACTOR_AGENT_DEFINITION_ID` remains the stable product-owned identity at the server composition boundary; core intentionally has no built-in/name/model/provider check.
+- Disabled means no automatic compaction, not unlimited context. The existing provider/model input capacity and ordinary output/safety reserve continue to govern child admission.
+- The existing single `CompactionPolicy`, `structured-json` registration, and `CompactionAgentRunner` remain the sole enabled strategy path.
 
 ## Known Risks
 
-- Valid strings can still be rejected for independent provider limits or provider-specific policy; this change addresses the proven malformed-surrogate/control boundary only.
-- Token estimation, provider accounting, factual summary quality, runtime-only threshold-state restart behavior, oversized single-input admission, and non-persistent queued turn starts remain the approved residuals.
+- No real-provider recursive-compactor scenario was executed in the implementation stage; fresh downstream investigation must validate the captured 20% reproduction against the full server/runtime child path.
+- Normal AutoByteus agent construction now truthfully fails if the required compaction runner cannot be created; this is approved behavior but expands the operational visibility of runner-factory failures.
+- Token estimation/provider accounting, factual summary quality, runtime-only threshold-state restart behavior, oversized single-input admission, and non-persistent queued turn starts remain approved residuals.
 - First-attempt runner/provider/timeout failures remain terminal until a later eligible USER turn; no automatic retry was added.
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: bounded extension of the existing memory-presentation boundary; preserve cumulative prompt/parser/runtime architecture.
-- Reviewed root-cause classification: deterministic derived-string truncation split a valid UTF-16 surrogate pair; latest-base generic native defaults independently violated the existing zero-tool contract.
-- Reviewed refactor decision: `No Refactor Needed` beyond one shared provider-safe text utility and one narrow built-in exposure exception.
+- Reviewed change posture: bounded ownership refactor plus behavioral correction for recursive built-in child execution.
+- Reviewed root-cause classification: fragmented automatic-compaction composition let the canonical Memory Compactor inherit a policy and launch a descendant.
+- Reviewed refactor decision: `Refactor Needed Now` within agent/memory composition, token-budget separation, and the generic LLM-phase integration boundary; no new controller/policy/strategy hierarchy.
 - Implementation matched the reviewed assessment: `Yes`.
 - If challenged, routed as `Design Impact`: `N/A`.
-- Evidence / notes: the exact captured shield fixture reproduces the former 2,000-unit pressure and now renders safely; the tool-exposure unit proves empty effective exposure even with a mixed team context.
+- Evidence / notes: one closed configuration replaces the parallel runner/policy sources; the server alone knows canonical identity; memory owns the installed decision; core consumes only that boundary.
 
 ## Legacy / Compatibility Removal Check
 
 - Backward-compatibility mechanisms introduced: `None`.
 - Legacy old-behavior retained in scope: `No`.
-- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes`; unsafe direct middle/end slices in the changed compaction boundaries were removed.
-- Shared structures remain tight: `Yes`; the Unicode utility owns only normalization/boundaries, while renderer/parser/prompt builder retain their domain ownership.
+- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes`; `AgentConfig.compactionAgentRunner`, unconditional `AgentFactory` policy construction, and the combined `resolveTokenBudget` API are removed.
+- Shared structures remain tight: `Yes`; exactly two configuration variants, no optional runner/policy bag, strategy ID, boolean, numeric sentinel, or persisted representation was added.
 - Canonical shared design guidance was reapplied during implementation: `Yes`.
-- Changed source implementation files stayed within proactive size-pressure guardrails: `Yes`; all are below 500 effective non-empty lines and no source delta exceeds 220 lines.
-- Notes: ordinary native agents retain the new latest-base default-tool behavior; only the product-owned Memory Compactor takes the least-authority bypass.
+- Changed source implementation files stayed within proactive size-pressure guardrails: `Yes`; the largest changed production files are 499 and 497 effective non-empty lines, and no changed source delta exceeds 220 lines.
+- Notes: remaining `compactionAgentRunner` names are internal to the existing strategy-construction contract, not a parallel `AgentConfig` capability source.
 
 ## Persisted Data Transition Check (When Applicable)
 
-- Approved decision: `Directly Usable — No Migration`.
+- Approved decision: `Not Affected` / `Directly Usable — No Migration` for the cumulative lineage and memory stores.
 - Design-spec decision reference: `design-spec.md`, “Persisted Data / State Transition Decision”.
 - Implementation follows the approved decision without an unapproved migration or version-specific runtime fallback: `Yes`.
-- Direct-use evidence or discard/rebuild result, when applicable: normalization occurs only on temporary provider-facing/projection strings. Raw traces, tool payloads, archives, snapshots, canonical memory, and v1/v2/v3 lineage remain unchanged and directly usable.
+- Direct-use evidence or discard/rebuild result, when applicable: the new configuration, request-capacity split, and child leaf decision are runtime-only. Raw traces, memory, snapshots, archives, and prompt-contract 1/2/3 lineage retain their existing readers/writers.
 - Migration implementation and focused checks, only when `Migration Required`: N/A.
 - Deviation from the reviewed transition decision: `None`.
 
 ## Environment Or Dependency Notes
 
-- Existing locked workspace dependencies were used; no dependency or schema change was introduced.
-- The server unit aggregate reset its normal isolated SQLite test database and passed.
+- Existing locked workspace dependencies were used; no dependency, provider contract, database schema, or persisted configuration change was introduced.
 - The normal server build generated Prisma and passed the sanitized built-in-agent bootstrap smoke.
+- Existing real/live API/E2E support still contains removed composition/token-budget references and is intentionally left for the required post-source-review coverage investigation rather than being treated as implementation sign-off.
 
 ## Local Implementation Checks Run
 
@@ -129,26 +133,27 @@ All checks are implementation-scoped; none is downstream API/E2E sign-off.
 
 - `pnpm build` in `autobyteus-ts` — passed, including source TypeScript compilation and runtime-dependency verification.
 - `pnpm build` in `autobyteus-server-ts` — passed, including shared builds, Prisma generation, source TypeScript compilation, asset copy, and sanitized built-in-agent bootstrap smoke.
-- Complete core memory unit directory — 40 files / 220 tests passed. This includes exact shield-fixture rendering, head/tail/end surrogate boundaries, malformed high/low surrogates, variation-selector emoji, multilingual/code/path content, newline/tab/control normalization, tiny limits, no source mutation, accepted-text clamps, final prompt failure, B/T/P, threshold, retry, and commit regressions.
-- Focused cumulative compaction regression aggregate — 15 files / 100 tests passed.
-- Focused server compactor/tool-exposure aggregate — 6 files / 34 tests passed, including empty effective Memory Compactor exposure, built-in template/bootstrap preservation, launch resolution, child output collection, and runner behavior.
-- Exact 540,727-UTF-16-unit prompt test — passed with the complete rendered history retained; no whole-task character clamp was introduced.
-- Changed-source size audit — passed; largest changed production file is 235 effective non-empty lines and no changed source delta exceeds 220 lines.
-- `git diff --check` — passed.
+- Core affected/broad unit aggregate — 49 files / 266 tests passed. Coverage includes configuration shape/copy, direct disabled defaults, manager no-work behavior, AgentFactory ownership, request-capacity/threshold arithmetic, missing and numeric-zero usage, high-usage disabled LLM phase, tool-response regressions, pending accepted lifecycle, and the cumulative memory suite.
+- Core narrow compaction integrations — 2 files / 5 tests passed. Enabled configuration reaches the current strategy/runner for tool-continuation and full runtime compaction, including preserved failure/retry behavior.
+- Server compactor/factory aggregate — 5 files / 37 tests passed. Coverage includes normal runner tuple/enabled configuration, exact canonical built-in disabled/no-runner selection, thrown/null composition failure, zero-tool exposure, lineage scope, collector, and runner behavior.
+- Changed-source size audit — passed; every changed production source file is below 500 effective non-empty lines and no delta exceeds 220 lines.
+- Production stale-carrier scan — passed; no `AgentConfig.compactionAgentRunner`, `MemoryManager.compactionPolicy`, or `resolveTokenBudget` reference remains in production source.
+- Path-filtered `git diff --cached --check` — passed for implementation, tests, Markdown, and non-verbatim artifacts. The supplied DR-005 build log and exact recursive server-log evidence retain their original trailing-space bytes; the latter still matches its authoritative SHA-256.
 
 ## Frontend Rendered-Result Check (When Applicable)
 
-Not Applicable — this revision changes backend/core compaction text construction, validation, and tool exposure; it does not alter a rendered frontend surface.
+Not Applicable — this revision changes core/server runtime composition and compaction lifecycle wiring; it does not alter a rendered frontend surface.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
-- Replay the exact captured shield trace through the normal compaction child request and verify provider acceptance, a well-formed serialized request, unchanged parent raw trace, and no U+FFFD for the valid shield pair.
-- Exercise a pre-existing lone high/low surrogate and disallowed control in derived input; verify U+FFFD/control removal only in the child prompt and no canonical/source mutation.
-- Verify accepted episode/fact text near supplementary-plane boundaries remains provider-safe when projected into a later prompt.
-- Force final prompt invariant failure and verify zero runner/provider calls, zero correction, typed `input_construction_failure`, retained pending state, stopped target dispatch, and unchanged memory/lineage/archive state.
-- Resolve effective native runtime tool exposure for the Memory Compactor with configured empty tools and mixed/native team context; verify no tool definitions reach the child while an ordinary native agent still receives the expected defaults.
-- Regress the cumulative 20% planning/threshold episode, partial-usage observation, typed runner failure, USER-only retry, and retained AGENT/SYSTEM FIFO paths against the integrated latest-base state.
+- Update/classify the stale removed-interface references in `test-support/live-e2e/live-e2e-harness.ts` and `autobyteus-ts/tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts` during the required coverage investigation; do not restore compatibility aliases.
+- Exercise the canonical Memory Compactor through both backend create and restore. Assert the runner factory is never called, `MemoryManager` owns disabled configuration, final tools remain empty, ordinary capacity is reported, original completion is returned, and no pending operation/lifecycle/descendant appears above proactive and hard-cap thresholds.
+- Repeat after a usable invalid initial response. Assert exactly one disabled correction sibling, zero descendants, and the parent remains the sole repair/commit owner.
+- Exercise a normal definition with the unchanged definition/workspace/runtime/model runner tuple. Assert a fresh existing policy plus runner reaches memory and the current `structured-json` strategy on both immediate and next-dispatch execution.
+- Exercise normal runner factory throw and null outcomes through create and restore. Assert truthful `AgentCreationError` and no disabled fallback.
+- Regress the cumulative exact v3 prompt/six-array, Unicode shield, 20% planning/actual-observation episode, missing usage/numeric zero, typed runner failure, USER-only retry, retained AGENT/SYSTEM FIFO, zero tools, and accepted commit/lineage paths.
+- Re-run the captured parent/outer/nested scenario with the 176,655-token provider-admissible child and 123,148-token global trigger; assert one outer leaf, no descendant, and the next actual 73,102-token parent observation resets the episode.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Yes. After the new source review passes, `api_e2e_engineer` must create a fresh coverage-investigation revision for `IR-004`, classify prior durable/live evidence against `REQ-016` and the integrated zero-tool correction, then execute repository and realistic system coverage. Any repository-resident durable coverage added, updated, or removed after source review must return through `code_reviewer` before delivery re-entry.
+Yes. After the new source review passes, `api_e2e_engineer` must create a fresh coverage-investigation revision for `IR-005`, classify and update prior durable/live coverage against `REQ-017`, then execute repository and realistic system coverage. Any repository-resident durable coverage added, updated, or removed after source review must return through `code_reviewer` before delivery re-entry.

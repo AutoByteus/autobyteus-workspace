@@ -7,7 +7,6 @@ import { ToolInvocation } from '../agent/tool-invocation.js';
 import { RawTraceItem, type RawTraceItemOptions } from './models/raw-trace-item.js';
 import { toolCallIdentityKey } from './models/tool-call-identity.js';
 import { MemoryType } from './models/memory-types.js';
-import { CompactionPolicy } from './policies/compaction-policy.js';
 import { MemoryStore } from './store/base-store.js';
 import type { CompactionLineageStore } from './lineage/compaction-lineage-store.js';
 import type { CompactionLineageScope } from './lineage/compaction-lineage-scope.js';
@@ -43,6 +42,7 @@ export type {
   PendingCompactionRequest,
 } from './memory-manager-compaction-coordinator.js';
 import type { CompactionPlanningBudget } from './compaction/compaction-planning-budget.js';
+import { DEFAULT_MEMORY_COMPACTION_CONFIGURATION, type MemoryCompactionConfiguration } from './compaction/memory-compaction-configuration.js';
 import type { TurnStartOrigin } from '../agent/event-inbox/agent-event-inbox-entry.js';
 import {
   buildNativeAssistantResponseTraces,
@@ -92,7 +92,6 @@ export type OperationBoundaryNoteInput = { scope: MemoryProjectionScope; reason?
 export class MemoryManager {
   store: MemoryStore;
   turnTracker: TurnTracker;
-  compactionPolicy: CompactionPolicy;
   memoryTypes = MemoryType;
   private readonly workingContextController: MemoryManagerWorkingContextController;
   workingContextSnapshotStore: WorkingContextSnapshotStore | null;
@@ -100,8 +99,10 @@ export class MemoryManager {
   private readonly llmRequestRecovery: LlmRequestRecoveryBoundary;
   private seqByTurn = new Map<string, number>();
   private readonly toolLifecycleState: ToolTraceLifecycleState;
+  private readonly automaticCompactionConfiguration: MemoryCompactionConfiguration;
 
-  constructor(options: { store: MemoryStore; turnTracker?: TurnTracker; compactionPolicy?: CompactionPolicy;
+  constructor(options: { store: MemoryStore; turnTracker?: TurnTracker;
+    memoryCompaction?: MemoryCompactionConfiguration;
     workingContext?: WorkingContext;
     workingContextSnapshotStore?: WorkingContextSnapshotStore | null;
     lineageStore?: CompactionLineageStore | null;
@@ -109,7 +110,7 @@ export class MemoryManager {
     agentId?: string | null }) {
     this.store = options.store;
     this.turnTracker = options.turnTracker ?? new TurnTracker();
-    this.compactionPolicy = options.compactionPolicy ?? new CompactionPolicy();
+    this.automaticCompactionConfiguration = options.memoryCompaction ?? DEFAULT_MEMORY_COMPACTION_CONFIGURATION;
     this.workingContextSnapshotStore = options.workingContextSnapshotStore ?? null;
     this.workingContextController = new MemoryManagerWorkingContextController({
       workingContext: options.workingContext,
@@ -144,13 +145,18 @@ export class MemoryManager {
     requestedTurnId: string;
     planningBudget: CompactionPlanningBudget;
   }): CompactionObservationDecision {
-    const pressure = this.compactionPolicy.classifyPressure(
+    if (this.automaticCompactionConfiguration.kind === 'disabled') {
+      return { kind: 'none', operationId: null, requestKind: null, planningBudget: input.planningBudget };
+    }
+    const pressure = this.automaticCompactionConfiguration.policy.classifyPressure(
       input.planningBudget.observedPromptTokens,
       input.planningBudget.inputBudgetTokens,
       input.planningBudget.triggerThresholdTokens,
     );
     return this.compactionCoordinator.evaluateObservation({ ...input, pressure });
   }
+
+  getAutomaticCompactionConfiguration(): MemoryCompactionConfiguration { return this.automaticCompactionConfiguration; }
 
   requestCompaction(input: {
     requestedTurnId?: string | null;

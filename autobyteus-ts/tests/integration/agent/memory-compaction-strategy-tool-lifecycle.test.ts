@@ -24,6 +24,7 @@ import type {
   CompactionAgentRunner,
   CompactionAgentTask,
 } from '../../../src/memory/compaction/compaction-agent-runner.js';
+import { createEnabledMemoryCompactionConfiguration } from '../../../src/memory/compaction/memory-compaction-configuration.js';
 import { AUTOBYTEUS_COMPACTION_STRATEGY } from '../../../src/memory/compaction/working-context-compaction-strategy-setting.js';
 import { MemoryManager } from '../../../src/memory/memory-manager.js';
 import { MemoryType } from '../../../src/memory/models/memory-types.js';
@@ -172,15 +173,19 @@ describe('structured strategy tool-safe lifecycle', () => {
         memberId: null,
       };
       const lineageStore = new FileCompactionLineageStore(store.agentDir, lineageScope);
+      const runner = new RecordingCompactionRunner();
+      const memoryCompaction = createEnabledMemoryCompactionConfiguration(
+        new CompactionPolicy({ triggerRatio: 0.5, safetyMarginTokens: 0 }),
+        runner,
+      );
       const manager = new MemoryManager({
         store,
-        compactionPolicy: new CompactionPolicy({ triggerRatio: 0.5, safetyMarginTokens: 0 }),
+        memoryCompaction,
         lineageStore,
         lineageScope,
         agentId: 'tool-lifecycle-agent',
       });
       seedSettledHistory(manager);
-      const runner = new RecordingCompactionRunner();
       const llm = new SequencedStreamingLLM([
         [new ChunkResponse({
           content: 'I will inspect the runtime.',
@@ -210,7 +215,7 @@ describe('structured strategy tool-safe lifecycle', () => {
         'System prompt',
         [readFileTool],
       );
-      config.compactionAgentRunner = runner;
+      config.memoryCompaction = memoryCompaction;
       const state = new AgentRuntimeState('tool-lifecycle-agent', tempDir);
       state.llmInstance = llm;
       state.memoryManager = manager;

@@ -1,5 +1,4 @@
-import { applyCompactionPolicy, resolveTokenBudget } from '../token-budget.js';
-import type { BaseLLM } from '../../llm/base.js';
+import type { CompactionTokenBudget } from '../token-budget.js';
 import type { LlmTokenUsageObservation } from '../../llm/utils/llm-token-usage-observation.js';
 import type { AgentContext } from '../context/agent-context.js';
 import type { CompactionRuntimeReporter } from '../compaction/compaction-runtime-reporter.js';
@@ -8,8 +7,8 @@ import { resolveCompactionPlanningBudget } from '../../memory/compaction/compact
 import type { CompactionObservationDecision } from '../../memory/memory-manager.js';
 
 export function evaluateLlmPhaseCompaction(input: {
-  llmInstance: BaseLLM;
   memoryManager: NonNullable<AgentContext['state']['memoryManager']>;
+  tokenBudget: CompactionTokenBudget | null;
   tokenUsage: LlmTokenUsageObservation | null;
   observedPromptTokens?: number | null;
   activeTurnId: string;
@@ -17,8 +16,8 @@ export function evaluateLlmPhaseCompaction(input: {
   runtimeSettingsResolver: CompactionRuntimeSettingsResolver;
 }): CompactionObservationDecision | null {
   const {
-    llmInstance,
     memoryManager,
+    tokenBudget,
     tokenUsage,
     observedPromptTokens,
     activeTurnId,
@@ -47,17 +46,10 @@ export function evaluateLlmPhaseCompaction(input: {
     );
     return null;
   }
-  const budget = resolveTokenBudget(
-    llmInstance.model,
-    llmInstance.config,
-    memoryManager.compactionPolicy,
-    runtimeSettings,
-  );
-  if (!budget) return null;
+  if (!tokenBudget) return null;
 
-  applyCompactionPolicy(memoryManager.compactionPolicy, budget);
   const planningBudget = resolveCompactionPlanningBudget(
-    budget,
+    tokenBudget,
     promptTokens,
   );
   const decision = memoryManager.evaluateCompactionObservation({
@@ -66,20 +58,20 @@ export function evaluateLlmPhaseCompaction(input: {
   });
   compactionReporter.logBudgetEvaluated({
     prompt_tokens: promptTokens,
-    effective_total_context_tokens: budget.effectiveContextCapacity,
-    context_derived_input_cap_tokens: budget.contextDerivedInputCapTokens,
-    provider_input_cap_tokens: budget.providerInputCapTokens,
-    effective_input_cap_tokens: budget.effectiveInputCapacity,
-    reserved_output_tokens: budget.reservedOutputTokens,
-    safety_margin_tokens: budget.safetyMarginTokens,
-    input_budget_tokens: budget.inputBudget,
-    compaction_ratio: budget.compactionRatio,
-    trigger_threshold_tokens: budget.triggerThresholdTokens,
+    effective_total_context_tokens: tokenBudget.effectiveContextCapacity,
+    context_derived_input_cap_tokens: tokenBudget.contextDerivedInputCapTokens,
+    provider_input_cap_tokens: tokenBudget.providerInputCapTokens,
+    effective_input_cap_tokens: tokenBudget.effectiveInputCapacity,
+    reserved_output_tokens: tokenBudget.reservedOutputTokens,
+    safety_margin_tokens: tokenBudget.safetyMarginTokens,
+    input_budget_tokens: tokenBudget.inputBudget,
+    compaction_ratio: tokenBudget.compactionRatio,
+    trigger_threshold_tokens: tokenBudget.triggerThresholdTokens,
     trigger_headroom_tokens: planningBudget.triggerHeadroomTokens,
     quality_retention_cap_tokens: planningBudget.qualityRetentionCapTokens,
     post_compaction_target_tokens: planningBudget.postCompactionTargetTokens,
     budget_key: planningBudget.budgetKey,
-    override_active: budget.overrideActive,
+    override_active: tokenBudget.overrideActive,
     compaction_required: decision.kind === 'requested',
     threshold_episode_decision: decision.kind,
   }, runtimeSettings.detailedLogsEnabled);

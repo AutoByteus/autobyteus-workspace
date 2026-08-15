@@ -170,6 +170,15 @@ remain enforced. Generic sender headings are removed from shared input
 composition; content without readable context remains unchanged, while combined
 context/message payloads use only neutral `[Context]` and `[Message]` sections.
 
+Derived compaction text is normalized to a provider-safe Unicode copy without
+rewriting canonical raw traces or stored source values. Valid surrogate pairs,
+multilingual text, code, paths, symbols, emoji, newline, and tab are preserved;
+lone surrogates are replaced, non-useful C0 controls are removed, and middle/end
+truncation cannot split a pair. The completed initial or correction prompt is
+checked before child launch. Failure is typed `input_construction_failure` and
+performs no child/correction call, target dispatch, or canonical mutation while
+retaining the user-authorized pending gate.
+
 The response boundary validates every exact, fenced, or balanced JSON-object
 candidate against the six required arrays and accepts only one distinct
 host-consumed result with a non-empty episode. Harmless extra fields do not fail
@@ -178,9 +187,11 @@ objects are ambiguous. A typed returned-content failure receives one corrective
 child attempt with the same selected history. Child error completion,
 interruption, terminal error, timeout, tool approval, launch/rejection, and
 collection failure retain typed runner identity and bypass response repair. The
-compactor remains tool-free. Success produces one parent completed lifecycle and
-one accepted commit; final failure leaves the pending operation and canonical
-memory unchanged.
+compactor remains tool-free: the native exposure resolver matches its exact
+built-in definition ID before ordinary default/team composition, leaving final
+`AgentConfig.tools` empty while ordinary native agents retain all four foundation
+tools. Success produces one parent completed lifecycle and one accepted commit;
+final failure leaves the pending operation and canonical memory unchanged.
 
 A new pending operation has one automatic initial attempt. Final failure changes
 it to `awaiting_user_retry`, stops that target-agent turn before dispatch, and

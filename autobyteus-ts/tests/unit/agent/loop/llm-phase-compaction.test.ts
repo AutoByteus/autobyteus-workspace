@@ -1,7 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
 import { evaluateLlmPhaseCompaction } from '../../../../src/agent/loop/llm-phase-compaction.js';
+import {
+  resolveCompactionTokenBudget,
+  resolveLlmRequestCapacity,
+} from '../../../../src/agent/token-budget.js';
 import type { CompactionRuntimeReporter } from '../../../../src/agent/compaction/compaction-runtime-reporter.js';
-import type { BaseLLM } from '../../../../src/llm/base.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
@@ -67,19 +70,17 @@ const buildHarness = (
     compactionPolicy,
     evaluateCompactionObservation,
   } as unknown as MemoryManager;
-  const llmInstance = {
-    model: new LLMModel({
-      name: 'compaction-observation-test',
-      value: 'compaction-observation-test',
-      canonicalName: 'compaction-observation-test',
-      provider: LLMProvider.OPENAI,
-      activeContextTokens: 6_000,
-      maxOutputTokens: 1_000,
-      defaultCompactionRatio: 0.2,
-      defaultSafetyMarginTokens: 0,
-    }),
-    config: new LLMConfig({ maxTokens: 1_000 }),
-  } as BaseLLM;
+  const model = new LLMModel({
+    name: 'compaction-observation-test',
+    value: 'compaction-observation-test',
+    canonicalName: 'compaction-observation-test',
+    provider: LLMProvider.OPENAI,
+    activeContextTokens: 6_000,
+    maxOutputTokens: 1_000,
+    defaultCompactionRatio: 0.2,
+    defaultSafetyMarginTokens: 0,
+  });
+  const config = new LLMConfig({ maxTokens: 1_000 });
   const compactionReporter = {
     logBudgetSkippedNoUsage: vi.fn(),
     logBudgetEvaluated: vi.fn(),
@@ -95,11 +96,21 @@ const buildHarness = (
     }),
   } as CompactionRuntimeSettingsResolver;
 
+  const capacity = resolveLlmRequestCapacity(model, config, runtimeSettingsResolver.resolve(), 0);
+  if (!capacity) throw new Error('Expected test request capacity.');
+  const tokenBudget = resolveCompactionTokenBudget(
+    capacity,
+    model,
+    config,
+    compactionPolicy,
+    runtimeSettingsResolver.resolve(),
+  );
+
   return {
     coordinator,
     memoryManager,
     evaluateCompactionObservation,
-    llmInstance,
+    tokenBudget,
     compactionReporter,
     runtimeSettingsResolver,
   };

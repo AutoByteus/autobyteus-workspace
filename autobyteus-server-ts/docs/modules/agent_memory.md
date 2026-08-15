@@ -135,6 +135,18 @@ remain ordered. It omits reasoning, backend IDs, duplicated schema/count policy,
 and platform internals while preserving redaction, explicit value bounds, and
 renamed-boundary escaping.
 
+Compaction rendering normalizes only derived provider-facing copies: CR/CRLF
+becomes LF, non-useful C0 controls are removed while newline/tab remain, lone
+UTF-16 surrogates become U+FFFD, and valid pairs plus multilingual text, paths,
+code, symbols, and emoji remain intact. Middle omission and accepted-entry end
+clamps use surrogate-safe boundaries. Canonical raw traces, tool payloads,
+archives, stored memory, and lineage are never rewritten by this policy.
+
+The complete initial and correction task prompts are finalized and checked
+again before `ServerCompactionAgentRunner` can launch a child. An invariant
+failure is `input_construction_failure`: zero child/correction calls, zero target
+dispatch, zero canonical mutation, and the same retained USER-authorized gate.
+
 `UserInputContextBuildingProcessor` no longer applies generic `[User
 Requirement]`, `[Tool Execution Result]`, `[Message From Agent]`, or `[System
 Notification]` headings. Authored message content passes through unchanged when
@@ -170,6 +182,12 @@ compactor nor target model. The core scheduler may select the earliest queued
 user behind those entries without removing them. Retry success clears the
 operation, dispatches that user turn, and then restores normal relative FIFO;
 retry failure retains the same gate. The compactor remains zero-tool.
+
+The native exposure resolver enforces that least-authority boundary by exact
+built-in definition ID before ordinary native defaults or team tools are
+composed, so the final Memory Compactor `AgentConfig.tools` is empty. Ordinary
+native agents still receive `run_bash`, `read_file`, `edit_file`, and
+`write_file` as their runtime-derived baseline.
 
 New successful lineage records use `promptContractVersion: 3`. Existing
 immutable values 1 and 2 remain directly usable, mixed `1 -> 2 -> 3` chains are

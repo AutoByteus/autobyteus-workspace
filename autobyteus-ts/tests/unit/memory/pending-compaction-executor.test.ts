@@ -19,7 +19,9 @@ import {
 } from '../../../src/memory/working-context-finalizer.js';
 import { WorkingContextSnapshotSerializer } from '../../../src/memory/working-context-snapshot-serializer.js';
 import { resolveCompactionPlanningBudget } from '../../../src/memory/compaction/compaction-planning-budget.js';
+import { createEnabledMemoryCompactionConfiguration } from '../../../src/memory/compaction/memory-compaction-configuration.js';
 import { CompactionPromptConstructionError } from '../../../src/memory/compaction/working-context-compaction-prompt-builder.js';
+import { CompactionPolicy } from '../../../src/memory/policies/compaction-policy.js';
 
 const planningBudget = resolveCompactionPlanningBudget(
   { inputBudget: 10_000, triggerThresholdTokens: 8_000 },
@@ -100,6 +102,10 @@ const makeHarness = () => {
   });
   const manager = new MemoryManager({
     store,
+    memoryCompaction: createEnabledMemoryCompactionConfiguration(
+      new CompactionPolicy(),
+      { runCompactionTask: vi.fn() },
+    ),
     lineageStore,
     lineageScope: scope,
     workingContextSnapshotStore: snapshotStore,

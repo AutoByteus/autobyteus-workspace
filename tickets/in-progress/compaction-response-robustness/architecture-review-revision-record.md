@@ -12,6 +12,7 @@ The latest `design-review-report.md` remains authoritative. This record is the c
 | `ARCH-REV-004` | Round 4 / `SR-004` USER-origin authorization and same-queue preservation | `SR-001`, `SR-002`, `SR-003`, `SR-004` | `Fail` — `Requirement Gap` | `Pass` | `AR-FIND-003`, `AR-FIND-004` |
 | `ARCH-REV-005` | Round 5 / `SR-005` provider-safe Unicode boundary | `SR-001`, `SR-002`, `SR-003`, `SR-004`, `SR-005` | `Pass` | `Fail` — `Design Impact` | `AR-FIND-002`, `AR-FIND-005` |
 | `ARCH-REV-006` | Round 6 / `SR-006` bounded evidence/oracle corrections | `SR-001`, `SR-002`, `SR-003`, `SR-004`, `SR-005`, `SR-006` | `Fail` — `Design Impact` | `Pass` | `AR-FIND-002`, `AR-FIND-005` |
+| `ARCH-REV-007` | Round 7 / `SR-008` memory-owned configuration and non-recursive built-in leaf | `SR-001`–`SR-008` | `Pass` | `Pass` | None |
 
 ## Revision Entries
 
@@ -142,3 +143,22 @@ None — `ARCH-REV-001` had no findings. Its `SR-001` prompt/parser/commit concl
 - Material classification changes: the two bounded `Design Impact` findings are resolved; the package returns to `Pass` and is ready for implementation rework.
 - Recommended recipient: `implementation_engineer`
 - Remaining risks or uncertainty: malformed old/external source becomes U+FFFD only in the derived copy; provider token estimation remains approximate; runtime-only threshold state can reset on restart; ordinary queued work remains non-persistent; one oversized input lacks general admission/chunking; deterministic validation cannot prove factual summary quality.
+
+### ARCH-REV-007 — Memory-owned non-recursive leaf composition passes
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/design-review-report.md`
+- Review round and trigger: round 7; `SR-008` supersedes the unimplemented `SR-007` null-runner boundary with the user-approved bounded automatic-compaction ownership refactor
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/design-review-report.md`; no open prior or new finding IDs
+- Relevant solution revision IDs: `SR-001`–`SR-008`
+- Prior authoritative decision: `Pass` (`ARCH-REV-006`, applicable through `SR-006`; SR-007/SR-008 implementation remained blocked pending this review)
+- Current authoritative decision: `Pass`
+- What changed in the review result or what baseline was established: live production evidence adds `BEH-012` and proves that fragmented runner/policy/strategy composition let the built-in Memory Compactor apply the global 20% policy to its already-usable 176,655-token response and launch a nested compactor. SR-008 replaces the split sources with one closed runtime-only memory configuration; server provisioning selects disabled for the canonical built-in on create/restore and fail-fast enabled composition for normal definitions; `AgentFactory` installs rather than invents policy; `MemoryManager` owns the configuration; and definition-agnostic `LlmPhase` retains common provider request capacity while omitting every automatic-compaction integration when disabled. The current policy, strategy registry/sole strategy, parent-owned initial/correction sibling runs, accepted commit, prompt/schema/tool/storage contracts, and no-migration posture remain intact.
+
+#### Prior Finding Resolution
+
+No prior finding was open in `ARCH-REV-006`. Direct recheck confirms `AR-FIND-001`–`AR-FIND-005` remain resolved; SR-008 does not alter their accepted behavior or evidence.
+
+- New or remaining finding IDs: None.
+- Material classification changes: None. The prior authoritative result remains `Pass`; `ARCH-REV-007` extends that approval to the new `REQ-017` / `SR-008` ownership and leaf-execution scope. `SR-007` is superseded before implementation.
+- Recommended recipient: `implementation_engineer`
+- Remaining risks or uncertainty: a genuinely oversized one-shot child has no chunking strategy and fails truthfully; token estimation remains approximate; enabled configurations require a fresh mutable policy per runtime; runtime-only threshold state and ordinary queued delivery retain their accepted restart/shutdown limits; the independent token-ledger schema mismatch is out of scope; deterministic validation cannot prove factual summary quality.

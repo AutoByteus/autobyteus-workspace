@@ -380,11 +380,25 @@ interaction is one `Tool` body containing name, status, arguments, and exactly
 one result or error section. Source text that could imitate the reserved
 `target_agent_conversation_history` boundary is escaped.
 
+All rendered compaction values are derived provider-facing copies. They
+normalize CR/CRLF to LF, remove non-useful C0 controls while preserving newline
+and tab, replace a pre-existing lone UTF-16 surrogate with U+FFFD, and preserve
+valid surrogate pairs, multilingual text, paths, code, symbols, and emoji.
+Head/tail omission adjusts both slice boundaries so it never splits a valid
+pair. Canonical raw traces, tool payloads, archives, and stored source values are
+not rewritten or sanitized.
+
 The shared server input processor does not wrap messages in generic sender
 headings. Authored content passes through unchanged when no readable context is
 concatenated; when context is present, neutral `[Context]` and `[Message]`
 sections delimit it without changing sender metadata or provider-native tool
 protocol.
+
+Both the initial and corrective task messages are finalized and rechecked as
+provider-safe text before child launch. Failure of that completed-prompt
+invariant is typed as `input_construction_failure`: no child or correction run
+starts, the target model is not dispatched, canonical memory is unchanged, and
+the pending operation retains the ordinary user-authorized retry gate.
 
 The response parser extracts exact, fenced, and balanced JSON-object candidates,
 validates every candidate against all six required arrays, and accepts exactly
@@ -416,14 +430,18 @@ WorkingContext, or its snapshot.
 The compactor may choose any structurally valid natural output size with at least
 one episode. Prompt rendering is not persisted as lineage evidence; the final
 successful attempt's optional SHA-256 digest may support integrity/audit metadata
-without copying content.
+without copying content. Accepted episode/fact strings use the same
+provider-safe end clamp, so later prompt projection cannot create a lone
+surrogate at an entry-length boundary.
 
 ## 12. Shared Readable Value And Tool Policy
 
 `ReadableValueRenderer` and `CondensedToolCallRenderer` are core-owned,
 consumer-neutral presentation policies. They provide deterministic
 serialization, secret/backend-field redaction, and explicit head/tail omission
-with an omitted-character count.
+with an omitted-character count. `ProviderSafeCompactionText` owns the shared
+derived-copy Unicode invariant and surrogate-safe slice/end-truncation
+boundaries. The policy never mutates the canonical input value.
 
 Native compaction and generated Work Evidence reuse this value/tool body policy
 but keep separate sources and envelopes:
@@ -493,6 +511,7 @@ Current strategy and presentation:
 - `src/memory/compaction/compaction-conversation-history-renderer.ts`
 - `src/memory/presentation/readable-value-renderer.ts`
 - `src/memory/presentation/condensed-tool-call-renderer.ts`
+- `src/memory/presentation/unicode-safe-text.ts`
 
 Lineage, projection, and restore:
 

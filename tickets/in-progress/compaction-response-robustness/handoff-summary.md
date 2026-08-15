@@ -6,57 +6,75 @@
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness`
 - Ticket branch: `codex/compaction-response-robustness`
 - Recorded base/finalization target: `origin/personal` / `personal`
-- Current delivery revision: `DR-004`
-- State: `Latest Base Integrated; Electron Rebuilt; Acceptance Handoff Blocked By Compactor Tool-Exposure Conflict`
-- Finalization hold: no ticket archival, final delivery commit/push, target merge, release, deployment, or cleanup is authorized
+- Current delivery revision: `DR-005`
+- State: `Latest Base Contained; Reviewed Fixes And Durable Docs Current; Electron Rebuilt And Verified; Explicit User Verification Pending`
+- Finalization hold: no ticket archival, final delivery commit/push, target merge/push, release, deployment, or cleanup is authorized before explicit user acceptance
 
-## Latest-Base Integration
+## Integrated Candidate
 
-- DR-003 delivery-state checkpoint: `b2a6d29ce0e2f84fb787856c7c59681be34ad801`
+- Implementation commit: `aa12df0a383c1520d23afc88e862994be5b65131`
+- Reviewed coverage checkpoint: `75168d307f5291c3bbd6e98978db146c4c3204dd`
 - Latest fetched base: `origin/personal` at `cd2420c607c5129c961f14d4d9e2559c0888331f`
-- Integration method: merge, with no textual conflicts
-- Integrated ticket HEAD: `9f00e5d7078dfb4800b8dae9a1b5f4abe3d8d3f8`
-- Post-merge relation: ticket 7 commits ahead / 0 behind; latest base is an ancestor
-- Evidence: `delivery-integrated-state-refresh.log`
+- Integration result: already current; the base is an ancestor and the checkpoint is 9 commits ahead / 0 behind
+- Post-build base recheck: unchanged and still contained
+- Source review: `CRR-007 Pass`, 9.6/10
+- API/E2E: `API-REV-004 Pass`, 98.7% confidence
+- Proportional durable-test review: `CRR-008 Pass`, no findings
+- Evidence: `delivery-integrated-state-refresh.log`, `code-review-report.md`, `api-e2e-execution-coverage-report.md`, and `api-e2e-test-review-report.md`
 
-## Rebuilt Electron Artifact
+## Current Behavior
+
+- Derived compaction/readable text is converted to provider-safe, well-formed Unicode while authoritative raw traces, tool payloads, archives, memory, snapshots, and lineage stay exact.
+- CR/CRLF is normalized to LF, non-useful C0 controls are removed while newline/tab remain, pre-existing lone UTF-16 surrogates become U+FFFD, and valid multilingual text, paths, code, symbols, and emoji are preserved.
+- Middle omission and end clamps do not split valid surrogate pairs; accepted episode/fact strings receive the same safe end clamp.
+- Both initial and corrective compaction prompts are finalized before child launch. A failed invariant is typed `input_construction_failure`, launches no child/correction, dispatches no target model, mutates no canonical memory, and retains the distinct USER-authorized retry gate.
+- The exact built-in `autobyteus-memory-compactor` definition has final effective tools `[]`; ordinary empty native definitions still receive `run_bash`, `read_file`, `edit_file`, and `write_file`.
+- The packaged-runtime probe confirms the compactor exception and ordinary native defaults coexist. DR-004's compatibility blocker is resolved.
+
+## Durable Documentation
+
+Delivery updated and validated:
+
+- `autobyteus-ts/docs/agent_memory_design.md`
+- `autobyteus-ts/docs/agent_memory_design_nodejs.md`
+- `autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md`
+- `autobyteus-server-ts/docs/modules/agent_memory.md`
+- `autobyteus-server-ts/docs/ARCHITECTURE.md`
+- `autobyteus-server-ts/docs/modules/agent_tools.md`
+- `autobyteus-server-ts/docs/modules/agent_work_traces.md`
+
+`autobyteus-web/docs/agent_execution_architecture.md` was reviewed as no-impact. Existing persisted data remains `Directly Usable — No Migration`.
+
+## Current Electron Test Package
 
 - Build result: `Pass`
 - Package verification result: `Pass`
 - Target/flavor/version: macOS ARM64 / `personal` / `1.4.50`
 - Preferred DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.dmg`
-- DMG size / SHA-256: `402413407` bytes / `0b98e35998cfb94ab61074a13ce46ae5b91b9c28505f06fafc5bfbb17d4dad69`
+- DMG size / SHA-256: `402293986` bytes / `50ac6506ba6980870463b92e816c9e8ad0d843d0183432f63e59fe950f3ff894`
 - Alternate ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.zip`
-- ZIP size / SHA-256: `398039359` bytes / `2b874c69402dc5403e69ad4ede9383c5fd452d8ee05cd96b0957015590ec2448`
-- Verification covered bundle identity/version/ARM64 architecture, updater hashes and sizes, staged and packaged terminal-runtime helpers with real `node-pty` spawn probes, current compaction markers, integrated native-default markers, DMG verification, and ZIP integrity.
-- Signing boundary: intentionally unsigned and not notarized; local test package only.
-- Build evidence: `electron-build-macos-arm64-dr-004.log`
-- Verification evidence: `electron-build-verification-macos-arm64-dr-004.log`
-- Supersession: these files overwrite the same DR-003 paths; use only the DR-004 hashes above.
+- ZIP size / SHA-256: `398040397` bytes / `89c95c31f93e9a40e43645d74e3079f2da7d3b1b80d3b56c1a1f5bdefae33ab3`
+- Verification covers updater hashes/sizes, bundle identifier/version/ARM64 architecture, staged and final packaged terminal-runtime helpers with real `node-pty` spawn probes, current Unicode/failure/tool-exposure markers, a final packaged native-tool runtime probe, DMG checksum, and ZIP integrity.
+- Signing boundary: intentionally unsigned/ad-hoc and not notarized; local test package only.
+- Build evidence: `electron-build-macos-arm64-dr-005.log`
+- Verification evidence: `electron-build-verification-macos-arm64-dr-005.log`
+- Supersession: the DR-001 through DR-004 hashes describe historical same-path files and must not be used for this package.
 
-## Blocking Integration Finding
+## Residual Risks
 
-The latest base adds the native foundation tools `run_bash`, `read_file`, `edit_file`, and `write_file` to AutoByteus runtime exposure even when an agent definition has an empty persisted `toolNames` array. The built-in Memory Compactor launches through that same native factory.
+- Semantic factual quality remains probabilistic even when a summary is schema-valid.
+- Provider availability, accounting, and usage reporting can vary; local-provider behavior is environment-dependent.
+- The construction-invariant failure path is deterministically covered rather than reproduced through an external provider.
+- Token estimation and provider-reported usage can differ.
+- Threshold episode state is process-local and resets on restart.
+- A single newly admitted oversized input has no general chunking solution.
+- Queued turn starts are not persisted across shutdown.
+- Unrelated broad-suite debt remains outside this ticket.
 
-A deterministic integrated probe produced:
+## User Verification And Next Action
 
-- persisted Memory Compactor tools: `[]`
-- effective requested tools: `[run_bash, read_file, edit_file, write_file]`
-
-This conflicts with this ticket's approved `REQ-009` and `AC-012` requirement that the compactor remain effectively tool-free. `autoExecuteTools:false` prevents silent execution, but tool exposure still exists and a request would enter the approval-failure path. Evidence: `delivery-integrated-compatibility-probe-dr-004.log`.
-
-## Documentation State
-
-The five DR-003 long-lived compaction documents still describe the approved zero-tool contract and other reviewed runtime behavior. DR-004 makes no long-lived documentation change: editing those documents to claim that generic compactor tools are acceptable would hide a real executable/contract mismatch.
-
-## Required Route
-
-1. Implementation owner adds an explicit native-default bypass for the built-in Memory Compactor while preserving the latest base's defaults for ordinary native agents.
-2. Code review rechecks the source change.
-3. API/E2E re-establishes focused, integration, live-provider, and package evidence; durable test edits return through proportional code review.
-4. Delivery refreshes the base again, validates docs, and rebuilds Electron.
-5. User verification occurs only against that corrected current package.
+Test the current DMG above. If it behaves correctly, reply `verified, finalize without release`. If it fails, report the exact reproduction and observed result. Release/publication remains separate and requires an explicit request.
 
 ## Current Status
 
-`Blocked — the branch contains latest origin/personal and the requested Electron rebuild passed, but the rebuilt artifact is not an acceptance-ready compaction candidate because latest-base integration violates the approved zero-tool Memory Compactor boundary.`
+`Pass — latest origin/personal is contained, reviewed source/API/E2E/test evidence is current, durable docs are synchronized, and the rebuilt local Electron package is integrity/runtime-verified. Explicit hands-on user verification is the only current gate before repository finalization.`

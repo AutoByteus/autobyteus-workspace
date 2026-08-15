@@ -1,4 +1,4 @@
-import type { TokenBudget } from '../../agent/token-budget.js';
+import type { CompactionTokenBudget } from '../../agent/token-budget.js';
 
 export type CompactionPlanningBudget = Readonly<{
   budgetKey: string;
@@ -32,7 +32,7 @@ const requireNonNegativeInteger = (value: number, label: string): number => {
 };
 
 export const resolveCompactionPlanningBudget = (
-  budget: Pick<TokenBudget, 'inputBudget' | 'triggerThresholdTokens'>,
+  budget: Pick<CompactionTokenBudget, 'inputBudget' | 'triggerThresholdTokens'>,
   observedPromptTokens: number,
 ): CompactionPlanningBudget => {
   const inputBudgetTokens = requireNonNegativeInteger(budget.inputBudget, 'input budget');

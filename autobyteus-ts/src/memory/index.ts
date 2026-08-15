@@ -18,6 +18,17 @@ export { CompactionResponseParser, CompactionResponseParseError } from './compac
 export { CompactionRuntimeSettingsResolver } from './compaction/compaction-runtime-settings.js';
 export type { CompactionRuntimeSettings } from './compaction/compaction-runtime-settings.js';
 export { PendingCompactionExecutor } from './compaction/pending-compaction-executor.js';
+export {
+  copyMemoryCompactionConfiguration,
+  createDisabledMemoryCompactionConfiguration,
+  createEnabledMemoryCompactionConfiguration,
+  DEFAULT_MEMORY_COMPACTION_CONFIGURATION,
+} from './compaction/memory-compaction-configuration.js';
+export type {
+  DisabledMemoryCompactionConfiguration,
+  EnabledMemoryCompactionConfiguration,
+  MemoryCompactionConfiguration,
+} from './compaction/memory-compaction-configuration.js';
 export { WorkingContextMessageWindowPlanner } from './compaction/working-context-message-window-planner.js';
 export { WorkingContextMessageUnitBuilder } from './compaction/working-context-message-unit-builder.js';
 export { EstimatedMessageBudgetStrategy } from './compaction/message-budget-strategy.js';

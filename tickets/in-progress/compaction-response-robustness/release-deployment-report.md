@@ -2,18 +2,37 @@
 
 ## Scope
 
-DR-004 covers protection of the prior delivery state, integration of the advanced `origin/personal`, a user-requested macOS ARM64 Electron rebuild, package verification, and integrated-behavior assessment. No release, publication, deployment, or repository finalization was requested or performed.
+DR-005 covers delivery re-entry after the reviewed provider-boundary and exact-compactor-tool fixes, latest-`origin/personal` refresh, durable documentation synchronization, and the user-requested macOS ARM64 Electron rebuild and package verification. No release, publication, deployment, or repository finalization was requested or performed.
 
 ## Integrated State
 
 - Ticket branch: `codex/compaction-response-robustness`
 - Recorded target: `origin/personal` / `personal`
-- Protected DR-003 checkpoint: `b2a6d29ce0e2f84fb787856c7c59681be34ad801`
+- Implementation commit: `aa12df0a383c1520d23afc88e862994be5b65131`
+- Reviewed coverage checkpoint: `75168d307f5291c3bbd6e98978db146c4c3204dd`
 - Latest fetched base: `cd2420c607c5129c961f14d4d9e2559c0888331f`
-- Integration method/result: merge without textual conflicts
-- Integrated HEAD: `9f00e5d7078dfb4800b8dae9a1b5f4abe3d8d3f8`
-- Relation after merge: ticket 7 ahead / 0 behind; latest base is contained
+- Integration method/result: already current; no new base commit to integrate
+- Relation at build and post-build recheck: ticket 9 ahead / 0 behind; latest base is contained
 - Evidence: `delivery-integrated-state-refresh.log`
+
+The unchanged integrated candidate retains `CRR-007 Pass` at 9.6/10, `API-REV-004 Pass` at 98.7% confidence, and `CRR-008 Pass` with no proportional-test findings.
+
+## Compatibility And Behavior Result
+
+- DR-004 blocker: `Resolved`.
+- Exact built-in compactor behavior: final effective tools `[]`.
+- Ordinary empty native behavior: retains `run_bash`, `read_file`, `edit_file`, and `write_file`.
+- Provider-boundary result: derived compaction/readable text is well-formed Unicode with surrogate-safe truncation; authoritative raw evidence and persisted source data remain unchanged.
+- Typed local invariant failure: `input_construction_failure`, with zero child/correction/target dispatch, zero canonical mutation, and retained USER-authorized retry state.
+- Evidence: `delivery-integrated-compatibility-probe-dr-005.log`, `api-e2e-execution-coverage-report.md`, and the final packaged native exposure probe in `electron-build-verification-macos-arm64-dr-005.log`.
+
+## Documentation Result
+
+- Result: `Updated — Pass`.
+- Updated paths: seven core/server memory, runtime-loop, architecture, native-tool, and work-trace documents recorded in `docs-sync-report.md`.
+- No-impact path: `autobyteus-web/docs/agent_execution_architecture.md`.
+- Validation: whitespace, mirror equality, required Unicode/failure/source-owner/raw-authority/tool-exception markers, and integrated compatibility checks passed in `docs-sync-validation.log`.
+- Persisted data: `Directly Usable — No Migration`.
 
 ## Build And Package Result
 
@@ -21,53 +40,34 @@ DR-004 covers protection of the prior delivery state, integration of the advance
 - Package verification: `Pass`
 - Target/flavor/version: macOS ARM64 / personal / 1.4.50
 - DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.dmg`
-- DMG integrity: `402413407` bytes; SHA-256 `0b98e35998cfb94ab61074a13ce46ae5b91b9c28505f06fafc5bfbb17d4dad69`; SHA-512 `7Hd+C0yE3ITNZkicCdN/Y8tC6CawDdIT4GU5xUE80Y96l4TkDbWgB1ms4hvSzIM6yJWnxYP3vtD2+570CRwQYg==`; `hdiutil verify` Pass.
+- DMG integrity: `402293986` bytes; SHA-256 `50ac6506ba6980870463b92e816c9e8ad0d843d0183432f63e59fe950f3ff894`; SHA-512 `ZII59UlLE3WyTXZIY1vsNIhuvcyD1H0Yew3l6JJ/LirYmP48o2nCjJT9M4maXSNeub0cSNAEw6zZwT3TMqE8xw==`; `hdiutil verify` Pass.
 - ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.50.zip`
-- ZIP integrity: `398039359` bytes; SHA-256 `2b874c69402dc5403e69ad4ede9383c5fd452d8ee05cd96b0957015590ec2448`; SHA-512 `diyvo9qbJ+R6IfZkQCplHN8gHH/ht8gZqQaQELadGfgUSEYHg1kWnHl4fGDNxJ4cOUYv3kLgA87VLd0Jjbg6YA==`; `unzip -tq` Pass.
-- Build evidence: `electron-build-macos-arm64-dr-004.log`
-- Verification evidence: `electron-build-verification-macos-arm64-dr-004.log`
-- Signing/notarization: intentionally absent; local test package only.
+- ZIP integrity: `398040397` bytes; SHA-256 `89c95c31f93e9a40e43645d74e3079f2da7d3b1b80d3b56c1a1f5bdefae33ab3`; SHA-512 `tsodVqTeDODmy3+PfploceNbOm0ro07HpI85G7ba2IHgmxeLat6/YEgL8eonsI7DOdQv95t2HDoce5o11V2HBw==`; `unzip -tq` Pass.
+- Build evidence: `electron-build-macos-arm64-dr-005.log` ending `build_exit=0`.
+- Verification evidence: `electron-build-verification-macos-arm64-dr-005.log` ending `VERIFICATION RESULT: PASS`.
+- Signing/notarization: intentionally absent; the local package is unsigned/ad-hoc and must not be represented or published as a release artifact.
 
-The build passed web/localization guards, core/server compilation, Prisma and sanitized bootstrap, mobile/Electron generation, native-module rebuild, packaging, and updater metadata. Verification passed ARM64/bundle identity, updater hash/size agreement, staged and packaged real terminal spawn probes, ticket and latest-base packaged-source markers, and both archive integrity checks.
-
-## Integrated Compatibility Result
-
-- Overall delivery result: `Blocked`.
-- Classification: `Local Fix / implementation conflict`.
-- Finding: the incoming native runtime policy derives `run_bash`, `read_file`, `edit_file`, and `write_file` for an empty native definition. The built-in Memory Compactor uses that factory, so its integrated effective tool surface is no longer empty.
-- Contract conflict: `REQ-009` and `AC-012` require an effectively zero-tool compactor.
-- Mitigation already present but insufficient: `autoExecuteTools:false` prevents silent execution and makes a request an approval failure, but it does not remove the provider-visible tool surface.
-- Deterministic evidence: `delivery-integrated-compatibility-probe-dr-004.log`.
-- Required correction: add an explicit compactor exception to native defaults without changing ordinary native agent behavior.
-
-## Documentation Result
-
-- DR-003 long-lived docs remain the correct approved contract.
-- DR-004 long-lived docs change: none.
-- Rationale: changing the docs to accept generic compactor tools would conceal integration drift rather than synchronize an approved executable state.
-- Docs-sync artifact: `docs-sync-report.md`.
+The build passed web/localization guards, core/server builds, Prisma and sanitized bootstrap preparation, mobile/Electron generation, native-module rebuild, packaging, blockmaps, and updater metadata. Verification passed updater size/hash agreement, bundle identity/version/architecture, staged and final real terminal spawn probes, current packaged-source markers, final native-tool exposure behavior, and DMG/ZIP integrity.
 
 ## User Verification And Finalization
 
-- Current artifact acceptance requested: `No`; the package is not acceptance-ready for this ticket while the compatibility finding is open.
+- Current artifact acceptance requested: `Yes — explicit hands-on verification pending`.
 - Ticket archive: not started.
 - Final delivery commit/push: not started.
 - Target merge/push: not started.
 - Release/publication/deployment: not requested and not performed.
 - Cleanup: deferred.
 
-## Persisted Data
-
-`Directly Usable — No Migration` remains unchanged. The finding concerns runtime tool exposure, not memory schema or stored lineage.
-
-## Required Route
-
-Implementation correction must return through source review and API/E2E. If durable coverage changes, it must also receive proportional test-code review before delivery re-entry. Delivery must refresh `origin/personal` again and rebuild after those passes.
+If the user accepts the package, delivery must refresh the tracked base again before repository finalization. Any material integration change invalidates the current verification and requires an updated build/handoff. Release work requires a separate explicit request.
 
 ## Rollback / Safety Boundary
 
-No remote ticket or target state changed. The generated DMG/ZIP is ignored build output and has not been published. Withhold this package as acceptance evidence until the integration conflict is corrected.
+No remote ticket or target state changed. The generated DMG/ZIP is ignored local build output and has not been published. DR-001 through DR-004 artifacts and hashes are historical; only DR-005 hashes identify the current same-path files.
+
+## Residual Risks
+
+Probabilistic summary semantics, provider availability/accounting variability, deterministic rather than external-provider induction of the local construction failure, token estimate/reporting variability, restart-reset process-local threshold state, no general chunking for one oversized new input, non-persistent queued turn starts across shutdown, and unrelated broad-suite debt remain disclosed in the handoff.
 
 ## Final Status
 
-`Blocked — latest origin/personal is integrated and the Electron rebuild/package verification passed, but repository finalization and acceptance handoff are blocked because the integrated Memory Compactor inherits generic native tools contrary to REQ-009/AC-012.`
+`Pass — the reviewed candidate contains latest origin/personal, the DR-004 compatibility conflict is resolved, durable documentation is synchronized, and the current local Electron package is build/package verified. Repository finalization and any release remain held for explicit user verification.`

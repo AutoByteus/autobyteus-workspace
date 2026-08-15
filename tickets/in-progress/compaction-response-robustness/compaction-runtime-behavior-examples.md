@@ -2,19 +2,20 @@
 
 ## Status And Authority
 
-- **Status:** Approved intended behavior — user approved 2026-08-14, including the later strict fail-closed/manual-retry and non-user deferral clarifications; provider-safe Unicode behavior approved 2026-08-15.
-- **Purpose:** Make REQ-011–REQ-016 and AC-014–AC-026 concrete without prescribing an arbitrary implementation.
-- **Scope:** Trigger-aligned planning, bounded post-compaction behavior, runner-versus-response failure classification, provider-safe derived text, strict fail-closed recovery through a later user-initiated retry, and preservation of non-user inputs while that retry gate is active.
+- **Status:** Approved intended behavior — user approved 2026-08-14, including the later strict fail-closed/manual-retry and non-user deferral clarifications; provider-safe Unicode and non-recursive Memory Compactor leaf behavior approved 2026-08-15.
+- **Purpose:** Make REQ-011–REQ-017 and AC-014–AC-029 concrete without prescribing an arbitrary implementation.
+- **Scope:** Trigger-aligned planning, bounded post-compaction behavior, runner-versus-response failure classification, provider-safe derived text, non-recursive built-in compactor execution, strict fail-closed recovery through a later user-initiated retry, and preservation of non-user inputs while that retry gate is active.
 - **Not changed:** The approved Memory Compactor prompt and six-array JSON response contract remain exactly as specified in `memory-compactor-prompt-spec.md`.
 
 ## Why These Corrections Are Needed
 
-The current runtime has four independent decisions that must agree but currently do not:
+The current runtime has five independent decisions that must agree but currently do not:
 
 1. **When compaction is requested:** the configured ratio is applied to the model's usable input budget.
 2. **How much context the planner retains:** the current planner independently uses a fixed 35% of the input budget.
 3. **What happens when the child compactor fails:** a pre-response runner failure currently becomes ordinary text, is parsed as if the model authored invalid JSON, and the unchanged pending operation can be attempted again on the next parent message.
 4. **Whether the derived child prompt is provider-safe:** middle/end truncation currently slices UTF-16 at arbitrary code-unit boundaries and can create a lone surrogate from valid source text.
+5. **Whether the one-shot compactor is itself compactable:** the server currently attaches the normal compaction runner to the built-in Memory Compactor, so a low global ratio can recursively wrap and summarize the worker's own task.
 
 The corrections make those decisions one coherent lifecycle. The configured trigger becomes a real postcondition for planning; only model-authored output is eligible for JSON correction; and any final compaction failure stops the current target-agent turn without an autonomous retry. Canonical memory remains atomic, the pending operation remains available, and a later user-origin turn explicitly initiates one new attempt. Agent/system inputs remain queued rather than being mistaken for that authorization or discarded.
 
@@ -204,6 +205,38 @@ Trigger alignment is therefore a constraint on the planner, not a requirement to
 - removing every emoji or all non-ASCII text; or
 - treating the resulting HTTP 400 as a malformed compactor JSON response.
 
+## Example 10 — The Memory Compactor's Own Prompt Crosses 20%
+
+**Given**
+
+- the parent Daily Assistant requests one compaction operation
+- the built-in Memory Compactor child receives a provider-admissible prompt of approximately `176,655` tokens
+- the global ratio is `20%`, whose target-agent proactive trigger is approximately `123,148` tokens
+- the resolved input budget is approximately `615,744` tokens
+
+**Correct behavior**
+
+- At agent creation, the server selects the explicit disabled memory-compaction configuration for the built-in Memory Compactor and never calls the runner factory for that child.
+- `MemoryManager` owns that disabled configuration. The child has neither the automatic-compaction policy nor the current strategy runner, and generic `LlmPhase` performs no policy, strategy, pending, evaluation, or lifecycle work.
+- The child sends its complete parent-built one-shot request directly because it is within provider/request capacity.
+- The child returns its original usable response to the parent collector.
+- It creates no pending self-compaction, lifecycle card, or descendant Memory Compactor run, even though its usage is above the normal proactive threshold or a policy hard-cap threshold.
+- If the original usable response violates the six-array contract, the parent summarizer may launch the existing one correction child. Initial and correction children are siblings, both non-compactable leaves.
+- Normal target agents receive the enabled configuration containing the single existing `CompactionPolicy` and current strategy runner. The policy still decides whether pressure is `none`, `proactive`, or `hard_input_cap`; the existing strategy registry/current `structured-json` strategy still decides how the operation is performed.
+- Existing child-run archives and canonical parent memory remain untouched; no migration or historical cleanup occurs.
+
+**Incorrect behavior**
+
+- applying the target agent's 20% policy to the built-in child after it has produced a response;
+- wrapping the outer compactor task inside another compactor task, producing two START/END pairs;
+- shrinking or removing prompt separators to hide that nested task;
+- setting the child ratio to 100% instead of selecting disabled automatic compaction;
+- treating a nullable top-level runner as the final ownership boundary while `AgentFactory` still creates a separate policy; or
+- adding speculative ratio/capacity policy subclasses, a second controller, or a new strategy when the current policy/strategy already suffice; or
+- recursively summarizing the compactor's instruction/history as a fallback for a genuinely oversized request.
+
+The proactive percentage is not the provider input limit. Crossing `123,148` inside this specialized leaf does not make a `176,655`-token request invalid when the actual request capacity is `615,744`.
+
 ## Decision Summary
 
 The recommended correction is proportionate because it preserves the existing product model while repairing mismatched boundaries:
@@ -214,6 +247,8 @@ The recommended correction is proportionate because it preserves the existing pr
 - require an actual below-threshold provider observation—not an accepted estimate—before rearming the same threshold crossing;
 - keep runner failures out of the JSON parser;
 - keep compaction provider-facing input/output clamps well-formed without mutating exact source traces;
+- compose automatic compaction at agent creation through one memory-owned disabled/enabled configuration;
+- keep the built-in Memory Compactor a non-compactable leaf while normal agents retain the single existing policy and current pluggable-strategy path;
 - stop the current target-agent turn on any final compaction failure;
 - retain the pending operation so a later user-origin turn can explicitly retry it once;
 - preserve agent/system inputs in the existing queue and let an eligible user entry pass them only to resolve the gate;

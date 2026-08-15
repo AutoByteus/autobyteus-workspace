@@ -153,6 +153,10 @@ uses these collaborators:
   - executes an authorized pending compaction before appending the new turn's
     user message, and treats final compaction failure as a fail-closed turn
     result rather than dispatching the target model;
+  - treats completed compaction-prompt Unicode validation failure as typed
+    `input_construction_failure` before any child launch or correction; the
+    target dispatch remains stopped and the pending operation keeps its
+    user-authorized retry gate;
   - evaluates provider-normalized prompt observations after responses for
     trigger-aligned compaction, while missing prompt-token observations leave
     the threshold episode unchanged;

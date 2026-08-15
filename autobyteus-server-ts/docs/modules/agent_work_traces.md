@@ -111,9 +111,12 @@ assistant message content remains visible as `assistant:` content.
 `CondensedToolCallRenderer`. The shared policy deterministically serializes
 visible values, redacts common secrets and backend/protocol fields, and bounds
 each variable value to 20,000 characters with explicit head/tail retention and an
-omitted-character count. A tool block has name, terminal status, arguments, and
-exactly one result/error section; a genuinely missing terminal record renders its
-truthful status and `result: not available`.
+omitted-character count. Its derived text is well-formed Unicode: valid pairs,
+multilingual/code/path content, emoji, newline, and tab survive; lone surrogates
+are replaced, non-useful controls are removed, and omission cannot split a
+surrogate pair. Canonical raw traces are not rewritten. A tool block has name,
+terminal status, arguments, and exactly one result/error section; a genuinely
+missing terminal record renders its truthful status and `result: not available`.
 
 The Work Evidence layer still owns timestamps, Markdown headings, file/manifests,
 raw-trace source selection, correlation, and the larger consumer bound. Native

@@ -21,6 +21,8 @@ import {
   type CompactionAgentRunner,
   type CompactionAgentTask,
 } from '../../../../src/memory/compaction/compaction-agent-runner.js';
+import { createEnabledMemoryCompactionConfiguration } from '../../../../src/memory/compaction/memory-compaction-configuration.js';
+import { CompactionPolicy } from '../../../../src/memory/policies/compaction-policy.js';
 import { MemoryType } from '../../../../src/memory/models/memory-types.js';
 import { FileMemoryStore } from '../../../../src/memory/store/file-store.js';
 import { MEMORY_FILE_NAMES } from '../../../../src/memory/store/memory-file-names.js';
@@ -174,7 +176,10 @@ const createConfig = (tempDir: string, mainLLM: RecordingMainLLM, runner: Compac
     mainLLM
   );
   config.memoryDir = tempDir;
-  config.compactionAgentRunner = runner;
+  config.memoryCompaction = createEnabledMemoryCompactionConfiguration(
+    new CompactionPolicy(),
+    runner,
+  );
   return config;
 };
 
