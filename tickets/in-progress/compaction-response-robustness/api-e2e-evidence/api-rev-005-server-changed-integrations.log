@@ -1,0 +1,2 @@
+ ERROR  ENOENT: no such file or directory, lstat '/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-server-ts/autobyteus-server-ts'
+For help, run: pnpm help exec

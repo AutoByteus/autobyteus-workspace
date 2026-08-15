@@ -8,6 +8,8 @@
 | `API-REV-002` | `code_reviewer`; `api-e2e-test-review-report.md`; API/E2E round 2 | `SR-001`, `ARCH-REV-001`, `IR-001`, `CRR-001`, `CRR-002`, `API-REV-001` | Pass / 97.5%; proportional review Fail `CR-TEST-001` | Pass / 97.5% |
 | `API-REV-003` | `code_reviewer`; `code-review-report.md`; API/E2E round 3 | `SR-004`, `ARCH-REV-004`, `IR-003`, `CRR-005`, `API-REV-001/002` | historical Pass / 97.5%; not validation of IR-003 | Pass / 98.3% |
 | `API-REV-004` | `code_reviewer`; `code-review-report.md`; API/E2E round 4 | `SR-006`, `ARCH-REV-006`, `IR-004`, `CRR-007`, `DR-004`, `API-REV-001/002/003` | historical Pass / 98.3%; not validation of IR-004 | Pass / 98.7% |
+| `API-REV-005` | `code_reviewer`; `code-review-report.md`; API/E2E round 5 | `SR-008`, `ARCH-REV-007`, `IR-005`, `CRR-009`, `API-REV-001/002/003/004` | historical Pass / 98.7%; not validation of IR-005 | Pass / 98.7% |
+| `API-REV-006` | `code_reviewer`; `api-e2e-test-review-report.md`; API/E2E round 6 | `SR-008`, `ARCH-REV-007`, `IR-005`, `CRR-009/010`, `API-REV-005` | execution Pass / 98.7%; proportional review Fail `CR-TEST-002/003` | Pass / 98.8% |
 
 ## Revision Entries
 
@@ -114,3 +116,68 @@ None — no earlier completed API/E2E result exists.
 - New or remaining failure IDs: none.
 - Recommended recipient: `code_reviewer` for proportional review of the four updated durable coverage paths.
 - Remaining risks: probabilistic provider summary wording, external availability/accounting variance, and deterministic rather than live-provider induction of the local prompt invariant failure.
+
+### API-REV-005 — Non-Recursive Canonical Compactor Leaf Validation
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/code-review-report.md`; API/E2E round 5.
+- Triggering revisions and scenarios: `IR-005` / `CRR-009`; `REQ-017`; `AC-027`–`AC-029`; `API-E2E-010`–`013`; `LIVE-DEEPSEEK-004`.
+- Related revisions: `SR-008`, `ARCH-REV-007`, `IR-005`, `CRR-009`; `API-REV-001`–`004` retained as history only.
+- Why recorded: IR-005 changed memory-compaction configuration ownership and the server/core child runtime so the canonical Memory Compactor cannot compact itself. Earlier API/E2E results expressly did not validate this implementation.
+- Durable paths changed:
+  - `autobyteus-ts/tests/unit/agent/loop/llm-phase-memory-compaction-configuration.test.ts` — exact 176,655 / 615,744 / 123,148 disabled-leaf values and zero automatic work.
+  - `autobyteus-server-ts/tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts` — canonical create/restore disabled/no-runner and normal enabled create/restore.
+  - `autobyteus-server-ts/tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts` — new actual server/core initial/correction sibling topology with zero descendants/pending/status/nested wrappers.
+  - `autobyteus-ts/tests/integration/agent/runtime/agent-runtime-compaction.test.ts` — exact enabled-parent planning, commit, 176,655 suppression, and 73,102 reset observations.
+  - `autobyteus-ts/tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts` — current enabled configuration and split capacity/planning budget APIs.
+  - `test-support/live-e2e/live-e2e-harness.ts` — current split budget API plus live child run-directory/lineage/archive and zero-descendant proof.
+  - `autobyteus-server-ts/tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts` — public no-self-compaction persistence/run-count/descendant assertions.
+  - `autobyteus-server-ts/tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts` — broad execution exposed stale null-runner and empty-tool expectations; updated to a valid normal runner and approved four native defaults.
+- Scenarios added/changed/rechecked: `API-E2E-010`–`013`, `LIVE-DEEPSEEK-004`, optional `LIVE-LMSTUDIO-COMPILE-002`, plus cumulative `API-E2E-001`–`009`.
+- Execution delta: 89 affected core units, 12 affected core integrations, 51 affected server tests, 10 settings GraphQL E2E tests, one configured-skill E2E, both package builds, live compile/skip, isolated vault dry-run/apply, 18-test preflight, and real DeepSeek 2/2 with one canonical child run and zero descendants.
+
+#### Prior Failure Resolution
+
+| Prior Scenario / Failure Reference | Classification | Resolution | Evidence |
+| --- | --- | --- | --- |
+| historical recursive MP-004 child | implementation defect resolved by IR-005/CRR-009 | exact deterministic child at 176,655 returns its original response; initial/correction are siblings; no descendant/pending/status/wrapper | server changed integration final log |
+| initial parent exact-number run | API/E2E fixture issue | replaced tiny seed with incident-scale deterministic context so the 372,123 observation has an attainable target; final affected integration passed | initial and rerun core logs |
+| initial canonical restore run | API/E2E fixture lifecycle issue | persisted a strict v5 snapshot before restore; create and restore both prove disabled/no runner | initial and final server integration logs |
+| broad configured-skill failure | stale durable coverage | valid runner supplied and ordinary-agent tool expectations aligned to current four native defaults; focused E2E passed | configured-skill initial/final logs |
+
+- Broad-suite truth: the additional full server E2E sweep passed 49 files / 177 tests and skipped 14 files / 51 tests, while surfacing four failures. The one IR-005-relevant stale test was corrected. The three remaining failures reproduce in isolation, have no IR-005 path overlap, and are recorded as unrelated repository debt.
+- Live result: managed `deepseek-v4-flash` passed 2/2; one v3 parent compaction completed, the canonical child had zero tools, exactly one child run directory existed, descendant count was zero, no child lineage/archive existed, and the exact retained continuation artifact was produced.
+- Canonical artifacts updated: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, this revision record, and `api-e2e-evidence/api-rev-005-*.log`.
+- Prior result/confidence: `API-REV-004` historical `Pass / 98.7%`, expressly not current IR-005 evidence.
+- Current result/confidence: `Pass / 98.7%`.
+- New or remaining failure IDs: none for IR-005. Three unrelated broad-suite debts remain outside the changed owner set.
+- Recommended recipient: `code_reviewer` for proportional review of one added and seven updated durable coverage paths.
+- Remaining risks: external provider output/accounting variance, deterministic rather than provider-random invalid-first correction, unrelated broad-suite debt, and proportional review pending.
+
+### API-REV-006 — Hard-Cap And Correction-Aware Durable Proof
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/api-e2e-test-review-report.md`; API/E2E round 6.
+- Triggering findings / scenarios: `CR-TEST-002`, `CR-TEST-003`; `API-E2E-011A-PROACTIVE`, `API-E2E-011A-HARD-CAP`, `LIVE-TOPOLOGY-001/002`, `API-E2E-011B`, and `LIVE-DEEPSEEK-004`.
+- Related revisions: `SR-008`, `ARCH-REV-007`, `IR-005`, `CRR-009`, `CRR-010`, `API-REV-005`.
+- Why recorded: API-REV-005 execution passed, but proportional review found that one durable unit no longer proved the disabled policy hard cap and the live topology rejected the approved optional correction sibling. The implementation source review remained closed and passing; this revision records the completed API/E2E-owned correction and fresh execution.
+- Durable paths changed in this round:
+  - `autobyteus-ts/tests/unit/agent/loop/llm-phase-memory-compaction-configuration.test.ts` — split the captured proactive and true hard-cap observations and proved capacity reporting with zero evaluator/strategy/executor/pending/memory/lifecycle work in both.
+  - `test-support/live-e2e/live-e2e-harness.ts` — added a correction-aware topology classifier, inspected every new run, required the accepted run, admitted one initial plus at most one correction sibling, verified one wrapper/no lineage/archive, and counted only outside runs as descendants.
+  - `autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts` — added direct accepted-correction and outside-bound descendant classifier cases.
+  - `autobyteus-server-ts/tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts` — replaced the one-run equality with one-or-two-sibling and count-conservation assertions.
+- Execution delta: core unit 2/2; live-harness unit 19/19; actual sibling integration 1/1; final affected gate core 2/2 and server 20/20 with expected live skip; repeated production builds; isolated nine-ID vault import; preflight 18/18; managed DeepSeek 2/2; cleanup/value-safety/diff checks.
+
+#### Prior Failure Resolution
+
+| Prior Finding / Run | Classification | Resolution | Evidence |
+| --- | --- | --- | --- |
+| `CR-TEST-002` | API/E2E Local Fix | 176,655 is now accurately proactive and 615,744 directly reaches `B`; both preserve original response and prove zero automatic work | disabled unit and final affected gate logs |
+| `CR-TEST-003` | API/E2E Local Fix | deterministic classifier admits an accepted correction sibling, rejects only runs beyond the bounded set, and the live public contract accepts one or two siblings | topology unit, actual sibling integration, compile/skip, and managed live logs |
+| first API-REV-006 combined unit attempt | API/E2E assertion typo | changed obsolete `inputBudgetTokens` reference to current `inputBudget`; complete rerun passed | initial-failure and corrected affected-gate logs |
+
+- Real result: managed `deepseek-v4-flash` passed 2/2 with one v3 operation, one inspected initial sibling, zero correction in the natural run, zero descendants, no self lineage/archive, zero child tools, and exact continuation. The optional correction branch is directly proven by deterministic coverage, not overclaimed as live-observed.
+- Canonical artifacts updated: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, this revision record, and `api-e2e-evidence/api-rev-006-*.log`.
+- Prior result/confidence: API-REV-005 execution `Pass / 98.7%`; subsequent proportional test review `Fail` on `CR-TEST-002` and `CR-TEST-003`.
+- Current result/confidence: `Pass / 98.8%`.
+- New or remaining API/E2E failure IDs: none. Proportional confirmation of the four corrected durable paths is the next gate.
+- Recommended recipient: `code_reviewer` for proportional re-review; implementation source scorecard remains closed.
+- Remaining risks: provider output/accounting variance, deterministic rather than naturally observed correction, unrelated historical broad-E2E and test-typing debt.

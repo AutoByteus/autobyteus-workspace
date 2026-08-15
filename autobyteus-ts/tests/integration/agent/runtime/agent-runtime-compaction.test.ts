@@ -58,6 +58,8 @@ const isCompactionEventPayload = (payload: unknown): payload is CompactionEventP
   typeof payload === 'object' &&
   typeof (payload as { phase?: unknown }).phase === 'string';
 const promptSizedUserMessage = (label: string): string => `${label} ${'context '.repeat(500)}`;
+const capturedPromptSizedUserMessage = (label: string): string =>
+  `${label} ${'context '.repeat(55_000)}`;
 const acceptedBoundaryEpisode = 'First turn summary '.padEnd(3_999, 'x') + '🛡️tail';
 
 const snapshotCanonicalCompactionFiles = (agentDir: string): Record<string, string | null> => {
@@ -157,7 +159,7 @@ class RecordingCompactionAgentRunner implements CompactionAgentRunner {
   }
 }
 
-const createMainModel = (activeContextTokens = 5_000) =>
+const createMainModel = (activeContextTokens = 5_000, maxOutputTokens = 200) =>
   new LLMModel({
     name: 'runtime-compaction-main-model',
     value: 'runtime-compaction-main-model',
@@ -165,7 +167,7 @@ const createMainModel = (activeContextTokens = 5_000) =>
     provider: LLMProvider.OPENAI,
     activeContextTokens,
     maxContextTokens: activeContextTokens,
-    maxOutputTokens: 200
+    maxOutputTokens
   });
 
 const createConfig = (tempDir: string, mainLLM: RecordingMainLLM, runner: CompactionAgentRunner): AgentConfig => {
@@ -219,14 +221,14 @@ describe('Agent runtime compaction integration', () => {
       }),
     ]);
     const mainLLM = new RecordingMainLLM(
-      createMainModel(15_000),
+      createMainModel(617_024, 1_024),
       new LLMConfig({
         systemMessage: 'Runtime compaction system prompt',
-        maxTokens: 200,
+        maxTokens: 1_024,
         compactionRatio: 0.2,
-        safetyMarginTokens: 10
+        safetyMarginTokens: 256
       }),
-      [200, 200, 200, 3_000, null, 3_000, 200]
+      [200, 200, 200, 372_123, null, 176_655, 73_102]
     );
     const agent = new AgentFactory().createAgent(createConfig(tempDir, mainLLM, compactionRunner));
     const compactionEvents: CompactionEventPayload[] = [];
@@ -245,7 +247,7 @@ describe('Agent runtime compaction integration', () => {
 
       for (let turnIndex = 1; turnIndex <= 3; turnIndex += 1) {
         await agent.postUserMessage(new AgentInputUserMessage(
-          promptSizedUserMessage(`Seed turn ${turnIndex}`),
+          capturedPromptSizedUserMessage(`Seed turn ${turnIndex}`),
         ));
         expect(await waitForCondition(
           () => mainLLM.requests.length === turnIndex && agent.currentStatus === AgentStatus.IDLE && agent.context.state.activeTurn === null,
@@ -302,7 +304,7 @@ describe('Agent runtime compaction integration', () => {
         'compaction_post_success_usage_not_below_trigger',
         expect.objectContaining({
           reason: 'post_success_usage_not_below_trigger',
-          observed_prompt_tokens: 3_000,
+          observed_prompt_tokens: 176_655,
         }),
       );
       expect(compactionRunner.tasks).toHaveLength(2);
@@ -320,19 +322,22 @@ describe('Agent runtime compaction integration', () => {
       const requestedBudget = evaluatedBudgets.find(({ threshold_episode_decision }) =>
         threshold_episode_decision === 'requested');
       expect(requestedBudget).toEqual(expect.objectContaining({
-        prompt_tokens: 3_000,
+        prompt_tokens: 372_123,
+        input_budget_tokens: 615_744,
         compaction_ratio: 0.2,
+        trigger_threshold_tokens: 123_148,
+        post_compaction_target_tokens: 110_833,
         threshold_episode_decision: 'requested',
       }));
       expect(requestedBudget?.post_compaction_target_tokens as number)
         .toBeLessThan(requestedBudget?.trigger_threshold_tokens as number);
       expect(evaluatedBudgets).toEqual(expect.arrayContaining([
         expect.objectContaining({
-          prompt_tokens: 3_000,
+          prompt_tokens: 176_655,
           threshold_episode_decision: 'suppressed',
         }),
         expect.objectContaining({
-          prompt_tokens: 200,
+          prompt_tokens: 73_102,
           threshold_episode_decision: 'reset',
         }),
       ]));

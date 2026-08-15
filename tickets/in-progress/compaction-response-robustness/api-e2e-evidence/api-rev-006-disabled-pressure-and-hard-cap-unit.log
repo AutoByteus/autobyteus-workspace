@@ -1,0 +1,21 @@
+$ pnpm -C autobyteus-ts exec vitest run tests/unit/agent/loop/llm-phase-memory-compaction-configuration.test.ts --no-watch
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-ts
+
+stdout | tests/unit/agent/loop/llm-phase-memory-compaction-configuration.test.ts > LlmPhase disabled automatic compaction > reports capacity but performs no automatic-compaction work at captured proactive pressure
+AgentRuntimeState initialized for agent_id 'disabled-leaf'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentConfig created for name='leaf', role='compactor'.
+AgentContext composed for agent_id 'disabled-leaf'. Config and State linked.
+
+stdout | tests/unit/agent/loop/llm-phase-memory-compaction-configuration.test.ts > LlmPhase disabled automatic compaction > reports capacity but performs no automatic-compaction work at the policy hard cap
+AgentRuntimeState initialized for agent_id 'disabled-leaf'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentConfig created for name='leaf', role='compactor'.
+AgentContext composed for agent_id 'disabled-leaf'. Config and State linked.
+
+ ✓ tests/unit/agent/loop/llm-phase-memory-compaction-configuration.test.ts (2 tests) 15ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  12:35:49
+   Duration  836ms (transform 464ms, setup 20ms, import 694ms, tests 15ms, environment 0ms)
+

@@ -9,6 +9,10 @@ import { AgentRuntimeState } from '../../../../src/agent/context/agent-runtime-s
 import { UserMessageReceivedEvent } from '../../../../src/agent/events/agent-events.js';
 import { LlmPhase } from '../../../../src/agent/loop/llm-phase.js';
 import { AgentInputUserMessage } from '../../../../src/agent/message/agent-input-user-message.js';
+import {
+  resolveCompactionTokenBudget,
+  resolveLlmRequestCapacity,
+} from '../../../../src/agent/token-budget.js';
 import { BaseLLM } from '../../../../src/llm/base.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
@@ -16,10 +20,21 @@ import { LLMUserMessage } from '../../../../src/llm/user-message.js';
 import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { buildLlmTokenUsageObservation } from '../../../../src/llm/utils/llm-token-usage-observation.js';
 import { ChunkResponse, CompleteResponse } from '../../../../src/llm/utils/response-types.js';
+import { defaultWorkingContextCompactionStrategyRegistry } from '../../../../src/memory/compaction/default-working-context-compaction-strategy-registry.js';
 import { MemoryManager } from '../../../../src/memory/memory-manager.js';
+import { MemoryType } from '../../../../src/memory/models/memory-types.js';
+import { CompactionPolicy } from '../../../../src/memory/policies/compaction-policy.js';
 import { FileMemoryStore } from '../../../../src/memory/store/file-store.js';
 
-class HighUsageLeafLLM extends BaseLLM {
+class ObservedUsageLeafLLM extends BaseLLM {
+  constructor(
+    model: LLMModel,
+    config: LLMConfig,
+    private readonly observedPromptTokens: number,
+  ) {
+    super(model, config);
+  }
+
   protected async _sendMessagesToLLM(): Promise<CompleteResponse> {
     return new CompleteResponse({ content: 'original leaf completion' });
   }
@@ -28,9 +43,9 @@ class HighUsageLeafLLM extends BaseLLM {
     yield new ChunkResponse({
       content: 'original leaf completion',
       usage: buildLlmTokenUsageObservation({
-        inputTokens: 1_000,
+        inputTokens: this.observedPromptTokens,
         outputTokens: 10,
-        totalTokens: 1_010,
+        totalTokens: this.observedPromptTokens + 10,
         rawUsage: null,
       }),
       is_complete: true,
@@ -39,27 +54,39 @@ class HighUsageLeafLLM extends BaseLLM {
 }
 
 describe('LlmPhase disabled automatic compaction', () => {
-  it('resolves ordinary request capacity but performs no automatic-compaction work at hard-cap pressure', async () => {
+  const runDisabledObservation = async (
+    observedPromptTokens: number,
+    expectedPressure: 'proactive' | 'hard-cap',
+  ): Promise<void> => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'disabled-memory-compaction-phase-'));
+    const classifyPressure = vi.spyOn(CompactionPolicy.prototype, 'classifyPressure');
+    const resolveStrategy = vi.spyOn(defaultWorkingContextCompactionStrategyRegistry, 'get');
     try {
-      const llm = new HighUsageLeafLLM(
+      const llm = new ObservedUsageLeafLLM(
         new LLMModel({
           name: 'disabled-leaf-model',
           value: 'disabled-leaf-model',
           canonicalName: 'disabled-leaf-model',
           provider: LLMProvider.OPENAI,
-          activeContextTokens: 1_200,
-          maxContextTokens: 1_200,
-          maxOutputTokens: 100,
+          activeContextTokens: 617_024,
+          maxContextTokens: 617_024,
+          maxOutputTokens: 1_024,
           defaultCompactionRatio: 0.2,
           defaultSafetyMarginTokens: 256,
         }),
-        new LLMConfig({ maxTokens: 100, compactionRatio: 0.01 }),
+        new LLMConfig({
+          maxTokens: 1_024,
+          compactionRatio: 0.2,
+          safetyMarginTokens: 256,
+        }),
+        observedPromptTokens,
       );
       const memoryManager = new MemoryManager({
         store: new FileMemoryStore(tempDir, 'disabled-leaf'),
       });
       const evaluateObservation = vi.spyOn(memoryManager, 'evaluateCompactionObservation');
+      const beginPendingAttempt = vi.spyOn(memoryManager, 'beginPendingCompactionAttempt');
+      const captureCompactionBaseline = vi.spyOn(memoryManager, 'captureCompactionBaseline');
       const state = new AgentRuntimeState('disabled-leaf');
       state.llmInstance = llm;
       state.memoryManager = memoryManager;
@@ -79,6 +106,23 @@ describe('LlmPhase disabled automatic compaction', () => {
       } as any;
 
       const content = 'compact this one-shot task';
+      const requestCapacity = resolveLlmRequestCapacity(llm.model, llm.config);
+      expect(requestCapacity?.inputBudget).toBe(615_744);
+      const planningBudget = resolveCompactionTokenBudget(
+        requestCapacity!,
+        llm.model,
+        llm.config,
+        new CompactionPolicy(),
+      );
+      expect(planningBudget.triggerThresholdTokens).toBe(123_148);
+      expect(observedPromptTokens).toBeGreaterThanOrEqual(
+        expectedPressure === 'hard-cap'
+          ? planningBudget.inputBudget
+          : planningBudget.triggerThresholdTokens,
+      );
+      if (expectedPressure === 'proactive') {
+        expect(observedPromptTokens).toBeLessThan(planningBudget.inputBudget);
+      }
       const outcome = await new LlmPhase().run(
         {
           llmUserMessage: new LLMUserMessage({ content }),
@@ -95,16 +139,32 @@ describe('LlmPhase disabled automatic compaction', () => {
         response: { content: 'original leaf completion' },
       });
       expect(memoryManager.getAutomaticCompactionConfiguration()).toEqual({ kind: 'disabled' });
+      expect(classifyPressure).not.toHaveBeenCalled();
       expect(evaluateObservation).not.toHaveBeenCalled();
+      expect(resolveStrategy).not.toHaveBeenCalled();
+      expect(beginPendingAttempt).not.toHaveBeenCalled();
+      expect(captureCompactionBaseline).not.toHaveBeenCalled();
       expect(memoryManager.hasPendingCompaction()).toBe(false);
       expect(memoryManager.getPendingCompactionGate()).toEqual({ kind: 'none' });
+      expect(memoryManager.store.list(MemoryType.EPISODIC)).toEqual([]);
+      expect(memoryManager.store.list(MemoryType.SEMANTIC)).toEqual([]);
       expect(notifyAgentCompactionStatus).not.toHaveBeenCalled();
       expect(notifyAgentTokenUsageUpdated).toHaveBeenCalledWith(expect.objectContaining({
-        latest_prompt_tokens: 1_000,
-        effective_context_window_tokens: 1_200,
+        latest_prompt_tokens: observedPromptTokens,
+        effective_context_window_tokens: 617_024,
       }));
     } finally {
+      classifyPressure.mockRestore();
+      resolveStrategy.mockRestore();
       fs.rmSync(tempDir, { recursive: true, force: true });
     }
+  };
+
+  it('reports capacity but performs no automatic-compaction work at captured proactive pressure', async () => {
+    await runDisabledObservation(176_655, 'proactive');
+  });
+
+  it('reports capacity but performs no automatic-compaction work at the policy hard cap', async () => {
+    await runDisabledObservation(615_744, 'hard-cap');
   });
 });

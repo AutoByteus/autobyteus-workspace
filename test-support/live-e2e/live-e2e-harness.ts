@@ -18,7 +18,10 @@ import { LLMProvider } from '../../autobyteus-ts/src/llm/providers.js';
 import { MessageRole, type Message } from '../../autobyteus-ts/src/llm/utils/messages.js';
 import type { CompleteResponse } from '../../autobyteus-ts/src/llm/utils/response-types.js';
 import { SkillAccessMode } from '../../autobyteus-ts/src/agent/context/skill-access-mode.js';
-import { resolveTokenBudget } from '../../autobyteus-ts/src/agent/token-budget.js';
+import {
+  resolveCompactionTokenBudget,
+  resolveLlmRequestCapacity,
+} from '../../autobyteus-ts/src/agent/token-budget.js';
 import { CompactionPolicy } from '../../autobyteus-ts/src/memory/policies/compaction-policy.js';
 import { providerSafeCompactionText } from '../../autobyteus-ts/src/memory/presentation/unicode-safe-text.js';
 import {
@@ -119,6 +122,12 @@ export type LiveE2eCompactionAgentFlowResult = {
   canonicalCompactorSourceToolTailVerified: true;
   canonicalCompactorProviderSafeUnicodeVerified: true;
   canonicalCompactorShieldOmissionPressureVerified: true;
+  canonicalCompactorNoSelfCompactionPersistenceVerified: true;
+  canonicalCompactorRunCount: number;
+  canonicalCompactorSiblingRunCount: number;
+  canonicalCompactorInitialSiblingRunCount: number;
+  canonicalCompactorCorrectionSiblingRunCount: number;
+  canonicalCompactorDescendantCount: number;
   unicodeShieldSourceImmutableVerified: true;
   qualityEvidence: {
     persistedMemory: {
@@ -225,6 +234,53 @@ const loadCanonicalCompactorEvidence = async (): Promise<{
 const countOccurrences = (value: string, needle: string): number =>
   value.split(needle).length - 1;
 
+export const classifyCanonicalCompactorRunTopology = (input: {
+  completedOperationCount: number;
+  acceptedRunIds: readonly string[];
+  runs: readonly {
+    runId: string;
+    attemptKind: 'initial' | 'correction' | null;
+  }[];
+}): {
+  valid: boolean;
+  siblingRunIds: string[];
+  initialSiblingRunIds: string[];
+  correctionSiblingRunIds: string[];
+  descendantRunIds: string[];
+} => {
+  const initialCandidates = input.runs.filter(({ attemptKind }) => attemptKind === 'initial');
+  const correctionCandidates = input.runs.filter(
+    ({ attemptKind }) => attemptKind === 'correction',
+  );
+  const initialSiblingRunIds = initialCandidates
+    .slice(0, input.completedOperationCount)
+    .map(({ runId }) => runId);
+  const correctionSiblingRunIds = correctionCandidates
+    .slice(0, input.completedOperationCount)
+    .map(({ runId }) => runId);
+  const siblingRunIds = [...initialSiblingRunIds, ...correctionSiblingRunIds];
+  const siblingRunIdSet = new Set(siblingRunIds);
+  const descendantRunIds = input.runs
+    .filter(({ runId }) => !siblingRunIdSet.has(runId))
+    .map(({ runId }) => runId);
+  return {
+    valid:
+      input.completedOperationCount > 0
+      && input.acceptedRunIds.length === input.completedOperationCount
+      && new Set(input.acceptedRunIds).size === input.acceptedRunIds.length
+      && initialCandidates.length === input.completedOperationCount
+      && correctionCandidates.length <= input.completedOperationCount
+      && siblingRunIds.length >= input.completedOperationCount
+      && siblingRunIds.length <= input.completedOperationCount * 2
+      && input.acceptedRunIds.every((runId) => siblingRunIdSet.has(runId))
+      && descendantRunIds.length === 0,
+    siblingRunIds,
+    initialSiblingRunIds,
+    correctionSiblingRunIds,
+    descendantRunIds,
+  };
+};
+
 const hasCanonicalSourceToolTail = (initialTask: string): boolean => {
   const openTagStart = initialTask.indexOf(TARGET_HISTORY_OPEN_TAG);
   if (openTagStart < 0) return false;
@@ -251,10 +307,12 @@ const hasCanonicalSourceToolTail = (initialTask: string): boolean => {
 };
 
 const inspectCanonicalCompactorTask = (runId: string): {
+  attemptKind: 'initial' | 'correction';
   taskFramingVerified: true;
   providerSafeUnicodeVerified: true;
   shieldOmissionPressureVerified: boolean;
   sourceToolTailVerified: boolean;
+  noSelfCompactionPersistenceVerified: boolean;
 } => {
   const store = new FileMemoryStore(appConfigProvider.config.getMemoryDir(), runId);
   const userTraces = store.listRawTraceCorpusOrdered()
@@ -263,6 +321,11 @@ const inspectCanonicalCompactorTask = (runId: string): {
     throw new Error('LIVE_E2E_CANONICAL_COMPACTOR_TASK_TRACE_INVALID');
   }
   const processedTask = userTraces[0]!.content;
+  const childLineage = new FileCompactionLineageStore(store.agentDir, {
+    targetKind: 'agent_run',
+    runId,
+    memberId: null,
+  }).list();
   const initialTaskStart = processedTask.lastIndexOf(COMPACTION_TASK_INTRO);
   if (initialTaskStart < 0) {
     throw new Error('LIVE_E2E_CANONICAL_COMPACTOR_TASK_FRAMING_INVALID');
@@ -272,11 +335,11 @@ const inspectCanonicalCompactorTask = (runId: string): {
     processedTask.startsWith('**[User Requirement]**')
     || (initialTaskStart > 0
       && !processedTask.startsWith('A prior compaction attempt failed host validation at the `'))
-    || countOccurrences(initialTask, COMPACTION_TASK_INTRO) !== 1
-    || countOccurrences(initialTask, TARGET_HISTORY_OPEN_TAG) !== 1
-    || countOccurrences(initialTask, TARGET_HISTORY_CLOSE_TAG) !== 1
-    || countOccurrences(initialTask, 'START OF TARGET AGENT CONVERSATION HISTORY') !== 1
-    || countOccurrences(initialTask, 'END OF TARGET AGENT CONVERSATION HISTORY') !== 1
+    || countOccurrences(processedTask, COMPACTION_TASK_INTRO) !== 1
+    || countOccurrences(processedTask, TARGET_HISTORY_OPEN_TAG) !== 1
+    || countOccurrences(processedTask, TARGET_HISTORY_CLOSE_TAG) !== 1
+    || countOccurrences(processedTask, 'START OF TARGET AGENT CONVERSATION HISTORY') !== 1
+    || countOccurrences(processedTask, 'END OF TARGET AGENT CONVERSATION HISTORY') !== 1
     || initialTask.includes('<conversation_history>')
     || initialTask.includes('</conversation_history>')
     || !initialTask.endsWith(COMPACTION_TASK_END_SEPARATOR)
@@ -291,6 +354,7 @@ const inspectCanonicalCompactorTask = (runId: string): {
     throw new Error('LIVE_E2E_CANONICAL_COMPACTOR_TASK_UNICODE_UNSAFE');
   }
   return {
+    attemptKind: initialTaskStart === 0 ? 'initial' : 'correction',
     taskFramingVerified: true,
     providerSafeUnicodeVerified: true,
     shieldOmissionPressureVerified:
@@ -299,6 +363,9 @@ const inspectCanonicalCompactorTask = (runId: string): {
       && initialTask.includes('… [')
       && !initialTask.includes('🛡️'),
     sourceToolTailVerified: hasCanonicalSourceToolTail(initialTask),
+    noSelfCompactionPersistenceVerified:
+      childLineage.length === 0
+      && store.readArchiveRawTraces().length === 0,
   };
 };
 
@@ -362,6 +429,20 @@ const waitForLiveCondition = async (
     await new Promise((resolve) => setTimeout(resolve, 100));
   }
   throw new Error('LIVE_E2E_COMPACTION_FLOW_TIMEOUT');
+};
+
+const listCompactorRunDirectories = async (): Promise<string[]> => {
+  try {
+    return (await fs.readdir(path.join(appConfigProvider.config.getMemoryDir(), 'agents'), {
+      withFileTypes: true,
+    }))
+      .filter((entry) => entry.isDirectory() && entry.name.startsWith('memory_compactor_'))
+      .map((entry) => entry.name)
+      .sort();
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') return [];
+    throw error;
+  }
 };
 
 export const classifyAutoByteusDiscoveryUnavailable = (
@@ -586,7 +667,6 @@ export class LiveE2eScenarioExecution {
       createLLM: (modelIdentifier, configInput) =>
         LLMFactory.createLLM(modelIdentifier, configInput, this.llmResolver),
       workspaceManager,
-      compactionAgentRunnerFactory: () => null,
     });
     const backendFactory: LiveE2eAgentBackendFactory = {
       createBackend: async (config, runId) => wrapProductAgentBackendForLiveE2e(
@@ -696,6 +776,7 @@ export class LiveE2eScenarioExecution {
 
     const modelIdentifier = await this.resolveScenarioModelIdentifier();
     const canonicalCompactor = await loadCanonicalCompactorEvidence();
+    const compactorRunDirectoriesBefore = new Set(await listCompactorRunDirectories());
     const providerExtraParams = this.scenario.providerId === 'DEEPSEEK'
       ? { thinking_type: 'disabled' }
       : {};
@@ -843,11 +924,18 @@ export class LiveE2eScenarioExecution {
       if (!observedPrimaryLlm) {
         throw new Error('LIVE_E2E_COMPACTION_PRIMARY_LLM_MISSING');
       }
-      const budget = resolveTokenBudget(
+      const requestCapacity = resolveLlmRequestCapacity(
         observedPrimaryLlm.model,
         observedPrimaryLlm.config,
-        new CompactionPolicy(),
       );
+      const budget = requestCapacity
+        ? resolveCompactionTokenBudget(
+            requestCapacity,
+            observedPrimaryLlm.model,
+            observedPrimaryLlm.config,
+            new CompactionPolicy(),
+          )
+        : null;
       process.stdout.write(`${JSON.stringify({
         event: 'managed_compaction_budget_probe',
         compactionRatio: REAL_COMPACTION_RATIO,
@@ -891,22 +979,56 @@ export class LiveE2eScenarioExecution {
       ) {
         throw new Error('LIVE_E2E_CANONICAL_COMPACTOR_EXECUTION_METADATA_INVALID');
       }
-      const canonicalCompactorTasks = compactionRunIds.map((runId) =>
-        inspectCanonicalCompactorTask(runId!));
+      const acceptedCompactorRunIds = compactionRunIds
+        .filter((value): value is string => value !== null);
+      const compactorRunDirectories = (await listCompactorRunDirectories())
+        .filter((entry) => !compactorRunDirectoriesBefore.has(entry));
+      const inspectedCompactorRuns = compactorRunDirectories.map((runId) => {
+        try {
+          return { runId, inspection: inspectCanonicalCompactorTask(runId) };
+        } catch {
+          return { runId, inspection: null };
+        }
+      });
+      const canonicalCompactorTopology = classifyCanonicalCompactorRunTopology({
+        completedOperationCount: completedCompactions.length,
+        acceptedRunIds: acceptedCompactorRunIds,
+        runs: inspectedCompactorRuns.map(({ runId, inspection }) => ({
+          runId,
+          attemptKind: inspection?.attemptKind ?? null,
+        })),
+      });
+      if (!canonicalCompactorTopology.valid) {
+        throw new Error('LIVE_E2E_CANONICAL_COMPACTOR_DESCENDANT_RUN_DETECTED');
+      }
+      const canonicalCompactorSiblingRunIds = new Set(
+        canonicalCompactorTopology.siblingRunIds,
+      );
+      const canonicalCompactorSiblingRuns = inspectedCompactorRuns.filter(
+        ({ runId }) => canonicalCompactorSiblingRunIds.has(runId),
+      );
+      const canonicalCompactorDescendantCount =
+        canonicalCompactorTopology.descendantRunIds.length;
+      const canonicalCompactorTasks = canonicalCompactorSiblingRuns
+        .map(({ inspection }) => inspection!);
       const canonicalCompactorSourceToolTailVerified = canonicalCompactorTasks
         .some(({ sourceToolTailVerified }) => sourceToolTailVerified);
       const canonicalCompactorProviderSafeUnicodeVerified = canonicalCompactorTasks
         .every(({ providerSafeUnicodeVerified }) => providerSafeUnicodeVerified);
       const canonicalCompactorShieldOmissionPressureVerified = canonicalCompactorTasks
         .some(({ shieldOmissionPressureVerified }) => shieldOmissionPressureVerified);
+      const canonicalCompactorNoSelfCompactionPersistenceVerified = canonicalCompactorTasks
+        .every(({ noSelfCompactionPersistenceVerified }) =>
+          noSelfCompactionPersistenceVerified);
       if (!canonicalCompactorSourceToolTailVerified) {
         throw new Error('LIVE_E2E_CANONICAL_COMPACTOR_SOURCE_TOOL_TAIL_MISSING');
       }
       if (
         !canonicalCompactorProviderSafeUnicodeVerified
         || !canonicalCompactorShieldOmissionPressureVerified
+        || !canonicalCompactorNoSelfCompactionPersistenceVerified
       ) {
-        throw new Error('LIVE_E2E_CANONICAL_COMPACTOR_UNICODE_EVIDENCE_MISSING');
+        throw new Error('LIVE_E2E_CANONICAL_COMPACTOR_LEAF_EVIDENCE_MISSING');
       }
 
       const successfulTools = events.filter(
@@ -1025,6 +1147,14 @@ export class LiveE2eScenarioExecution {
         canonicalCompactorSourceToolTailVerified,
         canonicalCompactorProviderSafeUnicodeVerified,
         canonicalCompactorShieldOmissionPressureVerified,
+        canonicalCompactorNoSelfCompactionPersistenceVerified,
+        canonicalCompactorRunCount: compactorRunDirectories.length,
+        canonicalCompactorSiblingRunCount: canonicalCompactorTopology.siblingRunIds.length,
+        canonicalCompactorInitialSiblingRunCount:
+          canonicalCompactorTopology.initialSiblingRunIds.length,
+        canonicalCompactorCorrectionSiblingRunCount:
+          canonicalCompactorTopology.correctionSiblingRunIds.length,
+        canonicalCompactorDescendantCount,
         canonicalCompactorToolFree: canonicalCompactor.toolFree,
         canonicalCompactorEffectiveToolNames: canonicalCompactor.effectiveToolNames,
         unicodeShieldSourceImmutableVerified: true,
@@ -1083,6 +1213,14 @@ export class LiveE2eScenarioExecution {
         canonicalCompactorSourceToolTailVerified: true,
         canonicalCompactorProviderSafeUnicodeVerified: true,
         canonicalCompactorShieldOmissionPressureVerified: true,
+        canonicalCompactorNoSelfCompactionPersistenceVerified: true,
+        canonicalCompactorRunCount: compactorRunDirectories.length,
+        canonicalCompactorSiblingRunCount: canonicalCompactorTopology.siblingRunIds.length,
+        canonicalCompactorInitialSiblingRunCount:
+          canonicalCompactorTopology.initialSiblingRunIds.length,
+        canonicalCompactorCorrectionSiblingRunCount:
+          canonicalCompactorTopology.correctionSiblingRunIds.length,
+        canonicalCompactorDescendantCount,
         unicodeShieldSourceImmutableVerified: true,
         qualityEvidence: {
           persistedMemory: {

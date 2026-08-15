@@ -163,7 +163,9 @@ describe("Configured skill on-demand loading active native runtime e2e", () => {
           workspaceId === workspace.workspaceId ? workspace : undefined,
         getOrCreateTempWorkspace: async () => workspace,
       } as any,
-      compactionAgentRunnerFactory: async () => null,
+      compactionAgentRunnerFactory: async () => ({
+        runCompactionTask: vi.fn(),
+      }),
     });
     const backend = await factory.createBackend(
       new AgentRunConfig({
@@ -186,7 +188,7 @@ describe("Configured skill on-demand loading active native runtime e2e", () => {
     activeBackends.delete(backend);
   };
 
-  it("keeps skill tools explicit and reads updated skill files from the same active run", async () => {
+  it("keeps ordinary native tools and configured skill reads explicit in the same active run", async () => {
     const unique = `${Date.now()}_${Math.random().toString(16).slice(2)}`;
     const skillName = `fresh_skill_${unique}`;
     const description = "Active native configured skill freshness fixture";
@@ -233,7 +235,12 @@ describe("Configured skill on-demand loading active native runtime e2e", () => {
     });
     const noReaderContext = noReaderBackend.getContext().runtimeContext as AgentContext;
     expect(noReaderBackend.isActive()).toBe(true);
-    expect(Object.keys(noReaderContext.toolInstances)).toEqual([]);
+    expect(Object.keys(noReaderContext.toolInstances)).toEqual([
+      "run_bash",
+      "read_file",
+      "edit_file",
+      "write_file",
+    ]);
     expect(noReaderContext.processedSystemPrompt.match(/^## .+$/gm)).toEqual([
       "## Agent Identity",
       "## Working Environment",
@@ -269,7 +276,12 @@ describe("Configured skill on-demand loading active native runtime e2e", () => {
       });
       const runtimeContext = readerBackend.getContext().runtimeContext as AgentContext;
       expect(readerBackend.isActive()).toBe(true);
-      expect(Object.keys(runtimeContext.toolInstances)).toEqual(["read_file", "run_bash"]);
+      expect(Object.keys(runtimeContext.toolInstances)).toEqual([
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+      ]);
       for (const retiredToolName of retiredToolNames) {
         expect(runtimeContext.toolInstances).not.toHaveProperty(retiredToolName);
         expect(warnSpy).toHaveBeenCalledWith(

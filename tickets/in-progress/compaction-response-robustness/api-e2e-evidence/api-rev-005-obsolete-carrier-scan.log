@@ -1,0 +1,19 @@
+API-REV-005 current-surface scan
+$ git grep -nE "resolveTokenBudget|memoryManager\\.compactionPolicy" -- test-support/live-e2e/live-e2e-harness.ts autobyteus-ts/tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts
+PASS no removed combined-budget/property API remains in required stale paths
+$ git grep -n "compactionAgentRunnerFactory" -- required changed durable paths
+autobyteus-server-ts/tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts:166:      compactionAgentRunnerFactory: async () => ({
+autobyteus-server-ts/tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts:53:  let compactionAgentRunnerFactory: ReturnType<typeof vi.fn>;
+autobyteus-server-ts/tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts:81:    compactionAgentRunnerFactory = vi.fn(() => compactionRunner);
+autobyteus-server-ts/tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts:99:      compactionAgentRunnerFactory,
+autobyteus-server-ts/tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts:144:    expect(compactionAgentRunnerFactory).toHaveBeenCalledOnce();
+autobyteus-server-ts/tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts:169:    compactionAgentRunnerFactory.mockClear();
+autobyteus-server-ts/tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts:186:    expect(compactionAgentRunnerFactory).not.toHaveBeenCalled();
+autobyteus-server-ts/tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts:213:    expect(compactionAgentRunnerFactory).not.toHaveBeenCalled();
+autobyteus-server-ts/tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts:291:    expect(compactionAgentRunnerFactory).toHaveBeenCalledTimes(2);
+PASS changed normal-agent fixtures use a valid runner; canonical compactor paths assert no runner construction rather than supplying a null compatibility carrier
+UNRELATED BROAD-SUITE DEBT
+autobyteus-server-ts/tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts:348:    compactionAgentRunnerFactory: vi.fn(async () => null),
+CLASSIFICATION agent-package-private-skills is unchanged by IR-005 and currently fails before test collection on an already absent Codex module; it is recorded as unrelated broad-suite debt, not claimed clean
+$ git diff --name-only 204fcf0c1^ 204fcf0c1 -- unrelated failure owners
+PASS no IR-005 overlap with the three remaining unrelated broad failures

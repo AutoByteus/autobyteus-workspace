@@ -1,0 +1,11 @@
+API-REV-006 owned-resource cleanup
+ABSENT autobyteus-server-ts/db/test.db
+ABSENT autobyteus-server-ts/db/test.db.secret.key
+ABSENT autobyteus-server-ts/db/test.db-wal
+ABSENT autobyteus-server-ts/db/test.db-shm
+ABSENT autobyteus-server-ts/tests/.tmp/live-e2e-runtime
+ABSENT autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db
+ABSENT autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db-journal
+SOURCE_ENV_RETAINED /Users/normy/.autobyteus/server-data/.env
+PROCESS_AUDIT
+NO_OWNED_LIVE_PROCESS

@@ -1,0 +1,1253 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:69761) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+Using temp workspace (ID: temp_ws_backend_integration) for agent.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+AgentRuntimeState initialized for agent_id 'autobyteus_backend_agent_11111111111111111111111111111111'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': LLM instance 'DummyLLM' and 4 tools prepared and stored in state.
+AgentContext composed for agent_id 'autobyteus_backend_agent_11111111111111111111111111111111'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'autobyteus_backend_agent_11111111111111111111111111111111' with config: 'AutoByteusBackendAgent'.
+AgentWorker initialized for agent_id 'autobyteus_backend_agent_11111111111111111111111111111111'.
+Registered AgentContext for agent_id 'autobyteus_backend_agent_11111111111111111111111111111111'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'autobyteus_backend_agent_11111111111111111111111111111111'. Context registered.
+Agent facade initialized for agent_id 'autobyteus_backend_agent_11111111111111111111111111111111'.
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111' created and stored successfully.
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111' requesting runtime to start.
+AgentRuntime for 'autobyteus_backend_agent_11111111111111111111111111111111': Starting worker.
+AgentWorker 'autobyteus_backend_agent_11111111111111111111111111111111': Starting...
+AgentWorker 'autobyteus_backend_agent_11111111111111111111111111111111' asyncRun(): Starting.
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': Runtime init completed (event store initialized).
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': Runtime init completed (status deriver initialized).
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': Runtime init completed (AgentEventInbox initialized).
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'autobyteus_backend_agent_11111111111111111111111111111111' to become idle (timeout: 30s)...
+AgentEventStream (ID: 07787f45-9768-457e-9a29-64d39096932e) initialized for agent_id 'autobyteus_backend_agent_11111111111111111111111111111111'. Subscribed to notifier.
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+AgentExternalEventNotifier (NotifierID: 782525d0-0e0e-4d85-b84b-4320b72857d5, AgentID: autobyteus_backend_agent_11111111111111111111111111111111) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': Bootstrapper starting direct lifecycle execution.
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': Executing SystemPromptProcessingStep.
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': No configured skills. Skipping skill catalog.
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': Final processed system prompt configured on LLM instance. Final length: 2596.
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': Final processed system prompt:
+---
+## Agent Identity
+
+- Name: AutoByteusBackendAgent
+- Description: real backend integration test
+
+### Responsibilities and Boundaries
+
+Respond briefly.
+
+## Working Environment
+
+- Agent workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-backend-workspace-pQLRhr`
+- Use skills from their skill package directories to work on tasks in the agent workspace.
+- A skill package directory contains the skill's instructions and bundled assets. It is not the agent workspace, and reading the skill does not change the agent workspace.
+- Resolve skill-package references from the skill package directory. Resolve task and project locations from the agent workspace unless an explicit target says otherwise.
+- Do not modify a skill package unless the task explicitly targets that skill package.
+- With no working-directory override, `pwd` returns the agent workspace. An explicit working directory changes only that command's location; it does not redefine the workspace.
+
+## Bash Operating Practice
+
+- Use Bash for workspace navigation, targeted search, repository and project commands, processes, network operations, and verification. Prefer deterministic, targeted commands over broad directory listings.
+- For file content, follow `File And Directory Practice` and prefer the exposed dedicated file tools. Use Bash for file inspection or modification when those tools are unavailable or cannot complete the operation after recovery.
+- Prefer non-interactive, small, composable, project-native commands.
+
+## File And Directory Practice
+
+- Locate files and directories by intent instead of broadly listing them. For content searches, use `rg -n "term" path`; for filename discovery, use `rg --files path | rg "pattern"`; use constrained `find path -maxdepth N ...` only when filesystem traversal or metadata is the goal.
+- When exposed, use `read_file` for file reading, `edit_file` for targeted regional changes to an existing file, and `write_file` for new files or deliberate whole-file replacement.
+- Before every targeted `edit_file` change, use `read_file` to read the relevant current content of the original file unless it was read recently and has not changed.
+- Build the regional `edit_file` patch from that latest content and preserve unrelated content. If the edit context fails or the file changed, use `read_file` again for the affected content, construct a new patch, and retry; do not blindly retry an unchanged patch.
+- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check.
+---
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+AgentExternalEventNotifier (NotifierID: 782525d0-0e0e-4d85-b84b-4320b72857d5, AgentID: autobyteus_backend_agent_11111111111111111111111111111111) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+AgentWorker 'autobyteus_backend_agent_11111111111111111111111111111111' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111' has become idle.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+AgentEventStream (ID: 07787f45-9768-457e-9a29-64d39096932e) for 'autobyteus_backend_agent_11111111111111111111111111111111': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+AgentExternalEventNotifier (NotifierID: 782525d0-0e0e-4d85-b84b-4320b72857d5, AgentID: autobyteus_backend_agent_11111111111111111111111111111111) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+AgentExternalEventNotifier (NotifierID: 782525d0-0e0e-4d85-b84b-4320b72857d5, AgentID: autobyteus_backend_agent_11111111111111111111111111111111) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+AgentExternalEventNotifier (NotifierID: 782525d0-0e0e-4d85-b84b-4320b72857d5, AgentID: autobyteus_backend_agent_11111111111111111111111111111111) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+compaction_budget_skipped_no_usage {
+  agent_id: 'autobyteus_backend_agent_11111111111111111111111111111111',
+  turn_id: 'turn_0001',
+  reason: 'missing_usage'
+}
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+AgentExternalEventNotifier (NotifierID: 782525d0-0e0e-4d85-b84b-4320b72857d5, AgentID: autobyteus_backend_agent_11111111111111111111111111111111) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+AgentExternalEventNotifier (NotifierID: 782525d0-0e0e-4d85-b84b-4320b72857d5, AgentID: autobyteus_backend_agent_11111111111111111111111111111111) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+AgentExternalEventNotifier (NotifierID: 782525d0-0e0e-4d85-b84b-4320b72857d5, AgentID: autobyteus_backend_agent_11111111111111111111111111111111) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+AgentExternalEventNotifier (NotifierID: 782525d0-0e0e-4d85-b84b-4320b72857d5, AgentID: autobyteus_backend_agent_11111111111111111111111111111111) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+Removing agent 'autobyteus_backend_agent_11111111111111111111111111111111'. Attempting graceful shutdown.
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+AgentExternalEventNotifier (NotifierID: 782525d0-0e0e-4d85-b84b-4320b72857d5, AgentID: autobyteus_backend_agent_11111111111111111111111111111111) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+AgentWorker 'autobyteus_backend_agent_11111111111111111111111111111111': Stop requested.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+AgentExternalEventNotifier (NotifierID: 782525d0-0e0e-4d85-b84b-4320b72857d5, AgentID: autobyteus_backend_agent_11111111111111111111111111111111) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+AgentWorker 'autobyteus_backend_agent_11111111111111111111111111111111' asyncRun() loop has finished.
+AgentWorker 'autobyteus_backend_agent_11111111111111111111111111111111': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+AgentWorker 'autobyteus_backend_agent_11111111111111111111111111111111': Shutdown resource cleanup completed successfully.
+AgentWorker 'autobyteus_backend_agent_11111111111111111111111111111111': Shutdown sequence completed.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+Unregistered AgentContext for agent_id 'autobyteus_backend_agent_11111111111111111111111111111111'.
+AgentRuntime for 'autobyteus_backend_agent_11111111111111111111111111111111': Context unregistered.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+AgentRuntime for 'autobyteus_backend_agent_11111111111111111111111111111111' stop() method completed.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+Using temp workspace (ID: temp_ws_backend_integration) for agent.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentRuntimeState initialized for agent_id 'memory_compactor_runtime_tools_empty_11111111'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'memory_compactor_runtime_tools_empty_11111111': No tools provided in config.
+Agent 'memory_compactor_runtime_tools_empty_11111111': LLM instance 'DummyLLM' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'memory_compactor_runtime_tools_empty_11111111'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'memory_compactor_runtime_tools_empty_11111111' with config: 'Memory Compactor'.
+AgentWorker initialized for agent_id 'memory_compactor_runtime_tools_empty_11111111'.
+Registered AgentContext for agent_id 'memory_compactor_runtime_tools_empty_11111111'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'memory_compactor_runtime_tools_empty_11111111'. Context registered.
+Agent facade initialized for agent_id 'memory_compactor_runtime_tools_empty_11111111'.
+Agent 'memory_compactor_runtime_tools_empty_11111111' created and stored successfully.
+Agent 'memory_compactor_runtime_tools_empty_11111111' requesting runtime to start.
+AgentRuntime for 'memory_compactor_runtime_tools_empty_11111111': Starting worker.
+AgentWorker 'memory_compactor_runtime_tools_empty_11111111': Starting...
+AgentWorker 'memory_compactor_runtime_tools_empty_11111111' asyncRun(): Starting.
+Agent 'memory_compactor_runtime_tools_empty_11111111': Runtime init completed (event store initialized).
+Agent 'memory_compactor_runtime_tools_empty_11111111': Runtime init completed (status deriver initialized).
+Agent 'memory_compactor_runtime_tools_empty_11111111': Runtime init completed (AgentEventInbox initialized).
+Agent 'memory_compactor_runtime_tools_empty_11111111': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'memory_compactor_runtime_tools_empty_11111111' to become idle (timeout: 30s)...
+AgentEventStream (ID: 46da5197-f10c-410d-815f-d07739417ef1) initialized for agent_id 'memory_compactor_runtime_tools_empty_11111111'. Subscribed to notifier.
+Agent 'memory_compactor_runtime_tools_empty_11111111': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentExternalEventNotifier (NotifierID: a8af87cf-46a2-462c-b00c-0e9a29a6bd06, AgentID: memory_compactor_runtime_tools_empty_11111111) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+Agent 'memory_compactor_runtime_tools_empty_11111111': Bootstrapper starting direct lifecycle execution.
+Agent 'memory_compactor_runtime_tools_empty_11111111': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'memory_compactor_runtime_tools_empty_11111111': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+Agent 'memory_compactor_runtime_tools_empty_11111111': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'memory_compactor_runtime_tools_empty_11111111': Executing SystemPromptProcessingStep.
+Agent 'memory_compactor_runtime_tools_empty_11111111': No configured skills. Skipping skill catalog.
+Agent 'memory_compactor_runtime_tools_empty_11111111': Final processed system prompt configured on LLM instance. Final length: 2619.
+Agent 'memory_compactor_runtime_tools_empty_11111111': Final processed system prompt:
+---
+## Agent Identity
+
+- Name: Memory Compactor
+- Description: Compacts target-agent memory.
+
+### Responsibilities and Boundaries
+
+Return the required structured memory object.
+
+## Working Environment
+
+- Agent workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-backend-workspace-Wt5zBk`
+- Use skills from their skill package directories to work on tasks in the agent workspace.
+- A skill package directory contains the skill's instructions and bundled assets. It is not the agent workspace, and reading the skill does not change the agent workspace.
+- Resolve skill-package references from the skill package directory. Resolve task and project locations from the agent workspace unless an explicit target says otherwise.
+- Do not modify a skill package unless the task explicitly targets that skill package.
+- With no working-directory override, `pwd` returns the agent workspace. An explicit working directory changes only that command's location; it does not redefine the workspace.
+
+## Bash Operating Practice
+
+- Use Bash for workspace navigation, targeted search, repository and project commands, processes, network operations, and verification. Prefer deterministic, targeted commands over broad directory listings.
+- For file content, follow `File And Directory Practice` and prefer the exposed dedicated file tools. Use Bash for file inspection or modification when those tools are unavailable or cannot complete the operation after recovery.
+- Prefer non-interactive, small, composable, project-native commands.
+
+## File And Directory Practice
+
+- Locate files and directories by intent instead of broadly listing them. For content searches, use `rg -n "term" path`; for filename discovery, use `rg --files path | rg "pattern"`; use constrained `find path -maxdepth N ...` only when filesystem traversal or metadata is the goal.
+- When exposed, use `read_file` for file reading, `edit_file` for targeted regional changes to an existing file, and `write_file` for new files or deliberate whole-file replacement.
+- Before every targeted `edit_file` change, use `read_file` to read the relevant current content of the original file unless it was read recently and has not changed.
+- Build the regional `edit_file` patch from that latest content and preserve unrelated content. If the edit context fails or the file changed, use `read_file` again for the affected content, construct a new patch, and retry; do not blindly retry an unchanged patch.
+- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check.
+---
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+Agent 'memory_compactor_runtime_tools_empty_11111111': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentExternalEventNotifier (NotifierID: a8af87cf-46a2-462c-b00c-0e9a29a6bd06, AgentID: memory_compactor_runtime_tools_empty_11111111) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentWorker 'memory_compactor_runtime_tools_empty_11111111' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+Agent 'memory_compactor_runtime_tools_empty_11111111' has become idle.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentEventStream (ID: 46da5197-f10c-410d-815f-d07739417ef1) for 'memory_compactor_runtime_tools_empty_11111111': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentExternalEventNotifier (NotifierID: a8af87cf-46a2-462c-b00c-0e9a29a6bd06, AgentID: memory_compactor_runtime_tools_empty_11111111) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentExternalEventNotifier (NotifierID: a8af87cf-46a2-462c-b00c-0e9a29a6bd06, AgentID: memory_compactor_runtime_tools_empty_11111111) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentExternalEventNotifier (NotifierID: a8af87cf-46a2-462c-b00c-0e9a29a6bd06, AgentID: memory_compactor_runtime_tools_empty_11111111) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentExternalEventNotifier (NotifierID: a8af87cf-46a2-462c-b00c-0e9a29a6bd06, AgentID: memory_compactor_runtime_tools_empty_11111111) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentExternalEventNotifier (NotifierID: a8af87cf-46a2-462c-b00c-0e9a29a6bd06, AgentID: memory_compactor_runtime_tools_empty_11111111) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentExternalEventNotifier (NotifierID: a8af87cf-46a2-462c-b00c-0e9a29a6bd06, AgentID: memory_compactor_runtime_tools_empty_11111111) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentExternalEventNotifier (NotifierID: a8af87cf-46a2-462c-b00c-0e9a29a6bd06, AgentID: memory_compactor_runtime_tools_empty_11111111) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+Removing agent 'memory_compactor_runtime_tools_empty_11111111'. Attempting graceful shutdown.
+Agent 'memory_compactor_runtime_tools_empty_11111111' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentExternalEventNotifier (NotifierID: a8af87cf-46a2-462c-b00c-0e9a29a6bd06, AgentID: memory_compactor_runtime_tools_empty_11111111) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentWorker 'memory_compactor_runtime_tools_empty_11111111': Stop requested.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentExternalEventNotifier (NotifierID: a8af87cf-46a2-462c-b00c-0e9a29a6bd06, AgentID: memory_compactor_runtime_tools_empty_11111111) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentWorker 'memory_compactor_runtime_tools_empty_11111111' asyncRun() loop has finished.
+AgentWorker 'memory_compactor_runtime_tools_empty_11111111': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentWorker 'memory_compactor_runtime_tools_empty_11111111': Shutdown resource cleanup completed successfully.
+AgentWorker 'memory_compactor_runtime_tools_empty_11111111': Shutdown sequence completed.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+Unregistered AgentContext for agent_id 'memory_compactor_runtime_tools_empty_11111111'.
+AgentRuntime for 'memory_compactor_runtime_tools_empty_11111111': Context unregistered.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentRuntime for 'memory_compactor_runtime_tools_empty_11111111' stop() method completed.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+Using temp workspace (ID: temp_ws_backend_integration) for agent.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentRuntimeState initialized for agent_id 'memory_compactor_runtime_tools_empty_11111111'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'memory_compactor_runtime_tools_empty_11111111': No tools provided in config.
+Agent 'memory_compactor_runtime_tools_empty_11111111': LLM instance 'DummyLLM' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'memory_compactor_runtime_tools_empty_11111111'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'memory_compactor_runtime_tools_empty_11111111' with config: 'Memory Compactor'.
+AgentWorker initialized for agent_id 'memory_compactor_runtime_tools_empty_11111111'.
+Registered AgentContext for agent_id 'memory_compactor_runtime_tools_empty_11111111'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'memory_compactor_runtime_tools_empty_11111111'. Context registered.
+Agent facade initialized for agent_id 'memory_compactor_runtime_tools_empty_11111111'.
+Agent 'memory_compactor_runtime_tools_empty_11111111' restored and stored successfully.
+Agent 'memory_compactor_runtime_tools_empty_11111111' requesting runtime to start.
+AgentRuntime for 'memory_compactor_runtime_tools_empty_11111111': Starting worker.
+AgentWorker 'memory_compactor_runtime_tools_empty_11111111': Starting...
+AgentWorker 'memory_compactor_runtime_tools_empty_11111111' asyncRun(): Starting.
+Agent 'memory_compactor_runtime_tools_empty_11111111': Runtime init completed (event store initialized).
+Agent 'memory_compactor_runtime_tools_empty_11111111': Runtime init completed (status deriver initialized).
+Agent 'memory_compactor_runtime_tools_empty_11111111': Runtime init completed (AgentEventInbox initialized).
+Agent 'memory_compactor_runtime_tools_empty_11111111': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'memory_compactor_runtime_tools_empty_11111111' to become idle (timeout: 30s)...
+AgentEventStream (ID: 872aad7a-fd68-4636-8458-f7b3e3f86a97) initialized for agent_id 'memory_compactor_runtime_tools_empty_11111111'. Subscribed to notifier.
+Agent 'memory_compactor_runtime_tools_empty_11111111': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentExternalEventNotifier (NotifierID: b64d7cc0-a374-4908-83d9-566c867f9977, AgentID: memory_compactor_runtime_tools_empty_11111111) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+Agent 'memory_compactor_runtime_tools_empty_11111111': Bootstrapper starting direct lifecycle execution.
+Agent 'memory_compactor_runtime_tools_empty_11111111': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'memory_compactor_runtime_tools_empty_11111111': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+Agent 'memory_compactor_runtime_tools_empty_11111111': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'memory_compactor_runtime_tools_empty_11111111': Executing SystemPromptProcessingStep.
+Agent 'memory_compactor_runtime_tools_empty_11111111': No configured skills. Skipping skill catalog.
+Agent 'memory_compactor_runtime_tools_empty_11111111': Final processed system prompt configured on LLM instance. Final length: 2619.
+Agent 'memory_compactor_runtime_tools_empty_11111111': Final processed system prompt:
+---
+## Agent Identity
+
+- Name: Memory Compactor
+- Description: Compacts target-agent memory.
+
+### Responsibilities and Boundaries
+
+Return the required structured memory object.
+
+## Working Environment
+
+- Agent workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-backend-workspace-Wt5zBk`
+- Use skills from their skill package directories to work on tasks in the agent workspace.
+- A skill package directory contains the skill's instructions and bundled assets. It is not the agent workspace, and reading the skill does not change the agent workspace.
+- Resolve skill-package references from the skill package directory. Resolve task and project locations from the agent workspace unless an explicit target says otherwise.
+- Do not modify a skill package unless the task explicitly targets that skill package.
+- With no working-directory override, `pwd` returns the agent workspace. An explicit working directory changes only that command's location; it does not redefine the workspace.
+
+## Bash Operating Practice
+
+- Use Bash for workspace navigation, targeted search, repository and project commands, processes, network operations, and verification. Prefer deterministic, targeted commands over broad directory listings.
+- For file content, follow `File And Directory Practice` and prefer the exposed dedicated file tools. Use Bash for file inspection or modification when those tools are unavailable or cannot complete the operation after recovery.
+- Prefer non-interactive, small, composable, project-native commands.
+
+## File And Directory Practice
+
+- Locate files and directories by intent instead of broadly listing them. For content searches, use `rg -n "term" path`; for filename discovery, use `rg --files path | rg "pattern"`; use constrained `find path -maxdepth N ...` only when filesystem traversal or metadata is the goal.
+- When exposed, use `read_file` for file reading, `edit_file` for targeted regional changes to an existing file, and `write_file` for new files or deliberate whole-file replacement.
+- Before every targeted `edit_file` change, use `read_file` to read the relevant current content of the original file unless it was read recently and has not changed.
+- Build the regional `edit_file` patch from that latest content and preserve unrelated content. If the edit context fails or the file changed, use `read_file` again for the affected content, construct a new patch, and retry; do not blindly retry an unchanged patch.
+- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check.
+---
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+Agent 'memory_compactor_runtime_tools_empty_11111111': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentExternalEventNotifier (NotifierID: b64d7cc0-a374-4908-83d9-566c867f9977, AgentID: memory_compactor_runtime_tools_empty_11111111) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentWorker 'memory_compactor_runtime_tools_empty_11111111' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+Agent 'memory_compactor_runtime_tools_empty_11111111' has become idle.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentEventStream (ID: 872aad7a-fd68-4636-8458-f7b3e3f86a97) for 'memory_compactor_runtime_tools_empty_11111111': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+Removing agent 'memory_compactor_runtime_tools_empty_11111111'. Attempting graceful shutdown.
+Agent 'memory_compactor_runtime_tools_empty_11111111' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentExternalEventNotifier (NotifierID: b64d7cc0-a374-4908-83d9-566c867f9977, AgentID: memory_compactor_runtime_tools_empty_11111111) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentWorker 'memory_compactor_runtime_tools_empty_11111111': Stop requested.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentExternalEventNotifier (NotifierID: b64d7cc0-a374-4908-83d9-566c867f9977, AgentID: memory_compactor_runtime_tools_empty_11111111) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentWorker 'memory_compactor_runtime_tools_empty_11111111' asyncRun() loop has finished.
+AgentWorker 'memory_compactor_runtime_tools_empty_11111111': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentWorker 'memory_compactor_runtime_tools_empty_11111111': Shutdown resource cleanup completed successfully.
+AgentWorker 'memory_compactor_runtime_tools_empty_11111111': Shutdown sequence completed.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+Unregistered AgentContext for agent_id 'memory_compactor_runtime_tools_empty_11111111'.
+AgentRuntime for 'memory_compactor_runtime_tools_empty_11111111': Context unregistered.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentRuntime for 'memory_compactor_runtime_tools_empty_11111111' stop() method completed.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+Using temp workspace (ID: temp_ws_backend_integration) for agent.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+AgentRuntimeState initialized for agent_id 'preferred_autobyteus_run_4242'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'preferred_autobyteus_run_4242': LLM instance 'DummyLLM' and 4 tools prepared and stored in state.
+AgentContext composed for agent_id 'preferred_autobyteus_run_4242'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'preferred_autobyteus_run_4242' with config: 'AutoByteusBackendAgent'.
+AgentWorker initialized for agent_id 'preferred_autobyteus_run_4242'.
+Registered AgentContext for agent_id 'preferred_autobyteus_run_4242'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'preferred_autobyteus_run_4242'. Context registered.
+Agent facade initialized for agent_id 'preferred_autobyteus_run_4242'.
+Agent 'preferred_autobyteus_run_4242' created and stored successfully.
+Agent 'preferred_autobyteus_run_4242' requesting runtime to start.
+AgentRuntime for 'preferred_autobyteus_run_4242': Starting worker.
+AgentWorker 'preferred_autobyteus_run_4242': Starting...
+AgentWorker 'preferred_autobyteus_run_4242' asyncRun(): Starting.
+Agent 'preferred_autobyteus_run_4242': Runtime init completed (event store initialized).
+Agent 'preferred_autobyteus_run_4242': Runtime init completed (status deriver initialized).
+Agent 'preferred_autobyteus_run_4242': Runtime init completed (AgentEventInbox initialized).
+Agent 'preferred_autobyteus_run_4242': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'preferred_autobyteus_run_4242' to become idle (timeout: 30s)...
+AgentEventStream (ID: dbbad5c7-fa6f-4c36-be20-9634706106bd) initialized for agent_id 'preferred_autobyteus_run_4242'. Subscribed to notifier.
+Agent 'preferred_autobyteus_run_4242': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+AgentExternalEventNotifier (NotifierID: 4e1c5003-c29a-416b-950d-37cdc379fe83, AgentID: preferred_autobyteus_run_4242) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+Agent 'preferred_autobyteus_run_4242': Bootstrapper starting direct lifecycle execution.
+Agent 'preferred_autobyteus_run_4242': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'preferred_autobyteus_run_4242': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+Agent 'preferred_autobyteus_run_4242': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'preferred_autobyteus_run_4242': Executing SystemPromptProcessingStep.
+Agent 'preferred_autobyteus_run_4242': No configured skills. Skipping skill catalog.
+Agent 'preferred_autobyteus_run_4242': Final processed system prompt configured on LLM instance. Final length: 2596.
+Agent 'preferred_autobyteus_run_4242': Final processed system prompt:
+---
+## Agent Identity
+
+- Name: AutoByteusBackendAgent
+- Description: real backend integration test
+
+### Responsibilities and Boundaries
+
+Respond briefly.
+
+## Working Environment
+
+- Agent workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-backend-workspace-nfK7WG`
+- Use skills from their skill package directories to work on tasks in the agent workspace.
+- A skill package directory contains the skill's instructions and bundled assets. It is not the agent workspace, and reading the skill does not change the agent workspace.
+- Resolve skill-package references from the skill package directory. Resolve task and project locations from the agent workspace unless an explicit target says otherwise.
+- Do not modify a skill package unless the task explicitly targets that skill package.
+- With no working-directory override, `pwd` returns the agent workspace. An explicit working directory changes only that command's location; it does not redefine the workspace.
+
+## Bash Operating Practice
+
+- Use Bash for workspace navigation, targeted search, repository and project commands, processes, network operations, and verification. Prefer deterministic, targeted commands over broad directory listings.
+- For file content, follow `File And Directory Practice` and prefer the exposed dedicated file tools. Use Bash for file inspection or modification when those tools are unavailable or cannot complete the operation after recovery.
+- Prefer non-interactive, small, composable, project-native commands.
+
+## File And Directory Practice
+
+- Locate files and directories by intent instead of broadly listing them. For content searches, use `rg -n "term" path`; for filename discovery, use `rg --files path | rg "pattern"`; use constrained `find path -maxdepth N ...` only when filesystem traversal or metadata is the goal.
+- When exposed, use `read_file` for file reading, `edit_file` for targeted regional changes to an existing file, and `write_file` for new files or deliberate whole-file replacement.
+- Before every targeted `edit_file` change, use `read_file` to read the relevant current content of the original file unless it was read recently and has not changed.
+- Build the regional `edit_file` patch from that latest content and preserve unrelated content. If the edit context fails or the file changed, use `read_file` again for the affected content, construct a new patch, and retry; do not blindly retry an unchanged patch.
+- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check.
+---
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+Agent 'preferred_autobyteus_run_4242': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+AgentExternalEventNotifier (NotifierID: 4e1c5003-c29a-416b-950d-37cdc379fe83, AgentID: preferred_autobyteus_run_4242) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+AgentWorker 'preferred_autobyteus_run_4242' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+Agent 'preferred_autobyteus_run_4242' has become idle.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+AgentEventStream (ID: dbbad5c7-fa6f-4c36-be20-9634706106bd) for 'preferred_autobyteus_run_4242': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+AgentExternalEventNotifier (NotifierID: 4e1c5003-c29a-416b-950d-37cdc379fe83, AgentID: preferred_autobyteus_run_4242) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+AgentExternalEventNotifier (NotifierID: 4e1c5003-c29a-416b-950d-37cdc379fe83, AgentID: preferred_autobyteus_run_4242) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+AgentExternalEventNotifier (NotifierID: 4e1c5003-c29a-416b-950d-37cdc379fe83, AgentID: preferred_autobyteus_run_4242) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+compaction_budget_skipped_no_usage {
+  agent_id: 'preferred_autobyteus_run_4242',
+  turn_id: 'turn_0001',
+  reason: 'missing_usage'
+}
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+AgentExternalEventNotifier (NotifierID: 4e1c5003-c29a-416b-950d-37cdc379fe83, AgentID: preferred_autobyteus_run_4242) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+AgentExternalEventNotifier (NotifierID: 4e1c5003-c29a-416b-950d-37cdc379fe83, AgentID: preferred_autobyteus_run_4242) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+AgentExternalEventNotifier (NotifierID: 4e1c5003-c29a-416b-950d-37cdc379fe83, AgentID: preferred_autobyteus_run_4242) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+AgentExternalEventNotifier (NotifierID: 4e1c5003-c29a-416b-950d-37cdc379fe83, AgentID: preferred_autobyteus_run_4242) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+Removing agent 'preferred_autobyteus_run_4242'. Attempting graceful shutdown.
+Agent 'preferred_autobyteus_run_4242' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+AgentExternalEventNotifier (NotifierID: 4e1c5003-c29a-416b-950d-37cdc379fe83, AgentID: preferred_autobyteus_run_4242) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+AgentWorker 'preferred_autobyteus_run_4242': Stop requested.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+AgentExternalEventNotifier (NotifierID: 4e1c5003-c29a-416b-950d-37cdc379fe83, AgentID: preferred_autobyteus_run_4242) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+AgentWorker 'preferred_autobyteus_run_4242' asyncRun() loop has finished.
+AgentWorker 'preferred_autobyteus_run_4242': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+AgentWorker 'preferred_autobyteus_run_4242': Shutdown resource cleanup completed successfully.
+AgentWorker 'preferred_autobyteus_run_4242': Shutdown sequence completed.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+Unregistered AgentContext for agent_id 'preferred_autobyteus_run_4242'.
+AgentRuntime for 'preferred_autobyteus_run_4242': Context unregistered.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+AgentRuntime for 'preferred_autobyteus_run_4242' stop() method completed.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+Using temp workspace (ID: temp_ws_backend_integration) for agent.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentRuntimeState initialized for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': LLM instance 'DummyLLM' and 4 tools prepared and stored in state.
+AgentContext composed for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'autobyteus_backend_agent_22222222222222222222222222222222' with config: 'AutoByteusBackendAgent'.
+AgentWorker initialized for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'.
+Registered AgentContext for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'. Context registered.
+Agent facade initialized for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222' created and stored successfully.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222' requesting runtime to start.
+AgentRuntime for 'autobyteus_backend_agent_22222222222222222222222222222222': Starting worker.
+AgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222': Starting...
+AgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222' asyncRun(): Starting.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Runtime init completed (event store initialized).
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Runtime init completed (status deriver initialized).
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Runtime init completed (AgentEventInbox initialized).
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'autobyteus_backend_agent_22222222222222222222222222222222' to become idle (timeout: 30s)...
+AgentEventStream (ID: 7037b291-5a9b-4661-b7c4-492839be92a6) initialized for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'. Subscribed to notifier.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentExternalEventNotifier (NotifierID: 20b91e38-272d-496d-8ae9-4dc54bc5692e, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Bootstrapper starting direct lifecycle execution.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Executing SystemPromptProcessingStep.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': No configured skills. Skipping skill catalog.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Final processed system prompt configured on LLM instance. Final length: 2596.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Final processed system prompt:
+---
+## Agent Identity
+
+- Name: AutoByteusBackendAgent
+- Description: real backend integration test
+
+### Responsibilities and Boundaries
+
+Respond briefly.
+
+## Working Environment
+
+- Agent workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-backend-workspace-bIBUds`
+- Use skills from their skill package directories to work on tasks in the agent workspace.
+- A skill package directory contains the skill's instructions and bundled assets. It is not the agent workspace, and reading the skill does not change the agent workspace.
+- Resolve skill-package references from the skill package directory. Resolve task and project locations from the agent workspace unless an explicit target says otherwise.
+- Do not modify a skill package unless the task explicitly targets that skill package.
+- With no working-directory override, `pwd` returns the agent workspace. An explicit working directory changes only that command's location; it does not redefine the workspace.
+
+## Bash Operating Practice
+
+- Use Bash for workspace navigation, targeted search, repository and project commands, processes, network operations, and verification. Prefer deterministic, targeted commands over broad directory listings.
+- For file content, follow `File And Directory Practice` and prefer the exposed dedicated file tools. Use Bash for file inspection or modification when those tools are unavailable or cannot complete the operation after recovery.
+- Prefer non-interactive, small, composable, project-native commands.
+
+## File And Directory Practice
+
+- Locate files and directories by intent instead of broadly listing them. For content searches, use `rg -n "term" path`; for filename discovery, use `rg --files path | rg "pattern"`; use constrained `find path -maxdepth N ...` only when filesystem traversal or metadata is the goal.
+- When exposed, use `read_file` for file reading, `edit_file` for targeted regional changes to an existing file, and `write_file` for new files or deliberate whole-file replacement.
+- Before every targeted `edit_file` change, use `read_file` to read the relevant current content of the original file unless it was read recently and has not changed.
+- Build the regional `edit_file` patch from that latest content and preserve unrelated content. If the edit context fails or the file changed, use `read_file` again for the affected content, construct a new patch, and retry; do not blindly retry an unchanged patch.
+- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check.
+---
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentExternalEventNotifier (NotifierID: 20b91e38-272d-496d-8ae9-4dc54bc5692e, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222' has become idle.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentEventStream (ID: 7037b291-5a9b-4661-b7c4-492839be92a6) for 'autobyteus_backend_agent_22222222222222222222222222222222': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentExternalEventNotifier (NotifierID: 20b91e38-272d-496d-8ae9-4dc54bc5692e, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentExternalEventNotifier (NotifierID: 20b91e38-272d-496d-8ae9-4dc54bc5692e, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentExternalEventNotifier (NotifierID: 20b91e38-272d-496d-8ae9-4dc54bc5692e, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+compaction_budget_skipped_no_usage {
+  agent_id: 'autobyteus_backend_agent_22222222222222222222222222222222',
+  turn_id: 'turn_0001',
+  reason: 'missing_usage'
+}
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentExternalEventNotifier (NotifierID: 20b91e38-272d-496d-8ae9-4dc54bc5692e, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentExternalEventNotifier (NotifierID: 20b91e38-272d-496d-8ae9-4dc54bc5692e, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentExternalEventNotifier (NotifierID: 20b91e38-272d-496d-8ae9-4dc54bc5692e, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentExternalEventNotifier (NotifierID: 20b91e38-272d-496d-8ae9-4dc54bc5692e, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+Removing agent 'autobyteus_backend_agent_22222222222222222222222222222222'. Attempting graceful shutdown.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentExternalEventNotifier (NotifierID: 20b91e38-272d-496d-8ae9-4dc54bc5692e, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222': Stop requested.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentExternalEventNotifier (NotifierID: 20b91e38-272d-496d-8ae9-4dc54bc5692e, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222' asyncRun() loop has finished.
+AgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222': Shutdown resource cleanup completed successfully.
+AgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222': Shutdown sequence completed.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+Unregistered AgentContext for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'.
+AgentRuntime for 'autobyteus_backend_agent_22222222222222222222222222222222': Context unregistered.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentRuntime for 'autobyteus_backend_agent_22222222222222222222222222222222' stop() method completed.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+Using temp workspace (ID: temp_ws_backend_integration) for agent.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentRuntimeState initialized for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': LLM instance 'DummyLLM' and 4 tools prepared and stored in state.
+AgentContext composed for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'autobyteus_backend_agent_22222222222222222222222222222222' with config: 'AutoByteusBackendAgent'.
+AgentWorker initialized for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'.
+Registered AgentContext for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'. Context registered.
+Agent facade initialized for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222' restored and stored successfully.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222' requesting runtime to start.
+AgentRuntime for 'autobyteus_backend_agent_22222222222222222222222222222222': Starting worker.
+AgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222': Starting...
+AgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222' asyncRun(): Starting.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Runtime init completed (event store initialized).
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Runtime init completed (status deriver initialized).
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Runtime init completed (AgentEventInbox initialized).
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'autobyteus_backend_agent_22222222222222222222222222222222' to become idle (timeout: 30s)...
+AgentEventStream (ID: 90bfc0ed-dd1a-453b-9a0e-008b0b94f42f) initialized for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'. Subscribed to notifier.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentExternalEventNotifier (NotifierID: af8c1b19-48b1-42cc-b3c8-850f6f696e0f, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Bootstrapper starting direct lifecycle execution.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Executing SystemPromptProcessingStep.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': No configured skills. Skipping skill catalog.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Final processed system prompt configured on LLM instance. Final length: 2596.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Final processed system prompt:
+---
+## Agent Identity
+
+- Name: AutoByteusBackendAgent
+- Description: real backend integration test
+
+### Responsibilities and Boundaries
+
+Respond briefly.
+
+## Working Environment
+
+- Agent workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-backend-workspace-bIBUds`
+- Use skills from their skill package directories to work on tasks in the agent workspace.
+- A skill package directory contains the skill's instructions and bundled assets. It is not the agent workspace, and reading the skill does not change the agent workspace.
+- Resolve skill-package references from the skill package directory. Resolve task and project locations from the agent workspace unless an explicit target says otherwise.
+- Do not modify a skill package unless the task explicitly targets that skill package.
+- With no working-directory override, `pwd` returns the agent workspace. An explicit working directory changes only that command's location; it does not redefine the workspace.
+
+## Bash Operating Practice
+
+- Use Bash for workspace navigation, targeted search, repository and project commands, processes, network operations, and verification. Prefer deterministic, targeted commands over broad directory listings.
+- For file content, follow `File And Directory Practice` and prefer the exposed dedicated file tools. Use Bash for file inspection or modification when those tools are unavailable or cannot complete the operation after recovery.
+- Prefer non-interactive, small, composable, project-native commands.
+
+## File And Directory Practice
+
+- Locate files and directories by intent instead of broadly listing them. For content searches, use `rg -n "term" path`; for filename discovery, use `rg --files path | rg "pattern"`; use constrained `find path -maxdepth N ...` only when filesystem traversal or metadata is the goal.
+- When exposed, use `read_file` for file reading, `edit_file` for targeted regional changes to an existing file, and `write_file` for new files or deliberate whole-file replacement.
+- Before every targeted `edit_file` change, use `read_file` to read the relevant current content of the original file unless it was read recently and has not changed.
+- Build the regional `edit_file` patch from that latest content and preserve unrelated content. If the edit context fails or the file changed, use `read_file` again for the affected content, construct a new patch, and retry; do not blindly retry an unchanged patch.
+- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check.
+---
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentExternalEventNotifier (NotifierID: af8c1b19-48b1-42cc-b3c8-850f6f696e0f, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222' has become idle.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentEventStream (ID: 90bfc0ed-dd1a-453b-9a0e-008b0b94f42f) for 'autobyteus_backend_agent_22222222222222222222222222222222': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentExternalEventNotifier (NotifierID: af8c1b19-48b1-42cc-b3c8-850f6f696e0f, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentExternalEventNotifier (NotifierID: af8c1b19-48b1-42cc-b3c8-850f6f696e0f, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentExternalEventNotifier (NotifierID: af8c1b19-48b1-42cc-b3c8-850f6f696e0f, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+compaction_budget_skipped_no_usage {
+  agent_id: 'autobyteus_backend_agent_22222222222222222222222222222222',
+  turn_id: 'turn_0001',
+  reason: 'missing_usage'
+}
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentExternalEventNotifier (NotifierID: af8c1b19-48b1-42cc-b3c8-850f6f696e0f, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentExternalEventNotifier (NotifierID: af8c1b19-48b1-42cc-b3c8-850f6f696e0f, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentExternalEventNotifier (NotifierID: af8c1b19-48b1-42cc-b3c8-850f6f696e0f, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentExternalEventNotifier (NotifierID: af8c1b19-48b1-42cc-b3c8-850f6f696e0f, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+Removing agent 'autobyteus_backend_agent_22222222222222222222222222222222'. Attempting graceful shutdown.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentExternalEventNotifier (NotifierID: af8c1b19-48b1-42cc-b3c8-850f6f696e0f, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222': Stop requested.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentExternalEventNotifier (NotifierID: af8c1b19-48b1-42cc-b3c8-850f6f696e0f, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222' asyncRun() loop has finished.
+AgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222': Shutdown resource cleanup completed successfully.
+AgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222': Shutdown sequence completed.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+Unregistered AgentContext for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'.
+AgentRuntime for 'autobyteus_backend_agent_22222222222222222222222222222222': Context unregistered.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentRuntime for 'autobyteus_backend_agent_22222222222222222222222222222222' stop() method completed.
+
+ ✓ tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts (5 tests) 358ms
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:69765) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+Using temp workspace (ID: memory-compactor-leaf-workspace) for agent.
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentRuntimeState initialized for agent_id 'memory_compactor_leaf_1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'memory_compactor_leaf_1': No tools provided in config.
+Agent 'memory_compactor_leaf_1': LLM instance 'CapturedUsageChildLLM' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'memory_compactor_leaf_1'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'memory_compactor_leaf_1' with config: 'Memory Compactor'.
+AgentWorker initialized for agent_id 'memory_compactor_leaf_1'.
+Registered AgentContext for agent_id 'memory_compactor_leaf_1'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'memory_compactor_leaf_1'. Context registered.
+Agent facade initialized for agent_id 'memory_compactor_leaf_1'.
+Agent 'memory_compactor_leaf_1' created and stored successfully.
+Agent 'memory_compactor_leaf_1' requesting runtime to start.
+AgentRuntime for 'memory_compactor_leaf_1': Starting worker.
+AgentWorker 'memory_compactor_leaf_1': Starting...
+AgentWorker 'memory_compactor_leaf_1' asyncRun(): Starting.
+Agent 'memory_compactor_leaf_1': Runtime init completed (event store initialized).
+Agent 'memory_compactor_leaf_1': Runtime init completed (status deriver initialized).
+Agent 'memory_compactor_leaf_1': Runtime init completed (AgentEventInbox initialized).
+Agent 'memory_compactor_leaf_1': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'memory_compactor_leaf_1' to become idle (timeout: 30s)...
+AgentEventStream (ID: 031aa42f-1c92-4c6d-adc7-f62f4acb3979) initialized for agent_id 'memory_compactor_leaf_1'. Subscribed to notifier.
+Agent 'memory_compactor_leaf_1': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentExternalEventNotifier (NotifierID: 03182356-9013-40ba-8287-b70280d0b8aa, AgentID: memory_compactor_leaf_1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+Agent 'memory_compactor_leaf_1': Bootstrapper starting direct lifecycle execution.
+Agent 'memory_compactor_leaf_1': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'memory_compactor_leaf_1': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+Agent 'memory_compactor_leaf_1': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'memory_compactor_leaf_1': Executing SystemPromptProcessingStep.
+Agent 'memory_compactor_leaf_1': No configured skills. Skipping skill catalog.
+Agent 'memory_compactor_leaf_1': Final processed system prompt configured on LLM instance. Final length: 2627.
+Agent 'memory_compactor_leaf_1': Final processed system prompt:
+---
+## Agent Identity
+
+- Name: Memory Compactor
+- Description: Compacts one target-agent history.
+
+### Responsibilities and Boundaries
+
+Return the required structured memory object.
+
+## Working Environment
+
+- Agent workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-compactor-leaf-workspace-ISc5Pk`
+- Use skills from their skill package directories to work on tasks in the agent workspace.
+- A skill package directory contains the skill's instructions and bundled assets. It is not the agent workspace, and reading the skill does not change the agent workspace.
+- Resolve skill-package references from the skill package directory. Resolve task and project locations from the agent workspace unless an explicit target says otherwise.
+- Do not modify a skill package unless the task explicitly targets that skill package.
+- With no working-directory override, `pwd` returns the agent workspace. An explicit working directory changes only that command's location; it does not redefine the workspace.
+
+## Bash Operating Practice
+
+- Use Bash for workspace navigation, targeted search, repository and project commands, processes, network operations, and verification. Prefer deterministic, targeted commands over broad directory listings.
+- For file content, follow `File And Directory Practice` and prefer the exposed dedicated file tools. Use Bash for file inspection or modification when those tools are unavailable or cannot complete the operation after recovery.
+- Prefer non-interactive, small, composable, project-native commands.
+
+## File And Directory Practice
+
+- Locate files and directories by intent instead of broadly listing them. For content searches, use `rg -n "term" path`; for filename discovery, use `rg --files path | rg "pattern"`; use constrained `find path -maxdepth N ...` only when filesystem traversal or metadata is the goal.
+- When exposed, use `read_file` for file reading, `edit_file` for targeted regional changes to an existing file, and `write_file` for new files or deliberate whole-file replacement.
+- Before every targeted `edit_file` change, use `read_file` to read the relevant current content of the original file unless it was read recently and has not changed.
+- Build the regional `edit_file` patch from that latest content and preserve unrelated content. If the edit context fails or the file changed, use `read_file` again for the affected content, construct a new patch, and retry; do not blindly retry an unchanged patch.
+- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check.
+---
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+Agent 'memory_compactor_leaf_1': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentExternalEventNotifier (NotifierID: 03182356-9013-40ba-8287-b70280d0b8aa, AgentID: memory_compactor_leaf_1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentWorker 'memory_compactor_leaf_1' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+Agent 'memory_compactor_leaf_1' has become idle.
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentEventStream (ID: 031aa42f-1c92-4c6d-adc7-f62f4acb3979) for 'memory_compactor_leaf_1': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentEventStream (ID: 592e2a6d-2763-498c-a4a3-ed650334f762) initialized for agent_id 'memory_compactor_leaf_1'. Subscribed to notifier.
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentExternalEventNotifier (NotifierID: 03182356-9013-40ba-8287-b70280d0b8aa, AgentID: memory_compactor_leaf_1) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentExternalEventNotifier (NotifierID: 03182356-9013-40ba-8287-b70280d0b8aa, AgentID: memory_compactor_leaf_1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentExternalEventNotifier (NotifierID: 03182356-9013-40ba-8287-b70280d0b8aa, AgentID: memory_compactor_leaf_1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentExternalEventNotifier (NotifierID: 03182356-9013-40ba-8287-b70280d0b8aa, AgentID: memory_compactor_leaf_1) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentExternalEventNotifier (NotifierID: 03182356-9013-40ba-8287-b70280d0b8aa, AgentID: memory_compactor_leaf_1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentExternalEventNotifier (NotifierID: 03182356-9013-40ba-8287-b70280d0b8aa, AgentID: memory_compactor_leaf_1) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentExternalEventNotifier (NotifierID: 03182356-9013-40ba-8287-b70280d0b8aa, AgentID: memory_compactor_leaf_1) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentExternalEventNotifier (NotifierID: 03182356-9013-40ba-8287-b70280d0b8aa, AgentID: memory_compactor_leaf_1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stderr | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+Finished LM Studio discovery. Total models registered: 15
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentEventStream (ID: 592e2a6d-2763-498c-a4a3-ed650334f762) for 'memory_compactor_leaf_1': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'memory_compactor_leaf_1'. Attempting graceful shutdown.
+Agent 'memory_compactor_leaf_1' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentExternalEventNotifier (NotifierID: 03182356-9013-40ba-8287-b70280d0b8aa, AgentID: memory_compactor_leaf_1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentWorker 'memory_compactor_leaf_1': Stop requested.
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentExternalEventNotifier (NotifierID: 03182356-9013-40ba-8287-b70280d0b8aa, AgentID: memory_compactor_leaf_1) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-server-ts
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentWorker 'memory_compactor_leaf_1' asyncRun() loop has finished.
+AgentWorker 'memory_compactor_leaf_1': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentWorker 'memory_compactor_leaf_1': Shutdown resource cleanup completed successfully.
+AgentWorker 'memory_compactor_leaf_1': Shutdown sequence completed.
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+Unregistered AgentContext for agent_id 'memory_compactor_leaf_1'.
+AgentRuntime for 'memory_compactor_leaf_1': Context unregistered.
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentRuntime for 'memory_compactor_leaf_1' stop() method completed.
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+Using temp workspace (ID: memory-compactor-leaf-workspace) for agent.
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentRuntimeState initialized for agent_id 'memory_compactor_leaf_2'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'memory_compactor_leaf_2': No tools provided in config.
+Agent 'memory_compactor_leaf_2': LLM instance 'CapturedUsageChildLLM' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'memory_compactor_leaf_2'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'memory_compactor_leaf_2' with config: 'Memory Compactor'.
+AgentWorker initialized for agent_id 'memory_compactor_leaf_2'.
+Registered AgentContext for agent_id 'memory_compactor_leaf_2'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'memory_compactor_leaf_2'. Context registered.
+Agent facade initialized for agent_id 'memory_compactor_leaf_2'.
+Agent 'memory_compactor_leaf_2' created and stored successfully.
+Agent 'memory_compactor_leaf_2' requesting runtime to start.
+AgentRuntime for 'memory_compactor_leaf_2': Starting worker.
+AgentWorker 'memory_compactor_leaf_2': Starting...
+AgentWorker 'memory_compactor_leaf_2' asyncRun(): Starting.
+Agent 'memory_compactor_leaf_2': Runtime init completed (event store initialized).
+Agent 'memory_compactor_leaf_2': Runtime init completed (status deriver initialized).
+Agent 'memory_compactor_leaf_2': Runtime init completed (AgentEventInbox initialized).
+Agent 'memory_compactor_leaf_2': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'memory_compactor_leaf_2' to become idle (timeout: 30s)...
+AgentEventStream (ID: 8dec8952-0bb5-4e57-b2cb-c4bbbb7bfa24) initialized for agent_id 'memory_compactor_leaf_2'. Subscribed to notifier.
+Agent 'memory_compactor_leaf_2': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentExternalEventNotifier (NotifierID: 87d993b9-4d5f-4218-a2cc-508cdaf789d7, AgentID: memory_compactor_leaf_2) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+Agent 'memory_compactor_leaf_2': Bootstrapper starting direct lifecycle execution.
+Agent 'memory_compactor_leaf_2': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'memory_compactor_leaf_2': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+Agent 'memory_compactor_leaf_2': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'memory_compactor_leaf_2': Executing SystemPromptProcessingStep.
+Agent 'memory_compactor_leaf_2': No configured skills. Skipping skill catalog.
+Agent 'memory_compactor_leaf_2': Final processed system prompt configured on LLM instance. Final length: 2627.
+Agent 'memory_compactor_leaf_2': Final processed system prompt:
+---
+## Agent Identity
+
+- Name: Memory Compactor
+- Description: Compacts one target-agent history.
+
+### Responsibilities and Boundaries
+
+Return the required structured memory object.
+
+## Working Environment
+
+- Agent workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-compactor-leaf-workspace-ISc5Pk`
+- Use skills from their skill package directories to work on tasks in the agent workspace.
+- A skill package directory contains the skill's instructions and bundled assets. It is not the agent workspace, and reading the skill does not change the agent workspace.
+- Resolve skill-package references from the skill package directory. Resolve task and project locations from the agent workspace unless an explicit target says otherwise.
+- Do not modify a skill package unless the task explicitly targets that skill package.
+- With no working-directory override, `pwd` returns the agent workspace. An explicit working directory changes only that command's location; it does not redefine the workspace.
+
+## Bash Operating Practice
+
+- Use Bash for workspace navigation, targeted search, repository and project commands, processes, network operations, and verification. Prefer deterministic, targeted commands over broad directory listings.
+- For file content, follow `File And Directory Practice` and prefer the exposed dedicated file tools. Use Bash for file inspection or modification when those tools are unavailable or cannot complete the operation after recovery.
+- Prefer non-interactive, small, composable, project-native commands.
+
+## File And Directory Practice
+
+- Locate files and directories by intent instead of broadly listing them. For content searches, use `rg -n "term" path`; for filename discovery, use `rg --files path | rg "pattern"`; use constrained `find path -maxdepth N ...` only when filesystem traversal or metadata is the goal.
+- When exposed, use `read_file` for file reading, `edit_file` for targeted regional changes to an existing file, and `write_file` for new files or deliberate whole-file replacement.
+- Before every targeted `edit_file` change, use `read_file` to read the relevant current content of the original file unless it was read recently and has not changed.
+- Build the regional `edit_file` patch from that latest content and preserve unrelated content. If the edit context fails or the file changed, use `read_file` again for the affected content, construct a new patch, and retry; do not blindly retry an unchanged patch.
+- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check.
+---
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+Agent 'memory_compactor_leaf_2': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentExternalEventNotifier (NotifierID: 87d993b9-4d5f-4218-a2cc-508cdaf789d7, AgentID: memory_compactor_leaf_2) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentWorker 'memory_compactor_leaf_2' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+Agent 'memory_compactor_leaf_2' has become idle.
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentEventStream (ID: 8dec8952-0bb5-4e57-b2cb-c4bbbb7bfa24) for 'memory_compactor_leaf_2': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentEventStream (ID: 501e6151-12d1-4d03-a8a6-059b014c58c6) initialized for agent_id 'memory_compactor_leaf_2'. Subscribed to notifier.
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentExternalEventNotifier (NotifierID: 87d993b9-4d5f-4218-a2cc-508cdaf789d7, AgentID: memory_compactor_leaf_2) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentExternalEventNotifier (NotifierID: 87d993b9-4d5f-4218-a2cc-508cdaf789d7, AgentID: memory_compactor_leaf_2) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentExternalEventNotifier (NotifierID: 87d993b9-4d5f-4218-a2cc-508cdaf789d7, AgentID: memory_compactor_leaf_2) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentExternalEventNotifier (NotifierID: 87d993b9-4d5f-4218-a2cc-508cdaf789d7, AgentID: memory_compactor_leaf_2) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentExternalEventNotifier (NotifierID: 87d993b9-4d5f-4218-a2cc-508cdaf789d7, AgentID: memory_compactor_leaf_2) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentExternalEventNotifier (NotifierID: 87d993b9-4d5f-4218-a2cc-508cdaf789d7, AgentID: memory_compactor_leaf_2) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentExternalEventNotifier (NotifierID: 87d993b9-4d5f-4218-a2cc-508cdaf789d7, AgentID: memory_compactor_leaf_2) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentExternalEventNotifier (NotifierID: 87d993b9-4d5f-4218-a2cc-508cdaf789d7, AgentID: memory_compactor_leaf_2) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentEventStream (ID: 501e6151-12d1-4d03-a8a6-059b014c58c6) for 'memory_compactor_leaf_2': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'memory_compactor_leaf_2'. Attempting graceful shutdown.
+Agent 'memory_compactor_leaf_2' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentExternalEventNotifier (NotifierID: 87d993b9-4d5f-4218-a2cc-508cdaf789d7, AgentID: memory_compactor_leaf_2) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentWorker 'memory_compactor_leaf_2': Stop requested.
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentExternalEventNotifier (NotifierID: 87d993b9-4d5f-4218-a2cc-508cdaf789d7, AgentID: memory_compactor_leaf_2) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentWorker 'memory_compactor_leaf_2' asyncRun() loop has finished.
+AgentWorker 'memory_compactor_leaf_2': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentWorker 'memory_compactor_leaf_2': Shutdown resource cleanup completed successfully.
+AgentWorker 'memory_compactor_leaf_2': Shutdown sequence completed.
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+Unregistered AgentContext for agent_id 'memory_compactor_leaf_2'.
+AgentRuntime for 'memory_compactor_leaf_2': Context unregistered.
+
+stdout | tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts > recursive Memory Compactor leaf integration > runs captured-pressure initial and correction children as disabled siblings with no descendants
+AgentRuntime for 'memory_compactor_leaf_2' stop() method completed.
+
+ ✓ tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts (1 test) 216ms
+
+ Test Files  2 passed (2)
+      Tests  6 passed (6)
+   Start at  11:56:52
+   Duration  5.79s (transform 2.76s, setup 15ms, import 4.42s, tests 574ms, environment 0ms)
+
