@@ -1,12 +1,10 @@
 ## What's New
-- Added a consistent Carpenter-authored agent foundation across native AutoByteus, Codex, and Claude runtimes.
-- Added clear agent identity, workspace, Bash, file-operation, team-runtime, and configured-skill guidance to every new run.
+- Personal desktop releases now use deterministic flavor and platform-target selection across the release workflow.
 
 ## Improvements
-- Improved configured skills so their guidance stays lazy and package-relative while runtime work remains anchored to the selected workspace.
-- Improved team runs by automatically exposing validated messaging and delegation capabilities to team members.
-- Improved provider consistency by projecting one server-owned instruction contract through each provider's native system-instruction channel.
+- macOS Apple Silicon and Linux release jobs explicitly resolve their target architectures and publish matching updater metadata and artifacts.
+- Desktop release documentation now matches the current GitHub Actions workflow and publication path.
 
 ## Fixes
-- Removed legacy prompt-mutator and processor configuration paths that could produce inconsistent runtime instructions.
-- Fixed current agent-definition persistence so retired prompt-processor state is no longer written while historical definitions remain readable.
+- macOS CI prepares the Python setuptools dependency required by the Electron native-module rebuild path.
+- Local macOS packaging supports unsigned, non-notarized output when Apple credentials are unavailable.
