@@ -51,4 +51,3 @@ None.
 - Material classification changes: ARCH-DI-001 and ARCH-DI-002 changed from Design Impact/open to resolved; overall decision changed from Fail to Pass.
 - Recommended recipient: implementation_engineer
 - Remaining risks or uncertainty: No architecture blocker remains. Implementation must preserve the explicit entrypoint boundary, all create/restore paths, mixed MemberTeamContext ingress, scoped documentation cleanup, and unchanged tool/exposure/provider/persisted-data contracts.
-

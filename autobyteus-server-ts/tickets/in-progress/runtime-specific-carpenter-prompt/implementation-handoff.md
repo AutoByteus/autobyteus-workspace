@@ -141,4 +141,3 @@ Not Applicable — this is a backend prompt composition, runtime adapter, test, 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
 Yes. `api_e2e_engineer` must independently investigate existing coverage, decide whether durable tests require updates, and execute the supported standalone and mixed team/task-agent create/restore scenarios after code review.
-

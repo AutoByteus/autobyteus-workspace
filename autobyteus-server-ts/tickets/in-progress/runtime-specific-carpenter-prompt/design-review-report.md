@@ -233,4 +233,3 @@ implementation_engineer
 - Review Decision: Pass
 - Material-Premise Gate: Pass
 - Notes: ARCH-DI-001 and ARCH-DI-002 are resolved by SR-002. Implementation may proceed; downstream review and coverage gates remain required.
-
