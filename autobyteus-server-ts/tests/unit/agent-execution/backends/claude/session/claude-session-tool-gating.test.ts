@@ -10,7 +10,7 @@ import { buildRuntimeAgentToolExposure } from "../../../../../../src/agent-execu
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
 import { MemberTeamContext } from "../../../../../../src/agent-team-execution/domain/member-team-context.js";
 import { AgentDefinition } from "../../../../../../src/agent-definition/domain/models.js";
-import { composeCarpenterPrompt } from "../../../../../../src/agent-execution/prompt/carpenter-prompt-composer.js";
+import { composeSharedCarpenterPrompt } from "../../../../../../src/agent-execution/prompt/carpenter-prompt-composer.js";
 import { testMemberTeamContext } from "../../../../../fixtures/current-team-run-fixtures.js";
 
 const {
@@ -91,14 +91,13 @@ const createSession = (requestedToolNames: string[] = [], input: {
       memberTeamContext,
     }),
     runtimeContext: new ClaudeAgentRunContext({
-      carpenterSystemPrompt: composeCarpenterPrompt({
+      carpenterSystemPrompt: composeSharedCarpenterPrompt({
         agentDefinition: new AgentDefinition({
           name: "Test agent",
           description: "Tests Claude tooling.",
           instructions: "Run the requested test.",
           toolNames: requestedToolNames,
         }),
-        workspaceRootPath: "/tmp",
         memberTeamContext,
       }),
       sessionConfig: buildClaudeSessionConfig({

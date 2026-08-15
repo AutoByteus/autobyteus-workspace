@@ -47,6 +47,7 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
   let previousMemoryDir: string | undefined;
   let agentFactory: AgentFactory;
   let backendFactory: AutoByteusAgentRunBackendFactory;
+  let persistedAgentDefinition: AgentDefinition;
 
   const createPreparedConfig = (runId: string): AgentRunConfig =>
     new AgentRunConfig({
@@ -76,18 +77,9 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
     backendFactory = new AutoByteusAgentRunBackendFactory({
       agentFactory: agentFactory as any,
       agentDefinitionService: {
-        getAgentDefinitionById: async () =>
-          new AgentDefinition({
-            id: "def-autobyteus-backend",
-            name: "AutoByteusBackendAgent",
-            role: "Tester",
-            description: "real backend integration test",
-            instructions: "Respond briefly.",
-          }),
+        getAgentDefinitionById: async () => persistedAgentDefinition,
       } as any,
-      llmFactory: {
-        createLLM: async () => new DummyLLM(model, new LLMConfig({ systemMessage: "test" })),
-      } as any,
+      createLLM: async () => new DummyLLM(model, new LLMConfig({ systemMessage: "test" })),
       workspaceManager: {
         getWorkspaceById: () => null,
         getOrCreateTempWorkspace: async () => ({
@@ -99,6 +91,14 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
       skillService: {
         getSkill: () => null,
       } as any,
+    });
+    persistedAgentDefinition = new AgentDefinition({
+      id: "def-autobyteus-backend",
+      name: "AutoByteusBackendAgent",
+      role: "Tester",
+      description: "real backend integration test",
+      instructions: "Respond briefly.",
+      toolNames: [],
     });
   });
 
@@ -123,13 +123,20 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
 
     expect(backend.isActive()).toBe(true);
     expect(backend.getContext().config.agentDefinitionId).toBe("def-autobyteus-backend");
+    expect(agentFactory.getAgent(runId)?.context.config.tools.map((tool) => tool.definition?.name)).toEqual([
+      "run_bash",
+      "read_file",
+      "edit_file",
+      "write_file",
+    ]);
+    expect(persistedAgentDefinition.toolNames).toEqual([]);
 
     const commandResult = await backend.postUserMessage(
       new AgentInputUserMessage("hello backend integration"),
     );
     expect(commandResult.accepted).toBe(true);
 
-    await waitFor(() => backend.getStatusSnapshot().status === "idle");
+    await waitFor(() => backend.getLifecycleSnapshot().phase === "idle");
 
     const terminateResult = await backend.terminate();
     expect(terminateResult.accepted).toBe(true);
@@ -156,7 +163,7 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
       new AgentInputUserMessage("hello explicit memory"),
     );
     expect(commandResult.accepted).toBe(true);
-    await waitFor(() => backend.getStatusSnapshot().status === "idle");
+    await waitFor(() => backend.getLifecycleSnapshot().phase === "idle");
 
     const rawTracesPath = path.join(memoryDir, "agents", preferredRunId, "raw_traces_active.jsonl");
     await waitFor(async () => {
@@ -180,7 +187,7 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
       new AgentInputUserMessage("first restoreable turn"),
     );
     expect(firstResult.accepted).toBe(true);
-    await waitFor(() => created.getStatusSnapshot().status === "idle");
+    await waitFor(() => created.getLifecycleSnapshot().phase === "idle");
 
     const terminateResult = await created.terminate();
     expect(terminateResult.accepted).toBe(true);
@@ -200,12 +207,19 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
 
     expect(restored.runId).toBe(runId);
     expect(restored.isActive()).toBe(true);
+    expect(agentFactory.getAgent(runId)?.context.config.tools.map((tool) => tool.definition?.name)).toEqual([
+      "run_bash",
+      "read_file",
+      "edit_file",
+      "write_file",
+    ]);
+    expect(persistedAgentDefinition.toolNames).toEqual([]);
 
     const secondResult = await restored.postUserMessage(
       new AgentInputUserMessage("second restoreable turn"),
     );
     expect(secondResult.accepted).toBe(true);
-    await waitFor(() => restored.getStatusSnapshot().status === "idle");
+    await waitFor(() => restored.getLifecycleSnapshot().phase === "idle");
   });
 
   it("rejects fresh create when the standalone run is not fully prepared", async () => {

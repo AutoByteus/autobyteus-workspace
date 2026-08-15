@@ -79,5 +79,8 @@ describe("ClaudeSessionBootstrapper", () => {
     expect(runContext.runtimeContext.carpenterSystemPrompt).toContain("## AgentTeam Addressing");
     expect(runContext.runtimeContext.carpenterSystemPrompt).toContain("## AgentTeam Collaboration");
     expect(runContext.runtimeContext.carpenterSystemPrompt).not.toContain("## Team Runtime");
+    expect(runContext.runtimeContext.carpenterSystemPrompt).not.toContain("## Working Environment");
+    expect(runContext.runtimeContext.carpenterSystemPrompt).not.toContain("## Bash Operating Practice");
+    expect(runContext.runtimeContext.carpenterSystemPrompt).not.toContain("## File And Directory Practice");
   });
 });

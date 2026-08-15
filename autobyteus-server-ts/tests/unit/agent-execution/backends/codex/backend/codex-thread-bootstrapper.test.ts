@@ -302,6 +302,15 @@ describe("CodexThreadBootstrapper", () => {
     expect(createdRunContext.runtimeContext.codexThreadConfig.baseInstructions).not.toContain(
       "## Team Runtime",
     );
+    expect(createdRunContext.runtimeContext.codexThreadConfig.baseInstructions).not.toContain(
+      "## Working Environment",
+    );
+    expect(createdRunContext.runtimeContext.codexThreadConfig.baseInstructions).not.toContain(
+      "## Bash Operating Practice",
+    );
+    expect(createdRunContext.runtimeContext.codexThreadConfig.baseInstructions).not.toContain(
+      "## File And Directory Practice",
+    );
     expect(restoredRunContext.runtimeContext.threadId).toBe("thread-existing");
     expect(restoredRunContext.runtimeContext.codexThreadConfig.approvalPolicy).toBe("never");
     expect(restoredRunContext.runtimeContext.codexThreadConfig.sandbox).toBe("danger-full-access");

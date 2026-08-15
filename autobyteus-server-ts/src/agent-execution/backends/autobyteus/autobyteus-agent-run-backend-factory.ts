@@ -40,8 +40,8 @@ import {
 } from "./autobyteus-agent-run-backend.js";
 import type { AgentRunBackendFactory } from "../agent-run-backend-factory.js";
 import { buildAutoByteusManagedTeamContext } from "./autobyteus-managed-team-context-builder.js";
-import { composeCarpenterPrompt } from "../../prompt/carpenter-prompt-composer.js";
-import { resolveRuntimeAgentToolExposure } from "../../shared/runtime-agent-tool-exposure.js";
+import { composeNativeAutoByteusPrompt } from "../../prompt/carpenter-prompt-composer.js";
+import { resolveAutoByteusRuntimeAgentToolExposure } from "./autobyteus-runtime-tool-exposure.js";
 import { resolveAutoByteusAgentTools } from "./autobyteus-agent-tool-resolver.js";
 import { createLlmProviderApiKeyResolver } from "../../../secret-management/resolution/secret-management-provider-api-key-resolver.js";
 import { resolveCompactionLineageScope } from "./compaction-lineage-scope-resolver.js";
@@ -317,7 +317,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       throw new AgentCreationError("AutoByteus runtime workspace path is unavailable.");
     }
 
-    const runtimeToolExposure = resolveRuntimeAgentToolExposure(
+    const runtimeToolExposure = resolveAutoByteusRuntimeAgentToolExposure(
       agentDef,
       options.memberTeamContext,
     );
@@ -331,7 +331,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       memberTeamContext: options.memberTeamContext,
       logger,
     });
-    const resolvedPrompt = composeCarpenterPrompt({
+    const resolvedPrompt = composeNativeAutoByteusPrompt({
       agentDefinition: agentDef,
       workspaceRootPath,
       memberTeamContext: options.memberTeamContext ?? null,

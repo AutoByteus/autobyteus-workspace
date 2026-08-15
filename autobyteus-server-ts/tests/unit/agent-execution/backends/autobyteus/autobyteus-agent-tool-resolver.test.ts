@@ -4,6 +4,7 @@ import { defaultToolRegistry } from 'autobyteus-ts/tools/registry/tool-registry.
 import type { ToolDefinition } from 'autobyteus-ts/tools/registry/tool-definition.js';
 import { AgentDefinition } from '../../../../../src/agent-definition/domain/models.js';
 import { resolveAutoByteusAgentTools } from '../../../../../src/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.js';
+import { resolveAutoByteusRuntimeAgentToolExposure } from '../../../../../src/agent-execution/backends/autobyteus/autobyteus-runtime-tool-exposure.js';
 import { resolveRuntimeAgentToolExposure } from '../../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js';
 
 const removedToolName = ['replace', 'in', 'file'].join('_');
@@ -44,5 +45,27 @@ describe('resolveAutoByteusAgentTools', () => {
     expect(logger.error).not.toHaveBeenCalled();
     expect(agentDefinition.toolNames).toBe(requestedToolNames);
     expect(agentDefinition.toolNames).toEqual([removedToolName, 'read_file']);
+  });
+
+  it('materializes the native foundation baseline through the existing registry', () => {
+    const agentDefinition = new AgentDefinition({
+      name: 'Native agent',
+      description: 'Exercises native default materialization.',
+      toolNames: [],
+    });
+
+    const resolution = resolveAutoByteusAgentTools({
+      agentDefinition,
+      runtimeToolExposure: resolveAutoByteusRuntimeAgentToolExposure(agentDefinition),
+    });
+
+    expect(resolution.actualToolNames).toEqual(['run_bash', 'read_file', 'edit_file', 'write_file']);
+    expect(resolution.tools.map((tool) => tool.definition?.name)).toEqual([
+      'run_bash',
+      'read_file',
+      'edit_file',
+      'write_file',
+    ]);
+    expect(agentDefinition.toolNames).toEqual([]);
   });
 });

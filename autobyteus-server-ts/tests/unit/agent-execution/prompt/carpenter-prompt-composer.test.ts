@@ -1,6 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
 import { AgentDefinition } from "../../../../src/agent-definition/domain/models.js";
-import { composeCarpenterPrompt } from "../../../../src/agent-execution/prompt/carpenter-prompt-composer.js";
+import {
+  composeNativeAutoByteusPrompt,
+  composeSharedCarpenterPrompt,
+} from "../../../../src/agent-execution/prompt/carpenter-prompt-composer.js";
 import { containAuthoredMarkdownHeadings } from "../../../../src/agent-execution/prompt/markdown-heading-containment.js";
 import { testMemberTeamContext } from "../../../fixtures/current-team-run-fixtures.js";
 
@@ -24,9 +27,9 @@ const teamContext = (teamInstruction: string | null = "## Coordination\n\nShare 
     deliverInterAgentMessage: vi.fn(async () => undefined) as any,
   });
 
-describe("composeCarpenterPrompt", () => {
+describe("composeNativeAutoByteusPrompt", () => {
   it("renders the exact ordered standalone foundation without role or fallbacks", () => {
-    const prompt = composeCarpenterPrompt({
+    const prompt = composeNativeAutoByteusPrompt({
       agentDefinition: definition({ role: "Ignored role" }),
       workspaceRootPath: "/tmp/carpenter-workspace",
       memberTeamContext: null,
@@ -41,23 +44,41 @@ describe("composeCarpenterPrompt", () => {
     expect(prompt).toContain("```md\n# keep\n```");
     expect(prompt).toContain("**Deep**");
     expect(prompt).toContain("- Agent workspace: `/tmp/carpenter-workspace`");
+    expect(prompt).toContain(
+      "Use Bash for workspace navigation, targeted search, repository and project commands, processes, network operations, and verification.",
+    );
+    expect(prompt).toContain('For content searches, use `rg -n "term" path`;');
+    expect(prompt).toContain("use `rg --files path | rg \"pattern\"`");
+    expect(prompt).toContain("use constrained `find path -maxdepth N ...`");
+    expect(prompt).toContain(
+      "Before every targeted `edit_file` change, use `read_file` to read the relevant current content",
+    );
+    expect(prompt).toContain(
+      "If the edit context fails or the file changed, use `read_file` again",
+    );
+    expect(prompt).toContain(
+      "Use Bash for file inspection or modification when those tools are unavailable",
+    );
+    expect(prompt).not.toContain(
+      "Use Bash as the primary interface for performing work in the agent workspace. Use it for workspace navigation, search, file reading, writing and editing",
+    );
     expect(prompt).not.toContain("Ignored role");
     expect(prompt).not.toContain("## Team Instruction");
-    expect(prompt).not.toContain("## Team Runtime");
+    expect(prompt).not.toContain("## AgentTeam Addressing");
+    expect(prompt).not.toContain("## AgentTeam Collaboration");
     expect(prompt).not.toContain("## Skills");
   });
 
   it("renders the authored Team instruction before the exact sibling AgentTeam sections", () => {
-    const prompt = composeCarpenterPrompt({
+    const prompt = composeNativeAutoByteusPrompt({
       agentDefinition: definition(),
       workspaceRootPath: "/tmp/carpenter-workspace",
       memberTeamContext: teamContext(),
     });
 
     expect(prompt).toContain("## Team Instruction\n\n### Coordination");
-    expect(prompt).toContain("## AgentTeam Addressing\n\nAgentTeams use filesystem-like logical addresses.");
-    expect(prompt).toContain("Within this structure, your address is:\n\n/worker");
-    expect(prompt).toContain("Bare names, `../`, and backslashes are invalid.");
+    expect(prompt).toContain("## AgentTeam Addressing");
+    expect(prompt).toContain("/worker");
     expect(prompt).toContain("## AgentTeam Collaboration\n\nUse `send_message_to` with `recipient_address`");
     expect(prompt.indexOf("## Team Instruction")).toBeLessThan(prompt.indexOf("## AgentTeam Addressing"));
     expect(prompt.indexOf("## AgentTeam Addressing")).toBeLessThan(prompt.indexOf("## AgentTeam Collaboration"));
@@ -67,12 +88,12 @@ describe("composeCarpenterPrompt", () => {
     expect(prompt).not.toContain("## Team Runtime");
     expect(prompt).not.toContain("recipient_name");
     expect(prompt).not.toContain("You can message:");
-    expect(prompt).not.toContain("submit_task_result");
-    expect(prompt).not.toContain("review_task_result");
+    expect(prompt).toContain("submit_task_result");
+    expect(prompt).toContain("review_task_result");
   });
 
   it("omits blank optional identity and team bodies", () => {
-    const prompt = composeCarpenterPrompt({
+    const prompt = composeNativeAutoByteusPrompt({
       agentDefinition: definition({ description: " ", instructions: "\n" }),
       workspaceRootPath: "/tmp/carpenter-workspace",
       memberTeamContext: teamContext("  "),
@@ -86,17 +107,52 @@ describe("composeCarpenterPrompt", () => {
   });
 
   it("fails required scalars and unresolved placeholders before provider projection", () => {
-    expect(() => composeCarpenterPrompt({
+    expect(() => composeNativeAutoByteusPrompt({
       agentDefinition: definition({ name: " " }),
       workspaceRootPath: "/tmp/workspace",
     })).toThrow(/name must be non-blank/);
-    expect(() => composeCarpenterPrompt({
+    expect(() => composeNativeAutoByteusPrompt({
       agentDefinition: definition(),
       workspaceRootPath: "relative/path",
     })).toThrow(/absolute path/);
-    expect(() => composeCarpenterPrompt({
+    expect(() => composeNativeAutoByteusPrompt({
       agentDefinition: definition({ instructions: "Use {{missing}}." }),
       workspaceRootPath: "/tmp/workspace",
+    })).toThrow(/unresolved documentation placeholder/);
+  });
+});
+
+describe("composeSharedCarpenterPrompt", () => {
+  it("renders shared identity and collaboration without native workspace or file-operation guidance", () => {
+    const prompt = composeSharedCarpenterPrompt({
+      agentDefinition: definition(),
+      memberTeamContext: teamContext(),
+    });
+
+    expect(prompt).toContain("## Agent Identity");
+    expect(prompt).toContain("## Team Instruction\n\n### Coordination");
+    expect(prompt).toContain("## AgentTeam Addressing");
+    expect(prompt).toContain("## AgentTeam Collaboration");
+    expect(prompt).not.toContain("## Working Environment");
+    expect(prompt).not.toContain("## Bash Operating Practice");
+    expect(prompt).not.toContain("## File And Directory Practice");
+    expect(prompt).not.toContain("read_file");
+    expect(prompt).not.toContain("edit_file");
+    expect(prompt).not.toContain("write_file");
+  });
+
+  it("does not require a workspace path for standalone external composition", () => {
+    const prompt = composeSharedCarpenterPrompt({
+      agentDefinition: definition(),
+    });
+
+    expect(prompt).toContain("## Agent Identity");
+    expect(prompt).not.toContain("## Working Environment");
+  });
+
+  it("preserves placeholder validation without a native workspace", () => {
+    expect(() => composeSharedCarpenterPrompt({
+      agentDefinition: definition({ instructions: "Use {{missing}}." }),
     })).toThrow(/unresolved documentation placeholder/);
   });
 });

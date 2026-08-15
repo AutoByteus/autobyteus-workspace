@@ -9,9 +9,11 @@ This module covers two separate boundaries:
    instructions for native AutoByteus, Codex App Server, and Claude Agent SDK
    runs.
 
-The Carpenter boundary supplies identity, team context, workspace facts, and
-operating practice. It does not turn agent definitions into an open-ended prompt
-processor pipeline and does not encode tool schemas in text.
+The Carpenter boundary supplies shared identity and team context to every
+runtime. Native AutoByteus additionally receives workspace facts and the
+platform-owned Bash/file operating practice. It does not turn agent definitions
+into an open-ended prompt processor pipeline and does not encode tool schemas in
+text.
 
 ## TS Source
 
@@ -21,19 +23,20 @@ processor pipeline and does not encode tool schemas in text.
 - `src/agent-execution/prompt/carpenter-prompt-composer.ts`
 - `src/agent-execution/prompt/carpenter-prompt-sections.ts`
 - `src/agent-execution/prompt/markdown-heading-containment.ts`
-- `src/agent-team-execution/services/team-runtime-instruction-renderer.ts`
+- `src/agent-team-execution/services/team-collaboration-instruction-renderer.ts`
 - native `autobyteus-ts` `SystemPromptProcessingStep` and
   `appendConfiguredSkillsCatalog`
 
 ## Main Services
 
 - `src/prompt-engineering/services/prompt-service.ts`
-- `composeCarpenterPrompt(...)`
+- `composeSharedCarpenterPrompt(...)`
+- `composeNativeAutoByteusPrompt(...)`
 
 The prompt service and cached provider are singleton-backed to avoid repeated
-cache initialization. Runtime Carpenter composition is a pure, fail-fast
-operation over the selected agent definition, exact absolute workspace, and
-optional validated `MemberTeamContext`.
+cache initialization. Carpenter composition is pure and fail-fast. Shared
+composition accepts the selected agent definition and optional validated
+`MemberTeamContext`; native composition adds the exact absolute workspace.
 
 ## Runtime Instruction Ownership
 
@@ -43,16 +46,20 @@ Each section has one owner:
 | --- | --- | --- |
 | `Agent Identity` | Selected `AgentDefinition`: required name, optional description, optional `agent.md` body | Always |
 | `Team Instruction` | Exact non-blank selected `team.md` body | Team runs only, when non-blank |
-| `AgentTeam Addressing` then `AgentTeam Collaboration` | Validated `MemberTeamContext` and one fixed logical-address, collaboration, handoff, and task-eligibility renderer | Team runs only |
-| `Working Environment` | Exact absolute effective workspace selected for the run | Always |
-| `Bash Operating Practice` | Platform-owned fixed Carpenter text | Always |
-| `File And Directory Practice` | Platform-owned fixed Carpenter text | Always |
+| `AgentTeam Addressing` then `AgentTeam Collaboration` | Validated `MemberTeamContext` and one fixed canonical-address, collaboration, handoff, and task-eligibility renderer | Team runs only, shared across runtimes |
+| `Working Environment` | Exact absolute effective workspace selected for the run | Native AutoByteus only |
+| `Bash Operating Practice` | Platform-owned fixed Carpenter text | Native AutoByteus only |
+| `File And Directory Practice` | Platform-owned fixed Carpenter text | Native AutoByteus only |
 | `Skills` | Ordinary configured skill resolver and provider-specific skill projection | Only when configured skills apply |
 
-The logical order is the order shown above. Blank optional values omit their
-line, subsection, or section; they do not produce empty headings. An invalid
-required name, workspace, team member name, team delivery binding, or unresolved
-Carpenter placeholder stops bootstrap before provider invocation.
+The shared logical order is Agent Identity, optional Team Instruction,
+AgentTeam Addressing, and AgentTeam Collaboration. Native AutoByteus appends
+Working Environment, Bash Operating Practice, and File And Directory Practice
+in that order, then the native core appends its terminal configured-skills
+catalog. Blank optional values omit their line, subsection, or section; they do
+not produce empty headings. An invalid required name, native workspace, Team
+identity/delivery binding, or unresolved Carpenter placeholder stops bootstrap
+before provider invocation.
 
 Authored ATX headings in `agent.md` and `team.md` are shifted beneath their
 owning section. A heading inside a same-or-longer Markdown fence remains content,
@@ -101,11 +108,12 @@ system-prompt processors: no current agent-definition field, core processor
 list/default, registry, pipeline, or public extension export exists for mutating
 this closed composition.
 
-## Concrete Foundation Example
+## Native AutoByteus Foundation Example
 
-For a standalone `Release Reviewer` running in `/work/releases`, the stable
-foundation begins as follows (the file-practice list continues with the same
-platform-owned deterministic inspection/edit/verification rules):
+For a standalone native AutoByteus `Release Reviewer` running in
+`/work/releases`, the native foundation begins as follows (the file-practice
+list continues with the same platform-owned deterministic
+inspection/edit/verification rules):
 
 ```markdown
 ## Agent Identity
@@ -129,16 +137,17 @@ Block publication when required evidence or a rollback path is missing.
 
 ## Bash Operating Practice
 
-- Use Bash as the primary interface for performing work in the agent workspace. Use it for workspace navigation, search, file reading, writing and editing, repository operations, processes, network operations, and project commands.
-- Prefer deterministic, non-interactive, small, composable commands.
-- Prefer project-native commands and format-aware tools such as `git`, `npm`, `pnpm`, `pytest`, `jq`, and project scripts when applicable.
-- Use another provided tool when Bash cannot achieve the purpose.
+- Use Bash for workspace navigation, targeted search, repository and project commands, processes, network operations, and verification. Prefer deterministic, targeted commands over broad directory listings.
+- For file content, follow `File And Directory Practice` and prefer the exposed dedicated file tools. Use Bash for file inspection or modification when those tools are unavailable or cannot complete the operation after recovery.
+- Prefer non-interactive, small, composable, project-native commands.
 
 ## File And Directory Practice
 
-- Locate files and directories by intent instead of broadly listing them; use targeted `rg`, `rg --files`, or constrained `find` commands.
-- Read bounded relevant content with tools such as `cat`, `wc -l`, `sed`, `nl`, and format-aware readers.
-- Make the narrowest deterministic format-appropriate edit, preserve unrelated content, guard file operations, and run a fitting verification.
+- Locate files and directories by intent instead of broadly listing them. For content searches, use `rg -n "term" path`; for filename discovery, use `rg --files path | rg "pattern"`; use constrained `find path -maxdepth N ...` only when filesystem traversal or metadata is the goal.
+- When exposed, use `read_file` for file reading, `edit_file` for targeted regional changes to an existing file, and `write_file` for new files or deliberate whole-file replacement.
+- Before every targeted `edit_file` change, use `read_file` to read the relevant current content of the original file unless it was read recently and has not changed.
+- Build the regional `edit_file` patch from that latest content and preserve unrelated content. If the edit context fails or the file changed, use `read_file` again for the affected content, construct a new patch, and retry; do not blindly retry an unchanged patch.
+- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check.
 ```
 
 The authoritative full fixed text is
@@ -151,43 +160,28 @@ platform foundation with a second generic advice block.
 A team run inserts the exact non-blank `team.md` body under `Team Instruction`
 and then renders two sibling sections from the validated current member context:
 `AgentTeam Addressing` followed by `AgentTeam Collaboration`. They appear before
-`Working Environment`. The first explains the logical directory/file analogy,
-the `/...` and `./...` grammar, invalid forms, the member's exact rooted address,
-examples, and Team-coordinator ingress. The second explains `send_message_to`,
-direct-child eligibility for `delegate_task`, and the ordered
-`get_handoff_rules` completion/blocked workflow plus delivery confirmation. The
-renderer contains no flat recipient or delegation-target roster.
+native `Working Environment`. The first teaches one canonical absolute non-root
+address grammar and the member's exact address. The second explains universal
+same-root `send_message_to` and `delegate_task`, ordered `get_handoff_rules`,
+task result/review tools, and delivery confirmation. The renderer contains no
+flat recipient or delegation-target roster.
 
 For example, a Team-bound Agent can receive this shape:
 
 ```markdown
 ## AgentTeam Addressing
 
-AgentTeams use filesystem-like logical addresses. Think of an AgentTeam as a directory, an Agent inside it as a file, and a nested AgentTeam as a subdirectory. This analogy describes the Team structure and addressing model only; the addresses are not real filesystem paths.
+Every Agent and nested AgentTeam is identified by one canonical absolute address beginning with `/` at the root AgentTeam. Copy that exact address when a tool asks for `recipient_address`. Relative addresses, bare names, `../`, backslashes, and the structural root `/` itself are not valid recipients.
 
-An address beginning with `/` starts from the root AgentTeam. An address beginning with `./` starts from your immediate AgentTeam—the Team that directly contains you. Bare names, `../`, and backslashes are invalid.
-
-Within this structure, your address is:
+Your Agent address is:
 
 /release_team/release_reviewer
 
-For example:
-
-- `./architecture_reviewer` identifies an Agent in your immediate AgentTeam.
-- `./implementation_team` identifies a nested AgentTeam in your immediate AgentTeam.
-- `/requirements_engineering/requirements_lead` identifies an Agent using an absolute address from the root AgentTeam.
-
-An AgentTeam address identifies the Team itself. Sending a message to that address delivers it to the Team's configured coordinator.
-
 ## AgentTeam Collaboration
 
-Use `send_message_to` with `recipient_address` to send a message to an Agent or AgentTeam.
+Use `send_message_to` with `recipient_address` to contact any mounted Agent or AgentTeam in your rooted AgentTeam.
 
-`delegate_task` uses the same address format, but its recipient must be a direct Agent or AgentTeam child of your immediate AgentTeam. Message delivery may address deeper or cross-branch recipients.
-
-When you finish your work or are blocked, call `get_handoff_rules`. If a returned rule applies, notify its `recipient_address` using `send_message_to`. Combine applicable reasons for the same recipient and follow distinct recipients in their returned order. If no rule applies, finish normally.
-
-Do not claim that a handoff was completed unless `send_message_to` confirms delivery.
+Use `delegate_task` with `recipient_address` to create a fresh dedicated task execution for any mounted Agent or AgentTeam in your rooted AgentTeam, except your own exact Agent address.
 ```
 
 The runtime renderer owns the complete exact wording and is shared by
@@ -195,6 +189,13 @@ AutoByteus, Codex App Server, and Claude Agent SDK composition. Agent/team
 authors should not copy dynamic member addresses or tool schemas into `agent.md`
 or `team.md`. Standalone runs render neither Team Instruction nor either
 AgentTeam section.
+
+The shared composition used by Codex App Server and Claude Agent SDK stops
+after the shared identity/team sections. Those adapters place the resulting
+string into Codex `baseInstructions` or Claude SDK `systemPrompt`; their
+provider-native workspace, skills, tools, approval, and sandbox guidance stays
+in the existing provider boundary. They do not receive the native Working
+Environment, Bash Operating Practice, or File And Directory Practice sections.
 
 ## Ordinary Configured Skills
 
@@ -274,9 +275,9 @@ rewording:
 
 | Runtime | Instruction boundary | Skills | Team tools |
 | --- | --- | --- | --- |
-| Native AutoByteus | `AgentConfig.systemPrompt`, then the closed core terminal Skills append | Native metadata/path catalog | Server-owned local native schemas |
-| Codex App Server | Thread `baseInstructions` | Provider discovery plus configured workspace materialization when needed | Session-scoped `autobyteus_agent_tools` MCP |
-| Claude Agent SDK | SDK query `options.systemPrompt` custom string | Configured `.claude/skills` materialization | Session-scoped `autobyteus_agent_tools` MCP |
+| Native AutoByteus | `composeNativeAutoByteusPrompt` -> `AgentConfig.systemPrompt`, then the closed core terminal Skills append | Native metadata/path catalog | Server-owned local native schemas |
+| Codex App Server | `composeSharedCarpenterPrompt` -> thread `baseInstructions` | Provider discovery plus configured workspace materialization when needed | Session-scoped `autobyteus_agent_tools` MCP |
+| Claude Agent SDK | `composeSharedCarpenterPrompt` -> SDK query `options.systemPrompt` custom string | Configured `.claude/skills` materialization | Session-scoped `autobyteus_agent_tools` MCP |
 
 Claude user turns remain user/context-file content; stable Carpenter instructions
 are not rebuilt as XML inside every user message.

@@ -63,6 +63,16 @@ type TeamExecutionAddress = Readonly<{
   member placement, and `taskAgentRunId: null`;
 - nested task Teams append run IDs in traversal order.
 
+## Runtime Composition Path
+
+| Path | Authoritative owner | Member execution primitive | Notes |
+| --- | --- | --- | --- |
+| Any server team run (all-AutoByteus, all-Codex, all-Claude, heterogeneous, or nested) | `MixedTeamManager` | Agent members own one runtime-specific `AgentRun`; subteam members own child `TeamRun`s | `MixedTeamManager` is retained by name and is the single active server team manager. Runtime-specific team managers/backends are not instantiated by server team create/restore. |
+| AutoByteus member in a server team | `MixedAgentMemberHandle -> AgentRunManager -> AutoByteusAgentRunBackendFactory` | Standalone AutoByteus `AgentRun` | `composeNativeAutoByteusPrompt` consumes `MemberTeamContext` and emits Team Instruction plus AgentTeam Addressing/Collaboration before native guidance; native core then appends only the terminal configured Skills catalog. |
+| Codex or Claude member in a server team | `MixedAgentMemberHandle -> AgentRunManager` | Standalone Codex or Claude `AgentRun` | `composeSharedCarpenterPrompt` projects shared Team Instruction plus AgentTeam Addressing/Collaboration through provider instruction boundaries; native Bash/file guidance is excluded. `get_handoff_rules`, `send_message_to`, and `delegate_task` remain automatically included in effective team tool exposure and routed through Agent Tools MCP. |
+
+## Nested Member Identity And Commands
+
 The root ID must match the bound TeamRun. The member address must exist in the
 selected topology. Each task-Team ID must select the next active task Team, and
 the optional task-Agent ID must select the exact active task Agent for that
@@ -265,12 +275,15 @@ pipeline passes, or projection writes.
 - `src/agent-team-execution/services/team-logical-placement-resolver.ts`
 - `src/agent-team-execution/services/member-team-context-builder.ts`
 - `src/agent-team-execution/services/member-collaboration-instruction-renderer.ts`
-- `src/agent-team-execution/services/team-runtime-instruction-renderer.ts`
+- `src/agent-team-execution/services/team-collaboration-instruction-renderer.ts`
+- `src/agent-execution/prompt/carpenter-prompt-composer.ts`
 - `src/agent-team-execution/services/inter-agent-message-delivery-intent-builder.ts`
+- `src/agent-team-execution/services/member-command-status-overlay-store.ts`
 - `src/agent-team-execution/services/team-agent-event-adapter.ts`
 - `src/agent-team-execution/task-delegation`
 - `src/agent-team-execution/backends/mixed`
 - `src/agent-tools/task-delegation`
+- `src/agent-execution/shared/runtime-agent-tool-exposure.ts`
 - `src/services/agent-streaming/agent-team-stream-handler.ts`
 - `src/services/agent-streaming/team-agent-event-websocket-projector.ts`
 - `@autobyteus/team-stream-contracts`

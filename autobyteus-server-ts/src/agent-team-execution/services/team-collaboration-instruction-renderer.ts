@@ -1,7 +1,7 @@
 import type { MemberTeamContext } from "../domain/member-team-context.js";
 import { renderMemberCollaborationInstruction } from "./member-collaboration-instruction-renderer.js";
 
-export const renderTeamRuntimeInstruction = (
+export const renderTeamCollaborationInstruction = (
   context: MemberTeamContext,
 ): string => {
   if (!context.collaboration.deliverInterAgentMessage) {

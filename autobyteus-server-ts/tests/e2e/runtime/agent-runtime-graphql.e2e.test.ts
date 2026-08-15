@@ -848,6 +848,82 @@ const defineRuntimeSuite = (input: {
     }, 180_000);
 
     if (input.runtimeKind === "autobyteus") {
+      it("materializes the native write_file baseline when the persisted definition omits it", async () => {
+        const workspaceRootPath = await mkdtemp(
+          path.join(os.tmpdir(), `${input.runtimeKind}-runtime-default-tools-workspace-`),
+        );
+        createdWorkspaceRoots.add(workspaceRootPath);
+        const llmModelIdentifier = await fetchModelIdentifier();
+        const agentDefinitionId = await createAgentDefinition([]);
+        const runId = await createAgentRun({
+          agentDefinitionId,
+          llmModelIdentifier,
+          workspaceRootPath,
+          autoExecuteTools: false,
+        });
+
+        const { app, socket, messages } = await openAgentSocket(runId);
+        const targetRelativePath = `api-default-tool-${randomUUID().replace(/-/g, "_")}.txt`;
+        const targetAbsolutePath = path.join(workspaceRootPath, targetRelativePath);
+        const expectedContent = `NATIVE_DEFAULT_TOOL_${randomUUID().replace(/-/g, "_")}`;
+        try {
+          const startIndex = messages.length;
+          sendE2eSendMessageCommand(socket, {
+            content:
+              `Use the write_file tool exactly once with path ${targetRelativePath}, base_dir ${workspaceRootPath}, ` +
+              `and content ${expectedContent}. ` +
+              "Do not use another tool, do not simulate execution, and do not answer with plain text.",
+          });
+
+          const approvalRequested = await waitForMessageAfter(
+            messages,
+            startIndex,
+            (message) =>
+              message.type === "TOOL_APPROVAL_REQUESTED" &&
+              message.payload.tool_name === "write_file",
+            "native default write_file TOOL_APPROVAL_REQUESTED",
+          );
+          expect(approvalRequested.payload.arguments).toMatchObject({
+            path: targetRelativePath,
+            base_dir: workspaceRootPath,
+            content: expectedContent,
+          });
+          const invocationId = resolveInvocationId(approvalRequested.payload);
+          expect(invocationId).toBeTruthy();
+
+          socket.send(
+            JSON.stringify({
+              type: "APPROVE_TOOL",
+              payload: {
+                invocation_id: invocationId,
+                reason: "approved native default write_file E2E",
+              },
+            }),
+          );
+
+          await waitForMessageAfter(
+            messages,
+            startIndex,
+            (message) =>
+              message.type === "TOOL_EXECUTION_SUCCEEDED" &&
+              resolveInvocationId(message.payload) === invocationId,
+            "native default write_file TOOL_EXECUTION_SUCCEEDED",
+          );
+          await waitForMessageAfter(
+            messages,
+            startIndex,
+            (message) =>
+              message.type === "AGENT_STATUS" && message.payload.status === "idle",
+            "native default tool AGENT_STATUS IDLE",
+          );
+          await expect(readFile(targetAbsolutePath, "utf-8")).resolves.toContain(expectedContent);
+        } finally {
+          socket.close();
+          await app.close();
+          await terminateAgentRun(runId).catch(() => undefined);
+        }
+      }, 180_000);
+
       it("interrupts a live AutoByteus pending tool approval and accepts a follow-up message on the same websocket", async () => {
         const workspaceRootPath = await mkdtemp(
           path.join(os.tmpdir(), `${input.runtimeKind}-runtime-interrupt-workspace-`),
