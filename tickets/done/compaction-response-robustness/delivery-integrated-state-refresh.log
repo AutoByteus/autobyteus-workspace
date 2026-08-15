@@ -259,3 +259,14 @@ origin/personal remained edace166ee24681126e9aec8c6c3ab594fb6ebd5; v1.4.51 remai
 Verified integrated HEAD remained 70ed21eff3afa223da233b6bb603915ba48a48d7 with the base as ancestor at 12 commits ahead / 0 behind.
 Material handoff change from refresh: none.
 Decision: the user's DR-006 verification remains applicable. Ticket archival, repository finalization, and stable patch release v1.4.52 are authorized; rollout evidence must be recorded before cleanup.
+
+9. Repository finalization and release completion
+User verification: complete; finalization and stable release were explicitly requested.
+Archived ticket commit: ae1e793382ff4ac9500c15521dc45bb0ce718eee.
+personal merge commit: b74b074e1fd8fa1743781de40abe34645000f614.
+Release commit/tag: 3572bb1fe23dde7056a6b5b5c817a9b78d1ddb4c / v1.4.52.
+All tag workflows: PASS — desktop, Android, iOS/App Store Connect, messaging gateway, and server Docker.
+GitHub release: PASS — stable, 21 assets, updater/manifests declare 1.4.52.
+Docker rollout: PASS — versioned and latest tags share multi-architecture digest sha256:d54f975b10dc2929d6770063f125915c342a3f8cc2ff63ad193e4c6a201a0223.
+Cleanup: PASS — dedicated worktrees/clones and ticket branches removed; pre-existing unrelated .article-work left untouched.
+Final delivery result: PASS. Evidence: release-v1.4.52-execution.log and release-v1.4.52-rollout-verification.log.

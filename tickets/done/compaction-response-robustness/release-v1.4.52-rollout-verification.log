@@ -1,0 +1,171 @@
+Release rollout verification — v1.4.52
+Date: 2026-08-15 (Europe/Berlin)
+release_commit=3572bb1fe23dde7056a6b5b5c817a9b78d1ddb4c
+tag=v1.4.52
+
+## Workflow and job conclusions
+WORKFLOW	Desktop Release	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/31883940504
+JOB	Resolve Release Metadata	success
+JOB	Build Linux ARM64	success
+JOB	Build Linux x64	success
+JOB	Build macOS Intel x64	success
+JOB	Build Windows x64	success
+JOB	Build macOS ARM64	success
+JOB	Publish GitHub Release	success
+WORKFLOW	Android APK Release	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/31883940514
+JOB	Resolve Android Release Metadata	success
+JOB	Build Android APK	success
+JOB	Publish Android APK To GitHub Release	success
+WORKFLOW	iOS App Store Connect Release	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/31883940529
+JOB	Resolve iOS Release Metadata	success
+JOB	Build And Test iOS App	success
+JOB	Validate iOS Publish Secrets	success
+JOB	Archive And Upload To App Store Connect	success
+WORKFLOW	Release Messaging Gateway	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/31883940487
+JOB	Resolve Release Metadata	success
+JOB	Build Runtime Package	success
+JOB	Publish GitHub Release	success
+WORKFLOW	Server Docker Release	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/31883940459
+JOB	Resolve Release Metadata	success
+JOB	Build And Push Server Image	success
+
+## GitHub release metadata and assets
+release	v1.4.52	v1.4.52	false	false	2026-08-15T12:13:21Z	https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.52	3572bb1fe23dde7056a6b5b5c817a9b78d1ddb4c	21
+asset	autobyteus-message-gateway-1.4.52-node-generic.tar.gz	46408990	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.52/autobyteus-message-gateway-1.4.52-node-generic.tar.gz
+asset	autobyteus-message-gateway-1.4.52-node-generic.tar.gz.json	429	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.52/autobyteus-message-gateway-1.4.52-node-generic.tar.gz.json
+asset	autobyteus-message-gateway-1.4.52-node-generic.tar.gz.sha256	120	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.52/autobyteus-message-gateway-1.4.52-node-generic.tar.gz.sha256
+asset	AutoByteus_personal_android-1.4.52-release.apk	1846691	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.52/AutoByteus_personal_android-1.4.52-release.apk
+asset	AutoByteus_personal_android-1.4.52-release.apk.sha256	113	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.52/AutoByteus_personal_android-1.4.52-release.apk.sha256
+asset	AutoByteus_personal_linux-arm64-1.4.52.AppImage	357265101	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.52/AutoByteus_personal_linux-arm64-1.4.52.AppImage
+asset	AutoByteus_personal_linux-x64-1.4.52.AppImage	368877253	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.52/AutoByteus_personal_linux-x64-1.4.52.AppImage
+asset	AutoByteus_personal_macos-arm64-1.4.52.dmg	434308016	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.52/AutoByteus_personal_macos-arm64-1.4.52.dmg
+asset	AutoByteus_personal_macos-arm64-1.4.52.dmg.blockmap	453356	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.52/AutoByteus_personal_macos-arm64-1.4.52.dmg.blockmap
+asset	AutoByteus_personal_macos-arm64-1.4.52.zip	430054950	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.52/AutoByteus_personal_macos-arm64-1.4.52.zip
+asset	AutoByteus_personal_macos-arm64-1.4.52.zip.blockmap	441011	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.52/AutoByteus_personal_macos-arm64-1.4.52.zip.blockmap
+asset	AutoByteus_personal_macos-x64-1.4.52.dmg	456352451	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.52/AutoByteus_personal_macos-x64-1.4.52.dmg
+asset	AutoByteus_personal_macos-x64-1.4.52.dmg.blockmap	478678	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.52/AutoByteus_personal_macos-x64-1.4.52.dmg.blockmap
+asset	AutoByteus_personal_macos-x64-1.4.52.zip	451694829	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.52/AutoByteus_personal_macos-x64-1.4.52.zip
+asset	AutoByteus_personal_macos-x64-1.4.52.zip.blockmap	461969	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.52/AutoByteus_personal_macos-x64-1.4.52.zip.blockmap
+asset	AutoByteus_personal_windows-1.4.52.exe	301889184	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.52/AutoByteus_personal_windows-1.4.52.exe
+asset	latest-linux-arm64.yml	417	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.52/latest-linux-arm64.yml
+asset	latest-linux.yml	413	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.52/latest-linux.yml
+asset	latest-mac.yml	897	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.52/latest-mac.yml
+asset	latest.yml	354	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.52/latest.yml
+asset	release-manifest.json	904	https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.52/release-manifest.json
+
+## Curated release body
+## What's New
+- Memory compaction now runs as a bounded, non-recursive operation for more reliable long conversations.
+
+## Improvements
+- Improved compaction handling across provider capacity limits while preserving the active conversation and accepted memory state.
+- Improved recovery from invalid compaction responses with one safe corrective attempt and an explicit user-authorized retry path.
+
+## Fixes
+- Fixed repeated or recursive Memory Compactor runs under proactive and hard-cap pressure.
+- Fixed malformed Unicode in provider-bound compaction prompts without changing authoritative tool results or stored history.
+- Fixed the built-in Memory Compactor inheriting shell and file tools intended for ordinary agents.
+- Fixed compaction setup failures silently degrading normal agents instead of failing before launch.
+
+
+## Published updater/managed manifest contents
+--- latest-mac.yml ---
+version: 1.4.52
+files:
+  - url: AutoByteus_personal_macos-arm64-1.4.52.zip
+    sha512: k3dUoDLURIjdjwmgfAAyKBxqmE6eC7SviWlZEKPkU2vBKsIwc653S7ZN6/h2KIeQ03TLCSlYcuhp0yPqom+vUA==
+    size: 430054950
+  - url: AutoByteus_personal_macos-arm64-1.4.52.dmg
+    sha512: GHBT5J4wgO3ta9uoXbixehQ25T2gHLw+S56XbowZXt2CKIxSgzGH9sU/ouBEKedNyMt5iyJy/3SihzW+Jelw3Q==
+    size: 434308016
+  - url: AutoByteus_personal_macos-x64-1.4.52.zip
+    sha512: p371IeuflyRXTVbyeNJG1N8QTj1nAX9kA6mLPCKsAF29qEUIxkmhNuRUbj1IoA+swRMRhEpyYlUxt9YUzgMpwA==
+    size: 451694829
+  - url: AutoByteus_personal_macos-x64-1.4.52.dmg
+    sha512: dTMftPfGkj9RJtE8T1uBLtMQLR7bj5pDa4Kc1IUI/nk64F/aMFqiBFLaRJTdxFru4+XARKwO4iniEfOmnVw6fg==
+    size: 456352451
+path: AutoByteus_personal_macos-arm64-1.4.52.zip
+sha512: k3dUoDLURIjdjwmgfAAyKBxqmE6eC7SviWlZEKPkU2vBKsIwc653S7ZN6/h2KIeQ03TLCSlYcuhp0yPqom+vUA==
+releaseDate: '2026-08-15T12:25:24.316Z'
+--- latest-linux.yml ---
+version: 1.4.52
+files:
+  - url: AutoByteus_personal_linux-x64-1.4.52.AppImage
+    sha512: XH8kvBgsU3nFCMbIT/8OWdnaWn1J2biR04mQKZTrvewSZtaq7tbUI16DlRSI/r+cb2lwbsX7N6opLCHz/RddCQ==
+    size: 368877253
+    blockMapSize: 384729
+path: AutoByteus_personal_linux-x64-1.4.52.AppImage
+sha512: XH8kvBgsU3nFCMbIT/8OWdnaWn1J2biR04mQKZTrvewSZtaq7tbUI16DlRSI/r+cb2lwbsX7N6opLCHz/RddCQ==
+releaseDate: '2026-08-15T12:15:06.470Z'
+--- latest-linux-arm64.yml ---
+version: 1.4.52
+files:
+  - url: AutoByteus_personal_linux-arm64-1.4.52.AppImage
+    sha512: 9pSfD8ATzJzrUU/rpJ2lrGQ3ijR0m1oCXu2hUE0rhxmdGQV1IBENrm5vYlQOzpmSZiJcnIZO2RdrMAOe3ESlpg==
+    size: 357265101
+    blockMapSize: 371225
+path: AutoByteus_personal_linux-arm64-1.4.52.AppImage
+sha512: 9pSfD8ATzJzrUU/rpJ2lrGQ3ijR0m1oCXu2hUE0rhxmdGQV1IBENrm5vYlQOzpmSZiJcnIZO2RdrMAOe3ESlpg==
+releaseDate: '2026-08-15T12:14:18.669Z'
+--- latest.yml ---
+version: 1.4.52
+files:
+  - url: AutoByteus_personal_windows-1.4.52.exe
+    sha512: i6O5letZTHwgULNNCvNX2FkfWP1bE24ys3CfQ26eFQrs85cBjyp0eLuO1vc+w3kvmiM6YXmXIJTIsCkzyVQbLg==
+path: AutoByteus_personal_windows-1.4.52.exe
+sha512: i6O5letZTHwgULNNCvNX2FkfWP1bE24ys3CfQ26eFQrs85cBjyp0eLuO1vc+w3kvmiM6YXmXIJTIsCkzyVQbLg==
+releaseDate: '2026-08-15T12:23:18.508Z'
+--- release-manifest.json ---
+{
+  "schemaVersion": 1,
+  "releases": [
+    {
+      "serverVersion": "0.1.1",
+      "releaseTag": "v1.4.52",
+      "artifactVersion": "1.4.52",
+      "platformKey": "node-generic",
+      "archiveType": "tar.gz",
+      "downloadUrl": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.52/autobyteus-message-gateway-1.4.52-node-generic.tar.gz",
+      "sha256Url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.52/autobyteus-message-gateway-1.4.52-node-generic.tar.gz.sha256",
+      "metadataUrl": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.52/autobyteus-message-gateway-1.4.52-node-generic.tar.gz.json",
+      "supportedProviders": [
+        "WHATSAPP",
+        "WECOM",
+        "DISCORD",
+        "TELEGRAM"
+      ],
+      "excludedProviders": [
+        "WHATSAPP",
+        "WECOM",
+        "WECHAT"
+      ]
+    }
+  ]
+}
+
+## Docker Hub manifests
+Name:      docker.io/autobyteus/autobyteus-server:1.4.52
+MediaType: application/vnd.oci.image.index.v1+json
+Digest:    sha256:d54f975b10dc2929d6770063f125915c342a3f8cc2ff63ad193e4c6a201a0223
+           
+Manifests: 
+  Name:      docker.io/autobyteus/autobyteus-server:1.4.52@sha256:81e6801fc5d71ebe0e6bf3062f171d72c18d2491e1f736bf0e93e276ccc544e2
+  MediaType: application/vnd.oci.image.manifest.v1+json
+  Platform:  linux/amd64
+             
+  Name:      docker.io/autobyteus/autobyteus-server:1.4.52@sha256:35178a4566277b1abeb1870d91012735b6628a063887dafa00ca32c3aea7ec9a
+  MediaType: application/vnd.oci.image.manifest.v1+json
+  Platform:  linux/arm64
+Name:      docker.io/autobyteus/autobyteus-server:latest
+MediaType: application/vnd.oci.image.index.v1+json
+Digest:    sha256:d54f975b10dc2929d6770063f125915c342a3f8cc2ff63ad193e4c6a201a0223
+           
+Manifests: 
+  Name:      docker.io/autobyteus/autobyteus-server:latest@sha256:81e6801fc5d71ebe0e6bf3062f171d72c18d2491e1f736bf0e93e276ccc544e2
+  MediaType: application/vnd.oci.image.manifest.v1+json
+  Platform:  linux/amd64
+             
+  Name:      docker.io/autobyteus/autobyteus-server:latest@sha256:35178a4566277b1abeb1870d91012735b6628a063887dafa00ca32c3aea7ec9a
+  MediaType: application/vnd.oci.image.manifest.v1+json
+  Platform:  linux/arm64
+ROLLOUT VERIFICATION RESULT: PASS

@@ -1,74 +1,94 @@
 # Delivery / Release / Deployment Report
 
-## Scope
+## Scope And Result
 
-DR-006 established the user-verified integrated handoff for reviewed IR-005/API-REV-006. On 2026-08-15 the user explicitly accepted that handoff and requested repository finalization plus a new release. The selected stable patch target is `v1.4.52`, the next unused version after `v1.4.51`; finalization and release execution are now authorized.
+The user explicitly accepted the integrated DR-006 Electron handoff and requested repository finalization plus a new release on 2026-08-15. Delivery finalized the ticket and published stable release `v1.4.52`, the next unused patch version after `v1.4.51`.
 
-## Integrated State
+Overall result: `Pass — repository finalized, release published, all tag workflows successful, rollout evidence verified, and dedicated ticket/release resources cleaned up`.
 
-- Ticket branch: `codex/compaction-response-robustness`
-- Recorded target: `origin/personal` / `personal`
-- Implementation commit: `204fcf0c1fae683b4cbae892d2c9b7425c5764b9`
-- Reviewed coverage checkpoint: `c03a544befff71492e80ff7ac8fed73f4307e8f9`
-- Latest fetched base: `edace166ee24681126e9aec8c6c3ab594fb6ebd5`
-- Integration method/result: 16 base-only commits merged without textual conflict by `70ed21eff3afa223da233b6bb603915ba48a48d7`
-- Relation at build and post-build recheck: ticket 12 ahead / 0 behind; latest base is contained
-- Base overlap: runtime-specific Carpenter prompt changes in the server factory and desktop version `1.4.51`; reviewed compactor selection remained intact
-- Post-integration smoke: `Pass` — core 2/2, server 20/20 deterministic, live path expected-skipped without its flag
-- Evidence: `delivery-integrated-state-refresh.log` and `delivery-integrated-smoke-dr-006.log`
+## Repository Finalization
 
-The integrated candidate retains `CRR-009 Pass` at 9.6/10 (95.5/100), `API-REV-006 Pass` at 98.8% confidence, and `CRR-011 Pass` with no proportional-test findings.
+- Pre-finalization refresh: `Pass`. `origin/personal` remained `edace166ee24681126e9aec8c6c3ab594fb6ebd5`, contained by user-verified integrated merge `70ed21eff3afa223da233b6bb603915ba48a48d7` at 12 ahead / 0 behind. No material handoff change occurred.
+- Archived ticket path: `tickets/done/compaction-response-robustness/`.
+- Final ticket commit: `ae1e793382ff4ac9500c15521dc45bb0ce718eee` (`docs(delivery): finalize compaction response robustness`).
+- Ticket branch push: completed before target integration.
+- Target branch: `personal`.
+- Target merge commit: `b74b074e1fd8fa1743781de40abe34645000f614` (`Merge compaction response robustness`).
+- Target push: completed to `origin/personal`.
+- Artifact-hygiene gate: `Pass` before final ticket commit and target push.
 
-## Behavior Result
+The user-verified implementation evidence remains `CRR-009 Pass` at 9.6/10 (95.5/100), `API-REV-006 Pass` at 98.8%, and `CRR-011 Pass` with no proportional-test findings. No implementation or durable-coverage change was introduced during finalization.
 
-- Complete runtime configuration: memory owns one closed disabled/enabled automatic-compaction value; no independent policy is inferred downstream.
-- Built-in compactor: disabled create/restore composition, no runner-factory call, provider-capacity resolution retained, no proactive/hard-cap or compaction lifecycle work, and no recursive self-compaction.
-- Ordinary agents: enabled with fresh current policy and required runner; runner composition fails closed rather than silently disabling automatic compaction.
-- Child topology: one initial plus at most one correction sibling; accepted run is within that set; zero descendant compactor runs and zero child lineage/raw archive.
-- Tools and safety: compactor tools remain `[]`; ordinary native defaults remain four tools; provider-safe Unicode and typed pre-launch/runner failure contracts remain intact.
+## Release Preparation
 
-## Documentation Result
+- Documented command: `pnpm release 1.4.52 -- --release-notes tickets/done/compaction-response-robustness/release-notes.md`.
+- Release commit/tag target: `3572bb1fe23dde7056a6b5b5c817a9b78d1ddb4c` / `v1.4.52`.
+- `autobyteus-web/package.json`: `1.4.51` -> `1.4.52`.
+- `autobyteus-message-gateway/package.json`: `1.4.51` -> `1.4.52`.
+- Managed messaging release manifest: synchronized to `v1.4.52`.
+- Curated GitHub release notes: synchronized from the ticket `release-notes.md`.
+- Branch and tag pushes: `Pass`.
+- Manual dispatch: not run; the canonical tag push started exactly one set of release workflows.
+- Execution evidence: `release-v1.4.52-execution.log` ending `RELEASE_HELPER_PASS`.
 
-- Result: `Updated — Pass`.
-- Updated paths: five canonical core/server memory, runtime-loop, and architecture documents recorded in `docs-sync-report.md`.
-- No-impact paths: server tool, work-trace, agent-definition, agent-execution, and web execution architecture docs.
-- Validation: whitespace, mirror equality, required composition/capacity/leaf/sibling/no-migration markers, integrated source-owner cross-checks, and smoke/base-containment checks passed in `docs-sync-validation.log`.
-- Persisted data: `Directly Usable — No Migration`.
+## Workflow Results
 
-## Build And Package Result
+All five tag-triggered workflows completed successfully:
 
-- Build: `Pass`
-- Package verification: `Pass`
-- Target/flavor/version: macOS ARM64 / personal / 1.4.51
-- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.51.dmg`
-- DMG integrity: `402536373` bytes; SHA-256 `3167d439c78903d14cba5828fb1084064f1d9bcb7994c7a98d210fe774873b8c`; SHA-512 `fKGP4BAm1cu3uRfSq+hjmJDfJYVozbXGvEaSuOJ7Nzx3TjqzBqRauZQAidslhw3KenArEfN98+KBbksFHqXn9w==`; `hdiutil verify` Pass.
-- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.51.zip`
-- ZIP integrity: `398169811` bytes; SHA-256 `f852f55b21a1c33731b46ccea26e9ebc2aab622f49fa77d1fc50cffc9bc8d3e1`; SHA-512 `T/ZQ3T/JJ8InbmMuuRk2s811ipxaOp/roD8KkkOcrKZK3VPu67KJWzTzZvpmtcbmGc1Jhn0ZYSp0g6bKQzD59Q==`; `unzip -tq` Pass.
-- Blockmap SHA-256: DMG `ee7123dadd5b9fd8395974b02636ae086f3aee894d50416b336244f81a7a1513`; ZIP `2f460fc04a4d9c375c3f9f2f948605348e9d9b0873a8716bfffb7c84f69fd386`.
-- Build evidence: `electron-build-macos-arm64-dr-006.log` ending `build_exit=0`.
-- Verification evidence: `electron-build-verification-macos-arm64-dr-006.log` ending `VERIFICATION RESULT: PASS`.
-- Signing/notarization: intentionally absent. The local package is unsigned/ad-hoc and must not be represented or published as a release artifact.
+| Workflow | Run | Required publish result |
+| --- | --- | --- |
+| Desktop Release | [31883940504](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/31883940504) | macOS ARM64/x64, Linux x64/ARM64, Windows x64 build and GitHub publication jobs succeeded |
+| Android APK Release | [31883940514](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/31883940514) | signed release APK build and GitHub publication succeeded |
+| iOS App Store Connect Release | [31883940529](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/31883940529) | build/test, publish-secret validation, archive, and App Store Connect upload succeeded |
+| Release Messaging Gateway | [31883940487](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/31883940487) | runtime package build and GitHub publication succeeded |
+| Server Docker Release | [31883940459](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/31883940459) | multi-architecture image build/push succeeded |
 
-The build passed web/localization guards, core/server builds, Prisma/bootstrap preparation, mobile/Electron generation, native-module rebuild, packaging, blockmaps, and updater metadata. Verification passed updater agreement, bundle identity/version/architecture, staged/final terminal spawn probes, packaged current-source markers, packaged composition/tool runtime probes, and DMG/ZIP integrity.
+The successful iOS upload reaches App Store Connect/TestFlight. Final public App Store review, listing, approval, and release remain external Apple-console operations and are not represented as completed here.
 
-## User Verification And Finalization
+## Publication And Rollout Verification
 
-- Current artifact acceptance: `Complete — explicitly accepted by the user`.
-- Pre-finalization base refresh: `Pass`; `origin/personal` remained `edace166ee24681126e9aec8c6c3ab594fb6ebd5`, contained at 12 ahead / 0 behind.
-- Ticket archive, final delivery commit/push, target merge/push, and release `v1.4.52`: authorized and in progress.
-- Release notes: `release-notes.md`, curated and user-facing.
-- Cleanup: deferred until finalization and rollout verification complete.
+- Stable GitHub release: [v1.4.52](https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.52).
+- Release state: published, non-draft, non-prerelease.
+- Published at: `2026-08-15T12:13:21Z`.
+- Target commit: `3572bb1fe23dde7056a6b5b5c817a9b78d1ddb4c`.
+- Published assets: 21.
+- Desktop binaries: macOS ARM64/x64 DMG+ZIP+blockmaps, Linux x64/ARM64 AppImages, and Windows x64 installer.
+- Updater metadata: `latest-mac.yml`, `latest-linux.yml`, `latest-linux-arm64.yml`, and `latest.yml`; downloaded copies all declare version `1.4.52`.
+- Android: `AutoByteus_personal_android-1.4.52-release.apk` plus SHA-256 sidecar.
+- Managed messaging: runtime tarball, metadata, SHA-256 sidecar, and `release-manifest.json` for `v1.4.52`.
+- Primary released Apple Silicon DMG: [AutoByteus_personal_macos-arm64-1.4.52.dmg](https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.52/AutoByteus_personal_macos-arm64-1.4.52.dmg), 434,308,016 bytes.
+- Docker Hub: `autobyteus/autobyteus-server:1.4.52` and `:latest` both resolve OCI index digest `sha256:d54f975b10dc2929d6770063f125915c342a3f8cc2ff63ad193e4c6a201a0223`, containing `linux/amd64` and `linux/arm64` manifests.
+- Detailed evidence: `release-v1.4.52-rollout-verification.log` ending `ROLLOUT VERIFICATION RESULT: PASS`.
 
-Final execution details and workflow results will replace this in-progress state after the release completes.
+The unsigned local DR-006 version `1.4.51` package was a user-test artifact only and was not published. The release assets were rebuilt by the release workflows under their configured signing, architecture, updater, and package-validation gates.
 
-## Rollback / Safety Boundary
+## Documentation And Migration
 
-No remote ticket or target state changed. The only pre-verification commits are the allowed local reviewed-state checkpoint and latest-base merge. The generated DMG/ZIP is ignored local output and has not been published. DR-001 through DR-005 artifacts and hashes are historical; only DR-006 identifies the current version `1.4.51` package.
+- DR-006's five durable memory/runtime/architecture document updates are finalized on `personal`.
+- No additional long-lived documentation change was required for the version bump itself.
+- Existing persisted data remains `Directly Usable — No Migration`.
+- Curated functional release notes are stored at `tickets/done/compaction-response-robustness/release-notes.md` and `.github/release-notes/release-notes.md` in the tagged revision.
 
-## Residual Risks
+## Cleanup
 
-Managed-provider wording/accounting variability remains external. The optional correction sibling is directly proven by deterministic coverage but was not naturally exercised in the latest live run, which accepted on the initial sibling. Three unrelated historical broad-E2E/test-typing debts remain outside this ticket. The local package is deliberately unsigned/unnotarized.
+- Dedicated ticket worktree: removed.
+- Local ticket branch `codex/compaction-response-robustness`: deleted after merge.
+- Remote ticket branch: deleted after target push.
+- Dedicated temporary release clone and external capture log: removed after evidence was copied into the archived ticket.
+- Generated local DR-006 Electron package: removed with the dedicated ticket worktree.
+- Pre-existing untracked `.article-work/` in the primary `personal` worktree: left untouched and excluded from all commits.
+
+Cleanup result: `Pass`.
+
+## Rollback And Residuals
+
+- Repository rollback point: merge parent before `b74b074e1`; release/tag point is immutable `3572bb1fe`.
+- Desktop/mobile rollback: retain or reinstall the prior stable GitHub release if needed; no rollback was requested or executed.
+- Server rollback: pin the prior immutable version tag instead of `latest` if rollback is required.
+- Managed-provider wording/accounting variability remains external.
+- The optional correction sibling is proven deterministically but was not naturally exercised in the latest managed DeepSeek run, which accepted the initial sibling.
+- Three unrelated historical broad-E2E/test-typing debts remain outside this ticket.
 
 ## Final Status
 
-`Accepted / authorized — user verification is complete; finalization and stable release v1.4.52 are in progress.`
+`Pass — compaction-response-robustness is archived and merged to personal; v1.4.52 is published with successful desktop, Android, iOS/App Store Connect, messaging-gateway, and Docker workflows; publication metadata/assets and multi-architecture Docker tags are verified; cleanup is complete.`
