@@ -17,15 +17,15 @@
 
 | Doc Path | Why It Was Reviewed | Result (`Updated`/`No change`/`Needs follow-up`) | Notes |
 | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-release-linux-macos-arm64/autobyteus-web/docs/github-actions-tag-build.md` | Desktop release trigger, target matrix, publish patterns, signing, and local commands | Updated | Updated by the implementation and current at the integrated state. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-release-linux-macos-arm64/README.md` | Repository release workflow and version/tag policy | No change | Already describes `scripts/desktop-release.sh`, version synchronization, and tag-triggered workflows. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-release-linux-macos-arm64/autobyteus-web/README.md` | Local Electron build and integrated-server packaging commands | No change | Already documents macOS build commands and `electron-dist` output. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/github-actions-tag-build.md` | Desktop release trigger, target matrix, publish patterns, signing, and local commands | Updated | Updated by the implementation and current at the integrated state. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/README.md` | Repository release workflow and version/tag policy | No change | Already describes `scripts/desktop-release.sh`, version synchronization, and tag-triggered workflows. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/README.md` | Local Electron build and integrated-server packaging commands | No change | Already documents macOS build commands and `electron-dist` output. |
 
 ## Docs Updated
 
 | Doc Path | Type Of Update | What Changed | Why |
 | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-release-linux-macos-arm64/autobyteus-web/docs/github-actions-tag-build.md` | Release operations documentation | Current workflow path, tag/manual triggers, personal flavor, explicit target architecture, artifact patterns, updater metadata, signing/notarization behavior, and local validation commands | Aligns operator guidance with the implemented CI workflow and successful tagged evidence. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/github-actions-tag-build.md` | Release operations documentation | Current workflow path, tag/manual triggers, personal flavor, explicit target architecture, artifact patterns, updater metadata, signing/notarization behavior, and local validation commands | Aligns operator guidance with the implemented CI workflow and successful tagged evidence. |
 
 The documentation update was already part of the reviewed implementation range; no additional delivery-owned wording change was required after the integrated-state refresh.
 
@@ -33,16 +33,16 @@ The documentation update was already part of the reviewed implementation range; 
 
 | Topic | What Future Readers Need To Understand | Source Ticket Artifact(s) | Target Long-Lived Doc |
 | --- | --- | --- | --- |
-| Deterministic personal release identity | CI must set `AUTOBYTEUS_BUILD_FLAVOR=personal`; artifact names must use the personal flavor. | `/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-release-linux-macos-arm64/autobyteus-server-ts/tickets/done/desktop-release-linux-macos-arm64/requirements.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-release-linux-macos-arm64/autobyteus-server-ts/tickets/done/desktop-release-linux-macos-arm64/aggregated-validation.md` | `/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-release-linux-macos-arm64/autobyteus-web/docs/github-actions-tag-build.md` |
-| Explicit architecture selection | macOS ARM64 and Linux targets are selected explicitly in release jobs and checked against artifact names/metadata. | `/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-release-linux-macos-arm64/autobyteus-server-ts/tickets/done/desktop-release-linux-macos-arm64/future-state-runtime-call-stack.md` | `/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-release-linux-macos-arm64/autobyteus-web/docs/github-actions-tag-build.md` |
-| Release-time artifact readiness | A shared tag release may become visible before all desktop updater assets finish uploading; operators must verify the desktop workflow and metadata before treating updater failures as product failures. | `/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-release-linux-macos-arm64/autobyteus-server-ts/tickets/done/desktop-release-linux-macos-arm64/aggregated-validation.md` | `/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-release-linux-macos-arm64/autobyteus-web/docs/github-actions-tag-build.md` |
+| Deterministic personal release identity | CI must set `AUTOBYTEUS_BUILD_FLAVOR=personal`; artifact names must use the personal flavor. | `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tickets/done/desktop-release-linux-macos-arm64/requirements.md`, `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tickets/done/desktop-release-linux-macos-arm64/aggregated-validation.md` | `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/github-actions-tag-build.md` |
+| Explicit architecture selection | macOS ARM64 and Linux targets are selected explicitly in release jobs and checked against artifact names/metadata. | `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tickets/done/desktop-release-linux-macos-arm64/future-state-runtime-call-stack.md` | `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/github-actions-tag-build.md` |
+| Release-time artifact readiness | A shared tag release may become visible before all desktop updater assets finish uploading; operators must verify the desktop workflow and metadata before treating updater failures as product failures. | `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tickets/done/desktop-release-linux-macos-arm64/aggregated-validation.md` | `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/github-actions-tag-build.md` |
 
 ## Removed / Replaced Components Recorded
 
 | Old Component / Path / Concept | What Replaced It | Where The New Truth Is Documented |
 | --- | --- | --- |
-| Stale `desktop-tag-build.yml` / external release-repository guidance | `.github/workflows/release-desktop.yml` in this repository with current `action-gh-release` publication | `/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-release-linux-macos-arm64/autobyteus-web/docs/github-actions-tag-build.md` |
-| Detached-head flavor/architecture inference | Explicit `AUTOBYTEUS_BUILD_FLAVOR=personal` and `--arm64`/platform-specific build entrypoints | `/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-release-linux-macos-arm64/autobyteus-web/docs/github-actions-tag-build.md` |
+| Stale `desktop-tag-build.yml` / external release-repository guidance | `.github/workflows/release-desktop.yml` in this repository with current `action-gh-release` publication | `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/github-actions-tag-build.md` |
+| Detached-head flavor/architecture inference | Explicit `AUTOBYTEUS_BUILD_FLAVOR=personal` and `--arm64`/platform-specific build entrypoints | `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/github-actions-tag-build.md` |
 
 ## No-Impact Decision (Use Only If Truly No Docs Changes Are Needed)
 
