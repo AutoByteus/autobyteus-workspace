@@ -42,7 +42,7 @@ export class ContextFileLayout {
       "team-runs",
       owner.teamDraftId,
       "members",
-      owner.memberAddress,
+      encodeURIComponent(owner.memberAddress),
       "context_files",
     );
   }

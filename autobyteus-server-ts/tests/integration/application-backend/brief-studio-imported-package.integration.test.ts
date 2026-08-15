@@ -45,7 +45,6 @@ import { registerApplicationBackendRoutes } from "../../../src/api/rest/applicat
 import { registerApplicationAvailabilityRoutes } from "../../../src/api/rest/application-availability.js";
 import { registerApplicationBackendNotificationWebsocket } from "../../../src/api/websocket/application-backend-notifications.js";
 import { AgentRunMetadataStore } from "../../../src/run-history/store/agent-run-metadata-store.js";
-import type { TeamMemberSelector } from "../../../src/agent-team-execution/domain/team-run-member-identity.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { PublishedArtifactProjectionStore } from "../../../src/services/published-artifacts/published-artifact-projection-store.js";
 import { PublishedArtifactSnapshotStore } from "../../../src/services/published-artifacts/published-artifact-snapshot-store.js";
@@ -329,7 +328,7 @@ const persistPublishedArtifactForRun = async (input: {
 
   await metadataStore.writeMetadata(input.runId, {
     runId: input.runId,
-    agentDefinitionId: `test-${input.producer.memberRouteKey}`,
+    agentDefinitionId: `test-${input.producer.agentRunId}`,
     workspaceRootPath: path.join(input.fixtureRoot, "workspace"),
     memoryDir,
     llmModelIdentifier: "gpt-test",
@@ -362,8 +361,6 @@ const persistPublishedArtifactForRun = async (input: {
 const buildDirectArtifactEvent = (input: {
   binding: ApplicationAgentBinding | ApplicationAgentTeamBinding;
   runId: string;
-  memberRouteKey: string;
-  memberName: string;
   displayName: string;
   path: string;
   revisionId: string;
@@ -379,12 +376,9 @@ const buildDirectArtifactEvent = (input: {
   publishedAt: input.publishedAt,
   binding: cloneBinding(input.binding),
   producer: {
-    runId: input.runId,
-    memberRouteKey: input.memberRouteKey,
-    memberName: input.memberName,
+    agentRunId: input.runId,
     displayName: input.displayName,
     runtimeKind: "AGENT_TEAM_MEMBER",
-    teamPath: [],
   },
 });
 
@@ -408,7 +402,7 @@ describe("Brief Studio imported package integration", () => {
   let latestTeamRunId: string | null;
   let executionContextByRouteKey: Map<string, ApplicationExecutionContext>;
   let memberRunIdByRouteKey: Map<string, string>;
-  let teamRunById: Map<string, { postMessage: (message: unknown, target: TeamMemberSelector | null) => Promise<{ accepted: boolean; message?: string | null }> }>;
+  let teamRunById: Map<string, { postMessage: (message: unknown, target: string | null) => Promise<{ accepted: boolean; message?: string | null }> }>;
   let lifecycleListenersByRunId: Map<string, (event: {
     runtimeSubject: "TEAM_RUN";
     runId: string;
@@ -547,7 +541,9 @@ describe("Brief Studio imported package integration", () => {
 
     const fakeLifecycleGateway = {
       observeBoundRun: vi.fn(async (
-        descriptor: { runtimeSubject: "TEAM_RUN"; runId: string },
+        descriptor:
+          | { runtimeSubject: "TEAM_RUN"; teamRunId: string }
+          | { runtimeSubject: "AGENT_RUN"; agentRunId: string },
         listener: (event: {
           runtimeSubject: "TEAM_RUN";
           runId: string;
@@ -556,73 +552,95 @@ describe("Brief Studio imported package integration", () => {
           errorMessage?: string | null;
         }) => void,
       ) => {
-        lifecycleListenersByRunId.set(descriptor.runId, listener);
+        const runId = descriptor.runtimeSubject === "TEAM_RUN"
+          ? descriptor.teamRunId
+          : descriptor.agentRunId;
+        lifecycleListenersByRunId.set(runId, listener);
         listener({
           runtimeSubject: descriptor.runtimeSubject,
-          runId: descriptor.runId,
+          runId,
           phase: "ATTACHED",
           occurredAt: new Date().toISOString(),
         });
         if (onObserveBoundRun) {
-          await onObserveBoundRun(descriptor);
+          await onObserveBoundRun({ runtimeSubject: descriptor.runtimeSubject, runId });
         }
         return () => {
-          lifecycleListenersByRunId.delete(descriptor.runId);
+          lifecycleListenersByRunId.delete(runId);
         };
       }),
     };
 
     const fakeTeamRunService = {
+      allocateTeamRunId: vi.fn(async () => {
+        const runIndex = (latestTeamRunId ? Number(latestTeamRunId.split("-").pop()) : 0) + 1;
+        latestTeamRunId = `team-run-${runIndex}`;
+        return latestTeamRunId;
+      }),
       buildMemberConfigsFromLaunchPreset: vi.fn(async ({ launchPreset }: { launchPreset: Record<string, unknown> }) => ([
         {
-          memberName: "researcher",
-          memberRouteKey: "researcher",
+          memberAddress: "/researcher",
           agentDefinitionId: "brief-studio-team/researcher",
           llmModelIdentifier: launchPreset.llmModelIdentifier,
           autoExecuteTools: Boolean(launchPreset.autoExecuteTools),
           skillAccessMode: launchPreset.skillAccessMode ?? "PRELOADED_ONLY",
-          workspaceId: null,
           workspaceRootPath: launchPreset.workspaceRootPath,
           llmConfig: launchPreset.llmConfig ?? null,
           runtimeKind: launchPreset.runtimeKind ?? "AUTOBYTEUS",
         },
         {
-          memberName: "writer",
-          memberRouteKey: "writer",
+          memberAddress: "/writer",
           agentDefinitionId: "brief-studio-team/writer",
           llmModelIdentifier: launchPreset.llmModelIdentifier,
           autoExecuteTools: Boolean(launchPreset.autoExecuteTools),
           skillAccessMode: launchPreset.skillAccessMode ?? "PRELOADED_ONLY",
-          workspaceId: null,
           workspaceRootPath: launchPreset.workspaceRootPath,
           llmConfig: launchPreset.llmConfig ?? null,
           runtimeKind: launchPreset.runtimeKind ?? "AUTOBYTEUS",
         },
       ])),
-      createTeamRun: vi.fn(async ({ memberConfigs }: { memberConfigs: Array<Record<string, unknown>> }) => {
-        const runIndex = (latestTeamRunId ? Number(latestTeamRunId.split("-").pop()) : 0) + 1;
-        latestTeamRunId = `team-run-${runIndex}`;
+      createTeamRun: vi.fn(async ({
+        memberConfigs,
+        teamRunId,
+        applicationBinding,
+      }: {
+        memberConfigs: Array<Record<string, unknown>>;
+        teamRunId: string;
+        applicationBinding: { applicationId: string; bindingId: string };
+      }) => {
+        latestTeamRunId = teamRunId;
         const runtimeMemberConfigs = memberConfigs.map((memberConfig) => {
-          const memberRouteKey = String(memberConfig.memberRouteKey ?? memberConfig.memberName);
+          const memberAddress = String(memberConfig.memberAddress);
+          const memberRouteKey = memberAddress.slice(1);
           const memberRunId = `${latestTeamRunId}::${memberRouteKey}`;
           executionContextByRouteKey.set(
             memberRouteKey,
-            structuredClone(memberConfig.applicationExecutionContext as ApplicationExecutionContext),
+            {
+              applicationId: applicationBinding.applicationId,
+              bindingId: applicationBinding.bindingId,
+              producer: {
+                agentRunId: memberRunId,
+                displayName: memberRouteKey,
+                runtimeKind: "AGENT_TEAM_MEMBER",
+              },
+            },
           );
           memberRunIdByRouteKey.set(memberRouteKey, memberRunId);
           return {
-            ...memberConfig,
-            memberRunId,
+            kind: "configured_agent",
+            address: memberAddress,
+            agentRunId: memberRunId,
           };
         });
         teamRunById.set(latestTeamRunId, {
           postMessage: async () => ({ accepted: true }),
         });
         return {
-          runId: latestTeamRunId,
-          config: {
-            memberConfigs: runtimeMemberConfigs,
-          },
+          teamRunId: latestTeamRunId,
+          getExecutionTreeSnapshot: () => ({
+            rootTeam: { members: runtimeMemberConfigs },
+          }),
+          postMessage: async () => ({ accepted: true }),
         };
       }),
       terminateTeamRun: vi.fn(async () => undefined),
@@ -643,7 +661,6 @@ describe("Brief Studio imported package integration", () => {
       bindingStore,
       lookupStore,
       teamRunService: fakeTeamRunService as never,
-      agentTeamDefinitionService: fakeTeamDefinitionService as never,
       agentDefinitionService: fakeAgentDefinitionService as never,
     });
 
@@ -1110,7 +1127,7 @@ describe("Brief Studio imported package integration", () => {
         path: string;
         description: string | null;
         body: string;
-        producerMemberRouteKey: string;
+        producerMemberAddress: string;
         updatedAt: string;
       }>;
       reviewNotes: unknown[];
@@ -1132,7 +1149,7 @@ describe("Brief Studio imported package integration", () => {
               path
               description
               body
-              producerMemberRouteKey
+              producerMemberAddress
               updatedAt
             }
             reviewNotes { noteId }
@@ -1164,7 +1181,7 @@ describe("Brief Studio imported package integration", () => {
           path: researcherPublishedPath,
           description: "Audience and sources collected.",
           body: "Research summary",
-          producerMemberRouteKey: "researcher",
+          producerMemberAddress: "/researcher",
           updatedAt: "2026-04-19T10:41:00.000Z",
         }),
         expect.objectContaining({
@@ -1174,7 +1191,7 @@ describe("Brief Studio imported package integration", () => {
           path: writerPublishedPath,
           description: "Draft ready for review.",
           body: "Final review-ready brief body.",
-          producerMemberRouteKey: "writer",
+          producerMemberAddress: "/writer",
           updatedAt: "2026-04-19T10:42:00.000Z",
         }),
       ],
@@ -1490,7 +1507,7 @@ describe("Brief Studio imported package integration", () => {
           path: earlyFinalPublishedPath,
           description: "Projected before launch completion.",
           body: "Projected before launch completion.",
-          producerMemberRouteKey: "writer",
+          producerMemberAddress: "/writer",
           updatedAt: "2026-04-19T10:51:00.000Z",
         }),
       ],
@@ -1595,15 +1612,13 @@ describe("Brief Studio imported package integration", () => {
       },
       runtime: {
         subject: "TEAM_RUN",
-        runId: "team-run-unexpected-1",
+        teamRunId: "team-run-unexpected-1",
         definitionId: "bundle-team__pkg__brief-studio__brief-studio-team",
         members: [
           {
-            memberName: "unexpected-member",
-            memberRouteKey: "unexpected-member",
+            memberAddress: "/unexpected-member",
             displayName: "Unexpected Member",
-            teamPath: [],
-            runId: "team-run-unexpected-1::unexpected-member",
+            agentRunId: "team-run-unexpected-1::unexpected-member",
             runtimeKind: "AGENT_TEAM_MEMBER",
           },
         ],
@@ -1621,8 +1636,6 @@ describe("Brief Studio imported package integration", () => {
           event: buildDirectArtifactEvent({
             binding,
             runId: "team-run-unexpected-1::unexpected-member",
-            memberRouteKey: "unexpected-member",
-            memberName: "unexpected-member",
             displayName: "Unexpected Member",
             path: "brief-studio/research.md",
             revisionId: "unexpected-producer-event",
@@ -1631,7 +1644,7 @@ describe("Brief Studio imported package integration", () => {
           }),
         },
       ),
-    ).rejects.toThrow("Unexpected Brief Studio artifact producer 'unexpected-member'");
+    ).rejects.toThrow("Unexpected Brief Studio artifact producer '/unexpected-member'");
 
     const db = new DatabaseSync(layout.appDatabasePath);
     try {

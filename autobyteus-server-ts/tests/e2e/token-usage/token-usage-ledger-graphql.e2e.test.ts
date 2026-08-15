@@ -10,7 +10,6 @@ import { buildGraphqlSchema } from '../../../src/api/graphql/schema.js';
 import { createTokenUsageUpdatedPayload } from '../../../src/agent-execution/domain/agent-run-token-usage.js';
 import { TokenUsageLedgerStore } from '../../../src/token-usage/providers/token-usage-ledger-store.js';
 import type { TokenUsageUpdatedPayload } from '../../../src/agent-execution/domain/agent-run-token-usage.js';
-import type { TokenUsageExecutionAddress } from '../../../src/token-usage/domain/execution-address.js';
 import { appConfigProvider } from '../../../src/config/app-config-provider.js';
 
 const store = new TokenUsageLedgerStore();
@@ -20,9 +19,6 @@ const createdTeamRunIds = new Set<string>();
 const buildEvent = (input: {
   runId: string;
   rootTeamRunId?: string | null;
-  memberRouteKey?: string | null;
-  executionAddress?: TokenUsageExecutionAddress | null;
-  taskAgentRunId?: string | null;
   taskId?: string | null;
   observedAt: string;
   inputTokenSemantic?: TokenUsageUpdatedPayload['input_token_semantic'];
@@ -84,10 +80,6 @@ const buildEvent = (input: {
       idempotency_key: `graphql-ledger:${randomUUID()}`,
       observed_at: input.observedAt,
       root_team_run_id: input.rootTeamRunId ?? null,
-      execution_address: input.executionAddress ?? null,
-      member_agent_run_id: input.rootTeamRunId ? input.runId : null,
-      member_route_key: input.memberRouteKey ?? null,
-      task_agent_run_id: input.taskAgentRunId ?? null,
       task_id: input.taskId ?? null,
       runtime_kind: input.runtimeKind ?? 'codex_app_server',
       ingestion_kind: input.ingestionKind ?? 'codex_thread_token_usage',
@@ -134,7 +126,7 @@ const buildEvent = (input: {
       agent_name: input.agentName ?? null,
       run_summary: input.runSummary ?? null,
       run_created_at: input.runCreatedAt ?? null,
-      member_name: input.memberName ?? null,
+      member_display_name: input.memberName ?? null,
     },
   });
 };
@@ -206,8 +198,6 @@ describe('token usage ledger GraphQL projections', () => {
     await store.appendTokenUsageEvent(buildEvent({
       runId: memberRunId,
       rootTeamRunId: teamRunId,
-      memberRouteKey: 'worker',
-      executionAddress: { segments: [{ kind: 'member', memberRouteKey: 'worker' }] },
       observedAt: '2026-06-24T10:02:00.000Z',
       grossInputTokens: 30,
       standardInputTokens: 30,
@@ -266,12 +256,9 @@ describe('token usage ledger GraphQL projections', () => {
           missingPriceDimensions
           usageReportCount
         }
-        getTeamMemberTokenUsageSummary(teamRunId: $teamRunId, memberAgentRunId: $memberRunId) {
+        getTeamMemberTokenUsageSummary(teamRunId: $teamRunId, agentRunId: $memberRunId) {
           runId
           rootTeamRunId
-          executionAddress
-          memberAgentRunId
-          memberRouteKey
           grossInputTokens
           totalTokens
           reasoningOutputTokens
@@ -356,9 +343,6 @@ describe('token usage ledger GraphQL projections', () => {
     expect(result.getTeamMemberTokenUsageSummary).toMatchObject({
       runId: memberRunId,
       rootTeamRunId: teamRunId,
-      executionAddress: { segments: [{ kind: 'member', memberRouteKey: 'worker' }] },
-      memberAgentRunId: memberRunId,
-      memberRouteKey: 'worker',
       grossInputTokens: 30,
       totalTokens: 40,
       reasoningOutputTokens: 3,
@@ -513,15 +497,13 @@ describe('token usage ledger GraphQL projections', () => {
     ]));
   });
 
-  it('returns recursive task statistics rows and runtime/model diagnostics without double counting team members', async () => {
+  it('returns run-owned task statistics rows and runtime/model diagnostics without double counting team members', async () => {
     const suffix = randomUUID();
     const olderTeamRunId = `graphql-task-team-older-${suffix}`;
     const newerTeamRunId = `graphql-task-team-newer-${suffix}`;
     const olderMemberRunId = `graphql-task-member-older-${suffix}`;
     const designerMemberRunId = `graphql-task-member-designer-${suffix}`;
     const builderMemberRunId = `graphql-task-member-builder-${suffix}`;
-    const taskTeamRunIdOne = `graphql-task-team-student-study-1-${suffix}`;
-    const taskTeamRunIdTwo = `graphql-task-team-student-study-2-${suffix}`;
     const studentOneRunId = `graphql-task-member-student-one-${suffix}`;
     const studentTwoRunId = `graphql-task-member-student-two-${suffix}`;
     const repeatedStudentRunId = `graphql-task-member-student-repeat-${suffix}`;
@@ -535,7 +517,6 @@ describe('token usage ledger GraphQL projections', () => {
     await store.appendTokenUsageEvent(buildEvent({
       runId: olderMemberRunId,
       rootTeamRunId: olderTeamRunId,
-      memberRouteKey: 'legacy_designer',
       observedAt: '2041-07-01T10:00:00.000Z',
       grossInputTokens: 20,
       outputTokens: 5,
@@ -571,8 +552,6 @@ describe('token usage ledger GraphQL projections', () => {
     await store.appendTokenUsageEvent(buildEvent({
       runId: designerMemberRunId,
       rootTeamRunId: newerTeamRunId,
-      memberRouteKey: 'designer',
-      executionAddress: { segments: [{ kind: 'member', memberRouteKey: 'designer' }] },
       observedAt: '2041-07-01T11:00:00.000Z',
       grossInputTokens: 100,
       standardInputTokens: 60,
@@ -596,8 +575,6 @@ describe('token usage ledger GraphQL projections', () => {
     await store.appendTokenUsageEvent(buildEvent({
       runId: builderMemberRunId,
       rootTeamRunId: newerTeamRunId,
-      memberRouteKey: 'builder',
-      executionAddress: { segments: [{ kind: 'member', memberRouteKey: 'builder' }] },
       observedAt: '2041-07-01T11:05:00.000Z',
       grossInputTokens: 60,
       standardInputTokens: 60,
@@ -619,14 +596,6 @@ describe('token usage ledger GraphQL projections', () => {
     await store.appendTokenUsageEvent(buildEvent({
       runId: studentOneRunId,
       rootTeamRunId: newerTeamRunId,
-      memberRouteKey: 'student_one',
-      executionAddress: {
-        segments: [
-          { kind: 'member', memberRouteKey: 'StudentStudyGroup' },
-          { kind: 'task_team', taskTeamRunId: taskTeamRunIdOne },
-          { kind: 'member', memberRouteKey: 'student_one' },
-        ],
-      },
       observedAt: '2041-07-01T11:06:00.000Z',
       grossInputTokens: 30,
       standardInputTokens: 30,
@@ -644,14 +613,6 @@ describe('token usage ledger GraphQL projections', () => {
     await store.appendTokenUsageEvent(buildEvent({
       runId: studentTwoRunId,
       rootTeamRunId: newerTeamRunId,
-      memberRouteKey: 'student_two',
-      executionAddress: {
-        segments: [
-          { kind: 'member', memberRouteKey: 'StudentStudyGroup' },
-          { kind: 'task_team', taskTeamRunId: taskTeamRunIdOne },
-          { kind: 'member', memberRouteKey: 'student_two' },
-        ],
-      },
       observedAt: '2041-07-01T11:07:00.000Z',
       grossInputTokens: 40,
       standardInputTokens: 40,
@@ -669,17 +630,7 @@ describe('token usage ledger GraphQL projections', () => {
     await store.appendTokenUsageEvent(buildEvent({
       runId: nestedTaskAgentRunId,
       rootTeamRunId: newerTeamRunId,
-      memberRouteKey: 'student_one',
-      taskAgentRunId: nestedTaskAgentRunId,
       taskId: `task-nested-agent-${suffix}`,
-      executionAddress: {
-        segments: [
-          { kind: 'member', memberRouteKey: 'StudentStudyGroup' },
-          { kind: 'task_team', taskTeamRunId: taskTeamRunIdOne },
-          { kind: 'member', memberRouteKey: 'student_one' },
-          { kind: 'task_agent', taskAgentRunId: nestedTaskAgentRunId },
-        ],
-      },
       observedAt: '2041-07-01T11:08:00.000Z',
       grossInputTokens: 20,
       standardInputTokens: 20,
@@ -697,14 +648,6 @@ describe('token usage ledger GraphQL projections', () => {
     await store.appendTokenUsageEvent(buildEvent({
       runId: repeatedStudentRunId,
       rootTeamRunId: newerTeamRunId,
-      memberRouteKey: 'student_one',
-      executionAddress: {
-        segments: [
-          { kind: 'member', memberRouteKey: 'StudentStudyGroup' },
-          { kind: 'task_team', taskTeamRunId: taskTeamRunIdTwo },
-          { kind: 'member', memberRouteKey: 'student_one' },
-        ],
-      },
       observedAt: '2041-07-01T11:11:00.000Z',
       grossInputTokens: 15,
       standardInputTokens: 15,
@@ -722,15 +665,7 @@ describe('token usage ledger GraphQL projections', () => {
     await store.appendTokenUsageEvent(buildEvent({
       runId: codexTaskAgentRunIdOne,
       rootTeamRunId: newerTeamRunId,
-      memberRouteKey: 'Codex',
-      taskAgentRunId: codexTaskAgentRunIdOne,
       taskId: `task-codex-agent-1-${suffix}`,
-      executionAddress: {
-        segments: [
-          { kind: 'member', memberRouteKey: 'Codex' },
-          { kind: 'task_agent', taskAgentRunId: codexTaskAgentRunIdOne },
-        ],
-      },
       observedAt: '2041-07-01T11:12:00.000Z',
       grossInputTokens: 50,
       standardInputTokens: 50,
@@ -748,15 +683,7 @@ describe('token usage ledger GraphQL projections', () => {
     await store.appendTokenUsageEvent(buildEvent({
       runId: codexTaskAgentRunIdTwo,
       rootTeamRunId: newerTeamRunId,
-      memberRouteKey: 'Codex',
-      taskAgentRunId: codexTaskAgentRunIdTwo,
       taskId: `task-codex-agent-2-${suffix}`,
-      executionAddress: {
-        segments: [
-          { kind: 'member', memberRouteKey: 'Codex' },
-          { kind: 'task_agent', taskAgentRunId: codexTaskAgentRunIdTwo },
-        ],
-      },
       observedAt: '2041-07-01T11:13:00.000Z',
       grossInputTokens: 25,
       standardInputTokens: 25,
@@ -795,12 +722,7 @@ describe('token usage ledger GraphQL projections', () => {
         rowKind
         runId
         rootTeamRunId
-        memberRouteKey
-        memberAgentRunId
-        taskAgentRunId
-        taskTeamRunId
         taskId
-        executionAddress
         displayName
         summary
         createdAt
@@ -850,12 +772,7 @@ describe('token usage ledger GraphQL projections', () => {
       rowKind: string;
       runId: string | null;
       rootTeamRunId: string | null;
-      memberRouteKey: string | null;
-      memberAgentRunId: string | null;
-      taskAgentRunId: string | null;
-      taskTeamRunId: string | null;
       taskId: string | null;
-      executionAddress: TokenUsageExecutionAddress | null;
       displayName: string;
       models: string[];
       runtimeKinds: string[];
@@ -874,7 +791,12 @@ describe('token usage ledger GraphQL projections', () => {
 
     const taskRowFieldNames = result.taskRowType.fields.map((field) => field.name);
     expect(taskRowFieldNames).toContain('children');
-    expect(taskRowFieldNames).toContain('executionAddress');
+    expect(taskRowFieldNames).toContain('runId');
+    expect(taskRowFieldNames).toContain('taskId');
+    expect(taskRowFieldNames).not.toContain('executionAddress');
+    expect(taskRowFieldNames).not.toContain('memberRouteKey');
+    expect(taskRowFieldNames).not.toContain('memberAgentRunId');
+    expect(taskRowFieldNames).not.toContain('taskTeamRunId');
     expect(taskRowFieldNames).not.toContain('members');
     expect(taskRowFieldNames).not.toContain('memberPath');
 
@@ -886,8 +808,6 @@ describe('token usage ledger GraphQL projections', () => {
     ]);
     expect(rows.some((row) => row.rowId === `agent:${designerMemberRunId}`)).toBe(false);
     expect(rows.some((row) => row.rowId === `agent:${builderMemberRunId}`)).toBe(false);
-    expect(rows.some((row) => row.rowId === `team:${taskTeamRunIdOne}`)).toBe(false);
-    expect(rows.some((row) => row.rowId === `team:${taskTeamRunIdTwo}`)).toBe(false);
     expect(rows.some((row) => row.rowId === `agent:${codexTaskAgentRunIdOne}`)).toBe(false);
     expect(rows.some((row) => row.rowId === `agent:${codexTaskAgentRunIdTwo}`)).toBe(false);
 
@@ -920,14 +840,15 @@ describe('token usage ledger GraphQL projections', () => {
     expect(newerTeam.aggregate.cacheReadInputTokenRate).toBeCloseTo(40 / 340, 8);
     expect(newerTeam.aggregate.estimatedApiTotalCost).toBeCloseTo(3.76, 10);
 
-    const directDesigner = newerTeam.children.find((row) => row.memberAgentRunId === designerMemberRunId)!;
+    expect(newerTeam.children).toHaveLength(8);
+    expect(new Set(newerTeam.children.map((row) => row.runId)).size).toBe(8);
+    expect(newerTeam.children.every((row) => row.rowKind === 'MEMBER_RUN' && row.children.length === 0)).toBe(true);
+
+    const directDesigner = newerTeam.children.find((row) => row.runId === designerMemberRunId)!;
     expect(directDesigner).toMatchObject({
       rowKind: 'MEMBER_RUN',
       runId: designerMemberRunId,
-      memberRouteKey: 'designer',
       displayName: 'GraphQL Designer',
-      executionAddress: { segments: [{ kind: 'member', memberRouteKey: 'designer' }] },
-      models: ['gpt-shared'],
       runtimeKinds: ['codex_app_server'],
       aggregate: expect.objectContaining({
         grossInputTokens: 100,
@@ -936,14 +857,11 @@ describe('token usage ledger GraphQL projections', () => {
         apiCostStatus: 'estimated',
       }),
     });
-    const directBuilder = newerTeam.children.find((row) => row.memberAgentRunId === builderMemberRunId)!;
+    const directBuilder = newerTeam.children.find((row) => row.runId === builderMemberRunId)!;
     expect(directBuilder).toMatchObject({
       rowKind: 'MEMBER_RUN',
       runId: builderMemberRunId,
-      memberRouteKey: 'builder',
       displayName: 'GraphQL Builder',
-      executionAddress: { segments: [{ kind: 'member', memberRouteKey: 'builder' }] },
-      runtimeKinds: ['autobyteus'],
       aggregate: expect.objectContaining({
         grossInputTokens: 60,
         outputTokens: 8,
@@ -952,75 +870,38 @@ describe('token usage ledger GraphQL projections', () => {
       }),
     });
 
-    const taskTeamRows = newerTeam.children.filter((row) => row.rowKind === 'TASK_TEAM_RUN');
-    expect(taskTeamRows.map((row) => row.taskTeamRunId).sort()).toEqual([taskTeamRunIdOne, taskTeamRunIdTwo].sort());
-    const firstTaskTeam = taskTeamRows.find((row) => row.taskTeamRunId === taskTeamRunIdOne)!;
-    expect(firstTaskTeam).toMatchObject({
-      runId: taskTeamRunIdOne,
-      memberRouteKey: 'StudentStudyGroup',
-      displayName: 'StudentStudyGroup',
-      executionAddress: {
-        segments: [
-          { kind: 'member', memberRouteKey: 'StudentStudyGroup' },
-          { kind: 'task_team', taskTeamRunId: taskTeamRunIdOne },
-        ],
-      },
-      aggregate: expect.objectContaining({
-        grossInputTokens: 90,
-        outputTokens: 9,
-        estimatedApiTotalCost: 0.99,
-      }),
-    });
-    expect(firstTaskTeam.children.map((row) => row.rowKind).sort()).toEqual(['MEMBER_RUN', 'MEMBER_RUN', 'TASK_AGENT_RUN']);
-    expect(firstTaskTeam.children.find((row) => row.memberRouteKey === 'student_two')).toMatchObject({
+    expect(newerTeam.children.find((row) => row.runId === studentTwoRunId)).toMatchObject({
       rowKind: 'MEMBER_RUN',
       runId: studentTwoRunId,
       displayName: 'student_two',
       aggregate: expect.objectContaining({ grossInputTokens: 40, estimatedApiTotalCost: 0.44 }),
     });
-    const nestedTaskAgent = firstTaskTeam.children.find((row) => row.rowKind === 'TASK_AGENT_RUN')!;
-    expect(nestedTaskAgent).toMatchObject({
+    expect(newerTeam.children.find((row) => row.runId === studentOneRunId)).toMatchObject({
+      rowKind: 'MEMBER_RUN',
+      displayName: 'student_one',
+      aggregate: expect.objectContaining({ grossInputTokens: 30, estimatedApiTotalCost: 0.33 }),
+    });
+    expect(newerTeam.children.find((row) => row.runId === nestedTaskAgentRunId)).toMatchObject({
+      rowKind: 'MEMBER_RUN',
       runId: nestedTaskAgentRunId,
-      memberRouteKey: 'student_one',
-      taskAgentRunId: nestedTaskAgentRunId,
       taskId: `task-nested-agent-${suffix}`,
-      executionAddress: {
-        segments: [
-          { kind: 'member', memberRouteKey: 'StudentStudyGroup' },
-          { kind: 'task_team', taskTeamRunId: taskTeamRunIdOne },
-          { kind: 'member', memberRouteKey: 'student_one' },
-          { kind: 'task_agent', taskAgentRunId: nestedTaskAgentRunId },
-        ],
-      },
       aggregate: expect.objectContaining({ grossInputTokens: 20, estimatedApiTotalCost: 0.22 }),
     });
-
-    const repeatedTaskTeam = taskTeamRows.find((row) => row.taskTeamRunId === taskTeamRunIdTwo)!;
-    expect(repeatedTaskTeam).toMatchObject({
-      runId: taskTeamRunIdTwo,
-      memberRouteKey: 'StudentStudyGroup',
-      displayName: 'StudentStudyGroup',
+    expect(newerTeam.children.find((row) => row.runId === repeatedStudentRunId)).toMatchObject({
+      rowKind: 'MEMBER_RUN',
+      displayName: 'student_one',
       aggregate: expect.objectContaining({ grossInputTokens: 15, estimatedApiTotalCost: 0.165 }),
     });
-    expect(repeatedTaskTeam.children).toHaveLength(1);
-    expect(repeatedTaskTeam.children[0]).toMatchObject({
+    expect(newerTeam.children.find((row) => row.runId === codexTaskAgentRunIdOne)).toMatchObject({
       rowKind: 'MEMBER_RUN',
-      runId: repeatedStudentRunId,
-      memberRouteKey: 'student_one',
-    });
-
-    const taskAgentRows = newerTeam.children.filter((row) => row.rowKind === 'TASK_AGENT_RUN');
-    expect(taskAgentRows.map((row) => row.taskAgentRunId).sort()).toEqual([codexTaskAgentRunIdOne, codexTaskAgentRunIdTwo].sort());
-    expect(taskAgentRows.find((row) => row.taskAgentRunId === codexTaskAgentRunIdOne)).toMatchObject({
       runId: codexTaskAgentRunIdOne,
-      memberRouteKey: 'Codex',
       displayName: 'Codex',
       taskId: `task-codex-agent-1-${suffix}`,
       aggregate: expect.objectContaining({ grossInputTokens: 50, estimatedApiTotalCost: 0.55 }),
     });
-    expect(taskAgentRows.find((row) => row.taskAgentRunId === codexTaskAgentRunIdTwo)).toMatchObject({
+    expect(newerTeam.children.find((row) => row.runId === codexTaskAgentRunIdTwo)).toMatchObject({
+      rowKind: 'MEMBER_RUN',
       runId: codexTaskAgentRunIdTwo,
-      memberRouteKey: 'Codex',
       displayName: 'Codex',
       taskId: `task-codex-agent-2-${suffix}`,
       aggregate: expect.objectContaining({ grossInputTokens: 25, estimatedApiTotalCost: 0.275 }),
@@ -1067,10 +948,8 @@ describe('token usage ledger GraphQL projections', () => {
     expect(olderTeam.children).toEqual([
       expect.objectContaining({
         rowKind: 'MEMBER_RUN',
-        memberRouteKey: 'legacy_designer',
-        memberAgentRunId: olderMemberRunId,
-        executionAddress: null,
-        displayName: 'legacy_designer',
+        runId: olderMemberRunId,
+        displayName: 'Unknown agent run',
         aggregate: expect.objectContaining({ grossInputTokens: 20 }),
       }),
     ]);
@@ -1183,8 +1062,6 @@ describe('token usage ledger GraphQL projections', () => {
       await store.appendTokenUsageEvent(buildEvent({
         runId: customMemberRunId,
         rootTeamRunId: teamRunId,
-        memberRouteKey: 'custom',
-        executionAddress: { segments: [{ kind: 'member', memberRouteKey: 'custom' }] },
         observedAt: '2046-07-30T10:04:00.000Z',
         grossInputTokens: 30,
         outputTokens: 3,
@@ -1195,12 +1072,11 @@ describe('token usage ledger GraphQL projections', () => {
         modelProvider: 'OPENAI_COMPATIBLE',
         providerName: 'alibaba_cloud',
         runtimeKind: 'autobyteus',
+        memberName: 'custom',
       }));
       await store.appendTokenUsageEvent(buildEvent({
         runId: builtInMemberRunId,
         rootTeamRunId: teamRunId,
-        memberRouteKey: 'built-in',
-        executionAddress: { segments: [{ kind: 'member', memberRouteKey: 'built-in' }] },
         observedAt: '2046-07-30T10:05:00.000Z',
         grossInputTokens: 20,
         outputTokens: 2,
@@ -1210,12 +1086,11 @@ describe('token usage ledger GraphQL projections', () => {
         modelValue: 'deepseek-v4-flash',
         modelProvider: 'DEEPSEEK',
         runtimeKind: 'autobyteus',
+        memberName: 'built-in',
       }));
       await store.appendTokenUsageEvent(buildEvent({
         runId: collisionMemberRunId,
         rootTeamRunId: teamRunId,
-        memberRouteKey: 'collision',
-        executionAddress: { segments: [{ kind: 'member', memberRouteKey: 'collision' }] },
         observedAt: '2046-07-30T10:06:00.000Z',
         grossInputTokens: 10,
         outputTokens: 1,
@@ -1225,6 +1100,7 @@ describe('token usage ledger GraphQL projections', () => {
         modelValue: 'qwen3.8-max-preview',
         modelProvider: 'OPENAI',
         runtimeKind: 'codex_app_server',
+        memberName: 'collision',
       }));
 
       const query = `
@@ -1244,7 +1120,8 @@ describe('token usage ledger GraphQL projections', () => {
               modelDisplayNames
               children {
                 rowId
-                memberRouteKey
+                runId
+                displayName
                 models
                 modelDisplayNames
               }
@@ -1270,7 +1147,8 @@ describe('token usage ledger GraphQL projections', () => {
             modelDisplayNames: string[];
             children: Array<{
               rowId: string;
-              memberRouteKey: string | null;
+              runId: string | null;
+              displayName: string;
               models: string[];
               modelDisplayNames: string[];
             }>;
@@ -1303,18 +1181,21 @@ describe('token usage ledger GraphQL projections', () => {
       expect(taskTeam).toBeDefined();
       expect(taskTeam?.models).toHaveLength(taskTeam?.modelDisplayNames.length ?? -1);
       expect(taskTeam?.children).toHaveLength(3);
-      const customMember = taskTeam?.children.find((row) => row.memberRouteKey === 'custom');
+      const customMember = taskTeam?.children.find((row) => row.runId === customMemberRunId);
       expect(customMember).toMatchObject({
+        displayName: 'custom',
         models: [customModel],
         modelDisplayNames: ['alibaba_cloud:qwen3.8-max-preview'],
       });
-      const builtInMember = taskTeam?.children.find((row) => row.memberRouteKey === 'built-in');
+      const builtInMember = taskTeam?.children.find((row) => row.runId === builtInMemberRunId);
       expect(builtInMember).toMatchObject({
+        displayName: 'built-in',
         models: ['deepseek-v4-flash'],
         modelDisplayNames: ['DeepSeek:deepseek-v4-flash'],
       });
-      const collisionMember = taskTeam?.children.find((row) => row.memberRouteKey === 'collision');
+      const collisionMember = taskTeam?.children.find((row) => row.runId === collisionMemberRunId);
       expect(collisionMember).toMatchObject({
+        displayName: 'collision',
         models: [customModel],
         modelDisplayNames: [customModel],
       });

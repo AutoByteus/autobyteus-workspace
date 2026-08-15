@@ -16,13 +16,33 @@ const expectedInstruction = (memberAddress: string): string => [
   "",
   "AgentTeams use filesystem-like logical addresses. Think of an AgentTeam as a directory, an Agent inside it as a file, and a nested AgentTeam as a subdirectory. This analogy describes the Team structure and addressing model only; the addresses are not real filesystem paths.",
   "",
+  "The root AgentTeam is represented by `/`. Its display or metadata name is not included in any address.",
+  "",
+  "The following example illustrates the address structure:",
+  "",
+  "/",
+  "├── /A              (Agent)",
+  "├── /B              (Agent)",
+  "└── /C              (nested AgentTeam)",
+  "    ├── /C/D         (Agent)",
+  "    └── /C/E         (Agent)",
+  "",
+  "In this example:",
+  "",
+  "- `/A` and `/B` are Agents directly under the root AgentTeam.",
+  "- `/C` is an AgentTeam directly under the root AgentTeam.",
+  "- `/C/D` and `/C/E` are Agents directly inside AgentTeam `/C`.",
+  "- Each `/` separates one parent-to-child level.",
+  "",
+  "The letters in this example are placeholders only. They do not identify available recipients. Use only an exact canonical address made available in your current AgentTeam context.",
+  "",
   "Every Agent and nested AgentTeam is identified by one canonical absolute address beginning with `/` at the root AgentTeam. Copy that exact address when a tool asks for `recipient_address`. Relative addresses, bare names, `../`, backslashes, and the structural root `/` itself are not valid recipients.",
   "",
   "Your Agent address is:",
   "",
   memberAddress,
   "",
-  "For example, `/requirements_engineering/requirements_lead` identifies one Agent, while `/requirements_engineering` identifies that AgentTeam. Sending a message to an AgentTeam address delivers it through that Team's configured coordinator.",
+  "Sending a message to an AgentTeam address delivers it through that AgentTeam's configured coordinator.",
   "",
   "## AgentTeam Collaboration",
   "",
@@ -89,6 +109,11 @@ describe("member collaboration instruction provider parity", () => {
       expect(prompt).not.toContain("recipient_name");
       expect(prompt).not.toContain("memberPath");
       expect(prompt).not.toContain("Team membership roster");
+      expect(prompt).not.toContain("requirements_engineering");
+      expect(prompt).toContain("The root AgentTeam is represented by `/`");
+      expect(prompt).toContain("├── /A              (Agent)");
+      expect(prompt).toContain("└── /C              (nested AgentTeam)");
+      expect(prompt).toContain("The letters in this example are placeholders only.");
     }
     expect(providerSharedPrompt).not.toContain("## Working Environment");
     expect(providerSharedPrompt).not.toContain("## Bash Operating Practice");

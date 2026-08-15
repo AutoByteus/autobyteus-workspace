@@ -13,8 +13,9 @@ import { AgentRunHistoryIndexStore } from "../../../src/run-history/store/agent-
 import { TeamRunHistoryIndexStore } from "../../../src/run-history/store/team-run-history-index-store.js";
 import { AgentRunMetadataStore } from "../../../src/run-history/store/agent-run-metadata-store.js";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
-import { TeamRunMetadataStore } from "../../../src/run-history/store/team-run-metadata-store.js";
-import type { TeamRunMetadata } from "../../../src/run-history/store/team-run-metadata-types.js";
+import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
+import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
+import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 
 const harness = vi.hoisted(() => ({
@@ -116,23 +117,18 @@ const buildAgentMetadata = (
   ...overrides,
 });
 
-const buildTeamMetadata = (
+const buildTeamExecutionTree = (
   teamRunId: string,
-  overrides: Partial<TeamRunMetadata> = {},
-): TeamRunMetadata => ({
-  teamRunId,
-  teamDefinitionId: "team-def-e2e",
-  teamDefinitionName: "E2E Team",
-  coordinatorMemberRouteKey: "coordinator",
-  createdAt: "2026-05-01T08:00:00.000Z",
-  archivedAt: null,
-  memberTree: [
-    {
-      memberKind: "agent",
-      memberRouteKey: "coordinator",
-      memberPath: ["coordinator"],
-      memberName: "Coordinator",
-      memberRunId: `${teamRunId}-member`,
+  archivedAt: string | null = null,
+) => ({
+  ...testExecutionTree({
+    rootTeamRunId: teamRunId,
+    rootTeamDefinitionId: "team-def-e2e",
+    teamDefinitionName: "E2E Team",
+    coordinatorAddress: "/coordinator",
+    createdAt: "2026-05-01T08:00:00.000Z",
+    children: [testAgentNode("/coordinator", {
+      agentRunId: `${teamRunId}-member`,
       runtimeKind: RuntimeKind.AUTOBYTEUS,
       platformAgentRunId: null,
       agentDefinitionId: "agent-def-e2e",
@@ -142,9 +138,9 @@ const buildTeamMetadata = (
       llmConfig: null,
       workspaceRootPath: WORKSPACE_ROOT,
       applicationExecutionContext: null,
-    },
-  ],
-  ...overrides,
+    })],
+  }),
+  archivedAt,
 });
 
 const seedRunFile = async (runDir: string, summary: string): Promise<void> => {
@@ -207,7 +203,8 @@ describe("Archive run history GraphQL e2e", () => {
   let memoryDir: string;
   let schema: GraphQLSchema;
   let agentMetadataStore: AgentRunMetadataStore;
-  let teamMetadataStore: TeamRunMetadataStore;
+  let teamExecutionTreeStore: TeamRunExecutionTreeStore;
+  let memoryLayout: AgentMemoryLayout;
 
   beforeAll(async () => {
     const require = createRequire(import.meta.url);
@@ -221,7 +218,8 @@ describe("Archive run history GraphQL e2e", () => {
     vi.clearAllMocks();
     memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "archive-history-graphql-e2e-"));
     agentMetadataStore = new AgentRunMetadataStore(memoryDir);
-    teamMetadataStore = new TeamRunMetadataStore(memoryDir);
+    teamExecutionTreeStore = new TeamRunExecutionTreeStore();
+    memoryLayout = new AgentMemoryLayout(memoryDir);
 
     harness.agentRunManager.hasActiveRun.mockImplementation(
       (runId: string) => runId === "run-agent-active",
@@ -249,7 +247,14 @@ describe("Archive run history GraphQL e2e", () => {
           }
         : null,
     );
-    harness.teamRunManager.getTeamRun.mockReturnValue(null);
+    harness.teamRunManager.getTeamRun.mockImplementation((teamRunId: string) =>
+      teamRunId === "team-active" || teamRunId === "team-archived-active"
+        ? {
+            teamRunId,
+            getLeafAgentStatusSnapshots: () => [],
+          }
+        : null,
+    );
     harness.teamRunManager.listActiveRuns.mockReturnValue([
       "team-active",
       "team-archived-active",
@@ -268,7 +273,7 @@ describe("Archive run history GraphQL e2e", () => {
     const teamIndexStore = new TeamRunHistoryIndexStore(memoryDir);
     const teamCatalogService = new TeamRunHistoryCatalogService(memoryDir, {
       indexStore: teamIndexStore,
-      metadataStore: teamMetadataStore,
+      executionTreeStore: teamExecutionTreeStore,
       teamRunManager: harness.teamRunManager as any,
     });
     const agentCatalogService = new AgentRunHistoryCatalogService(memoryDir, {
@@ -285,7 +290,7 @@ describe("Archive run history GraphQL e2e", () => {
       metadataStore: agentMetadataStore,
     });
     harness.services.teamRunHistoryService = new TeamRunHistoryService(memoryDir, {
-      metadataStore: teamMetadataStore,
+      executionTreeStore: teamExecutionTreeStore,
       catalogService: teamCatalogService,
       teamRunManager: harness.teamRunManager as any,
     });
@@ -350,7 +355,7 @@ describe("Archive run history GraphQL e2e", () => {
                 terminatedAt
                 isActive
                 members {
-                  memberRunId
+                  agentRunId
                 }
               }
             }
@@ -405,14 +410,19 @@ describe("Archive run history GraphQL e2e", () => {
       },
     ];
     for (const teamRun of teamRuns) {
-      const metadata = buildTeamMetadata(teamRun.teamRunId, {
-        archivedAt: teamRun.archivedAt ?? null,
+      const tree = buildTeamExecutionTree(teamRun.teamRunId, teamRun.archivedAt ?? null);
+      const teamDir = memoryLayout.getTeamDirPath({
+        rootTeamRunId: teamRun.teamRunId,
+        ancestorTeamRunIds: [],
       });
       await seedRunFile(
-        path.join(memoryDir, "agent_teams", teamRun.teamRunId, metadata.memberTree[0]!.memberRunId),
+        memoryLayout.getTeamAgentRunDirPath(
+          { rootTeamRunId: teamRun.teamRunId, ancestorTeamRunIds: [] },
+          `${teamRun.teamRunId}-member`,
+        ),
         teamRun.summary,
       );
-      await teamMetadataStore.writeMetadata(teamRun.teamRunId, metadata);
+      expect((await teamExecutionTreeStore.write(teamDir, tree)).outcome).toBe("committed");
     }
 
     await new TeamRunHistoryIndexStore(memoryDir).writeIndex(
@@ -486,9 +496,12 @@ describe("Archive run history GraphQL e2e", () => {
     });
 
     const archivedAgentMetadata = await agentMetadataStore.readMetadata("run-agent-archive");
-    const archivedTeamMetadata = await teamMetadataStore.readMetadata("team-archive");
+    const archivedTeamTree = await teamExecutionTreeStore.read(
+      memoryLayout.getTeamDirPath({ rootTeamRunId: "team-archive", ancestorTeamRunIds: [] }),
+      "team-archive",
+    );
     expect(archivedAgentMetadata).not.toHaveProperty("archivedAt");
-    expect(archivedTeamMetadata?.archivedAt).toEqual(expect.any(String));
+    expect(archivedTeamTree?.archivedAt).toEqual(expect.any(String));
 
     await expect(
       fs.stat(path.join(memoryDir, "agents", "run-agent-archive", "run_metadata.json")),
@@ -497,7 +510,7 @@ describe("Archive run history GraphQL e2e", () => {
       fs.stat(path.join(memoryDir, "agents", "run-agent-archive", "raw_traces_active.jsonl")),
     ).resolves.toBeTruthy();
     await expect(
-      fs.stat(path.join(memoryDir, "agent_teams", "team-archive", "team_run_metadata.json")),
+      fs.stat(path.join(memoryDir, "agent_teams", "team-archive", "team_run_execution_tree.json")),
     ).resolves.toBeTruthy();
     await expect(
       fs.stat(
@@ -565,7 +578,10 @@ describe("Archive run history GraphQL e2e", () => {
 
   it("rejects active and unsafe archive IDs without writing archive state or creating files", async () => {
     const activeAgentBefore = await agentMetadataStore.readMetadata("run-agent-active");
-    const activeTeamBefore = await teamMetadataStore.readMetadata("team-active");
+    const activeTeamBefore = await teamExecutionTreeStore.read(
+      memoryLayout.getTeamDirPath({ rootTeamRunId: "team-active", ancestorTeamRunIds: [] }),
+      "team-active",
+    );
     const treeBefore = await listRelativeFiles(memoryDir);
 
     const activeAgentResult = await execGraphql<{
@@ -600,7 +616,10 @@ describe("Archive run history GraphQL e2e", () => {
     expect(activeTeamResult.archiveStoredTeamRun.success).toBe(false);
     expect(activeTeamResult.archiveStoredTeamRun.message).toContain("Team run is active");
     expect(await agentMetadataStore.readMetadata("run-agent-active")).toEqual(activeAgentBefore);
-    expect(await teamMetadataStore.readMetadata("team-active")).toEqual(activeTeamBefore);
+    expect(await teamExecutionTreeStore.read(
+      memoryLayout.getTeamDirPath({ rootTeamRunId: "team-active", ancestorTeamRunIds: [] }),
+      "team-active",
+    )).toEqual(activeTeamBefore);
 
     for (const unsafeId of [
       "",

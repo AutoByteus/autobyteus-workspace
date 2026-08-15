@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createTokenUsageUpdatedPayload } from "../../../../src/agent-execution/domain/agent-run-token-usage.js";
 import { TokenUsageStatisticsProvider } from "../../../../src/token-usage/providers/statistics-provider.js";
 import type { TokenUsageUpdatedPayload } from "../../../../src/agent-execution/domain/agent-run-token-usage.js";
-import type { TokenUsageExecutionAddress } from "../../../../src/token-usage/domain/execution-address.js";
 
 const mockStore = {
   listEventsInPeriod: vi.fn(),
@@ -25,17 +24,13 @@ const buildEvent = (input: {
   modelValue?: string | null;
   runId?: string;
   rootTeamRunId?: string | null;
-  memberAgentRunId?: string | null;
-  memberRouteKey?: string | null;
   observedAt?: string;
   agentDefinitionId?: string | null;
   teamName?: string | null;
   agentName?: string | null;
   runSummary?: string | null;
   runCreatedAt?: string | null;
-  memberName?: string | null;
-  executionAddress?: TokenUsageExecutionAddress | null;
-  taskAgentRunId?: string | null;
+  memberDisplayName?: string | null;
   taskId?: string | null;
 }): TokenUsageUpdatedPayload => {
   const runId = input.runId ?? `stats_${input.model ?? "unknown"}`;
@@ -46,17 +41,13 @@ const buildEvent = (input: {
         idempotency_key: `stats:${runId}:${input.observedAt ?? Math.random()}`,
         observed_at: input.observedAt,
         root_team_run_id: input.rootTeamRunId ?? null,
-        execution_address: input.executionAddress ?? null,
-        member_agent_run_id: input.memberAgentRunId ?? null,
-        member_route_key: input.memberRouteKey ?? null,
         agent_definition_id: input.agentDefinitionId ?? null,
         team_name: input.teamName ?? null,
-        task_agent_run_id: input.taskAgentRunId ?? null,
         task_id: input.taskId ?? null,
         agent_name: input.agentName ?? null,
         run_summary: input.runSummary ?? null,
         run_created_at: input.runCreatedAt ?? null,
-        member_name: input.memberName ?? null,
+        member_display_name: input.memberDisplayName ?? null,
         runtime_kind: input.runtimeKind ?? "codex_app_server",
         model_provider: input.modelProvider ?? null,
         provider_name: input.providerName ?? null,
@@ -247,10 +238,7 @@ describe("TokenUsageStatisticsProvider", () => {
       buildEvent({
         runId: "member-a",
         rootTeamRunId: "team-new",
-        memberAgentRunId: "member-a",
-        memberRouteKey: "designer",
-        memberName: "Solution Designer",
-        executionAddress: { segments: [{ kind: "member", memberRouteKey: "designer" }] },
+        memberDisplayName: "Solution Designer",
         teamName: "Team New",
         runSummary: "Build a feature",
         runCreatedAt: "2026-06-29T10:00:00.000Z",
@@ -267,10 +255,7 @@ describe("TokenUsageStatisticsProvider", () => {
       buildEvent({
         runId: "member-b",
         rootTeamRunId: "team-new",
-        memberAgentRunId: "member-b",
-        memberRouteKey: "builder",
-        memberName: "Implementation Engineer",
-        executionAddress: { segments: [{ kind: "member", memberRouteKey: "builder" }] },
+        memberDisplayName: "Implementation Engineer",
         teamName: "Team New",
         runSummary: "Build a feature",
         runCreatedAt: "2026-06-29T10:00:00.000Z",
@@ -316,7 +301,7 @@ describe("TokenUsageStatisticsProvider", () => {
     expect(team.createdTimeSource).toBe("RUN_HISTORY");
     expect(team.aggregate.gross_input_tokens).toBe(150);
     expect(team.aggregate.estimated_api_total_cost).toBeCloseTo(1.65, 10);
-    expect(team.children.map((member) => member.memberRouteKey).sort()).toEqual(["builder", "designer"]);
+    expect(team.children.map((member) => member.runId).sort()).toEqual(["member-a", "member-b"]);
     expect(team.children.map((member) => member.displayName).sort()).toEqual([
       "Implementation Engineer",
       "Solution Designer",
@@ -335,10 +320,7 @@ describe("TokenUsageStatisticsProvider", () => {
       buildEvent({
         runId: "member-designer",
         rootTeamRunId: "team-usage",
-        memberAgentRunId: "member-designer",
-        memberRouteKey: "solution_designer",
-        memberName: "solution_designer",
-        executionAddress: { segments: [{ kind: "member", memberRouteKey: "solution_designer" }] },
+        memberDisplayName: "solution_designer",
         teamName: "Usage Team",
         runCreatedAt: "2026-06-29T09:00:00.000Z",
         model: "gpt-5.5",
@@ -354,8 +336,7 @@ describe("TokenUsageStatisticsProvider", () => {
       buildEvent({
         runId: "legacy-run",
         rootTeamRunId: "team-usage",
-        memberAgentRunId: "legacy-run",
-        memberRouteKey: "legacy_member",
+        memberDisplayName: "legacy_member",
         model: "legacy-model",
         inputTokens: 7,
         outputTokens: 3,
@@ -375,40 +356,31 @@ describe("TokenUsageStatisticsProvider", () => {
 
     const team = result.rows[0]!;
     expect(team.aggregate.estimated_api_total_cost).toBeCloseTo(1.2, 10);
-    expect(team.children.map((member) => member.memberRouteKey).sort()).toEqual([
-      "legacy_member",
-      "solution_designer",
+    expect(team.children.map((member) => member.runId).sort()).toEqual([
+      "legacy-run",
+      "member-designer",
     ]);
-    expect(team.children.some((member) => member.memberRouteKey === "architecture_reviewer")).toBe(false);
+    expect(team.children.some((member) => member.displayName === "architecture_reviewer")).toBe(false);
     expect(team.children.some((member) => member.aggregate.usage_report_count === 0)).toBe(false);
-    expect(team.children.find((member) => member.memberRouteKey === "solution_designer")).toMatchObject({
+    expect(team.children.find((member) => member.runId === "member-designer")).toMatchObject({
       displayName: "solution_designer",
       aggregate: expect.objectContaining({ usage_report_count: 1, gross_input_tokens: 100 }),
     });
-    expect(team.children.find((member) => member.memberRouteKey === "legacy_member")).toMatchObject({
-      memberRouteKey: "legacy_member",
-      memberAgentRunId: "legacy-run",
+    expect(team.children.find((member) => member.runId === "legacy-run")).toMatchObject({
+      runId: "legacy-run",
       displayName: "legacy_member",
       aggregate: expect.objectContaining({ gross_input_tokens: 7 }),
     });
   });
 
-  it("builds recursive task-team and task-agent rows from execution addresses", async () => {
+  it("keeps task-related usage grouped by exact AgentRun ID while Team topology stays execution-tree-owned", async () => {
     mockStore.listEventsInPeriod.mockResolvedValue([
       buildEvent({
         runId: "student-one-run",
         rootTeamRunId: "nested-classroom-root",
-        memberAgentRunId: "student-one-run",
-        memberRouteKey: "student_one",
-        memberName: "student_one",
+        memberDisplayName: "student_one",
         teamName: "Nested Classroom Test Team",
-        executionAddress: {
-          segments: [
-            { kind: "member", memberRouteKey: "StudentStudyGroup" },
-            { kind: "task_team", taskTeamRunId: "studentstudygroup-task-team-run-1" },
-            { kind: "member", memberRouteKey: "student_one" },
-          ],
-        },
+        taskId: "task-student-one",
         model: "gpt-5",
         inputTokens: 30,
         outputTokens: 3,
@@ -422,17 +394,9 @@ describe("TokenUsageStatisticsProvider", () => {
       buildEvent({
         runId: "student-two-run",
         rootTeamRunId: "nested-classroom-root",
-        memberAgentRunId: "student-two-run",
-        memberRouteKey: "student_two",
-        memberName: "student_two",
+        memberDisplayName: "student_two",
         teamName: "Nested Classroom Test Team",
-        executionAddress: {
-          segments: [
-            { kind: "member", memberRouteKey: "StudentStudyGroup" },
-            { kind: "task_team", taskTeamRunId: "studentstudygroup-task-team-run-1" },
-            { kind: "member", memberRouteKey: "student_two" },
-          ],
-        },
+        taskId: "task-student-two",
         model: "gpt-5",
         inputTokens: 40,
         outputTokens: 4,
@@ -446,17 +410,9 @@ describe("TokenUsageStatisticsProvider", () => {
       buildEvent({
         runId: "codex-task-agent-run",
         rootTeamRunId: "nested-classroom-root",
-        memberAgentRunId: "codex-task-agent-run",
-        memberRouteKey: "Codex",
-        memberName: "Codex",
-        taskAgentRunId: "codex-task-agent-run",
+        memberDisplayName: "Codex",
+        taskId: "task-codex",
         teamName: "Nested Classroom Test Team",
-        executionAddress: {
-          segments: [
-            { kind: "member", memberRouteKey: "Codex" },
-            { kind: "task_agent", taskAgentRunId: "codex-task-agent-run" },
-          ],
-        },
         model: "gpt-5",
         inputTokens: 50,
         outputTokens: 5,
@@ -470,19 +426,9 @@ describe("TokenUsageStatisticsProvider", () => {
       buildEvent({
         runId: "nested-task-agent-run",
         rootTeamRunId: "nested-classroom-root",
-        memberAgentRunId: "nested-task-agent-run",
-        memberRouteKey: "student_one",
-        memberName: "student_one",
-        taskAgentRunId: "nested-task-agent-run",
+        memberDisplayName: "student_one",
+        taskId: "task-nested",
         teamName: "Nested Classroom Test Team",
-        executionAddress: {
-          segments: [
-            { kind: "member", memberRouteKey: "StudentStudyGroup" },
-            { kind: "task_team", taskTeamRunId: "studentstudygroup-task-team-run-1" },
-            { kind: "member", memberRouteKey: "student_one" },
-            { kind: "task_agent", taskAgentRunId: "nested-task-agent-run" },
-          ],
-        },
         model: "gpt-5",
         inputTokens: 20,
         outputTokens: 2,
@@ -504,20 +450,17 @@ describe("TokenUsageStatisticsProvider", () => {
     const team = result.rows[0]!;
     expect(team.displayName).toBe("Nested Classroom Test Team");
     expect(team.aggregate.gross_input_tokens).toBe(140);
-    const taskTeam = team.children.find((row) => row.rowKind === "TASK_TEAM_RUN")!;
-    expect(taskTeam).toMatchObject({
-      displayName: "StudentStudyGroup",
-      taskTeamRunId: "studentstudygroup-task-team-run-1",
-      aggregate: expect.objectContaining({ gross_input_tokens: 90 }),
-    });
-    expect(taskTeam.children.map((row) => row.displayName).sort()).toEqual(["student_one", "student_one", "student_two"]);
-    expect(taskTeam.children.find((row) => row.rowKind === "TASK_AGENT_RUN")).toMatchObject({
-      taskAgentRunId: "nested-task-agent-run",
-      aggregate: expect.objectContaining({ gross_input_tokens: 20 }),
-    });
-    expect(team.children.find((row) => row.rowKind === "TASK_AGENT_RUN")).toMatchObject({
+    expect(team.children).toHaveLength(4);
+    expect(team.children.every((row) => row.rowKind === "MEMBER_RUN" && row.children.length === 0)).toBe(true);
+    expect(team.children.map((row) => row.runId).sort()).toEqual([
+      "codex-task-agent-run",
+      "nested-task-agent-run",
+      "student-one-run",
+      "student-two-run",
+    ]);
+    expect(team.children.find((row) => row.runId === "codex-task-agent-run")).toMatchObject({
       displayName: "Codex",
-      taskAgentRunId: "codex-task-agent-run",
+      taskId: "task-codex",
       aggregate: expect.objectContaining({ gross_input_tokens: 50 }),
     });
   });
