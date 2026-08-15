@@ -53,7 +53,7 @@ Repository finalization and a new personal release are in scope. The requested r
 - Current synchronized versions: `autobyteus-web@1.4.50`, `autobyteus-message-gateway@1.4.50`
 - Requested new version: `1.4.51`
 - Release tag: `v1.4.51`
-- Release preparation method: `pnpm release 1.4.51 -- --release-notes tickets/done/desktop-release-linux-macos-arm64/release-notes.md`
+- Release preparation method: `pnpm release 1.4.51 -- --release-notes autobyteus-server-ts/tickets/done/desktop-release-linux-macos-arm64/release-notes.md`
 - Version/tag status: `Pending release execution`
 
 ## Repository Finalization
@@ -77,7 +77,7 @@ Repository finalization and a new personal release are in scope. The requested r
 
 - Applicable: `Yes`
 - Method: `Documented Command`
-- Method reference / command: `pnpm release 1.4.51 -- --release-notes tickets/done/desktop-release-linux-macos-arm64/release-notes.md`
+- Method reference / command: `pnpm release 1.4.51 -- --release-notes autobyteus-server-ts/tickets/done/desktop-release-linux-macos-arm64/release-notes.md`
 - Release/publication/deployment result: `Pending release execution`
 - Release notes handoff result: `Prepared`
 - Blocker (if applicable): `None known; release workflows may expose CI-only credential or platform-runner issues after tag creation.`

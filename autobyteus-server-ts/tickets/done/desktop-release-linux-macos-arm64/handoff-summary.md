@@ -46,7 +46,7 @@ The desktop release pipeline explicitly selects the `personal` flavor, resolves 
 
 - Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-release-linux-macos-arm64/autobyteus-server-ts/tickets/done/desktop-release-linux-macos-arm64/docs-sync-report.md`
 - Release notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-release-linux-macos-arm64/autobyteus-server-ts/tickets/done/desktop-release-linux-macos-arm64/release-notes.md`
-- Release method: `pnpm release 1.4.51 -- --release-notes tickets/done/desktop-release-linux-macos-arm64/release-notes.md`
+- Release method: `pnpm release 1.4.51 -- --release-notes autobyteus-server-ts/tickets/done/desktop-release-linux-macos-arm64/release-notes.md`
 - No separate deployment or database migration is required.
 
 ## Cumulative Artifact Package
