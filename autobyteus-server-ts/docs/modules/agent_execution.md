@@ -23,26 +23,29 @@ Runtime managers compose definitions, prompts, tools, processors, and workspace 
 ## Carpenter Runtime Instructions
 
 Before creating any native AutoByteus, Codex, or Claude backend, the runtime
-resolves the selected agent definition and exact absolute effective workspace,
-then calls the shared `composeCarpenterPrompt(...)` boundary. A team run also
-supplies its validated `MemberTeamContext` so the same composition includes the
-exact selected team instruction, current member identity, communication roster,
-and delegation target roster.
+resolves the selected agent definition and team context. Native AutoByteus then
+resolves its exact absolute workspace and calls
+`composeNativeAutoByteusPrompt(...)`; Codex and Claude call
+`composeSharedCarpenterPrompt(...)` and retain ownership of their provider
+working-directory fields. A team run supplies its validated `MemberTeamContext`
+so every composition includes the exact selected team instruction, current
+member identity, communication roster, and delegation target roster.
 
-The stable semantic order is Agent Identity, optional Team Instruction and Team
-Runtime, Working Environment, Bash Operating Practice, File And Directory
-Practice, and optional configured Skills. Native AutoByteus places the Carpenter
-text in `AgentConfig.systemPrompt` and the core appends its one terminal Skills
-catalog. Codex passes the Carpenter text as thread `baseInstructions`; Claude
-passes it as SDK query `options.systemPrompt`. Codex/Claude configured skills use
-their provider-specific discovery/materialization paths rather than an eager
-prompt body.
+The shared semantic order is Agent Identity, optional Team Instruction, and
+optional Team Collaboration. Native AutoByteus appends Working Environment,
+Bash Operating Practice, and File And Directory Practice, then the native core
+appends its one terminal Skills catalog. Native AutoByteus places the Carpenter
+text in `AgentConfig.systemPrompt`; Codex passes shared text as thread
+`baseInstructions`; Claude passes shared text as SDK query
+`options.systemPrompt`. Codex/Claude configured skills use their
+provider-specific discovery/materialization paths rather than an eager prompt
+body.
 
-The composer fails before provider invocation when a required name/workspace,
-team member/delivery binding, or dynamic value is invalid. It also contains
-authored `agent.md` and `team.md` headings beneath their owning section and
-rejects unresolved Carpenter placeholders. Stable Claude instructions are not
-rebuilt in user turns.
+The composition boundary fails before provider invocation when a required name,
+native workspace, team member/delivery binding, or dynamic value is invalid. It
+also contains authored `agent.md` and `team.md` headings beneath their owning
+section and rejects unresolved Carpenter placeholders. Stable Claude
+instructions are not rebuilt in user turns.
 
 See
 [Prompt Engineering And Runtime Instruction Composition](./prompt_engineering.md)

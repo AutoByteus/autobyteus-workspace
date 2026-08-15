@@ -19,7 +19,7 @@ import {
 } from "../session/claude-session-config.js";
 import { ClaudeAgentRunContext, type ClaudeRunContext } from "./claude-agent-run-context.js";
 import { resolveRuntimeAgentToolExposure } from "../../../shared/runtime-agent-tool-exposure.js";
-import { composeCarpenterPrompt } from "../../../prompt/carpenter-prompt-composer.js";
+import { composeSharedCarpenterPrompt } from "../../../prompt/carpenter-prompt-composer.js";
 
 export class ClaudeSessionBootstrapper {
   private readonly workspaceResolver: ClaudeWorkspaceResolver;
@@ -81,9 +81,8 @@ export class ClaudeSessionBootstrapper {
         configuredSkills: exposedConfiguredSkills,
         skillAccessMode,
       });
-    const carpenterSystemPrompt = composeCarpenterPrompt({
+    const carpenterSystemPrompt = composeSharedCarpenterPrompt({
       agentDefinition,
-      workspaceRootPath: workingDirectory,
       memberTeamContext: runContext.config.memberTeamContext,
     });
     const sessionConfig = buildClaudeSessionConfig({

@@ -2,7 +2,10 @@ import { describe, expect, it, vi } from "vitest";
 import { AgentDefinition } from "../../../../src/agent-definition/domain/models.js";
 import { MemberTeamContext } from "../../../../src/agent-team-execution/domain/member-team-context.js";
 import { TeamBackendKind } from "../../../../src/agent-team-execution/domain/team-backend-kind.js";
-import { composeCarpenterPrompt } from "../../../../src/agent-execution/prompt/carpenter-prompt-composer.js";
+import {
+  composeNativeAutoByteusPrompt,
+  composeSharedCarpenterPrompt,
+} from "../../../../src/agent-execution/prompt/carpenter-prompt-composer.js";
 import { containAuthoredMarkdownHeadings } from "../../../../src/agent-execution/prompt/markdown-heading-containment.js";
 
 const definition = (input: Partial<ConstructorParameters<typeof AgentDefinition>[0]> = {}) =>
@@ -27,15 +30,16 @@ const teamContext = (teamInstruction: string | null = "## Coordination\n\nShare 
     deliverInterAgentMessage: vi.fn(async () => undefined) as any,
   });
 
-describe("composeCarpenterPrompt", () => {
+describe("composeNativeAutoByteusPrompt", () => {
   it("renders the exact ordered standalone foundation without role or fallbacks", () => {
-    const prompt = composeCarpenterPrompt({
+    const prompt = composeNativeAutoByteusPrompt({
       agentDefinition: definition({ role: "Ignored role" }),
       workspaceRootPath: "/tmp/carpenter-workspace",
       memberTeamContext: null,
     });
 
     expect(prompt.indexOf("## Agent Identity")).toBeLessThan(prompt.indexOf("## Working Environment"));
+    expect(prompt.indexOf("## Team Collaboration")).toBeLessThan(prompt.indexOf("## Working Environment"));
     expect(prompt.indexOf("## Working Environment")).toBeLessThan(prompt.indexOf("## Bash Operating Practice"));
     expect(prompt.indexOf("## Bash Operating Practice")).toBeLessThan(prompt.indexOf("## File And Directory Practice"));
     expect(prompt).toContain("- Name: Builder Agent");
@@ -64,19 +68,19 @@ describe("composeCarpenterPrompt", () => {
     );
     expect(prompt).not.toContain("Ignored role");
     expect(prompt).not.toContain("## Team Instruction");
-    expect(prompt).not.toContain("## Team Runtime");
+    expect(prompt).not.toContain("## Team Collaboration");
     expect(prompt).not.toContain("## Skills");
   });
 
   it("renders team instruction and fixed team runtime from context only", () => {
-    const prompt = composeCarpenterPrompt({
+    const prompt = composeNativeAutoByteusPrompt({
       agentDefinition: definition(),
       workspaceRootPath: "/tmp/carpenter-workspace",
       memberTeamContext: teamContext(),
     });
 
     expect(prompt).toContain("## Team Instruction\n\n### Coordination");
-    expect(prompt).toContain("## Team Runtime\n\nCurrent team member: worker member");
+    expect(prompt).toContain("## Team Collaboration\n\nCurrent team member: worker member");
     expect(prompt).toContain("No logical `recipient_name` roster recipients are currently listed for this run.");
     expect(prompt).toContain("You can delegate tasks with delegate_task:");
     expect(prompt).toContain("Task delegation protocol");
@@ -85,7 +89,7 @@ describe("composeCarpenterPrompt", () => {
   });
 
   it("omits blank optional identity and team bodies", () => {
-    const prompt = composeCarpenterPrompt({
+    const prompt = composeNativeAutoByteusPrompt({
       agentDefinition: definition({ description: " ", instructions: "\n" }),
       workspaceRootPath: "/tmp/carpenter-workspace",
       memberTeamContext: teamContext("  "),
@@ -93,21 +97,55 @@ describe("composeCarpenterPrompt", () => {
     expect(prompt).not.toContain("- Description:");
     expect(prompt).not.toContain("### Responsibilities and Boundaries");
     expect(prompt).not.toContain("## Team Instruction");
-    expect(prompt).toContain("## Team Runtime");
+    expect(prompt).toContain("## Team Collaboration");
   });
 
   it("fails required scalars and unresolved placeholders before provider projection", () => {
-    expect(() => composeCarpenterPrompt({
+    expect(() => composeNativeAutoByteusPrompt({
       agentDefinition: definition({ name: " " }),
       workspaceRootPath: "/tmp/workspace",
     })).toThrow(/name must be non-blank/);
-    expect(() => composeCarpenterPrompt({
+    expect(() => composeNativeAutoByteusPrompt({
       agentDefinition: definition(),
       workspaceRootPath: "relative/path",
     })).toThrow(/absolute path/);
-    expect(() => composeCarpenterPrompt({
+    expect(() => composeNativeAutoByteusPrompt({
       agentDefinition: definition({ instructions: "Use {{missing}}." }),
       workspaceRootPath: "/tmp/workspace",
+    })).toThrow(/unresolved documentation placeholder/);
+  });
+});
+
+describe("composeSharedCarpenterPrompt", () => {
+  it("renders shared identity and collaboration without native workspace or file-operation guidance", () => {
+    const prompt = composeSharedCarpenterPrompt({
+      agentDefinition: definition(),
+      memberTeamContext: teamContext(),
+    });
+
+    expect(prompt).toContain("## Agent Identity");
+    expect(prompt).toContain("## Team Instruction\n\n### Coordination");
+    expect(prompt).toContain("## Team Collaboration\n\nCurrent team member: worker member");
+    expect(prompt).not.toContain("## Working Environment");
+    expect(prompt).not.toContain("## Bash Operating Practice");
+    expect(prompt).not.toContain("## File And Directory Practice");
+    expect(prompt).not.toContain("read_file");
+    expect(prompt).not.toContain("edit_file");
+    expect(prompt).not.toContain("write_file");
+  });
+
+  it("does not require a workspace path for standalone external composition", () => {
+    const prompt = composeSharedCarpenterPrompt({
+      agentDefinition: definition(),
+    });
+
+    expect(prompt).toContain("## Agent Identity");
+    expect(prompt).not.toContain("## Working Environment");
+  });
+
+  it("preserves placeholder validation without a native workspace", () => {
+    expect(() => composeSharedCarpenterPrompt({
+      agentDefinition: definition({ instructions: "Use {{missing}}." }),
     })).toThrow(/unresolved documentation placeholder/);
   });
 });

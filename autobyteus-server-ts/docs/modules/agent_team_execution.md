@@ -55,8 +55,8 @@ names exist.
 | Path | Authoritative owner | Member execution primitive | Notes |
 | --- | --- | --- | --- |
 | Any server team run (all-AutoByteus, all-Codex, all-Claude, heterogeneous, or nested) | `MixedTeamManager` | Agent members own one runtime-specific `AgentRun`; subteam members own child `TeamRun`s | `MixedTeamManager` is retained by name and is the single active server team manager. Runtime-specific team managers/backends are not instantiated by server team create/restore. |
-| AutoByteus member in a server team | `MixedAgentMemberHandle -> AgentRunManager -> AutoByteusAgentRunBackendFactory` | Standalone AutoByteus `AgentRun` | The shared Carpenter composer consumes `MemberTeamContext` and emits Team Instruction/Team Runtime with current rosters; native core then appends only the terminal configured Skills catalog. |
-| Codex or Claude member in a server team | `MixedAgentMemberHandle -> AgentRunManager` | Standalone Codex or Claude `AgentRun` | The same Carpenter semantics project through provider instruction boundaries; `send_message_to` and `delegate_task` are automatically included in effective team tool exposure and routed through Agent Tools MCP. |
+| AutoByteus member in a server team | `MixedAgentMemberHandle -> AgentRunManager -> AutoByteusAgentRunBackendFactory` | Standalone AutoByteus `AgentRun` | `composeNativeAutoByteusPrompt` consumes `MemberTeamContext` and emits Team Instruction/Team Collaboration plus native guidance; native core then appends only the terminal configured Skills catalog. |
+| Codex or Claude member in a server team | `MixedAgentMemberHandle -> AgentRunManager` | Standalone Codex or Claude `AgentRun` | `composeSharedCarpenterPrompt` projects shared Team Instruction/Team Collaboration through provider instruction boundaries; native Bash/file guidance is excluded. `send_message_to` and `delegate_task` remain automatically included in effective team tool exposure and routed through Agent Tools MCP. |
 ## Nested Member Identity And Commands
 
 - `TeamMemberSelector` is the domain/backend structural member identity for
@@ -548,7 +548,7 @@ RUN_MIXED_TASK_DELEGATION_E2E=1 RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 \
 - `src/agent-team-execution/services/agent-team-run-manager.ts` (`AgentTeamRunManager`)
 - `src/agent-team-execution/services/team-definition-topology-planner.ts`
 - `src/agent-team-execution/services/member-team-context-builder.ts`
-- `src/agent-team-execution/services/team-runtime-instruction-renderer.ts`
+- `src/agent-team-execution/services/team-collaboration-instruction-renderer.ts`
 - `src/agent-execution/prompt/carpenter-prompt-composer.ts`
 - `src/agent-team-execution/services/inter-agent-message-router.ts`
 - `src/agent-team-execution/services/team-command-status-overlay-store.ts`

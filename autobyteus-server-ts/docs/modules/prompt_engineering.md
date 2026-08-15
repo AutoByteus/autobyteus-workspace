@@ -9,9 +9,11 @@ This module covers two separate boundaries:
    instructions for native AutoByteus, Codex App Server, and Claude Agent SDK
    runs.
 
-The Carpenter boundary supplies identity, team context, workspace facts, and
-operating practice. It does not turn agent definitions into an open-ended prompt
-processor pipeline and does not encode tool schemas in text.
+The Carpenter boundary supplies shared identity and team context to every
+runtime. Native AutoByteus additionally receives workspace facts and the
+platform-owned Bash/file operating practice. It does not turn agent definitions
+into an open-ended prompt processor pipeline and does not encode tool schemas in
+text.
 
 ## TS Source
 
@@ -21,19 +23,20 @@ processor pipeline and does not encode tool schemas in text.
 - `src/agent-execution/prompt/carpenter-prompt-composer.ts`
 - `src/agent-execution/prompt/carpenter-prompt-sections.ts`
 - `src/agent-execution/prompt/markdown-heading-containment.ts`
-- `src/agent-team-execution/services/team-runtime-instruction-renderer.ts`
+- `src/agent-team-execution/services/team-collaboration-instruction-renderer.ts`
 - native `autobyteus-ts` `SystemPromptProcessingStep` and
   `appendConfiguredSkillsCatalog`
 
 ## Main Services
 
 - `src/prompt-engineering/services/prompt-service.ts`
-- `composeCarpenterPrompt(...)`
+- `composeSharedCarpenterPrompt(...)`
+- `composeNativeAutoByteusPrompt(...)`
 
 The prompt service and cached provider are singleton-backed to avoid repeated
-cache initialization. Runtime Carpenter composition is a pure, fail-fast
-operation over the selected agent definition, exact absolute workspace, and
-optional validated `MemberTeamContext`.
+cache initialization. Carpenter composition is pure and fail-fast. Shared
+composition accepts the selected agent definition and optional validated
+`MemberTeamContext`; native composition adds the exact absolute workspace.
 
 ## Runtime Instruction Ownership
 
@@ -43,16 +46,20 @@ Each section has one owner:
 | --- | --- | --- |
 | `Agent Identity` | Selected `AgentDefinition`: required name, optional description, optional `agent.md` body | Always |
 | `Team Instruction` | Exact non-blank selected `team.md` body | Team runs only, when non-blank |
-| `Team Runtime` | Validated `MemberTeamContext`, fixed communication/delegation renderer, and current rosters | Team runs only |
-| `Working Environment` | Exact absolute effective workspace selected for the run | Always |
-| `Bash Operating Practice` | Platform-owned fixed Carpenter text | Always |
-| `File And Directory Practice` | Platform-owned fixed Carpenter text | Always |
+| `Team Collaboration` | Validated `MemberTeamContext`, fixed communication/delegation renderer, and current rosters | Team runs only, shared across runtimes |
+| `Working Environment` | Exact absolute effective workspace selected for the run | Native AutoByteus only |
+| `Bash Operating Practice` | Platform-owned fixed Carpenter text | Native AutoByteus only |
+| `File And Directory Practice` | Platform-owned fixed Carpenter text | Native AutoByteus only |
 | `Skills` | Ordinary configured skill resolver and provider-specific skill projection | Only when configured skills apply |
 
-The logical order is the order shown above. Blank optional values omit their
-line, subsection, or section; they do not produce empty headings. An invalid
-required name, workspace, team member name, team delivery binding, or unresolved
-Carpenter placeholder stops bootstrap before provider invocation.
+The shared logical order is Agent Identity, optional Team Instruction, and
+optional Team Collaboration. Native AutoByteus appends Working Environment,
+Bash Operating Practice, and File And Directory Practice in that order, then
+the native core appends its terminal configured-skills catalog. Blank optional
+values omit their line, subsection, or section; they do not produce empty
+headings. An invalid required name, native workspace, team member name, team
+delivery binding, or unresolved Carpenter placeholder stops bootstrap before
+provider invocation.
 
 Authored ATX headings in `agent.md` and `team.md` are shifted beneath their
 owning section. A heading inside a same-or-longer Markdown fence remains content,
@@ -101,11 +108,12 @@ system-prompt processors: no current agent-definition field, core processor
 list/default, registry, pipeline, or public extension export exists for mutating
 this closed composition.
 
-## Concrete Foundation Example
+## Native AutoByteus Foundation Example
 
-For a standalone `Release Reviewer` running in `/work/releases`, the stable
-foundation begins as follows (the file-practice list continues with the same
-platform-owned deterministic inspection/edit/verification rules):
+For a standalone native AutoByteus `Release Reviewer` running in
+`/work/releases`, the native foundation begins as follows (the file-practice
+list continues with the same platform-owned deterministic
+inspection/edit/verification rules):
 
 ```markdown
 ## Agent Identity
@@ -147,11 +155,11 @@ The authoritative full fixed text is
 instructions can narrow the work, but agent authors must not replace this
 platform foundation with a second generic advice block.
 
-## Team Instruction And Team Runtime
+## Team Instruction And Team Collaboration
 
 A team run inserts the exact non-blank `team.md` body under `Team Instruction`
-and then renders `Team Runtime` from the validated current member context.
-`Team Runtime` contains only:
+and then renders `Team Collaboration` from the validated current member context.
+`Team Collaboration` contains only:
 
 - the current team member alias;
 - the fixed `send_message_to` selector and delivery rules plus the allowed
@@ -162,7 +170,7 @@ and then renders `Team Runtime` from the validated current member context.
 For example, a member named `release_reviewer` can receive this shape:
 
 ```markdown
-## Team Runtime
+## Team Collaboration
 
 Current team member: release_reviewer
 
@@ -179,7 +187,14 @@ Delegation target roster
 
 The runtime renderer owns the complete exact wording. Agent/team authors should
 not copy these dynamic rosters or schemas into `agent.md` or `team.md`.
-Standalone runs render neither Team Instruction nor Team Runtime.
+Standalone runs render neither Team Instruction nor Team Collaboration.
+
+The shared composition used by Codex App Server and Claude Agent SDK stops
+after the shared identity/team sections. Those adapters place the resulting
+string into Codex `baseInstructions` or Claude SDK `systemPrompt`; their
+provider-native workspace, skills, tools, approval, and sandbox guidance stays
+in the existing provider boundary. They do not receive the native Working
+Environment, Bash Operating Practice, or File And Directory Practice sections.
 
 ## Ordinary Configured Skills
 
@@ -257,9 +272,9 @@ rewording:
 
 | Runtime | Instruction boundary | Skills | Team tools |
 | --- | --- | --- | --- |
-| Native AutoByteus | `AgentConfig.systemPrompt`, then the closed core terminal Skills append | Native metadata/path catalog | Server-owned local native schemas |
-| Codex App Server | Thread `baseInstructions` | Provider discovery plus configured workspace materialization when needed | Session-scoped `autobyteus_agent_tools` MCP |
-| Claude Agent SDK | SDK query `options.systemPrompt` custom string | Configured `.claude/skills` materialization | Session-scoped `autobyteus_agent_tools` MCP |
+| Native AutoByteus | `composeNativeAutoByteusPrompt` -> `AgentConfig.systemPrompt`, then the closed core terminal Skills append | Native metadata/path catalog | Server-owned local native schemas |
+| Codex App Server | `composeSharedCarpenterPrompt` -> thread `baseInstructions` | Provider discovery plus configured workspace materialization when needed | Session-scoped `autobyteus_agent_tools` MCP |
+| Claude Agent SDK | `composeSharedCarpenterPrompt` -> SDK query `options.systemPrompt` custom string | Configured `.claude/skills` materialization | Session-scoped `autobyteus_agent_tools` MCP |
 
 Claude user turns remain user/context-file content; stable Carpenter instructions
 are not rebuilt as XML inside every user message.

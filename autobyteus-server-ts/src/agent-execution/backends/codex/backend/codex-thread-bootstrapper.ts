@@ -54,7 +54,7 @@ import {
 import {
   materializeCodexAgentToolsMcpThreadConfig,
 } from "../agent-tools-mcp/codex-agent-tools-mcp-materializer.js";
-import { composeCarpenterPrompt } from "../../../prompt/carpenter-prompt-composer.js";
+import { composeSharedCarpenterPrompt } from "../../../prompt/carpenter-prompt-composer.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
@@ -227,9 +227,8 @@ export class CodexThreadBootstrapper {
       runContext.config.skillAccessMode ?? null,
       configuredSkills.length,
     );
-    const carpenterSystemPrompt = composeCarpenterPrompt({
+    const carpenterSystemPrompt = composeSharedCarpenterPrompt({
       agentDefinition,
-      workspaceRootPath: workingDirectory,
       memberTeamContext: runContext.config.memberTeamContext,
     });
     const dynamicToolRegistrations: CodexDynamicToolRegistration[] | null = null;

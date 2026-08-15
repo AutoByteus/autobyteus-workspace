@@ -15,7 +15,7 @@ const DELEGATION_PROTOCOL = `Task delegation protocol
 - To assign multiple independent tasks, call \`delegate_task\` separately for each task.
 - Activated task-agent or task-team executions receive task details directly in a work packet. The framework marks them active/running internally; do not report in_progress.`;
 
-export const renderTeamRuntimeInstruction = (
+export const renderTeamCollaborationInstruction = (
   context: MemberTeamContext,
   normalizedMemberName: string = context.memberName.trim(),
 ): string => {

@@ -249,10 +249,8 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
       );
 
       const events: AgentRunEvent[] = [];
-      const unsubscribe = backend.subscribeToEvents((event) => {
-        if (event && typeof event === "object") {
-          events.push(event as AgentRunEvent);
-        }
+      const unsubscribe = backend.subscribeToSourceEventBatches((batch) => {
+        events.push(...batch);
       });
 
       try {
@@ -262,7 +260,8 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
         const sendResult = await backend.postUserMessage(
           new AgentInputUserMessage(
             `Create ${targetRelativePath} with exactly two lines: ` +
-              `"line one" and "line two". Use a relative path and do not answer with plain text.`,
+              `"line one" and "line two". Use write_file exactly once with path ${targetRelativePath}, ` +
+              `base_dir ${workspaceDir}, and exact content ${targetContent}. Do not answer with plain text.`,
           ),
         );
         expect(sendResult.accepted).toBe(true);
@@ -307,7 +306,7 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
           () => events.some((event) => event.eventType === AgentRunEventType.AGENT_STATUS),
           EVENT_WAIT_TIMEOUT_MS,
         );
-        await waitFor(() => backend.getStatusSnapshot().status === "idle");
+        await waitFor(() => backend.getLifecycleSnapshot().phase === "idle");
 
         const targetPath = path.join(workspaceDir, targetRelativePath);
         expect(await waitForFile(targetPath)).toBe(true);
@@ -337,10 +336,8 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
       );
 
       const events: AgentRunEvent[] = [];
-      const unsubscribe = backend.subscribeToEvents((event) => {
-        if (event && typeof event === "object") {
-          events.push(event as AgentRunEvent);
-        }
+      const unsubscribe = backend.subscribeToSourceEventBatches((batch) => {
+        events.push(...batch);
       });
 
       try {
@@ -373,7 +370,7 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
             event.eventType === AgentRunEventType.TOOL_DENIED &&
             resolveInvocationId(event.payload) === invocationId,
         );
-        await waitFor(() => backend.getStatusSnapshot().status === "idle");
+        await waitFor(() => backend.getLifecycleSnapshot().phase === "idle");
 
         const targetPath = path.join(workspaceDir, targetRelativePath);
         expect(fs.existsSync(targetPath)).toBe(false);
@@ -399,10 +396,8 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
       );
 
       const events: AgentRunEvent[] = [];
-      const unsubscribe = backend.subscribeToEvents((event) => {
-        if (event && typeof event === "object") {
-          events.push(event as AgentRunEvent);
-        }
+      const unsubscribe = backend.subscribeToSourceEventBatches((batch) => {
+        events.push(...batch);
       });
 
       try {
@@ -429,7 +424,7 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
           events,
           (event) => event.eventType === AgentRunEventType.ASSISTANT_COMPLETE,
         );
-        await waitFor(() => backend.getStatusSnapshot().status === "idle");
+        await waitFor(() => backend.getLifecycleSnapshot().phase === "idle");
 
         expect(
           events.some((event) => event.eventType === AgentRunEventType.TOOL_APPROVAL_REQUESTED),
@@ -548,11 +543,12 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
         const projectionStore = new PublishedArtifactProjectionStore();
         const snapshotStore = new PublishedArtifactSnapshotStore();
         const projection = await projectionStore.readProjection(run.config.memoryDir as string);
+        const canonicalArtifactPath = await fsPromises.realpath(artifactAbsolutePath);
         expect(projection.summaries).toHaveLength(1);
         expect(projection.revisions).toHaveLength(1);
         expect(projection.summaries[0]).toMatchObject({
           runId: run.runId,
-          path: artifactRelativePath,
+          path: canonicalArtifactPath,
           type: "file",
           status: "available",
           description: artifactDescription,
