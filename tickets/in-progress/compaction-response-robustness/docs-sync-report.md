@@ -3,15 +3,24 @@
 ## Scope
 
 - Ticket: `compaction-response-robustness`
-- Delivery revision: `DR-003`
-- Trigger: `CRR-006 Pass` after `CRR-005` source Pass at 9.5/10 and `API-REV-003 Pass` at 98.3% confidence
+- Delivery revision: `DR-004`
+- Trigger: user-requested integration of an advanced `origin/personal` followed by an Electron rebuild
 - Current implementation commits: `51ed4b666` (`fix(memory): bound compaction retries and planning`) plus `915c938da` (`fix(memory): preserve missing prompt observations`)
 - Reviewed-current-candidate checkpoint: `d3971c014d910ba8ef3c65505a2a1d596af81372`
-- Integrated base: unchanged `origin/personal` at `54890a07f74e941a7a12b6daaa26364f4c927b72`, fully contained by the ticket branch
-- Post-integration verification: no additional executable rerun because fetch integrated no base commit; current `API-REV-003` / `CRR-006` evidence remains applicable
+- Delivery-state checkpoint: `b2a6d29ce0e2f84fb787856c7c59681be34ad801`
+- Integrated base: latest fetched `origin/personal` at `cd2420c607c5129c961f14d4d9e2559c0888331f`, merged by `9f00e5d7078dfb4800b8dae9a1b5f4abe3d8d3f8`
+- Post-integration verification: Electron build/package verification passed, but a deterministic compatibility probe found that the incoming native-default-tool policy gives the Memory Compactor four effective generic tools despite its empty persisted configuration
 - Integration evidence: `delivery-integrated-state-refresh.log`
 
-## Why Docs Were Updated
+## DR-004 Integrated-State Impact Decision
+
+- Long-lived compaction docs changed in DR-004: `No`.
+- No-impact rationale: The five DR-003 docs still state the approved and reviewed ticket contract, including the zero-tool Memory Compactor boundary. Weakening those docs to match the newly integrated generic-tool exposure would silently override `REQ-009` and `AC-012`; delivery does not rewrite an approved contract to conceal integration drift.
+- Executable/docs alignment: `Blocked`. The latest base's `resolveAutoByteusRuntimeAgentToolExposure` supplies `run_bash`, `read_file`, `edit_file`, and `write_file` for an empty native definition. The built-in Memory Compactor launches through that native factory, so integrated runtime behavior no longer matches the durable zero-tool statement.
+- Evidence: `delivery-integrated-compatibility-probe-dr-004.log` records empty persisted compactor `toolNames` and the four derived effective names.
+- Required route: implementation owner adds an explicit compactor zero-default boundary, after which source review, API/E2E execution, proportional test-code review when applicable, and delivery docs validation must run again.
+
+## Why Docs Were Updated In DR-003
 
 The prior DR-001/DR-002 documentation covered the target-history prompt, tolerant six-array response selection, one bounded returned-content correction, atomic accepted commit, zero-tool posture, and prompt-contract-v3 compatibility. User verification then exposed a second durable runtime surface: trigger and planner targets could diverge and request repeated successful compactions; child runner failures could be mistaken for invalid JSON; a retained failed operation could execute from any later turn start; and a missing normalized prompt-token observation could be treated as numeric zero.
 
@@ -68,11 +77,11 @@ The current integrated implementation replaces those behaviors with trigger-alig
 
 ## Delivery Continuation
 
-- Docs sync result: `Updated — Pass`
-- Current Electron artifact decision: the DR-002 DMG/ZIP predates `51ed4b666`, `915c938da`, and checkpoint `d3971c014`; it is historical and must not be used as proof of the current candidate. The DR-003 macOS ARM64 personal-flavor package was rebuilt and independently verified; its current paths and hashes are recorded in `release-deployment-report.md` and the DR-003 build/verification logs.
-- Finalization hold: ticket archival, final delivery commit/push, target merge, release/deployment, and cleanup remain blocked on explicit verification of the current candidate.
+- Docs sync result: `DR-003 Updated — Pass; DR-004 No Change — Blocked on executable/docs mismatch`
+- Current Electron artifact decision: the DR-004 package was rebuilt from merge `9f00e5d70` and its package checks passed. It supersedes all earlier same-path artifacts, but it is not an acceptance-ready compaction candidate because the integrated zero-tool contract is violated.
+- Finalization hold: ticket archival, final delivery commit/push, target merge, release/deployment, and cleanup remain blocked on the implementation compatibility fix and renewed downstream validation before user verification.
 - Release impact: no version bump, release notes, publication, or deployment requested.
 
 ## Blocked Or Escalated Follow-Up
 
-Not applicable. The integrated implementation and intended behavior are clear enough to synchronize truthfully; no documentation-local code/design reroute is required.
+`Local Fix` routed to the implementation owner: preserve the latest base's ordinary native defaults while exempting the built-in Memory Compactor so its effective provider/tool surface remains empty. No requirement or design reinterpretation is needed; the approved zero-tool boundary is explicit.

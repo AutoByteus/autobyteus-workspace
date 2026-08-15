@@ -4,6 +4,7 @@ import {
   CompactionResponseParser,
   type CompactionResponseValidationStage,
 } from '../../../src/memory/compaction/compaction-response-parser.js';
+import { providerSafeCompactionText } from '../../../src/memory/presentation/unicode-safe-text.js';
 
 const currentResponse = (overrides: Record<string, unknown> = {}) => ({
   episodes: [{ summary: 'Earlier work was compacted.' }],
@@ -111,6 +112,30 @@ describe('CompactionResponseParser', () => {
     expect(result.criticalIssues).toHaveLength(25);
     expect(result.criticalIssues.every(({ fact }) => fact.length <= 18)).toBe(true);
     expect(result.criticalIssues.at(-1)?.fact).toContain('fact-25');
+  });
+
+  it('clamps accepted text without splitting surrogate pairs and repairs only malformed derived copies', () => {
+    const source = currentResponse({
+      episodes: [{ summary: '1234🛡️tail' }],
+      critical_issues: [{ fact: '1234\uD83Dtail' }],
+      unresolved_work: [],
+      durable_facts: [],
+      user_preferences: [],
+      important_artifacts: [],
+    });
+    const before = JSON.stringify(source);
+    const result = new CompactionResponseParser({
+      maxEpisodeChars: 5,
+      maxFactChars: 9,
+    }).parse(JSON.stringify(source));
+
+    expect(result.episodes).toEqual([{ summary: '1234' }]);
+    expect(result.criticalIssues).toEqual([{ fact: '1234�tail' }]);
+    expect(result.episodes[0]!.summary.length).toBeLessThanOrEqual(5);
+    expect(result.criticalIssues[0]!.fact.length).toBeLessThanOrEqual(9);
+    expect(providerSafeCompactionText.isProviderSafeText(result.episodes[0]!.summary)).toBe(true);
+    expect(providerSafeCompactionText.isProviderSafeText(result.criticalIssues[0]!.fact)).toBe(true);
+    expect(JSON.stringify(source)).toBe(before);
   });
 
   it.each([

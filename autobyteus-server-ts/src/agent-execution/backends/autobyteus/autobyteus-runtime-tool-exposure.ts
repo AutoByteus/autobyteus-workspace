@@ -1,5 +1,6 @@
 import type { AgentDefinition } from "../../../agent-definition/domain/models.js";
 import type { MemberTeamContext } from "../../../agent-team-execution/domain/member-team-context.js";
+import { MEMORY_COMPACTOR_AGENT_DEFINITION_ID } from "../../../built-in-agents/built-in-agent-registry.js";
 import {
   buildRuntimeAgentToolExposure,
   type RuntimeAgentToolExposure,
@@ -18,13 +19,17 @@ export const AUTOBYTEUS_DEFAULT_TOOL_NAMES = [
  * owned by the runtime-neutral exposure builder.
  */
 export const resolveAutoByteusRuntimeAgentToolExposure = (
-  agentDefinition: Pick<AgentDefinition, "toolNames"> | null,
+  agentDefinition: Pick<AgentDefinition, "id" | "toolNames"> | null,
   memberTeamContext?: MemberTeamContext | null,
-): RuntimeAgentToolExposure =>
-  buildRuntimeAgentToolExposure(
+): RuntimeAgentToolExposure => {
+  if (agentDefinition?.id === MEMORY_COMPACTOR_AGENT_DEFINITION_ID) {
+    return buildRuntimeAgentToolExposure([], null);
+  }
+  return buildRuntimeAgentToolExposure(
     [
       ...AUTOBYTEUS_DEFAULT_TOOL_NAMES,
       ...(agentDefinition?.toolNames ?? []),
     ],
     memberTeamContext,
   );
+};

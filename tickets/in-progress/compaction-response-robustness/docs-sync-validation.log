@@ -238,3 +238,15 @@ $ git status --short
 ?? tickets/in-progress/compaction-response-robustness/electron-build-macos-arm64-dr-003.log
 ?? tickets/in-progress/compaction-response-robustness/electron-build-verification-macos-arm64-dr-003.log
 DR-003 FINAL HANDOFF AUDIT: PASS
+
+## DR-004 integrated-state documentation and handoff audit — 2026-08-15 (Europe/Berlin)
+
+- Latest base merge: PASS — `origin/personal` `cd2420c607c5129c961f14d4d9e2559c0888331f` is an ancestor of integrated HEAD `9f00e5d7078dfb4800b8dae9a1b5f4abe3d8d3f8`; relation after merge was 7 ticket-only / 0 base-only commits.
+- Electron build: PASS — `electron-build-macos-arm64-dr-004.log` ends with `build_exit=0`.
+- Package verification: PASS — `electron-build-verification-macos-arm64-dr-004.log` ends with `VERIFICATION RESULT: PASS`.
+- Integrated compatibility: BLOCKED — `delivery-integrated-compatibility-probe-dr-004.log` proves the empty Memory Compactor definition resolves four effective generic native tools.
+- Documentation decision: PASS — long-lived docs retain the approved zero-tool contract and do not normalize the executable mismatch; `docs-sync-report.md`, `handoff-summary.md`, and `release-deployment-report.md` explicitly record the local-fix route.
+- Release/finalization boundary: PASS — no push, target merge, archive, publication, deployment, or cleanup was performed.
+
+DR-004 DOCS/HANDOFF RESULT: BLOCKED BY INTEGRATED SOURCE COMPATIBILITY FINDING
+- Post-build base re-fetch: PASS — `origin/personal` remained `cd2420c607c5129c961f14d4d9e2559c0888331f`, contained by rebuild HEAD `9f00e5d7078dfb4800b8dae9a1b5f4abe3d8d3f8` at 7 ahead / 0 behind.

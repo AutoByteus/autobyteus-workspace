@@ -73,7 +73,7 @@ The third operation changed shape because `WorkingContextMessageWindowPlanner.en
 ## Evidence
 
 - Screenshot: `evidence/repeated-compaction-at-20-percent.png`
-- Focused runtime events: `evidence/repeated-compaction-server-log-excerpt.txt` (corrected for `ARCH-REV-002` / `AR-FIND-002`; SHA-256 `e8737eb3150dfe478aeed87c4c3c24e158bc152b8d97d1bf3d90f9d846203cd8`; contains all three operation IDs, all four prompt observations, and all three compactor prompt lengths; excludes the unrelated `mssvuhbz_1` run)
+- Focused runtime events: `evidence/repeated-compaction-server-log-excerpt.txt` (corrected for `ARCH-REV-002` / `AR-FIND-002`; directly recomputed SHA-256 `adc1c471f487ad1aee1ffe4e6176fdd70603218b0dadff39c09af439134148cf`; revalidated operation IDs `mssvv6cl_1`, `mssvwf3s_2`, `mssvxn2c_3`; prompt observations 249,416, 243,153, 242,812, 8,755; compactor prompt lengths 17,849, 3,628, 372,840; excludes the unrelated `mssvuhbz_1` run)
 - Full server log: `/Users/normy/.autobyteus/server-data/logs/server.log`
 - Trigger calculation: `autobyteus-ts/src/agent/token-budget.ts`
 - Re-evaluation/request path: `autobyteus-ts/src/agent/loop/llm-phase-compaction.ts`

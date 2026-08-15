@@ -11,7 +11,7 @@ export { CompactionResult } from './compaction/compaction-result.js';
 export { CompactionResultNormalizer } from './compaction/compaction-result-normalizer.js';
 export type { NormalizedCompactionResult, NormalizedCompactedMemoryEntry } from './compaction/compaction-result-normalizer.js';
 export { AgentCompactionSummarizer } from './compaction/agent-compaction-summarizer.js';
-export { WorkingContextCompactionPromptBuilder } from './compaction/working-context-compaction-prompt-builder.js';
+export { CompactionPromptConstructionError, WorkingContextCompactionPromptBuilder } from './compaction/working-context-compaction-prompt-builder.js';
 export { CompactionAgentRunnerError, getCompactionAgentRunnerErrorMetadata } from './compaction/compaction-agent-runner.js';
 export type { CompactionAgentExecutionMetadata, CompactionAgentRunner, CompactionAgentRunnerResult, CompactionAgentTask } from './compaction/compaction-agent-runner.js';
 export { CompactionResponseParser, CompactionResponseParseError } from './compaction/compaction-response-parser.js';
@@ -72,3 +72,4 @@ export type { CompactionLineageScope } from './lineage/compaction-lineage-scope.
 export type { CompactionLineageRecord } from './lineage/compaction-lineage-record.js';
 export { CondensedToolCallRenderer } from './presentation/condensed-tool-call-renderer.js';
 export { ReadableValueRenderer } from './presentation/readable-value-renderer.js';
+export { ProviderSafeCompactionText, providerSafeCompactionText } from './presentation/unicode-safe-text.js';

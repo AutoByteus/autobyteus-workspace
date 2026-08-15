@@ -8,6 +8,10 @@ import type {
   CompactionAgentTask,
 } from '../../../src/memory/compaction/compaction-agent-runner.js';
 import type { WorkingContextMessageUnit } from '../../../src/memory/compaction/working-context-message-unit.js';
+import {
+  CompactionPromptConstructionError,
+  WorkingContextCompactionPromptBuilder,
+} from '../../../src/memory/compaction/working-context-compaction-prompt-builder.js';
 
 const makeUnit = (content: string): WorkingContextMessageUnit => ({
   id: 'message_0001',
@@ -207,5 +211,28 @@ describe('AgentCompactionSummarizer', () => {
       compactionRunId: 'compaction-run-1',
       taskId: 'task-1',
     });
+  });
+
+  it('launches no child or response repair when local prompt construction fails', async () => {
+    const runner = new FakeRunner();
+    const responseParser = { parse: vi.fn() };
+    const messagePromptBuilder = new WorkingContextCompactionPromptBuilder(
+      undefined,
+      {
+        finalize: () => '\uD83D',
+        isProviderSafeText: () => false,
+      },
+    );
+    const summarizer = new AgentCompactionSummarizer({
+      runner,
+      responseParser: responseParser as any,
+      messagePromptBuilder,
+    });
+
+    await expect(summarizer.summarizeMessageUnits([makeUnit('trace')]))
+      .rejects.toBeInstanceOf(CompactionPromptConstructionError);
+    expect(runner.calls).toHaveLength(0);
+    expect(responseParser.parse).not.toHaveBeenCalled();
+    expect(summarizer.getLastCompactionExecutionMetadata()).toBeNull();
   });
 });

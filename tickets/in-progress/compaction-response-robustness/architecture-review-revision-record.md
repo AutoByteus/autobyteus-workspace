@@ -10,6 +10,8 @@ The latest `design-review-report.md` remains authoritative. This record is the c
 | `ARCH-REV-002` | Round 2 / user-verified runtime defects and `SR-002` redesign | `SR-001`, `SR-002` | `Pass` | `Fail` — `Design Impact` | `AR-FIND-001`, `AR-FIND-002` |
 | `ARCH-REV-003` | Round 3 / `SR-003` prior-finding fixes and fail-closed/manual-retry replacement | `SR-001`, `SR-002`, `SR-003` | `Fail` — `Design Impact` | `Fail` — `Requirement Gap` | `AR-FIND-001`, `AR-FIND-002`, `AR-FIND-003`, `AR-FIND-004` |
 | `ARCH-REV-004` | Round 4 / `SR-004` USER-origin authorization and same-queue preservation | `SR-001`, `SR-002`, `SR-003`, `SR-004` | `Fail` — `Requirement Gap` | `Pass` | `AR-FIND-003`, `AR-FIND-004` |
+| `ARCH-REV-005` | Round 5 / `SR-005` provider-safe Unicode boundary | `SR-001`, `SR-002`, `SR-003`, `SR-004`, `SR-005` | `Pass` | `Fail` — `Design Impact` | `AR-FIND-002`, `AR-FIND-005` |
+| `ARCH-REV-006` | Round 6 / `SR-006` bounded evidence/oracle corrections | `SR-001`, `SR-002`, `SR-003`, `SR-004`, `SR-005`, `SR-006` | `Fail` — `Design Impact` | `Pass` | `AR-FIND-002`, `AR-FIND-005` |
 
 ## Revision Entries
 
@@ -66,7 +68,7 @@ None — `ARCH-REV-001` had no findings. Its `SR-001` prompt/parser/commit concl
 | Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
 | --- | --- | --- | --- | --- |
 | `AR-FIND-001` | Open — successful estimate substituted for below-threshold usage | Resolved | `SR-003`; `REQ-012`; `AC-016`; `design-spec.md` DS-001/DS-004, coordinator/commit hook, examples, invariants, and coverage | `CompactionThresholdEpisode` is separate from pending; accepted commit's final hook clears the verified operation and installs `awaiting_below_observation`; first actual same-key below rearms, first at/above emits one diagnostic and suppresses; budget-key reset and hard-cap override are explicit |
-| `AR-FIND-002` | Open — wrong focused excerpt and incomplete inventory | Resolved | `SR-003`; corrected evidence and canonical inventory | Corrected file SHA-256 is `e8737eb3150dfe478aeed87c4c3c24e158bc152b8d97d1bf3d90f9d846203cd8`; all three operation IDs, four prompt observations, and three compactor prompt lengths are present; unrelated `mssvuhbz_1`/249139 is absent; all four SR-002 evidence files are inventoried and linked |
+| `AR-FIND-002` | Open — wrong focused excerpt and incomplete inventory | Resolved for content/inventory; checksum assertion later corrected by `ARCH-REV-005` | `SR-003`; corrected evidence and canonical inventory; `ARCH-REV-005` direct recomputation | All three operation IDs, four prompt observations, and three compactor prompt lengths are present; unrelated `mssvuhbz_1`/249139 is absent; all four SR-002 evidence files are inventoried and linked. The file's actual SHA-256 is `adc1c471f487ad1aee1ffe4e6176fdd70603218b0dadff39c09af439134148cf`, not the previously recorded `e8737e...`. |
 
 - New or remaining finding IDs: `AR-FIND-003`, `AR-FIND-004`
 - Material classification changes: the two prior `Design Impact` findings are resolved. The current result remains `Fail`, now classified `Requirement Gap`, because the approved user-only retry contract lacks a defined outcome for a supported non-user external turn; the runner-failure supplement has a secondary design-coherence correction.
@@ -94,3 +96,49 @@ None — `ARCH-REV-001` had no findings. Its `SR-001` prompt/parser/commit concl
 - Material classification changes: the prior `Requirement Gap` and secondary supplemental `Design Impact` are resolved; the current package passes architecture review and is ready for implementation rework.
 - Recommended recipient: `implementation_engineer`
 - Remaining risks or uncertainty: token estimation remains approximate; runtime-only threshold suppression may reset on restart; queued turn starts retain existing non-persistent shutdown behavior; a single oversized input has no general admission/chunking gate; schema validation cannot prove factual summary quality. These are explicit and do not undermine the reviewed behavior.
+
+### ARCH-REV-005 — Unicode architecture is sound; two package corrections remain
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/design-review-report.md`
+- Review round and trigger: round 5; `SR-005` adds the approved derived-copy Unicode correction after a live DeepSeek request rejection caused by a truncation-created lone surrogate
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/design-review-report.md`; prior result had no open finding, current findings `AR-FIND-002` (reopened) and `AR-FIND-005`
+- Relevant solution revision IDs: `SR-001`, `SR-002`, `SR-003`, `SR-004`, `SR-005`
+- Prior authoritative decision: `Pass` (`ARCH-REV-004`)
+- Current authoritative decision: `Fail — Design Impact`
+- What changed in the review result or what baseline was established: the live source-to-provider path is reachable and reproduced. The proposed pure memory-presentation utility, source-versus-derived ownership, surrogate-safe middle/end truncation, final local prompt guard, typed fail-closed disposition, parser-clamp reuse, exact fixtures, and directly usable/no-migration posture are proportionate and technically sound. Review found two bounded package defects: the retained three-operation evidence has a stale asserted checksum, and the Unicode example adds an undefined whole-prompt character limit that is not part of the approved per-value/clamp contract.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `AR-FIND-001` | Resolved in `ARCH-REV-003` | Remains resolved | `SR-003`–`SR-005`; DS-001/DS-004 and accepted commit hook | SR-005 does not change the actual-observation episode, suppression/reset, or hard-cap override |
+| `AR-FIND-002` | Resolved in `ARCH-REV-003` for evidence content/inventory | Reopened only for checksum metadata | `SR-003`, `SR-005`; canonical evidence and checksum assertions | Direct SHA-256 recomputation returns `adc1c471f487ad1aee1ffe4e6176fdd70603218b0dadff39c09af439134148cf`; upstream artifacts still assert `e8737e...`. Content remains the correct three-operation sequence. |
+| `AR-FIND-003` | Resolved in `ARCH-REV-004` | Remains resolved | `SR-004`, `SR-005`; REQ-014/015 | SR-005 preserves authoritative origin, USER-only retry, atomic attempt authorization, and same-queue non-user retention |
+| `AR-FIND-004` | Resolved in `ARCH-REV-004` | Remains resolved | `SR-004`, `SR-005`; runner-failure supplement | SR-005 preserves strict fail-closed/USER-only recovery and does not reintroduce autonomous failure retry |
+
+- New or remaining finding IDs: `AR-FIND-002` (reopened), `AR-FIND-005` (new)
+- Material classification changes: prior `Pass` changes to `Fail — Design Impact` for two narrow coherence/actionability corrections. The substantive Unicode architecture is accepted; no requirement clarification or new machinery is requested.
+- Recommended recipient: `solution_designer`
+- Remaining risks or uncertainty: malformed old/external source becomes U+FFFD only in the derived copy; token estimation remains approximate; runtime-only threshold state can reset on restart; ordinary queued work remains non-persistent; a single oversized input lacks general admission/chunking; deterministic validation cannot prove factual summary quality.
+
+### ARCH-REV-006 — Corrected Unicode package passes
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/design-review-report.md`
+- Review round and trigger: round 6; `SR-006` corrects the two bounded evidence/actionability findings from `ARCH-REV-005`
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/design-review-report.md`; `AR-FIND-002`, `AR-FIND-005`
+- Relevant solution revision IDs: `SR-001`, `SR-002`, `SR-003`, `SR-004`, `SR-005`, `SR-006`
+- Prior authoritative decision: `Fail — Design Impact` (`ARCH-REV-005`)
+- Current authoritative decision: `Pass`
+- What changed in the review result or what baseline was established: direct recomputation now agrees with every current upstream checksum assertion while the canonical evidence bytes and expected sequence remain unchanged. The invalid whole-prompt `plannedRenderedLimit` oracle is removed; the design now separates complete-prompt well-formed/control safety, independent configured per-value/per-clamp limits, and B/T/P token-budget ownership. No requirement behavior, prompt/schema/tool/storage/migration contract, or retry/origin lifecycle changed.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `AR-FIND-002` | Reopened — stale checksum metadata | Resolved | `SR-006`; investigation inventory, repeated-compaction analysis, solution revision record, retained evidence | File SHA-256 directly recomputes to `adc1c471f487ad1aee1ffe4e6176fdd70603218b0dadff39c09af439134148cf`; current upstream references agree. The file contains only the expected three operation IDs, four prompt observations, and three child prompt lengths; unrelated `mssvuhbz_1`/249139 remains absent. |
+| `AR-FIND-005` | Open — undefined whole-prompt character bound | Resolved | `SR-006`; `design-spec.md` Unicode example, exact invariants, and prompt/parser coverage | `plannedRenderedLimit` is removed as an oracle. The complete 540,727-unit captured task is preserved subject only to well-formed/control safety; each rendered value and accepted-text clamp uses its own configured bound after safe-boundary adjustment; B/T/P remains the exclusive complete-prompt budget path. |
+
+- New or remaining finding IDs: None.
+- Material classification changes: the two bounded `Design Impact` findings are resolved; the package returns to `Pass` and is ready for implementation rework.
+- Recommended recipient: `implementation_engineer`
+- Remaining risks or uncertainty: malformed old/external source becomes U+FFFD only in the derived copy; provider token estimation remains approximate; runtime-only threshold state can reset on restart; ordinary queued work remains non-persistent; one oversized input lacks general admission/chunking; deterministic validation cannot prove factual summary quality.

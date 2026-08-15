@@ -4,16 +4,17 @@
 
 The ticket worktree already contains the reviewed and implemented REQ-001–REQ-010 baseline at commits `ed7f65a5d` and `1f2406ffa`: explicit target-agent prompt framing, the preserved six-array response contract, schema-aware tolerant parsing, one new-child response correction, prompt-contract version 3, direct v1/v2/v3 lineage reads, zero compactor tools, and the existing host-owned accepted-compaction commit. The user has explicitly reconfirmed that boundary. The Memory Compactor system/operation prompt, response schema, episodic/semantic model, parser tolerance, and persistence model are not redesigned in this revision.
 
-User verification and architecture review exposed four defects below or beside that healthy response/commit boundary:
+User verification and architecture review exposed five defects below or beside that healthy response/commit boundary:
 
 1. `evaluateLlmPhaseCompaction` requests compaction at `triggerRatio × inputBudget`, while `EstimatedMessageBudgetStrategy` independently gives the recent suffix 35% of the full input budget. With a 20% trigger this allowed a planned result above the trigger. Three successful operations in one parent turn reduced 249,416 → 243,153 → 242,812 → 8,755 tokens.
 2. `LlmPhase` already represents provider/request/ingestion failure as `LlmPhaseOutcome.isError`, but `LLMResponsePipeline` drops that bit when publishing `ASSISTANT_COMPLETE`. `CompactionRunOutputCollector` therefore accepts generated error prose as usable model output, and `AgentCompactionSummarizer` misclassifies it as JSON extraction failure and launches an inapplicable correction child.
 3. `PendingCompactionExecutor` preserves the same pending operation after every failure, and request assembly executes it before a later user message reaches the target agent. The user has now explicitly approved that strict fail-closed/manual-retry boundary. The defect is that a genuine runner failure launches a meaningless correction child and is reported as JSON failure; the platform must perform no autonomous retry after the final failure.
 4. Pending presence is also treated as sufficient execution authorization. `InterAgentMessageReceivedEvent` shares the same turn-start/request path, and production team/direct-agent messages commonly arrive as `UserMessageReceivedEvent` with `SenderType.AGENT`; system task notifications use `SenderType.SYSTEM`. Any of them can currently execute the retained operation. Merely leaving an ineligible non-user message at the FIFO head would block a later user `continue`, while consuming it would lose supported work.
+5. Provider-facing compaction rendering is not Unicode-safe. In the 2026-08-15 reproduction, `ReadableValueRenderer.omitMiddle` applied `String.slice` at a 2,000-unit UTF-16 boundary inside valid `🛡️`, inserted the omission marker after its high surrogate, and produced one lone U+D83D in the 540,727-unit child prompt. DeepSeek rejected `messages[1].content` with HTTP 400 before inference. `CompactionResponseParser.clampText` has the same end-slice risk for accepted text that can enter a later prompt.
 
 The healthy boundary remains: a strategy proposal is normalized; `MemoryManager` validates the baseline and lineage; `AcceptedCompactionBuilder` creates host-owned typed artifacts and finalized context; validation runs before `AcceptedCompactionCommitter`; and only the committer archives selected traces, appends memory/lineage, replaces context/snapshot, and completes the pending operation. The revised design strengthens planning, child outcome transport, and pending-operation control without bypassing this boundary.
 
-Exact evidence and production traces are in `repeated-compaction-runtime-analysis.md`, `compactor-runner-failure-analysis.md`, `compaction-memory-shape-reassessment.md`, and `investigation-notes.md`.
+Exact evidence and production traces are in `repeated-compaction-runtime-analysis.md`, `compactor-runner-failure-analysis.md`, `compaction-unicode-safety-analysis.md`, `compaction-memory-shape-reassessment.md`, and `investigation-notes.md`.
 
 ## Intended Change
 
@@ -26,6 +27,8 @@ Propagate the existing `isError` outcome through the assistant-complete event co
 Preserve the pending compaction as a pre-dispatch gate after any final failure, but do not equate pending presence with executability. A pending operation has an explicit attempt state: a newly requested operation is `initial_attempt_ready` and keeps one automatic first attempt regardless of current turn origin; after final failure it is `awaiting_user_retry`. The failed target-agent turn ends after one truthful terminal error; no target-agent LLM dispatch/tool phase follows it, and the platform schedules no same-turn or background retry. A distinct turn with authoritative USER origin, such as `continue`, may initiate at most one new execution. Success clears the pending operation and resumes that user turn; another failure stops it and leaves the gate waiting. This uniform rule applies to proactive and hard-cap pressure. All raw traces and canonical memory remain untouched on every failure.
 
 Resolve turn origin at the inbox boundary before inter-agent conversion or input processing. Store `user` / `agent` / `system` on each turn-start entry and carry it into `AgentTurn` and request assembly. While `awaiting_user_retry`, a compaction-aware admission policy leaves agent/system entries unclaimed in the existing turn-start queue and allows the scheduler to claim the earliest USER entry behind them. No second deferred queue is needed. If recovery fails, retained entries stay queued. If it succeeds, the user turn runs first; after that active turn settles, ordinary FIFO scheduling resumes over the retained entries. Existing shutdown drain semantics continue to own all queued entries.
+
+Add a narrow provider-safe text boundary for compaction. Raw traces, tool payloads, archives, and canonical memory remain exact. `ReadableValueRenderer` continues to own serialization, redaction, limits, and omission-marker wording, but uses shared surrogate-aware head/tail boundaries and derived-copy normalization. `CompactionResponseParser` uses the same safe end clamp for accepted text. `WorkingContextCompactionPromptBuilder` finalizes the complete derived task prompt to well-formed Unicode, preserves newline/tab, removes non-useful C0/DEL controls, and verifies the invariant before child launch. Valid multilingual text, code, paths, symbols, and emoji remain; there is no ASCII conversion or emoji-specific subsystem.
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
@@ -41,6 +44,7 @@ Resolve turn origin at the inbox boundary before inter-agent conversion or input
 | BEH-008 | Operational | REQ-013; AC-018, AC-019, AC-021 | Child request fails before usable output, or produces usable invalid output | `compactor-runner-failure-analysis.md`; four no-assistant/no-usage runs | Preserve the error bit and cause across the event boundary; runner error bypasses parser/repair, while usable invalid output still gets one correction | LlmPhase outcome -> assistant event -> collector -> typed runner result -> summarizer; DS-002, DS-005 |
 | BEH-009 | Operational | REQ-014, REQ-015; AC-020–AC-023 | Any required compaction reaches a final failure | Same pending operation reran on the later user-authored `continue`; each runner failure incorrectly created a correction child | Stop that target-agent turn, transition pending to `awaiting_user_retry`, schedule no autonomous retry, and let one distinct USER-origin turn authorize no more than one new attempt | Executor failure -> retained pending attempt state -> terminal turn error -> eligible user request assembly -> one authorized attempt; DS-001, DS-004–DS-006 |
 | BEH-010 | System | REQ-015; AC-022, AC-023 | USER, AGENT, or SYSTEM input is queued while failed pending awaits user retry | `ARCH-REV-003` / `MP-002`; core inbox/turn/input/assembler path; server AGENT/SYSTEM carrier builders | Stamp authoritative origin before conversion; non-user entries remain in the existing queue and cause no turn/retry/dispatch/error; an eligible USER entry may pass them only to resolve the gate, then normal FIFO resumes after successful user-turn settlement | Message submit -> origin-stamped inbox entry -> eligibility-aware scheduler -> retained non-user or USER retry turn -> authorized executor -> user dispatch -> queued work resumes; DS-006 |
+| BEH-011 | Operational / Contract | REQ-016; AC-024–AC-026 | Selected history or accepted text is shortened at a supplementary-plane Unicode boundary | `compaction-unicode-safety-analysis.md`; exact parent/child traces and proof JSON; unsafe renderer/parser slices | Keep source exact; normalize only the derived copy; prevent split surrogate pairs in middle/end truncation; require well-formed completed prompt before launch; preserve valid multilingual/code/emoji content | Source unit -> provider-safe value renderer -> history/task builder final invariant -> child request; accepted response clamp -> future projection; DS-002, DS-005, DS-007 |
 
 ## Relevant Supplemental Task Artifacts
 
@@ -51,21 +55,25 @@ Resolve turn origin at the inbox boundary before inter-agent conversion or input
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/compaction-output-contract-decision.md` | Original structured-output decision | REQ-001–REQ-010; AC-001–AC-013 | Preserved contract and least-authority boundary | Approved 2026-08-14 |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/repeated-compaction-runtime-analysis.md` | 80%→20% trigger/planner evidence | REQ-011, REQ-012; AC-014, AC-015, AC-016, AC-017 | Defines the trigger-alignment defect and observed sequence | Evidence; N/A |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/compactor-runner-failure-analysis.md` | Four child failures, pending retry, and corrected re-entry direction | REQ-013–REQ-015; AC-018–AC-023 | Defines the event-boundary defect and aligns recovery with USER-only authorization and queued non-user preservation | Evidence; N/A |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/compaction-runtime-behavior-examples.md` | Concrete intended runtime outcomes | REQ-011–REQ-015; AC-014–AC-023 | Governs ratio lowering, later crossing, runner/output distinction, user-only retry, queued non-user preservation, and unattainable target | Approved 2026-08-14, including SR-004 clarification |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/compaction-runtime-behavior-examples.md` | Concrete intended runtime outcomes | REQ-011–REQ-016; AC-014–AC-026 | Governs ratio lowering, later crossing, runner/output distinction, user-only retry, queued non-user preservation, Unicode-safe rendering, and unattainable target | Approved 2026-08-14/15 |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/compaction-memory-shape-reassessment.md` | Response/storage option analysis | REQ-002, REQ-007–REQ-010; AC-003, AC-007–AC-013 | Records why JSON is transient, episodes are continuation-critical, direct writes are rejected, and the existing contract is preserved | Resolved evidence/decision context; user decision 2026-08-14 |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/evidence/repeated-compaction-at-20-percent.png` | User-visible repeated-success sequence | REQ-011, REQ-012; AC-014–AC-017 | Shows three rapid compaction cards after the ratio change | Evidence; N/A |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/evidence/repeated-compaction-server-log-excerpt.txt` | Exact trigger/plan/result logs | REQ-011, REQ-012 | Runtime numbers for planning regression coverage | Evidence; N/A |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/evidence/compactor-provider-failure-and-repeat.png` | User-visible later failure sequence | REQ-013, REQ-014; AC-018–AC-021 | Shows two failures and the parent token context | Evidence; N/A |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/evidence/compactor-runner-failure-evidence.json` | Correlated parent/child trace summary | REQ-013, REQ-014 | Proves error completion was not model-authored compaction output | Evidence; N/A |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/compaction-unicode-safety-analysis.md` | Unicode request-rejection analysis and intended safety boundary | REQ-016; AC-024–AC-026 | Defines source-versus-derived ownership, safe middle/end truncation, final prompt invariant, and direct coverage | Approved 2026-08-15 |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/evidence/compaction-unicode-request-rejection.png` | User-visible HTTP 400 reproduction | REQ-016; AC-024, AC-026 | Shows correct trigger and typed provider rejection | Evidence; N/A |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/evidence/compaction-unicode-request-rejection-log.txt` | Focused exact trigger/child/failure log | REQ-013, REQ-016; AC-018, AC-024–AC-026 | Proves one pre-inference failure and correct fail-closed transport | Evidence; N/A |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-response-robustness/tickets/in-progress/compaction-response-robustness/evidence/compaction-unicode-truncation-proof.json` | Machine-readable source-to-wire proof | REQ-016; AC-024–AC-026 | Supplies the exact valid shield source and derived lone-surrogate fixture | Evidence; N/A |
 
 ## Task Design Health Assessment (Mandatory)
 
 - Change posture: `Bug Fix`, bounded `Behavior Change`, and local `Refactor` on top of the implemented prompt/parser baseline.
 - Current design issue found: `Yes`.
-- Root cause classification: `Missing Invariant` (post-compaction target, actual-observation reset, and failed-pending authorization), `Duplicated Policy Or Coordination` (trigger versus fixed retention), `Boundary Or Ownership Issue` (LLM error bit lost before collector and original turn origin absent at pending execution), and `Shared Structure Looseness` (duplicated/minimal pending request cannot carry the trigger-time budget or attempt state, while pending alone cannot own post-success state after accepted cleanup).
+- Root cause classification: `Local Implementation Defect` (UTF-16-unsafe middle/end slicing), `Missing Invariant` (provider-facing text, post-compaction target, actual-observation reset, and failed-pending authorization), `Duplicated Policy Or Coordination` (trigger versus fixed retention), `Boundary Or Ownership Issue` (LLM error bit lost before collector and original turn origin absent at pending execution), and `Shared Structure Looseness` (duplicated/minimal pending request cannot carry the trigger-time budget or attempt state, while pending alone cannot own post-success state after accepted cleanup).
 - Refactor needed now: `Yes`.
-- Evidence: the supported 20% setting produced three rapid successful operations; four child runs had no assistant trace or usage yet reached the JSON parser; the identical pending operation reran before `continue` could dispatch; supported AGENT/SYSTEM turn starts share the same pending executor and current FIFO head-only selection cannot both preserve them and admit a user behind them.
-- Design response: introduce a single planning-budget DTO and target formula, preserve one coordinator-owned pending gate with explicit attempt state, add authoritative turn-start origin and eligibility-aware same-queue admission, add typed assistant error projection/collector failure, type repair exhaustion, and validate the budget before commit.
+- Evidence: the supported 20% setting produced three rapid successful operations; four child runs had no assistant trace or usage yet reached the JSON parser; the identical pending operation reran before `continue` could dispatch; supported AGENT/SYSTEM turn starts share the same pending executor and current FIFO head-only selection cannot both preserve them and admit a user behind them; a later valid shield emoji was split into lone U+D83D and rejected by DeepSeek before inference.
+- Design response: introduce a single planning-budget DTO and target formula, preserve one coordinator-owned pending gate with explicit attempt state, add authoritative turn-start origin and eligibility-aware same-queue admission, add typed assistant error projection/collector failure, type repair exhaustion, validate the budget before commit, and centralize Unicode-safe derived compaction text without touching source stores.
 - Refactor rationale: local patches such as lowering the 35% constant, matching error-message text, clearing every failed request, treating every pending record as executable, rejecting/dropping non-user messages, or adding a second deferred queue would leave two owners for policy, conflate model text with runtime failure, discard supported work, block user recovery, or weaken hard-cap safety.
 - Intentional deferrals and residual risk: exact tokenizer admission/chunking for one enormous newly arriving message, provider fallback, provider quota policy, UI denominator redesign, and factual-summary evaluation remain separate. Token estimation can differ from provider accounting; calibration and headroom reduce that risk, and the accepted postcondition fails closed before commit.
 
@@ -79,6 +87,7 @@ Resolve turn origin at the inbox boundary before inter-agent conversion or input
 - **Pending attempt state**: `initial_attempt_ready` permits the one automatic first execution; `attempt_in_progress` identifies that execution and turn; `awaiting_user_retry` permits no execution until a distinct USER-origin turn authorizes one attempt.
 - **Authoritative turn-start origin**: `user`, `agent`, or `system`, resolved from the original inbox event/sender type before input conversion and stored on the turn-start entry and active turn.
 - **Fail-closed pending gate**: a requested compaction remains pending until accepted commit clears it. Final failure ends the current target-agent turn and changes authorization to `awaiting_user_retry`; pending presence by itself is not executable authority.
+- **Provider-safe derived text**: a temporary rendered copy that is well-formed Unicode, retains valid multilingual/code/symbol content, removes only non-useful unsafe controls, and never splits a surrogate pair. It is not a rewritten raw trace or canonical-memory record.
 
 ## Design Reading Order
 
@@ -87,7 +96,8 @@ Resolve turn origin at the inbox boundary before inter-agent conversion or input
 3. Preserve the child `isError` contract through server collection.
 4. Apply uniform fail-closed/manual-retry behavior with explicit pending attempt state.
 5. Admit USER versus non-user turn starts from authoritative origin while retaining one ordinary queue.
-6. Map these owners into current files, remove duplicated policies, and validate without migration.
+6. Make derived compaction input/output clamps Unicode-safe while preserving exact source data.
+7. Map these owners into current files, remove duplicated policies, and validate without migration.
 
 ## Legacy Removal Policy (Mandatory)
 
@@ -98,18 +108,19 @@ Resolve turn origin at the inbox boundary before inter-agent conversion or input
 - Remove pending-presence-only execution checks and any direct derivation of compaction executability from `pendingRequest !== null`.
 - Remove the path that treats `ASSISTANT_COMPLETE` with `is_error=true` as candidate compaction text.
 - Remove generic `Error` construction for response-repair exhaustion in favor of a typed response-validation failure.
+- Remove direct UTF-16 `slice` boundaries from compaction middle/end truncation; one shared safe boundary replaces them without a compatibility switch.
 - Do not keep old planner behavior behind a flag, accept error prose as a fallback, dual-write pending shapes, or add a v4 prompt alias.
 
 ## Persisted Data / State Transition Decision (Mandatory When Persisted Data May Be Affected)
 
 - Stored subject, location, representative shape, and approximate volume: run-local `episodic.jsonl`, `semantic.jsonl`, `compaction_lineage.jsonl`, raw trace archives/manifests, and `working_context_snapshot.json`; representative Daily Assistant lineage has five successful heads with episode/semantic counts `4/25`, `3/21`, `2/18`, `2/18`, and `5/0`.
-- Relevant code-model, serialization, semantic, or physical-store change: none. The expanded pending request/attempt state, post-success threshold episode, authoritative turn origin, ordinary inbox entries, planning assessment, and LLM request recovery snapshot are runtime-only objects. Prompt contract remains 3.
+- Relevant code-model, serialization, semantic, or physical-store change: no persisted schema change. The expanded pending request/attempt state, post-success threshold episode, authoritative turn origin, ordinary inbox entries, planning assessment, LLM request recovery snapshot, and provider-safe rendered text are runtime-only objects. Prompt contract remains 3.
 - Normal reader/writer behavior and representative evidence: current v1/v2/v3 lineage reader and typed episode/semantic stores already load the representative data; accepted committer remains the only writer.
 - Required semantics and invariants under direct use: all existing IDs, timestamps, categories, facts, salience, lineage membership, archived traces, and current projection remain unchanged.
 - Physical-store, privacy/security, disposal/rebuild, and operational constraints: existing user memory must not be rewritten; compactor receives no filesystem authority.
 - Decision: `Directly Usable — No Migration`.
-- Decision rationale: no stored schema changes. Migration would add I/O and corruption/recovery risk without changing runtime meaning. The runtime-only post-success suppression state may reset on process restart, which can permit one additional proactive operation after restart; this bounded residual does not justify writing lifecycle state into canonical memory.
-- Acceptance criteria or design constraints supported: REQ-007–REQ-010, REQ-014, REQ-015; AC-010–AC-013, AC-020–AC-023.
+- Decision rationale: no stored schema changes. The malformed lone surrogate existed only in one failed child prompt; the valid shield remains in the parent raw trace and a fixed build regenerates a safe derived copy. Migration would add I/O and corruption/recovery risk without changing runtime meaning. The runtime-only post-success suppression state may reset on process restart, which can permit one additional proactive operation after restart; this bounded residual does not justify writing lifecycle state into canonical memory.
+- Acceptance criteria or design constraints supported: REQ-007–REQ-010, REQ-014–REQ-016; AC-010–AC-013, AC-020–AC-026.
 
 ### Migration Plan
 
@@ -125,6 +136,7 @@ N/A — no persisted transformation is required.
 | DS-004 | Bounded Local | BEH-007, BEH-009 | New token-usage observation or accepted operation result | Request, await actual-below observation, bounded inadequate-reduction suppression, actual-below reset, budget-key reset, or hard-cap override | `CompactionThresholdGate` owned by the coordinator | Prevents estimated success from creating another operation before an actual below-threshold observation |
 | DS-005 | Return-Event | BEH-002–BEH-004, BEH-006, BEH-008, BEH-009 | Child/strategy result or failure | One parent terminal status and either one commit or no canonical mutation | `PendingCompactionExecutor` | Preserves coherent reporting and atomicity |
 | DS-006 | Primary End-to-End | BEH-009, BEH-010 | USER/AGENT/SYSTEM input submission while a failed pending operation awaits user retry | Non-user entry retained without work, or one USER-authorized retry followed by user dispatch and later FIFO resumption | `AgentEventScheduler` for dispatch selection; `CompactionRetryTurnAdmissionPolicy` for eligibility; coordinator/executor for authorization | Prevents autonomous retries and message loss without a second queue or blocked user recovery |
+| DS-007 | Bounded Local | BEH-011 | Raw/source value or accepted compactor text requires provider-facing rendering/clamping | Well-formed, control-safe, bounded derived text or typed local construction failure before child launch | `ProviderSafeCompactionText` utility serving `ReadableValueRenderer`, parser clamp, and task-prompt builder | Prevents deterministic request rejection without mutating raw traces or stripping valid Unicode |
 
 ## Primary Execution Spine(s)
 
@@ -150,6 +162,7 @@ N/A — no persisted transformation is required.
 | DS-004 | One runtime-only state machine survives successful pending cleanup. Accepted success enters `awaiting_below_observation`; only an actual same-key usage below `T` rearms normal proactive eligibility. A first fresh same-key observation at/above `T` emits one inadequate-reduction diagnostic and suppresses another proactive operation until actual-below or budget-key reset; hard cap overrides suppression. | threshold episode, budget key, completed operation identity, first inadequate observation | threshold gate | diagnostic reason codes |
 | DS-005 | Parsed output returns through normalization and accepted construction. Finalized prompt cost is validated before the committer. A final failure transitions the pending attempt to `awaiting_user_retry` and terminates the target-agent turn; success commits once and installs the post-success threshold episode. | strategy result, accepted compaction, attempt disposition, terminal outcome | executor/manager | failure classification, reporter enrichment |
 | DS-006 | Every external turn-start entry receives immutable origin before input conversion. While the pending attempt awaits user retry, scheduler admission treats non-user entries as temporarily ineligible but leaves them in the sole FIFO queue; it selects the earliest USER behind them. The active turn carries that origin to request assembly, where the coordinator authorizes at most one retry for that turn. Success lets the user turn proceed and normal FIFO resume afterward; failure leaves retained entries untouched. | turn-start entry, authoritative origin, admission decision, authorized retry, retained queue order | scheduler/admission policy + coordinator/executor | inbox availability/wakeup, shutdown drain |
+| DS-007 | A raw/source value is serialized and redacted without mutation, normalized into a provider-safe derived copy, and omitted/clamped only at surrogate-safe boundaries. The completed task prompt is finalized and checked before the child runner receives it. Accepted episode/fact text uses the same safe end clamp before it can enter a later context. | exact source text, derived text, safe boundary, completed task prompt | provider-safe text utility + renderer/prompt builder | redaction, omission accounting, local input-construction diagnostics |
 
 ## Spine Actors / Main-Line Nodes
 
@@ -162,6 +175,7 @@ N/A — no persisted transformation is required.
 - `AgentEventScheduler`: selects the first currently dispatchable entry without consuming deferred non-user entries.
 - `CompactionRetryTurnAdmissionPolicy`: narrow adapter from public failed-pending state plus entry origin to dispatch eligibility.
 - `AgentTurn`: immutable carrier of authoritative external origin across input conversion and tool continuations.
+- `ProviderSafeCompactionText`: narrow pure owner of well-formed derived text, disallowed-control removal, and surrogate-safe head/tail/end boundaries.
 - `WorkingContextMessageWindowPlanner`: target-respecting unit selection.
 - `AgentCompactionSummarizer`: initial output/correction state.
 - `ServerCompactionAgentRunner`: one child execution and typed outcome.
@@ -185,6 +199,9 @@ N/A — no persisted transformation is required.
 | `AgentEventScheduler` | priority and first-eligible claim using injected admission policy | pending state mutation or input conversion |
 | `CompactionRetryTurnAdmissionPolicy` | whether one turn-start entry is dispatchable under the public `awaiting_user_retry` query | queue mutation, attempt authorization, or message conversion |
 | `AgentWorker` / `AgentTurn` | active-turn lifecycle and immutable origin propagation | compaction eligibility decisions |
+| `ProviderSafeCompactionText` | derived-copy Unicode normalization, disallowed-control removal, and safe slice-boundary calculation | source mutation, redaction policy, omission-marker wording, parser schema, or provider retry |
+| `ReadableValueRenderer` | source serialization/redaction, configured visible limit, and omission-marker semantics using safe boundaries | raw-trace writes or duplicated Unicode repair logic |
+| `WorkingContextCompactionPromptBuilder` | exact approved template composition plus final derived-text invariant before child launch | source cleanup, retry policy, or model response validation |
 | accepted builder/validator/committer | typed result, final context, postcondition, ordered commit | trigger/retry policy or child tools |
 
 ## Thin Entry Facades / Public Wrappers (If Applicable)
@@ -271,6 +288,14 @@ Parent: `AgentCompactionSummarizer`.
 
 A `CompactionAgentRunnerError` at either child execution is never converted to a parser stage.
 
+### DS-007 — provider-safe derived text
+
+Parent: `ReadableValueRenderer` for source presentation and `WorkingContextCompactionPromptBuilder` for the completed child task.
+
+`exact source value -> serialize/redact -> toWellFormed derived copy -> normalize CRLF/CR to LF -> remove C0/DEL except LF/TAB -> calculate surrogate-safe head/tail or end boundaries -> insert existing omission marker / clamp -> escape reserved history delimiter -> compose exact approved task template -> final provider-safe normalization + well-formed invariant -> child runner`
+
+The utility does not modify its input. A safe middle boundary moves the head end left when it would leave a high surrogate and moves the tail start right when it would begin with a low surrogate. Omitted-count calculation uses the adjusted retained lengths. The final prompt guard repairs pre-existing lone surrogates in old/external text to U+FFFD on the derived copy; an unexpected failure to produce well-formed text becomes a typed local input-construction failure before any provider call. `CompactionResponseParser.clampText` uses the same safe end primitive so a stored/projection-bound accepted fact cannot recreate the defect later.
+
 ## Off-Spine Concerns Around The Spine
 
 | Off-Spine Concern | Related Spine ID(s) | Serves Which Owner | Responsibility | Why It Exists | Risk If Misplaced On Main Line |
@@ -283,6 +308,8 @@ A `CompactionAgentRunnerError` at either child execution is never converted to a
 | Exact prompt templates | DS-002 | summarizer | preserve v3 task wording | user-approved contract | runtime fix accidentally churns prompt |
 | Turn-start origin resolution | DS-006 | inbox/active turn | classify original USER/AGENT/SYSTEM source before conversion | later pipeline normalizes different event shapes | sender text or converted event class is mistaken for authority |
 | Compaction retry admission | DS-006 | scheduler | use public failed-pending query to filter dispatchability without moving entries | normal FIFO must remain one queue | queue starts owning memory state or a second buffer appears |
+| Source redaction and omission marker | DS-007 | readable-value renderer | preserve current privacy and presentation semantics while boundaries become safe | Unicode utility must remain policy-small | utility starts owning redaction or response schema |
+| Final prompt invariant | DS-002, DS-007 | task-prompt builder / runner boundary | prevent malformed derived text from reaching provider | old/external source may already contain lone surrogates | provider error is used as validation instead of local construction safety |
 
 ## Ownership Boundaries
 
@@ -323,6 +350,7 @@ Allowed:
 - inbox origin resolver -> `SenderType` and external event type; worker -> origin-stamped entry/turn.
 - scheduler -> injected `CompactionRetryTurnAdmissionPolicy`; policy -> `MemoryManager.isCompactionAwaitingUserRetry` query only.
 - assembler/executor -> active turn origin + coordinator attempt-authorization command.
+- readable renderer/prompt builder/response clamp -> `ProviderSafeCompactionText` pure functions.
 
 Forbidden:
 
@@ -334,6 +362,8 @@ Forbidden:
 - scheduler/admission policy -> pending mutation, executor, input pipeline, or provider;
 - coordinator/executor -> inbox scan/reorder/requeue;
 - assembler -> infer user authority from converted content or event prose;
+- Unicode utility -> raw-trace store, redaction rules, response schema, prompt wording, provider client, or retry policy;
+- prompt builder/renderer -> mutate raw source strings or broadly strip valid non-ASCII content;
 - child compactor -> parent files, lineage, snapshot, or accepted commit;
 - any v2/v3 dual prompt or response path.
 
@@ -355,6 +385,10 @@ Forbidden:
 | `InboxQueueStore.claimFirstMatching(lane, predicate)` | one queue | remove first eligible entry while leaving all others in relative order | exact lane + pure predicate | used only where eligibility can temporarily differ from FIFO head |
 | `CompactionRetryTurnAdmissionPolicy.isDispatchable(entry)` | one turn-start entry | permit all normally; while awaiting retry permit USER only | origin-stamped entry | read-only memory query; no mutation/log loop |
 | `PendingCompactionExecutor.executeIfAuthorized(input)` | one pending attempt | begin authorization, execute once, commit or retain failure | operation/turn ID + immutable turn origin | replaces pending-presence-only `executeIfRequired` |
+| `ProviderSafeCompactionText.toWellFormedDerived(value)` | one derived string | normalize lone surrogates/line endings and remove disallowed controls without mutating input | JavaScript string | preserves LF/TAB and every valid Unicode scalar |
+| `ProviderSafeCompactionText.omitMiddle(value, limit)` | one rendered visible value | choose surrogate-safe head/tail boundaries and return existing marker semantics within limit | derived string + nonnegative integer limit | omitted count reflects adjusted retained units |
+| `ProviderSafeCompactionText.truncateEnd(value, limit)` | one accepted episode/fact string | clamp without ending on a lone high surrogate | derived string + nonnegative integer limit | shared by parser; no schema ownership |
+| `WorkingContextCompactionPromptBuilder.buildTaskPrompt` | one selected history | compose approved template and guarantee well-formed final provider-facing text | selected units + max-item limit | throws typed local construction error before runner if invariant cannot be met |
 
 ## Interface Boundary Check
 
@@ -368,6 +402,8 @@ Forbidden:
 | pending attempt authorization | Yes | Yes | Low | closed state/origin decision; reject duplicate same-turn execution |
 | origin resolver | Yes | Yes | Low | exact event/sender mapping before conversion |
 | eligible queue claim | Yes | Yes | Low | preserve relative order and use same predicate in wait logic |
+| provider-safe derived text | Yes | Yes | Low | pure input/output; never exposes or mutates a store-backed source |
+| completed prompt guard | Yes | Yes | Low | one final invariant at the operation-message owner before child launch |
 
 ## Main Domain Subject Naming Check
 
@@ -380,6 +416,7 @@ Forbidden:
 | finalized budget result | `CompactionBudgetAssessment` | Yes | Low | distinguish planned and finalized estimates |
 | original external author | `TurnStartOrigin` | Yes | Low | exactly `user` / `agent` / `system`; do not reuse `SenderType.TOOL` |
 | pending execution lifecycle | `PendingCompactionAttemptState` | Yes | Low | distinguish initial, in-progress, and awaiting-user states; do not call all `required` |
+| safe rendered text | `ProviderSafeCompactionText` | Yes | Low | do not call it generic sanitizer or let it become content policy |
 
 ## Existing Capability / Subsystem Reuse Check
 
@@ -392,13 +429,14 @@ Forbidden:
 | response repair | compaction summarizer/parser | Reuse | correct owner for usable invalid output | N/A |
 | persistence | accepted compaction | Reuse | healthy atomic boundary | N/A |
 | external origin and deferred admission | agent event inbox/scheduler + active turn | Extend | already own entry identity, FIFO storage, dispatchability, active-turn serialization, wakeup, and shutdown drain | one narrow compaction admission policy is needed because memory owns the gate but must not own the queue |
+| Unicode-safe compaction presentation | readable-value renderer + task-prompt builder + response clamp | Extend with one pure memory-presentation utility | existing owners already control the exact derived strings that can enter provider requests | generic provider middleware would alter unrelated requests and hide the local ownership defect |
 
 ## Subsystem / Capability-Area Allocation
 
 | Subsystem / Capability Area | Owns Which Concerns | Related Spine ID(s) | Governing Owner(s) Served | Decision | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `autobyteus-ts` agent inbox/runtime/loop | origin-stamped entry, eligible same-queue selection, active-turn origin, usage observation, and generic error-response publication | DS-001, DS-002, DS-006 | memory boundary, server collector | Extend | no new queue or UI denominator change |
-| `autobyteus-ts` memory compaction | planning budget, post-success gate, planner, strategy, acceptance, pending lifecycle | DS-001, DS-003–DS-005 | coordinator/executor | Extend | primary change area |
+| `autobyteus-ts` memory compaction/presentation | planning budget, post-success gate, planner, strategy, acceptance, pending lifecycle, and provider-safe derived text | DS-001, DS-003–DS-005, DS-007 | coordinator/executor/renderers | Extend | primary change area; source stores unchanged |
 | `autobyteus-ts` streaming events | `is_error` typed assistant payload | DS-002 | server runner | Extend | generic truthful event contract |
 | `autobyteus-server-ts` compaction execution | one child run and typed collector errors | DS-002 | server runner | Extend | no child retry policy |
 | memory persistence/lineage | existing canonical commit | DS-005 | accepted committer | Reuse unchanged | no migration/version bump |
@@ -416,6 +454,8 @@ Forbidden:
 | `agent-turn.ts` / worker / assembler | agent runtime | origin carrier and execution caller | preserve original origin through conversion and call typed attempt authorization | existing turn/request spine | turn-start origin |
 | stream payload/notifier/pipeline files | agent streaming | event contract | retain response error bit | existing event path | boolean field |
 | collector/runner files | server compaction | runner boundary | typed execution failure | existing boundary | runner error kinds |
+| `unicode-safe-text.ts` | memory presentation | derived-text boundary | well-formed normalization, safe head/tail/end indices, control filtering | one small reusable concern for input and accepted output clamps | strings only; no memory/provider dependencies |
+| `readable-value-renderer.ts` / prompt builder / response parser | memory presentation/compaction | render/clamp/final guard | delegate safe slicing; preserve redaction/templates/schema | current owners remain | Unicode utility |
 
 ## Reusable Owned Structures Check
 
@@ -427,6 +467,7 @@ Forbidden:
 | budget assessment | `working-context-compaction-proposal.ts` | accepted proposal | planner, builder, validator use one estimate contract | Yes | Yes | persisted lineage metadata |
 | turn-start origin | `agent-event-inbox-entry.ts` / `AgentTurn` | agent runtime | inbox, scheduler, worker, turn, and assembler require one immutable author classification | Yes | Yes | sender-content heuristic |
 | pending attempt state | coordinator exported type + copy function | memory lifecycle | coordinator, executor, recovery, and admission query require one lifecycle meaning | Yes | Yes | a second retry-state DTO |
+| provider-safe Unicode boundaries | `memory/presentation/unicode-safe-text.ts` | memory presentation | history omission and accepted-output clamp need identical safety | Yes | Yes | generic content policy or raw-data mutator |
 
 ## Shared Structure / Data Model Tightness Check
 
@@ -438,6 +479,7 @@ Forbidden:
 | runner failure enum/error | Yes | Yes | Low | message/cause/metadata remain singular |
 | `CompactionThresholdEpisode` | Yes | Yes | Low | separate runtime-only state is required because accepted commit clears pending before an actual usage observation exists |
 | `TurnStartEventInboxEntry.origin` / `AgentTurn.startOrigin` | Yes | Yes | Low | same immutable `TurnStartOrigin`; entry is source, turn carries it rather than recomputing |
+| provider-safe derived string | Yes | Yes | Low | source stays exact; utility returns one normalized string and boundary helpers expose no memory state |
 
 ## Final File Responsibility Mapping
 
@@ -467,6 +509,10 @@ Forbidden:
 | `autobyteus-ts/src/agent/pipelines/llm-response-pipeline.ts`, `src/agent/events/notifiers.ts`, `src/agent/streaming/events/stream-event-payload-assistant.ts` | agent events | response event contract | propagate `is_error` | one existing path | existing `isError` |
 | `autobyteus-ts/src/memory/compaction/compaction-agent-runner.ts` | memory compaction | runner interface | closed runner failure kinds and metadata | cross-package contract | N/A |
 | `autobyteus-ts/src/memory/compaction/agent-compaction-summarizer.ts` | memory compaction | response attempt owner | typed response-repair exhaustion; runner errors bypass parser | existing owner | runner/parser errors |
+| `autobyteus-ts/src/memory/presentation/unicode-safe-text.ts` | memory presentation | derived-text safety | well-formed normalization, control filtering, surrogate-safe head/tail/end boundaries | one pure reusable concern; no provider or store dependency | N/A |
+| `autobyteus-ts/src/memory/presentation/readable-value-renderer.ts` | memory presentation | serialization/redaction/omission owner | retain exact redaction and marker semantics while delegating safe boundaries | existing presentation owner | Unicode utility |
+| `autobyteus-ts/src/memory/compaction/working-context-compaction-prompt-builder.ts` | memory compaction | completed child task | preserve approved template; final provider-safe normalization/assertion | one operation-message boundary | Unicode utility/history renderer |
+| `autobyteus-ts/src/memory/compaction/compaction-response-parser.ts` | memory compaction | response schema and accepted-text clamp | preserve six-array parser; replace unsafe end slice with shared safe clamp | existing parse owner | Unicode utility |
 | `autobyteus-server-ts/src/agent-execution/compaction/{compaction-run-output-collector.ts,server-compaction-agent-runner.ts}` | server compaction | runner adapter | reject error completion/interruption/terminal/timeout/tool/launch and preserve cause/run ID | existing server boundary | runner error kinds |
 
 ## Applied Patterns (If Any)
@@ -567,6 +613,7 @@ type CompactionThresholdEpisode =
 | Later same-key usage remains between 123,148 and 615,744 | remain suppressed; detailed log only, no repeated card or operation |
 | Budget key changes while suppressed and current usage exceeds the new trigger | reset the old episode and request one configuration-driven operation under the new key |
 | Prompt reaches/exceeds 615,744 while awaiting/suppressed | request `hard_input_cap`; hard-cap safety overrides suppression |
+| Derived task cannot satisfy the local well-formed-text invariant | zero child/provider calls; one typed input-construction failure; transition the attempt through the same final fail-closed path |
 | Child runner fails for any in-progress request | one final fail-closed error; transition the same pending operation to `awaiting_user_retry`; no parser, correction child, target dispatch, or scheduled retry |
 | Distinct USER-origin turn later sends `continue` | authorize and execute the retained pending operation once before dispatch; success clears it and continues, failure records that execution turn and stops again |
 | AGENT/SYSTEM input arrives while awaiting | leave its origin-stamped entry in the normal queue; no turn, child, error, or target dispatch |
@@ -625,6 +672,28 @@ if response.content startsWith("Error processing") then runner failure
 
 Text matching is forbidden because valid model-authored content can contain those words and provider wording can change.
 
+### Unicode-safe omission example
+
+Captured source text is valid and remains unchanged:
+
+```text
+icon: '\uD83D\uDEE1\uFE0F'  // 🛡️
+```
+
+The old head boundary ended after `\uD83D` and inserted the omission marker before `\uDEE1`, producing a lone high surrogate. The target renderer adjusts that boundary so either the complete scalar is retained or the complete scalar is omitted. The complete derived prompt must be safe without being character-clamped as a whole:
+
+```ts
+isWellFormedUnicode(taskPrompt) === true
+containsDisallowedControls(taskPrompt) === false
+
+renderedValue.length <= configuredRenderedValueLimit
+acceptedText.length <= configuredAcceptedTextLimit
+```
+
+The latter two assertions apply independently to each renderer or accepted-text clamp and use the lengths produced after safe-boundary adjustment. There is no `plannedRenderedLimit` and no whole-task UTF-16 length clamp: the captured valid child prompt was 540,727 UTF-16 units, and the approved B/T/P token planning and accepted-result validation remain the only complete-prompt budget controls. The prompt builder performs final well-formed/control-safety normalization and assertion without dropping otherwise selected history.
+
+If a store-backed old/external value already contains an unpaired surrogate, the source is not edited. The derived copy contains U+FFFD at that position. Valid `ä`, `中文`, code, paths, and complete emoji remain intact.
+
 ## Backward-Compatibility Rejection Log (Mandatory)
 
 | Candidate Compatibility Mechanism | Why It Was Considered | Rejection Decision | Clean-Cut Replacement / Removal Plan |
@@ -640,6 +709,8 @@ Text matching is forbidden because valid model-authored content can contain thos
 | Persist post-success suppression in memory files | restart continuity | Rejected | runtime-only state; no stored-schema change or migration |
 | Prompt-contract v4 | runtime behavior changed | Rejected | model prompt/output bytes do not change; retain v3 |
 | Direct child file write or single text memory | simplify output | Rejected | preserve approved six arrays and accepted host commit |
+| Strip emoji or convert all compaction input to ASCII | avoid malformed characters | Rejected as lossy and unnecessary | preserve valid Unicode; repair malformed derived text and make boundaries surrogate-safe |
+| Add global provider middleware that silently rewrites every request | broad defense | Rejected as wrong ownership and excessive scope | final guard lives at the compaction task-prompt boundary; shared utility stays pure and memory-presentation-owned |
 
 ## Derived Layering (If Useful)
 
@@ -649,6 +720,7 @@ Text matching is forbidden because valid model-authored content can contain thos
 - Domain acceptance: manager baseline -> accepted builder -> structural and budget postcondition.
 - Persistence/projection: committer -> stores/lineage/snapshot/context.
 - Event return: child response flag -> collector -> typed error/result -> executor reporter -> UI/log.
+- Derived text: exact source -> compaction presentation -> provider-safe boundary -> child request; accepted text -> safe clamp -> later projection.
 
 No caller depends on both an authoritative boundary and its internal gate/planner/collector.
 
@@ -663,11 +735,12 @@ No caller depends on both an authoritative boundary and its internal gate/planne
 7. Carry `CompactionBudgetAssessment` through plan/proposal/accepted result. After host rendering, estimate the actual finalized context plus calibration gap and reject `post_compaction_target_exceeded` before committer invocation. Add plan/result diagnostics.
 8. Propagate `isError` from `LlmPhaseOutcome` through `LLMResponsePipeline`, notifier, `AssistantCompleteResponseData.is_error`, event conversion, and server collector. Add typed collector/runner failure kinds for error completion, interruption, terminal error, timeout, tool approval, rejection, launch, and collection failure.
 9. Make summarizer repair exhaustion typed. Assert first runner failure performs zero parser/correction calls; a runner failure on the second child after one actual invalid response preserves attempt 1 validation and attempt 2 runner metadata.
-10. Update `PendingCompactionExecutor` and both LLM-phase call sites to use `executeIfAuthorized({turnId, turnOrigin})`. Initial-ready requests execute once for any origin. Every final failure retains the pending request as `awaiting_user_retry`, emits one truthful terminal status, and stops the current target-agent turn. A distinct USER-origin turn may begin one pre-dispatch retry; success resumes it and failure records that turn and stops it again.
-11. Add authoritative `TurnStartOrigin` to inbox entries and active turns. Extend the existing queue store with first-matching claim. Inject `CompactionRetryTurnAdmissionPolicy` into scheduler selection and use the same predicate in `hasDispatchable`/wait logic. Preserve all non-user entries in place; do not create a second queue. Preserve existing lifecycle/active-turn priority and shutdown drain.
-12. Keep `memory-compactor/agent.md`, operation prompt, parser schema, prompt-contract version 3, tool config, episodic/semantic shapes, lineage reader/writer, and accepted committer byte/behavior unchanged. Add regression assertions that these files/contracts did not drift.
-13. Update current memory architecture documentation and diagnostics. Do not rewrite completed historical tickets or existing memory.
-14. Run focused core/server unit and integration checks, then route through code review and API/E2E coverage investigation. Re-run the real 80%→20% scenario, a controlled child error-completion scenario, and direct USER-versus-AGENT/SYSTEM admission scenarios when provider/environment access permits.
+10. Add `ProviderSafeCompactionText` under memory presentation. Replace unsafe middle/end slices in `ReadableValueRenderer` and `CompactionResponseParser`, preserve source values, and finalize/assert the completed child task in `WorkingContextCompactionPromptBuilder`. Cover the exact shield fixture, boundary cases, controls, multilingual/code preservation, response clamp, and local pre-launch failure.
+11. Update `PendingCompactionExecutor` and both LLM-phase call sites to use `executeIfAuthorized({turnId, turnOrigin})`. Initial-ready requests execute once for any origin. Every final failure retains the pending request as `awaiting_user_retry`, emits one truthful terminal status, and stops the current target-agent turn. A distinct USER-origin turn may begin one pre-dispatch retry; success resumes it and failure records that turn and stops it again.
+12. Add authoritative `TurnStartOrigin` to inbox entries and active turns. Extend the existing queue store with first-matching claim. Inject `CompactionRetryTurnAdmissionPolicy` into scheduler selection and use the same predicate in `hasDispatchable`/wait logic. Preserve all non-user entries in place; do not create a second queue. Preserve existing lifecycle/active-turn priority and shutdown drain.
+13. Keep `memory-compactor/agent.md`, approved operation-prompt template, parser schema, prompt-contract version 3, tool config, episodic/semantic shapes, lineage reader/writer, and accepted committer behavior unchanged. Add regression assertions that these contracts did not drift; only unsafe derived characters may be normalized.
+14. Update current memory architecture documentation and diagnostics. Do not rewrite completed historical tickets or existing memory.
+15. Run focused core/server unit and integration checks, then route through code review and API/E2E coverage investigation. Re-run the real 80%→20% scenario, the exact shield-source request, a controlled child error-completion scenario, and direct USER-versus-AGENT/SYSTEM admission scenarios when provider/environment access permits.
 
 No temporary dual path is permitted.
 
@@ -680,6 +753,7 @@ No temporary dual path is permitted.
 - First-matching claim adds a small queue primitive but avoids a second deferred store, message-copy lifecycle, separate shutdown handling, and data migration.
 - A separate post-success episode adds one runtime shape, but accepted commit must clear the pending operation while REQ-012 still requires an actual provider observation before rearming. Combining both states would either violate commit cleanup or lose the threshold-crossing invariant.
 - Adding `is_error` to the generic assistant-complete payload is broader than a compaction-only text heuristic, but it preserves an existing core fact truthfully and benefits any typed run consumer without changing ordinary response content.
+- Preserving valid Unicode while repairing only malformed derived text is slightly more careful than deleting every emoji, but it avoids corrupting multilingual instructions, code, paths, and meaningful symbols. Surrogate-safe code-unit boundaries plus one final `toWellFormed` guard are sufficient; grapheme-aware visual editing and emoji classification are unnecessary.
 
 ## Risks
 
@@ -691,6 +765,7 @@ No temporary dual path is permitted.
 - The assistant event field must be carried across every AutoByteus conversion path. Missing propagation in one layer would recreate the misclassification; contract tests must span notifier through server collector.
 - Existing uncommitted delivery documentation belongs to the previous completed round. Implementation must preserve unrelated edits and update it only through the delivery workflow after review/testing.
 - A process shutdown before successful recovery drains retained non-user entries under existing runtime semantics; this ticket does not add persistent inbox delivery. That is unchanged from other queued turn-start work and requires no migration.
+- A pre-existing lone surrogate in old/external source text is rendered as U+FFFD, so that one malformed character is not exact in the provider-facing copy. The authoritative source remains unchanged and directly inspectable; transport safety takes priority for the derived prompt.
 
 ## Guidance For Implementation
 
@@ -709,6 +784,12 @@ No temporary dual path is permitted.
 - Resolve origin before input conversion. `InterAgentMessageReceivedEvent`, `SenderType.AGENT`, and `SenderType.SYSTEM` are non-user; event names, rendered sender prose, and converted LLM messages are not authorization evidence.
 - While awaiting user retry, non-user entries remain in the existing turn-start queue and are not claimed/requeued. The scheduler's wait predicate must ignore them yet wake for a new USER or lifecycle event. Normal FIFO, active-turn serialization, and shutdown drain remain unchanged outside this gate.
 - Error assistant completion is a runner failure even if its text contains valid-looking JSON. Non-error invalid assistant completion is a response-validation failure even if its prose resembles a provider error.
+- Raw trace, tool payload, archive, lineage, and canonical memory values are never sanitized in place. Provider-safe normalization operates on a derived string only.
+- Compaction middle/end truncation must never leave a high surrogate without its low surrogate or begin a retained tail with an unmatched low surrogate. Adjusted boundaries, not pre-adjustment estimates, govern the omission count and maximum length.
+- Derived compaction text preserves valid Unicode. It normalizes CRLF/CR to LF, preserves LF/TAB, removes C0 U+0000–U+0008/U+000B/U+000C/U+000E–U+001F and DEL U+007F, and replaces pre-existing lone surrogates with U+FFFD.
+- The completed first/correction task prompt must be well formed before `CompactionAgentRunner.runCompactionTask`. Failure at this boundary is a typed local input-construction failure with zero child/provider calls and zero response-repair attempts.
+- No whole-task character clamp is introduced. Complete-prompt size remains governed by the approved B/T/P token planning and validation path; only an individual rendered value or accepted episode/fact is shortened to its own configured limit.
+- Accepted episode/fact clamps must use the same safe end primitive because their output can enter a later provider request.
 - No string matching to classify execution failure.
 
 ### Targeted executable coverage
@@ -723,6 +804,8 @@ Core unit/integration:
 - coordinator/recovery tests: pending/planning/attempt and episode copies without aliasing; `initial_attempt_ready -> attempt_in_progress -> awaiting_user_retry`, USER-only retry, duplicate same-turn denial, accepted clear, rollback restores both shapes; direct v1/v2/v3 stored memory remains unchanged.
 - `llm-phase-compaction` integration: 249,416 at 20% requests once; resulting target below 123,148; default 80% remains governed by the 35% quality cap.
 - summarizer tests: first typed runner failure -> one child, zero parser/correction; invalid non-error output -> two children; second runner failure after invalid output -> typed exhausted response failure with both run IDs.
+- provider-safe text tests: exact shield source at middle head boundary, shield at tail/end boundary, isolated high/low surrogate, variation-selector emoji, German/Chinese text, code/path symbols, CRLF/CR, LF/TAB, NUL/C0/DEL, limit 0/tiny limits, exact omitted count after boundary adjustment, no input mutation, and no-truncation/redaction regressions.
+- prompt/parser integration: exact captured tool result builds a complete well-formed/control-safe task that survives JSON serialization/strict parsing without whole-prompt character truncation; every individual rendered value and accepted episode/fact clamp stays within its own configured limit after safe-boundary adjustment; accepted text clamped at an emoji boundary remains well formed in the later continuation projection; an injected final invariant failure creates no child and no correction.
 
 Event/server:
 
@@ -733,6 +816,7 @@ Event/server:
 - inbox/scheduler unit tests: exact origin resolution for direct `InterAgentMessageReceivedEvent` and USER/AGENT/SYSTEM carriers; first-matching claim leaves skipped entries/order intact; same predicate governs dispatchability/wait; non-user-only queue does not spin; lifecycle priority and shutdown drain unchanged.
 - parent runtime integration: runner failure produces one truthful failed status, one child and zero correction children, retains `awaiting_user_retry`, performs no target dispatch, and schedules no retry; a distinct user `continue` executes once before dispatch and either resumes on success or stops again on failure. The same rule covers proactive and hard-cap pending requests.
 - direct origin-gate integration: with `AGENT-A, USER-continue, SYSTEM-S, AGENT-B`, no non-user turn/child/error occurs before USER; failure retains all three entries; success dispatches USER first and retained entries later as A/S/B. Repeat with the direct inter-agent event representation and the production `SenderType.AGENT` carrier. Verify a newly requested initial operation still auto-executes from AGENT/SYSTEM turns.
+- exact Unicode runtime regression: replay the captured selected source units containing `icon: '🛡️'`; assert the child receives a well-formed prompt and the request is not rejected with `unexpected end of hex escape`. If a live DeepSeek run is available, retain provider evidence; otherwise the exact deterministic serialization fixture is mandatory.
 
 Regression/API/E2E intent:
 
@@ -744,6 +828,7 @@ Regression/API/E2E intent:
 - controlled child error completion is reported as runner failure, never `json_object_extraction`, and never launches correction;
 - genuine malformed non-error model output still launches exactly one correction;
 - AGENT/SYSTEM delivery during `awaiting_user_retry` creates no compactor attempt and is preserved until a successful USER retry; USER recovery is not blocked by an earlier non-user queue head;
+- generated compaction history and clamped continuation text contain no lone surrogate or disallowed control, while raw source traces and valid multilingual/code/emoji content remain unchanged;
 - Memory Inspector and continuation projection retain existing episode/category behavior.
 
 ### Durable documentation

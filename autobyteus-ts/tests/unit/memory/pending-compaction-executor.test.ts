@@ -19,6 +19,7 @@ import {
 } from '../../../src/memory/working-context-finalizer.js';
 import { WorkingContextSnapshotSerializer } from '../../../src/memory/working-context-snapshot-serializer.js';
 import { resolveCompactionPlanningBudget } from '../../../src/memory/compaction/compaction-planning-budget.js';
+import { CompactionPromptConstructionError } from '../../../src/memory/compaction/working-context-compaction-prompt-builder.js';
 
 const planningBudget = resolveCompactionPlanningBudget(
   { inputBudget: 10_000, triggerThresholdTokens: 8_000 },
@@ -269,6 +270,27 @@ describe('PendingCompactionExecutor', () => {
     expect(harness.store.listRawTracesOrdered().map(({ id }) => id)).toEqual(['raw-1']);
     expect(reporter.emitStatus.mock.calls.map(([payload]) => payload.phase))
       .toEqual(['started', 'failed']);
+  });
+
+  it('classifies a local prompt invariant failure without committing canonical state', async () => {
+    const harness = makeHarness();
+    const reporter = { emitStatus: vi.fn() };
+    const executor = new PendingCompactionExecutor(harness.manager, {
+      strategyResolver: resolverFor(async () => {
+        throw new CompactionPromptConstructionError('provider-safe prompt invariant failed');
+      }),
+      reporter: reporter as any,
+    });
+
+    await expect(executor.executeIfAuthorized({ turnId: 'turn-unsafe', turnOrigin: 'user' }))
+      .rejects.toThrow('[input_construction_failure]');
+    expect(harness.manager.getPendingCompactionGate().kind).toBe('awaiting_user_retry');
+    expect(harness.lineageStore.list()).toEqual([]);
+    expect(harness.store.readArchiveRawTraces()).toEqual([]);
+    expect(reporter.emitStatus).toHaveBeenLastCalledWith(expect.objectContaining({
+      phase: 'failed',
+      error_message: expect.stringContaining('[input_construction_failure]'),
+    }));
   });
 
   it('does not resolve a strategy when no compaction is pending', async () => {

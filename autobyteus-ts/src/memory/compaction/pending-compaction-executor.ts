@@ -5,6 +5,7 @@ import type { MemoryManager, PendingCompactionRequest } from '../memory-manager.
 import { CompactionResponseRepairExhaustedError } from './agent-compaction-summarizer.js';
 import { CompactionAgentRunnerError } from './compaction-agent-runner.js';
 import { CompactionPlanningError } from './working-context-message-window-planner.js';
+import { CompactionPromptConstructionError } from './working-context-compaction-prompt-builder.js';
 import {
   WorkingContextCompactionOutputValidationError,
   WorkingContextCompactionOutputValidator,
@@ -114,6 +115,7 @@ export class PendingCompactionExecutor {
 const classifyCompactionFailure = (error: unknown): string => {
   if (error instanceof CompactionAgentRunnerError) return `runner_${error.kind}`;
   if (error instanceof CompactionResponseRepairExhaustedError) return 'response_repair_exhausted';
+  if (error instanceof CompactionPromptConstructionError) return error.code;
   if (error instanceof CompactionPlanningError) return error.code;
   if (error instanceof WorkingContextCompactionOutputValidationError) return error.code;
   return 'execution_failure';

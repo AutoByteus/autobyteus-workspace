@@ -2,18 +2,19 @@
 
 ## Status And Authority
 
-- **Status:** Approved intended behavior — user approved 2026-08-14, including the later strict fail-closed/manual-retry and non-user deferral clarifications.
-- **Purpose:** Make REQ-011–REQ-015 and AC-014–AC-023 concrete without prescribing an arbitrary implementation.
-- **Scope:** Trigger-aligned planning, bounded post-compaction behavior, runner-versus-response failure classification, strict fail-closed recovery through a later user-initiated retry, and preservation of non-user inputs while that retry gate is active.
+- **Status:** Approved intended behavior — user approved 2026-08-14, including the later strict fail-closed/manual-retry and non-user deferral clarifications; provider-safe Unicode behavior approved 2026-08-15.
+- **Purpose:** Make REQ-011–REQ-016 and AC-014–AC-026 concrete without prescribing an arbitrary implementation.
+- **Scope:** Trigger-aligned planning, bounded post-compaction behavior, runner-versus-response failure classification, provider-safe derived text, strict fail-closed recovery through a later user-initiated retry, and preservation of non-user inputs while that retry gate is active.
 - **Not changed:** The approved Memory Compactor prompt and six-array JSON response contract remain exactly as specified in `memory-compactor-prompt-spec.md`.
 
 ## Why These Corrections Are Needed
 
-The current runtime has three independent decisions that must agree but currently do not:
+The current runtime has four independent decisions that must agree but currently do not:
 
 1. **When compaction is requested:** the configured ratio is applied to the model's usable input budget.
 2. **How much context the planner retains:** the current planner independently uses a fixed 35% of the input budget.
 3. **What happens when the child compactor fails:** a pre-response runner failure currently becomes ordinary text, is parsed as if the model authored invalid JSON, and the unchanged pending operation can be attempted again on the next parent message.
+4. **Whether the derived child prompt is provider-safe:** middle/end truncation currently slices UTF-16 at arbitrary code-unit boundaries and can create a lone surrogate from valid source text.
 
 The corrections make those decisions one coherent lifecycle. The configured trigger becomes a real postcondition for planning; only model-authored output is eligible for JSON correction; and any final compaction failure stops the current target-agent turn without an autonomous retry. Canonical memory remains atomic, the pending operation remains available, and a later user-origin turn explicitly initiates one new attempt. Agent/system inputs remain queued rather than being mistaken for that authorization or discarded.
 
@@ -177,6 +178,32 @@ Trigger alignment is therefore a constraint on the planner, not a requirement to
 - leaving `AGENT-A` at the queue head while also making the scheduler unable to select `USER-continue`; or
 - allowing the target agent to process `AGENT-A` without first resolving required compaction.
 
+## Example 9 — A Long Tool Result Contains Emoji At The Omission Boundary
+
+**Given**
+
+- the exact raw tool result contains valid `icon: '🛡️'`
+- derived compaction presentation limits that value to 2,000 UTF-16 units with a head/middle-omission/tail layout
+- the calculated head boundary falls between the high and low surrogate of the shield character
+
+**Correct behavior**
+
+- The raw trace and tool result remain unchanged.
+- The derived provider-facing copy never contains a lone surrogate: the complete shield is retained or wholly omitted by an adjusted safe boundary.
+- Any pre-existing lone surrogate in old/external source text becomes U+FFFD only in the derived copy.
+- Valid German/Chinese text, code, paths, mathematical symbols, and complete emoji remain valid; there is no ASCII conversion.
+- CRLF/CR are normalized to LF, LF/TAB remain, and non-useful C0/DEL controls are removed from the provider-facing copy.
+- The completed compactor task prompt is verified as well-formed before child launch and survives request JSON serialization/parsing.
+- Accepted episode/fact text uses the same safe end clamp before later context projection.
+- If the final local invariant cannot be produced, no child/provider call or JSON-repair attempt occurs; the operation fails once through the normal fail-closed path.
+
+**Incorrect behavior**
+
+- inserting the omission marker after only `\uD83D` and sending a lone surrogate to the provider;
+- mutating or rewriting the raw trace to hide the problem;
+- removing every emoji or all non-ASCII text; or
+- treating the resulting HTTP 400 as a malformed compactor JSON response.
+
 ## Decision Summary
 
 The recommended correction is proportionate because it preserves the existing product model while repairing mismatched boundaries:
@@ -186,6 +213,7 @@ The recommended correction is proportionate because it preserves the existing pr
 - make the planner honor the threshold that invoked it;
 - require an actual below-threshold provider observation—not an accepted estimate—before rearming the same threshold crossing;
 - keep runner failures out of the JSON parser;
+- keep compaction provider-facing input/output clamps well-formed without mutating exact source traces;
 - stop the current target-agent turn on any final compaction failure;
 - retain the pending operation so a later user-origin turn can explicitly retry it once;
 - preserve agent/system inputs in the existing queue and let an eligible user entry pass them only to resolve the gate;

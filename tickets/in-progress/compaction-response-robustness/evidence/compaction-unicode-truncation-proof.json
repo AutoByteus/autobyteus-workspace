@@ -1,0 +1,40 @@
+{
+  "observed_at": "2026-08-15",
+  "parent_run_id": "daily_assistant_2a39c68eb96443ada6f5af9f4f81acef",
+  "turn_id": "turn_0001",
+  "compaction_operation_id": "compaction_operation_mstvdkn4_1",
+  "compactor_run_id": "memory_compactor_c7436219af804d759223edf4f4feef85",
+  "compaction_task_id": "compaction_task_47b6705ee66a4cefaa44f9fadace8bb7",
+  "trigger": {
+    "prompt_tokens": 371352,
+    "input_budget_tokens": 615744,
+    "ratio": 0.2,
+    "threshold_tokens": 123148,
+    "post_compaction_target_tokens": 110833
+  },
+  "child_prompt": {
+    "content_char_length_utf16_reported_by_runtime": 540727,
+    "stored_user_content_python_code_point_length": 540258,
+    "unpaired_surrogates": [
+      {
+        "index": 31434,
+        "code_unit": "U+D83D"
+      }
+    ],
+    "malformed_excerpt_escaped": "dien \\xb7 L\\xfccken',\\\\n    state: store.stepConfirmed[3] ? 'done' : store.evalStep >= 3 ? 'warn' : 'locked',\\\\n  },\\\\n  {\\\\n    id: 'risks', kind: 'risks', icon: '\\ud83d\\u2026 [677 characters omitted] \\u2026teilweise gest\\xfctzt (Evidenzl\\xfccke).' },\\\\n  ]\\\\n  if (store.released) msgs.push({ role: 'agent', text: `\\u2705 CER freigegeben durch ${store.signer}.` })\\\\n  return msgs\\\\n})\\\\n\\\\nfunction ",
+    "first_lone_surrogate_wire_escape_offset_in_reconstructed_minimal_body": 6155,
+    "note": "Actual SDK request includes additional fields, explaining the provider-reported column 40410 rather than the minimal-body offset."
+  },
+  "original_source": {
+    "file": "/Users/normy/.autobyteus/server-data/memory/agents/daily_assistant_2a39c68eb96443ada6f5af9f4f81acef/raw_traces_active.jsonl",
+    "zero_based_line": 144,
+    "trace_id": "rt_1786708450614_turn_0001_call_00_ET_YrZHb5hFhR66ZgyR6JpS3055_result",
+    "trace_type": "tool_result",
+    "original_contains_valid_shield_emoji": true,
+    "original_excerpt": "\u2194 Studien \u00b7 L\u00fccken',\n    state: store.stepConfirmed[3] ? 'done' : store.evalStep >= 3 ? 'warn' : 'locked',\n  },\n  {\n    id: 'risks', kind: 'risks', icon: '\ud83d\udee1\ufe0f', label: 'PMS-/Risikoabgleich', meta: 'ISO 14971 \u00b7 Vorf\u00e4lle vs. Risiken',\n    state: store.stepConfirmed[4] ? 'done' : store.evalStep >= 4 ? 'warn' : 'locked',\n  },\n  {\n    id: 'conc"
+  },
+  "provider_error": "400 Failed to parse the request body as JSON: messages[1].content: unexpected end of hex escape at line 1 column 40410",
+  "host_classification": "runner_error_completion",
+  "root_cause": "ReadableValueRenderer omitMiddle uses UTF-16 code-unit slice boundaries. maxItemChars truncation split the valid shield emoji surrogate pair and inserted the omission marker after the high surrogate.",
+  "expected_fix_boundary": "Sanitize only the derived provider-facing text; retain raw trace bytes/content unchanged; make head/tail/end truncation Unicode-scalar-safe and enforce well-formed text before child dispatch."
+}

@@ -1,4 +1,5 @@
 import { CompactionResult, type CompactionSemanticEntry } from './compaction-result.js';
+import { providerSafeCompactionText } from '../presentation/unicode-safe-text.js';
 
 export type CompactionResponseParserOptions = {
   maxEpisodeChars?: number;
@@ -33,7 +34,7 @@ type CandidateValidation =
   | { result?: never; failure: CandidateFailure };
 
 const clampText = (value: string, limit: number): string =>
-  value.length <= limit ? value : value.slice(0, limit).trim();
+  providerSafeCompactionText.truncateEnd(value, limit).trim();
 
 const extractFenceCandidates = (text: string): string[] => {
   const matches = Array.from(text.matchAll(/```(?:json)?\s*([\s\S]*?)```/gi));

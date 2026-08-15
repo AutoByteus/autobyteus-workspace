@@ -1,0 +1,175 @@
+# Focused server log excerpt: compaction Unicode request rejection
+# Source: /Users/normy/.autobyteus/server-data/logs/server.log
+# Captured: 2026-08-15; source lines 2647250-2647420
+# Scope: planning, child prompt construction, provider rejection, typed failure propagation
+  compaction_strategy_name: 'Structured JSON',
+  selected_block_count: null,
+  compacted_block_count: null
+}
+AgentExternalEventNotifier (NotifierID: 146368ac-9cc5-4d45-b619-fd7d5d86202f, AgentID: daily_assistant_2a39c68eb96443ada6f5af9f4f81acef) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+compaction_execution_context {
+  agent_id: 'daily_assistant_2a39c68eb96443ada6f5af9f4f81acef',
+  turn_id: 'turn_0001',
+  compaction_operation_id: 'compaction_operation_mstvdkn4_1',
+  requested_turn_id: 'turn_0001',
+  execution_turn_id: 'turn_0001',
+  pending_compaction: true,
+  selected_unit_count: 551,
+  protected_suffix_unit_count: 1,
+  retained_unit_count: 56,
+  working_context_message_count: 1174,
+  raw_trace_count: 1762
+}
+Creating new workspace for rootPath: /Users/normy/eddie_project
+Created metadata-only FileSystemWorkspace at /Users/normy/eddie_project.
+Reusing registered workspace ID: agent_ws_0be1f5398768ef2e7d63a93621c8ec1e60e3159f2a90d47fe5a7aede1acbf878
+Creating new workspace for rootPath: /Users/normy/eddie_project
+Created metadata-only FileSystemWorkspace at /Users/normy/eddie_project.
+Reusing registered workspace ID: agent_ws_0be1f5398768ef2e7d63a93621c8ec1e60e3159f2a90d47fe5a7aede1acbf878
+MediaStorageService initialized. Media root: /Users/normy/.autobyteus/server-data/media
+AgentRuntimeState initialized for agent_id 'memory_compactor_c7436219af804d759223edf4f4feef85'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'memory_compactor_c7436219af804d759223edf4f4feef85': LLM instance 'DeepSeekLLM' and 4 tools prepared and stored in state.
+AgentContext composed for agent_id 'memory_compactor_c7436219af804d759223edf4f4feef85'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'memory_compactor_c7436219af804d759223edf4f4feef85' with config: 'Memory Compactor'.
+AgentWorker initialized for agent_id 'memory_compactor_c7436219af804d759223edf4f4feef85'.
+Registered AgentContext for agent_id 'memory_compactor_c7436219af804d759223edf4f4feef85'. Total registered contexts: 2
+AgentRuntime initialized for agent_id 'memory_compactor_c7436219af804d759223edf4f4feef85'. Context registered.
+Agent facade initialized for agent_id 'memory_compactor_c7436219af804d759223edf4f4feef85'.
+Agent 'memory_compactor_c7436219af804d759223edf4f4feef85' created and stored successfully.
+Agent 'memory_compactor_c7436219af804d759223edf4f4feef85' requesting runtime to start.
+AgentRuntime for 'memory_compactor_c7436219af804d759223edf4f4feef85': Starting worker.
+AgentWorker 'memory_compactor_c7436219af804d759223edf4f4feef85': Starting...
+AgentWorker 'memory_compactor_c7436219af804d759223edf4f4feef85' asyncRun(): Starting.
+Agent 'memory_compactor_c7436219af804d759223edf4f4feef85': Runtime init completed (event store initialized).
+Agent 'memory_compactor_c7436219af804d759223edf4f4feef85': Runtime init completed (status deriver initialized).
+Agent 'memory_compactor_c7436219af804d759223edf4f4feef85': Runtime init completed (AgentEventInbox initialized).
+Agent 'memory_compactor_c7436219af804d759223edf4f4feef85': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'memory_compactor_c7436219af804d759223edf4f4feef85' to become idle (timeout: 30s)...
+AgentEventStream (ID: d5e1fd3d-3bce-4b7d-af79-6ce586deec14) initialized for agent_id 'memory_compactor_c7436219af804d759223edf4f4feef85'. Subscribed to notifier.
+Agent 'memory_compactor_c7436219af804d759223edf4f4feef85': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: f29f02e3-ea7c-4d32-a4b4-c4ba1a48e909, AgentID: memory_compactor_c7436219af804d759223edf4f4feef85) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'memory_compactor_c7436219af804d759223edf4f4feef85': Bootstrapper starting direct lifecycle execution.
+Agent 'memory_compactor_c7436219af804d759223edf4f4feef85': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'memory_compactor_c7436219af804d759223edf4f4feef85': Executing McpServerPrewarmingStep.
+Agent 'memory_compactor_c7436219af804d759223edf4f4feef85': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'memory_compactor_c7436219af804d759223edf4f4feef85': Executing SystemPromptProcessingStep.
+Agent 'memory_compactor_c7436219af804d759223edf4f4feef85': No configured skills. Skipping skill catalog.
+Agent 'memory_compactor_c7436219af804d759223edf4f4feef85': Final processed system prompt configured on LLM instance. Final length: 5282.
+Agent 'memory_compactor_c7436219af804d759223edf4f4feef85': Final processed system prompt:
+---
+## Agent Identity
+
+- Name: Memory Compactor
+- Description: Summarizes the conversation history of a target agent so the target agent can continue later.
+
+### Responsibilities and Boundaries
+
+You summarize the conversation history of a target agent so the target agent can continue later without rereading the full history.
+
+The supplied conversation history may begin with a summary of the target agent's earlier work followed by what happened afterward. Treat it as one continuous history. Keep earlier information that is still useful, update it when later events change it, and produce a fresh summary that stands on its own.
+
+Keep the information that would let the target agent resume safely: the goal, current state, distinct task phases, important outcomes, decisions and rationale, user preferences, constraints, important files or artifacts, implementation facts, validation results, open issues, and next actions.
+
+Use the smallest number of episodes that still makes the work easy to resume. Give separate episodes to genuinely distinct phases or unrelated work when combining them would hide important outcomes or the current state. Do not create episodes for chatter, repeated status, repetitive activity, or obsolete detail.
+
+Choose the number of facts based on what the work actually requires. Keep constraints, decisions and rationale, unresolved work, user preferences, important artifacts, and other stable facts that would affect future work. Prefer concise, non-overlapping facts. Do not omit an important fact merely to reduce the count, and do not create facts for chatter, repetition, or obsolete detail.
+
+Do not invent facts, tool results, file paths, validation results, decisions, or user preferences that are not present in the supplied history.
+
+Return one JSON object with these fields:
+- `episodes`: summaries of what happened, why it matters, and the current state.
+- `critical_issues`: blockers, failures, risks, regressions, or important warnings.
+- `unresolved_work`: open questions, pending work, deferred work, and next actions.
+- `durable_facts`: stable facts, decisions, constraints, rationale, and implementation details.
+- `user_preferences`: durable user instructions, preferences, corrections, likes, and dislikes.
+- `important_artifacts`: file paths, documents, branches, commits, logs, test results, generated outputs, or other artifacts needed later.
+
+At least one non-empty episode is required. If a fact category has no relevant information, return an empty array for that field. The final answer must be exactly one JSON object, with no Markdown fences or prose around it:
+
+{
+  "episodes": [{ "summary": "string" }],
+  "critical_issues": [{ "fact": "string" }],
+  "unresolved_work": [{ "fact": "string" }],
+  "durable_facts": [{ "fact": "string" }],
+  "user_preferences": [{ "fact": "string" }],
+  "important_artifacts": [{ "fact": "string" }]
+}
+
+## Working Environment
+
+- Agent workspace: `/Users/normy/eddie_project`
+- Use skills from their skill package directories to work on tasks in the agent workspace.
+- A skill package directory contains the skill's instructions and bundled assets. It is not the agent workspace, and reading the skill does not change the agent workspace.
+- Resolve skill-package references from the skill package directory. Resolve task and project locations from the agent workspace unless an explicit target says otherwise.
+- Do not modify a skill package unless the task explicitly targets that skill package.
+- With no working-directory override, `pwd` returns the agent workspace. An explicit working directory changes only that command's location; it does not redefine the workspace.
+
+## Bash Operating Practice
+
+- Use Bash for workspace navigation, targeted search, repository and project commands, processes, network operations, and verification. Prefer deterministic, targeted commands over broad directory listings.
+- For file content, follow `File And Directory Practice` and prefer the exposed dedicated file tools. Use Bash for file inspection or modification when those tools are unavailable or cannot complete the operation after recovery.
+- Prefer non-interactive, small, composable, project-native commands.
+
+## File And Directory Practice
+
+- Locate files and directories by intent instead of broadly listing them. For content searches, use `rg -n "term" path`; for filename discovery, use `rg --files path | rg "pattern"`; use constrained `find path -maxdepth N ...` only when filesystem traversal or metadata is the goal.
+- When exposed, use `read_file` for file reading, `edit_file` for targeted regional changes to an existing file, and `write_file` for new files or deliberate whole-file replacement.
+- Before every targeted `edit_file` change, use `read_file` to read the relevant current content of the original file unless it was read recently and has not changed.
+- Build the regional `edit_file` patch from that latest content and preserve unrelated content. If the edit context fails or the file changed, use `read_file` again for the affected content, construct a new patch, and retry; do not blindly retry an unchanged patch.
+- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check.
+---
+Agent 'memory_compactor_c7436219af804d759223edf4f4feef85': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: f29f02e3-ea7c-4d32-a4b4-c4ba1a48e909, AgentID: memory_compactor_c7436219af804d759223edf4f4feef85) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'memory_compactor_c7436219af804d759223edf4f4feef85' initialized successfully. Entering main event scheduler loop.
+Agent 'memory_compactor_c7436219af804d759223edf4f4feef85' has become idle.
+AgentEventStream (ID: d5e1fd3d-3bce-4b7d-af79-6ce586deec14) for 'memory_compactor_c7436219af804d759223edf4f4feef85': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: 698b8845-fe42-4003-9c78-bf65ab7519f9) initialized for agent_id 'memory_compactor_c7436219af804d759223edf4f4feef85'. Subscribed to notifier.
+Successfully created autobyteus agent run 'memory_compactor_c7436219af804d759223edf4f4feef85'.
+AgentExternalEventNotifier (NotifierID: f29f02e3-ea7c-4d32-a4b4-c4ba1a48e909, AgentID: memory_compactor_c7436219af804d759223edf4f4feef85) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: f29f02e3-ea7c-4d32-a4b4-c4ba1a48e909, AgentID: memory_compactor_c7436219af804d759223edf4f4feef85) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'memory_compactor_c7436219af804d759223edf4f4feef85': UserInputContextBuildingProcessor completed. Final content length: 540727
+AgentExternalEventNotifier (NotifierID: f29f02e3-ea7c-4d32-a4b4-c4ba1a48e909, AgentID: memory_compactor_c7436219af804d759223edf4f4feef85) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: f29f02e3-ea7c-4d32-a4b4-c4ba1a48e909, AgentID: memory_compactor_c7436219af804d759223edf4f4feef85) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: f29f02e3-ea7c-4d32-a4b4-c4ba1a48e909, AgentID: memory_compactor_c7436219af804d759223edf4f4feef85) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: f29f02e3-ea7c-4d32-a4b4-c4ba1a48e909, AgentID: memory_compactor_c7436219af804d759223edf4f4feef85) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: f29f02e3-ea7c-4d32-a4b4-c4ba1a48e909, AgentID: memory_compactor_c7436219af804d759223edf4f4feef85) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: f29f02e3-ea7c-4d32-a4b4-c4ba1a48e909, AgentID: memory_compactor_c7436219af804d759223edf4f4feef85) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentEventStream (ID: 698b8845-fe42-4003-9c78-bf65ab7519f9) for 'memory_compactor_c7436219af804d759223edf4f4feef85': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'memory_compactor_c7436219af804d759223edf4f4feef85'. Attempting graceful shutdown.
+Agent 'memory_compactor_c7436219af804d759223edf4f4feef85' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: f29f02e3-ea7c-4d32-a4b4-c4ba1a48e909, AgentID: memory_compactor_c7436219af804d759223edf4f4feef85) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'memory_compactor_c7436219af804d759223edf4f4feef85': Stop requested.
+AgentExternalEventNotifier (NotifierID: f29f02e3-ea7c-4d32-a4b4-c4ba1a48e909, AgentID: memory_compactor_c7436219af804d759223edf4f4feef85) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'memory_compactor_c7436219af804d759223edf4f4feef85' asyncRun() loop has finished.
+AgentWorker 'memory_compactor_c7436219af804d759223edf4f4feef85': Running shutdown sequence on worker loop.
+AgentWorker 'memory_compactor_c7436219af804d759223edf4f4feef85': Shutdown resource cleanup completed successfully.
+AgentWorker 'memory_compactor_c7436219af804d759223edf4f4feef85': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'memory_compactor_c7436219af804d759223edf4f4feef85'.
+AgentRuntime for 'memory_compactor_c7436219af804d759223edf4f4feef85': Context unregistered.
+AgentRuntime for 'memory_compactor_c7436219af804d759223edf4f4feef85' stop() method completed.
+compaction_failed {
+  agent_id: 'daily_assistant_2a39c68eb96443ada6f5af9f4f81acef',
+  phase: 'failed',
+  turn_id: 'turn_0001',
+  compaction_operation_id: 'compaction_operation_mstvdkn4_1',
+  requested_turn_id: 'turn_0001',
+  execution_turn_id: 'turn_0001',
+  compaction_strategy_id: 'structured-json',
+  compaction_strategy_name: 'Structured JSON',
+  selected_block_count: 551,
+  compacted_block_count: null,
+  error_message: "Memory compaction failed before dispatch [runner_error_completion]: Compactor agent run 'memory_compactor_c7436219af804d759223edf4f4feef85' returned an error completion: Error processing your request with the LLM: Error: Error in API streaming: Error: 400 Failed to parse the request body as JSON: messages[1].content: unexpected end of hex escape at line 1 column 40410",
+  raw_trace_count: 1762,
+  compaction_agent_definition_id: 'autobyteus-memory-compactor',
+  compaction_agent_name: 'Memory Compactor',
+  compaction_runtime_kind: 'autobyteus',
+  compaction_model_identifier: 'deepseek-v4-flash',
+  compaction_run_id: 'memory_compactor_c7436219af804d759223edf4f4feef85',
+  compaction_task_id: 'compaction_task_47b6705ee66a4cefaa44f9fadace8bb7'
+}
+AgentExternalEventNotifier (NotifierID: 146368ac-9cc5-4d45-b619-fd7d5d86202f, AgentID: daily_assistant_2a39c68eb96443ada6f5af9f4f81acef) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 146368ac-9cc5-4d45-b619-fd7d5d86202f, AgentID: daily_assistant_2a39c68eb96443ada6f5af9f4f81acef) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 146368ac-9cc5-4d45-b619-fd7d5d86202f, AgentID: daily_assistant_2a39c68eb96443ada6f5af9f4f81acef) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 146368ac-9cc5-4d45-b619-fd7d5d86202f, AgentID: daily_assistant_2a39c68eb96443ada6f5af9f4f81acef) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 146368ac-9cc5-4d45-b619-fd7d5d86202f, AgentID: daily_assistant_2a39c68eb96443ada6f5af9f4f81acef) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 146368ac-9cc5-4d45-b619-fd7d5d86202f, AgentID: daily_assistant_2a39c68eb96443ada6f5af9f4f81acef) emitted agent_status. Kwarg keys for emit: agent_id,payload
